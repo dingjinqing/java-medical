@@ -25,7 +25,7 @@ public class ModuleCard extends ModuleBase {
     private String cardName;
 
     @JsonProperty("card_state")
-    private String cardState;
+    private Byte cardState;
 
     @JsonProperty("card_grade")
     private String cardGrade;
@@ -34,7 +34,7 @@ public class ModuleCard extends ModuleBase {
     private String receiveDay;
 
     @JsonProperty("card_type")
-    private String cardType;
+    private Byte cardType;
 
     @JsonProperty("legal")
     private String legal;

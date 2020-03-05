@@ -5,15 +5,17 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FreeShipPromotion;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Record5;
+import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
 import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
@@ -32,6 +34,7 @@ public class FreeShipProcessorDao extends ShopBaseService {
      * @param catId 平台分类ID
      * @param sortId 商家分类ID
      * @param now 时间
+     * @return List<FreeShipPromotion>
      */
     public List<FreeShipPromotion> getFreeShipProcessorForDetail(Integer goodsId, Integer catId, Integer sortId, Timestamp now){
 
@@ -40,13 +43,24 @@ public class FreeShipProcessorDao extends ShopBaseService {
 
         Condition pointCondition = buildCondition(goodsId,catId,sortId);
 
-        Map<Integer, List<FreeShipPromotion>> fullShipMap = db().select(FREE_SHIPPING.ID, FREE_SHIPPING_RULE.SHIPPING_ID.as("promotion_id"),
+        Result<Record5<Integer, String, Integer, BigDecimal, Integer>> result = db().select(FREE_SHIPPING_RULE.ID, FREE_SHIPPING_RULE.AREA,
             FREE_SHIPPING_RULE.CON_TYPE, FREE_SHIPPING_RULE.MONEY, FREE_SHIPPING_RULE.NUM).from(FREE_SHIPPING).innerJoin(FREE_SHIPPING_RULE).on(FREE_SHIPPING_RULE.SHIPPING_ID.eq(FREE_SHIPPING.ID))
             .where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FREE_SHIPPING.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(timeCondition).and(pointCondition))
-            .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc())
-            .fetchGroups(FREE_SHIPPING.ID, FreeShipPromotion.class);
+            .orderBy(FREE_SHIPPING.LEVEL.desc(), FREE_SHIPPING.CREATE_TIME.desc()).fetch();
 
-        return fullShipMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+        List<FreeShipPromotion> returnList = new ArrayList<>(result.size());
+
+        for (int i = 0; i < result.size(); i++) {
+            Record5<Integer, String, Integer, BigDecimal, Integer> record5 = result.get(i);
+            FreeShipPromotion promotion =new FreeShipPromotion();
+            promotion.setPromotionId(record5.get(FREE_SHIPPING_RULE.ID));
+            promotion.setConType(record5.get(FREE_SHIPPING_RULE.CON_TYPE));
+            promotion.setMoney(record5.get(FREE_SHIPPING_RULE.MONEY));
+            promotion.setNum(record5.get(FREE_SHIPPING_RULE.NUM));
+            promotion.setIsFullArea(StringUtils.isBlank(record5.get(FREE_SHIPPING_RULE.AREA)));
+            returnList.add(promotion);
+        }
+        return returnList;
     }
 
     private Condition buildCondition(Integer goodsId,Integer catId,Integer sortId){

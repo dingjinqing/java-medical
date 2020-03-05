@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 public class DeliverTemplateConfigService extends BaseShopConfigService{
 	
-	final public static String K_DELIVER_TEMPLATE = "deliverTemplate";
+	final public static String K_DELIVER_TEMPLATE = "deliver_template";
 	
 	 /**
      * 获取默认运费模板配置

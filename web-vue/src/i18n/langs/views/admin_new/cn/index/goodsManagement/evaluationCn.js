@@ -13,6 +13,7 @@ export const cn = {
     evaluationTime: '评价时间',
     anonymousEvaluation: '匿名评价',
     evaluationReward: '评价奖励',
+    evaluationAct: '评价活动',
     operating: '操作'
   },
   userName: '用户名',
@@ -24,7 +25,7 @@ export const cn = {
   deleteReply: '删除回复',
   yes: '是',
   no: '否',
-  null: '无',
+  nothing: '无',
   deleteEvaluation: '删除评价',
   orderSn: '订单编号',
   goodsName: '商品名称',

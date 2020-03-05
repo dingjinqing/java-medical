@@ -4,11 +4,21 @@ import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSalePrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record3;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +36,11 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
  * @date 2019年11月01日
  */
 @Service
+@Slf4j
 public class PreSaleProcessorDao extends PreSaleService {
+
+    @Autowired
+    OrderInfoService order;
 
     /**
      * 获取商品集合内的预售信息
@@ -171,4 +185,114 @@ public class PreSaleProcessorDao extends PreSaleService {
         }
     }
 
+    /**
+     * 下单校验
+     * @param param
+     * @param activityInfo
+     * @throws MpException
+     */
+    public void orderCheck(OrderBeforeParam param, PreSaleVo activityInfo) throws MpException {
+        log.info("下单：预售校验start");
+        if(activityInfo == null ||
+            DelFlag.DISABLE_VALUE.equals(activityInfo.getDelFlag()) ||
+            BaseConstant.ACTIVITY_STATUS_DISABLE.equals(activityInfo.getStatus()) ||
+            activityInfo.getGoodsId() == null ||
+            CollectionUtils.isEmpty(activityInfo.getProducts())
+        ) {
+            log.error("活动停用");
+            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE);
+        }
+        if(param.getDate().before(activityInfo.getStartTime())) {
+            log.error("活动未开始");
+            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
+        }
+        if(PreSaleService.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
+            //定金期数2
+            if((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
+                || param.getDate().after(activityInfo.getPreEndTime2())) {
+                log.error("活动已结束");
+                throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
+            }
+        }else if(param.getDate().after(activityInfo.getPreEndTime())){
+            //定金期数1
+            log.error("活动已结束");
+            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
+        }
+        if(activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0){
+            Integer hasBuyNumber = order.getPreSaletUserBuyNumber(param.getWxUserInfo().getUserId(), activityInfo.getId());
+            if(hasBuyNumber >= activityInfo.getBuyNumber()) {
+                log.error("购买数量已达活动上限");
+                throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);
+            }
+        }
+        if(activityInfo.getGoodsId().equals(param.getGoodsIds().get(0))) {
+            //预售商品只支持一个商品,所以get(0)
+            log.error("该商品不支持预售");
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_SUPORT_PRESALE);
+        }
+        boolean flag = false;
+        for (ProductVo productVo : activityInfo.getProducts()) {
+            //库存校验
+            if(productVo.getProductId().equals(param.getGoods().get(0).getProductId())){
+                if(productVo.getPresaleNumber() >= param.getGoods().get(0).getGoodsNumber()) {
+                    flag = true;
+                }
+            }
+        }
+        if(flag == false) {
+            log.error("预售活动库存不足");
+            throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK);
+        }
+        log.info("下单：预售校验end");
+    }
+
+    /**
+     * 初始化营销价格
+     * @param param
+     * @param activityInfo
+     */
+    public void orderInit(OrderBeforeParam param, PreSaleVo activityInfo) {
+        log.info("下单：预售初始化start");
+        //优惠是否叠加
+        if(!PreSaleService.PRE_SALE_USE_COUPON.equals(activityInfo.getDiscountType())) {
+            param.setMemberCardNo(StringUtils.EMPTY);
+            param.setCouponSn(StringUtils.EMPTY);
+        }
+
+        OrderBeforeParam.Goods goods = param.getGoods().get(0);
+        for (ProductVo productVo : activityInfo.getProducts()) {
+            if(productVo.getProductId().equals(goods.getProductId())){
+                goods.setProductPrice(new BigDecimal((productVo.getPresalePrice().toString())));
+                break;
+            }
+        }
+        log.info("下单：预售初始化end");
+    }
+
+    public void updateStockAndSales(Map<Integer, Integer> updateParam, Integer activityId) throws MpException {
+        log.info("预售更新活动库存start");
+        Map<Integer, PresaleProductRecord> records = db().selectFrom(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(activityId).and(SUB_TABLE.PRODUCT_ID.in(updateParam.keySet()))).fetchMap(SUB_TABLE.PRODUCT_ID);
+        List<PresaleProductRecord> executeParam = new ArrayList<>(records.size());
+        for (Map.Entry<Integer, Integer> entry: updateParam.entrySet()) {
+            PresaleProductRecord record = records.get(entry.getKey());
+            if(record == null){
+                if(entry.getValue() < 0 ) {
+                    continue;
+                }else {
+                    logger().error("updateStockAndSales.预售下单,商品不存在，id:{}", entry.getKey());
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null);
+                }
+            }
+            if(entry.getValue() > 0 && record.getPresaleNumber() < entry.getValue()){
+                logger().error("updateStockAndSales.预售下单,库存不足，id:{}", entry.getKey());
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_OUT_OF_STOCK, null);
+            }
+            log.info("{}预售更新活动库存,prdId:{},num:{}", entry.getValue() > 0 ? "下单" : "退款", entry.getKey(), entry.getValue());
+            record.setPresaleNumber(record.getPresaleNumber() - entry.getValue());
+            record.setSaleNumber(record.getSaleNumber() + entry.getValue());
+            executeParam.add(record);
+        }
+        db().batchUpdate(executeParam).execute();
+        log.info("预售更新活动库存end");
+    }
 }

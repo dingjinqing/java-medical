@@ -22,9 +22,9 @@ public class WxAppPageParam extends WxAppCommonParam {
 	Integer pageId = 0;
 	
 	/**
-	 * 场景值Id
+	 * 场景值
 	 */
 	@JsonProperty(value = "scene")
-	Integer sceneId;
+	String scene;
 	
 }

@@ -2,6 +2,6 @@
   "navigationBarTitleText": "砍价详情",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "v-goods-recommend": "/components/item/recommend/index"
+    "v-recommend":"/components/item/recommend/index"
   }
 }

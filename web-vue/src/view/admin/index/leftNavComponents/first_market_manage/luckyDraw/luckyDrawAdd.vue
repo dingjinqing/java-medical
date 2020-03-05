@@ -20,6 +20,7 @@
                     <ul class="picWrapper">
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -27,6 +28,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.noAwardImage"
                           :src="$imageHost+requestParam.noAwardImage"
                           alt=""
                         >
@@ -34,6 +36,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[2].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
                           alt=""
                         >
@@ -41,6 +44,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[0].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[0].iconImgsImage "
                           alt=""
                         >
@@ -48,6 +52,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[1].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
                           alt=""
                         >
@@ -55,6 +60,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -62,6 +68,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[2].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[2].iconImgsImage "
                           alt=""
                         >
@@ -69,6 +76,7 @@
                       </li>
                       <li class="picItems">
                         <img
+                          v-if="requestParam.prizeList[3].iconImgsImage"
                           :src="$imageHost + requestParam.prizeList[3].iconImgsImage "
                           alt=""
                         >
@@ -76,7 +84,8 @@
                       </li>
                       <li class="picItems">
                         <img
-                          :src="$imageHost + requestParam.prizeList[1].iconImgsImage "
+                          v-if="requestParam.prizeList[1].iconImgsImage"
+                          :src="$imageHost + requestParam.prizeList[1].iconImgsImage"
                           alt=""
                         >
                         <div>{{requestParam.prizeList[1].iconImgs}}</div>
@@ -85,7 +94,7 @@
                   </div>
                   <div class="winningTips">
                     <img
-                      src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_words.png"
+                      :src="$imageHost + '/image/admin/icon_lottery/lo_words.png'"
                       alt=""
                     >
                     张三{{$t('luckyDraw.get')}}
@@ -99,20 +108,15 @@
               </div>
               <div class="actRule">
                 <div class="ruleInfo">
-                  <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_l.png"
-                    alt=""
-                  >
+                  <img :src="$imageHost+'/image/admin/icon_lottery/lo_rule_l.png'">
                   <span>{{$t('luckyDraw.activityRules')}}</span>
-                  <img
-                    src="http://mpdevimg2.weipubao.cn/image/admin/icon_lottery/lo_rule_r.png"
-                    alt=""
-                  >
+                  <img :src="$imageHost+'/image/admin/icon_lottery/lo_rule_r.png'">
                 </div>
                 <div class="ruleContent">
                   <div class="timeRange">{{$t('luckyDraw.activityValidity')}}：</div>
-                  <div>{{$t('luckyDraw.to')}}：</div>
+                  <div>{{requestParam.startTime}} {{$t('luckyDraw.to')}}： {{requestParam.endTime}}</div>
                   <div>{{$t('luckyDraw.activityDescription')}}：</div>
+                  <div>{{requestParam.lotteryExplain}}</div>
                 </div>
               </div>
             </div>
@@ -248,7 +252,7 @@
                     {{$t('luckyDraw.payLuckyDrawTips2')}}：
                     <el-input
                       size="small"
-                      placeholder="为空表示不消耗积分"
+                      :placeholder="$t('luckyDraw.consumed')"
                       style="width:125px"
                       v-model="requestParam.scorePerChance"
                     ></el-input>
@@ -279,8 +283,8 @@
                   <div class="upIcons">
                     <div class="leftContent">
                       <img
-                        :src="this.$imageHost + this.requestParam.noAwardImage"
-                        alt=""
+                        v-if="requestParam.noAwardImage"
+                        :src="$imageHost + requestParam.noAwardImage"
                       >
                     </div>
                     <div class="rightContent">
@@ -293,7 +297,10 @@
                         >
                           {{$t('luckyDraw.uploadChartForNoWinning')}}
                         </span>
-                        <span class="operateBtn">{{$t('luckyDraw.empty')}}</span>
+                        <span
+                          class="operateBtn"
+                          @click="clearImgHandler"
+                        >{{$t('luckyDraw.empty')}}</span>
                       </div>
                       <p>{{$t('luckyDraw.uploadChartForNoWinningTips')}}</p>
                     </div>
@@ -332,6 +339,7 @@
                   <el-form-item
                     :label="$t('luckyDraw.prizeRate')+':'"
                     label-width="80px"
+                    prop="prizeList"
                   >
                     <el-input
                       size="small"
@@ -355,7 +363,7 @@
                       <el-radio :label="4">{{$t('luckyDraw.prizeType')[3][1]}}</el-radio>
                       <el-radio :label="5">{{$t('luckyDraw.prizeType')[4][1]}}</el-radio>
                     </el-radio-group>
-                    <section>
+                    <section v-if="Number(tabSwitch) === Number(index) + 1">
                       <el-form-item
                         v-if="item.lotteryType===1"
                         required
@@ -374,7 +382,7 @@
                       </el-form-item>
                       <el-form-item
                         v-if="item.lotteryType===2"
-                        :prop="`prizeList[${index}].integralScore`"
+                        :prop="`prizeList[${index}].account`"
                         :rules="{ required: true, message: $t('luckyDraw.validBounsAmount'), trigger: 'blur' }"
                         :inline-message="true"
                         class="before-star"
@@ -384,9 +392,10 @@
                           size="small"
                           :placeholder="$t('luckyDraw.giveTheBalanceTips')"
                           style="width: 120px"
-                          v-model="item.integralScore"
+                          v-model="item.account"
                         ></el-input>
                       </el-form-item>
+                      <!-- 优惠券 -->
                       <el-form-item
                         v-if="item.lotteryType===3"
                         :prop="`prizeList[${index}].couponId`"
@@ -399,7 +408,7 @@
                           v-model="item.couponId"
                           size="small"
                           style="width: 120px"
-                          @change="couponChange"
+                          @change="couponChange(item)"
                         >
                           <el-option
                             v-for="itema in couponlist"
@@ -419,8 +428,9 @@
                           @click="createCouponList()"
                         >{{$t('luckyDraw.make')}}
                         </span>
+                        <!-- 优惠券可用库存 -->
                         <p style="color: #999;">
-                          {{$t('luckyDraw.couponsTips',[couponNumber])}}</p>
+                          {{$t('luckyDraw.couponsTips',[item.couponNumber])}}</p>
                       </el-form-item>
                       <el-form-item
                         v-if="item.lotteryType===4"
@@ -476,6 +486,7 @@
                                     href="##"
                                     item="5410"
                                     class="change_goods_del"
+                                    @click="deleteGoodsHandle(item)"
                                   >
                                     {{$t('luckyDraw.goodsRemove')}}
                                   </a>
@@ -505,7 +516,7 @@
                           v-model="item.lotteryDetail"
                         ></el-input>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item prop="prizeNumber">
                         <span>{{$t('luckyDraw.prizeNumber')}}：</span>
                         <el-input
                           size="small"
@@ -531,6 +542,7 @@
                   <div class="upIcons">
                     <div class="leftContent">
                       <img
+                        v-if="requestParam.prizeList[tabSwitch - 1].iconImgsImage"
                         :src="this.$imageHost + this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage "
                         alt=""
                       >
@@ -546,7 +558,7 @@
                         </span>
                         <span
                           class="operateBtn"
-                          @click="handleClear()"
+                          @click="handleClear"
                         >{{$t('luckyDraw.empty')}}
                         </span>
                       </div>
@@ -581,7 +593,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[requestParam.prizeList[tabSwitch-1].prdId]"
+        :chooseGoodsBack="chooseGoodsBackData"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -595,6 +607,7 @@
         :isDraggable='false'
         @handleSelectImg='imgDialogSelectedCallback'
       />
+      <!-- 修改图标dialog -->
       <lotteryImageDialog
         :tuneUp="lotteryImgDialogShow"
         @handleSelectImg='imgDialogSelectedCallback'
@@ -636,26 +649,70 @@ export default {
       }
       callback()
     }
+    // 填写中奖概率
+    function validChance (rule, value, callback) {
+      let prizeList = that.requestParam.prizeList
+      // 规则一：一等奖必须填写
+      if ((prizeList[0].chance === '' || prizeList[0].chance === undefined) && (prizeList[0].chanceNumerator === '' || prizeList[0].chanceNumerator === undefined)) {
+        callback(new Error('请填写中奖概率!'))
+      }
+      // 规则二：当填写了奖品后，没有填写中奖概率则报错
+      for (let i = 0; i < prizeList.length; i++) {
+        let prize = prizeList[i]
+        if ((prize.chanceNumerator === '' || prize.chanceNumerator === undefined) && (prize.integralScore || prize.account || prize.couponId || prize.goodsName || prize.lotteryDetail)) {
+          callback(new Error('请填写中奖概率!'))
+          break
+        }
+      }
+      callback()
+    }
+    // 填写奖品
+    function validLotteryExplain (rule, value, callback) {
+      if (that.tabSwitch === '1' && value === '') {
+        callback(new Error(that.$t('luckyDraw.validDesc')))
+      }
+      callback()
+    }
+    // 优惠券限制数量时，校验奖品份数不能大于优惠券数量
+    // 赠品限制数量时，校验赠品奖品份数不能大于商品库存
+    function validPrizeNumber (rule, value, callback) {
+      for (let i = 0; i < that.requestParam.prizeList.length; i++) {
+        let item = that.requestParam.prizeList[i]
+        let couponNum = item.couponNumber
+        if (item.lotteryType === 3) {
+          if (couponNum !== '不限制' && Number(item.lotteryNumber) > Number(couponNum)) {
+            callback(new Error('奖品数量不能大于优惠券可用份数'))
+            break
+          }
+        } else if (item.lotteryType === 4) {
+          if (Number(item.goodsNumber) < Number(item.lotteryNumber)) {
+            callback(new Error('奖品数量不能大于商品库存'))
+            break
+          }
+        }
+      }
+      callback()
+    }
     return {
       requestParam: {
         lotteryName: '',
         lotteryExplain: '',
         startTime: '',
         endTime: '',
-        freeChances: 0,
-        canShare: 0,
+        freeChances: '',
+        canShare: 2,
         shareChances: 0,
-        canUseScore: 0,
+        canUseScore: 2,
         scorePerChance: 0,
         scoreChances: 0,
-        noAwardScore: 0,
+        noAwardScore: '',
         noAwardIcon: this.$t('luckyDraw.thanksParticipation'),
         noAwardImage: '/image/admin/icon_lottery/thank.png',
         prizeList: [
-          { iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png' },
-          { iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png' },
-          { iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png' },
-          { iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png' }
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.firstPrize'), lotteryGrade: '1', iconImgsImage: '/image/admin/icon_lottery/1.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.secondPrize'), lotteryGrade: '2', iconImgsImage: '/image/admin/icon_lottery/2.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.thirdPrize'), lotteryGrade: '3', iconImgsImage: '/image/admin/icon_lottery/3.png', lotteryType: 1 },
+          { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png', lotteryType: 1 }
         ]
       },
       times: 1,
@@ -671,7 +728,6 @@ export default {
       imageSize: [80, 80],
       // 优惠劵列表
       couponlist: [],
-      couponNumber: 5,
       tabSwitch: '1',
       imgHost: `${this.$imageHost}`,
       formRules: {
@@ -681,7 +737,9 @@ export default {
           { required: true, message: that.$t('luckyDraw.validEndTime'), trigger: 'blur' },
           { validator: validTime, trigger: 'blur' }
         ],
-        lotteryExplain: [{ required: true, message: that.$t('luckyDraw.validDesc'), trigger: 'blur' }]
+        lotteryExplain: [{ required: true, validator: validLotteryExplain, trigger: 'change' }],
+        prizeList: [{ validator: validChance, trigger: 'change' }],
+        prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }]
       }
     }
   },
@@ -690,6 +748,11 @@ export default {
     this.langDefault()
     this.refreshCouponList()
     this.isEditeShowData()
+  },
+  computed: {
+    chooseGoodsBackData () {
+      return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
+    }
   },
   watch: {},
   methods: {
@@ -708,6 +771,7 @@ export default {
               console.log('update', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
@@ -720,6 +784,7 @@ export default {
               console.log('addLottery', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
+                this.$parent.closeAddGroupTab()
               } else {
                 this.$message.warning(res.message)
               }
@@ -729,8 +794,13 @@ export default {
       })
       this.submitStatus = false
     },
+    // 清空未中奖的图片地址
+    clearImgHandler () {
+      this.requestParam.noAwardImage = ''
+    },
+    // 清空中奖图标
     handleClear () {
-      console.log(1111)
+      this.requestParam.prizeList[this.tabSwitch - 1].iconImgsImage = ''
     },
     handleTabClick (tab, event) {
       console.log(tab, event)
@@ -742,13 +812,35 @@ export default {
     // 放回商品信息
     choosingGoodsResult (res) {
       console.log(res)
-      this.requestParam.prizeList[this.tabSwitch - 1].prdId = res.prdId
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsShow = true
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsName = res.goodsName
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsImage = res.goodsImg
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
-      this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
+      // this.requestParam.prizeList[this.tabSwitch - 1].prdId = res.prdId
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsShow = true
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsName = res.goodsName
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsImage = res.goodsImg
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsPrice = res.prdPrice
+      // this.requestParam.prizeList[this.tabSwitch - 1].goodsNumber = res.prdNumber
+      let goodsInfo = {
+        prdId: res.prdId,
+        goodsName: res.goodsName,
+        goodsImage: res.goodsImg,
+        goodsPrice: res.prdPrice,
+        goodsNumber: res.prdNumber
+      }
+      if (goodsInfo.prdId) {
+        goodsInfo.goodsShow = true
+      } else {
+        goodsInfo.goodsShow = false
+      }
+      this.$set(this.requestParam.prizeList, this.tabSwitch - 1, Object.assign({}, this.requestParam.prizeList[this.tabSwitch - 1], goodsInfo))
       this.$forceUpdate()
+    },
+    // 删除商品
+    deleteGoodsHandle (item) {
+      item.goodsName = ''
+      item.goodsImage = ''
+      item.goodsPrice = ''
+      item.goodsNumber = ''
+      item.goodsShow = false
+      item.prdId = ''
     },
     // 显示图片弹窗
     changeImgHandler (index) {
@@ -804,26 +896,59 @@ export default {
       console.log('isEditeShowData', this.isEdite)
       if (this.isEdite) {
         getLottery({ id: this.id }).then(res => {
-          res.content.prizeList.map((item, index) => {
-            item.lotteryGrade = item.lotteryGrade.toString()
-            item.chance = 100 * item.chanceNumerator / item.chanceDenominator
-          })
-          this.requestParam = res.content
-          console.log('数据回显', res, this.requestParam)
-          this.$forceUpdate()
+          if (res.error === 0) {
+            res.content.prizeList.map((item, index) => {
+              item.lotteryGrade = item.lotteryGrade.toString()
+              item.chance = 100 * item.chanceNumerator / item.chanceDenominator
+              // 如果奖励是赠品，那么回显赠品数据
+              if (item.lotteryType === 4) {
+                item.goodsName = item.product.goodsName
+                item.goodsImage = this.$imageHost + '/' + item.product.goodsImg
+                item.goodsPrice = item.product.prdPrice
+                item.goodsNumber = item.product.prdNumber
+                item.goodsShow = true
+              }
+              // 如果奖励是优惠券
+              if (item.lotteryType === 3) {
+                this.$nextTick(() => {
+                  let coupon = this.couponlist.find(citem => {
+                    return citem.id === item.couponId
+                  })
+                  if (Number(coupon.limitSurplusFlag) === 1) {
+                    item.couponNumber = '不限制'
+                  } else {
+                    item.couponNumber = coupon.surplus
+                  }
+                })
+              }
+            })
+            this.requestParam = res.content
+            console.log('数据回显', res, this.requestParam)
+            this.$forceUpdate()
+          } else {
+            this.$message.error(this.$t('luckyDraw.fetchDataFail'))
+            console.error(res)
+          }
         })
       }
     },
-    couponChange (id) {
+    couponChange (item) {
+      console.log('arguments', arguments)
+      let id = item.couponId
       console.log('couponitem', id)
       if (!id) {
-        this.couponNumber = 0
+        item.couponNumber = 0
       } else {
-        this.couponNumber = this.couponlist.filter(item => {
+        let coupon = this.couponlist.find(item => {
           return item.id === id
-        })[0].surplus
+        })
+        if (Number(coupon.limitSurplusFlag) === 1) {
+          item.couponNumber = '不限制'
+        } else {
+          item.couponNumber = coupon.surplus
+        }
       }
-      console.log('this.couponNumber', this.couponNumber)
+      console.log('this.couponNumber', item.couponNumber)
     }
   }
 }

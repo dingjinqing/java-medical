@@ -79,7 +79,10 @@
         "shoporderinfo/shoporderinfo",
         "usercardrecord/usercardrecord",
         "lottery/lottery",
-        "pinlotterylist/pinlotterylist"
+        "lotteryrule/lotteryrule",
+        "pinlotterylist/pinlotterylist",
+        "pinlotteryinfo/pinlotteryinfo",
+        "fullshiprule/fullshiprule"
       ]
     }
   ],

@@ -1,12 +1,18 @@
+<!--
+***
+*  砍价订单列表
+***
+-->
 <template>
   <div class="content">
-    <div class="main">
+    <div class="search-condition">
       <marketOrderSearchTab
         :requestParams="requestParams"
         @filter="initDataList"
         @export="exportDataList"
       />
-
+    </div>
+    <div class="main">
       <div class="table_box">
         <el-table
           v-loading="loading"
@@ -43,6 +49,7 @@
                   :src="$imageHost+'/image/admin/icon_jia.png'"
                   alt=""
                   class="goods_img"
+                  style="width:25px;height:25px"
                 >
                 <span class="goods_name">{{goodsItem.goodsName}}</span>
               </div>
@@ -64,7 +71,7 @@
           </el-table-column>
           <el-table-column
             prop="createTime"
-            :label="$t('marketCommon.price')"
+            :label="$t('marketCommon.orderTime')"
             align="center"
           >
           </el-table-column>
@@ -140,6 +147,15 @@ export default {
   },
   methods: {
     initDataList () {
+      if (this.requestParams.createTimeStart) {
+        let end = this.requestParams.createTimeStart.split(' ', 1)
+        let endTime = end[0] + ' 23:59:59'
+        this.requestParams.createTimeEnd = endTime
+      } else {
+        this.requestParams.createTimeEnd = ''
+      }
+      // console.log(this.requestParams, 'get data')
+
       this.loading = true
       this.requestParams.activityId = this.actId
       this.requestParams.currentPage = this.pageParams.currentPage
@@ -190,6 +206,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.search-condition {
+  padding: 10px 10px 0;
+}
 .main {
   padding: 10px;
   .table_box {
@@ -204,6 +223,7 @@ export default {
     }
     .goods_info {
       display: flex;
+      justify-content: center;
       border-bottom: 1px solid #ebeef5;
       padding: 8px;
       &:last-of-type {

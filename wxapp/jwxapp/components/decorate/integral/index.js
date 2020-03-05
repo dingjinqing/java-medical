@@ -15,8 +15,8 @@ global.wxComponent({
       var d = this.eventData(e);
       console.log(d.tips)
       if (d.tips) {
-        if (d.tips == "商品已删除") {
-          util.showModal('提示', '商品已删除');
+        if (d.tips == this.$t("components.decorate.goodsDeleted")) {
+          util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.goodsDeleted"));
         } else {
           this.navigateToItem(d.goods_id);
         }

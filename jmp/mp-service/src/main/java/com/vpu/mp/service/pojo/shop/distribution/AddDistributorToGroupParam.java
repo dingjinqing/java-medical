@@ -10,7 +10,7 @@ import lombok.Data;
  * 2019年9月18日
  */
 @Data
-public class addDistributorToGroupParam {
+public class AddDistributorToGroupParam {
 	private int groupId;
 	public List<Integer> userIds;
 }

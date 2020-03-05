@@ -25,7 +25,7 @@ export const cn = {
   renew: '我要续费',
   upgrade: '版本升级',
   shareShop: '分享店铺',
-  shareDefault: '获取二维码失败',
+  shareDefault: '请授权小程序',
   shareTitle: '扫一扫，分享给好友吧~',
   shareDownload: '下载二维码',
   copy: '复制',
@@ -45,47 +45,56 @@ export const cn = {
     {
       value: 1,
       label: '待发货订单',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: '待处理退款退货',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: '已售罄商品',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: '商品评价待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
       label: '待提货订单',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: '分销员待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distributorCheck'
     },
     {
       value: 7,
       label: '会员卡激活待审核',
-      isCheck: false
+      isCheck: false,
+      link: ''
     },
     {
       value: 8,
       label: '分销提现待审核',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/withdrawDepositCheck'
     },
     {
       value: 9,
       label: '服务评价待审核',
-      isCheck: false
+      isCheck: false,
+      link: ''
     }
   ],
 
@@ -115,11 +124,11 @@ export const cn = {
   order2paid: '下单-支付转化率',
   options: [
     {
-      value: 1,
+      value: 0,
       label: '今日'
     },
     {
-      value: 2,
+      value: 1,
       label: '昨日'
     },
     {
@@ -157,12 +166,12 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: '开屏有礼',
-      link: ''
+      link: '/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: '砍价',
-      link: ''
+      link: '/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
@@ -172,12 +181,12 @@ export const cn = {
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: '优惠券礼包',
-      link: ''
+      link: '/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: '支付有礼',
-      link: '/admin/home/main/admin/home/main/payReward'
+      link: '/admin/home/main/payReward'
     }
   ],
 
@@ -212,30 +221,37 @@ export const cn = {
   storeTip: '提醒',
   storeGo: '前往',
   storeCourse: '查看教程',
+  storeIntroduction: '功能介绍',
   storeTask: '任务',
+  storeConfig: '开店必备',
   storeRecommend: '推荐',
   // 待完成
   unShopTip1: '建议完善微信配置',
+  unShopTipSet1: '未注册小程序',
+  unShopTipSet2: '未配置小程序客服',
+  unShopTipSet3: '未授权小程序',
+  unShopTipSet4: '未开通微信支付',
+  unShopTipSet5: '未配置微信支付',
   unShopTip2: '建议完成子账号设置',
   unShopTip3: '建议授权公众号',
-  unShopTip4: '建议完成店铺装修',
+  unShopTip4: '建议完成店铺首页装修',
   unShopTip5: '建议开启好物圈',
   unShopTip6: '建议开启客服',
   unStoreTip1: '运费模板未设置',
-  unStoreTip2: '商品未添加',
-  unStoreTip3: '个商品库存偏少',
+  unStoreTip2: '未添加商品',
+  unStoreTip3: '个商品库存偏少于5',
   unStoreTip4: '个商品滞销',
   unStoreTip5: '个商品评价超过3天未审核',
   unStoreTip6: '未配置推荐商品',
   unStoreTip7: '未配置商家分类',
   unOrderTip1: '个订单超过3天未发货',
   unOrderTip2: '个订单退款申请超过3天未处理',
+  unOrderTip3: '个订单发货提醒申请超过3天未处理',
   unMarketTip1: '个分销员申请超过3天未处理',
-  unMarketTip2: '个会员卡激活申请超过2天未处理',
+  unMarketTip2: '会员卡激活申请超过2天未处理',
   unMarketTip3: '优惠券',
   unMarketTip4: '即将发完',
-  unMarketTip5: '超过',
-  unMarketTip6: '天未处理',
+  unMarketTip5: '类会员卡有',
   // 已完成
   tabInfo: [
     {
@@ -252,9 +268,14 @@ export const cn = {
   order: '订单',
   market: '营销',
   enShopTip1: '已完善微信配置',
+  enShopTipSet1: '已注册小程序',
+  enShopTipSet2: '已配置小程序客服',
+  enShopTipSet3: '已授权小程序',
+  enShopTipSet4: '已开通微信支付',
+  enShopTipSet5: '已配置微信支付',
   enShopTip2: '已完成子账号设置',
   enShopTip3: '已授权公众号',
-  enShopTip4: '已完成店铺装修',
+  enShopTip4: '已完成店铺首页装修',
   enShopTip5: '已开启好物圈',
   enShopTip6: '已开启客服',
   enStoreTip1: '已设置运费模板',
@@ -262,13 +283,15 @@ export const cn = {
   enStoreTip3: '商品库存充裕',
   enStoreTip4: '商品销售状况良好',
   enStoreTip5: '商品评价审核进度良好',
-  enStoreTip6: '商品已配置',
+  enStoreTip6: '已配置推荐商品',
   enStoreTip7: '已配置商家分类',
-  enOrderTip1: '订单发货进度良好',
+  enOrderTip1: '订单逾期发货处理进度良好',
   enOrderTip2: '退款处理进度良好',
+  enOrderTip3: '订单提醒发货处理进度良好',
   enMarketTip1: '个分销员申请超过3天未处理',
   enMarketTip2: '会员卡激活审核进度良好',
   enMarketTip3: '没有库存偏小(小于指定值)的优惠券',
+  enMarketTip4: '分销员审核进度良好',
 
   // 公告
   noticeTitle: '公告',

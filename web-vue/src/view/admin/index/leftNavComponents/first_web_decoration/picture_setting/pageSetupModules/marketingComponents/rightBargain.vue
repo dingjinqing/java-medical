@@ -129,6 +129,7 @@
       <!-- 弹窗选择砍价活动商品 -->
       <addBargainGoodsDialog
         :visible.sync="addBargainDialogVisible"
+        :backData="bargainTableData"
         @select="selectBargainGoodsHandle"
       ></addBargainGoodsDialog>
     </div>
@@ -149,7 +150,7 @@ export default {
     return {
       data: {
         module_name: 'm_bargain',
-        list_style: '0',
+        list_style: 0,
         goods_price: true,
         goods_count_down: true,
         free_btn: true,
@@ -175,7 +176,8 @@ export default {
             act_status: row.status,
             is_on_sale: row.isOnSale,
             is_delete: row.isDelete,
-            act_end_time: row.endTime
+            act_end_time: row.endTime,
+            cur_idx: row.cur_idx
           }
         })
         this.$set(this.data, 'bargain_goods', datas)

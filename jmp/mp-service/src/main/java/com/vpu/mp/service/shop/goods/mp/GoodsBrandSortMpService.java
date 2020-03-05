@@ -250,4 +250,13 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     public  List<GoodsBrandMpPinYinVo> getGoodsSearchFilterCondition() {
         return goodsBrandService.getBrandAssociatedWithGoodsGroupByPinYinNameMp();
     }
+
+    /**
+     * 根据parentId获取其所有子孙节点id,返回值包含parentId
+     * @param parentId 父节点id
+     * @return 要查询的子孙节点id
+     */
+    public List<Integer> getChildrenIds(Integer parentId){
+         return goodsSortService.getChildrenIdByParentIdsDao(Collections.singletonList(parentId));
+    }
 }

@@ -8,11 +8,11 @@ public class PrizeConstant {
     //****************奖品来源
 
     /**
-     * 奖品来源
+     * 幸运大抽奖
      */
     public final static byte PRIZE_SOURCE_LOTTERY=0;
     /**
-     * 奖品来源
+     * 支付有礼
      */
     public final static byte PRIZE_SOURCE_PAY_AWARD=3;
     /**

@@ -5,7 +5,7 @@
       v-if="modelFlag"
     ></div>
     <el-dialog
-      title="编辑图片热区"
+      :title="$t('pictureHotSpot.editPictureHotArea')"
       :visible.sync="hotDialogVisible"
       width="30%"
       :modal="false"
@@ -40,11 +40,11 @@
                   class="top"
                   @click="handleToCallLink()"
                 >
-                  {{item.link_text?item.link_text:'设置关联链接'}}
+                  {{item.link_text?item.link_text:$t('pictureHotSpot.setAssociationLink')}}
                 </div>
                 <div class="footer">
                   <div @click="handleToCallLink()">
-                    添加链接
+                    {{$t('pictureHotSpot.addLinks')}}
                   </div>
 
                 </div>
@@ -68,13 +68,13 @@
         slot="footer"
         class="dialog-footer"
       >
-        <div class="choose_el_area">已添加热区数量：<span>{{hotAreaData.length}}</span> 个</div>
+        <div class="choose_el_area">{{$t('pictureHotSpot.numberOfHotSpotsAdded')}}<span>{{hotAreaData.length}}</span> 个</div>
         <div>
-          <el-button @click="handleToAddHot()">添加热区</el-button>
+          <el-button @click="handleToAddHot()">{{$t('pictureHotSpot.addHotZone')}}</el-button>
           <el-button
             type="primary"
             @click="handleToSave()"
-          >保存</el-button>
+          >{{$t('pictureHotSpot.save')}}</el-button>
         </div>
 
       </span>
@@ -105,7 +105,7 @@ export default {
     hotDialogVisible (newVal) {
       if (!newVal) {
         this.modelFlag = false
-        // this.$emit('update:hotDialogVisible', false)
+        this.$emit('update:hotDialogVisible', false)
       } else {
         this.modelFlag = true
       }
@@ -114,12 +114,29 @@ export default {
     hotData: {
       handler (newVal) {
         if (newVal.length) {
-          this.hotAreaData = newVal
+          let data = JSON.parse(JSON.stringify(newVal))
+          this.hotAreaData = data
+        } else {
+          this.hotAreaData = [
+            {
+              hot_idx: 1,
+              x: 0,
+              y: 0,
+              w: 115,
+              h: 115,
+              link_url: '',
+              link_text: '',
+              z: 1
+            }
+          ]
         }
-        console.log(this.hotAreaData)
+        console.log(newVal, this.hotAreaData)
       },
       deep: true,
       immediate: true
+    },
+    lang () {
+      this.hotMainTopData = this.$t('pictureHotSpot.hotMainTopData')
     }
   },
   data () {
@@ -147,6 +164,10 @@ export default {
       nowClickIndex: null
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     // 添加热区
     handleToAddHot () {
@@ -164,16 +185,17 @@ export default {
     },
     // 保存
     handleToSave () {
-      let flag = true
-      this.hotAreaData.forEach((item, index) => {
-        if (!item.link_url) {
-          item.z = 99
-          flag = false
-        } else {
-          item.z = 1
-        }
-      })
-      if (!flag) return
+      // let flag = true
+      // this.hotAreaData.forEach((item, index) => {
+      //   if (!item.link_url) {
+      //     item.z = 99
+      //     flag = false
+      //   } else {
+      //     item.z = 1
+      //   }
+      // })
+      // if (!flag) return
+      console.log(this.hotAreaData)
       this.$emit('handleToGetHotData', this.hotAreaData)
       this.$emit('update:hotDialogVisible', false)
     },

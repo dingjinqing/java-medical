@@ -18,7 +18,7 @@ public class FreeShippingRuleParam {
     private Integer id;
     private Integer shippingId;
     /**
-     * 包邮条件 0满金额 1满件数
+     * 包邮条件 0满金额 1满件数 2满金额或满件数
      */
     @NotNull
     private Integer conType;

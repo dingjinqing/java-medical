@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.member;
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
-import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +32,6 @@ import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
@@ -56,6 +53,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
 import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -69,6 +67,7 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.CardInfoVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJson;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonDetailVo;
+import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeJsonVo;
 import com.vpu.mp.service.pojo.shop.member.userImp.SetNoticeParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListParam;
 import com.vpu.mp.service.pojo.shop.member.userImp.UIGetListVo;
@@ -178,9 +177,19 @@ public class UserImportService extends ShopBaseService {
 			return json;
 		}
 		json = Util.parseJson(record.getV(), SetNoticeJson.class);
+		
 		return json;
 	}
 
+	public SetNoticeJsonVo getAllActivationNotice() {
+		SetNoticeJson json = getActivationNotice();
+		String mrkingVoucherId = json.getMrkingVoucherId();
+		List<CouponView> couponViewByIds=new ArrayList<CouponView>();
+		if(StringUtils.isNotEmpty(mrkingVoucherId)) {
+			couponViewByIds = couponService.getCouponViewByIds(Util.splitValueToList(mrkingVoucherId));			
+		}
+		return new SetNoticeJsonVo(json.getExplain(), json.getScore(), mrkingVoucherId, couponViewByIds);
+	}
 	public SetNoticeJsonDetailVo getInfo(String lang) {
 		SetNoticeJson activationNotice = getActivationNotice();
 		String mrkingVoucherId = activationNotice.getMrkingVoucherId();
@@ -257,7 +266,7 @@ public class UserImportService extends ShopBaseService {
 		String cardId = param.getCardId();
 		Integer groupId = param.getGroupId();
 		Integer tagId = param.getTagId();
-		UserImportMqParam mqParam = new UserImportMqParam(models, lang, getShopId(), cardId, groupId, tagId);
+		UserImportMqParam mqParam = new UserImportMqParam(models, lang, getShopId(), cardId, groupId, tagId,null);
 		logger().info("会员导入发队列");
 		saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
 				TaskJobEnum.OTHER_MQ.getExecutionType());
@@ -439,11 +448,11 @@ public class UserImportService extends ShopBaseService {
 		int insert2 = newRecord.insert();
 		logger().info("插入USER_IMPORT"+insert2);
 		for (UserImportPojo userImportPojo2 : list) {
-			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL);
+			UserImportDetailRecord record = db().newRecord(USER_IMPORT_DETAIL, userImportPojo2);
 			record.setCardId(cardId);
 			record.setTagId(tagId);
 			record.setGroupId(groupId);
-			FieldsUtil.assignNotNull(userImportPojo2, record);
+			//FieldsUtil.assignNotNull(userImportPojo2, record);
 			record.setBatchId(newRecord.getId());
 			int insert = record.insert();
 			logger().info("插入" + insert);

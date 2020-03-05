@@ -33,7 +33,7 @@ public class ModuleGoods extends ModuleBase {
      * 范围集合
      */
     @JsonProperty("goods_area_data")
-    private List<String> goodsAreaData;
+    private List<Integer> goodsAreaData;
 
     @JsonProperty("goods_bg_color")
     private String goodsBgColor;

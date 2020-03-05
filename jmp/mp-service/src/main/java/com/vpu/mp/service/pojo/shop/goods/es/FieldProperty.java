@@ -18,6 +18,11 @@ public class FieldProperty {
 
     private Operator operator;
 
+    /**
+     * 此参数是否是必须匹配,默认是必须
+     */
+    private boolean isMust = Boolean.TRUE;
+
     private Object value;
 
     private boolean useFullQuery;
@@ -57,6 +62,14 @@ public class FieldProperty {
 
     public boolean isUseFullQuery() {
         return useFullQuery;
+    }
+
+    public boolean isMust() {
+        return isMust;
+    }
+
+    public void setMust(boolean must) {
+        isMust = must;
     }
 
     public void setValue(Object value) {

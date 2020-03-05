@@ -10,6 +10,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
@@ -93,6 +95,8 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setCardId(secKill.getCardId());
         seckillVo.setShareConfig(Util.parseJson(secKill.getShareConfig(), ShopShareConfig.class));
         seckillVo.setActProducts(this.getSecKillPrd(secKill.getSkId(),capsule));
+
+        seckillVo.setSaleNum(secKill.getSaleNum() + secKill.getBaseSale());
         return seckillVo;
     }
 
@@ -166,6 +170,11 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param orderBeforeParam
      */
     public void setOrderPrdSeckillPrice(OrderBeforeParam orderBeforeParam){
+        SecKillDefineRecord seckill = db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(orderBeforeParam.getActivityId())).fetchAny();
+        //是否免运费
+        orderBeforeParam.setIsFreeShippingAct(seckill.getFreeFreight());
+
+        //秒杀规格价
         for(OrderBeforeParam.Goods prd : orderBeforeParam.getGoods()){
             Record2<BigDecimal, BigDecimal> record = db().select(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,GOODS_SPEC_PRODUCT.PRD_PRICE).from(SEC_KILL_PRODUCT_DEFINE).leftJoin(GOODS_SPEC_PRODUCT).on(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(orderBeforeParam.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(prd.getProductId()))).fetchSingle();
 
@@ -181,26 +190,37 @@ public class SecKillProcessorDao extends ShopBaseService {
      */
     public void processSeckillStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         for(OrderGoodsBo goods : param.getBos()){
-            int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
-            if(seckillStock - goods.getGoodsNumber() < 0){
-                //秒杀库存不足
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+            if(goods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
+                int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
+                if (seckillStock - goods.getGoodsNumber() < 0) {
+                    //秒杀库存不足
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                }
+
+                int seckillPrdStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).fetchSingle().into(Integer.class);
+                if (seckillPrdStock - goods.getGoodsNumber() < 0) {
+                    //秒杀规格库存不足
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+                }
+
+                //修改库存
+                db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK, seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM, SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
+                db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK, seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM, SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
+
+                //秒杀记录
+                seckillService.seckillList.addSecRecord(order, param.getGoods().get(0).getGoodsId());
             }
-
-            int seckillPrdStock = db().select(SEC_KILL_PRODUCT_DEFINE.STOCK).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).fetchSingle().into(Integer.class);
-            if(seckillPrdStock - goods.getGoodsNumber() < 0){
-                //秒杀规格库存不足
-                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
-            }
-
-            //修改库存
-            db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
-            db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM,SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
-
-            //秒杀记录
-            seckillService.seckillList.addSecRecord(order,param.getGoods().get(0).getGoodsId());
         }
 
+    }
+
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        returnGoods.forEach(g->{
+            //不是赠品行，返还活动库存
+            if(g.getIsGift().equals(OrderConstant.IS_GIFT_N)){
+                seckillService.updateSeckillStock(activityId,g.getProductId(),- g.getGoodsNumber());
+            }
+        });
     }
 
 }

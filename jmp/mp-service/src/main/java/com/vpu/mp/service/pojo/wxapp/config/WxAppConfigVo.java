@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.wxapp.config;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.pojo.shop.config.BottomNavigatorConfig;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 前端店铺配置拉取
@@ -34,9 +33,15 @@ public class WxAppConfigVo {
 	 */
 	@JsonProperty(value = "show_logo")
 	Byte showLogo = 0;
+
+    /**
+     * 店铺logo图片链接
+     */
+    @JsonProperty(value = "logo")
+    String logo;
 	
 	/**
-	 * 店铺logo图片链接
+	 * 点击店铺logo图片后的跳转地址
 	 */
 	@JsonProperty(value = "logo_link")
 	String logoLink;

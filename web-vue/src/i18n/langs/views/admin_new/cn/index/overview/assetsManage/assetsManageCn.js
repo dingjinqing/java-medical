@@ -20,6 +20,7 @@ export const cn = {
   status: '交易状态',
   Reset: '重置',
   Export: '导出',
+  sourceAnalysis: '整体来源分析',
 
   scoreOptions: [{
     value: '0',

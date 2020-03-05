@@ -30,7 +30,7 @@ global.wxPage({
           //订单状态
           orderInfo.orderStatusName = orderEvent.getOrderStatus(orderInfo);
           //订单商品总价
-          orderInfo.goodsTotalPrice = orderInfo.goods.reduce((total, item) => { return total += item.goodsPrice }, 0)
+          orderInfo.goodsTotalPrice = orderInfo.goods.reduce((total, item) => { return total += item.discountedGoodsPrice }, 0)
           // 订单活动类型
           if (orderInfo.orderType && orderInfo.orderType.length) {
             orderInfo.activityName = ""
@@ -66,7 +66,7 @@ global.wxPage({
   },
   itemPage (e) {
     util.jumpLink(
-      `pages/item/item?goodsId=${e.currentTarget.dataset.goods_id}`,
+      `pages/item/item?gid=${e.currentTarget.dataset.goods_id}`,
       "navigateTo"
     );
   },

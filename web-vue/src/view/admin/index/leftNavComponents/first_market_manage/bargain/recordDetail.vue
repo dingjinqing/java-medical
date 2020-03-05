@@ -50,8 +50,8 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="id"
-            label="ID"
+            prop="userId"
+            :label="$t('marketCommon.userId')"
             align="center"
           >
           </el-table-column>

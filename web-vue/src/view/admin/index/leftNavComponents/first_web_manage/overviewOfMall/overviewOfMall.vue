@@ -138,7 +138,10 @@
               :key="index"
               v-if="item.isCheck === true"
             >
-              <a href="javascript:void(0);">
+              <a
+                href="javascript: void(0);"
+                @click="item.link ? jumpHandler(item.link) : selectHandler(item.value)"
+              >
                 <div class="order_top">{{ item.num }}</div>
                 <p>{{ item.label }}</p>
               </a>
@@ -333,152 +336,219 @@
               >
                 <div
                   class="task_list"
-                  v-if="storeList.dataShop && storeList.dataGoods && storeList.dataOrder && storeList.dataMarket"
+                  v-if="storeList.dataShop && storeList.wxDataShop && storeList.dataGoods && storeList.dataOrder && storeList.dataMarket"
                 >
+                  <!-- 微信配置 -->
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.wxPayConfigInfo === 2"
+                    v-if="storeList.wxDataShop.registerApplet.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.childAccountConf !== 0"
+                    v-if="storeList.wxDataShop.appletService.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.authApplet.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.wxPayment.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.configWxPayment.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.childAccountConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/shopAuthority">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.officialAccountConf !== 0"
+                    v-if="storeList.wxDataShop.officialAccountConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/shopMain?change_components=3">{{ $t('overview.storeGo') }}</a>
                   </div>
+                  <!-- 店铺 -->
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.homePageConf !== 0"
+                    v-if="storeList.dataShop.homePageConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/pictureSetting">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.shopRecommendConf !== 1"
+                    v-if="storeList.dataShop.shopRecommendConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.customServiceConf !== 0"
+                    v-if="storeList.dataShop.customServiceConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip6') }}</span>
                     <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
                   </div>
+                  <!-- 商品 -->
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.shipTemplateConf !== 0"
+                    v-if="storeList.dataGoods.shipTemplateConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/deliverTemplate/list">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsConf !== 0"
+                    v-if="storeList.dataGoods.goodsConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsForSale">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsStoreConf !== 0"
+                    v-if="storeList.dataGoods.goodsStoreConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', ShopData.storeSizeNum, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsUnsalableConf !== 0"
+                    v-if="storeList.dataGoods.goodsUnsalableConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', 3, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsComment !== 0"
+                    v-if="storeList.dataGoods.goodsComment.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('comment', ShopData.commentOver, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsRecommend === 0"
+                    v-if="storeList.dataGoods.goodsRecommend.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsRecommend">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.shopSort === 0"
+                    v-if="storeList.dataGoods.shopSort.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <!-- 订单 -->
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataOrder.deliver.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.deliverOver, 0, 'deliver')"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataOrder.deliver !== 0"
+                    v-if="storeList.dataOrder.refund.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataOrder.refund !== 0"
+                    v-if="storeList.dataOrder.remind.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.remindOver, 1, 'deliver')"
+                    >{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <!-- 营销 -->
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataMarket.examine.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
+                    <a
+                      href="javascript:void(0);"
+                      @click="clickJumpHandler('distribution_info', ShopData.applyOver, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataMarket.examine !== 0"
+                    v-if="storeList.dataMarket.member.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                    <a :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id">{{ $t('overview.storeGo') }}</a>
                   </div>
-                  <div v-if="storeList.dataMarket.member !== null">
-                    <div class="task_list_item">
-                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                    </div>
-                  </div>
-                  <div v-if="storeList.dataMarket.voucher !== null">
+                  <div v-if="storeList.dataMarket.voucher.status === 0">
                     <div
                       class="task_list_item"
-                      v-for="(val, key, index) in storeList.dataMarket.voucher"
+                      v-for="(val, key, index) in storeList.dataMarket.voucher.content"
                       :key="index"
                     >
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span class="task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a href="/admin/home/main/ordinaryCoupon">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
                 </div>
@@ -487,53 +557,93 @@
                 class="task_list_content"
                 v-if="tabSwitch === '2'"
               >
+                <!-- 微信配置 -->
+                <div
+                  class="task_list"
+                  v-if="storeList.wxDataShop"
+                  style="padding-bottom: 0;"
+                >
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.registerApplet.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet1') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.appletService.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet2') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.authApplet.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet3') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.wxPayment.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet4') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.configWxPayment.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTipSet5') }}</span>
+                    <a href="/admin/home/main/base_manger/-1">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.childAccountConf.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
+                    <a href="/admin/home/main/shopAuthority">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.wxDataShop.officialAccountConf.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
+                    <a href="/admin/home/shopMain?change_components=3">{{ $t('overview.storeGo') }}</a>
+                  </div>
+                </div>
+                <!-- 店铺 -->
                 <div
                   class="task_list"
                   v-if="storeList.dataShop"
                 >
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.wxPayConfigInfo === 2"
-                  >
-                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ $t('overview.unShopTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                  </div>
-                  <div
-                    class="task_list_item"
-                    v-if="storeList.dataShop.childAccountConf !== 0"
-                  >
-                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ $t('overview.unShopTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                  </div>
-                  <div
-                    class="task_list_item"
-                    v-if="storeList.dataShop.officialAccountConf !== 0"
-                  >
-                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ $t('overview.unShopTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                  </div>
-                  <div
-                    class="task_list_item"
-                    v-if="storeList.dataShop.homePageConf !== 0"
+                    v-if="storeList.dataShop.homePageConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/pictureSetting">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.shopRecommendConf !== 1"
+                    v-if="storeList.dataShop.shopRecommendConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a :href="'/admin/home/main/base_manger/' + this.storeList.dataShop.shopRecommendLink">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataShop.customServiceConf !== 0"
+                    v-if="storeList.dataShop.customServiceConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unShopTip6') }}</span>
@@ -551,59 +661,68 @@
                 >
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.shipTemplateConf !== 0"
+                    v-if="storeList.dataGoods.shipTemplateConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/deliverTemplate/list">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsConf !== 0"
+                    v-if="storeList.dataGoods.goodsConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsForSale">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsStoreConf !== 0"
+                    v-if="storeList.dataGoods.goodsStoreConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf }} {{ $t('overview.unStoreTip3') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsStoreConf.value }} {{ $t('overview.unStoreTip3') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', ShopData.storeSizeNum, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsUnsalableConf !== 0"
+                    v-if="storeList.dataGoods.goodsUnsalableConf.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf }} {{ $t('overview.unStoreTip4') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsUnsalableConf.value }} {{ $t('overview.unStoreTip4') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('goodsForSale', 3, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsComment !== 0"
+                    v-if="storeList.dataGoods.goodsComment.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataGoods.goodsComment }} {{ $t('overview.unStoreTip5') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataGoods.goodsComment.value }} {{ $t('overview.unStoreTip5') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('comment', ShopData.commentOver, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.goodsRecommend === 0"
+                    v-if="storeList.dataGoods.goodsRecommend.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip6') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsRecommend">{{ $t('overview.storeGo') }}</a>
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataGoods.shopSort === 0"
+                    v-if="storeList.dataGoods.shopSort.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                     <span class="task_list_desc">{{ $t('overview.unStoreTip7') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <a href="/admin/home/main/goodsManage/goodsSortManagement/allGoodsSort">{{ $t('overview.storeGo') }}</a>
                   </div>
                 </div>
               </div>
@@ -617,19 +736,37 @@
                 >
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataOrder.deliver !== 0"
+                    v-if="storeList.dataOrder.deliver.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataOrder.deliver }} {{ $t('overview.unOrderTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataOrder.deliver.value }} {{ $t('overview.unOrderTip1') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.deliverOver, 0, 'deliver')"
+                    >{{ $t('overview.storeGo') }}</a>
+
                   </div>
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataOrder.refund !== 0"
+                    v-if="storeList.dataOrder.refund.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataOrder.refund }} {{ $t('overview.unOrderTip2') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataOrder.refund.value }} {{ $t('overview.unOrderTip2') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.refundOver, 2, 'refund')"
+                    >{{ $t('overview.storeGo') }}</a>
+                  </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataOrder.remind.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataOrder.remind.value }} {{ $t('overview.unOrderTip3') }}</span>
+                    <a
+                      href="javascript: void(0);"
+                      @click="clickJumpHandler('order_wait', ShopData.remindOver, 1, 'deliver')"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
                 </div>
               </div>
@@ -643,40 +780,34 @@
                 >
                   <div
                     class="task_list_item"
-                    v-if="storeList.dataMarket.examine !== 0"
+                    v-if="storeList.dataMarket.examine.status === 0"
                   >
                     <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                    <span class="task_list_desc">{{ storeList.dataMarket.examine }} {{ $t('overview.unMarketTip1') }}</span>
-                    <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                    <span class="task_list_desc">{{ storeList.dataMarket.examine.value }} {{ $t('overview.unMarketTip1') }}</span>
+                    <a
+                      href="javascript:void(0);"
+                      @click="clickJumpHandler('distribution_info', ShopData.applyOver, 1)"
+                    >{{ $t('overview.storeGo') }}</a>
                   </div>
-                  <div v-if="storeList.dataMarket.member !== null">
-                    <!-- <div
-                      class="task_list_item"
-                      v-for="(val, key, index) in storeList.dataMarket.member"
-                      :key="index"
-                    >
-                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ val }} {{ $t('overview.unMarketTip2') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                    </div> -->
-                    <div class="task_list_item">
-                      <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
-                      <span class="task_list_desc">{{ storeList.dataMarket.member.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.card_num }} {{ $t('overview.unMarketTip6') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
-                    </div>
+                  <div
+                    class="task_list_item"
+                    v-if="storeList.dataMarket.member.status === 0"
+                  >
+                    <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
+                    <span class="task_list_desc">{{ storeList.dataMarket.member.content.card_name }} {{ $t('overview.unMarketTip5') }} {{ storeList.dataMarket.member.value }} {{ storeList.dataMarket.member.content.card_num }} {{ $t('overview.unMarketTip2') }}</span>
+                    <a :href="'/admin/home/main/activateAudit?cardId=' + storeList.dataMarket.member.content.card_id">{{ $t('overview.storeGo') }}</a>
                   </div>
-                  <div v-if="storeList.dataMarket.voucher !== null">
+                  <div v-if="storeList.dataMarket.voucher.status === 0">
                     <div
                       class="task_list_item"
-                      v-for="(val, key, index) in storeList.dataMarket.voucher"
+                      v-for="(val, key, index) in storeList.dataMarket.voucher.content"
                       :key="index"
                     >
                       <span class="tips ff4444">{{ $t('overview.storeTip') }}</span>
                       <span class="task_list_desc">{{ $t('overview.unMarketTip3') }} "{{ val }}" {{ $t('overview.unMarketTip4') }}</span>
-                      <a href="javascript:void(0);">{{ $t('overview.storeGo') }}</a>
+                      <a href="/admin/home/main/ordinaryCoupon">{{ $t('overview.storeGo') }}</a>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -820,6 +951,95 @@
           style="margin-bottom: 10px;width: 25%;"
         ></el-checkbox>
       </el-checkbox-group>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="cancelDataHandler"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureDataHandler"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 会员卡弹窗 -->
+    <el-dialog
+      title="请选择会员卡"
+      :visible.sync="cardDialog"
+      width="20%"
+      center
+    >
+      <el-select
+        v-model="cardValue"
+        size="small"
+        style="width: 170px;"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in cardList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="sureCardActive"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="cancelCardActive"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 门店弹窗 -->
+    <el-dialog
+      title="请选择门店"
+      :visible.sync="storeDialog"
+      width="20%"
+      center
+    >
+      <el-select
+        v-model="storeValue"
+        size="small"
+        style="width: 170px;"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in storeRevieweList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          size="small"
+          @click="cancelStoreReviewe"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureStoreReviewe"
+        >确 定</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -828,7 +1048,7 @@
 // 引入组件
 import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
-import { getAllOverview, shopShareRequest, toDoItemRequest, dataRequest, shopInfoRequest } from '@/api/admin/survey.js'
+import { getAllOverview, toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, shopShareRequest, shopInfoRequest, getAllStore } from '@/api/admin/survey.js'
 export default {
   components: {
     VCharts,
@@ -836,14 +1056,24 @@ export default {
   },
   data () {
     return {
-      image: 'http://mpdevimg2.weipubao.cn',
+      image: `${this.$imageHost}`,
       shareData: {}, // 分享店铺
       dataDialog: false, // 自定义事项弹框
       // 选中自定义事项
       checkData: this.$t('overview.checkData'),
+      // 记录选中数据
+      selectData: [],
+      // 会员卡
+      cardDialog: false,
+      cardValue: '',
+      cardList: [],
+      // 门店
+      storeDialog: false,
+      storeValue: '',
+      storeRevieweList: [],
       // 自定义列表
       checkList: this.$t('overview.checkList'),
-      screeningTime: 1, // 数据日期范围
+      screeningTime: 0, // 数据日期范围
       // 数据日期列表
       options: this.$t('overview.options'),
       // 数据列表信息
@@ -856,6 +1086,22 @@ export default {
       percentage: 0,
       storeList: {},
       storeTabs: this.$t('overview.storeTabs'),
+      // 店铺助手默认值
+      ShopData: {
+        isAuthOk: 1,
+        storeSizeNum: 5, // 商品库存偏小参数
+        // unsalableNum: 3, // 商品滞销
+        commentOver: 3, // 商品评价审核逾期
+
+        deliverOver: 3, // 订单发货逾期参数
+        refundOver: 3, // 退款申请处理预期参数
+        remindOver: 3, // 提醒发货参数
+
+        applyOver: 3, // 分销员审核超时参数,
+        examineOver: 2, // 会员卡激活审核参数
+
+        couponSizeNum: 10 // 优惠券库存参数
+      },
       // 公告列表
       noticeList: [],
       // 轮播图数据
@@ -881,10 +1127,14 @@ export default {
     }
   },
   created () {
-    // 初始化数据
-    this.getAllOverview()
-    this.getShopShare()
-    this.getShopInfo()
+    // this.getAllOverview() // 数据总接口
+    this.getTodoDate() // 获取代办事项
+    this.getShowData() // 获取数据展示
+    this.getShopData() // 获取店铺助手
+    this.getNoticeList() // 获取公告信息
+    this.getShopShare() // 店铺分享
+    this.getShopInfo() // 店铺信息
+    this.getAllStore() // 获取服务门店
   },
   mounted () {
     this.langDefault()
@@ -899,9 +1149,14 @@ export default {
       this.functionList = this.$t('overview.functionList')
       this.storeTabs = this.$t('overview.storeTabs')
       this.serveList = this.$t('overview.serveList')
-      this.getAllOverview()
-      this.getShopShare()
-      this.getShopInfo()
+      // this.getAllOverview() // 数据总接口
+      this.getTodoDate() // 获取代办事项
+      this.getShowData() // 获取数据展示
+      this.getShopData() // 获取店铺助手
+      this.getNoticeList() // 获取公告信息
+      this.getShopShare() // 店铺分享
+      this.getShopInfo() // 店铺信息
+      this.getAllStore() // 获取服务门店
     }
   },
   methods: {
@@ -932,45 +1187,54 @@ export default {
       getAllOverview(obj).then((res) => {
         if (res.error === 0) {
           // 代办
-          let data = res.content.toDoItemVo
-          for (var i = 0; i < this.checkList.length; i++) {
-            if (this.checkList[i].label === '待发货订单' || this.checkList[i].label === 'To be shipped') {
-              this.checkList[i].num = data.toBeDelivered
-            } else if (this.checkList[i].label === '待处理退款退货' || this.checkList[i].label === 'Pending disposal') {
-              this.checkList[i].num = data.refunds
-            } else if (this.checkList[i].label === '已售罄商品' || this.checkList[i].label === 'Sold out') {
-              this.checkList[i].num = data.soldOutGoods
-            } else if (this.checkList[i].label === '商品评价待审核' || this.checkList[i].label === 'To be audited') {
-              this.checkList[i].num = data.productEvaluationPr
-            } else if (this.checkList[i].label === '待提货订单' || this.checkList[i].label === 'Waiting for delivery') {
-              this.checkList[i].num = data.pendingOrder
-            } else if (this.checkList[i].label === '分销员待审核' || this.checkList[i].label === 'Reviewed by distributor') {
-              this.checkList[i].num = data.distributorPr
-            } else if (this.checkList[i].label === '会员卡激活待审核' || this.checkList[i].label === 'Membership activation') {
-              this.checkList[i].num = data.membershipCardPr
-            } else if (this.checkList[i].label === '分销提现待审核' || this.checkList[i].label === 'Cash withdrawal') {
-              this.checkList[i].num = data.distributionWithdrawalPr
-            } else if (this.checkList[i].label === '服务评价待审核' || this.checkList[i].label === 'Service evaluation') {
-              this.checkList[i].num = data.serviceEvaluationPr
-            }
-            this.checkList[i].isCheck = false
-            for (var j = 0; j < this.checkData.length; j++) {
-              if (this.checkList[i].label === this.checkData[j]) {
-                this.checkList[i].isCheck = true
-              }
-            }
-          }
+          // let data = res.content.toDoItemVo
+          // for (var i = 0; i < this.checkList.length; i++) {
+          //   if (this.checkList[i].label === '待发货订单' || this.checkList[i].label === 'To be shipped') {
+          //     this.checkList[i].num = data.toBeDelivered
+          //   } else if (this.checkList[i].label === '待处理退款退货' || this.checkList[i].label === 'Pending disposal') {
+          //     this.checkList[i].num = data.refunds
+          //   } else if (this.checkList[i].label === '已售罄商品' || this.checkList[i].label === 'Sold out') {
+          //     this.checkList[i].num = data.soldOutGoods
+          //   } else if (this.checkList[i].label === '商品评价待审核' || this.checkList[i].label === 'To be audited') {
+          //     this.checkList[i].num = data.productEvaluationPr
+          //   } else if (this.checkList[i].label === '待提货订单' || this.checkList[i].label === 'Waiting for delivery') {
+          //     this.checkList[i].num = data.pendingOrder
+          //   } else if (this.checkList[i].label === '分销员待审核' || this.checkList[i].label === 'Reviewed by distributor') {
+          //     this.checkList[i].num = data.distributorPr
+          //   } else if (this.checkList[i].label === '会员卡激活待审核' || this.checkList[i].label === 'Membership activation') {
+          //     this.checkList[i].num = data.membershipCardPr
+          //   } else if (this.checkList[i].label === '分销提现待审核' || this.checkList[i].label === 'Cash withdrawal') {
+          //     this.checkList[i].num = data.distributionWithdrawalPr
+          //   } else if (this.checkList[i].label === '服务评价待审核' || this.checkList[i].label === 'Service evaluation') {
+          //     this.checkList[i].num = data.serviceEvaluationPr
+          //   }
+          //   this.checkList[i].isCheck = false
+          //   for (var j = 0; j < this.checkData.length; j++) {
+          //     if (this.checkList[i].label === this.checkData[j]) {
+          //       this.checkList[i].isCheck = true
+          //     }
+          //   }
+          // }
           // 数据
-          this.dataList = res.content.dataDemonstrationVo
+          // this.dataList = res.content.dataDemonstrationVo
           // 店铺
-          this.storeList = res.content.shopAssistantVo
+          // this.storeList = res.content.shopAssistantVo
           // 公告
-          this.noticeList = res.content.announcementVoList
-          if (this.storeList.totalNum === 0) {
-            this.percentage = 100
-          } else {
-            this.percentage = 45
-          }
+          // this.noticeList = res.content.announcementVoList
+          // if (this.storeList.totalNum === 0) {
+          //   this.percentage = 100
+          // } else {
+          //   this.percentage = 45
+          // }
+        }
+      })
+    },
+
+    // 获取服务门店
+    getAllStore () {
+      getAllStore().then(res => {
+        if (res.error === 0) {
+          this.storeRevieweList = res.content
         }
       })
     },
@@ -1028,6 +1292,73 @@ export default {
     // 自定义事项弹框
     customizeHandler () {
       this.dataDialog = true
+      this.selectData = this.checkData
+    },
+
+    // 取消自定义事项弹窗
+    cancelDataHandler () {
+      this.checkData = this.selectData
+      this.dataDialog = false
+    },
+
+    // 确定自定义事项弹窗
+    sureDataHandler () {
+      if (this.checkData.length === 5) {
+        this.getTodoDate()
+        this.$nextTick(() => {
+          this.dataDialog = false
+        })
+      } else {
+        this.$message.warning({ message: this.$t('overview.agencyTip') })
+      }
+    },
+
+    // 跳转对应页面
+    jumpHandler (link) {
+      window.open(link)
+    },
+
+    // 自定义选值
+    selectHandler (value) {
+      if (value === 7) {
+        // 会员卡激活 (选择会员卡)
+        this.cardDialog = !this.cardDialog
+      } else if (value === 9) {
+        // 服务审核 (选择门店)
+        this.storeDialog = !this.storeDialog
+      }
+    },
+
+    // 确定会员激活
+    sureCardActive () {
+      this.cardDialog = false
+      // window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
+      this.cardValue = ''
+    },
+
+    // 取消会员激活
+    cancelCardActive () {
+      this.cardDialog = false
+      this.cardValue = ''
+    },
+
+    // 确定服务门店
+    sureStoreReviewe () {
+      this.storeDialog = false
+      this.$router.push({
+        name: 'comment',
+        params: {
+          ids: this.storeValue,
+          activeName: 'second'
+        }
+      })
+      this.storeValue = ''
+    },
+
+    // 取消服务门店
+    cancelStoreReviewe () {
+      this.storeDialog = false
+      this.storeValue = ''
     },
 
     // 关闭弹窗
@@ -1053,6 +1384,43 @@ export default {
     dateChangeHandler (value) {
       this.screeningTime = value
       this.getShowData()
+    },
+
+    // 获取店铺助手
+    getShopData () {
+      let obj = {
+        isAuthOk: 1,
+        storeSizeNum: 5,
+        commentOver: 3,
+        deliverOver: 3,
+        refundOver: 3,
+        applyOver: 3,
+        examineOver: 2,
+        couponSizeNum: 10
+      }
+      console.log(obj)
+      shopAssistantRequest(obj).then(res => {
+        if (res.error === 0) {
+          this.storeList = res.content
+          if (this.storeList.totalNum === 0) {
+            this.percentage = 100
+          } else {
+            this.percentage = 45
+          }
+        }
+      })
+    },
+
+    // 获取公告列表
+    getNoticeList () {
+      noticeListRequest({
+        currentPage: 1,
+        pageRows: 6
+      }).then(res => {
+        if (res.error === 0) {
+          this.noticeList = res.content.dataList
+        }
+      })
     },
 
     // 公告详情
@@ -1136,6 +1504,35 @@ export default {
           }
         }
       }, 300)
+    },
+
+    // 店铺助手跳转
+    // type用于区别订单的tab名
+    clickJumpHandler (name, IntegerDays, flag, type) {
+      var obj = {
+        IntegerDays: IntegerDays,
+        flag: flag
+      }
+      // 商品评价
+      if (name === 'comment') {
+        obj.activeName = 'second'
+      }
+      // 订单发货
+      if (name === 'order_wait') {
+        if (type === 'deliver') {
+          obj.orderStatus = 3
+        } else if (type === 'refund') {
+          obj.orderStatus = 7
+        }
+      }
+      // 分销员审核
+      if (name === 'distribution_info') {
+        obj.distributorName = 'ninth'
+      }
+      this.$router.push({
+        name: name,
+        params: obj
+      })
     }
 
   },

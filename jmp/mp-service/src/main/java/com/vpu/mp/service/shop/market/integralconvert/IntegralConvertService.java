@@ -2,30 +2,21 @@ package com.vpu.mp.service.shop.market.integralconvert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertConstant;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertOrderVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertProductVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSwitchParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -60,22 +51,55 @@ public class IntegralConvertService extends ShopBaseService {
 	IntegralMallDefine imd = INTEGRAL_MALL_DEFINE.as("imd");
 	IntegralMallProduct imp = INTEGRAL_MALL_PRODUCT.as("imp");
 	IntegralMallRecord imr = INTEGRAL_MALL_RECORD.as("imr");
-
+    /** 活动状态为启用 */
+	public static final Byte NORMAL = 1;
+    /** 默认查找上架和下架全部商品 */
+    public static final Byte DEFAULT_SALE_STATUS = -1;
 	@Autowired
 	private OrderReadService orderReadService;
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+    private DomainConfig domainConfig;
+
+    /**
+     * 积分兑换弹窗
+     * @param param 商品名称 是否上架
+     * @return 活动商品信息
+     */
+	public PageResult<PopListVo> getPopList(PopListParam param){
+	    SelectConditionStep<? extends Record> select = db().select(imd.ID.as("integral_goods_id"),GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+        GOODS.SHOP_PRICE.as("prd_price"),imp.STOCK.as("stock_sum"),imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+            .from(imd)
+            .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
+            .where(imd.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(imd.STATUS.eq(NORMAL))
+            .and(imd.START_TIME.lessThan(Util.currentTimeStamp()))
+            .and(imd.END_TIME.greaterThan(Util.currentTimeStamp()));
+	    if (!StringUtils.isNullOrEmpty(param.getGoodsName())){
+	        select.and(GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
+        }
+	    if (null!=param.getIsOnSale()&&!param.getIsOnSale().equals(DEFAULT_SALE_STATUS)){
+            select.and(GOODS.IS_ON_SALE.eq(param.getIsOnSale()));
+        }
+	    //整合分页信息
+        PageResult<PopListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),PopListVo.class);
+	    for (PopListVo vo :result.dataList){
+	        vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+        }
+	    return result;
+    }
 
 	/**
 	 * 积分兑换分页查询列表
 	 *
-	 * @param IntegralConvertListParam
+	 * @param param
 	 * @return PageResult<IntegralConvertListVo>
 	 */
 	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
-		SelectConditionStep<? extends Record> sql = db()
-				.select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
+		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
 						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
 						DSL.count(imr.USER_ID).as("userNumber"))

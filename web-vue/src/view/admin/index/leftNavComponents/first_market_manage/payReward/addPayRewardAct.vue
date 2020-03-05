@@ -110,8 +110,8 @@
               <div>
                 <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label="1">{{$t('payReward.allGoods')}}</el-radio>
-                  <el-radio :label="2">{{$t('payReward.partOfGoods')}}</el-radio>
+                  <el-radio :label=1>{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label=2>{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
@@ -141,8 +141,7 @@
                   prop="minPayMoney"
                   style="margin:0 5px"
                   :rules="[
-                    { message: '请输入支付条件', trigger: 'blur'},
-                    { validator: (rule, value, callback) => {validateMoney(rule, value, callback )}, trigger: ['blur']}
+                    { validator: (rule, value, callback) => {validateMoney(rule, value, callback )}, trigger: ['blur', 'change']}
                   ]"
                 >
                   <el-input
@@ -682,6 +681,7 @@ export default {
     }
   },
   data () {
+    var that = this
     var validateSiForever = (rule, value, callback) => {
       console.log(value, 'value data--')
       if (value === 0 && (this.dateInterval === null || this.dateInterval.length === 0)) {
@@ -700,13 +700,15 @@ export default {
         callback()
       }
     }
+
+    // 验证弹窗是否选择
     var validateGoodsAreaType = (rule, value, callback) => {
       console.log(value)
-      // var re = /^(0|\+?[1-9][0-9]*)$/
-      if (this.params.goodsAreaType === 2 && (this.noneBlockDiscArr[0].num.length === 0 || this.noneBlockDiscArr[1].num.length === 0 || this.noneBlockDiscArr[2].num.length === 0)) {
-        callback(new Error('请选择参加活动的商品'))
+      console.log(this.noneBlockDiscArr)
+      if (value === 2 && (that.noneBlockDiscArr[0].num === 0 && that.noneBlockDiscArr[1].num === 0 && that.noneBlockDiscArr[2].num === 0)) {
+        return callback(new Error('请选择参加活动的商品'))
       } else {
-        callback()
+        return callback()
       }
     }
     var limitTimesValidator = (rule, value, callback) => {
@@ -741,16 +743,16 @@ export default {
       ],
       options: [],
       noneBlockDiscArr: [
-        { name: '选择商品', num: '' },
-        { name: '选择商家分类', num: '' },
-        { name: '选择平台分类', num: '' }
+        { name: '选择商品', num: 0 },
+        { name: '选择商家分类', num: 0 },
+        { name: '选择平台分类', num: 0 }
       ],
       controlChoosingGoodsDialog: false,
       userDialogFlag: null,
       classFlag: null, // 区分商家分类和平台分类flag
       isShowBusinessPlatformDialog: false, // 商家分类和平台分类调起
-      choosingGoodsDateFlag1: [], // 指定商品-选择商品选中数据,
-      ownGoodsId: null, // 会员专享商品: 添加的商品Id
+      choosingGoodsDateFlag1: null, // 指定商品-选择商品选中数据,
+      // ownGoodsId: null, // 会员专享商品: 添加的商品Id
       tuneUpSelectLinkDialog: false,
       tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
@@ -781,7 +783,7 @@ export default {
         activityNames: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
         timeType: [{ required: true, validator: validateSiForever, trigger: ['blur', 'change'] }],
         actFirst: { required: true, validator: validatelevel, trigger: 'blur' },
-        goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: 'change' },
+        goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: ['blur', 'change'] },
         limitTimes: { required: true, validator: limitTimesValidator, trigger: 'blur' }
       }
     }
@@ -971,14 +973,12 @@ export default {
 
     // 获取会员权益选择商品弹窗的商品id
     getGoodsIdFromChoosingGoods (data) {
+      console.log(data, 'get data')
       // 添加商品id
       if (this.userDialogFlag === '1') {
         this.choosingGoodsDateFlag1 = data
         this.noneBlockDiscArr[0].num = data.length
         console.log(this.noneBlockDiscArr[0].num, 'num length')
-      } else {
-        this.ownGoodsId = data
-        this.noneBlockVipArr[0].num = data.length
       }
     },
 
@@ -1017,6 +1017,7 @@ export default {
           // 商家分类
           this.shopCategoryIds = data
           this.noneBlockDiscArr[1].num = data.length
+          console.log(this.noneBlockDiscArr)
         }
         if (this.AtreeType === 2) {
           // 平台分类
@@ -1128,8 +1129,8 @@ export default {
             this.params.endTime = this.dateInterval[1]
           }
           let obj = {
-            goodsIds: String(this.choosingGoodsDateFlag1), // 商品ID
-            goodsCatIds: String(this.platformCategoryIds), // 商家平台分类
+            goodsIds: this.goodsIds === null ? null : String(this.choosingGoodsDateFlag1), // 商品ID
+            goodsCatIds: this.goodsCatIds === null ? null : String(this.platformCategoryIds), // 商家平台分类
             goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
           }
           let requestParams = Object.assign(this.params, obj)
@@ -1256,7 +1257,7 @@ export default {
       if (value === '') {
         callback(new Error('请输入支付条件'))
       } else if (!re.test(value)) {
-        callback(new Error('请输入0或者正数'))
+        callback(new Error('请输入正整数'))
       } else {
         callback()
       }

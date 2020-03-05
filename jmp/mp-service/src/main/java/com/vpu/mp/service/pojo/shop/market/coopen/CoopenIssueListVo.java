@@ -1,11 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.coopen;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.sql.Timestamp;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * @author 孔德成

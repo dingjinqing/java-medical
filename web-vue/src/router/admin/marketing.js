@@ -243,6 +243,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
+  // 分销 返利提现审核
+  {
+    path: '/admin/home/main/withdrawDepositCheck',
+    name: 'withdrawDeposit_check',
+    meta: {
+      crumbTitle: 'router.distribution_info',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/distribution/withdrawDepositCheck'
+      )
+  },
   // 分销推广测试
   {
     path: '/admin/home/main/distribution/copyWriting',
@@ -418,6 +431,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
+      )
+  },
+  // 限时降价活动数据
+  {
+    path: '/admin/home/main/reduce/reduceEffect',
+    name: 'reduce_effect_view',
+    meta: {
+      crumbTitle: 'router.reduceEffect',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceEffect'
       )
   },
   // 好友助力
@@ -633,7 +660,7 @@ const routes = [
     meta: {
       crumbTitle: 'router.lottery_activity_detail',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(
@@ -642,12 +669,12 @@ const routes = [
   },
   // 幸运大抽奖活动 -- 获取新用户明细
   {
-    path: '/admin/home/main/luckyDraw/newUserList/:id/:activityName',
+    path: '/admin/home/main/luckyDraw/newUserList',
     name: 'lottery_activity_newUserList',
     meta: {
       crumbTitle: 'router.lottery_activity_newUserList',
       meta: 'first_market_manage',
-      category: 'first_market_manage'
+      category: 'lottery_activity'
     },
     component: () =>
       import(

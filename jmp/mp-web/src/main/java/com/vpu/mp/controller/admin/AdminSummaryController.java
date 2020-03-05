@@ -1,18 +1,23 @@
 package com.vpu.mp.controller.admin;
 
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
+import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitDistributionParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.summary.portrait.PortraitParam;
-import com.vpu.mp.service.pojo.shop.summary.portrait.ProvinceParam;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitDistributionParam;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitPageParam;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitStatisticsParam;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 概况
@@ -38,6 +43,16 @@ public class AdminSummaryController extends AdminBaseController {
         return i18nSuccess(shop().distribution.getVisitDistribution(param));
     }
 
+    @PostMapping("/api/admin/summary/source/distribution")
+    public JsonResult getSourceAnalysis(@Valid @RequestBody VisitDistributionParam param) {
+        return success(shop().distribution.querySourceAnalysis(param));
+    }
+
+    @GetMapping("/api/admin/summary/source/selectoption")
+    public JsonResult getSelectOption() {
+        return i18nSuccess(shop().distribution.getSelectOption());
+    }
+
     @PostMapping("/api/admin/summary/visit/retain")
     public JsonResult getVisitDistribution(@Valid @RequestBody VisitStatisticsParam param) {
         return success(shop().retain.getAccessRetain(param));
@@ -56,6 +71,18 @@ public class AdminSummaryController extends AdminBaseController {
     @PostMapping("/api/admin/summary/portrait/province")
     public JsonResult getProvincePortrait(@Valid @RequestBody ProvinceParam param) {
         return success(shop().portrait.getProvincePortrait(param));
+    }
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+    /**
+     * 统计数据导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/api/admin/summary/visit/export")
+    public void export(@Valid @RequestBody VisitExportParam param, HttpServletResponse response) {
+        Workbook workbook = shop().amount.getVisitExportVo(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.VIST_EXPORT_FILE_NAME, LANGUAGE_TYPE_EXCEL)+DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook, fileName, response);
     }
 }
 

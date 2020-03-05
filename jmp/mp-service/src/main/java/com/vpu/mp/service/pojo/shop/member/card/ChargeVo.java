@@ -32,6 +32,7 @@ public class ChargeVo {
 	
 	
 	private BigDecimal charge;
+	//	消费类型 0是普通卡 1限次卡
 	private Byte type;
 	private Short count;
 	private Short exchangCount;

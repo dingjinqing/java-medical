@@ -2,7 +2,8 @@ package com.vpu.mp.service.pojo.shop.decoration.module;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,7 +13,8 @@ import java.sql.Timestamp;
  * @author lixinguo
  *
  */
-@Data
+@Getter
+@Setter
 public class ModuleIntegral extends ModuleBase {
 
     @JsonProperty("list_styles")
@@ -21,7 +23,8 @@ public class ModuleIntegral extends ModuleBase {
     @JsonProperty("show_goods_price")
     private Boolean showGoodsPrice;
 
-    @Data
+    @Getter
+    @Setter
     public static class IntegralGoods{
         @JsonProperty("goods_id")
         private Integer goodsId;

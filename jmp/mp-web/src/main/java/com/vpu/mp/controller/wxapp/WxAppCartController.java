@@ -2,14 +2,13 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumParam;
 import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumVo;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppSwitchCartProductsParam;
-import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +30,7 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/list")
     public JsonResult getCartList() {
         WxAppSessionUser user = wxAppAuth.user();
-        WxAppCartListVo cartList = shop().cart.getCartList(user.getUserId());
+        WxAppCartBo cartList = shop().cart.getCartList(user.getUserId());
         return success(cartList);
     }
 
@@ -114,15 +113,13 @@ public class WxAppCartController extends WxAppBaseController {
 
     /**
      * 查询商品数量
-     * @param param
      * @return
      */
     @PostMapping("/goods/num")
-    public JsonResult cartGoodsNum(@RequestBody @Valid CartGoodsNumParam param){
+    public JsonResult cartGoodsNum(){
         WxAppSessionUser user = wxAppAuth.user();
-        Integer num = shop().cart.cartGoodsNum(user.getUserId(),param.getGoodsId());
+        Integer num = shop().cart.cartGoodsNum(user.getUserId());
         CartGoodsNumVo cartGoodsNumVo =new CartGoodsNumVo();
-        cartGoodsNumVo.setGoodsId(param.getGoodsId());
         cartGoodsNumVo.setGoodsNum(num==null?0:num);
         return success(cartGoodsNumVo);
     }

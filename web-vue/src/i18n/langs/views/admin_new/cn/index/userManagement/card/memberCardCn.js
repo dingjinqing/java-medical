@@ -250,5 +250,18 @@ export const cn = {
   gradeCondition: '升级条件: ',
   normalCard: '普通会员卡',
   limitCard: '限次会员卡',
-  gradeCard: '等级会员卡'
+  gradeCard: '等级会员卡',
+  defineGoodsDis: '指定商品折扣',
+  allGoodsDis: '全部商品折扣',
+  limitCardSendCardTip: '填0时为不限制',
+  currentReceive: '当前已领取:',
+  sendCardTotal: '发放总量:',
+  personReceive: '领取限制：每人限领',
+  storeUseTimes: '请输入允许使用次数',
+  times: '次',
+  allowUse: '允许使用',
+  allowUseTime: '允许适用时间',
+  timeTip: '至少选择一项使用时间',
+  workDay: '工作日',
+  breakDay: '双休日'
 }

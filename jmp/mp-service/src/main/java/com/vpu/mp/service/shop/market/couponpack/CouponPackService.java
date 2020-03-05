@@ -167,7 +167,7 @@ public class CouponPackService extends ShopBaseService {
         db().select(COUPON_PACK.ID,COUPON_PACK.ACT_NAME,COUPON_PACK.START_TIME,COUPON_PACK.END_TIME,COUPON_PACK.PACK_NAME,COUPON_PACK.LIMIT_GET_TIMES,COUPON_PACK.TOTAL_AMOUNT,COUPON_PACK.ACCESS_MODE,COUPON_PACK.ACCESS_COST,COUPON_PACK.ACT_RULE).
         from(COUPON_PACK).
         where(COUPON_PACK.ID.eq(id)).and(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
-        fetchOne().into(CouponPackUpdateVo.class);
+        fetchOneInto(CouponPackUpdateVo.class);
 
         if(res != null){
             List<CouponPackUpdateVoucherVo> couponPackVoucherList =

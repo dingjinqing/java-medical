@@ -79,5 +79,5 @@
     </view>
   </view>
 </v-popup>
-<v-sort-filter show="{{showSortDialog}}" sorts="{{sorts}}" nav-height="{{navHeight}}"/>
+<v-sort-filter show="{{showSortDialog}}" sorts="{{sorts}}" bindchoose="chooseSort" selected-sort="{{selectedSort}}" nav-height="{{navHeight}}" />
 <v-brand-filter show="{{showBrandDialog}}" goods-brands="{{goodsBrands}}" selected-brands="{{selectedBrands}}" bindchoose="chooseBrands" nav-height="{{navHeight}}"/>

@@ -21,7 +21,6 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
-import com.vpu.mp.service.pojo.saas.shop.ShopVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.VersionEditParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.VersionShowParam;

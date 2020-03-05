@@ -137,7 +137,7 @@ export default {
     return {
       data: {
         module_name: 'm_seckill',
-        list_style: '0',
+        list_style: 0,
         goods_price: true,
         goods_count_down: true,
         seckill_goods: []

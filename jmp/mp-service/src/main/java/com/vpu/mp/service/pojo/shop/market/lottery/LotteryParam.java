@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeParam;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -34,5 +35,6 @@ public class LotteryParam {
     private Integer   noAwardScore;
     private String    noAwardImage;
     private String    noAwardIcon;
+    @Valid
     private List<LotteryPrizeParam> prizeList ;
 }

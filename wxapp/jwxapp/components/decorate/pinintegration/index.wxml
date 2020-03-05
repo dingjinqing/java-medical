@@ -1,14 +1,15 @@
+<wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="pin_content" style='background:{{m.module_bg == 1 ? m.moude_img1: m.moude_img2}} no-repeat ; background-size:100%;margin-bottom:{{m.show_type == 1?"0":m.margin_bot}}rpx;' bindtap='bindToPinIntegration' data-act_id="{{m.act_id}}">
   <block wx:if="{{m.pin_title == '1'}}">
-    <view class="p1" style='color:{{m.font_color }}'>{{m.inte_total}}积分等你拿，</view>
-    <view class="p2" style='color:{{m.font_color}}'>购物可抵现金！</view>
+    <view class="p1" style='color:{{m.font_color }}'>{{m.inte_total}}{{i18n.$t(localePack,'components.decorate.waitinForYou')}}，</view>
+    <view class="p2" style='color:{{m.font_color}}'>{{i18n.$t(localePack,'components.decorate.cashForShopping')}}！</view>
   </block>
   <block wx:else>
     <view class='user_auto'>
       <text class="user_auto_text" style='color:{{m.font_color}}'>{{m.pin_title_text}}</text>
     </view>
   </block>
-  <view class="p3" wx:if="{{m.hide_active == 0}}" style='color:{{m.font_color}}'>{{m.limit_amount}}人瓜分{{m.inte_group}}积分</view>
-  <view class="p4" wx:if="{{m.hide_time == 0}}" style='color:{{m.font_color}}'>有效期：{{m.start_time}} 至 {{m.end_time}}</view>
+  <view class="p3" wx:if="{{m.hide_active == 0}}" style='color:{{m.font_color}}'>{{m.limit_amount}}{{i18n.$t(localePack,'components.decorate.humanCarveUp')}}{{m.inte_group}}{{i18n.$t(localePack,'components.decorate.integral')}}</view>
+  <view class="p4" wx:if="{{m.hide_time == 0}}" style='color:{{m.font_color}}'>{{i18n.$t(localePack,'components.decorate.termOfValidity')}}：{{m.start_time}} {{i18n.$t(localePack,'components.decorate.to')}} {{m.end_time}}</view>
   <view class='status' wx:if="{{m.can_pin.status}}">{{m.can_pin.msg}}</view>
 </view>

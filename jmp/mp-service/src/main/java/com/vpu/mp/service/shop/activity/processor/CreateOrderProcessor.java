@@ -2,7 +2,10 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+
+import java.util.List;
 
 /**
  * 小程序-订单生成时-营销处理器接口
@@ -18,7 +21,7 @@ public interface CreateOrderProcessor extends Processor {
     void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException;
 
     /**
-     * 保存信息（订单入库前）
+     * 保存信息（订单入库前,订单信息已经计算完成）
      * @param param
      * @param order
      * @throws MpException
@@ -33,4 +36,11 @@ public interface CreateOrderProcessor extends Processor {
      * @throws MpException
      */
     void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
+
+    /**
+     * 退货成功时更新
+     * @param activityId 活动id
+     * @param returnGoods 退款商品
+     */
+    void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods)throws MpException;
 }

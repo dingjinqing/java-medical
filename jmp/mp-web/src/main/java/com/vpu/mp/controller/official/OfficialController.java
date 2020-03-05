@@ -69,7 +69,6 @@ public class OfficialController extends OfficialBaseController{
 	 */
 	private String detectDevice(HttpServletRequest request) {
 		String userAgent = request.getHeader("User-Agent");
-		System.out.println(userAgent);
 		
 		int i = userAgent.indexOf("Mobile");
 		if(i != -1) {

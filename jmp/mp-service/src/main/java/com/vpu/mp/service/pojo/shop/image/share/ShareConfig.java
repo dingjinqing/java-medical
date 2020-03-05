@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class ShareConfig {
 
-    private Byte moduleAction;
     private Byte shareAction;
     private String shareDoc;
     private Byte shareImgAction;

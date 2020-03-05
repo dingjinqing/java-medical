@@ -22,4 +22,8 @@ public class UserImportMqParam {
 	private String cardId;
 	private Integer groupId;
 	private Integer tagId;
+	/**
+	 * 任务id
+	 */
+	private Integer taskJobId;
 }

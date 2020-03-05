@@ -1,12 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.order.goods;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.math.BigDecimal;
 
 /**
  * @author 王帅
@@ -43,4 +42,5 @@ public class OrderGoodsMpVo {
 	private Integer goodsScore;
 	private Integer isGift;
 	private Integer giftId;
+	private BigDecimal discountedGoodsPrice;
 }

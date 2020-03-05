@@ -41,7 +41,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Cart extends TableImpl<CartRecord> {
 
-    private static final long serialVersionUID = 1527362770;
+    private static final long serialVersionUID = -4745400;
 
     /**
      * The reference instance of <code>mini_shop_4748160.b2c_cart</code>
@@ -87,9 +87,9 @@ public class Cart extends TableImpl<CartRecord> {
     public final TableField<CartRecord, String> GOODS_NAME = createField("goods_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "商品名称");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_cart.goods_specs</code>. 例如,颜色:黑色
+     * The column <code>mini_shop_4748160.b2c_cart.prd_desc</code>. 规格描述，格式例子：颜色:红色 尺码:s
      */
-    public final TableField<CartRecord, String> GOODS_SPECS = createField("goods_specs", org.jooq.impl.SQLDataType.CLOB, this, "例如,颜色:黑色");
+    public final TableField<CartRecord, String> PRD_DESC = createField("prd_desc", org.jooq.impl.SQLDataType.VARCHAR(1024), this, "规格描述，格式例子：颜色:红色 尺码:s");
 
     /**
      * The column <code>mini_shop_4748160.b2c_cart.product_id</code>. 规格产品id

@@ -283,6 +283,24 @@ export const en = {
       tips: '（*When balance is positive,increase,else reduce*）',
       bzText: 'Add Remark',
       index: 0
+    },
+    {
+      title: 'Modify Ex Times',
+      presentText: 'Times',
+      persentMoney: '',
+      addText: 'Add-times',
+      tips: '（*When times is positive,increase,else reduce*）',
+      bzText: 'Add Remark',
+      index: 0
+    },
+    {
+      title: 'Modify Times',
+      presentText: 'Times',
+      persentMoney: '',
+      addText: 'Add-times',
+      tips: '（*When times is positive,increase,else reduce*）',
+      bzText: 'Add Remark',
+      index: 0
     }
   ],
   integralDialogData: [
@@ -426,6 +444,10 @@ export const en = {
     id: null,
     cardName: 'All Card'
   },
+  chargeDetail: 'chargeDetail',
+  consumeDetail: 'consumeDetail',
+  deleteCard: 'DEL',
+
   add: 'Add',
   normalCardFull: 'NormalCard',
   limiteCardFull: 'LimiteCard',

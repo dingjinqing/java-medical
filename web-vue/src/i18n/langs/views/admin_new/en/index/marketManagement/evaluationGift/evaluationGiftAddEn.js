@@ -33,7 +33,8 @@ export const en = {
   coupon: 'Coupon',
   balance: 'Balance',
   luckyDraw: 'Lucky Lucky Draw',
-  Canuse0: '0 coupons available in stock',
+  Canuse: 'Coupon Available Stock',
+  part: 'part',
   inputAmount: 'Please enter the amount',
   activityPicture: 'Activity Picture:',
   activityLink: 'Activity link:',
@@ -48,6 +49,7 @@ export const en = {
   pscondition: 'Please select at least one evaluation condition',
   piname: 'Please enter an event name',
   pipriority: 'Please enter event priority',
+  piInteger: 'Please enter a positive integer',
   pipoins: 'Please enter points',
   pigreater0: 'Please enter a number greater than 0',
   pibalance: 'Please enter balance',
@@ -56,5 +58,6 @@ export const en = {
   pslink: 'Please set an active link',
   piNumPrizes: 'Please enter the number of prizes',
   updateSuccessed: 'Update succeeded',
-  addSuccessed: 'Added successfully'
+  addSuccessed: 'Added successfully',
+  noLimit: 'not limited'
 }

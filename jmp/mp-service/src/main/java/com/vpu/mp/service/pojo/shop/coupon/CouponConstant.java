@@ -24,6 +24,11 @@ public class CouponConstant {
      */
     public static final byte COUPON_GIVE_SOURCE_PAY_AWARD=2;
     /**
+     * 幸运大抽奖
+     */
+    public static final byte COUPON_GIVE_SOURCE_LOTTERY_AWARD=8;
+
+    /**
      * 优惠券状态 0停用 1启用
      */
     public static final Byte ENABLED = 1;

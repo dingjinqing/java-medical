@@ -162,9 +162,13 @@
       />
 
       <span slot="footer">
-        <el-button @click="cancelHandler()">取 消</el-button>
+        <el-button
+          size="small"
+          @click="cancelHandler()"
+        >取 消</el-button>
         <el-button
           type="primary"
+          size="small"
           @click="sureHandler()"
         >确 定</el-button>
       </span>
@@ -174,7 +178,7 @@
 </template>
 
 <script>
-import { distributorList, distributorLevelList, distributorGroupList } from '@/api/admin/marketManage/distribution.js'
+import { distributorList, distributorLevelList, distributorGroupList, manualAddDistributor } from '@/api/admin/marketManage/distribution.js'
 export default {
   components: {
     Pagination: () => import('@/components/admin/pagination/pagination')
@@ -191,6 +195,15 @@ export default {
       default () {
         return []
       }
+    },
+    // 当前等级
+    level: {
+      type: Number
+    },
+    // 当前已选中分销员
+    userIds: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -232,8 +245,9 @@ export default {
           this.pageParams = res.content.page
           // 数据回显
           this.$nextTick(() => {
-            if (this.selectRowIds.length > 0) {
-              this.selectRowIds.map(item => {
+            if (this.userIds !== '' && this.userIds !== null) {
+              this.userIds = this.userIds.split(',')
+              this.userIds.map(item => {
                 this.distributorList.map((row, index) => {
                   if (item === row.userId) {
                     this.$refs.multipleTable.toggleRowSelection(row, true)
@@ -253,9 +267,20 @@ export default {
 
     // 确定添加
     sureHandler () {
-      this.$emit('handleSelect', this.multipleData)
-      this.dialogTableVisible = false
-      this.$message.success({ message: '添加成功!' })
+      var userIds = []
+      this.multipleData.filter((item, index) => {
+        userIds.push(item.userId)
+      })
+      manualAddDistributor({
+        level: this.level,
+        userIds: userIds
+      }).then(res => {
+        if (res.error === 0) {
+          this.$emit('handleSelect', userIds)
+          this.dialogTableVisible = false
+          this.$message.success({ message: '添加成功!' })
+        }
+      })
     },
 
     // 取消添加

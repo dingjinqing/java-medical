@@ -71,6 +71,10 @@
 }
 .order_mark {
   width: auto;
+  border: 1rpx solid;
+  font-size: 26rpx;
+  padding: 0 6rpx;
+  margin-right: 12rpx;
 }
 .order_sn {
   flex: 1;
@@ -97,6 +101,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  line-height: 42rpx;
 }
 .goods_info > .goods_spec {
   color: #888;
@@ -151,6 +156,7 @@
 }
 .partial_delivery_top {
   flex: 1;
+  display: flex;
 }
 .partial_delivery_bottom {
   width: auto;
@@ -173,4 +179,9 @@
   width: 0;
   height: 0;
   color: transparent;
+}
+.goods-tag{
+  border: 1rpx solid;
+  margin-right: 10rpx;
+  padding: 0 4rpx;
 }

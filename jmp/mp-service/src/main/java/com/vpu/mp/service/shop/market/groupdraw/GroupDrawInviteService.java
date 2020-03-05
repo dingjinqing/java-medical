@@ -64,4 +64,8 @@ public class GroupDrawInviteService extends ShopBaseService {
 			logger().info("插入邀请记录"+insert);
 		}
 	}
+	
+	public void updateRow(Integer id,Byte isUsed) {
+		db().update(GROUP_DRAW_INVITE).set(GROUP_DRAW_INVITE.IS_USED, isUsed).where(GROUP_DRAW_INVITE.ID.eq(id)).execute();
+	}
 }

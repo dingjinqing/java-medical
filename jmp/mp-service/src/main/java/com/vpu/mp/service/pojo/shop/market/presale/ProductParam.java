@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * 活动商品规格入参
@@ -26,16 +27,16 @@ public class ProductParam {
     private Integer productId;
     /** 活动价格 **/
     @NotNull
-    private Double presalePrice;
+    private BigDecimal presalePrice;
     /** 活动库存 **/
     @NotNull
     private Integer presaleNumber;
     /** 定金 **/
     @NotNull
-    private Double presaleMoney;
+    private BigDecimal presaleMoney;
     /** 1段定金可抵扣金额 **/
     @NotNull
-    private Double preDiscountMoney1;
+    private BigDecimal preDiscountMoney1;
     /** 2段定金可抵扣金额 **/
-    private Double preDiscountMoney2;
+    private BigDecimal preDiscountMoney2;
 }

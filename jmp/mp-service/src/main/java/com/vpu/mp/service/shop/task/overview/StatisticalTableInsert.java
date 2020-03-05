@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.DistributionTag.DISTRIBUTION_TAG;
 import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST;
+import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST_1;
 import static org.apache.commons.lang3.math.NumberUtils.*;
 
 /**
@@ -120,7 +121,7 @@ public class StatisticalTableInsert extends ShopBaseService {
         UserSummaryTrendRecord record = new UserSummaryTrendRecord();
         LocalDateTime today = LocalDate.now().atStartOfDay();
         Timestamp end = Timestamp.valueOf(today);
-        TYPE_LIST.forEach((e) ->
+        TYPE_LIST_1.forEach((e) ->
             db().executeInsert(createUserSummaryTrendRecord(Timestamp.valueOf(today.minusDays(e)), end, e, record, param)
             ));
     }
@@ -136,7 +137,10 @@ public class StatisticalTableInsert extends ShopBaseService {
         record.setRegUserData(userSummary.getUserNum(start, end));
         record.setUpgradeUserData(userSummary.upgradeUserSum(start, end));
         record.setChargeUserData(userSummary.chargeUserSum(start, end));
+        // 付款用户数（distinct(userId)）
         record.setOrderUserData(goodsStatistic.totalCustomerTranNum(start, end).size());
+        // 付款人数
+        record.setPayPeopleNum(goodsStatistic.totalPeopleTranNum(start, end));
         record.setNewOrderUserData(goodsStatistic.newCustomerTranNum(start, end));
         record.setOldOrderUserData(goodsStatistic.oldCustomerTranNum(start, end));
         record.setTotalPaidMoney(goodsStatistic.orderUserMoney(start, end));
@@ -148,7 +152,10 @@ public class StatisticalTableInsert extends ShopBaseService {
         record.setPayOrderNum(userSummary.orderNum(start, end));
         record.setLoginPv(userSummary.getPv(start, end));
         record.setOrderNum(userSummary.generateOrderNum(start, end));
+        // 下单用户数（distinct(userId)）
         record.setOrderUserNum(userSummary.generateOrderUserNum(start, end));
+        // 下单人数
+        record.setOrderUserNum(userSummary.generatePeopleUserNum(start, end));
         return record;
     }
 

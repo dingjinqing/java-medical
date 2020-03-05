@@ -1,31 +1,28 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>积分兑换</h2>
+      <h2>{{$t('integralExchange.integralExchange')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="listStyle">
-          <div class="title">列表样式：</div>
+          <div class="title">{{$t('integralExchange.listStyle')}}</div>
           <el-radio
             v-model="moduleData.list_styles"
             :label="1"
-          >单列</el-radio>
+          >{{$t('integralExchange.singleRow')}}</el-radio>
           <el-radio
             v-model="moduleData.list_styles"
             :label="2"
-          >双列</el-radio>
+          >{{$t('integralExchange.doubleRow')}}</el-radio>
         </div>
         <div class="listStyle">
-          <div class="title">选择活动：</div>
+          <div class="title">{{$t('integralExchange.selectAnActivity')}}</div>
           <div
             class="choose_goods"
             @click="handleToAddAct()"
           >
-            <img
-              src="http://mpdevimg2.weipubao.cn/image/admin/icon_jia.png"
-              alt=""
-            >
-            添加活动
+            <img :src="$imageHost+'/image/admin/icon_jia.png'">
+            {{$t('integralExchange.addActivities')}}
           </div>
           <div class="question">
             <img :src="$imageHost+'/image/admin/analysis_tishi.png'">
@@ -34,8 +31,7 @@
                 class="float-layer-i"
                 style="left:81px; top:-11px"
               ></div>
-              <div>仅可以选择进行中以及未开始的积分兑换活动，将以活动商品形式展示在小程序前端，每个“积分兑换“组件最多可添加6个积分兑换活动。
-                对积分兑换活动中商品进行更换时，当前组件商品将同步更新。</div>
+              <div>{{$t('integralExchange.addActivitiesTip')}}</div>
             </div>
           </div>
         </div>
@@ -54,47 +50,47 @@
           >
             <el-table-column
               prop="name"
-              label="商品信息"
+              :label="$t('integralExchange.commodityInformation')"
             >
               <template slot-scope="scope">
                 <div class="goodsInfo">
-                  <img :src="scope.row.goods_img">
-                  <div>{{scope.row.goods_name}}</div>
+                  <img :src="scope.row.goodsImg">
+                  <div>{{scope.row.goodsName}}</div>
                 </div>
               </template>
             </el-table-column>
             <el-table-column
-              prop="stock_sum"
-              label="库存"
+              prop="stockSum"
+              :label="$t('integralExchange.stock')"
               width="80"
             >
             </el-table-column>
             <el-table-column
               prop="xianjin"
-              label="现金+积分"
+              :label="$t('integralExchange.cashPoints')"
             >
               <template slot-scope="scope">
-                ￥{{scope.row.money}}+{{scope.row.score}}积分
+                ￥{{scope.row.money}}+{{scope.row.score}}{{$t('integralExchange.integral')}}
               </template>
             </el-table-column>
             <el-table-column
               prop="status"
-              label="状态"
+              :label="$t('integralExchange.status')"
               width="80"
             >
               <template slot-scope="scope">
-                {{scope.row.is_on_sale==='1'?'正常操作':'异常操作'}}
+                {{scope.row.isOnSale==='1'?$t('integralExchange.normalOperation'):$t('integralExchange.exceptionOperation')}}
               </template>
             </el-table-column>
             <el-table-column
-              label="操作"
+              :label="$t('integralExchange.operation')"
               width="80"
             >
               <template slot-scope="scope">
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="上移"
+                  :content="$t('integralExchange.moveUpward')"
                   placement="top"
                 >
                   <span
@@ -106,7 +102,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="下移"
+                  :content="$t('integralExchange.movDown')"
                   placement="top"
                 >
                   <span
@@ -118,7 +114,7 @@
                 <el-tooltip
                   class="item"
                   effect="dark"
-                  content="删除"
+                  :content="$t('integralExchange.delete')"
                   placement="top"
                 >
                   <span
@@ -133,13 +129,13 @@
         </div>
         <!--底部显示内容模块-->
         <div class="listStyle">
-          <div class="title">显示内容：</div>
-          <el-checkbox v-model="moduleData.show_goods_price">商品原价</el-checkbox>
+          <div class="title">{{$t('integralExchange.displayContent')}}</div>
+          <el-checkbox v-model="moduleData.show_goods_price">{{$t('integralExchange.originalCommodity')}}</el-checkbox>
         </div>
       </div>
       <!--选择活动弹窗-->
       <el-dialog
-        title="选择积分活动"
+        :title="$t('integralExchange.selectPointsActivity')"
         :visible.sync="dialogVisible"
         width="60%"
         header-row-class-name="tableClss"
@@ -148,7 +144,7 @@
         <div class="addActDialogMain">
           <div class="dialogTop">
             <div class="key">
-              <span>关键词</span>
+              <span>{{$t('integralExchange.keyWord')}}</span>
               <el-input
                 v-model="keyInput"
                 size="small"
@@ -156,7 +152,7 @@
             </div>
             <el-select
               v-model="value"
-              placeholder="请选择"
+              :placeholder="$t('integralExchange.pleaseChoose')"
               size="small"
             >
               <el-option
@@ -171,7 +167,7 @@
               type="primary"
               @click="handleToSearch()"
               size="small"
-            >搜索</el-button>
+            >{{$t('integralExchange.search')}}</el-button>
           </div>
           <div class="dialogMain">
             <el-table
@@ -187,61 +183,73 @@
               </el-table-column>
               <el-table-column
                 prop="name"
-                label="商品信息"
+                :label="$t('integralExchange.commodityInformation')"
               >
                 <template slot-scope="scope">
                   <div class="goodsInfo">
-                    <img :src="scope.row.goods_img">
-                    <div>{{scope.row.goods_name}}</div>
+                    <img :src="scope.row.goodsImg">
+                    <div>{{scope.row.goodsName}}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="stock_sum"
-                label="库存"
+                prop="stockSum"
+                :label="$t('integralExchange.stock')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
-                prop="prd_price"
-                label="价格"
+                prop="prdPrice"
+                :label="$t('integralExchange.price')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="money"
-                label="现金"
+                :label="$t('integralExchange.cash')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
                 prop="score"
-                label="积分"
+                :label="$t('integralExchange.integral')"
                 width="80"
               >
               </el-table-column>
               <el-table-column
-                prop="start_time"
-                label="开始时间"
+                prop="startTime"
+                :label="$t('integralExchange.startTime')"
               >
               </el-table-column>
               <el-table-column
-                prop="end_time"
-                label="结束时间"
+                prop="endTime"
+                :label="$t('integralExchange.endTime')"
               >
               </el-table-column>
             </el-table>
+            <div class="pagination">
+              <div>{{$t('integralExchange.currentPage')}}{{currentPage}}/{{pageCount}}，{{$t('integralExchange.generalRecord')}}{{total}}{{$t('integralExchange.strip')}}</div>
+              <el-pagination
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-size="20"
+                layout="prev, pager, next, jumper"
+                :total="total"
+              >
+              </el-pagination>
+            </div>
+
           </div>
         </div>
         <span
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="dialogVisible = false">{{$t('integralExchange.cancel')}}</el-button>
           <el-button
             type="primary"
             @click="handleToSure()"
-          >确 定</el-button>
+          >{{$t('integralExchange.determine')}}</el-button>
         </span>
       </el-dialog>
       <!--模块私有end-->
@@ -249,6 +257,7 @@
   </div>
 </template>
 <script>
+import { getIntegralExchange } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   props: {
     modulesData: Object, // 模块公共
@@ -259,16 +268,16 @@ export default {
       dialogVisible: false, //  选择活动弹窗flag
       keyInput: '', // 关键词输入框
       options: [{
-        value: '0',
+        value: -1,
         label: '请选择上下架'
       }, {
-        value: '1',
+        value: 1,
         label: '上架'
       }, {
-        value: '2',
+        value: 2,
         label: '下架'
       }],
-      value: '0',
+      value: -1,
       tableData: [ // 模拟数据
         {
           'goods_id': '1139',
@@ -303,7 +312,10 @@ export default {
       selectData: [], // 添加活动弹窗选中数据
       moduleData: {
         integral_goods: []
-      }
+      },
+      currentPage: 1, // 当前页
+      total: 0, // 总条数
+      pageCount: 1 // 总页数
     }
   },
   watch: {
@@ -317,7 +329,10 @@ export default {
               if (this.modulesData.integral_goods.length) {
                 this.isShowTable = true
               }
+              this.tableData = this.modulesData.integral_goods
               this.moduleData = this.modulesData
+              // 初始请求弹窗数据
+              this.handleToRequestData()
             })
           }
         }
@@ -333,8 +348,31 @@ export default {
       deep: true
     }
   },
-
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
+    // 初始化请求弹窗数据
+    handleToRequestData () {
+      let obj = {
+        goodsName: this.keyInput,
+        isOnSale: this.value,
+        page: this.currentPage
+      }
+      getIntegralExchange(obj).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.total = res.content.page.totalRows
+          this.pageCount = res.content.page.pageCount
+        }
+      })
+    },
+    // 当前页发生变化
+    handleCurrentChange () {
+      this.handleToRequestData()
+    },
     // 点击添加活动
     handleToAddAct () {
       this.dialogVisible = true
@@ -343,14 +381,14 @@ export default {
         console.log(this.tableData, this.moduleData.integral_goods)
         let arr = []
         this.tableData.forEach((item, index) => {
-          arr.push(item.goods_id)
+          arr.push(item.goodsId)
         })
         console.log(this.moduleData.integral_goods, arr)
         this.$refs.addActTable.clearSelection()
         if (this.moduleData.integral_goods.length) {
           arr.forEach((item, index) => {
             this.moduleData.integral_goods.forEach((itemC, indexC) => {
-              if (item === itemC.goods_id) {
+              if (item === itemC.goodsId) {
                 this.$refs.addActTable.toggleRowSelection(this.tableData[index], true)
               }
             })
@@ -376,7 +414,7 @@ export default {
     },
     // 搜索点击
     handleToSearch () {
-
+      this.handleToRequestData()
     },
     // 表格操作点击综合处理
     handleToClickOperation (flag, index) {
@@ -553,5 +591,12 @@ export default {
       -webkit-box-orient: vertical;
     }
   }
+}
+.pagination {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 </style>

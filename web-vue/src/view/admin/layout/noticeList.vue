@@ -50,7 +50,7 @@ export default {
   },
   data () {
     return {
-      image: 'http://mpdevimg2.weipubao.cn',
+      image: `${this.$imageHost}`,
       pageParams: {}, // 分页
       noticeList: []
     }

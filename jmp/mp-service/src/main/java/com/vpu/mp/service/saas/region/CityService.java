@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- *
+ * 市
  * @author 新国
  *
  */
@@ -60,5 +63,15 @@ public class CityService extends MainBaseService {
 		}
 		return db().insertInto(DICT_CITY, DICT_CITY.PROVINCE_ID, DICT_CITY.CITY_ID, DICT_CITY.NAME)
 				.values(provinceId, cityId, cityName).execute();
+	}
+
+	/**
+	 * 获取市名称
+	 * @param ids
+	 * @return
+	 */
+	public Map<Integer, String> getCityNameByIds(List<Integer> ids){
+		return db().select(DICT_CITY.CITY_ID,DICT_CITY.NAME).from(DICT_CITY).where(DICT_CITY.CITY_ID.in(ids))
+				.fetchMap(DICT_CITY.CITY_ID,DICT_CITY.NAME);
 	}
 }

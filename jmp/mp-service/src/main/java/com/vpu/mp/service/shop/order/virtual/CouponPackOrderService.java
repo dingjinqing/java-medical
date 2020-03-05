@@ -1,23 +1,5 @@
 package com.vpu.mp.service.shop.order.virtual;
 
-import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
-import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
-import static com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -26,6 +8,23 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderPageParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderRefundParam;
 import com.vpu.mp.service.pojo.shop.order.virtual.CouponPackOrderVo;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
+import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+import static com.vpu.mp.db.shop.tables.CustomerAvailCoupons.CUSTOMER_AVAIL_COUPONS;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 
 /**
  * @author huangronggang
@@ -160,7 +159,7 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @return
      */
 	public int getCouponPackIssueAmount(int couponPackId){
-	    return db().selectCount().from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(couponPackId)).fetchOne().into(Integer.class);
+	    return db().selectCount().from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.GOODS_TYPE.eq(GOODS_TYPE_COUPON_PACK)).and(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED)).and(VIRTUAL_ORDER.VIRTUAL_GOODS_ID.eq(couponPackId)).fetchOneInto(Integer.class);
     }
 
 

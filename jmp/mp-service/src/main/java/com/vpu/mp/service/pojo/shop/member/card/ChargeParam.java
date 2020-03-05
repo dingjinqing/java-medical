@@ -15,6 +15,7 @@ public class ChargeParam {
 	public Integer pageRows;
 	/** -当前页 */
 	public Integer currentPage;
+	private Integer userId;
 	// 会员卡id
 	private Integer cardId;
 	// 会员卡类型
@@ -26,6 +27,6 @@ public class ChargeParam {
 	// 余额变动时间
 	private Timestamp startTime;
 	private Timestamp endTime;
-	
+
 	private String cardNo;
 }

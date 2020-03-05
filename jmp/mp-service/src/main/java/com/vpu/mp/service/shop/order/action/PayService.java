@@ -8,12 +8,14 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
@@ -23,11 +25,12 @@ import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
+import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
-import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
@@ -88,15 +91,27 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private OrderPayService orderPay;
+
     @Autowired
     private GroupBuyListService groupBuyListService;
+
     @Autowired
-    private GroupBuyService groupBuyService;
+    private GiftProcessorDao giftProcessorDao;
+
+    @Autowired
+    private PreSaleProcessorDao preSaleProcessorDao;
+
     /**
      * 营销活动processorFactory
      */
     @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
+
+    @Override
+    public OrderServiceCode getServiceCode() {
+        return OrderServiceCode.PAY;
+    }
+
     @Override
     public Object query(OrderOperateQueryParam param) {
         return null;
@@ -111,52 +126,23 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         if (order.getOrderStatus() != OrderConstant.ORDER_WAIT_PAY) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_STATUS_NOT_WAIT_PAY, null);
         }
-        //过期校验
-        long currenTmilliseconds = Instant.now().toEpochMilli();
-        if (order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-            //定金订单
-            Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-            if (timeInterval.value1().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
-            }
-            if (currenTmilliseconds > timeInterval.value2().getTime()) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
-            }
-        } else {
-            //普通订单
-            if (order.getExpireTime().getTime() < currenTmilliseconds) {
-                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
-            }
+        //时间校验
+        ExecuteResult checkPayTimeResult = checkPayTime(order);
+        if (checkPayTimeResult != null) {
+            return checkPayTimeResult;
         }
         //订单商品
         Result<OrderGoodsRecord> orderGoodsRecord = orderGoodsService.getByOrderId(param.getOrderId());
-        List<Goods> orderGoods = orderGoodsRecord.into(Goods.class);
-        //商品
-        Map<Integer, GoodsRecord> goodsRecords = goodsService.getGoodsToOrder(orderGoods.stream().map(Goods::getGoodsId).distinct().collect(Collectors.toList()));
-        //规格信息,key proId
-        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(orderGoods.stream().map(Goods::getProductId).distinct().collect(Collectors.toList()));
-        for (Goods temp : orderGoods) {
-            temp.setProductInfo(productInfo.get(temp.getProductId()));
-            temp.setGoodsInfo(goodsRecords.get(temp.getGoodsId()));
-            try {
-                createOrder.checkGoodsAndProduct(temp);
-            } catch (MpException e) {
-                return ExecuteResult.create(e.getErrorCode(), e.getMessage(), e.getCodeParam());
-            }
+        //商品校验
+        ExecuteResult checkGoodsResult = checkGoods(param, orderGoodsRecord);
+        if (checkGoodsResult != null) {
+            return checkGoodsResult;
         }
-        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
-        //拼团校验
-        if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY.toString())){
-            GroupOrderVo groupBuyRecord = groupBuyListService.getByOrder(order.getOrderSn());
-            Timestamp date = DateUtil.getLocalDateTime();
-            // 是否可以参加拼团
-            ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(groupBuyRecord.getUserId(), date, groupBuyRecord.getActivityId(), groupBuyRecord.getGroupId(), IS_GROUPER_N);
-            if (!resultMessage.getFlag()) {
-                String[] str2 = resultMessage.getMessages().toArray(new String[0]);
-                return ExecuteResult.create(resultMessage.getJsonResultCode(), null, str2);
-            }
+        //活动校验
+        ExecuteResult checkActivityResult = checkActivity(order);
+        if (checkActivityResult != null) {
+            return checkActivityResult;
         }
-
         CreateOrderVo result = new CreateOrderVo();
         result.setOrderSn(order.getOrderSn());
         try {
@@ -176,9 +162,85 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         }
     }
 
-    @Override
-    public OrderServiceCode getServiceCode() {
-        return OrderServiceCode.PAY;
+    /**
+     * 支付时间校验
+     * @param order
+     * @return
+     */
+    private ExecuteResult checkPayTime(OrderInfoRecord order) {
+        //过期校验
+        long currenTmilliseconds = Instant.now().toEpochMilli();
+        if (order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
+            //定金订单支付尾款
+            Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
+            if (timeInterval.value1().getTime() < currenTmilliseconds) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
+            }
+            if (currenTmilliseconds > timeInterval.value2().getTime()) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
+            }
+        } else {
+            //普通订单或定金订单支付定金
+            if (order.getExpireTime().getTime() < currenTmilliseconds) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_EXPIRED, null);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 商品校验
+     * @param param
+     * @return
+     */
+    private ExecuteResult checkGoods(PayParam param, Result<OrderGoodsRecord> orderGoodsRecord) {
+        //商品
+        Map<Integer, GoodsRecord> goodsRecords = goodsService.getGoodsToOrder(orderGoodsRecord.stream().map(OrderGoodsRecord::getGoodsId).distinct().collect(Collectors.toList()));
+        //规格信息,key proId
+        Map<Integer, GoodsSpecProductRecord> productInfo = goodsSpecProduct.selectSpecByProIds(orderGoodsRecord.stream().map(OrderGoodsRecord::getProductId).distinct().collect(Collectors.toList()));
+        for (OrderGoodsRecord orderGoods : orderGoodsRecord) {
+            Goods temp = orderGoods.into(Goods.class);
+            temp.setProductInfo(productInfo.get(temp.getProductId()));
+            temp.setGoodsInfo(goodsRecords.get(temp.getGoodsId()));
+            if(OrderConstant.IS_GIFT_Y.equals(orderGoods.getIsGift())) {
+                if(!giftProcessorDao.toPayCheck(orderGoods.getGiftId(), orderGoods.getProductId(), orderGoods.getGoodsNumber())) {
+                    //赠品不满足删除
+                    orderGoods.delete();
+                }
+            }
+            try {
+                createOrder.checkGoodsAndProduct(temp);
+            } catch (MpException e) {
+                return ExecuteResult.create(e);
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * 活动校验
+     */
+    private ExecuteResult checkActivity(OrderInfoRecord order) {
+        //订单类型
+        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        if (goodsType.contains(ACTIVITY_TYPE_GROUP_BUY.toString())){
+            GroupOrderVo groupBuyRecord = groupBuyListService.getByOrder(order.getOrderSn());
+            Timestamp date = DateUtil.getLocalDateTime();
+            // 是否可以参加拼团
+            ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(groupBuyRecord.getUserId(), date, groupBuyRecord.getActivityId(), groupBuyRecord.getGroupId(), IS_GROUPER_N);
+            if (!resultMessage.getFlag()) {
+                String[] str2 = resultMessage.getMessages().toArray(new String[0]);
+                return ExecuteResult.create(resultMessage.getJsonResultCode(), null, str2);
+            }
+        } else if (goodsType.contains(BaseConstant.ACTIVITY_TYPE_PRE_SALE.toString())){
+            //预售
+            PreSaleVo info = preSaleProcessorDao.getDetail(order.getActivityId());
+            if(info == null || info.getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_ACTIVITY_DISABLE, null);
+            }
+        }
+        return null;
     }
 
     /**

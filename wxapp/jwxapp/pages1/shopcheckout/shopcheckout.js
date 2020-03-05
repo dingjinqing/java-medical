@@ -18,7 +18,10 @@ global.wxPage({
       shopBusinessState: 1, // 店铺营业状态
       storeBusinessState: 1, // 门店营业状态
       storeBuy: 1, // 门店是否支持买单开关
-      delFlag: 0, // 门店是否已删除 
+      delFlag: 0, // 门店是否已删除
+      scoreDiscountRatio: 100, // 积分抵扣比例
+      scorePayNum: 0, //积分支付限制
+      maxScore: 0 // 积分最多使用多少
     },
     payInfo: {
       cardNo: '', // 会员卡号
@@ -38,7 +41,9 @@ global.wxPage({
     showCardDialog: false, // 会员卡弹窗是否显示
     useCard: {}, // 选中的会员卡
     invoiceInfo: {}, // 选择的发票
-    discount_block: 0 // 是否展开折扣详情
+    discount_block: 0, // 是否展开折扣详情
+
+    scoreProportion: 100, // 积分兑换比
   },
 
   /**
@@ -46,7 +51,6 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
-    let that = this
     let storeId = options.storeId
     this.setData({
       storeId: storeId,
@@ -55,8 +59,8 @@ global.wxPage({
     this.initOrderInfo()
   },
 
+  // 请求用户信息
   initOrderInfo () {
-    // 请求用户信息
     let params = {
       storeId: this.data.storeId,
       userId: util.getCache('user_id')
@@ -64,8 +68,8 @@ global.wxPage({
     let that = this
     util.api('/api/wxapp/store/payOrder', function (res) {
       if (res.error === 0) {
-        console.log(res)
         let info = res.content;
+        // 门店买单开关是否关闭
         if (info.storeBuy === 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.noPayment'), function () {
             util.reLaunch({
@@ -74,6 +78,7 @@ global.wxPage({
           });
           return;
         }
+        // 门店是否被删除
         if (info.delFlag == 1) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.hasDeleteStore'), function () {
             util.reLaunch({
@@ -82,6 +87,7 @@ global.wxPage({
           });
           return;
         }
+        // 门店是否营业
         if (info.shopBusinessState == 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
@@ -90,6 +96,7 @@ global.wxPage({
           });
           return;
         }
+        // 店铺是否营业
         if (info.storeBusinessState == 0) {
           util.showModal(that.$t('pages.store.prompt'), that.$t('pages.store.wanderAround'), function () {
             util.reLaunch({
@@ -102,27 +109,46 @@ global.wxPage({
         var src_no = that.data.imageUrl + 'image/wxapp/icon_rectangle.png';
         var useCard = {}
         if (info.memberCardList && info.memberCardList.length > 0) {
-          info.memberCardList.forEach((item, i) => {
+          // 会员卡处理
+          info.memberCardList.forEach(item => {
+            // 有效期
+            if (item.startDate === null || item.endDate === null) {
+              item.startDate = item.startTime.split(' ')[0]
+              item.endDate = item.endTime.split(' ')[0]
+            }
+            // 折扣
             if (item.discount == null) {
               item.discount = 10
             }
+            // 样式
             item.src_yes = src_yes
             item.src_no = src_no
+            // 背景
+            if (item.bgImg != '') {
+              item.bgImg = that.data.imageUrl + item.bgImg
+            }
           })
+          // 默认使用的会员卡
           useCard = info.memberCardList.find(item => item.isDefault == 1)
           if (typeof (useCard) === 'undefined') {
             useCard = info.memberCardList[0]
           }
         }
-        // 发票开关
-        if (info.invoiceSwitch) {
+        // 积分使用
+        let scoreProportion = info.scoreProportion ? Number(info.scoreProportion) : 100// 积分兑换比
+        // 积分转换成scoreProportion的整数倍
+        info.score = Math.floor(info.score / scoreProportion) * scoreProportion
+        if (Number(info.scorePayLimit) === 0) {
+          info.scorePayNum = 0
+        } else {
+          info.scorePayNum = Number(info.scorePayNum)
         }
-        // 积分转换成100的整数倍
-        info.score = Math.floor(info.score/100)*100
+        // 最多使用积分
         that.setData({
           orderInfo: info,
           useCard: useCard,
-          'payInfo.cardNo': useCard.cardNo
+          'payInfo.cardNo': useCard.cardNo,
+          scoreProportion: scoreProportion
         })
       }
     }, params)
@@ -133,8 +159,14 @@ global.wxPage({
 
   },
 
+  // 节流输入支付金额
+  throttleInputMoney: function (e) {
+    util.debouce(this.inputMoney, 500)(e)
+  },
+
   // 输入要支付的金额
   inputMoney: function (e) {
+    console.log('input...')
     let money = e.detail.value;
     if (money) {
       //限制只能输入一个点
@@ -158,22 +190,59 @@ global.wxPage({
     this.computedMoney(money)
   },
 
+  // 默认支付方式选中
+  defaultPayMethod: function (payInfo) {
+    let defaultPayConf = this.data.orderInfo.defaultPayConf
+    let moneyPaid = this.data.payInfo.moneyPaid
+    let discountedAmount = payInfo.discountedAmount// 折后金额
+    // 会员卡余额支付
+    if (defaultPayConf.card_first === 1 && moneyPaid > 0) {
+
+    }
+    // 余额支付
+    if (defaultPayConf.balance_first === 1 && moneyPaid > 0) {
+
+    }
+    // 积分支付
+    if (defaultPayConf.score_first === 1 && moneyPaid > 0) {
+
+    }
+  },
+
   // 计算金额
   computedMoney: function () {
+    let orderInfo = this.data.orderInfo
     let payInfo = this.data.payInfo
     let money = payInfo.orderAmount
     let useCard = this.data.useCard
+    let scoreProportion = this.data.scoreProportion
     // 如果会员卡有折扣
-    if (useCard) {
+    if (useCard && Object.keys(useCard).length != 0) {
       let discount = this.data.useCard.discount
       if (discount) {
         payInfo.cardDisAmount = ((1 - discount / 10) * money).toFixed(2)
       }
+    } else {
+      payInfo.cardDisAmount = 0
     }
+    // 折后金额
+    payInfo.discountedAmount = parseFloat(Number(payInfo.orderAmount) - Number(payInfo.cardDisAmount))
+    // 积分最多可使用多少
+    let maxScore = 0
+    if (orderInfo.scoreDiscountRatio > 0) {
+      maxScore = payInfo.discountedAmount * (Number(orderInfo.scoreDiscountRatio) / 100) * scoreProportion
+    } else {
+      maxScore = payInfo.discountedAmount * scoreProportion
+    }
+    if (maxScore > orderInfo.score) {
+      maxScore = orderInfo.score
+    }
+    // 会员卡折扣 会员卡余额支付金额 余额支付金额 积分支付金额
     payInfo.totalDiscount = parseFloat(Number(payInfo.cardDisAmount) + Number(payInfo.cardAmount) + Number(payInfo.scoreAmount) + Number(payInfo.balanceAmount)).toFixed(2)
     payInfo.moneyPaid = parseFloat(payInfo.orderAmount - payInfo.totalDiscount).toFixed(2)
     this.setData({
-      payInfo: payInfo
+      payInfo: payInfo,
+      'orderInfo.maxScore': maxScore
     })
   },
 
@@ -202,14 +271,24 @@ global.wxPage({
   },
 
   // 选择会员卡回调
+  // 允许取消使用会员卡
   getSelectCard (e) {
     let cardNo = e.detail
-    let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
-    console.log(useCard)
-    this.setData({
-      useCard: useCard,
-      'payInfo.cardNo': useCard.cardNo
-    })
+    if (cardNo === null) {
+      this.setData({
+        useCard: {},
+        'payInfo.cardNo': '',
+        'payInfo.cardAmount': ''
+      })
+    } else {
+      let useCard = this.data.orderInfo.memberCardList.find(item => item.cardNo === cardNo)
+      console.log(useCard)
+      this.setData({
+        useCard: useCard,
+        'payInfo.cardNo': useCard.cardNo,
+        'payInfo.cardAmount': ''
+      })
+    }
     this.computedMoney()
   },
 
@@ -259,7 +338,7 @@ global.wxPage({
   // 输入积分
   score_money: function (e) {
     let value = e.detail.value
-    console.log(value)
+    let scoreProportion = this.data.scoreProportion
     if (value) {
       value = Number(value)
       if (isNaN(value) || value < 0) {
@@ -271,8 +350,8 @@ global.wxPage({
         this.computedMoney()
         return false
       }
-      if (value % 100 !== 0) {
-        util.showModal('', this.$t('pages.store.integerMultiple'))
+      if (value % scoreProportion !== 0) {
+        util.showModal('', '积分数量必须等于' + scoreProportion + '的整数倍')
         this.setData({
           'payInfo.inputScore': '',
           'payInfo.scoreAmount': 0
@@ -289,7 +368,26 @@ global.wxPage({
         this.computedMoney()
         return false
       }
-      let amount = parseFloat(Number(value) / 100).toFixed(2)
+      // 输入积分范围
+      if (value < this.data.orderInfo.scorePayNum) {
+        util.showModal('', this.$t('pages.store.belowLimit'))
+        this.setData({
+          'payInfo.inputScore': '',
+          'payInfo.scoreAmount': 0
+        })
+        this.computedMoney()
+        return false
+      }
+      if (value > this.data.orderInfo.maxScore) {
+        util.showModal('', this.$t('pages.store.exceedLimit'))
+        this.setData({
+          'payInfo.inputScore': '',
+          'payInfo.scoreAmount': 0
+        })
+        this.computedMoney()
+        return false
+      }
+      let amount = parseFloat(Number(value) / scoreProportion).toFixed(2)
       if (Math.fround(amount) > Math.fround(this.data.payInfo.moneyPaid)) {
         util.showModal('', this.$t('pages.store.scoreLimit'))
         this.setData({

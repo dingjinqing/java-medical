@@ -1,11 +1,17 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
+import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.*;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,24 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainAddParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUpdateVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainUserListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.SimpleBargainParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
-import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * @author 王兵兵
@@ -65,7 +56,7 @@ public class AdminBargainController extends AdminBaseController {
 	 *
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/add")
-	public JsonResult addBargain(@RequestBody @Valid BargainAddParam param) {
+	public JsonResult addBargain(@RequestBody @Valid BargainAddParam param){
         if(shop().bargain.isOnGoingBargain(param.getGoodsId(),param.getStartTime(),param.getEndTime())){
             return fail(JsonResultCode.BARGAIN_CONFLICTING_ACT_TIME);
         }
@@ -210,5 +201,25 @@ public class AdminBargainController extends AdminBaseController {
     @GetMapping("/api/admin/market/bargain/share")
     public JsonResult getBargainShareCode(Integer id) {
         return success(shop().bargain.getMpQrCode(id));
+    }
+
+    /**
+     * 活动订单
+     * 取将要导出的行数
+     */
+    @PostMapping("/api/admin/market/bargain/order/export/rows")
+    public JsonResult getActivityOrderExportTotalRows(@RequestBody @Valid MarketOrderListParam param) {
+        return success(shop().readOrder.marketOrderInfo.getMarketOrderListSize(param, BaseConstant.ACTIVITY_TYPE_BARGAIN));
+    }
+
+    /**
+     * 活动订单
+     * 订单导出
+     */
+    @PostMapping("/api/admin/market/bargain/order/export")
+    public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook =shop().bargain.exportBargainOrderList(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.BARGAIN_ORDER_LIST_FILENAME , OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
     }
 }

@@ -80,6 +80,8 @@ export default {
   mounted () {
     // 初始化国际语言
     this.langDefault()
+
+    this.activeName = this.$route.params.activeName || 'first'
   },
   methods: {
     // tap切换

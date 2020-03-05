@@ -6,6 +6,7 @@
       @change="changeHandle"
       style="width:170px;"
       size="small"
+      :disabled="disabled"
     >
       <el-option
         v-for="item in selects"
@@ -39,7 +40,8 @@ export default {
     isHasStock: { // 是否限制库存 默认true限制
       type: Boolean,
       default: true
-    }
+    },
+    disabled: Boolean
   },
   model: {
     prop: 'value',
@@ -53,7 +55,14 @@ export default {
   computed: {
     selectValue: {
       get () {
-        return Number(this.value)
+        if (this.value === '') {
+          return this.value
+        } else {
+          let val = Number(this.value)
+          let item = this.selects.find(item => item.id === val)
+          this.$emit('initItem', item)
+          return Number(this.value)
+        }
       },
       set (val) {
         this.$emit('change', val)
@@ -71,6 +80,7 @@ export default {
       getAllCoupon(params).then(res => {
         if (res.error === 0) {
           this.selects = res.content
+          this.$emit('initData', res.content)
         }
       })
     },

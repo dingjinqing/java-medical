@@ -1,31 +1,24 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
-import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryByIdParam;
-import com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryPageListVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.LotteryVo;
-import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
-import org.jooq.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author 孔德成
@@ -53,7 +46,8 @@ public class AdminLotteryController extends AdminBaseController {
     @PostMapping("/usablelist")
     public JsonResult getLotteryUsableAllList(){
         LotteryPageListParam param = new LotteryPageListParam();
-        param.setState(BaseConstant.NAVBAR_TYPE_ONGOING);
+        //进行中,未开始
+        param.setState(BaseConstant.NAVBAR_TYPE_AVAILABLE);
         param.setPageRows(Integer.MAX_VALUE);
         PageResult<LotteryPageListVo> result = shop().lottery.getLotteryList(param);
         return success(result);
@@ -89,6 +83,16 @@ public class AdminLotteryController extends AdminBaseController {
     }
 
     /**
+     * 分享
+     * @param param
+     * @return
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid LotteryByIdParam param){
+        return success(shop().lottery.getMpQRCode(param));
+    }
+
+    /**
      * 改变状态
      * @param param param
      * @return json
@@ -118,20 +122,10 @@ public class AdminLotteryController extends AdminBaseController {
      */
     @PostMapping("/get")
     public JsonResult getLotteryById(@RequestBody @Valid LotteryByIdParam param){
-        LotteryRecord lottery = shop().lottery.getLotteryById(param.getId());
-        Result<LotteryPrizeRecord> lotteryPrizeList = shop().lottery.getLotteryPrizeById(param.getId());
-        if (lottery==null||lotteryPrizeList.size()==0){
+        LotteryVo lotteryVo = shop().lottery.getLotteryVo(param.getId());
+        if (lotteryVo==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
         }
-        LotteryVo lotteryVo =lottery.into(LotteryVo.class);
-        List<LotteryPrizeVo>  lotteryPrizeVoList =lotteryPrizeList.into(LotteryPrizeVo.class);
-        lotteryPrizeVoList.forEach( lotteryPrizeVo -> {
-            if (lotteryPrizeVo.getLotteryType().equals(LotteryConstant.LOTTERY_TYPE_GOODS)){
-                ProductSmallInfoVo product =  shop().goods.getProductVoInfoByProductId(lotteryPrizeVo.getPrdId());
-                lotteryPrizeVo.setProduct(product);
-            }
-        });
-        lotteryVo.setPrizeList(lotteryPrizeVoList);
         return success(lotteryVo);
     }
 
@@ -155,14 +149,4 @@ public class AdminLotteryController extends AdminBaseController {
         return success(shop().lottery.getLotteryUserList(param));
     }
 
-    /**
-     * 抽奖模拟
-     *
-     * @param param JoinLotteryParam
-     * @return json
-     */
-    @PostMapping("/join")
-    public JsonResult joinLottery(JoinLotteryParam param){
-        return success(shop().lottery.joinLottery(param));
-    }
 }

@@ -78,4 +78,8 @@ public class ShareRewardInfoVo {
      * 分享规则数组
      */
     private List<ShareRule> shareRules;
+
+    private Integer firstAwardNum;
+    private Integer secondAwardNum;
+    private Integer thirdAwardNum;
 }

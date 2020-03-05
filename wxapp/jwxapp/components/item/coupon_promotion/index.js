@@ -38,7 +38,9 @@ global.wxComponent({
           })
         }
       }
-    }
+    },
+    promotion:Array,
+    goodsGifts:Array
   },
 
   /**
@@ -59,6 +61,13 @@ global.wxComponent({
       console.log(111)
       this.setData({
         showPromotionDialog: true
+      })
+    },
+    showGift(e){
+      let {id} = e.currentTarget.dataset
+      this.setData({
+        showGiftsDialog:true,
+        giftInfo:this.data.goodsGifts.find(item=>item.id === id)
       })
     }
   }

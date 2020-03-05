@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.vpu.mp.config.AuthConfig;
-import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.SystemUserRecord;
 import com.vpu.mp.db.main.tables.records.UserLoginRecordRecord;
@@ -19,7 +18,6 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemLoginParam;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
-import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.saas.SaasApplication;
 
 /**

@@ -2,16 +2,11 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
-import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.cart.list.CartGoodsInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
-import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -149,35 +144,23 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.debug("WxAppCartBo:"+Util.toJson(cartBo));
-        WxAppCartListVo cartListVo = new WxAppCartListVo();
-        List<CartGoodsInfo> cartGoodsInfoList =cartGoodsToInfo(cartBo.getCartGoodsList(),cartBo.getOrderCartProductBo());
-        List<CartGoodsInfo> invalidCartGoodsInfoList =cartGoodsToInfo(cartBo.getInvalidCartList(), cartBo.getOrderCartProductBo());
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            if (goods.getPrdPrice()==null){
+                goods.setPrdPrice(goods.getGoodsPrice());
+            }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
             }else {
                 isAllCheck=0;
             }
         }
-        cartListVo.setTotalPrice(totalPrice);
-        cartListVo.setIsAllCheck(isAllCheck);
-        cartListVo.setCartGoodsList(cartGoodsInfoList);
-        cartListVo.setInvalidCartList(invalidCartGoodsInfoList);
-        cartBo.setCartListVo(cartListVo);
+        cartBo.setTotalPrice(totalPrice);
+        cartBo.setIsAllCheck(isAllCheck);
+
+
     }
 
-    private  List<CartGoodsInfo> cartGoodsToInfo(List<WxAppCartGoods> cartGoodsList, OrderCartProductBo orderCartProductBo){
-        List<CartGoodsInfo> cartGoodsInfoList =new ArrayList<>();
-        cartGoodsList.forEach(goods->{
-            CartGoodsInfo cartGoodsInfo = goods.toInfo();
-            List<GoodsActivityInfo> collect = new ArrayList<>(orderCartProductBo.get(cartGoodsInfo.getPrdId()).getActivityInfo().values());
-            cartGoodsInfo.setActivityInfos(collect);
-            cartGoodsInfoList.add(cartGoodsInfo);
-        });
-        return cartGoodsInfoList;
-    }
 
 }

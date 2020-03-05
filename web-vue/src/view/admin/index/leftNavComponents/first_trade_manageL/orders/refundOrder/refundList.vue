@@ -15,7 +15,7 @@
           <div class="filters_item">
             <span>{{$t('order.returnSn')}}：</span>
             <el-input
-              v-model="searchParams.refundSn"
+              v-model="searchParams.returnOrderSn"
               :placeholder="$t('order.returnSn')"
               size="small"
               class="default_input"
@@ -261,7 +261,7 @@ export default {
       searchParams: {
         searchType: 1,
         orderSn: null,
-        refundSn: null,
+        returnOrderSn: null,
         refundStatus: null,
         returnType: null,
         returnStart: null,

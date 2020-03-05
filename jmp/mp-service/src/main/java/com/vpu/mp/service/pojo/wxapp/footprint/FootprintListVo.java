@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.footprint;
 
 import com.vpu.mp.service.foundation.util.Page;
+import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,10 @@ import java.util.List;
 public class FootprintListVo {
 
     List<FootprintDayVo> day;
-
+    /**划线价开关 0关，1显示*/
+    Byte delMarket;
+    /**购物车按钮显示配置*/
+    ShowCartConfig showCart;
     /**
      * 	分页信息
      */

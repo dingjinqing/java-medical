@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
@@ -33,5 +34,20 @@ public class WxAppGoodsController extends WxAppBaseController {
     public JsonResult getRecommendGoods(@RequestBody RecommendGoodsParam param) {
         RecommendGoodsVo result = shop().goodsMp.mpGoodsRecommendService.getRecommendGoods(param);
         return success(result);
+    }
+
+    /**
+     * 小程序-商品分组组件-获取单个组内数据
+     * @param param 商品分组过滤数据
+     * @return 商品数据
+     */
+    @PostMapping("/api/wxapp/goods/group/list")
+    public JsonResult getGoodsGroupList(@RequestBody GoodsGroupListMpParam param) {
+	    if (param.getSortGroupArr()==null||param.getSortGroupArr().size()==0){
+	        return fail();
+        }
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        return success(shop().goodsMp.getGoodsGroupList(param));
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="rightCommodity">
     <div class="rightCommodityMain">
-      <h2>图片热区模块</h2>
+      <h2>{{$t('pictureHotSpot.pictureHotAreaModule')}}</h2>
       <!--模块私有区域-->
       <div class="main">
         <div
@@ -17,7 +17,7 @@
               class="change-img"
               style="cursor: pointer"
               @click="handleToCallImageDialog()"
-            >更换图片</div>
+            >{{$t('pictureHotSpot.replacePictures')}}</div>
             <div class="change-img mask">
 
             </div>
@@ -32,19 +32,19 @@
           @click="handleToCallImageDialog()"
           v-else
         >
-          <div>+添加一个背景图</div>
-          <h4>建议宽度750像素,高度1000像素以内</h4>
-          <h4>单张图片大小200kb以内</h4>
+          <div>+{{$t('pictureHotSpot.addABackgroundImage')}}</div>
+          <h4>{{$t('pictureHotSpot.addABackgroundImageTips1')}}</h4>
+          <h4>{{$t('pictureHotSpot.addABackgroundImageTips2')}}</h4>
         </div>
 
         <!--底部-->
         <div class="operation-area">
-          <div class="hot-number">热区数量：<span class="hot-number-span">{{modulesSaveData.data.rectangles.length}}个</span></div>
+          <div class="hot-number">{{$t('pictureHotSpot.numberOfHotAreas')}}<span class="hot-number-span">{{modulesSaveData.data.rectangles.length}}个</span></div>
 
           <el-button
             @click="handleToSetHotArea()"
             size="small"
-          >设置热区</el-button>
+          >{{$t('pictureHotSpot.hotZoneSet')}}</el-button>
 
         </div>
       </div>
@@ -109,6 +109,10 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
   },
   methods: {
     // 图片弹窗调起

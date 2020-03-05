@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -158,6 +159,11 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
         //无
     }
 
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+
+    }
+
     /**
      * 处理满折满减活动（金额计算）
      * @param param
@@ -189,9 +195,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
                     }
                     if(!OrderConstant.CART_Y.equals(param.getIsCart()) || param.getStoreId() != null || (activity.getId().equals(goods.getStraId()))) {
                         //购物车可选是否参加活动需要特殊处理
-                        if(joinActivity.get(activityInfo) == null){
-                            joinActivity.put(activityInfo, new ArrayList<>());
-                        }
+                        joinActivity.computeIfAbsent(activityInfo, k -> new ArrayList<>());
                         goods.setStraId(activity.getId());
                         joinActivity.get(activityInfo).add(goods);
                         used.add(goods.getProductId());

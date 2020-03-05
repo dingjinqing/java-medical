@@ -58,8 +58,14 @@
                 v-if="data.goods_count_down"
                 class="bargain_time_down"
               >
-                <div>{{$t('bargain.endOfLeft')}}</div>
-                <p>{{good.act_end_time | endTimeFmt}}</p>
+                <template v-if="!(new Date(good.act_begin_time) > new Date())">
+                  <div>{{$t('bargain.endOfLeft')}}</div>
+                  <p>{{good.act_end_time | endTimeFmt}}</p>
+                </template>
+                <template v-else>
+                  <div>{{$t('bargain.begainTime')}}</div>
+                  <p>{{good.act_begin_time}}</p>
+                </template>
               </div>
             </div>
             <div class="bargain_default_info">
@@ -130,16 +136,22 @@
                 :src="good.goods_img"
                 style="width: 100%; height: 100%;"
               ></el-image>
-              <div class="bargain_time_down">
-                <div>{{$t('bargain.endOfLeft')}}</div>
-                <p>{{good.act_end_time | endTimeFmt}}</p>
+              <div
+                class="bargain_time_down"
+                v-if="data.goods_count_down"
+              >
+                <template v-if="!(new Date(good.act_begin_time) > new Date())">
+                  <div>{{$t('bargain.endOfLeft')}}</div>
+                  <p>{{good.act_end_time | endTimeFmt}}</p>
+                </template>
+                <template v-else>
+                  <div>{{$t('bargain.begainTime')}}</div>
+                  <p>{{good.act_begin_time}}</p>
+                </template>
               </div>
             </div>
             <div class="bargain_default_info">
-              <div
-                v-if="data.goods_count_down"
-                class="bargain_info_head"
-              >
+              <div class="bargain_info_head">
                 <div class="bargain_info_name">{{good.goods_name}}</div>
                 <span class="bargain_num">{{$t('bargain.onlyLeft')}}{{good.bargain_num}}{{$t('bargain.pieces')}}</span>
               </div>

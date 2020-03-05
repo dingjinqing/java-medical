@@ -13,6 +13,7 @@ export const en = {
     evaluationTime: 'Evaluation time',
     anonymousEvaluation: 'Anonymous evaluation',
     evaluationReward: 'Evaluation reward',
+    evaluationAct: 'Evaluation activity',
     operating: 'operating'
   },
   userName: 'username',
@@ -24,7 +25,7 @@ export const en = {
   deleteReply: 'Delete reply',
   yes: 'yes',
   no: 'no',
-  null: 'null',
+  nothing: 'nothing',
   deleteEvaluation: 'Delete evaluation',
   orderSn: 'orderSn',
   goodsName: 'Goods name',

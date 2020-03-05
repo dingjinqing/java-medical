@@ -4,6 +4,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -127,6 +128,9 @@ public class CardUtil {
 	 * @return true: 已经过期，false: 未过期
 	 */
 	public static boolean isCardExpired(Timestamp endTime) {
+		if(endTime==null) {
+			return false;
+		}
 		return DateUtil.getLocalDateTime().after(endTime);
 	}
 	
@@ -145,6 +149,29 @@ public class CardUtil {
 	public static boolean canUseInStore(Byte type) {
 		return !CardConstant.MCARD_STP_BAN.equals(type);
 	}
+	
+	/**
+	 * 获取卡适用的门店类型
+	 */
+	public static Byte getUseStoreType(Byte storeUseSwitch,String storeList) {
+		Byte useStoreType = null;
+		if(CardConstant.AVAILABLE_IN_STORE.equals(storeUseSwitch)) {
+			List<Integer> ids = parseStoreList(storeList);
+			if(ids.size()>0 && ids.get(0) != 0) {
+				// 在部分门店使用
+				useStoreType = CardConstant.MCARD_STP_PART;
+			}else {
+				// 全部门店使用
+				useStoreType = CardConstant.MCARD_STP_ALL;
+			}
+		}else {
+			// 不可在门店使用
+			useStoreType = CardConstant.MCARD_STP_BAN;
+		}
+		return useStoreType;
+	}
+	
+	
 	
 	/**
 	 * 是否开卡送券
@@ -171,6 +198,9 @@ public class CardUtil {
 	 * 解析卡的使用门店
 	 */
 	public static List<Integer> parseStoreList(String storeList){
+		if(StringUtils.isBlank(storeList)) {
+			return Collections.emptyList();
+		}
 		return Util.json2Object(storeList, new TypeReference<List<Integer>>() {
         }, false);
 	}
@@ -295,12 +325,14 @@ public class CardUtil {
 			}
 		}
 		
-		if(isCardTimeForever(card.getExpireType()) &&
-					card.getExpireTime() != null) {
-			// 取快照
-			card.setExpireType(CardConstant.MCARD_ET_FIX);
+		if(card.getExpireTime() != null) {
+			// 取快照 有效期
+			bean.setExpireType(NumberUtils.BYTE_ONE);
+		}else {
+			// 永久有效
+			bean.setExpireType((byte)2);
 		}
-		bean.setExpireType(card.getExpireType());
+		
 		return bean;
 	}
 

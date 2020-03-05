@@ -216,5 +216,10 @@ export const en = {
     }
   ],
   putItHere: 'Put it here',
-  seizeASeat: 'Drag left module for decoration'
+  seizeASeat: 'Drag left module for decoration',
+  pagePublishingReminder: 'Page publishing reminder',
+  pagePublishingReminderTip: 'The page is automatically saved as a draft and published online',
+  cancel: 'cancel',
+  determine: 'Determine',
+  scanningPreview: 'Mobile scanning Preview'
 }

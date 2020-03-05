@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,17 +12,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertOrderVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSwitchParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 
 /**
@@ -32,11 +22,20 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 @RestController
 @RequestMapping("/api/admin/market/integral/convert")
 public class AdminIntegralConvertController extends AdminBaseController{
-
+    /**
+     * 积分兑换弹窗
+     * @param param 商品名称 是否上架
+     * @return 活动商品信息
+     */
+    @PostMapping("/pop")
+    public JsonResult getPopList(@RequestBody PopListParam param){
+        PageResult<PopListVo> result = shop().integralConvertService.getPopList(param);
+        return success(result);
+    }
 	/**
 	 * 查询积分兑换活动分页列表
 	 *
-	 * @param IntegralConvertListParam
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/list")
@@ -50,7 +49,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 停用或启用活动
 	 *
-	 * @param IntegralConvertSwitchParam
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/switch")
@@ -76,7 +75,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 积分兑换用户列表
 	 *
-	 * @param 
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/user")
@@ -89,7 +88,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 添加积分兑换活动
 	 *
-	 * @param 
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/add")
@@ -102,7 +101,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 返回指定商品规格详情
 	 *
-	 * @param 
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/product")
@@ -115,7 +114,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 查询指定积分兑换活动详情
 	 *
-	 * @param 
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/select")
@@ -127,7 +126,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 添加积分兑换活动
 	 *
-	 * @param 
+	 * @param param
 	 * @return
 	 */
 	@PostMapping("/update")
@@ -139,7 +138,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 /**
      * 新增用户列表
      *
-     * @param
+     * @param param
      * @return JsonResult
      */
     @PostMapping("/newuser")
@@ -151,7 +150,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
     /**
      * 查看积分兑换订单
      * 
-     * @param
+     * @param param
      * @return JsonResult
      */
     @PostMapping("/order")

@@ -5,7 +5,6 @@ package com.vpu.mp.db.shop;
 
 
 import com.vpu.mp.db.shop.tables.ShareAwardRecord;
-import com.vpu.mp.db.shop.tables.TradesRecord;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.AssessTopicRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
@@ -15,6 +14,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
 import com.vpu.mp.db.shop.tables.records.PaymentRecord;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.TradesRecord;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -39,6 +39,19 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_SEARCH_HISTORY_PRIMARY;
+    public static final Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Identities0.IDENTITY_SEARCH_HISTORY;
+    public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_MP_SCENE_RECORD_PRIMARY;
+    public static final Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Identities0.IDENTITY_MP_SCENE_RECORD;
+    public static final UniqueKey<TradesRecord> KEY_B2C_TRADES_PRIMARY = UniqueKeys0.KEY_B2C_TRADES_PRIMARY;
+    public static final Identity<TradesRecord, Integer> IDENTITY_TRADES = Identities0.IDENTITY_TRADES;
+    public static final UniqueKey<DistributionOrderRecord> KEY_B2C_DISTRIBUTION_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_DISTRIBUTION_ORDER_PRIMARY;
+    public static final Identity<DistributionOrderRecord, Integer> IDENTITY_DISTRIBUTION_ORDER = Identities0.IDENTITY_DISTRIBUTION_ORDER;
+    public static final UniqueKey<ServiceMessageRecordRecord> KEY_B2C_SERVICE_MESSAGE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_SERVICE_MESSAGE_RECORD_PRIMARY;
+    public static final Identity<ServiceMessageRecordRecord, Integer> IDENTITY_SERVICE_MESSAGE_RECORD = Identities0.IDENTITY_SERVICE_MESSAGE_RECORD;
+    public static final UniqueKey<MpSummaryTrendRecord> KEY_B2C_MP_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_MP_SUMMARY_TREND_PRIMARY;
+    public static final Identity<MpSummaryTrendRecord, Integer> IDENTITY_MP_SUMMARY_TREND = Identities0.IDENTITY_MP_SUMMARY_TREND;
+    public static final Identity<UserCardRecord, Integer> IDENTITY_USER_CARD = Identities0.IDENTITY_USER_CARD;
     public static final Identity<PrizeRecordRecord, Integer> IDENTITY_PRIZE_RECORD = Identities0.IDENTITY_PRIZE_RECORD;
     public static final Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Identities0.IDENTITY_COOPEN_ACTIVITY;
     public static final Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Identities0.IDENTITY_COOPEN_ACTIVITY_RECORDS;
@@ -251,6 +264,7 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_PRIMARY = UniqueKeys0.KEY_B2C_USER_CARD_PRIMARY;
     public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PRIZE_RECORD_PRIMARY;
     public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIZE_PRIMARY;
     public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = UniqueKeys0.KEY_B2C_CART_PRIMARY;
@@ -506,6 +520,13 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Internal.createIdentity(SearchHistory.SEARCH_HISTORY, SearchHistory.SEARCH_HISTORY.ID);
+        public static Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Internal.createIdentity(MpSceneRecord.MP_SCENE_RECORD, MpSceneRecord.MP_SCENE_RECORD.ID);
+        public static Identity<TradesRecord, Integer> IDENTITY_TRADES = Internal.createIdentity(Trades.TRADES, Trades.TRADES.ID);
+        public static final Identity<DistributionOrderRecord, Integer> IDENTITY_DISTRIBUTION_ORDER = Identities0.IDENTITY_DISTRIBUTION_ORDER;
+        public static Identity<ServiceMessageRecordRecord, Integer> IDENTITY_SERVICE_MESSAGE_RECORD = Internal.createIdentity(ServiceMessageRecord.SERVICE_MESSAGE_RECORD, ServiceMessageRecord.SERVICE_MESSAGE_RECORD.ID);
+        public static Identity<MpSummaryTrendRecord, Integer> IDENTITY_MP_SUMMARY_TREND = Internal.createIdentity(MpSummaryTrend.MP_SUMMARY_TREND, MpSummaryTrend.MP_SUMMARY_TREND.ID);
+        public static Identity<UserCardRecord, Integer> IDENTITY_USER_CARD = Internal.createIdentity(UserCard.USER_CARD, UserCard.USER_CARD.ID);
         public static Identity<PrizeRecordRecord, Integer> IDENTITY_PRIZE_RECORD = Internal.createIdentity(PrizeRecord.PRIZE_RECORD, PrizeRecord.PRIZE_RECORD.ID);
         public static Identity<CoopenActivityRecord, Integer> IDENTITY_COOPEN_ACTIVITY = Internal.createIdentity(CoopenActivity.COOPEN_ACTIVITY, CoopenActivity.COOPEN_ACTIVITY.ID);
         public static Identity<CoopenActivityRecordsRecord, Integer> IDENTITY_COOPEN_ACTIVITY_RECORDS = Internal.createIdentity(CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS, CoopenActivityRecords.COOPEN_ACTIVITY_RECORDS.ID);
@@ -663,7 +684,7 @@ public class Keys {
         public static Identity<SubOrderInfoRecord, Integer> IDENTITY_SUB_ORDER_INFO = Internal.createIdentity(SubOrderInfo.SUB_ORDER_INFO, SubOrderInfo.SUB_ORDER_INFO.ID);
         public static Identity<TagRecord, Integer> IDENTITY_TAG = Internal.createIdentity(Tag.TAG, Tag.TAG.TAG_ID);
         public static Identity<TemplateConfigRecord, Integer> IDENTITY_TEMPLATE_CONFIG = Internal.createIdentity(TemplateConfig.TEMPLATE_CONFIG, TemplateConfig.TEMPLATE_CONFIG.ID);
-        public static Identity<TradesRecordRecord, Integer> IDENTITY_TRADES_RECORD = Internal.createIdentity(TradesRecord.TRADES_RECORD, TradesRecord.TRADES_RECORD.ID);
+        public static Identity<TradesRecordRecord, Integer> IDENTITY_TRADES_RECORD = Internal.createIdentity(com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD, com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD.ID);
         public static Identity<TradesRecordSummaryRecord, Integer> IDENTITY_TRADES_RECORD_SUMMARY = Internal.createIdentity(TradesRecordSummary.TRADES_RECORD_SUMMARY, TradesRecordSummary.TRADES_RECORD_SUMMARY.ID);
         public static Identity<UploadedImageRecord, Integer> IDENTITY_UPLOADED_IMAGE = Internal.createIdentity(UploadedImage.UPLOADED_IMAGE, UploadedImage.UPLOADED_IMAGE.IMG_ID);
         public static Identity<UploadedImageCategoryRecord, Integer> IDENTITY_UPLOADED_IMAGE_CATEGORY = Internal.createIdentity(UploadedImageCategory.UPLOADED_IMAGE_CATEGORY, UploadedImageCategory.UPLOADED_IMAGE_CATEGORY.IMG_CAT_ID);
@@ -719,6 +740,13 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = Internal.createUniqueKey(SearchHistory.SEARCH_HISTORY, "KEY_b2c_search_history_PRIMARY", SearchHistory.SEARCH_HISTORY.ID);
+        public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = Internal.createUniqueKey(MpSceneRecord.MP_SCENE_RECORD, "KEY_b2c_mp_scene_record_PRIMARY", MpSceneRecord.MP_SCENE_RECORD.ID);
+        public static final UniqueKey<TradesRecord> KEY_B2C_TRADES_PRIMARY = Internal.createUniqueKey(Trades.TRADES, "KEY_b2c_trades_PRIMARY", Trades.TRADES.ID);
+        public static final UniqueKey<DistributionOrderRecord> KEY_B2C_DISTRIBUTION_ORDER_PRIMARY = Internal.createUniqueKey(DistributionOrder.DISTRIBUTION_ORDER, "KEY_b2c_distribution_order_PRIMARY", DistributionOrder.DISTRIBUTION_ORDER.ID);
+        public static final UniqueKey<ServiceMessageRecordRecord> KEY_B2C_SERVICE_MESSAGE_RECORD_PRIMARY = Internal.createUniqueKey(ServiceMessageRecord.SERVICE_MESSAGE_RECORD, "KEY_b2c_service_message_record_PRIMARY", ServiceMessageRecord.SERVICE_MESSAGE_RECORD.ID);
+        public static final UniqueKey<MpSummaryTrendRecord> KEY_B2C_MP_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(MpSummaryTrend.MP_SUMMARY_TREND, "KEY_b2c_mp_summary_trend_PRIMARY", MpSummaryTrend.MP_SUMMARY_TREND.ID);
+        public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_PRIMARY = Internal.createUniqueKey(UserCard.USER_CARD, "KEY_b2c_user_card_PRIMARY", UserCard.USER_CARD.ID);
         public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = Internal.createUniqueKey(PrizeRecord.PRIZE_RECORD, "KEY_b2c_prize_record_PRIMARY", PrizeRecord.PRIZE_RECORD.ID);
         public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = Internal.createUniqueKey(PayAwardPrize.PAY_AWARD_PRIZE, "KEY_b2c_pay_award_prize_PRIMARY", PayAwardPrize.PAY_AWARD_PRIZE.ID);
         public static final UniqueKey<CartRecord> KEY_B2C_CART_PRIMARY = Internal.createUniqueKey(Cart.CART, "KEY_b2c_cart_PRIMARY", Cart.CART.CART_ID);
@@ -902,7 +930,7 @@ public class Keys {
         public static final UniqueKey<TagRecord> KEY_B2C_TAG_PRIMARY = Internal.createUniqueKey(Tag.TAG, "KEY_b2c_tag_PRIMARY", Tag.TAG.TAG_ID);
         public static final UniqueKey<TagRecord> KEY_B2C_TAG_TAG_NAME = Internal.createUniqueKey(Tag.TAG, "KEY_b2c_tag_tag_name", Tag.TAG.TAG_NAME);
         public static final UniqueKey<TemplateConfigRecord> KEY_B2C_TEMPLATE_CONFIG_PRIMARY = Internal.createUniqueKey(TemplateConfig.TEMPLATE_CONFIG, "KEY_b2c_template_config_PRIMARY", TemplateConfig.TEMPLATE_CONFIG.ID);
-        public static final UniqueKey<TradesRecordRecord> KEY_B2C_TRADES_RECORD_PRIMARY = Internal.createUniqueKey(TradesRecord.TRADES_RECORD, "KEY_b2c_trades_record_PRIMARY", TradesRecord.TRADES_RECORD.ID);
+        public static final UniqueKey<TradesRecordRecord> KEY_B2C_TRADES_RECORD_PRIMARY = Internal.createUniqueKey(com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD, "KEY_b2c_trades_record_PRIMARY", com.vpu.mp.db.shop.tables.TradesRecord.TRADES_RECORD.ID);
         public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_PRIMARY = Internal.createUniqueKey(TradesRecordSummary.TRADES_RECORD_SUMMARY, "KEY_b2c_trades_record_summary_PRIMARY", TradesRecordSummary.TRADES_RECORD_SUMMARY.ID);
         public static final UniqueKey<TradesRecordSummaryRecord> KEY_B2C_TRADES_RECORD_SUMMARY_DATE_TYPE = Internal.createUniqueKey(TradesRecordSummary.TRADES_RECORD_SUMMARY, "KEY_b2c_trades_record_summary_date_type", TradesRecordSummary.TRADES_RECORD_SUMMARY.REF_DATE, TradesRecordSummary.TRADES_RECORD_SUMMARY.TYPE);
         public static final UniqueKey<UploadedImageRecord> KEY_B2C_UPLOADED_IMAGE_PRIMARY = Internal.createUniqueKey(UploadedImage.UPLOADED_IMAGE, "KEY_b2c_uploaded_image_PRIMARY", UploadedImage.UPLOADED_IMAGE.IMG_ID);

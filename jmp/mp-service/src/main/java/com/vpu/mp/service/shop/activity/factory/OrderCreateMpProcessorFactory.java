@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.factory;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.processor.CreateOrderProcessor;
@@ -32,8 +33,9 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 一般营销  首单特惠 会员专享
      */
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
-            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
-            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+        BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+        BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
+        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
     );
     /**
      * 全局的活动  支付有礼
@@ -52,7 +54,15 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             BaseConstant.ACTIVITY_TYPE_SEC_KILL,
             BaseConstant.ACTIVITY_TYPE_BARGAIN,
             BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
-            BaseConstant.ACTIVITY_TYPE_PRE_SALE
+            BaseConstant.ACTIVITY_TYPE_PRE_SALE,
+            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW
+    );
+
+    /**
+     * 退款
+     */
+    public final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
+        BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**
@@ -66,6 +76,11 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     private List<CreateOrderProcessor> processorGeneralList;
 
     /**
+     * 退货活动处理
+     */
+    private Map<Byte, CreateOrderProcessor> processorReturnMap;
+
+    /**
      * 全局营销
      */
     private List<CreateOrderProcessor> processorGlobalList;
@@ -77,6 +92,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         processorMap = new HashMap<>(processors.size());
         processorGeneralList = new ArrayList<>(processors.size());
         processorGlobalList = new ArrayList<>(processors.size());
+        processorReturnMap = new HashMap<>(RETURN_ACTIVITY.size());
         for (CreateOrderProcessor processor : processors) {
             if (SINGLENESS_ACTIVITY.contains(processor.getActivityType())) {
                 processorMap.put(processor.getActivityType(), processor);
@@ -86,6 +102,9 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             }
             if (GLOBAL_ACTIVITY.contains(processor.getActivityType())) {
                 processorGlobalList.add(processor);
+            }
+            if(RETURN_ACTIVITY.contains(processor.getActivityType())){
+                processorReturnMap.put(processor.getActivityType(), processor);
             }
         }
     }
@@ -159,6 +178,21 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             //全局活动
             processor.processOrderEffective(param, order);
         }
+    }
+
+    /**
+     * 退款成功调用活动库存销量修改方法
+     * @param activityType 活动类型
+     * @param activityId 活动id（赠品活动id在）
+     * @param returnOrderGoods 退款商品
+     * @throws MpException
+     */
+    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
+        CreateOrderProcessor process = processorReturnMap.get(activityType);
+        if(process != null){
+            process.processReturn(activityId, returnOrderGoods);
+        }
+
     }
 }
 

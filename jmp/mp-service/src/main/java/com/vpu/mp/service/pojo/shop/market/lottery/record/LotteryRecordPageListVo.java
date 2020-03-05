@@ -40,7 +40,10 @@ public class LotteryRecordPageListVo {
      */
     @JsonIgnore
     private String awardInfo;
-
+    /**
+     * 抽奖信息
+     */
+    private String lotteryAward;
     /**
      * 奖品信息
      */

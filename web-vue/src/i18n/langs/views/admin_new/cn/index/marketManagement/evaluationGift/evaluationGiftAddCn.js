@@ -33,7 +33,8 @@ export const cn = {
   coupon: '优惠券',
   balance: '余额',
   luckyDraw: '幸运大抽奖',
-  Canuse0: '优惠券可用库存0份',
+  Canuse: '优惠券可用库存',
+  part: '份',
   inputAmount: '请输入金额',
   activityPicture: '活动图片：',
   activityLink: '活动链接：',
@@ -48,6 +49,7 @@ export const cn = {
   pscondition: '请选择至少一种评价条件',
   piname: '请输入活动名称',
   pipriority: '请输入活动优先级',
+  piInteger: '请输入正整数',
   pipoins: '请输入积分',
   pigreater0: '请输入大于0的数字',
   pibalance: '请输入余额',
@@ -56,5 +58,6 @@ export const cn = {
   pslink: '请设置活动链接',
   piNumPrizes: '请输入奖品份数',
   updateSuccessed: '更新成功',
-  addSuccessed: '添加成功'
+  addSuccessed: '添加成功',
+  noLimit: '不限制'
 }

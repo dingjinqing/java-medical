@@ -31,12 +31,27 @@ public final class ImageUtil {
      * @return
      */
     public static BufferedImage resizeImage(int width, int height, BufferedImage bufferedImage) {
-        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_USHORT_555_RGB);
         newBufferedImage.getGraphics().drawImage(bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0,
             0, null);
         return newBufferedImage;
     }
 
+    
+    /**
+     * 重新设置图片大小，图带Alpha，存在透明像素时调用
+     *
+     * @param width
+     * @param height
+     * @param bufferedImage
+     * @return
+     */
+    public static BufferedImage resizeImageTransparent(int width, int height, BufferedImage bufferedImage) {
+        BufferedImage newBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        newBufferedImage.getGraphics().drawImage(bufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0,
+            0, null);
+        return newBufferedImage;
+    }
 
     /**
      * 给图片添加文字
@@ -45,7 +60,7 @@ public final class ImageUtil {
      * @param message         文字
      * @param font            字体
      * @param x               x轴数值
-     * @param y               y轴数值
+     * @param y               y轴数值 添加文本时的y值表示的是文本的底边位置
      * @param color           颜色,默认黑色
      * @returns
      */
@@ -61,8 +76,27 @@ public final class ImageUtil {
     }
 
     /**
-     * 在图片上绘制矩形
+     * 给图片添加文字
      *
+     * @param backgroundImage 背景图片
+     * @param message         文字
+     * @param font            字体
+     * @param x               x轴数值
+     * @param y               y轴数值
+     * @param color           颜色,默认黑色
+     * @param onBaseLine true表示y值是文本底边位置
+     * @returns
+     */
+    public static BufferedImage addFont(BufferedImage backgroundImage, String message, Font font, int x, int y, Color color, boolean onBaseLine) {
+        if (!onBaseLine) {
+            int textHeight = getTextAscent(backgroundImage,font);
+            y += textHeight;
+        }
+        return addFont(backgroundImage,message,font,x,y,color);
+    }
+
+    /**
+     * 在图片上绘制矩形
      * @param bufferedImage 目标背景图对象
      * @param x             矩形左上角x位置
      * @param y             矩形左上角y位置
@@ -89,6 +123,29 @@ public final class ImageUtil {
     }
 
     /**
+     *  添加文字附带边框
+     * @param bufferedImage 背景图
+     * @param x 开始x
+     * @param y 开始y
+     * @param message 文字内容
+     * @param font 文本字体
+     * @param lineColor 边框线颜色
+     * @param fillColor 边框内部填充颜色
+     * @param fontColor 文本颜色
+     */
+    public static int addFontWithRect(BufferedImage bufferedImage, int x, int y, String message, Font font, Color lineColor,Color fillColor,Color fontColor){
+        int paddingLeft = 5;
+        int paddingHeight = font.getSize()/4;
+        int fontHeight = getTextAscent(bufferedImage,font);
+        int textWidth = getTextWidth(bufferedImage,font,message);
+        addRect(bufferedImage,x,y,textWidth+2*paddingLeft,fontHeight,lineColor,fillColor);
+        // 添加文本时的y值表示的是文本的底边位置
+        addFont(bufferedImage,message,font,x+paddingLeft,y+fontHeight-paddingHeight/3*2,fontColor);
+
+        return textWidth+2*paddingLeft;
+    }
+
+    /**
      * 添加线段
      *
      * @param bufferedImage 目标背景图对象
@@ -104,6 +161,23 @@ public final class ImageUtil {
         graphics.setColor(color);
         graphics.drawLine(x1, y1, x2, y2);
         graphics.dispose();
+    }
+
+    /**
+     * 添加文字附带中划线
+     * @param bufferedImage 背景图片
+     * @param x 文本左上角开始x坐标
+     * @param y 文本左上角开始y坐标
+     * @param message 文本内容
+     * @param font 字体
+     * @param fontColor 字体颜色
+     */
+    public static void addFontWithLine(BufferedImage bufferedImage, int x, int y, String message,Font font, Color fontColor) {
+        int linePad = 5;
+        int textWidth = getTextWidth(bufferedImage, font, message);
+        int textHeight = getTextAscent(bufferedImage,font);
+        addFont(bufferedImage,message,font,x+linePad,y+textHeight,fontColor);
+        addLine(bufferedImage,x,y+textHeight/4*3,x+textWidth+2*linePad,y+textHeight/4*3,fontColor);
     }
 
     /**
@@ -222,7 +296,6 @@ public final class ImageUtil {
 
     /**
      * 获取文本内容的宽度
-     *
      * @param font 文本使用的字体
      * @param text 文本内容
      * @return 文本宽度
@@ -238,5 +311,20 @@ public final class ImageUtil {
         return width;
     }
 
-
+    /**
+     * 获取对应字体文本的ascent高度
+     * 字体高度height包括：ascent+descent+leading高度
+     * ascent:字母b k的高度（外加了一个留白，不同字体的留白存在差异）
+     * descent:字母p g的下半部分高度（一般是负数）
+     * leading:是当前行和上一行的间隔高度
+     * @param bufferedImage
+     * @param font
+     * @return
+     */
+    public static Integer getTextAscent(BufferedImage bufferedImage, Font font) {
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setFont(font);
+        FontMetrics metrics = graphics.getFontMetrics(font);
+        return metrics.getAscent();
+    }
 }

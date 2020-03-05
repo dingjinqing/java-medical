@@ -129,7 +129,7 @@ global.wxComponent({
           styleName:`color:${data.main_setting.comColor}`
         }, //开启购物车按钮-样式 
         '1-1': {
-          className: 'iconfont icongouwuche5',
+          className: 'iconfont icongouwuche1',
           styleName:`color:${data.main_setting.comColor}`
         },
         '1-2': {
@@ -160,9 +160,13 @@ global.wxComponent({
           textContent
         })
     },
+    // 打开规格弹窗
+    showSpecDialog(){
+      this.triggerEvent("showSpecDialog", this.data.goodsData);
+    },
     toItem() {
       util.jumpLink(
-        `pages/item/item?goodsId=${this.data.goodsData.goodsId}&activityType=${this.data.goodsData.activityType}&activityId=${this.data.goodsData.activityId}`,
+        `pages/item/item?gid=${this.data.goodsData.goodsId}&atp=${this.data.goodsData.activityType}&aid=${this.data.goodsData.activityId}`,
         'navigateTo'
       );
     }

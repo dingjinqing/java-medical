@@ -45,8 +45,8 @@ export const cn = {
   save: '保存',
   modification: '修改',
   empty: '清空',
-  uploadChartForNoWinning: '上传未中奖图表',
-  uploadChartForWinning: '上传中奖图表',
+  uploadChartForNoWinning: '上传未中奖图标',
+  uploadChartForWinning: '上传中奖图标',
   uploadChartForNoWinningTips: '仅支持jpg/png/尺寸80*80 不超过1M',
   iconDescribe: 'icon描述',
   iconDescribeTips: '最多可填写4个字',
@@ -115,6 +115,7 @@ export const cn = {
     name: '4'
   }],
   changeStatusComment: '此操作将启用该活动, 是否继续?',
+  stopStatusComment: '此操作将停用该活动，是否继续?',
   deleteLuckDrawComment: '此操作将删除该活动, 是否继续?',
   confirm: '确定',
   cancel: '取消',
@@ -129,15 +130,17 @@ export const cn = {
   lotteryPrize: '奖品',
   luckSourceList: [
     [null, '全部'],
-    [0, '分享'],
     [1, '开屏有礼'],
-    [2, '支付有礼']
+    [2, '支付有礼'],
+    [3, '分享'],
+    [4, '评价有礼'],
+    [5, '分享有礼']
   ],
   chanceSourceList: [
     [null, '全部'],
-    [0, '免费'],
-    [1, '分享'],
-    [2, '积分']
+    [1, '免费'],
+    [2, '分享'],
+    [3, '积分']
   ],
   lotteryGradeList: [
     [null, '全部'],
@@ -163,5 +166,11 @@ export const cn = {
   validScore: '请填写赠送积分',
   validBounsAmount: '请填写赠送金额',
   validCoupon: '请选择优惠券',
-  validGivea: '请选择赠品'
+  validGivea: '请选择赠品',
+  dataLoadFail: '数据加载失败',
+  addSweepstakes: '添加抽奖活动',
+  jumpRaffleDetails: '跳转到抽奖详情页面',
+  jumpGetUserList: '跳转到获取新用户列表页面',
+  consumed: '为空表示不消耗积分',
+  fetchDataFail: '获取数据失败'
 }

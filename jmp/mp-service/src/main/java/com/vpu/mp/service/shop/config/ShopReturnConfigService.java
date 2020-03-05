@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.config.trade.ReturnConfigParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -106,7 +107,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setAutoReturn(Byte autoReturn) {
-        assert(autoReturn ==(byte)0 || autoReturn == (byte)1);
+    	Assert.isTrue(autoReturn ==(byte)0 || autoReturn == (byte)1,"setAutoReturn need value equal zero or one");
         return this.set(K_AUTO_RETURN, autoReturn,Byte.class);
     }
 
@@ -155,7 +156,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setIsReturnCoupon(Byte isReturnCoupon) {
-        assert(isReturnCoupon ==(byte)0 || isReturnCoupon == (byte)1);
+    	Assert.isTrue(isReturnCoupon ==(byte)0 || isReturnCoupon == (byte)1,"setIsReturnCoupon need value equal one or zero");
         return this.set(K_IS_REFUND_COUPON, isReturnCoupon,Byte.class);
     }
 
@@ -173,7 +174,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setReturnChangeGoodsStatus(Byte returnChangeGoodsStatus) {
-        assert(returnChangeGoodsStatus ==(byte)0 || returnChangeGoodsStatus == (byte)1);
+    	Assert.isTrue(returnChangeGoodsStatus ==(byte)0 || returnChangeGoodsStatus == (byte)1,"setReturnChangeGoodsStatus need value equal one or zero");
         return this.set(K_RETURN_CHANGE_GOODS_STATUS, returnChangeGoodsStatus,Byte.class);
     }
 
@@ -195,7 +196,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setPostSaleStatus(Byte postSaleStatus) {
-        assert (postSaleStatus.equals(BYTE_ZERO) || postSaleStatus.equals(BYTE_ONE));
+    	Assert.isTrue(postSaleStatus.equals(BYTE_ZERO) || postSaleStatus.equals(BYTE_ONE),"setPostSaleStatus need value equal one or zero");
         return this.set(K_POST_SALE_STATUS, postSaleStatus, Byte.class);
     }
 
@@ -204,7 +205,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setOrderCanExchange(Byte orderCanExchange) {
-        assert (orderCanExchange.equals(BYTE_ZERO) || orderCanExchange.equals(BYTE_ONE) || orderCanExchange.equals(BYTE_TWO));
+    	Assert.isTrue(orderCanExchange.equals(BYTE_ZERO) || orderCanExchange.equals(BYTE_ONE) || orderCanExchange.equals(BYTE_TWO),"setOrderCanExchange need value equal zero or one or two");
         return this.set(K_ORDER_CAN_EXCHANGE, orderCanExchange, Byte.class);
     }
 
@@ -213,7 +214,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setAutoReturnGoodsStock(Byte autoReturnGoodsStock) {
-        assert (autoReturnGoodsStock.equals(BYTE_ZERO) || autoReturnGoodsStock.equals(BYTE_ONE));
+    	Assert.isTrue(autoReturnGoodsStock.equals(BYTE_ZERO) || autoReturnGoodsStock.equals(BYTE_ONE),"setAutoReturnGoodsStock need value euqal zero or one ");
         return this.set(K_AUTO_RETURN_GOODS_STOCK, autoReturnGoodsStock, Byte.class);
     }
 

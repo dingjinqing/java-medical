@@ -165,7 +165,7 @@
             ></div>
             <div class="send-limit">
               <el-form-item class="send-num" prop="stockValid">
-                <span>发送总量：</span>
+                <span>{{$t('memberCard.sendCardTotal')}}</span>
                 <el-input-number
                   v-model="ruleForm.stock"
                   :controls="false"
@@ -174,12 +174,12 @@
                   size="small"
                 >
                 </el-input-number>
-                <span>张</span>
-                <span class="send-tip">填0时为不限制</span>
-                <span>当前已领取： {{ruleForm.hasSend}}张</span>
+                <span>{{$t('memberCard.unitZhang')}}</span>
+                <span class="send-tip">{{$t('memberCard.limitCardSendCardTip')}}</span>
+                <span>{{$t('memberCard.currentReceive')}} {{ruleForm.hasSend}}{{$t('memberCard.unitZhang')}}</span>
               </el-form-item>
               <el-form-item class="person-receive-num" prop="limitValid">
-                <span>领取限制：每人限领</span>
+                <span>{{$t('memberCard.personReceive')}}</span>
                 <el-input-number
                   v-model="ruleForm.limits"
                   :controls="false"
@@ -188,8 +188,8 @@
                   size="small"
                 >
                 </el-input-number>
-                <span>张</span>
-                <span class="send-tip">填0时为不限制</span>
+                <span>{{$t('memberCard.unitZhang')}}</span>
+                <span class="send-tip">{{$t('memberCard.limitCardSendCardTip')}}</span>
               </el-form-item>
             </div>
           </div>
@@ -254,6 +254,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.$on('checkRule', () => {
       let flag = false
       if (this.ruleForm.cardType === 1) {
@@ -478,7 +479,6 @@ export default {
     },
 
     showReceiveCodeDiaglog (index) {
-      debugger
       if (!this.ruleForm.codeAddDivArr[index].batchName) {
         this.$message.warning('请填写批次名称')
         return

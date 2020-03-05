@@ -86,12 +86,23 @@ export default {
       console.log('->', this.model.index)
       let index = this.model.index
 
-      // 余额,卡余额
-      if ([0, 2].includes(index)) {
+      if (index === 0) {
+        // 余额
         return this.$t('membershipIntroduction.accountCertain')
       } else if (index === 1) {
         // 积分
         return this.$t('membershipIntroduction.scoreCertain')
+      } else if (index === 2) {
+        if (this.model.type === 0) {
+          // 卡余额
+          return this.$t('membershipIntroduction.accountCertain')
+        } else if (this.model.type === 1) {
+          // 门店使用次数
+          return this.$t('membershipIntroduction.centain')
+        } else if (this.model.type === 2) {
+          // 商品兑换次数
+          return this.$t('membershipIntroduction.centain')
+        }
       }
     },
     submitData (index) {
@@ -141,6 +152,7 @@ export default {
       })
     },
     submitCardChargeConsume (type) {
+      debugger
       let commonAttr = {
         reduce: this.inputValue,
         userId: this.model.userId,
@@ -163,14 +175,14 @@ export default {
           // 兑换商品次数
           obj = {
             ...commonAttr,
-            countDis: this.model.presentText
+            countDis: Number(this.model.persentMoney)
           }
           break
         case 2:
           // 兑换门店次数
           obj = {
             ...commonAttr,
-            countDis: this.model.presentText
+            countDis: Number(this.model.persentMoney)
           }
           break
         default:

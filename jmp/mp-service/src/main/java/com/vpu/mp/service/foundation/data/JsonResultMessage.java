@@ -178,6 +178,20 @@ public class JsonResultMessage {
     public static final String BARGAIN_USER_LIST_BARGAIN_MONEY = "bargain.user.list.bargain_money";
 
     /**
+     *  营销-砍价excel导出-砍价订单
+     */
+    public static final String BARGAIN_ORDER_LIST_FILENAME = "bargain.order.list.file_name";
+    public static final String BARGAIN_ORDER_LIST_ORDER_SN = "bargain.order.list.order_sn";
+    public static final String BARGAIN_ORDER_LIST_BARGAIN_GOODS = "bargain.order.list.bargain_goods";
+    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.user.order.price";
+    public static final String BARGAIN_ORDER_LIST_CREATE_TIME = "bargain.order.list.create_time";
+    public static final String BARGAIN_ORDER_LIST_ORDER_USER = "bargain.order.list.order_user";
+    public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
+    public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
+
+
+
+    /**
      * 营销-优惠券礼包订单excel导出
      */
     public static final String COUPON_PACK_ORDER_FILENAME = "coupon.pack.order.filename";
@@ -244,7 +258,27 @@ public class JsonResultMessage {
 	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
 	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
 	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
-    
+	public static final String EVENT_IS_OVER = "event.is.over";
+	public static final String EVENT_NOT_STARTED = "event_not_started";
+	public static final String HAVE_UNPAID_ORDERS = "have.unpaid.orders";
+	public static final String PARTICIPATED_IN_EVENT = "participated.in.event";
+	public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
+	public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
+	public static final String GROUP_ONLY_ONE = "group.only.one";
+
+	/**
+	 * 幸运大抽奖
+	 */
+	public static final String LOTTERY_ACTIVITY_FAIL="lottery.activity.fail";
+	public static final String LOTTERY_ACTIVITY_STOP="lottery.activity.stop";
+	public static final String LOTTERY_ACTIVITY_NOT_BEGIN="lottery.activity.not.begin";
+	public static final String LOTTERY_ACTIVITY_OUT_DATE="lottery.activity.out.date";
+	public static final String LOTTERY_SHARE_TIME_USE_UP="lottery.share.time.use.up";
+	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
+	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
+	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
+
+
 	/**
 	 * 营销- 支付有礼
 	 */
@@ -261,7 +295,19 @@ public class JsonResultMessage {
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE = "pay.award.activity.message.amount.score";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM = "pay.award.activity.message.amount.custom";
 
-    /**
+	/**
+	 * 营销--满包邮
+	 */
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED = "free.shipping.activity.message.expire.fixed";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER = "free.shipping.activity.message.expire.never";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL = "free.shipping.activity.message.goods.all";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART = "free.shipping.activity.message.goods.part";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT = "free.shipping.activity.message.condition.account";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
+	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
+
+	/**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
@@ -341,8 +387,10 @@ public class JsonResultMessage {
     public static final String CODE_DATA_ALREADY_EXIST = "data.already.exist";
     public static final String CODE_ORDER_AMOUNT_NOT_EQUALS_SERVICE_SUBSIST = "code.order.amount.not.equals.service.subsist";
     public static final String CODE_WX_LOGISTICS_API_CALL_FAILED = "wx.logistics.api.call.failed";
+    public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
+    public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
 
-	/**
+    /**
 	 * 门店技师管理
 	 */
 	public static final String STORE_STORE_ID_NULL = "store.store.id.null";
@@ -472,6 +520,19 @@ public class JsonResultMessage {
 	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
 	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
 	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    /**
+     * 访问分析导出
+     */
+    public static final String VIST_EXPORT_FILE_NAME = "visit.export.file_name";
+    public static final String VISIT_EXPORT_COLUMN_GRADING = "visit.statistics.grading";
+    public static final String VISIT_EXPORT_COLUMN_DATE = "visit.statistics.date";
+    public static final String VISIT_EXPORT_COLUMN_SESSION_COUNT = "visit.statistics.session_count";
+    public static final String VISIT_EXPORT_COLUMN_PV = "visit.statistics.pv";
+    public static final String VISIT_EXPORT_COLUMN_UV = "visit.statistics.uv";
+    public static final String VISIT_EXPORT_COLUMN_UV_NEW = "visit.statistics.uv_new";
+    public static final String VISIT_EXPORT_COLUMN_STAY_TIME_UV = "visit.statistics.stay_time_uv";
+    public static final String VISIT_EXPORT_COLUMN_STAY_TIME_SESSION = "visit.statistics.stay_time_session";
+    public static final String VISIT_EXPORT_COLUMN_VISIT_DEPTH = "visit.statistics.visit_depth";
     // 资产明细导出
     public static final String ASSETS_EXPORT_FILE_NAME = "assets.export.file_name";
     public static final String ASSETS_EXPORT_COLUMN_TRADE_TIME = "overview.asset.management.trade_time";
@@ -573,6 +634,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_LIMIT_MIN = "order.goods.limit.min";
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
     public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
+    public static final String MSG_ORDER_MUST_NOT_NULL = "order.must.not.null";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -585,6 +647,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_ACTIVITY_NO_START = "order.activity.no.start";
     public static final String MSG_ORDER_ACTIVITY_END = "order.activity.end";
     public static final String MSG_ORDER_ACTIVITY_NUMBER_LIMIT = "order.activity.number.limit";
+    public static final String MSG_ORDER_ACTIVITY_GOODS_OUT_OF_STOCK = "order.activity.goods.out.of.stock";
     /**商品不支持预售*/
     public static final String MSG_ORDER_GOODS_NOT_SUPORT_PRESALE = "order.goods.not.suport.presale";
     /**订单发货*/
@@ -793,6 +856,18 @@ public class JsonResultMessage {
     public static final String WX_MA_DOT = "wx.ma.dot";
     /** 元 */
     public static final String WX_MA_PICTORIAL_MONEY = "wx.ma.pictorial.money";
+    /**普通商品分享时默认海报分享语*/
+    public static final String WX_MA_NORMAL_GOODS_SHARE_INFO = "wx.ma.normal.goods.share.info";
+    /**普通商品海报下载时默认宣传语*/
+    public static final String WX_MA_NORMAL_GOODS_INFO = "wx.ma.normal.goods.info";
+    /**拼团抽奖相关*/
+    /**'拼团抽奖'文字*/
+    public static final String WX_MA_GROUP_DRAW_SHARE_INFO = "wx.ma.group.draw.share.info";
+    /**'快来参与1.00元拼团大抽奖吧'文字*/
+    public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
+    /**'1.00元大抽奖，快来参与吧'文字*/
+    public static final String WX_MA_GROUP_DRAW_PICTORIAL_DOC = "wx.ma.group.draw.pictorial.doc";
+
     /** 拼团相关 */
     /** 开团省 */
     public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
@@ -804,5 +879,14 @@ public class JsonResultMessage {
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
     public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+    /** 预售图片相关*/
+    /**"定金膨胀"四个字*/
+    public static final String WX_MA_PRESALE_SHARE_INFO = "wx.ma.presale.share.info";
+    /**"定金"两个字*/
+    public static final String WX_MA_PRESALE_DEPOSIT = "wx.ma.presale.deposit";
+    /**"10.00元定金,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
+    /**"200.00元,限时预售" 分享图片*/
+    public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
 
 }

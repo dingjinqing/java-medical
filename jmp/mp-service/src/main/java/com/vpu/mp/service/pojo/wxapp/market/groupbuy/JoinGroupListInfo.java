@@ -14,6 +14,10 @@ public class JoinGroupListInfo {
 
     private Integer userId;
     /**
+     * 用户名称
+     */
+    private String username;
+    /**
      * 订单
      */
     private String orderSn;

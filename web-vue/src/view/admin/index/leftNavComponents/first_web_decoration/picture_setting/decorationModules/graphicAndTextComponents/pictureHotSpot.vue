@@ -16,7 +16,7 @@
         <div
           v-if="!data.data.bg_img_url"
           class="hot-middle"
-        >点击编辑【图片热区】</div>
+        >{{$t('pictureHotSpot.clickToEdit')}}</div>
         <img
           :src="data.data.bg_img_url"
           v-if="data.data.bg_img_url"
@@ -27,7 +27,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>图片热区</span>
+        <span>{{$t('pictureHotSpot.imageHotArea')}}</span>
       </div>
       <div class="item_operation">
         <img

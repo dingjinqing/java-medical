@@ -8,7 +8,10 @@ global.wxComponent({
   properties: {
     image:{
       type: Array,
-      value:null
+      value:null,
+      observer(val){
+        console.log(val)
+      }
     }
   },
 

@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
-import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -18,17 +19,22 @@ import java.util.List;
 @Setter
 public class WxAppCartBo {
 
-    private Integer userId;
-    private Boolean isNewUser;
-    private List<Integer> productIdList;
-    private List<Integer> goodsIdList;
-    private Timestamp date;
-    private Integer storeId;
-
     /**
-     * 商品活动信息
+     * 总价
      */
-    private OrderCartProductBo orderCartProductBo;
+    private BigDecimal totalPrice;
+    /**
+     * 商品总数量
+     */
+    private Integer totalGoodsNum;
+    /**
+     * 是否能支付
+     */
+    private Byte isCanPayment;
+    /**
+     * 是否全选
+     */
+    private Byte isAllCheck;
     /**
      * 商品列表
      */
@@ -37,5 +43,18 @@ public class WxAppCartBo {
      * 购物车 - 失效商品
      */
     private List<WxAppCartGoods> invalidCartList;
-    private WxAppCartListVo cartListVo;
+
+    @JsonIgnore
+    private Integer userId;
+    @JsonIgnore
+    private Boolean isNewUser;
+    @JsonIgnore
+    private List<Integer> productIdList;
+    @JsonIgnore
+    private List<Integer> goodsIdList;
+    @JsonIgnore
+    private Timestamp date;
+    @JsonIgnore
+    private Integer storeId;
+
 }

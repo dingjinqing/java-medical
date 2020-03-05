@@ -12,58 +12,30 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponListVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponParam;
-import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponVo;
-import com.vpu.mp.service.pojo.wxapp.coupon.ExpireTimeVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
-import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
-import static com.vpu.mp.db.shop.Tables.CUSTOMER_AVAIL_COUPONS;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.util.Util.listToString;
 import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -535,6 +507,7 @@ public class CouponService extends ShopBaseService {
     public Integer getCanUseCouponNum(Integer userId) {
         Result<Record1<Integer>> record = db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
             .where(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId).and(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0)
+            		.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .and(CUSTOMER_AVAIL_COUPONS.END_TIME.gt(DateUtil.getSqlTimestamp()))))
             .fetch();
         return record.get(0).into(Integer.class);
@@ -581,19 +554,34 @@ public class CouponService extends ShopBaseService {
 
     /**
      * 获取所有可用给的优惠卷
-     * @param isHasStock 是否限制库存
+     * @param param 是否限制库存,启用时间
      * @return
      */
-    public List<CouponAllVo> getCouponAll(Boolean isHasStock) {
-        Timestamp nowTime = new Timestamp(System.currentTimeMillis());
+    public List<CouponAllVo> getCouponAll(CouponAllParam param) {
+        Timestamp nowDate = new Timestamp(System.currentTimeMillis());
         SelectConditionStep<Record6<Integer, String, String, Byte, Integer, Byte>> couponAllVos = db()
                 .select(MRKING_VOUCHER.ID, MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.ALIAS_CODE, MRKING_VOUCHER.TYPE, MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.LIMIT_SURPLUS_FLAG)
                 .from(MRKING_VOUCHER)
-//                .(MRKING_VOUCHER.TYPE.eq(BaseConstant.COUPON_TYPE_NORMAL))
-                .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-                .and(MRKING_VOUCHER.START_TIME.le(nowTime).and(MRKING_VOUCHER.END_TIME.gt(nowTime))
-                .or(MRKING_VOUCHER.VALIDITY.gt(0).or(MRKING_VOUCHER.VALIDITY_HOUR.gt(0)).or(MRKING_VOUCHER.VALIDITY_MINUTE.gt(0))));
-        if (isHasStock){
+                .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        switch (param.getStatus()){
+            case BaseConstant.NAVBAR_TYPE_AVAILABLE:
+                couponAllVos.and((MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
+                break;
+            case  BaseConstant.NAVBAR_TYPE_ONGOING:
+                couponAllVos.and((MRKING_VOUCHER.START_TIME.le(nowDate))
+                        .and(MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
+                break;
+            default:
+                couponAllVos.and((MRKING_VOUCHER.START_TIME.le(nowDate))
+                        .and(MRKING_VOUCHER.END_TIME.ge(nowDate))
+                        .or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+                        .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL));
+        }
+        if (param.getIsHasStock()){
             couponAllVos.and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BaseConstant.COUPON_LIMIT_SURPLUS_FLAG_UNLIMITED).or(MRKING_VOUCHER.SURPLUS.gt(0)));
         }
         return couponAllVos.fetchInto(CouponAllVo.class);
@@ -679,14 +667,16 @@ public class CouponService extends ShopBaseService {
             //代金券
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ? coupon.getAmount() : BigDecimal.ZERO;
         }else if(OrderConstant.T_CAC_TYPE_DISCOUNT == coupon.getType()){
-            //打折券 return = totalPrice * (1 - coupon.getAmount) /10
+            //打折券 return = 价格 * （10 - 折扣（eg:6.66） / 10）
             return BigDecimalUtil.compareTo(coupon.getLimitOrderAmount(), totalPrice) < 1 ?
-                BigDecimalUtil.multiplyOrDivide(
+                BigDecimalUtil.multiplyOrDivideByMode(RoundingMode.DOWN,
                     BigDecimalUtil.BigDecimalPlus.create(totalPrice, BigDecimalUtil.Operator.multiply),
-                    BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.addOrSubtrac(BigDecimalUtil.BigDecimalPlus.create(BigDecimal.ONE, BigDecimalUtil.Operator.subtrac),
-                        BigDecimalUtil.BigDecimalPlus.create(BigDecimalUtil.multiplyOrDivide(BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), BigDecimalUtil.Operator.divide),
-                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null)), null)
-                    ), null))
+                    BigDecimalUtil.BigDecimalPlus.create(
+                        BigDecimalUtil.addOrSubtrac(
+                            BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
+                            BigDecimalUtil.BigDecimalPlus.create(coupon.getAmount(), null)),
+                        BigDecimalUtil.Operator.divide),
+                    BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
             : BigDecimal.ZERO;
         }
         return BigDecimal.ZERO;
@@ -708,16 +698,24 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-     * Get small inventory coupon map.获取库存偏小的优惠券
-     *
+     * Get small inventory coupon map.获取库存偏小的优惠券（排除已过期和已停用的）
+     * （limit_surplus_flag：是否限制库存）不限制库存的排外
      * @param num the num
      * @return the map
      */
     public Map<Integer, String> getSmallInventoryCoupon(Integer num) {
+        Condition condition = MRKING_VOUCHER.VALIDITY_TYPE.eq(BYTE_ZERO)
+            .and(MRKING_VOUCHER.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+        Condition condition1 = MRKING_VOUCHER.VALIDITY_TYPE.eq(BYTE_ONE);
         return db().select(MRKING_VOUCHER.ID, MrkingVoucher.MRKING_VOUCHER.ACT_NAME)
             .from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.SURPLUS.lessOrEqual(num))
+            // 已启用
             .and(MRKING_VOUCHER.ENABLED.eq(BYTE_ONE))
+            // 未过期
+            .and(condition.or(condition1))
+            // 不限制库存的排外
+            .and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq(BYTE_ZERO))
             .and(MRKING_VOUCHER.DEL_FLAG.eq(BYTE_ZERO))
             .and(MRKING_VOUCHER.CREATE_TIME.add(MRKING_VOUCHER.VALIDATION_CODE).greaterThan(Timestamp.valueOf(LocalDateTime.now())))
             .orderBy(MRKING_VOUCHER.SURPLUS, MRKING_VOUCHER.CREATE_TIME)

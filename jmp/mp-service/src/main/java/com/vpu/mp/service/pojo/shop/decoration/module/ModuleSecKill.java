@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.decoration.module;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,7 +40,8 @@ public class ModuleSecKill extends ModuleBase {
     @JsonProperty("seckill_goods")
     private List<SeckillGoods> seckillGoods;
 
-    @Data
+    @Getter
+    @Setter
     public static class SeckillGoods{
         @JsonProperty("goods_id")
         private Integer goodsId;

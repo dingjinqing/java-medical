@@ -38,7 +38,7 @@
             class="tips imageDalogTip_lineHeight"
           >
             <img :src="$imageHost + '/image/admin/notice_img.png'">
-              {{$t('videoSpace.upload.uploadRule')}}
+            {{$t('videoSpace.upload.uploadRule')}}
           </div>
         </el-upload>
       </div>
@@ -46,7 +46,7 @@
       <div class="dialog_middle">
         <div class="dialog_middle_top">
           <VTree
-                  ref="categoryTree"
+            ref="categoryTree"
             @node-click="nodeClick"
             @node-append="nodeAppend"
             @node-remove="nodeRemove"
@@ -94,11 +94,14 @@
                   v-for="(item,index) in videoList"
                   :key="index"
                 >
-                    <div
-                            v-show="item.checked"
-                            class="img_sel"
-                    ></div>
-                  <div class="img-container" style="position:relative">
+                  <div
+                    v-show="item.checked"
+                    class="img_sel"
+                  ></div>
+                  <div
+                    class="img-container"
+                    style="position:relative"
+                  >
                     <a :title="item.videoName">
                       <img
                         :src="item.snapshotUrl"
@@ -133,13 +136,19 @@
                     <p style="text-align:center">{{item.videoWidth}}x{{item.videoHeight}}</p>
                     <p style="text-align:center">{{item.formatDuration}}</p>
                   </div>
-                    <div class="video-name" :title="item.videoName">
-                        {{item.videoName}}
-                    </div>
+                  <div
+                    class="video-name"
+                    :title="item.videoName"
+                  >
+                    {{item.videoName}}
+                  </div>
                 </li>
               </ul>
               <div class="bottom">
-                <div class="bottom_radio" v-show="!dialogMode">
+                <div
+                  class="bottom_radio"
+                  v-show="!dialogMode"
+                >
                   <el-checkbox
                     v-model="allChecked"
                     true-label="1"
@@ -218,6 +227,7 @@
 <script>
 import VTree from '@/components/admin/v-tree'
 import VPagination from '@/components/admin/pagination/pagination'
+import { shopInfoRequest } from '@/api/admin/survey.js'
 import {
   getVideoCategoryTreeRequest,
   addVideoCategoryRequest,
@@ -226,7 +236,8 @@ import {
   batchDeleteVideoRequest,
   getVideoListRequest,
   batchMoveVideoRequest,
-  uploadVideoRequest
+  uploadVideoRequest,
+  getUsedVideoSpace
 } from '@/api/admin/videoSpace.js'
 export default {
   components: { VTree, VPagination },
@@ -251,15 +262,20 @@ export default {
       allChecked: false,
       showBatchMoveDialog: false,
       hasVideoData: true,
-      version: '--', // 版本
-      leftSpace: '--' // 剩余空间
+      shopType: null,
+      version: null, // 版本
+      leftSpace: 0, // 剩余空间
+      experienceVersionSpace: 100,
+      basicVersionSpace: 0,
+      advanceVersionSpace: 2048,
+      flagShipVersionSpace: 10240
     }
   },
   mounted () {
     this.langDefault()
     this.sortOptions = this.$t('videoSpace.options')
     this.requestTreeNodes()
-    this.requestVersionInfo()
+    this.requestVersionAndSpaceInfo()
   },
   watch: {
     lang (newData) {
@@ -267,8 +283,44 @@ export default {
     }
   },
   methods: {
-    requestVersionInfo () {
-      // todo: request version and leftSpace
+    /* 获取店铺版本号和用户空间 */
+    requestVersionAndSpaceInfo () {
+      shopInfoRequest().then(res => {
+        this.shopType = res.content.shopType
+        switch (this.shopType) {
+          case 'v1':
+            this.version = this.$t('overview.experienceVersion')
+            break
+          case 'v2':
+            this.version = this.$t('overview.basicEdition')
+            break
+          case 'v3':
+            this.version = this.$t('overview.advancedVersion')
+            break
+          case 'v4':
+            this.version = this.$t('overview.Ultimate')
+            break
+        }
+      }).then(() => {
+        getUsedVideoSpace().then(res => {
+          let maxSpace = 0
+          switch (this.shopType) {
+            case 'v1':
+              maxSpace = this.experienceVersionSpace
+              break
+            case 'v2':
+              maxSpace = this.basicVersionSpace
+              break
+            case 'v3':
+              maxSpace = this.advanceVersionSpace
+              break
+            case 'v4':
+              maxSpace = this.flagShipVersionSpace
+              break
+          }
+          this.leftSpace = maxSpace - res.content
+        })
+      })
     },
     requestTreeNodes: function () {
       let _this = this
@@ -300,7 +352,6 @@ export default {
         _this.requestTreeNodes()
       })
     },
-
     nodeRemove (object) {
       console.log('nodeRemove', object)
       let data = {
@@ -312,6 +363,8 @@ export default {
       let _this = this
       deleteVideoCategoryRequest(data).then(function (res) {
         _this.requestTreeNodes()
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
       })
     },
 
@@ -380,7 +433,7 @@ export default {
 
     upLoadVideo ({ file, maxVideoSize }) {
       if (file.size > maxVideoSize) {
-        let msg = this.$t('videoSpace.upload.uploadFitVideo', {maxVideoSize: maxVideoSize})
+        let msg = this.$t('videoSpace.upload.uploadFitVideo', { maxVideoSize: maxVideoSize })
         this.$message.error(msg)
         return
       }
@@ -392,6 +445,8 @@ export default {
         if (res.error === 0) {
           _this.searchVideos()
         }
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
       })
     },
     // 视频上传前的钩子
@@ -451,7 +506,9 @@ export default {
             _this.searchVideos()
           }
         })
-      }).catch(() => {})
+      }).then(() => {
+        _this.requestVersionAndSpaceInfo()
+      }).catch(() => { })
     },
     // 遮罩层删除点击
     delMaskVideo (data) {
@@ -696,22 +753,22 @@ ul {
   font-size: 12px;
   display: block;
 }
-.img-container{
-    max-width: 140px;
-    max-height: 80px;
-    overflow: hidden;
+.img-container {
+  max-width: 140px;
+  max-height: 80px;
+  overflow: hidden;
 }
 
 .video-name {
-    position: absolute;
-    bottom: 0;
-    height: 20px;
-    line-height: 20px;
-    width: 140px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: 14px;
+  position: absolute;
+  bottom: 0;
+  height: 20px;
+  line-height: 20px;
+  width: 140px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 14px;
 }
 .img_mask {
   background: rgba(0, 0, 0, 0.3) !important;
@@ -781,5 +838,4 @@ ul {
   font-size: 12px !important;
   border-radius: 3px !important;
 }
-
 </style>

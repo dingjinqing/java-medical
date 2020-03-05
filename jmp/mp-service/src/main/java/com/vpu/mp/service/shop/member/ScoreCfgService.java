@@ -18,6 +18,7 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Map;
 
@@ -118,8 +119,8 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 */
 	private void cfgScoreEffectiveRule(ShopCfgParam param) {
 		Byte type = param.getScoreLimit();
-		assert isEffectiveForever(type) || isEffectiveUtilToYmd(type) ||isEffectiveFromCurrentDay(type)
-			: "配置积分有效规则错误";
+		Assert.isTrue(isEffectiveForever(type) || isEffectiveUtilToYmd(type) ||isEffectiveFromCurrentDay(type)
+			, "配置积分有效规则错误");
 		setScoreLimit(type);
 		if ( isEffectiveUtilToYmd(type)) {	
 			setScoreDay(param.getScoreDay());

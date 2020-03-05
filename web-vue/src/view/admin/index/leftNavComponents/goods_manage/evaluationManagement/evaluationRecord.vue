@@ -1,47 +1,46 @@
 <template>
   <!-- class="evaluationRecordContent" -->
   <div>
-    <div
-      class="table_box"
-      style="background: #fff;margin-bottom: 10px;"
-    >
+    <div class="table_box" style="background: #fff;margin-bottom: 10px;">
       <el-row>
         <el-col :span="6">
-          <div class="filters_item"><span>{{$t('evaluation.orderSn') + '：' }}</span>
+          <div class="filters_item">
+            <span>{{ $t("evaluation.orderSn") + "：" }}</span>
             <el-input
               v-model="searchParams.orderSn"
-              :placeholder="$t('evaluation.input',[$t('evaluation.orderSn')])"
+              :placeholder="$t('evaluation.input', [$t('evaluation.orderSn')])"
               size="small"
               style="width: 170px;"
             ></el-input>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="filters_item"><span>{{$t('evaluation.goodsName') + '：' }}</span>
+          <div class="filters_item">
+            <span>{{ $t("evaluation.goodsName") + "：" }}</span>
             <el-input
               v-model="searchParams.goodsName"
-              :placeholder="$t('evaluation.input',[$t('evaluation.goodsName')])"
+              :placeholder="
+                $t('evaluation.input', [$t('evaluation.goodsName')])
+              "
               size="small"
               style="width: 170px;"
             ></el-input>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="filters_item"><span>{{$t('evaluation.mobile') + '：' }}</span>
+          <div class="filters_item">
+            <span>{{ $t("evaluation.mobile") + "：" }}</span>
             <el-input
               v-model="searchParams.mobile"
-              :placeholder="$t('evaluation.input',[$t('evaluation.mobile')])"
+              :placeholder="$t('evaluation.input', [$t('evaluation.mobile')])"
               size="small"
               style="width: 170px;"
             ></el-input>
           </div>
         </el-col>
-        <el-col
-          :span="6"
-          v-if="target === 'Record'"
-        >
+        <el-col :span="6" v-if="target === 'Record'">
           <div class="filters_item">
-            <span>{{$t('evaluation.auditState') + '：'}}</span>
+            <span>{{ $t("evaluation.auditState") + "：" }}</span>
             <el-select
               v-model="searchParams.flag"
               size="small"
@@ -58,7 +57,8 @@
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="filters_item"><span>{{$t('evaluation.evaluationGrade') + '：'}}</span>
+          <div class="filters_item">
+            <span>{{ $t("evaluation.evaluationGrade") + "：" }}</span>
             <el-select
               v-model="searchParams.commstar"
               size="small"
@@ -75,7 +75,10 @@
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="filters_item"><span>{{$t('evaluation.evaluationTable.evaluationReward') + '：' }}</span>
+          <div class="filters_item">
+            <span>{{
+              $t("evaluation.evaluationTable.evaluationAct") + "："
+            }}</span>
             <el-select
               v-model="searchParams.awardActivityId"
               size="small"
@@ -85,7 +88,7 @@
               <el-option
                 v-for="item in evaluationRewardList"
                 :key="item.id"
-                :label="item.value"
+                :label="item.name"
                 :value="item.id"
               ></el-option>
             </el-select>
@@ -93,11 +96,9 @@
         </el-col>
         <el-col :span="6">
           <div class="filters_item">
-            <el-button
-              @click="initDataList"
-              type="primary"
-              size="small"
-            >{{$t('marketCommon.filter')}}</el-button>
+            <el-button @click="initDataList" type="primary" size="small">{{
+              $t("marketCommon.filter")
+            }}</el-button>
           </div>
         </el-col>
       </el-row>
@@ -110,11 +111,7 @@
         :data="dataList"
         border
       >
-        <el-table-column
-          type="selection"
-          align="center"
-          width="58px"
-        >
+        <el-table-column type="selection" align="center" width="58px">
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.evaluationTable.productInformation')"
@@ -123,20 +120,22 @@
         >
           <template slot-scope="scope">
             <div class="orderSn">
-              <span v-if="scope.row.bogusUsername">{{$t('evaluation.merchantAddComment')}}</span>
-              <span v-else>{{$t('evaluation.orderSn')}}：<span>{{scope.row.orderSn}}</span></span>
+              <span v-if="scope.row.bogusUsername">{{
+                $t("evaluation.merchantAddComment")
+              }}</span>
+              <span v-else
+                >{{ $t("evaluation.orderSn") }}：<span>{{
+                  scope.row.orderSn
+                }}</span></span
+              >
             </div>
             <div class="goods_info">
-              <img
-                :src="$imageHost+'/'+scope.row.goodsImg"
-                alt=""
-              >
+              <img :src="$imageHost + '/' + scope.row.goodsImg" alt="" />
               <div class="right_info">
-                <div class="goods_name">{{scope.row.goodsName}}</div>
-                <div
-                  class="goods_desc"
-                  v-if="scope.row.prdDesc"
-                >{{scope.row.prdDesc}}</div>
+                <div class="goods_name">{{ scope.row.goodsName }}</div>
+                <div class="goods_desc" v-if="scope.row.prdDesc">
+                  {{ scope.row.prdDesc }}
+                </div>
               </div>
             </div>
           </template>
@@ -149,9 +148,17 @@
             <div class="user_info">
               <p
                 :class="scope.row.bogusUsername ? 'fake_user' : 'user_name'"
-                @click="!scope.row.bogusUsername && goUserCenter(scope.row.userId)"
-              >{{$t('evaluation.userName')}}：<span>{{scope.row.bogusUsername || scope.row.username }}</span></p>
-              <p v-if="!scope.row.bogusUsername">{{$t('evaluation.mobile')}}：{{scope.row.mobile}}</p>
+                @click="
+                  !scope.row.bogusUsername && goUserCenter(scope.row.userId)
+                "
+              >
+                {{ $t("evaluation.userName") }}：<span>{{
+                  scope.row.bogusUsername || scope.row.username
+                }}</span>
+              </p>
+              <p v-if="!scope.row.bogusUsername">
+                {{ $t("evaluation.mobile") }}：{{ scope.row.mobile }}
+              </p>
             </div>
           </template>
         </el-table-column>
@@ -162,18 +169,30 @@
         >
           <template slot-scope="scope">
             <div class="evaluation-info">
-              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.grade')}}：</span><span><i
+              <div class="evaluation-info_item">
+                <span class="evaluation-info_title"
+                  >{{ $t("evaluation.grade") }}：</span
+                ><span
+                  ><i
                     class="el-icon-star-on"
                     v-for="index in scope.row.commstar"
                     :key="index"
-                  ></i></span></div>
-              <div class="evaluation-info_item"><span class="evaluation-info_title">{{$t('evaluation.evaluation')}}：</span><span>{{scope.row.commNote || $t('evaluation.noExperience')}}</span></div>
+                  ></i
+                ></span>
+              </div>
+              <div class="evaluation-info_item">
+                <span class="evaluation-info_title"
+                  >{{ $t("evaluation.evaluation") }}：</span
+                ><span>{{
+                  scope.row.commNote || $t("evaluation.noExperience")
+                }}</span>
+              </div>
               <div
                 class="evaluation-info_item"
                 v-if="scope.row.commImg.length > 0"
               >
                 <div class="evaluation-pic">
-                  <template v-for="(picItem,picIndex) in scope.row.commImg">
+                  <template v-for="(picItem, picIndex) in scope.row.commImg">
                     <el-image
                       :key="picIndex"
                       lazy
@@ -194,19 +213,23 @@
         >
           <template slot-scope="scope">
             <div class="evaluation_response">
-              <span v-if="scope.row.content">{{$t('evaluation.reply')}}：{{scope.row.content}}</span>
+              <span v-if="scope.row.content"
+                >{{ $t("evaluation.reply") }}：{{ scope.row.content }}</span
+              >
               <el-button
                 type="primary"
                 v-if="!scope.row.content"
                 size="mini"
                 @click="writeReply(scope.row.id)"
-              >{{$t('evaluation.writeReply')}}</el-button>
+                >{{ $t("evaluation.writeReply") }}</el-button
+              >
               <el-button
                 type="default"
                 v-else
                 size="mini"
                 @click="deleteReply(scope.row.id)"
-              >{{$t('evaluation.deleteReply')}}</el-button>
+                >{{ $t("evaluation.deleteReply") }}</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -220,7 +243,11 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.anonymousflag ? $t('evaluation.yes') : $t('evaluation.no')}}</span>
+            <span>{{
+              scope.row.anonymousflag
+                ? $t("evaluation.yes")
+                : $t("evaluation.no")
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -228,7 +255,9 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.lotteryAward ? scope.row.lotteryAward : $t('evaluation.null')}}</span>
+            <span>{{
+              scope.row.awardType | awardType
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -237,7 +266,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div>{{scope.row.flag | auditStatus}}</div>
+            <div>{{ scope.row.flag | auditStatus }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -257,7 +286,10 @@
             <el-tooltip
               :content="$t('evaluation.pass')"
               placement="top"
-              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 2)"
+              v-if="
+                target === 'Record' &&
+                  (scope.row.flag === 0 || scope.row.flag === 2)
+              "
             >
               <span
                 class="el-icon-success operateSpan"
@@ -267,7 +299,10 @@
             <el-tooltip
               :content="$t('evaluation.refuse')"
               placement="top"
-              v-if="target === 'Record' && (scope.row.flag === 0 || scope.row.flag === 1)"
+              v-if="
+                target === 'Record' &&
+                  (scope.row.flag === 0 || scope.row.flag === 1)
+              "
             >
               <span
                 class="el-icon-error operateSpan"
@@ -278,10 +313,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <pagination
-      :page-params.sync="pageParams"
-      @pagination="initDataList"
-    />
+    <pagination :page-params.sync="pageParams" @pagination="initDataList" />
     <el-dialog
       :title="$t('evaluation.reply')"
       :visible.sync="showReply"
@@ -294,22 +326,28 @@
         resize="none"
         rows="10"
       ></el-input>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="showReply = false">{{$t('evaluation.cancel')}}</el-button>
-        <el-button
-          type="primary"
-          @click="confirmReply"
-        >{{$t('evaluation.confirm')}}</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showReply = false">{{
+          $t("evaluation.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="confirmReply">{{
+          $t("evaluation.confirm")
+        }}</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getCommentList, goodsCommentDelete, CommentPass, CommentRefuse, CommentAnswer, delAnswer } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import {
+  getCommentList,
+  goodsCommentDelete,
+  CommentPass,
+  CommentRefuse,
+  CommentAnswer,
+  delAnswer
+} from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
+import { getEvaluationGiftList } from '@/api/admin/marketManage/evaluationGift.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination')
@@ -338,11 +376,12 @@ export default {
         { key: 5, value: '五星' }
       ],
       evaluationRewardList: [
-        { id: -1, value: '全部' },
-        { id: 1, value: 'xxxx' },
-        { id: 2, value: 'aaaa' },
-        { id: 3, value: 'dddd' },
-        { id: 4, value: 'cccc' }
+        { type: -1, value: '全部' },
+        { type: 1, value: '积分' },
+        { type: 15, value: '优惠券' },
+        { type: 3, value: '余额' },
+        { type: 4, value: '幸运大抽奖' },
+        { type: 5, value: '自定义' }
       ],
       auditFlag: [
         { key: -1, value: '全部' },
@@ -350,24 +389,34 @@ export default {
         { key: 1, value: '已通过' },
         { key: 2, value: '未通过' }
       ],
-      pageParams: {
-      },
-      dataList: [
-      ],
+      pageParams: {},
+      dataList: [],
       loading: false,
       showReply: false,
       replyContent: null,
-      replyId: null
+      replyId: null,
+      shopHelperParams: {}
     }
   },
   mounted () {
     if (this.$route.query.award_activity_id) {
-      this.$set(this.searchParams, 'awardActivityId', this.$route.query.award_activity_id)
+      this.$set(
+        this.searchParams,
+        'awardActivityId',
+        this.$route.query.award_activity_id
+      )
     }
     if (this.$route.query.orderSn) {
       this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
     }
+    if (this.$route.params.flag) {
+      this.$set(this.shopHelperParams, 'shopAssistantFlag', this.$route.params.flag)
+    }
+    if (this.$route.params.IntegerDays) {
+      this.$set(this.shopHelperParams, 'nDays', this.$route.params.IntegerDays)
+    }
     this.initDataList()
+    this.langDefault()
   },
   methods: {
     // 初始化列表 评价列表 待评价列表
@@ -376,7 +425,11 @@ export default {
       let obj = {
         ...this.searchParams,
         page: { ...this.pageParams },
-        awardActivityId: this.searchParams.awardActivityId === -1 ? null : this.searchParams.awardActivityId
+        awardActivityId:
+          this.searchParams.awardActivityId === -1
+            ? null
+            : this.searchParams.awardActivityId,
+        ...this.shopHelperParams
       }
       if (this.target !== 'Record') {
         delete obj.flag
@@ -402,6 +455,16 @@ export default {
           // this.dataList = res.content.dataList
           console.log(this.dataList)
           this.loading = false
+        }
+      })
+      getEvaluationGiftList({navType: 0, pageRows: 300}).then(res => {
+        if (res.error === 0) {
+          let dataList = res.content.dataList.map(item => {
+            return {id: item.id, name: item.name}
+          })
+          dataList.unshift({id: -1, name: '全部'})
+          console.log(dataList)
+          this.evaluationRewardList = dataList
         }
       })
     },
@@ -493,6 +556,22 @@ export default {
           return `未通过`
         default:
           return `待审核`
+      }
+    },
+    awardType (type) {
+      switch (type) {
+        case 1:
+          return `积分`
+        case 2:
+          return `优惠券`
+        case 3:
+          return `余额`
+        case 4:
+          return `幸运大抽奖`
+        case 5:
+          return `自定义`
+        default:
+          return '无'
       }
     }
   }

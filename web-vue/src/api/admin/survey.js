@@ -26,7 +26,7 @@ export function bindRequest (data) {
   })
 }
 
-// 待办事项
+// 获取待办事项
 export function toDoItemRequest (data) {
   return service({
     url: '/api/admin/malloverview/toDoItem',
@@ -35,7 +35,7 @@ export function toDoItemRequest (data) {
   })
 }
 
-// 数据展示
+// 获取数据展示
 export function dataRequest (data) {
   return service({
     url: '/api/admin/malloverview/datademonstration',
@@ -44,7 +44,7 @@ export function dataRequest (data) {
   })
 }
 
-// 店铺助手
+// 获取店铺助手
 export function shopAssistantRequest (data) {
   return service({
     url: '/api/admin/malloverview/shopAssistant',
@@ -53,7 +53,7 @@ export function shopAssistantRequest (data) {
   })
 }
 
-// 公告查询
+// 获取公告查询
 export function noticeListRequest (data) {
   return service({
     url: '/api/admin/malloverview/getAnnouncementList',
@@ -76,5 +76,14 @@ export function shopInfoRequest () {
   return service({
     url: '/api/admin/account/shop/oneInfo',
     method: 'get'
+  })
+}
+
+// 获取所有门店
+export function getAllStore (data) {
+  return service({
+    url: '/api/admin/store/all/get',
+    method: 'post',
+    data: data
   })
 }

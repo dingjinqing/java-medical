@@ -31,8 +31,13 @@ var order = {
     );
   },
   // 查看评价
-  viewComment ({ order_sn: orderSn, order_id: orderId }) {
-    util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
+  viewComment({ order_sn: orderSn, order_id: orderId, operate_info: operate_info }) {
+    console.log(operate_info)
+    if (operate_info === 'isShowCommentType-2') {
+      util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
+    } else {
+      util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}&hasComment=1`, "navigateTo");
+    }
   },
   //发货
   confirmation ({ order_sn: orderSn, order_id: orderId }) {
@@ -256,6 +261,17 @@ var order = {
       }
     }
     return "待发货";
+  },
+  getOrderTypeIconName(orderItem){
+    if(orderItem.orderType.includes('1')){
+      return '拼团'
+    } else if(orderItem.orderType.includes('3')){
+      return '砍价'
+    } else if(orderItem.orderType.includes('5')){
+      return '秒杀'
+    } else {
+      return null
+    }
   }
 };
 

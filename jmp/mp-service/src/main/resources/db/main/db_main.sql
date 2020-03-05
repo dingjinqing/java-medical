@@ -139,11 +139,11 @@ CREATE TABLE `b2c_cache` (
 
 
 CREATE TABLE `b2c_category` (
-  `cat_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cat_name` varchar(90) DEFAULT '' COMMENT '分类名称',
+  `cat_id` smallint(5)  NOT NULL AUTO_INCREMENT,
+  `cat_name` varchar(90)  DEFAULT '' COMMENT '分类名称',
   `keywords` varchar(191) DEFAULT '' COMMENT '关键词',
   `cat_desc` varchar(191) DEFAULT '' COMMENT '分类描述',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父ID',
+  `parent_id` smallint(5)  NOT NULL DEFAULT '0' COMMENT '父ID',
   `level` smallint(5) NOT NULL DEFAULT '0' COMMENT '层级',
   `has_child` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是子节点',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
@@ -151,7 +151,7 @@ CREATE TABLE `b2c_category` (
   `first` smallint(2) NOT NULL DEFAULT '0' COMMENT '优先级',
   PRIMARY KEY (`cat_id`),
   KEY `parent_id` (`parent_id`)
-)COMMENT='移动端只支持分类一级';
+) COMMENT='移动端只支持分类一级';
 
 
 

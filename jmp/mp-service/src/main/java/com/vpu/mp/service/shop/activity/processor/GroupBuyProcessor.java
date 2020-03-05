@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -162,9 +163,18 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        //不允许使用货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //拼团不使用优惠券和会员卡
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
+        //不允许使用积分支付和货到付款
+        if(param.getPaymentList() != null){
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //团长,团id
         Byte isGrouper = param.getGroupId() == null ? IS_GROUPER_Y : IS_GROUPER_N;
         log.debug("拼团订单");
@@ -180,6 +190,9 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             throw new MpException(resultMessage.getJsonResultCode(), null, resultMessage.getMessages().toArray(new String[0]));
         }
         GroupBuyDefineRecord groupBuyRecord = groupBuyProcessorDao.getGroupBuyRecord(param.getActivityId());
+        if (groupBuyRecord.getShippingType().equals(OrderConstant.YES)){
+            param.setIsFreeShippingAct(OrderConstant.YES);
+        }
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             //拼团规格库存校验
             GroupBuyProductDefineRecord groupBuyProduct = groupBuyProcessorDao.getGroupBuyProduct(param.getActivityId(), goods.getProductId());
@@ -199,8 +212,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 //拼团价-团长价
                 goods.setGrouperGoodsReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()));
             }
-
         }
+
     }
 
     /**
@@ -212,9 +225,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        Integer groupId =0;
-        String goodsName="";
-        BigDecimal goodsPrice =BigDecimal.ZERO;
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             GroupBuyListRecord groupBuyProductList = db().newRecord(GROUP_BUY_LIST);
             groupBuyProductList.setActivityId(param.getActivityId());
@@ -239,9 +249,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 groupBuyProductList.setGroupId(groupBuyProductList.getId());
                 groupBuyProductList.update();
             }
-            groupId =groupBuyProductList.getGroupId();
-            goodsName =goods.getGoodsInfo().getGoodsName();
-            goodsPrice =goods.getProductPrice();
         }
     }
 
@@ -255,15 +262,16 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
                 }
             }
         }
-
-        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
+        List<OrderGoodsBo> orderGoodsBos = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
-            String goodsName =goods.get(0).getGoodsName();
-            String goodsPrice =goods.get(0).getGoodsPrice().toString();
-            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),goodsName,goodsPrice);
+            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),orderGoodsBos.get(0).getGoodsName());
         }
+    }
+
+    @Override
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

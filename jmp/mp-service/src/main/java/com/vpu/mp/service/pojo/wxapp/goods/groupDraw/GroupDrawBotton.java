@@ -1,10 +1,5 @@
 package com.vpu.mp.service.pojo.wxapp.goods.groupDraw;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

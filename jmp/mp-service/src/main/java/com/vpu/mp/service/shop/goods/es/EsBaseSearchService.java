@@ -225,9 +225,7 @@ public class EsBaseSearchService extends ShopBaseService {
             if( from > page.getTotalRows() ){
                 from = page.getTotalRows();
             }
-            sourceBuilder
-                .from( from )
-                .size( size );
+            sourceBuilder.from( from ).size( size );
         }
         if( param.getFactList() != null ){
             assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);

@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -187,6 +186,9 @@ public class StoreWxService extends ShopBaseService {
     @Autowired
     public ProvinceService provinceService;
 
+    @Autowired
+    public BaseScoreCfgService baseScoreCfgService;
+
     /**
      * The constant BYTE_TWO.
      */
@@ -252,9 +254,7 @@ public class StoreWxService extends ShopBaseService {
             });
         }
         // 设置图片和距离
-        Double lat1 = location.getLatitude();
-        Double lon1 = location.getLongitude();
-        log.debug("用户地理位置为：经度【{}】，维度【{}】", lat1, lon1);
+        boolean locationAuth = param.getLocationAuth() == BYTE_ONE;
         storeList.forEach(s -> {
             String storeImgs = s.getStoreImgs();
             log.debug("门店宣传图列表为:{}", storeImgs);
@@ -266,17 +266,26 @@ public class StoreWxService extends ShopBaseService {
             } else {
                 s.setStoreImgs(null);
             }
-            if (lat1 != null && lon1 != null) {
-                double distance = Util.getDistance(lat1, lon1, Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
-                log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
-                s.setDistance(distance);
+            if (locationAuth) {
+                log.debug("用户已开启授权地理位置信息");
+                if (Objects.isNull(location)) {
+                    log.error("入参用户地理位置信息缺失！");
+                    s.setDistance(DOUBLE_ZERO);
+                } else {
+                    double distance = Util.getDistance(location.getLatitude(), location.getLongitude(), Double.parseDouble(s.getLatitude()), Double.parseDouble(s.getLongitude()));
+                    log.debug("门店 {} 距离用户位置 {} km", s.getStoreName(), distance);
+                    s.setDistance(distance);
+                }
             } else {
-                // 默认或者异常地理位置信息均为0km
-                s.setDistance(DOUBLE_ZERO);
+                // 未开启地理位置授权，门店距离为null
+                log.debug("用户未开启授权地理位置信息");
+                s.setDistance(null);
             }
         });
         // 结果按照距离 从小到大排序
-        Collections.sort(storeList);
+        if (locationAuth) {
+            Collections.sort(storeList);
+        }
         return storeList;
     }
 
@@ -390,6 +399,21 @@ public class StoreWxService extends ShopBaseService {
         // todo 获取待核销扫码购订单
         // 门店买单开关配置
         storeInfoVo.setStoreBuy(storeConfigService.getStoreBuy());
+        // 门店距离
+        if (param.getLocationAuth() == 1) {
+            Location location = param.getLocation();
+            if (Objects.isNull(location)) {
+                log.error("入参缺少用户地理位置信息，无法计算门店距离！");
+            } else {
+                double distance = Util.getDistance(location.getLatitude(),
+                    location.getLongitude(),
+                    Double.parseDouble(storeInfoVo.getLatitude()),
+                    Double.parseDouble(storeInfoVo.getLongitude()));
+                storeInfoVo.setDistance(distance);
+            }
+        } else {
+            storeInfoVo.setDistance(null);
+        }
         return storeInfoVo;
     }
 
@@ -410,11 +434,7 @@ public class StoreWxService extends ShopBaseService {
         // 获取发票开关配置
         payOrderVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
         // 获取有效用户会员卡列表
-        List<ValidUserCardBean> cardList = userCardDaoService.getValidCardList(userId, BYTE_ZERO, BYTE_ZERO)
-            .stream().filter((c) -> StringUtils.isBlank(c.getStoreList()) || Objects.requireNonNull(Util.json2Object(c.getStoreList(), new TypeReference<List<Integer>>() {
-            }, false)).contains(storeId))
-            .collect(toList());
-        log.debug("有效用户会员卡列表:{}", cardList);
+        List<ValidUserCardBean> cardList = userCardDaoService.getStoreValidCardList(userId, storeId);
         payOrderVo.setMemberCardList(cardList);
         // 门店营业状态和删除标示
         StorePojo storePojo = store.getStore(storeId);
@@ -422,6 +442,13 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setDelFlag(storePojo.getDelFlag());
         // 门店买单开关配置
         payOrderVo.setStoreBuy(storeConfigService.getStoreBuy());
+        // 交易配置
+        payOrderVo.setDefaultPayConf(tradeService.getDefaultPayConf());
+        payOrderVo.setPayStatusList(tradeService.getPaymentEnabled());
+        // 积分使用规则
+        payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
+        payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
+        payOrderVo.setScorePayLimit(baseScoreCfgService.getScorePayLimit());
         return payOrderVo;
     }
 

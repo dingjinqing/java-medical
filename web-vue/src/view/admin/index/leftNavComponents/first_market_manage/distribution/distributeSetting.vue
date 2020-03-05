@@ -39,6 +39,7 @@
               v-model="form.activation"
               :true-label='1'
               :false-label='0'
+              @change="activationChange"
             >{{ $t('distribution.reviewedInvitation') }}</el-checkbox>
           </div>
           <div>
@@ -653,8 +654,8 @@ export default {
   watch: {
     lang () {
       this.checkedList = this.$t('distribution.checkedList')
-      this.checkedList1 = this.checkedList.slice(0, 10)
-      this.checkedList2 = this.checkedList.slice(11)
+      this.checkedList1 = this.checkedList.slice(0, 12)
+      this.checkedList2 = this.checkedList.slice(12)
     }
   },
   mounted () {
@@ -947,6 +948,32 @@ export default {
         path: '/admin/home/shopMain',
         query: { change_components: '3' }
       })
+    },
+
+    // 自动审核切换
+    activationChange (value) {
+      let hasCheck = this.form.activation_cfg.some((item, index) => {
+        if (item === '邀请码') {
+          return true
+        } else {
+          return false
+        }
+      })
+      if (value === 1) {
+        // 勾选自动审核
+        if (hasCheck === false) {
+          this.form.activation_cfg.push('邀请码')
+        }
+      } else {
+        // 不勾选自动审核
+        if (hasCheck === true) {
+          this.form.activation_cfg.filter((item, index) => {
+            if (item === '邀请码') {
+              this.form.activation_cfg.splice(index, 1)
+            }
+          })
+        }
+      }
     }
 
   }

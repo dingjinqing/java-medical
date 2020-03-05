@@ -1,32 +1,29 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
-import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
-import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static org.jooq.impl.DSL.*;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
+import com.vpu.mp.service.shop.image.postertraits.BargainPictorialService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -36,17 +33,21 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordExportVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.bargain.BargainRecordPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.List;
+import java.util.Map;
+
+import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 /**
  * @author 王兵兵
@@ -70,6 +71,8 @@ public class BargainRecordService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private OrderInfoService orderInfo;
+    @Autowired
+    private BargainPictorialService shareImgService;
 	
 	/**
 	 * 状态：正在砍价 
@@ -87,11 +90,11 @@ public class BargainRecordService extends ShopBaseService {
     /**
      *  已下单
      */
-    public static final byte IS_ORDERED_Y = 1;
+    public static final Byte IS_ORDERED_Y = 1;
     /**
      *  未下单
      */
-    public static final byte IS_ORDERED_N = 0;
+    public static final Byte IS_ORDERED_N = 0;
 	
 	private static final String LANGUAGE_TYPE_EXCEL= "excel";
 
@@ -100,7 +103,7 @@ public class BargainRecordService extends ShopBaseService {
 	 *
 	 */
 	public Integer getBargainRecordNumberByStatus(int bargainId,byte status) {
-		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.STATUS.eq(status)).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
+		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.STATUS.eq(status)).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOneInto(Integer.class);
 	}
 	
 	/**
@@ -109,7 +112,7 @@ public class BargainRecordService extends ShopBaseService {
 	 *
 	 */
 	public Integer getBargainRecordNumber(int bargainId) {
-		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
+		return db().selectCount().from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(bargainId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOneInto(Integer.class);
 	}
 	
 	/**
@@ -239,7 +242,7 @@ public class BargainRecordService extends ShopBaseService {
     public PageResult<BargainRecordListQueryVo> getRecordPageList(Integer userId,BargainRecordListQueryParam param){
         SelectWhereStep<? extends Record> select = db().select(
             BARGAIN_RECORD.ID,BARGAIN_RECORD.GOODS_PRICE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS
+            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN_RECORD.PRD_ID,BARGAIN_RECORD.BARGAIN_ID,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS,ORDER_INFO.ORDER_SN
         ).
             from(BARGAIN_RECORD).
             leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -292,7 +295,7 @@ public class BargainRecordService extends ShopBaseService {
      * @return
      */
     public BargainApplyVo getUserBargainRecordId(int userId, BargainApplyParam param){
-        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId()))).fetchOptionalInto(Integer.class).orElse(0);
+        Integer recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.BARGAIN_ID.eq(param.getBargainId())).and(BARGAIN_RECORD.PRD_ID.eq(param.getPrdId())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).fetchOptionalInto(Integer.class).orElse(0);
 
         return recordId > 0 ? BargainApplyVo.builder().recordId(recordId).resultCode((byte)0).build() : BargainApplyVo.builder().resultCode((byte)-1).build();
     }
@@ -361,7 +364,9 @@ public class BargainRecordService extends ShopBaseService {
                     vo.getRecordShareImg().setShareImg(recordInfo.getGoodsImg());
                     vo.getRecordShareImg().setShareImgFullUrl(domainConfig.imageUrl(recordInfo.getGoodsImg()));
                 }else{
-                    //TODO 生成砍价分享图
+                    String shareImgPath = shareImgService.getBargainInfoShareImg(recordInfo);
+                    vo.getRecordShareImg().setShareImg(shareImgPath);
+                    vo.getRecordShareImg().setShareImgFullUrl(domainConfig.imageUrl(shareImgPath));
                 }
             }
             vo.setRecordInfo(recordInfo);
@@ -383,7 +388,7 @@ public class BargainRecordService extends ShopBaseService {
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,
+            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.FREE_FREIGHT,
             USER.WX_OPENID,USER.USERNAME).from(
             BARGAIN_RECORD
             .leftJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))
@@ -448,6 +453,13 @@ public class BargainRecordService extends ShopBaseService {
                         return 11;
                     }
                 }
+            }else{
+                if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y)){
+                    return 10;
+                }
+                if(recordInfo.getStatus().equals(STATUS_SUCCESS)){
+                    return 5;
+                }
             }
         }
 
@@ -456,7 +468,7 @@ public class BargainRecordService extends ShopBaseService {
             if(userNumber == 2){
                 return 7;
             }
-            if(recordInfo.getUserNumber() == 1){
+            if(userNumber == 1){
                 return 8;
             }
         }else {
@@ -476,7 +488,7 @@ public class BargainRecordService extends ShopBaseService {
                         }
                     }
                 }else {
-                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_IN_PROCESS)){
+                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_SUCCESS)){
                         return 9;
                     }
                 }
@@ -512,7 +524,7 @@ public class BargainRecordService extends ShopBaseService {
         //进行砍价
         BigDecimal bargainMoney = bargainUser.addUserBargain(userId,recordId);
         vo.setState((byte)0);
-        vo.setBargainMoney(bargainMoney);
+        vo.setBargainMoney(bargainMoney.setScale(2,BigDecimal.ROUND_HALF_UP));
         return vo;
     }
 

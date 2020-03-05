@@ -1,22 +1,19 @@
 package com.vpu.mp.service.shop.store.group;
 
-import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-
-import java.sql.Timestamp;
-import java.util.List;
-
+import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
+import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
-import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
-import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.shop.operation.aop.RecordAction;
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
 
 /**
  * @author 王兵兵
@@ -58,7 +55,7 @@ public class StoreGroupService extends ShopBaseService{
 	}
 
 	private int getGroupNumberInGroup(int groupId){
-        return db().selectCount().from(STORE).where(STORE.GROUP.eq(groupId)).fetchOne().into(Integer.class);
+        return db().selectCount().from(STORE).where(STORE.GROUP.eq(groupId)).fetchOneInto(Integer.class);
     }
 
     /**

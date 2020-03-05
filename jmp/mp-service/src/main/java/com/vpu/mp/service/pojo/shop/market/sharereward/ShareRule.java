@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.sharereward;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author liufei
@@ -50,5 +53,21 @@ public class ShareRule {
      */
     @JsonProperty(value = "lottery_num")
     private Integer lotteryNum;
+    /**
+     * 奖品剩余份数
+     */
+    @JsonProperty(value = "stock")
+    private Integer stock;
+    /**
+     * 活动规则等级
+     */
+    @JsonProperty(value = "rule_level")
+    private Byte ruleLevel;
+
+    /**
+     * 参与活动用户列表
+     */
+    @JsonProperty(value = "user_info_list")
+    private List<UserInfo> userInfoList;
 
 }

@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.freeshipping;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,11 +21,15 @@ public class FreeShippingVo {
     private Byte      expireType;
     private Byte      status;
     private Byte      currentStatus;
+    /**
+     * 条件 1全部 0部分
+     */
     private Integer   type;
     private Byte      level;
     private String    recommendGoodsId;
     private String    recommendCatId;
     private String    recommendSortId;
+    private Timestamp createTime;
 
     private List<FreeShippingRuleVo> ruleList;
 

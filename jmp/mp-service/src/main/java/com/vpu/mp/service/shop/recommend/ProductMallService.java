@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.recommend;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,11 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
-import com.vpu.mp.service.pojo.shop.recommend.SendOrderBean;
 import com.vpu.mp.service.pojo.shop.recommend.SendProductBean;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.recommend.product.JsonProductBean;

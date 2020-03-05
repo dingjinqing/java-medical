@@ -42,7 +42,7 @@ public class ExecuteResult {
 
     /**
      * 静态构造器
-     * @param errorCode errorCode参数
+     * @param errorCode errorCode
      * @param result 返回结果
      * @param errorParam errorCode参数
      * @return this

@@ -72,3 +72,11 @@ export function uploadVideoRequest (riid) {
     data: riid
   })
 }
+
+// 查询视频空间已使用量
+export function getUsedVideoSpace () {
+  return service({
+    url: '/api/admin/video/space/info',
+    method: 'get'
+  })
+}

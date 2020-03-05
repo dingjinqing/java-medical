@@ -22,7 +22,7 @@ public class BargainRecordInfo {
     private BigDecimal bargainMoney;
     private Integer    userNumber;
     private Byte       status;
-    private Integer    isOrdered;
+    private Byte    isOrdered;
     private String     orderSn;
     private Timestamp createTime;
 
@@ -40,6 +40,8 @@ public class BargainRecordInfo {
     private BigDecimal floorPrice;
     private String shareConfig;
     private Integer stock;
+    private Timestamp updateTime;
+    private Byte freeFreight;
 
     private String wxOpenid;
     private String username;

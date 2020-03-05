@@ -212,6 +212,20 @@
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
 
+        <el-form-item
+          label="活动初始销量："
+          prop="limitAmount"
+        >
+          <el-input-number
+            :disabled="this.isEdite"
+            v-model="form.baseSale"
+            controls-position="right"
+            :min="0"
+            size="small"
+          ></el-input-number>
+          <span style="color: #999; margin-left: 10px;">初始销量必填</span>
+        </el-form-item>
+
         <!-- 收起、展开更多配置 -->
         <div
           @click="handleToChangeArror"
@@ -451,6 +465,7 @@ export default {
         limitPaytime: '', // 支付有效时间
         secKillProduct: [], // 秒杀价格表格数据
         freeFreight: 0, // 运费设置
+        baseSale: 0,
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
         shareConfig: {

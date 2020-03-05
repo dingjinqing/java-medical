@@ -379,7 +379,7 @@ public class GiftService extends ShopBaseService {
     public PageResult<GiftListVo> getPageList(GiftListParam param) {
         SelectConditionStep<?> query = getPageListQuery();
         buildOptions(query, param);
-        query.orderBy(TABLE.CREATE_TIME.desc());
+        query.orderBy(TABLE.LEVEL.desc(),TABLE.CREATE_TIME.desc());
         PageResult<GiftListVo> page = getPageResult(query, param, GiftListVo.class);
         page.dataList.forEach(vo->{
             vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
@@ -484,7 +484,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(mobile)) {
             query.and(USER.MOBILE.like(format("%s%%", mobile)));
         }
-        query.and(ORDER_GOODS.ACTIVITY_ID.eq(giftId).and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT)));
+        query.and(ORDER_GOODS.GIFT_ID.eq(giftId));
     }
 
     /**

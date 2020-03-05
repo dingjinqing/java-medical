@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PromotionBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,6 +67,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private Byte delFlag;
     private Boolean isCollected;
     private CommentDetailVo comment;
+    /**商品赠品*/
+    private List<GoodsGiftMpVo> goodsGifts;
     /**相关优惠券*/
     List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/

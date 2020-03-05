@@ -99,7 +99,7 @@ public class CouponMpService extends ShopBaseService {
      */
     public CouponListVo getCouponData(mpGetCouponParam param){
         CouponListVo couponData = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.getCouponId()))
-            .fetchOne().into(CouponListVo.class);
+            .fetchOneInto(CouponListVo.class);
         return couponData;
     }
 
@@ -110,7 +110,7 @@ public class CouponMpService extends ShopBaseService {
      */
     public Integer couponAlreadyGet(Integer userId,Integer couponId){
         int res = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(couponId)).and(CUSTOMER_AVAIL_COUPONS.USER_ID.eq(userId))
-            .fetchOne().into(Integer.class);
+            .fetchOneInto(Integer.class);
         return res;
     }
 

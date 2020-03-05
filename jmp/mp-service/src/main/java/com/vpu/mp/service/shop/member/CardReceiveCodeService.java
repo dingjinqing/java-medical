@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
@@ -105,7 +106,7 @@ public class CardReceiveCodeService extends ShopBaseService {
 	}
 	
 	private <T> Set<T> removeCommonSet(Set<T> set,Set<T> commonSet){
-		assert set!=null && commonSet!=null;
+		Assert.isTrue(set!=null && commonSet!=null,"removeCommonSet have erro");
 		set.removeAll(commonSet);
 		return set;
 	}

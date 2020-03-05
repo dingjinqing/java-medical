@@ -1,45 +1,12 @@
 package com.vpu.mp.service.shop.order.info;
 
-import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -74,6 +41,54 @@ import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GroupBuyList.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_GOODS;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
+import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * Table:order_info
@@ -146,12 +161,12 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<String> getOrderSns(OrderPageListQueryParam param, OrderQueryVo result) {
+	    // 数量查询
+        calculateOrderCount(param, result);
 		SelectJoinStep<Record1<String>> mainOrder = db().select(TABLE.ORDER_SN).from(TABLE);
 		// 存在子单但是显示不易子单为主所以查询需过滤子单
 		mainOrder.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
 		buildOptions(mainOrder, param);
-		// 数量查询
-		calculateOrderCount(mainOrder, param, result);
 		mainOrder.orderBy(TABLE.ORDER_ID.desc());
 		// 得到订单号
 		return getPageResult(mainOrder, param.getCurrentPage(), param.getPageRows(), String.class);
@@ -159,11 +174,9 @@ public class OrderInfoService extends ShopBaseService {
 
 	/**
 	 * 计算部分订单数量
-	 * 
-	 * @param select
 	 * @param result
 	 */
-	private void calculateOrderCount(SelectJoinStep<?> select, OrderPageListQueryParam param, OrderQueryVo result) {
+	private void calculateOrderCount(OrderPageListQueryParam param, OrderQueryVo result) {
 		Map<Byte, Integer> count = new HashMap<>(OrderConstant.SEARCH_RETURN_COMPLETED);
 		for (int i = 1; i <= OrderConstant.SEARCH_RETURN_COMPLETED; i++) {
 			count.put(Integer.valueOf(i).byteValue(), calculateOrderCount(param, Integer.valueOf(i).byteValue()));
@@ -192,8 +205,9 @@ public class OrderInfoService extends ShopBaseService {
 		case OrderConstant.SEARCH_RETURN_COMPLETED:
 			// 退完成
 			return db().fetchCount(select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_FINISH)));
+        default:
+            return 0;
 		}
-		return 0;
 	}
 
 	/**
@@ -218,7 +232,23 @@ public class OrderInfoService extends ShopBaseService {
 			select.where(ORDER_INFO.ORDER_SN.contains(param.orderSn));
 		}
 		if (param.orderStatus != null && param.orderStatus.length != 0) {
-			select.where(ORDER_INFO.ORDER_STATUS.in(param.orderStatus));
+            List<Byte> status = Lists.newArrayList(param.orderStatus);
+            Condition condition = DSL.noCondition();
+            if(status.contains(ORDER_RETURNING) || status.contains(ORDER_REFUNDING)) {
+                select.leftJoin(RETURN_ORDER).on(TABLE.ORDER_ID.eq(RETURN_ORDER.ORDER_ID));
+                if(status.contains(ORDER_RETURNING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_ONLY_MONEY).and(RETURN_ORDER.REFUND_STATUS.eq(REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_RETURNING));
+                }
+                if(status.contains(ORDER_REFUNDING)) {
+                    condition = condition.or(RETURN_ORDER.RETURN_TYPE.eq(RT_GOODS).and(RETURN_ORDER.REFUND_STATUS.in(REFUND_DEFAULT_STATUS, REFUND_STATUS_AUDITING ,REFUND_STATUS_AUDIT_PASS , REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)));
+                    status.remove(Byte.valueOf(ORDER_REFUNDING));
+                }
+            }
+            if(CollectionUtils.isNotEmpty(status)) {
+                condition = condition.or(TABLE.ORDER_STATUS.in(status));
+            }
+            select.where().and(condition);
 		}
 		if (param.goodsType != null && param.goodsType.length != 0) {
 			select.where(ORDER_INFO.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(param.getGoodsType())));
@@ -236,6 +266,9 @@ public class OrderInfoService extends ShopBaseService {
 				select.where(USER_TAG.TAG_ID.in(param.tagIds));
 			}
 		}
+		if(param.getUserId() != null){
+            select.where(ORDER_INFO.USER_ID.eq(param.getUserId()));
+        }
 		if (!StringUtils.isEmpty(param.source)) {
 			select.where(ORDER_INFO.SOURCE.eq(param.source));
 		}
@@ -308,6 +341,18 @@ public class OrderInfoService extends ShopBaseService {
 				break;
 			}
 		}
+        if (param.getOrderIds() != null && param.getOrderIds().length != 0) {
+            select.where(ORDER_INFO.ORDER_ID.in(param.getOrderIds()));
+        }
+        //店铺助手操作
+        if(param.getShopHelperAction() != null) {
+            if(param.getShopHelperAction().equals(SHOP_HELPER_OVERDUE_DELIVERY)) {
+                select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+                    .and(TABLE.CREATE_TIME.add(param.getShopHelperActionDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+            }else if(param.getShopHelperAction().equals(SHOP_HELPER_REMIND_DELIVERY)) {
+                select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO)));
+            }
+        }
 		// 构造营销活动查询条件
 		activeBuildOptions(select, param);
 		return select;
@@ -342,6 +387,9 @@ public class OrderInfoService extends ShopBaseService {
         }
         //distinct
         orderType = orderType.stream().distinct().collect(Collectors.toList());
+        if(orderType.size() > 1) {
+            orderType.remove(BaseConstant.ACTIVITY_TYPE_GENERAL);
+        }
         //sort A->Z
         orderType.sort(Byte::compareTo);
         StringBuilder sbr = new StringBuilder();
@@ -363,6 +411,21 @@ public class OrderInfoService extends ShopBaseService {
      */
     public static String[] orderTypeToArray(String orderType) {
         return orderType.substring(1, orderType.length() - 1 ).split("\\]\\[");
+    }
+
+    /**
+     * 转化订单类型
+     * @param orderType
+     * @return
+     */
+    public static Byte[] orderTypeToByte(String orderType) {
+        String[] split = orderTypeToArray(orderType);
+        Byte[] bytes = new Byte[split.length];
+        int i = 0;
+        for (String str : split) {
+            bytes[i] = Byte.valueOf(str);
+        }
+        return bytes;
     }
 
 	/**
@@ -471,6 +534,11 @@ public class OrderInfoService extends ShopBaseService {
 	 * @return
 	 */
 	public BigDecimal getOrderFinalAmount(OrderListInfoVo order, boolean isIncludeShipingFee) {
+		if(order.getBkOrderMoney()==null){
+			return order.getMoneyPaid().add(order.getScoreDiscount())
+					.add(order.getMemberCardBalance()).add(order.getUseAccount())
+					.subtract(isIncludeShipingFee?BigDecimal.ZERO:order.getShippingFee());
+		}
 		return order.getBkOrderMoney().add(order.getMoneyPaid()).add(order.getScoreDiscount())
 				.add(order.getMemberCardBalance()).add(order.getUseAccount())
 				// TODO 少这个字段
@@ -774,10 +842,12 @@ public class OrderInfoService extends ShopBaseService {
         beforeVo.intoRecord(order);
         //orderBo赋值
         orderBo.intoRecord(order);
+        //订单付款方式，0全款 1定金 2好友代付(此处只是设置默认值，后续可能修改)
+        order.setOrderPayWay(OrderConstant.PAY_WAY_FULL);
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
-        //TODO 补款状态
-        order.setBkOrderPaid((byte)0);
+        //补款状态
+        order.setBkOrderPaid(beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.BK_PAY_NO : (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ? OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
         //TODO 代付人数
         order.setInsteadPayNum((short)0);
         //TODO 推广信息
@@ -802,6 +872,10 @@ public class OrderInfoService extends ShopBaseService {
 
         if(Boolean.FALSE){
 
+        }
+        //必填信息初始化orderSn
+        if(param.getMust() != null) {
+            param.getMust().setOrderSn(orderSn);
         }
         return order;
     }
@@ -1352,6 +1426,38 @@ public class OrderInfoService extends ShopBaseService {
     }
 
     /**
+     * Overdue delivery integer.发货逾期订单id集合
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> overdueDeliverySet(Integer nDays) {
+        Condition condition = TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
+            .and(TABLE.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(condition).fetchSet(TABLE.ORDER_ID);
+    }
+
+    /**
+     * Remind overdue order int.提醒发货订单数
+     *
+     * @return the int
+     */
+    public int remindOverdueOrder() {
+        Condition condition = TABLE.ORDER_STATUS.eq(BYTE_THREE).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO));
+        return db().fetchCount(TABLE, condition);
+    }
+
+    /**
+     * Remind overdue order int.提醒发货订单id列表
+     *
+     * @return the int
+     */
+    public Set<Integer> remindOverdueOrderSet() {
+        Condition condition = TABLE.ORDER_STATUS.eq(BYTE_THREE).and(TABLE.ORDER_REMIND.greaterThan(BYTE_ZERO));
+        return db().select(TABLE.ORDER_ID).from(TABLE).where(condition).fetchSet(TABLE.ORDER_ID);
+    }
+
+    /**
      * 获得待支付尾款的订单
      * @param pinGroupId
      * @return
@@ -1371,6 +1477,25 @@ public class OrderInfoService extends ShopBaseService {
      */
     public Integer getOrderIdBySn(String orderSn){
         return db().select(TABLE.ORDER_ID).from(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetchOptionalInto(Integer.class).orElse(null);
+    }
+    
+    /**
+     * 获得待付款活动订单
+     * @param userId
+     * @param goodsId
+     * @param goodsType
+     * @param activityId
+     * @return
+     */
+    public OrderInfoRecord getWaitPayOrderByActivityId(Integer userId,Integer goodsId,Byte goodsType,Integer activityId) {
+		return  db().select(TABLE.asterisk()).from(TABLE, ORDER_GOODS)
+				.where(TABLE.ORDER_SN.eq(ORDER_GOODS.ORDER_SN)
+						.and(TABLE.ACTIVITY_ID.eq(activityId)
+								.and(TABLE.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+										.and(TABLE.USER_ID.eq(userId)
+												.and(ORDER_GOODS.GOODS_ID.eq(goodsId)
+														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
+				.fetchAnyInto(TABLE);
     }
 
 }

@@ -85,9 +85,9 @@ public class UserCardVo {
 	private Boolean isGet;
 	// 卡是否可用  1 可用，-1不可用
 	private Integer status;
-	@JsonProperty("startTime")
+	@JsonProperty("startDate")
 	private LocalDate startDate;
-	@JsonProperty("endTime")
+	@JsonProperty("endDate")
 	private LocalDate endDate;
 	// 头像
 	@JsonProperty("avatar")
@@ -98,6 +98,9 @@ public class UserCardVo {
 	private Integer scoreAmount;
 	private Byte bindMobile;
 	private List<GoodsSmallVo> goodsList;
+	// 门店Id信息
+	@JsonProperty("storeList")
+	private List<Integer> storeIdList;
 	// 门店信息
 	private List<StoreBasicVo> storeInfoList;
 	// 优惠券列表

@@ -30,8 +30,9 @@ public class ModuleScrollImage extends ModuleBase {
 	 */
 	@JsonProperty(value = "img_items")
 	List<ImageItem> imgItems = new ArrayList<>();
-		
-	@Data
+
+    @Getter
+    @Setter
 	public static class ImageItem{
 		@JsonProperty(value = "img_url")
 		String imageUrl;

@@ -268,7 +268,7 @@ public class SqlCheckProcessor implements ApplicationListener<ContextRefreshedEv
             }
             DBUtil.deleteTable(con, updateSql.getTableName());
 
-            log.debug("表【{}】的update语句校验结束...",updateSql.getTableName());
+            log.debug ("表【{}】的update语句校验结束...",updateSql.getTableName());
         }
         if( !StringUtils.isEmpty(duplicateError.toString()) ){
             log.error(duplicateError.toString());

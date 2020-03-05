@@ -230,29 +230,38 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData) {
-          this.$nextTick(() => {
-            console.log(this.listTypeData, this.listTypeData[Number(this.moduleSaveData.image_type)])
-            this.listTypeData.forEach((item, index) => {
-              item.isChecked = false
-            })
-            if (this.modulesData.image_list.length) {
-              this.modulesData.image_list.forEach((item, index) => {
-                item['whetherToExpand'] = 0
-              })
-            }
-            this.moduleSaveData = this.modulesData
-            this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
-            this.pictureGapValue = this.moduleSaveData.image_space
+          // this.$nextTick(() => {
+          console.log(this.listTypeData, this.listTypeData[Number(this.moduleSaveData.image_type)])
+          this.listTypeData.forEach((item, index) => {
+            item.isChecked = false
           })
+          if (this.modulesData.image_list) {
+            this.modulesData.image_list.forEach((item, index) => {
+              item['whetherToExpand'] = 0
+            })
+          }
+          console.log(this.modulesData.image_space)
+          this.moduleSaveData = this.modulesData
+          this.pictureGapValue = this.moduleSaveData.image_space
+          this.$nextTick(() => {
+            console.log(this.listTypeData, this.moduleSaveData)
+            this.listTypeData[Number(this.moduleSaveData.image_type)].isChecked = true
+          })
+
+          // })
         }
       },
       immediate: true
     },
     // 监听数据变换
-    data: {
+    moduleSaveData: {
       handler (newData) {
         console.log(newData)
-        this.$emit('handleToBackData', newData)
+        let saveData = JSON.parse(JSON.stringify(newData))
+        newData.image_list.forEach((item, index) => {
+          delete saveData.image_list[index].whetherToExpand
+        })
+        this.$emit('handleToBackData', saveData)
       },
       deep: true
     },

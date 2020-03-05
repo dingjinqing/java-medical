@@ -99,6 +99,16 @@ export default {
       activeName: 'first'
     }
   },
+  mounted () {
+    // 店铺助手跳转分销审核
+    console.log(this.$route.params)
+    if (this.$route.params.flag === 1) {
+      if (this.$route.params.distributorName) {
+        // tab重新赋值
+        this.activeName = this.$route.params.distributorName
+      }
+    }
+  },
   methods: {
     handleClick () {
       // console.log(tab)

@@ -406,6 +406,8 @@ public class OrderConstant {
     public static final Byte D_T_COUPON = 1;
     /**满折满减*/
     public static final Byte D_T_FULL_REDUCE = 2;
+    /**预售*/
+    public static final Byte D_T_FULL_PRE_SALE = 3;
     /**
      * table : b2c_customer_avail_coupons type 1为减价，2为打折
      */
@@ -488,4 +490,13 @@ public class OrderConstant {
      * 交易售后配置
      */
 
+    /**
+     * 店铺助手查询订单列表操作
+     */
+    /**发货逾期*/
+    public static final Byte SHOP_HELPER_OVERDUE_DELIVERY = 0;
+    /**提醒发货*/
+    public static final Byte SHOP_HELPER_REMIND_DELIVERY = 1;
+    /**退款申请逾期*/
+    public static final Byte SHOP_HELPER_OVERDUE_RETURN_APPLY = 2;
 }

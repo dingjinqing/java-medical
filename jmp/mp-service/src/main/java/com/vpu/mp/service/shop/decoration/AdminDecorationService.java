@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.upyun.UpException;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLBSConfig;
@@ -17,7 +16,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -31,7 +29,8 @@ import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -258,39 +257,39 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_SCROLL_IMAGE:
                     ModuleScrollImage moduleScrollImage = objectMapper.readValue(node.getValue().toString(), ModuleScrollImage.class);
                     for (ModuleScrollImage.ImageItem imageItem : moduleScrollImage.getImgItems()) {
-                        imageItem.setImageUrl(domainConfig.imageUrl(imageItem.getImageUrl()));
+                        imageItem.setImageUrl(imageUrl(imageItem.getImageUrl()));
                     }
                     return moduleScrollImage;
                 case ModuleConstant.M_IMAGE_GUIDE:
                     ModuleImageGuide moduleImageGuide = objectMapper.readValue(node.getValue().toString(), ModuleImageGuide.class);
                     for (ModuleImageGuide.NavItem navItem : moduleImageGuide.getNavGroup()) {
-                        navItem.setNavSrc(domainConfig.imageUrl(navItem.getNavSrc()));
+                        navItem.setNavSrc(imageUrl(navItem.getNavSrc()));
                     }
                     return moduleImageGuide;
                 case ModuleConstant.M_IMAGE_ADVER:
                     ModuleImageAdver moduleImageAdver = objectMapper.readValue(node.getValue().toString(), ModuleImageAdver.class);
                     for (ModuleImageAdver.ImageAdItem item : moduleImageAdver.getImageList()){
-                        item.setImage(domainConfig.imageUrl(item.getImage()));
+                        item.setImage(imageUrl(item.getImage()));
                     }
                     return moduleImageAdver;
                 case ModuleConstant.M_MAGIC_CUBE:
                     ModuleMagicCube moduleMagicCube = objectMapper.readValue(node.getValue().toString(), ModuleMagicCube.class);
                     for(ModuleMagicCube.BlockItem blockItem : moduleMagicCube.getData().values()){
-                        blockItem.setImgUrl(domainConfig.imageUrl(blockItem.getImgUrl()));
+                        blockItem.setImgUrl(imageUrl(blockItem.getImgUrl()));
                     }
                     return moduleMagicCube;
                 case ModuleConstant.M_HOT_AREA:
                     ModuleHotArea moduleHotArea = objectMapper.readValue(node.getValue().toString(), ModuleHotArea.class);
-                    moduleHotArea.getData().setBgImgUrl(domainConfig.imageUrl(moduleHotArea.getData().getBgImgUrl()));
+                    moduleHotArea.getData().setBgImgUrl(imageUrl(moduleHotArea.getData().getBgImgUrl()));
                     return moduleHotArea;
                 case ModuleConstant.M_TEXT_IMAGE:
                     ModuleTextImage moduleTextImage = objectMapper.readValue(node.getValue().toString(), ModuleTextImage.class);
-                    moduleTextImage.setImgUrl(domainConfig.imageUrl(moduleTextImage.getImgUrl()));
+                    moduleTextImage.setImgUrl(imageUrl(moduleTextImage.getImgUrl()));
                     return moduleTextImage;
                 case ModuleConstant.M_TITLE:
                     ModuleTitle moduleTitle = objectMapper.readValue(node.getValue().toString(), ModuleTitle.class);
                     if(StringUtil.isNotEmpty(moduleTitle.getImgUrl())){
-                        moduleTitle.setImgUrl(domainConfig.imageUrl(moduleTitle.getImgUrl()));
+                        moduleTitle.setImgUrl(imageUrl(moduleTitle.getImgUrl()));
                     }
                     return moduleTitle;
                 case ModuleConstant.M_VIDEO:
@@ -298,13 +297,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(domainConfig.videoUrl(moduleVideo.getVideoUrl()));
                         moduleVideo.setVideoImg(domainConfig.videoUrl(moduleVideo.getVideoImg()));
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
-                        moduleVideo.setImgUrl(domainConfig.imageUrl(moduleVideo.getImgUrl()));
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                        moduleVideo.setImgUrl(imageUrl(moduleVideo.getImgUrl()));
                     }
                     return moduleVideo;
                 case ModuleConstant.M_MAP:
                     ModuleMap moduleMap = objectMapper.readValue(node.getValue().toString(), ModuleMap.class);
-                    moduleMap.setImgPath(domainConfig.imageUrl(moduleMap.getImgPath()));
+                    moduleMap.setImgPath(imageUrl(moduleMap.getImgPath()));
                     return moduleMap;
                 case ModuleConstant.M_GOODS:
                     ModuleGoods moduleGoods = objectMapper.readValue(node.getValue().toString(), ModuleGoods.class);
@@ -338,9 +338,24 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                 case ModuleConstant.M_CARD:
                     ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
                    if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
-                       moduleCard.setBgImg(domainConfig.imageUrl(moduleCard.getBgImg()));
+                       moduleCard.setBgImg(imageUrl(moduleCard.getBgImg()));
                    }
                     return moduleCard;
+                case ModuleConstant.M_SHOP:
+                    ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+                    if(StringUtil.isNotEmpty(moduleShop.getShopBgPath())){
+                        moduleShop.setShopBgPath(imageUrl(moduleShop.getShopBgPath()));
+                    }
+                    if(StringUtil.isNotEmpty(moduleShop.getBgUrl())){
+                        moduleShop.setBgUrl(imageUrl(moduleShop.getBgUrl()));
+                    }
+                    return moduleShop;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(imageUrl(moduleGroupDraw.getModuleImg()));
+                    }
+                    return moduleGroupDraw;
 
 
                     /**
@@ -349,12 +364,14 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     /**
                      * TODO: 基于店铺等级的模块权限校验
                      */
+
+                default:
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
-                pageCfg.getPictorial().setShareImgPath(domainConfig.imageUrl(pageCfg.getPictorial().getShareImgPath()));
+                pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
             }
             return pageCfg;
         }
@@ -476,38 +493,63 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
      * @param page
      * @return
      */
-    public boolean storePage(PageStoreParam page){
+    public int storePage(PageStoreParam page){
         try {
             //处理PageContent里的json数据，校验格式
             page.setPageContent(processPageContentBeforeSave(page.getPageContent()));
         }catch (IOException e){
             logger().error("装修页面保存格式错误：", e);
-            return false;
+            return 0;
         }
 
+        //记录页面变化
         recordPageChange(page);
-        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
 
+        XcxCustomerPageRecord record = db().newRecord(XCX_CUSTOMER_PAGE);
         record.setPageContent(page.getPageContent());
         record.setPageName(page.getPageName());
         record.setCatId(page.getCatId() == null ? 0 : page.getCatId());
 
-        if (page.getPageState() == 1) {
+
+        if(page.getPageState() == 3){
+            //回退到当前已发布版本
+
+            if(page.getPageId() != null && page.getPageId() > 0){
+                XcxCustomerPageRecord oldRecord = this.getPageById(page.getPageId());
+                record.setPageContent(oldRecord.getPagePublishContent());
+            }
+        }else if (page.getPageState() == 1) {
             //保存并发布
+
             record.setPageState(page.getPageState());
             record.setPagePublishContent(page.getPageContent());
         }
-        if (page.getPageId() != null) {
-            XcxCustomerPageRecord oldRecord = this.getPageById(page.getPageId());
-            record.setPageId((page.getPageId()));
-            if (page.getPageState() == 3) {
-                //回退到当前已发布版本
-                record.setPageContent(oldRecord.getPagePublishContent());
-            }
-            return record.update() > 0;
-        }
 
-        return record.insert() > 0;
+        //入库
+        if(page.getPageId() != null && page.getPageId() > 0){
+            record.setPageId(page.getPageId());
+            return record.update();
+        }else {
+            if(record.insert() > 0){
+                page.setPageId(record.getPageId());
+                return record.getPageId();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 预览
+     * @param param
+     * @return
+     */
+    public String getPreviewCode(PageStoreParam param){
+        if(this.storePage(param) > 0){
+            String pathParam="page_id="+param.getPageId();
+            String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INDEX, pathParam);
+            return imageUrl;
+        }
+        return null;
     }
 
     /**
@@ -582,7 +624,8 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
                         moduleVideo.setVideoImg(new URL(moduleVideo.getVideoImg()).getPath());
-                    }else if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
+                    }
+                    if(StringUtil.isNotEmpty(moduleVideo.getImgUrl())){
                         moduleVideo.setImgUrl(new URL(moduleVideo.getImgUrl()).getPath());
                     }
                     return moduleVideo;
@@ -606,12 +649,19 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
                     }
                     return moduleCard;
+                case ModuleConstant.M_GROUP_DRAW:
+                    ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
+                        moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
+                    }
+                    return moduleGroupDraw;
 
                 //TODO 其他保存前需要处理的模块
+                default:
 
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
             if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
                 pageCfg.setPageBgImage(new URL(pageCfg.getPageBgImage()).getPath());
@@ -646,7 +696,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     }
 
     protected String getStaticMapImg(String latitude,String longitude){
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>(8);
         param.put("size","375*150");
         param.put("key",txMapLBSConfig.getKey());
         param.put("center",latitude + "," + longitude);
@@ -666,10 +716,11 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
             String fullFilePath = path + fileName;
             File file = new File(fullFilePath);
             uploadToUpYun(relativePath + fileName,file);
-            //上传完成删除
+            //上传完成删除本地图片
             //file.delete();
         } catch (Exception e) {
             logger().error("图片加载错误",e);
+            return "";
         }
         return relativePath + fileName;
     }

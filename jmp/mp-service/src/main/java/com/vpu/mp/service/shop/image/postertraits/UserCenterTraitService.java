@@ -63,7 +63,7 @@ public class UserCenterTraitService extends ShopBaseService {
 			}
 		}
 		// 重新设置大小
-		backgroundImage = ImageUtil.resizeImage(600, 800, backgroundImage);
+		backgroundImage = ImageUtil.resizeImageTransparent(600, 800, backgroundImage);
 		logger().info("重新设置大小完成");
 
 		logger().info("获取微信二维码");

@@ -26,6 +26,7 @@ export const en = {
   luckyDraw: 'Lucky Lucky Draw',
   balance: 'Balance',
   splitCoupon: 'Split Coupon',
+  piSlogan: 'Please fill in the event slogan',
   custom: 'Custom',
   enterIntegral: 'Please enter points',
   coupon2: 'Coupon:',

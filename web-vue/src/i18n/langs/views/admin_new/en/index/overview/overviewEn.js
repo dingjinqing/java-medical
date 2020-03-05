@@ -29,7 +29,7 @@ export const en = {
   renew: 'Want to renew',
   upgrade: 'Version upgrade',
   shareShop: 'Sharing',
-  shareDefault: 'Failed to get QR code',
+  shareDefault: 'Please authorize the applet',
   shareTitle: 'Scan, Share with friends~',
   shareDownload: 'Download QR code',
   copy: 'Copy',
@@ -49,47 +49,56 @@ export const en = {
     {
       value: 1,
       label: 'To be shipped',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/waiting?orderStatus=3'
     },
     {
       value: 2,
       label: 'Pending disposal',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/refund/list'
     },
     {
       value: 3,
       label: 'Sold out',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/goodsForSaleOut'
     },
     {
       value: 4,
       label: 'To be audited',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/goodsManage/evaluationManagement?activeName=second'
     },
     {
       value: 5,
       label: 'Waiting for delivery',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/orders/self'
     },
     {
       value: 6,
       label: 'Reviewed by distributor',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/distributorCheck'
     },
     {
       value: 7,
       label: 'Membership activation',
-      isCheck: false
+      isCheck: false,
+      link: ''
     },
     {
       value: 8,
       label: 'Cash withdrawal',
-      isCheck: false
+      isCheck: false,
+      link: '/admin/home/main/withdrawDepositCheck'
     },
     {
       value: 9,
       label: 'Service evaluation',
-      isCheck: false
+      isCheck: false,
+      link: ''
     }
   ],
 
@@ -164,12 +173,12 @@ export const en = {
     {
       icon: '/image/admin/new_ov/hdyl.png',
       title: 'Kaiping is polite',
-      link: ''
+      link: '/admin/home/main/openScreen/list'
     },
     {
       icon: '/image/admin/new_ov/kj.png',
       title: 'Bargain',
-      link: ''
+      link: '/admin/home/main/bargain'
     },
     {
       icon: '/image/admin/new_ov/ptcj.png',
@@ -179,12 +188,12 @@ export const en = {
     {
       icon: '/image/admin/new_ov/yhqlb.png',
       title: 'Coupon pack',
-      link: ''
+      link: '/admin/home/main/couponPackage'
     },
     {
       icon: '/image/admin/new_ov/zfyl.png',
       title: 'Payment of courtesy',
-      link: '/admin/home/main/admin/home/main/payReward'
+      link: '/admin/home/main/payReward'
     }
   ],
 
@@ -219,18 +228,25 @@ export const en = {
   storeTip: 'Tip',
   storeGo: 'Go',
   storeCourse: 'View tutorial',
+  storeIntroduction: 'Function introduction',
   storeTask: 'Task',
+  storeConfig: 'Shop must',
   storeRecommend: 'Recommend',
   // 待完成
-  unShopTip1: 'Suggestions on improving wechat configuration',
+  unShopTip1: 'Suggestions on improving weChat configuration',
+  unShopTipSet1: 'Applet not registered',
+  unShopTipSet2: 'Applet customer service is not configured',
+  unShopTipSet3: 'Unauthorized applet',
+  unShopTipSet4: 'WeChat payment not opened',
+  unShopTipSet5: 'WeChat payment is not configured',
   unShopTip2: 'It is recommended to complete the sub account setting',
   unShopTip3: 'Proposal to authorize public number',
-  unShopTip4: 'It is suggested to finish the shop decoration',
+  unShopTip4: 'It is suggested to finish the decoration of the front page of the store',
   unShopTip5: 'It is recommended to open the circle',
   unShopTip6: 'Suggest opening customer service',
   unStoreTip1: 'Freight template not set',
-  unStoreTip2: 'Item not added',
-  unStoreTip3: 'Low inventory',
+  unStoreTip2: 'No item added',
+  unStoreTip3: 'Merchandise inventory less than 5',
   unStoreTip4: 'Unsalable goods',
   unStoreTip5: 'Product evaluation has not been reviewed for more than 3 days',
   unStoreTip6: 'Recommendation not configured',
@@ -238,14 +254,15 @@ export const en = {
   unOrderTip1: 'Order is not delivered for more than 3 days',
   unOrderTip2:
     'Order refund application has not been processed for more than 3 days',
+  unOrderTip3:
+    'Order delivery reminder application has not been processed for more than 3 days',
   unMarketTip1:
     'Distributor application has not been processed for more than 3 days',
   unMarketTip2:
     'Membership card activation application has not been processed for more than 2 days',
   unMarketTip3: 'Coupon',
   unMarketTip4: 'Soon to be completed',
-  unMarketTip5: 'over',
-  unMarketTip6: 'days not handled',
+  unMarketTip5: 'cards have',
   // 已完成
   tabInfo: [
     {
@@ -262,9 +279,14 @@ export const en = {
   order: 'Order',
   market: 'Market',
   enShopTip1: 'WeChat configuration has been improved',
+  enShopTipSet1: 'Registered applet',
+  enShopTipSet2: 'Applet customer service configured',
+  enShopTipSet3: 'Authorized applet',
+  enShopTipSet4: 'WeChat payment has been opened',
+  enShopTipSet5: 'WeChat payment configured',
   enShopTip2: 'Sub account setting completed',
   enShopTip3: 'Authorized public address',
-  enShopTip4: 'Shop decoration completed',
+  enShopTip4: 'Finishing the front page of the store',
   enShopTip5: 'The circle has been opened',
   enShopTip6: 'Customer service enabled',
   enStoreTip1: 'Freight template set',
@@ -272,14 +294,16 @@ export const en = {
   enStoreTip3: 'Abundant commodity inventory',
   enStoreTip4: 'Good sales',
   enStoreTip5: 'Good progress of commodity evaluation and audit',
-  enStoreTip6: 'Item configured',
+  enStoreTip6: 'Recommended products configured',
   enStoreTip7: 'Merchant classification configured',
-  enOrderTip1: 'Good order delivery progress',
+  enOrderTip1: 'Good progress in handling overdue orders',
   enOrderTip2: 'Refund processing progress is good',
+  enOrderTip3: 'Order reminder shipment processing progress is good',
   enMarketTip1:
     'Distributor application has not been processed for more than 3 days',
   enMarketTip2: 'Membership card activation audit progress is good',
   enMarketTip3: 'No coupon with small stock (less than the specified value)',
+  enMarketTip4: 'Good progress of distributor audit',
 
   // 公告
   noticeTitle: 'Notice',

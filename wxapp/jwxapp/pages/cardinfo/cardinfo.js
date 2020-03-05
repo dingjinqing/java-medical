@@ -55,11 +55,11 @@ global.wxPage({
           that.setData({
             carStatus: "已领取"
           })
-        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus  === 1) {
           that.setData({
             carStatus: "审核中"
           })
-        } else if (cardInfo.examine && cardInfo.isExamine.status === 'TODO') {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus  === 3) {
           that.setData({
             carStatus: "审核失败"
           })
@@ -128,7 +128,7 @@ global.wxPage({
         let cardInfo = res.content.cardInfo
         that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
-        if (cardInfo.activation) {
+        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
@@ -142,7 +142,7 @@ global.wxPage({
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-        cardInfo.storeList = cardInfo.storeList ? JSON.parse(cardInfo.storeList) : []
+        cardInfo.storeList = cardInfo.storeList 
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -157,7 +157,6 @@ global.wxPage({
         }
       }, { cardId: cardId })
     }
-
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
@@ -386,7 +385,7 @@ global.wxPage({
                   })
                 } else if (parseInt(goods_id)) {
                   util.redirectTo({
-                    url: '/pages/item/item?good_id=' + goods_id,
+                    url: '/pages/item/item?gid=' + goods_id,
                   })
                 } else {
                   console.log(111)

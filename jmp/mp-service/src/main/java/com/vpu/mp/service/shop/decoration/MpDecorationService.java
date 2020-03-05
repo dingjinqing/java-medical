@@ -13,10 +13,12 @@ import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.collect.CollectGiftParam;
 import com.vpu.mp.service.pojo.wxapp.config.ShareConfig;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
@@ -25,6 +27,7 @@ import com.vpu.mp.service.pojo.wxapp.decorate.PageCfgVo;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageModuleParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageParam;
 import com.vpu.mp.service.pojo.wxapp.decorate.WxAppPageVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
@@ -40,6 +43,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -192,10 +197,29 @@ public class MpDecorationService extends ShopBaseService {
         Integer pageId = param.getPageId();
         String pageContent;
         if (pageId == null || pageId == 0) {
-            record = this.getIndex();
-            pageId = record.getPageId();
-            pageContent = param.getSceneId() != null && param.getSceneId() > 0 ? record.getPageContent()
-                : record.getPagePublishContent();
+            if(StringUtil.isNotEmpty(param.getScene())){
+                //scene的格式为page_id=1,url编码
+                String scene = null;
+                try {
+                    scene = URLDecoder.decode(param.getScene(),"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logger().error("URLDecoder.decode error",e);
+                }
+                if(StringUtil.isNotEmpty(scene)){
+                    String[] sceneParam = scene.split("=",2);
+                    pageId =  Integer.valueOf(sceneParam[1]);
+                    record = getPageById(pageId);
+                    //页面预览
+                    pageContent = record.getPageContent();
+                }else {
+                    return null;
+                }
+            }else{
+                //首页
+                record = this.getIndex();
+                pageId = record.getPageId();
+                pageContent = record.getPagePublishContent();
+            }
 
         } else {
             record = this.getPageById(pageId);
@@ -210,7 +234,7 @@ public class MpDecorationService extends ShopBaseService {
         page.setPageInfo(pageInfo);
         page.setIsFirstPage(record.getPageType());
         page.setPageId(pageId);
-        page.setSceneId(param.getSceneId());
+        page.setScene(param.getScene());
         page.setPageName(record.getPageName());
         page.setPageType(record.getPageType());
 //		this.setCollectInfo(page.getCollectInfo(), shop, userRecord);
@@ -336,12 +360,15 @@ public class MpDecorationService extends ShopBaseService {
                     return this.convertTitleForIndex(objectMapper, node, user);
                 case ModuleConstant.M_MAP:
                     return this.convertMapForIndex(objectMapper, node, user);
+                case ModuleConstant.M_SHOP:
+                    return this.convertShopBgForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
+                default:
             }
         }
-        if(node.getKey().equals("page_cfg")){
+        if("page_cfg".equals(node.getKey())){
             return this.convertPageCfgIndex(objectMapper, node, user);
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
@@ -359,7 +386,7 @@ public class MpDecorationService extends ShopBaseService {
      */
     public ModuleGoodsGroup convertGoodsGroupForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
         ModuleGoodsGroup element = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
-        // TODO: 转换实时信息
+        element.setNeedRequest(true);
         return element;
     }
 
@@ -652,7 +679,7 @@ public class MpDecorationService extends ShopBaseService {
             pageRecord = this.getPageById(param.getPageId());
         }
 
-        String pageContent = param.getSceneId() != null && param.getSceneId() > 0 ? pageRecord.getPageContent() : pageRecord.getPagePublishContent();
+        String pageContent = StringUtil.isNotEmpty(param.getScene())  ? pageRecord.getPageContent() : pageRecord.getPagePublishContent();
         DistributionParam distributionCfg = config.distributionCfg.getDistributionCfg();
         // 是否是分销员
         boolean isDistributor = 1 == userRecord.getIsDistributor();
@@ -686,6 +713,8 @@ public class MpDecorationService extends ShopBaseService {
                     switch (moduleName) {
                         case ModuleConstant.M_GOODS:
                             return this.convertGoodsForModule(objectMapper, node, user);
+                        case ModuleConstant.M_GOODS_GROUP:
+                            return this.convertGoodsGroupForModule(objectMapper,node,user);
                         case ModuleConstant.M_COUPON:
                             return this.convertCouponForModule(objectMapper, node, user);
                         case ModuleConstant.M_CARD:
@@ -699,6 +728,7 @@ public class MpDecorationService extends ShopBaseService {
                         case ModuleConstant.M_GROUP_DRAW:
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
                         //TODO case
+                        default:
                     }
                 }
             }
@@ -733,6 +763,7 @@ public class MpDecorationService extends ShopBaseService {
         param.setMinPrice(moduleGoods.getMinPrice());
         param.setMaxPrice(moduleGoods.getMaxPrice());
         param.setGoodsArea(moduleGoods.getGoodsArea());
+        param.setGoodsAreaData(moduleGoods.getGoodsAreaData());
         param.setGoodsType(moduleGoods.getGoodsType());
         param.setSortType(moduleGoods.getSortType());
         param.setGoodsNum(moduleGoods.getGoodsNum());
@@ -742,6 +773,38 @@ public class MpDecorationService extends ShopBaseService {
         moduleGoods.setGoodsListData(pageIndexGoodsList);
 
         return moduleGoods;
+    }
+
+    /**
+     * 商品分组模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleGoodsGroup convertGoodsGroupForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException{
+        ModuleGoodsGroup moduleGoodsGroup = objectMapper.readValue(node.getValue().toString(), ModuleGoodsGroup.class);
+        Integer userId = user.getUserId();
+        GoodsGroupListMpParam param = new GoodsGroupListMpParam();
+        param.setUserId(userId);
+
+        if (!GoodsConstant.GOODS_GROUP_LIST_TOP_POSITION.equals(moduleGoodsGroup.getPositionStyle()) || !GoodsConstant.GOODS_GROUP_LIST_SHOW_ALL_COLUMN.equals(moduleGoodsGroup.getGroupDisplay())) {
+            ModuleGoodsGroup.SortGroup sortGroup = moduleGoodsGroup.getSortGroupArr().get(0);
+            GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
+            param.setSortGroupArr(Collections.singletonList(paramGroup));
+        } else {
+            List< GoodsGroupListMpParam.SortGroup> groups = new ArrayList<>();
+            for (ModuleGoodsGroup.SortGroup sortGroup : moduleGoodsGroup.getSortGroupArr()) {
+                GoodsGroupListMpParam.SortGroup paramGroup = new GoodsGroupListMpParam.SortGroup(sortGroup.getSortId(),sortGroup.getSortType(),sortGroup.getGroupGoodsId(),sortGroup.getIsAll());
+                groups.add(paramGroup);
+            }
+            param.setSortGroupArr(groups);
+        }
+        // 转换实时信息
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getGoodsGroupList(param);
+        moduleGoodsGroup.setGoodsListData(pageIndexGoodsList);
+        return moduleGoodsGroup;
     }
 
     /**
@@ -836,10 +899,28 @@ public class MpDecorationService extends ShopBaseService {
      * @throws IOException
      */
     private ModuleGroupDraw convertGroupDrawForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleGroupDraw ModuleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
+        ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
 
         // 转换实时信息
-        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(ModuleGroupDraw);
+        return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
     }
-
+    
+    /**
+     * 店招模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleShop convertShopBgForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleShop moduleShop = objectMapper.readValue(node.getValue().toString(), ModuleShop.class);
+        String shopBgPath = moduleShop.getShopBgPath();
+        if(StringUtils.isNotEmpty(shopBgPath)) {
+        	//shop_bg_path返回店铺设置中的地址
+        	ShopPojo shopInfo = saas.shop.getShopById(getShopId()).into(ShopPojo.class);
+        	moduleShop.setShopBgPath("/"+shopInfo.getShopAvatar());
+        }
+		return moduleShop;
+    }
 }

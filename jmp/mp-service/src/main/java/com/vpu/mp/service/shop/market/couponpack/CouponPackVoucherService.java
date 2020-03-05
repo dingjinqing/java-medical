@@ -22,7 +22,7 @@ public class CouponPackVoucherService extends ShopBaseService {
      * @return
      */
     public int getVoucherKindsNumber(int couponPackId){
-        return db().selectCount().from(COUPON_PACK_VOUCHER).where(COUPON_PACK_VOUCHER.ACT_ID.eq(couponPackId)).and(COUPON_PACK_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOne().into(Integer.class);
+        return db().selectCount().from(COUPON_PACK_VOUCHER).where(COUPON_PACK_VOUCHER.ACT_ID.eq(couponPackId)).and(COUPON_PACK_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchOneInto(Integer.class);
     }
 
     /**

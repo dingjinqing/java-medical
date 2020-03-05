@@ -76,9 +76,16 @@ global.wxPage({
   onLoad: function (opt) {
     if (!util.check_setting(opt)) return;
     var that = this;
-    order_sn = opt.order_sn || opt.orderSn;
     wx.hideShareMenu(); // 隐藏转发按钮
-    this.get_comment(that, 0);
+    order_sn = opt.order_sn || opt.orderSn;
+    if (opt.hasComment) {
+      this.setData({
+        currentTab: 1
+      })
+      this.get_comment(that, 1);
+    } else {
+      this.get_comment(that, 0);
+    }
   },
   // 初始化数据
   get_comment: function (that, i) {
@@ -345,7 +352,7 @@ global.wxPage({
     }
     if (item.id) {
       if (item.awardType === 2) {
-        params.award = item.id
+        params.award = item.award.id ? Number(item.award.id) : item.award
       } else if (item.awardType === 5) {
         params.award = JSON.stringify(item.award)
       }
@@ -388,7 +395,7 @@ global.wxPage({
         [1, ['pages1/integral/integral']], // 积分详情页
         [2, ['pages/coupon/coupon']], // 优惠券列表
         [3, ['pages/account/account']], // 余额详情页
-        [4, ['pages1/lottery/lottery?lottery_id=' + commentInfo.award]] // 幸运大抽奖 活动链接
+        [4, ['pages1/lottery/lottery?lotteryId=' + commentInfo.award + '&lotterySource=4']] // 幸运大抽奖 活动链接
       ])
       let action = url.get(commentInfo.awardType)
       util.jumpLink(action[0], 'navigateTo')

@@ -43,7 +43,7 @@ import com.vpu.mp.service.shop.market.gift.GiftService;
 import com.vpu.mp.service.shop.market.givegift.GiveGiftService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import com.vpu.mp.service.shop.market.groupdraw.*;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
@@ -57,6 +57,7 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
+import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -76,6 +77,7 @@ import com.vpu.mp.service.shop.summary.visit.PageService;
 import com.vpu.mp.service.shop.summary.visit.RetainService;
 import com.vpu.mp.service.shop.task.ShopTaskService;
 import com.vpu.mp.service.shop.user.cart.CartService;
+import com.vpu.mp.service.shop.user.message.MessageRecordService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.WechatMessageTemplateService;
 import com.vpu.mp.service.shop.user.user.MpOfficialAccountUserByShop;
@@ -494,4 +496,16 @@ public class ShopApplication {
 
     @Autowired
     public EnterPolitelyService enterPolitelyService;
+
+    /**
+     * 小程序端分享有礼
+     */
+    @Autowired
+    public WxShareRewardService wxShareReward;
+    
+    /**
+     * 小程序公众号短信发送记录表
+     */
+    @Autowired
+    public MessageRecordService msgRecordService;
 }

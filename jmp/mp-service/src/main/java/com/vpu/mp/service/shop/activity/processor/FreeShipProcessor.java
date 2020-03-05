@@ -28,7 +28,7 @@ public class FreeShipProcessor implements Processor,ActivityGoodsListProcessor,G
     /*****处理器优先级*****/
     @Override
     public Byte getPriority() {
-        return GoodsConstant.ACTIVITY_FULL_REDUCTION_PRIORITY;
+        return GoodsConstant.ACTIVITY_FREE_SHIP_PRIORITY;
     }
 
     @Override

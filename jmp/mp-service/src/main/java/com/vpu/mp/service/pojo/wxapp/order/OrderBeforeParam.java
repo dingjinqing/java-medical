@@ -22,7 +22,6 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -78,7 +77,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	/**下单时间*/
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Timestamp date = DateUtil.getSqlTimestamp();
-
+    /**活动免运费*/
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Byte isFreeShippingAct;
     /**
      * 指定可用的支付方式
      */
@@ -106,6 +107,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 */
 	@Getter
 	@Setter
+    @ToString
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
@@ -147,11 +149,14 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
     /**
      * 获取商品计算首单特惠活动。。。
      */
-    public OrderCartProductBo getOrderCartProductBo(){
+    public OrderCartProductBo createOrderCartProductBo(){
     	if (orderCartProductBo==null){
 			orderCartProductBo= new OrderCartProductBo();
+            orderCartProductBo.setUserId(getWxUserInfo().getUserId());
+            orderCartProductBo.setStoreId(getStoreId());
+            orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.productId, x.goodsNumber));
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber()));
 			});
 		}
         return orderCartProductBo;
@@ -171,20 +176,5 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	 */
 	public List<Integer> getProductIds() {
 		return goods == null ? Collections.emptyList() : goods.stream().map(Goods::getProductId).collect(Collectors.toList());
-	}
-
-	/**
-	 * 获取goodsMap
-	 * @return k->proId,v->goods
-	 */
-	public Map<Integer, Goods> getGoodsMap(){
-		if(goods == null) {
-			return Collections.emptyMap();
-		}else if(goodsMap != null){
-			return goodsMap;
-		}else {
-			//重复key报错
-			return goods.stream().collect(Collectors.toMap(Goods::getProductId, Function.identity()));
-		}
 	}
 }

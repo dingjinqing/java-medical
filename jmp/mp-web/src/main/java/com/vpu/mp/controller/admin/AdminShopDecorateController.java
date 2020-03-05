@@ -156,22 +156,27 @@ public class AdminShopDecorateController extends AdminBaseController {
 		return success(shop().adminDecoration.getMpQrCode(pageId));
 	}
 
-	/**
-	 * 保存装修数据
-	 *
-	 * @param  param
-	 * @return
-	 */
-	@PostMapping(value = "/admin/decorate/page/save")
-	public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
-		boolean res = shop().adminDecoration.storePage(param);
-		if(res) {
-			return this.success();
-		}else {
-			return this.fail();
-		}
-
-	}
+    /**
+     * 保存装修数据(包括更新)
+     *
+     * @param  param
+     * @return
+     */
+    @PostMapping(value = "/admin/decorate/page/save")
+    public JsonResult saveDecoration(@RequestBody @Valid PageStoreParam param) {
+        if(param.getPageState() == 2){
+            //预览，返回太阳码的图片链接
+            return this.success(shop().adminDecoration.getPreviewCode(param));
+        }else{
+            //新建或更新
+            int res = shop().adminDecoration.storePage(param);
+            if(res > 0){
+                return this.success(res);
+            }else {
+                return fail();
+            }
+        }
+    }
 
 	/**
 	 * 设置店铺风格

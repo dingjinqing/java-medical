@@ -32,5 +32,6 @@ export const cn = {
   previewEffect: '预览效果',
   remind: '提醒',
   cancel: '取消',
-  sureToDelete: '确认要删除吗？'
+  sureToDelete: '确认要删除吗？',
+  pleaseSelectClassification: '请选择页面分类'
 }

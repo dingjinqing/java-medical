@@ -26,7 +26,7 @@
           class="default_input"
         >
           <el-option
-            v-for="item in $t('order.orderStatusList')"
+            v-for="item in $t('order.orderStatus')"
             :key="item[0]"
             :label="item[1]"
             :value="item[0]"
@@ -54,7 +54,7 @@
       <div class="filters_item"><span>{{$t('marketCommon.orderTime')}}</span>
         <el-date-picker
           v-model="requestParams.createTimeStart"
-          type="datetime"
+          type="date"
           :placeholder="$t('marketCommon.orderTime')"
           size="small"
           value-format="yyyy-MM-dd HH:mm:ss"
@@ -82,6 +82,7 @@
           @click="exportDataList()"
           type="default"
           size="small"
+          class="export-data"
         >{{$t('marketCommon.export')}}</el-button>
       </div>
     </section>
@@ -132,6 +133,9 @@ export default {
       width: 90px;
       font-size: 14px;
       margin-right: 20px;
+    }
+    .export-data {
+      margin-left: 15px;
     }
   }
 }

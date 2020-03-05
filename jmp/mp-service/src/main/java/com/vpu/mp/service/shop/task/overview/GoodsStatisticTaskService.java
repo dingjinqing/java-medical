@@ -370,6 +370,13 @@ public class GoodsStatisticTaskService extends ShopBaseService {
         add(Byte.valueOf("30"));
     }};
 
+    public static final List<Byte> TYPE_LIST_1 = new ArrayList<Byte>() {{
+        add(Byte.valueOf("1"));
+        add(Byte.valueOf("7"));
+        add(Byte.valueOf("30"));
+        add(Byte.valueOf("90"));
+    }};
+
     /**
      * Insert overview.
      * 往表b2c_goods_overview_summary中插入统计数据(昨天, 前一星期, 前一个月)
@@ -494,7 +501,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
     }
 
     /**
-     * Total customer tran num set.获取指定时间范围内总成交客户数（可细分为新/老成交客户数）
+     * Total customer tran num set.获取指定时间范围内总成交客户数（付款用户数）（可细分为新/老成交客户数）
      *
      * @param startTime the start time
      * @param endTime   the end time
@@ -502,6 +509,17 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      */
     public Set<Integer> totalCustomerTranNum(Timestamp startTime, Timestamp endTime) {
         return new HashSet<>(customerTransactionNum(startTime, endTime).getValues(ORDER_I.USER_ID));
+    }
+
+    /**
+     * Total customer tran num set.获取指定时间范围内总成交人数（付款人数）（可细分为新/老成交客户数）
+     *
+     * @param startTime the start time
+     * @param endTime   the end time
+     * @return the set
+     */
+    public int totalPeopleTranNum(Timestamp startTime, Timestamp endTime) {
+        return customerTransactionNum(startTime, endTime).getValues(ORDER_I.USER_ID).size();
     }
 
     /**
@@ -782,7 +800,7 @@ public class GoodsStatisticTaskService extends ShopBaseService {
      * @return the big decimal
      */
     public BigDecimal cardOrderTurnover(Timestamp startTime, Timestamp endTime) {
-        return db().select(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE))
+        return db().select(sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)))
             .from(VIRTUAL_ORDER).where(VIRTUAL_ORDER.ORDER_STATUS.eq(BYTE_ONE))
             .and(VIRTUAL_ORDER.CREATE_TIME.ge(startTime)).and(VIRTUAL_ORDER.CREATE_TIME.lessThan(endTime))
             .fetchOptionalInto(BigDecimal.class).orElse(BIGDECIMAL_ZERO);

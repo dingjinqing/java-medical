@@ -31,7 +31,9 @@
 }
 .promotion-desc{
   flex: 1;
-  word-break: break-all;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
 }
 .right-arrow{
   width: 20rpx;

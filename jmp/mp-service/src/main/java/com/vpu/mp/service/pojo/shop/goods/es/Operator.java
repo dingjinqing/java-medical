@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.es;
 
 /**
- * 运算枚举
+ * 查询匹配枚举
  * @author 卢光耀
  * @date 2019/11/6 10:26 上午
  *

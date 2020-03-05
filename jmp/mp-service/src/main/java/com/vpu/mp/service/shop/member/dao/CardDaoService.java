@@ -213,6 +213,12 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getCardId() != null) {
 			select.where(CHARGE_MONEY.CARD_ID.eq(param.getCardId()));
 		}
+		
+		// 会员Id
+		if(param.getUserId() != null) {
+			select.where(CHARGE_MONEY.USER_ID.eq(param.getUserId()));
+		}
+		
 		// 会员卡类型
 		if (param.getCardType() != null) {
 			select.where(CHARGE_MONEY.TYPE.eq(param.getCardType()));
@@ -235,7 +241,7 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getEndTime() != null) {
 			select.where(CHARGE_MONEY.CREATE_TIME.le(param.getEndTime()));
 		}
-		if(StringUtils.isEmpty(param.getCardNo())) {
+		if(!StringUtils.isBlank(param.getCardNo())) {
 			select.where(CHARGE_MONEY.CARD_NO.eq(param.getCardNo()));
 		}
 	}

@@ -6,7 +6,7 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    
+    goodsData:Array
   },
 
   /**
@@ -30,6 +30,9 @@ global.wxComponent({
         show:false,
         isEdit:false
       })
+    },
+    cartChange(){	
+      this.triggerEvent('cartChange')	
     }
   }
 })

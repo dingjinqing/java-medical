@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import org.jooq.*;
@@ -30,6 +31,7 @@ public class DistributorLevelService extends ShopBaseService{
 	 * @return
 	 */
 	public DistributorLevelCfgVo levelConfig() {
+	    //获取每级分销员等级信息
 		Integer level_info = db().selectCount()
 				.from(DISTRIBUTOR_LEVEL)
 				.where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq((byte) 1))
@@ -331,5 +333,47 @@ public class DistributorLevelService extends ShopBaseService{
 		return bigDecimal;
 		
 	}
+
+    /**
+     * 分销等等级配置，手动升级添加分销员
+     * @param param
+     * @return
+     */
+	public Integer addDistributorTOLevel(AddDistributorToLevelParam param){
+        int result = db().update(USER)
+            .set(USER.DISTRIBUTOR_LEVEL,(param.getLevel()))
+            .where(USER.USER_ID.in(param.getUserIds()))
+            .execute();
+        return result;
+    }
+
+    /**
+     * 获取下级用户数
+     * @param userId
+     * @return
+     */
+    public Integer getNextUser(Integer userId){
+        Record1<Integer> record1 = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne();
+        if(record1 != null){
+            return record1.into(Integer.class);
+        }else{
+            return 0;
+        }
+    }
+
+    /**
+     * 根据userId获取对应分组
+     * @param userId
+     * @return
+     */
+    public DistributorLevelVo getLevelByUser(Integer userId){
+        Record record = db().select().from(USER.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
+            .where(USER.USER_ID.eq(userId)).fetchOne();
+        if(record != null){
+            return record.into(DistributorLevelVo.class);
+        }else{
+            return null;
+        }
+    }
 
 }

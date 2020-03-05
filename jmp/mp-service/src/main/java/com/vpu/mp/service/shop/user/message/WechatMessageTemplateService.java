@@ -84,18 +84,13 @@ public class WechatMessageTemplateService extends ShopBaseService {
         if( param.getMaTemplateData() != null && (type>2000)){
         	logger().info("发小程序");
             success = sendMaMessage(param,info);
-            if(!success){
-//                ServiceMessageRecord record =
-            }
+            logger().info("发小程序结果："+success);
         }
 
-		if ((param.getMpTemplateData() != null && type < 2000)|| !success && param.getMpTemplateData() != null) {
+		if ((param.getMpTemplateData() != null && type < 2000)|| (!success && param.getMpTemplateData() != null)) {
 			logger().info("发公众号");
             success = sendMpMessage(param,info);
-            logger().info("success"+success);
-        }
-        if( success ){
-            //TODO 成功后的处理逻辑
+            logger().info("发公众号结果："+success);
         }
         return success;
     }
@@ -161,7 +156,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
         }
         try{
             accountMessageService.sendMpTemplateMessage(info.getMpAppId(),info.getMpOpenId(),
-                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage());
+                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),param.getUserIdList());
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;

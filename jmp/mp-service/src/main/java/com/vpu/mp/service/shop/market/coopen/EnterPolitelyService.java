@@ -46,6 +46,7 @@ import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConst
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.operation.RemarkTemplate.ENTER_HAS_GIFT;
 import static com.vpu.mp.service.pojo.shop.overview.OverviewConstant.STRING_ONE;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
 import static org.apache.commons.lang3.math.NumberUtils.*;
@@ -111,10 +112,15 @@ public class EnterPolitelyService extends ShopBaseService {
         AwardVo award;
         try {
             UserRecord userRecord = userService.getUserByUserId(userId);
-            if (Objects.isNull(userRecord))
+            if (Objects.isNull(userRecord)) {
                 throw new BusinessException(JsonResultCode.CODE_FAIL);
+            }
             // 获取进行中的开屏有礼活动（取优先级最高的活动）
-            CoopenActivityRecord record = getProcessingActivity().stream().findFirst().orElseThrow(() -> new BusinessException(JsonResultCode.CODE_FAIL));
+            Optional<CoopenActivityRecord> optional = getProcessingActivity().stream().findFirst();
+            if (!optional.isPresent()) {
+                return noAward;
+            }
+            CoopenActivityRecord record = optional.get();
             int activityId = record.getId();
             noAward.setActivityId(activityId);
             // 先查缓存，key = enter_politely_shopId_activityId_userId
@@ -230,6 +236,7 @@ public class EnterPolitelyService extends ShopBaseService {
                     setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                     setPayment(PAY_CODE_BALANCE_PAY);
                     setIsPaid(UACCOUNT_RECHARGE.val());
+                    setRemarkId(ENTER_HAS_GIFT.code);
                 }};
                 TradeOptParam tradeOptParam = TradeOptParam.builder()
                     .tradeType(TYPE_CRASH_PAY_AWARD.val())
@@ -255,6 +262,7 @@ public class EnterPolitelyService extends ShopBaseService {
                 scoreParam.setUserId(userId);
                 scoreParam.setOrderSn(Objects.isNull(bo) ? StringUtils.EMPTY : bo.getOrderSn());
                 scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(ENTER_HAS_GIFT.code);
                 try {
                     scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
                 } catch (MpException e) {
@@ -285,9 +293,10 @@ public class EnterPolitelyService extends ShopBaseService {
      */
     public List<CoopenActivityRecord> getProcessingActivity() {
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        Condition timeCon = COOPEN.START_DATE.lessThan(now).and(COOPEN.END_DATE.greaterThan(now));
+        Condition timeCon1 = COOPEN.IS_FOREVER.eq(INTEGER_ONE);
         Condition condition = COOPEN.DEL_FLAG.eq(BYTE_ZERO)
-            .and(COOPEN.START_DATE.lessThan(now).and(COOPEN.END_DATE.greaterThan(now)))
-            .or(COOPEN.IS_FOREVER.eq(INTEGER_ONE))
+            .and(timeCon.or(timeCon1))
             .and(COOPEN.STATUS.eq(BYTE_ONE));
         return db().selectFrom(COOPEN).where(condition).orderBy(COOPEN.FIRST.desc(), COOPEN.CREATE_TIME.desc()).fetchInto(COOPEN);
     }

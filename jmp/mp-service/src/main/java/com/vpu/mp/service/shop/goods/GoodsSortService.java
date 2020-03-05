@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods;
 
 import com.google.common.base.Functions;
+import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -391,7 +392,7 @@ public class GoodsSortService extends ShopBaseService {
         if( idResult.isNotEmpty() ){
             return getSort(getIdListByRecord3(idResult));
         }
-        return new HashMap<>(0);
+        return Maps.newHashMap();
     }
     private List<Integer> getIdListByRecord3(Result<Record3<Integer,Integer,Integer>> idResult){
         List<Integer> result = new ArrayList<>(idResult.size()*3);

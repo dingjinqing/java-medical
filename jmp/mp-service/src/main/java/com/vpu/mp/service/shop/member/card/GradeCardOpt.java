@@ -40,12 +40,21 @@ public class GradeCardOpt extends CardOpt {
 		//	是否拥有会员卡
 		if(uCardSvc.isHasAvailableGradeCard(userId)) {
 			//	设置卡等级
+			logger().info("更换等级卡卡号");
 			MemberCardRecord oldCard = uCardSvc.getUserGradeCard(userId);
 			MemberCardRecord newCard = mCardSvc.getCardById(cardId);
-			uCardSvc.changeUserGradeCard(userId, oldCard, newCard, "");
-			return uCardSvc.getCardNoByUserAndCardId(userId,cardId);
+			if(oldCard != null && newCard != null) {
+				// 检测是否为同一张卡
+				if(!oldCard.getId().equals(cardId)) {
+					uCardSvc.changeUserGradeCard(userId, oldCard, newCard, "");
+					return uCardSvc.getCardNoByUserAndCardId(userId,cardId);
+				}
+			}
+			return null;
+			
 		}else {
 			//	直接发卡
+			logger().info("直接发卡");
 			MemberCardRecord card = mCardSvc.getCardById(cardId);
 			
 			UserCardRecord newCard = UserCardRecordBuilder.create()
@@ -71,7 +80,8 @@ public class GradeCardOpt extends CardOpt {
 
 	@Override
 	public boolean canSendCard(Integer userId, Integer cardId) {
-		// TODO 等待产品规划发放等级卡业务
+		// 等待产品规划发放等级卡业务->目前admin后台权限是放开的
+		
 		return true;
 	}
 }

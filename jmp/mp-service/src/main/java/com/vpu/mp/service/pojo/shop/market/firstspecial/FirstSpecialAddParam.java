@@ -1,15 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-
-import lombok.Data;
-import org.hibernate.validator.constraints.Range;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author: 王兵兵
@@ -63,5 +61,5 @@ public class FirstSpecialAddParam {
 
     /** 分享设置 */
     @NotNull
-    private ShopShareConfig shareConfig;
+    private PictorialShareConfig shareConfig;
 }

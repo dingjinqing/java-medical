@@ -1,36 +1,39 @@
 <!--
-* 砍价 - 用户信息列表页面
+* 砍价 - 砍价用户页面
 *
 * @author:赵鑫
 -->
 <template>
   <div>
     <!-- 上半部分：筛选条件查询部分 -->
-    <wrapper style="padding: 0 30px">
+    <div class="filter-conditions">
       <section class="bargainUserMain">
         <div class="bargainUserInfo">
-          <span>{{$t('marketCommon.username')}}</span>
+          <span>{{$t('marketCommon.username')+"："}}</span>
           <el-input
             v-model="requestParams.username"
             size="small"
             class="inputWidth"
+            clearable
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>{{$t('marketCommon.mobile')}}</span>
+          <span>{{$t('marketCommon.mobile')+"："}}</span>
           <el-input
             v-model="requestParams.mobile"
             size="small"
             class="inputWidth"
+            clearable
           ></el-input>
         </div>
         <div class="bargainUserInfo">
-          <span>{{$t('bargainList.bargainStatus')}}</span>
+          <span>{{$t('bargainList.bargainStatus')+"："}}</span>
           <el-select
             v-model="requestParams.status"
             :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="inputWidth"
+            clearable
           >
             <el-option
               :value="1"
@@ -50,7 +53,7 @@
       </section>
       <section class="bargainUserMain infoBottom">
         <div style="display:flex">
-          <span style="height:32px;line-height:32px;margin-right:20px">{{$t('bargainList.initiatedTime')}}</span>
+          <span style="height:32px;line-height:32px;margin-right:5px">{{$t('bargainList.initiatedTime')+"："}}</span>
           <el-date-picker
             v-model="createDate"
             type="datetimerange"
@@ -66,16 +69,67 @@
           <el-button
             type="primary"
             size="small"
+            @click="initDataList"
           >{{$t('marketCommon.filter')}}</el-button>
         </div>
         <div>
-          <el-button size="small">{{$t('marketCommon.export')}}</el-button>
+          <el-button
+            size="small"
+            @click="exportData"
+          >{{$t('marketCommon.export')}}</el-button>
         </div>
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          custom-class="custom"
+          width="30%"
+          style="font-size: 20px;"
+          center
+        >
+          <!-- <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div> -->
+          <!-- <div class="tips-content2">筛选条件：无</div> -->
+          <div>筛选条件：</div>
+          <div
+            v-for="(item, key, index) in param"
+            :key="index"
+          >
+            <div v-if="ok(key,item)">
+              <div v-if="key === 'orderStatus'">
+                {{$t('orderSearch.'+key)}}:
+                <span
+                  v-for="status in item"
+                  :key="status"
+                >
+                  {{orderStatusMap.get(status)}}
+                </span>
+              </div>
+              <div
+                v-else
+                style="margin-top: 10px;"
+              >{{$t('orderSearch.'+key)}}:{{item}}</div>
+            </div>
+          </div>
+
+          <span
+            slot="footer"
+            class="dialog-footer"
+          >
+            <el-button
+              size="small"
+              @click="dialogVisible = false"
+            >取 消</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handelConfirm"
+            >确 定</el-button>
+          </span>
+        </el-dialog>
       </section>
-    </wrapper>
+    </div>
 
     <!-- 下半部分：表格数据部分 -->
-    <wrapper>
+    <div class="table">
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -160,22 +214,22 @@
           @pagination="initDataList"
         />
       </div>
-    </wrapper>
+    </div>
 
   </div>
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
-import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
 import pagination from '@/components/admin/pagination/pagination'
-import { getRecordPageList } from '@/api/admin/marketManage/bargain.js'
+import { getRecordPageList, exportBargainUserData } from '@/api/admin/marketManage/bargain.js'
+import { download } from '@/util/excelUtil.js'
 
 export default {
-  components: { wrapper, dateTimePicker, pagination },
+  components: { pagination },
   mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
+      console.log(this.$route, 'get id')
       this.actId = this.$route.query.id
       this.initDataList()
     }
@@ -187,9 +241,14 @@ export default {
       pageParams: {},
       tableData: [],
       createDate: '',
+      actId: '',
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+
+      // 导出数据接口参数
+      dialogVisible: false,
+      param: Object
     }
   },
   methods: {
@@ -201,6 +260,7 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       getRecordPageList(this.requestParams).then((res) => {
+        console.log(res, 'get res')
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
@@ -236,6 +296,26 @@ export default {
           recordId: id
         }
       })
+    },
+
+    // 表格导出
+    exportData () {
+      this.dialogVisible = true
+    },
+    handelConfirm () {
+      console.log(this.tableData, 'get tableData')
+      exportBargainUserData({
+        // 'bargainId': this.actId,
+        // 'status': this.tableData.status[1],
+        // 'username': this.tableData.username[1]
+      }).then(res => {
+        if (res.error === 0) {
+          console.log(res, 'excle-res')
+          let fileName = localStorage.getItem('V-content-disposition')
+          fileName = fileName.split(';')[1].split('=')[1]
+          download(res, decodeURIComponent(fileName))
+        }
+      }).catch(err => console.log(err))
     }
   },
   watch: {
@@ -254,12 +334,40 @@ export default {
 * {
   font-size: 14px;
 }
+.filter-conditions {
+  margin: 10px;
+  padding: 20px 30px;
+  background: #fff;
+}
+.table {
+  margin: 0 10px 10px;
+  padding: 15px;
+  background: #fff;
+}
+.tips-content1 {
+  margin: 0 0 20px;
+}
+/deep/ .custom {
+  .el-dialog__header {
+    background: #f3f3f3;
+    padding-top: 10px;
+    .el-dialog__title {
+      font-size: 14px;
+    }
+    .el-dialog__headerbtn {
+      top: 10px;
+    }
+  }
+  .el-checkbox-button.is-disabled .el-checkbox-button__inner {
+    background-color: #f5f7fa;
+  }
+}
 .bargainUserMain {
   display: flex;
   .bargainUserInfo {
     margin-right: 50px;
     span {
-      margin-right: 20px;
+      margin-right: 5px;
     }
     .inputWidth {
       width: 150px;
@@ -275,8 +383,5 @@ export default {
   height: 36px;
   color: #000;
   padding: 8px 10px;
-}
-.table_list {
-  position: relative;
 }
 </style>

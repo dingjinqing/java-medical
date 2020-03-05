@@ -15,4 +15,10 @@ public class ExtBo {
     private String customizeImgPath;
     private String orderSn;
     private String activityName;
+    private Integer userId;
+    /**
+     * 积分来源
+     */
+    private Integer changeWay;
+    private Integer goodsId;
 }

@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
@@ -59,6 +60,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -1065,9 +1067,20 @@ public class MemberCardService extends ShopBaseService {
 
 		return cardList;
 	}
-
 	/**
-	 * 	会员卡列表
+	 * 获取可用会员卡列表
+	 */
+	public List<UserAction> getUsableMemberCardList() {
+		Timestamp localDateTime = DateUtil.getLocalDateTime();
+		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME.as("name")).from(MEMBER_CARD)
+				.where(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+				.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
+				.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.END_TIME.ge(localDateTime)))
+						.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER)))
+				.fetchInto(UserAction.class);
+	}
+	/**
+	 * 会员卡列表
 	 *
 	 * @return
 	 */
@@ -1087,11 +1100,9 @@ public class MemberCardService extends ShopBaseService {
 			cardVo.setLegal(legal);
 			cardVo.setExchangCountLegal(exchangCountLegal);
 			cardVo.setLegalFlag(legalFlag);
-			if(CardUtil.isBgImgType(cardVo.getBgType())) {
-				if(!StringUtils.isBlank(cardVo.getBgImg())) {
-					String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
-					cardVo.setBgImg(imageUrl);
-				}
+			if(!StringUtils.isBlank(cardVo.getBgImg())) {
+				String imageUrl = saas.getShopApp(getShopId()).image.imageUrl(cardVo.getBgImg());
+				cardVo.setBgImg(imageUrl);
 			}
 			if (MCARD_TP_NORMAL.equals(cardType)) {
 				vo.getNormalCard().add(cardVo);
@@ -1180,8 +1191,17 @@ public class MemberCardService extends ShopBaseService {
 	 * 查询所有的会员卡
 	 */
 	private Result<MemberCardRecord> selectAllMemberCard(CardParam param) {
-		logger().info("查询所有有效会员卡");
+		logger().info("查询所有会员卡");
+		Result<MemberCardRecord> cardRecords = db().selectFrom(MEMBER_CARD)
+				.where(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
+				.and(getCondition(param))
+				.fetch();
+		return cardRecords;
+	}
+
+	private Condition getCondition(CardParam param) {
 		Condition condition = DSL.noCondition();
+
 		//	有效时间
 		
 		condition = condition.and(MEMBER_CARD.EXPIRE_TYPE.eq(CardConstant.MCARD_ET_DURING)
@@ -1195,15 +1215,11 @@ public class MemberCardService extends ShopBaseService {
 		if(null != param.getCardType()) {
 			condition = condition.and(MEMBER_CARD.CARD_TYPE.eq(param.getCardType()));
 		}
-		if(!StringUtils.isBlank(param.getCardName())) {
-			String cardName = param.getCardName().trim();
-			condition = condition.and(MEMBER_CARD.CARD_NAME.like(likeValue(cardName)));
+		if(isNotBlank(param.getCardName())) {
+			condition = condition.and(MEMBER_CARD.CARD_NAME.like(likeValue(param.getCardName())));
 		}
-		
-		return db().selectFrom(MEMBER_CARD).where(condition).fetch();
+		return condition;
 	}
-
-	
 
 	/**
 	 * 为会员分配会员卡
@@ -1216,9 +1232,13 @@ public class MemberCardService extends ShopBaseService {
 		
 		for(Integer cardId: cardIdList) {
 			MemberCardRecord card = this.getCardById(cardId);
-			CardOpt cardOpt = getCardOpt(card.getCardType());
-			for(Integer userId: userIdList) {
-				cardOpt.handleSendCard(userId, cardId, true);
+			if(card != null) {
+				CardOpt cardOpt = getCardOpt(card.getCardType());
+				for(Integer userId: userIdList) {
+					cardOpt.handleSendCard(userId, cardId, true);
+				}
+			}else {
+				logger().info("该卡: "+cardId+" 不存在");
 			}
 		}
 	}
@@ -1961,7 +1981,7 @@ public class MemberCardService extends ShopBaseService {
 
         //用户已经领取该卡的数量
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
-        if(vo.getCardType().equals(MCARD_TP_LIMIT) && vo.getLimit() > 1){
+        if(vo.getCardType().equals(MCARD_TP_LIMIT)){
             //限次卡，还有库存 或 不限库存
         	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
         	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();

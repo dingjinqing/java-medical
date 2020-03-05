@@ -13,7 +13,8 @@ public enum DelFlag {
 	//删除状态
 	DISABLE((byte)1);
 	
-	private byte code;
+	private byte code; 
+
 
 	private DelFlag(byte code) {
 		this.code = code;
@@ -31,4 +32,5 @@ public enum DelFlag {
      */
     public static final Byte NORMAL_VALUE=0;
 	public static final Byte DISABLE_VALUE=1;
+
 }

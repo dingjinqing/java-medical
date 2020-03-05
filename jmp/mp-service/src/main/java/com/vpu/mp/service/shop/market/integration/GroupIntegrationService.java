@@ -14,7 +14,9 @@ import java.util.Map;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
+import com.vpu.mp.service.pojo.shop.market.integration.*;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -26,12 +28,6 @@ import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 
@@ -52,8 +48,20 @@ public class GroupIntegrationService extends ShopBaseService {
     /**是否开团24小时自动开奖*/
     public static final Byte IS_DAY_DIVIDE_Y = 1;
     public static final Byte IS_DAY_DIVIDE_N = 0;
-    
-	
+    /**活动状态：启用*/
+    public static final Byte STATUS_NORMAL = 1;
+
+    public List<ActSelectList> getActSelectList() {
+        List<ActSelectList> result = db().select(GROUP_INTEGRATION_DEFINE.ID,GROUP_INTEGRATION_DEFINE.NAME)
+            .from(GROUP_INTEGRATION_DEFINE)
+            .where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(GROUP_INTEGRATION_DEFINE.STATUS.eq(STATUS_NORMAL))
+            .and(GROUP_INTEGRATION_DEFINE.START_TIME.lessThan(Util.currentTimeStamp())
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp())))
+            .fetchInto(ActSelectList.class);
+        return result;
+    }
+
 	/**
 	 * 分页查询瓜分积分活动列表
 	 * @param pageParam

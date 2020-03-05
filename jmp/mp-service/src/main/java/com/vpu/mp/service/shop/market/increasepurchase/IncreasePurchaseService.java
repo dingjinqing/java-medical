@@ -296,7 +296,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         if (StringUtils.isNotBlank(param.getMobile())) {
             conditionStep = conditionStep.and(oi.MOBILE.like(likeValue(param.getMobile())));
         }
-        if(param.orderStatus != null && param.orderStatus.length != 0){
+        if(param.getOrderStatus() != null && param.getOrderStatus().length != 0){
             conditionStep = conditionStep.and(oi.ORDER_STATUS.in(param.getOrderStatus()));
         }
         if (param.getProvinceCode() != null) {

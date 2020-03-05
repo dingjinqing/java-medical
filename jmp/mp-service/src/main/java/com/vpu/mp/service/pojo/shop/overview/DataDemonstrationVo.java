@@ -20,13 +20,21 @@ public class DataDemonstrationVo {
     /** 下单用户数 */
     private int orderUserNum;
     /**
+     * 下单人数
+     */
+    private int orderPeopleNum;
+    /**
      * 下单笔数
      */
     private int orderNum;
     /** 总支付金额 */
-    private int totalPaidSum;
+    private BigDecimal totalPaidSum;
     /** 支付用户数 */
     private int paidUserNum;
+    /**
+     * 支付人数
+     */
+    private int payPeopleNum;
     /** 访问下单转化率 */
     private BigDecimal uv2order;
     /** 访问支付转化率*/

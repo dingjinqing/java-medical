@@ -32,5 +32,6 @@ export const en = {
   previewEffect: 'Preview effect',
   remind: 'Remind',
   cancel: 'Cancel',
-  sureToDelete: 'Are you sure you want to delete?'
+  sureToDelete: 'Are you sure you want to delete?',
+  pleaseSelectClassification: 'Please select a page classification'
 }

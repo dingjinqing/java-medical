@@ -77,10 +77,10 @@
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
       <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
       <view class="goods_info">
-        <view class="goods_name">{{goodsItem.goodsName}}</view>
+        <view class="goods_name"><text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>{{goodsItem.goodsName}}</view>
         <view class="goods_spec">{{goodsItem.goodsAttr}}</view>
         <view class="goods_price_num">
-          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.goodsPrice}}</view>
+          <view class="goods_price" style="color:{{comColor}}">￥{{goodsItem.discountedGoodsPrice}}</view>
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
@@ -173,7 +173,7 @@
     <view class="order_info">
       <text class="title">{{i18n.$t(localePack,"pages.order.orderDetail")}}</text>
       <view class="order_item" selectable>
-        <text class="activity_icon" wx:if="{{orderInfo.activityName}}">{{orderInfo.activityName}}</text>
+        <text class="activity_icon" style="border-color:{{comColor}};color:{{comColor}};" wx:if="{{orderInfo.activityName}}">{{orderInfo.activityName}}</text>
         <text>{{i18n.$t(localePack,"pages.order.orderSn")}}：{{orderInfo.orderSn}}</text>
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>

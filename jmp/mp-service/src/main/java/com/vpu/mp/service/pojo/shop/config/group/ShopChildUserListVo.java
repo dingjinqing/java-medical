@@ -4,10 +4,6 @@ package com.vpu.mp.service.pojo.shop.config.group;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.vpu.mp.service.foundation.util.PageResult;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -8,6 +8,7 @@ import org.jooq.Result;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -134,8 +135,8 @@ public class AdminWechatApiController extends AdminBaseController {
 		//最新版本id
 		logger().info("开始查询最新版本id");
 		MpVersionRecord mpRecord = saas.shop.mpVersion.getCurrentUseVersion(record.getAppId(),(byte)1);
-		into.setCurrentTemplateId(mpRecord.getTemplateId());
-		into.setCurrentUserVersion(mpRecord.getUserVersion());
+		into.setCurrentTemplateId(mpRecord == null ? 0 : mpRecord.getTemplateId());
+		into.setCurrentUserVersion(mpRecord == null ? "0.0.0" : mpRecord.getUserVersion());
 		//当前版本名字
 		logger().info("开始查询当前版本名字，版本ID为"+record.getBindTemplateId());
 		MpVersionRecord row = saas.shop.mpVersion.getRow(record.getBindTemplateId());
@@ -251,7 +252,7 @@ public class AdminWechatApiController extends AdminBaseController {
 			return false;
 		}
 		AdminTokenAuthInfo user = adminAuth.user();
-		assert (user != null && user.isShopLogin());
+		Assert.isTrue(user != null && user.isShopLogin(),"user is null");
 		if (!sendSysId.equals(user.sysId)) {
 			// 没有权限
 			return false;

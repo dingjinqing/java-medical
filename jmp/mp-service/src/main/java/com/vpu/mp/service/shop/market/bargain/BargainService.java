@@ -5,19 +5,19 @@ import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleBargain;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
+import com.vpu.mp.service.pojo.shop.market.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
@@ -28,6 +28,8 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -36,8 +38,11 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -152,10 +157,17 @@ public class BargainService extends ShopBaseService  {
 	 * 新建砍价活动
 	 *
 	 */
-	public void addBargain(BargainAddParam param) {
+	public void addBargain(BargainAddParam param){
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
 		if(param.getShareConfig() != null) {
+            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
 		db().executeInsert(record);
@@ -172,9 +184,16 @@ public class BargainService extends ShopBaseService  {
 	public void updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
-		if(param.getShareConfig() != null) {
-			record.setShareConfig(Util.toJson(param.getShareConfig()));
-		}
+        if(param.getShareConfig() != null) {
+            if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                try {
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            record.setShareConfig(Util.toJson(param.getShareConfig()));
+        }
 		db().executeUpdate(record);
 		//刷新goodsType
 		saas.getShopApp(getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
@@ -200,11 +219,11 @@ public class BargainService extends ShopBaseService  {
 	 *
 	 */
 	public BargainUpdateVo getBargainByIsd(Integer bargainId) {
-        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOne().into(BargainUpdateVo.class);
+        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOneInto(BargainUpdateVo.class);
 		if(bargain != null) {
 			bargain.setGoods(saas().getShopApp(getShopId()).goods.getGoodsView(bargain.getGoodsId()));
             bargain.setShopShareConfig(Util.parseJson(bargain.getShareConfig(), PictorialShareConfigVo.class));
-            if(bargain.getShopShareConfig() != null && bargain.getShopShareConfig().getShareImg() != null){
+            if(bargain.getShopShareConfig() != null && StringUtil.isNotEmpty(bargain.getShopShareConfig().getShareImg())){
                 bargain.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(bargain.getShopShareConfig().getShareImg()));
             }
             bargain.setMrkingVoucherList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getMrkingVoucherId())));
@@ -346,12 +365,12 @@ public class BargainService extends ShopBaseService  {
      * @return bool
      */
     public boolean isOnGoingBargain(int goodsId,Timestamp startTime,Timestamp endTime){
-        Record r = db().select(BARGAIN.ID).from(BARGAIN).where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchOne();
+        Record r = db().select(BARGAIN.ID).from(BARGAIN).where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(BARGAIN.GOODS_ID.eq(goodsId)).and(isConflictingActTime(startTime,endTime))).fetchAny();
         return r != null;
     }
 
     private Condition isConflictingActTime(Timestamp startTime,Timestamp endTime){
-        return (BARGAIN.START_TIME.gt(startTime).and(BARGAIN.START_TIME.lt(endTime))).or(BARGAIN.END_TIME.gt(startTime).and(BARGAIN.END_TIME.lt(endTime))).or(BARGAIN.START_TIME.lt(startTime).and(BARGAIN.END_TIME.gt(endTime)));
+        return (BARGAIN.START_TIME.ge(startTime).and(BARGAIN.START_TIME.le(endTime))).or(BARGAIN.END_TIME.ge(startTime).and(BARGAIN.END_TIME.le(endTime))).or(BARGAIN.START_TIME.le(startTime).and(BARGAIN.END_TIME.ge(endTime)));
     }
 
     /**
@@ -424,5 +443,28 @@ public class BargainService extends ShopBaseService  {
      */
     public void updateBargainStock(int bargainId,int number){
         db().update(BARGAIN).set(BARGAIN.STOCK,BARGAIN.STOCK.sub(number)).set(BARGAIN.SALE_NUM,BARGAIN.SALE_NUM.add(number)).where(BARGAIN.ID.eq(bargainId)).execute();
+    }
+
+    public Workbook exportBargainOrderList(MarketOrderListParam param,String lang){
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_BARGAIN);
+
+        List<BargainOrderExportVo> res = new ArrayList<>();
+        list.forEach(order->{
+            BargainOrderExportVo vo = new BargainOrderExportVo();
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoodsName(order.getGoods().get(0).getGoodsName());
+            vo.setPrice(order.getGoods().get(0).getGoodsPrice());
+            vo.setCreateTime(order.getCreateTime());
+            vo.setUsername(order.getUsername());
+            vo.setConsignee(order.getConsignee());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(res, BargainOrderExportVo.class);
+        return workbook;
     }
 }

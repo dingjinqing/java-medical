@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.UploadedVideo.UPLOADED_VIDEO;
 public class GoodsVideoBo {
 
     private Integer id;
+    private Integer goodsId;
     private String url;
     private String imgUrl;
     private Integer size;
@@ -18,12 +19,21 @@ public class GoodsVideoBo {
     public GoodsVideoBo(){}
 
     public GoodsVideoBo(Record record){
+        this.goodsId = record.get(GOODS.GOODS_ID);
         this.id = record.get(UPLOADED_VIDEO.VIDEO_ID);
         this.size = record.get(GOODS.GOODS_VIDEO_SIZE);
         this.url = record.get(GOODS.GOODS_VIDEO);
         this.imgUrl = record.get(GOODS.GOODS_VIDEO_IMG);
         this.width = record.get(UPLOADED_VIDEO.VIDEO_WIDTH);
         this.height = record.get(UPLOADED_VIDEO.VIDEO_HEIGHT);
+    }
+
+    public Integer getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
     }
 
     public Integer getId() {

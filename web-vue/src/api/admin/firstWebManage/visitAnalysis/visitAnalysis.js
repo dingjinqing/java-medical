@@ -12,7 +12,15 @@ export function amountAnalysis (data) {
     data: data
   })
 }
-
+// 表格导出
+export function excelExport (data) {
+  return service({
+    url: '/api/admin/summary/visit/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
 // 访问分布
 export function distributionAnalysis (data) {
   return service({
@@ -37,5 +45,22 @@ export function pageAnalysis (data) {
     url: '/api/admin/summary/visit/page',
     method: 'post',
     data: data
+  })
+}
+
+// 来源分析折线图
+export function sourceAnalysis (data) {
+  return service({
+    url: '/api/admin/summary/source/distribution',
+    method: 'post',
+    data: data
+  })
+}
+
+// 来源下拉
+export function sourceSelect () {
+  return service({
+    url: '/api/admin/summary/source/selectoption',
+    method: 'get'
   })
 }

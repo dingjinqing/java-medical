@@ -216,5 +216,10 @@ export const cn = {
     }
   ],
   putItHere: '放这里',
-  seizeASeat: '拖拽左侧模块进行装修'
+  seizeASeat: '拖拽左侧模块进行装修',
+  pagePublishingReminder: '页面发布提醒',
+  pagePublishingReminderTip: '页面将自动保存为草稿并发布到线上',
+  cancel: '取 消',
+  determine: '确 定',
+  scanningPreview: '手机扫码预览'
 }

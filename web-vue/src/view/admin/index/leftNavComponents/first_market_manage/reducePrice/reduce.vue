@@ -170,7 +170,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-s-data"
-                  @click="seckillEffectHandler(scope.row.id)"
+                  @click="reduceEffectHandler(scope.row.id)"
                 ></span>
               </el-tooltip>
             </div>
@@ -363,8 +363,8 @@ export default {
     },
 
     // 活动效果数据
-    seckillEffectHandler (id) {
-      // this.$router.push({ name: 'reduce_order_list', query: { id: id } })
+    reduceEffectHandler (id) {
+      this.$router.push({ name: 'reduce_effect_view', query: { id: id } })
     }
   }
 }

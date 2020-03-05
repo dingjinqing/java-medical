@@ -298,13 +298,16 @@ export default {
     }
 
   },
+  mounted () {
+    this.langDefault()
+  },
   data () {
     return {
       leftNavData: [
         {
           backGroundImgUrl: this.$imageHost + '/image/admin/discount.png',
           title: this.$t('memberCard.memberAd'),
-          children: ['指定商品折扣', '全部商品折扣']
+          children: [this.$t('memberCard.defineGoodsDis'), this.$t('memberCard.allGoodsDis')]
         },
         {
           backGroundImgUrl: this.$imageHost + '/image/admin/score_mem.png',

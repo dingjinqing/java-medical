@@ -139,7 +139,7 @@
                       <span
                         v-else
                         class="card_state"
-                      >{{item.cardState===1?'使用中':'停止使用'}}</span>
+                      >{{(item.cardState===1||item.cardState==='1')?'使用中':'停止使用'}}</span>
                     </div>
                     <!-- <p
                       class="receive_day"
@@ -198,78 +198,216 @@ export default {
       input: '',
       showCardList: [],
       ordinaryCardData: [
-        // {
-        //   'card_name': '普通卡续费测试1',
-        //   'card_id': 1,
-        //   'isChecked': false,
-        //   'card_state': '使用中',
-        //   'card_grade': 'v1',
-        //   'card_type': '0',
-        //   'receive_day': '有效期:永久有效',
-        //   'legal': '会员折扣9折',
-        //   'exchang_count_legal': '开卡赠送10次兑换商品机会',
-        //   'bg_type': '0',
-        //   'bg_color': '#ecca90',
-        //   'bg_img': '',
-        //   'is_pay': '2',
-        //   'pay_type': '0',
-        //   'pay_fee': '0.00'
+        {
+          'card_name': '普通卡续费测试1',
+          'card_id': 1,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
 
-        // },
-        // {
-        //   'card_name': '普通卡续费测试2',
-        //   'card_id': 2,
-        //   'isChecked': false,
-        //   'card_state': '使用中',
-        //   'card_grade': 'v1',
-        //   'card_type': '0',
-        //   'receive_day': '有效期:永久有效',
-        //   'legal': '会员折扣9折',
-        //   'exchang_count_legal': '开卡赠送10次兑换商品机会',
-        //   'bg_type': '0',
-        //   'bg_color': '#990000',
-        //   'bg_img': '',
-        //   'is_pay': '2',
-        //   'pay_type': '0',
-        //   'pay_fee': '0.00'
-        // },
-        // {
-        //   'card_name': '普通卡续费测试3',
-        //   'card_id': 3,
-        //   'isChecked': false,
-        //   'card_state': '使用中',
-        //   'card_grade': 'v1',
-        //   'card_type': '0',
-        //   'receive_day': '有效期:永久有效',
-        //   'legal': '会员折扣9折',
-        //   'exchang_count_legal': '开卡赠送10次兑换商品机会',
-        //   'bg_type': '0',
-        //   'bg_color': '#66FF2B',
-        //   'bg_img': '',
-        //   'is_pay': '2',
-        //   'pay_type': '0',
-        //   'pay_fee': '0.00'
-        // },
-        // {
-        //   'card_name': '普通卡续费测试4',
-        //   'card_id': 4,
-        //   'isChecked': false,
-        //   'card_state': '使用中',
-        //   'card_grade': 'v1',
-        //   'card_type': '0',
-        //   'receive_day': '有效期:永久有效',
-        //   'legal': '会员折扣9折',
-        //   'exchang_count_legal': '开卡赠送10次兑换商品机会',
-        //   'bg_type': '1',
-        //   'bg_color': '#666666',
-        //   'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
-        //   'is_pay': '2',
-        //   'pay_type': '0',
-        //   'pay_fee': '0.00'
-        // }
+        },
+        {
+          'card_name': '普通卡续费测试2',
+          'card_id': 2,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '普通卡续费测试3',
+          'card_id': 3,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '普通卡续费测试4',
+          'card_id': 4,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '0',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        }
       ],
-      limitCardData: [],
-      gradeCardData: [],
+      limitCardData: [
+        {
+          'card_name': '限次卡续费测试1',
+          'card_id': 5,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '限次卡续费测试2',
+          'card_id': 6,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '限次卡续费测试3',
+          'card_id': 7,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '限次卡续费测试4',
+          'card_id': 8,
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_grade': 'v1',
+          'card_type': '1',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        }
+      ],
+      gradeCardData: [
+        {
+          'card_name': '等级卡续费测试1',
+          'card_id': 5,
+          'card_grade': 'v9',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#ecca90',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '等级卡续费测试2',
+          'card_id': 6,
+          'card_grade': 'v6',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#990000',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '等级卡续费测试3',
+          'card_id': 7,
+          'card_grade': 'v2',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '0',
+          'bg_color': '#66FF2B',
+          'bg_img': '',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        },
+        {
+          'card_name': '等级卡续费测试4',
+          'card_id': 8,
+          'card_grade': 'v4',
+          'isChecked': false,
+          'card_state': '使用中',
+          'card_type': '2',
+          'receive_day': '有效期:永久有效',
+          'legal': '会员折扣9折',
+          'exchang_count_legal': '开卡赠送10次兑换商品机会',
+          'bg_type': '1',
+          'bg_color': '#666666',
+          'bg_img': this.$imageHost + '/image/admin/fighting_group_draw1.jpg',
+          'is_pay': '2',
+          'pay_type': '0',
+          'pay_fee': '0.00'
+        }
+      ],
       nowChecked: '',
       zcCheckedData: '',
       overallColor: null
@@ -295,29 +433,33 @@ export default {
       immediate: true
     },
     radio (newData) {
+      this.handleToSearchCard()
       this.showCardList.forEach(item => {
         item.isChecked = false
       })
-      switch (newData) {
-        case '1':
-          this.showCardList = this.ordinaryCardData
-          break
-        case '2':
-          this.showCardList = this.limitCardData
-          break
-        case '3':
-          this.showCardList = this.gradeCardData
-      }
+      // switch (newData) {
+      //   case '1':
+      //     this.showCardList = this.ordinaryCardData
+      //     break
+      //   case '2':
+      //     this.showCardList = this.limitCardData
+      //     break
+      //   case '3':
+      //     this.showCardList = this.gradeCardData
+      // }
     },
     checked (newData) {
       // 如果已经有选中数据则直接改变数据里的isHidden项，若果没有则等待弹窗选中确认后，将是否隐藏卡片checked值赋予选中的数据中的isHidden.
-      if (this.nowChecked.id) {
+      console.log(this.nowChecked)
+      if (this.nowChecked.card_id) {
         if (newData) { // 将checked得值转化为0 1
           this.nowChecked.hidden_card = 1
         } else {
           this.nowChecked.hidden_card = 0
         }
         console.log(this.nowChecked)
+        this.nowChecked['cur_idx'] = this.modulesData.cur_idx
+        this.nowChecked['module_name'] = this.modulesData.module_name
         this.$emit('handleToBackData', this.nowChecked)
       }
     }
@@ -359,6 +501,16 @@ export default {
       this.limitCardData = res.content.limitNumCard
       this.gradeCardData = res.content.rankCard
       this.showCardList = this.ordinaryCardData
+      switch (this.radio) {
+        case '1':
+          this.showCardList = this.ordinaryCardData
+          break
+        case '2':
+          this.showCardList = this.limitCardData
+          break
+        case '3':
+          this.showCardList = this.gradeCardData
+      }
     },
     // 处理每种卡的权益、过期类型
     handleToExptreType (item) {

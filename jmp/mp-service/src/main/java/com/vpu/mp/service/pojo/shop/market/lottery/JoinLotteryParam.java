@@ -2,37 +2,25 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author 孔德成
  * @date 2019/8/6 17:10
  */
 @Data
-public class JoinLotteryParam {
-
-    /**
-     * 分享
-     */
-    public static final byte SHARE =1;
-    /**
-     * 积分
-     */
-    public static final byte SCORE =2;
-    /**
-     * 免费
-     */
-    public static final byte FREE =3;
-
+public class  JoinLotteryParam {
 
     private Integer userId;
+    @NotNull
     private Integer lotteryId;
 
     /**
-     * 抽奖类型 share
-     *          score
-     *          free
+     * 抽奖来源 1开瓶有礼 2支付有礼3分享
      */
-    private Byte lotteryType;
-
-
-
+    private Byte lotterySource;
+    /**
+     * 活动记录来源
+     */
+    private Integer activityRecordId;
 }

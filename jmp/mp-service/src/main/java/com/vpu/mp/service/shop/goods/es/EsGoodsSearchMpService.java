@@ -17,12 +17,14 @@ import com.vpu.mp.service.pojo.wxapp.goods.goodssort.GoodsSortCacheInfo;
 import com.vpu.mp.service.pojo.wxapp.goods.label.GoodsLabelMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
 import com.vpu.mp.service.shop.goods.es.convert.EsConvertFactory;
 import com.vpu.mp.service.shop.goods.es.convert.goods.EsGoodsConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsDetailBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.goods.GoodsListMpBoConverter;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsListMpConverter;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsSearchMpConverter;
+import com.vpu.mp.service.shop.goods.es.convert.param.GoodsSearchParamConverter;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
@@ -78,13 +80,8 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
     public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsListMpParam mpParam) throws IOException {
         Integer shopId = getShopId();
         EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
-        try {
-            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
-            return esPageConvertVoPage(esGoodsPage);
-        } catch (IOException e) {
-            log.error("EsGoodsSearchMpService-->queryGoodsByParam ElasticSearch connection error when querying");
-            throw e;
-        }
+        PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
+        return esPageConvertVoPage(esGoodsPage);
     }
 
     /**
@@ -126,6 +123,23 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         }
     }
 
+    /**
+     * 小程序活动商品列表页-商品列表
+     * @param mpParam 查询条件 {@link GoodsSearchMpParam}
+     * @return 分页结果
+     * @throws IOException ElasticSearch连接异常
+     */
+    public PageResult<GoodsListMpBo> queryGoodsByParam(GoodsSearchParam mpParam) throws IOException {
+        Integer shopId = getShopId();
+        EsSearchParam param = assemblyEsSearchParam(mpParam,shopId);
+        try {
+            PageResult<EsGoods> esGoodsPage = searchGoodsPageByParam(param);
+            return esPageConvertVoPage(esGoodsPage);
+        } catch (IOException e) {
+            log.error("EsGoodsSearchMpService-->queryGoodsByParam ElasticSearch connection error when querying");
+            throw e;
+        }
+    }
     /**
      * 小程序搜索列表页-筛选条件倒推
      * @return {@link GoodsSearchFilterConditionMpVo}
@@ -267,13 +281,21 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
     }
     /**
      * assembly EsSearchParam
-     * @param mpParam {@link GoodsListMpParam}
+     * @param mpParam {@link GoodsSearchMpParam}
      * @param shopId 门店ID
      * @return {@link EsSearchParam}
      */
     private EsSearchParam assemblyEsSearchParam(GoodsSearchMpParam mpParam,Integer shopId){
         return EsConvertFactory.getParamConvert(GoodsSearchMpConverter.class).convert(mpParam,shopId);
     }
-
+    /**
+     * assembly EsSearchParam
+     * @param mpParam {@link GoodsSearchParam}
+     * @param shopId 门店ID
+     * @return {@link EsSearchParam}
+     */
+    private EsSearchParam assemblyEsSearchParam(GoodsSearchParam mpParam,Integer shopId){
+        return EsConvertFactory.getParamConvert(GoodsSearchParamConverter.class).convert(mpParam,shopId);
+    }
 
 }

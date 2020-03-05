@@ -245,7 +245,7 @@ CREATE TABLE `b2c_cart` (
   `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
   `goods_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '商品sn',
   `goods_name` varchar(120) NOT NULL DEFAULT '' COMMENT '商品名称',
-  `goods_specs` text COMMENT '例如,颜色:黑色',
+  `prd_desc` varchar(1024) NOT NULL DEFAULT '' COMMENT '规格描述，格式例子：颜色:红色 尺码:s',
   `product_id` int(11) NOT NULL DEFAULT '0' COMMENT '规格产品id',
   `prd_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '规格sn',
   `goods_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',
@@ -768,7 +768,7 @@ CREATE TABLE `b2c_distributor_apply` (
   `status` tinyint(2) NOT NULL DEFAULT '0',
   `msg` text COMMENT '审核内容',
   `del_flag` tinyint(2) NOT NULL DEFAULT '0',
-  `activation_fields` varchar(1000) DEFAULT NULL COMMENT '审核校验',
+  `activation_fields` text DEFAULT NULL COMMENT '审核校验',
   `config_fields` varchar(500) DEFAULT NULL COMMENT '审核字段',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -1396,7 +1396,6 @@ CREATE TABLE `b2c_goods_opai_spec` (
   PRIMARY KEY (`id`)
 )COMMENT='欧派记录价格变化表';
 
-
 CREATE TABLE `b2c_goods_overview_summary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_date` date DEFAULT NULL COMMENT '2018-09-04',
@@ -1532,6 +1531,7 @@ CREATE TABLE `b2c_goods_user_summary` (
   PRIMARY KEY (`id`),
   KEY `ref_type` (`ref_date`,`type`)
 ) ROW_FORMAT=COMPACT;
+
 
 CREATE TABLE `b2c_grade_prd` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1973,7 +1973,7 @@ CREATE TABLE `b2c_member_card` (
   `send_money` int(11) DEFAULT NULL COMMENT '开卡送钱',
   `charge_money` text COMMENT '充值活动策略',
   `use_time` int(11) DEFAULT NULL COMMENT '使用时间 1工作日 2双休 0不限制',
-  `store_list` varchar(191) NOT NULL DEFAULT '{}' COMMENT '可用门店',
+  `store_list` varchar(191) NOT NULL DEFAULT '[]' COMMENT '可用门店',
   `count` int(11) DEFAULT NULL COMMENT '卡总次数',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1为删除状态',
   `grade` char(10) NOT NULL DEFAULT '' COMMENT '等级卡的等级',

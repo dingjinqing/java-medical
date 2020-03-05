@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** @author 新国 */
@@ -162,6 +163,11 @@ public class BaseController {
     VoTranslator.translateFields(content, getLang());
     return result(JsonResultCode.CODE_SUCCESS, content);
   }
+
+    protected <T> JsonResult i18nSuccess(List<T> contents) {
+        contents.forEach(content -> VoTranslator.translateFields(content, getLang()));
+        return result(JsonResultCode.CODE_SUCCESS, contents);
+    }
 
   public JsonResult wxfail(WxOpenResult result) {
     JsonResult result2 = null;

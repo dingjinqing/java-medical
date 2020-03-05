@@ -1,0 +1,7 @@
+<!--pages1/fullshiprule/fullshiprule.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class='full_content'>
+  <view class='title' >{{text}}</view>
+  <view class='time'>{{expire}}</view>
+  <view class='place'>{{area}}</view>
+</view>

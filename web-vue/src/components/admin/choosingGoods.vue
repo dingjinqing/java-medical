@@ -283,12 +283,22 @@ export default {
     },
     // 弹出窗口
     tuneUpChooseGoods: Boolean,
+    // 只回显已选商品
+    onlyShowChooseGoods: {
+      type: Boolean,
+      default: false
+    },
     // 选择的商品id
     chooseGoodsBack: {
       type: Array,
       default () {
         return []
       }
+    },
+    // 初始条件渲染
+    initialConditionRender: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -332,6 +342,11 @@ export default {
         goodsSn: null,
         brandId: null
       },
+      showItem: {
+        sortId: true,
+        labelIdL: true,
+        brandId: true
+      },
       // 表格数据
       tableData: [],
       // 下拉框数据
@@ -352,32 +367,48 @@ export default {
     }
   },
   watch: {
-    chooseGoodsBack (newData) {
+    chooseGoodsBack: function (newData) {
       console.log(newData)
       console.log('chooseGoodsBack')
-      this.checkedIdList = this.chooseGoodsBack
+      let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
+      // this.chooseGoodsBack = uniqGoodsIds
+      this.checkedIdList = uniqGoodsIds
     },
     tuneUpChooseGoods () {
-      console.log('tuneUpChooseGoods', this.chooseGoodsBack)
+      console.log('tuneUpChooseGoods', this.checkedIdList, this.initialConditionRender)
+      // 如果外部有初始渲染条件传入
+      if (this.initialConditionRender.length) {
+        this.requestParam = {
+          currentPage: 1,
+          pageRows: 3,
+          isOnSale: 1,
+          isSaleOut: false,
+          catId: null,
+          sortId: null,
+          labelId: null,
+          lowShopPrice: null,
+          highShopPrice: null,
+          goodsName: null,
+          goodsSn: null,
+          brandId: null
+        }
+        switch (this.initialConditionRender[0]) {
+          case 0:
+            this.requestParam.sortId = this.initialConditionRender[1]
+            this.showItem.sortId = false
+            break
+          case 1:
+            this.requestParam.labelId = this.initialConditionRender[1]
+            this.showItem.labelId = false
+            break
+          case 2:
+            this.requestParam.brandId = this.initialConditionRender[1]
+            this.showItem.brandId = false
+            break
+        }
+      }
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
-      if (this.loadProduct) {
-        getProductListByIds({ productId: this.chooseGoodsBack }).then(res => {
-          console.log('getGoodslistByIds', res)
-          this.clearCheckedRow()
-          res.content.forEach(item => {
-            this.addCheckedRow(item)
-          })
-        })
-      } else {
-        getGoodsListByIds({ goodsIds: this.chooseGoodsBack }).then(res => {
-          console.log('getGoodslistByIds', res)
-          this.clearCheckedRow()
-          res.content.forEach(item => {
-            this.addCheckedRow(item)
-          })
-        })
-      }
     }
   },
   mounted () {
@@ -396,8 +427,11 @@ export default {
       return getGoodsFilterItem({ needGoodsLabel: true, needGoodsBrand: true }).then((res) => {
         if (!res) return
         if (res.error === 0) {
-          this.goodsLabelOptions = res.content.goodsLabels
-          this.goodsBrandOptions = res.content.goodsBrands
+          console.log(res)
+          let arr1 = [{ id: null, name: '请选择商品标签' }]
+          let arr2 = [{ id: null, brandName: '请选择商品品牌' }]
+          this.goodsLabelOptions = arr1.concat(res.content.goodsLabels)
+          this.goodsBrandOptions = arr2.concat(res.content.goodsBrands)
         }
       })
     },
@@ -414,6 +448,11 @@ export default {
       }
       this.requestParam.currentPage = this.pageParams.currentPage
       this.requestParam.pageRows = this.pageParams.pageRows
+      if (this.onlyShowChooseGoods) {
+        this.requestParam.goodsIds = this.checkedIdList
+      } else {
+        this.requestParam.goodsIds = []
+      }
       // 分页请求
       query(this.requestParam).then((res) => {
         if (!res) return
@@ -505,9 +544,46 @@ export default {
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
-      this.$emit('resultGoodsDatas', this.checkedRowList)
-      // 把选中的id集合和url集合回传
-      this.$emit('res', this.checkedIdList, this.checkedUrlList)
+      // 找出差异数据
+      let residueIds = this.checkedIdList.filter(id => {
+        this.checkedRowList.forEach(itme => {
+          if (this.getRowId(itme) === id) {
+            return false
+          }
+        })
+        return true
+      })
+      // 删除多余数据
+      this.checkedRowList = this.checkedRowList.filter(item => {
+        this.checkedIdList.forEach(id => {
+          if (this.getRowId(item) === id) {
+            return true
+          }
+        })
+        return false
+      })
+      console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
+      if (this.loadProduct) {
+        getProductListByIds({ productId: residueIds }).then(res => {
+          res.content.forEach(item => {
+            this.checkedRowList.push(item)
+          })
+          console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
+          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+          // 把选中的id集合和url集合回传
+          this.$emit('res', this.checkedIdList, this.checkedUrlList)
+        })
+      } else {
+        getGoodsListByIds({ goodsIds: residueIds }).then(res => {
+          res.content.forEach(item => {
+            this.checkedRowList.push(item)
+          })
+          console.log('返回参数', this.checkedRowList, Array.from(this.checkedRowList))
+          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+          // 把选中的id集合和url集合回传
+          this.$emit('res', this.checkedIdList, this.checkedUrlList)
+        })
+      }
     },
     /* 翻页方法 */
     paginationChange () {
@@ -558,9 +634,14 @@ export default {
         })
         if (flag.length === 0) {
           this.checkPageAllFlag = true
+        } else {
+          this.checkPageAllFlag = false
         }
+        console.log('选中添加', this.allGoodsProductId, this.checkedIdList)
         if (this.allGoodsProductId.every(val => this.checkedIdList.includes(val))) {
           this.checkAllFlag = true
+        } else {
+          this.checkAllFlag = false
         }
       }
     },
@@ -571,9 +652,11 @@ export default {
       this.checkedId = {}
       this.checkedRow = {}
       this.checkedIdList.splice(this.checkedIdList.lastIndexOf(this.getRowId(row)), 1)
+      console.log('removeCheckedRow', this.checkedRowList)
       this.checkedRowList = this.checkedRowList.filter(item => {
         return this.getRowId(item) !== this.getRowId(row)
       })
+      console.log('removeCheckedRow', this.checkedRowList)
       this.checkedUrlList = this.checkedUrlList.filter(item => {
         return item.goodsId !== this.getRowId(row)
       })
@@ -603,13 +686,13 @@ export default {
     checkedAllRow (flag) {
       console.log('checkedAllRow')
       this.checkPageAllFlag = flag
-      this.checkedPageRow(flag)
       if (flag) {
         // 选择全部只有全部商品id
         this.checkedIdList = this.allGoodsProductId
       } else {
         this.clearCheckedRow()
       }
+      this.hxTableData()
     }
 
   }
@@ -749,9 +832,6 @@ img {
   margin-top: 9px;
   margin-left: 5px;
 }
-.tdCenter {
-  text-align: center;
-}
 .noData {
   height: 100px;
   display: flex;
@@ -776,7 +856,10 @@ img {
 .tdCenter {
   width: 100%;
   height: 100%;
-  display: flex;
+  text-align: center;
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
   justify-content: center;
 }
 .level_1 {
@@ -792,7 +875,6 @@ img {
 }
 .table_container .el-checkbox {
   width: 14px !important;
-  float: left !important;
   margin-right: 0 !important;
 }
 ._Container .rangeLi .el-input__inner {

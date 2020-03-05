@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class OrderExportConfigService extends BaseShopConfigService {
      * @return
      */
     public int setOrderExportList(List<String> columns) {
-        assert(columns.size() >= 0);
+    	Assert.isTrue(columns.size() >= 0,"columns size nedd >=0");
         return this.setJsonObject(K_ORDER_EXPORT_LIST, columns);
     }
 }

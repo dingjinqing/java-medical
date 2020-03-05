@@ -10,7 +10,9 @@ import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.wxapp.subscribe.MsgRecordParam;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
+import com.vpu.mp.service.shop.user.message.msgRecordConfig.MessageRecordType;
 
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpTemplateMsgService;
@@ -91,7 +93,8 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 */
 	public void sendMpTemplateMessage(String appId, String toUser, List<WxMpTemplateData> keywordValues,
 			MpTemplateConfig templateConfig, String maAppId,
-			String page, String url) throws WxErrorException {
+			String page, String url,Integer shopId,Integer type,List<Integer> userIdList) throws WxErrorException {
+		logger().info("发送模板消息");
         WxMpTemplateMessage.WxMpTemplateMessageBuilder messageBuilder = null;
 		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
 
@@ -113,21 +116,19 @@ public class MpOfficialAccountMessageService extends MainBaseService {
             page = page + ((page.indexOf("?") != -1 ? "&" : "?") + "rnd=" + Util.randomId());
             messageBuilder.miniProgram(new WxMpTemplateMessage.MiniProgram(maAppId,page,true));
 		}
+		String sendTemplateMsg = null;
 		try {
-			service.sendTemplateMsg(messageBuilder.build());
+			sendTemplateMsg = service.sendTemplateMsg(messageBuilder.build());
 		} catch (WxErrorException e) {
 			// template_id不正确，移除缓存，重新发送模板消息
 			if (e.getError().getErrorCode() == _40037) {
 				jedis.delete(key);
-				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url);
+				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url,shopId,type,userIdList);
 			}else {
 				throw new WxErrorException(e.getError(), e);
 			}
 		}
-		/**
-		 * TODO: 记录发送日志
-		 * 		shop($this->getShopId())->serviceRequest->messageRecord->addSendMessageRecord($toUser, $templateConfig['id'], 1, $page, $templateType, $mpLinkIdentity, $template_content,0);
-		 */
+		recordMsg(userIdList.get(0), messageBuilder.build().toJson(), page, type, templateId, sendTemplateMsg, shopId, templateConfig.getTemplateNo());
 	}
 
 	/**
@@ -160,5 +161,36 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 */
 	public String addTemplate(WxMpTemplateMsgService service, String templateNo) throws WxErrorException {
 		return service.addTemplate(templateNo);
+	}
+	
+	/**
+	 * 记录
+	 * @param userId
+	 * @param sendData
+	 * @param page
+	 * @param type
+	 * @param templateId
+	 * @param sendResult
+	 * @param shopId
+	 * @param templateNo
+	 */
+	public void recordMsg(Integer userId,String sendData,String page,Integer type,String templateId,String sendResult,Integer shopId,String templateNo) {
+		logger().info("公众号消息记录");
+		if(type.byteValue()!=MessageRecordType.TEMPLATE_TYPE_CUSTOM) {
+			logger().info("type不是7，不记录");
+			return;
+		}
+		MsgRecordParam param=new MsgRecordParam();
+		param.setUserId(userId);
+		param.setRequestAction(MessageRecordType.SYSTEM_SEND_MESSAGE);
+		param.setIdentityId(templateNo);
+		param.setTemplatePlatform((byte)2);
+		param.setPage(page);
+		param.setLinkIdentity(templateId);
+		param.setTemplateContent(sendData);
+		param.setResponseMsg(sendResult);
+		param.setTemplateType(type.byteValue());
+		logger().info("公众号消息记录准备发");
+		saas.getShopApp(shopId).msgRecordService.addSendMessageRecord(param);
 	}
 }

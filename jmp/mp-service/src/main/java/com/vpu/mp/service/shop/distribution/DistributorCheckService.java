@@ -2,22 +2,24 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
+import org.jooq.Condition;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import java.util.Set;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_APPLY;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * 分销员审核service
@@ -33,13 +35,14 @@ public class DistributorCheckService extends ShopBaseService{
      * @return
      */
 	public PageResult<DistributorCheckListVo> getDistributorCheckList(DistributorCheckListParam param) {
-        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE, USER.IS_DISTRIBUTOR, USER.INVITE_ID,
-            USER_DETAIL.REAL_NAME,USER_DETAIL.SEX,USER_DETAIL.BIRTHDAY_YEAR,USER_DETAIL.BIRTHDAY_MONTH,USER_DETAIL.BIRTHDAY_DAY,USER_DETAIL.MARITAL_STATUS,
-            USER_DETAIL.CID,USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO)
-            .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID))
-                .leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID))).where(DSL.trueCondition());
+        SelectConditionStep<Record> select = db().select(DISTRIBUTOR_APPLY.fields()).select(USER.USERNAME, USER.MOBILE)
+            .from(DISTRIBUTOR_APPLY.leftJoin(USER).on(DISTRIBUTOR_APPLY.USER_ID.eq(USER.USER_ID)))
+               .where(DSL.trueCondition());
         buildOptions(select,param);
         PageResult<DistributorCheckListVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), DistributorCheckListVo.class);
+        for(DistributorCheckListVo applyInfo: pageResult.getDataList()){
+            applyInfo.setCheckField(Util.parseJson(applyInfo.getActivationFields(),DistributorApplyParam.InfoField.class));
+        }
         return pageResult;
 	}
 
@@ -50,19 +53,31 @@ public class DistributorCheckService extends ShopBaseService{
      * @param param
      */
 	public void buildOptions(SelectConditionStep<Record> select,DistributorCheckListParam param){
+	    //根据手机号查询
         if(isNotEmpty(param.getMobile())){
             select.and(USER.MOBILE.eq(param.getMobile()));
         }
+        //根据用户名
         if(isNotEmpty(param.getUsername())){
             select.and(USER.USERNAME.contains(param.getUsername()));
         }
+        //申请开始时间
         if(param.getStartTime() !=null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.le(param.getStartTime()));
         }
+        //申请结束时间
         if(param.getEndTime() != null){
             select.and(DISTRIBUTOR_APPLY.CREATE_TIME.ge(param.getEndTime()));
         }
-        select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        //flag = 1是从店铺助手过来
+        if(param.getFlag() == 1){
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq((byte)0).and(DISTRIBUTOR_APPLY.CREATE_TIME.add(param.getNumberDays()).lessThan(Timestamp.valueOf(LocalDateTime.now()))));
+        }
+        //状态 0：待审核；1：审核通过；2：未通过
+        if(param.getNav() != null) {
+            select.and(DISTRIBUTOR_APPLY.STATUS.eq(param.getNav()));
+        }
+        //根据申请时间降序排序
         select.orderBy(DISTRIBUTOR_APPLY.CREATE_TIME.desc());
     }
 
@@ -77,6 +92,17 @@ public class DistributorCheckService extends ShopBaseService{
     }
 
     /**
+     * Distribution review timeout integer.分销审核超过N天未处理集合
+     *
+     * @param nDays the n days
+     * @return the integer
+     */
+    public Set<Integer> distributionReviewTimeoutSet(Integer nDays) {
+        Condition condition = DISTRIBUTOR_APPLY.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now()));
+        return db().select(DISTRIBUTOR_APPLY.ID).from(DISTRIBUTOR_APPLY).where(condition).fetchSet(DISTRIBUTOR_APPLY.ID);
+    }
+
+    /**
      * 分销审核通过
      * @param param
      * @return
@@ -84,9 +110,9 @@ public class DistributorCheckService extends ShopBaseService{
     public boolean applyPass(DistributionApplyOptParam param){
         //获取申请信息
         Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);
-
+        //事务处理
         this.transaction(() -> {
-            //更新审核状态
+            //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)1);
             //更新分销身份状态，分组情况
             updateApplyGroup(userId,param.getGroupId());
@@ -96,12 +122,17 @@ public class DistributorCheckService extends ShopBaseService{
         return true;
     }
 
+    /**
+     * 分销员审核拒绝
+     * @param param
+     * @return
+     */
     public boolean applyRefuse(DistributionApplyOptParam param){
         //获取申请信息
         Integer userId = db().select(DISTRIBUTOR_APPLY.USER_ID).from(DISTRIBUTOR_APPLY).where(DISTRIBUTOR_APPLY.ID.eq(param.getId())).fetchOne().into(Integer.class);
-
+        //事务处理
         this.transaction(() -> {
-            //更新审核状态
+            //更新审核状态 1：审核通过；2：审核拒绝
             changeApplyStatus(param.getId(),(byte)2);
             //添加审核内容
             if(isNotEmpty(param.getMsg())){
