@@ -5,19 +5,19 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialRule;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,12 @@ public class PictorialService extends ShopBaseService {
      * 分享海报时使用的默认头像
      */
     public static final String DEFAULT_USER_AVATAR = "image/wxapp/default_user_avatar.png";
+
+
+    /**
+     * 表单分享海报图片上的指纹图片
+     */
+    public static final String FINGER_IMG = "/image/admin/usr_codes.png";
 
     /**
      * 获取海报中用户头像
@@ -365,31 +371,39 @@ public class PictorialService extends ShopBaseService {
     /**
      * 生成表单海报背景图
      *
-     * @param userInfo  用户信息
-     * @param shop      店铺配置
-     * @param qrCodeImg 二维码
-     * @param goodsImg  商品图片
-     * @param shareDoc  海报分享文案
-     * @param goodsName 商品名称
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
-     * @param imgPx     图片规格信息
-     * @return 通过图片
+     * @param userAvatarImg 用户头像
+     * @param qrCodeImg     二维码
+     * @param bgImg         背景图
+     * @param imgPx         图片规格信息
+     * @return 通过图片 buffered image
      */
-    BufferedImage createFormPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, boolean needSelfCustomerRect) {
-        //设置背景图
+    public BufferedImage createFormPictorialBgImage(BufferedImage userAvatarImg, BufferedImage qrCodeImg, BufferedImage bgImg
+        , PictorialFormImgPx imgPx) {
+        //设置白画布
         BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
 
         // 设置用户头像
-        BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
+        BufferedImage userAvatarImage = ImageUtil.makeRound(userAvatarImg, imgPx.getUserHeaderDiameter());
         ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getBgPadding(), imgPx.getBgPadding());
+
+        // 设置背景图
+        bgImg = ImageUtil.resizeImage(imgPx.getBgImgWidth(), imgPx.getBgImgWidth(), bgImg);
+        ImageUtil.addTwoImage(bgBufferedImage, bgImg, imgPx.getBgPadding(), imgPx.getHeaderHeight());
 
         // 设置二维码
         qrCodeImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), qrCodeImg);
-        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
+        ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getQrCodeStartY());
 
         // 设置指纹
+        try {
+            BufferedImage fingerImg = ImageIO.read(new URL(imageService.getImgFullUrl(FINGER_IMG)));
+            fingerImg = ImageUtil.resizeImageTransparent(imgPx.getQrCodeWidth(), imgPx.getQrCodeWidth(), fingerImg);
+            ImageUtil.addTwoImage(bgBufferedImage, fingerImg, imgPx.getFingerStartX(), imgPx.getFingerStartY());
+        } catch (IOException e) {
+            logger().error("加载指纹图片{}异常:{}", FINGER_IMG, ExceptionUtils.getStackTrace(e));
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
 
         return bgBufferedImage;
     }

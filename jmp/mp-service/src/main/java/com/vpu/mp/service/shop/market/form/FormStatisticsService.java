@@ -16,9 +16,13 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialFormImgPx;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.image.postertraits.PictorialService;
+import com.vpu.mp.service.shop.user.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -29,9 +33,12 @@ import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -54,6 +61,10 @@ public class FormStatisticsService extends ShopBaseService {
     CouponGiveService couponGiveService;
     @Autowired
     PictorialService pictorialService;
+    @Autowired
+    private UserService user;
+    @Autowired
+    private ImageService imageService;
     /**
      * FORM_PAGE表单删除状态值，删除状态页面不展示
      */
@@ -157,16 +168,25 @@ public class FormStatisticsService extends ShopBaseService {
         return vo;
     }
 
+    public ShareQrCodeVo getQrCode(int pageId) {
+        String pathParam = PARAM + pageId;
+        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FORM, pathParam);
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.FORM.getPathUrl(pathParam));
+        return vo;
+    }
+
     public void getFormPictorialCode(int pageId) {
         CodeRecord record = db().select().from(CODE)
             .where(CODE.TYPE.eq((short) 100))
             .and(CODE.PARAM_ID.eq(String.valueOf(pageId)))
             .fetchOneInto(CODE);
 
-        generateFormPictorial(pageId);
+        generateFormPictorial(pageId, 0);
     }
 
-    public void generateFormPictorial(int pageId) {
+    public void generateFormPictorial(int pageId, int userId) {
         // 获取表单信息
         FormPageRecord record = getFormRecord(pageId);
         String pageName = record.getPageName();
@@ -184,6 +204,22 @@ public class FormStatisticsService extends ShopBaseService {
 //           'is_edit' => 0,
 //               'path' => $pictorial->path,
 //            ];
+        }
+        try {
+            // 获取用户头像
+            UserInfo userInfo = user.getUserInfo(userId);
+            BufferedImage userAvator = ImageIO.read(new URL(imageService.getImgFullUrl(userInfo.getUserAvatar())));
+
+            // 获取分享二维码
+            ShareQrCodeVo qrCode = getQrCode(pageId);
+            BufferedImage qrCodImg = ImageIO.read(new URL(imageService.getImgFullUrl(qrCode.getImageUrl())));
+
+            // 背景图
+            BufferedImage bgImgBuf = ImageIO.read(new URL(imageService.getImgFullUrl(bgImg)));
+
+            BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
