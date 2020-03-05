@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.CartPurchaseParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -24,7 +25,9 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.util.resources.cldr.es.CalendarData_es_AR;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,6 +236,14 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber,Integer activityId,Byte activityType) {
+        //加价购
+        if (activityType.equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)){
+            CartRecord cartRecord = db().selectFrom(CART)
+                    .where(CART.USER_ID.eq(userId))
+                    .and(CART.PRODUCT_ID.eq(prdId))
+                    .and(CART.TYPE.eq(activityType)).fetchOne();
+            // todo.....
+        }
         CartRecord cartRecord = db().selectFrom(CART).where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId))).fetchOne();
         if (cartRecord == null) {
             Record goodsProduct = goodsService.getGoodsByProductId(prdId);
@@ -432,4 +443,15 @@ public class CartService extends ShopBaseService {
                 .orderBy(CART.CART_ID.desc())
                 .fetchInto(OrderBeforeParam.Goods.class);
     }
+
+    /**
+     * 加价购添加商品
+     * @param param
+     */
+    public void addPurchasePrice(CartPurchaseParam param) {
+
+
+
+    }
+
 }

@@ -67,7 +67,7 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
         Map<Integer,PurchasePriceCartBo> activityMap =new HashMap<>();
         //商品活动信息
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
-            Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> purchaseRulesMap = null;
+            Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> purchaseRulesMap;
             //获取商品的活动
             if (activityCacheMap.size() > 0 && activityCacheMap.get(goods.getGoodsId()) != null) {
                 purchaseRulesMap = activityCacheMap.get(goods.getGoodsId());
@@ -86,12 +86,15 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
                     CartActivityInfo.PurchasePrice purchasePrice = new CartActivityInfo.PurchasePrice();
                     purchasePrice.setPurchasePriceRule(new ArrayList<>());
                     //加价购规则
-                    purchaseRules.forEach(rule->{
+                    for (Record4<Integer, Integer, BigDecimal, BigDecimal> rule : purchaseRules) {
                         CartActivityInfo.PurchasePriceRule cartPurchasePriceRule = new CartActivityInfo.PurchasePriceRule();
                         cartPurchasePriceRule.setFullPrice(rule.get(PURCHASE_PRICE_RULE.FULL_PRICE));
                         cartPurchasePriceRule.setPurchasePrice(rule.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
                         purchasePrice.getPurchasePriceRule().add(cartPurchasePriceRule);
-                    });
+                        if (purchasePrice.getRule()==null){
+                            purchasePrice.setRule(cartPurchasePriceRule);
+                        }
+                    }
                     //设置
                     cartActivityInfo.setPurchasePrice(purchasePrice);
                     goods.getCartActivityInfos().add(cartActivityInfo);
@@ -126,11 +129,13 @@ public class PurchasePriceProcessor implements Processor,GoodsDetailProcessor,Ac
                     CartActivityInfo.PurchasePrice purchasePrice = cartActivityInfo.getPurchasePrice();
                     CartActivityInfo.PurchasePriceRule enabledRule = purchasePrice.getRule();
                     List<CartActivityInfo.PurchasePriceRule> purchasePriceRule = purchasePrice.getPurchasePriceRule();
-                    enabledRule.setName("满 "+" 加价"+"换购");
+                    if (enabledRule!=null){
+                        enabledRule.setName("满 "+enabledRule.getFullPrice()+" 加价"+enabledRule.getPurchasePrice()+"换购");
+                        purchasePrice.setCondition(enabledRule.getName());
+                    }
                     purchasePriceRule.forEach(rule->{
-                        rule.setName("满 "+" 加价"+"换购");
+                        rule.setName("满 "+rule.getFullPrice()+" 加价"+rule.getPurchasePrice()+"换购");
                     });
-                    purchasePrice.setCondition(purchasePrice.getRule().getName());
                 }
             });
         }
