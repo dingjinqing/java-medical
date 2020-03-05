@@ -152,6 +152,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private GoodsSpecProductRecord productInfo;
         @JsonIgnore
         private GoodsRecord goodsInfo;
+        /**积分兑换需要的积分*/
+        private Integer goodsScore;
 	}
 
     /**

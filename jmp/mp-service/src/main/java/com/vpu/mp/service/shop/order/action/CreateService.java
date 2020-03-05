@@ -909,7 +909,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             throw new MpException(JsonResultCode.CODE_ORDER_AMOUNT_CHANGE, null, vo.getOrderAmount().toString());
         }
         //积分抵扣金额不能超过
-        if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1){
+        if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1 && !BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
         //TODO 限次卡校验
@@ -1117,10 +1117,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(OrderConstant.MP_PAY_CODE_COD.equals(param.getOrderPayWay()) && null == supportPayment.get(OrderConstant.MP_PAY_CODE_TO_STRING[param.getOrderPayWay()])){
             //货到付款
             throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_COD);
-        }
-        if(vo.getGoodsType() != null && BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType()) && BigDecimalUtil.compareTo(vo.getScoreDiscount(), BigDecimal.ZERO) == 1 && vo.getIsScorePay() == NO){
-            //积分（非积分兑换）
-            throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
         }
     }
 

@@ -113,6 +113,9 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights` text COMMENT '自定义
 ALTER TABLE `b2c_member_card` ADD COLUMN `freeship_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日';
 ALTER TABLE `b2c_member_card` ADD COLUMN `freeship_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数';
 
+-- 2020年03月05日 积分兑换记录表增加删除标识
+ALTER TABLE `b2c_integral_mall_record` ADD COLUMN `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1删除';
+
 /***********************2.10*********************END*/
 -- 瓜分积分 添加活动规则说明
 ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';
