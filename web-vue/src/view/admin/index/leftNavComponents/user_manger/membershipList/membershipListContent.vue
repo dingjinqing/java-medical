@@ -1100,8 +1100,8 @@ export default {
           'hasCard': this.membershipCard,
           'hasDelete': this.noLanding,
           'hasImport': this.importMembership,
-          'currentPage': this.currentPage3,
-          'pageRow': '20',
+          // 'currentPage': this.currentPage3,
+          // 'pageRow': '20',
           'orderRule': this.orderRule
         }
       },

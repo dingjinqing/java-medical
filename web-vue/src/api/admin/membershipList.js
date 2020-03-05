@@ -135,6 +135,7 @@ export function exportCfg (data) {
   return service({
     url: '/api/admin/member/list/export/new',
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }
