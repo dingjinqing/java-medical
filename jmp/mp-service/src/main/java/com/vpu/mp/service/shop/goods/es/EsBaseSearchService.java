@@ -74,7 +74,9 @@ public class EsBaseSearchService extends ShopBaseService {
         PRD_JSON,
         BASE_SALE,
         DEFAULT_PRD,
-        CAN_REBATE
+        CAN_REBATE,
+        LIMIT_BUY_NUM,
+        LIMIT_MAX_NUM
     };
 
 
