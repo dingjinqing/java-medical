@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.market.fullcut;
+package com.vpu.mp.service.pojo.wxapp.cart.activity;
 
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
  */
 @Getter
 @Setter
-public class FullReductionGoodsBo {
+public class FullReductionGoodsCartBo {
 
     private Integer fullReductionId;
     private Integer fullReductionRuleId;
