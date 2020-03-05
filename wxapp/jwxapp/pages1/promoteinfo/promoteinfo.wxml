@@ -75,11 +75,11 @@
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1}}'>立即领取</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1||promote_info.rewardType == 0)}}'>查看订单</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 1}}'>助力好友得奖品</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>助力好友得奖品</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
           <!-- <button class='btn_launch' data-showquan = "showquan"  wx:if='{{is_userinfos==0&&promote_info.promote_status == 0 && promote_info.launchFlag == 2&&is_shares==0}}' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>授权再得一次助力机会</button> -->
           <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 & is_shares == 0&&promote_info.canPromote == 0}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 & is_shares == 0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'>去使用</button>
       </view>
