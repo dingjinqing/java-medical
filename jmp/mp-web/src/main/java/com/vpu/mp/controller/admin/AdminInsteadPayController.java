@@ -99,7 +99,7 @@ public class AdminInsteadPayController extends AdminBaseController {
             param.setInsteadPayWay(InsteadPay.NOT_SET);
         }
 
-        shop().config.insteadPayConfig.setInsteadPayConfig(param);
+        shop().config.insteadPayConfigService.setInsteadPayConfig(param);
         return success();
     }
 
@@ -110,7 +110,7 @@ public class AdminInsteadPayController extends AdminBaseController {
      */
     @RequestMapping("/api/admin/market/instead/pay/get")
     public JsonResult getInsteadPayConfig() {
-        InsteadPay insteadPayConfig = shop().config.insteadPayConfig.getInsteadPayConfig();
+        InsteadPay insteadPayConfig = shop().config.insteadPayConfigService.getInsteadPayConfig();
         return success(insteadPayConfig);
     }
 }

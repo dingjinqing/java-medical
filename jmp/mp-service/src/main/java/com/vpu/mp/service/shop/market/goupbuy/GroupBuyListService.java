@@ -48,6 +48,7 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * @author 孔德成
@@ -204,8 +205,14 @@ public class GroupBuyListService extends ShopBaseService {
             select.and(USER.USERNAME.eq(param.getNickName()));
         }
         if (param.getStatus() != null) {
-            if (param.getStatus() > 0 && param.getStatus() < 3) {
+            if (param.getStatus().equals(STATUS_WAIT_PAY)){
+                select.and(GROUP_BUY_LIST.STATUS.eq(STATUS_WAIT_PAY));
+            }else if (param.getStatus().equals(STATUS_ONGOING)){
                 select.and(GROUP_BUY_LIST.STATUS.eq(param.getStatus()));
+            }else if (param.getStatus().equals(STATUS_SUCCESS)){
+                select.and(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS));
+            }else if (param.getStatus().equals(STATUS_FAILED)){
+                select.and(GROUP_BUY_LIST.STATUS.eq(STATUS_FAILED));
             }
         }
 

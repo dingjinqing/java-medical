@@ -37,7 +37,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
-import com.vpu.mp.service.shop.config.InsteadPayConfig;
+import com.vpu.mp.service.shop.config.InsteadPayConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -155,9 +155,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private FreeShippingService freeShippingService;
-    
+
     @Autowired
-    private InsteadPayConfig insteadPayConfig;
+    private InsteadPayConfigService insteadPayConfig;
 
     @Autowired
     private SeckillService seckillService;
