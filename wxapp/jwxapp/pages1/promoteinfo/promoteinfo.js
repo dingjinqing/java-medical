@@ -71,9 +71,6 @@ global.wxPage({
   // 发起助力
   shareGoods: function (e) {
     var that = this;
-    // var form_id = e.detail.formId;
-    // var open_id = util.getCache("openid");
-    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
@@ -170,30 +167,34 @@ global.wxPage({
       })
       return false;
     }
-    // util.api('/api/wxapp/friend/promote', function (res) {
-    //   if (res.error == 0) {
-    //     var add_promote_value = res.content.promote_value;
-    //     var modal_can_share = res.content.canShare;
-    //     if (promote_info.canPromote.code == 0 && promote_info.canShare == 0) {
-    //       that.setData({
-    //         promote_fail: 1,
-    //         is_shares: 0,
-    //         add_promote_value: add_promote_value,
-    //         modal_can_share: modal_can_share
-    //       })
-    //     } else {
-    //       that.setData({
-    //         promote_ok: 1,
-    //         add_promote_value: add_promote_value,
-    //         modal_can_share: modal_can_share
-    //       })
-    //     }
+    util.api('/api/wxapp/promote/participate', function (res) {
+      if (res.error == 0) {
+        var add_promote_value = res.content.promoteValue; // 助力值
+        var modal_can_share = res.content.canShare; // 能否再分享
+        if (promote_info.canPromote == null && promote_info.canShare == null) {
+          that.setData({
+            promote_fail: 1,
+            is_shares: 0,
+            add_promote_value: add_promote_value,
+            modal_can_share: modal_can_share
+          })
+        } else {
+          that.setData({
+            promote_ok: 1,
+            add_promote_value: add_promote_value,
+            modal_can_share: modal_can_share
+          })
+        }
 
-    //   } else {
-    //     util.showModal('提示', res.message);
-    //     return false
-    //   }
-    // }, { actCode: actCode, launch_id: launch_id, launch_user_id: launch_user_id })
+      } else {
+        util.showModal('提示', res.message);
+        return false
+      }
+    }, { 
+      actCode: actCode, 
+      launchId: launch_id, 
+      launchUserId: launch_user_id 
+    })
   },
   // 放弃分享
   forgive_share: function (e) {
@@ -230,7 +231,7 @@ global.wxPage({
   },
   // 查看订单
   to_order: function () {
-    util.jumpLink("/pages/orderinfo/orderinfo?order_sn=" + promote_info.order_sn);
+    util.jumpLink("/pages/orderinfo/orderinfo?orderSn=" + promote_info.orderSn);
   },
   // 去逛逛
   to_index: function () {
@@ -242,11 +243,12 @@ global.wxPage({
   },
   // 优惠券列表
   to_coupon: function () {
-    util.jumpLink("/pages/couponlist/couponlist");
+    util.jumpLink("/pages/coupon/coupon");
   },
   // 券购搜索
   to_cou_search: function () {
-    util.jumpLink('/pages/searchs/search?list=1&alias_code=' + promote_info.coupon_info.alias_code);
+    // util.jumpLink('/pages1/search/search?list=1&alias_code=' + promote_info.coupon_info.alias_code);
+    util.jumpLink('/pages1/search/search');
   },
   // 去逛逛
   to_index: function () {
@@ -261,6 +263,7 @@ global.wxPage({
   to_goods: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.jumpLink("/pages/item/item?goods_id=" + goods_id);
+    // pages/item/item?gid=goodsId&aid=activityId&atp=activityType
   },
   // 结算
   to_checkout: function () {

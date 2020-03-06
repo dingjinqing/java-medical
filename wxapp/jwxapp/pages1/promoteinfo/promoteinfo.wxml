@@ -197,7 +197,6 @@
           <block wx:if='{{promote_ok == 1}}'> 
             <view class='st1' style='color:{{comColor}}'>助力成功</view>
             <view class='st2'>帮助好友增加助力值: <text style='color:{{comColor}}'>{{add_promote_value}}</text></view>
-            <!-- <button class='st3' style='background:{{comColor}}' wx:if='{{is_userinfos == 0}}' open-type='getUserInfo' bindgetuserinfo="getUserInfo">授权增加一次助力机会</button> -->
             <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1}}' open-type='share'>分享再得一次助力机会</button>
             <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 0}}' bindtap='to_own_act'>我也要发起助力</button>
             <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 1}}' >放弃分享</view>
