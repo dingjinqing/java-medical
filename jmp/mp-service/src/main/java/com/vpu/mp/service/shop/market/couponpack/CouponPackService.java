@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.market.couponpack.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.*;
 import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -368,8 +369,8 @@ public class CouponPackService extends ShopBaseService {
             orderParam.setPackId(packId);
             orderParam.setOrderAmount(BigDecimal.ZERO);
             orderParam.setScoreDiscount(0);
-            String orderSn = couponPackOrderService.createOrder(orderParam,userId,clientIp);
-            vo.setOrderSn(orderSn);
+            WebPayVo webPayVo = couponPackOrderService.createOrder(orderParam,userId,clientIp);
+            //vo.setOrderSn(orderSn);
             vo.setState((byte)6);
         }
 
@@ -453,19 +454,19 @@ public class CouponPackService extends ShopBaseService {
         List<GeneralUserCardVo> memberCardLit = memberService.userCardService.getCanUseGeneralCardList(userId);
         vo.setMemberCardList(memberCardLit);
         if(StringUtils.isNoneBlank(param.getCardNo())){
-            //主动不选会员卡
-            if(param.getCardNo().equals("1")){
-                vo.setMemberCardInfo(null);
-                vo.setMemberCardNo(null);
+            //默认选第一个
+            if(param.getCardNo().equals("0")){
+                vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
+                vo.setMemberCardInfo(memberCardLit.get(0));
             }else{
                 vo.setMemberCardInfo(memberCardLit.stream().filter(GeneralUserCardVo->GeneralUserCardVo.getCardNo().equals(param.getCardNo())).collect(Collectors.toList()).get(0));
                 vo.setMemberCardNo(param.getCardNo());
             }
         }else{
-            //默认选第一个
+            //主动不选会员卡
             if(!memberCardLit.isEmpty()){
-                vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
-                vo.setMemberCardInfo(memberCardLit.get(0));
+                vo.setMemberCardInfo(null);
+                vo.setMemberCardNo(null);
             }
         }
 
@@ -546,7 +547,8 @@ public class CouponPackService extends ShopBaseService {
                 String [] couponArray = {String.valueOf(coupon.getVoucherId())};
                 for(int i=0;i<sentNum;i++){
                     CouponGiveQueueParam newParam = new CouponGiveQueueParam(
-                        getShopId(),userIds , order.getVirtualGoodsId(),couponArray , BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_COUPON_PACK);
+                        getShopId(),userIds , order.getVirtualGoodsId(),couponArray , BaseConstant.ACCESS_MODE_COUPON_PACK, BaseConstant.GET_SOURCE_COUPON_PACK);
+                    newParam.setAccessOrderSn(order.getOrderSn());
                     saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
                 }
             }

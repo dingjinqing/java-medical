@@ -21,6 +21,14 @@ public class GeneralUserCardVo {
     private Timestamp expireTime;
     private BigDecimal money;
     private String bgColor;
+    private Byte bgType;
+    private String bgImg;
     private String cardName;
     private BigDecimal discount;
+    private Byte expireType;
+    private Byte cardType;
+    private Timestamp startTime;
+    private Timestamp endTime;
+    private String startDate;
+    private String endDate;
 }

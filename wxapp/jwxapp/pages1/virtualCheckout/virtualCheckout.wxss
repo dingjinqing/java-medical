@@ -172,3 +172,19 @@
   font-size: 24rpx;
   text-align: center;
 }
+.checkout_detail > .detail_item {
+  height: 90rpx;
+}
+.pay_list_item > .pay_list_right {
+  width: auto;
+  min-width: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.pay_list_item.score > .pay_list_right{
+  font-weight: 600;
+}
+.pay_content .pay_list_item{
+  height: 90rpx;
+}

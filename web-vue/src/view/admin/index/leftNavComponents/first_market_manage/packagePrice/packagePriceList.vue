@@ -74,10 +74,11 @@
     <!-- 添加 / 编辑 -->
     <packagePriceAdd
       isEdite="isEdite"
-      :editId="editId"
-      @addPackageSubmit="addPackageSubmit"
       v-if="tableListView === false"
     />
+
+    <!-- :editId="editId" -->
+    <!-- @addPackageSubmit="addPackageSubmit" -->
 
     <!-- 表格内容 -->
     <div

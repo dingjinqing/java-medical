@@ -49,4 +49,7 @@ public class CouponGiveQueueParam {
     /** 未使用队列消息时不需要传 */
 	@JsonProperty(access = Access.WRITE_ONLY)
     private Integer taskJobId;
+
+	/** 发放活动的订单的订单编号 */
+	private String accessOrderSn;
 }

@@ -264,7 +264,7 @@ export default {
           lastPageSetData[item] = this.handleToTurnBoolean(lastPageSetData[item])
         }
       })
-      params['pageId'] = null
+      params['pageId'] = this.pageId
       params['shopId'] = Number(localStorage.getItem('V-ShopId'))
       params['pageName'] = lastPageSetData.page_name
       params['status'] = null

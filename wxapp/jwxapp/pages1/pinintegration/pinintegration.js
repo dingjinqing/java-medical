@@ -268,34 +268,35 @@ global.wxPage({
       is_share: 0
     })
   },
+  // 生成海报
   go_share: function () {
     var that = this;
     wx.showLoading({
       title: '生成中',
     })
-    util.api('/api/wxapp/pictorial', function (res) {
-      if (res.error == 0) {
-        pictorial = res.content.pictorial;
+    // util.api('/api/wxapp/pictorial', function (res) {
+    //   if (res.error == 0) {
+    //     pictorial = res.content.pictorial;
 
-        if (pictorial) {
-          util.api('/api/wxapp/upayyun/image', function (res) {
-            if (res.error == 0) {
-              pictorial = imageUrl + pictorial + "!big";
-              posterBase64 = res.content;
-              that.setData({
-                pictorial: posterBase64,
-                is_share: 1
-              })
-              wx.hideLoading();
-            }
-          }, { image_path: pictorial });
-        }
-      } else {
-        wx.hideLoading();
-        util.toast_fail(res.message);
-        return false;
-      }
-    }, { action: 7, goods_id: pinInte_id, group_id: group_id })
+    //     if (pictorial) {
+    //       util.api('/api/wxapp/upayyun/image', function (res) {
+    //         if (res.error == 0) {
+    //           pictorial = imageUrl + pictorial + "!big";
+    //           posterBase64 = res.content;
+    //           that.setData({
+    //             pictorial: posterBase64,
+    //             is_share: 1
+    //           })
+    //           wx.hideLoading();
+    //         }
+    //       }, { image_path: pictorial });
+    //     }
+    //   } else {
+    //     wx.hideLoading();
+    //     util.toast_fail(res.message);
+    //     return false;
+    //   }
+    // }, { action: 7, goods_id: pinInte_id, group_id: group_id })
   },
 
   saveImgToPhotosAlbumTap: function () {

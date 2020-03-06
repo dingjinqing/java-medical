@@ -306,7 +306,7 @@ public class PreSaleService extends ShopBaseService {
      */
     private String shareConfigJson(PreSaleParam param) {
         ShareConfig config = createShareConfig(param);
-        return Util.underLineStyleGson().toJson(config);
+        return Util.toJson(config);
     }
 
     /**

@@ -37,9 +37,9 @@
             ref="cardCouponCfgData"
           ></cardCouponCfg>
           <!-- 包邮 -->
-          <!-- <cardFreeshipCfg v-bind.sync="freeship">
+          <cardFreeshipCfg v-bind.sync="freeship">
 
-          </cardFreeshipCfg> -->
+          </cardFreeshipCfg>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
@@ -254,7 +254,7 @@ export default {
       },
       // 包邮信息
       freeship: {
-        num: 0,
+        num: null,
         type: 3
       }
     }

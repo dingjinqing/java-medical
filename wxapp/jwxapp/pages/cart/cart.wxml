@@ -24,7 +24,7 @@
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
                   <!-- <view class='act_content' style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view> -->
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
-                    <view wx:if="{{proItem.activityType == 7 && item.activityId == proItem.activityId}}">{{ proItem.purchasePrice.rule }}</view>
+                    <view wx:if="{{proItem.activityType == 7 && item.activityId == proItem.activityId}}">满{{ proItem.purchasePrice.rule.fullPrice }}元另加{{ proItem.purchasePrice.rule.purchasePrice }}元即可换购商品</view>
                   </view>
                 </view>
                 <view class='go_full clearfix'>

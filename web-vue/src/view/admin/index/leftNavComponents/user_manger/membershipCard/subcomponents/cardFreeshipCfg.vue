@@ -5,19 +5,27 @@
                     <el-checkbox v-model="turnOn">包邮</el-checkbox>
                     <span>持有此会员卡的用户可享受包邮</span>
             </el-form-item>
-            <el-form-item class="free_ship_content" v-if="turnOn">
+            <el-form-item class="free_ship_content" v-if="turnOn" >
                 <div>
                     <el-radio v-model="freeshipType" label="0">不限制包邮次数</el-radio>
                 </div>
                 <div>
                     <el-radio v-model="freeshipType" label="1">持卡会员</el-radio>
-                    <el-select size="small" style="width: 150px;">
+                    <!-- <el-select  size="small" style="width: 150px;">
                         <el-option v-for="(item,index) in shipTime"
                             :label="item.label"
                             :value="item.value"
                             :key="index">
                         </el-option>
-                    </el-select>
+                    </el-select> -->
+                    <span>享受</span>
+                    <el-form :model="$data" ref="shipNum" style="display: inline-block">
+                      <el-form-item prop="shipNum" :rules="shipNumRule">
+                        <!-- 当通过校验时，触发input事件(但是目前有elementui有bug通过第一个校验后，就会调用) -->
+                          <el-input v-model.number="$data.shipNum" size="small" style="width: 80px;" @input="changeShipNum('shipNum')"></el-input>
+                      </el-form-item>
+                    </el-form>
+                    <span>{{shipNum}}次包邮</span>
                 </div>
             </el-form-item>
         </el-form>
@@ -78,6 +86,17 @@ export default {
         this.$emit('update:type', Number(val))
       }
 
+    },
+    /**
+     * 包邮次数
+     */
+    shipNumTwo: {
+      get () {
+        return this.num
+      },
+      set (val) {
+        this.$emit('update:num', Number(val))
+      }
     }
   },
   data () {
@@ -85,12 +104,29 @@ export default {
       cacheType: 0,
       shipTime: null,
       // 包邮有效期值
-      shipTimeOptVal: [1, 2, 3, 4, 5, 6]
+      shipTimeOptVal: [1, 2, 3, 4, 5, 6],
+      // 校验规则
+      shipNum: null,
+      shipNumRule: [
+        {
+          required: true,
+          message: '请输入有效值'
+          // trigger: 'blur'
+        }, {
+          // 1到7位整数校验
+          pattern: /^[0-9]\d{0,6}$/,
+          message: '请输入1到7位的整数'
+        }
+      ]
+
     }
   },
   watch: {
     lang () {
       this.initShipTimeOption()
+    },
+    num (val) {
+      this.shipNum = val
     }
   },
   mounted () {
@@ -110,6 +146,14 @@ export default {
           value: this.shipTimeOptVal[index]
         })
       }
+    },
+    changeShipNum (val) {
+      console.log(val)
+      this.$refs[val].validate((valid) => {
+        if (valid) {
+          this.$emit('update:num', Number(val))
+        }
+      })
     }
   }
 }
@@ -133,6 +177,9 @@ export default {
         margin-left: 72px;
         /deep/ .el-select{
             width: 150px;
+        }
+        /deep/ .el-input__inner{
+          text-align: center;
         }
     }
 

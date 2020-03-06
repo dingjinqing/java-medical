@@ -39,7 +39,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
 import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
@@ -214,7 +213,7 @@ public class CouponPackOrderService extends VirtualOrderService {
      * @param userId
      * @return
      */
-    public String createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
+    public WebPayVo createOrder(CouponPackOrderParam param,Integer userId,String clientIp){
         //用户的余额和积分
         UserRecord user = memberService.getUserRecordById(userId);
         if(param.getAccountDiscount() != null && param.getAccountDiscount().compareTo(user.getAccount()) > 0){
@@ -258,15 +257,16 @@ public class CouponPackOrderService extends VirtualOrderService {
         insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_COUPON_PACK);
         insertVirtualOrderRecord.setAccessMode(couponPackRecord.getAccessMode());
 
+
         insertVirtualOrderRecord.insert();
+        WebPayVo vo = null;
         if(moneyPaid.compareTo(BigDecimal.ZERO) <= 0){
             this.finishPayCallback(insertVirtualOrderRecord,null);
+            return null;
         }else{
-            AtomicReference<WebPayVo> webPayVo = new AtomicReference<>();
-
             //微信支付接口
             try {
-                webPayVo.set(mpPaymentService.wxUnitOrder(clientIp, couponPackRecord.getPackName(), orderSn, moneyPaid.multiply(BigDecimal.valueOf(100)), user.getWxOpenid()));
+                vo = mpPaymentService.wxUnitOrder(clientIp, couponPackRecord.getPackName(), orderSn, moneyPaid.multiply(BigDecimal.valueOf(100)), user.getWxOpenid());
             } catch (WxPayException e) {
                 logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
                 throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
@@ -274,13 +274,13 @@ public class CouponPackOrderService extends VirtualOrderService {
                 logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", orderSn, e.getMessage());
                 throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
             }
-            logger().debug("优惠券礼包-微信支付接口调用结果：{}", webPayVo.get());
+            logger().debug("优惠券礼包-微信支付接口调用结果：{}", vo);
             // 更新记录微信预支付id：prepayid
-            this.updatePrepayId(orderSn,webPayVo.get().getResult().getPrepayId());
+            this.updatePrepayId(orderSn,vo.getResult().getPrepayId());
 
-
+            return vo;
         }
-        return insertVirtualOrderRecord.getOrderSn();
+
     }
 
     /**

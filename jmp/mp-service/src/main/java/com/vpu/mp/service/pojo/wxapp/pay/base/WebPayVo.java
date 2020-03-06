@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class WebPayVo {
+public class WebPayVo {
     /**统一下单实际返回值*/
     @JsonIgnore
     private WxPayUnifiedOrderResult result;

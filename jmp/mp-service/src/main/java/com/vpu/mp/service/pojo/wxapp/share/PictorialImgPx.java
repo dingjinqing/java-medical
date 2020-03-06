@@ -113,20 +113,10 @@ public class PictorialImgPx {
     private Integer customerIconStartX = customerRectStartX+20;
     private Integer customerIconStartY = customerRectStartY +20;
 
-    private Integer customerTextPadding = 5;
+    private Integer customerTextPadding = 8;
     private Integer customerTextStartY = customerRectStartY + 5;
     private Integer customerTextStartX = customerRectStartX+20;
-    /**
-     * @param hasCustomerIcon 是否会有自定义的icon图标
-     * @return 自定义内容文字开始x坐标
-     */
-    public Integer getCustomerTextStartX(boolean hasCustomerIcon) {
-        if (hasCustomerIcon) {
-            return customerIconStartX + customerIconWidth + customerTextPadding;
-        } else {
-            return customerTextStartX;
-        }
-    }
+
     private Integer customerSecondTextStartY = customerTextStartY +12;
     private Color customerTextFontColor = new Color(255, 255, 255);
 

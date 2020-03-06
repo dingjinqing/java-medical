@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
@@ -123,7 +124,7 @@ public class UserCardService extends ShopBaseService {
 	@Autowired
 	private OrderInfoService orderInfoService;
 	@Autowired
-	private CouponGiveService couponGiveService;
+	private DomainConfig domainConfig;
 	@Autowired
 	private ShopCommonConfigService shopCommonConfigService;
 	@Autowired
@@ -1701,7 +1702,7 @@ public class UserCardService extends ShopBaseService {
      * @return
      */
 	public List<GeneralUserCardVo> getCanUseGeneralCardList(Integer userId){
-	    return db().select(USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.MONEY,MEMBER_CARD.ID,MEMBER_CARD.BG_COLOR,MEMBER_CARD.CARD_NAME,MEMBER_CARD.DISCOUNT).
+        List<GeneralUserCardVo> list = db().select(USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.MONEY,MEMBER_CARD.ID,MEMBER_CARD.BG_COLOR,MEMBER_CARD.CARD_NAME,MEMBER_CARD.DISCOUNT,MEMBER_CARD.BG_TYPE,MEMBER_CARD.BG_IMG,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.CARD_TYPE,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME).
             from(USER_CARD).leftJoin(MEMBER_CARD).on(MEMBER_CARD.ID.eq(USER_CARD.CARD_ID)).
             where(USER_CARD.USER_ID.eq(userId)).
             and(MEMBER_CARD.CARD_TYPE.eq(CardConstant.MCARD_TP_NORMAL)).
@@ -1710,6 +1711,16 @@ public class UserCardService extends ShopBaseService {
             and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_NO).or(USER_CARD.ACTIVATION_TIME.isNotNull().and(MEMBER_CARD.ACTIVATION.eq(CardConstant.MCARD_ACT_YES)))).
             and(USER_CARD.MONEY.gt(BigDecimal.ZERO)).
             fetchInto(GeneralUserCardVo.class);
+        list.forEach(c->{
+            if(StringUtil.isNotBlank(c.getBgImg())){
+                c.setBgImg(domainConfig.imageUrl(c.getBgImg()));
+            }
+            if(c.getStartTime() != null && c.getEndTime() != null){
+                c.setStartDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,c.getStartTime()));
+                c.setEndDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,c.getEndTime()));
+            }
+        });
+        return list;
     }
 	
 }
