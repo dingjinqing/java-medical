@@ -82,7 +82,7 @@ global.wxPage({
       share_good: true
     })
   },
-  // 关闭分享弹窗
+  // 关闭分享
   bindClose: function () {
     this.setData({
       share_good: false
@@ -129,6 +129,7 @@ global.wxPage({
       that.onPullDownRefresh();
     }, 200);
   },
+  // 保存图片
   saveImgToPhotosAlbumTap: function () {
     var that = this;
     var os_type = '';
@@ -156,7 +157,7 @@ global.wxPage({
       that.onPullDownRefresh();
     }, 200);
   },
-  //规则详情
+  // 规则详情
   toRule: function () {
     util.jumpToWeb('/wxapp/promote/help')
   },
@@ -173,7 +174,7 @@ global.wxPage({
     //   if (res.error == 0) {
     //     var add_promote_value = res.content.promote_value;
     //     var modal_can_share = res.content.canShare;
-    //     if (promote_info.canPromote == 0 && promote_info.canShare == 0) {
+    //     if (promote_info.canPromote.code == 0 && promote_info.canShare == 0) {
     //       that.setData({
     //         promote_fail: 1,
     //         is_shares: 0,
@@ -211,6 +212,7 @@ global.wxPage({
       that.onPullDownRefresh();
     }, 200);
   },
+  // 放弃发起
   forgive_share_fail: function () {
     this.setData({
       promote_fail: 0,
@@ -234,7 +236,7 @@ global.wxPage({
   to_index: function () {
     util.jumpLink("/pages/index/index", 'reLaunch');
   },
-  // 好友主力列表
+  // 好友助力列表
   to_list: function () {
     util.jumpLink("/pages/promotelist/promotelist?launch_id=" + launch_id);
   },

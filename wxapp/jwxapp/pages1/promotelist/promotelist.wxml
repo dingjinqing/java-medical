@@ -1,0 +1,20 @@
+<!--pages1/promotelist/promotelist.wxml-->
+<include src="/pages/common/header.wxml" />
+    <view class='main-container'>
+        <view class='list_top'>
+            <view class='hr'></view>
+            <view>好友助力</view>
+            <view class='hr'></view>
+        </view>
+        <view class='each_area'>
+          <view class='each_one' wx:for='{{promote_list}}' wx:key='key'>
+              <view class='eo_left'>
+                  <image src='{{item.user_avatar}}'></image>
+                  <view>{{item.username}}</view>
+              </view>
+              <view class='eo_right' style='color:{{comColor}}'>{{item.promote_value}}</view>
+          </view>
+          
+        </view>
+    </view>
+<include src="/pages/common/footer.wxml" />
