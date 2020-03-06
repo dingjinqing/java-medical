@@ -1,74 +1,44 @@
+<wxs module="filter">
+  substring = function (str,start,end) {
+    return str.substring(start,end)
+  }
+  module.exports = {
+    substring:substring
+  }
+</wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <!-- 优惠券礼包样式 -->
-  <block wx:if="{{true}}">
+  <block wx:if="{{options.packId}}">
     <view class="coupon-package-content">
       <view class="coupon-package-title">优惠券礼包</view>
       <view class="package-list">
-        <view class="coupon-item">
-          <view class="item-left" style="background-color:{{comColor}};">
-            <view class="coupon-money">￥<text>200.00</text></view>
-            <view class="coupon-limit">
-              无门槛
+        <block wx:for="{{couponData}}" wx:for-item="couponItem" wx:for-index="couponIndex" wx:key="id">
+          <view class="coupon-item">
+            <view class="item-left" style="background-color:{{comColor}};">
+              <view class="coupon-money" wx:if="{{couponItem.actCode === 'voucher'}}">￥<text>{{couponItem.denomination}}</text></view>
+              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'discount'}}"><text>{{couponItem.denomination}}</text>折</view>
+              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'random'}}"><text>{{couponItem.randomMax}}</text>最高</view>
+              <view class="coupon-limit">
+                {{couponItem.leastConsume ? '满'+couponItem.leastConsume+'元可用' : '无门槛'}}
+              </view>
+              <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
             </view>
-            <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
+            <view class="item-right">
+              <view class='coupon-name'>{{couponItem.actName}}</view>
+              <view class='coupon-goods-limit'>
+                {{couponItem.isAllGoodsUse ? '全部商品可用' : '部分商品可用'}}
+                <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
+              </view>
+              <view class="send-rule">{{couponItem.packDoc}}</view>
+              <view class="coupon-time">
+                {{filter.substring(couponItem.startTime,0,10)}} ~ {{filter.substring(couponItem.endTime,0,10)}}
+              </view>
+              <view class="coupon-num">{{couponItem.totalAmount}}张</view>
+            </view>
           </view>
-          <view class="item-right">
-            <view class='coupon-name'>测试测试测试测试测试测试测试测试测试测试测试测试</view>
-            <view class='coupon-goods-limit'>
-              全部商品可用
-              <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
-            </view>
-            <view class="send-rule">领取后立即发放5张</view>
-            <view class="coupon-time">
-              2020-01-15 ~ 2020-01-24
-            </view>
-            <view class="coupon-num">5张</view>
-          </view>
-        </view>
-        <view class="coupon-item">
-          <view class="item-left" style="background-color:{{comColor}};">
-            <view class="coupon-money">￥<text>200.00</text></view>
-            <view class="coupon-limit">
-              无门槛
-            </view>
-            <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
-          </view>
-          <view class="item-right">
-            <view class='coupon-name'>测试测试测试测试测试测试测试测试测试测试测试测试</view>
-            <view class='coupon-goods-limit'>
-              全部商品可用
-              <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
-            </view>
-            <view class="send-rule">领取后立即发放5张</view>
-            <view class="coupon-time">
-              2020-01-15 ~ 2020-01-24
-            </view>
-            <view class="coupon-num">5张</view>
-          </view>
-        </view>
-        <view class="coupon-item">
-          <view class="item-left" style="background-color:{{comColor}};">
-            <view class="coupon-money">￥<text>200.00</text></view>
-            <view class="coupon-limit">
-              无门槛
-            </view>
-            <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
-          </view>
-          <view class="item-right">
-            <view class='coupon-name'>测试测试测试测试测试测试测试测试测试测试测试测试</view>
-            <view class='coupon-goods-limit'>
-              全部商品可用
-              <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
-            </view>
-            <view class="send-rule">领取后立即发放5张</view>
-            <view class="coupon-time">
-              2020-01-15 ~ 2020-01-24
-            </view>
-            <view class="coupon-num">5张</view>
-          </view>
-        </view>
+        </block>
       </view>
     </view>
   </block>
@@ -95,26 +65,34 @@
       <view class="card_exp" wx:if="{{item.cardType !== 2}}">{{item.cardExpireTime}}</view>
     </view>
   </block>
+
   <view class="pay_content">
-    <view class="pay_list_item" bindtap="selectCardTap" wx:if="{{orderInfo.memberCards.length>0}}">
+    <view class="pay_list_item" bindtap="selectCardTap" wx:if="{{memberCardList.length>0}}">
       <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
-      <text class="pay_list_content">{{orderInfo.defaultMemberCard ? orderInfo.defaultMemberCard.cardName : i18n.$t(localePack,"pages.checkout.select")+i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
+      <text class="pay_list_content">{{memberCardInfo ? memberCardInfo.cardName : i18n.$t(localePack,"pages.checkout.select")+i18n.$t(localePack,"pages.checkout.membershipCard")}}</text>
       <view class="pay_list_right">
         <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
       </view>     
     </view> 
-    <view class="pay_list_item" wx:if="{{orderInfo.defaultMemberCard.money > 0}}" bindtap="cardBalanceTap">
+    <view class="pay_list_item" wx:if="{{memberCardInfo.money > 0}}" bindtap="cardBalanceTap">
       <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
       <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useCardBalance})}}</text>
       <view class="pay_list_right">
         <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
       </view>
     </view>
-    <view class="pay_list_item" wx:if="{{orderInfo.paymentList.balance}}" bindtap="balanceTap">
-      <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}{{}}</text>
+    <view class="pay_list_item" wx:if="{{!isScorePay}}" bindtap="balanceTap">
+      <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
       <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useBalance})}}</text>
       <view class="pay_list_right">
         <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
+      </view>
+    </view>
+    <view class="pay_list_item score" wx:if="{{isScorePay}}">
+      <text class="pay_list_title">积分支付</text>
+      <text class="pay_list_content"></text>
+      <view class="pay_list_right">
+        {{orderPayScore}}积分
       </view>
     </view>
   </view>
@@ -122,7 +100,7 @@
   <view class="checkout_detail">
     <view class="detail_item">
       <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.order")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-      <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount})}}</text>
+      <text class="detail_content" style="color:{{comColor}};">{{isScorePay ? orderPayScore + '积分' : i18n.$t(localePack,"pages.checkout.currency",{price:orderAmount})}}</text>
     </view>
     <view class="detail_item" wx:if="{{cardBalanceStatus}}">
       <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
@@ -138,7 +116,8 @@
     </view>
    </view>
    <view class="checkout_footer">
-      <text class="footer_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
+      <text class="footer_content" wx:if="{{!isScorePay}}" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
+      <text class="footer_content" wx:elif="{{isScorePay}}" style="color:{{comColor}};">应付积分：{{orderPayScore}}</text>
       <text class="footer_button" style="background-color:{{comColor}};" bindtap="confirmOrder">{{i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
    </view>
    <include src="/pages/common/footer.wxml" />
@@ -146,10 +125,8 @@
 
 
 <!-- 修改余额 -->
-<v-balance-popup show="{{showBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-balance="{{orderInfo.userAccount}}" bindconfirm="getInputBalance" bindclose="closeDialog" />
-<!-- 修改积分 -->
-<v-score-popup show="{{showScoreDialog}}" money-paid="{{usePayInfo.moneyPaid}}" score-max="{{orderInfo.scoreMaxDiscount}}" score-min="{{orderInfo.scorePayNum}}" score-proportion="{{orderInfo.scoreProportion}}" user-score="{{orderInfo.userScore}}" bindconfirm="getInputScore" bindclose="closeDialog"/>
+<v-balance-popup show="{{showBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-balance="{{account}}" bindconfirm="getInputBalance" bindclose="closeDialog" />
 <!-- 修改会员卡余额- -->
-<v-card-balance show="{{showCardBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-card-balance="{{orderInfo.memberCardMoney}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"/>
+<v-card-balance show="{{showCardBalanceDialog}}" money-paid="{{usePayInfo.moneyPaid}}" user-card-balance="{{memberCardInfo.money}}" bindconfirm="getInputCardBalance" bindclose="closeDialog"/>
 <!-- 选择会员卡 -->
-<v-select-card show="{{showCardDialog}}" member-card-list="{{orderInfo.memberCards}}" default-member-card-no="{{orderInfo.defaultMemberCard.cardNo}}" bindconfirm="getSelectCard"/>
+<v-select-card show="{{showCardDialog}}" member-card-list="{{memberCardList}}" default-member-card-no="{{memberCardInfo.cardNo}}" bindconfirm="getSelectCard"/>

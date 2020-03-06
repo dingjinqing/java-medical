@@ -126,22 +126,17 @@ public class GroupBuyPictorialService extends ShopBaseService {
             String linePrice = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             String realPrice = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            // "开团省" 文字
-            String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages");
-            // "元" 文字
-            String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
-            String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
-            // 一个字符占的宽度
-            int fontWidth = 20;
 
-            // 添加开团省边框
-            int width = 4 * fontWidth + saveMoney.length() * 10;
             Color lineColor = new Color(255, 102, 102);
+            // "开团省2元" 文字
+            String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE,null,"messages",saveMoney);
+            ImageUtil.addFont(bgBufferImg,startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 265, 130, lineColor);
+            int width = ImageUtil.getTextWidth(bgBufferImg,ImageUtil.SourceHanSansCN(Font.PLAIN, 18),startGroupMoneyText);
+            // 添加开团省边框
             ImageUtil.addRect(bgBufferImg, 255, 100, width + 10, 40, lineColor, new Color(255, 238, 238));
 
-            // 添加开团省文字
-            ImageUtil.addFont(bgBufferImg, startGroupText + saveMoney + startGroupMoneyText, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), 265, 130, lineColor);
 
+            String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             // 添加拼团价￥
             ImageUtil.addFont(bgBufferImg, moneyFlag, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), 250, 200, lineColor);
             ImageUtil.addFont(bgBufferImg, realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 32), 280, 200, lineColor);
@@ -246,27 +241,16 @@ public class GroupBuyPictorialService extends ShopBaseService {
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx, true);
 
         // 拼装自定义内容
-        // "开团省" 文字
-        String startGroupText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_START_GROUP, "messages");
-        // "元" 文字
-        String startGroupMoneyText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
         BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
-        String saveText = startGroupText + saveMoney + startGroupMoneyText;
-        Integer saveTextWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), saveText);
 
-        ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getCustomerTextStartX(), imgPx.getCustomerSecondTextStartY(), saveText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
-
+        // "开团省" 文字
+        String saveText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null,"messages",saveMoney);
         // 活动价
         String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-        Integer realPriceTextStartX = imgPx.getCustomerTextStartX() + saveTextWidth + 15;
-        ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceTextStartX, imgPx.getCustomerTextStartY(), imgPx.getCustomerTextFontColor(), false);
-        Integer realPriceTextWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
-
         // 划线价格
         String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-        int linePriceTextStartX = realPriceTextStartX + realPriceTextWidth + 5;
-        ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getCustomerSecondTextStartY(), linePriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor());
 
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,saveText,realPriceText,linePriceText,true,imgPx);
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
     }

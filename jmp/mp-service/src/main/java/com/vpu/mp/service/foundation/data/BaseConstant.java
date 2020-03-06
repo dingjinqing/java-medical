@@ -248,6 +248,10 @@ public final  class  BaseConstant {
      * 1领取
      */
     public final static Byte ACCESS_MODE_RECEIVE =1;
+    /**
+     * 2优惠券礼包自动发放
+     */
+    public final static Byte ACCESS_MODE_COUPON_PACK =2;
 
     //*********************前端活动状态***************************************/
     /**

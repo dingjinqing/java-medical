@@ -222,16 +222,18 @@ public class ReducePricePictorialService extends ShopBaseService {
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {
             BufferedImage reduceIconBufferImg = ImageIO.read(reduceIconStream);
             ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBgPadding(), imgPx.getPriceY());
-            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + 20;
-            int realPriceHeight = imgPx.getLargeFontAscent(bgBufferedImage);
-            ImageUtil.addFont(bgBufferedImage, param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - realPriceHeight / 4, imgPx.getRealPriceColor(), false);
+            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + imgPx.getBgPadding() + 10;
+            String realPriceText = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+            ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
+            Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
+            int linePriceStartX = realPriceStartX + textWidth + imgPx.getBgPadding() + 10;
+            ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY()- 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
 
         } catch (IOException e) {
             pictorialLog("pictorial", "装载限时降价图标失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
-
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
     }

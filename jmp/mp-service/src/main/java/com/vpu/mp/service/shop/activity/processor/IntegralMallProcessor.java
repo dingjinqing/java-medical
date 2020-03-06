@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -12,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.integral.IntegralMallPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.IntegralMallProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,11 +92,23 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        Map<Integer, OrderGoodsBo> addRecordParam = param.getBos().stream()
+        .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
+        .collect(Collectors.toMap(OrderGoodsBo::getProductId, Function.identity()));
 
+        Map<Integer, Integer> updateParam = addRecordParam.values().stream()
+            .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
+        dao.updateStockAndSales(param.getActivityId(), updateParam);
+        dao.addRecords(order, addRecordParam);
     }
 
     @Override
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-
+        Map<Integer, Integer> updateParam = returnGoods.stream().filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber));
+        updateParam.forEach((k, v)->updateParam.put(k, -v));
+        if(updateParam.size() != 0){
+            dao.updateStockAndSales(activityId, updateParam);
+            dao.removeRecords(activityId, updateParam.keySet());
+        }
     }
 }

@@ -618,6 +618,7 @@ public class CouponGiveService extends ShopBaseService {
                 customerAvailCouponsRecord.setEndTime(timeMap.get("endTime"));
                 customerAvailCouponsRecord.setAccessMode(param.getAccessMode());
                 customerAvailCouponsRecord.setGetSource(param.getGetSource());
+                customerAvailCouponsRecord.setAccessOrderSn(StringUtil.isNotBlank(param.getAccessOrderSn()) ? param.getAccessOrderSn() : "");
                 customerAvailCouponsRecord.setLimitOrderAmount(couponDetails.getLeastConsume());
                 try {
                     this.transaction(()-> {

@@ -10,6 +10,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class FormInfoVo {
+    private Integer pageId;
     private String pageName;
     private Timestamp createTime;
     /**反馈数量*/

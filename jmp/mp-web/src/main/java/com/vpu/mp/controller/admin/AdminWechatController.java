@@ -163,11 +163,9 @@ public class AdminWechatController extends AdminBaseController {
 			orderResult.checkResult(wxPayService, null, true);
 			mpPay.onPayNotify(orderResult);
 			return WxPayNotifyResponse.success("Ok");
-		} catch (WxPayException e) {
+		} catch (WxPayException | MpException e) {
 			return WxPayNotifyResponse.fail(e.getMessage());
-		} catch (MpException e) {
-            return WxPayNotifyResponse.fail(e.getMessage());
-        }
-	}
+		}
+    }
 
 }

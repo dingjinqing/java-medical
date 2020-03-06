@@ -986,7 +986,11 @@ public class FriendPromoteService extends ShopBaseService {
             }
         }
         //获取所有可助力的次数
-        Integer promoteTimesInfo = promoteTimesInfo(userId,launchId).getOwnPromoteTimes();
+        Integer promoteTimesInfo = 0;
+        FriendPromoteTimesRecord timesRecord = promoteTimesInfo(userId,launchId);
+        if (timesRecord!=null){
+            promoteTimesInfo = promoteTimesInfo(userId,launchId).getOwnPromoteTimes();
+        }
         Integer ownPromoteTimes = promoteTimesInfo+1;
         //判断所有的助力次数限制
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);

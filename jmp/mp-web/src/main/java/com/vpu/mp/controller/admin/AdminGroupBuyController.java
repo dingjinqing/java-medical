@@ -65,7 +65,6 @@ public class AdminGroupBuyController extends AdminBaseController {
         Timestamp date = DateUtil.getLocalDateTime();
 
         shop().groupBuy.addGroupBuy(param);
-//        return success(Util.translateMessage(getLang(), JsonResultMessage.GROUP_BUY_ADD_ACTIVITY_STOP_STATUS,I18N_RESOURCE));
         return success();
     }
 

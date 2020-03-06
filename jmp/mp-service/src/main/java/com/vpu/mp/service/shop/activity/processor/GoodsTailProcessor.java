@@ -110,11 +110,9 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
 
         // 处理运费信息
         log.debug("小程序-商品详情-处理运费信息");
-        log.debug("小程序-商品详情-规格测试：");
-        log.debug(goodsDetailMpBo.getProducts()==null?"无规格":goodsDetailMpBo.getProducts().toString());
-//        Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
-//        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
-//        goodsDetailMpBo.setDeliverPrice(deliverPrice);
+        Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
+        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
+        goodsDetailMpBo.setDeliverPrice(deliverPrice);
 
         // 判断是否已收藏商品
         log.debug("小程序-商品详情-判断是否已收藏商品");

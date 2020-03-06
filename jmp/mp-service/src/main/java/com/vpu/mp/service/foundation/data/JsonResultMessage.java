@@ -914,7 +914,7 @@ public class JsonResultMessage {
 
     /** 拼团相关 */
     /** 开团省 */
-    public static final String WX_MA_GROUP_BUY_START_GROUP = "wx.ma.group.buy.start.group";
+    public static final String WX_MA_GROUP_BUY_SAVE = "wx.ma.group.buy.save";
     /** 2人品仅需5元推荐给你*/
     public static final String WX_MA_GROUP_BUY_DOC = "wx.ma.group.buy.doc";
     /** 砍价 */
