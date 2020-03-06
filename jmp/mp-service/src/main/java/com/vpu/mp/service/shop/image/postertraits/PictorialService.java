@@ -137,7 +137,7 @@ public class PictorialService extends ShopBaseService {
      * @param imgPx     图片规格信息
      * @return 通过图片
      */
-    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx, boolean needSelfCustomerRect) {
+    public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
         //设置背景图
         BufferedImage bgBufferedImage = new BufferedImage(imgPx.getBgWidth(), imgPx.getBgHeight(), BufferedImage.TYPE_USHORT_555_RGB);
         ImageUtil.addRect(bgBufferedImage, 0, 0, imgPx.getBgWidth(), imgPx.getBgHeight(), null, Color.WHITE);
@@ -158,8 +158,7 @@ public class PictorialService extends ShopBaseService {
         ImageUtil.addTwoImage(bgBufferedImage, qrCodeImg, imgPx.getQrCodeStartX(), imgPx.getBottomStartY());
 
         // 设置商品名称
-        ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
-        int goodsNameHeight = ImageUtil.getTextAscent(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()));
+        int goodsNameHeight = pictorialAddFontName(bgBufferedImage, goodsName, imgPx);
         imgPx.setPriceY(imgPx.getGoodsNameStartY() + goodsNameHeight + 30);
         // 设置原价
         if (realPrice != null) {
@@ -179,13 +178,53 @@ public class PictorialService extends ShopBaseService {
     }
 
     /**
+     * 海报添加商品名称，根据长度自动折行或截断商品名称
+     *
+     * @param bgBufferedImage 背景图bufferImage
+     * @param goodsName       商品名称
+     * @param imgPx           图片规格信息
+     * @return 商品结束出Y值
+     */
+    private int pictorialAddFontName(BufferedImage bgBufferedImage, String goodsName, PictorialImgPx imgPx) {
+        // 名称单个字符高度
+        int nameCharHeight = imgPx.getMediumFontAscent(bgBufferedImage);
+        // 名称总长度
+        int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), goodsName);
+
+        if (nameTextLength <= imgPx.getGoodsNameCanUseWidth()) {
+            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
+            return nameCharHeight;
+        } else {
+            double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
+            int oneLineCharNum = (int) Math.floor(imgPx.getGoodsNameCanUseWidth() / oneCharWidth);
+            if (goodsName.length() >oneLineCharNum * 3) {
+                goodsName = goodsName.substring(0, oneLineCharNum * 2 + oneLineCharNum / 2) + "...";
+            }
+
+            int nextTextStartY = imgPx.getGoodsNameStartY();
+            String text;
+            for (int i = 0; i < goodsName.length(); i += oneLineCharNum) {
+                if (i + oneLineCharNum >= goodsName.length()) {
+                    text = goodsName.substring(i);
+                } else {
+                    text = goodsName.substring(i, i + oneLineCharNum);
+                }
+                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBgPadding(), nextTextStartY, imgPx.getGoodsNameColor(), false);
+                nextTextStartY += nameCharHeight;
+            }
+            return nextTextStartY - imgPx.getGoodsNameStartY();
+        }
+    }
+
+    /**
      * 给海报添加自定义内容区域内容
-     * @param bufferedImg 海报背景对象
-     * @param iconBufferImg 图标对象，没有为null
-     * @param firstContentText 一级自定义内容
+     *
+     * @param bufferedImg       海报背景对象
+     * @param iconBufferImg     图标对象，没有为null
+     * @param firstContentText  一级自定义内容
      * @param secondContentText 二级自定义内容
-     * @param secondNeedLine 二级内容是否需要划线
-     * @param imgPx 图片规格信息
+     * @param secondNeedLine    二级内容是否需要划线
+     * @param imgPx             图片规格信息
      */
     public void addPictorialSelfCustomerContent(BufferedImage bufferedImg, BufferedImage iconBufferImg, String firstContentText, String secondContentText, boolean secondNeedLine, PictorialImgPx imgPx) {
         addPictorailSelfCustomerContent(bufferedImg, iconBufferImg, null, firstContentText, secondContentText, secondNeedLine, imgPx);
@@ -193,12 +232,13 @@ public class PictorialService extends ShopBaseService {
 
     /**
      * 给海报添加自定义内容区域内容
-     * @param bufferedImg 海报背景对象
+     *
+     * @param bufferedImg        海报背景对象
      * @param activityPosterText 海报上自定义内容带边框的宣传文字，没有为null
-     * @param firstContentText 一级自定义内容
-     * @param secondContentText 二级自定义内容
-     * @param secondNeedLine 二级内容是否需要划线
-     * @param imgPx 图片规格信息
+     * @param firstContentText   一级自定义内容
+     * @param secondContentText  二级自定义内容
+     * @param secondNeedLine     二级内容是否需要划线
+     * @param imgPx              图片规格信息
      */
     public void addPictorialSelfCustomerContent(BufferedImage bufferedImg, String activityPosterText, String firstContentText, String secondContentText, boolean secondNeedLine, PictorialImgPx imgPx) {
         addPictorailSelfCustomerContent(bufferedImg, null, activityPosterText, firstContentText, secondContentText, secondNeedLine, imgPx);
@@ -206,26 +246,27 @@ public class PictorialService extends ShopBaseService {
 
     /**
      * 给海报添加自定义内容区域内容
-     * @param bufferedImg 海报背景对象
-     * @param iconBufferImg 图标对象，没有为null
+     *
+     * @param bufferedImg        海报背景对象
+     * @param iconBufferImg      图标对象，没有为null
      * @param activityPosterText 海报上自定义内容带边框的宣传文字，没有为null
-     * @param firstContentText 一级自定义内容
-     * @param secondContentText 二级自定义内容
-     * @param secondNeedLine 二级内容是否需要划线
-     * @param imgPx 图片规格信息
+     * @param firstContentText   一级自定义内容
+     * @param secondContentText  二级自定义内容
+     * @param secondNeedLine     二级内容是否需要划线
+     * @param imgPx              图片规格信息
      */
-    private void addPictorailSelfCustomerContent(BufferedImage bufferedImg, BufferedImage iconBufferImg, String activityPosterText,String firstContentText, String secondContentText, boolean secondNeedLine, PictorialImgPx imgPx) {
+    private void addPictorailSelfCustomerContent(BufferedImage bufferedImg, BufferedImage iconBufferImg, String activityPosterText, String firstContentText, String secondContentText, boolean secondNeedLine, PictorialImgPx imgPx) {
 
         ImageUtil.addRect(bufferedImg, imgPx.getCustomerRectStartX(), imgPx.getCustomerRectStartY(), imgPx.getCustomerRectWidth(), imgPx.getCustomerRectHeight(), null, imgPx.getCustomerRectFillColor());
         // 添加自定义图标
         if (iconBufferImg != null) {
             iconBufferImg = ImageUtil.resizeImageTransparent(imgPx.getCustomerIconWidth(), imgPx.getCustomerIconHeight(), iconBufferImg);
             ImageUtil.addTwoImage(bufferedImg, iconBufferImg, imgPx.getCustomerIconStartX(), imgPx.getCustomerIconStartY());
-            imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX()+imgPx.getCustomerIconWidth()+imgPx.getCustomerTextPadding());
+            imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX() + imgPx.getCustomerIconWidth() + imgPx.getCustomerTextPadding());
         }
-        if (activityPosterText != null && iconBufferImg==null) {
+        if (activityPosterText != null && iconBufferImg == null) {
             int width = ImageUtil.addFontWithRect(bufferedImg, imgPx.getCustomerIconStartX(), imgPx.getCustomerIconStartY(), activityPosterText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
-            imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX()+width+imgPx.getCustomerTextPadding());
+            imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX() + width + imgPx.getCustomerTextPadding());
         }
         // 添加自定义一级内容（原价等）
         ImageUtil.addFont(bufferedImg, firstContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getCustomerTextStartX(), imgPx.getCustomerTextStartY(), imgPx.getCustomerTextFontColor(), false);
