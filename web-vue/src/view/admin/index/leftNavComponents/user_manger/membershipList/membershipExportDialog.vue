@@ -388,7 +388,7 @@ export default {
       let params = Object.assign({}, this.queryParams, {
         userExpParam: {
           startNum: '',
-          endNu: '',
+          endNum: '',
           columns: checkedCfgs
         }
       })
