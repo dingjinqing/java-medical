@@ -289,12 +289,12 @@ public class OrderGoodsService extends ShopBaseService{
             //限时降价
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
-            //TODO 需要考虑 是否赠品
+            //当前非赠品（赠品后续初始化）
             isGift(OrderConstant.IS_GIFT_N).
             //TODO 需要考虑 赠品的关联商品
-            rGoods("").
-            //TODO 需要考虑 商品积分
-            goodsScore(0).
+            rGoods(StringUtils.EMPTY).
+            //商品积分(积分兑换当前商品需要的积分)
+            goodsScore(goods.getGoodsScore()).
             //TODO 需要考虑 商品成长值
             goodsGrowth(0).
             goodsType(goods.getGoodsInfo().getGoodsType()).
@@ -304,7 +304,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 逐级计算折扣
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
-            //TODO 规格质量
+            //商品质量
             goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
             //TODO 后续处理
             userCoupon(null).

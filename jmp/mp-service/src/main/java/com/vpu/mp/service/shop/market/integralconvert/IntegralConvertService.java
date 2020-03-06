@@ -48,9 +48,9 @@ import static com.vpu.mp.db.shop.Tables.USER;
  */
 @Service
 public class IntegralConvertService extends ShopBaseService {
-    public IntegralMallDefine imd = INTEGRAL_MALL_DEFINE.as("imd");
-    public IntegralMallProduct imp = INTEGRAL_MALL_PRODUCT.as("imp");
-    public IntegralMallRecord imr = INTEGRAL_MALL_RECORD.as("imr");
+    private IntegralMallDefine imd = INTEGRAL_MALL_DEFINE.as("imd");
+    protected IntegralMallProduct imp = INTEGRAL_MALL_PRODUCT.as("imp");
+    protected IntegralMallRecord imr = INTEGRAL_MALL_RECORD.as("imr");
     /** 活动状态为启用 */
 	public static final Byte NORMAL = 1;
     /** 默认查找上架和下架全部商品 */
