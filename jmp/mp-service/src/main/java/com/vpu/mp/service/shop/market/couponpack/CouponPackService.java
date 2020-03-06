@@ -453,7 +453,7 @@ public class CouponPackService extends ShopBaseService {
         //会员卡
         List<GeneralUserCardVo> memberCardLit = memberService.userCardService.getCanUseGeneralCardList(userId);
         vo.setMemberCardList(memberCardLit);
-        if(StringUtils.isNoneBlank(param.getCardNo())){
+        if(StringUtils.isNoneBlank(param.getCardNo()) && !memberCardLit.isEmpty()){
             //默认选第一个
             if(param.getCardNo().equals("0")){
                 vo.setMemberCardNo(memberCardLit.get(0).getCardNo());
