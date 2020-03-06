@@ -45,7 +45,7 @@ global.wxPage({
     invoiceArray: ['不需要', '普通发票', '增值税普通发票', '增值税专用发票'],
     invoiceIndex: 0,
     message: '', //买家备注
-    showFriendPayDialog:false,
+    showFriendPayDialog: false,
     must: {
       orderRealName: '',
       orderCid: '',
@@ -58,7 +58,7 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     let goods = []
     let { goodsList, activityType, activityId, recordId } = options
     JSON.parse(goodsList).forEach(item => {
@@ -71,6 +71,10 @@ global.wxPage({
       } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
     })
+    if (preSaleInfo) {
+      preSaleInfo = JSON.parse(preSaleInfo)
+    }
+    console.log(preSaleInfo)
     this.setData({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
@@ -85,7 +89,7 @@ global.wxPage({
     }
     this.requestOrder()
   },
-  requestOrder() {
+  requestOrder () {
     util.api(
       '/api/wxapp/order',
       res => {
@@ -98,30 +102,30 @@ global.wxPage({
           this.defaultInput(orderInfo)
           this.getPayType(orderInfo)
         } else {
-            util.showModal('提示', res.message, function () {
-              let pages = getCurrentPages()
-              if (pages.length > 1) {
-                wx.navigateBack()
-              } else {
-                util.jumpLink('/pages/index/index', 'reLaunch')
-              }
-            }, false, '', '确定')
+          util.showModal('提示', res.message, function () {
+            let pages = getCurrentPages()
+            if (pages.length > 1) {
+              wx.navigateBack()
+            } else {
+              util.jumpLink('/pages/index/index', 'reLaunch')
+            }
+          }, false, '', '确定')
         }
       },
       { ...this.data.params }
     )
   },
-  getPayType(orderinfo){
+  getPayType (orderinfo) {
     let payType = this.data.payType
-    if(orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)){
+    if (orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
       payType.push(2)
     }
     this.setData({
-      payType 
+      payType
     })
   },
   // 选择地址
-  addAddress() {
+  addAddress () {
     wx.chooseAddress({
       success: res => {
         util.api(
@@ -139,16 +143,16 @@ global.wxPage({
           { wxAddress: { ...res } }
         )
       },
-      fail: function() {
+      fail: function () {
         wx.getSetting({
-          success: function(res) {
+          success: function (res) {
             if (!res.authSetting['scope.address']) {
               util.showModal(
                 '是否打开设置页面',
                 '需要获取您的位置信息，请到小程序的设置页面打开授权',
-                function() {
+                function () {
                   wx.openSetting({
-                    success: function(res) {}
+                    success: function (res) { }
                   })
                 }
               )
@@ -159,7 +163,7 @@ global.wxPage({
     })
   },
   // 默认填充
-  defaultInput(orderInfo) {
+  defaultInput (orderInfo) {
     let {
       isBalancePay,
       isCardPay,
@@ -206,8 +210,8 @@ global.wxPage({
             ? userScore
             : scoreMaxDiscount * scoreProportion
           : moneyPaid * scoreProportion > userScore
-          ? userScore
-          : moneyPaid * scoreProportion
+            ? userScore
+            : moneyPaid * scoreProportion
       moneyPaid -= parseInt(useScore)
       this.setData({
         'usePayInfo.useScore': parseInt(useScore),
@@ -222,7 +226,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 会员卡余额支付事件
-  cardBalanceTap() {
+  cardBalanceTap () {
     if (this.data.cardBalanceStatus) {
       this.setData({
         cardBalanceStatus: 0,
@@ -237,7 +241,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 余额支付事件
-  balanceTap() {
+  balanceTap () {
     if (this.data.balanceStatus) {
       this.setData({
         balanceStatus: 0,
@@ -252,7 +256,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 积分支付事件
-  scoreTap() {
+  scoreTap () {
     if (this.data.scoreStatus) {
       this.setData({
         scoreStatus: 0,
@@ -267,7 +271,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获得输入的余额数
-  getInputBalance(data) {
+  getInputBalance (data) {
     this.setData({
       'usePayInfo.useBalance': data.detail,
       balanceStatus: 1
@@ -275,7 +279,7 @@ global.wxPage({
     this.getPayMoney()
   },
   //获取输入的积分数
-  getInputScore(data) {
+  getInputScore (data) {
     this.setData({
       'usePayInfo.useScore': parseInt(data.detail),
       scoreStatus: 1
@@ -283,7 +287,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获取输入的会员卡余额数
-  getInputCardBalance(data) {
+  getInputCardBalance (data) {
     this.setData({
       'usePayInfo.useCardBalance': data.detail,
       cardBalanceStatus: 1
@@ -291,7 +295,7 @@ global.wxPage({
     this.getPayMoney()
   },
   // 获取优惠券数据
-  getCouponData(orderInfo) {
+  getCouponData (orderInfo) {
     let { coupons, defaultCoupon } = orderInfo
     if (coupons === null || coupons.length === 0) {
       this.setData({
@@ -306,7 +310,7 @@ global.wxPage({
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
             newItem.limitOrderAmount
-          }${this.$t('components.decorate.reduce')}${newItem.amount}`
+            }${this.$t('components.decorate.reduce')}${newItem.amount}`
         } else {
           newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
             'components.decorate.reduce'
@@ -316,9 +320,9 @@ global.wxPage({
         if (newItem.useConsumeRestrict === 1) {
           newItem.text = `${this.$t('components.decorate.full')}${
             newItem.limitOrderAmount
-          }${this.$t('components.decorate.hit')}${newItem.amount}${this.$t(
-            'components.decorate.fracture'
-          )}`
+            }${this.$t('components.decorate.hit')}${newItem.amount}${this.$t(
+              'components.decorate.fracture'
+            )}`
         } else {
           newItem.text = `${this.$t('components.decorate.coupon')}${this.$t(
             'components.decorate.hit'
@@ -338,7 +342,7 @@ global.wxPage({
   },
 
   // 变更优惠券
-  couponChange(e) {
+  couponChange (e) {
     let { couponSn } = this.data.couponArray[parseInt(e.detail.value)]
     this.setData({
       defaultCouponIndex: parseInt(e.detail.value)
@@ -358,13 +362,13 @@ global.wxPage({
     this.requestOrder()
   },
   // 选择会员卡事件
-  selectCardTap() {
+  selectCardTap () {
     this.setData({
       showCardDialog: true
     })
   },
   // 得到选择后的会员卡
-  getSelectCard(data) {
+  getSelectCard (data) {
     if (data.detail) {
       this.setData({
         'params.memberCardNo': data.detail
@@ -379,20 +383,20 @@ global.wxPage({
     this.requestOrder()
   },
   // 变更支付类型
-  changePayType(e) {
+  changePayType (e) {
     this.setData({
       choosePayType: e.currentTarget.dataset.payType
     })
   },
   // 变更配送方式
-  selectShippingMethod(e) {
+  selectShippingMethod (e) {
     this.setData({
       'params.deliverType': e.currentTarget.dataset.index
     })
     this.requestOrder()
   },
   // 选择门店
-  selectStore() {
+  selectStore () {
     if (this.data.chooseShippingIndex === 0) return
     let storeDialogData = {}
     storeDialogData.openType = this.data.chooseShippingIndex
@@ -408,7 +412,7 @@ global.wxPage({
     })
   },
   //获取应付总金额
-  getPayMoney() {
+  getPayMoney () {
     let moneyPaid = this.data.orderInfo.moneyPaid,
       useScore = this.data.usePayInfo.useScore,
       useBalance = this.data.usePayInfo.useBalance,
@@ -424,7 +428,7 @@ global.wxPage({
     })
   },
   // 获取门店改变
-  getSelectStore(info) {
+  getSelectStore (info) {
     let { id: storeId, openType } = info.detail
     console.log(storeId, openType)
     switch (openType) {
@@ -435,13 +439,13 @@ global.wxPage({
     }
   },
   // 是否使用发票
-  bindInvoiceChange(e) {
+  bindInvoiceChange (e) {
     this.setData({
       invoiceIndex: parseInt(e.detail.value)
     })
   },
   // 下单必填项
-  mustInput(e) {
+  mustInput (e) {
     let { type } = e.currentTarget.dataset,
       { value } = e.detail
     switch (type) {
@@ -473,16 +477,16 @@ global.wxPage({
     }
   },
   // 添加备注
-  addMsg(e) {
+  addMsg (e) {
     let { value: message } = e.detail
     this.setData({
       message
     })
   },
   // 选择发票
-  chooseInvoice() {
+  chooseInvoice () {
     wx.chooseInvoiceTitle({
-      success(res) {
+      success (res) {
         // util.api('/api/wxapp/invoice/choose', function(e) {
         //   that.data.create_order.invoice_id = e.content;
         //   that.setData({
@@ -493,37 +497,37 @@ global.wxPage({
         // })
         console.log(res)
       },
-      fail() {
+      fail () {
         util.showModal('', '获取发票信息失败')
       }
     })
   },
   // 获取必填项
-  getMust(params){
+  getMust (params) {
     let must = {}
-    if(this.data.orderInfo.must.isShow){
-      if(this.data.orderInfo.must.consigneeCid){
+    if (this.data.orderInfo.must.isShow) {
+      if (this.data.orderInfo.must.consigneeCid) {
         must.consigneeCid = this.data.must.consigneeCid
       }
-      if(this.data.orderInfo.must.consigneeRealName){
+      if (this.data.orderInfo.must.consigneeRealName) {
         must.consigneeRealName = this.data.must.consigneeRealName
       }
-      if(this.data.orderInfo.must.orderCid){
+      if (this.data.orderInfo.must.orderCid) {
         must.orderCid = this.data.must.orderCid
       }
-      if(this.data.orderInfo.must.orderRealName){
+      if (this.data.orderInfo.must.orderRealName) {
         must.orderRealName = this.data.must.orderRealName
       }
-      if(this.data.orderInfo.must.custom){
+      if (this.data.orderInfo.must.custom) {
         must.custom = this.data.must.custom
       }
     }
-    if(Object.keys(must).length > 0){
+    if (Object.keys(must).length > 0) {
       params.must = must
     }
   },
   // 是否可提交
-  canSubmit(){
+  canSubmit () {
     let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
     if (!addressId) {
       wx.showToast({
@@ -548,7 +552,7 @@ global.wxPage({
     return true
   },
   // 关闭弹窗
-  closeDialog(target) {
+  closeDialog (target) {
     switch (target.detail) {
       case 'balance':
         this.setData({
@@ -568,10 +572,10 @@ global.wxPage({
     }
   },
   // 提交订单
-  confirmOrder() {
-    util.getNeedTemplateId('add_order',()=>{
+  confirmOrder () {
+    util.getNeedTemplateId('add_order', () => {
       let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
-      this.data.orderInfo || {}
+        this.data.orderInfo || {}
       let {
         useBalance: balance,
         useCardBalance: cardBalance,
@@ -587,13 +591,13 @@ global.wxPage({
         return item.isGift !== 1
       })
       let addParams = {}
-      if(this.data.choosePayType === 2 && this.data.insteadPayNum !== null){
+      if (this.data.choosePayType === 2 && this.data.insteadPayNum !== null) {
         addParams.insteadPayNum = this.data.insteadPayNum
-      } else if(addParams.insteadPayNum) {
+      } else if (addParams.insteadPayNum) {
         delete addParams.insteadPayNum
       }
       console.log(addParams)
-      if(!this.canSubmit()) return
+      if (!this.canSubmit()) return
       let params = {
         goods,
         action: 10,
@@ -611,7 +615,7 @@ global.wxPage({
         activityId,
         recordId: this.data.params.recordId,
         groupId: this.data.params.groupId,
-        isCart:this.data.params.isCart,
+        isCart: this.data.params.isCart,
         ...addParams
       }
       this.getMust(params)
@@ -620,8 +624,8 @@ global.wxPage({
         res => {
           if (res.error === 0) {
             let { orderSn } = res.content
-            if(this.data.insteadPayNum !== null && this.data.choosePayType === 2){
-              util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`,'redirectTo')
+            if (this.data.insteadPayNum !== null && this.data.choosePayType === 2) {
+              util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`, 'redirectTo')
             } else if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
               wx.requestPayment({
                 timeStamp: res.content.webPayVo.timeStamp,
@@ -643,7 +647,7 @@ global.wxPage({
                   console.log(res)
                   util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
                 },
-                complete: res => {}
+                complete: res => { }
               })
             } else {
               util.jumpLink(
@@ -655,7 +659,7 @@ global.wxPage({
               )
             }
           } else {
-            util.showModal('提示', res.message, function() {
+            util.showModal('提示', res.message, function () {
               util.jumpLink('/pages/index/index', 'redirectTo')
             })
           }
@@ -665,50 +669,50 @@ global.wxPage({
     })
   },
   //整合参数
-  getUrlParams(obj) {
+  getUrlParams (obj) {
     return Object.keys(obj).reduce((UrlStr, item, index) => {
       if (index !== 0) UrlStr += `&`
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
   },
-  showShareFriend(){
+  showShareFriend () {
     this.setData({
-      showFriendPayDialog:true
+      showFriendPayDialog: true
     })
   },
-  getFriendPayData(e){
+  getFriendPayData (e) {
     this.setData({
-      insteadPayNum:e.detail.type
+      insteadPayNum: e.detail.type
     })
     this.confirmOrder()
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {},
+  onReady: function () { },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {},
+  onShow: function () { },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {},
+  onHide: function () { },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {},
+  onUnload: function () { },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {},
+  onPullDownRefresh: function () { },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {}
+  onReachBottom: function () { }
 })

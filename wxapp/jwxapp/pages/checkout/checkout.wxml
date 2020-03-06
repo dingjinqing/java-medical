@@ -216,6 +216,26 @@
         </view>
       </view>
 
+      <view class="checkout_detail presale-info" wx:if="{{preSaleInfo}}">
+        <view class="detail_item">
+          <text class="dotted" style="background-color:{{comColor}}"></text>
+          <text class="detail_title">定金（待付款）</text>
+          <text class="detail_content" wx:if="{{preSaleInfo.preSaleType!==1}}" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+          <text class="detail_content" wx:else style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.preSalePrice}}</text>
+        </view>
+        <view class="detail_item" wx:if='{{preSaleInfo.preSaleType == 0}}'>
+          <text class="dotted"></text>
+          <text class="detail_title">尾款（待付款）</text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.bkOrderMoney}}</text>
+        </view>
+        <view class="detail_item rule">
+          <text class="detail_title" bindtap="viewPreSaleRule">{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
+          <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
+        </view>
+      </view>
+      <view class='presale_tips' wx:if="{{preSaleInfo && preSaleInfo.preSaleType == 0}}">
+        定金：￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})；尾款：￥{{orderInfo.bkOrderMoney}}
+      </view>
       <view class="checkout_footer">
         <text class="footer_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
         <text class="footer_button" style="background-color:{{comColor}};" bindtap="{{choosePayType === 2 ? 'showShareFriend' : 'confirmOrder'}}">{{choosePayType === 2 ? '去分享' : i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
