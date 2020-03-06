@@ -17,11 +17,8 @@ import java.sql.Timestamp;
 @Data
 public class BargainUserExportVo {
 
-    /**
-     * 主键
-     */
     @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_ID,columnIndex = 0)
-    private Integer id;
+    private Integer userId;
 
     @ExcelColumn(columnName = JsonResultMessage.BARGAIN_USER_LIST_USERNAME,columnIndex = 1)
     private String username;
