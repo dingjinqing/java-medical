@@ -259,11 +259,10 @@ public class CouponPackOrderService extends VirtualOrderService {
 
 
         insertVirtualOrderRecord.insert();
-        WebPayVo vo = new WebPayVo();
+        WebPayVo vo = null;
         if(moneyPaid.compareTo(BigDecimal.ZERO) <= 0){
             this.finishPayCallback(insertVirtualOrderRecord,null);
-            vo.setOrderSn(insertVirtualOrderRecord.getOrderSn());
-            return vo;
+            return null;
         }else{
             //微信支付接口
             try {
