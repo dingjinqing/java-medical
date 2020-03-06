@@ -497,7 +497,7 @@ global.wxComponent({
     },
     // 返回首页
     backHome() {
-      util.jumpLink("pages/inDex/index", "redirectTo")
+      util.jumpLink("pages/index/index", "redirectTo")
     },
     toCartList() {
       util.jumpLink("pages/cart/cart", "navigateTo")
