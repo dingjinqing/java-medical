@@ -267,6 +267,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     private SelectJoinStep<? extends Record> buildMarketOrderOptions(MarketOrderListParam param, byte goodsType){
         SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile")).from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param, goodsType);
+        select.orderBy(ORDER_INFO.ORDER_ID);
         return select;
     }
 
@@ -290,7 +291,6 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
 
         buildOptions(select, orderParam);
         select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
-        select.orderBy(ORDER_INFO.ORDER_ID);
     }
 
     /**
@@ -339,6 +339,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public int getMarketOrderListSize(MarketOrderListParam param, byte goodsType){
         SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param,goodsType);
+        select.groupBy(ORDER_INFO.ORDER_ID);
         return select.fetchOptionalInto(Integer.class).orElse(0);
     }
 
