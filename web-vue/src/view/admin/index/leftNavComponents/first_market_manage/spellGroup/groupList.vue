@@ -1,3 +1,6 @@
+<!--
+*** 多人拼团-列表页面
+-->
 <template>
   <div class="content">
     <div class="main">
@@ -56,7 +59,7 @@
           :label="$t('groupBuy.goodsName')"
           align="center"
         ></el-table-column>
-          <el-table-column
+        <el-table-column
           prop="level"
           :label="$t('groupBuy.activtiyLevel')"
           align="center"
@@ -211,10 +214,10 @@
 
     <!-- 分享弹窗 -->
     <shareDialog
-      :show="shareDialog"
+      :show="showShareDialog"
       :imgPath="shareImg"
       :pagePath="sharePath"
-      @close="shareDialog=false"
+      @close="showShareDialog=false"
     />
 
   </div>
@@ -229,7 +232,8 @@ import {
   changeStatusActivity,
   deleteGroupBuyActivity,
   getGroupBuyDetail,
-  groupBuyList
+  groupBuyList,
+  shareActivity
 } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
@@ -254,7 +258,7 @@ export default {
       editData: {},
       isEdite: true,
       loading: false,
-      shareDialog: false, // 分享弹窗
+      showShareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: ''
     }
@@ -462,8 +466,19 @@ export default {
     },
 
     // 分享弹窗
-    shareActivity (id) {
-      this.shareDialog = !this.shareDialog
+    shareActivity (shareId) {
+      // this.showShareDialog = !this.showShareDialog
+      let obj = {
+        'id': shareId
+      }
+      shareActivity(obj).then(res => {
+        if (res.error === 0) {
+          console.log(res, 'img-res')
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+          this.showShareDialog = !this.showShareDialog
+        }
+      })
     }
 
   }

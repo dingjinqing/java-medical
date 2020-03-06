@@ -30,7 +30,7 @@
           <span>{{$t('groupBuy.grouponState') + '：'}}</span>
           <el-select
             size="small"
-            v-model="stauts"
+            v-model="status"
             class="inputWidth"
           >
             <el-option
@@ -96,13 +96,18 @@
           prop="status"
           :label="$t('groupBuy.grouponState')"
           align="center"
+          :formatter="statusText"
         ></el-table-column>
 
         <el-table-column
           prop="isDefault"
           :label="$t('groupBuy.isDefault')"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.isisDefault === 1 ? '是':'否'}}
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="orderSn"
@@ -144,7 +149,7 @@ export default {
     return {
       mobile: null,
       nickname: null,
-      stauts: 0,
+      status: null,
       tableData: [],
       pageParams: {},
       stateOptions: {}
@@ -169,13 +174,34 @@ export default {
       }
       this.searchData()
     },
+    statusText (row) {
+      console.log(row, 'get-row')
+      switch (row.status) {
+        case 0:
+          row.status = '拼团中'
+          break
+        case 1:
+          row.status = '已成团'
+          break
+        case 2:
+          row.status = '未成团'
+          break
+        case 3:
+          row.status = '已成团'
+          break
+        case -1:
+          row.status = '未付款'
+          break
+      }
+      return row.status
+    },
     // 查询
     searchData () {
       this.tableData.loading = true
       let obj = {
         nickName: this.nickname,
         mobile: this.mobile,
-        stauts: this.stauts,
+        status: this.status,
         activityId: this.$route.query.id,
         currentPage: this.pageParams.currentPage,
         pageRows: this.pageParams.pageRows
