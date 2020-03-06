@@ -410,4 +410,12 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger().info("结束获取导入领取码模板");
 	}
 	
+	/**
+	 * 	获取待审核的卡列表
+	 */
+	public JsonResult getCardExamineList() {
+		logger().info("获取待审核的卡列表");
+		return success(shop().mallOverview.cardVerifyService.getCardExamineList());
+	}
+	
 }

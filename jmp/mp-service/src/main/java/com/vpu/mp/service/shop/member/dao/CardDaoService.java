@@ -46,6 +46,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RemarkUtil;
 import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
@@ -758,4 +759,18 @@ public class CardDaoService extends ShopBaseService {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * 	根据会员卡ID获取会员卡的名称
+	 * @return cardId和cardName的对象List
+	 */
+	public List<CardBasicVo> getCardBasicInfoById(Integer ...ids){
+		
+		return db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME)
+			.from(MEMBER_CARD)
+			.where(MEMBER_CARD.ID.in(ids))
+			.fetchInto(CardBasicVo.class);
+	}
+	
 }
