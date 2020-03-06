@@ -15,4 +15,6 @@ public class PromoteVo {
     private Byte canPromote;
     /** 能否分享 */
     private Byte canShare;
+    /** 不能助力返回信息 */
+    private Byte cantPromote;
 }

@@ -973,13 +973,13 @@ public class FriendPromoteService extends ShopBaseService {
         //是否发起
         if(promoteInfo.getPromoteStatus()==-1){
             canPromote.setCode((byte)0);
-            canPromote.setMsg("该助力申请未发起");
+            canPromote.setMsg((byte)0);
             return canPromote;
         }
         //是否已完成助力
         if (hasPromoteTimes>=promoteInfo.getPromoteTimes()||promoteInfo.getPromoteStatus()==1||promoteInfo.getPromoteStatus()==2||promoteInfo.getPromoteStatus()==3){
             canPromote.setCode((byte)0);
-            canPromote.setMsg("助力已完成");
+            canPromote.setMsg((byte)1);
             return canPromote;
         }
         //判断当天助力次数限制
@@ -987,7 +987,7 @@ public class FriendPromoteService extends ShopBaseService {
             Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
             if (usedPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
                 canPromote.setCode((byte)0);
-                canPromote.setMsg("今天的助力次数已经用完了");
+                canPromote.setMsg((byte)2);
                 return canPromote;
             }
         }
@@ -1002,13 +1002,13 @@ public class FriendPromoteService extends ShopBaseService {
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
         if (usedPromoteTimes>ownPromoteTimes){
             canPromote.setCode((byte)0);
-            canPromote.setMsg("助力次数已用完");
+            canPromote.setMsg((byte)3);
             return canPromote;
         }
         //活动是否失效
         if (promoteInfo.getPromoteTimes()==0&&promoteInfo.getActStatus()==2){
             canPromote.setCode((byte)0);
-            canPromote.setMsg("助力次数已用完");
+            canPromote.setMsg((byte)3);
             return canPromote;
         }
         canPromote.setCode((byte)1);
@@ -1211,13 +1211,14 @@ public class FriendPromoteService extends ShopBaseService {
      * 用户参与好友助力
      */
     public PromoteVo friendPromote(PromoteParam param){
+        PromoteVo promoteVo = new PromoteVo();
         PromoteInfo promoteInfo = new PromoteInfo();
         //得到活动信息
         FriendPromoteActivityRecord record = getInfo(param.getActCode());
         //校验必需参数
         if(param.getLaunchId()==null||record==null){
             //返回参数错误
-            return null;
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         //活动状态：0未开始，1进行中，2已结束
         promoteInfo.setActStatus(getActStatus(param.getActCode()));
@@ -1225,7 +1226,7 @@ public class FriendPromoteService extends ShopBaseService {
         FriendPromoteLaunchRecord launchInfo = getLaunchInfo(param.getLaunchId(),null,null);
         if (launchInfo==null){
             //返回参数错误
-            return null;
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         Integer launchUserId =launchInfo.getUserId();
         //设置助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取，3助力未领取失效，4助力未完成失败
@@ -1234,10 +1235,13 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setHasPromoteTimes(0);
         promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
         //是否可以继续助力
+        promoteInfo.setPromoteTimes(record.getPromoteTimes());
+        promoteInfo.setPromoteTimesPerDay(record.getPromoteTimesPerDay());
         CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
         if (canPromote!=null&&canPromote.getCode()==0){
             //返回canPromote.getMsg()
-            return null;
+            promoteVo.setCantPromote(canPromote.getMsg());
+            return promoteVo;
         }
         //助力总值
         Integer hasPromoteValue = hasPromoteValue(param.getLaunchId());
@@ -1261,7 +1265,9 @@ public class FriendPromoteService extends ShopBaseService {
         messageVo.setActCode(record.getActCode());
         messageVo.setActName(record.getActName());
         messageVo.setSuccessTime(DateUtil.getSqlTimestamp());
-        String officeAppId = maMpScheduleTaskService.friendPromoteCommand();
+        messageVo.setRewardType(record.getRewardType());
+        messageVo.setRewardContent(record.getRewardContent());
+        String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
         //首位助力者发送消息通知
         if (promoteInfo.getHasPromoteTimes()==0){
             maMpScheduleTaskService.sendMessage((byte)1,messageVo,officeAppId);
@@ -1274,7 +1280,7 @@ public class FriendPromoteService extends ShopBaseService {
         CanPromote isCanPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
         Byte canShareTimes = canShareTimes(record.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
         promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
-        PromoteVo promoteVo = new PromoteVo();
+
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
         promoteVo.setCanShare(canShareTimes);
@@ -1317,8 +1323,8 @@ public class FriendPromoteService extends ShopBaseService {
         logger().info("发起活动为："+launchId);
         logger().info("助力值为："+promoteValue);
             this.transaction(()->{
-                db().insertInto(FRIEND_PROMOTE_DETAIL,FRIEND_PROMOTE_DETAIL.LAUNCH_ID,FRIEND_PROMOTE_DETAIL.USER_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE)
-                    .values(launchId,userId,promoteValue)
+                db().insertInto(FRIEND_PROMOTE_DETAIL,FRIEND_PROMOTE_DETAIL.LAUNCH_ID,FRIEND_PROMOTE_DETAIL.USER_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE)
+                    .values(launchId,userId,promoteInfo.getId(),promoteValue)
                     .execute();
                 Integer lastId = db().lastID().intValue();
                 if (promoteInfo.getHasPromoteTimes()+1>=promoteInfo.getPromoteTimes()||promoteInfo.getHasPromoteValue()+promoteValue>=promoteInfo.getPromoteAmount().intValue()){
