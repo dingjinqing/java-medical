@@ -261,6 +261,7 @@ public class CardVerifyService extends ShopBaseService {
      */
     public List<CardBasicVo> getCardExamineList() {
     	List<Integer> cardIds = db().selectDistinct(CARD_EXAMINE.CARD_ID)
+    		.from(CARD_EXAMINE)
     		.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_CHECKING))
     		.fetch(CARD_EXAMINE.CARD_ID);
     	if(cardIds==null || cardIds.size()==0) {

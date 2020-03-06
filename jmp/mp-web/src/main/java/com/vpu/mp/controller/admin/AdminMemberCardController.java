@@ -413,6 +413,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	/**
 	 * 	获取待审核的卡列表
 	 */
+	@PostMapping(value="/card/examine/list")
 	public JsonResult getCardExamineList() {
 		logger().info("获取待审核的卡列表");
 		return success(shop().mallOverview.cardVerifyService.getCardExamineList());
