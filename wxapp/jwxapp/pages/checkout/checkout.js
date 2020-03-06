@@ -73,6 +73,7 @@ global.wxPage({
     if(preSaleInfo){
       preSaleInfo = JSON.parse(preSaleInfo)
     }
+    console.log(preSaleInfo)
     this.setData({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情

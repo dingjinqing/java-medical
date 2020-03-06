@@ -224,7 +224,8 @@
         <view class="detail_item">
           <text class="dotted" style="background-color:{{comColor}}"></text>
           <text class="detail_title">定金（待付款）</text>
-          <text class="detail_content" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+          <text class="detail_content" wx:if="{{preSaleInfo.preSaleType!==1}}" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+          <text class="detail_content" wx:else style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.preSalePrice}}</text>
         </view>
         <view class="detail_item" wx:if='{{preSaleInfo.preSaleType == 0}}'>
           <text class="dotted"></text>
