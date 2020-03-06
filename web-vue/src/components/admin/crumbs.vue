@@ -10,9 +10,21 @@
       v-for="(item,index) in titleList"
       :key="index"
     ><i v-if="index !==0"> / {{item}}</i></span>
-    <span class="showLink" v-if="isLink">
-      <el-link :underline="false"  type="primary"  target="_blank"
-      href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15">瓜分积分使用教程</el-link>
+    <span class="showLink">
+      <el-link
+        v-if="$route.name == 'pin_integration'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >瓜分积分使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'friend_pay'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >好用代付使用教程</el-link>
     </span>
   </div>
 </template>
@@ -61,11 +73,11 @@ export default {
         } else {
           this.isSurvey = true
         }
-        if (routeName === 'pin_integration') {
-          this.isLink = true
-        } else {
-          this.isLink = false
-        }
+        // if (routeName === 'pin_integration' || routeName === 'friend_pay') {
+        //   this.isLink = true
+        // } else {
+        //   this.isLink = false
+        // }
       }
       // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
@@ -228,6 +240,7 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
+  overflow: hidden;
 }
 .canClick {
   span {
@@ -237,8 +250,11 @@ export default {
     }
   }
 }
-.showLink{
+.showLink {
   float: right;
   margin-right: 2%;
+}
+.crumbs-right {
+  float: right;
 }
 </style>

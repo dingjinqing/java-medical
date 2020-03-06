@@ -40,8 +40,8 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     let that = this
-    let groupId = options.group_id
-    let pinGroupId = options.pin_group_id
+    let groupId = options.group_id// 团组id
+    let pinGroupId = options.pin_group_id// 拼团活动id
     this.setData({
       groupId: Number(groupId),
       pinGroupId: pinGroupId
