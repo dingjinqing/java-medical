@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.*;
@@ -44,9 +45,6 @@ public class WxAppCartController extends WxAppBaseController {
         if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }
-        //检查商品活动
-        // 活动校验 todo
-
         //添加商品到购物车
         shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber(),param.getActivityId(),param.getActivityType());
         return success();
@@ -132,6 +130,20 @@ public class WxAppCartController extends WxAppBaseController {
         CartGoodsNumVo cartGoodsNumVo =new CartGoodsNumVo();
         cartGoodsNumVo.setGoodsNum(num==null?0:num);
         return success(cartGoodsNumVo);
+    }
+
+    /**
+     * 添加加价购商品
+     * @return
+     */
+    @PostMapping("/purchase/add")
+    public JsonResult addPurchasePrice(@RequestBody @Valid CartPurchaseParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        shop().cart.addPurchasePrice(param);
+
+
+        return null;
     }
 
 }

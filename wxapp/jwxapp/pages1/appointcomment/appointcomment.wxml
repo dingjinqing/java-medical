@@ -1,0 +1,69 @@
+<!--pages1/appointcomment/appointcomment.wxml-->
+<include src="/pages/common/header.wxml"/>
+<view class="main-container">
+  <view class="appoint-comment-page">
+    <view class="ac-comment">
+      <view class="ac-chart">
+        <view class="ac-chart-left">
+          <view class="ac-chart-percent" style='color:{{comColor}}'>{{ratio[0]}}%</view>
+          <view class="ac-chart-percent-intro">好评度</view>
+        </view>
+        <view class="ac-chart-right">
+          <view class="ac-percent-wrap">
+            <text>好评({{ratio[0]}}%)</text>
+            <progress percent="{{ratio[0]}}" color="{{comColor}}" stroke-width="6" active />
+          </view>
+          <view class="ac-percent-wrap">
+            <text>中评({{ratio[1]}}%)</text>
+            <progress percent="{{ratio[1]}}" color="{{comColor}}" stroke-width="6" active />
+          </view>
+          <view class="ac-percent-wrap">
+            <text>差评({{ratio[2]}}%)</text>
+            <progress percent="{{ratio[2]}}" color="{{comColor}}" stroke-width="6" active />
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="ac-content">
+      <view class='com_detail_top'>
+        <text class="com_view" style="{{serviceType == 0?activeStyle:''}}" bindtap="change_com" data-type = "0">全部评价({{numbers[0]}})</text>
+        <text class="com_view" style="{{serviceType == 1?activeStyle:''}}" bindtap="change_com" data-type = "1">好评({{numbers[1]}})</text>
+        <text class="com_view" style="{{serviceType == 2?activeStyle:''}}" bindtap="change_com" data-type = "2">中评({{numbers[2]}})</text>
+        <text class="com_view" style="{{serviceType == 3?activeStyle:''}}" bindtap="change_com" data-type = "3">差评({{numbers[3]}})</text>
+      </view>
+      <block wx:for="{{comment}}" wx:key="key">
+        <view class="com_info">
+          <view class="clearfix">
+            <view class="fl">
+              <image src='{{ item.anonymousflag == 0?item.user_avatar:item.user_avatar }}' mode='widthFix' />
+              <block wx:if="{{item.username!=''}}">
+                <text class="com_mobile" wx:if="{{item.anonymousflag == 0}}">{{item.username}}</text>
+                <text class="com_mobile" wx:if="{{item.anonymousflag == 1}}">匿名用户</text>
+              </block>
+              <block wx:else>
+                <text class="com_mobile">{{item.mobile}}</text>
+              </block>
+            </view>
+            <view class="fr">
+              <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{item.commstar >= 1}}'></text>
+              <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{item.commstar >= 2}}'></text>
+              <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{item.commstar >= 3}}'></text>
+              <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{item.commstar >= 4}}'></text>
+              <text class='iconfont iconshoucang' style='color:{{comColor}};font-size:30rpx;margin-left:10rpx;' wx:if='{{item.commstar >= 5}}'></text>
+            </view>
+          </view>
+          <view>{{item.commNote}}</view>
+          <view class='com_img clearfix'>
+            <view class='fl' wx:for="{{item.commImg}}" wx:key="key" wx:for-item="item_img">
+              <image src='{{ item_img }}!small?v=1' data-all='{{item.comm_img}}' bindtap='clickComment' data-src="{{ item_img }}"></image>
+            </view>
+          </view>
+          <view>
+            <text class="com_time">{{item.createTime}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml"/>
