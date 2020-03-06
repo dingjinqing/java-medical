@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jooq.Condition;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +32,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static com.vpu.mp.db.shop.Tables.PICTORIAL;
+import static com.vpu.mp.service.foundation.util.DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
@@ -251,7 +255,7 @@ public class PictorialService extends ShopBaseService {
      * @throws UpException 上传异常
      * @throws IOException 文件io异常
      */
-    public void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, PictorialRule pictorialRule, Integer goodsId, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
+    public <T extends Rule> void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, T pictorialRule, Integer goodsId, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
             // 上传upanyun
@@ -408,4 +412,37 @@ public class PictorialService extends ShopBaseService {
         return bgBufferedImage;
     }
 
+    public static final String UPLOAD = "upload/";
+    public static final String PICTORIAL_S = "pictorial/";
+    public static final String PICTORIAL_ = "pictorial_";
+    public static final String SLASH = "/";
+    public static final String UNDERLINE = "_";
+    public static final String IMG_PNG = ".png";
+
+    /**
+     * Gets img dir.获取海报图片路径
+     *
+     * @param action   the action
+     * @param fileName the file name
+     * @return the img dir value1:relativePath, value2:fullPath
+     */
+    public Tuple2<String, String> getImgDir(int action, String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String relativePath = stringBuilder.append(UPLOAD).append(this.getShopId()).append(SLASH).append(PICTORIAL_S).append(action).append(SLASH).append(fileName).toString();
+        String fullPath = imageService.getImgFullUrl(relativePath);
+        return new Tuple2<>(relativePath, fullPath);
+    }
+
+    /**
+     * Gets img file name.获取海报图片文件名
+     *
+     * @param pageId  the page id
+     * @param action  the action
+     * @param action1 the action 1
+     * @return the img file name
+     */
+    public String getImgFileName(String pageId, String action, String action1) {
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL_NO_UNDERLINE));
+        return String.join(StringUtils.EMPTY, PICTORIAL_, action, UNDERLINE, pageId, UNDERLINE, action1, UNDERLINE, date, IMG_PNG);
+    }
 }

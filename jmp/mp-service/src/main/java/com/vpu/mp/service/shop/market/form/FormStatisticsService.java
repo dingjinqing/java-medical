@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.form;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -17,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.share.FormPictorialRule;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialFormImgPx;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -30,6 +32,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record6;
 import org.jooq.Record8;
 import org.jooq.SelectConditionStep;
+import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -183,45 +186,50 @@ public class FormStatisticsService extends ShopBaseService {
             .and(CODE.PARAM_ID.eq(String.valueOf(pageId)))
             .fetchOneInto(CODE);
 
-        generateFormPictorial(pageId, 0);
+        // 获取表单海报图片路径
+        Tuple2<Integer, String> pictorial = generateFormPictorial(pageId, 0);
     }
 
-    public void generateFormPictorial(int pageId, int userId) {
+    /**
+     * Generate form pictorial tuple 2.生成表单海报图片
+     *
+     * @param pageId the page id
+     * @param userId the user id
+     * @return the tuple 2 v1:：是否可编辑， v2：海报图片路径
+     */
+    public Tuple2<Integer, String> generateFormPictorial(int pageId, int userId) {
         // 获取表单信息
         FormPageRecord record = getFormRecord(pageId);
-        String pageName = record.getPageName();
         String bgImg = getValueFromFormCfgByKey(record.getFormCfg(), BG_IMG);
         bgImg = StringUtils.isBlank(bgImg) ? FORM_DEFAULT_BG_IMG : bgImg;
-
+        // 构建海报标识规则
+        FormPictorialRule rule = FormPictorialRule.builder().page_name(record.getPageName()).bg_img(StringUtils.isBlank(bgImg) ? FORM_DEFAULT_BG_IMG : bgImg).build();
         // 判断是否需要重新生成表单海报
-        Map<String, String> rule = new HashMap<>(2);
-        rule.put(PAGE_NAME, pageName);
-        rule.put(BG_IMG, bgImg);
         PictorialRecord pictorialRecord = pictorialService.getPictorialFromDb(INTEGER_ZERO, pageId, (byte) 4);
         if (pictorialService.isNeedNewPictorial(Util.toJson(rule), pictorialRecord)) {
             log.debug("不需要重新生成表单海报，直接返回db中海报路径");
-//           return [
-//           'is_edit' => 0,
-//               'path' => $pictorial->path,
-//            ];
+            return new Tuple2<>(0, pictorialRecord.getPath());
         }
         try {
             // 获取用户头像
             UserInfo userInfo = user.getUserInfo(userId);
             BufferedImage userAvator = ImageIO.read(new URL(imageService.getImgFullUrl(userInfo.getUserAvatar())));
-
             // 获取分享二维码
             ShareQrCodeVo qrCode = getQrCode(pageId);
             BufferedImage qrCodImg = ImageIO.read(new URL(imageService.getImgFullUrl(qrCode.getImageUrl())));
-
             // 背景图
             BufferedImage bgImgBuf = ImageIO.read(new URL(imageService.getImgFullUrl(bgImg)));
-
+            // 创建海报图片
             BufferedImage pictorialImg = pictorialService.createFormPictorialBgImage(userAvator, qrCodImg, bgImgBuf, new PictorialFormImgPx());
-        } catch (IOException e) {
-            e.printStackTrace();
+            // 获取海报图片路径
+            Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
+            // 将待分享图片上传到U盘云，并在数据库缓存记录
+            pictorialService.uploadToUpanYun(pictorialImg, path.v1(), rule, pageId, null, INTEGER_ZERO);
+            return new Tuple2<>(1, path.v1());
+        } catch (IOException | UpException e) {
+            log.error("表单海报图片创建失败：{}", ExceptionUtils.getStackTrace(e));
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
-
     }
 
     // 从表单配置json串中获取元素value值
