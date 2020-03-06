@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Slf4j
 @Component
 @RabbitListener(queues = {RabbitConfig.QUEUE_RETURN_SUB_ORDER},containerFactory = "simpleRabbitListenerContainerFactory")
@@ -31,19 +29,11 @@ public class OrderListener implements BaseRabbitHandler {
     private SaasApplication saas;
 
     @RabbitHandler
-    public void handler(@Payload ReturnMqParam param, Message message, Channel channel) throws IOException {
-        int failSize = 0;
-        try {
-            saas.getShopApp(param.getShopId()).writeOrder.returnMethodService.returnSubOrder(param);
-        }catch (MpException e){
-            log.error("代付订单退款接口调用 错误 e",e);
-            failSize = 1;
-            failReturn(channel, message);
-        }
+    public void handler(@Payload ReturnMqParam param, Message message, Channel channel) throws MpException {
+        saas.getShopApp(param.getShopId()).writeOrder.returnMethodService.returnSubOrder(param);
         //更新taskJob进度和状态
-        saas.taskJobMainService.updateProgress(Util.toJson(param), param.getTaskJobId(), failSize,1);
+        saas.taskJobMainService.updateProgress(Util.toJson(param), param.getTaskJobId(), 0,1);
     }
-
 
     @Override
     public void executeException(Object[] datas, Throwable throwable) {
