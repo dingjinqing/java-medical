@@ -165,18 +165,34 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
+                  :content="$t('pictureSetting.copy')"
+                  placement="top"
+                  v-if="scope.row.status===1"
+                >
+                  <span
+                    @click="handletoClickOperation(scope.row,4)"
+                    class="fa fa-copy iconSpn"
+                  ></span>
+                </el-tooltip>
+                <el-tooltip
                   content="查看反馈"
                   placement="top"
                   v-if="scope.row.status===1"
                 >
-                  <span class="iconfont iconchakanfankui iconSpn"></span>
+                  <span
+                    @click="handletoClickOperation(scope.row,7)"
+                    class="iconfont iconchakanfankui iconSpn"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   content="反馈统计"
                   placement="top"
                   v-if="scope.row.status===1"
                 >
-                  <span class="iconfont iconfankuitongji iconSpn"></span>
+                  <span
+                    @click="handletoClickOperation(scope.row,8)"
+                    class="iconfont iconfankuitongji iconSpn"
+                  ></span>
                 </el-tooltip>
                 <el-tooltip
                   content="关闭"
@@ -191,6 +207,7 @@
                 <el-tooltip
                   :content="$t('pictureSetting.copy')"
                   placement="top"
+                  v-if="scope.row.status===0"
                 >
                   <span
                     @click="handletoClickOperation(scope.row,4)"
@@ -278,7 +295,7 @@
   </div>
 </template>
 <script>
-import { formListQuery, delCloseListQuery, shareFormQuery } from '@/api/admin/marketManage/formDecoration' // 装修方法混入
+import { formListQuery, delCloseListQuery, shareFormQuery } from '@/api/admin/marketManage/formDecoration'
 export default {
   data () {
     return {
@@ -397,6 +414,22 @@ export default {
         case 6: // 关闭
           this.twoSureText = '确认要关闭吗？'
           this.dialogTwoVisible = true
+          break
+        case 7: // 查看反馈
+          this.$router.push({
+            path: '/admin/home/main/feedbackList',
+            query: {
+              row: row
+            }
+          })
+          break
+        case 8: // 反馈统计
+          this.$router.push({
+            path: '/admin/home/main/feedbackStatistics',
+            query: {
+              row: row
+            }
+          })
           break
       }
     },

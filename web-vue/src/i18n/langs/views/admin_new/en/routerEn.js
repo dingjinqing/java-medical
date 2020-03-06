@@ -455,6 +455,12 @@ export const en = {
   formStatistical: ['Marketing management', 'Form statistics'],
   // 营销管理 表单装修主页
   formDecorationHome: ['Marketing management', 'Form statistics', 'Form decoration'],
+  // 营销管理 表单统计  查看反馈页
+  feedbackList: ['Marketing management', 'Form statistics', 'Feedback list'],
+  // 营销管理 表单统计  反馈统计页面
+  feedbackStatistics: ['Marketing management', 'Form statistics', 'Feedback statistics'],
+  // 营销管理 表单统计  查看详情页
+  feedbackDetails: ['Marketing management', 'Form statistics', 'Feedback list', 'Feedback details'],
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情

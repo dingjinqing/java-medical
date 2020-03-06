@@ -26,6 +26,48 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/formStatisticsHome'
       )
   },
+  // 表单统计 反馈统计页面
+  {
+    path: '/admin/home/main/feedbackStatistics',
+    name: 'feedbackStatistics',
+    meta: {
+      crumbTitle: 'router.feedbackStatistics',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackStatistics'
+      )
+  },
+  // 表单统计 反馈列表页面
+  {
+    path: '/admin/home/main/feedbackList',
+    name: 'feedbackList',
+    meta: {
+      crumbTitle: 'router.feedbackList',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackList'
+      )
+  },
+  // 表单统计 反馈详细页面
+  {
+    path: '/admin/home/main/feedbackDetails',
+    name: 'feedbackDetails',
+    meta: {
+      crumbTitle: 'router.feedbackDetails',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/formStatistics/feedbackDetails'
+      )
+  },
   // 表单装修主页
   {
     path: '/admin/home/main/formDecorationHome',

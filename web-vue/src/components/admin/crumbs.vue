@@ -5,8 +5,8 @@
   >
     <span @click="handleToClickCrumb(titleLeft,true)">{{titleLeft}}</span>
     <span
-      @click="handleToClickCrumb(item)"
-      :style="index===2?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
+      @click="handleToClickCrumb(item,false,index)"
+      :style="index===(titleList.length-1)?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
       v-for="(item,index) in titleList"
       :key="index"
     ><i v-if="index !==0"> / {{item}}</i></span>
@@ -44,8 +44,8 @@ export default {
       console.log(newData)
       this.changeText()
     },
-    '$route.name' (newData) {
-      console.log(newData)
+    '$route.name' (newData, oldData) {
+      console.log(newData, oldData)
       this.changeText(newData)
     },
     '$store.state.crumbs.cardholderData' (newData) {
@@ -195,9 +195,10 @@ export default {
       this.titleList = data.concat(this.titleList)
       console.log(data, this.titleList)
     },
-    handleToClickCrumb (name, flag) {
-      console.log(this.titleList.length)
+    handleToClickCrumb (name, flag, index) {
+      console.log(name, flag)
       if (this.titleList.length < 3) return
+      if (index === (this.titleList.length - 1)) return
       if (flag) {
         if (this.$route.meta.meta === 'user_manger') {
           this.$router.push({
@@ -220,11 +221,36 @@ export default {
           this.$router.push({
             name: 'formStatistical'
           })
-        } else {
+        } else if (this.$route.name === 'feedbackList') {
           console.log(this.$route)
           this.$router.push({
-            name: this.$route.meta.meta
+            name: 'formStatistical'
           })
+        } else if (this.$route.name === 'feedbackDetails') {
+          console.log(name)
+          if (name === '反馈列表') {
+            this.$router.push({
+              name: 'feedbackList'
+            })
+          } else if (name === '表单统计') {
+            this.$router.push({
+              name: 'formStatistical'
+            })
+          }
+          // this.$router.push({
+          //   name: 'feedbackDetails'
+          // })
+        } else {
+          console.log(name)
+          if (name === '表单统计') {
+            this.$router.push({
+              name: 'formStatistical'
+            })
+          } else {
+            this.$router.push({
+              name: this.$route.meta.meta
+            })
+          }
         }
       }
       console.log(name, this.$route)

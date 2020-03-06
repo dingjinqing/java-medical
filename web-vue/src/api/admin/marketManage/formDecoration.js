@@ -61,3 +61,38 @@ export function shareFormQuery (data) {
     data: data
   })
 }
+// 反馈列表接口
+export function feedBackListQuery (data) {
+  return service({
+    url: '/api/admin/formstatistics/feedBackList',
+    method: 'post',
+    data: data
+  })
+}
+
+// 表单列表反馈导出
+export function exportFeedBackListQuery (data) {
+  return service({
+    url: '/api/admin/formstatistics/export2Excel',
+    method: 'post',
+    data: data
+  })
+}
+
+// 表单列表反馈信息详情
+export function feedBackListDetailQuery (data) {
+  return service({
+    url: '/api/admin/formstatistics/feedBackDetail',
+    method: 'post',
+    data: data
+  })
+}
+
+// 表单列表反馈统计接口
+export function feedbackStatisticsQuery (data) {
+  return service({
+    url: '/api/admin/formstatistics/feedBackStatistics',
+    method: 'post',
+    data: data
+  })
+}
