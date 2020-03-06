@@ -760,7 +760,9 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("发送拼团失败的通知");
 			//TODO 公众号拼团失败通知
 		}else {
-			
+			if(pinInteInfo.getDivideType().equals(IS_DAY_DIVIDE_N)) {
+				
+			}
 		}
 	}
 }
