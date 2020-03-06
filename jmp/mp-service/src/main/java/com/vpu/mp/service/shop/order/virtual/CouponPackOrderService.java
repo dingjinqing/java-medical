@@ -266,7 +266,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         }else{
             //微信支付接口
             try {
-                vo = mpPaymentService.wxUnitOrder(clientIp, couponPackRecord.getPackName(), orderSn, moneyPaid.multiply(BigDecimal.valueOf(100)), user.getWxOpenid());
+                vo = mpPaymentService.wxUnitOrder(clientIp, couponPackRecord.getPackName(), orderSn, moneyPaid, user.getWxOpenid());
             } catch (WxPayException e) {
                 logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", orderSn, e);
                 throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);

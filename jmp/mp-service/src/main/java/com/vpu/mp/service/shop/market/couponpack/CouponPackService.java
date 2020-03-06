@@ -494,27 +494,34 @@ public class CouponPackService extends ShopBaseService {
 
                 //这一轮需要发出去的优惠券数量
                 int sentNum=0;
+
                 if(coupon.getLastSendTime() == null && coupon.getGrantCouponNumber() <= 0 && coupon.getImmediatelyGrantAmount() > 0){
                     //立即发放
                     sentNum = coupon.getImmediatelyGrantAmount();
                 }else{
+                    Timestamp lastTime;
+                    if(coupon.getLastSendTime() == null){
+                        lastTime = order.getPayTime();
+                    } else{
+                        lastTime = coupon.getLastSendTime();
+                    }
                     if(coupon.getImmediatelyGrantAmount() < coupon.getTotalAmount()){
                         Timestamp nextTime = null;
-                        if(DateUtil.TimestampIsSameDay(coupon.getLastSendTime(),order.getPayTime())){
+                        if(DateUtil.TimestampIsSameDay(lastTime,order.getPayTime())){
                             //立即发放之后的第一次周期发放
                             Calendar cal = Calendar.getInstance();
                             switch (coupon.getTimingUnit()){
                                 case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    cal.setTime(DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.WEEKS));
+                                    cal.setTime(DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
                                     cal.setFirstDayOfWeek(Calendar.MONDAY);
                                     cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - coupon.getTimingTime());
                                     nextTime = new Timestamp(cal.getTime().getTime());
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    cal.setTime(DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.MONTHS));
+                                    cal.setTime(DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS));
                                     cal.set(Calendar.DATE,coupon.getTimingTime());
                                     nextTime = new Timestamp(cal.getTime().getTime());
                                     break;
@@ -524,13 +531,13 @@ public class CouponPackService extends ShopBaseService {
                             //不是第一次周期发放
                             switch (coupon.getTimingUnit()){
                                 case CouponPackConstant.TIMING_UNIT_DAY:
-                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.DAYS);
+                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.DAYS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_WEEK:
-                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.WEEKS);
+                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS);
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_MONTH:
-                                    nextTime = DateUtil.getTimeStampPlus(coupon.getLastSendTime(),coupon.getTimingEvery(), ChronoUnit.MONTHS);
+                                    nextTime = DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.MONTHS);
                                     break;
                                 default:
                             }
