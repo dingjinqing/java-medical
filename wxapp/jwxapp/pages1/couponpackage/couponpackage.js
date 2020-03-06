@@ -87,8 +87,8 @@ global.wxPage({
           util.jumpLink(`/pages1/virtualCheckout/virtualCheckout?packId=${packId}`,'navigateTo')
         }
         if(res.content.state === 6) {
-          util.showModal("提示", '领取成功', function () {
-            that.requestData();
+          util.toast_success('领取成功',()=>{
+            this.requestData();
           })
         }
         if([1,2,3,4,5].includes(res.content.state)){
