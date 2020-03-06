@@ -17,7 +17,7 @@ public class ExcelStyleFactory {
     private static final String DEFAULT_FONT_NAME = "宋体";
     private static final short DEFAULT_HEIGHT_IN_POINT = 20;
     private static final short DEFAULT_FONT_HEIGHT = 12 * DEFAULT_HEIGHT_IN_POINT;
-    private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm";
+    private static final String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     /**
      * 生成一般样式
