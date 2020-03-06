@@ -4,7 +4,7 @@
        会员卡
       <image src="{{imageUrl}}image/wxapp/close_icon.png" bindtap='bindClose'></image>
     </view>
-    <scroll-view class="dialog_info" scroll-y enable-flex>
+    <view class="dialog_info">
       <block wx:for="{{cardList}}" wx:for-item="cardItem" wx:for-index="cardIndex"  wx:key="cardIndex">
         <view class="card_item" data-index="{{cardIndex}}" bindtap="selectCard">
           <view class="radio_box">
@@ -21,7 +21,7 @@
           </view>
         </view>
       </block>
-    </scroll-view>
+    </view>
      <view class="dialog_bottom" bindtap="confirm" style="background-color:{{main_setting.comColor}}">
           确定
     </view>
