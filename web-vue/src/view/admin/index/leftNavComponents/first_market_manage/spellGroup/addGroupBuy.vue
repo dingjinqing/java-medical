@@ -45,9 +45,10 @@
         >
           <el-col :span="8">
             <el-input-number
-                    v-model="form.level"
-                    controls-position="right"
-                    :min="0">
+              v-model="form.level"
+              controls-position="right"
+              :min="0"
+            >
             </el-input-number>
             <div class="prompt">
               {{$t('groupBuy.activtiyLevelComment')}}
@@ -348,9 +349,10 @@
         </el-form-item>
         <el-form-item :label="$t('groupBuy.beginNum') + '：'">
           <el-input-number
-                  v-model="form.beginNum"
-                  controls-position="right"
-                  :min="0">
+            v-model="form.beginNum"
+            controls-position="right"
+            :min="0"
+          >
           </el-input-number>
           <div class="prompt fontColor">
             {{$t('groupBuy.beginNumComment')}}
@@ -873,8 +875,7 @@ export default {
     },
     // 获取商品ids
     choosingGoodsResult (row) {
-      console.log(row)
-
+      console.log(row, 'get row')
       this.goodsRow = row
       this.form.goodsId = row.goodsId
       if (Object.keys(row).length === 0) {
@@ -886,7 +887,17 @@ export default {
         res.content.forEach((item, index) => {
           item.index = index
         })
-        this.form.product = res.content
+        // this.form.product = res.content
+        // this.param.product((item, index) =>{
+        // })
+        let list = res.content
+        list.map((item, index) => {
+          this.form.product.push(
+            Object.assign({}, item, { goodsId: row.goodsId })
+          )
+          console.log(this.form.product, '123--')
+        })
+
         console.log(' this.form.product ', this.form.product)
       })
     },
