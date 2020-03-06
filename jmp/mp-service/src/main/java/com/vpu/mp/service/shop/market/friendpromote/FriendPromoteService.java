@@ -5,21 +5,24 @@ import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
-import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
-import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -27,13 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -46,6 +49,9 @@ import static com.vpu.mp.db.shop.Tables.*;
 @Service
 public class FriendPromoteService extends ShopBaseService {
     @Autowired ImageService imageService;
+    @Autowired CouponGiveService couponGiveService;
+    @Autowired PrizeRecordService prizeRecordService;
+    @Autowired MaMpScheduleTaskService maMpScheduleTaskService;
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
@@ -1204,14 +1210,14 @@ public class FriendPromoteService extends ShopBaseService {
     /**
      * 用户参与好友助力
      */
-    public void friendPromote(PromoteParam param){
+    public PromoteVo friendPromote(PromoteParam param){
         PromoteInfo promoteInfo = new PromoteInfo();
         //得到活动信息
         FriendPromoteActivityRecord record = getInfo(param.getActCode());
         //校验必需参数
         if(param.getLaunchId()==null||record==null){
             //返回参数错误
-            return;
+            return null;
         }
         //活动状态：0未开始，1进行中，2已结束
         promoteInfo.setActStatus(getActStatus(param.getActCode()));
@@ -1219,7 +1225,7 @@ public class FriendPromoteService extends ShopBaseService {
         FriendPromoteLaunchRecord launchInfo = getLaunchInfo(param.getLaunchId(),null,null);
         if (launchInfo==null){
             //返回参数错误
-            return;
+            return null;
         }
         Integer launchUserId =launchInfo.getUserId();
         //设置助力进度：-1未发起，0助力中，1助力完成待领取，2助力完成已领取，3助力未领取失效，4助力未完成失败
@@ -1231,11 +1237,48 @@ public class FriendPromoteService extends ShopBaseService {
         CanPromote canPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
         if (canPromote!=null&&canPromote.getCode()==0){
             //返回canPromote.getMsg()
-            return;
+            return null;
         }
         //助力总值
         Integer hasPromoteValue = hasPromoteValue(param.getLaunchId());
+        promoteInfo.setHasPromoteValue(hasPromoteValue);
         //获取每次助力值
+        promoteInfo.setPromoteAmount(record.getPromoteAmount());
+        promoteInfo.setPromoteTimes(record.getPromoteTimes());
+        promoteInfo.setPromoteType(record.getPromoteType());
+        Integer promoteValue = perPromoteValue(promoteInfo,promoteInfo.getHasPromoteTimes(),hasPromoteValue);
+        //助力入库
+        promoteInfo.setId(record.getId());
+        promoteInfo.setRewardType(record.getRewardType());
+        promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false));
+        promoteInfo.setRewardDuration(record.getRewardDuration());
+        promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
+        friendPromote(promoteInfo,param.getUserId(),param.getLaunchId(),promoteValue);
+        //发送消息
+        FriendPromoteSelectVo messageVo = new FriendPromoteSelectVo();
+        messageVo.setId(launchInfo.getId());
+        messageVo.setUserId(launchUserId);
+        messageVo.setActCode(record.getActCode());
+        messageVo.setActName(record.getActName());
+        messageVo.setSuccessTime(DateUtil.getSqlTimestamp());
+        String officeAppId = maMpScheduleTaskService.friendPromoteCommand();
+        //首位助力者发送消息通知
+        if (promoteInfo.getHasPromoteTimes()==0){
+            maMpScheduleTaskService.sendMessage((byte)1,messageVo,officeAppId);
+        }
+        //助力完成
+        if (promoteInfo.getHasPromoteTimes()+1>=promoteInfo.getPromoteTimes()||promoteInfo.getHasPromoteValue()+promoteValue>=promoteInfo.getPromoteAmount().intValue()){
+            maMpScheduleTaskService.sendMessage((byte)4,messageVo,officeAppId);
+        }
+        promoteInfo.setHasPromoteTimes(getHasPromoteTimes(launchInfo.getId(),null,null,null));
+        CanPromote isCanPromote = canPromote(promoteInfo,promoteInfo.getHasPromoteTimes(),param.getUserId(),param.getLaunchId());
+        Byte canShareTimes = canShareTimes(record.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
+        promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
+        PromoteVo promoteVo = new PromoteVo();
+        promoteVo.setPromoteValue(promoteValue);
+        promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
+        promoteVo.setCanShare(canShareTimes);
+        return promoteVo;
     }
 
     /**
@@ -1244,8 +1287,160 @@ public class FriendPromoteService extends ShopBaseService {
      * @param hasPromoteTimes 已助力次数
      * @param hasPromoteValue 已获得的助力值
      */
-    public void perPromoteValue(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer hasPromoteValue){
-
+    public Integer perPromoteValue(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer hasPromoteValue){
+        //最后一次助力时
+        if ((promoteInfo.getPromoteTimes()-hasPromoteTimes)<=1){
+            return promoteInfo.getPromoteAmount().intValue()-hasPromoteValue;
+        }
+        Double av = Math.ceil(promoteInfo.getPromoteAmount().doubleValue()/promoteInfo.getPromoteTimes().doubleValue());
+        if (promoteInfo.getPromoteType()==1){
+            Double d = av/10;
+            Random random = new Random();
+            Integer randResult = new Double(Math.ceil(av+(random.nextDouble()*(d*2)-d))).intValue();
+            return randResult;
+        }
+        else {
+            Integer avResult =av.intValue();
+            return avResult;
+        }
     }
 
+    /**
+     * 助力入库
+     * @param promoteInfo 活动信息
+     * @param userId 帮忙助力用户id
+     * @param launchId 发起id
+     * @param promoteValue 助力值
+     */
+    public void friendPromote(PromoteInfo promoteInfo,Integer userId,Integer launchId,Integer promoteValue){
+        logger().info("开始助力，助力用户为："+userId);
+        logger().info("发起活动为："+launchId);
+        logger().info("助力值为："+promoteValue);
+            this.transaction(()->{
+                db().insertInto(FRIEND_PROMOTE_DETAIL,FRIEND_PROMOTE_DETAIL.LAUNCH_ID,FRIEND_PROMOTE_DETAIL.USER_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE)
+                    .values(launchId,userId,promoteValue)
+                    .execute();
+                Integer lastId = db().lastID().intValue();
+                if (promoteInfo.getHasPromoteTimes()+1>=promoteInfo.getPromoteTimes()||promoteInfo.getHasPromoteValue()+promoteValue>=promoteInfo.getPromoteAmount().intValue()){
+                    //助力状态
+                    Byte promoteStatus;
+                    //发优惠券
+                    if (promoteInfo.getRewardType()==2){
+                        CouponInfo couponInfo = getCouponById(promoteInfo.getRewardContent().getRewardIds());
+                        CouponGiveQueueParam param = new CouponGiveQueueParam();
+                        List<Integer> userList = new ArrayList<>();
+                        userList.add(userId);
+                        param.setUserIds(userList);
+                        param.setCouponArray(new String[]{couponInfo.getCouponId().toString()});
+                        param.setAccessMode((byte)0);
+                        param.setGetSource((byte)16);
+                        param.setActId(promoteInfo.getId());
+                        CouponGiveQueueBo couponGiveQueueBo = couponGiveService.handlerCouponGive(param);
+                        if (couponGiveQueueBo.getSuccessSize()==0){
+                            logger().info("优惠券发放失败");
+                            throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                        }
+                        promoteStatus=2;
+                    }else {
+                        promoteStatus=1;
+                    }
+                    //更新助力状态
+                    Integer successRows = upPromoteInfo(promoteStatus,launchId);
+                    if (successRows==null||successRows==0){
+                        logger().info("助力状态更新失败");
+                        throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                    }
+
+                    //赠品入库
+                    if(promoteInfo.getRewardType()==0){
+                        //得到商品规格信息
+                        GoodsSpecProductRecord prdRecord = getPrdInfo(promoteInfo.getRewardContent().getGoodsIds());
+                        if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
+                            //计算奖励过期时间
+                            Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
+                            Integer day = durationSec.intValue()/(24*60*60);
+                            //奖励入库
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(userId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            if (prizeRecordRecord==null){
+                                logger().info("商品发放失败");
+                                throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                            }
+
+                            //更新商品规格库存
+                            Integer updatePrdRows = updatePrdNum(promoteInfo.getRewardContent().getGoodsIds(),1);
+                            if (updatePrdRows==0){
+                                logger().info("规格库存更新失败");
+                                throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                            }
+                            //更新商品库存
+                            Integer updateGoodsRows = updateGoodsNum(promoteInfo.getRewardContent().getGoodsIds(),1);
+                            if (updateGoodsRows==0){
+                                logger().info("商品库存更新失败");
+                                throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                            }
+                        }else {
+                            logger().info("商品库存不足");
+                            throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
+                        }
+                    }
+                }
+                //返回插入成功数据行的id
+//                return lastId;
+            });
+    }
+
+    /**
+     * 得当指定规格商品信息
+     * @param prdId 规格id
+     * @return 商品信息
+     */
+    public GoodsSpecProductRecord getPrdInfo(Integer prdId){
+        GoodsSpecProductRecord record = db().select()
+            .from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchOneInto(GoodsSpecProductRecord.class);
+        return record;
+    }
+
+    /**
+     * 发放成功减库存
+     * @param prdId 规格id
+     * @param prdNumber 库存改变量
+     * @return 成功数量
+     */
+    public Integer updatePrdNum(Integer prdId,Integer prdNumber){
+        GoodsSpecProductRecord prdRecord = getPrdInfo(prdId);
+        if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
+            Integer newNumber = prdRecord.getPrdNumber()-prdNumber;
+            return db().update(GOODS_SPEC_PRODUCT)
+                .set(GOODS_SPEC_PRODUCT.PRD_NUMBER,newNumber)
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+                .execute();
+        }
+        return 0;
+    }
+
+    /**
+     * 更新商品库存
+     * @param prdId 规格id
+     * @param prdNumber 变化数量
+     * @return 成功条数
+     */
+    public Integer updateGoodsNum(Integer prdId,Integer prdNumber){
+        GoodsRecord goodsRecord = db().select()
+            .from(GOODS)
+            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
+            .fetchOneInto(GoodsRecord.class);
+        if (goodsRecord!=null){
+            Integer goodsNumber = goodsRecord.getGoodsNumber()-prdNumber;
+            Integer goodsSaleNumber = goodsRecord.getGoodsSaleNum()+prdNumber;
+            return db().update(GOODS)
+                .set(GOODS.GOODS_NUMBER,goodsNumber)
+                .set(GOODS.GOODS_SALE_NUM,goodsSaleNumber)
+                .where(GOODS.GOODS_ID.eq(goodsRecord.getGoodsId()))
+                .execute();
+        }
+        return 0;
+    }
 }

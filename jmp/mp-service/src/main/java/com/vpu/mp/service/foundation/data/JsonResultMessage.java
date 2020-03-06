@@ -978,4 +978,6 @@ public class JsonResultMessage {
     public static final String FORM_FEED_MOBILE = "form.feed.mobile";
     public static final String FORM_FEED_CREATE_TIME = "form.feed.create.time";
 
+    //好友助力
+    public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
 }

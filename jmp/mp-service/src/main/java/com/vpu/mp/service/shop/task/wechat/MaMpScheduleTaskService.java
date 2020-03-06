@@ -397,7 +397,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		return remark;
 	}
 
-    private String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
+    public String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
 		log.info("sendMessage");
 		String title = "";
 		String content = "";
