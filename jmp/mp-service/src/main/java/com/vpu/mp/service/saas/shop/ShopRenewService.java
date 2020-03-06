@@ -2,9 +2,11 @@ package com.vpu.mp.service.saas.shop;
 
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.SystemChildAccount.SYSTEM_CHILD_ACCOUNT;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import org.jooq.Record;
@@ -88,8 +90,9 @@ public class ShopRenewService extends MainBaseService {
 	}
 
 	public Timestamp getShopRenewExpireTime(Integer shopId) {
-		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
-				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
+		return  db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny(SHOP.EXPIRE_TIME);
+//		return db().select().from(SHOP_RENEW).where(SHOP_RENEW.SHOP_ID.eq(shopId))
+//				.orderBy(SHOP_RENEW.EXPIRE_TIME.desc()).fetchAny(SHOP_RENEW.EXPIRE_TIME);
 	}
 
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {

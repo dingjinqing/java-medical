@@ -1336,6 +1336,8 @@ public class FriendPromoteService extends ShopBaseService {
                         CouponGiveQueueParam param = new CouponGiveQueueParam();
                         List<Integer> userList = new ArrayList<>();
                         userList.add(userId);
+                        logger().info("用户编号为："+userId);
+                        logger().info("用户集合为："+userList);
                         param.setUserIds(userList);
                         param.setCouponArray(new String[]{couponInfo.getCouponId().toString()});
                         param.setAccessMode((byte)0);
