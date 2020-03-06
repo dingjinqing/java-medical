@@ -172,7 +172,7 @@ export default {
       console.log(typeof this.ruleForm.count)
       // 使用时间检测
       if (this.bothFalse) {
-        this.$message.warning('至少选择一项使用时间')
+        this.$message.warning(this.$t('memberCard.timeTip'))
         this.ruleForm.valid = false
         this.timeValid = true
         return
@@ -181,13 +181,18 @@ export default {
         this.timeValid = false
       }
       // 适用次数检测
-      if (typeof this.ruleForm.count === 'number') {
-        this.ruleForm.valid = true
-        this.countValid = false
+      console.log(typeof this.ruleForm.storeListType, this.ruleForm.storeListType)
+      if (this.ruleForm.storeListType !== '-1') {
+        if (typeof this.ruleForm.count === 'number') {
+          this.ruleForm.valid = true
+          this.countValid = false
+        } else {
+          this.$message.warning(this.$t('memberCard.storeUseTimes'))
+          this.ruleForm.valid = false
+          this.countValid = true
+        }
       } else {
-        this.$message.warning('请输入允许使用次数')
-        this.ruleForm.valid = false
-        this.countValid = true
+        this.ruleForm.valid = true
       }
     })
   },

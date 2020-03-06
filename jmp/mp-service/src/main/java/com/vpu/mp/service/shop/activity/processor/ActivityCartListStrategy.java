@@ -8,7 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
  * @author 孔德成
  * @date 2019/11/6 15:24
  */
-public interface ActivityCartListStrategy {
+public interface ActivityCartListStrategy extends Processor{
 
     /**
      * 执行业务的处理方法

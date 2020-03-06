@@ -85,4 +85,8 @@ public class PromoteInfo {
     private Byte shareImgType;
     /** 自定义分享样式图片路径 */
     private String customImgPath;
+    /** 奖励有效期 */
+    private Integer rewardDuration;
+    /** 奖励有效期单位 */
+    private Byte rewardDurationUnit;
 }

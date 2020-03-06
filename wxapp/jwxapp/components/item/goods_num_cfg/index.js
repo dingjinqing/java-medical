@@ -31,7 +31,7 @@ global.wxComponent({
       let goodsNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
       limitMaxNum = limitMaxNum && limitMaxNum > 0 ? limitMaxNum : prdNumber
       let canMinus = false;
-      let canPlus = prdNumber < limitMaxNum ? true : false
+      let canPlus = goodsNum < limitMaxNum ? true : false
       this.setData({
         goodsNum,
         canMinus,

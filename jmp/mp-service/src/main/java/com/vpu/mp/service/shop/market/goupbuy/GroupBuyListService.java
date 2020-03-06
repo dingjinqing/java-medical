@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecService;
 import com.vpu.mp.service.shop.member.MemberService;
 import org.jooq.Record;
@@ -36,7 +37,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
+import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.JOIN_LIMIT_N;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.OPEN_LIMIT_N;
@@ -44,6 +48,7 @@ import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STAT
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_FAILED;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 
 /**
  * @author 孔德成
@@ -63,6 +68,8 @@ public class GroupBuyListService extends ShopBaseService {
     private GroupBuyService groupBuyService;
     @Autowired
     private GoodsSpecService goodsSpecService;
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 查询团购列表
@@ -78,12 +85,10 @@ public class GroupBuyListService extends ShopBaseService {
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
         SelectConditionStep<? extends Record> records = db().select(
-                GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME,GROUP_BUY_DEFINE.LEVEL, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
+                GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GROUP_BUY_DEFINE.LEVEL, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
-                DSL.ifnull(table.field(GROUP_ORDER_NUM), 0).as(GROUP_ORDER_NUM))
+                GROUP_BUY_DEFINE.GOODS_ID, DSL.ifnull(table.field(GROUP_ORDER_NUM), 0).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_DEFINE)
-                .leftJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(GROUP_BUY_DEFINE.ID))
-                .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         records.orderBy(GROUP_BUY_DEFINE.LEVEL,GROUP_BUY_DEFINE.ID.desc());
@@ -91,7 +96,10 @@ public class GroupBuyListService extends ShopBaseService {
 
         PageResult<GroupBuyListVo> page = getPageResult(records, param.getCurrentPage(), param.getPageRows(), GroupBuyListVo.class);
         page.dataList.forEach(vo -> {
+            //状态
             vo.setCurrentState(Util.getActStatus(vo.getStatus(), vo.getStartTime(), vo.getEndTime()));
+            //商品信息
+            vo.setGoodsViews(goodsService.selectGoodsViewList(Util.stringToList(vo.getGoodsId())));
         });
         return page;
     }
@@ -197,8 +205,14 @@ public class GroupBuyListService extends ShopBaseService {
             select.and(USER.USERNAME.eq(param.getNickName()));
         }
         if (param.getStatus() != null) {
-            if (param.getStatus() > 0 && param.getStatus() < 3) {
+            if (param.getStatus().equals(STATUS_WAIT_PAY)){
+                select.and(GROUP_BUY_LIST.STATUS.eq(STATUS_WAIT_PAY));
+            }else if (param.getStatus().equals(STATUS_ONGOING)){
                 select.and(GROUP_BUY_LIST.STATUS.eq(param.getStatus()));
+            }else if (param.getStatus().equals(STATUS_SUCCESS)){
+                select.and(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS));
+            }else if (param.getStatus().equals(STATUS_FAILED)){
+                select.and(GROUP_BUY_LIST.STATUS.eq(STATUS_FAILED));
             }
         }
 

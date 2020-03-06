@@ -216,7 +216,7 @@ public class ReducePricePictorialService extends ShopBaseService {
         PictorialImgPx imgPx = new PictorialImgPx();
 
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx, false);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
 
         // 拼装价值限时降价图片和商品价格
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {

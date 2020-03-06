@@ -119,9 +119,6 @@ global.wxPage({
     util.jumpToWeb('/wxapp/bargain/help');
   },
   toIndex: function () {
-    // util.reLaunch({
-    //   url: '/pages/index/index',
-    // })
     util.jumpLink('/pages/index/index', 'reLaunch')
   },
   // 砍价商品详情
@@ -133,18 +130,17 @@ global.wxPage({
   },
   // 砍价完成
   toCheckout: function (e) {
-    // var form_id = e.detail.formId;
-    // var open_id = util.getCache("openid");
-    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id })
+    console.log(this.data.bargain_info)
     var record_id = bargain_info.recordInfo.id;
     var bargain_id = bargain_info.recordInfo.bargainId;
     if (bargain_info.recordInfo.bargainType == 1 && bargain_info.recordInfo.isOrdered == 1) {
       var check_money = parseFloat(bargain_info.recordInfo.goodsPrice - bargain_info.recordInfo.bargainMoney).toFixed(2);
-      util.showModal("提示", "您有一笔待支付订单，继续下单将以" + (check_money || 0) + "元结算并取消订单，是否继续下单？", function () {
+      util.showModal("提示", "您有一笔待支付订单，是否继续支付？", function () {
+        var order_sn = bargain_info.recordInfo.orderSn;
         util.navigateTo({
-          url: '/pages/goodsCheckout/goodsCheckout?order_type=bargain&record_id=' + record_id,
+          url: '/pages/orderinfo/orderinfo?orderSn=' + order_sn,
         })
-      }, true, "取消", "去下单")
+      }, true, "取消", "继续支付")
     } else {
       let goodsList = [{
         goodsId: bargain_info.recordInfo.goodsId,
@@ -175,28 +171,22 @@ global.wxPage({
   },
   toWhere: function (e) {
     var bargain_id = bargain_info.recordInfo.bargainId;
-    if (bargain_info.recordInfo.prdDesc != "") {
-      util.reLaunch({
-        url: '/pages/bargainitem/bargainitem?bargain_id=' + bargain_id,
-      })
-    } else if (bargain_info.recordInfo.prdDesc == "") {
-      // var choose_list = {};
-      // choose_list.user_id = util.getCache('user_id');
-      // choose_list.goods_id = bargain_info.recordInfo.goodsId;
-      // choose_list.prd_id = bargain_info.recordInfo.prdId;
-      // choose_list.bargain_id = bargain_info.recordInfo.bargainId;
-      // choose_list.goods_price = bargain_info.recordInfo.goodsPrice;
+    var goods_id = bargain_info.recordInfo.goodsId;
+    console.log('pages/item/item?aid=' + bargain_id + '&&atp=3&&gid=' + goods_id)
+    // 判断是否为多规格
+    if (bargain_info.recordInfo.isDefaultProduct == 0) {
+      var url = 'pages/item/item?aid=' + bargain_id + '&&atp=3&&gid=' + goods_id;
+      util.jumpLink(url);
+    } else if (bargain_info.recordInfo.isDefaultProduct == 1) {
       util.api("/api/wxapp/bargain/apply", function (res) {
         if (res.error == 0) {
           util.reLaunch({
-            // url: "/pages/bargaininfo/bargaininfo?record_id=" + res.content.record_id + "&bargain_money=" + res.content.bargain_money
             url: "/pages/bargaininfo/bargaininfo?record_id=" + res.content.recordId
           })
         } else {
           util.showModal('提示', res.content);
         }
       }, {
-          // choose_list: JSON.stringify(choose_list) 
           bargainId: bargain_info.recordInfo.bargainId,
           prdId: bargain_info.recordInfo.prdId
         })
@@ -237,9 +227,6 @@ global.wxPage({
   // 帮忙砍价
   toKnajia: function (e) {
     var that = this;
-    // var form_info = {};
-    // var open_id = util.getCache("openid");
-    // var form_id = e.detail.formId;
     if (util.getCache('mobile') == '' && bargain_info.recordInfo.needBindMobile == 1) {
       util.checkSession(function () {
         that.setData({
@@ -256,6 +243,9 @@ global.wxPage({
             is_help: 1,
             cut_money: res.content.bargainMoney
           })
+        }
+        if (res.content.state == 12) {
+          util.showModal('提示', '已达到设置的每日砍价次数限制');
         }
         setTimeout(function () {
           clearTimeout(set_time_out);
@@ -410,14 +400,6 @@ function request_kanjia(that) {
     if (res.error == 0) {
       bargain_info = res.content;
       console.log(bargain_info)
-      // if (bargain_info.recordInfo.goodsId) {
-      //   util.getUserLocation(function (loc) {
-      //     util.api('/api/wxapp/user_goods/record', function (res1) { }, {
-      //       goods_id: bargain_info.recordInfo.goodsId, active_id: bargain_info.recordInfo.bargainId, active_type: 3, type: 1, lat: loc.latitude || '',
-      //       lng: loc.longitude || ''
-      //     })
-      //   })
-      // }
       if (bargain_info.state == 1 || bargain_info.state == 2) {
         util.showModal('提示', '砍价失败', function () {
           wx.navigateBack()

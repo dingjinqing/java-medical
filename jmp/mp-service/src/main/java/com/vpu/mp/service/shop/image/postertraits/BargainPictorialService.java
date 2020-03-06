@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -237,7 +239,7 @@ public class BargainPictorialService extends ShopBaseService {
 
         // 拼装背景图
         PictorialImgPx imgPx = new PictorialImgPx();
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,true);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
 
         BufferedImage moneyIconImg;
         try(InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {

@@ -2,10 +2,23 @@ package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.shop.activity.processor.*;
+import com.vpu.mp.service.shop.activity.processor.ActivityCartListStrategy;
+import com.vpu.mp.service.shop.activity.processor.ExclusiveProcessor;
+import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
+import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
+import com.vpu.mp.service.shop.activity.processor.GoodsBeginProcessor;
+import com.vpu.mp.service.shop.activity.processor.GoodsTailProcessor;
+import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
+import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
+import com.vpu.mp.service.shop.activity.processor.PurchasePriceProcessor;
+import com.vpu.mp.service.shop.activity.processor.ReducePriceProcessor;
+import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -15,6 +28,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CartProcessorContext {
 
+
+
+    @Autowired(required = false)
+    private List<ActivityCartListStrategy> sortProcessors;
 
     @Autowired
     private GoodsBeginProcessor goodsBegin;
@@ -36,6 +53,18 @@ public class CartProcessorContext {
     private FullReductionProcessor fullReduction;
     @Autowired
     private PurchasePriceProcessor purchasePrice;
+    /**
+     * 购物车一般活动
+     */
+    public final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
+            BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+            BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
+            BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,
+            BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE
+    );
 
 
     /**

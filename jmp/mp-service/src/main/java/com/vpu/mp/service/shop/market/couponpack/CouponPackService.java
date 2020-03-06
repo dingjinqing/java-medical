@@ -517,7 +517,7 @@ public class CouponPackService extends ShopBaseService {
                                 case CouponPackConstant.TIMING_UNIT_WEEK:
                                     cal.setTime(DateUtil.getTimeStampPlus(lastTime,coupon.getTimingEvery(), ChronoUnit.WEEKS));
                                     cal.setFirstDayOfWeek(Calendar.MONDAY);
-                                    cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - coupon.getTimingTime());
+                                    cal.add(Calendar.DATE, cal.getFirstDayOfWeek()- cal.get(Calendar.DAY_OF_WEEK) + coupon.getTimingTime() - 1);
                                     nextTime = new Timestamp(cal.getTime().getTime());
                                     break;
                                 case CouponPackConstant.TIMING_UNIT_MONTH:

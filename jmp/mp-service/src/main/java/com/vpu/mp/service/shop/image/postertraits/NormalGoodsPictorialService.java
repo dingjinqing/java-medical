@@ -133,7 +133,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
 
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc,goodsVo.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx,false);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc,goodsVo.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

@@ -4,7 +4,6 @@ import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jodd.util.StringUtil;
 import org.jooq.DatePart;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -51,6 +49,8 @@ import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
+
+import jodd.util.StringUtil;
 
 /**
  * 
@@ -159,25 +159,16 @@ public class ShopService extends MainBaseService {
 		Integer shopSoonExpiredStatus = 3;
 		if (param.isUse != null && param.isUse.equals(shopUsingStatus)) {
 			// 店铺在使用中
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
-					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
+			select.where(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp()));
 		}
 
 		if (param.isUse != null && param.isUse.equals(shopExpiredStatus)) {
 			// 店铺已过期
-			select.where(SHOP.SHOP_ID.notIn(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
-					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
-			/*
-			 * select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(
-			 * SHOP_RENEW) .where(SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID))
-			 * .and(SHOP_RENEW.EXPIRE_TIME.lt(DSL.currentTimestamp()).or(SHOP_RENEW.
-			 * EXPIRE_TIME.isNull()))));
-			 */
+			select.where(SHOP.EXPIRE_TIME.lt(DSL.currentTimestamp()));
 		}
 		if (param.isUse != null && param.isUse.equals(shopSoonExpiredStatus)) {
 			// 即将过期
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
-					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH))).and(SHOP_RENEW.EXPIRE_TIME.ge(DSL.currentTimestamp())))));
+			select.where(SHOP.EXPIRE_TIME.le(DSL.timestampAdd(DSL.currentTimestamp(), 1, DatePart.MONTH)).and(SHOP.EXPIRE_TIME.ge(DSL.currentTimestamp())));
 		}
 
 		if (!StringUtils.isEmpty(param.shopType)) {
@@ -218,12 +209,10 @@ public class ShopService extends MainBaseService {
 		}
 		
 		if(!StringUtils.isEmpty(param.expireStartTime)) {
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
-					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.ge(param.expireStartTime)))));
+			select.where(SHOP.EXPIRE_TIME.ge(param.expireStartTime));
 		}
 		if(!StringUtils.isEmpty(param.expireEndTime)) {
-			select.where(SHOP.SHOP_ID.in(db().selectDistinct(SHOP_RENEW.SHOP_ID).from(SHOP_RENEW).where(
-					SHOP_RENEW.SHOP_ID.eq(SHOP.SHOP_ID).and(SHOP_RENEW.EXPIRE_TIME.le(param.expireEndTime)))));
+			select.where(SHOP.EXPIRE_TIME.le(param.expireEndTime));
 		}
 		return select;
 	}

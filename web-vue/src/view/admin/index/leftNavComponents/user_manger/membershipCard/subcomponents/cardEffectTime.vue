@@ -148,7 +148,7 @@ export default {
         if (this.ruleForm.fixedDate) {
           callback()
         } else {
-          callback(new Error('请选择日期'))
+          callback(new Error(this.$t('memberCard.inputDate')))
         }
       }
       callback()
@@ -157,9 +157,9 @@ export default {
     let validateReceiveDay = (rule, value, callback) => {
       if (this.ruleForm.expiredType === '1') {
         if (this.checkReceiveError(value)) {
-          callback(new Error('请输入有效期'))
+          callback(new Error(this.$t('memberCard.inputTime')))
         } else if (Number(value) <= 0) {
-          callback(new Error('请输入有效期'))
+          callback(new Error(this.$t('memberCard.inputTime')))
         } else {
           callback()
         }
@@ -183,9 +183,9 @@ export default {
         this.ruleForm.valid = valid
         if (!valid) {
           if (this.ruleForm.expiredType === '0') {
-            this.$message.warning('请填写日期')
+            this.$message.warning(this.$t('memberCard.inputDate'))
           } else if (this.ruleForm.expiredType === '1') {
-            this.$message.warning('请输入有效期')
+            this.$message.warning(this.$t('memberCard.inputTime'))
           }
         }
       })

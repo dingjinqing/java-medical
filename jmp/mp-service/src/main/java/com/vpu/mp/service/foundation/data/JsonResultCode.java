@@ -368,6 +368,11 @@ public enum JsonResultCode {
 	GROUP_INTEGRATION_TOTAL(148102,JsonResultMessage.GROUP_INTEGRATION_TOTAL),
 
     /**
+     * 营销-好友助力
+     */
+    FRIEND_PROMOTE_FAIL(149001,JsonResultMessage.FRIEND_PROMOTE_FAIL),
+
+    /**
      * 表单统计-反馈列表导出
      */
     FORM_FEED_FILE_NAME(149001, JsonResultMessage.FORM_FEED_FILE_NAME),

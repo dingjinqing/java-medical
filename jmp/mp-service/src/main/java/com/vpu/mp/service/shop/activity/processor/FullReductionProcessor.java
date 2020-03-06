@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
@@ -213,6 +214,10 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 BigDecimal[] tolalNumberAndPrice = calculate.getTolalNumberAndPriceByType(entry.getValue(), OrderConstant.D_T_FULL_REDUCE, null);
                 BigDecimal discount = fullReductionProcessorDao.calculateFullReduce(entry.getKey(), entry.getValue(), tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER].intValue(), tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
                 OrderFullReduce orderFullReduce = new OrderFullReduce();
+                if(BigDecimalUtil.compareTo(discount, BigDecimal.ZERO) < 1) {
+                    entry.getValue().forEach(x->x.setStraId(0));
+                    continue;
+                }
                 orderFullReduce.setInfo(entry.getKey());
                 orderFullReduce.setTotalDiscount(discount);
                 orderFullReduce.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);

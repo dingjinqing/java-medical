@@ -53,6 +53,8 @@ import com.vpu.mp.service.shop.user.user.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+
 /**
  * 小程序公众号相关的定时任务
  *
@@ -369,7 +371,10 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				goodsName=String.valueOf(coupon.getDenomination())+value+"优惠券";
 			}
 		}else {
-			Optional<GoodsRecord> goodsById = goodsService.getGoodsById(rewardContent.getGoodsIds());
+		    Integer goodsId = db().select(GOODS_SPEC_PRODUCT.GOODS_ID).from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(rewardContent.getGoodsIds()))
+                .fetchOne().into(Integer.class);
+			Optional<GoodsRecord> goodsById = goodsService.getGoodsById(goodsId);
 			if(goodsById.get()!=null) {
 				goodsName=goodsById.get().getGoodsName();
 			}
@@ -397,7 +402,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 		return remark;
 	}
 
-    private String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
+    public String sendMessage(Byte type,FriendPromoteSelectVo vo,String officeAppId) {
 		log.info("sendMessage");
 		String title = "";
 		String content = "";

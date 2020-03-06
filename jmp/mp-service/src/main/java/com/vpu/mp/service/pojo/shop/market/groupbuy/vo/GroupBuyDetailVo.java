@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 孔德成
@@ -25,7 +24,7 @@ public class GroupBuyDetailVo {
     /**
      * 商品id
      */
-    private Integer goodsId;
+    private String goodsId;
     /**
      * 成团人数
      */

@@ -183,7 +183,7 @@ public class JsonResultMessage {
     public static final String BARGAIN_ORDER_LIST_FILENAME = "bargain.order.list.file_name";
     public static final String BARGAIN_ORDER_LIST_ORDER_SN = "bargain.order.list.order_sn";
     public static final String BARGAIN_ORDER_LIST_BARGAIN_GOODS = "bargain.order.list.bargain_goods";
-    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.user.order.price";
+    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.order.list.price";
     public static final String BARGAIN_ORDER_LIST_CREATE_TIME = "bargain.order.list.create_time";
     public static final String BARGAIN_ORDER_LIST_ORDER_USER = "bargain.order.list.order_user";
     public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
@@ -978,4 +978,6 @@ public class JsonResultMessage {
     public static final String FORM_FEED_MOBILE = "form.feed.mobile";
     public static final String FORM_FEED_CREATE_TIME = "form.feed.create.time";
 
+    //好友助力
+    public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
 }

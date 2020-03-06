@@ -1,14 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author 王兵兵
@@ -18,47 +17,41 @@ import lombok.Data;
 @ExcelSheet
 @Data
 public class BargainRecordExportVo {
-
-	/**
-	 * 主键 
-	 */
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_ID,columnIndex = 0)
-	private Integer id;
 	
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_GOODS_NAME,columnIndex = 1)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_GOODS_NAME,columnIndex = 0)
 	private String goodsName;
 	
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_USERNAME,columnIndex = 2)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_USERNAME,columnIndex = 1)
 	private String username;
 	
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_MOBILE,columnIndex = 3)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_MOBILE,columnIndex = 2)
 	private String mobile;
 	
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_CREATE_TIME,columnIndex = 4)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_CREATE_TIME,columnIndex = 3)
 	private Timestamp createTime;
 	
 	/**
 	 * 已砍金额 
 	 */
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_BARGAIN_MONEY,columnIndex = 5)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_BARGAIN_MONEY,columnIndex = 4)
 	private BigDecimal bargainMoney;
 	
 	/**
 	 * 待砍金额 
 	 */
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_SURPLUS_MONEY,columnIndex = 6)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_SURPLUS_MONEY,columnIndex = 5)
 	private BigDecimal surplusMoney;
 	
 	/**
 	 * 参与砍价人数 
 	 */
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_USER_NUMBER,columnIndex = 7)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_USER_NUMBER,columnIndex = 6)
 	private Integer userNumber;
 	
 	/**
 	 *  状态 0砍价中，1成功，2失败
 	 */
-	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_STATUS,columnIndex = 8)
+	@ExcelColumn(columnName = JsonResultMessage.BARGAIN_RECORD_LIST_STATUS,columnIndex = 7)
 	private String statusName;
 	
 	/**

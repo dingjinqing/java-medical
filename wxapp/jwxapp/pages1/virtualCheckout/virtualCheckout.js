@@ -13,6 +13,7 @@ global.wxPage({
     cardBalanceStatus:0,
     balanceStatus:0,
     scoreStatus:0,
+    chooseCardNo:0,
     usePayInfo: {
       moneyPaid: 0, //订单可支付的金额
       useCardBalance: 0, //已使用的会员卡余额
@@ -32,7 +33,7 @@ global.wxPage({
   },
   requestPackageData(){
     let {packId} = this.data.options
-    let cardNo = this.data.chooseCardNo ? this.data.chooseCardNo : null
+    let cardNo = this.data.chooseCardNo
     util.api(`/api/wxapp/coupon/pack/order`,res=>{
       if(res.error === 0){
         this.setData({
@@ -224,10 +225,10 @@ global.wxPage({
     }
     let params = {
       orderAmount:this.data.isScorePay ? null : this.data.orderAmount,
-      scoreDiscount:this.data.isScorePay ? this.data.orderPayScore : null,
+      scoreDiscount:this.data.isScorePay ? this.data.orderPayScore : 0,
       memberCardBalance:this.data.usePayInfo.useCardBalance,
       accountDiscount:this.data.usePayInfo.useBalance,
-      cardNo:null,
+      cardNo: !this.data.isScorePay && this.data.usePayInfo.useCardBalance ? this.data.memberCardNo : null,
       invoiceId:0,
       invoiceDetail:null
     }
@@ -235,10 +236,50 @@ global.wxPage({
       params.packId = this.data.options.packId
     }
     util.api('/api/wxapp/coupon/pack/checkout',res=>{
-      console.log(res)
+      if(res.error === 0 && res.content){
+        wx.requestPayment({
+          timeStamp: res.content.timeStamp,
+          nonceStr: res.content.nonceStr,
+          package: res.content.package,
+          signType: 'MD5',
+          paySign: res.content.paySign,
+          success: res => {
+            util.toast_success('支付成功',()=>{
+              util.jumpLink(
+                `pages1/payment/payment${this.getUrlParams({
+                  useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                })}`,
+                'redirectTo'
+              )
+            })
+          },
+          fail: res => {
+            console.log(res)
+          },
+          complete: res => {}
+        })
+      } else if (res.error === 0 && !res.content){
+        util.toast_success('支付成功',()=>{
+          util.jumpLink(
+            `pages1/payment/payment${this.getUrlParams({
+              useInfo: JSON.stringify({ ...this.data.usePayInfo })
+            })}`,
+            'redirectTo'
+          )
+        })
+      } else {
+        util.showModal('提示',res.message)
+      }
     },{
       ...params
     })
+  },
+  //整合参数
+  getUrlParams(obj) {
+    return Object.keys(obj).reduce((UrlStr, item, index) => {
+      if (index !== 0) UrlStr += `&`
+      return (UrlStr += `${item}=${obj[item]}`)
+    }, '?')
   },
 
 

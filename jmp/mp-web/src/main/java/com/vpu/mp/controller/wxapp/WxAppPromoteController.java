@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.LaunchVo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteInfo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +47,19 @@ public class WxAppPromoteController extends WxAppBaseController {
         LaunchVo launchVo = shop().friendPromoteService.friendPromoteLaunch(param);
 
         return success(launchVo);
+    }
+
+    /**
+     * 好友帮忙点击
+     *
+     * @param param 用户id 助力活动码
+     * @return launchVo 发起信息
+     */
+    @PostMapping("/participate")
+    public JsonResult promoteParticipate(@RequestBody PromoteParam param) {
+
+        PromoteVo promoteVo = shop().friendPromoteService.friendPromote(param);
+
+        return success(promoteVo);
     }
 }

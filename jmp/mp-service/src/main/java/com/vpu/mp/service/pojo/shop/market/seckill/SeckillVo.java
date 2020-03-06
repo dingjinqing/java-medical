@@ -40,6 +40,9 @@ public class SeckillVo {
     /** 秒杀当前库存*/
     private Integer stock;
 
+    /** 初始销量*/
+    private Integer baseSale;
+
     /** 规定的有效支付时间 单位：分钟*/
     private Short limitPaytime;
 

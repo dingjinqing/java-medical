@@ -53,44 +53,6 @@ public class PictorialImgPx {
     private Integer goodsHeight = bgWidth - 2 * bgPadding-70;
     private Integer goodsStartX = bgPadding;
     private Integer goodsStartY = bgPadding + headerHeight;
-    /**
-     * 底部高度
-     */
-    private Integer bottomHeight = 160;
-    /**
-     * 图片总高度
-     */
-    private Integer bgHeight = headerHeight + bottomHeight + goodsHeight + bgPadding * 2;
-
-    /**
-     * 底部开始Y
-     */
-    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding;
-    private Color goodsNameColor = new Color(52, 52, 52);
-
-    /**
-     * 二维码直径
-     */
-    private Integer qrCodeWidth = 150;
-    /**
-     * 二维码X
-     */
-    private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
-    /**
-     * 商品名称开始Y
-     */
-    private Integer goodsNameStartY = bottomStartY + 10;
-
-    /**
-     * 底部商品价格开始y,需要根据商品名称行数计算得到
-     */
-    private Integer priceY = goodsNameStartY + 20;
-    private Color realPriceColor = new Color(255, 102, 102);
-    /**
-     * 底部划线价，线的Y
-     */
-    private Integer priceLineY = priceY - smallFontSize;
-    private Color linePriceColor = new Color(146, 146, 146);
 
     /** 图片上方，各个活动自定义内容区域 */
     /**
@@ -119,6 +81,52 @@ public class PictorialImgPx {
 
     private Integer customerSecondTextStartY = customerTextStartY +12;
     private Color customerTextFontColor = new Color(255, 255, 255);
+
+    /*****************海报底部图片配置参数******************/
+    /**
+     * 底部高度
+     */
+    private Integer bottomHeight = 200;
+    /**
+     * 图片总高度
+     */
+    private Integer bgHeight = headerHeight + bottomHeight + goodsHeight + bgPadding * 2;
+
+    /**
+     * 底部开始Y
+     */
+    private Integer bottomStartY = headerHeight + goodsHeight + bgPadding;
+    private Color goodsNameColor = new Color(52, 52, 52);
+
+    /**
+     * 二维码直径
+     */
+    private Integer qrCodeWidth = 150;
+    /**
+     * 二维码X
+     */
+    private Integer qrCodeStartX = bgWidth - (bgPadding + qrCodeWidth);
+
+    /**
+     * 商品名称可使用的最大宽度
+     */
+    private Integer goodsNameCanUseWidth = bgWidth - 2*bgPadding-qrCodeWidth-20;
+
+    /**
+     * 商品名称开始Y
+     */
+    private Integer goodsNameStartY = bottomStartY + 10;
+
+    /**
+     * 底部商品价格开始y,需要根据商品名称行数计算得到
+     */
+    private Integer priceY = goodsNameStartY + 20;
+    private Color realPriceColor = new Color(255, 102, 102);
+    /**
+     * 底部划线价，线的Y
+     */
+    private Integer priceLineY = priceY - smallFontSize;
+    private Color linePriceColor = new Color(146, 146, 146);
 
 
     public PictorialImgPx() {

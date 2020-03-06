@@ -459,8 +459,8 @@ public class BargainService extends ShopBaseService  {
             vo.setGoodsName(order.getGoods().get(0).getGoodsName());
             vo.setPrice(order.getGoods().get(0).getGoodsPrice());
             vo.setCreateTime(order.getCreateTime());
-            vo.setUsername(order.getUsername());
-            vo.setConsignee(order.getConsignee());
+            vo.setUsername(order.getUsername() + ";" + order.getUserMobile());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
             vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
 
             res.add(vo);
