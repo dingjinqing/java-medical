@@ -86,3 +86,12 @@ export function getAllStore () {
     method: 'get'
   })
 }
+
+// 会员卡激活待审核列表
+export function getExamineList (data) {
+  return service({
+    url: '/api/admin/member/card/examine/list',
+    method: 'post',
+    data: data
+  })
+}
