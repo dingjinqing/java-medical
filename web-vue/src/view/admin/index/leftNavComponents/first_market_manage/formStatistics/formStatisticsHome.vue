@@ -235,10 +235,10 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="handleToSureTwo()">取 消</el-button>
+        <el-button @click="dialogTwoVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogTwoVisible = false"
+          @click="handleToSureTwo()"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -424,11 +424,14 @@ export default {
           break
       }
       delCloseListQuery({ pageId: this.nowClickRow.pageId, formStatus: status }).then(res => {
+        console.log(res)
         if (res.error === 0) {
           this.$message.success({
             message: message,
             showClose: true
           })
+          this.initData()
+          this.dialogTwoVisible = false
         }
       })
     },
