@@ -54,7 +54,6 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -71,6 +70,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
@@ -279,6 +279,8 @@ public class GroupBuyService extends ShopBaseService {
                 .select(GROUP_BUY_PRODUCT_DEFINE.ID,
                         GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,
                         GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,
+                        GROUP_BUY_PRODUCT_DEFINE.GOODS_ID,
+                        GOODS.GOODS_NAME,
                         GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,
                         GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE,
                         GROUP_BUY_PRODUCT_DEFINE.SALE_NUM,
@@ -289,6 +291,7 @@ public class GroupBuyService extends ShopBaseService {
                 )
                 .from(GROUP_BUY_PRODUCT_DEFINE)
                 .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
+                .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
         //优惠卷信息
         List<Integer> ids = Util.splitValueToList(groupBuy.getRewardCouponId());

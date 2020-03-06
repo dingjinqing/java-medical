@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @author 孔德成
@@ -24,6 +23,15 @@ public class GroupBuyProductVo {
      */
     @JsonProperty(value = "prdId")
     private Integer productId;
+
+    /**
+     * 商品id
+     */
+    private Integer goodsId;
+    /**
+     * 商品名称
+     */
+    private Integer goodsName;
 
     /**
      * 商品规格名称

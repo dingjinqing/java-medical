@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
@@ -20,6 +21,16 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class GoodsBeginProcessor implements ActivityCartListStrategy{
+
+    @Override
+    public Byte getPriority() {
+        return 0;
+    }
+
+    @Override
+    public Byte getActivityType() {
+        return BaseConstant.ACTIVITY_TYPE_GENERAL;
+    }
 
     /**
      * 购物车
