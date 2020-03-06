@@ -138,7 +138,7 @@ export default {
         console.log(valid)
         this.ruleForm.valid = valid
         if (!valid) {
-          this.$message.warning('请输入会员卡名称')
+          this.$message.warning(this.$t('memberCard.inputCardName'))
         }
       })
     })
@@ -146,7 +146,7 @@ export default {
   data () {
     var validateCardName = (rule, value, callback) => {
       if (this.isBlank(value)) {
-        callback(new Error('请输入会员卡名称'))
+        callback(new Error(this.$t('memberCard.inputCardName')))
       } else {
         callback()
       }
