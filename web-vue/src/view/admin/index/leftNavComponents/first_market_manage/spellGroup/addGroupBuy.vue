@@ -758,7 +758,8 @@ export default {
       }
     },
     validateNum (rule, value, callback, prdNumber) {
-      var re = /(^0|\+?[1-9][0-9]\d*)$/
+      // var re = /(^0|\+?[1-9][0-9]\d*)$/
+      var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
         callback(new Error('请填写0和正整数'))
       } else if (value > prdNumber) {
