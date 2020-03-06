@@ -1,5 +1,20 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_REFUSED;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
@@ -13,16 +28,12 @@ import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveOverDueVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
+import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.dao.CardVerifyDaoService;
 import com.vpu.mp.service.shop.user.user.UserDetailService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-
-import static com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant.VSTAT_REFUSED;
 
 /**
 * @author 黄壮壮
@@ -36,6 +47,7 @@ public class CardVerifyService extends ShopBaseService {
 	@Autowired public MemberCardService memberCardService;
 	@Autowired public UserCardService userCardService;
 	@Autowired public UserDetailService userDetailService;
+	@Autowired public CardDaoService cardDaoSvc;
 	/**
 	 *  分页查询
 	 */
@@ -242,5 +254,19 @@ public class CardVerifyService extends ShopBaseService {
     
     public CardExamineRecord getStatusByNo(String cardNo) {
     	return verifyDao.getStatusByNo(cardNo);
+    }
+    
+    /**
+     * 	获取待审核的会员卡列表
+     */
+    public List<CardBasicVo> getCardExamineList() {
+    	List<Integer> cardIds = db().selectDistinct(CARD_EXAMINE.CARD_ID)
+    		.where(CARD_EXAMINE.STATUS.eq(CardVerifyConstant.VSTAT_CHECKING))
+    		.fetch(CARD_EXAMINE.CARD_ID);
+    	if(cardIds==null || cardIds.size()==0) {
+    		return Collections.<CardBasicVo>emptyList();
+    	}else {
+    		return cardDaoSvc.getCardBasicInfoById(cardIds.toArray(new Integer[cardIds.size()]));
+    	}
     }
 }
