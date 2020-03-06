@@ -212,10 +212,8 @@
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
 
-        <el-form-item
-          label="活动初始销量："
-          prop="limitAmount"
-        >
+        <el-form-item label="活动初始销量：">
+          <!-- prop="limitAmount" -->
           <el-input-number
             :disabled="this.isEdite"
             v-model="form.baseSale"
@@ -223,7 +221,7 @@
             :min="0"
             size="small"
           ></el-input-number>
-          <span style="color: #999; margin-left: 10px;">初始销量必填</span>
+          <!-- <span style="color: #999; margin-left: 10px;">初始销量必填</span> -->
         </el-form-item>
 
         <!-- 收起、展开更多配置 -->
@@ -519,8 +517,8 @@ export default {
       // 分享
       showImageDialog: false,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/seckill_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/seckill_pictorial.jpg`
       },
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
