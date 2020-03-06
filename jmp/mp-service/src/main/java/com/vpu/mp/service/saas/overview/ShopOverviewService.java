@@ -150,9 +150,7 @@ public class ShopOverviewService extends MainBaseService {
      * @return the timestamp
      */
     public Timestamp shopExpireTime(Integer shopId) {
-        return db().select(ShopRenew.SHOP_RENEW.EXPIRE_TIME)
-            .from(ShopRenew.SHOP_RENEW)
-            .where(ShopRenew.SHOP_RENEW.SHOP_ID.eq(shopId))
+        return  db().select(SHOP.EXPIRE_TIME).from(SHOP).where(SHOP.SHOP_ID.eq(shopId))
             .fetchOptionalInto(Timestamp.class)
             .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_ACCOUNT_SHOP_EXPRIRE));
     }

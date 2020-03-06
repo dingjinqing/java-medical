@@ -984,13 +984,13 @@ public class MpAuthShopService extends MainBaseService {
 
 
     public SelectConditionStep<Record13<String, Integer, String, String, Byte, String, Byte, Timestamp, Integer, Byte, Byte, Integer, Timestamp>> getCanSubmitAuditMps(MpAuthShopListParam param, Condition condition) {
-    	  String shopFieldName=SHOP_RENEW.SHOP_ID.getName();
-          String expireFieldName=SHOP_RENEW.EXPIRE_TIME.getName();
+    	  String shopFieldName=SHOP.SHOP_ID.getName();
+          String expireFieldName=SHOP.EXPIRE_TIME.getName();
 
           Table<Record2<Integer, Timestamp>> nested =
-              db().select(SHOP_RENEW.SHOP_ID.as(shopFieldName),
-                  DSL.max(SHOP_RENEW.EXPIRE_TIME).as(expireFieldName))
-                  .from(SHOP_RENEW).groupBy(SHOP_RENEW.SHOP_ID).asTable("nested");
+              db().select(SHOP.SHOP_ID.as(shopFieldName),
+                  (SHOP.EXPIRE_TIME).as(expireFieldName))
+                  .from(SHOP).asTable("nested");
 
           Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
 
