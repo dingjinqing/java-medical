@@ -96,6 +96,11 @@ public class ShopRenewService extends MainBaseService {
 
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
 		ShopRenewRecord sRecord=db().newRecord(SHOP_RENEW,sReq);
+		if(sReq.getRenewType().equals((byte)4)){
+			logger().info("退款{}",sReq.getRenewMoney());
+			//改为负数
+			sRecord.setRenewMoney(sReq.getRenewMoney().negate());
+		}
 		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
 		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
 		sRecord.setRenewDate(DateUtil.getSqlTimestamp());
