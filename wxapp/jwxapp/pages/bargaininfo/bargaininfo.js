@@ -251,10 +251,12 @@ global.wxPage({
     // 帮助砍价
     util.api("/api/wxapp/bargain/cut", function (res) {
       if (res.error == 0) {
-        that.setData({
-          is_help: 1,
-          cut_money: res.content.bargainMoney
-        })
+        if (res.content.state == 0) {
+          that.setData({
+            is_help: 1,
+            cut_money: res.content.bargainMoney
+          })
+        }
         setTimeout(function () {
           clearTimeout(set_time_out);
           that.onPullDownRefresh();
@@ -278,7 +280,7 @@ global.wxPage({
    */
   onShareAppMessage: function (options) {
     var that = this;
-    if (bargain_info.state == 8 || bargain_info.state == 11) {
+    if (bargain_info.state == 8) {
       clearTimeout(set_time_out);
       util.api("/api/wxapp/bargain/cut", function (res) {
 
