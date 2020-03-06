@@ -175,6 +175,7 @@ global.wxPage({
   },
   toWhere: function (e) {
     var bargain_id = bargain_info.recordInfo.bargainId;
+    // 判断是否为多规格
     if (bargain_info.recordInfo.prdDesc != "") {
       util.reLaunch({
         url: '/pages/bargainitem/bargainitem?bargain_id=' + bargain_id,
