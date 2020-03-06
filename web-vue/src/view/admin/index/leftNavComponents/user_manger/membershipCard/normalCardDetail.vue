@@ -254,7 +254,7 @@ export default {
       },
       // 包邮信息
       freeship: {
-        num: 0,
+        num: null,
         type: 3
       }
     }

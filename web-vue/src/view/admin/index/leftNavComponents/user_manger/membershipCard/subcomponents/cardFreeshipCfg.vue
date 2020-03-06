@@ -19,12 +19,13 @@
                         </el-option>
                     </el-select> -->
                     <span>享受</span>
-                    <el-form :model="$data" style="display: inline-block">
+                    <el-form :model="$data" ref="shipNum" style="display: inline-block">
                       <el-form-item prop="shipNum" :rules="shipNumRule">
-                          <el-input v-model="$data.shipNum" size="small" style="width: 80px;"></el-input>
+                        <!-- 当通过校验时，触发input事件(但是目前有elementui有bug通过第一个校验后，就会调用) -->
+                          <el-input v-model.number="$data.shipNum" size="small" style="width: 80px;" @input="changeShipNum('shipNum')"></el-input>
                       </el-form-item>
                     </el-form>
-                    <span>次包邮</span>
+                    <span>{{shipNum}}次包邮</span>
                 </div>
             </el-form-item>
         </el-form>
@@ -111,6 +112,10 @@ export default {
           required: true,
           message: '请输入有效值'
           // trigger: 'blur'
+        }, {
+          // 1到7位整数校验
+          pattern: /^[0-9]\d{0,6}$/,
+          message: '请输入1到7位的整数'
         }
       ]
 
@@ -121,7 +126,7 @@ export default {
       this.initShipTimeOption()
     },
     num (val) {
-      this.ruleData.shipNum = val
+      this.shipNum = val
     }
   },
   mounted () {
@@ -144,6 +149,11 @@ export default {
     },
     changeShipNum (val) {
       console.log(val)
+      this.$refs[val].validate((valid) => {
+        if (valid) {
+          this.$emit('update:num', Number(val))
+        }
+      })
     }
   }
 }
@@ -167,6 +177,9 @@ export default {
         margin-left: 72px;
         /deep/ .el-select{
             width: 150px;
+        }
+        /deep/ .el-input__inner{
+          text-align: center;
         }
     }
 
