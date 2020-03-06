@@ -265,5 +265,17 @@ export const en = {
   allowUseTime: 'Allow Time',
   timeTip: 'Must one',
   workDay: 'workDay',
-  breakDay: 'breakDay'
+  breakDay: 'breakDay',
+  sendTotalTip: 'valid value',
+  receiveLimitTip: 'valid value',
+  leastCodeTip: 'at least code',
+  inputMoney: 'valid money',
+  inputScore: 'valid score',
+  inputInfomation: 'must info',
+  leastBatch: 'at least batch',
+  inputBatchName: 'must batch name',
+  noData: 'none',
+  inputCardName: 'card name need',
+  inputTime: 'must valid time',
+  inputDate: 'must valid date'
 }

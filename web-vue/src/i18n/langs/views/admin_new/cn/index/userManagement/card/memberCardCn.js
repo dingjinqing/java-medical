@@ -128,7 +128,7 @@ export const cn = {
   usingStore: '使用门店：',
   allStores: '全部门店',
   partStores: '部分门店',
-  banStore: '不可再门店使用',
+  banStore: '不可在门店使用',
   storeConfig:
     '配置仅限限制门店买单、门店自提、核销门店预约服务时的会员卡使用，线上购买发货默认所有会员卡均可以使用',
   storeName: '门店名称',
@@ -303,5 +303,18 @@ export const cn = {
   allowUseTime: '允许适用时间',
   timeTip: '至少选择一项使用时间',
   workDay: '工作日',
-  breakDay: '双休日'
+  breakDay: '双休日',
+  sendTotalTip: '请填写发送总量',
+  receiveLimitTip: '请填写领取限制',
+  leastCodeTip: '至少生成一项领取码',
+  inputMoney: '请输入金额',
+  inputScore: '请输入积分',
+  inputInfomation: '请输入信息',
+  leastBatch: '最少保留一个批次',
+  inputBatchName: '请填写批次名称',
+  noData: '暂无记录',
+  inputCardName: '请输入会员卡名称',
+  inputTime: '请输入有效期',
+  inputDate: '请填写日期'
+
 }
