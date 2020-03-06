@@ -446,13 +446,10 @@ public class BargainRecordService extends ShopBaseService {
                         }
                     }
                 }else {
-                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y)){
-                        return 10;
-                    }
-                    if(recordInfo.getStatus().equals(STATUS_SUCCESS)){
+                    if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) <= 0){
                         return 5;
                     }
-                    if(remainMoney.compareTo(BigDecimal.ZERO) > 0){
+                    if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0){
                         return 11;
                     }
                 }
