@@ -202,6 +202,7 @@ global.wxComponent({
         rightStyle:`color:#fff;background:${this.data.main_setting.comColor};`,
         notBuyRightStyle:'background:#666;'
       })
+      this.getCartNum()
     }
   },
   /**
@@ -309,17 +310,19 @@ global.wxComponent({
       this.checkDealtAct(buttonData)
       return buttonData
     },
-    // getCartNum() {
-    //   // let { goodsId } = this.data.productInfo
-    //   let that = this
-    //   util.api('/api/wxapp/cart/goods/num', res => {
-    //     if (res.error === 0) {
-    //       that.setData({
-    //         cartNum: res.content.goodsNum
-    //       })
-    //     }
-    //   }, { })
-    // },
+    getCartNum() {
+      util.api('/api/wxapp/cart/list', res => {
+        if (res.error === 0) {
+          let {cartGoodsList:goodsList} = res.content
+          let cartNum = goodsList.reduce((total,item,index)=>{
+            return total += item.cartNumber
+          },0)
+          this.setData({
+            cartNum
+          })
+        }
+      })
+    },
     // 添加购物车
     addCart() {
       let { goodsNum: goodsNumber, prdId } = this.data.productInfo
@@ -328,6 +331,7 @@ global.wxComponent({
         res => {
           if (res.error == 0) {
             util.toast_success('添加成功')
+            this.getCartNum()
           } else {
             util.toast_fail('添加失败')
           }
