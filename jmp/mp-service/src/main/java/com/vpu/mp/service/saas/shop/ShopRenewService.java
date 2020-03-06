@@ -95,8 +95,7 @@ public class ShopRenewService extends MainBaseService {
 	}
 
 	public int insertShopRenew(ShopRenewReq sReq,SystemTokenAuthInfo info) {
-		ShopRenewRecord sRecord=new ShopRenewRecord();
-		FieldsUtil.assignNotNull(sReq, sRecord);
+		ShopRenewRecord sRecord=db().newRecord(SHOP_RENEW,sReq);
 		sRecord.setRenewDuration(sReq.getYear()+","+sReq.getMonth());
 		sRecord.setSendContent(sReq.getSendYear()+","+sReq.getSendMonth());
 		sRecord.setRenewDate(DateUtil.getSqlTimestamp());
@@ -106,6 +105,13 @@ public class ShopRenewService extends MainBaseService {
 		}else {
 			sRecord.setOperator(0);
 		}
-		return db().executeInsert(sRecord);
+		Integer shopId = sReq.getShopId();
+		 this.transaction(()->{
+			 int execute = db().update(SHOP).set(SHOP.EXPIRE_TIME,sReq.getExpireTime()).where(SHOP.SHOP_ID.eq(shopId)).execute();
+			 logger().info("店铺{}续费插入主库：{}",shopId,execute);
+			 int executeInsert = db().executeInsert(sRecord);
+			 logger().info("店铺{}续费插入从库：{}",shopId,executeInsert);
+		 });
+		return 1;
 	}
 }
