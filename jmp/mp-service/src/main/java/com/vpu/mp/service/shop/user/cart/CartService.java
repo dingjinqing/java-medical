@@ -1,6 +1,23 @@
 package com.vpu.mp.service.shop.user.cart;
 
-import com.fasterxml.jackson.databind.JsonSerializable;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.Cart.CART;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -10,7 +27,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.CartPurchaseParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -19,26 +35,6 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.UserCardService;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-<<<<<<< HEAD
-
-=======
->>>>>>> 31287ea27... 常用链接优惠券bug修复
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
-import static com.vpu.mp.db.shop.tables.Cart.CART;
 
 
 /**
