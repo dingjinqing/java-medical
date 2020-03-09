@@ -337,7 +337,7 @@ public class FormStatisticsService extends ShopBaseService {
             , fsd.MODULE_NAME, fsd.MODULE_TYPE, fsd.MODULE_VALUE
             , fsd.CUR_IDX.as("curIdx"))
             .from(fsd)
-            .where(fsd.PAGE_ID.eq(pageId))
+            .where(fsd.SUBMIT_ID.eq(param.getSubmitId()))
             .and(fsd.USER_ID.eq(param.getUserId()))
             .fetchInto(FeedBackDetailVo.class);
 

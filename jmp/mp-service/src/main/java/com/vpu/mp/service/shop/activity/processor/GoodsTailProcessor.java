@@ -108,12 +108,6 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         goodsDetailMpBo.setGoodsVideo(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideo(),true));
         goodsDetailMpBo.setGoodsVideoImg(getVideoFullUrlUtil(goodsDetailMpBo.getGoodsVideoImg(),false));
 
-        // 处理运费信息
-        log.debug("小程序-商品详情-处理运费信息");
-        Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
-        BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
-        goodsDetailMpBo.setDeliverPrice(deliverPrice);
-
         // 判断是否已收藏商品
         log.debug("小程序-商品详情-判断是否已收藏商品");
         boolean collectedGoods = tailProcessorDao.isCollectedGoods(param.getUserId(), param.getGoodsId());
@@ -124,6 +118,14 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
         goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());
 
+        // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
+        if (goodsDetailMpBo.getProducts().size() != 0) {
+            // 处理运费信息
+            log.debug("小程序-商品详情-处理运费信息");
+            Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
+            BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
+            goodsDetailMpBo.setDeliverPrice(deliverPrice);
+        }
     }
 
     /**

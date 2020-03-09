@@ -346,8 +346,10 @@ export default {
       exportBargainUserData(Object.assign(this.requestParams, obj)).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
+        this.dialogVisible = false
         download(res, decodeURIComponent(fileName))
       }).catch((err, data) => {
+        this.dialogVisible = false
         console.log(err)
       })
     }
