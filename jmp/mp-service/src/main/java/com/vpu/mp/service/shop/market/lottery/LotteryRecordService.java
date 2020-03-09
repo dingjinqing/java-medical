@@ -105,7 +105,6 @@ public class LotteryRecordService extends ShopBaseService {
         PageResult<LotteryRecordPageListVo> pageList = getPageResult(select, param.getCurrentPage(), param.getPageRows(), LotteryRecordPageListVo.class);
         pageList.getDataList().forEach(item -> {
             item.setLotteryPrize(Util.parseJson(item.getAwardInfo(), LotteryPrizeVo.class));
-            item.setAwardInfo(null);
         });
         return pageList;
     }
