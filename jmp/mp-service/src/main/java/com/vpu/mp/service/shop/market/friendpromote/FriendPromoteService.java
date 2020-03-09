@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.simpleflatmapper.reflect.primitive.IntGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1450,5 +1451,90 @@ public class FriendPromoteService extends ShopBaseService {
                 .execute();
         }
         return 0;
+    }
+
+    /**
+     * 用户分享获得助力次数
+     * @param param 用户id 发起id
+     * @return flag
+     */
+    public AddPromoteTimesVo addPromoteTimes(PromoteParam param){
+        AddPromoteTimesVo vo = new AddPromoteTimesVo();
+        //分享可得助力次数
+        Integer shareCreateTimes = addShareTimesInfo(param.getLaunchId());
+        Byte canShareTimes = canShareTimes(shareCreateTimes.byteValue(),param.getUserId(),param.getLaunchId());
+        if (canShareTimes<=0){
+            // 分享获取助力次数已用完
+            vo.setFlag(0);
+            vo.setMsgCode(0);
+            return vo;
+        }
+        Integer addNum = 1;
+        Integer shareTimes = 1;
+        Integer affectRows = addUserPromoteTimes(param,addNum,shareTimes);
+        if (affectRows == 0){
+            vo.setFlag(0);
+            return vo;
+        }else {
+            vo.setFlag(1);
+            return vo;
+        }
+    }
+
+    /**
+     * 增加助力次数入库
+     * @param param 用户id 发起id
+     * @param addNum 增加次数
+     * @param shareTimes 分享次数
+     * @return 成功条数
+     */
+    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes){
+        //次数详情
+        FriendPromoteTimesRecord promoteTimesInfo = promoteTimesInfo(param);
+        Integer affectRows;
+        if (promoteTimesInfo!=null){
+            shareTimes = shareTimes + promoteTimesInfo.getShareTimes();
+            addNum = addNum + promoteTimesInfo.getOwnPromoteTimes();
+            affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                .execute();
+        }else {
+            affectRows = db().insertInto(FRIEND_PROMOTE_TIMES,FRIEND_PROMOTE_TIMES.SHARE_TIMES,FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,
+                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID)
+                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId())
+                .execute();
+        }
+        return affectRows;
+    }
+
+    /**
+     * 获得助力次数详情
+     * @param param 用户id 发起id
+     */
+    public FriendPromoteTimesRecord promoteTimesInfo(PromoteParam param){
+        FriendPromoteTimesRecord promoteTimesInfo = db().select()
+            .from(FRIEND_PROMOTE_TIMES)
+            .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+            .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+            .fetchOneInto(FriendPromoteTimesRecord.class);
+        return promoteTimesInfo;
+    }
+
+    /**
+     * 获取分享可获得助力次数
+     * @param launchId 发起id
+     * @return 分享可获得助力次数
+     */
+    public Integer addShareTimesInfo(Integer launchId){
+        Integer shareCreateTimes = db().select(FRIEND_PROMOTE_ACTIVITY.SHARE_CREATE_TIMES)
+            .from(FRIEND_PROMOTE_LAUNCH)
+            .leftJoin(FRIEND_PROMOTE_ACTIVITY).on(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(FRIEND_PROMOTE_ACTIVITY.ID))
+            .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+            .fetchOptionalInto(Integer.class)
+            .orElse(1);
+        return shareCreateTimes;
     }
 }
