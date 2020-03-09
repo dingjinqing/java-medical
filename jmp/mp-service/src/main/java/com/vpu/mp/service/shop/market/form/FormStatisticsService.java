@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.market.form;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -344,6 +346,7 @@ public class FormStatisticsService extends ShopBaseService {
         list.stream().filter((e) -> ALL.containsKey(e.getModuleName()))
             .filter((e) -> SPECIAL.containsKey(e.getModuleName()))
             .forEach((e) -> e.setModuleValueList(findModuleValue(pageId, e.getCurIdx())));
+        list.stream().filter((e) -> e.getModuleName().equals(M_UPLOAD_VIDEO)).forEach(e->e.setModuleValue(convertModuleVideo(e.getModuleValue())));
 
         return list;
     }
@@ -352,6 +355,21 @@ public class FormStatisticsService extends ShopBaseService {
         return db().select(fp.PAGE_CONTENT)
             .from(fp).where(fp.PAGE_ID.eq(pageId))
             .fetchOneInto(String.class);
+    }
+
+    private String convertModuleVideo(String video) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ModuleUploadVideo moduleUploadVideo = null;
+        try {
+            moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
+            moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
+            moduleUploadVideo.setVideoImgSrc(imageService.imageUrl(moduleUploadVideo.getVideoImgSrc()));
+            return objectMapper.writeValueAsString(moduleUploadVideo);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private List<String> findModuleValue(int pageId, String curIdx) {

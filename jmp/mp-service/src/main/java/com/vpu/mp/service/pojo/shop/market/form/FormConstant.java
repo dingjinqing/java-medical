@@ -1,7 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -131,6 +134,17 @@ public class FormConstant {
     public static final String BG_IMG = "bg_img";
     public static final String PAGE_NAME = "page_name";
     public static final String FORM_DEFAULT_BG_IMG = "image/admin/pictorial/form_bg.png";
+
+    @Getter
+    @Setter
+    public static class  ModuleUploadVideo{
+        @JsonProperty("video_src")
+        private String videoSrc;
+        @JsonProperty("video_img_src")
+        private String videoImgSrc;
+        @JsonProperty("video_id")
+        private Integer videoId;
+    }
 
 }
 
