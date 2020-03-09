@@ -40,14 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
 import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_CHEAP_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * 商品列表,下单
@@ -92,7 +87,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             bo.setRealPrice(record3.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
             GroupBuyListMpVo activity = new GroupBuyListMpVo();
 
-            activity.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
+            activity.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID));
             activity.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             activity.setDiscountPrice(bo.getShopPrice().subtract(bo.getRealPrice()));
             bo.getGoodsActivities().add(activity);
