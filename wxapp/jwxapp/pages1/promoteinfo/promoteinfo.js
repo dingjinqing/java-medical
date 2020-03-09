@@ -1,9 +1,6 @@
 // pages1/promoteinfo/promoteinfo.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var mobile = util.getCache('mobile');
 var promote_info = [];
 var launch_user_id; // 用户id
 var launch_id; // 发起id
@@ -438,18 +435,24 @@ global.wxPage({
 })
 // 分享加机会
 function shareAdd(that) {
-  // util.api("/api/wxapp/promote/addTimes", function (res) {
-  //   if (res.error == 0) {
-  //     util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
-  //   } else if (res.error == 400004) {
-  //     that.setData({
-  //       promote_fail: 1
-  //     })
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { launch_id: launch_id, add_promote_type: 'share' });
+  util.api("/api/wxapp/promote/addTimes", function (res) {
+    if (res.error == 0) {
+      if (res.content.flag == 0) {
+        // 助力失败
+        that.setData({
+          promote_fail: 1
+        })
+        if (res.content.msgCode == 0) {
+          that.setData({
+            cant_promote: '分享获取助力次数已用完'
+          })
+        }
+      }
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  }, { userId: launch_user_id, launchId: launch_id });
 };
 // 发起助力
 function launchAct(that) {
