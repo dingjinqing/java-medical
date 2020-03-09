@@ -171,8 +171,9 @@ public class GroupIntegrationListService extends ShopBaseService {
 	public int batchUpdateIntegeration(Integer actId,Integer groupId,Integer integration) {
 		return db().update(GROUP_INTEGRATION_LIST)
 			.set(GROUP_INTEGRATION_LIST.INTEGRATION,integration)
-			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId))
+			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
 			.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
+			.and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGroupper.NO.value())))
 			.execute();
 	}
 	/**
@@ -196,11 +197,12 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	public int getInviteNum(Integer groupId,Integer userId) {
+	public int getInviteNum(Integer groupId,Integer userId,Integer pinInteId) {
 		return db().select(DSL.count())
 			.from(GROUP_INTEGRATION_LIST)
 			.where(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
 			.and(GROUP_INTEGRATION_LIST.INVITE_USER.eq(userId))
+			.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId))
 			.fetchOneInto(Integer.class);
 	}
 	/**
@@ -243,7 +245,6 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param actId
 	 * TODO 待指定线程池
 	 */
-	@Async
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
 //		活动内容 
 		GroupIntegrationDefineRecord defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);
