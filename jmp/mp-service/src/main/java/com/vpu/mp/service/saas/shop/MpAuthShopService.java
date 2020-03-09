@@ -96,6 +96,7 @@ import me.chanjar.weixin.open.bean.WxOpenCreateResult;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizationInfo;
 import me.chanjar.weixin.open.bean.auth.WxOpenAuthorizerInfo;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaCategory;
+import me.chanjar.weixin.open.bean.ma.WxOpenMaMember;
 import me.chanjar.weixin.open.bean.ma.WxOpenMaSubmitAudit;
 import me.chanjar.weixin.open.bean.message.WxOpenMaSubmitAuditMessage;
 import me.chanjar.weixin.open.bean.result.WxOpenAuthorizerInfoResult;
@@ -104,6 +105,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenMaDomainResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaPageListResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaQueryAuditResult;
 import me.chanjar.weixin.open.bean.result.WxOpenMaSubmitAuditResult;
+import me.chanjar.weixin.open.bean.result.WxOpenMaTesterListResult;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
 /**
@@ -212,7 +214,7 @@ public class MpAuthShopService extends MainBaseService {
         record.setAuthorizerInfo(Util.toJson(authorizerInfo));
         record.setPrincipalName(authorizerInfo.getPrincipalName());
         record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
-
+        setTestRecord(record, appId);
         record.update();
 
         wxOpenResult.setErrcode("0");
@@ -1689,5 +1691,32 @@ public class MpAuthShopService extends MainBaseService {
 		MpAuthShopRecord mp = getAuthShopByShopId(shopId);
 		Assert.isTrue(mp != null && mp.getIsAuthOk().equals(AUTH_OK),"mp is null ");
 		return mp.getAppId();
+	}
+	
+	public List<String> getAllTester(String appId) throws WxErrorException{
+		WxOpenMaService maService = this.getMaServiceByAppId(appId);
+		WxOpenMaTesterListResult testerList = maService.getTesterList();
+		List<String> list = new ArrayList<String>();
+		if (!testerList.isSuccess()) {
+			return null;
+		}
+		List<WxOpenMaMember> membersList = testerList.getMembersList();
+		for (WxOpenMaMember wxOpenMaMember : membersList) {
+			list.add(wxOpenMaMember.getUserstr());
+		}
+		return list;
+	}
+	
+	private void setTestRecord(MpAuthShopRecord record,String appId) {
+		logger().info("appid：{}更新体验者",appId);
+		List<String> allTester=null;
+		try {
+			allTester = getAllTester(appId);
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+		}
+		if(allTester!=null) {
+			record.setTester(Util.toJson(allTester));
+		}
 	}
 }
