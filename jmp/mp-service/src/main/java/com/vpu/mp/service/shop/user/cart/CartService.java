@@ -26,7 +26,10 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 31287ea27... 常用链接优惠券bug修复
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
