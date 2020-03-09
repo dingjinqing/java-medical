@@ -208,6 +208,7 @@
           >
             <span>{{$t('order.shippingAddress')}}：</span>
             <areaLinkage
+              :areaCode="areaLinkage"
               @areaData="handleAreaData"
               style="width:365px;"
             />
@@ -441,7 +442,10 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name"><span><i
+                              class="goods-tag"
+                              v-if="goodsItem.isGift === 1"
+                            >赠品</i>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -628,7 +632,10 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name"><span><i
+                                class="goods-tag"
+                                v-if="goodsItem.isGift === 1"
+                              >赠品</i>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -866,7 +873,12 @@ export default {
       notesOrderSn: null,
       showExportColumnSelect: false,
       showExportConfirm: false,
-      shopHelperParams: {}
+      shopHelperParams: {},
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   inject: ['adminReload'],
@@ -1221,7 +1233,7 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  .goods-tag{
+                  .goods-tag {
                     border: 1px solid;
                     vertical-align: middle;
                     margin-right: 5px;
