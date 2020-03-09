@@ -17,7 +17,7 @@ public class CardFreeship {
 	/**
 	 *	 包邮类型
 	 */
-	enum shipType{
+	public static enum shipType{
 		/**
 		 * 	不包邮
 		 */
@@ -67,6 +67,10 @@ public class CardFreeship {
 			return desc;
 		}
 		
+		public byte getType() {
+			return this.type;
+		}
+
 	}
 	
 	/**
