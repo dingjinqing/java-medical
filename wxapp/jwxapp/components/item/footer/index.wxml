@@ -1,5 +1,5 @@
 <view class="footer">
-  <block wx:if="{{position === 'footer'}}">
+  <block wx:if="{{position === 'footer' && activity.activityType!==8}}">
     <view class="small_view" bindtap="backHome">
       <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>
@@ -17,9 +17,10 @@
     <text>{{rightButtonName}}</text>
   </view> -->
   <block wx:for="{{buttonData.buttonInfo}}" wx:key="index">
-    <view class="footer_flex_view" bindtap="{{item.canBuy ? item.event : 'notBuyTips'}}" style='{{index === "left" ? leftStyle : rightStyle}}{{!item.canBuy && notBuyRightStyle}}' >
+    <view class="footer_flex_view" bindtap="{{item.canBuy ? item.event : 'notBuyTips'}}" style='{{index === "left" ? leftStyle : rightStyle}}{{item.style}}{{!item.canBuy && notBuyRightStyle}}' >
       <text wx:if="{{item.top}}">{{item.top}}</text>
       <text>{{item.left}}{{item.name}}{{item.right}}</text>
+      <text wx:if="{{item.bottom}}">{{item.bottom}}</text>
     </view>
   </block>
 </view>
