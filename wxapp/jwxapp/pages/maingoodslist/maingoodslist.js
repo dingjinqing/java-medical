@@ -447,7 +447,7 @@ global.wxPage({
   to_items: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: '/pages/item/item?goods_id=' + goods_id,
+      url: '/pages/item/item?gid=' + goods_id,
     })
   },
 

@@ -57,6 +57,24 @@ global.wxPage({
     promote_request(that);
 
   },
+  // 商品详情
+  to_goods: function (e) {
+    var goods_id = e.currentTarget.dataset.goods_id;
+    util.jumpLink("/pages/item/item?gid=" + goods_id);
+  },
+  // 券购搜索
+  to_cou_search: function () {
+    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+  },
+  // 好友助力列表
+  to_list: function () {
+    util.jumpLink("/pages/promotelist/promotelist?launch_id=" + launch_id);
+  },
+  // 规则详情
+  toRule: function () {
+    util.jumpToWeb('/wxapp/promote/help')
+  },
   // 发起助力
   shareGoods: function (e) {
     var that = this;
@@ -142,10 +160,6 @@ global.wxPage({
       clearTimeout(set_time_out);
       that.onPullDownRefresh();
     }, 200);
-  },
-  // 规则详情
-  toRule: function () {
-    util.jumpToWeb('/wxapp/promote/help')
   },
   // 好友点击助力
   friend_help: function (e) {
@@ -237,35 +251,16 @@ global.wxPage({
   to_index: function () {
     util.jumpLink("/pages/index/index", 'reLaunch');
   },
-  // 好友助力列表
-  to_list: function () {
-    util.jumpLink("/pages/promotelist/promotelist?launch_id=" + launch_id);
-  },
   // 优惠券列表
   to_coupon: function () {
     util.jumpLink("/pages/coupon/coupon");
-  },
-  // 券购搜索
-  to_cou_search: function () {
-    // util.jumpLink('/pages1/search/search?list=1&alias_code=' + promote_info.coupon_info.alias_code);
-    // util.jumpLink('/pages1/search/search');
-  },
-  // 去逛逛
-  to_index: function () {
-    util.jumpLink("/pages/index/index", 'reLaunch');
   },
   // 更多活动
   to_other_act: function (e) {
     var actcode = e.currentTarget.dataset.actcode;
     util.jumpLink('/pages1/promoteinfo/promoteinfo?actCode=' + actcode, 'reLaunch')
   },
-  // item
-  to_goods: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
-    // util.jumpLink("/pages/item/item?goods_id=" + goods_id);
-    // pages/item/item?gid=goodsId&aid=activityId&atp=activityType
-  },
-  // 结算
+  // 领取奖品-结算
   to_checkout: function () {
     var params = {};
     params.goods_id = promote_info.goods_info.goods_id;
