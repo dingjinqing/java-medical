@@ -13,5 +13,7 @@ public class FeedBackDetailParam {
     @NotNull
     private Integer pageId;
     @NotNull
+    private Integer submitId;
+    @NotNull
     private Integer userId;
 }
