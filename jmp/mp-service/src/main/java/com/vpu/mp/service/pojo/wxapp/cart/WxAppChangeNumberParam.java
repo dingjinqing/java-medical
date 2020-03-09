@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 孔德成
@@ -14,7 +15,17 @@ import javax.validation.constraints.Min;
 @Setter
 public class WxAppChangeNumberParam {
 
+    /**
+     * 规格id
+     */
+    @NotNull
     private Integer productId;
+    /**
+     *购物车id
+     */
+    @NotNull
+    private Integer cartId;
     @Min(value = 0)
     private Integer cartNumber;
+    private Integer UserId;
 }

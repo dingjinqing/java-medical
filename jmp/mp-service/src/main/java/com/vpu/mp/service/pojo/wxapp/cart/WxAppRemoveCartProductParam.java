@@ -15,5 +15,5 @@ import javax.validation.constraints.NotNull;
 public class WxAppRemoveCartProductParam {
 
     @NotNull
-    private Integer recId;
+    private Integer cartId;
 }
