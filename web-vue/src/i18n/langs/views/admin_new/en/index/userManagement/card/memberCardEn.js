@@ -283,5 +283,13 @@ export const en = {
   shareCodeFail: 'failed',
   copy: 'copy',
   downQrcode: 'download qrcode',
-  scanCode: 'Scan and share~'
+  scanCode: 'Scan and share~',
+  shipNumValidO: 'Must valid',
+  shipNumValidT: 'Must 1-7 single',
+  enjoy: 'enjoy',
+  freeshipTip: 'card holder can enjoy',
+  freeship: 'free ship',
+  nolimitFreeship: 'vip',
+  cardHolder: 'cardHolder',
+  timesFreeship: 'Times'
 }
