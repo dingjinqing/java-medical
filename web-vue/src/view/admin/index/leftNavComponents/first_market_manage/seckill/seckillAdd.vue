@@ -570,6 +570,7 @@ export default {
           this.form.limitAmount = data.limitAmount
           this.form.limitPaytime = data.limitPaytime
           this.form.freeFreight = data.freeFreight
+          this.form.baseSale = data.baseSale
           // 展开设置
           this.arrorFlag = false
           // 会员卡
