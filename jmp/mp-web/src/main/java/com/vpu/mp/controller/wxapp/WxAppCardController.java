@@ -45,7 +45,7 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping(value="/api/card/list")
 	public JsonResult getUserCard(@RequestBody SearchCardParam param) {
 		logger().info("wxapp request for card list of person.");
-		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param);
+		PageResult<WxAppUserCardVo> cardList = shop().user.userCard.getAllCardsOfUser(param,getLang());
 		return success(cardList);
 	}
 	
