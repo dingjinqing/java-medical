@@ -32,7 +32,7 @@
                优惠券
               </view>
               <view class='ca_center'>仅剩{{promote_info.marketStore}}张，抢完为止</view>
-              <view class='ca_bottom' bindtap='to_cou_search' style='color:{{comColor}};background:{{somColor}}'>
+              <view class='ca_bottom' bindtap='to_cou_search' data-coupon_sn="{{promote_info.couponInfo.couponSn}}" style='color:{{comColor}};background:{{somColor}}'>
                 查看适用商品 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
               </view>
           </view>
@@ -62,7 +62,6 @@
             <block wx:if='{{promote_info.promoteStatus == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>已领取，请在订单中查看</block>
-
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
           </view>
           <!-- 助力按钮 -->
@@ -77,9 +76,8 @@
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>助力好友得奖品</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
-          <!-- <button class='btn_launch' data-showquan = "showquan"  wx:if='{{is_userinfos==0&&promote_info.promote_status == 0 && promote_info.launchFlag == 2&&is_shares==0}}' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>授权再得一次助力机会</button> -->
           <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 & is_shares == 0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'>去使用</button>
       </view>
@@ -88,7 +86,8 @@
    <view class='promote_list' wx:if='{{promote_info.promoteDetailList && promote_info.promoteDetailList!=""}}'>
       <view class='list_top'>
           <view class='lt_title'>好友助力</view>
-          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' wx:if='{{promote_info.promoteDetailList.length>=10}}'>
+          <view class='to_list' style='color:{{comColor}}' bindtap='to_list' >
+          <!-- wx:if='{{promote_info.promoteDetailList.length>=10}}' -->
               查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
@@ -204,7 +203,7 @@
           </block>
           <block wx:if='{{promote_fail == 1}}'>
             <view class='st1' style='color:{{comColor}}'>助力失败</view>
-            <view class='st2'>您的助力次数已用尽</view>
+            <view class='st2'>{{ cant_promote }}</view>
             <button class='st3' style='background:{{comColor}}' bindtap='to_own_act'>我也要发起助力</button>
             <view class='st4' bindtap='forgive_share_fail'>放弃发起</view>
           </block>

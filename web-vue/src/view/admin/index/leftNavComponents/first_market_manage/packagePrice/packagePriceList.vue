@@ -189,7 +189,7 @@
               </el-tooltip>
               <!-- 查看活动订单 -->
               <el-tooltip
-                content="查看砍价订单"
+                content="查看活动订单"
                 placement="top"
               >
                 <span
@@ -413,6 +413,16 @@ export default {
       this.editId = id
       this.isEdit = true
       this.showTabAddGroup('添加打包一口价活动111')
+    },
+    // 查看砍价订单
+    gotoOrder (id, valScope) {
+      // console.log(valId, valScope)
+      this.$router.push({
+        path: `/admin/home/main/packsale/order/${id}`,
+        query: {
+          id: id
+        }
+      })
     },
     showTabAddGroup (title) {
       if (this.param.tabStatus === '6' || this.tabInfo.length > 5) {

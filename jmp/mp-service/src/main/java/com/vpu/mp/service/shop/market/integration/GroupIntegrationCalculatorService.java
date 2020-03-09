@@ -101,7 +101,7 @@ public class GroupIntegrationCalculatorService extends ShopBaseService{
 		//算出每个人的权重
 		for (GroupIntegrationListParticipationVo vo : participationList) {
 			Integer userId = vo.getUserId();
-			int inviteNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNum(groupId, userId);
+			int inviteNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNum(groupId, userId,defineRecord.getId());
 			int inviteNewNum = saas.getShopApp(getShopId()).groupIntegration.groupIntegrationList.getInviteNewNum(groupId, userId);
 			int selfNum = vo.getIsNew().equals(IsNew.YES.value())?2:1;
 			int weight = inviteNewNum+ inviteNum + selfNum;

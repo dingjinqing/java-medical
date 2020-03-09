@@ -37,6 +37,11 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected String qrCode;
 	protected NextGradeCardVo nextGradeCard;
 	protected WxAppCardExamineVo isExamine;
+	/**
+	 * freeshipDesc 包邮信息描述
+	 */
+	protected String freeshipDesc;
+	
 	
 	
 	// 使用商品列表

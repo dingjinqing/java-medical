@@ -127,7 +127,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         if (userId!=null){
             condition =condition.and(INTEGRAL_MALL_RECORD.USER_ID.eq(userId));
         }
-        Integer sum = db().select(DSL.sum(INTEGRAL_MALL_RECORD.NUMBER)).where(condition).fetchOneInto(Integer.class);
+        Integer sum = db().select(DSL.sum(INTEGRAL_MALL_RECORD.NUMBER)).from(INTEGRAL_MALL_RECORD).where(condition).fetchOneInto(Integer.class);
         return sum== null ? 0 : sum;
     }
 

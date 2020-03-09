@@ -24,8 +24,10 @@ import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.*;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -744,15 +746,39 @@ public class UserCardService extends ShopBaseService {
 	/**
 	 * 获取用户所有的会员卡列表
 	 *
-	 * @return
 	 */
-	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param) {
+	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param,String lang) {
 		PageResult<WxAppUserCardVo> cardList = userCardDao.getCardList(param);
 		String avatar = getCardAvatar();
 		for (WxAppUserCardVo card : cardList.dataList) {
 			dealWithWxUserCard(card, avatar);
+			//过期检查
+			setWxUserCardVoExpire(card);
+			// 包邮信息
+			dealWithFreeShipInfo(card,lang);			
 		}
 		return cardList;
+	}
+
+	/**
+	 * 	处理卡的包邮信息
+	 */
+	private void dealWithFreeShipInfo(WxAppUserCardVo card,String lang) {
+		
+		if(card.getFreeshipLimit()==null) {
+			return;
+		}
+		String desc=null;
+		List<String> freeShipDescs = CardFreeship.getFreeShipDesc(lang);
+		if(NumberUtils.BYTE_ZERO.equals(card.getFreeshipLimit())) {
+			desc = freeShipDescs.get(0);
+		}else if(card.getFreeshipLimit()>0) {
+			// TODO user card 使用包邮次数，以便计算剩余的包邮次数
+			// 剩余包邮次数多少
+			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, null, card.getFreeshipNum());
+			desc = freeShipDescs.get(card.getFreeshipLimit())+remainStr;
+		}
+		card.setFreeshipDesc(desc);
 	}
 
 	/**
@@ -771,14 +797,21 @@ public class UserCardService extends ShopBaseService {
 		BeanUtils.copyProperties(bg, card);
 
 		// 用户卡的有效时间
+		setWxUserCardVoExpire(card);
+		
+		// 设置卡是否过期状态
+		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
+	}
+	
+	/**
+	 * 	设置WxUserCardVo的有效时间
+	 */
+	private void setWxUserCardVoExpire(WxAppUserCardVo card) {
 		EffectTimeParam etParam = new EffectTimeParam();
 		BeanUtils.copyProperties(card, etParam);
 		etParam.setCreateTime(card.getUserCardCreateTime());
 		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
 		BeanUtils.copyProperties(etBean, card);
-		
-		// 设置卡是否过期状态
-		card.setStatus(CardUtil.getStatus(card.getExpireType(), card.getEndTime()));
 	}
 
 	/**

@@ -25,6 +25,13 @@
         :underline="false"
         target="_blank"
       >好用代付使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'formStatistical'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=65&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >表单统计使用教程</el-link>
     </span>
   </div>
 </template>

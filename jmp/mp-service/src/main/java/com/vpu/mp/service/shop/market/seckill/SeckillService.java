@@ -119,6 +119,8 @@ public class SeckillService extends ShopBaseService{
             vo.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             vo.setIsOnSale(goods.getIsOnSale());
             vo.setGoodsName(goods.getGoodsName());
+            vo.setShopPrice(goods.getShopPrice());
+            vo.setGoodsNumber(goods.getGoodsNumber());
 
             SecKillDefineRecord seckill = getSeckillActById(bo.getSkId());
             vo.setName(seckill.getName());
@@ -126,6 +128,10 @@ public class SeckillService extends ShopBaseService{
             vo.setEndTime(seckill.getEndTime());
             vo.setSkId(bo.getSkId());
             vo.setStock(seckill.getStock());
+            vo.setBaseSale(seckill.getBaseSale());
+            vo.setSaleNum(seckill.getSaleNum());
+            vo.setStatus(seckill.getStatus());
+            vo.setLimitAmount(seckill.getLimitAmount());
 
             dataList.add(vo);
         }

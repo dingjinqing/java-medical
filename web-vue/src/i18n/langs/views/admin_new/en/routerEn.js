@@ -342,6 +342,12 @@ export const en = {
     'Package Price',
     'Participation details'
   ],
+  // 营销管理 打包一口价 查看活动订单
+  package_price_order: [
+    'Marketing management',
+    'Package Price',
+    'Active order'
+  ],
   // 营销管理 开屏有礼
   open_screen: ['Marketing management', 'Open screen courtesy'],
   // 营销管理 开屏有礼 活动明细

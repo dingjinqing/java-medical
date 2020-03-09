@@ -60,7 +60,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
     JSON.parse(goodsList).forEach(item => {
       let {
         goodsId,
