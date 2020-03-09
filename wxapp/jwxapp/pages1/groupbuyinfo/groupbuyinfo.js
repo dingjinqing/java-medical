@@ -9,8 +9,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    groupId: '',
-    pinGroupId: '',
+    groupId: '',// 成团id
+    pinGroupId: '',// 拼团活动id
     imageUrl: app.globalData.imageUrl,
     click_more: imageUrl + 'image/wxapp/backward_right.png',
     img_noperson: imageUrl + 'image/wxapp/icon_group2.png',
@@ -42,6 +42,12 @@ global.wxPage({
     let that = this
     let groupId = options.group_id
     let pinGroupId = options.pin_group_id
+    // 处理扫码进入的情况 第一个参数是group_id，第二个参数是pin_group_id
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      groupId = scene[0].split('=')[1]
+      pinGroupId = scene[1] ? scene[1].split('=')[1] : ''
+    }
     this.setData({
       groupId: Number(groupId),
       pinGroupId: pinGroupId
@@ -49,10 +55,8 @@ global.wxPage({
     this.selectComponent('#recommend').requestData() //推荐商品请求
     // 判断用户是否登录
     that.judgeLogin()
-
+    // 初始化数据
     that.getGroupBuyInfo()
-
-    
   },
 
   getGroupBuyInfo () {
@@ -480,7 +484,7 @@ global.wxPage({
   onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
     let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + this.$t('page1.fight.personToBuy') + groupbuyInfo.goodsInfo.minGroupBuyPrice + this.$t('page1.fight.yuan') + groupbuyInfo.goodsInfo.goodsName
-    let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+    let path = '/pages1/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id
     return {
       title: title,
       imageUrl: shareImg,
