@@ -129,7 +129,6 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             //商品原规格
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(vo.getProductId());
 
-            // 商家新增的规格，在拼团规格中并未有
             if (goodsPrdMpVo != null) {
                 // 设置拼团规格对应的原价，便于前端使用
                 vo.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
@@ -148,6 +147,10 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(groupBuyInfo.getActState())) {
             log.debug("小程序-商品详情-拼团商品数量已用完");
             groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+        if (newPrdList.size() == 0) {
+            log.debug("小程序-商品详情-拼团-商品规格信息和活动规格信息无交集");
+            groupBuyInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
 
         capsule.setActivity(groupBuyInfo);

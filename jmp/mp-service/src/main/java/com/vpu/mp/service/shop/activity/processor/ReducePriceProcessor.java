@@ -3,7 +3,6 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -15,8 +14,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +25,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
-import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
-import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
 import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
 
 /**
@@ -38,6 +34,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  * 限时降价 返利
  */
 @Service
+@Slf4j
 public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy{
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
@@ -100,7 +97,6 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                 return true;
             }
         }).collect(Collectors.toList());
-
         reducePriceInfo.setReducePricePrdMpVos(newReducePrds);
         capsule.setActivity(reducePriceInfo);
     }
