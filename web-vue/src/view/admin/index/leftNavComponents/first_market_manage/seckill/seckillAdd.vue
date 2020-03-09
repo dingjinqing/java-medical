@@ -578,6 +578,7 @@ export default {
           this.form.limitPaytime = data.limitPaytime
           this.form.freeFreight = data.freeFreight
           this.form.first = data.first
+          this.form.baseSale = data.baseSale
           // 展开设置
           this.arrorFlag = false
           // 会员卡
@@ -750,8 +751,8 @@ export default {
     initEditProduct (goods) {
       let newdata = []
       goods.forEach(item => {
-        let expand = item.secKillProduct.length < 2 ? {...item.secKillProduct[0]} : {...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct}
-        newdata.push({...item, ...expand})
+        let expand = item.secKillProduct.length < 2 ? { ...item.secKillProduct[0] } : { ...item.secKillProduct[0], goodsSpecProducts: item.secKillProduct }
+        newdata.push({ ...item, ...expand })
       })
       return newdata
     },
