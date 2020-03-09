@@ -6,7 +6,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    page: 1,
+    page: 1, // 当前页
     last_page: 1,
     promote_list: [], // 列表数据
     is_load: 0,
@@ -57,16 +57,18 @@ global.wxPage({
 
 })
 function promote_request(that) {
-  // util.api('/api/wxapp/promote/detailList', function (res) {
-  //   var servL = res.content;
-  //   that.data.last_page = servL.last_page;
-  //   var server_list_r = res.content.data;
-  //   var promote_list = [];
-  //   if (server_list_r.length > 0) {
-  //     promote_list = server_list_r;
-  //   }
-  //   that.setData({
-  //     promote_list: promote_list,
-  //   });
-  // }, { pageNo: that.data.page, launch_id: that.data.launch_id });
+  util.api('/api/wxapp/promote/detailList', function (res) {
+    if (res.error == 0) {
+      // var servL = res.content;
+      // that.data.last_page = servL.last_page;
+      // var server_list_r = res.content.data;
+      // var promote_list = [];
+      // if (server_list_r.length > 0) {
+      //   promote_list = server_list_r;
+      // }
+      that.setData({
+        promote_list: res.content,
+      });
+    }
+  }, { pageNo: that.data.page, launchId: that.data.launch_id });
 }

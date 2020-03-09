@@ -259,17 +259,20 @@ global.wxPage({
   },
   // 领取奖品-结算
   to_checkout: function () {
-    var params = {};
-    params.goods_id = promote_info.goods_info.goods_id;
-    params.goods_price = promote_info.goods_info.market_price;
-    params.user_id = util.getCache('user_id');
-    params.goods_number = 1;
-    params.product_id = promote_info.goods_info.product_id;
-    params.launch_id = launch_id;
-    var query_param = {};
-    query_param.goods_id = promote_info.goods_info.goods_id;
-    console.log(JSON.stringify(params));
-    util.jumpLink("/pages/goodsCheckout/goodsCheckout?order_type=friend_promote&choose_list=" + JSON.stringify(params) + '&query_param=' + JSON.stringify(query_param));
+    let goodsList = [{
+      goodsId: promote_info.goodsInfo.goodsId,
+      goodsPrice: promote_info.goodsInfo.goodsPrice,
+      goodsNum: 1,
+      prdId: promote_info.goodsInfo.prdId,
+      productId: promote_info.goodsInfo.prdId
+    }]
+    if (promote_info.rewardType == 0) {
+      goodsList.prdRealPrice = 0
+    } else if (promote_info.rewardType == 1) {
+      goodsList.prdRealPrice = promote_info.goodsInfo.marketPrice
+    }
+    console.log(goodsList)
+    util.jumpLink("/pages/checkout/checkout?activityId=" + promote_info.id + "&goodsList=" + JSON.stringify(goodsList));
   },
   // 倒计时
   countdown: function (that) {
