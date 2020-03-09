@@ -300,3 +300,10 @@ export function getFailExcel (data) {
     responseType: 'blob'
   })
 }
+
+export function getShareCode (cardId) {
+  return service({
+    url: `/api/admin/member/card/getqrcode/${cardId}`,
+    method: 'post'
+  })
+}

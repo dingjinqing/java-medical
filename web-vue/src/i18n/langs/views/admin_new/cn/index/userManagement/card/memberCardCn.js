@@ -315,6 +315,11 @@ export const cn = {
   noData: '暂无记录',
   inputCardName: '请输入会员卡名称',
   inputTime: '请输入有效期',
-  inputDate: '请填写日期'
+  inputDate: '请填写日期',
+  shareCodeSuccess: '获取分享码成功',
+  shareCodeFail: '获取分享码失败',
+  copy: '复制',
+  downQrcode: '下载二维码',
+  scanCode: '扫一扫，分享给好友吧~'
 
 }
