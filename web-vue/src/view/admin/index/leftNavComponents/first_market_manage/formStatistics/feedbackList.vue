@@ -194,13 +194,14 @@ export default {
       }
     },
     // 点击查看操作数据
-    handleToCheckData ({ userId, pageId }) {
+    handleToCheckData ({ userId, pageId, submitId }) {
       console.log(pageId, pageId)
       this.$router.push({
         path: '/admin/home/main/feedbackDetails',
         query: {
           userId: userId,
-          pageId: pageId
+          pageId: pageId,
+          submitId: submitId
         }
       })
     }

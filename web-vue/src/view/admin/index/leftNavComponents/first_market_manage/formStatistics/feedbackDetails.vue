@@ -133,7 +133,15 @@
                 width="60%"
                 class="comm_message"
               >
-                {{picture}}
+                <img
+                  v-for="(item,index) in picture"
+                  :key="index"
+                  :src="item"
+                  style="display: inline-block;"
+                  width="65px"
+                  height="65px"
+                  class="click_comm"
+                >
               </td>
             </tr>
             <tr>
@@ -142,7 +150,24 @@
                 width="60%"
                 class="comm_message"
               >
-                {{video}}
+                <a
+                  :href="video.video_src"
+                  target="_blank"
+                  class="video_src"
+                >
+                  <img
+                    :src="video.video_img_src"
+                    style="display: inline-block;"
+                    width="140px"
+                    height="80px"
+                  >
+                  <p class="video_time">00:00:02</p>
+                  <div
+                    :style="`background:url(${$imageHost}/image/admin/play_button.png) no-repeat center`"
+                    class="play_bg"
+                  >
+                  </div>
+                </a>
               </td>
             </tr>
           </tbody>
@@ -180,8 +205,8 @@ export default {
     // 初始化请求数据
     handleToInitQuery () {
       if (this.$route.query) {
-        let { pageId, userId } = this.$route.query
-        feedBackListDetailQuery({ pageId: pageId, userId: userId }).then(res => {
+        let { pageId, userId, submitId } = this.$route.query
+        feedBackListDetailQuery({ pageId: pageId, userId: userId, submitId: submitId }).then(res => {
           console.log(res)
           if (res.error === 0) {
             res.content.forEach((item, index) => {
@@ -221,10 +246,12 @@ export default {
                   this.date = item.moduleValue
                   break
                 case 'm_imgs':
-                  //   this.picture =
+                  console.log(item.moduleValue)
+                  this.picture = JSON.parse(item.moduleValue)
                   break
                 case 'm_upload_video':
-                  //   this.video =
+                  this.video = JSON.parse(item.moduleValue)
+
                   break
               }
             })
@@ -276,6 +303,51 @@ export default {
           .sex {
             display: flex;
           }
+        }
+      }
+    }
+  }
+  .comm_message {
+    .click_comm {
+      margin-right: 5px;
+    }
+    .play_bg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      text-align: center;
+    }
+    .video_time {
+      position: absolute;
+      bottom: 0;
+      height: auto;
+      line-height: 20px;
+      width: 100%;
+      background: #000;
+      color: white;
+      font-size: 12px;
+      display: block;
+      text-align: center;
+      transition: opacity 0.4s ease;
+      opacity: 0.5;
+    }
+
+    .video_src {
+      display: inline-block;
+      position: relative;
+      &:hover {
+        text-decoration: none;
+        color: #333;
+        cursor: pointer;
+        .play_bg {
+          opacity: 0.5;
+        }
+        .video_time {
+          display: none;
         }
       }
     }

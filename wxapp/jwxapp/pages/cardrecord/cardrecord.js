@@ -93,7 +93,7 @@ global.wxPage({
 
   }
 })
-function get_accout(that) {
+function get_accout (that) {
   if (is_submit) return;
   is_submit = true;
   util.api('/api/wxapp/card/use', function (res) {

@@ -98,3 +98,50 @@
   height: 200rpx;
   margin-bottom: 20rpx;
 }
+.card-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  margin-left: -8rpx;
+}
+.moren {
+  padding: 5rpx 20rpx;
+  font-size: 26rpx;
+  border-radius: 40rpx;
+  color: #fff;
+  border: 1px solid #fff;
+}
+.card_discount {
+  margin-bottom: 5rpx;
+  font-size: 26rpx;
+}
+
+.card_offset {
+  width: 500rpx;
+  font-size: 26rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.out_time {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.out_time .image {
+  width: 130rpx;
+}
+.right_renew {
+  position: absolute;
+  bottom: 13rpx;
+  left: 150rpx;
+  width: 130rpx;
+  height: 44rpx;
+  background: rgba(0, 0, 0, 0.1);
+  line-height: 44rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+  border-radius: 10rpx;
+}
