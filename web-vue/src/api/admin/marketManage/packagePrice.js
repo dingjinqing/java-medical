@@ -51,3 +51,11 @@ export function activityOrder (data) {
     data: data
   })
 }
+// 打包一口价 - 新增活动
+export function addActivity (data) {
+  return service({
+    url: '/api/admin/market/packsale/add',
+    method: 'post',
+    data: data
+  })
+}

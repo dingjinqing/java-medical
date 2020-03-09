@@ -8,7 +8,7 @@
     <!-- tab切换 -->
     <div class="main">
       <el-tabs
-        v-model="param.tabStatus"
+        v-model="param.activityStatus"
         @tab-click="initDataList"
         :lazy="true"
       >
@@ -241,8 +241,7 @@
 import pagination from '@/components/admin/pagination/pagination'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import status from '@/components/admin/marketManage/status/status'
-import { packagePriceList, shareActivity } from '@/api/admin/marketManage/packagePrice.js'
-// , enableActivity, disableActivity, deleteActivity
+import { packagePriceList, shareActivity, disableActivity, enableActivity, deleteActivity } from '@/api/admin/marketManage/packagePrice.js'
 import shareDialog from '@/components/admin/shareDialog'
 import packagePriceAdd from './packagePriceAdd'
 export default {
@@ -288,7 +287,7 @@ export default {
         name: '',
         startTime: '',
         endTime: '',
-        tabStatus: '1'
+        activityStatus: '1'
       },
       tableInfo: [],
       pageInfo: {}
@@ -296,7 +295,7 @@ export default {
   },
 
   watch: {
-    'param.tabStatus' (n, o) {
+    'param.activityStatus' (n, o) {
       this.initDataList()
     }
   },
@@ -352,57 +351,60 @@ export default {
         }
       })
     },
-    // enableActivity (id) {
-    //   this.$alert('确定要启用吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'      }).then(() => {
-    //     enableActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('启用成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('启用失败')
-    //       }
-    //     })
-    //   })
-    // },
-    // disableActivity (id) {
-    //   this.$alert('确定要停用吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'      }).then(() => {
-    //     disableActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('停用成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('停用失败')
-    //       }
-    //     })
-    //   })
-    // },
-    // deleteActivity (id) {
-    //   this.$alert('确定要删除吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'}).then(() => {
-    //     deleteActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('删除成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('删除失败')
-    //       }
-    //     })
-    //   })
-    // },
+    enableActivity (id) {
+      this.$alert('确定要启用吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        enableActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('启用成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('启用失败')
+          }
+        })
+      })
+    },
+    disableActivity (id) {
+      this.$alert('确定要停用吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        disableActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('停用成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('停用失败')
+          }
+        })
+      })
+    },
+    deleteActivity (id) {
+      this.$alert('确定要删除吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('删除成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('删除失败')
+          }
+        })
+      })
+    },
 
     addActivity () {
       this.isEdit = false
@@ -425,19 +427,19 @@ export default {
       })
     },
     showTabAddGroup (title) {
-      if (this.param.tabStatus === '6' || this.tabInfo.length > 5) {
+      if (this.param.activityStatus === '6' || this.tabInfo.length > 5) {
         this.closeTabAddGroup()
       }
       this.tabInfo.push({
         title: title,
         name: '6'
       })
-      this.param.tabStatus = '6'
+      this.param.activityStatus = '6'
       this.tableListView = false
     },
     closeTabAddGroup () {
       // 新增标签
-      if (this.param.tabStatus === '6') {
+      if (this.param.activityStatus === '6') {
         return
       }
       // 不是新增
