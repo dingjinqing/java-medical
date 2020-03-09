@@ -567,6 +567,10 @@ export default {
           pageId: res
         }
       })
+    },
+    // 点击分享icon
+    handleOperation () {
+
     }
   }
 }
