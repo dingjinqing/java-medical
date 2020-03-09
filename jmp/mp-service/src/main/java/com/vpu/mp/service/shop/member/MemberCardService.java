@@ -207,13 +207,14 @@ public class MemberCardService extends ShopBaseService {
 	private void initFreeshipCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化包邮信息");
 		CardFreeship freeship = param.getFreeship();
-		if(freeship==null) {
+		if(freeship!=null) {
 			if(freeship.getType()!=null) {
-				cardBuilder.freeshipLimit(freeship.getType());	  
+				cardBuilder.freeshipLimit(freeship.getType());
+				if(freeship.getNum()!=null && freeship.getNum()>= 0) {
+					cardBuilder.freeshipNum(freeship.getNum());
+				}
 			}
-			if(freeship.getNum()!=null && freeship.getNum()>= 0) {
-				cardBuilder.freeshipNum(freeship.getNum());
-			}
+			
 		}
 	}
 
@@ -986,9 +987,24 @@ public class MemberCardService extends ShopBaseService {
 		assignCardBatch(normalCard);
 		changeCardJsonCfgToDetailType(normalCard);
 		assignCoupon(normalCard);
+		// 包邮信息
+		normalCard.setFreeship(getFreeshipData(card));
 		return normalCard;
 	}
 	
+	/**
+	 * 	获取卡的包邮信息
+	 */
+	private CardFreeship getFreeshipData(MemberCardRecord card) {
+		CardFreeship cardFreeship = new CardFreeship();
+		Byte type = card.getFreeshipLimit();
+		cardFreeship.setType(type);
+		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+			cardFreeship.setNum(card.getFreeshipNum());
+		}
+		return cardFreeship;
+	}
+
 	private void changeCardJsonCfgToDetailType(BaseCardVo card) {
 			card.changeJsonCfg();
 			assignCardStoreIdAndName(card);
