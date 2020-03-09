@@ -30,7 +30,7 @@
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
-          <span>{{ this.$t('lotteryDraw.to') }}</span>
+          <span>{{ $t('lotteryDraw.to') }}</span>
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
@@ -91,14 +91,14 @@
           class="item"
           style="margin-left: 10px;"
           @click="initDataList"
-        >{{ this.$t('lotteryDraw.select') }}</el-button>
+        >{{ $t('lotteryDraw.select') }}</el-button>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
           @click="resetDataList"
-        >{{ this.$t('lotteryDraw.resetSelect') }}</el-button>
+        >{{ $t('lotteryDraw.resetSelect') }}</el-button>
       </el-form>
     </div>
 
