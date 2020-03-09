@@ -85,3 +85,12 @@ export function pageEditSave (data) {
     data: data
   })
 }
+
+// 编辑保存页面信息
+export function pageAhare (data) {
+  return service({
+    url: '/api/admin/decorate/page/share',
+    method: 'post',
+    data: data
+  })
+}

@@ -15,12 +15,12 @@
             </li>
             <li style="width:360px">
               有效期：<span>
-                {{validityPeriod===1?'永久有效':'期限内有效'}}
+                {{isForeverValid===1?'永久有效':'期限内有效'}}
               </span>
             </li>
             <li>
               状态：<span>
-                {{status===1?'已发布':'未发布'}}
+                {{state===1?'已发布':'未发布'}}
               </span>
             </li>
 
@@ -140,7 +140,7 @@ export default {
     return {
       participantsNum: '', // 参与人数
       submitNum: '', // 反馈数量
-      validityPeriod: '', // 有效期
+      isForeverValid: '', // 有效期
       status: '', // 发布状态
       sexList: [], // 性别表单元素统计结果
       slideList: [], // 下拉表单元素统计结果
@@ -161,64 +161,18 @@ export default {
       feedbackStatisticsQuery({ pageId: this.$route.query.row.pageId }).then(res => {
         console.log(res)
         if (res.error === 0) {
-
+          this.participantsNum = res.content.participantsNum
+          this.submitNum = res.content.submitNum
+          this.isForeverValid = res.content.isForeverValid
+          this.sexList = res.content.sexList
+          this.slideList = res.content.slideList
+          this.chooseList = res.content.chooseList
+          this.sexTotal = res.content.sexTotal
+          this.slideTotal = res.content.slideTotal
+          this.chooseTotal = res.content.chooseTotal
+          this.state = res.content.state
         }
       })
-      let content = {
-        'participantsNum': 1,
-        'submitNum': 1,
-        'validityPeriod': 1,
-        'status': 2,
-        'sexList': [
-          {
-            'moduleType': '男',
-            'votes': 1,
-            'percentage': 1.0
-          },
-          {
-            'moduleType': '女',
-            'votes': 0,
-            'percentage': 0.0
-          }
-        ],
-        'slideList': [
-          {
-            'moduleType': '下拉选项1',
-            'votes': 0,
-            'percentage': 0.0
-          },
-          {
-            'moduleType': '下拉选项2',
-            'votes': 0,
-            'percentage': 0.0
-          }
-        ],
-        'chooseList': [
-          {
-            'moduleType': '选项选择1',
-            'votes': 0,
-            'percentage': 0.0
-          },
-          {
-            'moduleType': '选项选择2',
-            'votes': 0,
-            'percentage': 0.0
-          }
-        ],
-        'sexTotal': 2,
-        'slideTotal': 2,
-        'chooseTotal': 2
-      }
-      this.participantsNum = content.participantsNum
-      this.submitNum = content.submitNum
-      this.validityPeriod = content.validityPeriod
-      this.status = content.status
-      this.sexList = content.sexList
-      this.slideList = content.slideList
-      this.chooseList = content.chooseList
-      this.sexTotal = content.sexTotal
-      this.slideTotal = content.slideTotal
-      this.chooseTotal = content.chooseTotal
     }
   }
 }
