@@ -1,80 +1,72 @@
 var util = require('../../utils/util.js')
 var app = new getApp();
-var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var good_id = '';
-var mobile = util.getCache('mobile');
-var total_micro_second = 0;
-var gd;
-var group_id = '';
-var invite_user = 0;
-var pin_info;
-var group_gd;
 var set_time_out;
-var person = [];
-var num;
-var limit = [];
-var pinInte_id;
-var group2;
-var status;
-var show_user_modal;
-var share_group = true;
-var choose_list = {};
-var inteGoods;
-var new_options;
-var is_share = 0;
-var pictorial;
-var os_type = '';
-var posterBase64 = '';
 global.wxPage({
-
   /**
    * 页面的初始数据00
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    total_micro_second: 0,
-    person: [],
+    islogin: false, // 是否已登录
+    invite_user: 0,
+    gd: {},
+    choose_list: {},
+    inteGoods: {},
+    group_id: '', 
+    pinInte_id: null, // 组团id
+    pin_info: {}, // 成团信息
+    group_gd: {},
+    total_micro_second: 0, // 倒计时总时间
+    person: [], // 团员信息
     limit: [],
     share_group: true,
     display: false,
     act_open: 0,
-    show_user_modal: 0,
+    // show_user_modal: 0,
     end: false,
-    is_share: 0,
-    title_bgColor: "#f18a4f"
+    is_share: 0, // 海报弹窗
+    os_type: '', // 手机类型
+    title_bgColor: "#f18a4f",
+    pictorial: '', // 海报图片
+    posterBase64: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    pinInte_id = options.pinInte_id;
-    if (!util.check_setting(options)) return;
     var that = this;
-    new_options = options;
-    choose_list = {};
+    if (!util.check_setting(options)) return;
+    that.setData({
+      pinInte_id: options.pinInte_id,
+      new_options: options,
+      choose_list: {}
+    })
+    // new_options = options;
+    // choose_list = {};
     clearTimeout(set_time_out);
     request_pinIntegration(that);
+    // 判断用户是否登录
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
       || user_name == util.getCache('openid') || !user_avatar
       || user_avatar.indexOf('image/admin/head_icon.png') > -1) {
       that.setData({
-        getsq: false,
+        islogin: false,
       })
     } else {
       that.setData({
-        getsq: true,
+        islogin: true,
       })
     }
   },
+  // 倒计时
   countdown: function (that) {
     that.setData({
-      clock: that.dateformat(total_micro_second)
+      clock: that.dateformat(that.data.total_micro_second)
     });
-    if (total_micro_second <= 0) {
+    if (that.data.total_micro_second <= 0) {
       that.setData({
         clock: "已结束",
         end: true,
@@ -84,7 +76,7 @@ global.wxPage({
     }
     set_time_out = setTimeout(function () {
       // 放在最后--
-      total_micro_second -= 1;
+      that.data.total_micro_second -= 1;
       that.countdown(that);
     }, 1000)
   },
@@ -181,16 +173,13 @@ global.wxPage({
     that.setData({
       share: true,
     })
-    util.api("/api/wxapp/share/record", function (d) {
-
-    }, { activity_id: pinInte_id, activity_type: 7 });
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
-      imageUrl: imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages/pinintegration/pinintegration?pinInte_id=' + pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + group_id + '&invite_id=' + util.getCache('user_id'),
+      imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
+      path: '/pages/pinintegration/pinintegration?pinInte_id=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + that.data.group_id + '&invite_id=' + util.getCache('user_id'),
     }
   },
-
+  
   close: function () {
     var that = this;
     that.setData({
@@ -202,20 +191,20 @@ global.wxPage({
   iwantgo: function (e) {
     var form_id = e.detail.formId;
     var open_id = util.getCache("openid");
-    group2 = '';
-    util.api('/api/wxapp/pin/integration/start', function (res) {
-      if (res.content.can_pin.status == 0) {
-        group2 = res.content.group_id;
-      }
-      if (res.content.can_pin.status > 0) {
-        util.showModal('提示', res.content.can_pin.msg, function () {
-        });
-        return;
-      }
-      util.navigateTo({
-        url: '/pages/pinintegration/pinintegration?pinInte_id=' + pinInte_id + '&group_id=' + group2,
-      })
-    }, { pinInte_id: pinInte_id, form_id: form_id, open_id: open_id });
+    var group2 = '';
+    // util.api('/api/wxapp/pin/integration/start', function (res) {
+    //   if (res.content.can_pin.status == 0) {
+    //     group2 = res.content.group_id;
+    //   }
+    //   if (res.content.can_pin.status > 0) {
+    //     util.showModal('提示', res.content.can_pin.msg, function () {
+    //     });
+    //     return;
+    //   }
+    //   util.navigateTo({
+    //     url: '/pages/pinintegration/pinintegration?pinInte_id=' + this.data.pinInte_id + '&group_id=' + group2,
+    //   })
+    // }, { pinInte_id: this.data.pinInte_id, form_id: form_id, open_id: open_id });
   },
   // 获取用户昵称 头像
   onGotUserInfo: function (e) {
@@ -223,16 +212,18 @@ global.wxPage({
     if (e.detail.userInfo) {
       util.setCache("nickName", e.detail.userInfo.nickName);
       util.setCache("avatarUrl", e.detail.userInfo.avatarUrl);
-      util.api('/api/wxapp/account/updateUser', function (res) {
-      }, { username: util.getCache('nickName'), user_avatar: util.getCache('avatarUrl') });
-      person[person.length - 1].user_avatar = util.getCache('avatarUrl');
-      person[person.length - 1].username = util.getCache('nickName');
+      // util.api('/api/wxapp/account/updateUser', function (res) {
+      // }, { username: util.getCache('nickName'), user_avatar: util.getCache('avatarUrl') });
+      that.data.person[that.data.person.length - 1].user_avatar = util.getCache('avatarUrl');
+      that.data.person[that.data.person.length - 1].username = util.getCache('nickName');
       that.setData({
+        islogin: true,
         share_group: false,
-        person: person,
+        person: that.data.person,
       });
     } else {
       that.setData({
+        islogin: false,
         share_group: false,
       });
     }
@@ -247,7 +238,7 @@ global.wxPage({
   toRule: function () {
     util.jumpToWeb('/wxapp/pinintegration/help', choose_list);
   },
-  // 我的活动
+  // 我参与的活动
   toActivity: function () {
     wx: util.navigateTo({
       url: '/pages/pinintegrationdetail/pinintegrationdetail',
@@ -256,6 +247,7 @@ global.wxPage({
     //   url: '/pages/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
     // })
   },
+  // 积分商品列表
   to_integral: function (e) {
     var in_id = e.currentTarget.dataset.in_goods_id;
     util.navigateTo({
@@ -276,27 +268,28 @@ global.wxPage({
     })
     // util.api('/api/wxapp/pictorial', function (res) {
     //   if (res.error == 0) {
-    //     pictorial = res.content.pictorial;
+    //     that.setData({ pictorial: res.content.pictorial })
+    //     
 
-    //     if (pictorial) {
+    //     if (that.data.pictorial) {
     //       util.api('/api/wxapp/upayyun/image', function (res) {
     //         if (res.error == 0) {
-    //           pictorial = imageUrl + pictorial + "!big";
-    //           posterBase64 = res.content;
+    //           that.data.pictorial = that.data.imageUrl + that.data.pictorial + "!big";
+    //           that.data.posterBase64 = res.content;
     //           that.setData({
-    //             pictorial: posterBase64,
+    //             pictorial: that.data.posterBase64,
     //             is_share: 1
     //           })
     //           wx.hideLoading();
     //         }
-    //       }, { image_path: pictorial });
+    //       }, { image_path: that.data.pictorial });
     //     }
     //   } else {
     //     wx.hideLoading();
     //     util.toast_fail(res.message);
     //     return false;
     //   }
-    // }, { action: 7, goods_id: pinInte_id, group_id: group_id })
+    // }, { action: 7, goods_id: that.data.pinInte_id, group_id: that.data.group_id })
   },
 
   saveImgToPhotosAlbumTap: function () {
@@ -305,10 +298,12 @@ global.wxPage({
       util.base64ImageHandle(posterBase64, function (res) {
         wx.getSystemInfo({
           success: function (res) {
-            os_type = res.platform
+            that.setData({
+              os_type: res.platform
+            })
           }
         })
-        if (os_type == 'ios') {
+        if (that.data.os_type == 'ios') {
           util.toast_success('保存成功');
         } else {
           util.toast_success('图片已保存到相册');
@@ -323,38 +318,46 @@ global.wxPage({
   },
 })
 function request_pinIntegration(that) {
-  if (new_options.group_id) {
-    group_id = new_options.group_id;
+  if (that.data.new_options.group_id) {
+    that.setData({
+      group_id: that.data.new_options.group_id
+    })
   } else {
-    group_id = '';
+    that.setData({
+      group_id: ''
+    })
   }
   mobile = util.getCache('mobile');
-  if (new_options.invite_user) {
-    invite_user = new_options.invite_user;
+  if (that.data.new_options.invite_user) {
+    that.setData({
+      invite_user: that.data.new_options.invite_user
+    })
     // util.api('/api/wxapp/pin/integration/start', function (res) {
-    //   group_gd = res.content;
+    //   var group_gd = res.content;
     //   if (group_gd.can_pin.status == 0) {
-    //     group_id = group_gd.group_id;
+    //    that.setData({
+    //      group_id: group_gd.group_id
+    //    })
     //   }
     //   that.setData({
     //     group_gd: group_gd,
     //   })
     //   util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //     gd = ress.content;
+    //     var gd = ress.content;
     //     if (ress.content) {
     //       util.api('/api/wxapp/user_goods/record', function (res1) {
 
-    //       }, { goods_id: group_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
+    //       }, { goods_id: that.data.group_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
     //     }
-    //     pin_info = ress.content.pinInteInfo;
-    //     inteGoods = ress.content.inteGoodsInfo;
-    //     choose_list['limit_amount'] = pin_info.limit_amount;
-    //     choose_list['inte_group'] = pin_info.inte_group;
-    //     choose_list['join_limit'] = pin_info.join_limit;
-    //     choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //     num = pin_info.limit_amount - 1;
-    //     person = ress.content.groupInfo;
-    //     limit = [];
+    //     var pin_info = ress.content.pinInteInfo;
+    //     var inteGoods = ress.content.inteGoodsInfo;
+    //     that.data.choose_list['limit_amount'] = pin_info.limit_amount;
+    //     that.data.choose_list['inte_group'] = pin_info.inte_group;
+    //     that.data.choose_list['join_limit'] = pin_info.join_limit;
+    //     that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //     var num = pin_info.limit_amount - 1;
+    //     var person = ress.content.groupInfo;
+    //     var limit = [];
     //     for (var i = 0; i < num; i++) {
     //       limit.push(i);
     //     }
@@ -366,36 +369,36 @@ function request_pinIntegration(that) {
     //       limit: limit,
     //     })
     //     // 倒计时
-    //     if (gd.remain_time) {
-    //       total_micro_second = gd.remain_time;
+    //     if (that.data.gd.remain_time) {
+    //       that.setData({ total_micro_second: that.data.gd.remain_time })
     //     }
-    //     if (total_micro_second > 0) {
+    //     if (that.data.total_micro_second > 0) {
     //       that.countdown(that);
     //       that.setData({
     //         act_open: 1
     //       });
     //     }
-    //   }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
-    // }, { pinInte_id: new_options.pinInte_id, group_id: group_id, invite_user: invite_user });
-  } else if (group_id != '') {
+    //   }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id });
+    // }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id, invite_user: that.data.invite_user });
+  } else if (that.data.group_id != '') {
     // util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //   gd = ress.content;
+    //   var gd = ress.content;
     //   if (ress.content) {
     //     if (ress.content) {
     //       util.api('/api/wxapp/user_goods/record', function (res1) {
 
-    //       }, { goods_id: pinInte_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
+    //       }, { goods_id: that.data.pinInte_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
     //     }
     //   }
-    //   pin_info = ress.content.pinInteInfo;
-    //   choose_list['limit_amount'] = pin_info.limit_amount;
-    //   choose_list['inte_group'] = pin_info.inte_group;
-    //   choose_list['join_limit'] = pin_info.join_limit;
-    //   choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //   num = pin_info.limit_amount - 1;
-    //   person = ress.content.groupInfo;
-    //   inteGoods = ress.content.inteGoodsInfo;
-    //   limit = [];
+    //   var pin_info = ress.content.pinInteInfo;
+    //   that.data.choose_list['limit_amount'] = pin_info.limit_amount;
+    //   that.data.choose_list['inte_group'] = pin_info.inte_group;
+    //   that.data.choose_list['join_limit'] = pin_info.join_limit;
+    //   that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //   var num = pin_info.limit_amount - 1;
+    //   var person = ress.content.groupInfo;
+    //   var inteGoods = ress.content.inteGoodsInfo;
+    //   var limit = [];
     //   for (var i = 0; i < num; i++) {
     //     limit.push(i);
     //   }
@@ -407,32 +410,32 @@ function request_pinIntegration(that) {
     //     inteGoods: inteGoods,
     //   })
     //   // 倒计时
-    //   if (gd.remain_time) {
-    //     total_micro_second = gd.remain_time;
+    //   if (that.data.gd.remain_time) {
+    //     that.setData({ total_micro_second: that.data.gd.remain_time })
     //   }
-    //   if (total_micro_second > 0) {
+    //   if (that.data.total_micro_second > 0) {
     //     that.countdown(that);
     //     that.setData({
     //       act_open: 1
     //     });
 
     //   }
-    // }, { pinInte_id: new_options.pinInte_id, group_id: group_id });
+    // }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id });
   } else {
     // util.api('/api/wxapp/pin/integration/start', function (res) {
     //   if (res.content.can_pin.status == 0) {
-    //     group_id = res.content.group_id;
+    //     that.setData({ group_id: res.content.group_id })
     //     util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //       gd = ress.content;
-    //       pin_info = ress.content.pinInteInfo;
-    //       choose_list['limit_amount'] = pin_info.limit_amount;
-    //       choose_list['inte_group'] = pin_info.inte_group;
-    //       choose_list['join_limit'] = pin_info.join_limit;
-    //       choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //       num = pin_info.limit_amount - 1;
-    //       person = ress.content.groupInfo;
-    //       inteGoods = ress.content.inteGoodsInfo;
-    //       limit = [];
+    //       var gd = ress.content;
+    //       var pin_info = ress.content.pinInteInfo;
+    //       that.data.choose_list['limit_amount'] = pin_info.limit_amount;
+    //       that.data.choose_list['inte_group'] = pin_info.inte_group;
+    //       that.data.choose_list['join_limit'] = pin_info.join_limit;
+    //       that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
+    //       var num = pin_info.limit_amount - 1;
+    //       var person = ress.content.groupInfo;
+    //       var inteGoods = ress.content.inteGoodsInfo;
+    //       var limit = [];
     //       for (var i = 0; i < num; i++) {
     //         limit.push(i);
     //       }
@@ -444,17 +447,17 @@ function request_pinIntegration(that) {
     //         inteGoods: inteGoods,
     //       })
     //       // 倒计时
-    //       if (gd.remain_time) {
-    //         total_micro_second = gd.remain_time;
+    //       if (that.data.gd.remain_time) {
+    //         that.setData({ total_micro_second: that.data.gd.remain_time })
     //       }
-    //       if (total_micro_second > 0) {
+    //       if (that.data.total_micro_second > 0) {
     //         that.countdown(that);
     //         that.setData({
     //           act_open: 1
     //         });
 
     //       }
-    //     }, { pinInte_id: pinInte_id, group_id: group_id });
+    //     }, { pinInte_id: that.data.pinInte_id, group_id: that.data.group_id });
     //   }
     //   if (res.content.can_pin.status > 0) {
     //     // util.showModal('提示', res.content.can_pin.msg);
@@ -471,7 +474,7 @@ function request_pinIntegration(that) {
     //     return;
     //   }
     // }, {
-    //     pinInte_id: pinInte_id
+    //     pinInte_id: that.data.pinInte_id
     //   });
   }
 }
