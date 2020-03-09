@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
@@ -2498,6 +2500,19 @@ public class MemberCardService extends ShopBaseService {
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(list, CardNoPwdExcelVo.class);
 		return workbook;
+	}
+	
+	/**
+	 * 	获取会员卡的分享二维码
+	 * @param cardId
+	 */
+	public ShareQrCodeVo getShareCode(Integer cardId) {
+		String paramStr = String.format("card_id=%d&invite_id=", cardId);
+		String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,paramStr);
+		ShareQrCodeVo vo = new ShareQrCodeVo();
+		vo.setImageUrl(imageUrl);
+		vo.setPagePath(QrCodeTypeEnum.USER_CARD_INFO.getPathUrl(paramStr));
+		return vo;
 	}
 	
 }

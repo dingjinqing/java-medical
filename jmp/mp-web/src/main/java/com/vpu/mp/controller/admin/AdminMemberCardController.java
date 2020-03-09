@@ -419,4 +419,12 @@ public class AdminMemberCardController extends AdminBaseController {
 		return success(shop().mallOverview.cardVerifyService.getCardExamineList());
 	}
 	
+	/**
+	 * 	获取会员卡分享码
+	 */
+	@PostMapping(value="/card/getqrcode/{cardId}")
+	public JsonResult getCardQrcode(@PathVariable Integer cardId) {
+		logger().info("获取卡ID: "+cardId+"的分享码");
+		return success(shop().member.card.getShareCode(cardId));
+	}
 }
