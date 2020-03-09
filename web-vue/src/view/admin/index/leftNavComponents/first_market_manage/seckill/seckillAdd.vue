@@ -150,6 +150,12 @@
               align="center"
             ></el-table-column>
             <el-table-column
+              v-if="isEdite"
+              :label="$t('seckill.prdStock')"
+              prop="totalStock"
+              align="center"
+            ></el-table-column>
+            <el-table-column
               :label="$t('seckill.prdNumber')"
               align="center"
             >
