@@ -9,8 +9,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -18,13 +16,12 @@ import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
