@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -59,9 +60,9 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
 
     /**
      *加价购
-     * @param goodsId
-     * @param date
-     * @return
+     * @param goodsId 商品id
+     * @param date 日期
+     * @return 加价购数据
      */
     public Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> getPurchasePriceInfo(Integer goodsId, Timestamp date){
         return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
@@ -77,6 +78,13 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
                 .fetch().intoGroups(PURCHASE_PRICE_DEFINE.ID);
     }
 
-
+    /**
+     * 加价购
+     * @param activityId activityId
+     * @return 加价购记录
+     */
+    public PurchasePriceDefineRecord  getPurchaseInfo(Integer activityId){
+      return  db().selectFrom(PURCHASE_PRICE_DEFINE).where(PURCHASE_PRICE_DEFINE.ID.eq(activityId)).fetchAny();
+    }
 
 }

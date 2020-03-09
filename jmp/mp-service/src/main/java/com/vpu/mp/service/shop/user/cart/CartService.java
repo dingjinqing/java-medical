@@ -235,7 +235,7 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber,Integer activityId,Byte activityType) {
-        CartRecord cartRecord = db().selectFrom(CART).where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId))).fetchOne();
+        CartRecord cartRecord = db().selectFrom(CART).where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId))).fetchAny();
         //添加加价购商品
         if (activityType!=null&&activityType.equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS)){
              cartRecord = db().selectFrom(CART)
