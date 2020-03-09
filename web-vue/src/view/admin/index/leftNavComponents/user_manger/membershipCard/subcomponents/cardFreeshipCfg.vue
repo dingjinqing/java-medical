@@ -11,21 +11,26 @@
                 </div>
                 <div>
                     <el-radio v-model="freeshipType" label="1">持卡会员</el-radio>
-                    <!-- <el-select  size="small" style="width: 150px;">
-                        <el-option v-for="(item,index) in shipTime"
-                            :label="item.label"
-                            :value="item.value"
-                            :key="index">
-                        </el-option>
-                    </el-select> -->
+                    <el-form :model="$data"  style="display: inline-block;">
+                      <el-form-item prop="shipTimeVal" :rules="shipRules.shipTimeVal">
+                        <el-select  :value="$data.shipTimeVal" size="small" style="width: 150px;" @change="updateShipTimeVal">
+                            <el-option v-for="(item,index) in shipTime"
+                                :label="item.label"
+                                :value="item.value"
+                                :key="index">
+                            </el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-form>
+                    {{shipTimeVal}}
                     <span>享受</span>
-                    <el-form :model="$data" ref="shipNum" style="display: inline-block">
-                      <el-form-item prop="shipNum" :rules="shipNumRule">
+                    <el-form :inline="true"   :model="$data" ref="shipNum" :rules="shipRules" style="display: inline-block">
+                      <el-form-item prop="shipNum">
                         <!-- 当通过校验时，触发input事件(但是目前有elementui有bug通过第一个校验后，就会调用) -->
                           <el-input v-model.number="$data.shipNum" size="small" style="width: 80px;" @input="changeShipNum('shipNum')"></el-input>
                       </el-form-item>
                     </el-form>
-                    <span>{{shipNum}}次包邮</span>
+                    <span>次包邮</span>
                 </div>
             </el-form-item>
         </el-form>
@@ -73,51 +78,81 @@ export default {
     freeshipType: {
       get () {
         let res = null
-        if ([0, 1].includes(this.type)) {
-          res = this.type
-        } else if (this.type > 1) {
+        if ([0, -1].includes(this.type)) {
+          res = 0
+        } else if (this.type > 0) {
           res = 1
         } else {
           res = 0
         }
+        if (this.holdCardOptOn) {
+          res = 1
+        }
         return String(res)
       },
       set (val) {
-        this.$emit('update:type', Number(val))
+        let res = null
+        if (val === '1') {
+          this.holdCardOptOn = true
+          if (this.shipTimeVal !== '') {
+            res = this.shipTimeVal
+          } else {
+            return
+          }
+        } else {
+          this.holdCardOptOn = false
+          res = val
+        }
+        this.$emit('update:type', Number(res))
       }
 
     },
     /**
-     * 包邮次数
+     * 包邮的时间类型
      */
-    shipNumTwo: {
+    shipTimeVal2: {
       get () {
-        return this.num
+        if ([-1, 0].includes(this.type)) {
+          return ''
+        } else {
+          return this.type
+        }
       },
       set (val) {
-        this.$emit('update:num', Number(val))
+        this.$emit('update:type', Number(val))
       }
     }
+
   },
   data () {
     return {
       cacheType: 0,
       shipTime: null,
+      holdCardOptOn: false,
       // 包邮有效期值
       shipTimeOptVal: [1, 2, 3, 4, 5, 6],
-      // 校验规则
+      shipTimeVal: null,
       shipNum: null,
-      shipNumRule: [
-        {
-          required: true,
-          message: '请输入有效值'
+      // 校验规则
+      shipRules: {
+        // 包邮有效期规则
+        shipTimeVal: [
+          {required: true, type: 'number', message: '请选择', trigger: ['blur', 'change']}
+        ],
+
+        // 包邮次数规则
+        shipNum: [
+          {
+            required: true,
+            message: '请输入有效值'
           // trigger: 'blur'
-        }, {
+          }, {
           // 1到7位整数校验
-          pattern: /^[0-9]\d{0,6}$/,
-          message: '请输入1到7位的整数'
-        }
-      ]
+            pattern: /^[0-9]\d{0,6}$/,
+            message: '请输入1到7位的整数'
+          }
+        ]
+      }
 
     }
   },
@@ -127,6 +162,14 @@ export default {
     },
     num (val) {
       this.shipNum = val
+    },
+    type (val) {
+      console.log(val)
+      if ([-1, 0].includes(this.type)) {
+        // this.shipTimeVal = ''
+      } else {
+        this.shipTimeVal = this.type
+      }
     }
   },
   mounted () {
@@ -148,12 +191,19 @@ export default {
       }
     },
     changeShipNum (val) {
-      console.log(val)
       this.$refs[val].validate((valid) => {
         if (valid) {
-          this.$emit('update:num', Number(val))
+          this.$emit('update:num', Number(this.shipNum))
+        } else {
+          // todo 可以在这里，校验不通过时，进行一些处理。
         }
       })
+    },
+    /**
+     * 包邮选择框
+     */
+    updateShipTimeVal (val) {
+      this.$emit('update:type', Number(val))
     }
   }
 }
