@@ -319,7 +319,7 @@ global.wxPage({
         that.requestCartList()
       }
     }, {
-      recIds: ids,
+      cartIds: ids,
       activityId: activityId,
       activityType: activityType,
       isChecked: 1
