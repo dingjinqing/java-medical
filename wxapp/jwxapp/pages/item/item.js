@@ -65,6 +65,25 @@ const actBaseInfo = {
       0: 'endTime'
     }
   },
+  8: {
+    actName: '拼团抽奖',
+    multiSkuAct: false,
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    },
+    prdRealPrice: 'payMoney',
+    countDownInfo: {
+      canCountDown: [0, 3],
+      3: 'startTime',
+      0: 'endTime'
+    }
+  },
   10:{
     actName:'定金膨胀',
     multiSkuAct:true,
@@ -139,6 +158,10 @@ global.wxPage({
       3: {
         title: '砍价规则',
         ruleList: ['点击下方“砍价拿”按钮开始', '邀请好友来砍价', '砍价成功，商品低价拿']
+      },
+      8: {
+        title: '拼团抽奖玩法',
+        ruleList: [['image/wxapp/pl_icons1.png','付款开团'], ['image/wxapp/pl_icons2.png','邀请好友'], ['image/wxapp/pl_icons3.png','成团抽奖'],['image/wxapp/pl_icons4.png','中奖发货']]
       }
     }
   },
@@ -171,10 +194,10 @@ global.wxPage({
                util.jumpLink(`pages/index/index`,'redirectTo')
               },false,'',pageFlag ? '返回上一页':'回到首页')
             }
-            if (res.content.activity && [1, 3, 5, 10].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1, 3, 5, 8, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
-            if (res.content.activity && [1,3,5,10].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1,3,5,8,10].includes(res.content.activity.activityType)){
               this.setData({
                 page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
               })
@@ -367,6 +390,7 @@ global.wxPage({
   },
   // 获取actBar活动状态
   getActStatusName({ actState, activityType }) {
+    console.log(actBaseInfo[activityType])
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar价格
@@ -718,10 +742,15 @@ global.wxPage({
     let { type } = e.currentTarget.dataset
     switch (type) {
       case 1:
+        util.jumpToWeb('/wxapp/group/help')
         break
 
       case 3:
         util.jumpToWeb('/wxapp/bargain/help')
+        break
+
+      case 8:
+        util.jumpToWeb('/wxapp/pinlottery/help')
         break
     }
   },

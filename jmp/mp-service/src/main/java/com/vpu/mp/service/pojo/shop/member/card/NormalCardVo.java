@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,6 +70,11 @@ public class NormalCardVo extends BaseCardVo {
 
 	/** 1:使用中，2:停止使用 3：过期 */
 	protected Byte flag;
+	
+	/**
+	 * 	包邮信息
+	 */
+	protected CardFreeship freeship;
 
 	/**
 	 * 设置开关及是否过期

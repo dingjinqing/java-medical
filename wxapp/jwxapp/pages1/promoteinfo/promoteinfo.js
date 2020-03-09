@@ -1,9 +1,6 @@
 // pages1/promoteinfo/promoteinfo.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var mobile = util.getCache('mobile');
 var promote_info = [];
 var launch_user_id; // 用户id
 var launch_id; // 发起id
@@ -262,17 +259,20 @@ global.wxPage({
   },
   // 领取奖品-结算
   to_checkout: function () {
-    var params = {};
-    params.goods_id = promote_info.goods_info.goods_id;
-    params.goods_price = promote_info.goods_info.market_price;
-    params.user_id = util.getCache('user_id');
-    params.goods_number = 1;
-    params.product_id = promote_info.goods_info.product_id;
-    params.launch_id = launch_id;
-    var query_param = {};
-    query_param.goods_id = promote_info.goods_info.goods_id;
-    console.log(JSON.stringify(params));
-    util.jumpLink("/pages/goodsCheckout/goodsCheckout?order_type=friend_promote&choose_list=" + JSON.stringify(params) + '&query_param=' + JSON.stringify(query_param));
+    let goodsList = [{
+      goodsId: promote_info.goodsInfo.goodsId,
+      goodsPrice: promote_info.goodsInfo.goodsPrice,
+      goodsNum: 1,
+      prdId: promote_info.goodsInfo.prdId,
+      productId: promote_info.goodsInfo.prdId
+    }]
+    if (promote_info.rewardType == 0) {
+      goodsList.prdRealPrice = 0
+    } else if (promote_info.rewardType == 1) {
+      goodsList.prdRealPrice = promote_info.goodsInfo.marketPrice
+    }
+    console.log(goodsList)
+    util.jumpLink("/pages/checkout/checkout?activityId=" + promote_info.id + "&goodsList=" + JSON.stringify(goodsList));
   },
   // 倒计时
   countdown: function (that) {
@@ -438,18 +438,24 @@ global.wxPage({
 })
 // 分享加机会
 function shareAdd(that) {
-  // util.api("/api/wxapp/promote/addTimes", function (res) {
-  //   if (res.error == 0) {
-  //     util.api("/api/wxapp/share/record", function (d) { }, { activity_id: launch_id, activity_type: 14 });
-  //   } else if (res.error == 400004) {
-  //     that.setData({
-  //       promote_fail: 1
-  //     })
-  //   } else {
-  //     util.showModal('提示', res.message);
-  //     return false
-  //   }
-  // }, { launch_id: launch_id, add_promote_type: 'share' });
+  util.api("/api/wxapp/promote/addTimes", function (res) {
+    if (res.error == 0) {
+      if (res.content.flag == 0) {
+        // 助力失败
+        that.setData({
+          promote_fail: 1
+        })
+        if (res.content.msgCode == 0) {
+          that.setData({
+            cant_promote: '分享获取助力次数已用完'
+          })
+        }
+      }
+    } else {
+      util.showModal('提示', res.message);
+      return false
+    }
+  }, { userId: launch_user_id, launchId: launch_id });
 };
 // 发起助力
 function launchAct(that) {

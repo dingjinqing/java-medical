@@ -37,4 +37,6 @@ public class GroupStartVo {
 	private String activityCopywriting;
 	private Integer groupId;
 	private CanPinInte canPin;
+	private String inviteName;
+	private Integer addInte;
 }

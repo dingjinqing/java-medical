@@ -13,6 +13,7 @@ const actPrdType = {
     prdLinePrice: 'prdPrice',
     multiSkuAct: true
   },
+  8: { prdRealPrice: 'payMoney', multiSkuAct: false },
   6: {
     prdListName: 'reducePricePrdMpVos',
     prdRealPrice: 'reducePrice',
@@ -218,7 +219,7 @@ global.wxComponent({
     getPrdInfo() {
       let select_prd = JSON.parse(JSON.stringify(this.select_prd))
       let { limitBuyNum, limitMaxNum,activity} = this.data.productsInfo
-      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3){
+      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3 && activity.activityType !== 8){
         select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdRealPrice']]
         select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdLinePrice']]
         if(activity.activityType === 1){
@@ -228,8 +229,8 @@ global.wxComponent({
         if([5,10].includes(activity.activityType) || ([6,18,22].includes(activity.activityType) && activity.isLimit)){
           limitMaxNum = activity.limitAmount
         }
-      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
-        select_prd.prdRealPrice = activity.bargainPrice
+      } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && (activity.activityType === 3 || activity.activityType === 8)){
+        select_prd.prdRealPrice = activity[actPrdType[activity.activityType]['prdRealPrice']]
       }
       if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(activity.activityType)){
         select_prd.prdNumber = select_prd['actProduct']['stock']

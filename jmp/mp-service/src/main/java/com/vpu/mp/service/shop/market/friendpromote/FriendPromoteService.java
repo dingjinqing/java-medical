@@ -939,7 +939,7 @@ public class FriendPromoteService extends ShopBaseService {
             .leftJoin(USER_DETAIL).on(FRIEND_PROMOTE_DETAIL.USER_ID.eq(USER_DETAIL.USER_ID))
             .where(FRIEND_PROMOTE_DETAIL.LAUNCH_ID.eq(launchId))
             .orderBy(FRIEND_PROMOTE_DETAIL.ID.desc())
-            .limit(10)
+            .limit(20)
             .fetchInto(PromoteDetail.class);
         for(PromoteDetail item:detailList){
             item.setUsername((item.getUsername()!=null&&!item.getUsername().isEmpty())?item.getUsername():item.getUserId().toString());
@@ -1536,5 +1536,15 @@ public class FriendPromoteService extends ShopBaseService {
             .fetchOptionalInto(Integer.class)
             .orElse(1);
         return shareCreateTimes;
+    }
+
+    /**
+     * 好友助力明细
+     * @param param 发起id
+     * @return 助力用户详情
+     */
+    public List<PromoteDetail> friendPromoteDetailList(PromoteParam param){
+        List<PromoteDetail> detailList = friendPromoteDetail(param.getLaunchId());
+        return detailList;
     }
 }

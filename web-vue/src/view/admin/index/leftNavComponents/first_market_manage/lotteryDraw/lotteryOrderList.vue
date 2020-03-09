@@ -32,8 +32,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.grouped === true">{{ this.$t('lotteryDraw.isYes') }}</span>
-            <span v-if="scope.row.grouped === false">{{ this.$t('lotteryDraw.isNo') }}</span>
+            <span v-if="scope.row.grouped === true">{{ $t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.grouped === false">{{ $t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -47,8 +47,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.isWinDraw === true">{{ this.$t('lotteryDraw.isYes') }}</span>
-            <span v-if="scope.row.isWinDraw === false">{{ this.$t('lotteryDraw.isNo') }}</span>
+            <span v-if="scope.row.isWinDraw === true">{{ $t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.isWinDraw === false">{{ $t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column

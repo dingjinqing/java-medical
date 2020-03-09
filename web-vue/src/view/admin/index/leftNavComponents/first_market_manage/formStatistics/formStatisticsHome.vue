@@ -267,7 +267,7 @@
     >
       <div class="copyContainer">
         <img
-          src="http://mpdevimg2.weipubao.cn/upload/4748160/pictorial/4/T100P385_20200305172829.png"
+          :src="posterAddressImgUrl"
           alt=""
           style="width:160px;height:160px"
           class="code_imgs"

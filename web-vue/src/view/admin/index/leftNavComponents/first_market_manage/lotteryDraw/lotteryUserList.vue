@@ -29,7 +29,7 @@
             :placeholder="$t('actionRecord.startTime')"
           >
           </el-date-picker>
-          <span>{{ this.$t('lotteryDraw.to') }}</span>
+          <span>{{ $t('lotteryDraw.to') }}</span>
           <el-date-picker
             size="small"
             v-model="requestParams.endTime"
@@ -76,7 +76,7 @@
             clearable
             class="inputWidth"
           ></el-input>
-          {{ this.$t('lotteryDraw.to') }}
+          {{ $t('lotteryDraw.to') }}
           <el-input
             size="small"
             v-model="requestParams.maxInviteUserCount"
@@ -138,13 +138,13 @@
           class="item"
           style="margin-left: 10px;"
           @click="initDataList"
-        >{{ this.$t('lotteryDraw.select') }}</el-button>
+        >{{ $t('lotteryDraw.select') }}</el-button>
         <el-button
           size="small"
           type="primary"
           class="item"
           style="margin-left: 10px;"
-        >{{ this.$t('lotteryDraw.resetSelect') }}</el-button>
+        >{{ $t('lotteryDraw.resetSelect') }}</el-button>
       </el-form>
     </div>
 
@@ -181,8 +181,8 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.isGrouper === true">{{ this.$t('lotteryDraw.isYes') }}</span>
-            <span v-if="scope.row.isGrouper === false">{{ this.$t('lotteryDraw.isNo') }}</span>
+            <span v-if="scope.row.isGrouper === true">{{ $t('lotteryDraw.isYes') }}</span>
+            <span v-if="scope.row.isGrouper === false">{{ $t('lotteryDraw.isNo') }}</span>
           </template>
         </el-table-column>
         <el-table-column
