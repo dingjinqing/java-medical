@@ -18,10 +18,17 @@ public class SeckillDecoratePageListVo {
     private Integer skId;
     /** 活动名称 */
     private String name;
+    private Integer stock;
+    private Integer saleNum;
+    private Integer baseSale;
+    private Byte status;
+    private Short limitAmount;
 
     private Integer goodsId;
     private String goodsName;
     private String goodsImg;
+    private BigDecimal shopPrice;
+    private Integer goodsNumber;
     /**
      * 是否在售，1在售，0下架
      */
@@ -30,10 +37,6 @@ public class SeckillDecoratePageListVo {
      * 最小的一个秒杀价格
      */
     private BigDecimal secPrice;
-    /**
-     * 活动库存
-     */
-    private Integer stock;
 
     private Timestamp startTime;
     private Timestamp endTime;
