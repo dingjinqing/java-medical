@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 /**
  * 好友助力
@@ -62,13 +64,26 @@ public class WxAppPromoteController extends WxAppBaseController {
     /**
      * 分享获得助力次数
      *
-     * @param param 用户id 助力活动码
+     * @param param 用户id 发起id
      * @return 提示信息
      */
     @PostMapping("/addTimes")
     public JsonResult addTimes(@RequestBody PromoteParam param) {
 
         AddPromoteTimesVo vo = shop().friendPromoteService.addPromoteTimes(param);
+
+        return success(vo);
+    }
+    /**
+     * 助力用户详情
+     *
+     * @param param 发起id
+     * @return 提示信息
+     */
+    @PostMapping("/detailList")
+    public JsonResult promoteDetail(@RequestBody PromoteParam param) {
+
+        List<PromoteDetail> vo = shop().friendPromoteService.friendPromoteDetailList(param);
 
         return success(vo);
     }

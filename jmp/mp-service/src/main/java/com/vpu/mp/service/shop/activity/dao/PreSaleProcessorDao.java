@@ -298,6 +298,8 @@ public class PreSaleProcessorDao extends PreSaleService {
         if (param.getPaymentList() != null) {
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
+        //禁止好友代付
+        param.getInsteadPayCfg().setStatus(false);
         OrderBeforeParam.Goods goods = param.getGoods().get(0);
         for (ProductVo productVo : activityInfo.getProducts()) {
             if (productVo.getProductId().equals(goods.getProductId())) {

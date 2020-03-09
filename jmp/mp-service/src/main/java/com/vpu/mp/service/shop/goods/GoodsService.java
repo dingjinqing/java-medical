@@ -793,7 +793,7 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)) + 1;
+            int count = db().fetchCount(GOODS) + 1;
             goods.setGoodsSn(String.format("G10%08d", count));
         }
 
