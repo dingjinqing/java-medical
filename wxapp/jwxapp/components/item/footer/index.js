@@ -333,7 +333,8 @@ global.wxComponent({
             util.toast_success('添加成功')
             this.getCartNum()
           } else {
-            util.toast_fail('添加失败')
+            util.showModal(this.$t("components.decorate.tips"), res.message);
+            // util.toast_fail('添加失败')
           }
           this.triggerEvent('close')
         },

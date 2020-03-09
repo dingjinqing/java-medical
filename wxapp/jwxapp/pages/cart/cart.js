@@ -96,7 +96,7 @@ global.wxPage({
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recIds: [cartId], isChecked: isChecked ? 0 : 1 })
+    }, { cartIds: [cartId], isChecked: isChecked ? 0 : 1 })
   },
 
   // 更改全选状态
@@ -107,12 +107,13 @@ global.wxPage({
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recIds: cartIds, isChecked: isAllCheck })
+    }, { cartIds: cartIds, isChecked: isAllCheck })
   },
 
   // 更改商品数量
   goodsNumChange(e) {
     let type = e.currentTarget.dataset.type;
+    let cartId = e.currentTarget.dataset.cart_id;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
     util.api('/api/wxapp/cart/change', res => {
@@ -120,6 +121,7 @@ global.wxPage({
         this.requestCartList()
       }
     }, {
+        cartId: cartId,
         productId: prdId,
         cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
       })
@@ -147,6 +149,7 @@ global.wxPage({
             this.requestCartList()
           }
         }, {
+            cartId: cartId,
             productId: item.productId,
             cartNumber: item.cartNumber
           })
@@ -162,7 +165,7 @@ global.wxPage({
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recId: cartId })
+    }, { cartId: cartId })
   },
 
   // 清除无效购物车列表
@@ -172,7 +175,7 @@ global.wxPage({
       if (res.error === 0) {
         this.requestCartList()
       }
-    }, { recIds: cartIds })
+    }, { cartIds: cartIds })
   },
 
   //触摸改变
