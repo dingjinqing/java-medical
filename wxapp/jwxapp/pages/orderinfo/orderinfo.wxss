@@ -197,6 +197,7 @@
 /* 拼团活动样式 */
 
 .fight_info {
+  box-sizing: border-box;
   width: 100%;
   background: #fff;
   margin-bottom: 20rpx;
