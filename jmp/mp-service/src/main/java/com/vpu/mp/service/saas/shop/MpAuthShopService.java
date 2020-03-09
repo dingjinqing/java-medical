@@ -214,7 +214,7 @@ public class MpAuthShopService extends MainBaseService {
         record.setAuthorizerInfo(Util.toJson(authorizerInfo));
         record.setPrincipalName(authorizerInfo.getPrincipalName());
         record.setQrcodeUrl(getMpQrCode(appId, authorizerInfo));
-        setTestRecord(record, appId);
+        //setTestRecord(record, appId);
         record.update();
 
         wxOpenResult.setErrcode("0");
