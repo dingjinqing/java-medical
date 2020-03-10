@@ -152,7 +152,7 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * @return
 	 */
 	@GetMapping(value = "/admin/decorate/page/share")
-	public JsonResult getPageShareCode(Integer pageId) {
+	public JsonResult getPageShareCode(@RequestParam Integer pageId) {
 		return success(shop().adminDecoration.getMpQrCode(pageId));
 	}
 
