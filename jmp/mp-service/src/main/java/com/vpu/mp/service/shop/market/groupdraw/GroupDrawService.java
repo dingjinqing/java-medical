@@ -1267,7 +1267,6 @@ public class GroupDrawService extends ShopBaseService {
     	vo.setStatus(fetchAny.getStatus());
     	vo.setGroupId(fetchAny.getGroupId());
     	vo.setIsGrouper(fetchAny.getIsGrouper());
-		return null;
-    	
+		return vo;
     }
 }
