@@ -155,12 +155,19 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        log.info("预售下单更新库存start");
         Map<Integer, Integer> updateParam = param.getBos().stream()
             .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
             .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
         if(updateParam.size() != 0){
             preSaleProcessorDao.updateStockAndSales(updateParam, order.getActivityId());
         }
+        log.info("预售下单更新库存end,data{}",updateParam);
     }
 
     @Override
