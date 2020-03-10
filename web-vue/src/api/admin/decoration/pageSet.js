@@ -89,7 +89,7 @@ export function pageEditSave (data) {
 // 页面装修分享
 export function pegeShare (data) {
   return service({
-    url: `api/admin/decorate/page/share?pageId=${data}`,
+    url: `/api/admin/decorate/page/share?pageId=${data}`,
     method: 'get'
   })
 }
