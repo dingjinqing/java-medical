@@ -94,7 +94,7 @@ public final class DateUtil {
      * @return
      */
     public static String getLocalDateFormat() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_FULL));
     }
 
 	/**
