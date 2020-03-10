@@ -52,8 +52,7 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
       couponFlag: false, // 优惠券td flag
-      path: '', //  显示和保存的路径
-      flag: null
+      path: '' //  显示和保存的路径
     }
   },
   computed: {
@@ -89,7 +88,6 @@ export default {
       this.clickIindex = null
       if (newData.levelIndex === 1) {
         this.navText = newData.navText
-        this.flag = newData.index
         switch (newData.index) {
           case 0:
             pinListRequest().then((res) => {
@@ -197,7 +195,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/getCoupon/getCoupon?couponSn='
+                this.path = 'pages/getCoupon/getCoupon?id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
@@ -251,12 +249,7 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      let path = ''
-      if (this.flag === 7) {
-        path = `${this.path}${this.trList[index].couponSn}`
-      } else {
-        path = `${this.path}${this.trList[index].id}`
-      }
+      let path = `${this.path}${this.trList[index].id}`
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
     }
