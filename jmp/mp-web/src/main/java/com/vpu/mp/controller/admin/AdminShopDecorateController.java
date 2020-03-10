@@ -151,8 +151,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * 分享装修页面获取小程序二维码
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/page/share")
-	public JsonResult getPageShareCode(@RequestBody Integer pageId) throws Exception {
+	@GetMapping(value = "/admin/decorate/page/share")
+	public JsonResult getPageShareCode(Integer pageId) {
 		return success(shop().adminDecoration.getMpQrCode(pageId));
 	}
 

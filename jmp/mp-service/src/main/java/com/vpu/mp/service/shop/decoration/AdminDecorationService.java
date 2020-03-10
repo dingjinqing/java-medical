@@ -486,7 +486,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.INDEX.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.INDEX.getUrl());
         return vo;
     }
 
