@@ -52,6 +52,7 @@ import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
 
 import lombok.extern.slf4j.Slf4j;
+import sun.plugin2.os.windows.FLASHWINFO;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
@@ -360,7 +361,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
     //发送好友助力中奖结果
 	private String sendPromoteDrawMessage(FriendPromoteSelectVo vo,String officeAppId) {
 		String json = vo.getRewardContent();
-		FpRewardContent rewardContent = Util.parseJson(json, FpRewardContent.class);
+		FpRewardContent rewardContent = Util.json2Object(json,FpRewardContent.class, false);
 		String goodsName=null;
 		if(vo.getRewardType().equals(TWO)) {
 			Integer rewardIds = rewardContent.getRewardIds();
