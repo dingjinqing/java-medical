@@ -272,7 +272,7 @@ global.wxPage({
       goodsList.prdRealPrice = promote_info.goodsInfo.marketPrice
     }
     console.log(goodsList)
-    util.jumpLink("/pages/checkout/checkout?activityId=" + promote_info.id + "&goodsList=" + JSON.stringify(goodsList));
+    util.jumpLink("/pages/checkout/checkout?activityType=14&activityId=" + promote_info.id + "&goodsList=" + JSON.stringify(goodsList));
   },
   // 倒计时
   countdown: function (that) {
@@ -493,9 +493,18 @@ function promote_request(that) {
       var is_promote_value = promote_info.hasPromoteValue 
       // 助力进度
       var launched_width = parseFloat(660 * parseFloat(is_promote_value) / promote_info.promoteAmount).toFixed(0);
-      that.data.total_micro_second = promote_info.surplusSecond;
-      if (that.data.total_micro_second > 0) {
-        that.countdown(that);
+      if (promote_info.promoteStatus == 0) {
+        // 单次助力活动时限
+        that.data.total_micro_second = promote_info.surplusSecond;
+        if (that.data.total_micro_second > 0) {
+          that.countdown(that);
+        }
+      } else if (promote_info.promoteStatus == 1) {
+        // 领取奖品时限
+        that.data.total_micro_second = promote_info.rewardSpurTime;
+        if (that.data.total_micro_second > 0) {
+          that.countdown(that);
+        }
       }
       if (promote_info.launchId) {
         launch_id = promote_info.launchId

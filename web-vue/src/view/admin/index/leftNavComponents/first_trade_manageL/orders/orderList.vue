@@ -208,6 +208,7 @@
           >
             <span>{{$t('order.shippingAddress')}}：</span>
             <areaLinkage
+              :areaCode="areaLinkage"
               @areaData="handleAreaData"
               style="width:365px;"
             />
@@ -866,7 +867,12 @@ export default {
       notesOrderSn: null,
       showExportColumnSelect: false,
       showExportConfirm: false,
-      shopHelperParams: {}
+      shopHelperParams: {},
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   inject: ['adminReload'],
