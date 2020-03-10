@@ -884,13 +884,13 @@ public class GroupDrawService extends ShopBaseService {
 	 */
 	public List<GroupDrawList> getGroupList(Integer groupDrawId, Integer groupId, Byte status) {
 		SelectConditionStep<Record> selectConditionStep = db()
-				.select(JOIN_GROUP_LIST.asterisk(), USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR)
-				.from(JOIN_GROUP_LIST, USER_DETAIL).where(JOIN_GROUP_LIST.USER_ID.eq(USER_DETAIL.USER_ID)
-						.and(JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId))));
+				.select(JOIN_GROUP_LIST.asterisk(), USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR).from(JOIN_GROUP_LIST)
+				.leftJoin(USER_DETAIL).on(JOIN_GROUP_LIST.USER_ID.eq(USER_DETAIL.USER_ID))
+				.where((JOIN_GROUP_LIST.GROUP_DRAW_ID.eq(groupDrawId).and(JOIN_GROUP_LIST.GROUP_ID.eq(groupId))));
 		if (status != null) {
 			selectConditionStep.and(JOIN_GROUP_LIST.STATUS.eq(status));
 		} else {
-			selectConditionStep.and(JOIN_GROUP_LIST.STATUS.ge(status));
+			selectConditionStep.and(JOIN_GROUP_LIST.STATUS.ge(ZERO));
 		}
 		List<GroupDrawList> list = selectConditionStep.orderBy(JOIN_GROUP_LIST.IS_GROUPER.desc())
 				.fetchInto(GroupDrawList.class);
