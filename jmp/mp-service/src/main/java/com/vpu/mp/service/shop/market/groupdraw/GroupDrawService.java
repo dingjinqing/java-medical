@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.DrawUser;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawBotton;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoReturnVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
@@ -1241,5 +1242,32 @@ public class GroupDrawService extends ShopBaseService {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * 订单号查询拼团信息
+     * @param orderSn
+     * @return
+     */
+    public GroupDrawInfoByOsVo getGroupByOrderSn(String orderSn) {
+    	JoinGroupListRecord fetchAny = db().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.ORDER_SN.eq(orderSn)).fetchAny();
+    	if(fetchAny==null) {
+    		logger().info("订单{}不存在",orderSn);
+    		return null;
+    	}
+    	GroupDrawVo byId = groupDrawList(fetchAny.getGroupDrawId());
+    	if(byId==null) {
+    		logger().info("拼团活动{}不存在",fetchAny.getGroupDrawId());
+    		return null;
+    	}
+    	GroupDrawInfoByOsVo vo=new GroupDrawInfoByOsVo();
+    	vo.setActivityId(fetchAny.getGroupDrawId());
+    	vo.setActivityType(8);
+    	vo.setDrawStatus(fetchAny.getDrawStatus());
+    	vo.setStatus(fetchAny.getStatus());
+    	vo.setGroupId(fetchAny.getGroupId());
+    	vo.setIsGrouper(fetchAny.getIsGrouper());
+		return null;
+    	
     }
 }
