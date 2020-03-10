@@ -103,5 +103,13 @@ public class AvailCouponDetailVo {
     private String cardId;
     private Integer cardStatus;
     private String needGetCard;
+    /**
+     * 来源：0：优惠券列表；1：装修常用链接
+     */
+    private Integer linkSource = 0;
+    /**
+     * 是否可以领取 0：否；1：是
+     */
+    private Integer canReceive = 0;
 }
 

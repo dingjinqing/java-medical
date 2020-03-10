@@ -59,6 +59,10 @@ import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawList;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
@@ -75,6 +79,7 @@ import com.vpu.mp.service.shop.goods.GoodsCommentService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.ShipService;
@@ -191,6 +196,8 @@ public class OrderReadService extends ShopBaseService {
     private ConfigService configService;
     @Autowired
     public SubOrderService subOrderService;
+    @Autowired
+    private GroupDrawService groupDrawService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -627,9 +634,15 @@ public class OrderReadService extends ShopBaseService {
                 order.setGroupBuyInfo(groupOrderVo);
             }
 		}else if(orderType.indexOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.toString()) != -1) {
-
+			//拼团抽奖
+			GroupDrawInfoByOrderVo groupDraw=new GroupDrawInfoByOrderVo();
+			GroupDrawInfoByOsVo groupByOrderSn = groupDrawService.getGroupByOrderSn(order.getOrderSn(), false);
+			groupDraw.setPinGroup(groupByOrderSn);
+			GroupDrawInfoVo into = groupDrawService.getById(groupByOrderSn.getActivityId()).into(GroupDrawInfoVo.class);
+			groupDraw.setPinGroupInfo(into);
+			groupDraw.setPinUserGroup(groupDrawService.getGroupList(groupByOrderSn.getActivityId(), groupByOrderSn.getGroupId(), null));
+			order.setGroupDraw(groupDraw);
 		}
-		//拼团抽奖
 
 		//优惠卷
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +40,8 @@ public class OrderInfoMpVo extends OrderListMpVo{
 	 * 团id
 	 */
 	private Integer groupId;
+	/** 拼团抽奖对应的信息*/
+	private GroupDrawInfoByOrderVo groupDraw;
 	/***/
 	@JsonIgnore
 	private String mainOrderSn;

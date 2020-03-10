@@ -134,7 +134,7 @@ export default {
       })
     },
     selectionChangeHandle (rows) {
-      if (rows.length > 5) {
+      if (rows.length > 6) {
         let nowClick = rows.pop()
         this.$refs.addSpikeTable.toggleRowSelection(nowClick)
         this.$message.warning('只能添加6个活动商品')

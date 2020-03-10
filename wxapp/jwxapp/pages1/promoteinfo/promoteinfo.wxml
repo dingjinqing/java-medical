@@ -79,7 +79,7 @@
           <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'>去使用</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-coupon_sn="{{promote_info.couponInfo.couponSn}}">去使用</button>
       </view>
    </view>
    <!-- 助力列表 -->
