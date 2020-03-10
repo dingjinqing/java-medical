@@ -1262,7 +1262,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false));
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,param.getUserId(),param.getLaunchId(),promoteValue);
+        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,launchUserId,param.getLaunchId(),promoteValue);
         //发送消息
         FriendPromoteSelectVo messageVo = new FriendPromoteSelectVo();
         messageVo.setId(launchInfo.getId());
