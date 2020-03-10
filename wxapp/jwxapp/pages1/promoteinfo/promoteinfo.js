@@ -5,6 +5,7 @@ var promote_info = [];
 var launch_user_id; // 用户id
 var launch_id; // 发起id
 var actCode; // 活动code
+var activityId; // 活动id
 var set_time_out;
 global.wxPage({
 
@@ -100,24 +101,24 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    util.api('/api/wxapp/bargain/pictorial/info', function (res) {
-      wx.hideLoading();
-      if (res.error == 0) {
-        that.setData({
-          posterBase64: res.content,
-          pictorial: res.content,
-          is_share: 1
-        })
-      } else {
-        util.toast_fail(res.message);
-        return false;
-      }
-    }, { 
-      activityId: promote_info.id,
-      realPrice: promote_info.goodsInfo.marketPrice ? promote_info.goodsInfo.marketPrice : 0,
-      linePrice: promote_info.goodsPrice,
-      pageType: 2
-    })
+    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    //   wx.hideLoading();
+    //   if (res.error == 0) {
+    //     that.setData({
+    //       posterBase64: res.content,
+    //       pictorial: res.content,
+    //       is_share: 1
+    //     })
+    //   } else {
+    //     util.toast_fail(res.message);
+    //     return false;
+    //   }
+    // }, { 
+    //   activityId: promote_info.id,
+    //   realPrice: promote_info.goodsInfo.marketPrice ? promote_info.goodsInfo.marketPrice : 0,
+    //   linePrice: promote_info.goodsPrice,
+    //   pageType: 2
+    // })
   },
   // 关闭海报
   not_show_share: function () {
@@ -172,6 +173,9 @@ global.wxPage({
         var add_promote_value = res.content.promoteValue; // 助力值
         var modal_can_share = res.content.canShare; // 能否再分享
         var cant_promote = res.content.cantPromote; // 助力失败原因
+        if (res.content.rewardRecordId != null) {
+          activityId = res.content.rewardRecordId
+        }
         if (promote_info.canPromote == null && promote_info.canShare == null) {
           if (cant_promote == 0) {
             cant_promote = '该助力申请未发起'
@@ -261,18 +265,14 @@ global.wxPage({
   to_checkout: function () {
     let goodsList = [{
       goodsId: promote_info.goodsInfo.goodsId,
-      goodsPrice: promote_info.goodsInfo.goodsPrice,
+      prdRealPrice: promote_info.rewardType == 0 ? 0 : promote_info.goodsInfo.marketPrice,
       goodsNum: 1,
       prdId: promote_info.goodsInfo.prdId,
-      productId: promote_info.goodsInfo.prdId
+      isCart: 0
+      // goodsPrice: promote_info.goodsInfo.goodsPrice,
+      // productId: promote_info.goodsInfo.prdId
     }]
-    if (promote_info.rewardType == 0) {
-      goodsList.prdRealPrice = 0
-    } else if (promote_info.rewardType == 1) {
-      goodsList.prdRealPrice = promote_info.goodsInfo.marketPrice
-    }
-    console.log(goodsList)
-    util.jumpLink("/pages/checkout/checkout?activityType=14&activityId=" + promote_info.id + "&goodsList=" + JSON.stringify(goodsList));
+    util.jumpLink("/pages/checkout/checkout?activityType=24&activityId=" + activityId + "&goodsList=" + JSON.stringify(goodsList));
   },
   // 倒计时
   countdown: function (that) {
