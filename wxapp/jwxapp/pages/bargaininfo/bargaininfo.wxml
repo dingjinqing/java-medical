@@ -4,18 +4,21 @@
 
 <view class='main-container'>
   <!-- 下载海报 -->
-  <block wx:if="{{ islogin }}">
-    <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.state == 1 || bargain_info.state == 2 || bargain_info.state == 3 || bargain_info.state == 4 || bargain_info.state == 6) }}' bindtap='go_share'>
-      <view>下载</view>
-      <view>海报</view>
-    </view>
+  <block>
+    <block wx:if="{{getsq == true || click_num == true}}">
+      <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.state == 1 || bargain_info.state == 2 || bargain_info.state == 3 || bargain_info.state == 4 || bargain_info.state == 6) }}' bindtap='go_share'>
+        <view>下载</view>
+        <view>海报</view>
+      </view>
+    </block>
+    <block wx:else>
+      <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <view>下载</view>
+        <view>海报</view>
+      </button>
+    </block>
   </block>
-  <block wx:else>
-    <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-      <view>下载</view>
-      <view>海报</view>
-    </button>
-  </block>
+  
 
   <view class='all'>
     <!-- 砍价信息 -->
@@ -88,15 +91,13 @@
     <!-- 砍价按钮 -->
     <view class='btn_kanjia' wx:if='{{bargain_info.state == 0}}' style='position:relative;height:70rpx;padding:0'>
       <form report-submit='true' bindsubmit='toKnajia'>
-       <block wx:if="{{islogin == true}}">
-        <button formType="submit">帮TA砍一刀</button>
-       </block>
+        <block  wx:if="{{getsq == true || click_num == true}}">
+          <button formType="submit">帮TA砍一刀</button>
+        </block>
         <block wx:else>
-        <!-- <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">{{bargain_info.record_status.msg}}</button> -->
-        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">帮TA砍一刀</button>
-       </block>
+          <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">帮TA砍一刀</button>
+        </block>
       </form>
-
     </view>
     <view class='btn_kanjia' wx:if='{{bargain_info.state == 1}}' bindtap='toIndex'>活动不存在，随便逛逛</view>
     <view class='btn_kanjia' wx:if='{{bargain_info.state == 2}}' bindtap='toIndex'>砍价失败，随便逛逛</view>
@@ -106,7 +107,7 @@
     <form report-submit='true' bindsubmit='toCheckout'>
       <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.state == 5}}'>砍价成功，立即完善订单</button>
     </form>
-    <block wx:if="{{islogin == true}}">
+    <block wx:if="{{ getsq == true || click_num == true}}">
       <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7}}'>
         <button open-type='share'></button>
         邀请好友帮忙砍价
@@ -174,7 +175,7 @@
             <text>{{bargain_info.stateMoney}}</text>元，</view>
           <view class='sentence2'>快邀请小伙伴帮忙砍价吧</view>
           <view class='but_invite has_btn'>
-            <block wx:if="{{islogin == true}}">
+            <block wx:if="{{ getsq == true || click_num == true}}">
               <button open-type='share'></button>
               立即邀请好友砍价，多砍{{bargain_info.stateMoney}}元
             </block>
@@ -198,7 +199,7 @@
           <view class='sentence1'>帮他砍了
             <text>{{cut_money}}</text>元，</view>
           <view class='sentence2'>一起来{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物吧~</view>
-          <block wx:if="{{islogin == true}}">
+          <block wx:if="{{ getsq == true || click_num == true}}">
             <view class='but_invite has_btn' bindtap='toWhere' wx:if='{{bargain_info.state != 6}}'>
               我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
             </view>

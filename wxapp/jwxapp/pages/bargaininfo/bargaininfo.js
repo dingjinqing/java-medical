@@ -20,7 +20,7 @@ global.wxPage({
     is_help: 0, // 帮砍弹窗
     is_share: 0, // 海报弹窗
     is_block: 0, // 绑定手机号
-    islogin: false, // 是否已登录
+    click_num: false,
     os_type: '', // 手机类型
     money_now_left: 0, // 砍价进度条
     posterBase64: '', 
@@ -45,11 +45,11 @@ global.wxPage({
       || user_name == util.getCache('openid') || !user_avatar
       || user_avatar.indexOf('image/admin/head_icon.png') > -1) {
       that.setData({
-        islogin: false,
+        getsq: false,
       })
     } else {
       that.setData({
-        islogin: true,
+        getsq: true,
       })
     }
   },
@@ -337,54 +337,37 @@ global.wxPage({
   // 获取用户信息
   getUserInfo: function (e) {
     var that = this;
-    if (util.getUserInfoCommon) {
-      util.getUserInfoCommon(e, function (userInfo) {
-        if (userInfo) {
-          console.log(userInfo)
-          that.setData({
-            islogin: true
-          })
-        }
-      });
-    } else {
-      var canIUse = wx.canIUse('button.open-type.getUserInfo');
-      if (e.detail.userInfo) {
-        if (canIUse) {
-          var user_avatar = e.detail.userInfo.avatarUrl;
-          var user_name = e.detail.userInfo.nickName;
-          util.setCache("nickName", user_name);
-          util.setCache("avatarUrl", user_avatar);
-          util.api('/api/wxapp/account/updateUser', function (res) {
-          }, {
-              username: user_name,
-              user_avatar: user_avatar
-            });
-        } else {
-          wx.getUserInfo({
-            success: res => {
-              var user_avatar = e.detail.userInfo.avatarUrl;
-              var user_name = e.detail.userInfo.nickName;
-              util.setCache("nickName", user_name);
-              util.setCache("avatarUrl", user_avatar);
-              util.api('/api/wxapp/account/updateUser', function (res) {
-              }, {
-                  username: user_name,
-                  user_avatar: user_avatar
-                });
-            }
-          })
-        }
-        that.setData({
-          nickName: user_name,
-          islogin: true
+    var canIUse = wx.canIUse('button.open-type.getUserInfo');
+    if (e.detail.userInfo) {
+      if (canIUse) {
+        var user_avatar = e.detail.userInfo.avatarUrl;
+        var user_name = e.detail.userInfo.nickName;
+        util.setCache("nickName", user_name);
+        util.setCache("avatarUrl", user_avatar);
+        util.api('/api/wxapp/account/updateUser', function (res) {
+        }, { username: user_name, user_avatar: user_avatar });
+      } else {
+        wx.getUserInfo({
+          success: res => {
+            var user_avatar = e.detail.userInfo.avatarUrl;
+            var user_name = e.detail.userInfo.nickName;
+            util.setCache("nickName", user_name);
+            util.setCache("avatarUrl", user_avatar);
+            util.api('/api/wxapp/account/updateUser', function (res) {
+            }, { username: user_name, user_avatar: user_avatar });
+          }
         })
       }
+      that.setData({
+        nickName: user_name,
+      })
     }
-    
-
     if (e.currentTarget.dataset.kj == 1) {
       that.toWhere(e);
     }
+    that.setData({
+      click_num: true,
+    })
   }
 })
 function request_kanjia(that) {
