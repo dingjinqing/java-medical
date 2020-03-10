@@ -33,7 +33,7 @@
               <span class="coupon-info">
                 {{ $t('memberCard.offerInfo') }}
               </span>
-              <span v-if="couponError"  class="coupon-error-tip">请选择开卡送优惠券</span>
+              <span v-if="couponError"  class="coupon-error-tip">{{$t('memberCard.couponErrorTip')}}</span>
             </div>
             <div
               v-if="ruleForm.couponType==='1'"
@@ -66,9 +66,15 @@
                     }}
                   </div>
                   <div class="coupon-center-number">
-                    {{ $t('memberCard.remaining') }}
-                    <span>{{item.surplus}}</span>
-                    {{ $t('memberCard.unitZhang') }}
+                    <div v-if="item.useConsumeRestrict>0">
+                      {{ $t('memberCard.remaining') }}
+                      <span>{{item.surplus}}</span>
+                      {{ $t('memberCard.unitZhang') }}
+                    </div>
+                    <div v-else>
+                      {{$t('memberCard.noLimitCoupon')}}
+                    </div>
+
                   </div>
                 </div>
                 <div
@@ -150,7 +156,7 @@ export default {
             this.ruleForm.valid = true
           } else {
             this.ruleForm.valid = false
-            this.$message.warning('请选择开卡送优惠券')
+            this.$message.warning(this.$t('memberCard.couponErrorTip'))
             this.couponError = true
           }
         } else {
@@ -175,7 +181,7 @@ export default {
       this.couponBack = this.ruleForm.couponIdList
     },
     handleCouponList (val) {
-      console.log('添加优惠券')
+      console.log('添加优惠券', val)
       // this.couponList = val
       this.ruleForm.couponList = val
       let res = val.map(({ id }) => id)
@@ -186,7 +192,7 @@ export default {
     handlToDelCouList (index) {
       console.log('删除优惠券', index)
       this.ruleForm.couponList.splice(index, 1)
-      this.ruleForm.couponIdList = this.couponList.map(({ id }) => id)
+      this.ruleForm.couponIdList = this.ruleForm.couponList.map(({ id }) => id)
     }
   }
 }

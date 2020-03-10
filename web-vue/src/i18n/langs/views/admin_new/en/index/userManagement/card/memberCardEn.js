@@ -291,5 +291,7 @@ export const en = {
   freeship: 'free ship',
   nolimitFreeship: 'vip',
   cardHolder: 'cardHolder',
-  timesFreeship: 'Times'
+  timesFreeship: 'Times',
+  noLimitCoupon: 'No limit',
+  couponErrorTip: 'Must choose.'
 }

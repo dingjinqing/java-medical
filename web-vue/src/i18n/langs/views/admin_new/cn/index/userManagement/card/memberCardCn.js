@@ -329,6 +329,7 @@ export const cn = {
   freeship: '包邮',
   nolimitFreeship: '不限制包邮次数',
   cardHolder: '持卡会员',
-  timesFreeship: '次包邮'
-
+  timesFreeship: '次包邮',
+  noLimitCoupon: '无库存限制',
+  couponErrorTip: '请选择开卡送优惠券'
 }
