@@ -52,7 +52,6 @@ import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.user.UserService;
 
 import lombok.extern.slf4j.Slf4j;
-import sun.plugin2.os.windows.FLASHWINFO;
 
 import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
 
