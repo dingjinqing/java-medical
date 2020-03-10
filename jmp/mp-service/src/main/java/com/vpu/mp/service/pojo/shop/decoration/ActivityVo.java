@@ -9,9 +9,7 @@ public class ActivityVo {
 	public Integer id;
 	public String actName;
 	public String type;
-<<<<<<< HEAD
 	public String actCode;
-=======
     /**
      * 优惠券有效期类型
      */
@@ -28,7 +26,6 @@ public class ActivityVo {
      * 优惠券有效分钟数
      */
     private Integer validityMinute;
->>>>>>> fd6040fcd... 优惠券链接 领取日期起有效期判断优化
 	public Timestamp startTime;
 	public Timestamp endTime;
 }
