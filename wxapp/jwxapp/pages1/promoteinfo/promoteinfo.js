@@ -60,8 +60,8 @@ global.wxPage({
     util.jumpLink("/pages/item/item?gid=" + goods_id);
   },
   // 券购搜索
-  to_cou_search: function () {
-    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
+  to_cou_search: function (e) {
+    var coupon_sn = e.currentTarget.dataset.coupon_sn;
     util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
   },
   // 好友助力列表
@@ -207,7 +207,7 @@ global.wxPage({
       userId: launch_user_id 
     })
   },
-  // 放弃分享
+  // 助力成功后放弃分享
   forgive_share: function (e) {
     if (e.currentTarget.dataset.ifshare == 1) {
       this.setData({
@@ -224,7 +224,7 @@ global.wxPage({
       that.onPullDownRefresh();
     }, 200);
   },
-  // 放弃发起
+  // 助力失败后放弃发起
   forgive_share_fail: function () {
     this.setData({
       promote_fail: 0,
