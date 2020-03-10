@@ -279,15 +279,15 @@
         >{{$t('pictureSetting.sure')}}</el-button>
       </span>
     </el-dialog>
-    <!--分享弹窗
+    <!--分享弹窗-->
     <el-dialog
       title="扫一扫分享给好友吧~"
       :visible.sync="shareVisible"
-      width="30%"
+      width="20%"
     >
       <div class="copyContainer">
         <img
-          src="http://mpdevimg2.weipubao.cn/upload/4748160/pictorial/4/T100P385_20200305172829.png"
+          :src="shareImageUrl"
           alt=""
           style="width:160px;height:160px"
           class="code_imgs"
@@ -297,10 +297,9 @@
         class="copyContainer"
         style="color:#999"
       >
-        下载海报码
+        下载二维码
       </div>
       <div class="copyContainer copyDiv">
-        <span>下载海报链接：</span>
         <el-input
           size="small"
           v-model="posterAddress"
@@ -312,7 +311,6 @@
         >复制</span>
       </div>
     </el-dialog>
-    -->
 
   </div>
 </template>
@@ -354,8 +352,10 @@ export default {
       pageIds: '',
       isBatch: 0,
       delPageId: '',
-      setRowData: ''
-
+      setRowData: '',
+      shareVisible: false, // 分享弹窗flag
+      posterAddress: '', // 路径
+      shareImageUrl: '' // 分享路径
     }
   },
   watch: {
@@ -608,6 +608,11 @@ export default {
       console.log(pageId)
       pegeShare(pageId).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          this.posterAddress = res.content.pagePath
+          this.shareImageUrl = res.content.imageUrl
+          this.shareVisible = true
+        }
       })
     },
     // 点击复制
@@ -800,6 +805,22 @@ export default {
           line-height: 28px;
         }
       }
+    }
+  }
+  .copyContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    /deep/ .el-input {
+      width: 220px;
+      margin-right: 5px;
+    }
+    .copy {
+      white-space: nowrap;
+      color: #5a8bff;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 }

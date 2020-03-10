@@ -7,7 +7,7 @@ export const en = {
   addBargain: 'create a bargaining activity',
   cutTimesSetTip1: 'Bargaining settings: Every day,each invited user can help bargain',
   times: 'times',
-  cutTimesSetTip2: 'When set to empty, there is no limit to the number of help bargains',
+  cutTimesSetTip2: 'When set to zero or empty, there is no limit to the number of help bargains',
   settingSave: 'Save Settings',
   bargainName: 'Bargaining activity name',
   bargainType: 'type of activity',
