@@ -15,6 +15,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.SpringProperties;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -157,7 +158,9 @@ public class UserExportService extends ShopBaseService{
 		if(UserExpCont.EXP_USER_CARD.equals(key)) {
 			// 会员卡
 			Record card = memDao.getOneMemberCard(vo.getUserId());
-			value = card.get(MEMBER_CARD.CARD_NAME);
+			if(card != null) {
+				value = card.get(MEMBER_CARD.CARD_NAME);
+			}
 		}else if(UserExpCont.EXP_USER_SOURCE.equals(key)) {
 			// 来源信息
 			MemberBasicInfoVo memberBasicInfoVo = memSvc.getMemberInfo(vo.getUserId());
