@@ -237,9 +237,9 @@
                     >
                       <i class="el-icon-plus"></i> {{ item.name }}
                     </el-button>
-                    <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-                    <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
-                    <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+                    <span v-if="index === 0">{{ $t('pledge.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('pledge.goodsTip2') }}</span>
+                    <span v-if="index === 1">{{ $t('pledge.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('pledge.goodsTip3') }}</span>
+                    <span v-if="index === 2">{{ $t('pledge.goodsTip1') }} {{ brandsInfo.length > 0 ? brandsInfo.length : 0 }} {{ $t('pledge.goodsTip4') }}</span>
                   </div>
                 </div>
 
@@ -278,17 +278,25 @@
       @BusClassTrueDetailData="busClassDialogResult"
       @backDataArr="commInfo"
     />
+    <!-- 选择商品品牌弹窗 -->
+    <AddBrandDialog
+      :callAddBrand.sync="tuneUpBrandDialog"
+      :brandBackData="brandsInfo"
+      @handleToGetBackData="returnGoodsBrandData"
+    />
   </div>
 </template>
 
 <script>
 import ImageDalog from '@/components/admin/imageDalog'
+import AddBrandDialog from '@/components/admin/addBrandDialog'
 import { pledgeList, addPledge, delPledge, editPledge, totalSwitch, oneSwitch } from '@/api/admin/basicConfiguration/servicePledge.js'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
     AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
-    ImageDalog
+    ImageDalog,
+    AddBrandDialog
   },
   data () {
     // var checkLevel = (rule, value, callback) => {
@@ -301,6 +309,10 @@ export default {
     //   }
     // }
     return {
+      // 选择商品品牌
+      tuneUpBrandDialog: false,
+      brandsInfoRow: [],
+      brandsInfo: [],
       tabValue: 'first',
       switchValue: '',
       tableData: [],
@@ -367,7 +379,7 @@ export default {
   },
   watch: {
     lang () {
-      this.storeArr = this.$t('shipping.storeArr')
+      this.storeArr = this.$t('pledge.storeArr')
     }
   },
   created () {
@@ -388,12 +400,21 @@ export default {
           this.commInfo = this.busClass
           break
         case 2:
-          this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
-          this.classFlag = 2
-          this.flag = 2
-          this.commInfo = this.platClass
+          this.tuneUpBrandDialog = !this.tuneUpBrandDialog
           break
       }
+    },
+    // 选择商品品牌
+    returnGoodsBrandData (row) {
+      this.brandsInfoRow = row
+      this.brandsInfo = []
+      this.brandsInfoRow.map((item, index) => {
+        console.log('item is what ??? ', item)
+        this.brandsInfo.push(item.id)
+      })
+      this.form.goodsBrandIds = this.brandsInfo
+      console.log('this.brandsInfo', this.brandsInfo)
+      console.log('this.brandsInfoRow', this.brandsInfoRow)
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
@@ -417,7 +438,7 @@ export default {
         this.busClassRow.map((item, index) => {
           this.busClass.push(item.sortId)
         })
-        this.form.goodsBrandIds = this.busClass
+        this.form.sortIds = this.busClass
         // this.busClassRow = []
         // this.busClass = []
       } else {
@@ -432,6 +453,7 @@ export default {
         // this.platClass = []
       }
     },
+
     clickTabs (tab, event) {
       console.log(tab, event)
       this.loadData()
@@ -584,8 +606,8 @@ export default {
       this.form.goodsBrandIds = row.goodsBrandIds
       this.form.sortIds = row.sortIds
       this.goodsInfo = row.goodsIds
-      this.busClass = row.goodsBrandIds
-      this.platClass = row.sortIds
+      this.brandsInfo = row.goodsBrandIds
+      this.busClass = row.sortIds
       if (row.type === this.$t('pledge.allGoods')) {
         this.form.type = 1
       }

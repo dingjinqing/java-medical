@@ -154,6 +154,12 @@ export default {
       })
     },
     selectionChangeHandle (rows) {
+      if (rows.length > 6) {
+        let nowClick = rows.pop()
+        this.$refs.addBargainTable.toggleRowSelection(nowClick)
+        this.$message.warning('只能添加6个活动商品')
+        return false
+      }
       this.selects = rows
     },
     currentClickHandle (row) {
