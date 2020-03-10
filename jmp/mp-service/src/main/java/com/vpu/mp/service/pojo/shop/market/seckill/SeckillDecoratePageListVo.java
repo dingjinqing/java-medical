@@ -18,7 +18,14 @@ public class SeckillDecoratePageListVo {
     private Integer skId;
     /** 活动名称 */
     private String name;
+    /**
+     * 当前活动库存
+     */
     private Integer stock;
+    /**
+     * 活动总库存
+     */
+    private Integer totalStock;
     private Integer saleNum;
     private Integer baseSale;
     private Byte status;

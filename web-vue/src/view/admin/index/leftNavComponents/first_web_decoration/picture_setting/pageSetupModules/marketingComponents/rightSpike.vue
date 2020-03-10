@@ -198,6 +198,7 @@ export default {
             goods_name: row.goodsName,
             goods_price: row.shopPrice,
             seckill_num: row.stock,
+            total_stock: row.totalStock,
             act_begin_time: row.startTime,
             act_status: row.status,
             is_on_sale: row.isOnSale,

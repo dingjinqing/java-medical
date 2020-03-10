@@ -132,12 +132,17 @@ public class SeckillService extends ShopBaseService{
             vo.setSaleNum(seckill.getSaleNum());
             vo.setStatus(seckill.getStatus());
             vo.setLimitAmount(seckill.getLimitAmount());
+            vo.setTotalStock(getTotalStock(bo.getSkId()));
 
             dataList.add(vo);
         }
 
         res.setDataList(dataList);
         return res;
+    }
+
+    private int getTotalStock(int skId){
+        return db().select(DSL.sum(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,SeckillPageListQueryParam param){
