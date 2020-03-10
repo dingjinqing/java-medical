@@ -282,5 +282,7 @@ export const en = {
   shareCodeFail: 'failed',
   copy: 'copy',
   downQrcode: 'download qrcode',
-  scanCode: 'Scan and share~'
+  scanCode: 'Scan and share~',
+  noLimitCoupon: 'No limit',
+  couponErrorTip: 'Must choose.'
 }
