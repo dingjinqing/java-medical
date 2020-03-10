@@ -124,12 +124,13 @@ public class UserExportService extends ShopBaseService{
 						Integer userId = (Integer)uExpMap.get(key);
 						model.setUserId(userId);
 					}else {
-						map.put(key, uExpMap.get(key));
+						Object obj = uExpMap.get(key);
+						if(obj == null) {
+							// 处理会员相关的其他数据信息
+							obj = dealWithOtherUserData(key,vo,language);
+						}
+						map.put(key, obj);
 					}
-				}else {
-					// 处理会员相关的其他数据信息
-					dealWithOtherUserData(map,key,vo,language);
-					logger().info("查询其他数据");
 				}
 			}
 			model.setOther(map);
@@ -149,7 +150,7 @@ public class UserExportService extends ShopBaseService{
 	 * @param key
 	 * @param vo
 	 */
-	private void dealWithOtherUserData(Map<String, Object> map, String key, UserExpVo vo,String language) {
+	private Object dealWithOtherUserData(String key, UserExpVo vo,String language) {
 		
 		Object value = null;
 		MemberDetailsVo detailsVo = memSvc.getMemberInfoById(vo.getUserId(),language);
@@ -183,7 +184,7 @@ public class UserExportService extends ShopBaseService{
 			value = dealWithDistributorInfo(detailsVo.getTransStatistic(),key);
 		}
 		
-		map.put(key, value);
+		return value;
 		
 	}
 
