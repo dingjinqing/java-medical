@@ -240,7 +240,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/couponpackage/couponpackage?pack_id='
+                this.path = 'pages1/couponpackage/couponpackage?packId='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
