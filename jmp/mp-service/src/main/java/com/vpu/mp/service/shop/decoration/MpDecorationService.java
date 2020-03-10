@@ -195,7 +195,7 @@ public class MpDecorationService extends ShopBaseService {
     public WxAppPageVo getPageInfo(WxAppPageParam param) {
         XcxCustomerPageRecord record = null;
         Integer pageId = param.getPageId();
-        String pageContent = null;
+        String pageContent;
         if (pageId == null || pageId == 0) {
             if(StringUtil.isNotEmpty(param.getScene())){
                 //scene的格式有：
@@ -211,12 +211,15 @@ public class MpDecorationService extends ShopBaseService {
                     String[] sceneParam = scene.split("=",2);
                     pageId =  Integer.valueOf(sceneParam[1]);
                     record = getPageById(pageId);
-                    if(sceneParam[0] == "page_id"){
+                    if("page_id".equals(sceneParam[0])){
                         //页面预览
                         pageContent = record.getPageContent();
-                    }else if(sceneParam[0] == "page"){
+                    }else if("page".equals(sceneParam[0])){
                         //页面分享
                         pageContent = record.getPagePublishContent();
+                    }else{
+                        logger().error("未知scene");
+                        pageContent = null;
                     }
 
                 }else {
