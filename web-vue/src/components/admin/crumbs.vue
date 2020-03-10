@@ -5,11 +5,34 @@
   >
     <span @click="handleToClickCrumb(titleLeft,true)">{{titleLeft}}</span>
     <span
-      @click="handleToClickCrumb(item)"
-      :style="index===2?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
+      @click="handleToClickCrumb(item,false,index)"
+      :style="index===(titleList.length-1)?'cursor:auto;text-decoration: none;color:#666;':'color:#666;'"
       v-for="(item,index) in titleList"
       :key="index"
     ><i v-if="index !==0"> / {{item}}</i></span>
+    <span class="showLink">
+      <el-link
+        v-if="$route.name == 'pin_integration'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >瓜分积分使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'friend_pay'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >好用代付使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'formStatistical'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=65&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >表单统计使用教程</el-link>
+    </span>
   </div>
 </template>
 <script>
@@ -19,7 +42,8 @@ export default {
       titleLeft: '',
       titleList: '',
       lang: '',
-      isSurvey: true // 若是概况里的商城概览则隐藏面包屑
+      isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
+      isLink: false // 瓜分积分显示的一个跳转链接
     }
   },
   watch: {
@@ -27,8 +51,8 @@ export default {
       console.log(newData)
       this.changeText()
     },
-    '$route.name' (newData) {
-      console.log(newData)
+    '$route.name' (newData, oldData) {
+      console.log(newData, oldData)
       this.changeText(newData)
     },
     '$store.state.crumbs.cardholderData' (newData) {
@@ -56,6 +80,11 @@ export default {
         } else {
           this.isSurvey = true
         }
+        // if (routeName === 'pin_integration' || routeName === 'friend_pay') {
+        //   this.isLink = true
+        // } else {
+        //   this.isLink = false
+        // }
       }
       // console.log(this.$t(`${this.$route.meta.crumbTitle}`))
       let data = JSON.parse(JSON.stringify(this.$t(this.$route.meta.crumbTitle)))
@@ -173,15 +202,25 @@ export default {
       this.titleList = data.concat(this.titleList)
       console.log(data, this.titleList)
     },
-    handleToClickCrumb (name, flag) {
-      console.log(this.titleList.length)
+    handleToClickCrumb (name, flag, index) {
+      console.log(name, flag)
       if (this.titleList.length < 3) return
+      if (index === (this.titleList.length - 1)) return
       if (flag) {
         if (this.$route.meta.meta === 'user_manger') {
           this.$router.push({
             name: this.$route.meta.category
           })
+        } else if (this.$route.name === 'addBrand') {
+          this.$router.push({
+            name: 'brand'
+          })
+        } else if (this.$route.name === 'store_storemanage_reservation') {
+          this.$router.push({
+            name: 'store_list'
+          })
         } else {
+          console.log(this.$route)
           this.$router.push({
             name: this.$route.meta.meta
           })
@@ -193,10 +232,54 @@ export default {
           this.$router.push({
             name: this.$route.meta.category
           })
-        } else {
+        } else if (this.$route.name === 'formDecorationHome') {
+          console.log(this.$route)
           this.$router.push({
-            name: this.$route.meta.meta
+            name: 'formStatistical'
           })
+        } else if (this.$route.name === 'feedbackList') {
+          console.log(this.$route)
+          this.$router.push({
+            name: 'formStatistical'
+          })
+        } else if (this.$route.name === 'feedbackDetails') {
+          console.log(name)
+          if (name === '反馈列表') {
+            this.$router.push({
+              name: 'feedbackList'
+            })
+          } else if (name === '表单统计') {
+            this.$router.push({
+              name: 'formStatistical'
+            })
+          }
+          // this.$router.push({
+          //   name: 'feedbackDetails'
+          // ordinary_coupon_receive_details
+          // })
+        } else if (this.$route.name === 'ordinary_coupon_receive_details') {
+          this.$router.push({
+            name: 'ordinary_coupon'
+          })
+        } else if (this.$route.name === 'addBrand') {
+          this.$router.push({
+            name: 'brand'
+          })
+        } else if (this.$route.name === 'store_storemanage_reservation') {
+          this.$router.push({
+            name: 'store_list'
+          })
+        } else {
+          console.log(this.$route)
+          if (name === '表单统计') {
+            this.$router.push({
+              name: 'formStatistical'
+            })
+          } else {
+            this.$router.push({
+              name: this.$route.meta.meta
+            })
+          }
         }
       }
       console.log(name, this.$route)
@@ -212,6 +295,7 @@ export default {
   padding-left: 25px;
   color: #333;
   background: #fff;
+  overflow: hidden;
 }
 .canClick {
   span {
@@ -220,5 +304,12 @@ export default {
       text-decoration: underline;
     }
   }
+}
+.showLink {
+  float: right;
+  margin-right: 2%;
+}
+.crumbs-right {
+  float: right;
 }
 </style>
