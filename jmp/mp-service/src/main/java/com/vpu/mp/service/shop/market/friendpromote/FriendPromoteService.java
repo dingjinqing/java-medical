@@ -628,6 +628,10 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setCustomShareWord(record.getCustomShareWord());
         promoteInfo.setShareImgType(record.getShareImgType());
         promoteInfo.setCustomImgPath(record.getCustomImgPath());
+        //设置奖励倒计时
+        promoteInfo.setRewardDuration(record.getRewardDuration());
+        promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
+        promoteInfo.setRewardSpurTime(promoteDurationSec(record.getRewardDurationUnit(),record.getRewardDuration()));
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());

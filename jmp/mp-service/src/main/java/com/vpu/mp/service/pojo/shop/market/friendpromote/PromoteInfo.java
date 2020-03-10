@@ -89,4 +89,6 @@ public class PromoteInfo {
     private Integer rewardDuration;
     /** 奖励有效期单位 */
     private Byte rewardDurationUnit;
+    /** 奖励倒计时 */
+    private Long rewardSpurTime;
 }
