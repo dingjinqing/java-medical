@@ -36,23 +36,27 @@
               size="small"
               v-model="form.name"
               style="width: 170px"
+              placeholder="请输入活动名称"
             ></el-input>
           </el-col>
         </el-form-item>
         <el-form-item
           :label="$t('groupBuy.activtiyLevel') + '：'"
-          prop="name"
+          prop="level"
         >
-          <el-col :span="8">
-            <el-input-number
+          <el-col :span="12">
+            <el-input
               v-model="form.level"
               controls-position="right"
-              :min="0"
+              style="width:170px"
+              size="small"
+              placeholder="请输入活动名称"
             >
-            </el-input-number>
+            </el-input>
             <div class="prompt">
               {{$t('groupBuy.activtiyLevelComment')}}
             </div>
+            <!-- <span>用于区分不同拼团活动的优先级，请填写正整数，数值越大优先级越高</span> -->
           </el-col>
         </el-form-item>
         <el-form-item
@@ -636,12 +640,22 @@ export default {
       }
       callback()
     }
+    var levelValid = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (value === '') {
+        return callback(new Error('请输入活动优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
     return {
       // from 表单数据
       form: {
         id: null,
         name: '',
-        level: 0,
+        level: '',
         goodsId: '',
         limitAmount: 2,
         joinLimit: 0,
@@ -671,6 +685,10 @@ export default {
         name: [
           { required: true, message: this.$t('groupBuy.activityNameRequiredRules'), trigger: 'blur' },
           { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
+        ],
+        level: [
+          { required: true, validator: levelValid, trigger: ['blur', 'change'] }
+          // { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
         ],
         goodsId: [
           { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
