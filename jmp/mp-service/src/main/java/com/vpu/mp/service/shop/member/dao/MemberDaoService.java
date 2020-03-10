@@ -18,8 +18,10 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
@@ -34,6 +36,7 @@ import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
 import org.jooq.SortField;
+import org.jooq.Table;
 import  org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.TagService;
@@ -217,6 +221,21 @@ public class MemberDaoService extends ShopBaseService {
 	}
 	
 	/**
+	 * 获取用户其中的一张卡，改卡的顺序为等级卡》限次卡》普通卡
+	 * @param userIds
+	 * @return List<UserExpCardVo> 用户卡信息列表 || null
+	 */
+	public Map<Integer, UserExpCardVo> getUserOneCard(List<Integer> userIds) {
+		if(userIds == null || userIds.size()==0) {
+			return null;
+		}
+		List<Integer> inDate = userCardService.useInDate();
+		Map<Integer, UserExpCardVo>  res = getMemberCardSql(inDate,userIds);
+		return res;
+	}
+	
+	
+	/**
 	 * 获取用户的所有可用会员卡
 	 */
 	public Result<Record> getAllAvailableMemberCard(Integer userId) {
@@ -243,6 +262,28 @@ public class MemberDaoService extends ShopBaseService {
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
 
+	private Map<Integer, UserExpCardVo> getMemberCardSql(List<Integer> inData, List<Integer> userIds) {
+		// 防止mysql5.7groupby对之前的order by不生效
+		int count = db().fetchCount(USER_CARD);
+		Table<?> nested = db()
+						.select(USER_CARD.USER_ID,USER_CARD.CARD_ID,MEMBER_CARD.CARD_NAME)
+						.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+						.where(USER_CARD.USER_ID.in(userIds)
+								.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+								.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
+								.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+										.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))))
+						.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc())
+						.limit(count)
+						.asTable("nested");
+		
+		Map<Integer, UserExpCardVo> res = db().select(nested.field("user_id"),DSL.max(nested.field("card_id")).as("card_id"),
+					DSL.max(nested.field("card_name")).as("card_name"))
+					.from(nested)
+					.groupBy(nested.field("user_id"))
+					.fetchMap(nested.field("user_id").cast(Integer.class), UserExpCardVo.class);
+		return res;
+	}
 	
 	
 	/**

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExcelModel;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCont;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
@@ -117,9 +119,20 @@ public class UserExportService extends ShopBaseService{
 		
 		//	查询数据库
 		List<UserExpVo> data = memDao.getExportAllUserList(mParam);
+		List<Integer> userIds = null;
+		if(data != null) {
+			userIds = data.stream().map(UserExpVo::getUserId).collect(Collectors.toList());
+		}
+		//  用户持有的会员卡<userId,value>
+		Map<Integer, UserExpCardVo> userCardMap = null;
+		List<String> columns = param.getColumns();
+		if(columns != null && columns.contains(UserExpCont.EXP_USER_CARD)) {
+			// 导出会员卡内容，则需要提前准备好数据
+			userCardMap = memDao.getUserOneCard(userIds);
+		}
 		
 		List<UserExcelModel> excelModel = new ArrayList<>();
-		List<String> columns = param.getColumns();
+		
 		for(UserExpVo vo: data) {
 			Map<String, Object> uExpMap = changeUserExpVo2Map(vo);
 			MemberDetailsVo detailsVo = memSvc.getMemberInfoById(vo.getUserId(),language);
@@ -137,7 +150,7 @@ public class UserExportService extends ShopBaseService{
 						Object obj = uExpMap.get(key);
 						if(obj == null) {
 							// 处理会员相关的其他数据信息
-							obj = dealWithOtherUserData(key,vo,language,detailsVo);
+							obj = dealWithOtherUserData(key,vo,language,detailsVo,userCardMap);
 						}
 						map.put(key, obj);
 					}
@@ -156,19 +169,17 @@ public class UserExportService extends ShopBaseService{
 	
 	/**
 	 * 获取用户导出的详细信息
-	 * @param map
-	 * @param key
-	 * @param vo
-	 * @param detailsVo2 
 	 */
-	private Object dealWithOtherUserData(String key, UserExpVo vo,String language, MemberDetailsVo detailsVo) {
+	private Object dealWithOtherUserData(String key, UserExpVo vo,String language, MemberDetailsVo detailsVo, Map<Integer, UserExpCardVo> userCardMap) {
 		
 		Object value = null;
 		if(UserExpCont.EXP_USER_CARD.equals(key)) {
 			// 会员卡
-			Record card = memDao.getOneMemberCard(vo.getUserId());
-			if(card != null) {
-				value = card.get(MEMBER_CARD.CARD_NAME);
+			if(userCardMap != null) {
+				UserExpCardVo card = userCardMap.get(vo.getUserId());
+				if(card != null) {
+					value = card.getCardName();
+				}
 			}
 		}else if(UserExpCont.EXP_USER_SOURCE.equals(key)) {
 			// 来源信息

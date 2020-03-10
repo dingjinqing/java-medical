@@ -65,6 +65,12 @@ public class UserExpVo {
 	private String userSource;
 	
 	/**
+	 * 用户来源Id
+	 */
+	private Integer source;
+	
+	
+	/**
 	 * 	注册时间
 	 */
 	@ExcelColumn(columnName=JsonResultMessage.UEXP_CREATE_TIME)
@@ -189,5 +195,8 @@ public class UserExpVo {
 	@ExcelColumn(columnName=JsonResultMessage.UEXP_GROUP_NAM)
 	@JsonProperty(value=UserExpCont.EXP_GROUP_NAME,index=24)
 	private String groupName;
+	
+	
+
 
 }

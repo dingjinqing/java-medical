@@ -41,7 +41,7 @@ public class UserExpColNameI18n implements IDymicColNameI18n {
 			Field[] fields = clazz.getDeclaredFields();
 			for(Field field: fields) {
 				JsonProperty jsonAnno = field.getAnnotation(JsonProperty.class);
-				if(jsonAnno != null || !StringUtils.isBlank(jsonAnno.value())) {
+				if(jsonAnno != null && !StringUtils.isBlank(jsonAnno.value())) {
 					ExcelColumn excelColAnno = field.getAnnotation(ExcelColumn.class);
 					if(excelColAnno != null) {
 						userExpAttrMap.put(jsonAnno.value(), excelColAnno.columnName());
