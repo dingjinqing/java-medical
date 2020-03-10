@@ -198,7 +198,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/getcoupon/getcoupon?code='
+                this.path = 'pages/getCoupon/getCoupon?code='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
