@@ -86,11 +86,10 @@ export function pageEditSave (data) {
   })
 }
 
-// 编辑保存页面信息
-export function pageAhare (data) {
+// 页面装修分享
+export function pegeShare (data) {
   return service({
-    url: '/api/admin/decorate/page/share',
-    method: 'post',
-    data: data
+    url: `api/admin/decorate/page/share?pageId=${data}`,
+    method: 'get'
   })
 }

@@ -317,7 +317,7 @@
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pageAhare } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pegeShare } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -606,7 +606,7 @@ export default {
     // 点击分享
     handleOperation ({ pageId }) {
       console.log(pageId)
-      pageAhare({ pageId: pageId }).then(res => {
+      pegeShare(pageId).then(res => {
         console.log(res)
       })
     },
