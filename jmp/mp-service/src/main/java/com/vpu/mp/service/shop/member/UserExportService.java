@@ -113,7 +113,7 @@ public class UserExportService extends ShopBaseService{
 		List<String> columns = param.getColumns();
 		for(UserExpVo vo: data) {
 			Map<String, Object> uExpMap = changeUserExpVo2Map(vo);
-		
+			MemberDetailsVo detailsVo = memSvc.getMemberInfoById(vo.getUserId(),language);
 			//	创建UserExcelModel
 			UserExcelModel model = new UserExcelModel();
 			Map<String,Object> map = new LinkedHashMap<>();
@@ -128,7 +128,7 @@ public class UserExportService extends ShopBaseService{
 						Object obj = uExpMap.get(key);
 						if(obj == null) {
 							// 处理会员相关的其他数据信息
-							obj = dealWithOtherUserData(key,vo,language);
+							obj = dealWithOtherUserData(key,vo,language,detailsVo);
 						}
 						map.put(key, obj);
 					}
@@ -150,11 +150,11 @@ public class UserExportService extends ShopBaseService{
 	 * @param map
 	 * @param key
 	 * @param vo
+	 * @param detailsVo2 
 	 */
-	private Object dealWithOtherUserData(String key, UserExpVo vo,String language) {
+	private Object dealWithOtherUserData(String key, UserExpVo vo,String language, MemberDetailsVo detailsVo) {
 		
 		Object value = null;
-		MemberDetailsVo detailsVo = memSvc.getMemberInfoById(vo.getUserId(),language);
 		if(UserExpCont.EXP_USER_CARD.equals(key)) {
 			// 会员卡
 			Record card = memDao.getOneMemberCard(vo.getUserId());
