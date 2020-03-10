@@ -220,9 +220,7 @@ public class EsBaseSearchService extends ShopBaseService {
         }
         QueryBuilder queryBuilder = assemblySearchBuilder(param.getSearchList());
         sourceBuilder.query(queryBuilder);
-        if( null != param.getSort() ){
-            sourceBuilder.sort(param.getSort().getSortName(),param.getSort().getSortOrder());
-        }
+
         if( param.isQueryByPage() ){
             Integer totalRow =  assemblyPage(sourceBuilder,indexName);
             Page page = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());
@@ -233,6 +231,9 @@ public class EsBaseSearchService extends ShopBaseService {
                 from = page.getTotalRows();
             }
             sourceBuilder.from( from ).size( size );
+        }
+        if( null != param.getSort() ){
+            sourceBuilder.sort(param.getSort().getSortName(),param.getSort().getSortOrder());
         }
         if( param.getFactList() != null ){
             assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);
