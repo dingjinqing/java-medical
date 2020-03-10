@@ -7,7 +7,7 @@ export const cn = {
   addBargain: '添加砍价活动',
   cutTimesSetTip1: '砍价设置：每个被邀请的用户，单日可帮助砍价',
   times: '次',
-  cutTimesSetTip2: '设置为空时，不限制帮助砍价次数',
+  cutTimesSetTip2: '设置为0或空时，不限制帮助砍价次数',
   settingSave: '保存设置',
   bargainName: '砍价活动名称',
   bargainType: '活动类型',
