@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.member;
 
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +24,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExcelModel;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCont;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
@@ -37,6 +46,10 @@ import com.vpu.mp.service.shop.member.excel.UserExpColNameI18n;
 public class UserExportService extends ShopBaseService{
 	@Autowired
 	private MemberDaoService memDao;
+	@Autowired
+	private MemberService memSvc;
+	@Autowired
+	public AddressService adrSvc;
 	@Autowired
 	private UserExpCfgService uExpCfgSvc;
 	/**
@@ -113,7 +126,7 @@ public class UserExportService extends ShopBaseService{
 			UserExcelModel model = new UserExcelModel();
 			Map<String,Object> map = new LinkedHashMap<>();
 			for(String key: columns) {
-				// TODO	直接获取的数据
+				// 	直接获取的数据
 				if(uExpMap.containsKey(key)) {
 					if(firstColName!=null && firstColName.equals(key)){
 						//	目前excel默认了userId为第一项固定值
@@ -123,7 +136,8 @@ public class UserExportService extends ShopBaseService{
 						map.put(key, uExpMap.get(key));
 					}
 				}else {
-					// TODO	进一步需要处理的数据
+					// 处理会员相关的其他数据信息
+					dealWithOtherUserData(map,key,vo,language);
 					logger().info("查询其他数据");
 				}
 			}
@@ -138,6 +152,88 @@ public class UserExportService extends ShopBaseService{
 		return workbook;
 	}
 	
+	/**
+	 * 获取用户导出的详细信息
+	 * @param map
+	 * @param key
+	 * @param vo
+	 */
+	private void dealWithOtherUserData(Map<String, Object> map, String key, UserExpVo vo,String language) {
+		
+		Object value = null;
+		MemberDetailsVo detailsVo = memSvc.getMemberInfoById(vo.getUserId(),language);
+		if(UserExpCont.EXP_USER_CARD.equals(key)) {
+			// 会员卡
+			Record card = memDao.getOneMemberCard(vo.getUserId());
+			value = card.get(MEMBER_CARD.CARD_NAME);
+		}else if(UserExpCont.EXP_USER_SOURCE.equals(key)) {
+			// 来源信息
+			MemberBasicInfoVo memberBasicInfoVo = memSvc.getMemberInfo(vo.getUserId());
+			MemberInfoVo memberInfoVo = new MemberInfoVo();
+			FieldsUtil.assignNotNull(memberBasicInfoVo, memberInfoVo);
+			value = memSvc.getSourceName(language,memberInfoVo);
+		}else if(UserExpCont.EXP_USER_ADDRESS.equals(key)) {
+			// 地址,取其中一个
+			List<String> adds = detailsVo.getMemberBasicInfo().getAddressList();
+			if(adds != null && adds.size()>0) {
+				value = adds.get(0);
+			}
+		}else if(UserExpCont.EXP_INVITE_USER_NAME.equals(key)) {
+			// 邀请人昵称
+			value  = detailsVo.getMemberBasicInfo().getInviteUserName();
+		}else if(UserExpCont.EXP_INVITE_MOBILE.equals(key)) {
+			// 邀请人手机
+			value = detailsVo.getMemberBasicInfo().getInviteUserMobile();
+		}else if(UserExpCont.EXP_INVITE_GROUP_NAME.equals(key)){
+			// 邀请人分销员分组
+			value = detailsVo.getMemberBasicInfo().getInviteGroupName();
+		}else {
+			// 处理分销的信息
+			value = dealWithDistributorInfo(detailsVo.getTransStatistic(),key);
+		}
+		
+		map.put(key, value);
+		
+	}
+
+	private Object dealWithDistributorInfo(MemberTransactionStatisticsVo details, String key) {
+		Object value = null;
+		if(UserExpCont.EXP_REBATE_ORDER_NUM.equals(key)) {
+			// 获返利订单数量
+			value = details.getRebateOrderNum();
+		}else if(UserExpCont.EXP_CALCULATE_MONEY.equals(key)) {
+			// 返利商品总金额
+			value = details.getTotalCanFanliMoney();
+		}else if(UserExpCont.EXP_REBATE_MONEY.equals(key)) {
+			// 获返利订单佣金总额
+			value = details.getRebateMoney();
+		}else if(UserExpCont.EXP_WITHDRAW_MONEY.equals(key)) {
+			// 已提现佣金总额
+			value = details.getWithdrawCash();
+		}else if(UserExpCont.EXP_SUBLAYER_NUMBER.equals(key)) {
+			// 下级用户数
+			value = details.getSublayerNumber();
+		}else if(UserExpCont.EXP_LEVEL_NAME.equals(key)) {
+			// 分销员等级
+			value = details.getLevelName();
+		}else if(UserExpCont.EXP_GROUP_NAME.equals(key)) {
+			// 分销员分组
+			value = details.getGroupName();
+		}else if(UserExpCont.EXP_ORDER .equals(key)) {
+			// 累计消费单数
+			value = details.getOrderNum();
+		}else if(UserExpCont.EXP_RETURN_ORDER_MONEY.equals(key)) {
+			// 累计退款金额
+			value = details.getReturnOrderMoney();
+		}else if(UserExpCont.EXP_RETURN_ORDER.equals(key)) {
+			// 累计退款订单数
+			value = details.getReturnOrderNum();
+		}
+		return value;
+		
+	}
+
+
 	public Map<String, Object> changeUserExpVo2Map(UserExpVo vo) {
 		Map<String,Object> map = new HashMap<>();
 		Field[] fields = vo.getClass().getDeclaredFields();
@@ -171,7 +267,7 @@ public class UserExportService extends ShopBaseService{
 		ObjectNode ob = mapper.createObjectNode();
 		JsonNode ars = mapper.valueToTree(getAllExportCfg());
 		ob.set(ALL_CFG, ars);
-		//TODO 从数据取数据
+		// 从数据取数据
 		JsonNode cfg = mapper.valueToTree(uExpCfgSvc.getUserExpCfg());
 		ob.set(CHOOSED_CFG, cfg);
 		//	设置允许导出最大数量

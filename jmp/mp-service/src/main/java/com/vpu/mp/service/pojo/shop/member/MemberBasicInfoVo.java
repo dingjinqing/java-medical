@@ -48,6 +48,14 @@ public class MemberBasicInfoVo {
 	
 	/** 邀请人昵称 */
 	private String inviteUserName;
+	/**
+	 *	邀请人手机
+	 */
+	private String inviteUserMobile;
+	/**
+	 * 邀请人分销分组名称
+	 */
+	private String inviteGroupName;
 	/** 邀请人id */
 	private String inviteId;
 	

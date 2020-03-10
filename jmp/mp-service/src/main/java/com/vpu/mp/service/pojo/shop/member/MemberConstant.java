@@ -14,6 +14,7 @@ public class MemberConstant {
 	/** 允许登录 */
 	public static final Byte LOGIN_PERMIT = 0;
 	public static final String INVITE_USERNAME = "inviteUserName";
+	public static final String INVITE_MOBILE = "inviteUserMobile";
 	
 	/** 用于计算时间范围 */
 	public static final int MONTH_DAYS = 30;
