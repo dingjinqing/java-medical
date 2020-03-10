@@ -1262,7 +1262,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false));
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,launchUserId,param.getLaunchId(),promoteValue);
+        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,launchUserId,param.getUserId(),param.getLaunchId(),promoteValue);
         //发送消息
         FriendPromoteSelectVo messageVo = new FriendPromoteSelectVo();
         messageVo.setId(launchInfo.getId());
@@ -1325,7 +1325,7 @@ public class FriendPromoteService extends ShopBaseService {
      * @param promoteValue 助力值
      * @return
      */
-    public AtomicReference<Integer> friendPromote(PromoteInfo promoteInfo, Integer userId, Integer launchId, Integer promoteValue){
+    public AtomicReference<Integer> friendPromote(PromoteInfo promoteInfo, Integer launchUserId,Integer userId, Integer launchId, Integer promoteValue){
         logger().info("开始助力，助力用户为："+userId);
         logger().info("发起活动为："+launchId);
         logger().info("助力值为："+promoteValue);
@@ -1344,8 +1344,8 @@ public class FriendPromoteService extends ShopBaseService {
                         CouponInfo couponInfo = getCouponById(promoteInfo.getRewardContent().getRewardIds());
                         CouponGiveQueueParam param = new CouponGiveQueueParam();
                         List<Integer> userList = new ArrayList<>();
-                        userList.add(userId);
-                        logger().info("用户编号为："+userId);
+                        userList.add(launchUserId);
+                        logger().info("用户编号为："+launchUserId);
                         logger().info("用户集合为："+userList);
                         param.setUserIds(userList);
                         param.setCouponArray(new String[]{couponInfo.getCouponId().toString()});
@@ -1377,7 +1377,7 @@ public class FriendPromoteService extends ShopBaseService {
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
                             Integer day = durationSec.intValue()/(24*60*60);
                             //奖励入库
-                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(userId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
                             if (prizeRecordRecord==null){
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
