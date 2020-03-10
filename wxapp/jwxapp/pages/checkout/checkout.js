@@ -621,7 +621,7 @@ global.wxPage({
       this.getMust(params)
       util.api(
         '/api/wxapp/order/submit',
-        res => {
+       async res => {
           if (res.error === 0) {
             let { orderSn } = res.content
             if (this.data.insteadPayNum !== null && this.data.choosePayType === 2) {
@@ -633,15 +633,22 @@ global.wxPage({
                 package: res.content.webPayVo.package,
                 signType: 'MD5',
                 paySign: res.content.webPayVo.paySign,
-                success: res => {
+                success: async res => {
                   util.toast_success('支付成功')
-                  util.jumpLink(
-                    `pages1/payment/payment${this.getUrlParams({
-                      orderSn,
-                      useInfo: JSON.stringify({ ...this.data.usePayInfo })
-                    })}`,
-                    'redirectTo'
-                  )
+                  if(activityType === 8){
+                    let groupInfo = await this.requestGroupDraw(orderSn)
+                    console.log(groupInfo)
+                    if(!groupInfo) return
+                    util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
+                  } else {
+                    util.jumpLink(
+                      `pages1/payment/payment${this.getUrlParams({
+                        orderSn,
+                        useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                      })}`,
+                      'redirectTo'
+                    )
+                  }
                 },
                 fail: res => {
                   console.log(res)
@@ -650,13 +657,20 @@ global.wxPage({
                 complete: res => { }
               })
             } else {
-              util.jumpLink(
-                `pages1/payment/payment${this.getUrlParams({
-                  orderSn,
-                  useInfo: JSON.stringify({ ...this.data.usePayInfo })
-                })}`,
-                'redirectTo'
-              )
+              if(activityType === 8){
+                let groupInfo = await this.requestGroupDraw(orderSn)
+                console.log(groupInfo)
+                if(!groupInfo) return
+                util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
+              } else {
+                util.jumpLink(
+                  `pages1/payment/payment${this.getUrlParams({
+                    orderSn,
+                    useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                  })}`,
+                  'redirectTo'
+                )
+              }
             }
           } else {
             util.showModal('提示', res.message, function () {
@@ -685,6 +699,29 @@ global.wxPage({
       insteadPayNum: e.detail.type
     })
     this.confirmOrder()
+  },
+  // 请求拼团抽奖订单详情
+  requestGroupDraw(orderSn){
+    return new Promise(resolve=>{
+      util.api('/api/wxapp/groupdraw/info/ordersn',res=>{
+        console.log(res)
+        if(res.error === 0 && res.content){
+          let {activityId,activityType,groupId} = res.content
+          resolve({activityId,activityType,groupId}) 
+        } else {
+          util.jumpLink(
+            `pages1/payment/payment${this.getUrlParams({
+              orderSn,
+              useInfo: JSON.stringify({ ...this.data.usePayInfo })
+            })}`,
+            'redirectTo'
+          )
+          resolve(false)
+        }
+      },{
+        orderSn
+      })
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
