@@ -36,8 +36,8 @@ global.wxPage({
     if (options.couponSn) {
       couponSn = options.couponSn
       // 个人中心查看详情
-      util.api("api/wxapp/coupon/detail",function(res){
-        if(res.error == 0){
+      util.api("api/wxapp/coupon/detail", function (res) {
+        if (res.error == 0) {
           _this.initHandler(res, 0)
         } else {
           util.toast_fail('操作失败');
@@ -47,12 +47,12 @@ global.wxPage({
             })
           }, 2000);
         }
-      },{couponSn:options.couponSn})
-    } 
+      }, { couponSn: options.couponSn })
+    }
   },
 
   // 优化数据
-  initHandler: function(res, type) {
+  initHandler: function (res, type) {
     var _this = this;
     // 是否过期
     var time_now = util.formatTime(new Date);
@@ -155,7 +155,7 @@ global.wxPage({
           } else {
             util.toast_fail('领取失败');
           }
-        }, { 
+        }, {
           couponId: d.coupon_id,
         })
       }
@@ -230,5 +230,5 @@ global.wxPage({
       url: '/pages/index/index',
     })
   }
-  
+
 })

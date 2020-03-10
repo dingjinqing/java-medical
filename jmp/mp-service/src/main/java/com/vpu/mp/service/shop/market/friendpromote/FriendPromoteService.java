@@ -26,7 +26,6 @@ import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
-import org.simpleflatmapper.reflect.primitive.IntGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -340,10 +340,10 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @param
 	 * @return
 	 */
-	public List<FriendPromoteSelectVo> selectOne(FriendPromoteSelectParam param) {
+	public FriendPromoteSelectVo selectOne(FriendPromoteSelectParam param) {
 
-		List<FriendPromoteSelectVo> vo = db().select().from(fpa).where(fpa.ID.eq(param.getId()))
-				.fetchInto(FriendPromoteSelectVo.class);
+		FriendPromoteSelectVo vo = db().select().from(fpa).where(fpa.ID.eq(param.getId()))
+				.fetchOneInto(FriendPromoteSelectVo.class);
 
 		return vo;
 	}
@@ -1262,7 +1262,7 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false));
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        friendPromote(promoteInfo,param.getUserId(),param.getLaunchId(),promoteValue);
+        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,launchUserId,param.getUserId(),param.getLaunchId(),promoteValue);
         //发送消息
         FriendPromoteSelectVo messageVo = new FriendPromoteSelectVo();
         messageVo.setId(launchInfo.getId());
@@ -1286,6 +1286,7 @@ public class FriendPromoteService extends ShopBaseService {
         Byte canShareTimes = canShareTimes(record.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
         promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
 
+        promoteVo.setRewardRecordId(rewardRecordId);
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
         promoteVo.setCanShare(canShareTimes);
@@ -1322,16 +1323,19 @@ public class FriendPromoteService extends ShopBaseService {
      * @param userId 帮忙助力用户id
      * @param launchId 发起id
      * @param promoteValue 助力值
+     * @return
      */
-    public void friendPromote(PromoteInfo promoteInfo,Integer userId,Integer launchId,Integer promoteValue){
+    public AtomicReference<Integer> friendPromote(PromoteInfo promoteInfo, Integer launchUserId,Integer userId, Integer launchId, Integer promoteValue){
         logger().info("开始助力，助力用户为："+userId);
         logger().info("发起活动为："+launchId);
         logger().info("助力值为："+promoteValue);
+        AtomicReference<Integer> rewardRecordId = new AtomicReference<>();
             this.transaction(()->{
                 db().insertInto(FRIEND_PROMOTE_DETAIL,FRIEND_PROMOTE_DETAIL.LAUNCH_ID,FRIEND_PROMOTE_DETAIL.USER_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE)
                     .values(launchId,userId,promoteInfo.getId(),promoteValue)
                     .execute();
                 Integer lastId = db().lastID().intValue();
+                rewardRecordId.set(lastId);
                 if (promoteInfo.getHasPromoteTimes()+1>=promoteInfo.getPromoteTimes()||promoteInfo.getHasPromoteValue()+promoteValue>=promoteInfo.getPromoteAmount().intValue()){
                     //助力状态
                     Byte promoteStatus;
@@ -1340,8 +1344,8 @@ public class FriendPromoteService extends ShopBaseService {
                         CouponInfo couponInfo = getCouponById(promoteInfo.getRewardContent().getRewardIds());
                         CouponGiveQueueParam param = new CouponGiveQueueParam();
                         List<Integer> userList = new ArrayList<>();
-                        userList.add(userId);
-                        logger().info("用户编号为："+userId);
+                        userList.add(launchUserId);
+                        logger().info("用户编号为："+launchUserId);
                         logger().info("用户集合为："+userList);
                         param.setUserIds(userList);
                         param.setCouponArray(new String[]{couponInfo.getCouponId().toString()});
@@ -1365,7 +1369,7 @@ public class FriendPromoteService extends ShopBaseService {
                     }
 
                     //赠品入库
-                    if(promoteInfo.getRewardType()==0){
+                    if(promoteInfo.getRewardType()==0||promoteInfo.getRewardType()==1){
                         //得到商品规格信息
                         GoodsSpecProductRecord prdRecord = getPrdInfo(promoteInfo.getRewardContent().getGoodsIds());
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
@@ -1373,7 +1377,7 @@ public class FriendPromoteService extends ShopBaseService {
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
                             Integer day = durationSec.intValue()/(24*60*60);
                             //奖励入库
-                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(userId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
                             if (prizeRecordRecord==null){
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
@@ -1397,9 +1401,10 @@ public class FriendPromoteService extends ShopBaseService {
                         }
                     }
                 }
-                //返回插入成功数据行的id
 //                return lastId;
             });
+        //返回插入成功数据行的id
+        return rewardRecordId;
     }
 
     /**

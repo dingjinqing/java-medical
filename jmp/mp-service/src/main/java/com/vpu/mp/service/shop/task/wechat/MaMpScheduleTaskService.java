@@ -360,7 +360,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
     //发送好友助力中奖结果
 	private String sendPromoteDrawMessage(FriendPromoteSelectVo vo,String officeAppId) {
 		String json = vo.getRewardContent();
-		FpRewardContent rewardContent = Util.json2Object(json,FpRewardContent.class, false);
+		FpRewardContent rewardContent = Util.json2Object(json.substring(1,json.length()-1),FpRewardContent.class, false);
 		String goodsName=null;
 		if(vo.getRewardType().equals(TWO)) {
 			Integer rewardIds = rewardContent.getRewardIds();

@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.market.friendpromote;
 
 import lombok.Data;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * 好友助力帮忙出参
  * @author liangchen
@@ -17,4 +19,6 @@ public class PromoteVo {
     private Byte canShare;
     /** 不能助力返回信息 */
     private Byte cantPromote;
+    /** 奖品记录id */
+    private AtomicReference<Integer> rewardRecordId;
 }

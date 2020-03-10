@@ -124,7 +124,7 @@ public class AdminFriendPromoteController extends AdminBaseController{
 	 */
 	@PostMapping("/select")
 	public JsonResult selectOne(@RequestBody FriendPromoteSelectParam param) {
-		List<FriendPromoteSelectVo> vo	= shop().friendPromoteService.selectOne(param);
+		FriendPromoteSelectVo vo	= shop().friendPromoteService.selectOne(param);
 		return success(vo);
 	}
 	
