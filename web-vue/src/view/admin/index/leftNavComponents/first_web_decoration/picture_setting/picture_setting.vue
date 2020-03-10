@@ -157,7 +157,7 @@
                 >
                   <span
                     class="el-icon-share iconSpn"
-                    @click="handleOperation(scope.row,3)"
+                    @click="handleOperation(scope.row)"
                   ></span>
                 </el-tooltip>
               </div>
@@ -279,10 +279,45 @@
         >{{$t('pictureSetting.sure')}}</el-button>
       </span>
     </el-dialog>
+    <!--分享弹窗
+    <el-dialog
+      title="扫一扫分享给好友吧~"
+      :visible.sync="shareVisible"
+      width="30%"
+    >
+      <div class="copyContainer">
+        <img
+          src="http://mpdevimg2.weipubao.cn/upload/4748160/pictorial/4/T100P385_20200305172829.png"
+          alt=""
+          style="width:160px;height:160px"
+          class="code_imgs"
+        >
+      </div>
+      <div
+        class="copyContainer"
+        style="color:#999"
+      >
+        下载海报码
+      </div>
+      <div class="copyContainer copyDiv">
+        <span>下载海报链接：</span>
+        <el-input
+          size="small"
+          v-model="posterAddress"
+          ref="qrCodePageUrlInput"
+        ></el-input>
+        <span
+          class="copy"
+          @click="handelToCopy"
+        >复制</span>
+      </div>
+    </el-dialog>
+    -->
+
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pegeShare } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -568,9 +603,17 @@ export default {
         }
       })
     },
-    // 点击分享icon
-    handleOperation () {
-
+    // 点击分享
+    handleOperation ({ pageId }) {
+      console.log(pageId)
+      pegeShare(pageId).then(res => {
+        console.log(res)
+      })
+    },
+    // 点击复制
+    handelToCopy () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
     }
   }
 }
