@@ -11,7 +11,7 @@ import lombok.Data;
 public class GroupDrawInfoByOsVo {
 	private Integer groupId;
 	private Integer activityId;
-	private Integer activityType;
+	private Byte activityType;
 	private Byte status;
 	private Byte drawStatus;
 	private Byte isGrouper;

@@ -1247,22 +1247,25 @@ public class GroupDrawService extends ShopBaseService {
     /**
      * 订单号查询拼团信息
      * @param orderSn
+     * @param flag 为true校验拼团活动是否在，为false不校验
      * @return
      */
-    public GroupDrawInfoByOsVo getGroupByOrderSn(String orderSn) {
+    public GroupDrawInfoByOsVo getGroupByOrderSn(String orderSn,Boolean flag) {
     	JoinGroupListRecord fetchAny = db().selectFrom(JOIN_GROUP_LIST).where(JOIN_GROUP_LIST.ORDER_SN.eq(orderSn)).fetchAny();
     	if(fetchAny==null) {
     		logger().info("订单{}不存在",orderSn);
     		return null;
     	}
-    	GroupDrawVo byId = groupDrawList(fetchAny.getGroupDrawId());
-    	if(byId==null) {
-    		logger().info("拼团活动{}不存在",fetchAny.getGroupDrawId());
-    		return null;
+    	if(flag) {
+    		GroupDrawVo byId = groupDrawList(fetchAny.getGroupDrawId());
+    		if(byId==null) {
+    			logger().info("拼团活动{}不存在",fetchAny.getGroupDrawId());
+    			return null;
+    		}    		
     	}
     	GroupDrawInfoByOsVo vo=new GroupDrawInfoByOsVo();
     	vo.setActivityId(fetchAny.getGroupDrawId());
-    	vo.setActivityType(8);
+    	vo.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW);
     	vo.setDrawStatus(fetchAny.getDrawStatus());
     	vo.setStatus(fetchAny.getStatus());
     	vo.setGroupId(fetchAny.getGroupId());
