@@ -10,7 +10,7 @@
       </view>
     </view>
     <view class="button-info">
-      <view style="background-color:{{comColor}};color:#fff" bindtap="checkOrder">查看订单</view>
+      <view style="background-color:{{comColor}};color:#fff" wx:if="{{!isNotGoods}}" bindtap="checkOrder">查看订单</view>
       <view bindtap="goHome">返回首页</view>
     </view>
     <v-recommend id="recommend" pageName="payment" />

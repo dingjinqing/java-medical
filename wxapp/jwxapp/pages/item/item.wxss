@@ -152,10 +152,10 @@
 .goods_price_info {
   color: #ff6666;
 }
-.goods_price > text:first-child {
+.goods_price > text {
   font-size: 26rpx;
 }
-.goods_price > text:last-child {
+.goods_price > text.price {
   font-size: 46rpx;
 }
 .marking_price {
@@ -221,4 +221,10 @@
 }
 .pre-sale-content > view:last-of-type{
   margin-bottom: 15rpx;
+}
+.scoreRedeem{
+  padding: 0 30rpx;
+  line-height: 80rpx;
+  background: #fff6e6;
+  color: #ffb93c;
 }

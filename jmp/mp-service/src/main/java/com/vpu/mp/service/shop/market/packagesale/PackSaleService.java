@@ -99,13 +99,19 @@ public class PackSaleService extends ShopBaseService {
 		switch(param.getActivityStatus()) {
 			case ActivityStatus.UNSTARTED:
 				step.and(PACKAGE_SALE.START_TIME.ge(currentTime));
+				step.and(PACKAGE_SALE.STATUS.le(BaseConstant.ACTIVITY_STATUS_NORMAL));
 				break;
 			case ActivityStatus.UNDER_WAY:
 				step.and(PACKAGE_SALE.START_TIME.le(currentTime));
 				step.and(PACKAGE_SALE.END_TIME.ge(currentTime));
+				step.and(PACKAGE_SALE.STATUS.le(BaseConstant.ACTIVITY_STATUS_NORMAL));
 				break;
 			case ActivityStatus.OVERDUE:
 				step.and(PACKAGE_SALE.END_TIME.le(currentTime));
+				step.and(PACKAGE_SALE.STATUS.le(BaseConstant.ACTIVITY_STATUS_NORMAL));
+				break;
+			case ActivityStatus.STOPPED:
+				step.and(PACKAGE_SALE.STATUS.le(BaseConstant.ACTIVITY_STATUS_DISABLE));
 				break;
 			default:break;
 		}

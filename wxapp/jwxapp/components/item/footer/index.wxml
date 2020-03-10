@@ -1,5 +1,14 @@
+<wxs module="filter">
+  includes = function (arr, target) {
+    if (arr.length === 0) return false
+    return arr.indexOf(target) === -1 ? false : true
+  }
+  module.exports = {
+    includes:includes
+  }
+</wxs>
 <view class="footer">
-  <block wx:if="{{position === 'footer' && activity.activityType!==8}}">
+  <block wx:if="{{position === 'footer' && !filter.includes([4,8],activity.activityType)}}">
     <view class="small_view" bindtap="backHome">
       <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/back_index_item.png"></image>
       <text>首页</text>

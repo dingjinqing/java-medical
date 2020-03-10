@@ -42,6 +42,20 @@ const actBaseInfo = {
       0: 'endTime'
     }
   },
+  4: {
+    actName: '积分',
+    multiSkuAct: true,
+    prdListName: 'integralMallPrdMpVos',
+    actStatus: {
+      0: '距结束仅剩',
+      1: '活动不存在',
+      2: '活动已停用',
+      3: '据开始仅剩',
+      4: '活动已结束',
+      5: '商品已抢光',
+      6: '超购买上限'
+    }
+  },
   5: {
     actName: '秒杀',
     multiSkuAct: true,
@@ -197,7 +211,7 @@ global.wxPage({
             if (res.content.activity && [1, 3, 5, 8, 10].includes(res.content.activity.activityType)){
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
-            if (res.content.activity && [1,3,5,8,10].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1, 3, 4, 5, 8, 10,].includes(res.content.activity.activityType)){
               this.setData({
                 page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
               })
@@ -606,48 +620,59 @@ global.wxPage({
   // 获取价格
   getPrice(data) {
     let { products, activity } = data
-    if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
-      products = activity[actBaseInfo[activity.activityType]['prdListName']]
-      if (activity.activityType === 6 && activity.actState != 0) {
-        products = data.products
+    if(activity && activity.activityType === 4){
+      let actProductList = JSON.parse(JSON.stringify(activity[actBaseInfo[activity.activityType]['prdListName']]))
+      actProductList.sort((a,b)=>{
+        return a.score - b.score
+      })
+      return {
+        prdRealPrice:actProductList[0],
+        prdLinePrice:products.find(item=>{return item.prdId === actProductList[0].productId}).prdRealPrice,
       }
-    }
-    let { realPrice, linePrice } = products.reduce(
-      (defaultData, val) => {
-        if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
-          var {
-            [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice,
-            [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
-          } = val
-          if (activity.activityType === 6 && activity.actState != 0) {
+    } else {
+      if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
+        products = activity[actBaseInfo[activity.activityType]['prdListName']]
+        if (activity.activityType === 6 && activity.actState != 0) {
+          products = data.products
+        }
+      }
+      let { realPrice, linePrice } = products.reduce(
+        (defaultData, val) => {
+          if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
+            var {
+              [actBaseInfo[activity.activityType]['prdPriceName']['prdRealPrice']]: prdRealPrice,
+              [actBaseInfo[activity.activityType]['prdPriceName']['prdLinePrice']]: prdLinePrice
+            } = val
+            if (activity.activityType === 6 && activity.actState != 0) {
+              var { prdRealPrice, prdLinePrice } = val
+            }
+          } else {
             var { prdRealPrice, prdLinePrice } = val
           }
-        } else {
-          var { prdRealPrice, prdLinePrice } = val
-        }
-        defaultData.realPrice.push(prdRealPrice)
-        defaultData.linePrice.push(prdLinePrice)
-        return defaultData
-      },
-      { realPrice: [], linePrice: [] }
-    )
-    let realMinPrice = this.getMin(realPrice),
-      realMaxPrice = this.getMax(realPrice),
-      lineMinPrice = this.getMin(linePrice),
-      lineMaxPrice = this.getMax(linePrice)
-    return {
-      prdRealPrice: data.defaultPrd
-        ? realPrice[0]
-        : realMinPrice === realMaxPrice
-        ? realMinPrice
-        : `${realMinPrice}~${realMaxPrice}`,
-      prdLinePrice: data.defaultPrd
-        ? linePrice[0]
-        : lineMinPrice === lineMaxPrice
-        ? lineMinPrice
-        : `${lineMinPrice}~${lineMaxPrice}`,
-      singleRealPrice: realMinPrice,
-      singleLinePrice: lineMinPrice
+          defaultData.realPrice.push(prdRealPrice)
+          defaultData.linePrice.push(prdLinePrice)
+          return defaultData
+        },
+        { realPrice: [], linePrice: [] }
+      )
+      let realMinPrice = this.getMin(realPrice),
+        realMaxPrice = this.getMax(realPrice),
+        lineMinPrice = this.getMin(linePrice),
+        lineMaxPrice = this.getMax(linePrice)
+      return {
+        prdRealPrice: data.defaultPrd
+          ? realPrice[0]
+          : realMinPrice === realMaxPrice
+          ? realMinPrice
+          : `${realMinPrice}~${realMaxPrice}`,
+        prdLinePrice: data.defaultPrd
+          ? linePrice[0]
+          : lineMinPrice === lineMaxPrice
+          ? lineMinPrice
+          : `${lineMinPrice}~${lineMaxPrice}`,
+        singleRealPrice: realMinPrice,
+        singleLinePrice: lineMinPrice
+      }
     }
   },
   // 获取促销信息

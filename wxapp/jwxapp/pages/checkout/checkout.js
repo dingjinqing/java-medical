@@ -117,7 +117,7 @@ global.wxPage({
   },
   getPayType (orderinfo) {
     let payType = this.data.payType
-    if (orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
+    if (!payType.includes(2) && orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
       payType.push(2)
     }
     this.setData({

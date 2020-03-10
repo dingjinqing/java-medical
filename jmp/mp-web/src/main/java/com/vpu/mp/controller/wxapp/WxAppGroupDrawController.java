@@ -62,7 +62,7 @@ public class WxAppGroupDrawController extends WxAppBaseController {
 	 */
 	@PostMapping(value = "/api/wxapp/groupdraw/info/ordersn")
 	public JsonResult getGroupDrawInfoByOrderSn(@RequestBody @Valid GroupDrawInfoByOsParam param) {
-		GroupDrawInfoByOsVo vo = shop().groupDraw.getGroupByOrderSn(param.getOrderSn());
+		GroupDrawInfoByOsVo vo = shop().groupDraw.getGroupByOrderSn(param.getOrderSn(),true);
 		if(vo==null) {
 			return fail(JsonResultCode.GROUP_DRAW_FAIL);
 		}
