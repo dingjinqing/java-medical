@@ -1,12 +1,18 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.market.friendpromote.FriendPromoteService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +38,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
 
     @Autowired
     private PrizeRecordService prizeRecordService;
+    @Autowired private FriendPromoteService friendPromoteService;
     @Override
     public Byte getPriority() {
         return 0;
@@ -68,7 +75,13 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
             goods.setProductPrice(BigDecimal.ZERO);
             goods.setGoodsPriceAction(ACTIVITY_TYPE_MY_PRIZE);
             if (prizeRecord.getActivityType().equals(PRIZE_SOURCE_PROMOTE_ORDER)){
-                goods.setProductPrice(BigDecimal.ZERO);
+                FriendPromoteSelectParam selectParam = new FriendPromoteSelectParam();
+                selectParam.setId(prizeRecord.getActivityId());
+                FriendPromoteSelectVo actRecord = friendPromoteService.selectOne(selectParam);
+                FpRewardContent rewardContent = Util.json2Object(actRecord.getRewardContent(),FpRewardContent.class,false);
+                if (rewardContent!=null){
+                    goods.setProductPrice(rewardContent.getMarketPrice());
+                }
             }
         }
     }
