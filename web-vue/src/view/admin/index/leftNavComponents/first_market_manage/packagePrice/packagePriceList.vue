@@ -29,6 +29,7 @@
                 placeholder="请输入活动名称"
                 class="input-width"
                 v-model="param.name"
+                clearable
               ></el-input>
             </div>
             <div class="act-time">
@@ -39,6 +40,10 @@
                 size="small"
                 class="input-width"
                 v-model="param.startTime"
+                clearable
+                default-time="00:00:00"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
               <span>至</span>
               <el-date-picker
@@ -47,13 +52,17 @@
                 size="small"
                 class="input-width"
                 v-model="param.endTime"
+                clearable
+                default-time="23:59:59"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
             </div>
             <el-button
               type="primary"
               size="small"
               class="btn"
-              @click="filter"
+              @click="initDataList"
             >筛选</el-button>
             <el-button
               size="small"
@@ -290,7 +299,8 @@ export default {
         activityStatus: '1'
       },
       tableInfo: [],
-      pageInfo: {}
+      pageInfo: {},
+      isEdit: true // 编辑状态
     }
   },
 
@@ -308,12 +318,11 @@ export default {
     onSubmit () {
       this.pageInfo.currentPage = 1
     },
-    filter () {
-
-    },
     reset () {
       this.param.name = ''
       this.dateRange = ''
+      this.param.startTime = ''
+      this.param.endTime = ''
     },
     initDataList () {
       packagePriceList(Object.assign(this.param, this.pageParams)).then(res => {
@@ -408,13 +417,12 @@ export default {
 
     addActivity () {
       this.isEdit = false
-      this.showTabAddGroup('添加打包一口价活动-11')
+      this.showTabAddGroup('添加打包一口价活动')
     },
     gotoEdit (id, row) {
-      // console.log(val, 'get val--')
       this.editId = id
       this.isEdit = true
-      this.showTabAddGroup('添加打包一口价活动111')
+      this.showTabAddGroup('编辑打包一口价活动')
     },
     // 查看砍价订单
     gotoOrder (id, valScope) {
@@ -428,11 +436,12 @@ export default {
     },
     showTabAddGroup (title) {
       if (this.param.activityStatus === '6' || this.tabInfo.length > 5) {
+        console.log(12324325)
         this.closeTabAddGroup()
       }
       this.tabInfo.push({
         title: title,
-        name: '6'
+        name: '5'
       })
       this.param.activityStatus = '6'
       this.tableListView = false
@@ -446,7 +455,7 @@ export default {
       if (this.tableInfo.length > 5) {
         this.tableListView = true
         this.tableInfo.pop({
-          title: '添加打包一口价活动',
+          title: '编辑打包一口价活动',
           name: '6'
         })
         console.log('closeTabAddGroup', this.tabInfo)
@@ -473,7 +482,7 @@ export default {
       display: flex;
       margin-top: 10px;
       .input-width {
-        width: 175px;
+        width: 185px;
       }
       .act-time {
         margin: 0 0 0 60px;
