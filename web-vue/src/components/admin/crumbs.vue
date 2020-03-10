@@ -211,7 +211,16 @@ export default {
           this.$router.push({
             name: this.$route.meta.category
           })
+        } else if (this.$route.name === 'addBrand') {
+          this.$router.push({
+            name: 'brand'
+          })
+        } else if (this.$route.name === 'store_storemanage_reservation') {
+          this.$router.push({
+            name: 'store_list'
+          })
         } else {
+          console.log(this.$route)
           this.$router.push({
             name: this.$route.meta.meta
           })
@@ -246,9 +255,22 @@ export default {
           }
           // this.$router.push({
           //   name: 'feedbackDetails'
+          // ordinary_coupon_receive_details
           // })
+        } else if (this.$route.name === 'ordinary_coupon_receive_details') {
+          this.$router.push({
+            name: 'ordinary_coupon'
+          })
+        } else if (this.$route.name === 'addBrand') {
+          this.$router.push({
+            name: 'brand'
+          })
+        } else if (this.$route.name === 'store_storemanage_reservation') {
+          this.$router.push({
+            name: 'store_list'
+          })
         } else {
-          console.log(name)
+          console.log(this.$route)
           if (name === '表单统计') {
             this.$router.push({
               name: 'formStatistical'
