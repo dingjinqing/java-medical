@@ -116,6 +116,11 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
         bargainProcessorDao.processReturn(activityId,returnGoods);
     }

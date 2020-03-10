@@ -109,6 +109,11 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     }
 
     @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
