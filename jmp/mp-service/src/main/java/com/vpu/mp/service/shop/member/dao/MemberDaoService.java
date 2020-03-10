@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_MOBILE;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
@@ -181,9 +182,9 @@ public class MemberDaoService extends ShopBaseService {
 		User a = USER.as("a");
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
-		
+		Field<?>  inviteMobile = db().select(b.MOBILE).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_MOBILE);
 		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
-				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
+				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName,inviteMobile, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,
 				USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID,USER_DETAIL.USER_AVATAR)
@@ -209,9 +210,9 @@ public class MemberDaoService extends ShopBaseService {
 	 * 获取一张会员卡信息,此会员卡为等级会员，限次会员卡再到普通会员卡
 	 * @param inData 工作日，休息，或 无限制
 	 */
-	public Record getOneMemberCard(List<Integer> inData, Integer userId) {
-			//.limit(1).fetchAny();
-		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inData,userId);
+	public Record getOneMemberCard(Integer userId) {
+		List<Integer> inDate = userCardService.useInDate();
+		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inDate,userId);
 		return sql.limit(1).fetchAny();
 	}
 	

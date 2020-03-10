@@ -147,19 +147,17 @@ public class MemberService extends ShopBaseService {
 		/** 获取会员列表的基本信息 */
 		PageResult<MemberInfoVo> memberList = getMemberList(param);
 		logger().info("获取会员列表成功");
-		List<Integer> inDate = userCardService.useInDate();
-		
 		for (MemberInfoVo member : memberList.dataList) {
 			Integer userId = member.getUserId();
 
 			/** 只需要一张会员卡的信息即可 */
-			Record recordInfo = memberDao.getOneMemberCard(inDate, userId);
+			Record recordInfo = memberDao.getOneMemberCard(userId);
 
-				if(recordInfo != null) {
-					String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
-					logger().info(cardName);
-					member.setCardName(cardName);
-				}
+			if(recordInfo != null) {
+				String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
+				logger().info(cardName);
+				member.setCardName(cardName);
+			}
 			/** 处理来源信息 */
 			String sourceName = getSourceName(language, member);
 
@@ -183,7 +181,7 @@ public class MemberService extends ShopBaseService {
 	/**
 	 * 获取用户来源
 	 */
-	private String getSourceName(String language, MemberInfoVo member) {
+	public String getSourceName(String language, MemberInfoVo member) {
 		logger().info("正在获取用户来源信息");
 		// 微信后台相关来源
 		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
@@ -436,6 +434,10 @@ public class MemberService extends ShopBaseService {
 			memberBasicInfoVo.setIndustryInfo(name);
 		}
 		memberBasicInfoVo.setUserId(userId);
+		
+		/** 邀请人分销分组名称 */
+		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
+		
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
 		setRecentOrderInfo(userId, transStatistic);
