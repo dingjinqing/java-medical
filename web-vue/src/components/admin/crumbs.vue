@@ -43,7 +43,9 @@ export default {
       titleList: '',
       lang: '',
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
-      isLink: false // 瓜分积分显示的一个跳转链接
+      isLink: false, // 瓜分积分显示的一个跳转链接
+      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'lottery_effect_view', 'lottery_group_view', 'lottery_user_view', 'lottery_order_view', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail'], // name池,
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted']// 跳转池
     }
   },
   watch: {
@@ -203,7 +205,7 @@ export default {
       console.log(data, this.titleList)
     },
     handleToClickCrumb (name, flag, index) {
-      console.log(name, flag)
+      console.log(name, flag, this.$route)
       if (this.titleList.length < 3) return
       if (index === (this.titleList.length - 1)) return
       if (flag) {
@@ -211,18 +213,14 @@ export default {
           this.$router.push({
             name: this.$route.meta.category
           })
-        } else if (this.$route.name === 'addBrand') {
+        } else if (this.$route.meta.meta === 'first_market_manage') {
           this.$router.push({
-            name: 'brand'
-          })
-        } else if (this.$route.name === 'store_storemanage_reservation') {
-          this.$router.push({
-            name: 'store_list'
+            name: 'first_market_manage'
           })
         } else {
           console.log(this.$route)
           this.$router.push({
-            name: this.$route.meta.meta
+            name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
           })
         }
       } else {
@@ -231,16 +229,6 @@ export default {
         } else if (this.$route.meta.meta === 'user_manger') {
           this.$router.push({
             name: this.$route.meta.category
-          })
-        } else if (this.$route.name === 'formDecorationHome') {
-          console.log(this.$route)
-          this.$router.push({
-            name: 'formStatistical'
-          })
-        } else if (this.$route.name === 'feedbackList') {
-          console.log(this.$route)
-          this.$router.push({
-            name: 'formStatistical'
           })
         } else if (this.$route.name === 'feedbackDetails') {
           console.log(name)
@@ -253,22 +241,6 @@ export default {
               name: 'formStatistical'
             })
           }
-          // this.$router.push({
-          //   name: 'feedbackDetails'
-          // ordinary_coupon_receive_details
-          // })
-        } else if (this.$route.name === 'ordinary_coupon_receive_details') {
-          this.$router.push({
-            name: 'ordinary_coupon'
-          })
-        } else if (this.$route.name === 'addBrand') {
-          this.$router.push({
-            name: 'brand'
-          })
-        } else if (this.$route.name === 'store_storemanage_reservation') {
-          this.$router.push({
-            name: 'store_list'
-          })
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
@@ -276,13 +248,15 @@ export default {
               name: 'formStatistical'
             })
           } else {
+            console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
             this.$router.push({
-              name: this.$route.meta.meta
+              name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
             })
           }
         }
       }
       console.log(name, this.$route)
+      //
     }
   }
 
