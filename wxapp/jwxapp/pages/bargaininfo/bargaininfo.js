@@ -418,8 +418,8 @@ function request_kanjia(that) {
       that.countdown();
 
       // 进度条显示已砍价金额
-      that.data.money_now_left = parseFloat(bargain_info.recordInfo.progress_present / 100) * 670;
-      that.data.money_now_left = parseFloat(that.data.money_now_left).toFixed(2);
+      var money_now_left = parseFloat(bargain_info.recordInfo.progress_present / 100) * 670;
+      money_now_left = parseFloat(money_now_left).toFixed(2);
 
       // 砍价列表时间
       if (bargain_info.recordUserList.length > 0) {

@@ -27,6 +27,7 @@ module.exports = {
   "canUseScore": "当前拥有",
   "exchange": "已兑换",
   "isUsed": "立即使用",
+  "collectImmediately": "立即领取",
   "myCoupon": "我的优惠券",
   "visitshop": "进店看看",
   "useExplain": "使用说明",
