@@ -165,9 +165,9 @@
             <text class="user-name">{{groupItem.userName}}</text>
             <view class="join-item-info">
               <text>
-                还差
+                <text>还差</text>
                 <text style="color:{{comColor}}">{{groupItem.remainNum}}人</text>
-                成团
+                <text>成团</text>
               </text>
               <text>剩余{{groupItem.countDown}}</text>
             </view>
