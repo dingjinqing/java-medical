@@ -35,7 +35,7 @@
                         class="coupon_price"
                         v-else
                       ><span>{{item.denomination}}</span>{{$t('addCouponPackage.discount')}}</div>
-                      <div class="coupon_rule">{{item.useConsumeRestrict > 0? `$t('addCouponPackage.full')${item.leastConsume}$t('addCouponPackage.yuan')$t('addCouponPackage.available')` : $t('addCouponPackage.unrestricted')}}</div>
+                      <div class="coupon_rule">{{item.useConsumeRestrict > 0? $t('addCouponPackage.full')+ item.leastConsume + $t('addCouponPackage.yuan')+$t('addCouponPackage.available') : $t('addCouponPackage.unrestricted')}}</div>
                     </div>
                     <div class="coupon_middle">
                       <img
@@ -482,22 +482,22 @@ export default {
       // 表单约束
       formRules: {
         actName: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: this.$t('addCouponPackage.validName'), trigger: 'blur' }
         ],
         packName: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: this.$t('addCouponPackage.validPackageName'), trigger: 'blur' }
         ],
         limitGetTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: this.$t('addCouponPackage.validPerNum'), trigger: 'blur' }
         ],
         totalAmount: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: this.$t('addCouponPackage.validNum'), trigger: 'blur' }
         ],
         actRule: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: this.$t('addCouponPackage.validRules'), trigger: 'blur' }
         ],
         effectiveDate: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+          { required: true, message: this.$t('addCouponPackage.validTime'), trigger: 'change' }
         ]
       }
     }
@@ -740,6 +740,8 @@ export default {
     display: flex;
     .left_preview {
       width: 310px;
+      flex: 0 0 310px;
+      margin-right: 15px;
       // max-height: 600px;
       overflow-y: auto;
       &::-webkit-scrollbar {
@@ -945,7 +947,6 @@ export default {
             > .rule_title {
               color: #fff;
               font-size: 14px;
-              font-weight: 600;
             }
             > .rule_info {
               word-break: break-all;
