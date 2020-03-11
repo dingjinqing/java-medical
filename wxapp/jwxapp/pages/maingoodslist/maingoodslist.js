@@ -98,22 +98,22 @@ global.wxPage({
     })
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
-        // var change_goods_info = res.content;
-        // for (var i = 0; i < change_goods_info.list.length; i++) {
-        //   if (change_goods_info.list[i].is_checked == 1) {
-        //     purchase_change_goods[change_goods_info.list[i].prd_id] = change_goods_info.list[i].purchase_rule_id;
-        //   }
-        // }
-        // that.setData({
-        //   change_goods_info: change_goods_info
-        // })
+        var change_goods_info = res.content;
+        for (var i = 0; i < change_goods_info.list.length; i++) {
+          if (change_goods_info.list[i].is_checked == 1) {
+            purchase_change_goods[change_goods_info.list[i].prd_id] = change_goods_info.list[i].purchase_rule_id;
+          }
+        }
+        that.setData({
+          change_goods_info: change_goods_info
+        })
       } else {
-        // util.showModal("提示", res.message, function () {
-        //   util.reLaunch({
-        //     url: '/pages/index/index'
-        //   })
-        // });
-        // return false;
+        util.showModal("提示", res.message, function () {
+          util.reLaunch({
+            url: '/pages/index/index'
+          })
+        });
+        return false;
       }
     }, { purchasePriceId: that.data.identity_id, storeId: that.data.store_id });
   },
@@ -130,25 +130,25 @@ global.wxPage({
     var ids = e.currentTarget.dataset.keys;
     var change_goods_info = that.data.change_goods_info
     if (this_is_checked == 0) {
-      change_goods_info.list[ids].is_checked = 1;
-      change_goods_info.already_change_num = parseInt(change_goods_info.already_change_num) + 1;
-      if (change_goods_info.max_change_purchase > 0) {
-        if (change_goods_info.already_change_num > change_goods_info.max_change_purchase) {
-          change_goods_info.list[ids].is_checked = 0;
-          change_goods_info.already_change_num = parseInt(change_goods_info.already_change_num) - 1;
+      change_goods_info.list[ids].isChecked = 1;
+      change_goods_info.alreadyChangeNum = parseInt(change_goods_info.alreadyChangeNum) + 1;
+      if (change_goods_info.maxChangePurchase > 0) {
+        if (change_goods_info.alreadyChangeNum > change_goods_info.maxChangePurchase) {
+          change_goods_info.list[ids].isChecked = 0;
+          change_goods_info.alreadyChangeNum = parseInt(change_goods_info.alreadyChangeNum) - 1;
           util.showModal("提示", "换购数量已达上限");
           return false;
         }
       }
-      purchase_change_goods[change_goods_info.list[ids].prd_id] = change_goods_info.list[ids].purchase_rule_id;
+      purchase_change_goods[change_goods_info.list[ids].prdId] = change_goods_info.list[ids].purchaseRuleId;
       that.setData({
         change_goods_info: change_goods_info
       })
     } else {
-      change_goods_info.list[ids].is_checked = 0;
-      change_goods_info.already_change_num = parseInt(change_goods_info.already_change_num) - 1;
-      if (purchase_change_goods.hasOwnProperty(change_goods_info.list[ids].prd_id)) {
-        var enen = change_goods_info.list[ids].prd_id;
+      change_goods_info.list[ids].isChecked = 0;
+      change_goods_info.alreadyChangeNum = parseInt(change_goods_info.alreadyChangeNum) - 1;
+      if (purchase_change_goods.hasOwnProperty(change_goods_info.list[ids].prdId)) {
+        var enen = change_goods_info.list[ids].prdId;
         delete purchase_change_goods.enen;
         delete purchase_change_goods[enen];
       }

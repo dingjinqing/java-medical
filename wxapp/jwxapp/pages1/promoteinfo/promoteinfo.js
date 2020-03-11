@@ -5,7 +5,6 @@ var promote_info = [];
 var launch_user_id; // 用户id
 var launch_id; // 发起id
 var actCode; // 活动code
-var activityId; // 活动id
 var set_time_out;
 global.wxPage({
 
@@ -173,9 +172,6 @@ global.wxPage({
         var add_promote_value = res.content.promoteValue; // 助力值
         var modal_can_share = res.content.canShare; // 能否再分享
         var cant_promote = res.content.cantPromote; // 助力失败原因
-        if (res.content.rewardRecordId != null) {
-          activityId = res.content.rewardRecordId
-        }
         if (promote_info.canPromote == null && promote_info.canShare == null) {
           if (cant_promote == 0) {
             cant_promote = '该助力申请未发起'
@@ -272,7 +268,7 @@ global.wxPage({
       // goodsPrice: promote_info.goodsInfo.goodsPrice,
       // productId: promote_info.goodsInfo.prdId
     }]
-    util.jumpLink("/pages/checkout/checkout?activityType=24&activityId=" + activityId + "&goodsList=" + JSON.stringify(goodsList));
+    util.jumpLink("/pages/checkout/checkout?activityType=24&activityId=" + promote_info.rewardRecordId + "&goodsList=" + JSON.stringify(goodsList));
   },
   // 倒计时
   countdown: function (that) {
@@ -514,17 +510,6 @@ function promote_request(that) {
         is_promote_value: is_promote_value,
         launched_width: launched_width
       })
-
-      // 统计浏览记录
-      if (promote_info.rewardType == 2) {
-        that.setData({
-          goods_id: promote_info.couponInfo.couponId
-        })
-      } else {
-        that.setData({
-          goods_id: promote_info.goodsInfo.goodsId
-        })
-      }
     } else {
       util.showModal('提示', res.message);
       return false
