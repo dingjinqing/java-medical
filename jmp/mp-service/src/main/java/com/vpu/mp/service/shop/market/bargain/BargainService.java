@@ -184,6 +184,8 @@ public class BargainService extends ShopBaseService  {
 	public void updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
+		record.setBargainMax(param.getBargainMax());
+		record.setBargainMin(param.getBargainMin());
         if(param.getShareConfig() != null) {
             if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
                 try {
