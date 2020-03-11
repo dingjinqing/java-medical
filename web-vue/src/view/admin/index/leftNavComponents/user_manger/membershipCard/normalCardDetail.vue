@@ -46,6 +46,10 @@
             @input="initCardEffectTimeData"
             ref="cardEffectTime"
           ></cardEffectTime>
+          <!-- 续费开发 -->
+          <cardRenewCfg>
+
+          </cardRenewCfg>
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
@@ -122,6 +126,9 @@ export default {
     ),
     cardFreeshipCfg: () => import(
       './subcomponents/cardFreeshipCfg'
+    ),
+    cardRenewCfg: () => import(
+      './subcomponents/cardRenewCfg'
     )
   },
   computed: {
