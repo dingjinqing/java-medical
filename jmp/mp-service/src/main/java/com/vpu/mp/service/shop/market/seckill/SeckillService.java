@@ -607,7 +607,7 @@ public class SeckillService extends ShopBaseService{
             seckillGoods.setActStatus(seckill.getStatus());
             seckillGoods.setSeckillSaleNum(seckill.getSaleNum());
             seckillGoods.setSeckillNum(seckill.getStock() > goodsInfo.getGoodsNumber() ? goodsInfo.getGoodsNumber() : seckill.getStock());
-            seckillGoods.setBaseSale(goodsInfo.getBaseSale() > 0 ? goodsInfo.getBaseSale() : 0);
+            seckillGoods.setBaseSale(seckill.getBaseSale() > 0 ? seckill.getBaseSale() : 0);
             seckillGoods.setSecPrice(getMinProductSecPrice(seckill.getSkId()));
             seckillGoods.setSecPriceInt(new BigDecimal(seckillGoods.getSecPrice().intValue()).compareTo(seckillGoods.getSecPrice()) == 0 ? (byte)1 : (byte)0);
 
