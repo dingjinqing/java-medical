@@ -414,7 +414,9 @@ function request_kanjia(that) {
       bargain_info.recordInfo.progress_present = bargain_info.recordInfo.progress_present * 100;
 
       //倒计时
-      that.data.total_micro_second = bargain_info.recordInfo.remainingTime;
+      that.setData({
+        total_micro_second: bargain_info.recordInfo.remainingTime
+      })
       that.countdown();
 
       // 进度条显示已砍价金额
@@ -423,8 +425,11 @@ function request_kanjia(that) {
 
       // 砍价列表时间
       if (bargain_info.recordUserList.length > 0) {
+        // 时间处理兼容ios
+        bargain_info.timestamp = bargain_info.timestamp.replace(/-/g, '/')
         var now = new Date(bargain_info.timestamp).getTime();
         bargain_info.recordUserList.forEach((item, index) => {
+          item.createTime = item.createTime.replace(/-/g, '/')
           item.allTime = (now - new Date(item.createTime).getTime()) / 1000;
           if (item.allTime < 60) {
             item.show_time = '刚刚'
