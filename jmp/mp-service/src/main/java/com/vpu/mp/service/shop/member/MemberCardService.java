@@ -2523,7 +2523,8 @@ public class MemberCardService extends ShopBaseService {
 	 * @param cardId
 	 */
 	public ShareQrCodeVo getShareCode(Integer cardId) {
-		String paramStr = String.format("cardId=%d&inviteId=", cardId);
+		//String paramStr = String.format("cardId=%d&inviteId=", cardId);
+		String paramStr = String.format("cardId=%d", cardId);
 		String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,paramStr);
 		ShareQrCodeVo vo = new ShareQrCodeVo();
 		vo.setImageUrl(imageUrl);
