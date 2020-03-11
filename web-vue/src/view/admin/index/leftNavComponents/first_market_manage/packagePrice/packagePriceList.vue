@@ -441,7 +441,7 @@ export default {
       }
       this.tabInfo.push({
         title: title,
-        name: '5'
+        name: '6'
       })
       this.param.activityStatus = '6'
       this.tableListView = false
@@ -452,9 +452,9 @@ export default {
         return
       }
       // 不是新增
-      if (this.tableInfo.length > 5) {
+      if (this.tabInfo.length > 5) {
         this.tableListView = true
-        this.tableInfo.pop({
+        this.tabInfo.pop({
           title: '编辑打包一口价活动',
           name: '6'
         })
