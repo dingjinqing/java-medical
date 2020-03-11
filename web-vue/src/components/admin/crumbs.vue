@@ -44,8 +44,8 @@ export default {
       lang: '',
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
-      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'lottery_effect_view', 'lottery_group_view', 'lottery_user_view', 'lottery_order_view', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted']// 跳转池
+      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'lottery_effect_view', 'lottery_group_view', 'lottery_user_view', 'lottery_order_view', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'bargain_record_detail'], // name池,
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'bargain_bargain_user']// 跳转池
     }
   },
   watch: {
@@ -246,6 +246,10 @@ export default {
           if (name === '表单统计') {
             this.$router.push({
               name: 'formStatistical'
+            })
+          } else if (name === '砍价') {
+            this.$router.push({
+              name: 'bargain'
             })
           } else {
             console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])

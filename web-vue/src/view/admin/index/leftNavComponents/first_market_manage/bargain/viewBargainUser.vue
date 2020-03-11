@@ -238,9 +238,14 @@ export default {
   components: { pagination },
   mounted () {
     this.langDefault()
+    console.log(this.$route)
     if (this.$route.query.id > 0) {
       console.log(this.$route, 'get id')
+      localStorage.setItem('V-viewBargainUser', this.$route.query.id)
       this.actId = this.$route.query.id
+      this.initDataList()
+    } else {
+      this.actId = localStorage.getItem('V-viewBargainUser')
       this.initDataList()
     }
   },
