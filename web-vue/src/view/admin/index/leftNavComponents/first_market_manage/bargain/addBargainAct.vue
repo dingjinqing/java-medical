@@ -227,24 +227,22 @@
               <div class="fontColor">{{$t('addBargainAct.expectPeopleTip')}}</div>
             </el-form-item>
 
-            <el-form-item :label="$t('addBargainAct.goodsFirstBargainProportion')+':'">
+            <el-form-item
+              :label="$t('addBargainAct.goodsFirstBargainProportion')+':'"
+              prop="bargainMin"
+            >
               <div>
-                <el-input-number
+                <el-input
                   v-model="param.bargainMin"
-                  controls-position="right"
                   size="small"
                   style="width:150px"
-                  :min="0"
-                  :max="50"
-                ></el-input-number>&nbsp;%&nbsp;{{$t('marketCommon.to')}}&nbsp;
-                <el-input-number
+                ></el-input>&nbsp;%&nbsp;{{$t('marketCommon.to')}}&nbsp;
+                <el-input
                   v-model="param.bargainMax"
                   size="small"
-                  controls-position="right"
                   style="width:150px"
-                  :min="0"
-                  :max="50"
-                ></el-input-number>&nbsp;%
+                  ref="bargainMax"
+                ></el-input>&nbsp;%
                 <span style="margin-left:10px">({{$t('addBargainAct.proportionIntervalTip')}})</span>
               </div>
               <div
@@ -587,10 +585,16 @@ export default {
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
           let resultConfig = res.content.shopShareConfig
-          console.log(resultConfig)
           this.shareConfig = resultConfig
           this.shareConfig.shareImg = resultConfig.shareImgFullUrl
-          console.log(this.shareConfig)
+          this.param.needBindMobile = Boolean(res.content.needBindMobile)
+          if (res.content.bargainMin === null && res.content.bargainMax === null) {
+            this.param.bargainMin = ''
+            this.param.bargainMax = ''
+          } else {
+            this.param.bargainMin = res.content.bargainMin
+            this.param.bargainMax = res.content.bargainMax
+          }
         }
       })
     }
@@ -605,6 +609,22 @@ export default {
     }
   },
   data () {
+    var validMin = (rule, value, callback) => {
+      let validMax = this.$refs.bargainMax.value
+      if (!value && !validMax) {
+        callback()
+      }
+      var reg = /^(0|[1-9][0-9]*)$/
+      if (!reg.test(value) || !reg.test(validMax)) {
+        callback(new Error('请输入0和正整数'))
+      } else {
+        if (value > 50 || validMax > 50) {
+          callback(new Error('数值不能大于50'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       // 向帮忙砍价的用户赠送优惠券
       mrkingVoucherObjs: [],
@@ -630,8 +650,10 @@ export default {
         effectiveDate: '',
         goodsId: 0,
         expectationPrice: 0,
-        needBindMobile: 0,
+        needBindMobile: false,
         initialSales: 0,
+        bargainMin: '',
+        bargainMax: '',
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
@@ -669,6 +691,9 @@ export default {
         ],
         effectiveDate: [
           { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        ],
+        bargainMin: [
+          { validator: validMin, trigger: ['change', 'blur'] }
         ]
       }
     }
@@ -733,7 +758,6 @@ export default {
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
           this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
-
           if (this.validParam()) {
             addBargain(this.param).then((res) => {
               if (res.error === 0) {
@@ -759,6 +783,7 @@ export default {
           this.param.endTime = this.param.effectiveDate[1]
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
+          this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
           if (this.validParam()) {
             updateBargain(this.param).then((res) => {
               if (res.error === 0) {
