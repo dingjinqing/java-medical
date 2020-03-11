@@ -62,7 +62,11 @@ public class ServiceCommentService extends ShopBaseService {
         PageResult<ServiceCommentVo> result = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceCommentVo.class);
         result.dataList.forEach((e) -> {
             e.setServiceImg(imgDomain(e.getServiceImg()));
-            e.setCommImg(imgDomain(e.getCommImg()));
+            List<String> imgs = Util.json2Object(e.getCommImg(), new TypeReference<List<String>>() {
+            }, false);
+            if(imgs!= null && !imgs.isEmpty()) {
+                e.setCommImgList(imgs.stream().map(i->{return domainConfig.imageUrl(i);}).collect(Collectors.toList()));
+            }
         });
         return result;
     }
@@ -272,11 +276,10 @@ public class ServiceCommentService extends ShopBaseService {
         List<AllCommentVo.Comment> commentList = select.orderBy(COMMENT_SERVICE.CREATE_TIME.desc()).fetchInto(AllCommentVo.Comment.class);
 
         commentList.forEach(comment -> {
-            // 图片加域名处理
-            List<String> stringList = Util.json2Object(comment.getCommImg(), new TypeReference<List<String>>() {}, false);
-            if (!CollectionUtils.isEmpty(stringList)) {
-                stringList = stringList.stream().map(domainConfig::imageUrl).collect(Collectors.toList());
-                comment.setCommImg(Util.toJson(stringList));
+            List<String> imgs = Util.json2Object(comment.getCommImg(), new TypeReference<List<String>>() {
+            }, false);
+            if(imgs!= null && !imgs.isEmpty()){
+                comment.setCommImgList(imgs.stream().map(i->{return domainConfig.imageUrl(i);}).collect(Collectors.toList()));
             }
         });
 
