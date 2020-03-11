@@ -73,6 +73,7 @@ global.wxComponent({
               }
             } else if (activity && activity.activityType === 3) {
               val.products[0].prdNumber = activity.stock
+              limitBuyNum = 1
             }
             if(activity && [6,18,22].includes(activity.activityType) && activity.isLimit){
               limitMaxNum = activity.limitAmount
@@ -230,6 +231,7 @@ global.wxComponent({
         }
       } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
         select_prd.prdRealPrice = activity.bargainPrice
+        limitBuyNum = 1
       }
       if(activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(activity.activityType)){
         select_prd.prdNumber = select_prd['actProduct']['stock']
