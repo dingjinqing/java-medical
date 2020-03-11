@@ -9,6 +9,7 @@
       <div class="wrapper">
         <el-button
           type="primary"
+          size="small"
           @click="addActivity"
         >{{$t('bargainList.addBargain')}}</el-button>
 
