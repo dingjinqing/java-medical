@@ -999,6 +999,11 @@ public class OrderInfoService extends ShopBaseService {
         order.update();
     }
 
+    public void updateStockLock(OrderInfoRecord order, Byte isLock) {
+        order.setIsLock(isLock);
+        order.update();
+    }
+
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
 	/**
 	 * 根据用户id获取累计消费金额
