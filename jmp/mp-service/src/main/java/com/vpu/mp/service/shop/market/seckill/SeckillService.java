@@ -509,6 +509,8 @@ public class SeckillService extends ShopBaseService{
                 vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
                 vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
             }
+        }else{
+            vo.setState(res);
         }
         return vo;
     }
