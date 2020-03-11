@@ -423,12 +423,12 @@ public class FriendPromoteService extends ShopBaseService {
 	
 	/**
 	 * 修改助力状态
-	 * @param staus
+	 * @param status
 	 * @param id
 	 * @return
 	 */
-	public int upPromoteInfo(Byte staus,Integer id) {
-		return db().update(fpl).set(fpl.PROMOTE_STATUS,staus ).where(fpl.ID.eq(id)).execute();
+	public int upPromoteInfo(Byte status,Integer id) {
+		return db().update(fpl).set(fpl.PROMOTE_STATUS,status ).where(fpl.ID.eq(id)).execute();
 	}
 	
 	/**
@@ -518,12 +518,12 @@ public class FriendPromoteService extends ShopBaseService {
             if (promoteInfo.getRewardType()!=2){
                 //助力进度为完成待领取
                 if (promoteInfo.getPromoteStatus()==1){
-                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
-                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
+//                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
+//                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
                         orderFlag = 1;
-                    }else {
-                        orderFlag = 2;
-                    }
+//                    }else {
+//                        orderFlag = 2;
+//                    }
                 }else if (promoteInfo.getPromoteStatus()==2){
                     orderFlag = 2;
                 }
@@ -541,8 +541,20 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
         }
 
-        //倒计时
+        //活动倒计时
         promoteDownTime(promoteInfo,launchInfo);
+        //奖励倒计时
+        if (promoteInfo.getPromoteStatus()==1){
+            Long duration = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
+            //成功时间 倒计时的起点
+            Long successTime = getSuccessTime(launchInfo.getId()).getTime();
+            //奖励结束时间
+            Long endTime = successTime+duration*1000;
+            Long nowTime = DateUtil.getLocalDateTime().getTime();
+            Long spurTime = endTime-nowTime>0?(endTime/1000-nowTime/1000):0;
+            promoteInfo.setRewardSpurTime(spurTime);
+        }
+
         //已助力总值
         if (promoteInfo.getPromoteStatus()>=0){
             promoteInfo.setHasPromoteValue(hasPromoteValue(launchInfo.getId()));
@@ -631,7 +643,7 @@ public class FriendPromoteService extends ShopBaseService {
         //设置奖励倒计时
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        promoteInfo.setRewardSpurTime(promoteDurationSec(record.getRewardDurationUnit(),record.getRewardDuration()));
+
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
@@ -1367,6 +1379,8 @@ public class FriendPromoteService extends ShopBaseService {
                         logger().info("助力状态更新失败");
                         throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
                     }
+                    //更新成功时间
+                    updateSuccessTime(launchId);
 
                     //赠品入库
                     if(promoteInfo.getRewardType()==0||promoteInfo.getRewardType()==1){
@@ -1555,5 +1569,29 @@ public class FriendPromoteService extends ShopBaseService {
     public List<PromoteDetail> friendPromoteDetailList(PromoteParam param){
         List<PromoteDetail> detailList = friendPromoteDetail(param.getLaunchId());
         return detailList;
+    }
+
+    /**
+     * 更新助力成功时间
+     * @param launchId 发起id
+     */
+    public void updateSuccessTime(Integer launchId){
+        db().update(FRIEND_PROMOTE_LAUNCH)
+            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME,DateUtil.getSqlTimestamp())
+            .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+            .execute();
+    }
+
+    /**
+     * 得到助力成功时间
+     * @param launchId 发起id
+     * @return 成功时间
+     */
+    public Timestamp getSuccessTime(Integer launchId){
+        Timestamp successTime = db().select(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME)
+            .from(FRIEND_PROMOTE_LAUNCH)
+            .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+            .fetchOneInto(Timestamp.class);
+        return successTime;
     }
 }

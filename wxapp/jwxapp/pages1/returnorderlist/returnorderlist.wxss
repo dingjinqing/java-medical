@@ -102,9 +102,9 @@
 .order-item-title {
   margin-bottom: 30rpx;
 }
-.order-item-title text {
+/* .order-item-title text {
   color: #999;
-}
+} */
 .order-item-btn {
   border-top: 2rpx solid #eee;
   padding-top: 20rpx;

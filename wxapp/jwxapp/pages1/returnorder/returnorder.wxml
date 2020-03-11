@@ -21,12 +21,14 @@
       </view>
       <view class="order-goods-info" wx:for="{{goodsInfo}}" wx:key="index" bindtap="toggleGoodsSelect" data-index="{{index}}" data-sku="{{item.productId}}">
         <view class="order-goods-check-wrap">
-          <text wx:if="{{!item.checked}}" class="iconfont iconduoxuanbiankuang order-goods-check"></text>
-          <text wx:else class="iconfont iconduoxuan order-goods-check"></text>
+          <image wx:if="{{item.sendNumber <= 0 && returnType == 1}}" src="{{checkbox_no}}" style="width:28rpx;height:28rpx;background-color: rgb(238, 238, 238);" />
+          <text wx:elif="{{!item.checked}}" class="iconfont iconduoxuanbiankuang order-goods-check"></text>
+          <text wx:elif="{{item.checked}}" class="iconfont iconduoxuan order-goods-check"></text>
         </view>
         <view class="order-goods-info-details">
           <view class="order-goods-img">
-            <image class="goods-img" src="{{imageUrl + item.goodsImg}}" mode="widthFix"></image>
+            <image class="goods-img" src="{{imageUrl + item.goodsImg}}" mode="scaleToFill"></image>
+            <view wx:if="{{item.sendNumber <= 0 && returnType == 1}}" class="no-shippied">未发货</view>
           </view>
           <view class="goods-wrap">
             <view class="goods-name">
@@ -70,8 +72,9 @@
       <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
       <text><text style="color:{{comColor}}">￥{{ returnMoney }}</text></text>
     </view>
-    <view class="order-info" wx:if="{{selectGoodIds.length && isRefund && orderInfo.returnShippingFee}}">
+    <view class="order-info" wx:if="{{selectGoodIds.length && isRefund && orderInfo.returnShippingFee&& !hasShipped}}">
       <block>
+        <!-- 参考运费： -->
         <text><text class="order-place">*</text>{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
         <text style="color:{{comColor}}">￥{{orderInfo.returnShippingFee}}</text>
       </block>
