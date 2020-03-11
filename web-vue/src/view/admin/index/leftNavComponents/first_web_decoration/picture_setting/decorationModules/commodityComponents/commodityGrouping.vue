@@ -288,7 +288,7 @@
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='3'&&data.other_message==='0'"
-                      >{{item.goodsNumber}}人评价</span>
+                      >{{item.goodsSaleNum}}人评价</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"

@@ -203,7 +203,7 @@
                         <span
                           style="color: #c0c0c0"
                           v-if="data.show_market==='3'&&data.col_type!=='2'&&data.other_message==='1'"
-                        >{{item.goodsNumber}}人评价</span>
+                        >{{item.commentNum}}人评价</span>
                         <!--购买按钮-->
                         <i
                           class="iconfont icontianjia icon_font_size new_class"
