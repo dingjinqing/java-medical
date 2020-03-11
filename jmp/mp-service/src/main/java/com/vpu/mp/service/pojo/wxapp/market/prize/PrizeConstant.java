@@ -5,7 +5,7 @@ package com.vpu.mp.service.pojo.wxapp.market.prize;
  * @date 2020/1/3 13:56
  */
 public class PrizeConstant {
-    //****************奖品来源
+    //****************奖品来源0幸运大抽奖，1好友助力，2测评 3支付有礼
 
     /**
      * 幸运大抽奖
@@ -14,7 +14,11 @@ public class PrizeConstant {
     /**
      * 好友助力
      */
-    public final static byte PRIZE_SOURCE_PROMOTE_ORDER=1;
+    public final static byte PRIZE_SOURCE_FRIEND_POWER=1;
+    /**
+     * 测评
+     */
+    public final static byte PRIZE_SOURCE_EVALUATION=2;
     /**
      * 支付有礼
      */
