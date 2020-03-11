@@ -9,10 +9,10 @@
         <view class='each_area'>
           <view class='each_one' wx:for='{{promote_list}}' wx:key='key'>
               <view class='eo_left'>
-                  <image src='{{item.user_avatar}}'></image>
+                  <image src='{{item.userAvatar}}'></image>
                   <view>{{item.username}}</view>
               </view>
-              <view class='eo_right' style='color:{{comColor}}'>{{item.promote_value}}</view>
+              <view class='eo_right' style='color:{{comColor}}'>{{item.promoteValue}}</view>
           </view>
           
         </view>

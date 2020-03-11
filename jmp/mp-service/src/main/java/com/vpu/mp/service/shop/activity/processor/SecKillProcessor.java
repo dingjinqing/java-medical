@@ -69,7 +69,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
             capsule.setRealPrice(record3.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
-            activity.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
+            activity.setActivityId(record3.get(SEC_KILL_PRODUCT_DEFINE.SK_ID));
             activity.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
@@ -149,6 +149,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 

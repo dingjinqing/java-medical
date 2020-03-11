@@ -495,6 +495,17 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
+	/**
+	 * 	用户卡包邮信息
+	 */
+	public static final String CARD_SHIP_NOT_AVAIL = "card.ship.not.avail";
+	public static final String CARD_SHIP_VIP = "card.ship.vip";
+	public static final String CARD_SHIP_IN_EFFECTTIME = "card.ship.in.effecttime";
+	public static final String CARD_SHIP_YEAR = "card.ship.year";
+	public static final String CARD_SHIP_SEASON = "card.ship.season";
+	public static final String CARD_SHIP_DAY = "card.ship.day";
+	public static final String CARD_SHIP_MONTH = "card.ship.month";
+	public static final String CARD_SHIP_WEEK = "card.ship.week";
 	
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";

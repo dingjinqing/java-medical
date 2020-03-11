@@ -231,6 +231,8 @@ export const cn = {
   package_price: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
+  // 营销管理 打包一口价 查看活动订单
+  package_price_order: ['营销管理', '打包一口价', '活动订单'],
   // 营销管理 开屏有礼
   open_screen: ['营销管理', '开屏有礼'],
   // 营销管理 开屏有礼 活动明细
@@ -303,6 +305,8 @@ export const cn = {
   collectGift: ['营销管理', '收藏有礼'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['营销管理', '微信好物圈'],
+  // 营销管理 积分兑换
+  integralExchangeHome: ['营销管理', '积分兑换'],
   // 营销管理 支付有礼
   payreward: ['营销管理', '支付有礼'],
   // 营销管理 添加支付有礼活动

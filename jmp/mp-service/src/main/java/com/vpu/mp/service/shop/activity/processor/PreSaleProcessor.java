@@ -119,21 +119,29 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         for (PreSalePrdMpVo preSalePrd : preSalePrdMpVos) {
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(preSalePrd.getProductId());
             if (goodsPrdMpVo == null) {
+                prdMap.remove(preSalePrd.getProductId());
                 continue;
             }
             // 库存数量从新设置
-            int stock = preSalePrd.getStock()>goodsPrdMpVo.getPrdNumber()? goodsPrdMpVo.getPrdNumber():preSalePrd.getStock();
-            preSalePrd.setStock(stock);
-            goodsNum+=stock;
+            if (preSalePrd.getStock() > goodsPrdMpVo.getPrdNumber()) {
+                preSalePrd.setStock(goodsPrdMpVo.getPrdNumber());
+            }
+            goodsNum+=preSalePrd.getStock();
             saleNumber+=preSalePrd.getSaleNumber();
             preSalePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
             newPreSalePrds.add(preSalePrd);
         }
+
+        capsule.setProducts(new ArrayList<>(prdMap.values()));
+        capsule.setGoodsNumber(goodsNum);
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
             log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
-        capsule.setGoodsNumber(goodsNum);
+        if (prdMap.size() == 0) {
+            log.debug("小程序-商品详情-预售活动-商品规格信息和活动规格信息无交集");
+            goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
         capsule.setGoodsSaleNum(saleNumber);
         goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
         capsule.setActivity(goodsPreSaleInfo);
@@ -155,12 +163,19 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        log.info("预售下单更新库存start");
         Map<Integer, Integer> updateParam = param.getBos().stream()
             .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
             .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
         if(updateParam.size() != 0){
             preSaleProcessorDao.updateStockAndSales(updateParam, order.getActivityId());
         }
+        log.info("预售下单更新库存end,data{}",updateParam);
     }
 
     @Override

@@ -316,6 +316,20 @@ export const cn = {
   noData: '暂无记录',
   inputCardName: '请输入会员卡名称',
   inputTime: '请输入有效期',
-  inputDate: '请填写日期'
-
+  inputDate: '请填写日期',
+  shareCodeSuccess: '获取分享码成功',
+  shareCodeFail: '获取分享码失败',
+  copy: '复制',
+  downQrcode: '下载二维码',
+  scanCode: '扫一扫，分享给好友吧~',
+  shipNumValidO: '请输入有效值',
+  shipNumValidT: '请输入1到7位的整数',
+  enjoy: '享受',
+  freeshipTip: '持有此会员卡的用户可享受包邮',
+  freeship: '包邮',
+  nolimitFreeship: '不限制包邮次数',
+  cardHolder: '持卡会员',
+  timesFreeship: '次包邮',
+  noLimitCoupon: '无库存限制',
+  couponErrorTip: '请选择开卡送优惠券'
 }

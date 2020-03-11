@@ -157,7 +157,7 @@
                 >
                   <span
                     class="el-icon-share iconSpn"
-                    @click="handleOperation(scope.row,3)"
+                    @click="handleOperation(scope.row)"
                   ></span>
                 </el-tooltip>
               </div>
@@ -279,10 +279,43 @@
         >{{$t('pictureSetting.sure')}}</el-button>
       </span>
     </el-dialog>
+    <!--分享弹窗-->
+    <el-dialog
+      title="扫一扫分享给好友吧~"
+      :visible.sync="shareVisible"
+      width="20%"
+    >
+      <div class="copyContainer">
+        <img
+          :src="shareImageUrl"
+          alt=""
+          style="width:160px;height:160px"
+          class="code_imgs"
+        >
+      </div>
+      <div
+        class="copyContainer"
+        style="color:#999"
+      >
+        下载二维码
+      </div>
+      <div class="copyContainer copyDiv">
+        <el-input
+          size="small"
+          v-model="posterAddress"
+          ref="qrCodePageUrlInput"
+        ></el-input>
+        <span
+          class="copy"
+          @click="handelToCopy"
+        >复制</span>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pegeShare } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -319,8 +352,10 @@ export default {
       pageIds: '',
       isBatch: 0,
       delPageId: '',
-      setRowData: ''
-
+      setRowData: '',
+      shareVisible: false, // 分享弹窗flag
+      posterAddress: '', // 路径
+      shareImageUrl: '' // 分享路径
     }
   },
   watch: {
@@ -567,6 +602,23 @@ export default {
           pageId: res
         }
       })
+    },
+    // 点击分享
+    handleOperation ({ pageId }) {
+      console.log(pageId)
+      pegeShare(pageId).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.posterAddress = res.content.pagePath
+          this.shareImageUrl = res.content.imageUrl
+          this.shareVisible = true
+        }
+      })
+    },
+    // 点击复制
+    handelToCopy () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
     }
   }
 }
@@ -753,6 +805,22 @@ export default {
           line-height: 28px;
         }
       }
+    }
+  }
+  .copyContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    /deep/ .el-input {
+      width: 220px;
+      margin-right: 5px;
+    }
+    .copy {
+      white-space: nowrap;
+      color: #5a8bff;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 }

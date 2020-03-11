@@ -37,7 +37,7 @@
       </div>
     </div>
     <div
-      v-if="totalRows=0"
+      v-if="totalRows===0"
       style="margin-top:10px"
     >{{$t('allGoods.allGoodsData.no')}}</div>
     <span
@@ -80,7 +80,6 @@ export default {
       console.log(this.param, 'get params')
       getBargainExportTotalRows(this.param).then(res => {
         if (res.error === 0) {
-          console.log(res, 'data-res')
           this.totalRows = res.content
         }
       }).catch(() => {
@@ -98,9 +97,11 @@ export default {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
         this.loading = false
+        this.showNodes = false
         download(res, decodeURIComponent(fileName))
       }).catch(() => {
         this.loading = false
+        this.showNodes = false
       })
     },
     ok (key, item) {

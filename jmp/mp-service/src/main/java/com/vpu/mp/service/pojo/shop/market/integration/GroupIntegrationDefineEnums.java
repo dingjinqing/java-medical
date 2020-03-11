@@ -109,7 +109,7 @@ public class GroupIntegrationDefineEnums {
 //		是团长
 		YES ((byte)1),
 //		不是团长
-		NO ((byte)1);
+		NO ((byte)0);
 		private byte value;
 		IsGroupper(byte value){
 			this.value = value;

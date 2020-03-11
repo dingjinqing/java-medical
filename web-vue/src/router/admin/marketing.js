@@ -906,7 +906,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceList'
       )
   },
-  // 打包一口价活动参与明细
+  // 打包一口价活动-参与明细
   {
     path: '/admin/home/main/packsale/detail/:id',
     name: 'package_price_detail',
@@ -918,6 +918,20 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceDetail'
+      )
+  },
+  // 打包一口价活动-查看活动订单
+  {
+    path: '/admin/home/main/packsale/order/:id',
+    name: 'package_price_order',
+    meta: {
+      crumbTitle: 'router.package_price_order',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/packagePrice/packagePriceActivityOrder'
       )
   },
   // 开屏有礼
@@ -1434,6 +1448,19 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
+      )
+  },
+  // 积分兑换
+  {
+    path: '/admin/home/main/integralExchangeHome',
+    name: 'integralExchangeHome',
+    meta: {
+      crumbTitle: 'router.integralExchangeHome',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/integralExchangeHome'
       )
   },
   // 支付有礼

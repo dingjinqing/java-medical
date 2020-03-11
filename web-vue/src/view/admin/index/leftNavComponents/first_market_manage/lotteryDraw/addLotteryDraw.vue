@@ -50,7 +50,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">{{ this.$t('lotteryDraw.joinNumTip') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.joinNumTip') }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.payMoney') + '：'"
@@ -62,8 +62,8 @@
             v-model="form.payMoney"
             class="inputWidth"
           ></el-input>
-          <span>{{ this.$t('lotteryDraw.money') }}</span>
-          <span class="tips">{{ this.$t('lotteryDraw.payMoneyTip') }}</span>
+          <span>{{ $t('lotteryDraw.money') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.payMoneyTip') }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.maxJinNum') + '：'"
@@ -77,7 +77,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">{{ this.$t('lotteryDraw.maxJinNumTip') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.maxJinNumTip') }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.openLimit') + '：'"
@@ -91,7 +91,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">{{ this.$t('lotteryDraw.openLimitTip') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.openLimitTip') }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.limitAmount') + '：'"
@@ -105,7 +105,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">{{ this.$t('lotteryDraw.limitAmountTip') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.limitAmountTip') }}</span>
         </el-form-item>
         <el-form-item
           :label="$t('lotteryDraw.toNumShow') + '：'"
@@ -119,7 +119,7 @@
             class="inputWidth"
             controls-position="right"
           ></el-input-number>
-          <span class="tips">{{ this.$t('lotteryDraw.toNumShowTip') }}</span>
+          <span class="tips">{{ $t('lotteryDraw.toNumShowTip') }}</span>
           <el-popover
             placement="right-start"
             width="220"
@@ -130,7 +130,7 @@
               slot="reference"
               type="text"
               style="margin: 0 20 0 0px"
-            >{{ this.$t('lotteryDraw.example') }}</el-button>
+            >{{ $t('lotteryDraw.example') }}</el-button>
           </el-popover>
         </el-form-item>
         <el-form-item
@@ -168,18 +168,18 @@
                   <div
                     class="coupon_center_number"
                     v-if="item.surplus !==0"
-                  >{{ this.$t('lotteryDraw.rewardTip1') }}{{item.surplus}}{{ this.$t('lotteryDraw.rewardTip2') }}</div>
+                  >{{ $t('lotteryDraw.rewardTip1') }}{{item.surplus}}{{ $t('lotteryDraw.rewardTip2') }}</div>
                   <div
                     class="coupon_center_number"
                     v-if="item.surplus ===0"
-                  >{{ this.$t('lotteryDraw.rewardTip3') }}</div>
+                  >{{ $t('lotteryDraw.rewardTip3') }}</div>
                   <div
                     class="coupon_list_bottom"
                     :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
                   >
-                    <span v-if="item.scoreNumber === 0">{{ this.$t('lotteryDraw.rewardTip4') }}</span>
+                    <span v-if="item.scoreNumber === 0">{{ $t('lotteryDraw.rewardTip4') }}</span>
                     <div v-if="item.scoreNumber !== 0">
-                      <span>{{item.scoreNumber}}</span>{{ this.$t('lotteryDraw.rewardTip5') }}
+                      <span>{{item.scoreNumber}}</span>{{ $t('lotteryDraw.rewardTip5') }}
                     </div>
                   </div>
                 </section>
@@ -224,12 +224,12 @@
               class="el-icon-plus"
               size="small"
               @click="showChoosingGoods"
-            >{{ this.$t('lotteryDraw.selectGood') }}</el-button>
+            >{{ $t('lotteryDraw.selectGood') }}</el-button>
             <span
               class="tips "
               style="color: #5a8bff"
               @click="onlyShowChoosingGoods"
-            >{{ this.$t('lotteryDraw.goodsTip1') }}{{this.goodsRow.length}}{{ this.$t('lotteryDraw.goodsTip2') }}</span>
+            >{{ $t('lotteryDraw.goodsTip1') }}{{this.goodsRow.length}}{{ $t('lotteryDraw.goodsTip2') }}</span>
           </div>
 
           <div v-if="form.goodsIds.length > 0">
@@ -265,7 +265,7 @@
                   <span
                     @click="deleteGoods(scope.$index)"
                     style="color: #5a8bff;cursor: pointer;"
-                  >{{ this.$t('lotteryDraw.delete') }}</span>
+                  >{{ $t('lotteryDraw.delete') }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -465,7 +465,7 @@ export default {
             // 添加拼团抽奖
             addLotteryDraw(this.form).then((res) => {
               if (res.error === 0) {
-                this.$message.success({ message: this.$t('lotteryDraw.addsuccess') })
+                this.$message.success({ message: this.$t('lotteryDraw.addSuccess') })
                 this.$emit('addLotterySubmit')
               } else {
                 this.$message.warning({ message: res.message })

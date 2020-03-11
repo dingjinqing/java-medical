@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -189,10 +190,10 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param order
      */
     public void processSeckillStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        SecKillDefineRecord seckill = getSeckillActById(order.getActivityId());
         for(OrderGoodsBo goods : param.getBos()){
             if(goods.getIsGift().equals(OrderConstant.IS_GIFT_N)) {
-                int seckillStock = db().select(SEC_KILL_DEFINE.STOCK).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).fetchSingle().into(Integer.class);
-                if (seckillStock - goods.getGoodsNumber() < 0) {
+                if (seckill.getStock() - goods.getGoodsNumber() < 0) {
                     //秒杀库存不足
                     throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
                 }
@@ -204,13 +205,15 @@ public class SecKillProcessorDao extends ShopBaseService {
                 }
 
                 //修改库存
-                db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK, seckillStock - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM, SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
+                db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK, seckill.getStock() - goods.getGoodsNumber()).set(SEC_KILL_DEFINE.SALE_NUM, SEC_KILL_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_DEFINE.SK_ID.eq(order.getActivityId())).execute();
                 db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK, seckillPrdStock - goods.getGoodsNumber()).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM, SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(goods.getGoodsNumber())).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(order.getActivityId()).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(goods.getProductId()))).execute();
 
                 //秒杀记录
                 seckillService.seckillList.addSecRecord(order, param.getGoods().get(0).getGoodsId());
             }
         }
+        //设置订单过期时间
+        order.setExpireTime(DateUtil.getTimeStampPlus(seckill.getLimitPaytime(), ChronoUnit.MINUTES));
 
     }
 
@@ -221,6 +224,15 @@ public class SecKillProcessorDao extends ShopBaseService {
                 seckillService.updateSeckillStock(activityId,g.getProductId(),- g.getGoodsNumber());
             }
         });
+    }
+
+    /**
+     * 取单个活动
+     * @param actId
+     * @return
+     */
+    private SecKillDefineRecord getSeckillActById(int actId){
+        return db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(actId));
     }
 
 }

@@ -63,7 +63,7 @@ global.wxPage({
     var goods_id = e.currentTarget.dataset.goods_id;
     var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      url: 'pages/item/item?aid=' + group_draw_id + '&&atp=1&&gid=' + goods_id
+      url: 'pages/item/item?aid=' + group_draw_id + '&&atp=8&&gid=' + goods_id
       // url: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=3"
     })
   },

@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseChangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +23,10 @@ public class WxAppPurchasePriceController extends WxAppBaseController{
     }
 
     /**
-     * 	可当前以换购的商品列表
+     * 	当前已换购的商品列表
      */
     @PostMapping("/api/wxapp/purchase/changegoods")
-    public JsonResult changePurchaseProductList(@RequestBody @Validated PurchaseGoodsListParam param) {
-        return success();
+    public JsonResult changePurchaseProductList(@RequestBody @Validated PurchaseChangeGoodsParam param) {
+        return success(shop().increaseService.changePurchaseProductList(param,wxAppAuth.user().getUserId()));
     }
 }

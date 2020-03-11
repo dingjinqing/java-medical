@@ -12,13 +12,17 @@ public class PrizeConstant {
      */
     public final static byte PRIZE_SOURCE_LOTTERY=0;
     /**
+     * 好友助力
+     */
+    public final static byte PRIZE_SOURCE_PROMOTE_ORDER=1;
+    /**
      * 支付有礼
      */
     public final static byte PRIZE_SOURCE_PAY_AWARD=3;
     /**
      * 奖品类型 todo
      */
-    public final static byte PRIZE_SOURCE=1;
+    public final static byte PRIZE_SOURCE=9;
 
 
     //**************状态

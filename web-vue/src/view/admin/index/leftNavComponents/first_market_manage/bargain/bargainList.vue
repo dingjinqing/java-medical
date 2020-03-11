@@ -9,6 +9,7 @@
       <div class="wrapper">
         <el-button
           type="primary"
+          size="small"
           @click="addActivity"
         >{{$t('bargainList.addBargain')}}</el-button>
 
@@ -379,6 +380,9 @@ export default {
     },
     // 设置砍价取单日可帮助砍价的次数
     updateDailyCutTimes () {
+      if (typeof this.dailyCutTimes === 'undefined') {
+        this.dailyCutTimes = 0
+      }
       setDailyCutTimes(this.dailyCutTimes).then((res) => {
         if (res.error === 0) {
           this.$message.success(this.$t('marketCommon.successfulOperation'))

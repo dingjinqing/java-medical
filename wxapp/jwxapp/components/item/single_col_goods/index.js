@@ -100,13 +100,13 @@ global.wxComponent({
             this.triggerEvent('cartChange') //购物车改变触发
           }
         },
-        { recId: e.currentTarget.dataset.cartId }
+        { cartId: e.currentTarget.dataset.cartId }
       )
     },
     // 更改购物车商品数量
     changeGoodsNum(e) {
       let { type } = e.currentTarget.dataset
-      let { cartNumber, productId } = this.data.goodsData
+      let { cartId, cartNumber, productId } = this.data.goodsData
       util.api(
         '/api/wxapp/cart/change',
         res => {
@@ -115,6 +115,7 @@ global.wxComponent({
           }
         },
         {
+          cartId: cartId,
           productId: productId,
           cartNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1
         }
@@ -122,7 +123,7 @@ global.wxComponent({
     },
     changeCartInput(e){
       let cartNumber = parseInt(e.detail.value)
-      let { productId } = this.data.goodsData
+      let { cartId, productId } = this.data.goodsData
       if(!isNaN(cartNumber)){
         util.api(
           '/api/wxapp/cart/change',
@@ -132,6 +133,7 @@ global.wxComponent({
             }
           },
           {
+            cartId,
             productId,
             cartNumber
           }

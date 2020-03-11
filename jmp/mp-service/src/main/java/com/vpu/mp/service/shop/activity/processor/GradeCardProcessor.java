@@ -175,9 +175,10 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 GradeReducePrdMpVo prdMpVo = new GradeReducePrdMpVo();
                 prdMpVo.setProductId(gradePrd.getProductId());
                 prdMpVo.setPrdPrice(gradePrd.getPrdPrice());
+                // reducePricePrdMpVo可能为null,创建限时降价后商品的规格信息可能又被修改
+                // 如果为null，则价格按照会员价设置
                 ReducePricePrdMpVo reducePricePrdMpVo = reducePrdMap.get(gradePrd.getProductId());
-
-                if (reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
+                if (reducePricePrdMpVo!=null&&reducePricePrdMpVo.getReducePrice().compareTo(gradePrd.getGradePrice()) < 0) {
                     prdMpVo.setIsGradePrice(false);
                     prdMpVo.setActivityPrice(reducePricePrdMpVo.getReducePrice());
                 } else {
@@ -263,6 +264,11 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
 
     }
 

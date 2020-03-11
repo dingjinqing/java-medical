@@ -8,7 +8,7 @@
     <!-- tab切换 -->
     <div class="main">
       <el-tabs
-        v-model="param.tabStatus"
+        v-model="param.activityStatus"
         @tab-click="initDataList"
         :lazy="true"
       >
@@ -29,6 +29,7 @@
                 placeholder="请输入活动名称"
                 class="input-width"
                 v-model="param.name"
+                clearable
               ></el-input>
             </div>
             <div class="act-time">
@@ -39,6 +40,10 @@
                 size="small"
                 class="input-width"
                 v-model="param.startTime"
+                clearable
+                default-time="00:00:00"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
               <span>至</span>
               <el-date-picker
@@ -47,13 +52,17 @@
                 size="small"
                 class="input-width"
                 v-model="param.endTime"
+                clearable
+                default-time="23:59:59"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
             </div>
             <el-button
               type="primary"
               size="small"
               class="btn"
-              @click="filter"
+              @click="initDataList"
             >筛选</el-button>
             <el-button
               size="small"
@@ -189,7 +198,7 @@
               </el-tooltip>
               <!-- 查看活动订单 -->
               <el-tooltip
-                content="查看砍价订单"
+                content="查看活动订单"
                 placement="top"
               >
                 <span
@@ -241,8 +250,7 @@
 import pagination from '@/components/admin/pagination/pagination'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import status from '@/components/admin/marketManage/status/status'
-import { packagePriceList, shareActivity } from '@/api/admin/marketManage/packagePrice.js'
-// , enableActivity, disableActivity, deleteActivity
+import { packagePriceList, shareActivity, disableActivity, enableActivity, deleteActivity } from '@/api/admin/marketManage/packagePrice.js'
 import shareDialog from '@/components/admin/shareDialog'
 import packagePriceAdd from './packagePriceAdd'
 export default {
@@ -288,15 +296,16 @@ export default {
         name: '',
         startTime: '',
         endTime: '',
-        tabStatus: '1'
+        activityStatus: '1'
       },
       tableInfo: [],
-      pageInfo: {}
+      pageInfo: {},
+      isEdit: true // 编辑状态
     }
   },
 
   watch: {
-    'param.tabStatus' (n, o) {
+    'param.activityStatus' (n, o) {
       this.initDataList()
     }
   },
@@ -309,12 +318,11 @@ export default {
     onSubmit () {
       this.pageInfo.currentPage = 1
     },
-    filter () {
-
-    },
     reset () {
       this.param.name = ''
       this.dateRange = ''
+      this.param.startTime = ''
+      this.param.endTime = ''
     },
     initDataList () {
       packagePriceList(Object.assign(this.param, this.pageParams)).then(res => {
@@ -352,89 +360,102 @@ export default {
         }
       })
     },
-    // enableActivity (id) {
-    //   this.$alert('确定要启用吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'      }).then(() => {
-    //     enableActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('启用成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('启用失败')
-    //       }
-    //     })
-    //   })
-    // },
-    // disableActivity (id) {
-    //   this.$alert('确定要停用吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'      }).then(() => {
-    //     disableActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('停用成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('停用失败')
-    //       }
-    //     })
-    //   })
-    // },
-    // deleteActivity (id) {
-    //   this.$alert('确定要删除吗？', '提示', {
-    //     showCancelButton: true,
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'}).then(() => {
-    //     deleteActivity(id).then(res => {
-    //       console.log(res)
-    //       if (res.error === 0) {
-    //         this.$message('删除成功')
-    //         this.loadTable()
-    //       } else {
-    //         this.$message('删除失败')
-    //       }
-    //     })
-    //   })
-    // },
+    enableActivity (id) {
+      this.$alert('确定要启用吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        enableActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('启用成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('启用失败')
+          }
+        })
+      })
+    },
+    disableActivity (id) {
+      this.$alert('确定要停用吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        disableActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('停用成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('停用失败')
+          }
+        })
+      })
+    },
+    deleteActivity (id) {
+      this.$alert('确定要删除吗？', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteActivity(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success('删除成功')
+            this.initDataList()
+          } else {
+            this.$message.warning('删除失败')
+          }
+        })
+      })
+    },
 
     addActivity () {
       this.isEdit = false
-      this.showTabAddGroup('添加打包一口价活动-11')
+      this.showTabAddGroup('添加打包一口价活动')
     },
     gotoEdit (id, row) {
-      // console.log(val, 'get val--')
       this.editId = id
       this.isEdit = true
-      this.showTabAddGroup('添加打包一口价活动111')
+      this.showTabAddGroup('编辑打包一口价活动')
+    },
+    // 查看砍价订单
+    gotoOrder (id, valScope) {
+      // console.log(valId, valScope)
+      this.$router.push({
+        path: `/admin/home/main/packsale/order/${id}`,
+        query: {
+          id: id
+        }
+      })
     },
     showTabAddGroup (title) {
-      if (this.param.tabStatus === '6' || this.tabInfo.length > 5) {
+      if (this.param.activityStatus === '6' || this.tabInfo.length > 5) {
+        console.log(12324325)
         this.closeTabAddGroup()
       }
       this.tabInfo.push({
         title: title,
-        name: '6'
+        name: '5'
       })
-      this.param.tabStatus = '6'
+      this.param.activityStatus = '6'
       this.tableListView = false
     },
     closeTabAddGroup () {
       // 新增标签
-      if (this.param.tabStatus === '6') {
+      if (this.param.activityStatus === '6') {
         return
       }
       // 不是新增
       if (this.tableInfo.length > 5) {
         this.tableListView = true
         this.tableInfo.pop({
-          title: '添加打包一口价活动',
+          title: '编辑打包一口价活动',
           name: '6'
         })
         console.log('closeTabAddGroup', this.tabInfo)
@@ -461,7 +482,7 @@ export default {
       display: flex;
       margin-top: 10px;
       .input-width {
-        width: 175px;
+        width: 185px;
       }
       .act-time {
         margin: 0 0 0 60px;

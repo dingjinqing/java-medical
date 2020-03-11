@@ -26,7 +26,8 @@ export const en = {
   ],
   // 表格
   activityName: 'ActivityName',
-  goodsName: 'GoodsName',
+  goodsName: 'Goods',
+  first: 'priority',
   validDate: 'ValidDate',
   activityStatus: 'ActivityStatus',
   saleNum: 'SaleNum',
@@ -75,6 +76,7 @@ export const en = {
   prdPrice: 'Price Spike',
   goodsNumber: 'Original Stock',
   prdNumber: 'Spike Inventory',
+  prdStock: 'stock',
   goodsSaleNum: 'Seconds Sold',
   prdTypeNum: 'Surplus Stock',
   save: 'Save',

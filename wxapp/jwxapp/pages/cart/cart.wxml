@@ -94,9 +94,9 @@
                                       <!-- <view wx:if="{{ item.cartActivityInfos.length == 0 }}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view> -->
                                     </view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
+                                      <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}"  bindtap="{{item.cartNumber <= item.limitBuyNum ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
+                                      <view class="num_plus {{item.cartNumber >= item.limitMaxNum ? 'not_tap' : ''}}" bindtap="{{item.cartNumber >= item.limitMaxNum ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>
@@ -122,6 +122,41 @@
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
+
+              <!-- 换购商品部分 -->
+              <view wx:for="{{item.cartActivityInfos}}" wx:for-item="val" wx:key="index" wx:if="{{item.activityId == val.activityId && val.activityType == 7}}">
+                <view class='change_goods_area'>
+                  <view class='each_cga_goods clearfix'>
+                    <view class='cga_left'>
+                      <image src='{{item.goodsImg}}' class='cg_img'></image>
+                      <!-- <image wx:if='{{item4.tip}}' class='no_change_img' src='{{imageUrl}}/image/wxapp/no_change_icon.png'></image> -->
+                    </view>
+                    <view class='cga_right'>
+                      <view class='cga_names'>
+                        <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>换购</text>{{item.goodsName}}
+                      </view>
+                      <view class='cga_specs' wx:if="{{item.prdDesc!=''}}">{{item.prdDesc}}</view>
+                      <view class='cga_price_info'>
+                        <view class='cga_rice'>
+                          <view class='cga_market' style='color:{{comColor}}'>￥{{item.prdPrice}}</view>
+                        </view>
+                        <view class='cga_nums'>X{{item.cartNumber}}</view>
+                      </view>
+                    </view>
+                    <view class='del_btn' data-del_id="{{item4.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+                  </view>
+                </view>
+              </view>
+              
+
+
+
+
+
+
+
+
+
 
             </view>
         </view>

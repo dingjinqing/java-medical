@@ -9,8 +9,8 @@ var card_code = '';
 var card_num = '';
 var card_pwd = '';
 var card_activation = 0;
+var custom_power = [];
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
@@ -27,9 +27,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options)
+    console.log(options, '腾飞测试++++++++++++++++++')
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      cardId = scene[0].split('=')[1]
+    }
     var card_list = options.card_list;
     this.setData({ cardId: cardId })
     this.requestCardInfo(cardNo, cardId, card_list)
@@ -79,6 +83,23 @@ global.wxPage({
           card_activation = card_info.activation;
         }
         that.getUpgradeCondition(cardInfo)
+        // 自定义测试数据
+        cardInfo.custom_options = "[{'custom_type':'2','custom_title':'fsfsdfds','option_ver':1,'is_checked':1}]"
+        cardInfo.custom_rights = [
+          {
+            cright_content: "one for test",
+            cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20190708/crop_pADgmTm2w2az2bMu.jpeg",
+            cright_name: "one"
+          },
+          {
+            cright_content: "two for test",
+            cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20200206/crop_4LfGH88XPGhulaRI.jpeg",
+            cright_name: "two"
+          }
+        ]
+        cardInfo.custom_rights_flag = 1
+        cardInfo.give_away_status = 0
+
         that.setData({
           cardInfo: cardInfo
         })
@@ -94,6 +115,7 @@ global.wxPage({
             card_list: card_list
           })
         }
+
 
       }, { cardNo: cardNo })
     } else if (cardId) {
@@ -447,6 +469,26 @@ global.wxPage({
   },
   bindCardPwd (e) {
     card_pwd = e.detail.value;
+  },
+  show_rebate: function () {
+    wx.showModal({
+      title: '会员卡已转赠',
+      content: cardInfo.give_away_time + '转赠\r\n给好友' + cardInfo.give_username,
+      showCancel: false,
+      confirmText: '关闭',
+      confirmColor: '#000'
+    })
+  },
+  custom_click: function (e) {
+    var index = e.currentTarget.dataset.index;
+    if (custom_power[index]) {
+      custom_power[index] = false;
+    } else {
+      custom_power[index] = true;
+    }
+    this.setData({
+      custom_power: custom_power,
+    })
   },
   fetchCard () {
     var that = this;

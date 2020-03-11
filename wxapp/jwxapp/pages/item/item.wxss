@@ -38,10 +38,13 @@
   align-items: center;
   margin-right: 20rpx;
 }
+.join-group > .join-item-info > text{
+  white-space: nowrap;
+}
 .join-group > .join-item-info > text:last-of-type{
   color: #666;
 }
-.group{
+.group,.group-draw{
   background-color: #fff;
   color: #666;
 }
@@ -61,7 +64,37 @@
   border-radius: 50%;
   margin-right: 10rpx;
 }
-
+.group-draw{
+  display: flex;
+  align-items: center;
+  color: #000;
+}
+.group-draw > .rule-line{
+  flex: 0.2;
+  height: 2rpx;
+  background-color:#eee;
+}
+.group-draw > view.rule-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.group-draw > view.rule-item > image{
+  width: 50rpx;
+  height: 50rpx;
+  margin-bottom: 10rpx;
+}
+.group-draw-bottom{
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #fff;
+  color: #666;
+  font-size: 24rpx;
+  padding-top: 0;
+}
+.group-draw-bottom > view+view{
+  margin-top: 10rpx;
+}
 
 .goods-info {
   padding: 30rpx 0;
@@ -122,10 +155,10 @@
 .goods_price_info {
   color: #ff6666;
 }
-.goods_price > text:first-child {
+.goods_price > text {
   font-size: 26rpx;
 }
-.goods_price > text:last-child {
+.goods_price > text.price {
   font-size: 46rpx;
 }
 .marking_price {
@@ -152,6 +185,9 @@
 }
 .flex-wrap > .flex-item:last-of-type {
   justify-content: flex-end;
+}
+.flex-wrap > .flex-item:first-of-type {
+  justify-content: flex-start;
 }
 .flex-wrap .flex-item > image {
   width: 26rpx;
@@ -188,4 +224,10 @@
 }
 .pre-sale-content > view:last-of-type{
   margin-bottom: 15rpx;
+}
+.scoreRedeem{
+  padding: 0 30rpx;
+  line-height: 80rpx;
+  background: #fff6e6;
+  color: #ffb93c;
 }

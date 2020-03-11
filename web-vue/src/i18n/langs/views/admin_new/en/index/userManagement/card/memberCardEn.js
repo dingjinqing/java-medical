@@ -278,5 +278,20 @@ export const en = {
   noData: 'none',
   inputCardName: 'card name need',
   inputTime: 'must valid time',
-  inputDate: 'must valid date'
+  inputDate: 'must valid date',
+  shareCodeSuccess: 'success',
+  shareCodeFail: 'failed',
+  copy: 'copy',
+  downQrcode: 'download qrcode',
+  scanCode: 'Scan and share~',
+  shipNumValidO: 'Must valid',
+  shipNumValidT: 'Must 1-7 single',
+  enjoy: 'enjoy',
+  freeshipTip: 'card holder can enjoy',
+  freeship: 'free ship',
+  nolimitFreeship: 'vip',
+  cardHolder: 'cardHolder',
+  timesFreeship: 'Times',
+  noLimitCoupon: 'No limit',
+  couponErrorTip: 'Must choose.'
 }

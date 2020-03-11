@@ -4,38 +4,38 @@
     <div class="main">
       <el-form label-width="100px">
         <el-form-item
-          :label="this.$t('seckill.mobile') + '：'"
+          :label="$t('seckill.mobile') + '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.mobile"
-            :placeholder="this.$t('seckill.mobile')"
+            :placeholder="$t('seckill.mobile')"
             maxlength="11"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="this.$t('seckill.name')+ '：'"
+          :label="$t('seckill.name')+ '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.nickName"
-            :placeholder="this.$t('seckill.name')"
+            :placeholder="$t('seckill.name')"
             clearable
             class="inputWidth"
           ></el-input>
         </el-form-item>
         <el-form-item
-          :label="this.$t('seckill.inviter')+ '：'"
+          :label="$t('seckill.inviter')+ '：'"
           class="item"
         >
           <el-input
             size="small"
             v-model="requestParams.inviteUserNickname"
-            :placeholder="this.$t('seckill.inviter')"
+            :placeholder="$t('seckill.inviter')"
             clearable
             class="inputWidth"
           ></el-input>
@@ -46,7 +46,7 @@
           @click="initDataList"
           class="item"
           style="margin-left: 10px;"
-        >{{ this.$t('lotteryDraw.query') }}</el-button>
+        >{{ $t('lotteryDraw.query') }}</el-button>
       </el-form>
     </div>
 
@@ -59,32 +59,32 @@
         style="width: 100%"
       >
         <el-table-column
-          :label="this.$t('seckill.activityName')"
+          :label="$t('seckill.activityName')"
           prop="name"
           align="center"
         ></el-table-column>
         <el-table-column
-          :label="this.$t('seckill.id')"
+          :label="$t('seckill.id')"
           prop="userId"
           align="center"
         ></el-table-column>
         <el-table-column
-          :label="this.$t('seckill.name')"
+          :label="$t('seckill.name')"
           prop="userName"
           align="center"
         ></el-table-column>
         <el-table-column
-          :label="this.$t('seckill.mobile')"
+          :label="$t('seckill.mobile')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          :label="this.$t('seckill.createTime')"
+          :label="$t('seckill.createTime')"
           prop="createTime"
           align="center"
         ></el-table-column>
         <el-table-column
-          :label="this.$t('seckill.inviter')"
+          :label="$t('seckill.inviter')"
           prop="inviteUserName"
           align="center"
         ></el-table-column>

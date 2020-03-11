@@ -31,6 +31,22 @@ export const en = {
   allGoods: 'all goods',
   someGoods: 'some goods',
 
+  storeArr: [{
+    name: 'Select merchandise',
+    value: '1'
+  },
+  {
+    name: 'Select product category',
+    value: '2'
+  },
+  {
+    name: 'Select brand category',
+    value: '3'
+  }],
+  goodsTip1: 'Selected',
+  goodsTip2: 'Several items',
+  goodsTip3: 'Several businesses',
+  goodsTip4: 'Several brands',
   // 添加-提示信息
   nameCheck: 'Please fill in the service name',
   priorityCheck: 'Please enter priority',

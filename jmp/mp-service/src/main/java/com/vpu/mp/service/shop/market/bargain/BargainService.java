@@ -184,6 +184,8 @@ public class BargainService extends ShopBaseService  {
 	public void updateBargain(BargainUpdateParam param) {
 		BargainRecord record = new BargainRecord();
 		assign(param,record);
+		record.setBargainMax(param.getBargainMax());
+		record.setBargainMin(param.getBargainMin());
         if(param.getShareConfig() != null) {
             if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
                 try {
@@ -219,7 +221,7 @@ public class BargainService extends ShopBaseService  {
 	 *
 	 */
 	public BargainUpdateVo getBargainByIsd(Integer bargainId) {
-        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOneInto(BargainUpdateVo.class);
+        BargainUpdateVo bargain = db().select(BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_MIN,BARGAIN.BARGAIN_MAX,BARGAIN.STOCK,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.BARGAIN_MONEY_TYPE,BARGAIN.BARGAIN_FIXED_MONEY,BARGAIN.BARGAIN_MIN_MONEY,BARGAIN.BARGAIN_MAX_MONEY,BARGAIN.FREE_FREIGHT,BARGAIN.GOODS_ID,BARGAIN.MRKING_VOUCHER_ID,BARGAIN.REWARD_COUPON_ID,BARGAIN.SHARE_CONFIG,BARGAIN.NEED_BIND_MOBILE,BARGAIN.INITIAL_SALES).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOneInto(BargainUpdateVo.class);
 		if(bargain != null) {
 			bargain.setGoods(saas().getShopApp(getShopId()).goods.getGoodsView(bargain.getGoodsId()));
             bargain.setShopShareConfig(Util.parseJson(bargain.getShareConfig(), PictorialShareConfigVo.class));
@@ -459,7 +461,7 @@ public class BargainService extends ShopBaseService  {
             vo.setGoodsName(order.getGoods().get(0).getGoodsName());
             vo.setPrice(order.getGoods().get(0).getGoodsPrice());
             vo.setCreateTime(order.getCreateTime());
-            vo.setUsername(order.getUsername() + ";" + order.getUserMobile());
+            vo.setUsername(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
             vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
             vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
 

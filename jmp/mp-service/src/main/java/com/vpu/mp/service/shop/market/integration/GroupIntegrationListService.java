@@ -9,8 +9,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -18,13 +16,12 @@ import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -171,8 +168,9 @@ public class GroupIntegrationListService extends ShopBaseService {
 	public int batchUpdateIntegeration(Integer actId,Integer groupId,Integer integration) {
 		return db().update(GROUP_INTEGRATION_LIST)
 			.set(GROUP_INTEGRATION_LIST.INTEGRATION,integration)
-			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId))
+			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)
 			.and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
+			.and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGroupper.NO.value())))
 			.execute();
 	}
 	/**
@@ -196,11 +194,12 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param userId
 	 * @return
 	 */
-	public int getInviteNum(Integer groupId,Integer userId) {
+	public int getInviteNum(Integer groupId,Integer userId,Integer pinInteId) {
 		return db().select(DSL.count())
 			.from(GROUP_INTEGRATION_LIST)
 			.where(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))
 			.and(GROUP_INTEGRATION_LIST.INVITE_USER.eq(userId))
+			.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId))
 			.fetchOneInto(Integer.class);
 	}
 	/**
@@ -243,7 +242,6 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param actId
 	 * TODO 待指定线程池
 	 */
-	@Async
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
 //		活动内容 
 		GroupIntegrationDefineRecord defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);

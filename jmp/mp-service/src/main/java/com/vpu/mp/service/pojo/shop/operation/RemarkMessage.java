@@ -47,6 +47,8 @@ public class RemarkMessage {
 	public static final String OPEN_CARD_SEND = "member.card.open.send";
 	/** 系统检测升级 */
 	public static final String SYSTEM_UPGRADE = "member.card.system.upgrade";
+	/**	剩余可享包邮{0}次 */
+	public static final String FREESHIP_NUM = "member.card.freeship.num";
 
 
 

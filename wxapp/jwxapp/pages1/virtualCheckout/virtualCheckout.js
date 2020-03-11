@@ -235,6 +235,11 @@ global.wxPage({
     if(this.data.options.packId){
       params.packId = this.data.options.packId
     }
+    if(this.data.isScorePay){
+      this.setData({
+        'usePayInfo.useScore':this.data.orderPayScore
+      })
+    }
     util.api('/api/wxapp/coupon/pack/checkout',res=>{
       if(res.error === 0 && res.content){
         wx.requestPayment({
@@ -247,6 +252,7 @@ global.wxPage({
             util.toast_success('支付成功',()=>{
               util.jumpLink(
                 `pages1/payment/payment${this.getUrlParams({
+                  isNotGoods:1,
                   useInfo: JSON.stringify({ ...this.data.usePayInfo })
                 })}`,
                 'redirectTo'
@@ -262,6 +268,7 @@ global.wxPage({
         util.toast_success('支付成功',()=>{
           util.jumpLink(
             `pages1/payment/payment${this.getUrlParams({
+              isNotGoods:1,
               useInfo: JSON.stringify({ ...this.data.usePayInfo })
             })}`,
             'redirectTo'

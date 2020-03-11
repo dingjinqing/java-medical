@@ -15,7 +15,7 @@ public enum QrCodeTypeEnum {
     /*服务*/
     SERVICE_APPOINTMENT((byte) 3, "pages/appointment/appointment"),
     /*会员卡*/
-    USER_CARD_INFO((byte) 4, "pages/usercardinfo/usercardinfo"),
+    USER_CARD_INFO((byte) 4, "pages/cardinfo/cardinfo"),
     /*优惠券*/
     DISCOUN_COUPON((byte) 5, "pages/getcoupon/getcoupon"),
     /*门店买单*/

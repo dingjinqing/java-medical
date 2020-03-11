@@ -3,17 +3,17 @@
 
 <view class='main-container'>
   <!-- 下载海报 -->
-  <block wx:if="{{show_poster.flag == 1}}">
-    <block wx:if="{{getsq == true || click_num == true}}">
+  <block>
+    <block wx:if="{{ islogin }}">
       <view class='share_img_btn' wx:if="{{is_share == 0 }}" bindtap='go_share'>
-        <view>{{show_poster.text_1}}</view>
-        <view>{{show_poster.text_2}}</view>
+        <view>下载</view>
+        <view>海报</view>
       </view>
     </block>
     <block wx:else>
       <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-        <view>{{show_poster.text_1}}</view>
-        <view>{{show_poster.text_2}}</view>
+        <view>下载</view>
+        <view>海报</view>
       </button>
     </block>
   </block>
@@ -282,7 +282,7 @@
     </view>
   </view>
 </view>
-<!--fenxiang弹框  -->
+<!--海报弹框  -->
 <view class='share_bg' style='display:{{is_share == 1?"block":"none"}}'>
   <view class='zhezhao' catchtap='not_show_share'></view>
   <view class='share_content_share'>

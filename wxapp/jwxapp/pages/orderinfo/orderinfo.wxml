@@ -80,6 +80,26 @@
         </block>
       </view>
     </view>
+
+    <view class="group-draw-content" bindtap="toGroupDrawInfo" wx:if="{{groupDrawInfo}}">
+      <view class="group-draw-title">
+        <view>
+          <image src="{{imageUrl}}image/wxapp/icon_group3.png"></image>
+          {{groupDrawInfo.groupDrawStatus}}
+        </view>
+        <view>
+          拼团详情
+          <image src="{{imageUrl}}/image/wxapp/backward_right.png"></image>
+        </view>
+      </view>
+      <view class="group-user-content">
+       <block wx:for="{{groupDrawInfo.userList}}" wx:key="index">
+        <view>
+          <image src="{{item.userAvatar}}"></image>
+        </view>
+       </block>
+      </view>
+    </view>
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
     </view>

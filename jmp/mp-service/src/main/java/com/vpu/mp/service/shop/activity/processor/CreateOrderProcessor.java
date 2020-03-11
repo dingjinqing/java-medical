@@ -40,6 +40,14 @@ public interface CreateOrderProcessor extends Processor {
     void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order)throws MpException;
 
     /**
+     * 更新活动库存
+     * @param param
+     * @param order
+     * @throws MpException
+     */
+    void processUpdateStock(OrderBeforeParam param,OrderInfoRecord order) throws MpException;
+
+    /**
      * 退货成功时更新
      * @param activityId 活动id
      * @param returnGoods 退款商品

@@ -119,6 +119,8 @@ public class SeckillService extends ShopBaseService{
             vo.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             vo.setIsOnSale(goods.getIsOnSale());
             vo.setGoodsName(goods.getGoodsName());
+            vo.setShopPrice(goods.getShopPrice());
+            vo.setGoodsNumber(goods.getGoodsNumber());
 
             SecKillDefineRecord seckill = getSeckillActById(bo.getSkId());
             vo.setName(seckill.getName());
@@ -126,12 +128,21 @@ public class SeckillService extends ShopBaseService{
             vo.setEndTime(seckill.getEndTime());
             vo.setSkId(bo.getSkId());
             vo.setStock(seckill.getStock());
+            vo.setBaseSale(seckill.getBaseSale());
+            vo.setSaleNum(seckill.getSaleNum());
+            vo.setStatus(seckill.getStatus());
+            vo.setLimitAmount(seckill.getLimitAmount());
+            vo.setTotalStock(getTotalStock(bo.getSkId()));
 
             dataList.add(vo);
         }
 
         res.setDataList(dataList);
         return res;
+    }
+
+    private int getTotalStock(int skId){
+        return db().select(DSL.sum(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,SeckillPageListQueryParam param){

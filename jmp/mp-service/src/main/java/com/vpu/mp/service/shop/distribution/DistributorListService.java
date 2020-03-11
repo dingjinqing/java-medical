@@ -269,6 +269,17 @@ public class DistributorListService extends ShopBaseService{
         int res = db().update(USER).set(USER.INVITE_GROUP, param.getGroupId()).where(USER.USER_ID.in(param.getUserId())).execute();
         return res;
     }
+    
+    /**
+     * 获取分销员的分组名称
+     * @return 分组名称
+     */
+    public String getGroupName(Integer userId) {
+        return db().select(DISTRIBUTOR_GROUP.GROUP_NAME)
+        	.from(USER.leftJoin(DISTRIBUTOR_GROUP).on(DISTRIBUTOR_GROUP.ID.eq(USER.INVITE_GROUP)))
+        	.where(USER.USER_ID.eq(userId))
+        	.fetchAnyInto(String.class);
+    }
 
 
 }

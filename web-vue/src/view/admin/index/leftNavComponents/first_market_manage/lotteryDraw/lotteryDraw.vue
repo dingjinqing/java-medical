@@ -58,13 +58,13 @@
             class="item"
             @click="initDataList"
             style="margin-left: 10px;"
-          >{{ this.$t('lotteryDraw.select') }}</el-button>
+          >{{ $t('lotteryDraw.select') }}</el-button>
         </el-form>
         <el-button
           type="primary"
           size="small"
           @click="addLotteryDraw"
-        >{{ this.$t('lotteryDraw.addLotteryDraw') }}</el-button>
+        >{{ $t('lotteryDraw.addLotteryDraw') }}</el-button>
       </div>
     </div>
 
@@ -99,7 +99,7 @@
           width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>{{ this.$t('lotteryDraw.to') }}<br>{{scope.row.endTime}}
+            {{scope.row.startTime}}<br>{{ $t('lotteryDraw.to') }}<br>{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column

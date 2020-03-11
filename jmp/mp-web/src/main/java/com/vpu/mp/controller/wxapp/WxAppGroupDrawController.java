@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsParam;
+import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
@@ -51,6 +53,21 @@ public class WxAppGroupDrawController extends WxAppBaseController {
 			return success(checkGroupDraw.getVo());
 		}
 		return fail(code);
+	}
+	
+	/**
+	 *订单号查询用户拼团信息 
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/api/wxapp/groupdraw/info/ordersn")
+	public JsonResult getGroupDrawInfoByOrderSn(@RequestBody @Valid GroupDrawInfoByOsParam param) {
+		GroupDrawInfoByOsVo vo = shop().groupDraw.getGroupByOrderSn(param.getOrderSn(),true);
+		if(vo==null) {
+			return fail(JsonResultCode.GROUP_DRAW_FAIL);
+		}
+		return success(vo);
+		
 	}
 
 }

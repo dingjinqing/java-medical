@@ -342,6 +342,12 @@ export const en = {
     'Package Price',
     'Participation details'
   ],
+  // 营销管理 打包一口价 查看活动订单
+  package_price_order: [
+    'Marketing management',
+    'Package Price',
+    'Active order'
+  ],
   // 营销管理 开屏有礼
   open_screen: ['Marketing management', 'Open screen courtesy'],
   // 营销管理 开屏有礼 活动明细
@@ -441,6 +447,8 @@ export const en = {
   collectGift: ['Marketing management', 'Collect Gift'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
+  // 营销管理 积分兑换
+  integralExchangeHome: ['Marketing management', 'Integral exchange'],
   // 营销管理 支付有礼
   payreward: ['Marketing management', 'Pay Reward'],
   // 营销管理 添加支付有礼活动

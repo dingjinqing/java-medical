@@ -65,7 +65,9 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
 
         for (IntegralMallPrdMpVo integralPrdMpVo : integralMallPrdMpVos) {
             GoodsPrdMpVo prd = prdMap.get(integralPrdMpVo.getProductId());
+            // 无效规格信息
             if (prd == null) {
+                prdMap.remove(integralPrdMpVo.getProductId());
                 continue;
             }
             if (prd.getPrdNumber()<integralPrdMpVo.getStock()) {
@@ -74,8 +76,17 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
             goodsNum+=integralPrdMpVo.getStock();
             newPrdMpVos.add(integralPrdMpVo);
         }
-        integralMallMpVo.setIntegralMallPrdMpVos(newPrdMpVos);
+        capsule.setProducts(new ArrayList<>(prdMap.values()));
         capsule.setGoodsNumber(goodsNum);
+        if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(integralMallMpVo.getActState())) {
+            log.debug("小程序-商品详情-积分兑换商品数量已用完");
+            integralMallMpVo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
+        }
+        if (prdMap.size() == 0) {
+            log.debug("小程序-商品详情-积分兑换-商品规格信息和活动规格信息无交集");
+            integralMallMpVo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
+        integralMallMpVo.setIntegralMallPrdMpVos(newPrdMpVos);
         capsule.setActivity(integralMallMpVo);
     }
     @Override
@@ -100,6 +111,11 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
             .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
         dao.updateStockAndSales(param.getActivityId(), updateParam);
         dao.addRecords(order, addRecordParam);
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 
     @Override

@@ -16,7 +16,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -985,10 +984,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //设置支付过期时间(默认30minutes)
         Integer cancelTime = tradeCfg.getCancelTime();
         cancelTime = cancelTime < 1 ? OrderConstant.DEFAULT_AUTO_CANCEL_TIME : cancelTime;
-        if(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_SEC_KILL)) {
-            SeckillVo seckillCfg = seckillService.getSeckillById(beforeVo.getActivityId());
-            order.setExpireTime(DateUtil.getTimeStampPlus(seckillCfg.getLimitPaytime(), ChronoUnit.MINUTES));
-        }
         if(beforeVo.getOrderPayWay() != null && OrderConstant.PAY_WAY_FRIEND_PAYMENT == beforeVo.getOrderPayWay()) {
             //代付
             order.setExpireTime(DateUtil.getTimeStampPlus(1, ChronoUnit.DAYS));

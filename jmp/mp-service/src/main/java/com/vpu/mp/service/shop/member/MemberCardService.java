@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
@@ -205,13 +207,14 @@ public class MemberCardService extends ShopBaseService {
 	private void initFreeshipCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
 		logger().info("初始化包邮信息");
 		CardFreeship freeship = param.getFreeship();
-		if(freeship==null) {
+		if(freeship!=null) {
 			if(freeship.getType()!=null) {
-				cardBuilder.freeshipLimit(freeship.getType());	  
+				cardBuilder.freeshipLimit(freeship.getType());
+				if(freeship.getNum()!=null && freeship.getNum()>= 0) {
+					cardBuilder.freeshipNum(freeship.getNum());
+				}
 			}
-			if(freeship.getNum()!=null && freeship.getNum()>= 0) {
-				cardBuilder.freeshipNum(freeship.getNum());
-			}
+			
 		}
 	}
 
@@ -984,9 +987,24 @@ public class MemberCardService extends ShopBaseService {
 		assignCardBatch(normalCard);
 		changeCardJsonCfgToDetailType(normalCard);
 		assignCoupon(normalCard);
+		// 包邮信息
+		normalCard.setFreeship(getFreeshipData(card));
 		return normalCard;
 	}
 	
+	/**
+	 * 	获取卡的包邮信息
+	 */
+	private CardFreeship getFreeshipData(MemberCardRecord card) {
+		CardFreeship cardFreeship = new CardFreeship();
+		Byte type = card.getFreeshipLimit();
+		cardFreeship.setType(type);
+		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+			cardFreeship.setNum(card.getFreeshipNum());
+		}
+		return cardFreeship;
+	}
+
 	private void changeCardJsonCfgToDetailType(BaseCardVo card) {
 			card.changeJsonCfg();
 			assignCardStoreIdAndName(card);
@@ -2498,6 +2516,20 @@ public class MemberCardService extends ShopBaseService {
 		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
 		excelWriter.writeModelList(list, CardNoPwdExcelVo.class);
 		return workbook;
+	}
+	
+	/**
+	 * 	获取会员卡的分享二维码
+	 * @param cardId
+	 */
+	public ShareQrCodeVo getShareCode(Integer cardId) {
+		//String paramStr = String.format("cardId=%d&inviteId=", cardId);
+		String paramStr = String.format("cardId=%d", cardId);
+		String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,paramStr);
+		ShareQrCodeVo vo = new ShareQrCodeVo();
+		vo.setImageUrl(imageUrl);
+		vo.setPagePath(QrCodeTypeEnum.USER_CARD_INFO.getPathUrl(paramStr));
+		return vo;
 	}
 	
 }

@@ -1,13 +1,12 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.refund;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-
-import lombok.Data;
 
 /**
  * 退款、退货
@@ -66,7 +65,6 @@ public class RefundVo {
 		/**手动退款时已退金额*/
 		private BigDecimal returnMoney;
 		/** 发货数 */
-		@JsonIgnore
 		private Short sendNumber;
 	}
 

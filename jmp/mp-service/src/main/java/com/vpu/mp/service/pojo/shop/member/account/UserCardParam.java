@@ -93,6 +93,15 @@ public class UserCardParam {
 	protected Integer stock;
 	protected Integer limit;
 	protected String discountBrandId;
+
+	/**
+	 * freeship_limit包邮周期类型 -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
+	 */
+	protected Byte freeshipLimit;
+	/**
+	 * freeship_num 周期内包邮次数
+	 */
+	protected Integer freeshipNum;
 	
 	/**
 	 * 是否支持需要用现金购买

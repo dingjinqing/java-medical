@@ -37,8 +37,9 @@
             ref="cardCouponCfgData"
           ></cardCouponCfg>
           <!-- 包邮 -->
-          <cardFreeshipCfg v-bind.sync="freeship">
-
+          <cardFreeshipCfg
+            v-bind.sync="freeship"
+            ref="freeship">
           </cardFreeshipCfg>
           <cardEffectTime
             :val="cardEffectTime"
@@ -255,7 +256,8 @@ export default {
       // 包邮信息
       freeship: {
         num: null,
-        type: 3
+        type: 3,
+        valid: false
       }
     }
   },
@@ -309,25 +311,28 @@ export default {
       this.ownGoodsData.choosedBrandId = data.ownBrandId
 
       // 积分
-      this.cardScoreCfgData.powerScore = data.powerScore ? data.powerScore === 1 : true
+      this.cardScoreCfgData.powerScore = data.powerScore ? true : data.powerScore === 1
       this.cardScoreCfgData.score = data.score
       this.cardScoreCfgData.offSet = data.scoreJson ? String(data.scoreJson.offset) : '0'
+
       // 购物满
-      if (data.scoreJson.goodsMoney.length > 0) {
-        this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
-        this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
-        data.scoreJson.goodsMoney.splice(0, 1)
-        data.scoreJson.getScores.splice(0, 1)
-        for (let index in data.scoreJson.goodsMoney) {
-          this.cardScoreCfgData.addIntegralArr.push({
-            leftInput: data.scoreJson.goodsMoney[index],
-            rightInput: data.scoreJson.getScores[index]
-          })
+      if (data.scoreJson !== null) {
+        if (data.scoreJson.goodsMoney.length > 0) {
+          this.cardScoreCfgData.shopingInputLeft = data.scoreJson.goodsMoney[0]
+          this.cardScoreCfgData.shopingInputRight = data.scoreJson.getScores[0]
+          data.scoreJson.goodsMoney.splice(0, 1)
+          data.scoreJson.getScores.splice(0, 1)
+          for (let index in data.scoreJson.goodsMoney) {
+            this.cardScoreCfgData.addIntegralArr.push({
+              leftInput: data.scoreJson.goodsMoney[index],
+              rightInput: data.scoreJson.getScores[index]
+            })
+          }
         }
+        // 购物每满
+        this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
+        this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
       }
-      // 购物每满
-      this.cardScoreCfgData.shopingInputLeftM = data.scoreJson.perGoodsMoney
-      this.cardScoreCfgData.shopingInputRightM = data.scoreJson.perGetScores
       // 充值
       this.cardChargeCfgData.powerCard = data.powerCard ? data.powerCard === 1 : false
       this.cardChargeCfgData.sendMoney = data.sendMoney ? data.sendMoney : undefined
@@ -371,6 +376,10 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
+
+      // 包邮信息
+      this.freeship = data.freeship
+      this.freeship.valid = false
 
       // 使用须知
       this.cardUsageCfgData.desc = data.desc
@@ -475,14 +484,14 @@ export default {
     },
     handleToSave () {
       // 检验通过
-      this.$refs.cardNameAndBg.$emit('checkRule')
-      this.$refs.disCountData.$emit('checkRule')
-      this.$refs.cardScoreCfgData.$emit('checkRule')
-      this.$refs.cardChargeCfgData.$emit('checkRule')
-      this.$refs.cardCouponCfgData.$emit('checkRule')
-      this.$refs.cardEffectTime.$emit('checkRule')
-      this.$refs.cardReceiveCfgData.$emit('checkRule')
-      this.$refs.cardActiveCfgData.$emit('checkRule')
+      let checkComponents = ['cardNameAndBg', 'disCountData', 'cardScoreCfgData', 'cardChargeCfgData',
+        'cardCouponCfgData', 'cardEffectTime', 'cardReceiveCfgData', 'cardActiveCfgData',
+        'freeship']
+
+      for (let i = 0; i < checkComponents.length; i++) {
+        this.$refs[checkComponents[i]].$emit('checkRule')
+      }
+
       // 至少选择一项会员权益
       if (this.disCountData.powerDiscount || this.ownGoodsData.powerOwnGoods ||
         this.cardScoreCfgData.powerScore || this.cardChargeCfgData.powerCard || this.cardCouponCfgData.powerCoupon) {
@@ -490,7 +499,7 @@ export default {
         console.log(this.cardChargeCfgData.valid)
         if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardScoreCfgData.valid &&
           this.cardChargeCfgData.valid && this.cardCouponCfgData.valid && this.cardEffectTime.valid &&
-          this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
+          this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid && this.freeship.valid) {
           // 保存数据
           this.prepareCardData()
         } else {
@@ -563,7 +572,8 @@ export default {
         'batchIdList': this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId),
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'freeship': this.freeship
       }
       if (this.cardId) {
         // 更新会员卡

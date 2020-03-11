@@ -198,7 +198,9 @@ public class MpDecorationService extends ShopBaseService {
         String pageContent;
         if (pageId == null || pageId == 0) {
             if(StringUtil.isNotEmpty(param.getScene())){
-                //scene的格式为page_id=1,url编码
+                //scene的格式有：
+                // page_id=1,url编码，表示装修预览，取未发布的装修内容
+                // page=1,url编码，表示页面分享，取已发布的装修内容
                 String scene = null;
                 try {
                     scene = URLDecoder.decode(param.getScene(),"UTF-8");
@@ -209,8 +211,17 @@ public class MpDecorationService extends ShopBaseService {
                     String[] sceneParam = scene.split("=",2);
                     pageId =  Integer.valueOf(sceneParam[1]);
                     record = getPageById(pageId);
-                    //页面预览
-                    pageContent = record.getPageContent();
+                    if("page_id".equals(sceneParam[0])){
+                        //页面预览
+                        pageContent = record.getPageContent();
+                    }else if("page".equals(sceneParam[0])){
+                        //页面分享
+                        pageContent = record.getPagePublishContent();
+                    }else{
+                        logger().error("未知scene");
+                        pageContent = null;
+                    }
+
                 }else {
                     return null;
                 }

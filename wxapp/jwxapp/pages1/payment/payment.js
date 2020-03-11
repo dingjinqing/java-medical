@@ -17,10 +17,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {orderSn = null,useInfo} = options
+    let {orderSn = null,useInfo,isNotGoods=null} = options
     this.setData({
       orderSn,
-      useInfo:JSON.parse(useInfo)
+      useInfo:JSON.parse(useInfo),
+      isNotGoods
     })
     this.selectComponent('#recommend').requestData()
     this.payGiftRequest()
