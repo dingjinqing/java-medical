@@ -73,7 +73,8 @@ public class EsBaseSearchService extends ShopBaseService {
         FREIGHT_TEMPLATE_ID,
         PRD_JSON,
         BASE_SALE,
-        DEFAULT_PRD
+        DEFAULT_PRD,
+        MARKET_PRICE
     };
 
 
