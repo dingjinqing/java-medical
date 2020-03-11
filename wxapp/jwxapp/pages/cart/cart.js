@@ -69,7 +69,7 @@ global.wxPage({
                   }
                 } else if (val.activityType == 7) {
                   val.purchasePrice.purchasePriceRule.forEach((pitem, pindex) => {
-                    item.ruleList += '满' + pitem.fullPrice + '元另加' + pitem.purchasePrice + '元即可换购商品' + ','
+                    item.ruleList += pitem.name + '或'
                   })
                   if (item.ruleList.length > 0) {
                     item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);

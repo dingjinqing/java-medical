@@ -10,7 +10,6 @@ global.wxComponent({
       newVal.moude_img2 = "url(" + newVal.imageUrl + "/image/wxapp/pin_back.png)";
     },
     bindToPinIntegration (e) {
-      debugger
       var act_id = e.currentTarget.dataset.act_id;
       console.log(act_id)
       util.jumpLink('/pages/pinintegration/pinintegration?pinInte_id=' + act_id);

@@ -160,21 +160,33 @@ global.wxPage({
   // 确认换购商品
   btn_confirm_change: function () {
     var that = this;
-    // util.api('/api/wxapp/cart/addnew', function (res) {
-    //   if (res.error == 0) {
-    //     var get_price = res.content.main_price;
-    //     var get_doc = res.content.change_doc;
-    //     that.setData({
-    //       changeMove: true,
-    //       get_price: get_price,
-    //       get_doc: get_doc
-    //     })
-
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, { action: 1, purchase_change_goods: JSON.stringify(purchase_change_goods), identity_id: that.data.identity_id, store_id: that.data.store_id })
+    var prdIds = [];
+    that.data.change_goods_info.list.forEach((item, index) => {
+      if (item.isChecked == 1) {
+        prdIds.push(item.prdId)
+      }
+    })
+    prdIds.forEach((item, index) => {
+      that.add_cart(item)
+    })
+  },
+  add_cart(data) {
+    console.log(data)
+    var that = this
+    util.api('/api/wxapp/cart/add', function (res) {
+      if (res.error == 0) {
+        // var get_price = res.content.main_price;
+        // var get_doc = res.content.change_doc;
+        that.setData({
+          changeMove: true,
+          // get_price: get_price,
+          // get_doc: get_doc
+        })
+      } else {
+        util.showModal("提示", res.message);
+        return false;
+      }
+    }, { goodsNumber: 1, prdId: data, activityType: 97, activityId: that.data.identity_id })
   },
   // 加入购物车
   add_to_cart: function (e) {
