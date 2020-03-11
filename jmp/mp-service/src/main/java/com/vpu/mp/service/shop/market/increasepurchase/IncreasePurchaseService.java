@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -21,9 +23,12 @@ import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseChangeGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseChangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -44,6 +49,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -78,6 +84,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private CartService cartService;
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 分页查询加价购活动信息
@@ -637,6 +645,66 @@ public class IncreasePurchaseService extends ShopBaseService {
         doc.setState((byte)1);
         doc.setDiffPrice(diffPrice);
         return doc;
+    }
+
+    /***
+     * 当前已换购的商品
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PurchaseChangeGoodsVo changePurchaseProductList(PurchaseChangeGoodsParam param,Integer userId){
+        PurchaseChangeGoodsVo vo = new PurchaseChangeGoodsVo();
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(param.getPurchasePriceId()));
+
+        //用户不能买的专属商品
+        List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+        //换购规则
+        List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
+        //输出商品列表
+        List<PurchaseChangeGoodsVo.Goods> list = new ArrayList<>();
+        ruleRecords.forEach(rule->{
+            Map<Integer, GoodsSpecProductRecord> prds = goodsService.goodsSpecProductService.goodsSpecProductByIds(Util.splitValueToList(rule.getProductId()));
+            prds.forEach((prdId,productRecord)->{
+                if(!userExclusiveGoodsIds.contains(productRecord.getGoodsId())){
+                    PurchaseChangeGoodsVo.Goods goods = new PurchaseChangeGoodsVo.Goods();
+                    GoodsRecord goodsView = goodsService.getGoodsRecordById(productRecord.getGoodsId());
+                    goods.setGoodsId(goodsView.getGoodsId());
+                    goods.setGoodsName(goodsView.getGoodsName());
+                    if(StringUtil.isNotBlank(goodsView.getGoodsImg())){
+                        goods.setGoodsImg(domainConfig.imageUrl(goodsView.getGoodsImg()));
+                    }
+                    goods.setShopPrice(goodsView.getShopPrice());
+                    goods.setMarketPrice(goodsView.getMarketPrice());
+                    goods.setIsDelete(goodsView.getDelFlag());
+                    goods.setIsOnSale(goodsView.getIsOnSale());
+                    goods.setPrdId(prdId);
+                    goods.setPrdDesc(productRecord.getPrdDesc());
+                    if(StringUtil.isNotBlank(productRecord.getPrdImg())){
+                        goods.setPrdImg(domainConfig.imageUrl(productRecord.getPrdImg()));
+                    }
+                    goods.setPrdNumber(productRecord.getPrdNumber());
+
+                    goods.setPrdPrice(rule.getPurchasePrice());
+                    goods.setPurchaseRuleId(rule.getId());
+                    if(cartBo.getProductIdList().contains(prdId)){
+                        goods.setIsChecked((byte)1);
+                    }
+                    if(rule.getFullPrice().compareTo(cartBo.getTotalPrice()) > 0){
+                        goods.setTip((byte)0);
+                        goods.setTipMoney(rule.getFullPrice());
+                    }
+
+                    list.add(goods);
+                }
+            });
+        });
+        vo.setList(list);
+        vo.setMaxChangePurchase(purchasePriceDefineRecord.getMaxChangePurchase());
+        vo.setAlreadyChangeNum(cartBo.getTotalGoodsNum());
+
+        return vo;
     }
 
 }
