@@ -416,7 +416,8 @@
   </div>
 </template>
 <script>
-
+import { download } from '@/util/excelUtil.js'
+import { goodsExport } from '@/api/admin/goodsManage/allGoods/allGoods.js'
 import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
@@ -458,7 +459,8 @@ export default {
       bottomDialogVisible: false, // 底部点击弹窗flag
       isBottomClickIndex: 0, // 底部按钮点击flag
       nowCheckAll: [], // 当前选中的总数
-      batchSetupVisible: false // 批量设置弹窗flag
+      batchSetupVisible: false, // 批量设置弹窗flag
+      exportRowEnd: null // 导出的商品数量
     }
   },
   computed: {
@@ -784,7 +786,7 @@ export default {
       let flag = this.handleToJudgeIsChecked()
       if (!flag) {
         this.$message.error({
-          message: this.$t('allGoods.bottomOptions.noItemSelected'),
+          message: this.$t('allGoods.batchExportOptions.noItemSelected'),
           showClose: true
         })
         return
@@ -835,6 +837,26 @@ export default {
               console.log(res)
               this.fetchGoodsData(this.filterData)
             }
+          })
+          break
+        case 2:
+          goodsExport({ exportRowStart: 1, exportRowEnd: this.pageParams.totalRows }).then(res => {
+            console.log(res)
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
+          })
+          break
+        case 3:
+          let arr = []
+          this.nowCheckAll.forEach((item, index) => {
+            arr.push(item.goodsId)
+          })
+          goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr }).then(res => {
+            console.log(res)
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
           })
       }
       this.bottomDialogVisible = false
