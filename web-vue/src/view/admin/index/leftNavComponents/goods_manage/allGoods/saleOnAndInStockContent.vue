@@ -840,7 +840,9 @@ export default {
           })
           break
         case 2:
-          goodsExport({ exportRowStart: 1, exportRowEnd: this.pageParams.totalRows }).then(res => {
+          this.filterData.exportRowStart = 1
+          this.filterData.exportRowEnd = this.pageParams.totalRows
+          goodsExport(this.filterData).then(res => {
             console.log(res)
             let fileName = localStorage.getItem('V-content-disposition')
             fileName = fileName.split(';')[1].split('=')[1]
@@ -852,7 +854,7 @@ export default {
           this.nowCheckAll.forEach((item, index) => {
             arr1.push(item.goodsId)
           })
-          goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr }).then(res => {
+          goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr1 }).then(res => {
             console.log(res)
             let fileName = localStorage.getItem('V-content-disposition')
             fileName = fileName.split(';')[1].split('=')[1]
