@@ -29,6 +29,8 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
+import com.vpu.mp.service.pojo.wxapp.market.seckill.SeckillCheckVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -481,25 +483,34 @@ public class SeckillService extends ShopBaseService{
 
     /**
      * 判断秒杀规格的可用状态
-     * @param skId 秒杀ID
-     * @param productId 规格ID
+     * @param param
      * @param userId
      * @return 0正常可用;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;
      *          7该秒杀为会员专属，该用户没有对应会员卡；8该规格无库存；9有待支付的秒杀订单
      */
-    public Byte canApplySecKill(Integer skId,Integer productId,Integer userId) {
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
+    public SeckillCheckVo canApplySecKill(SecKillProductParam param, Integer userId) {
+        SeckillCheckVo vo = new SeckillCheckVo();
+
+        SecKillDefineRecord secKill = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getSkId()));
         int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsView(secKill.getGoodsId()).getGoodsNumber();
         byte res = this.canApplySecKill(secKill,goodsNumber,userId);
+
         if(res == 0){
-            if(!this.checkSeckillProductStock(skId,productId)){
-                return BaseConstant.ACTIVITY_STATUS_PRD_NOT_HAS_NUM;
+            if(!this.checkSeckillProductStock(param.getSkId(),param.getProductId())){
+                vo.setState(BaseConstant.ACTIVITY_STATUS_PRD_NOT_HAS_NUM);
             }
-            if(seckillList.checkSeckillOrderWaitPay(skId,userId) != null){
-                return BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY;
+            String orderSn = seckillList.checkSeckillOrderWaitPay(param.getSkId(),userId);
+            if(orderSn != null){
+                vo.setState(BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY);
+                vo.setOrderSn(orderSn);
+            }
+            int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
+            if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
+                vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
+                vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
             }
         }
-        return res;
+        return vo;
     }
 
     /**
