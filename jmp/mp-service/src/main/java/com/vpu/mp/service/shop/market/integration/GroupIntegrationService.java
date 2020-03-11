@@ -63,6 +63,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.CanPinInte;
+import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -501,7 +502,6 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	public CanApplyPinInteVo canApplyPinInte(Integer pinInteId, Integer groupId, Integer userId, Integer type) {
 		GroupIntegrationDefineRecord pinInteInfo = getOneInfoByIdNoInto(pinInteId);
-		CanApplyPinInteVo vo = null;
 		if (pinInteInfo == null) {
 			return new CanApplyPinInteVo(STATUS_ONE, "该活动不存在");
 		}
@@ -1009,5 +1009,53 @@ public class GroupIntegrationService extends ShopBaseService {
 		logger().info("准备发组团瓜分积成功");
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+	
+	
+	
+	
+	public GroupDetailVo pinIntegrationDetail(GroupStartParam param,Integer userId) {
+		Integer pinInteId = param.getPinInteId();
+		Integer groupId = param.getGroupId() == null ? 0 : param.getGroupId();
+		Integer inviteUser = param.getInviteUser() == null ? 0 : param.getInviteUser();
+		GroupIntegrationDefineRecord record = getOneInfoByIdNoInto(pinInteId);
+		if (record == null) {
+			return null;
+		}
+		GroupDetailVo vo=new GroupDetailVo();
+		GroupIntegrationPojo pinInteInfo = record.into(GroupIntegrationPojo.class);
+		GroupIntegrationListRecord pinInteUser = groupIntegrationList.getUserIntegrationInfo(userId,pinInteId,groupId);
+		List<GroupIntegrationMaVo> groupInfo = groupIntegrationList.getPinIntegrationGroupDetail(pinInteId,groupId);
+		GroupIntegrationMaVo groupIntegration = groupInfo.get(0);
+		for (GroupIntegrationMaVo item : groupInfo) {
+			int inviteNum = groupIntegrationList.getInviteNum(groupId, item.getUserId(), pinInteId);
+			item.setInviteNum((short)inviteNum);
+			if(item.getIsGrouper().equals(STATUS_ONE)) {
+				groupIntegration=item;
+			}
+		}
+		long startTime = groupIntegration.getStartTime().getTime();
+		long endTime = groupIntegration.getEndTime().getTime();
+		long add=24*60*60*1000L;
+		if(groupIntegration.getStatus().equals(STATUS_ZERO)) {
+			long time = startTime + add > endTime ? endTime : startTime + add;
+			vo.setRemainTime(time);
+		}
+		vo.setGroupInfo(groupInfo);
+		vo.setPinInteInfo(pinInteInfo);
+		int userNum=groupInfo.size();
+		if (pinInteUser.getStatus() > STATUS_ZERO && pinInteUser.getIsLook().equals(STATUS_ZERO)) {
+			pinInteUser.setIsLook(STATUS_ONE);
+			int update = pinInteUser.update();
+			logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+		}
+		vo.setUserNum(userNum);
+		vo.setInviteUser(inviteUser);
+		vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));
+		UserRecord userByUserId = userService.getUserByUserId(userId);
+		vo.setScore(userByUserId.getScore());
+		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, null, userId, null);
+		vo.setCanPin(canApplyPinInte);
+		return vo;
 	}
 }
