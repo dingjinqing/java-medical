@@ -317,6 +317,7 @@ export default {
                 } else {
                   item.salePercent = Number((Number(item.sale_num) + Number(item.base_sale)) / (Number(item.total_stock) + Number(item.base_sale))).toFixed(4) || 0
                 }
+                console.log(item)
               }
             })
           }
