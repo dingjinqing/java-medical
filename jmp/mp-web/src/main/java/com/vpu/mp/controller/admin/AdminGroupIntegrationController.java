@@ -1,7 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +15,6 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.ChangeStatusParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
-import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEditVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefinePageParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;

@@ -479,7 +479,7 @@ public class GroupBuyService extends ShopBaseService {
             logger().info("拼团成功,groupId:{}", groupId);
             Timestamp date = DateUtil.getLocalDateTime();
             List<String> orderSnList = groupUserList.stream().map(GroupBuyUserInfo::getOrderSn).collect(Collectors.toList());
-            updateGroupSuccess(groupBuyId, date, orderSnList);
+            updateGroupSuccess(groupId, date, orderSnList);
             logger().info("修改订单状态");
             orderInfoService.batchChangeToWaitDeliver(orderSnList);
             List<Integer> userIds = groupUserList.stream().map(GroupBuyUserInfo::getUserId).collect(Collectors.toList());

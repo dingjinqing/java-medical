@@ -60,9 +60,11 @@
           <!-- 倒计时提示 -->
           <view class='time_daojishi'>
             <block wx:if='{{promote_info.promoteStatus == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
-            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
+            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime > 0}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
+            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime <= 0}}'>奖品已失效</block>
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>已领取，请在订单中查看</block>
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
+            <block wx:if='{{promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4}}'>已结束,助力失败</block>
           </view>
           <!-- 助力按钮 -->
           <form report-submit='true' bindsubmit='shareGoods'>
@@ -71,7 +73,8 @@
           <form report-submit='true' bindsubmit='shareGoods'>
             <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 1}}'>邀请好友帮忙助力</button>
           </form>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1}}'>立即领取</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime > 0}}'>立即领取</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime <= 0}}'>去逛逛</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1||promote_info.rewardType == 0)}}'>查看订单</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>助力好友得奖品</button>

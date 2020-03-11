@@ -34,6 +34,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
@@ -52,7 +53,12 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationMaVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationPojo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupperInfoPojo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -62,6 +68,7 @@ import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.user.UserService;
 
 /**
@@ -79,7 +86,6 @@ public class GroupIntegrationService extends ShopBaseService {
 	private RecordAdminActionService recordService;
 	@Autowired
 	private ScoreService scoreService;
-
 	@Autowired
 	private UserService userService;
 
@@ -818,13 +824,20 @@ public class GroupIntegrationService extends ShopBaseService {
 					.execute();
 			logger().info("活动id：{},团id：{}，更新状态为：{}；结果：{}", pinInteId, groupId, STATUS_TWO, execute2);
 			logger().info("发送拼团失败的通知");
-			// TODO 公众号拼团失败通知
+			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfo) {
+				sendGroupFailedMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId());
+			}
 		} else {
-			//按邀请好友数量瓜分
+			// 按邀请好友数量瓜分
 			if (pinInteInfo.getDivideType().equals(IS_DAY_DIVIDE_N)) {
-				invitedGriends(groupId, pinInteId, groupInfo, canIntegration);
+				logger().info("按邀请好友数量瓜分");
+				boolean invitedGriends = invitedGriends(groupId, pinInteId, groupInfo, canIntegration);
+				if(!invitedGriends) {
+					return invitedGriends;
+				}
 			} else if (pinInteInfo.getDivideType().equals(IS_DAY_DIVIDE_Y)) {
-				//好友均分
+				// 好友均分
+				logger().info("好友均分");
 				logger().info("DivideType为1");
 				int preInte = canIntegration / userNum;
 				int grouperInte = canIntegration - preInte * (userNum - 1);
@@ -833,7 +846,8 @@ public class GroupIntegrationService extends ShopBaseService {
 					groupIntegrationList.updateGroupperIntegration(pinInteId, groupId, grouperInte);
 				});
 			} else if (pinInteInfo.getDivideType().equals(STATUS_TWO)) {
-				//随机瓜分
+				// 随机瓜分
+				logger().info("随机瓜分");
 				List<Integer> numbers = range(0, canIntegration - 1);
 				// 随机排序
 				Collections.shuffle(numbers);
@@ -880,7 +894,13 @@ public class GroupIntegrationService extends ShopBaseService {
 					e.printStackTrace();
 				}
 			}
-			// TODO 发送拼团成功通知
+			GroupperInfoPojo grouperInfo = groupIntegrationList.getGrouperInfo(pinInteId, groupId);
+			String groupName = grouperInfo.getUsername();
+			int groupSize = groupInfoNew.size();
+			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfoNew) {
+				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize);
+			}
+			
 		}
 		GroupIntegrationDefineRecord pinInteInfoNew = getOneInfoByIdNoInto(pinInteId);
 		if ((pinInteInfoNew.getIsDayDivide().equals(IS_DAY_DIVIDE_Y) && pinInteInfoNew.getInteRemain().equals(0))
@@ -897,15 +917,17 @@ public class GroupIntegrationService extends ShopBaseService {
 
 	/**
 	 * 按邀请好友数量瓜分
+	 * 
 	 * @param groupId
 	 * @param pinInteId
 	 * @param groupInfo
 	 * @param canIntegration
 	 * @return
 	 */
-	private boolean invitedGriends(Integer groupId, Integer pinInteId, List<GroupIntegrationMaVo> groupInfo, int canIntegration) {
-		int haveDivide=0;
-		int execute=0;
+	private boolean invitedGriends(Integer groupId, Integer pinInteId, List<GroupIntegrationMaVo> groupInfo,
+			int canIntegration) {
+		int haveDivide = 0;
+		int execute = 0;
 		logger().info("DivideType为0");
 		int getNumTotal = 0;
 		Map<GroupIntegrationMaVo, Integer> map = new HashMap<GroupIntegrationMaVo, Integer>();
@@ -947,5 +969,45 @@ public class GroupIntegrationService extends ShopBaseService {
 			list.add(i);
 		}
 		return list;
+	}
+	
+	/**
+	 * 组团瓜分积分失败发公众号
+	 */
+	public void sendGroupFailedMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId) {
+		logger().info("组团瓜分积失败");
+		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId;
+		List<Integer> userIdList = new ArrayList<Integer>();
+		userIdList.add(userId);
+		String first="您好，您参加的组团瓜分积由于团已过期，拼团失败";
+		String remake="拼团人数未满"+pinInteInfo.getLimitAmount()+"人";
+		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { "", "#173177" }, {remake, "#173177" } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.build();
+		logger().info("准备发组团瓜分积失败");
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+	}
+	
+	
+	/**
+	 * 组团瓜分积分成功发公众号
+	 */
+	public void sendGroupSuccessMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId,String groupName,Integer groupSize) {
+		logger().info("组团瓜分积成功");
+		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId;
+		List<Integer> userIdList = new ArrayList<Integer>();
+		userIdList.add(userId);
+		String first="您好，您有新的组团瓜分积成功订单";
+		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
+		RabbitMessageParam param = RabbitMessageParam.builder()
+				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.build();
+		logger().info("准备发组团瓜分积成功");
+		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}
 }

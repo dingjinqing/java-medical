@@ -854,6 +854,26 @@ export default {
               this.fetchGoodsData(this.filterData)
             }
           })
+          break
+        case 2:
+          goodsExport({ exportRowStart: 1, exportRowEnd: this.pageParams.totalRows }).then(res => {
+            console.log(res)
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
+          })
+          break
+        case 3:
+          let arr1 = []
+          this.nowCheckAll.forEach((item, index) => {
+            arr1.push(item.goodsId)
+          })
+          goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr }).then(res => {
+            console.log(res)
+            let fileName = localStorage.getItem('V-content-disposition')
+            fileName = fileName.split(';')[1].split('=')[1]
+            download(res, decodeURIComponent(fileName))
+          })
       }
       this.bottomDialogVisible = false
     }

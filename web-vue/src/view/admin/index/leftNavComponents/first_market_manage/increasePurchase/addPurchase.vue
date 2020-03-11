@@ -228,8 +228,9 @@
               type="primary"
               @click="showChoosingGoods1"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择商品弹窗-->
+            <!--选择规格弹窗-->
             <ChoosingGoods
+              :loadProduct="true"
               :tuneUpChooseGoods="tuneUpChooseGoods1"
               @resultGoodsDatas="choosingGoodsResult1"
               :chooseGoodsBack="purcahse_rule1.productId"
@@ -280,8 +281,9 @@
               type="primary"
               @click="showChoosingGoods2"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择商品弹窗-->
+            <!--选择规格弹窗-->
             <ChoosingGoods
+              :loadProduct="true"
               :tuneUpChooseGoods="tuneUpChooseGoods2"
               @resultGoodsDatas="choosingGoodsResult2"
               :chooseGoodsBack="purcahse_rule2.productId"
@@ -332,8 +334,9 @@
               type="primary"
               @click="showChoosingGoods3"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
-            <!--选择商品弹窗-->
+            <!--选择规格弹窗-->
             <ChoosingGoods
+              :loadProduct="true"
               :tuneUpChooseGoods="tuneUpChooseGoods3"
               @resultGoodsDatas="choosingGoodsResult3"
               :chooseGoodsBack="purcahse_rule3.productId"
@@ -592,7 +595,8 @@ export default {
       this.purchase_table1 = row
       this.purcahse_rule1.productId = []
       this.purchase_table1.map((item, index) => {
-        this.purcahse_rule1.productId.push(item.goodsId)
+        // this.purcahse_rule1.productId.push(item.goodsId)
+        this.purcahse_rule1.productId.push(item.prdId)
       })
     },
     // 删除选中的换购商品-规则1
@@ -611,7 +615,8 @@ export default {
       this.purchase_table2 = row
       this.purcahse_rule2.productId = []
       this.purchase_table2.map((item, index) => {
-        this.purcahse_rule2.productId.push(item.goodsId)
+        // this.purcahse_rule2.productId.push(item.goodsId)
+        this.purcahse_rule2.productId.push(item.prdId)
       })
     },
     // 删除选中的换购商品-规则2
@@ -630,7 +635,8 @@ export default {
       this.purchase_table3 = row
       this.purcahse_rule3.productId = []
       this.purchase_table3.map((item, index) => {
-        this.purcahse_rule3.productId.push(item.goodsId)
+        // this.purcahse_rule3.productId.push(item.goodsId)
+        this.purcahse_rule3.productId.push(item.prdId)
       })
     },
     // 删除选中的换购商品-规则3
@@ -689,6 +695,7 @@ export default {
         param.goodsId = this.goodsId
         param.goodsId = param.goodsId.join()
         param.rules = this.getPurchaseRules()
+        console.log(param)
         add(param).then(res => {
           if (res.error === 0) {
             this.$message.success({

@@ -6,7 +6,6 @@ import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -17,7 +16,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
@@ -64,64 +62,65 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 好友助力活动列表
 	 *
-	 * @param param
+	 * @param param 活动名称等查询条件
 	 * @return pageResult
 	 */
 	public PageResult<FriendPromoteListVo> friendPromoteList(FriendPromoteListParam param) {
-		/* 查询好友助力活动 */
+		// 查询好友助力活动
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<Record8<Integer, String,String, Timestamp, Timestamp, Byte, String, Byte>> sql = db()
 				.select(fpa.ID, fpa.ACT_CODE,fpa.ACT_NAME, fpa.START_TIME, fpa.END_TIME, fpa.REWARD_TYPE, fpa.REWARD_CONTENT,
 						fpa.IS_BLOCK)
-				.from(fpa).where(fpa.DEL_FLAG.eq((byte) FriendPromoteListParam.NOT_DELETE));
-		/* 查询条件：活动名称 */
+				.from(fpa).where(fpa.DEL_FLAG.eq(FriendPromoteListParam.NOT_DELETE));
+		//查询条件：活动名称
 		if (!StringUtils.isNullOrEmpty(param.getActName())) {
 			sql = sql.and(fpa.ACT_NAME.like(this.likeValue(param.getActName())));
 		}
-		/* 查询条件：开始时间 */
+		//查询条件：开始时间
 		if (param.getStartTime() != null) {
 			sql = sql.and(fpa.START_TIME.greaterOrEqual(param.getStartTime()));
 		}
-		/* 查询条件：结束时间 */
+		// 查询条件：结束时间
 		if (param.getEndTime() != null) {
 			sql = sql.and(fpa.END_TIME.lessOrEqual(param.getEndTime()));
 		}
-		/* 查询条件：奖励类型 */
-		if (param.getRewardType() != FriendPromoteListParam.REWARDTYPE_DEFAULT_VALUE) {
-			sql = sql.and(fpa.REWARD_TYPE.eq((byte) param.getRewardType().intValue()));
+		// 查询条件：奖励类型
+		if (!param.getRewardType().equals(FriendPromoteListParam.REWARD_TYPE_DEFAULT_VALUE)) {
+			sql = sql.and(fpa.REWARD_TYPE.eq(param.getRewardType()));
 		}
-		/* 活动状态0全部 */
-		if (FriendPromoteListParam.ALL == param.getActState()) {
+		// 活动状态0全部
+		if (FriendPromoteListParam.ALL.equals(param.getActState())) {
 		}
-		/* 活动状态1进行中 */
-		if (FriendPromoteListParam.DOING == param.getActState()) {
+		// 活动状态1进行中
+		if (FriendPromoteListParam.DOING.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.START_TIME.lessOrEqual(nowTime))
 					.and(fpa.END_TIME.greaterOrEqual(nowTime));
 		}
-		/* 活动状态2未开始 */
-		if (FriendPromoteListParam.TODO == param.getActState()) {
+		// 活动状态2未开始
+		if (FriendPromoteListParam.TODO.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.START_TIME.greaterOrEqual(nowTime));
 		}
-		/* 活动状态3已结束 */
-		if (FriendPromoteListParam.OUT_OF_DATE == param.getActState()) {
+		// 活动状态3已结束
+		if (FriendPromoteListParam.OUT_OF_DATE.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq(ZERO)).and(fpa.END_TIME.lessOrEqual(nowTime));
 		}
-		/* 活动状态4已停用 */
-		if (FriendPromoteListParam.STOPPED == param.getActState()) {
+		// 活动状态4已停用
+		if (FriendPromoteListParam.STOPPED.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq((byte) 1));
 		}
-		/* 整合分页信息 */
+		// 整合分页信息
 		PageResult<FriendPromoteListVo> pageResultVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteListVo.class);
-		/* 获取领取数量和活动状态 */
+		// 获取领取数量和活动状态
 		for (FriendPromoteListVo vo : pageResultVo.getDataList()) {
-			/* 领取数量recNum */
+		    vo.setFpRewardContent(Util.json2Object(vo.getRewardContent(),FpRewardContent.class,false));
+			// 领取数量recNum
 			int recNum = db().select(DSL.count(fpl.PROMOTE_STATUS).as("recNum")).from(fpl)
 					.where(fpl.PROMOTE_ID.eq(vo.getId()))
-					.and(fpl.PROMOTE_STATUS.eq((byte) FriendPromoteListParam.RECIEVED)).fetchOptionalInto(Integer.class)
+					.and(fpl.PROMOTE_STATUS.eq( FriendPromoteListParam.RECEIVED)).fetchOptionalInto(Integer.class)
 					.orElse(0);
 			vo.setRecNum(recNum);
-			/* 活动状态actState */
+			// 活动状态actState
 			if (1 == vo.getIsBlock()) {
 				vo.setActState(FriendPromoteListParam.STOPPED);
 			}
@@ -141,19 +140,18 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 启用或停用活动
 	 *
-	 * @param param
-	 * @return void
+	 * @param param 活动id
 	 */
 	public void startOrBlock(FriendPromoteOptionParam param) {
-		/* 查询当前停用状态 */
+		// 查询当前停用状态
 		int isBlock = db().select(fpa.IS_BLOCK).from(fpa).where(fpa.ID.eq(param.getId()))
 				.fetchOptionalInto(Integer.class).get();
-		/* 若未停用，则停用 */
+		// 若未停用，则停用
 		if (isBlock == FriendPromoteOptionParam.BLOCKED) {
 			db().update(fpa).set(fpa.IS_BLOCK, FriendPromoteOptionParam.NOT_BLOCK)
 					.where(fpa.ID.eq(param.getId())).execute();
 		}
-		/* 若已停用，则启用 */
+		// 若已停用，则启用
 		if (isBlock == FriendPromoteOptionParam.NOT_BLOCK) {
 			db().update(fpa).set(fpa.IS_BLOCK, FriendPromoteOptionParam.BLOCKED).where(fpa.ID.eq(param.getId()))
 					.execute();
@@ -163,12 +161,12 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 删除单个活动
 	 *
-	 * @param param
+	 * @param param 活动id
 	 * @return void
 	 */
 	public void deleteAct(FriendPromoteOptionParam param) {
-		/* 修改del_flag */
-		db().update(fpa).set(fpa.DEL_FLAG, (byte) FriendPromoteOptionParam.DELETED).where(fpa.ID.eq(param.getId()))
+		// 修改del_flag
+		db().update(fpa).set(fpa.DEL_FLAG,  FriendPromoteOptionParam.DELETED).where(fpa.ID.eq(param.getId()))
 				.execute();
 	}
 
@@ -189,8 +187,7 @@ public class FriendPromoteService extends ShopBaseService {
 						fpl.ORDER_SN)
 				.from(USER, fpl).where(fpl.PROMOTE_ID.eq(param.getPromoteId())).and(USER.USER_ID.eq(fpl.USER_ID));
 		/* 助力商品 */
-		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db()
-				.select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.PAY_TIME.as("recTime"),
+		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.PAY_TIME.as("recTime"),
 						fpl.ORDER_SN)
 				.from(fpl).leftJoin(USER).on(USER.USER_ID.eq(fpl.USER_ID)).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(fpl.ORDER_SN)).where(fpl.PROMOTE_ID.eq(param.getPromoteId()));
@@ -312,21 +309,21 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 添加好友助力活动
 	 *
-	 * @param param
-	 * @return void
+	 * @param param 活动信息
 	 */
 	public void addActivity(FriendPromoteAddParam param) {
 		FriendPromoteActivityRecord record = new FriendPromoteActivityRecord();
+		String rewardContent = Util.toJson(param.getFpRewardContent());
+		record.setRewardContent(rewardContent);
 		record.setShopId(getShopId());
 		record.setActCode(getActCode());
 		FieldsUtil.assignNotNull(param, record);
 		db().executeInsert(record);
-
 	}
 
 	/**
 	 * 生成助力活动编号
-	 * 
+	 * @return 活动编号
 	 */
 	public static String getActCode() {
 		System.currentTimeMillis();
@@ -337,8 +334,8 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 查询单个好友助力活动
 	 *
-	 * @param
-	 * @return
+	 * @param param 活动id
+	 * @return 活动详情
 	 */
 	public FriendPromoteSelectVo selectOne(FriendPromoteSelectParam param) {
 
@@ -351,12 +348,12 @@ public class FriendPromoteService extends ShopBaseService {
 	/**
 	 * 修改好友助力活动信息
 	 *
-	 * @param param
-	 * @return void
+	 * @param param 活动id
 	 */
 	public void updateActivity(FriendPromoteUpdateParam param) {
 		FriendPromoteActivityRecord record = new FriendPromoteActivityRecord();
-
+        String rewardContent = Util.toJson(param.getFpRewardContent());
+        record.setRewardContent(rewardContent);
 		FieldsUtil.assignNotNull(param, record);
 		db().executeUpdate(record);
 
@@ -423,12 +420,12 @@ public class FriendPromoteService extends ShopBaseService {
 	
 	/**
 	 * 修改助力状态
-	 * @param staus
+	 * @param status
 	 * @param id
 	 * @return
 	 */
-	public int upPromoteInfo(Byte staus,Integer id) {
-		return db().update(fpl).set(fpl.PROMOTE_STATUS,staus ).where(fpl.ID.eq(id)).execute();
+	public int upPromoteInfo(Byte status,Integer id) {
+		return db().update(fpl).set(fpl.PROMOTE_STATUS,status ).where(fpl.ID.eq(id)).execute();
 	}
 	
 	/**
@@ -518,12 +515,12 @@ public class FriendPromoteService extends ShopBaseService {
             if (promoteInfo.getRewardType()!=2){
                 //助力进度为完成待领取
                 if (promoteInfo.getPromoteStatus()==1){
-                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
-                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
+//                    OrderInfoRecord orderInfo = getOrder(launchInfo.getOrderSn());
+//                    if (orderInfo==null||orderInfo.getOrderStatus()== OrderConstant.ORDER_CANCELLED||orderInfo.getOrderStatus()==OrderConstant.ORDER_CLOSED||DelFlag.DISABLE_VALUE.equals(orderInfo.getDelFlag())){
                         orderFlag = 1;
-                    }else {
-                        orderFlag = 2;
-                    }
+//                    }else {
+//                        orderFlag = 2;
+//                    }
                 }else if (promoteInfo.getPromoteStatus()==2){
                     orderFlag = 2;
                 }
@@ -541,8 +538,20 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
         }
 
-        //倒计时
+        //活动倒计时
         promoteDownTime(promoteInfo,launchInfo);
+        //奖励倒计时
+        if (promoteInfo.getPromoteStatus()==1){
+            Long duration = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
+            //成功时间 倒计时的起点
+            Long successTime = getSuccessTime(launchInfo.getId()).getTime();
+            //奖励结束时间
+            Long endTime = successTime+duration*1000;
+            Long nowTime = DateUtil.getLocalDateTime().getTime();
+            Long spurTime = endTime-nowTime>0?(endTime/1000-nowTime/1000):0;
+            promoteInfo.setRewardSpurTime(spurTime);
+        }
+
         //已助力总值
         if (promoteInfo.getPromoteStatus()>=0){
             promoteInfo.setHasPromoteValue(hasPromoteValue(launchInfo.getId()));
@@ -557,6 +566,10 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setPromoteActList(promoteActList(promoteInfo.getId()));
         promoteInfo.setLaunchFlag(launchFlag);
         //todo 生成助力图片
+        //设置奖品记录id 下单用
+        if (launchInfo!=null){
+            promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
+        }
 
         return promoteInfo;
     }
@@ -589,7 +602,7 @@ public class FriendPromoteService extends ShopBaseService {
         //得到当前活动部分信息
         FriendPromoteActivityRecord record = getInfo(actCode);
         //设置奖励内容
-        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false);
+        FpRewardContent rewardContent = Util.json2Object(record.getRewardContent(),FpRewardContent.class,false);
         promoteInfo.setRewardContent(rewardContent);
         //设置活动id
         promoteInfo.setId(record.getId());
@@ -631,7 +644,7 @@ public class FriendPromoteService extends ShopBaseService {
         //设置奖励倒计时
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        promoteInfo.setRewardSpurTime(promoteDurationSec(record.getRewardDurationUnit(),record.getRewardDuration()));
+
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
             GoodsInfo goodsInfo = getGoodsInfo(rewardContent.getGoodsIds());
@@ -1144,7 +1157,7 @@ public class FriendPromoteService extends ShopBaseService {
             //活动状态
             item.setActStatus(getActStatus(item.getActCode()));
             //活动奖励
-            item.setFpRewardContent(Util.json2Object(item.getRewardContent().substring(1,item.getRewardContent().length()-1),FpRewardContent.class,false));
+            item.setFpRewardContent(Util.json2Object(item.getRewardContent(),FpRewardContent.class,false));
             //奖励内容
             if (item.getRewardType()==TWO){
                 CouponInfo couponInfo = getCouponById(item.getFpRewardContent().getRewardIds());
@@ -1259,10 +1272,10 @@ public class FriendPromoteService extends ShopBaseService {
         //助力入库
         promoteInfo.setId(record.getId());
         promoteInfo.setRewardType(record.getRewardType());
-        promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent().substring(1,record.getRewardContent().length()-1),FpRewardContent.class,false));
+        promoteInfo.setRewardContent(Util.json2Object(record.getRewardContent(),FpRewardContent.class,false));
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
-        AtomicReference<Integer> rewardRecordId = friendPromote(promoteInfo,launchUserId,param.getUserId(),param.getLaunchId(),promoteValue);
+        friendPromote(promoteInfo,launchUserId,param.getUserId(),param.getLaunchId(),promoteValue);
         //发送消息
         FriendPromoteSelectVo messageVo = new FriendPromoteSelectVo();
         messageVo.setId(launchInfo.getId());
@@ -1286,7 +1299,6 @@ public class FriendPromoteService extends ShopBaseService {
         Byte canShareTimes = canShareTimes(record.getShareCreateTimes(),param.getUserId(),param.getLaunchId());
         promoteInfo.setCanShare(canShareTimes>0?(byte)1:(byte)0);
 
-        promoteVo.setRewardRecordId(rewardRecordId);
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
         promoteVo.setCanShare(canShareTimes);
@@ -1325,17 +1337,17 @@ public class FriendPromoteService extends ShopBaseService {
      * @param promoteValue 助力值
      * @return
      */
-    public AtomicReference<Integer> friendPromote(PromoteInfo promoteInfo, Integer launchUserId,Integer userId, Integer launchId, Integer promoteValue){
+    public void friendPromote(PromoteInfo promoteInfo, Integer launchUserId,Integer userId, Integer launchId, Integer promoteValue){
         logger().info("开始助力，助力用户为："+userId);
         logger().info("发起活动为："+launchId);
         logger().info("助力值为："+promoteValue);
-        AtomicReference<Integer> rewardRecordId = new AtomicReference<>();
+//        AtomicReference<Integer> rewardRecordId = new AtomicReference<>();
             this.transaction(()->{
                 db().insertInto(FRIEND_PROMOTE_DETAIL,FRIEND_PROMOTE_DETAIL.LAUNCH_ID,FRIEND_PROMOTE_DETAIL.USER_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_ID,FRIEND_PROMOTE_DETAIL.PROMOTE_VALUE)
                     .values(launchId,userId,promoteInfo.getId(),promoteValue)
                     .execute();
-                Integer lastId = db().lastID().intValue();
-                rewardRecordId.set(lastId);
+//                Integer lastId = db().lastID().intValue();
+//                rewardRecordId.set(lastId);
                 if (promoteInfo.getHasPromoteTimes()+1>=promoteInfo.getPromoteTimes()||promoteInfo.getHasPromoteValue()+promoteValue>=promoteInfo.getPromoteAmount().intValue()){
                     //助力状态
                     Byte promoteStatus;
@@ -1367,6 +1379,8 @@ public class FriendPromoteService extends ShopBaseService {
                         logger().info("助力状态更新失败");
                         throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
                     }
+                    //更新成功时间
+                    updateSuccessTime(launchId);
 
                     //赠品入库
                     if(promoteInfo.getRewardType()==0||promoteInfo.getRewardType()==1){
@@ -1404,7 +1418,7 @@ public class FriendPromoteService extends ShopBaseService {
 //                return lastId;
             });
         //返回插入成功数据行的id
-        return rewardRecordId;
+//        return rewardRecordId;
     }
 
     /**
@@ -1555,5 +1569,49 @@ public class FriendPromoteService extends ShopBaseService {
     public List<PromoteDetail> friendPromoteDetailList(PromoteParam param){
         List<PromoteDetail> detailList = friendPromoteDetail(param.getLaunchId());
         return detailList;
+    }
+
+    /**
+     * 更新助力成功时间
+     * @param launchId 发起id
+     */
+    public void updateSuccessTime(Integer launchId){
+        db().update(FRIEND_PROMOTE_LAUNCH)
+            .set(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME,DateUtil.getSqlTimestamp())
+            .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+            .execute();
+    }
+
+    /**
+     * 得到助力成功时间
+     * @param launchId 发起id
+     * @return 成功时间
+     */
+    public Timestamp getSuccessTime(Integer launchId){
+        Timestamp successTime = db().select(FRIEND_PROMOTE_LAUNCH.SUCCESS_TIME)
+            .from(FRIEND_PROMOTE_LAUNCH)
+            .where(FRIEND_PROMOTE_LAUNCH.ID.eq(launchId))
+            .fetchOneInto(Timestamp.class);
+        return successTime;
+    }
+
+    /**
+     * 得到奖品记录id
+     * @param userId 用户id
+     * @param actId 活动id
+     * @param recordId 发起id
+     * @return 记录id
+     */
+    public Integer getRewardRecordId(Integer userId,Integer actId,Integer recordId){
+        Integer id = db().select(PRIZE_RECORD.ID)
+            .from(PRIZE_RECORD)
+            .where(PRIZE_RECORD.USER_ID.eq(userId))
+            .and(PRIZE_RECORD.ACTIVITY_ID.eq(actId))
+            .and(PRIZE_RECORD.RECORD_ID.eq(recordId))
+            .and(PRIZE_RECORD.ACTIVITY_TYPE.eq((byte)1))
+            .and(PRIZE_RECORD.EXPIRED_TIME.greaterThan(DateUtil.getSqlTimestamp()))
+            .fetchOptionalInto(Integer.class)
+            .orElse(0);
+        return id;
     }
 }

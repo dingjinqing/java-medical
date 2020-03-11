@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 黄荣刚
@@ -53,6 +54,7 @@ public class ServiceCommentVo {
     private String commNote;
 	/** 评论图片*/
 	private String commImg;
+	private List<String> commImgList;
 
     /** 技师ID*/
 	private Integer technicianId;

@@ -5,7 +5,7 @@ module.exports = {
   afterMarketType: "售后类型",
   gift: "赠品",
   cash: "现金",
-  freightRefundAmount:"运费退款金额",
+  freightRefundAmount:"参考可退运费",
   integral: "积分",
   price: "价格",
   returnableNum: "可退货商品数量",

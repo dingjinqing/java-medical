@@ -363,7 +363,10 @@
 
       <div class="box3">
         <!-- 积分兑换 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('integralExchangeHome')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/jfdh.png'"
               alt=""

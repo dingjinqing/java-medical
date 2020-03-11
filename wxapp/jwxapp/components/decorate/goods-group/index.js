@@ -90,7 +90,7 @@ global.wxComponent({
         }
       })
       if (d.click == 1) {
-        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 1 + '&goodsIds=' + JSON.stringify(goodsIds));
+        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 0 + '&goodsIds=' + JSON.stringify(goodsIds));
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
