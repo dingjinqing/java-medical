@@ -220,7 +220,7 @@ global.wxPage({
     if (util.getCache('mobile') == '' && bargain_info.recordInfo.needBindMobile == 1) {
       util.checkSession(function () {
         that.setData({
-          is_block: is_block = 1
+          is_block: 1
         })
       })
       return false;
@@ -245,6 +245,12 @@ global.wxPage({
         return false;
       }
     }, { recordId: record_id });
+  },
+  // 授权回调
+  bindGetPhoneNumberOk: function (e) {
+    this.setData({
+      mobile: e.detail.phoneNumber
+    })
   },
   // 订单详情
   toOrder: function (e) {

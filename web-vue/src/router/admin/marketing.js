@@ -1450,6 +1450,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
       )
   },
+  // 积分兑换
+  {
+    path: '/admin/home/main/integralExchangeHome',
+    name: 'integralExchangeHome',
+    meta: {
+      crumbTitle: 'router.integralExchangeHome',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/integralExchangeHome'
+      )
+  },
   // 支付有礼
   {
     path: '/admin/home/main/payReward',
