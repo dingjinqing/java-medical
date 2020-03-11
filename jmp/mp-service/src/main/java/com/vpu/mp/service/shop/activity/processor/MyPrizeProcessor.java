@@ -78,7 +78,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
                 FriendPromoteSelectParam selectParam = new FriendPromoteSelectParam();
                 selectParam.setId(prizeRecord.getActivityId());
                 FriendPromoteSelectVo actRecord = friendPromoteService.selectOne(selectParam);
-                FpRewardContent rewardContent = Util.json2Object(actRecord.getRewardContent().substring(1,actRecord.getRewardContent().length()-1),FpRewardContent.class,false);
+                FpRewardContent rewardContent = Util.json2Object(actRecord.getRewardContent(),FpRewardContent.class,false);
                 if (rewardContent!=null){
                     goods.setProductPrice(rewardContent.getMarketPrice());
                 }
