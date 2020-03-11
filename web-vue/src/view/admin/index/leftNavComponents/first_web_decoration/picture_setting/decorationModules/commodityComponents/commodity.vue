@@ -197,11 +197,11 @@
                           v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
                         >{{Number(item.linePrice).toFixed(2)}}</span>
                         <span
-                          style="text-decoration: line-through;color: #c0c0c0"
+                          style="color: #c0c0c0"
                           v-if="data.show_market==='2'&&data.col_type!=='2'&&data.other_message==='1'"
                         >{{item.goodsSaleNum}}人付款</span>
                         <span
-                          style="text-decoration: line-through;color: #c0c0c0"
+                          style="color: #c0c0c0"
                           v-if="data.show_market==='3'&&data.col_type!=='2'&&data.other_message==='1'"
                         >{{item.goodsNumber}}人评价</span>
                         <!--购买按钮-->

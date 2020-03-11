@@ -38,6 +38,9 @@
   align-items: center;
   margin-right: 20rpx;
 }
+.join-group > .join-item-info > text{
+  white-space: nowrap;
+}
 .join-group > .join-item-info > text:last-of-type{
   color: #666;
 }

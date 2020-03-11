@@ -224,7 +224,7 @@ public class GroupBuyListService extends ShopBaseService {
         return db().selectFrom(GROUP_BUY_LIST)
                 .where(GROUP_BUY_LIST.STATUS.ge(STATUS_ONGOING))
                 .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
-                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchOne();
+                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchAny();
 
     }
 

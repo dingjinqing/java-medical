@@ -1,14 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import lombok.Data;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -49,6 +46,7 @@ public class BargainUpdateParam {
     private BigDecimal bargainMinMoney;
     private BigDecimal bargainMaxMoney;
     private Byte       freeFreight;
+    private Byte needBindMobile;
 
     private BigDecimal expectationPrice;
 	

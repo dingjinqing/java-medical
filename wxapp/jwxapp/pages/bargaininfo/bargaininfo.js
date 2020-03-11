@@ -220,7 +220,7 @@ global.wxPage({
     if (util.getCache('mobile') == '' && bargain_info.recordInfo.needBindMobile == 1) {
       util.checkSession(function () {
         that.setData({
-          is_block: is_block = 1
+          is_block: 1
         })
       })
       return false;
@@ -245,6 +245,12 @@ global.wxPage({
         return false;
       }
     }, { recordId: record_id });
+  },
+  // 授权回调
+  bindGetPhoneNumberOk: function (e) {
+    this.setData({
+      mobile: e.detail.phoneNumber
+    })
   },
   // 订单详情
   toOrder: function (e) {
@@ -414,17 +420,22 @@ function request_kanjia(that) {
       bargain_info.recordInfo.progress_present = bargain_info.recordInfo.progress_present * 100;
 
       //倒计时
-      that.data.total_micro_second = bargain_info.recordInfo.remainingTime;
+      that.setData({
+        total_micro_second: bargain_info.recordInfo.remainingTime
+      })
       that.countdown();
 
       // 进度条显示已砍价金额
-      that.data.money_now_left = parseFloat(bargain_info.recordInfo.progress_present / 100) * 670;
-      that.data.money_now_left = parseFloat(that.data.money_now_left).toFixed(2);
+      var money_now_left = parseFloat(bargain_info.recordInfo.progress_present / 100) * 670;
+      money_now_left = parseFloat(money_now_left).toFixed(2);
 
       // 砍价列表时间
       if (bargain_info.recordUserList.length > 0) {
+        // 时间处理兼容ios
+        bargain_info.timestamp = bargain_info.timestamp.replace(/-/g, '/')
         var now = new Date(bargain_info.timestamp).getTime();
         bargain_info.recordUserList.forEach((item, index) => {
+          item.createTime = item.createTime.replace(/-/g, '/')
           item.allTime = (now - new Date(item.createTime).getTime()) / 1000;
           if (item.allTime < 60) {
             item.show_time = '刚刚'

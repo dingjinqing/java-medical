@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -14,14 +15,15 @@ import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -95,13 +97,20 @@ public class StoreServiceService extends ShopBaseService {
      * @return StorePageListVo
      */
     public PageResult<StoreServiceListQueryVo> getServicePageList(StoreServiceListQueryParam param) {
-        SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> select =
-            db().select(STORE_SERVICE.ID, STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_IMG, STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE_CATEGORY.CAT_NAME, STORE_SERVICE.SALE_NUM, STORE_SERVICE.SERVICE_TYPE, STORE_SERVICE.SERVICE_SHELF, STORE_SERVICE.CREATE_TIME).
+        SelectConditionStep<? extends Record> select =
+            db().select(STORE_SERVICE.ID, STORE_SERVICE.SERVICE_NAME, STORE_SERVICE.SERVICE_IMG, STORE_SERVICE.SERVICE_PRICE, STORE_SERVICE.START_DATE,STORE_SERVICE.END_DATE,STORE_SERVICE_CATEGORY.CAT_NAME, STORE_SERVICE.SALE_NUM, STORE_SERVICE.SERVICE_TYPE, STORE_SERVICE.SERVICE_SHELF, STORE_SERVICE.CREATE_TIME).
                 from(STORE_SERVICE).
                 leftJoin(STORE_SERVICE_CATEGORY).on(STORE_SERVICE_CATEGORY.CAT_ID.eq(STORE_SERVICE.CAT_ID)).where(STORE_SERVICE.DEL_FLAG.eq(BYTE_ZERO));
         select = this.buildServiceOptions(select, param);
         select.and(STORE_SERVICE.STORE_ID.eq(param.getStoreId())).orderBy(STORE_SERVICE.CREATE_TIME.desc());
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreServiceListQueryVo.class);
+        PageResult<StoreServiceListQueryVo>  res = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreServiceListQueryVo.class);
+        res.getDataList().forEach(s->{
+            if(s.getEndDate().before(DateUtil.getLocalDateTime())){
+                //表示已过期
+                s.setServiceShelf((byte)2);
+            }
+        });
+        return res;
     }
 
     /**
@@ -111,7 +120,7 @@ public class StoreServiceService extends ShopBaseService {
      * @param param
      * @return
      */
-    public SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> buildServiceOptions(SelectConditionStep<Record9<Integer, String, String, BigDecimal, String, Integer, Byte, Byte, Timestamp>> select, StoreServiceListQueryParam param) {
+    public SelectConditionStep<? extends Record> buildServiceOptions(SelectConditionStep<? extends Record> select, StoreServiceListQueryParam param) {
         if (param == null) {
             return select;
         }
@@ -132,7 +141,12 @@ public class StoreServiceService extends ShopBaseService {
      * @return the list
      */
     public List<StoreServiceListQueryVo> getAllStoreServiceByStoreId(Integer storeId) {
-        return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
+        return db().selectFrom(STORE_SERVICE).
+            where(STORE_SERVICE.STORE_ID.eq(storeId)).
+            and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+            and(STORE_SERVICE.END_DATE.gt(DateUtil.yyyyMmDdDate(DateUtil.getLocalDate()))).
+            and(STORE_SERVICE.SERVICE_SHELF.eq(BYTE_ONE)).
+            fetchInto(StoreServiceListQueryVo.class);
     }
 
     /**

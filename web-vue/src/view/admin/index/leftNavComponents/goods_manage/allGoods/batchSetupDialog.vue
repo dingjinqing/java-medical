@@ -28,7 +28,11 @@
               v-if="nowIndex===0"
               class="price"
             >
-              <div class="title">{{$t('allGoods.batchDialog.goodsPriceTips1')}}：<i>{{$t('allGoods.batchDialog.goodsPriceTips2')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips3')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips4')}}</i><span>{{$t('allGoods.batchDialog.goodsPriceTips5')}}</span></div>
+              <div
+                @click="handleToClickPriceTip()"
+                class="title"
+                style="cursor:pointer"
+              >{{$t('allGoods.batchDialog.goodsPriceTips1')}}：<i>{{$t('allGoods.batchDialog.goodsPriceTips2')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips3')}}</i><i>{{$t('allGoods.batchDialog.goodsPriceTips4')}}</i><span>{{$t('allGoods.batchDialog.goodsPriceTips5')}}</span></div>
               <div class="bottom">
                 <el-table
                   class="version-manage-table"
@@ -691,10 +695,7 @@ export default {
       innerVisible: false, // 内层
       judgeIsEdit: false, // 判断商品价格是否被修改过
       initSortCatParams: {
-        needGoodsNum: true,
-        isOnSale: 1,
-        isSaleOut: false,
-        selectType: 1
+        needGoodsNum: false
       },
       sortId: null,
       templateOptions: [],
@@ -732,7 +733,9 @@ export default {
         total: 0
       },
       tableClassifyClickRow: null, // 模板表格选中
-      tableBrandClickRow: null // 商品品牌表格选中值
+      tableBrandClickRow: null, // 商品品牌表格选中值
+      nowOptionIndex: -1, // 当前操作的行下标
+      nowInputValFlag: ''// 当前操作的格子flag
     }
   },
   watch: {
@@ -801,6 +804,34 @@ export default {
       this.handleToQueryLabel()
       // 会员专属
       this.handleToQueryCardList()
+    },
+    // 商品价格点击tips
+    handleToClickPriceTip () {
+      console.log(this.nowOptionIndex)
+      if (this.nowOptionIndex === -1) return
+      console.log(this.nowOptionIndex, this.nowInputValFlag, this.goodsPriceShowData)
+      this.goodsPriceShowData.forEach((item, index) => {
+        console.log(item)
+        if (!item.priceRevisionVal && !item.priceRevisionVal !== 0) {
+          console.log(item)
+          let obj = {
+            $index: index,
+            row: item
+          }
+          switch (this.nowInputValFlag) {
+            case 0:
+              item.discountInputVal = this.goodsPriceShowData[this.nowOptionIndex].discountInputVal
+              break
+            case 1:
+              item.priceIncreaseVal = this.goodsPriceShowData[this.nowOptionIndex].priceIncreaseVal
+              break
+            case 2:
+              item.priceRevisionVal = this.goodsPriceShowData[this.nowOptionIndex].priceRevisionVal
+              break
+          }
+          this.handleToBlur(obj, this.nowInputValFlag)
+        }
+      })
     },
     // 会员专属
     handleToQueryCardList () {
@@ -952,7 +983,8 @@ export default {
       console.log(scope, flag)
       let initPrice = scope.row.shopPrice
       console.log(scope)
-
+      this.nowOptionIndex = scope.$index // 当前操作的行下标
+      this.nowInputValFlag = flag // 当前操作的格子flag
       let reg = /[^\d.]/g
       switch (flag) {
         case 0:

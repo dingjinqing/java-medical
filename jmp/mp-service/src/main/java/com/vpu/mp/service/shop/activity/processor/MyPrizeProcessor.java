@@ -18,14 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MY_PRIZE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_LOTTERY;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_SOURCE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_EXPIRE;
-import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.PRIZE_STATUS_RECEIVED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
+import static com.vpu.mp.service.pojo.wxapp.market.prize.PrizeConstant.*;
 
 /**
  * 我的奖品
@@ -84,7 +78,13 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
                 logger().info("大抽奖");
                 collect.add(ACTIVITY_TYPE_LOTTERY_PRESENT);
                 break;
-            case PRIZE_SOURCE:
+            case PRIZE_SOURCE_FRIEND_POWER:
+                logger().info("好友助力");
+                collect.add(ACTIVITY_TYPE_PROMOTE_ORDER);
+                break;
+            case PRIZE_SOURCE_EVALUATION:
+                logger().info("测评");
+                collect.add(ACTIVITY_TYPE_GIFT);
                 break;
             default:
         }
@@ -99,6 +99,11 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         logger().info("奖品已成功领取");
         int i = prizeRecordService.updateReceivedPrize(param.getActivityId(), order.getOrderSn());
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 
     @Override

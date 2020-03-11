@@ -320,6 +320,7 @@ export const cn = {
   shareCodeFail: '获取分享码失败',
   copy: '复制',
   downQrcode: '下载二维码',
-  scanCode: '扫一扫，分享给好友吧~'
-
+  scanCode: '扫一扫，分享给好友吧~',
+  noLimitCoupon: '无库存限制',
+  couponErrorTip: '请选择开卡送优惠券'
 }
