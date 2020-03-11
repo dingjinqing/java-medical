@@ -185,6 +185,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), "生成退款退货订单信息："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
 					}
+                    //暂存退款订单
+                    result.setResult(rOrder);
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
                         logger.info("退款商品为空则初始化");
@@ -228,8 +230,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						//需要执行 完成后更新信息
 						finishUpdateInfo(order , rOrder , param);
 					}
-                    //暂存退款订单
-                    result.setResult(rOrder);
 				} catch (MpException e) {
 				    //TODO 处理异常状态，判断是否需要回滚
 					throw new MpException(e.getErrorCode());

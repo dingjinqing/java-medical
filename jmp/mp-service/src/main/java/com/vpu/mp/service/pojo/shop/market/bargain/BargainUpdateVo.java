@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import lombok.Data;
@@ -33,6 +32,8 @@ public class BargainUpdateVo {
     private BigDecimal bargainMinMoney;
     private BigDecimal bargainMaxMoney;
     private Byte       freeFreight;
+    private Byte needBindMobile;
+    private Integer initialSales;
 
     private Integer    goodsId;
     private GoodsView goods;
