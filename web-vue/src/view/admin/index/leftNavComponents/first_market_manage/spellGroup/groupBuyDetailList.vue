@@ -178,7 +178,7 @@ export default {
       console.log(row, 'get-row')
       switch (row.status) {
         case 0:
-          row.status = '拼团中'
+          row.status = '成团中'
           break
         case 1:
           row.status = '已成团'
