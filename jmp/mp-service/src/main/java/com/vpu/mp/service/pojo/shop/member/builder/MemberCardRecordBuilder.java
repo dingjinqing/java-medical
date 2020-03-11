@@ -11,6 +11,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
  * @Description:
  */
 
+
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
 	
@@ -32,297 +33,415 @@ public class MemberCardRecordBuilder {
 	}
 
 	public MemberCardRecordBuilder id (Integer id) {
-		record.setId(id);
+		if(id != null){
+			record.setId(id);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder cardName (String cardName) {
-		record.setCardName(cardName);
+		if(cardName != null){
+			record.setCardName(cardName);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder cardType (Byte cardType) {
-		record.setCardType(cardType);
+		if(cardType != null){
+			record.setCardType(cardType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder bgType (Byte bgType) {
-		record.setBgType(bgType);
+		if(bgType != null){
+			record.setBgType(bgType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder bgColor (String bgColor) {
-		record.setBgColor(bgColor);
+		if(bgColor != null){
+			record.setBgColor(bgColor);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder bgImg (String bgImg) {
-		record.setBgImg(bgImg);
+		if(bgImg != null){
+			record.setBgImg(bgImg);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discount (BigDecimal discount) {
-		record.setDiscount(discount);
+		if(discount != null){
+			record.setDiscount(discount);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder sorce (Integer sorce) {
-		record.setSorce(sorce);
+		if(sorce != null){
+			record.setSorce(sorce);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder buyScore (String buyScore) {
-		record.setBuyScore(buyScore);
+		if(buyScore != null){
+			record.setBuyScore(buyScore);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder expireType (Byte expireType) {
-		record.setExpireType(expireType);
+		if(expireType != null){
+			record.setExpireType(expireType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder startTime (Timestamp startTime) {
-		record.setStartTime(startTime);
+		if(startTime != null){
+			record.setStartTime(startTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder endTime (Timestamp endTime) {
-		record.setEndTime(endTime);
+		if(endTime != null){
+			record.setEndTime(endTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder receiveDay (Integer receiveDay) {
-		record.setReceiveDay(receiveDay);
+		if(receiveDay != null){
+			record.setReceiveDay(receiveDay);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder dateType (Byte dateType) {
-		record.setDateType(dateType);
+		if(dateType != null){
+			record.setDateType(dateType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder activation (Byte activation) {
-		record.setActivation(activation);
+		if(activation != null){
+			record.setActivation(activation);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder receiveCode (String receiveCode) {
-		record.setReceiveCode(receiveCode);
+		if(receiveCode != null){
+			record.setReceiveCode(receiveCode);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder desc (String desc) {
-		record.setDesc(desc);
+		if(desc != null){
+			record.setDesc(desc);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder mobile (String mobile) {
-		record.setMobile(mobile);
+		if(mobile != null){
+			record.setMobile(mobile);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder createTime (Timestamp createTime) {
-		record.setCreateTime(createTime);
+		if(createTime != null){
+			record.setCreateTime(createTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder updateTime (Timestamp updateTime) {
-		record.setUpdateTime(updateTime);
+		if(updateTime != null){
+			record.setUpdateTime(updateTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder flag (Byte flag) {
-		record.setFlag(flag);
+		if(flag != null){
+			record.setFlag(flag);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder sendMoney (Integer sendMoney) {
-		record.setSendMoney(sendMoney);
+		if(sendMoney != null){
+			record.setSendMoney(sendMoney);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder chargeMoney (String chargeMoney) {
-		record.setChargeMoney(chargeMoney);
+		if(chargeMoney != null){
+			record.setChargeMoney(chargeMoney);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder useTime (Integer useTime) {
-		record.setUseTime(useTime);
+		if(useTime != null){
+			record.setUseTime(useTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder storeList (String storeList) {
-		record.setStoreList(storeList);
+		if(storeList != null){
+			record.setStoreList(storeList);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder count (Integer count) {
-		record.setCount(count);
+		if(count != null){
+			record.setCount(count);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder delFlag (Byte delFlag) {
-		record.setDelFlag(delFlag);
+		if(delFlag != null){
+			record.setDelFlag(delFlag);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder grade (String grade) {
-		record.setGrade(grade);
+		if(grade != null){
+			record.setGrade(grade);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder gradeCondition (String gradeCondition) {
-		record.setGradeCondition(gradeCondition);
+		if(gradeCondition != null){
+			record.setGradeCondition(gradeCondition);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder activationCfg (String activationCfg) {
-		record.setActivationCfg(activationCfg);
+		if(activationCfg != null){
+			record.setActivationCfg(activationCfg);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder examine (Byte examine) {
-		record.setExamine(examine);
+		if(examine != null){
+			record.setExamine(examine);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discountGoodsId (String discountGoodsId) {
-		record.setDiscountGoodsId(discountGoodsId);
+		if(discountGoodsId != null){
+			record.setDiscountGoodsId(discountGoodsId);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discountCatId (String discountCatId) {
-		record.setDiscountCatId(discountCatId);
+		if(discountCatId != null){
+			record.setDiscountCatId(discountCatId);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discountSortId (String discountSortId) {
-		record.setDiscountSortId(discountSortId);
+		if(discountSortId != null){
+			record.setDiscountSortId(discountSortId);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discountIsAll (Byte discountIsAll) {
-		record.setDiscountIsAll(discountIsAll);
+		if(discountIsAll != null){
+			record.setDiscountIsAll(discountIsAll);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder isPay (Byte isPay) {
-		record.setIsPay(isPay);
+		if(isPay != null){
+			record.setIsPay(isPay);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder payType (Byte payType) {
-		record.setPayType(payType);
+		if(payType != null){
+			record.setPayType(payType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder payFee (BigDecimal payFee) {
-		record.setPayFee(payFee);
+		if(payFee != null){
+			record.setPayFee(payFee);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder payOwnGood (Byte payOwnGood) {
-		record.setPayOwnGood(payOwnGood);
+		if(payOwnGood != null){
+			record.setPayOwnGood(payOwnGood);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder receiveAction (Byte receiveAction) {
-		record.setReceiveAction(receiveAction);
+		if(receiveAction != null){
+			record.setReceiveAction(receiveAction);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder isExchang (Byte isExchang) {
-		record.setIsExchang(isExchang);
+		if(isExchang != null){
+			record.setIsExchang(isExchang);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder storeUseSwitch (Byte storeUseSwitch) {
-		record.setStoreUseSwitch(storeUseSwitch);
+		if(storeUseSwitch != null){
+			record.setStoreUseSwitch(storeUseSwitch);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder exchangGoods (String exchangGoods) {
-		record.setExchangGoods(exchangGoods);
+		if(exchangGoods != null){
+			record.setExchangGoods(exchangGoods);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder exchangFreight (Byte exchangFreight) {
-		record.setExchangFreight(exchangFreight);
+		if(exchangFreight != null){
+			record.setExchangFreight(exchangFreight);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder exchangCount (Integer exchangCount) {
-		record.setExchangCount(exchangCount);
+		if(exchangCount != null){
+			record.setExchangCount(exchangCount);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder stock (Integer stock) {
-		record.setStock(stock);
+		if(stock != null){
+			record.setStock(stock);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder limit (Integer limit) {
-		record.setLimit(limit);
+		if(limit != null){
+			record.setLimit(limit);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder discountBrandId (String discountBrandId) {
-		record.setDiscountBrandId(discountBrandId);
+		if(discountBrandId != null){
+			record.setDiscountBrandId(discountBrandId);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder sendCouponSwitch (Byte sendCouponSwitch) {
-		record.setSendCouponSwitch(sendCouponSwitch);
+		if(sendCouponSwitch != null){
+			record.setSendCouponSwitch(sendCouponSwitch);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder sendCouponType (Byte sendCouponType) {
-		record.setSendCouponType(sendCouponType);
+		if(sendCouponType != null){
+			record.setSendCouponType(sendCouponType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder sendCouponIds (String sendCouponIds) {
-		record.setSendCouponIds(sendCouponIds);
+		if(sendCouponIds != null){
+			record.setSendCouponIds(sendCouponIds);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder customRights (String customRights) {
-		record.setCustomRights(customRights);
+		if(customRights != null){
+			record.setCustomRights(customRights);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder freeshipLimit (Byte freeshipLimit) {
-		record.setFreeshipLimit(freeshipLimit);
+		if(freeshipLimit != null){
+			record.setFreeshipLimit(freeshipLimit);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder freeshipNum (Integer freeshipNum) {
-		record.setFreeshipNum(freeshipNum);
+		if(freeshipNum != null){
+			record.setFreeshipNum(freeshipNum);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder renewMemberCard (Byte renewMemberCard) {
-		record.setRenewMemberCard(renewMemberCard);
+		if(renewMemberCard != null){
+			record.setRenewMemberCard(renewMemberCard);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder renewType (Byte renewType) {
-		record.setRenewType(renewType);
+		if(renewType != null){
+			record.setRenewType(renewType);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder renewNum (BigDecimal renewNum) {
-		record.setRenewNum(renewNum);
+		if(renewNum != null){
+			record.setRenewNum(renewNum);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder renewTime (Integer renewTime) {
-		record.setRenewTime(renewTime);
+		if(renewTime != null){
+			record.setRenewTime(renewTime);
+		}
 		return this;
 	}
 
 	public MemberCardRecordBuilder renewDateType (Byte renewDateType) {
-		record.setRenewDateType(renewDateType);
+		if(renewDateType != null){
+			record.setRenewDateType(renewDateType);
+		}
 		return this;
 	}
 
@@ -330,5 +449,4 @@ public class MemberCardRecordBuilder {
 		return record;
 	}
 }
-
 

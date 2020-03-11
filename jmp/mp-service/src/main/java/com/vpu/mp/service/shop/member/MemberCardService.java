@@ -25,6 +25,8 @@ import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -215,6 +217,27 @@ public class MemberCardService extends ShopBaseService {
 				}
 			}
 			
+		}
+	}
+	
+	/**
+	 * 初始化续费信息
+	 */
+	private void initRenewCardCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化续费信息");
+		CardRenew cardRenew = param.getCardRenew();
+		if(cardRenew == null) {
+			return;
+		}
+		cardBuilder
+			.renewMemberCard(cardRenew.getRenewMemberCard()) // 是否可续费
+			.renewType(cardRenew.getRenewType()) // 续费类型
+			.renewNum(cardRenew.getRenewNum())	// 续费数值
+			.renewTime(cardRenew.getRenewTime()); // 续费时长
+		// 续费单位
+		CardRenew.DateType dateType = cardRenew.getRenewDateType();
+		if(dateType != null) {
+			cardBuilder.renewDateType((byte)dateType.ordinal());
 		}
 	}
 
@@ -684,9 +707,11 @@ public class MemberCardService extends ShopBaseService {
 		initCardStoreList(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
 		initFreeshipCfg(param,cardBuilder);
+		initRenewCardCfg(param,cardBuilder);
 	}
 
 
+	
 
 	/**
 	 * 初始化限次会员卡配置信息
@@ -989,9 +1014,12 @@ public class MemberCardService extends ShopBaseService {
 		assignCoupon(normalCard);
 		// 包邮信息
 		normalCard.setFreeship(getFreeshipData(card));
+		normalCard.setCardRenew(getRenewData(card));
 		return normalCard;
 	}
 	
+
+
 	/**
 	 * 	获取卡的包邮信息
 	 */
@@ -1003,6 +1031,23 @@ public class MemberCardService extends ShopBaseService {
 			cardFreeship.setNum(card.getFreeshipNum());
 		}
 		return cardFreeship;
+	}
+	
+	/**
+	 * 获取卡的续费信息
+	 */
+	private CardRenew getRenewData(MemberCardRecord card) {
+		DateType dateType = null;
+		if(card.getRenewDateType() != null) {
+			dateType = CardRenew.DateType.values()[card.getRenewDateType()];
+		}
+		return CardRenew.builder()
+				 .renewMemberCard(card.getRenewMemberCard())
+				 .renewType(card.getRenewType())
+				 .renewNum(card.getRenewNum())
+				 .renewTime(card.getRenewTime())
+				 .renewDateType(dateType)
+				 .build();
 	}
 
 	private void changeCardJsonCfgToDetailType(BaseCardVo card) {
