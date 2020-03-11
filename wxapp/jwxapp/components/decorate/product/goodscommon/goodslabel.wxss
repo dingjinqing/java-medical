@@ -223,3 +223,6 @@ rgba(91, 158, 164, 0.8),
   margin-bottom: 10rpx;
   white-space: normal;
 }
+.line-through-none{
+  text-decoration: none!important
+}
