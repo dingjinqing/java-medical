@@ -45,7 +45,7 @@
         <el-input
           type="tel"
           :placeholder="$t('reservationManage.keywords')"
-          style="width: 170px;"
+          style="width: 210px;"
           size="small"
           v-model="queryParams.keywords"
         >
@@ -362,20 +362,25 @@
       <div class="table_list">
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.chooseUser')"
                 v-model="userRowData.userName"
+                size="small"
               >
               </el-input>
               <el-button
                 type="primary"
+                size="small"
                 @click="hanldeModifyPerson()"
               >{{$t('reservationManage.chooseUser')}}</el-button>
             </el-col>
@@ -383,16 +388,21 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.mobile')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.mobile')"
                 v-model="reservation.mobile"
+                size="small"
+                class="new-input"
               >
               </el-input>
             </el-col>
@@ -400,10 +410,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.serviceDate')}}：
             </el-col>
             <el-col :span="10">
@@ -414,6 +427,8 @@
                 :placeholder="$t('reservationManage.serviceDate')"
                 align="right"
                 :picker-options="pickerOptions"
+                size="small"
+                class="new-input"
               >
               </el-date-picker>
             </el-col>
@@ -421,10 +436,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.serviceName')}}：
             </el-col>
             <el-col :span="10">
@@ -434,6 +452,8 @@
                   clearable
                   :placeholder="$t('reservationManage.serviceName')"
                   @change="changeEvent()"
+                  size="small"
+                  class="new-input"
                 >
                   <el-option
                     v-for="item in reservationService"
@@ -449,10 +469,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk"></span> {{this.technicianConfigName}}：
             </el-col>
             <el-col :span="10">
@@ -461,6 +484,8 @@
                   v-model="reservation.technicianId"
                   clearable
                   :placeholder="technicianConfigName"
+                  size="small"
+                  class="new-input"
                 >
                   <el-option
                     v-for="item in reservationTech"
@@ -476,16 +501,21 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               {{$t('reservationManage.message')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.messageLimit')"
                 v-model="reservation.adminMessage"
+                size="small"
+                class="new-input"
               >
               </el-input>
             </el-col>
@@ -1013,6 +1043,10 @@ export default {
   .list_info {
     margin-top: 20px;
     padding-bottom: 10px;
+    & > label {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
     .filter_input {
       width: 170px;
     }
@@ -1029,5 +1063,11 @@ export default {
       cursor: pointer !important;
     }
   }
+}
+.new-input {
+  width: 170px;
+}
+.add-dialog-text {
+  line-height: 32px;
 }
 </style>
