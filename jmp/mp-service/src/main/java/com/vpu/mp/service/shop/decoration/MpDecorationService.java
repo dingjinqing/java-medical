@@ -813,7 +813,7 @@ public class MpDecorationService extends ShopBaseService {
             param.setSortGroupArr(groups);
         }
         // 转换实时信息
-        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.getGoodsGroupList(param);
+        List<? extends GoodsListMpVo> pageIndexGoodsList = goodsMpService.goodsGroupMpService.getGoodsGroupList(param);
         moduleGoodsGroup.setGoodsListData(pageIndexGoodsList);
         return moduleGoodsGroup;
     }

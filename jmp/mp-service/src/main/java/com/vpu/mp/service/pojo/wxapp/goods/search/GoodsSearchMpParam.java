@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.goods.search;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,7 +45,7 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**标签id集合*/
     private List<Integer> labelIds;
 
-    /**是否展示售罄商品,service层获取
+    /**是否展示售罄商品,service层获取并设置
      * {@link com.vpu.mp.service.pojo.shop.goods.GoodsConstant#SOLD_OUT_GOODS_SHOW} 展示售罄
      */
     private Boolean soldOutGoodsShow;
@@ -61,7 +62,11 @@ public class GoodsSearchMpParam extends BasePageParam {
     private List<Integer> goodsIds;
 
     /**从商品分组页面跳转至此*/
-    public static final Byte PAGE_FROM_GROUP_LIST = 1;
+    public static final Byte PAGE_FROM_GROUP_LIST = 0;
+    /**admin拼团活动分享码跳转 pageFrom =1*/
+    public static final Byte PAGE_FROM_GROUP_BUY = BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
     /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;
+    /**用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId*/
+    private Integer actId;
 }

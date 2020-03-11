@@ -621,7 +621,7 @@ public class AdminGoodsController extends AdminBaseController {
             param.setSortGroupArr(param.getSortGroupArr().subList(0,1));
         }
 
-        return success(shop().goodsMp.getGoodsGroupList(param));
+        return success(shop().goodsMp.goodsGroupMpService.getGoodsGroupList(param));
     }
 
     /**
