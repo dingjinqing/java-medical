@@ -112,7 +112,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 	 * @param groupId
 	 * @return
 	 */
-	private GroupperInfoPojo getGrouperInfo(Integer actId,Integer groupId) {
+	public GroupperInfoPojo getGrouperInfo(Integer actId,Integer groupId) {
 		GroupperInfoPojo pojo = db().select().from(GROUP_INTEGRATION_LIST)
 			.leftJoin(USER).on(GROUP_INTEGRATION_LIST.USER_ID.eq(USER.USER_ID))
 			.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId))

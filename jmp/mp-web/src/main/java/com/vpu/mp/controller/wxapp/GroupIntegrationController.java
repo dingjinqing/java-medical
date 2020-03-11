@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
+import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
 
 /**
  * 组团瓜分积分
@@ -24,8 +25,8 @@ public class GroupIntegrationController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/pin/integration/start")
 	public JsonResult startPinIntegrationGroup(@RequestBody @Valid GroupStartParam param) {
-		shop().groupIntegration.startPinIntegrationGroup(param, wxAppAuth.user().getUserId());
-		return null;
+		GroupStartVo vo = shop().groupIntegration.startPinIntegrationGroup(param, wxAppAuth.user().getUserId());
+		return success(vo);
 		
 	}
 

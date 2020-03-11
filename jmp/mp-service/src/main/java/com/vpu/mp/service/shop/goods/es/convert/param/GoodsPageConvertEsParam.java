@@ -98,14 +98,14 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         }
         if( StringUtils.isNotBlank(param.getOrderDirection()) && StringUtils.isNotBlank(param.getOrderField()) ){
             Sort sort = new Sort();
-            if( GoodsPageListParam.GOODS_NUMBER.equals(param.getOrderDirection()) ){
+            if( GoodsPageListParam.GOODS_NUMBER.equals(param.getOrderField()) ){
                 sort.setSortName(EsSearchName.GOODS_NUMBER);
-            }else if( GoodsPageListParam.GOODS_SALE_NUM.equals(param.getOrderDirection()) ){
+            }else if( GoodsPageListParam.GOODS_SALE_NUM.equals(param.getOrderField()) ){
                 sort.setSortName(EsSearchName.GOODS_SALE_NUM);
-            }else if( GoodsPageListParam.SHOP_PRICE.equals(param.getOrderDirection()) ){
+            }else if( GoodsPageListParam.SHOP_PRICE.equals(param.getOrderField()) ){
                 sort.setSortName(EsSearchName.SHOP_PRICE);
             }
-            if( GoodsPageListParam.ASC.equals(param.getOrderField()) ){
+            if( GoodsPageListParam.ASC.equals(param.getOrderDirection()) ){
                 sort.setSortOrder(SortOrder.ASC);
             }else{
                 sort.setSortOrder(SortOrder.DESC);

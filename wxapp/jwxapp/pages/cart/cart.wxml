@@ -19,7 +19,7 @@
               </view>
             
               <!-- 加价购 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-ids='{{item3.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}" data-ids='{{item3.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
                   <!-- <view class='act_content' style='width:350rpx;'>满1.00元另加1.00元即可换购商品</view> -->

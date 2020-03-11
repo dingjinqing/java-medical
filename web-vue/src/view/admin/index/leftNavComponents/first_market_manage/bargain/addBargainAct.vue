@@ -154,30 +154,32 @@
                 v-else
                 prop="shopPrice"
                 :label="$t('addBargainAct.sttlementAmount')"
-                align="center"
                 class="tableHeaderHeight"
+                align="center"
               >
                 <template slot-scope="scope">
                   <div>
-                    <el-input-number
-                      :disabled="isEditFlag"
-                      v-model="param.floorPrice"
-                      size="mini"
-                      controls-position="right"
-                      :min="0"
-                      :max="scope.row.shopPrice"
-                    >
-                    </el-input-number>
-                    <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
-                    <el-input-number
-                      :disabled="isEditFlag"
-                      v-model="param.expectationPrice"
-                      size="mini"
-                      controls-position="right"
-                      :min="0"
-                      :max="scope.row.shopPrice"
-                    >
-                    </el-input-number>
+                    <div style="display: flex;justify-content: center;">
+                      <el-input-number
+                        :disabled="isEditFlag"
+                        v-model="param.floorPrice"
+                        size="mini"
+                        controls-position="right"
+                        :min="0"
+                        :max="scope.row.shopPrice"
+                      >
+                      </el-input-number>
+                      <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
+                      <el-input-number
+                        :disabled="isEditFlag"
+                        v-model="param.expectationPrice"
+                        size="mini"
+                        controls-position="right"
+                        :min="0"
+                        :max="scope.row.shopPrice"
+                      >
+                      </el-input-number>
+                    </div>
                     <div style="margin-top:5px;">
                       <span>({{$t('addBargainAct.default0')}})</span>
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
@@ -401,10 +403,11 @@
                           class="coupon_list_bottom"
                           style="font-size:12px"
                         >
-                          <span v-if="item.scoreNumber === 0">领取</span>
+                          <!-- <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
                             <span>{{item.scoreNumber}}</span>积分 兑换
-                          </div>
+                          </div> -->
+                          <span>领取</span>
                         </div>
                       </section>
                       <!-- <span
@@ -486,10 +489,11 @@
                         class="coupon_list_bottom"
                         style="font-size:12px"
                       >
-                        <span v-if="item.scoreNumber === 0">领取</span>
+                        <!-- <span v-if="item.scoreNumber === 0">领取</span>
                         <div v-if="item.scoreNumber !== 0">
                           <span>{{item.scoreNumber}}</span>积分 兑换
-                        </div>
+                        </div> -->
+                        <span>领取</span>
                       </div>
                     </section>
                     <div
@@ -934,6 +938,7 @@ export default {
           width: 100px;
           height: 101px;
           margin-bottom: 10px;
+          border-radius: 10px;
           background: #fff;
           border: 1px solid #e4e4e4;
           cursor: pointer;

@@ -558,6 +558,21 @@ public class ReturnOrderService extends ShopBaseService{
                 .and(TABLE.APPLY_PASS_TIME.le(returnPassTime))
         ).fetch();
     }
+    
+    /**
+     * 得到退货/退款总金额（包含退款处理中和退款成功，不包含失败情况）
+     * @param orderSn
+     * @return
+     */
+    public BigDecimal getReturnOrderMoney(String orderSn) {
+		Record1<BigDecimal> fetchOne = db().select(DSL.sum(TABLE.MONEY)).from(TABLE)
+				.where(TABLE.ORDER_SN.eq(orderSn).and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING,
+						OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING,
+						OrderConstant.REFUND_STATUS_FINISH)))
+				.fetchOne();
+    	return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
+    }
+    
 }
 
 
