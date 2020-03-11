@@ -184,16 +184,17 @@ export const cn = {
   endTime: '成团时间',
   searchDataText: '查询',
   stateOptions: [{
-    value: 0,
+    value: null,
     label: '全部'
-  }, {
-    value: 1,
+  },
+  {
+    value: 0,
     label: '成团中'
   }, {
-    value: 2,
+    value: 1,
     label: '已成团'
   }, {
-    value: 3,
+    value: 2,
     label: '未成团'
   }],
   moreConfigure: '展开更多配置',

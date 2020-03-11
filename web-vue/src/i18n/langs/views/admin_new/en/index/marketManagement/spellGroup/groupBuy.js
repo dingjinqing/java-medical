@@ -169,17 +169,18 @@ export const en = {
   endTime: 'endTime',
   searchDataText: 'search',
   stateOptions: [{
+    value: null,
+    label: 'All'
+  },
+  {
     value: 0,
-    label: 'all'
+    label: 'In the group'
   }, {
     value: 1,
-    label: 'Groupon proceed'
+    label: 'Has been grouped'
   }, {
     value: 2,
-    label: 'Groupon end'
-  }, {
-    value: 3,
-    label: 'Groupon failure'
+    label: 'Ungrouped'
   }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
   deleteComment: 'TThis operation will delete the activity, will it continue?',

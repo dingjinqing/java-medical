@@ -784,7 +784,7 @@ export default {
       let flag = this.handleToJudgeIsChecked()
       if (!flag) {
         this.$message.error({
-          message: this.$t('allGoods.batchExportOptions.noItemSelected'),
+          message: this.$t('allGoods.bottomOptions.noItemSelected'),
           showClose: true
         })
         return

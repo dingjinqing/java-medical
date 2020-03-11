@@ -96,6 +96,9 @@ global.wxPage({
       'pageParams.currentPage': 1,
       dataList: []
     })
+    // 添加热词
+    util.api('/api/wxapp/search/addHotWords', function (res) {
+    }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
     this.requestList()
   },
   loadFilter (options) {

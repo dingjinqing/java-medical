@@ -410,4 +410,21 @@ public class AdminMemberCardController extends AdminBaseController {
 		logger().info("结束获取导入领取码模板");
 	}
 	
+	/**
+	 * 	获取待审核的卡列表
+	 */
+	@PostMapping(value="/card/examine/list")
+	public JsonResult getCardExamineList() {
+		logger().info("获取待审核的卡列表");
+		return success(shop().mallOverview.cardVerifyService.getCardExamineList());
+	}
+	
+	/**
+	 * 	获取会员卡分享码
+	 */
+	@PostMapping(value="/card/getqrcode/{cardId}")
+	public JsonResult getCardQrcode(@PathVariable Integer cardId) {
+		logger().info("获取卡ID: "+cardId+"的分享码");
+		return success(shop().member.card.getShareCode(cardId));
+	}
 }

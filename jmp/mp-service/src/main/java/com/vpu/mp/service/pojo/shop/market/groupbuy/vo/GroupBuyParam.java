@@ -113,6 +113,4 @@ public class GroupBuyParam {
     @ListValid(min = 1)
     @Valid
     private List<GroupBuyProductParam> product;
-
-
 }

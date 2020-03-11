@@ -1,3 +1,6 @@
+<!--
+*** 多人拼团-详情页面
+-->
 <template>
   <div class="content">
     <div class="main">
@@ -49,15 +52,25 @@
           align="center"
         > </el-table-column>
         <el-table-column
-          prop="username"
           :label="$t('groupBuy.buyerName')"
           align="center"
-        > </el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.username}}
+            <br />
+            {{scope.row.userMobile}}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="consignee"
           :label="$t('groupBuy.consigneeInfo')"
           align="center"
-        > </el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.consignee}}
+            <br />
+            {{scope.row.mobile}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="moneyPaid"
           :label="$t('groupBuy.paymentAmount')"

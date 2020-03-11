@@ -17,7 +17,7 @@ import java.util.List;
 public class WxAppSwitchCartProductsParam {
 
     @NotNull
-    private List<Integer> recIds;
+    private List<Integer> cartIds;
     /**
      * 选中状态
      */

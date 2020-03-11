@@ -7,10 +7,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.sort.SortVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -149,11 +146,16 @@ public class ChooseLinkService extends ShopBaseService {
 	 * @return
 	 */
 	public List<ActivityVo> getVoucherList() {
-		 List<ActivityVo>list = db().select(MRKING_VOUCHER.ID,MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.START_TIME,MRKING_VOUCHER.END_TIME,MRKING_VOUCHER.TYPE).from(MRKING_VOUCHER)
-				.where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
-		return list;
+        Result<? extends Record> record = db().select().from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
+            .and(MRKING_VOUCHER.SURPLUS.gt(0))
+            .fetch();
+        if(record != null){
+            return record.into(ActivityVo.class);
+        }else{
+            return null;
+        }
 	}
 	
 	/**

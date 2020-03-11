@@ -9,8 +9,8 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    groupId: '',
-    pinGroupId: '',
+    groupId: '',// 成团id
+    pinGroupId: '',// 拼团活动id
     imageUrl: app.globalData.imageUrl,
     click_more: imageUrl + 'image/wxapp/backward_right.png',
     img_noperson: imageUrl + 'image/wxapp/icon_group2.png',
@@ -42,6 +42,12 @@ global.wxPage({
     let that = this
     let groupId = options.group_id
     let pinGroupId = options.pin_group_id
+    // 处理扫码进入的情况 第一个参数是group_id，第二个参数是pin_group_id
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      groupId = scene[0].split('=')[1]
+      pinGroupId = scene[1] ? scene[1].split('=')[1] : ''
+    }
     this.setData({
       groupId: Number(groupId),
       pinGroupId: pinGroupId
@@ -49,10 +55,8 @@ global.wxPage({
     this.selectComponent('#recommend').requestData() //推荐商品请求
     // 判断用户是否登录
     that.judgeLogin()
-
+    // 初始化数据
     that.getGroupBuyInfo()
-
-    
   },
 
   getGroupBuyInfo () {
@@ -83,36 +87,11 @@ global.wxPage({
         // 规格弹窗信息
         let defaultPrd = groupbuyInfo.prdSpecsList && groupbuyInfo.prdSpecsList.length >= 0 ? false : true;
         groupbuyInfo.groupBuyDefineInfo.defaultPrd = defaultPrd
-        // 规格选择组件需要的数据
-        let productsInfo = {
-          goodsId: goodsInfo.goodsId,
-          defaultPrd: defaultPrd, // 是否不是多规格,默认只有一个规格
-          goodsNumber: goodsInfo.goodsNumber,
-          goodsImgs: [imageUrl + goodsInfo.goodsImg],
-          goodsName: goodsInfo.goodsName,
-          limitBuyNum: groupbuyInfo.groupBuyDefineInfo.limitBuyNum, // 最少购买
-          limitMaxNum: groupbuyInfo.groupBuyDefineInfo.limitMaxNum, // 最多购买
-          products: groupbuyInfo.prdSpecsList,
-          activity: {
-            activityId: that.data.groupId,
-            activityType: groupbuyInfo.groupBuyDefineInfo.activityType,
-            actState: 0,
-            isGrouperCheap: 0,// 是否团长特惠 0 否 1 是
-            limitBuyNum: groupbuyInfo.groupBuyDefineInfo.limitBuyNum, // 最少购买
-            limitMaxNum: groupbuyInfo.groupBuyDefineInfo.limitMaxNum, // 最多购买
-            limitAmount: 3, // 成团人数
-            groupBuySuccessCount: '', // 已成团数量
-            freeShip: 0, // 活动运费方式
-            groupBuyListMpVos: groupbuyInfo.userInfoList,
-            groupBuyPrdMpVos: groupbuyInfo.prdSpecsList// 拼团规格信息
-          }
-        }
-        that.data.specInfo.goodsNum = productsInfo.limitBuyNum
+        that.data.specInfo.goodsNum = groupbuyInfo.groupBuyDefineInfo.limitBuyNum || 1
 
         that.setData({
           has_spec: !defaultPrd,
           groupbuyInfo: groupbuyInfo,
-          productsInfo: productsInfo,
           specInfo: that.data.specInfo
         })
         that.getShareImg()
@@ -203,8 +182,30 @@ global.wxPage({
       return false;
     } else {
       if (this.data.has_spec) {
-        this.setData({
-          showSpec: true
+        util.api("/api/wxapp/goods/detail",res=>{
+          if(res.error === 0){
+            let productsInfo = {
+              activity:res.content.activity,
+              defaultPrd:res.content.defaultPrd,
+              goodsId:res.content.goodsId,
+              goodsImgs:res.content.goodsImgs,
+              goodsNumber:res.content.goodsNumber,
+              limitBuyNum:res.content.limitBuyNum,
+              limitMaxNum:res.content.limitMaxNum,
+              products:res.content.products
+            }
+            this.setData({
+              productsInfo,
+              showSpec:true
+            })
+          }
+        },{
+          goodsId: this.data.groupbuyInfo.goodsInfo.goodsId,
+          activityId: this.data.groupbuyInfo.groupBuyDefineInfo.id,
+          activityType: this.data.groupbuyInfo.groupBuyDefineInfo.activityType,
+          userId: util.getCache("user_id"),
+          lon: null,
+          lat: null
         })
         this.initSpecInfo()
       } else {
@@ -390,7 +391,7 @@ global.wxPage({
       })
       return false
     }
-    if (value > this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
+    if (this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum != 0 && value > this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
       util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.cannotExceed'), function () { })
       that.setData({
         'specInfo.goodsNum': this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
@@ -404,7 +405,8 @@ global.wxPage({
 
   bindMinus () {
     let goodsNum = this.data.specInfo.goodsNum
-    if (goodsNum <= this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum) {
+    let limitBuyNum = this.data.groupbuyInfo.groupBuyDefineInfo.limitBuyNum
+    if (goodsNum <= limitBuyNum || goodsNum <= 0) {
       return false;
     }
     goodsNum--
@@ -414,7 +416,8 @@ global.wxPage({
   },
   bindPlus () {
     let goodsNum = this.data.specInfo.goodsNum
-    if (goodsNum >= this.data.groupbuyInfo.groupBuyDefineInfo.limitMaxNum) {
+    let limitMaxNum = this.data.groupbuyInfo.groupBuyDefineInfo.limitMaxNum
+    if (limitMaxNum != 0 && goodsNum >= limitMaxNum) {
       return false;
     }
     goodsNum++
@@ -480,7 +483,7 @@ global.wxPage({
   onShareAppMessage: function (res) {
     let { groupbuyInfo, shareImg, groupId } = this.data
     let title = groupbuyInfo.groupBuyDefineInfo.limitAmount + this.$t('page1.fight.personToBuy') + groupbuyInfo.goodsInfo.minGroupBuyPrice + this.$t('page1.fight.yuan') + groupbuyInfo.goodsInfo.goodsName
-    let path = '/pages/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id + '&invite_id' + util.getCache('user_id')
+    let path = '/pages1/groupbuyinfo/groupbuyinfo?group_id=' + groupId + '&pin_group_id=' + groupbuyInfo.groupBuyDefineInfo.id
     return {
       title: title,
       imageUrl: shareImg,

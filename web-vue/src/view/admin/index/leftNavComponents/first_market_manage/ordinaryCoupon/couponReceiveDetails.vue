@@ -279,6 +279,11 @@ export default {
         } else {
           item.accessMode = '领取'
         }
+        if (item.isUsed === 0) {
+          item.isUsed = '否'
+        } else {
+          item.isUsed = '是'
+        }
       })
       this.tableData = data
     },

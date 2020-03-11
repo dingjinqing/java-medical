@@ -36,22 +36,27 @@
               size="small"
               v-model="form.name"
               style="width: 170px"
+              placeholder="请输入活动名称"
             ></el-input>
           </el-col>
         </el-form-item>
         <el-form-item
           :label="$t('groupBuy.activtiyLevel') + '：'"
-          prop="name"
+          prop="level"
         >
-          <el-col :span="8">
-            <el-input-number
-                    v-model="form.level"
-                    controls-position="right"
-                    :min="0">
-            </el-input-number>
+          <el-col :span="12">
+            <el-input
+              v-model="form.level"
+              controls-position="right"
+              style="width:170px"
+              size="small"
+              placeholder="请输入活动名称"
+            >
+            </el-input>
             <div class="prompt">
               {{$t('groupBuy.activtiyLevelComment')}}
             </div>
+            <!-- <span>用于区分不同拼团活动的优先级，请填写正整数，数值越大优先级越高</span> -->
           </el-col>
         </el-form-item>
         <el-form-item
@@ -348,9 +353,10 @@
         </el-form-item>
         <el-form-item :label="$t('groupBuy.beginNum') + '：'">
           <el-input-number
-                  v-model="form.beginNum"
-                  controls-position="right"
-                  :min="0">
+            v-model="form.beginNum"
+            controls-position="right"
+            :min="0"
+          >
           </el-input-number>
           <div class="prompt fontColor">
             {{$t('groupBuy.beginNumComment')}}
@@ -634,12 +640,22 @@ export default {
       }
       callback()
     }
+    var levelValid = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (value === '') {
+        return callback(new Error('请输入活动优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
     return {
       // from 表单数据
       form: {
         id: null,
         name: '',
-        level: 0,
+        level: '',
         goodsId: '',
         limitAmount: 2,
         joinLimit: 0,
@@ -669,6 +685,10 @@ export default {
         name: [
           { required: true, message: this.$t('groupBuy.activityNameRequiredRules'), trigger: 'blur' },
           { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
+        ],
+        level: [
+          { required: true, validator: levelValid, trigger: ['blur', 'change'] }
+          // { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
         ],
         goodsId: [
           { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
@@ -756,7 +776,8 @@ export default {
       }
     },
     validateNum (rule, value, callback, prdNumber) {
-      var re = /(^0|\+?[1-9][0-9]\d*)$/
+      // var re = /(^0|\+?[1-9][0-9]\d*)$/
+      var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
         callback(new Error('请填写0和正整数'))
       } else if (value > prdNumber) {
@@ -873,8 +894,7 @@ export default {
     },
     // 获取商品ids
     choosingGoodsResult (row) {
-      console.log(row)
-
+      console.log(row, 'get row')
       this.goodsRow = row
       this.form.goodsId = row.goodsId
       if (Object.keys(row).length === 0) {
@@ -886,7 +906,17 @@ export default {
         res.content.forEach((item, index) => {
           item.index = index
         })
-        this.form.product = res.content
+        // this.form.product = res.content
+        // this.param.product((item, index) =>{
+        // })
+        let list = res.content
+        list.map((item, index) => {
+          this.form.product.push(
+            Object.assign({}, item, { goodsId: row.goodsId })
+          )
+          console.log(this.form.product, '123--')
+        })
+
         console.log(' this.form.product ', this.form.product)
       })
     },

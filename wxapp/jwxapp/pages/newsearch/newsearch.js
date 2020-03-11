@@ -64,10 +64,6 @@ global.wxPage({
     })
 
   },
-  bindSearchConfirm: function (e) {
-    var search_text = e.detail.value;
-    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo");
-  },
   save_zhi: function (e) {
     search_word = e.detail.value;
     this.setData({

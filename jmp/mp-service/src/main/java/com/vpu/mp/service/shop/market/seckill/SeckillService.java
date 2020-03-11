@@ -110,8 +110,13 @@ public class SeckillService extends ShopBaseService{
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setSecPrice(getMinProductSecPrice(vo.getSkId()));
             vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+            vo.setTotalStock(getTotalStock(vo.getSkId()));
         }
         return res;
+    }
+
+    private int getTotalStock(int skId){
+        return db().select(DSL.sum(SEC_KILL_PRODUCT_DEFINE.TOTAL_STOCK)).from(SEC_KILL_PRODUCT_DEFINE).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     private SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends  Record> select,SeckillPageListQueryParam param){
@@ -215,7 +220,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
     public SeckillVo getSeckillById(Integer skId){
-        SecKillDefineRecord record = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,
+        SecKillDefineRecord record = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,SEC_KILL_DEFINE.BASE_SALE,
             SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.LIMIT_PAYTIME,SEC_KILL_DEFINE.FREE_FREIGHT,SEC_KILL_DEFINE.CARD_ID,SEC_KILL_DEFINE.SHARE_CONFIG).
             from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
         SeckillVo res = record.into(SeckillVo.class);

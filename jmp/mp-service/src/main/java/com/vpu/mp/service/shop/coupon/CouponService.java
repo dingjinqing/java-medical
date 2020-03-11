@@ -395,26 +395,45 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public AvailCouponDetailVo getCouponDetail(AvailCouponDetailParam param) {
-        Record record = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
-            CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.LEAST_CONSUME,
-            MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE)
-            .from(CUSTOMER_AVAIL_COUPONS
-            .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
-            .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
-            .fetchOne();
-            if(record != null){
-                AvailCouponDetailVo list = record.into(AvailCouponDetailVo.class);
+        Record record;
+        if(param.getCouponId() != null){
+             record = db().select().from(MRKING_VOUCHER)
+                .where(MRKING_VOUCHER.ID.eq(param.couponId))
+                .fetchOne();
+        }else{
+             record = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
+                CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE)
+                .from(CUSTOMER_AVAIL_COUPONS
+                    .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
+                .fetchOne();
+        }
+        if(record != null){
+            AvailCouponDetailVo list = record.into(AvailCouponDetailVo.class);
+            if(param.getCouponId() == null) {
                 ExpireTimeVo remain = getExpireTime(list.getEndTime());
-                if(remain != null){
+                if (remain != null) {
                     list.setRemainDays(remain.getRemainDays());
                     list.setRemainHours(remain.getRemainHours());
                     list.setRemainMinutes(remain.getRemainMinutes());
                     list.setRemainSeconds(remain.getRemainSeconds());
                 }
-                return list;
-            }else{
-                return null;
             }
+            //常用链接-领取优惠券
+            if(param.getCouponId() != null){
+                //优惠券规则
+                Integer perNum = db().select(MRKING_VOUCHER.RECEIVE_PER_PERSON).from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(param.couponId)).fetchOne().into(Integer.class);
+                Integer hasNum = db().selectCount().from(CUSTOMER_AVAIL_COUPONS).where(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(param.couponId)).fetchOne().into(Integer.class);
+                if(perNum == 0 || (perNum != 0 && hasNum<perNum)){
+                    list.setCanReceive(1);
+                }
+                list.setLinkSource(1);
+            }
+            return list;
+        }else{
+            return null;
+        }
     }
 
     /**

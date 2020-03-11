@@ -2,7 +2,7 @@
   <div>
     <div class="shareC">
       <el-dialog
-        title="扫一扫，分享给好友吧~"
+        :title="$t('memberCard.scanCode')"
         :visible.sync="dialogVisibleShare"
         width="25%"
         :modal='false'
@@ -15,7 +15,7 @@
           <div
             class="shareDialog_bottom_"
             @click="downs()"
-          >下载二维码</div>
+          >{{$t('memberCard.downQrcode')}}</div>
         </div>
 
         <div class="d_footer">
@@ -25,14 +25,14 @@
           >
             <el-input
               v-model="pathInput"
-              placeholder="请输入内容"
+              :placeholder="$t('memberCard.pleaseInput')"
               size="mini"
               ref="copy"
             ></el-input>
             <span
               style="cursor:pointer"
               @click="clickCopy()"
-            >复制</span>
+            >{{$t('memberCard.copy')}}</span>
           </div>
         </div>
 
@@ -41,31 +41,45 @@
   </div>
 </template>
 <script>
+import { getShareCode } from '@/api/admin/memberManage/memberCard.js'
 export default {
   data () {
     return {
       dialogVisibleShare: false,
-      shareImg: 'http://mpdev.weipubao.cn/upload/4748160/qrcode/33/T33P307bfc9947d3756c206033bd06eb13b0_20190614100251.jpg',
-      pathInput: ''
+      shareImg: null,
+      pathInput: null
     }
   },
   mounted () {
+    this.langDefault()
     // 初始化数据
     this.defaultData()
+  },
+  watch: {
+    lang () {
+
+    }
   },
   methods: {
     defaultData () {
       this.$http.$on('shareCodeDialog', res => {
-        console.log(res)
-        this.dialogVisibleShare = true
+        console.log(res.id)
+        this.downs(res.id)
       })
     },
     // 下载图片
-    downs () {
-      // var alink = document.createElement('a')
-      // alink.href = this.shareImg
-      // alink.download = name || 'pic' // 图片名
-      // alink.click()
+    downs (cardId) {
+      getShareCode(cardId).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.warning(this.$t('memberCard.shareCodeSuccess'))
+          this.shareImg = res.content.imageUrl
+          this.pathInput = res.content.pagePath
+          this.dialogVisibleShare = true
+        } else {
+          this.$message.warning(this.$t('memberCard.shareCodeFail'))
+        }
+      })
     },
     // 复制
     clickCopy () {

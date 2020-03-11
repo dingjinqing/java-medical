@@ -388,7 +388,7 @@ public class BargainRecordService extends ShopBaseService {
 
     public BargainRecordInfo getRecordInfo(int recordId){
         return db().select(BARGAIN_RECORD.asterisk(),
-            GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,
+            GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,GOODS.IS_DEFAULT_PRODUCT,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
             BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.NEED_BIND_MOBILE,BARGAIN.INITIAL_SALES,BARGAIN.FREE_FREIGHT,
@@ -409,7 +409,7 @@ public class BargainRecordService extends ShopBaseService {
      * @param userId
      * @param recordInfo
      * @return 状态码
-     * 0可以砍价（别人的砍价） 11可以邀请砍价（自己的砍价） 1活动不存在 2砍价失败 3活动未开始 4或已结束
+     * 0可以砍价（别人的砍价） 11可以邀请砍价（自己的砍价，但分享不再翻倍） 1活动不存在 2砍价失败 3活动未开始 4或已结束
      * 5砍价成功 6商品已抢光 7可以邀请砍价（自己的砍价，已经砍了2刀） 8可以再砍一刀（自己的砍价） 9我也要X元得好物（别人的砍价，已帮砍过一刀） 10已完成订单（自己的砍价）
      */
     private byte userBargainRecordStatus(int userId,BargainRecordInfo recordInfo){
@@ -446,13 +446,10 @@ public class BargainRecordService extends ShopBaseService {
                         }
                     }
                 }else {
-                    if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y)){
-                        return 10;
-                    }
-                    if(recordInfo.getStatus().equals(STATUS_SUCCESS)){
+                    if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) <= 0){
                         return 5;
                     }
-                    if(remainMoney.compareTo(BigDecimal.ZERO) > 0){
+                    if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0){
                         return 11;
                     }
                 }
@@ -519,7 +516,7 @@ public class BargainRecordService extends ShopBaseService {
 
         //可用状态过滤
         byte canCutStatus = userBargainRecordStatus(userId,getRecordInfo(recordId));
-        if(canCutStatus != 0 && canCutStatus != 8 && canCutStatus != 11){
+        if(canCutStatus != 0 && canCutStatus != 8){
             vo.setState(canCutStatus);
             return vo;
         }

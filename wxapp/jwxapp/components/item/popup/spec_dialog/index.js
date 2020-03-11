@@ -288,7 +288,7 @@ global.wxComponent({
             stock = prd_list[prd_specs]['prdNumber']
           }
           console.log(stock)
-          if (stock > min) return false
+          if (stock >= min) return false
         }
       }
       return true

@@ -308,10 +308,16 @@ export default {
         if (newData) {
           if (newData.seckill_goods) {
             newData.seckill_goods.forEach(function (item, i) {
-              if (!Number(item.seckill_num)) {
+              // 售出百分比：售出/秒杀库存
+              if (!Number(item.total_stock) || !Number(item.sale_num)) {
                 item.salePercent = 0
               } else {
-                item.salePercent = Number((Number(item.sale_num) + Number(item.base_sale)) / (Number(item.seckill_num) + Number(item.base_sale))).toFixed(4) || 0
+                console.log(item)
+                if (!item.base_sale) {
+                  item.salePercent = Number((Number(item.sale_num)) / (Number(item.total_stock))).toFixed(4) || 0
+                } else {
+                  item.salePercent = Number((Number(item.sale_num) + Number(item.base_sale)) / (Number(item.total_stock) + Number(item.base_sale))).toFixed(4) || 0
+                }
               }
             })
           }

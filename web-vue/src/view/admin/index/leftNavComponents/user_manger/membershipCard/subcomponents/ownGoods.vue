@@ -18,15 +18,18 @@
             class="noneBlockList"
             v-for="(item,index) in noneBlockVipArr"
             :key="index"
-            @click="handleToAddGoods(index)"
           >
-            <div class="noneBlockLeft">
+            <div
+              class="noneBlockLeft"
+              @click="handleToAddGoods(index, false)"
+            >
               <img :src="loadAddSymbol()">
               {{item.name}}
             </div>
             <div
               v-if="item.num"
               class="noneBlockRight"
+              @click="handleToAddGoods(index, true)"
             >
               {{ item.info }}：{{item.num}}{{ item.unit }}
             </div>
@@ -40,6 +43,7 @@
       @resultGoodsIds='initGoodsId'
       :tuneUpChooseGoods='goodsDialogVisiable'
       :chooseGoodsBack='ruleForm.choosedGoodsId'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     ></ChoosingGoods>
     <!--选择商家,平台分类弹窗-->
     <AddingBusClassDialog
@@ -144,19 +148,20 @@ export default {
       businessDialogVisible: false, // 商家分类和平台分类
       brandDialogVisiable: false,
       storeAndPlatformBackIds: [], // 商家分类和平台分类回显数据
-      noneBlockVipArr: [{ name: '', num: '' }]
+      noneBlockVipArr: [{ name: '', num: '' }],
+      isOnlyShowChooseGoods: false
     }
   },
   methods: {
     loadAddSymbol () {
       return this.$imageHost + '/image/admin/icon_jia.png'
     },
-    handleToAddGoods (type) {
+    handleToAddGoods (type, only) {
       console.log(type, typeof type)
       switch (type) {
         case this.goodsType:
           console.log('添加商品')
-          this.showAddGoodsDialog()
+          this.showAddGoodsDialog(only)
           break
         case this.storeType:
           console.log('添加商家')
@@ -172,9 +177,10 @@ export default {
           break
       }
     },
-    showAddGoodsDialog () {
+    showAddGoodsDialog (only) {
       this.goodsDialogVisiable = !this.goodsDialogVisiable
       this.choosedGoodsBack = this.ruleForm.choosedGoodsId
+      this.isOnlyShowChooseGoods = only
     },
     showAddStoreDialog () {
       this.currentClassType = this.storeType

@@ -32,6 +32,8 @@ public class BargainRecordInfo {
     private BigDecimal prdPrice;
     private String prdDesc;
     private Integer prdNumber;
+    /** 1默认规格，0自定义规格（多规格）*/
+    private Byte isDefaultProduct;
 
     private Byte bargainType;
     private Timestamp startTime;

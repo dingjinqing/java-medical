@@ -21,8 +21,8 @@
             @click="handleClick(index)"
           >
             <td>{{item.actName}}</td>
-            <td v-if="couponFlag"></td>
-            <td class="link">{{item.startTime}}{{$t('selectLinks.to')}}{{item.endTime}}</td>
+            <td v-if="couponFlag">{{item.type==='0'?'普通':item.type==='1'?'分裂':''}}</td>
+            <td class="link">{{item.validityType===1?'自领取开始':''}}{{item.validityType===1&&item.validity?`${item.validity}天`:''}}{{item.validityType===1&&item.validityHour?`${item.validityHour}小时`:''}}{{item.validityType===1&&item.validityMinute?`${item.validityMinute}分钟`:''}}{{item.validityType===1?'内有效':(item.startTime+$t('selectLinks.to')+item.endTime)}}</td>
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
@@ -52,7 +52,7 @@ export default {
       noImg: this.$imageHost + '/image/admin/no_data.png',
       navText: '',
       couponFlag: false, // 优惠券td flag
-      path: '' //  显示和保存的路径
+      path: ''//  显示和保存的路径
     }
   },
   computed: {
@@ -195,7 +195,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages/getcoupon/getcoupon?code='
+                this.path = 'pages/getCoupon/getCoupon?id='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)

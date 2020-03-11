@@ -31,6 +31,22 @@ export const cn = {
   allGoods: '全部商品',
   someGoods: '指定商品',
 
+  storeArr: [{
+    name: '选择商品',
+    value: '1'
+  },
+  {
+    name: '选择商品分类',
+    value: '2'
+  },
+  {
+    name: '选择商品品牌',
+    value: '3'
+  }],
+  goodsTip1: '已选',
+  goodsTip2: '件商品',
+  goodsTip3: '个商家',
+  goodsTip4: '个品牌',
   // 添加-提示信息
   nameCheck: '请填写服务名称',
   priorityCheck: '请输入优先级',

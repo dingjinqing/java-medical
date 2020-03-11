@@ -59,7 +59,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.yuan') }}</span>
-              <span v-if="payMoneyError" class="valid-check">请输入金额</span>
+              <span v-if="payMoneyError" class="valid-check">{{$t('memberCard.inputMoney')}}</span>
             </div>
             </el-form-item>
             <el-form-item style="margin-left: -100px;" prop="payScore">
@@ -80,7 +80,7 @@
               >
               </el-input-number>
               <span>{{ $t('memberCard.unitM') }}</span>
-              <span v-if="payScoreError" class="valid-check">请输入积分</span>
+              <span v-if="payScoreError" class="valid-check">{{$t('memberCard.inputScore')}}</span>
             </div>
             </el-form-item>
           </el-form>
@@ -89,7 +89,7 @@
             v-if="ruleForm.isPay==='2'"
             class="receive-code"
           >
-          <span class="receiveCodeError" v-if="receiveCodeError">至少生成一项领取码</span>
+          <span class="receiveCodeError" v-if="receiveCodeError">{{$t('memberCard.leastCodeTip')}}</span>
             <div class="receive-code-one">
 
               <el-radio
@@ -266,7 +266,7 @@ export default {
       if (this.ruleForm.cardType === 1) {
         this.$refs.ruleForm.validate((valid) => {
           if (!valid) {
-            this.$message.warning('请输入信息')
+            this.$message.warning(this.$t('memberCard.inputInfomation'))
             this.ruleForm.valid = false
           } else {
             flag = true
@@ -280,13 +280,13 @@ export default {
         // check crash
         if (this.ruleForm.payType === '0') {
           if (typeof this.ruleForm.payMoney === 'undefined') {
-            this.$message.warning('请输入金额')
+            this.$message.warning(this.$t('memberCard.inputMoney'))
             this.payMoneyError = true
             this.payScoreError = false
           }
         } else if (this.ruleForm.payType === '1') {
           if (typeof this.ruleForm.payScore === 'undefined') {
-            this.$message.warning('请输入积分')
+            this.$message.warning(this.$t('memberCard.inputScore'))
             this.payScoreError = true
             this.payMoneyError = false
           }
@@ -305,7 +305,7 @@ export default {
             this.ruleForm.valid = flag
             this.receiveCodeError = false
           } else {
-            this.$message.warning('至少生成一项领取码')
+            this.$message.warning(this.$t('memberCard.leastCodeTip'))
             this.ruleForm.valid = false
             this.receiveCodeError = true
           }
@@ -315,7 +315,7 @@ export default {
             this.ruleForm.valid = flag
             this.receiveCodeError = false
           } else {
-            this.$message.warning('至少生成一项领取码')
+            this.$message.warning(this.$t('memberCard.leastCodeTip'))
             this.ruleForm.valid = false
             this.receiveCodeError = true
           }
@@ -353,7 +353,7 @@ export default {
         callback()
       } else {
         this.ruleForm.stock = undefined
-        callback(new Error('请填写发送总量'))
+        callback(new Error(this.$t('memberCard.sendTotalTip')))
       }
     }
 
@@ -364,7 +364,7 @@ export default {
         callback()
       } else {
         this.ruleForm.limits = undefined
-        callback(new Error('请填写领取限制'))
+        callback(new Error(this.$t('memberCard.receiveLimitTip')))
       }
     }
     return {
@@ -457,14 +457,14 @@ export default {
     // 删除密码批次
     deletePwdBatchItem (index) {
       if (this.ruleForm.codeAddDivArrBottom.length === 1) {
-        this.$message.warning('最少保留一个批次')
+        this.$message.warning(this.$t('memberCard.leastBatch'))
       } else {
         this.ruleForm.codeAddDivArrBottom.splice(index, 1)
       }
     },
     showReceivePwdDiaglog (index) {
       if (!this.ruleForm.codeAddDivArrBottom[index].pwdName) {
-        this.$message.warning('请填写批次名称')
+        this.$message.warning(this.$t('memberCard.inputBatchName'))
         return
       }
       this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
@@ -499,7 +499,7 @@ export default {
 
     showReceiveCodeDiaglog (index) {
       if (!this.ruleForm.codeAddDivArr[index].batchName) {
-        this.$message.warning('请填写批次名称')
+        this.$message.warning(this.$t('memberCard.inputBatchName'))
         return
       }
       this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
@@ -521,7 +521,7 @@ export default {
     // 删除批次
     deleteBatchItem (index) {
       if (this.ruleForm.codeAddDivArr.length === 1) {
-        this.$message.warning('最少保留一个批次')
+        this.$message.warning(this.$t('memberCard.leastBatch'))
       } else {
         this.ruleForm.codeAddDivArr.splice(index, 1)
       }
@@ -557,7 +557,7 @@ export default {
         this.turnUp = !this.turnUp
         console.log('currentBatchId:' + this.currentBatchId)
       } else {
-        this.$message.warning('暂无记录')
+        this.$message.warning(this.$t('memberCard.noData'))
       }
     }
   }

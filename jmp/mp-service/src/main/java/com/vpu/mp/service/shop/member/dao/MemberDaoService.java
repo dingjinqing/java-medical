@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_MOBILE;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
@@ -17,8 +18,10 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
@@ -33,6 +36,7 @@ import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
 import org.jooq.SortField;
+import org.jooq.Table;
 import  org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +54,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
 import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
 import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.TagService;
@@ -181,9 +186,9 @@ public class MemberDaoService extends ShopBaseService {
 		User a = USER.as("a");
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
-		
+		Field<?>  inviteMobile = db().select(b.MOBILE).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_MOBILE);
 		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
-				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
+				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName,inviteMobile, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,
 				USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID,USER_DETAIL.USER_AVATAR)
@@ -209,11 +214,26 @@ public class MemberDaoService extends ShopBaseService {
 	 * 获取一张会员卡信息,此会员卡为等级会员，限次会员卡再到普通会员卡
 	 * @param inData 工作日，休息，或 无限制
 	 */
-	public Record getOneMemberCard(List<Integer> inData, Integer userId) {
-			//.limit(1).fetchAny();
-		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inData,userId);
+	public Record getOneMemberCard(Integer userId) {
+		List<Integer> inDate = userCardService.useInDate();
+		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inDate,userId);
 		return sql.limit(1).fetchAny();
 	}
+	
+	/**
+	 * 获取用户其中的一张卡，改卡的顺序为等级卡》限次卡》普通卡
+	 * @param userIds
+	 * @return List<UserExpCardVo> 用户卡信息列表 || null
+	 */
+	public Map<Integer, UserExpCardVo> getUserOneCard(List<Integer> userIds) {
+		if(userIds == null || userIds.size()==0) {
+			return null;
+		}
+		List<Integer> inDate = userCardService.useInDate();
+		Map<Integer, UserExpCardVo>  res = getMemberCardSql(inDate,userIds);
+		return res;
+	}
+	
 	
 	/**
 	 * 获取用户的所有可用会员卡
@@ -242,6 +262,28 @@ public class MemberDaoService extends ShopBaseService {
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
 
+	private Map<Integer, UserExpCardVo> getMemberCardSql(List<Integer> inData, List<Integer> userIds) {
+		// 防止mysql5.7groupby对之前的order by不生效
+		int count = db().fetchCount(USER_CARD);
+		Table<?> nested = db()
+						.select(USER_CARD.USER_ID,USER_CARD.CARD_ID,MEMBER_CARD.CARD_NAME)
+						.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+						.where(USER_CARD.USER_ID.in(userIds)
+								.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+								.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
+								.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+										.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))))
+						.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc())
+						.limit(count)
+						.asTable("nested");
+		
+		Map<Integer, UserExpCardVo> res = db().select(nested.field("user_id"),DSL.max(nested.field("card_id")).as("card_id"),
+					DSL.max(nested.field("card_name")).as("card_name"))
+					.from(nested)
+					.groupBy(nested.field("user_id"))
+					.fetchMap(nested.field("user_id").cast(Integer.class), UserExpCardVo.class);
+		return res;
+	}
 	
 	
 	/**
@@ -755,7 +797,7 @@ public class MemberDaoService extends ShopBaseService {
 	/**
 	 * 	获取用户总数
 	 */
-	public int getNumOfUser() {
-		return db().fetchCount(USER);
+	public int getNumOfUser(MemberPageListParam param) {
+		return db().fetchCount(USER, buildOptions(param));
 	}
 }

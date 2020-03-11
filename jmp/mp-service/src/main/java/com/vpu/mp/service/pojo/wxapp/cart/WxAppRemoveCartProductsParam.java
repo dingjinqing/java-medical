@@ -19,5 +19,5 @@ public class WxAppRemoveCartProductsParam {
 
 
     @ListValid(min = 1)
-    private List<Integer> recIds;
+    private List<Integer> cartIds;
 }
