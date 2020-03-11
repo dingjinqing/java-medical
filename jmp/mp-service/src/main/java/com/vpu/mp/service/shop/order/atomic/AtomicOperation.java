@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
+
 /**
  * 订单库存、销量更新规则
  * @author 王帅
@@ -43,10 +45,25 @@ public class AtomicOperation extends ShopBaseService {
     @Autowired
     private GoodsSpecProductService goodsSpecProduct;
 
+    @Autowired
+    private OrderInfoService orderInfo;
+
     /**
      * 该活动库存通过其他方式更新
      */
-    private List<Byte> filterAct = Lists.newArrayList(BaseConstant.ACTIVITY_TYPE_BARGAIN, BaseConstant.ACTIVITY_TYPE_GROUP_DRAW);
+    public static List<Byte> filterAct = null;
+    static {
+        filterAct = Lists.newArrayList(
+            BaseConstant.ACTIVITY_TYPE_BARGAIN,
+            BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+            BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
+            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER
+        );
+    }
 
     /**
      * 普通商品库存更新
@@ -79,7 +96,7 @@ public class AtomicOperation extends ShopBaseService {
      */
     public void updateStockandSalesByActFilter(OrderInfoRecord order, List<OrderGoodsBo> goodsBo, boolean limit) throws MpException {
         Byte[] types = OrderInfoService.orderTypeToByte(order.getGoodsType());
-        //过滤砍价、普通抽奖
+        //过滤活动
         for (Byte type : types) {
             if(filterAct.contains(type)) {
                 return;
@@ -156,8 +173,8 @@ public class AtomicOperation extends ShopBaseService {
         List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>(updateGoodsMap.values());
         //商品库存更新
         goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
-        //
-        //TODO 活动库存更新
+        //更新库存锁
+        orderInfo.updateStockLock(order, YES);
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新end");
     }
 }
