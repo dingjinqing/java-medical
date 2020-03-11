@@ -366,7 +366,7 @@ global.wxComponent({
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`
         }
-        if(this.data.activity && this.data.activity.activityType === 8 && this.data.triggerButton === 'right'){
+        if(this.data.activity && this.data.activity.activityType === 8 && (!this.data.triggerButton || this.data.triggerButton === 'right')){
           buttonData['buttonInfo']['right'].name = `￥${this.data.activity.payMoney}发起拼团抽奖`
         }
         if(this.data.activity && this.data.activity.activityType === 10 && this.data.triggerButton === 'right'){
