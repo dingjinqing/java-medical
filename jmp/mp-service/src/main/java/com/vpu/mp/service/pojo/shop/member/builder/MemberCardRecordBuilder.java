@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
  * @Date: 2019年11月1日
  * @Description:
  */
+
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
 	
@@ -297,6 +298,31 @@ public class MemberCardRecordBuilder {
 
 	public MemberCardRecordBuilder freeshipNum (Integer freeshipNum) {
 		record.setFreeshipNum(freeshipNum);
+		return this;
+	}
+
+	public MemberCardRecordBuilder renewMemberCard (Byte renewMemberCard) {
+		record.setRenewMemberCard(renewMemberCard);
+		return this;
+	}
+
+	public MemberCardRecordBuilder renewType (Byte renewType) {
+		record.setRenewType(renewType);
+		return this;
+	}
+
+	public MemberCardRecordBuilder renewNum (BigDecimal renewNum) {
+		record.setRenewNum(renewNum);
+		return this;
+	}
+
+	public MemberCardRecordBuilder renewTime (Integer renewTime) {
+		record.setRenewTime(renewTime);
+		return this;
+	}
+
+	public MemberCardRecordBuilder renewDateType (Byte renewDateType) {
+		record.setRenewDateType(renewDateType);
 		return this;
 	}
 
