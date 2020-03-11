@@ -5,7 +5,10 @@ global.wxComponent({
   properties: {
     productsInfo: {
       type: Object,
-      value: null
+      value: null,
+      observer(val){
+        console.log(val)
+      }
     },
     limitInfo: {
       type: Object,
@@ -56,6 +59,7 @@ global.wxComponent({
       this.setData({
         product: data.detail
       })
+      console.log(this.data.product)
       this.triggerEvent('product', data.detail)
     },
     getGoodsNum(data) {

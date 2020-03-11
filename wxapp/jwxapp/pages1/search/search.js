@@ -170,7 +170,7 @@ global.wxPage({
     this.setData({
       product:e.detail,
       limitInfo:{
-        activityType:this.data.productsInfo.activityType,
+        activityType:this.data.productsInfo.activity ? this.data.productsInfo.activity.activityType : null,
         limitBuyNum:e.detail.limitBuyNum,
         limitMaxNum:e.detail.limitMaxNum,
         prdNumber:e.detail.prdNumber

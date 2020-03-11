@@ -345,7 +345,8 @@ global.wxPage({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum
+        limitMaxNum,
+        activityType:this.data.specParams.activity ? this.data.specParams.activity.activityType : null
       }
     })
   },
@@ -354,6 +355,7 @@ global.wxPage({
     this.setData({
       productInfo: data.detail
     })
+    console.log(this.data.productInfo)
     if(this.data.specParams.activity && this.data.specParams.activity.activityType === 10){
       this.getPreSaleAct()
     }

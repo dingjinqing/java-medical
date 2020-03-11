@@ -77,6 +77,7 @@ global.wxComponent({
               }
             } else if (activity && activity.activityType === 3) {
               val.products[0].prdNumber = activity.stock
+              limitBuyNum = 1
             }
             if(activity && [6,18,22].includes(activity.activityType) && activity.isLimit){
               limitMaxNum = activity.limitAmount
@@ -235,6 +236,7 @@ global.wxComponent({
         }
       } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && (activity.activityType === 3 || activity.activityType === 8)){
         select_prd.prdRealPrice = activity[actPrdType[activity.activityType]['prdRealPrice']]
+        limitBuyNum = 1
       } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 4 ) {
         select_prd.prdRealPrice = `${select_prd['actProduct'].money > 0 ? select_prd['actProduct'].money + '元' : ''}${select_prd['actProduct'].money > 0 && select_prd['actProduct'].score > 0 ? ' + ' : ''}${select_prd['actProduct'].score > 0 ? select_prd['actProduct'].score + '积分' : ''}`
         limitMaxNum = activity.maxExchangeNum

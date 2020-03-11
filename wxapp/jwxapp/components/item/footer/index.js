@@ -261,6 +261,7 @@ global.wxComponent({
    */
   methods: {
     initFooter(){
+      console.log(111)
       this.setData({
         buttonData : this.getButtonData()
       })
@@ -373,6 +374,7 @@ global.wxComponent({
         }
       }
       buttonData.activityType = this.data.activity ? this.data.activity.activityType : null
+      console.log(buttonData)
       this.checkDealtAct(buttonData)
       return buttonData
     },
@@ -415,8 +417,21 @@ global.wxComponent({
       util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]) })}`, "navigateTo")
       this.triggerEvent('close')
     },
-    actCheckOut(){
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]), activityType: this.data.activity ? this.data.activity.activityType : null, activityId: this.data.activity ? this.data.activity.activityId : null })}`, "navigateTo")
+    async actCheckOut(){
+      let params = {
+        goodsList: JSON.stringify([this.data.productInfo]), 
+        activityType: this.data.activity ? this.data.activity.activityType : null, 
+        activityId: this.data.activity ? this.data.activity.activityId : null
+      }
+      let actFlag = await this.checkActLimit(this.data.activity,this.data.productInfo)
+      console.log(actFlag)
+      if(!actFlag) return;
+      if(this.data.activity && this.data.activity.activityType === 10){
+        params.preSaleInfo = {...this.data.activity,preSalePrdInfo:this.data.productInfo.actProduct}
+        delete params.preSaleInfo.preSalePrdMpVos
+        params.preSaleInfo = JSON.stringify(params.preSaleInfo)
+      }
+      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
       this.triggerEvent('close')
     },
     //整合参数
@@ -591,6 +606,48 @@ global.wxComponent({
     notBuyTips(){
       let {dealtAct} = this.data
       util.showModal(this.$t("components.decorate.tips"), dealtAct.errorMessage);
+    },
+    async checkActLimit(activity,productInfo){
+      if(activity && activity.activityType === 5) return(await this.checkSkillLimit(activity,productInfo))
+      return true
+    },
+    checkSkillLimit({activityId:skId},{prdId:productId,goodsNum: goodsNumber}){
+      return new Promise(resolve=>{
+        util.api('/api/wxapp/seckill/check',res=>{
+          console.log(res)
+          if(res.error === 0 && res.content && res.content.state === 0){
+            resolve(true)
+          } else {
+            let status =  {
+              1:`抱歉，此秒杀活动不存在`,
+              2:`抱歉，此秒杀活动已停用`,
+              3:`抱歉，此秒杀活动未开始`,
+              4:`抱歉，此秒杀活动已结束`,
+              5:`抱歉，商品已抢光`,
+              6:`抱歉，您已超出此活动购买限额。当前还可购买`,
+              7:`抱歉，该秒杀活动为会员专享活动。请检查是否有对应会员卡`,
+              8:`抱歉，当前选中规格库存已抢空`,
+              9:`您好，您有待支付秒杀订单，请支付后再试。`
+            }
+            let tips = res.error === 0 ? status[res.content.state] : res.message
+            if (res.content.state === 6) { tips += (res.content.diffNumber + '个');  util.showModal('提示',tips)}
+            if (res.content.state === 9) {
+              util.showModal('提示',tips,()=>{
+                util.jumpLink(
+                  `/pages/orderinfo/orderinfo?orderSn=${res.content.orderSn}`,
+                  "navigateTo"
+                );
+              },true,'取消','去查看')
+            } 
+            util.showModal('提示',tips)
+            resolve(false)
+          }
+        },{
+          skId,
+          productId,
+          goodsNumber
+        })
+      })
     },
     // 返回首页
     backHome() {
