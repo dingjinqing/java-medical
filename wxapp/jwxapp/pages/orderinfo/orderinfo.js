@@ -63,8 +63,10 @@ global.wxPage({
             this.countdown(parseInt(orderInfo.payOperationTime / 1000))
           }
           this.setData({
-            orderInfo: orderInfo
+            orderInfo: orderInfo,
+            groupDrawInfo: this.getGroupDrawInfo(orderInfo)
           });
+          console.log(this.data.groupDrawInfo)
         }
       },
       { orderSn: this.data.orderSn }
@@ -89,6 +91,38 @@ global.wxPage({
     order.operate = orderEvent.filterObj(order, filterArr);
     console.log(order);
     return order;
+  },
+  getGroupDrawInfo({groupDraw = null}){
+    if(!groupDraw) return null
+    let userList = [], groupDrawStatus = ''
+    if(groupDraw.pinUserGroup.length > 5){
+      userList = [...groupDraw.pinUserGroup.slice(0, 4),{userAvatar:`${imageUrl}image/wxapp/icon_group1.png`}]
+    } else if (groupDraw.pinUserGroup.length === 5) {
+      userList = [...groupDraw.pinUserGroup.slice(0, 5)]
+    } else if (groupDraw.pinUserGroup.length < 5){
+      userList = [...groupDraw.pinUserGroup,...this.getGroupDrawLimit(groupDraw.pinUserGroup.length,groupDraw.pinGroupInfo.limitAmount)]
+    }
+    if(groupDraw.pinUserGroup[0].status === 0){
+      groupDrawStatus = `拼团中`
+    } else if (groupDraw.pinUserGroup[0].status === 1) {
+      let userTarget = groupDraw.pinUserGroup.find(item=>{return item.userId === util.getCache('user_id')})
+      if(userTarget.drawStatus === 0){
+        groupDrawStatus = `已成团，等待抽奖`
+      } else {
+        groupDrawStatus = userTarget.isWinDraw ? `已成团，已中奖` : `已成团，未中奖`
+      }
+    } else if (groupDraw.pinUserGroup[0].status === 2) {
+      groupDrawStatus = `拼团失败`
+    }
+    return {...groupDraw,userList,groupDrawStatus}
+  },
+  getGroupDrawLimit(num,limitAmount){
+    let limitArr = []
+    let limitNum = limitAmount > 5 ? 5 - num : limitAmount - num
+    for(let i = 0;i < limitNum;i++){
+      limitArr.push({userAvatar:`${imageUrl}image/wxapp/icon_group2.png`})
+    }
+    return limitArr
   },
   // 订单下按钮事件集合
   handleOperate (e) {
@@ -152,6 +186,16 @@ global.wxPage({
       return '0' + num;
     }
     return num;
+  },
+  toGroupDrawInfo(){
+    util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:this.data.groupDrawInfo.pinGroup.activityId,group_id:this.data.groupDrawInfo.pinGroup.groupId,goods_id:this.data.orderInfo.goods[0].goodsId})}`,'navigateTo')
+  },
+  //整合参数
+  getUrlParams (obj) {
+    return Object.keys(obj).reduce((UrlStr, item, index) => {
+      if (index !== 0) UrlStr += `&`
+      return (UrlStr += `${item}=${obj[item]}`)
+    }, '?')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
