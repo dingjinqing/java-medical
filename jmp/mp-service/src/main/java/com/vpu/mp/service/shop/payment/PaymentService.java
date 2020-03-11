@@ -17,7 +17,6 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
-import com.vpu.mp.service.shop.activity.processor.PayAwardProcessor;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -57,10 +56,10 @@ public class PaymentService extends ShopBaseService {
 
     @Autowired
     public PayService pay;
-    @Autowired
-    private PayAwardProcessor payAwardProcessor;
+
     @Autowired
     private OrderGoodsService orderGoodsService;
+
 	/**
 	 * 营销活动processorFactory
 	 */
@@ -76,7 +75,7 @@ public class PaymentService extends ShopBaseService {
     @Autowired
     private StoreOrderService storeOrder;
 
-	public PaymentVo getPaymentInfo(String payCode) {
+    public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
 	}
 
@@ -199,15 +198,16 @@ public class PaymentService extends ShopBaseService {
 				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_DEPOSIT) {
 					// 定金尾款支付方式时，先标记定金已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
+                    if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+                        //修改相应预售商品数量销量库存
+                        marketProcessorFactory.processUpdateStock(pay.createOrderBeforeParam(orderInfo), orderInfo);
+                    }
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 					//状态变为待发货
 					pay.toWaitDeliver(orderInfo, paymentRecord);
 				}
-				/**
-				 * 修改相应预售商品数量销量库存 TODO: preSale.preSaleProduct.updateNumber(orderInfo, -1);
-				 */
 			} else {
 				// 定金已支付，标记为尾款已支付
                 orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
