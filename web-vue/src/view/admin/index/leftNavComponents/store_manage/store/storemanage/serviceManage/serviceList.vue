@@ -309,7 +309,7 @@ export default {
         return this.$t('serviceList.unShelf')
       } else if (row.serviceShelf === 1) {
         return this.$t('serviceList.shelf')
-      } else if (row.serviceShelf === 2) {
+      } else if (Number(row.serviceShelf) === 2) {
         return this.$t('serviceList.expired')
       } else {
         return ''
