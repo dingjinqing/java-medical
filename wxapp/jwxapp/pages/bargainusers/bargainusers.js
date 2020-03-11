@@ -72,8 +72,11 @@ function list_request(that) {
 
       // 砍价列表时间
       if (that.data.info_list.length > 0) {
+        // 时间处理兼容ios
+        that.data.timestamp = that.data.timestamp.replace(/-/g, '/')
         var now = new Date(that.data.timestamp).getTime();
         that.data.info_list.forEach((item, index) => {
+          item.createTime = item.createTime.replace(/-/g, '/')
           item.allTime = (now - new Date(item.createTime).getTime()) / 1000;
           if (item.allTime < 60) {
             item.show_time = '刚刚'
