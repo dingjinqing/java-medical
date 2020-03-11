@@ -848,9 +848,9 @@ export default {
           })
           break
         case 3:
-          let arr = []
+          let arr1 = []
           this.nowCheckAll.forEach((item, index) => {
-            arr.push(item.goodsId)
+            arr1.push(item.goodsId)
           })
           goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr }).then(res => {
             console.log(res)
