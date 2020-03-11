@@ -395,8 +395,15 @@ export default {
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
 
       // 包邮信息
-      this.freeship = data.freeship
+      if (data.freeship) {
+        this.freeship = data.freeship
+      }
       this.freeship.valid = false
+
+      // 续费信息
+      if (data.cardRenew) {
+        this.cardRenew = data.cardRenew
+      }
 
       // 使用须知
       this.cardUsageCfgData.desc = data.desc
@@ -590,7 +597,8 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
-        'freeship': this.freeship
+        'freeship': this.freeship,
+        'cardRenew': this.cardRenew
       }
       if (this.cardId) {
         // 更新会员卡
