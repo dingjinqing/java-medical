@@ -249,16 +249,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         }
     }
 
+    /**
+     * 修改状态
+     * @param param
+     * @param order
+     * @throws MpException
+     */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (order.getOrderStatus() >= OrderConstant.ORDER_WAIT_DELIVERY) {
-            for (OrderBeforeParam.Goods goods : param.getGoods()) {
-                boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
-                if (!b) {
-                    throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
-                }
-            }
-        }
         List<OrderGoodsBo> orderGoodsBos = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
@@ -267,13 +265,35 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         }
     }
 
+    /**
+     * 修改库存
+     * @param param
+     * @param order
+     * @throws MpException
+     */
     @Override
     public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        for (OrderBeforeParam.Goods goods : param.getGoods()) {
+            boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
+            if (!b) {
+                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+            }
+        }
     }
 
+    /**
+     * 退款
+     * @param activityId 活动id
+     * @param returnGoods 退款商品
+     */
     @Override
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
-
+        log.info("拼团退款-退库存");
+        for (OrderReturnGoodsVo returnGoodsVo : returnGoods) {
+            boolean b = groupBuyProcessorDao.updateGroupBuyStock(activityId, returnGoodsVo.getProductId(), -returnGoodsVo.getGoodsNumber());
+            if (!b) {
+                log.error("拼团退款,退库存-失败");
+            }
+        }
     }
 }

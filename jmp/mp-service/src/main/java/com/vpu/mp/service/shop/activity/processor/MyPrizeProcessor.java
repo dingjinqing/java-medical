@@ -104,7 +104,13 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
                 logger().info("大抽奖");
                 collect.add(ACTIVITY_TYPE_LOTTERY_PRESENT);
                 break;
-            case PRIZE_SOURCE:
+            case PRIZE_SOURCE_FRIEND_POWER:
+                logger().info("好友助力");
+                collect.add(ACTIVITY_TYPE_PROMOTE_ORDER);
+                break;
+            case PRIZE_SOURCE_EVALUATION:
+                logger().info("测评");
+                collect.add(ACTIVITY_TYPE_GIFT);
                 break;
             default:
         }
