@@ -27,9 +27,13 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options)
+    console.log(options, '腾飞测试++++++++++++++++++')
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      cardId = scene[0].split('=')[1]
+    }
     var card_list = options.card_list;
     this.setData({ cardId: cardId })
     this.requestCardInfo(cardNo, cardId, card_list)
