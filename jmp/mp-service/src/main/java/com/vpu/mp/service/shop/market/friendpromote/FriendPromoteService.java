@@ -177,24 +177,24 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return PageResult<FriendPromoteReceiveVo>
 	 */
 	public PageResult<FriendPromoteReceiveVo> receiveDetail(FriendPromoteReceiveParam param) {
-		/* 设置查询条件 */
+		// 设置查询条件
 		int rewardType = db().select(fpa.REWARD_TYPE).from(fpa).where(fpa.ID.eq(param.getPromoteId()))
 				.fetchOptionalInto(Integer.class).get();
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> sql;
-		/* 助力优惠券 */
+		// 助力优惠券
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> couponSql = db()
 				.select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, fpl.SUCCESS_TIME.as("recTime"),
 						fpl.ORDER_SN)
 				.from(USER, fpl).where(fpl.PROMOTE_ID.eq(param.getPromoteId())).and(USER.USER_ID.eq(fpl.USER_ID));
-		/* 助力商品 */
+		// 助力商品
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.PAY_TIME.as("recTime"),
 						fpl.ORDER_SN)
 				.from(fpl).leftJoin(USER).on(USER.USER_ID.eq(fpl.USER_ID)).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(fpl.ORDER_SN)).where(fpl.PROMOTE_ID.eq(param.getPromoteId()));
 
-		/* 判断是商品还是优惠券 */
+		// 判断是商品还是优惠券
 		sql = (rewardType == FriendPromoteReceiveParam.COUPON) ? couponSql : goodSql;
-		/* 查询条件 */
+		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
 		}
@@ -211,11 +211,11 @@ public class FriendPromoteService extends ShopBaseService {
 			if (param.getPromoteStatus()==FriendPromoteReceiveParam.RECEIVED) {
 				sql.and(fpl.PROMOTE_STATUS.equal((byte) param.getPromoteStatus()));
 			}else {
-				sql.and(fpl.PROMOTE_STATUS.notEqual((byte) FriendPromoteReceiveParam.RECEIVED));
+				sql.and(fpl.PROMOTE_STATUS.notEqual(FriendPromoteReceiveParam.RECEIVED));
 			}
 			
 		}
-		/* 整合分页信息 */
+		// 整合分页信息
 		PageResult<FriendPromoteReceiveVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteReceiveVo.class);
 
@@ -229,14 +229,14 @@ public class FriendPromoteService extends ShopBaseService {
 	 * @return PageResult<FriendPromoteLaunchVo>
 	 */
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
-		/* 设置查询条件 */
+		//设置查询条件
 		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db()
 				.select(fpl.ID, USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
 						DSL.count(fpd.USER_ID).as("promoteTimes"), DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId())).groupBy(fpl.ID,USER.USERNAME, USER.MOBILE,fpl.PROMOTE_STATUS);
-		/* 查询条件 */
+		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(USER.USERNAME.like(this.likeValue(param.getUsername())));
 		}
@@ -253,7 +253,7 @@ public class FriendPromoteService extends ShopBaseService {
 				sql.having(fpl.PROMOTE_STATUS.notEqual((byte) FriendPromoteReceiveParam.RECEIVED));
 			}
 		}
-		/* 整合分页信息 */
+		// 整合分页信息
 		PageResult<FriendPromoteLaunchVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteLaunchVo.class);
 

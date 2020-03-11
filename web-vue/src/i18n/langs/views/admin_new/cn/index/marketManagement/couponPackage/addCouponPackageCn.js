@@ -60,5 +60,16 @@ export const cn = {
   validStrategy2: '策略发放数量大于发券总量！',
   validaAccessCost: '请填写领取价格！',
   validVoucher: '请选择礼包内优惠券！',
-  validStrategy3: '请完整填写所选优惠券的发券数量和策略！'
+  validStrategy3: '请完整填写所选优惠券的发券数量和策略！',
+
+  validName: '请填写活动名称',
+  validStartTime: '请填写有效期开始时间',
+  validEndTime: '请填写有效期结束时间',
+  validTime: '请填写有效期时间',
+  validPackageName: '请填写礼包名称',
+  validPerNum: '请填写每人限领礼包数量',
+  validNum: '请填写礼包发放数量',
+  validRules: '请填写活动规则',
+  validPrice: '请填写礼包价格',
+  validCoupon: '请选择优惠券'
 }

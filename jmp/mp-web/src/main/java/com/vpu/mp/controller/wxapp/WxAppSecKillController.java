@@ -20,6 +20,6 @@ public class WxAppSecKillController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/seckill/check")
     public JsonResult checkSeckillProductStock(@RequestBody @Validated SecKillProductParam param) {
-        return success(shop().seckill.canApplySecKill(param.getSkId(),param.getProductId(),wxAppAuth.user().getUserId()));
+        return success(shop().seckill.canApplySecKill(param,wxAppAuth.user().getUserId()));
     }
 }

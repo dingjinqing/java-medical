@@ -59,5 +59,16 @@ export const en = {
   validStrategy2: 'The number of policy issues is greater than the total amount of bonds issued!',
   validaAccessCost: 'Please fill in the collection price!',
   validVoucher: 'Please choose coupons in the package!',
-  validStrategy3: 'Please complete the number and strategy of the selected coupons!'
+  validStrategy3: 'Please complete the number and strategy of the selected coupons!',
+
+  validName: 'Please fill in the event name',
+  validStartTime: 'Please fill in the start time of the validity period',
+  validEndTime: 'Please fill in the end of the validity period',
+  validTime: 'Please fill in the validity period',
+  validPackageName: 'Please fill in the package name',
+  validPerNum: 'Please fill in the number of gift packages per person',
+  validNum: 'Please fill in the number of gift packages issued',
+  validRules: 'Please fill in the event rules',
+  validPrice: 'Please fill in the package price',
+  validCoupon: 'Please select a coupon'
 }

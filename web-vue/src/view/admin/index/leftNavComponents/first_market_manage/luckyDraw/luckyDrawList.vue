@@ -1,5 +1,8 @@
 <template>
-  <div class="content" v-loading="loading">
+  <div
+    class="content"
+    v-loading="loading"
+  >
     <div class="main">
       <el-tabs
         v-model="tabSwitch"
@@ -107,7 +110,8 @@
               >
                 <span
                   class="el-icon-share"
-                  @click="shareActivity(scope.row.id)"></span>
+                  @click="shareActivity(scope.row.id)"
+                ></span>
               </el-tooltip>
               <!-- 停用 -->
               <el-tooltip
@@ -187,10 +191,18 @@
       <el-image
         :src="shareInfo.imageUrl"
         style="width:160px;height:160px;margin:0 auto;"
-        fit="fill"></el-image>
-      <a class="share-dialog-a" :href="shareInfo.iamgeUrl" download>下载二维码</a>
+        fit="fill"
+      ></el-image>
+      <a
+        class="share-dialog-a"
+        :href="shareInfo.imageUrl"
+        download
+      >下载二维码</a>
       <div class="share-dialog-footer">
-        <el-input size="small" v-model="shareInfo.pagePath"></el-input>
+        <el-input
+          size="small"
+          v-model="shareInfo.pagePath"
+        ></el-input>
         <el-button
           type="text"
           style="margin-left:10px;"
@@ -528,7 +540,7 @@ export default {
     background: #fff;
   }
   .el-dialog__body {
-    padding-top:10px;
+    padding-top: 10px;
     padding-bottom: 10px;
   }
   .el-image {
@@ -549,5 +561,4 @@ export default {
     display: flex;
   }
 }
-
 </style>
