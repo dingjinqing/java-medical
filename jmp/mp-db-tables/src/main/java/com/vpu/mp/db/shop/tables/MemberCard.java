@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 1681206726;
+    private static final long serialVersionUID = 239792925;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -327,6 +327,31 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      * The column <code>jmini_shop_489258.b2c_member_card.freeship_num</code>. 周期内包邮次数
      */
     public final TableField<MemberCardRecord, Integer> FREESHIP_NUM = createField("freeship_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "周期内包邮次数");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.renew_member_card</code>. 0:不可续费，1:可续费
+     */
+    public final TableField<MemberCardRecord, Byte> RENEW_MEMBER_CARD = createField("renew_member_card", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:不可续费，1:可续费");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.renew_type</code>. 0:现金 1：积分
+     */
+    public final TableField<MemberCardRecord, Byte> RENEW_TYPE = createField("renew_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:现金 1：积分");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.renew_num</code>. 现金或积分数量
+     */
+    public final TableField<MemberCardRecord, BigDecimal> RENEW_NUM = createField("renew_num", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "现金或积分数量");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.renew_time</code>. 续费时间
+     */
+    public final TableField<MemberCardRecord, Integer> RENEW_TIME = createField("renew_time", org.jooq.impl.SQLDataType.INTEGER, this, "续费时间");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.renew_date_type</code>. 0:日，1:周 2: 月
+     */
+    public final TableField<MemberCardRecord, Byte> RENEW_DATE_TYPE = createField("renew_date_type", org.jooq.impl.SQLDataType.TINYINT, this, "0:日，1:周 2: 月");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference

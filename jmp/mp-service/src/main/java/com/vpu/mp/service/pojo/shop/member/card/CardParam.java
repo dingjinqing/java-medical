@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -187,4 +188,9 @@ public class CardParam {
 	 * 	卡的自定义权益信息
 	 */
 	private CardCustomRights customRights;
+	/**
+	 * 续费功能
+	 */
+	private CardRenew cardRenew;
+	
 }

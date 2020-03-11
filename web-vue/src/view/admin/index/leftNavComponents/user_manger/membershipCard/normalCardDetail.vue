@@ -46,6 +46,13 @@
             @input="initCardEffectTimeData"
             ref="cardEffectTime"
           ></cardEffectTime>
+          <!-- 续费开发 -->
+          <cardRenewCfg
+            v-bind.sync="cardRenew"
+            ref="cardRenew"
+          >
+
+          </cardRenewCfg>
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
@@ -122,6 +129,9 @@ export default {
     ),
     cardFreeshipCfg: () => import(
       './subcomponents/cardFreeshipCfg'
+    ),
+    cardRenewCfg: () => import(
+      './subcomponents/cardRenewCfg'
     )
   },
   computed: {
@@ -258,6 +268,13 @@ export default {
         num: null,
         type: 3,
         valid: false
+      },
+      cardRenew: {
+        renewMemberCard: 0,
+        renewType: 0,
+        renewNum: null,
+        renewTime: null,
+        renewDateType: null
       }
     }
   },
@@ -378,8 +395,15 @@ export default {
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
 
       // 包邮信息
-      this.freeship = data.freeship
+      if (data.freeship) {
+        this.freeship = data.freeship
+      }
       this.freeship.valid = false
+
+      // 续费信息
+      if (data.cardRenew) {
+        this.cardRenew = data.cardRenew
+      }
 
       // 使用须知
       this.cardUsageCfgData.desc = data.desc
@@ -573,7 +597,8 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
-        'freeship': this.freeship
+        'freeship': this.freeship,
+        'cardRenew': this.cardRenew
       }
       if (this.cardId) {
         // 更新会员卡

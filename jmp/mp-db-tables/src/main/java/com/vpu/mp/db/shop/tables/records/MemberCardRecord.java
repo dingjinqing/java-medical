@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -276729846;
+    private static final long serialVersionUID = -10512508;
 
     /**
      * Setter for <code>jmini_shop_489258.b2c_member_card.id</code>.
@@ -786,6 +786,76 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (Integer) get(53);
     }
 
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.renew_member_card</code>. 0:不可续费，1:可续费
+     */
+    public void setRenewMemberCard(Byte value) {
+        set(54, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.renew_member_card</code>. 0:不可续费，1:可续费
+     */
+    public Byte getRenewMemberCard() {
+        return (Byte) get(54);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.renew_type</code>. 0:现金 1：积分
+     */
+    public void setRenewType(Byte value) {
+        set(55, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.renew_type</code>. 0:现金 1：积分
+     */
+    public Byte getRenewType() {
+        return (Byte) get(55);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.renew_num</code>. 现金或积分数量
+     */
+    public void setRenewNum(BigDecimal value) {
+        set(56, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.renew_num</code>. 现金或积分数量
+     */
+    public BigDecimal getRenewNum() {
+        return (BigDecimal) get(56);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.renew_time</code>. 续费时间
+     */
+    public void setRenewTime(Integer value) {
+        set(57, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.renew_time</code>. 续费时间
+     */
+    public Integer getRenewTime() {
+        return (Integer) get(57);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.renew_date_type</code>. 0:日，1:周 2: 月
+     */
+    public void setRenewDateType(Byte value) {
+        set(58, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.renew_date_type</code>. 0:日，1:周 2: 月
+     */
+    public Byte getRenewDateType() {
+        return (Byte) get(58);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -812,7 +882,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -869,5 +939,10 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(51, customRights);
         set(52, freeshipLimit);
         set(53, freeshipNum);
+        set(54, renewMemberCard);
+        set(55, renewType);
+        set(56, renewNum);
+        set(57, renewTime);
+        set(58, renewDateType);
     }
 }
