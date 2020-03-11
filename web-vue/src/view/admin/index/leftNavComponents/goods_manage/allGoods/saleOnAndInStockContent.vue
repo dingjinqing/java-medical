@@ -392,7 +392,7 @@
       <div
         class="bottomTip"
         :style="isBottomClickIndex===2 || isBottomClickIndex===3?'text-align:left':''"
-      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${pageParams.totalRows}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
+      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${screenNum}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
       <div
         style="margin-top:10px"
         v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
@@ -417,7 +417,7 @@
 </template>
 <script>
 import { download } from '@/util/excelUtil.js'
-import { goodsExport } from '@/api/admin/goodsManage/allGoods/allGoods.js'
+import { goodsExport, getExportTotalRows } from '@/api/admin/goodsManage/allGoods/allGoods.js'
 import { getGoodsList, deleteGoods, batchOperateSpecPrdPriceNumber, batchOperateGoods, updateLabelByGoodsId, getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { getGoodsQrCode } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
@@ -460,7 +460,8 @@ export default {
       isBottomClickIndex: 0, // 底部按钮点击flag
       nowCheckAll: [], // 当前选中的总数
       batchSetupVisible: false, // 批量设置弹窗flag
-      exportRowEnd: null // 导出的商品数量
+      exportRowEnd: null, // 导出的商品数量
+      screenNum: '' // 筛选得数量
     }
   },
   computed: {
@@ -755,7 +756,7 @@ export default {
         console.log(this.pageParams.totalRows)
         this.pageParams.currentPage = page.currentPage
         this.pageParams.pageRows = page.pageRows
-        this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + page.totalRows + this.$t('allGoods.bottomOptions.commodity')
+        this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + this.screenNum + this.$t('allGoods.bottomOptions.commodity')
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
@@ -788,6 +789,15 @@ export default {
         })
         this.$set(this, 'goodsData', dataList)
       })
+      // 筛选导出
+      this.filterData.exportRowStart = 1
+      this.filterData.exportRowEnd = 5000
+      getExportTotalRows(this.filterData).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.screenNum = res.content
+        }
+      })
     },
     showExportDialog (filterData, filterDataString) {
       if (filterData !== undefined) {
@@ -802,7 +812,7 @@ export default {
       let flag = this.handleToJudgeIsChecked()
       if (!flag) {
         this.$message.error({
-          message: this.$t('allGoods.batchExportOptions.noItemSelected'),
+          message: this.$t('allGoods.bottomOptions.noItemSelected'),
           showClose: true
         })
         return
@@ -857,7 +867,8 @@ export default {
           break
         case 2:
           this.filterData.exportRowStart = 1
-          this.filterData.exportRowEnd = this.pageParams.totalRows
+          this.filterData.exportRowEnd = this.screenNum
+          console.log(this.filterData)
           goodsExport(this.filterData).then(res => {
             console.log(res)
             let fileName = localStorage.getItem('V-content-disposition')
@@ -870,7 +881,10 @@ export default {
           this.nowCheckAll.forEach((item, index) => {
             arr1.push(item.goodsId)
           })
-          goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr1 }).then(res => {
+          let params = {}
+          params = Object.assign(this.filterData, { goodsIds: arr1 })
+          this.filterData.exportRowEnd = arr1.length
+          goodsExport(params).then(res => {
             console.log(res)
             let fileName = localStorage.getItem('V-content-disposition')
             fileName = fileName.split(';')[1].split('=')[1]
