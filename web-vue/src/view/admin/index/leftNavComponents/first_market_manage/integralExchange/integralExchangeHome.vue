@@ -36,7 +36,7 @@
           name="sixth"
           v-if="showSix"
         >
-          <IntegrationAdd @backHome="backHome" />
+          <IntegralExchangeAdd @backHome="backHome" />
         </el-tab-pane>
       </el-tabs>
       <el-button
