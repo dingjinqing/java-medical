@@ -47,7 +47,10 @@
             ref="cardEffectTime"
           ></cardEffectTime>
           <!-- 续费开发 -->
-          <cardRenewCfg>
+          <cardRenewCfg
+            v-bind.sync="cardRenew"
+            ref="cardRenew"
+          >
 
           </cardRenewCfg>
           <cardStoreCfg
@@ -265,6 +268,13 @@ export default {
         num: null,
         type: 3,
         valid: false
+      },
+      cardRenew: {
+        renewMemberCard: 0,
+        renewType: 0,
+        renewNum: null,
+        renewTime: null,
+        renewDateType: null
       }
     }
   },
