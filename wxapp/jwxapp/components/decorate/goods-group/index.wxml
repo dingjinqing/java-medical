@@ -84,7 +84,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
@@ -160,7 +160,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
@@ -320,7 +320,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3 }}">
@@ -388,7 +388,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10 }}">
@@ -507,7 +507,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3 }}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5 }}">
