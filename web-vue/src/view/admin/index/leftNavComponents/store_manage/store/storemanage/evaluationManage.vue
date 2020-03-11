@@ -1,5 +1,5 @@
 <template>
-  <!-- 服务管理 -->
+  <!-- 评价管理 -->
   <div class="service_manage_page">
     <el-tabs
       v-model="activeName"
