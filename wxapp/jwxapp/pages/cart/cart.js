@@ -342,8 +342,9 @@ global.wxPage({
   // 跳转加价购商品列表
   to_purchase: function (e) {
     var activity_id = e.currentTarget.dataset.activity_id;
+    var store_id = e.currentTarget.dataset.store_id;
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activity_id,
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activity_id + '&store_id=' + store_id,
     })
   },
 

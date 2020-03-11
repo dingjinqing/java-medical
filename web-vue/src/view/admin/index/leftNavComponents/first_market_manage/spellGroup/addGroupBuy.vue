@@ -703,7 +703,7 @@ export default {
           { type: 'integer', required: true, message: this.$t('groupBuy.openLimitRequireRules'), trigger: 'blur' }
         ],
         validityDate: [
-          { validator: dateValid, trigger: 'blur' }
+          { required: true, validator: dateValid, trigger: 'blur' }
         ],
         'share.shareDoc': [{ validator: shareDocValid, trigger: 'blur' }],
         shareInfo: [{ required: true, validator: shareInfoValid, trigger: 'blur' }]

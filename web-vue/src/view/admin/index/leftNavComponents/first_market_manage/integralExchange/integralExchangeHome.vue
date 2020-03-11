@@ -31,13 +31,24 @@
         >
 
         </el-tab-pane>
+        <el-tab-pane
+          :label="sixTitle"
+          name="sixth"
+          v-if="showSix"
+        >
+          <IntegralExchangeAdd @backHome="backHome" />
+        </el-tab-pane>
       </el-tabs>
       <el-button
         type="primary"
         @click="addActivity"
+        v-if="!showSix"
       >添加瓜分积分活动</el-button>
     </div>
-    <div class="table_list">
+    <div
+      class="table_list"
+      v-if="!showSix"
+    >
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -53,84 +64,101 @@
 
         </el-table-column>
         <el-table-column
-          prop="content"
+          prop="goodsName"
           label="商品名称"
           align="center"
+          width="200"
         >
+          <template slot-scope="scope">
+            <div class="goodImge">
+              <div>
+                <img :src="$imageHost+'/'+scope.row.goodsImg">
+              </div>
+              <div class="name">
+                {{scope.row.goodsName}}
+              </div>
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="actDate"
           label="有效期"
           align="center"
+          width="200"
         >
           <template slot-scope="scope">
             {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column
+          prop="money"
           label="兑换现金(元)"
           align="center"
-          width="200"
         >
           <template slot-scope="scope">
-            <div>
-              <span>{{scope.row.totalIntegration}}</span>
-              <br>
-              <span>{{scope.row.leftIntegration}}</span>
-            </div>
+            {{scope.row.money?scope.row.money:'0'}}
           </template>
         </el-table-column>
 
         <el-table-column
-          prop="expire"
+          prop="score"
           label="兑换积分数"
           align="center"
-          :formatter="formatter"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.score?scope.row.score:'0'}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="inteUserSum"
+          prop="goodsNumber"
           label="商品库存"
           align="center"
           width="90"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.goodsNumber?scope.row.goodsNumber:'0'}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="inteGroupSum"
+          prop="stock"
           label="积分兑换库存"
           align="center"
           width="90"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.stock?scope.row.stock:'0'}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="useIntegration"
+          prop="number"
           label="已兑换数量"
           align="center"
           width="90"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.number?scope.row.number:'0'}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="useIntegration"
+          prop="userNumber"
           label="兑换用户数"
           align="center"
           width="90"
         >
-
+          <template slot-scope="scope">
+            {{scope.row.userNumber?scope.row.userNumber:'0'}}
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
           align="center"
+          width="170"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
                 content="编辑"
                 placement="top"
-                v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
                   class="el-icon-edit-outline iconSpan"
@@ -149,34 +177,24 @@
               <el-tooltip
                 content="停用"
                 placement="top"
-                v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
                   @click="puaseGroupIntegration(scope.row.id)"
                   class="el-icon-circle-close iconSpan"
                 ></span>
               </el-tooltip>
+
               <el-tooltip
-                content="启用"
-                placement="top"
-                v-if="scope.row.expire===4"
-              >
-                <span
-                  @click="upGroupIntegration(scope.row.id)"
-                  class="el-icon-circle-check iconSpan"
-                ></span>
-              </el-tooltip>
-              <el-tooltip
-                content="参与明细"
+                content="查看积分兑换订单"
                 placement="top"
               >
                 <span
                   @click="gotoDetail(scope.row.id)"
-                  class="el-icon-present iconSpan"
+                  class="iconfont icondingdan iconSpan"
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="成团明细"
+                content="获取新用户明细"
                 placement="top"
               >
                 <span
@@ -185,22 +203,12 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
-                placement="top"
-                v-if="scope.row.expire===4||scope.row.expire===3"
-              >
-                <span
-                  @click="delGroupIntegration(scope.row.id)"
-                  class="el-icon-delete iconSpan"
-                ></span>
-              </el-tooltip>
-              <el-tooltip
-                content="活动效果数据"
+                content="查看积分兑换用户"
                 placement="top"
               >
                 <span
-                  @click="gotoAnalysis(scope.row.id)"
-                  class="el-icon-data-line iconSpan"
+                  @click="gotoSuccess(scope.row.id)"
+                  class="iconfont iconmingxi1 iconSpan"
                 ></span>
               </el-tooltip>
             </div>
@@ -212,52 +220,69 @@
         @pagination="seacherGroupIntegrationList"
       />
     </div>
-    <shareDialog
-      :imgPath="shareImgPath"
-      :pagePath="sharePagePath"
-      :show="shareDialogShow"
-      @close="shareDialogShow=false"
-    />
   </div>
 </template>
 <script>
+import { integralExchangeList } from '@/api/admin/marketManage/integralExchange'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页组件
+    IntegralExchangeAdd: () => import('./integralExchangeAdd') // 添加积分兑换
+  },
   data () {
     return {
       activeName: 'second',
       shareImgPath: '',
       sharePagePath: '',
       shareDialogShow: false,
-      tableData: [],
+      tableData: [], // 表格数据
+      actState: 1, // 当前tap下标
       pageParams: {
+        currentPage: 1,
+        pageRows: 20
       },
+      showSix: false, // 是否显示第六个隐藏的tap
       isEditId: 0,
-      sixTitle: '添加瓜分积分活动'
+      sixTitle: '添加瓜分积分活动' // 隐藏tap文案
     }
   },
   mounted () {
     // 初始化数据
     this.langDefault()
-    let params = {
-      'index': 1
-    }
-    this.handleClick(params)
-    // this.seacherGroupIntegrationList()
+    // 初始化数据
+    this.handleToInit()
   },
   methods: {
-
+    // 初始化数据
+    handleToInit () {
+      let params = {
+        'actState': this.actState,
+        'page': {
+          'currentPage': this.pageParams.currentPage,
+          'pageRows': '20'
+        }
+      }
+      integralExchangeList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let data = res.content
+          this.tableData = data.dataList
+          this.pageParams = Object.assign(this.pageParams, data.page)
+        }
+      })
+    },
     handleClick (e) {
-      this.type = parseInt(e.index)
-      this.pageParams.currentPage = 1
-      if (this.activeName === 'sixth') {
+      if (this.activeName === 'sixth') { // 判断点的是否是第六个tap
         this.showSix = true
       } else {
         this.showSix = false
       }
-      this.seacherGroupIntegrationList()
+      this.pageParams.currentPage = 1
+      this.actState = Number(e.index)
+      this.handleToInit()
     },
     seacherGroupIntegrationList () {
-
+      this.handleToInit()
     },
     // 对过期状态值设置对应显示
     formatter (row, column) {
@@ -289,7 +314,8 @@ export default {
     },
     // 增加瓜分积分活动
     addActivity () {
-
+      this.showSix = true
+      this.activeName = 'sixth'
     },
     // 分享活动
     shareHandle (id) {
@@ -310,11 +336,21 @@ export default {
     },
     gotoAnalysis (id) {
 
+    },
+    backHome (data) {
+      console.log(data)
+      // if (data.flag === 6) {
+      //   this.showSix = false
+      //   this.activeName = 'first'
+      //   this.type = 0
+      //   this.seacherGroupIntegrationList()
+      // }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .content {
   padding: 10px;
   min-width: 100%;
@@ -399,5 +435,25 @@ export default {
   color: #5a8bff;
   cursor: pointer !important;
   margin-top: 5px;
+}
+.goodImge {
+  display: flex;
+  img {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border: 1px solid #ccc;
+  }
+  .name {
+    width: 115px;
+    height: 40px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    margin-left: 12px;
+    text-align: left;
+  }
 }
 </style>

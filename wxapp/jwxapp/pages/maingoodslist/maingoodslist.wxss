@@ -276,6 +276,10 @@ page{
   color: #999;
   position: absolute;
   top: 80rpx;
+  width: 100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .eg_right .price_info{
   position: absolute;

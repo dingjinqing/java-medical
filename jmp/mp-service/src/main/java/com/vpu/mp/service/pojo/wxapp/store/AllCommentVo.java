@@ -30,8 +30,9 @@ public class AllCommentVo {
         private Byte anonymousflag;
         private String commNote;
         private String commImg;
+        private List<String> commImgList;
         private String username;
-        private String user_avatar;
+        private String userAvatar;
         private Timestamp createTime;
     }
 }

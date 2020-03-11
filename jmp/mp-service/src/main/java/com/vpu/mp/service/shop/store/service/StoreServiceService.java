@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
@@ -132,7 +133,12 @@ public class StoreServiceService extends ShopBaseService {
      * @return the list
      */
     public List<StoreServiceListQueryVo> getAllStoreServiceByStoreId(Integer storeId) {
-        return db().selectFrom(STORE_SERVICE).where(STORE_SERVICE.STORE_ID.eq(storeId)).and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(StoreServiceListQueryVo.class);
+        return db().selectFrom(STORE_SERVICE).
+            where(STORE_SERVICE.STORE_ID.eq(storeId)).
+            and(STORE_SERVICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+            and(STORE_SERVICE.END_DATE.gt(DateUtil.yyyyMmDdDate(DateUtil.getLocalDate()))).
+            and(STORE_SERVICE.SERVICE_SHELF.eq(BYTE_ONE)).
+            fetchInto(StoreServiceListQueryVo.class);
     }
 
     /**

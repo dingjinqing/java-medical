@@ -105,7 +105,12 @@ public enum MpTemplateConfig {
         "OPENTM202314085",
         "订单确认收货通知",
         "{{first.DATA}}订单号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}下单时间：{{keyword3.DATA}}发货时间：{{keyword4.DATA}}确认收货时间：{{keyword5.DATA}}{{remark.DATA}}"
-    );
+    ),
+    GROUP_FAIL (
+            "OPENTM401113750",
+            "拼团失败通知",
+            "{{first.DATA}}拼团商品：{{keyword1.DATA}}商品金额：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}{{remark.DATA}}"
+        );
 	/**
 	 * 模板编号
 	 */

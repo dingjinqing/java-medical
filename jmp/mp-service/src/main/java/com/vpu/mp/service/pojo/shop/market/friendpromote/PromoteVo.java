@@ -19,6 +19,4 @@ public class PromoteVo {
     private Byte canShare;
     /** 不能助力返回信息 */
     private Byte cantPromote;
-    /** 奖品记录id */
-    private AtomicReference<Integer> rewardRecordId;
 }

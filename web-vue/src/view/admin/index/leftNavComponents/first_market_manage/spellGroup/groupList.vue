@@ -69,6 +69,7 @@
           prop="vaildDate"
           :label="$t('groupBuy.validDate')"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
@@ -458,7 +459,8 @@ export default {
     },
     refundFailureOrder (id) {
       console.log('跳转到拼团退款失败订单 id = ', id)
-      this.$router.push({ path: `/admin/home/main/spellGroup/refundFailureOrder/2/${id}` })
+      // this.$router.push({ path: `/admin/home/main/spellGroup/refundFailureOrder/2/${id}`, query: { id: id } })
+      this.$router.push({ path: `/admin/home/main/orders/pinGroup/fail`, query: { id: id, pinStatus: 2 } })
     },
     activityEffectData (id) {
       console.log('跳转到活动效果数据页面 id = ', id)
@@ -473,7 +475,6 @@ export default {
       }
       shareActivity(obj).then(res => {
         if (res.error === 0) {
-          console.log(res, 'img-res')
           this.shareImg = res.content.imageUrl
           this.sharePath = res.content.pagePath
           this.showShareDialog = !this.showShareDialog

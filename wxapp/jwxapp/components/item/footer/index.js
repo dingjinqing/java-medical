@@ -360,7 +360,7 @@ global.wxComponent({
           }
         }
       } else if (this.data.position === 'spec'){
-        let position = this.data.activity && [1,3,5,8,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
+        let position = this.data.activity && [1,3,4,5,8,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
         buttonData['buttonInfo'] = this.data.triggerButton ? position[this.data.triggerButton] : position['default']
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`

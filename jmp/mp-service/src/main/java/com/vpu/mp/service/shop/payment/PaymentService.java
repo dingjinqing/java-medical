@@ -1,7 +1,14 @@
 package com.vpu.mp.service.shop.payment;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.PaymentRecord;
+import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import com.vpu.mp.db.shop.tables.records.StoreOrderRecord;
+import com.vpu.mp.db.shop.tables.records.SubOrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -28,7 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Payment.PAYMENT;
@@ -52,19 +63,20 @@ public class PaymentService extends ShopBaseService {
 
     @Autowired
     public PayService pay;
-    
+
     @Autowired
     private OrderGoodsService orderGoodsService;
 
     @Autowired
     private SubOrderService subOrderService;
 
+
     @Autowired
     private InsteadPayService insteadPayService;
 
-    /**
-     * 营销活动processorFactory
-     */
+	/**
+	 * 营销活动processorFactory
+	 */
 	@Autowired
 	private OrderCreateMpProcessorFactory marketProcessorFactory;
 
@@ -207,15 +219,16 @@ public class PaymentService extends ShopBaseService {
 				if (orderInfo.getOrderPayWay() == OrderConstant.PAY_WAY_DEPOSIT) {
 					// 定金尾款支付方式时，先标记定金已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FRONT);
+                    if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+                        //修改相应预售商品数量销量库存
+                        marketProcessorFactory.processUpdateStock(pay.createOrderBeforeParam(orderInfo), orderInfo);
+                    }
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
                     orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);
 					//状态变为待发货
 					pay.toWaitDeliver(orderInfo, paymentRecord);
 				}
-				/**
-				 * 修改相应预售商品数量销量库存 TODO: preSale.preSaleProduct.updateNumber(orderInfo, -1);
-				 */
 			} else {
 				// 定金已支付，标记为尾款已支付
                 orderInfo.setBkOrderPaid(OrderConstant.BK_PAY_FINISH);

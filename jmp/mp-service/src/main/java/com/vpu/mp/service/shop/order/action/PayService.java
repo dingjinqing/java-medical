@@ -283,10 +283,11 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
         //订单商品
         Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId());
-        //库存销量
-        atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
+        if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+            //库存销量
+            atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
+        }
         //TODO 异常订单处理等等
-
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo);
         //模板消息
@@ -315,24 +316,31 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
             return;
         }
+        OrderBeforeParam orderBeforeParam = createOrderBeforeParam(orderInfo);
+        marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
+        if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+            marketProcessorFactory.processUpdateStock(orderBeforeParam, orderInfo);
+        }
+    }
+
+    public OrderBeforeParam createOrderBeforeParam(OrderInfoRecord orderInfo) {
         String[] strings = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
         List<Byte> activityTypeList = Arrays.stream(strings).map(Byte::valueOf).collect(Collectors.toList());
-        Byte activityType = OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY.stream().filter(activityTypeList::contains).findFirst().get();
+        Byte activityType =  activityTypeList.stream().filter(OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY::contains).findFirst().get();
         OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
         orderBeforeParam.setActivityType(activityType);
         orderBeforeParam.setActivityId(orderInfo.getActivityId());
         orderBeforeParam.setDate(orderInfo.getCreateTime());
         orderBeforeParam.setGoods(new ArrayList<>());
         List<GoodsRecord> goodsList = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
-        Map<Integer, OrderBeforeParam.Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, OrderBeforeParam.Goods.class);
+        Map<Integer, Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, Goods.class);
         goodsList.forEach(goods->{
-            OrderBeforeParam.Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
+            Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
             goodsParam.setGoodsInfo(goods);
             orderBeforeParam.getGoods().add(goodsParam);
         });
-        marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
+        return orderBeforeParam;
     }
-
 
 
 }
