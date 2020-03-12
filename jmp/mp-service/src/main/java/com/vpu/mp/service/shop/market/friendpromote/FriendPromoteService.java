@@ -644,6 +644,8 @@ public class FriendPromoteService extends ShopBaseService {
         //设置奖励倒计时
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
+        //设置授权相关
+        promoteInfo.setPromoteCondition(record.getPromoteCondition());
 
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){

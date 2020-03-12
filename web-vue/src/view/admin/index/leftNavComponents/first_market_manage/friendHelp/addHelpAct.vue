@@ -324,6 +324,24 @@
             >{{$t('promoteList.authorizeYes')}}</el-radio>
             <span class="gray">{{$t('promoteList.promoteConditionText')}}</span>
           </el-form-item>
+<!--  助力次数限制-->
+          <el-form-item
+            label="助力次数限制"
+            prop="promoteTimesPerDay"
+          >
+            <div style="display:flex">
+              <div >单个用户每天最多可帮忙助力</div>
+              <el-input
+                size="small"
+                style="margin-right: 10px"
+                v-model="form.promoteTimesPerDay"
+              ></el-input>
+              <div >{{$t('promoteList.time')}}</div>
+              <div
+                style="margin-left:12px"
+                class="gray">默认为0，表示不限制</div>
+            </div>
+          </el-form-item>
 
           <el-form-item
             v-if="form.rewardType == 1"
@@ -670,8 +688,8 @@ export default {
           rewardType: '',
           market_price: '',
           market_store: ''
-        }]
-
+        }],
+        promoteTimesPerDay: ''
       },
       // 优惠券
       coupon_msg: [],
@@ -780,6 +798,7 @@ export default {
         this.form.customShareWord = res.content[0].customShareWord
         this.form.shareImgType = res.content[0].shareImgType.toString()
         this.srcList.src = res.content[0].customImgPath
+        this.form.promoteTimesPerDay = res.content[0].promoteTimesPerDay
         if (this.form.rewardType === '0') {
           this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
           console.log(this.form.rewardSet.market_store)
@@ -842,7 +861,7 @@ export default {
       }
       if (this.form.rewardType === '2') {
         this.form.rewardSet.market_store = this.coupon_info[0].send_num
-        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+        // this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
@@ -852,7 +871,7 @@ export default {
         'startTime': this.form.startTime,
         'endTime': this.form.endTime,
         'rewardType': this.form.rewardType,
-        'rewardContent': this.form.rewardContent,
+        'fpRewardContent': this.form.rewardSet,
         'rewardDuration': this.form.rewardDuration,
         'rewardDurationUnit': this.form.rewardDurationUnitSelect,
         'promoteType': this.form.promoteType,
@@ -870,7 +889,8 @@ export default {
         'activityShareType': this.form.activityShareType,
         'customShareWord': this.form.customShareWord,
         'shareImgType': this.form.shareImgType,
-        'customImgPath': this.srcList.src
+        'customImgPath': this.srcList.src,
+        'promoteTimesPerDay': this.form.promoteTimesPerDay
       }
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
