@@ -18,7 +18,7 @@ module.exports = {
   "inviteFriends": "邀请好友，支付参团",
   "fullShipping": "满员发货，不满自动退款",
   "needPhone": "您需要绑定手机号才可以去购买商品",
-  "purchase": "购买数量：(最少",
+  "purchase": "(最少",
   "piece": "件",
   "most": "最多",
   "oneTouch": "一键参团",
