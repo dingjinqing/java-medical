@@ -3,6 +3,7 @@ var order = require("./pages/order.js")
 var checkout = require("./pages/checkout.js")
 var comment = require('./page1/commentCn.js')
 var store = require('./pages/store.js')
+var bargain = require('./pages/bargain.js') // 砍价
 var afterSale = require('./page1/afterSale.js') // 售后中心
 var fight = require('./page1/fight.js') // 拼团
 var reserve = require('./page1/reserve.js') // 预约
@@ -55,7 +56,8 @@ var zh_CN = {
     "order": order,
     "checkout": checkout,
     "item":item,
-    "coupon": coupon
+    "coupon": coupon,
+    "bargain": bargain
   },
   "page1": {
     "comment": comment,
