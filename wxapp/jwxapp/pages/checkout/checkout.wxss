@@ -119,11 +119,11 @@
   align-items: center;
   height: 80rpx;
 }
-.pay_type_item:first-of-type{
-  justify-content: flex-start;
-}
 .pay_type_item:last-of-type{
   justify-content: flex-end;
+}
+.pay_type_item:first-of-type{
+  justify-content: flex-start;
 }
 .pay_type_item > .iconfont{
   font-size: 40rpx;

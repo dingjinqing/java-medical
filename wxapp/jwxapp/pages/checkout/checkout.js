@@ -10,7 +10,7 @@ global.wxPage({
     cardBalanceStatus: 0, //使用会员卡余额状态
     couponArray: null, //优惠券列表
     defaultCouponIndex: null, //默认选择优惠券
-    payType: [0, 1],
+    payType: [0,1],
     choosePayType: 0, //所选支付方式
     showCardBalanceDialog: false, //是否显示会员卡余额弹框
     showBalanceDialog: false, //是否显示余额弹框
@@ -76,7 +76,6 @@ global.wxPage({
     if (preSaleInfo) {
       preSaleInfo = JSON.parse(preSaleInfo)
     }
-    console.log(preSaleInfo)
     this.setData({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
@@ -84,7 +83,6 @@ global.wxPage({
       'params.activityId': activityId,
       'params.recordId': recordId
     })
-    console.log(this.data.params.activityType)
     if (options.groupid) {
       this.setData({
         'params.groupId': options.groupid
@@ -101,6 +99,9 @@ global.wxPage({
           this.setData({
             orderInfo
           })
+          if(orderInfo.activityType === 4){ //积分兑换数据
+            this.setScoreRedeemData(orderInfo)
+          }
           this.getCouponData(orderInfo)
           this.defaultInput(orderInfo)
           this.getPayType(orderInfo)
@@ -122,6 +123,18 @@ global.wxPage({
     let payType = this.data.payType
     if (!payType.includes(2) && orderinfo.insteadPayCfg && orderinfo.insteadPayCfg.status && (orderinfo.insteadPayCfg.singlePay || orderinfo.insteadPayCfg.multiplePay)) {
       payType.push(2)
+    }
+    if(this.data.scoreRedeemData && this.data.scoreRedeemData.score){
+      payType = [3]
+      this.setData({
+        choosePayType : 3
+      })
+    }
+    if(this.data.scoreRedeemData && this.data.scoreRedeemData.money){
+      payType = [0]
+      this.setData({
+        choosePayType : 0
+      })
     }
     this.setData({
       payType
@@ -610,7 +623,7 @@ global.wxPage({
         cardBalance,
         scoreDiscount,
         deliverType: this.data.params.deliverType,
-        orderPayWay: this.data.choosePayType,
+        orderPayWay: this.data.choosePayType === 4 ? 0 : this.data.choosePayType,
         couponSn,
         message: this.data.message,
         memberCardNo,
@@ -644,10 +657,11 @@ global.wxPage({
                     if(!groupInfo) return
                     util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
                   } else {
+                    let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {useScore:this.data.scoreRedeemData.score} : {}
                     util.jumpLink(
                       `pages1/payment/payment${this.getUrlParams({
                         orderSn,
-                        useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                        useInfo: JSON.stringify({ ...this.data.usePayInfo,...scoreRedeemData })
                       })}`,
                       'redirectTo'
                     )
@@ -666,10 +680,11 @@ global.wxPage({
                 if(!groupInfo) return
                 util.jumpLink(`pages1/pinlotteryinfo/pinlotteryinfo${this.getUrlParams({group_draw_id:groupInfo.activityId,group_id:groupInfo.groupId,goods_id:goods[0].goodsId})}`,'redirectTo')
               } else {
+                let scoreRedeemData = this.data.orderInfo.activityType === 4 && this.data.scoreRedeemData.score > 0 ? {useScore:this.data.scoreRedeemData.score} : {}
                 util.jumpLink(
                   `pages1/payment/payment${this.getUrlParams({
                     orderSn,
-                    useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                    useInfo: JSON.stringify({ ...this.data.usePayInfo, ...scoreRedeemData})
                   })}`,
                   'redirectTo'
                 )
@@ -725,6 +740,16 @@ global.wxPage({
         orderSn
       })
     })
+  },
+  // 积分兑换数据
+  setScoreRedeemData(orderInfo){
+   let scoreRedeemData = orderInfo.orderGoods.reduce((defaultData,item,index)=>{
+      if(item.goodsScore) defaultData.score += item.goodsScore * item.goodsNumber
+      if(item.discountedGoodsPrice) defaultData.money += item.discountedGoodsPrice * item.goodsNumber
+      return defaultData
+    },{score:0,money:0})
+    this.setData({scoreRedeemData})
+    console.log(this.data.scoreRedeemData)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
