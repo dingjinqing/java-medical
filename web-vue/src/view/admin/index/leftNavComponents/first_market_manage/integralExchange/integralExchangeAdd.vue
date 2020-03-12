@@ -73,10 +73,16 @@
             <span
               class="addGoods"
               @click="handleToChooseGoods()"
+              v-if="!checkGoodsName"
             >
               + 选择商品
             </span>
-
+            <span v-if="checkGoodsName">{{checkGoodsName}}</span>
+            <span
+              v-if="checkGoodsName"
+              @click="handleToChooseGoods()"
+              class="modify"
+            >修改</span>
           </div>
         </el-form-item>
         <el-form-item
@@ -128,6 +134,23 @@
           label="商品兑换价格"
           align="center"
         >
+          <template slot-scope="scope">
+            <div class="scoreDiv">
+              <el-input
+                size="small"
+                v-model="scope.row.exchange.money"
+                onkeyup="value=value.replace(/[^\d.]/g,'')"
+              ></el-input>
+              <span>元 +</span>
+              <el-input
+                size="small"
+                v-model="scope.row.exchange.score"
+                onkeyup="value=value.replace(/[^\d.]/g,'')"
+              ></el-input>
+              <span>积分</span>
+            </div>
+
+          </template>
         </el-table-column>
         <el-table-column
           prop="goodsStock"
@@ -140,6 +163,13 @@
           label="兑换商品库存"
           align="center"
         >
+          <template slot-scope="scope">
+            <el-input
+              size="small"
+              v-model="scope.row.stock"
+              onkeyup="value=value.replace(/[^\d.]/g,'')"
+            ></el-input>
+          </template>
         </el-table-column>
       </el-table>
       <div class="showMore">
@@ -240,10 +270,16 @@
               v-if="sharedGraph==='2'&&formBottom.style==='2'"
             >
               <div
+                @click="handleToCheckImg()"
                 class="img"
+                :class="checkImgData?'holdImgTip':''"
                 :style="`background:url(${$imageHost}/image/admin/btn_add.png) no-repeat`"
               >
-
+                <img
+                  v-if="checkImgData"
+                  :src="checkImgData.imgUrl"
+                >
+                <span>重新选择</span>
               </div>
               <span>建议尺寸: 800*800像素</span>
             </div>
@@ -270,18 +306,29 @@
       :chooseGoodsBack="chooseGoodsBack"
       @resultGoodsRow="resultGoodsRow"
     />
+    <!--选择图片弹窗-->
+    <ImageDalog
+      pageIndex="pictureSpace"
+      :tuneUp="imageTuneUp"
+      :imageSize="[800,800]"
+      @handleSelectImg="handleSelectImg"
+    />
   </div>
 </template>
 <script>
 import { goodsSpecDetail } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
-    ChoosingGoods: () => import('@/components/admin/choosingGoods') // 选择商品弹窗
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
+    ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
   },
   data () {
     return {
+      checkImgData: '', // 选中的图片数据
+      imageTuneUp: false, // 选择图片弹窗flag
       chooseFlag: false, // 选择商品弹窗flag
       chooseGoodsBack: [], // 选择商品回显
+      checkGoodsName: '', // 选中的商品名称
       sharedGraph: '1', // 分享图radio值
       copywriting: '', // 文案
       hoverFlag: -1, // 查看示例和下载海报点击flag
@@ -290,16 +337,6 @@ export default {
       batchFlag: -1, // 点击批量设置子项
       showMoreFlag: false, // 展开flag
       tableData: [// 积分兑换设置表格数据
-        {
-          goodsName: '腾飞测试',
-          originPrice: '100',
-          exchange: {
-            'money': '100',
-            'score': '50'
-          },
-          goodsStock: '20',
-          stock: '2'
-        },
         {
           goodsName: '批量设置：',
           originPrice: '1',
@@ -391,9 +428,42 @@ export default {
     },
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
+      this.checkGoodsName = res.goodsName
       goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          let arr = []
+          res.content.forEach((item, index) => {
+            let obj = {
+              goodsName: item.prdDesc,
+              originPrice: item.prdPrice,
+              exchange: {
+                'money': '',
+                'score': ''
+              },
+              goodsStock: item.prdNumber,
+              stock: ''
+            }
+            arr.push(obj)
+          })
+          let lastObj = {
+            goodsName: '批量设置：',
+            originPrice: '1',
+            exchange: '',
+            goodsStock: '',
+            stock: ''
+          }
+          arr.push(lastObj)
+          this.tableData = arr
+        }
       })
+    },
+    handleToCheckImg () { // 调起图片让弹窗
+      this.imageTuneUp = !this.imageTuneUp
+    },
+    handleSelectImg (res) { // 选择图片弹窗返回数据
+      console.log(res)
+      this.checkImgData = res
     }
   }
 }
@@ -474,6 +544,18 @@ export default {
       cursor: pointer;
     }
   }
+  .scoreDiv {
+    display: flex;
+    /deep/ .el-input {
+      width: 60px;
+    }
+    span {
+      display: flex !important;
+      align-items: center;
+      display: inline-block;
+      margin: 0 5px;
+    }
+  }
   .hiddleShare {
     padding-left: 100px;
     .top {
@@ -496,6 +578,7 @@ export default {
             width: 240px;
             height: 355.74px;
             border: 1px solid #eee;
+            width: 100%;
           }
         }
         .hover_show:before {
@@ -522,6 +605,10 @@ export default {
   .cumtom {
     display: flex;
   }
+  .modify {
+    cursor: pointer;
+    color: #5a8bff;
+  }
   .addImg {
     padding-left: 58px;
     display: flex;
@@ -529,6 +616,32 @@ export default {
       width: 70px;
       height: 70px;
       cursor: pointer;
+      position: relative;
+      span {
+        display: none;
+        text-align: center;
+        width: 100%;
+        line-height: 18px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 0;
+      }
+      img {
+        width: 100%;
+      }
+    }
+    .holdImgTip {
+      &:hover {
+        span {
+          display: block;
+          width: 70px;
+        }
+      }
     }
     span {
       display: flex;
