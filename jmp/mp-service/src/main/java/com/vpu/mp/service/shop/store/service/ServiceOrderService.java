@@ -36,6 +36,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
@@ -187,11 +188,11 @@ public class ServiceOrderService extends ShopBaseService {
         select = this.buildOptions(select, param);
         select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
 
-        if(param.getOrderByColumn() == 1 && param.getOrderByDirection() == 1){
+        if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
             select.orderBy(SERVICE_ORDER.SERVICE_DATE.asc(),SERVICE_ORDER.SERVICE_PERIOD.asc());
-        }else if(param.getOrderByColumn() == 1 && param.getOrderByDirection() == 0){
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.DESC)){
             select.orderBy(SERVICE_ORDER.SERVICE_DATE.desc(),SERVICE_ORDER.SERVICE_PERIOD.desc());
-        }else if(param.getOrderByColumn() == 0 && param.getOrderByDirection() == 1){
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.CREATE_TIME) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
             select.orderBy(SERVICE_ORDER.CREATE_TIME.asc());
         }else{
             select.orderBy(SERVICE_ORDER.CREATE_TIME.desc());
