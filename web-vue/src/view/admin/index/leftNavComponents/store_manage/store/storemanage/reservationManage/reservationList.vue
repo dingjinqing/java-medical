@@ -698,8 +698,16 @@ export default {
     }
   },
   created () {
-    this.queryParams.storeId = this.$route.query.id
-    this.storeId = this.$route.query.id
+    console.log(this.$route)
+    if (this.$route.query.id) {
+      this.queryParams.storeId = this.$route.query.id
+      this.storeId = this.$route.query.id
+      localStorage.setItem('V-reservationListId', this.$route.query.id)
+    } else {
+      this.queryParams.storeId = localStorage.getItem('V-reservationListId')
+      this.storeId = localStorage.getItem('V-reservationListId')
+    }
+
     this.langDefault()
     this.initDataList()
     this.getStoreService()

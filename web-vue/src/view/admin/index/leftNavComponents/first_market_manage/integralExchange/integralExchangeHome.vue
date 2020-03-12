@@ -43,7 +43,7 @@
         type="primary"
         @click="addActivity"
         v-if="!showSix"
-      >添加瓜分积分活动</el-button>
+      >添加积分兑换活动</el-button>
     </div>
     <div
       class="table_list"
@@ -243,7 +243,7 @@ export default {
       },
       showSix: false, // 是否显示第六个隐藏的tap
       isEditId: 0,
-      sixTitle: '添加瓜分积分活动' // 隐藏tap文案
+      sixTitle: '添加积分兑换活动' // 隐藏tap文案
     }
   },
   mounted () {

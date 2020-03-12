@@ -404,8 +404,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
 		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
 		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
-		Result<Record> fetch = db()
-				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
+		Result<Record> fetch = db().select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
@@ -500,9 +499,9 @@ public class FriendPromoteService extends ShopBaseService {
             CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
             promoteInfo.setCanLaunch(canLaunch.getCode());
             //助力完成或者失效装修页进入后
-            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
-                promoteInfo.setPromoteStatus((byte)-1);
-            }
+//            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
+//                promoteInfo.setPromoteStatus((byte)-1);
+//            }
             //好友助力榜
             if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
                 promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
@@ -570,8 +569,28 @@ public class FriendPromoteService extends ShopBaseService {
         if (launchInfo!=null){
             promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
         }
-
+        if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
+            //更新状态
+            upPromoteInfo(TWO,launchInfo.getId());
+            String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
+            if (orderSn!=null){
+                promoteInfo.setPromoteStatus((byte)2);
+            }
+        }
         return promoteInfo;
+    }
+
+    /**
+     * 得到奖品订单
+     * @param id 奖品记录id
+     * @return 订单
+     */
+    public String getRewardOrderSn(Integer id){
+        String orderSn = db().select(PRIZE_RECORD.ORDER_SN)
+            .from(PRIZE_RECORD)
+            .where(PRIZE_RECORD.ID.eq(id))
+            .fetchOneInto(String.class);
+        return orderSn;
     }
 
     /**
@@ -653,7 +672,7 @@ public class FriendPromoteService extends ShopBaseService {
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
-            goodsInfo.setMarketPrice(record.getRewardType()==ZERO?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
@@ -1391,9 +1410,10 @@ public class FriendPromoteService extends ShopBaseService {
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
                             //计算奖励过期时间
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-                            Integer day = durationSec.intValue()/(24*60*60);
+                            Long endSec = DateUtil.getLocalDateTime().getTime()+durationSec*1000;
+                            Timestamp expiredTime = new Timestamp(endSec);
                             //奖励入库
-                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),null,expiredTime);
                             if (prizeRecordRecord==null){
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);

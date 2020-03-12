@@ -389,6 +389,10 @@ import {
 import {
   en as refundDialog
 } from './views/admin_new/en/index/orderManagement/virtualGoodsOrder/refundDialogEn'
+// 打包一口价
+import {
+  en as packagePrice
+} from './views/admin_new/en/index/marketManagement/packagePrice/packagePriceList'
 
 // 会员管理系列模块化
 // 会员列表
@@ -1023,7 +1027,7 @@ const en = {
   openScreenDetail, // 开屏有礼活动详情
   evaluationGiftList, // 评价有礼列表
   evaluationGiftAdd, // 评价有礼新增编辑
-
+  packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
 
   // 会员管理

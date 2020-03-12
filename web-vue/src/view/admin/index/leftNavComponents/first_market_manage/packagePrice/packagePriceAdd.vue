@@ -32,7 +32,7 @@
             style="width: 150px"
             v-model="param.packageName"
           ></el-input>
-          <span class="font-color">只作为商家记录使用，用户不会看到这个名称</span>
+          <span class="font-color">&nbsp;&nbsp;&nbsp;只作为商家记录使用，用户不会看到这个名称</span>
         </el-form-item>
 
         <el-form-item label="活动时间：">
@@ -49,7 +49,7 @@
             style="width: 350px"
           >
           </el-date-picker>
-          <span class="font-color">同一时间可以有多个一口价活动</span>
+          <span class="font-color">&nbsp;&nbsp;&nbsp;同一时间可以有多个一口价活动</span>
         </el-form-item>
 
         <el-form-item label="活动规则：">
@@ -99,7 +99,11 @@
 
         <el-form-item label="商品组：">
           <section style="display: flex">
-            <el-checkbox v-model="param.group1">商品组1</el-checkbox>
+            <el-checkbox
+              v-model="param.group1"
+              :checked="checkout"
+              :disabled="disabled"
+            >商品组1</el-checkbox>
             <div
               style="margin-left:20px"
               v-if="param.group1 === true"
@@ -127,16 +131,13 @@
 
           <section style="display: flex">
             <el-checkbox v-model="param.group2">商品组2</el-checkbox>
-            <div
-              style="margin-left:20px"
-              v-if="param.group2 === true"
-            >
+            <div style="margin-left:20px">
               <div>
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
                   style="width: 80px"
-                  v-model="param.groupName"
+                  v-model="param.groupName2"
                 ></el-input>&nbsp;&nbsp;
                 <span class="font-color">商品组名称，最多可填4个字</span>
               </div>
@@ -145,7 +146,7 @@
                 <el-input
                   size="small"
                   style="width: 80px"
-                  v-model="param.goodsNumber"
+                  v-model="param.goodsNumber2"
                 ></el-input>&nbsp;&nbsp;件
                 <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
               </div>
@@ -154,16 +155,13 @@
 
           <section style="display: flex">
             <el-checkbox v-model="param.group3">商品组3</el-checkbox>
-            <div
-              style="margin-left:20px"
-              v-if="param.group3 === true"
-            >
+            <div style="margin-left:20px">
               <div>
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
                   style="width: 80px"
-                  v-model="param.groupName"
+                  v-model="param.groupName3"
                 ></el-input>&nbsp;&nbsp;
                 <span class="font-color">商品组名称，最多可填4个字</span>
               </div>
@@ -172,7 +170,7 @@
                 <el-input
                   size="small"
                   style="width: 80px"
-                  v-model="param.goodsNumber"
+                  v-model="param.goodsNumber3"
                 ></el-input>&nbsp;&nbsp;件
                 <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
               </div>
@@ -182,7 +180,7 @@
 
         <el-form-item label="添加商品：">
           <div>
-            <span>请给每个商品组分别添加商品</span>
+            <span class="font-color">请给每个商品组分别添加商品</span>
             <div class="goods-area">
               <div
                 style="display: flex"
@@ -386,14 +384,36 @@ export default {
         startTime: '',
         endTime: '',
         totalMoney: '', // 总结算价格
-        group1: {},
-        group2: false,
-        group3: false,
+        group1: {
+          groupName: '', // 商品组名称
+          goodsNumber: '', // 至少需要选择件数
+          goodsIdList: [], // 商品ID列表
+          catIdList: [], // 平台分类列表
+          sortIdList: [] // 商家分类列表
+        },
+        group2: {
+          groupName: '', // 商品组名称
+          goodsNumber: '', // 至少需要选择件数
+          goodsIdList: [], // 商品ID列表
+          catIdList: [], // 平台分类列表
+          sortIdList: [] // 商家分类列表
+        },
+        group3: {
+          groupName: '', // 商品组名称
+          goodsNumber: '', // 至少需要选择件数
+          goodsIdList: [], // 商品ID列表
+          catIdList: [], // 平台分类列表
+          sortIdList: [] // 商家分类列表
+        },
         groupName: '', // 商品组名称
         goodsNumber: '', // 至少需要选择件数
         goodsIdList: [], // 商品ID列表
         catIdList: [], // 平台分类列表
-        sortIdList: [] // 商家分类列表
+        sortIdList: [], // 商家分类列表
+        groupName2: '',
+        goodsNumber2: '',
+        groupName3: '',
+        goodsNumber3: ''
       },
       srcList: {
         src1: `${this.imageHost}/image/admin/new_preview_image/packagesale.jpg`
@@ -409,7 +429,9 @@ export default {
       // 选择商家分类
       tuneUpBussDialog: false,
       bussinessList: [],
-      bussinessIdList: []
+      bussinessIdList: [],
+      checkout: true,
+      disabled: true
     }
   },
   methods: {
@@ -467,32 +489,26 @@ export default {
       this.bussinessIdList = []
     },
     submitData () {
-      // console.log(this.param, 'sub param')
-      // this.param.startTime = this.param.validity[0]
-      // this.param.endTime = this.param.validity[1]
-      // this.param.group1.groupName = this.param.groupName
-      // this.param.group1.goodsNumber = this.param.goodsNumber
-      // this.param.group1.goodsIdList = this.selectedGoodsIdList
-      // this.param.group1.catIdList = this.platformIdList
-      // this.param.group1.sortIdList = this.bussinessIdList
       let obj = {
-        'packageName': '已过期-活动',
-        'startTime': '2020-02-08 00:00:00',
-        'endTime': '2020-02-25 00:00:00',
-        'totalMoney': 163,
+        'packageName': this.param.packageName,
+        'startTime': this.param.validity[0],
+        'endTime': this.param.validity[1],
+        'totalMoney': this.param.totalMoney,
         'group1': {
-          'groupName': '商品组-11',
-          'goodsNumber': 1,
-          'goodsIdList': [1, 3]
+          'groupName': this.param.groupName,
+          'goodsNumber': this.param.goodsNumber,
+          'goodsIdList': this.selectedGoodsIdList,
+          'catIdList': this.platformIdList,
+          'sortIdList': this.bussinessIdList
         },
         'group2': {
-          'groupName': '商品组-22',
-          'goodsNumber': 1,
+          'groupName': this.param.groupName2,
+          'goodsNumber': this.param.goodsNumber3,
           'catIdList': [1, 3]
         },
         'group3': {
-          'groupName': '商品组-33',
-          'goodsNumber': 1,
+          'groupName': this.param.groupName3,
+          'goodsNumber': this.param.goodsNumber3,
           'sortIdList': [3]
         }
       }

@@ -301,7 +301,7 @@ public class LotteryRecordService extends ShopBaseService {
                 recordRecord.insert();
 
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),
-                        PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
+                        PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue(),null);
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
                 joinValid.setGoodsImage(goodsView.getGoodsImg());

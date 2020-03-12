@@ -20,6 +20,7 @@ global.wxPage({
       activityTypes: [],
       labelIds: [],
       pageFrom:null,
+      actId:null,
       goodsIds:[]
     }
   },
@@ -79,7 +80,10 @@ global.wxPage({
         sortIds,
         brandIds,
         labelIds,
-        activityTypes
+        activityTypes,
+        pageFrom:null,
+        actId:null,
+        goodsIds:[]
       },
       'pageParams.currentPage': 1,
       dataList: []
@@ -103,6 +107,7 @@ global.wxPage({
   },
   loadFilter (options) {
     return new Promise((resolve, reject) => {
+      if(options.scene) options = this.resetScene(options.scene)
       let target = {
         filterData: {},
         data: {}
@@ -182,6 +187,13 @@ global.wxPage({
       productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
     });
     console.log(this.data.productInfo)
+  },
+  resetScene(scene){
+    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+      let params = item.split('=')
+      defaultData[params[0]] = params[1]
+      return defaultData
+    },{})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
