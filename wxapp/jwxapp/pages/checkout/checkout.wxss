@@ -90,6 +90,10 @@
 .goods_item > .goods_info > .goods_price{
   display: flex;
 }
+.goods_item > .goods_info > .goods_price > text{
+  word-break: keep-all;
+  word-wrap: break-word;
+}
 .goods_item > .goods_info > .goods_price > .num{
   flex: 1;
   text-align: right;
@@ -115,11 +119,11 @@
   align-items: center;
   height: 80rpx;
 }
-.pay_type_item:first-of-type{
-  justify-content: flex-start;
-}
 .pay_type_item:last-of-type{
   justify-content: flex-end;
+}
+.pay_type_item:first-of-type{
+  justify-content: flex-start;
 }
 .pay_type_item > .iconfont{
   font-size: 40rpx;

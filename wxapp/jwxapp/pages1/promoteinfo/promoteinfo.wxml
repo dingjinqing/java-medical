@@ -1,10 +1,11 @@
 <!--pages1/promoteinfo/promoteinfo.wxml-->
 <include src="/pages/common/header.wxml" />
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='main-container'>
    <view class='top_area' style='height:{{promote_info.rewardType != 2?"735rpx":"815rpx"}}'>
       <!-- 背景图 -->
       <view class='top_bg' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
-      <view class='one_tip'>好友帮忙助力得奖品</view>
+      <view class='one_tip'>{{i18n.$t(localePack,"page1.promote.title")}}</view>
       <!-- 奖品信息 -->
       <view class='top_info'>
           <!-- 已完成logo -->
@@ -17,10 +18,10 @@
               <view class='goods_right'>
                   <view class='goods_name'>{{promote_info.goodsInfo.goodsName}}</view>
                   <view class='price_info' wx:if='{{promote_info.rewardType == 0}}'>
-                      <text style='color:{{comColor}}' class='zi'>免费拿</text> 仅剩{{promote_info.marketStore}}件，抢完即止
+                      <text style='color:{{comColor}}' class='zi'>{{i18n.$t(localePack,"page1.promote.promoteReward1")}}</text> {{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward3")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}
                   </view>
                   <view class='price_info' wx:if='{{promote_info.rewardType == 1}}'>
-                      <text style='color:{{comColor}}'>￥<text class='zi' style='color:{{comColor}}'>{{promote_info.goodsInfo.marketPrice}}</text></text> 仅剩{{promote_info.marketStore}}件，抢完即止
+                      <text style='color:{{comColor}}'>￥<text class='zi' style='color:{{comColor}}'>{{promote_info.goodsInfo.marketPrice}}</text></text> {{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward3")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}
                   </view>
               </view>
           </view>
@@ -29,18 +30,18 @@
               <view class='ca_top' style='color:{{comColor}}'>
                 <block wx:if='{{promote_info.couponInfo.actCode != "discount" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
                 <block wx:if='{{promote_info.coupon_info.actCode == "discount" }}'><text>{{promote_info.couponInfo.denomination}}</text>折</block>
-               优惠券
+               {{i18n.$t(localePack,"page1.promote.promoteReward5")}}
               </view>
-              <view class='ca_center'>仅剩{{promote_info.marketStore}}张，抢完为止</view>
+              <view class='ca_center'>{{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward6")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}</view>
               <view class='ca_bottom' bindtap='to_cou_search' data-coupon_sn="{{promote_info.couponInfo.couponSn}}" style='color:{{comColor}};background:{{somColor}}'>
-                查看适用商品 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+                {{i18n.$t(localePack,"page1.promote.promoteReward7")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
               </view>
           </view>
           <!-- 助力进度 -->
           <view class='promote_progress'>
               <view class='pro_top'>
-                  <view class='pro_left'>助力值</view>
-                  <view class='pro_right' style='color:#999' wx:if='{{promote_info.promoteType == 0}}'>好友帮忙助力{{promote_info.promoteTimes}}次即可获得奖励</view>
+                  <view class='pro_left'>{{i18n.$t(localePack,"page1.promote.promoteProgress1")}}</view>
+                  <view class='pro_right' style='color:#999' wx:if='{{promote_info.promoteType == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteProgress2")}}{{promote_info.promoteTimes}}{{i18n.$t(localePack,"page1.promote.promoteProgress3")}}</view>
               </view>
               <view class='pro_center'>
                   <view class='promoted_area' style='width:{{launched_width}}rpx;;background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'></view>
@@ -88,10 +89,10 @@
    <!-- 助力列表 -->
    <view class='promote_list' wx:if='{{promote_info.promoteDetailList && promote_info.promoteDetailList!=""}}'>
       <view class='list_top'>
-          <view class='lt_title'>好友助力</view>
+          <view class='lt_title'>{{i18n.$t(localePack,"page1.promote.promoteList1")}}</view>
           <view class='to_list' style='color:{{comColor}}' bindtap='to_list' >
           <!-- wx:if='{{promote_info.promoteDetailList.length>=10}}' -->
-              查看全部 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
+              {{i18n.$t(localePack,"page1.promote.promoteList2")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
       </view>
       <view class='frind_list'>
@@ -107,40 +108,40 @@
    <!-- 好友助力玩法 -->
    <view class='act_notices'>
        <view class='an_top' bindtap='toRule'>
-          <view class='at_left'>好友助力玩法</view>
+          <view class='at_left'>{{i18n.$t(localePack,"page1.promote.promoteRule1")}}</view>
           <view class='al_right'>
-              详细说明 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
+              {{i18n.$t(localePack,"page1.promote.promoteRule2")}} <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
           </view>
        </view>
        <view class='an_bottom'>
           <view class='iconword'>
               <image src='{{imageUrl}}/image/wxapp/promote_icon1.png' ></image>
-              <view>发起抢购</view>
+              <view>{{i18n.$t(localePack,"page1.promote.promoteRule3")}}</view>
           </view>
           <view class='hr'></view>
           <view class='iconword'>
               <image src='{{imageUrl}}/image/wxapp/promote_icon2.png'></image>
-              <view>邀请好友助力</view>
+              <view>{{i18n.$t(localePack,"page1.promote.promoteRule4")}}</view>
           </view>
           <view class='hr'></view>
           <view class='iconword'>
               <image src='{{imageUrl}}/image/wxapp/promote_icon3.png'></image>
-              <view>凑满助力值</view>
+              <view>{{i18n.$t(localePack,"page1.promote.promoteRule5")}}</view>
           </view>
           <view class='hr'></view>
           <view class='iconword'>
               <image src='{{imageUrl}}/image/wxapp/promote_icon4.png'></image>
-              <view>领取奖励</view>
+              <view>{{i18n.$t(localePack,"page1.promote.promoteRule6")}}</view>
           </view>
        </view>
-       <view class='effect_tips' style='margin-bottom:20rpx;'>助力有效期：发起活动后24小时</view>
-       <view class='effect_tips'>领取提示：中奖后指定领取时间内未领取奖品将失效</view>
+       <view class='effect_tips' style='margin-bottom:20rpx;'>{{i18n.$t(localePack,"page1.promote.promoteRule7")}}</view>
+       <view class='effect_tips'>{{i18n.$t(localePack,"page1.promote.promoteRule8")}}</view>
   </view>
   <!-- 更多助力活动 -->
   <view class='more_active' wx:if='{{promote_info.promoteActList && promote_info.promoteActList!=""}}'>
     <view class='reco_title'>
       <image src='{{imageUrl}}/image/wxapp/re_l.png' mode='widthFix'></image>
-      <text>更多助力活动</text>
+      <text>{{i18n.$t(localePack,"page1.promote.promoteActive1")}}</text>
       <image src='{{imageUrl}}/image/wxapp/re_r.png' mode='widthFix'></image>
     </view>
      <view class='act_goods_area clearfix'>
@@ -151,8 +152,8 @@
               <view class='price_sale' style='color:{{comColor}}'>￥<text>{{item.goodsInfo.marketPrice}}</text></view>
               <view class='price_market'>￥{{item.goodsInfo.goodsPrice}}</view>
             </view>
-            <button class='ei_btn' style='background:{{comColor}}' wx:if='{{item.actStatus == 1}}'>马上抢</button> 
-            <button class='ei_btn other_color' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}开始</button>
+            <button class='ei_btn' style='background:{{comColor}}' wx:if='{{item.actStatus == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteActive2")}}</button> 
+            <button class='ei_btn other_color' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}{{i18n.$t(localePack,"page1.promote.promoteActive3")}}</button>
         </view>
      </view>
      <view class='act_coupon_area'>
@@ -160,32 +161,32 @@
             <view class='cou_left'>
               <view class='cou_money' style='color:{{comColor}}'>
                 <block wx:if='{{item.couponInfo.actcCode != "discount" }}'>￥<text>{{item.couponInfo.denomination}}</text></block>
-                <block wx:if='{{item.couponInfo.actcCode == "discount" }}'><text>{{item.couponInfo.denomination}}</text>折</block>
+                <block wx:if='{{item.couponInfo.actcCode == "discount" }}'><text>{{item.couponInfo.denomination}}</text>{{i18n.$t(localePack,"page1.promote.promoteActive4")}}</block>
               </view>
               <view class='cou_rule'>
                   <view class='cou_limit'style='color:{{comColor}}'>
-                      <block wx:if='{{item.leastConsume == null}}'>无门槛</block>
-                      <block wx:if='{{item.leastConsume != null}}'>满{{item.couponInfo.leastConsume}}元可用</block>
+                      <block wx:if='{{item.leastConsume == null}}'>{{i18n.$t(localePack,"page1.promote.promoteActive5")}}</block>
+                      <block wx:if='{{item.leastConsume != null}}'>{{i18n.$t(localePack,"page1.promote.promoteActive6")}}{{item.couponInfo.leastConsume}}{{i18n.$t(localePack,"page1.promote.promoteActive7")}}</block>
                   </view>
-                  <view class='cou_num' style='color:{{linColor}}'>剩余{{item.couponInfo.marketStore}}张</view>
+                  <view class='cou_num' style='color:{{linColor}}'>{{i18n.$t(localePack,"page1.promote.promoteActive8")}}{{item.couponInfo.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward6")}}</view>
               </view>
             </view>
             <view class='cou_right'>
               <view class='cou_xian'><image src='{{imageUrl}}image/wxapp/new_cou_bg.png'></image></view>
-              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 1}}'>马上抢</view>
-              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}开始</view>
+              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteActive2")}}</view>
+              <view class='cou_btn' style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})' wx:if='{{item.actStatus == 0}}'>{{item.startTime}}{{i18n.$t(localePack,"page1.promote.promoteActive3")}}</view>
             </view>
         </view>
      </view>
   </view>
 
-  <!-- 一些谭框 -->
+  <!-- 一些弹框 -->
   <!-- 个人信息 --> 
   <view class='modal_bg' wx:if='{{has_user == 0}}'></view>
   <view class='user_modal' wx:if='{{has_user == 0}}'>
       <view class='user_kuang'>
-          <view>您需要授权个人信息才可助力好友</view>
-          <button class='shouquan_btn' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>授权</button>
+          <view>{{i18n.$t(localePack,"page1.promote.promoteUser1")}}</view>
+          <button class='shouquan_btn' open-type='getUserInfo' bindgetuserinfo="getUserInfo" style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteUser2")}}</button>
       </view>
       <image src='{{imageUrl}}image/wxapp/promote_close.png' class='btn_closr'></image>
   </view>
@@ -197,18 +198,18 @@
       <view class='status_icon' wx:if='{{promote_fail == 1}}'><image src='{{imageUrl}}image/wxapp/promote_icon6.png'></image></view>
       <view class='some_tips'>
           <block wx:if='{{promote_ok == 1}}'> 
-            <view class='st1' style='color:{{comColor}}'>助力成功</view>
-            <view class='st2'>帮助好友增加助力值: <text style='color:{{comColor}}'>{{add_promote_value}}</text></view>
-            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1}}' open-type='share'>分享再得一次助力机会</button>
-            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 0}}' bindtap='to_own_act'>我也要发起助力</button>
-            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 1}}' >放弃分享</view>
-            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 0}}' >放弃发起</view>
+            <view class='st1' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteHelp1")}}</view>
+            <view class='st2'>{{i18n.$t(localePack,"page1.promote.promoteHelp2")}}: <text style='color:{{comColor}}'>{{add_promote_value}}</text></view>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1}}' open-type='share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 0}}' bindtap='to_own_act'>{{i18n.$t(localePack,"page1.promote.promoteHelp4")}}</button>
+            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 1}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp5")}}</view>
+            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 0}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp6")}}</view>
           </block>
           <block wx:if='{{promote_fail == 1}}'>
-            <view class='st1' style='color:{{comColor}}'>助力失败</view>
+            <view class='st1' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteHelp7")}}</view>
             <view class='st2'>{{ cant_promote }}</view>
-            <button class='st3' style='background:{{comColor}}' bindtap='to_own_act'>我也要发起助力</button>
-            <view class='st4' bindtap='forgive_share_fail'>放弃发起</view>
+            <button class='st3' style='background:{{comColor}}' bindtap='to_own_act'>{{i18n.$t(localePack,"page1.promote.promoteHelp4")}}</button>
+            <view class='st4' bindtap='forgive_share_fail'>{{i18n.$t(localePack,"page1.promote.promoteHelp6")}}</view>
           </block>
           
       </view>
@@ -219,17 +220,17 @@
     <view class='modal_bg'></view>
     <view class="share_goods_box">
       <view class="popup_title">
-        分享
+        {{i18n.$t(localePack,"page1.promote.promoteShare1")}}
         <image src="{{ imageUrl }}image/wxapp/close_icon.png" mode='widthFix' bindtap='bindClose'></image>
       </view>
       <view class="content_box">
         <button open-type='share'>
           <image src="{{ imageUrl }}image/wxapp/share_friends.png" mode='widthFix'></image>
-          <text>分享给朋友</text>
+          <text>{{i18n.$t(localePack,"page1.promote.promoteShare2")}}</text>
         </button>
         <view bindtap='go_share'>
           <image src="{{ imageUrl }}image/wxapp/download_img.png" mode='widthFix'></image>
-          <text>下载海报</text>
+          <text>{{i18n.$t(localePack,"page1.promote.promoteShare3")}}</text>
         </view>
       </view>
     </view>
@@ -239,8 +240,8 @@
     <view class='zhezhao' catchtap='not_show_share'></view>
     <view class='share_content'>
       <image src='{{pictorial}}'></image>
-      <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}'>保存图片</view>
-      <view class='save_tips'>保存图片到本地相册</view>
+      <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap' style='background:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteShare4")}}</view>
+      <view class='save_tips'>{{i18n.$t(localePack,"page1.promote.promoteShare5")}}</view>
     </view>
   </view>
 </view>

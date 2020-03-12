@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.store.service.order;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author 王兵兵
  *
@@ -55,4 +57,6 @@ public class ServiceOrderListQueryVo {
      *客户留言
 	 */
 	private String addMessage;
+
+	private Timestamp createTime;
 }

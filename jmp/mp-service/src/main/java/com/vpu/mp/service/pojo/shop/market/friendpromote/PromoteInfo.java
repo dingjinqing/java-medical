@@ -93,4 +93,6 @@ public class PromoteInfo {
     private Long rewardSpurTime;
     /** 奖品记录id */
     private Integer rewardRecordId;
+    /** 0可不授权个人信息，1必须授权 */
+    private Byte promoteCondition;
 }

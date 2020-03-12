@@ -426,6 +426,10 @@ public class GoodsMpService extends ShopBaseService {
         }
     }
 
+    /**
+     * 获取小程序上商品展示时样式控制配置
+     * @return
+     */
     public GoodsShowStyleConfigBo getGoodsShowStyle(){
         //划线价等开关控制
         Byte delMarket = configService.shopCommonConfigService.getDelMarket();
@@ -435,6 +439,19 @@ public class GoodsMpService extends ShopBaseService {
         bo.setDelMarket(delMarket);
         bo.setShowCart(showCart);
         return bo;
+    }
+
+    /**
+     * 获取商品列表获取时最基础的过滤条件
+     * 未删除，在售，是否展示售罄
+     * @return 基础Condition
+     */
+    public Condition getGoodsBaseCondition(){
+        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if (!canShowSoldOutGoods()) {
+            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
+        }
+        return condition;
     }
 
     /**

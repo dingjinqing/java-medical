@@ -194,15 +194,20 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
     public void orderInit(OrderBeforeParam param, IntegralConvertSelectVo activityInfo) throws MpException {
         //不使用优惠券
         param.setCouponSn(StringUtils.EMPTY);
+        param.setMemberCardNo(StringUtils.EMPTY);
         //免运费
         param.setIsFreeShippingAct(OrderConstant.YES);
+        //禁止好友代付
+        param.getInsteadPayCfg().setStatus(false);
         //禁用货到付款、积分支付
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        if(param.getPaymentList() != null) {
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //初始化输入积分
         param.setScoreDiscount(0);
         //计算价格
-        Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getScore, Function.identity()));
+        Map<Integer, IntegralConvertProductVo> productMap = activityInfo.getProductVo().stream().collect(Collectors.toMap(IntegralConvertProductVo::getPrdId, Function.identity()));
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             IntegralConvertProductVo prd = productMap.get(goods.getProductId());
             goods.setGoodsPrice(prd.getMoney());
@@ -210,10 +215,10 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
             goods.setProductPrice(
                 BigDecimalUtil.add(
                     prd.getMoney(),
-                    BigDecimalUtil.multiply(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
+                    BigDecimalUtil.divide(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
             goods.setGoodsScore(prd.getScore());
             //后台设置此次需要的积分
-            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore());
+            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore() * goods.getGoodsNumber());
         }
     }
 
@@ -224,7 +229,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
      */
     public void updateStockAndSales(Integer activityId, Map<Integer, Integer> updateParam) throws MpException {
         logger().info("积分兑换更新活动库存start");
-        Map<Integer, IntegralMallProductRecord> prds = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imp.PRODUCT_ID.in(updateParam.values()))).fetchMap(imp.PRODUCT_ID);
+        Map<Integer, IntegralMallProductRecord> prds = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imp.PRODUCT_ID.in(updateParam.keySet()))).fetchMap(imp.PRODUCT_ID);
         List<IntegralMallProductRecord> executeParam = new ArrayList<>(prds.size());
         for (Map.Entry<Integer, Integer> entry : updateParam.entrySet()) {
             IntegralMallProductRecord prd = prds.get(entry.getKey());

@@ -306,7 +306,7 @@ export default {
       this.pageParams.actName = this.actName
       this.pageParams.actState = this.tabSwitch
       friendHelpList(this.pageParams).then(res => {
-        console.log(res)
+        console.log('表格数据：', res)
 
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -324,8 +324,9 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         item.validDate = `${item.startTime}<br/>${this.$t('promoteList.to')}<br/>${item.endTime}`
-        var jsonObject = JSON.parse(item.rewardContent)
-        item.marketStore = jsonObject[0].market_store
+        // var jsonObject = JSON.parse(item.rewardContent)
+        console.log('item是啥？', item)
+        item.marketStore = item.fpRewardContent.market_store
       })
       this.tableData = data
     },

@@ -196,6 +196,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Override
     public ExecuteResult execute(CreateParam param) {
         logger().info("下单start");
+        //初始化好友代付配置
+        param.setInsteadPayCfg(insteadPayConfig.getInsteadPayConfig());
         //vo
         CreateOrderVo createVo = new CreateOrderVo();
         //初始化bo
@@ -376,7 +378,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //好友代付校验
         if(param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
-            InsteadPay cfg = insteadPayConfig.getInsteadPayConfig();
+            InsteadPay cfg = param.getInsteadPayCfg();
             if(Boolean.FALSE.equals(cfg.getStatus())) {
                 //不支持好友代付
                 throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY);
@@ -554,6 +556,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processOrderBeforeVo(param, vo, vo.getOrderGoods());
         //赠品活动。。。
         processBeforeUniteActivity(param, vo);
+        //下单页面显示积分兑换金额时去除积分,结算不做此逻辑（只是为了展示方便）
+        if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
+            vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
+        }
         //服务条款
         setServiceTerms(vo);
         // 积分使用规则
@@ -844,6 +850,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
+
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         logger().info("金额处理赋值(processOrderBeforeVo),end");

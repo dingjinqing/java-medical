@@ -205,6 +205,7 @@ public class OrderConstant {
 	public final static byte IS_MP_Y = 1;
 	public final static byte IS_MP_ADMIN = 0;
 	public final static byte IS_MP_AUTO = 2;
+    public final static byte IS_MP_MQ = 3;
 
 	/**
 	 * 订单退款退货流程操作

@@ -1,15 +1,14 @@
 package com.vpu.mp.service.shop.goods.mp;
 
-import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
+import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.Record2;
@@ -45,6 +44,9 @@ public class GoodsSearchMpService extends ShopBaseService {
     @Autowired
     GoodsMpService goodsMpService;
 
+    @Autowired
+    GroupBuyService groupBuyService;
+
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
      * 由ES反向推到可用数据
@@ -78,17 +80,52 @@ public class GoodsSearchMpService extends ShopBaseService {
         return vo;
     }
 
+
+    /**
+     * 商品搜索接口统一入口，
+     * 判断来自不同的pageFrom的搜索条件，然后调用对应的方法
+     * @param param 搜索条件
+     * @return 搜索内容
+     */
+    public GoodsSearchContentVo searchGoodsGate(GoodsSearchMpParam param) {
+        PageResult<GoodsListMpBo> pageResult = null;
+        if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
+            pageResult = searchGoodsForGroupBuyQrCode(param);
+        } else {
+            pageResult = searchGoods(param);
+        }
+
+        goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+        GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
+        GoodsSearchContentVo vo = new GoodsSearchContentVo();
+        vo.setDelMarket(goodsShowStyle.getDelMarket());
+        vo.setShowCart(goodsShowStyle.getShowCart());
+        vo.setPageResult(pageResult);
+        return vo;
+    }
+
+    /**
+     * admin拼团活动扫码进入
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private PageResult<GoodsListMpBo> searchGoodsForGroupBuyQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getActId();
+        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
+        List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsBaseCondition);
+
+        List<SortField<?>> sortFields = buildSearchOrderFields(param);
+
+        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    }
+
     /**
      * 搜索小程序商品信息
-     *
      * @param param 商品信息过滤条件
      * @return 搜索出来的商品信息
      */
-    public GoodsSearchContentVo searchGoods(GoodsSearchMpParam param) {
+    private PageResult<GoodsListMpBo> searchGoods(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
-
-        param.setSoldOutGoodsShow(goodsMpService.canShowSoldOutGoods());
-
         if (esUtilSearchService.esState()) {
             try {
                 log.debug("小程序-es-搜索商品");
@@ -101,19 +138,11 @@ public class GoodsSearchMpService extends ShopBaseService {
             log.debug("小程序-db-搜索商品");
             pageResult = searchGoodsFromDb(param);
         }
-        goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
-        GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
-
-        GoodsSearchContentVo vo = new GoodsSearchContentVo();
-        vo.setDelMarket(goodsShowStyle.getDelMarket());
-        vo.setShowCart(goodsShowStyle.getShowCart());
-        vo.setPageResult(pageResult);
-        return vo;
+        return pageResult;
     }
 
     /**
      * 数据库搜索商品
-     *
      * @param param 搜索条件
      * @return 搜索到的内容
      */
@@ -132,11 +161,7 @@ public class GoodsSearchMpService extends ShopBaseService {
      * @return
      */
     private Condition buildSearchCondition(GoodsSearchMpParam param) {
-        Condition condition = GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-
-        if (!param.getSoldOutGoodsShow()) {
-            condition = condition.and(GOODS.GOODS_NUMBER.gt(0));
-        }
+        Condition condition = goodsMpService.getGoodsBaseCondition();
 
         if (param.getKeyWords() != null) {
             condition = condition.and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));

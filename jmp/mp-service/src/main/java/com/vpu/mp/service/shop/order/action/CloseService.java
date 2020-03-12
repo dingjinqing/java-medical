@@ -208,7 +208,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(order.getScoreProportion()), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 

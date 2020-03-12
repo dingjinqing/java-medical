@@ -469,7 +469,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	public boolean priorityRefund(OrderInfoVo order, ReturnOrderRecord returnOrder) throws MpException {
         logger.info("优先级退款start");
 		//是否微信退款（好友代付没有补款）
-		boolean flag = true;
+		boolean flag = false;
 		//此次退款金额
 		BigDecimal returnAmount = returnOrder.getMoney().add(returnOrder.getShippingFee());
         logger.info("此次退款金额{}",returnAmount);
@@ -518,7 +518,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 			}
 			//微信退款后续处理标识
 			if(key.equals(orderInfo.PS_MONEY_PAID)){
-				flag = false;
+				flag = true;
 			}
 			if(returnAmount.compareTo(BigDecimal.ZERO) < 1) {
 				//此次退款金额已经退完
@@ -575,7 +575,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		// 发送退款成功模板消息
 		// 自动同步订单微信购物单
 		//TODO
-        returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
+        returnStatusChange.addRecord(returnOrderRecord, param.getIsMp(), "当前退款订单正常结束："+OrderConstant.RETURN_TYPE_CN[returnOrderRecord.getReturnType()]);
         logger.info("退款完成变更相关信息end");
 	}
 

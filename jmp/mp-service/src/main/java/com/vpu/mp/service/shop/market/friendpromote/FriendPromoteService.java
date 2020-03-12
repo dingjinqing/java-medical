@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -108,6 +107,7 @@ public class FriendPromoteService extends ShopBaseService {
 		if (FriendPromoteListParam.STOPPED.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq((byte) 1));
 		}
+		sql.orderBy(fpa.ID.desc());
 		// 整合分页信息
 		PageResult<FriendPromoteListVo> pageResultVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteListVo.class);
@@ -230,8 +230,8 @@ public class FriendPromoteService extends ShopBaseService {
 	 */
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
-		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db()
-				.select(fpl.ID, USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
+		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db().select(fpl.ID,
+                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
 						DSL.count(fpd.USER_ID).as("promoteTimes"), DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
@@ -269,8 +269,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteParticipateVo> participateDetail(FriendPromoteParticipateParam param) {
 		User a = USER.as("a");
 		User b = USER.as("b");
-		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db()
-				.select(fpd.LAUNCH_ID, a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db().select(fpd.LAUNCH_ID,
+                        a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"), DSL.count(fpd.USER_ID).as("promoteTimes"),
 						DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"))
 				.from(fpd)
@@ -280,7 +280,7 @@ public class FriendPromoteService extends ShopBaseService {
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
 				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"));
-		/* 查询条件 */
+		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
 		}
@@ -298,7 +298,7 @@ public class FriendPromoteService extends ShopBaseService {
 			}
 		}
 		
-		/* 整合分页信息 */
+		// 整合分页信息
 		PageResult<FriendPromoteParticipateVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteParticipateVo.class);
 
@@ -404,8 +404,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
 		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
 		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
-		Result<Record> fetch = db()
-				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
+		Result<Record> fetch = db().select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
@@ -644,6 +643,8 @@ public class FriendPromoteService extends ShopBaseService {
         //设置奖励倒计时
         promoteInfo.setRewardDuration(record.getRewardDuration());
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
+        //设置授权相关
+        promoteInfo.setPromoteCondition(record.getPromoteCondition());
 
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
@@ -651,7 +652,7 @@ public class FriendPromoteService extends ShopBaseService {
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
-            goodsInfo.setMarketPrice(record.getRewardType()==ZERO?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完

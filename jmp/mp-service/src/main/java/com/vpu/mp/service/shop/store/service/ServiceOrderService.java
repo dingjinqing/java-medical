@@ -36,6 +36,7 @@ import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
 import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
@@ -180,11 +181,22 @@ public class ServiceOrderService extends ShopBaseService {
                 , SERVICE_ORDER.SUBSCRIBER
                 , STORE_SERVICE.SERVICE_NAME
                 , SERVICE_ORDER.MOBILE
+                , SERVICE_ORDER.CREATE_TIME
                 , SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
                 from(SERVICE_ORDER).
                 leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
         select = this.buildOptions(select, param);
-        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId())).orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
+
+        if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.asc(),SERVICE_ORDER.SERVICE_PERIOD.asc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.DESC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.desc(),SERVICE_ORDER.SERVICE_PERIOD.desc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.CREATE_TIME) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.asc());
+        }else{
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        }
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceOrderListQueryVo.class);
     }
 
