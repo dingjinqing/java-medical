@@ -184,7 +184,7 @@
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.order")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.tolalDiscountAfterPrice > 0}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.discount")+i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
