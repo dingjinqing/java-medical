@@ -570,10 +570,11 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
         }
         if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
-            //更新状态
-            upPromoteInfo(TWO,launchInfo.getId());
+
             String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
             if (orderSn!=null){
+                //更新状态
+                upPromoteInfo(TWO,launchInfo.getId());
                 promoteInfo.setPromoteStatus((byte)2);
             }
         }
