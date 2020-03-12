@@ -26,7 +26,7 @@
     <text>{{rightButtonName}}</text>
   </view> -->
   <block wx:for="{{buttonData.buttonInfo}}" wx:key="index">
-    <view class="footer_flex_view" bindtap="{{item.canBuy ? item.event : 'notBuyTips'}}" style='{{index === "left" ? leftStyle : rightStyle}}{{item.style}}{{!item.canBuy && notBuyRightStyle}}' >
+    <view class="footer_flex_view" bindtap="{{item.event}}" style='{{index === "left" ? leftStyle : rightStyle}}{{item.style}}' >
       <text wx:if="{{item.top}}">{{item.top}}</text>
       <text>{{item.left}}{{item.name}}{{item.right}}</text>
       <text wx:if="{{item.bottom}}">{{item.bottom}}</text>
