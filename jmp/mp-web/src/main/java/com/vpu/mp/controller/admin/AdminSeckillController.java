@@ -1,13 +1,13 @@
 package com.vpu.mp.controller.admin;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.*;
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,16 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDetailPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SimpleSeckillParam;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -143,5 +133,25 @@ public class AdminSeckillController extends AdminBaseController {
     @PostMapping("/api/admin/market/seckill/analysis")
     public JsonResult getSeckillAnalysisData(@RequestBody @Validated SeckillAnalysisParam param) {
         return success(shop().seckill.getSeckillAnalysisData(param));
+    }
+
+    /**
+     * 活动订单
+     * 取将要导出的行数
+     */
+    @PostMapping("/api/admin/market/seckill/order/export/rows")
+    public JsonResult getActivityOrderExportTotalRows(@RequestBody @Valid MarketOrderListParam param) {
+        return success(shop().readOrder.marketOrderInfo.getMarketOrderListSize(param, BaseConstant.ACTIVITY_TYPE_SEC_KILL));
+    }
+
+    /**
+     * 活动订单
+     * 订单导出
+     */
+    @PostMapping("/api/admin/market/seckill/order/export")
+    public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook =shop().seckill.exportBargainOrderList(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.SECKILL_ORDER_LIST_FILENAME , OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
     }
 }
