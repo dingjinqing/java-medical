@@ -373,6 +373,10 @@ import {
 import {
   cn as formDecorationHome
 } from './views/admin_new/cn/index/marketManagement/formStatistics/formDecoration/formDecorationHomeCn'
+// 打包一口价
+import {
+  cn as packagePrice
+} from './views/admin_new/cn/index/marketManagement/packagePrice/packagePriceList'
 // 订单管理系列模块化
 // 订单通用
 import {
@@ -1031,6 +1035,7 @@ const cn = {
   openScreenDetail, // 开屏有礼活动详情
   evaluationGiftList, // 评价有礼列表
   evaluationGiftAdd,
+  packagePrice, // 打包一口价
 
   // 会员管理
   memberCard, // 会员管理-会员卡

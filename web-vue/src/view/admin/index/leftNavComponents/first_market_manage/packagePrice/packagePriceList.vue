@@ -23,7 +23,7 @@
             v-if="tableListView"
           >
             <div class="act-name">
-              <span>活动名称：</span>
+              <span>{{$t('packagePrice.activityName')+'：'}}</span>
               <el-input
                 size="small"
                 placeholder="请输入活动名称"
@@ -156,6 +156,7 @@
               <el-tooltip
                 :content="$t('seckill.edit')"
                 placement="top"
+                v-if="scope.row.activityStatus === 1 || scope.row.activityStatus === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -167,6 +168,7 @@
               <el-tooltip
                 :content="$t('seckill.share')"
                 placement="top"
+                v-if="scope.row.activityStatus === 1 || scope.row.activityStatus === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -178,6 +180,7 @@
               <el-tooltip
                 :content="$t('seckill.stop')"
                 placement="top"
+                v-if="scope.row.activityStatus === 1 || scope.row.activityStatus === 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -189,6 +192,7 @@
               <el-tooltip
                 :content="$t('seckill.start')"
                 placement="top"
+                v-if="scope.row.activityStatus === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -200,6 +204,7 @@
               <el-tooltip
                 content="查看活动订单"
                 placement="top"
+                v-if="scope.row.activityStatus !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -211,6 +216,7 @@
               <el-tooltip
                 content="活动明细"
                 placement="top"
+                v-if="scope.row.activityStatus !== 2"
               >
                 <span
                   style="font-size: 22px;"
@@ -222,6 +228,7 @@
               <el-tooltip
                 :content="$t('seckill.delete')"
                 placement="top"
+                v-if="scope.row.activityStatus === 3 || scope.row.activityStatus === 4"
               >
                 <span
                   style="font-size: 22px;"
@@ -265,7 +272,7 @@ export default {
     return {
       tabInfo: [
         {
-          title: '全部满包邮活动',
+          title: '全部打包一口价活动',
           name: '0'
         },
         {
@@ -436,7 +443,6 @@ export default {
     },
     showTabAddGroup (title) {
       if (this.param.activityStatus === '6' || this.tabInfo.length > 5) {
-        console.log(12324325)
         this.closeTabAddGroup()
       }
       this.tabInfo.push({
