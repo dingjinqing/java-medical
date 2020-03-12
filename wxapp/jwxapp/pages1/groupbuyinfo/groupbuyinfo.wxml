@@ -139,9 +139,9 @@
     <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="specDialogClose" products-info="{{productsInfo}}" bindproductData="getProductData">
       <view slot="num-cfg">
         <view class="spec-num clearfix">
-          <text wx:if="{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum == 0 || groupbuyInfo.groupBuyDefineInfo.limitMaxNum == 0}}">购买数量：</text>
-          <text wx:elif="{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}">{{i18n.$t(localePack,"page1.fight.purchase")}}{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}{{i18n.$t(localePack,"page1.fight.piece")}}，</text>
-          <text wx:elif="{{groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}">{{i18n.$t(localePack,"page1.fight.most")}}{{groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}{{i18n.$t(localePack,"page1.fight.piece")}})</text>
+          <text>购买数量：</text>
+          <text wx:if="{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum && groupbuyInfo.groupBuyDefineInfo.limitBuyNum}}">{{i18n.$t(localePack,"page1.fight.purchase") + groupbuyInfo.groupBuyDefineInfo.limitBuyNum + i18n.$t(localePack,"page1.fight.piece")}}，</text>
+          <text wx:if="{{groupbuyInfo.groupBuyDefineInfo.limitBuyNum && groupbuyInfo.groupBuyDefineInfo.limitMaxNum}}">{{i18n.$t(localePack,"page1.fight.most") + groupbuyInfo.groupBuyDefineInfo.limitMaxNum + i18n.$t(localePack,"page1.fight.piece")}})</text>
           <view class="spec-num-btns">
             <text class="spec-num-btn" bindtap="bindMinus" style='background:{{(specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum)&&(groupbuyInfo.groupBuyDefineInfo.limitBuyNum) ? "#eee" : "#fff"}};color:{{specInfo.goodsNum <= groupbuyInfo.groupBuyDefineInfo.limitBuyNum && (groupbuyInfo.groupBuyDefineInfo.limitMaxNum)? "#ccc" : "#666"}}'>
               <text>-</text>
