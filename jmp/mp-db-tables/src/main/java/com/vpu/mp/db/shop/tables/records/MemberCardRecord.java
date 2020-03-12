@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -10512508;
+    private static final long serialVersionUID = -904030402;
 
     /**
      * Setter for <code>jmini_shop_489258.b2c_member_card.id</code>.
@@ -856,6 +856,34 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (Byte) get(58);
     }
 
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.cannot_use_coupon</code>. 是否和会员卡一起使用0:可以1：不可以
+     */
+    public void setCannotUseCoupon(Byte value) {
+        set(59, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.cannot_use_coupon</code>. 是否和会员卡一起使用0:可以1：不可以
+     */
+    public Byte getCannotUseCoupon() {
+        return (Byte) get(59);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.custom_rights_flag</code>. 自定义权益开关
+     */
+    public void setCustomRightsFlag(Byte value) {
+        set(60, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.custom_rights_flag</code>. 自定义权益开关
+     */
+    public Byte getCustomRightsFlag() {
+        return (Byte) get(60);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -882,7 +910,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType, Byte cannotUseCoupon, Byte customRightsFlag) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -944,5 +972,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(56, renewNum);
         set(57, renewTime);
         set(58, renewDateType);
+        set(59, cannotUseCoupon);
+        set(60, customRightsFlag);
     }
 }
