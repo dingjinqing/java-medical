@@ -70,12 +70,13 @@ global.wxComponent({
               }
               if([5,10].includes(activity.activityType)){
                 limitMaxNum = activity.limitAmount
+                limitBuyNum = 1
               }
             } else if (activity && activity.activityType === 3) {
               val.products[0].prdNumber = activity.stock
               limitBuyNum = 1
             }
-            if(activity && [6,18,22].includes(activity.activityType) && activity.isLimit){
+            if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
               limitMaxNum = activity.limitAmount
             }
             this.triggerEvent('productData', {
@@ -226,7 +227,10 @@ global.wxComponent({
           limitBuyNum = activity.limitBuyNum
           limitMaxNum = activity.limitMaxNum
         }
-        if([5,10].includes(activity.activityType) || ([6,18,22].includes(activity.activityType) && activity.isLimit)){
+        if([5,10].includes(activity.activityType)){
+          limitBuyNum = 1
+        }
+        if([5,10].includes(activity.activityType) || ([6,18,22,98].includes(activity.activityType) && activity.isLimit)){
           limitMaxNum = activity.limitAmount
         }
       } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
