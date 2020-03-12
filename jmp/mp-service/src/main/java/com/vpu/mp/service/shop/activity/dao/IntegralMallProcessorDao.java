@@ -194,6 +194,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
     public void orderInit(OrderBeforeParam param, IntegralConvertSelectVo activityInfo) throws MpException {
         //不使用优惠券
         param.setCouponSn(StringUtils.EMPTY);
+        param.setMemberCardNo(StringUtils.EMPTY);
         //免运费
         param.setIsFreeShippingAct(OrderConstant.YES);
         //禁用货到付款、积分支付
@@ -210,7 +211,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
             goods.setProductPrice(
                 BigDecimalUtil.add(
                     prd.getMoney(),
-                    BigDecimalUtil.multiply(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
+                    BigDecimalUtil.divide(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
             goods.setGoodsScore(prd.getScore());
             //后台设置此次需要的积分
             param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore());
