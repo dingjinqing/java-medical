@@ -12,6 +12,17 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class ServiceOrderListQueryParam {
+
+    /**
+     * 前台传入的控制排序方向
+     */
+    public static final String ASC="asc";
+    public static final String DESC="desc";
+    /**
+     * 	待排序字段
+     */
+    public static final String CREATE_TIME="createTime";
+    public static final String SERVICE_DATE="serviceDate";
 	
 	@NotNull
 	private Integer storeId;
@@ -35,13 +46,13 @@ public class ServiceOrderListQueryParam {
 	private String keywords;
 
     /**
-     * 排序依据列，0预约提交时间，1预约到店时间，默认0
+     * 排序依据列，createTime预约提交时间，serviceDate预约到店时间，默认createTime
      */
-	private Byte orderByColumn = 0;
+	private String orderField;
     /**
-     * 排序规则，0倒叙，1正序，默认0
+     * 排序规则，desc倒叙，asc正序，默认desc
      */
-	private Byte orderByDirection = 0;
+	private String orderDirection;
 	
 	/**
      * 	分页信息
