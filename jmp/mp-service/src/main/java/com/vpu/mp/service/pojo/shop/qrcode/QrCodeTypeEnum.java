@@ -76,7 +76,8 @@ public enum QrCodeTypeEnum {
     PIN_LOTTERY((byte) 33, "pages/pinlotterylist/pinlotterylist"),
     /*我要送礼*/
     PRESENT_GIFT((byte) 34, "pages1/presentinfo/presentinfo"),
-
+    /*商品搜索页*/
+    GOODS_SEARCH((byte) 35,"pages1/search/search"),
     /*砍价详情页分享*/
     BARGAIN_INFO_SHARE((byte) 98, "");
 
