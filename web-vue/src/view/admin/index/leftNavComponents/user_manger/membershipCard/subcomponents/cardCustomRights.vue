@@ -5,7 +5,7 @@
                 <el-checkbox >自定义权益</el-checkbox>
             </el-form-item>
             <el-form-item>
-                <el-button size="small">自定义权益</el-button>
+                <el-button size="small" @click="showDialog = !showDialog">自定义权益</el-button>
                 <span class="rightTip">最多可添加10个自定义权益</span>
                 <div class="content-container">
                     <div class="content">
@@ -17,10 +17,14 @@
                 </div>
             </el-form-item>
         </el-form>
+        <cardCustomRightsDialog :visible.sync="showDialog"></cardCustomRightsDialog>
     </div>
 </template>
 <script>
 export default {
+  components: {
+    cardCustomRightsDialog: () => import('./cardCustomRightsDialog')
+  },
   data () {
     return {
       showDialog: false
