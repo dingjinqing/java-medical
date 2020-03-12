@@ -84,6 +84,7 @@ global.wxPage({
       'params.activityId': activityId,
       'params.recordId': recordId
     })
+    console.log(this.data.params.activityType)
     if (options.groupid) {
       this.setData({
         'params.groupId': options.groupid

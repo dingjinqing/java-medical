@@ -10,6 +10,7 @@ export const en = {
   userMobile: 'Member phone number',
   serviceDate: 'Appointment time',
   serviceSubsist: 'Payment amount by appointment',
+  createTime: 'Appointment submission time',
   message: 'Message / Remark',
   messageLimit: 'Remarks should not exceed 200 words',
   operate: 'operating',
