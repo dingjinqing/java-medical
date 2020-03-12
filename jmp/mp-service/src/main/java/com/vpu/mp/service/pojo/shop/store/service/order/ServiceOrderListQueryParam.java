@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.service.order;
 
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 王兵兵
@@ -34,6 +33,15 @@ public class ServiceOrderListQueryParam {
 	 * 预约人姓名或服务名称
 	 */
 	private String keywords;
+
+    /**
+     * 排序依据列，0预约提交时间，1预约到店时间，默认0
+     */
+	private Byte orderByColumn = 0;
+    /**
+     * 排序规则，0倒叙，1正序，默认0
+     */
+	private Byte orderByDirection = 0;
 	
 	/**
      * 	分页信息
