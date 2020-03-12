@@ -18,18 +18,20 @@ var decorate = {
     }, null, loading);
   },
 
-  // requestFormPageData(page_id, cb) {
-  //   var _this = this;
-  //   util.api('/api/wxapp/form/get', function (d) {
-  //     var pageContent = d.content;
-  //     pageContent.page_info = JSON.parse(pageContent.page_content || '{}');
-  //     pageContent.page_cfg = pageContent.form_cfg || [];
-  //     pageContent.page_id = page_id;
-  //     pageContent.main_setting = _this._getColors();
-  //     cb(pageContent);
-  //   }, {
-  //     page_id: page_id,
-  //   });
-  // },
+  requestFormPageData(page_id, cb) {
+    var _this = this;
+    util.api('/api/wxapp/form/get', function (d) {
+      if (d) {
+        var pageContent = d.content;
+        pageContent.page_info = JSON.parse(pageContent.page_content || '{}');
+        pageContent.page_cfg = pageContent.form_cfg || [];
+        pageContent.page_id = page_id;
+        pageContent.main_setting = _this._getColors();
+        cb(pageContent);
+      }
+    }, {
+      page_id: page_id,
+    });
+  }
 };
 module.exports = decorate;
