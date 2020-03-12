@@ -15,6 +15,7 @@
           size="small"
           v-model="ruleForm.name"
         ></el-input>
+        <span class="tips">只作为商家记录使用，用户不会看到这个名称</span>
       </el-form-item>
 
     </el-form>
@@ -46,5 +47,12 @@ export default {
   background: #ffffff;
   min-height: 500px !important;
   padding-top: 20px;
+  /deep/ .el-input {
+    width: auto;
+  }
+  .tips {
+    font-size: 12px;
+    color: #999;
+  }
 }
 </style>
