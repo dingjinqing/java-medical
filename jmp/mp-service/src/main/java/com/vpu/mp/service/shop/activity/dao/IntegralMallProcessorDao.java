@@ -197,6 +197,8 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         param.setMemberCardNo(StringUtils.EMPTY);
         //免运费
         param.setIsFreeShippingAct(OrderConstant.YES);
+        //禁止好友代付
+        param.getInsteadPayCfg().setStatus(false);
         //禁用货到付款、积分支付
         param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
         param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
