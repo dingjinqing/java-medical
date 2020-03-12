@@ -36,7 +36,7 @@ public class WxAppGoodsSearchController extends WxAppBaseController {
         if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
             return success(shop().goodsMp.goodsGroupMpService.getGoodsGroupListFromGoodsSearch(param));
         } else {
-            return success(shop().goodsMp.goodsSearchMpService.searchGoods(param));
+            return success(shop().goodsMp.goodsSearchMpService.searchGoodsGate(param));
         }
     }
 }
