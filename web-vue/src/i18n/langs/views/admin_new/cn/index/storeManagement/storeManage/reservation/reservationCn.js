@@ -10,6 +10,7 @@ export const cn = {
   userMobile: '会员手机号',
   serviceDate: '预约到店时间',
   serviceSubsist: '预约支付金额',
+  createTime: '预约提交时间',
   message: '留言/备注',
   messageLimit: '备注不超过200字',
   operate: '操作',

@@ -108,6 +108,7 @@
               'background-color':'#f5f5f5',
               'border':'none'
             }"
+            @sort-change="sortChange"
           >
             <el-table-column
               :label="$t('reservationManage.subscriber')"
@@ -126,6 +127,7 @@
             <el-table-column
               :label="$t('reservationManage.serviceDate')"
               prop="serviceDate"
+              sortable="custom"
             ></el-table-column>
             <el-table-column
               :label="technicianConfigName"
@@ -134,6 +136,11 @@
             <el-table-column
               :label="$t('reservationManage.serviceSubsist')"
               prop="serviceSubsist"
+            ></el-table-column>
+            <el-table-column
+              :label="$t('reservationManage.createTime')"
+              prop="createTime"
+              sortable="custom"
             ></el-table-column>
             <el-table-column
               :label="$t('reservationManage.message')"
@@ -686,7 +693,8 @@ export default {
       }],
       storeId: 0,
       serviceId: 0,
-      modifypersonDialogVisible: false
+      modifypersonDialogVisible: false,
+      sortParams: {}
     }
   },
   created () {
@@ -960,7 +968,7 @@ export default {
       }
     },
     initDataList () {
-      let params = Object.assign({}, this.queryParams, this.pageParams)
+      let params = Object.assign({}, this.queryParams, this.pageParams, this.sortParams)
       getList(params).then(res => {
         if (res.error === 0) {
           this.tableData = [...res.content.pageList.dataList]
@@ -982,6 +990,17 @@ export default {
     // 会员组件 返回数据处理
     dealRowData (data) {
       this.userRowData = data
+    },
+    // 排序
+    sortChange ({ column, prop, order }) {
+      console.log(column, prop, order)
+      if (order !== null) {
+        this.sortParams = {
+          orderField: prop,
+          orderDirection: (order === 'ascending' ? 'asc' : 'desc')
+        }
+      }
+      this.initDataList()
     }
   }
 }
