@@ -25,8 +25,10 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.ReturnMqParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.action.ReturnService;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
@@ -75,6 +77,10 @@ public class ReturnMethodService extends ShopBaseService{
     private TaskJobMainService taskJobMainService;
     @Autowired
     private OrderOperateSendMessage sendMessage;
+    @Autowired
+    private ReturnService returnService;
+    @Autowired
+    private  ReturnOrderService returnOrder;
 	/**
 	 * 	退款统一入口（微信、余额、积分、卡余额等）
 	 * @param methodName 
@@ -381,6 +387,11 @@ public class ReturnMethodService extends ShopBaseService{
                     iterator.remove();
                 }
             }
+        }
+        if(param.getRetId() != null && param.getRetId() != 0) {
+            RefundParam refundParam = new RefundParam();
+            refundParam.setIsMp(OrderConstant.IS_MP_MQ);
+            returnService.finishUpdateInfo(mainOrder.into(OrderInfoVo.class), returnOrder.getByRetId(param.getRetId()), refundParam);
         }
     }
 
