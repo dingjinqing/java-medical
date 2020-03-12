@@ -200,8 +200,10 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         //禁止好友代付
         param.getInsteadPayCfg().setStatus(false);
         //禁用货到付款、积分支付
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        if(param.getPaymentList() != null) {
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //初始化输入积分
         param.setScoreDiscount(0);
         //计算价格
