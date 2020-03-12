@@ -775,35 +775,36 @@ export default {
       }
       selectOneInfo(selectParam).then(res => {
         console.log('message', res)
-        console.log('pageInfo:', res.content[0])
-        this.form.actName = res.content[0].actName
-        this.form.startTime = res.content[0].startTime
-        this.form.endTime = res.content[0].endTime
-        this.form.rewardType = res.content[0].rewardType.toString()
-        this.form.rewardDuration = res.content[0].rewardDuration
-        this.form.rewardDurationUnitSelect = res.content[0].rewardDurationUnit
-        this.form.promoteType = res.content[0].promoteType.toString()
-        this.form.promoteAmount = res.content[0].promoteAmount
-        this.form.promoteTimes = res.content[0].promoteTimes
-        this.form.launchLimitDuration = res.content[0].launchLimitDuration
-        this.form.launchLimitUnitSelect = res.content[0].launchLimitUnit
-        this.form.launchLimitTimes = res.content[0].launchLimitTimes
-        this.form.shareCreateTimes = res.content[0].shareCreateTimes
-        this.form.promoteCondition = res.content[0].promoteCondition.toString()
-        this.form.useDiscount = res.content[0].useDiscount.toString()
-        this.form.useScore = res.content[0].useScore.toString()
-        this.form.failedSendType = res.content[0].failedSendType.toString()
-        this.form.failedSendContent = res.content[0].failedSendContent
-        this.form.activityShareType = res.content[0].activityShareType.toString()
-        this.form.customShareWord = res.content[0].customShareWord
-        this.form.shareImgType = res.content[0].shareImgType.toString()
-        this.srcList.src = res.content[0].customImgPath
-        this.form.promoteTimesPerDay = res.content[0].promoteTimesPerDay
+        console.log('pageInfo:', res.content)
+        this.form.actName = res.content.actName
+        this.form.startTime = res.content.startTime
+        this.form.endTime = res.content.endTime
+        this.form.rewardType = res.content.rewardType.toString()
+        this.form.rewardSet = JSON.parse(res.content.rewardContent)
+        this.form.rewardDuration = res.content.rewardDuration
+        this.form.rewardDurationUnitSelect = res.content.rewardDurationUnit
+        this.form.promoteType = res.content.promoteType.toString()
+        this.form.promoteAmount = res.content.promoteAmount
+        this.form.promoteTimes = res.content.promoteTimes
+        this.form.launchLimitDuration = res.content.launchLimitDuration
+        this.form.launchLimitUnitSelect = res.content.launchLimitUnit
+        this.form.launchLimitTimes = res.content.launchLimitTimes
+        this.form.shareCreateTimes = res.content.shareCreateTimes
+        this.form.promoteCondition = res.content.promoteCondition.toString()
+        this.form.useDiscount = res.content.useDiscount.toString()
+        this.form.useScore = res.content.useScore.toString()
+        this.form.failedSendType = res.content.failedSendType.toString()
+        this.form.failedSendContent = res.content.failedSendContent
+        this.form.activityShareType = res.content.activityShareType.toString()
+        this.form.customShareWord = res.content.customShareWord
+        this.form.shareImgType = res.content.shareImgType.toString()
+        this.srcList.src = res.content.customImgPath
+        this.form.promoteTimesPerDay = res.content.promoteTimesPerDay
         if (this.form.rewardType === '0') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          console.log(this.form.rewardSet.market_store)
-          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
-          console.log(this.form.rewardSet.goods_ids)
+          // this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
+          console.log('market_store???', this.form.rewardSet.market_store)
+          // this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
+          console.log('goods_ids???', this.form.rewardSet.goods_ids)
           let goodsIdParam = {
             'goodsId': this.form.rewardSet.goods_ids
           }

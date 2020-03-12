@@ -229,7 +229,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
      */
     public void updateStockAndSales(Integer activityId, Map<Integer, Integer> updateParam) throws MpException {
         logger().info("积分兑换更新活动库存start");
-        Map<Integer, IntegralMallProductRecord> prds = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imp.PRODUCT_ID.in(updateParam.values()))).fetchMap(imp.PRODUCT_ID);
+        Map<Integer, IntegralMallProductRecord> prds = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(activityId).and(imp.PRODUCT_ID.in(updateParam.keySet()))).fetchMap(imp.PRODUCT_ID);
         List<IntegralMallProductRecord> executeParam = new ArrayList<>(prds.size());
         for (Map.Entry<Integer, Integer> entry : updateParam.entrySet()) {
             IntegralMallProductRecord prd = prds.get(entry.getKey());
