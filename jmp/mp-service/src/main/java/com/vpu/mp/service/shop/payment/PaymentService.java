@@ -16,8 +16,10 @@ import com.vpu.mp.service.pojo.shop.payment.PayCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentRecordParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.order.action.PayService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
@@ -59,6 +61,9 @@ public class PaymentService extends ShopBaseService {
 
     @Autowired
     private OrderGoodsService orderGoodsService;
+
+    @Autowired
+    private AtomicOperation atomicOperation;
 
 	/**
 	 * 营销活动processorFactory
@@ -201,6 +206,7 @@ public class PaymentService extends ShopBaseService {
                     if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
                         //修改相应预售商品数量销量库存
                         marketProcessorFactory.processUpdateStock(pay.createOrderBeforeParam(orderInfo), orderInfo);
+                        atomicOperation.updateStockAndSalesByLock(orderInfo, orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class), false);
                     }
 				} else {
 					// 全款支付方式时，则直接标记为尾款已支付
