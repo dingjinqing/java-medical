@@ -230,8 +230,8 @@ public class FriendPromoteService extends ShopBaseService {
 	 */
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
-		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db()
-				.select(fpl.ID, USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
+		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db().select(fpl.ID,
+                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
 						DSL.count(fpd.USER_ID).as("promoteTimes"), DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
@@ -269,8 +269,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteParticipateVo> participateDetail(FriendPromoteParticipateParam param) {
 		User a = USER.as("a");
 		User b = USER.as("b");
-		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db()
-				.select(fpd.LAUNCH_ID, a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db().select(fpd.LAUNCH_ID,
+                        a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"), DSL.count(fpd.USER_ID).as("promoteTimes"),
 						DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"))
 				.from(fpd)
@@ -280,7 +280,7 @@ public class FriendPromoteService extends ShopBaseService {
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
 				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
 						b.USERNAME.as("launchUsername"));
-		/* 查询条件 */
+		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
 		}
@@ -298,7 +298,7 @@ public class FriendPromoteService extends ShopBaseService {
 			}
 		}
 		
-		/* 整合分页信息 */
+		// 整合分页信息
 		PageResult<FriendPromoteParticipateVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteParticipateVo.class);
 
