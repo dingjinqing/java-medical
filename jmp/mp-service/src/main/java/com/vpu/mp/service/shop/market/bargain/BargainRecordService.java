@@ -422,9 +422,7 @@ public class BargainRecordService extends ShopBaseService {
         if(recordInfo.getEndTime().before(DateUtil.getLocalDateTime())){
             return 4;
         }
-        if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
-            return 6;
-        }
+
         //自己的砍价详情
         if(userId == recordInfo.getUserId()){
             if(recordInfo.getStatus().equals(STATUS_FAILED)){
@@ -440,7 +438,11 @@ public class BargainRecordService extends ShopBaseService {
                         return 10;
                     }else{
                         if(remainMoney.compareTo(BigDecimal.ZERO) > 0){
-                            return 11;
+                            if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
+                                return 6;
+                            }else{
+                                return 11;
+                            }
                         }else{
                             return 5;
                         }
@@ -450,7 +452,11 @@ public class BargainRecordService extends ShopBaseService {
                         return 5;
                     }
                     if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0){
-                        return 11;
+                        if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
+                            return 6;
+                        }else{
+                            return 11;
+                        }
                     }
                 }
             }else{
@@ -461,6 +467,9 @@ public class BargainRecordService extends ShopBaseService {
                     return 5;
                 }
             }
+        }
+        if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
+            return 6;
         }
 
         int userNumber = bargainUser.getUserBargainNumber(userId,recordInfo.getId());
