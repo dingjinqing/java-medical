@@ -72,7 +72,7 @@
           <text>￥</text>
           <text>{{goodsInfo.prdRealPrice}}</text>
         </view>
-        <view class="marking_price">
+        <view class="marking_price" wx:if="{{goodsInfo.prdLinePrice}}">
           ￥
           <text>{{goodsInfo.prdLinePrice}}</text>
         </view>
@@ -202,7 +202,7 @@
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
   </view>
-  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 

@@ -245,7 +245,7 @@ global.wxPage({
               }
             })
             if(activity && activity.activityType === 3 && activity.actState === 6){
-              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'navigateTo')
+              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'redirectTo')
             }
             // 限时降价状态栏
             if (res.content.activity && [6, 98].includes(res.content.activity.activityType)) {
@@ -375,7 +375,7 @@ global.wxPage({
     } else if (getPrice === 'prdRealPrice') {
       return activity[actBaseInfo[activity.activityType][getPrice]]
     } else if (getPrice === 'prdLinePrice') {
-      return this.getMin(products.map(item => item.prdRealPrice))
+      return this.getMax(products.map(item => item.prdRealPrice))
     }
   },
   // 获取actBar活动倒计时
@@ -593,7 +593,7 @@ global.wxPage({
       prdLinePrice: data.defaultPrd
         ? linePrice[0]
         : lineMinPrice === lineMaxPrice
-        ? lineMinPrice
+        ? lineMaxPrice
         : `${lineMinPrice}~${lineMaxPrice}`,
       singleRealPrice: lineMinPrice,
       singleLinePrice: lineMaxPrice
