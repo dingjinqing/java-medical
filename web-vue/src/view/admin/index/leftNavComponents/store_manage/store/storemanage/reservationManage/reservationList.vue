@@ -824,14 +824,14 @@ export default {
     // 添加预约
     add () {
       // 必填项校验
-      if (this.userRowData === {}) {
-        this.$message.info('必填项不可为空！')
-      } else if (this.mobile === '') {
-        this.$message.info('必填项不可为空！')
+      if (!this.userRowData.userName) {
+        this.$message.warning('预约人不能为空！')
+      } else if (this.reservation.mobile === '') {
+        this.$message.warning('手机号不能为空！')
       } else if (this.dateTime === '') {
-        this.$message.info('必填项不可为空！')
-      } else if (this.reservation.serviceId === 0) {
-        this.$message.info('必填项不可为空！')
+        this.$message.warning('预约时间不能为空！')
+      } else if (!this.reservation.serviceId) {
+        this.$message.warning('预约服务不能为空！')
       } else {
         console.log('技师列表：' + this.reservationTech)
         if (!this.reservationTech) {
