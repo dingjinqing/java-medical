@@ -41,6 +41,10 @@
             v-bind.sync="freeship"
             ref="freeship">
           </cardFreeshipCfg>
+          <!-- 自定义权益 -->
+          <cardCustomRights>
+
+          </cardCustomRights>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
@@ -132,6 +136,9 @@ export default {
     ),
     cardRenewCfg: () => import(
       './subcomponents/cardRenewCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   computed: {
