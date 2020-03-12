@@ -367,12 +367,16 @@ export default {
     }
   },
   watch: {
-    chooseGoodsBack: function (newData) {
-      console.log(newData)
-      console.log('chooseGoodsBack')
-      let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
-      // this.chooseGoodsBack = uniqGoodsIds
-      this.checkedIdList = uniqGoodsIds
+    chooseGoodsBack: {
+      handler (newData) {
+        console.log(newData)
+        console.log('chooseGoodsBack')
+        let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
+        // this.chooseGoodsBack = uniqGoodsIds
+        this.checkedIdList = uniqGoodsIds
+      },
+      deep: true,
+      immediate: true
     },
     tuneUpChooseGoods () {
       console.log('tuneUpChooseGoods', this.checkedIdList, this.initialConditionRender)
@@ -858,9 +862,9 @@ img {
   width: 100%;
   height: 100%;
   text-align: center;
-  display:-webkit-box;
-  -webkit-box-pack:center;
-  -webkit-box-align:center;
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
   justify-content: center;
 }
 .level_1 {

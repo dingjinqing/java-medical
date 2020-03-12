@@ -8,3 +8,11 @@ export function integralExchangeList (data) {
     data: data
   })
 }
+// 返回指定商品规格详情
+export function goodsSpecDetail (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/product',
+    method: 'post',
+    data: data
+  })
+}
