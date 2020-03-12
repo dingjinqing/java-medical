@@ -1,20 +1,20 @@
 <!--pages/bargaininfo/bargaininfo.wxml-->
 
 <include src="../common/header.wxml" />
-
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='main-container'>
   <!-- 下载海报 -->
   <block>
     <block wx:if="{{getsq == true || click_num == true}}">
       <view class='share_img_btn' wx:if='{{is_share == 0 && !(bargain_info.state == 1 || bargain_info.state == 2 || bargain_info.state == 3 || bargain_info.state == 4 || bargain_info.state == 6) }}' bindtap='go_share'>
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"pages.bargain.bargainShare1")}}</view>
+        <view>{{i18n.$t(localePack,"pages.bargain.bargainShare2")}}</view>
       </view>
     </block>
     <block wx:else>
       <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"pages.bargain.bargainShare1")}}</view>
+        <view>{{i18n.$t(localePack,"pages.bargain.bargainShare2")}}</view>
       </button>
     </block>
   </block>
@@ -27,7 +27,7 @@
       <view class='top_content'>
         <image class='success_icon' wx:if='{{bargain_info.recordInfo.status == 1 }}' src='{{imageUrl}}image/wxapp/kanjia_success.png'></image>
         <view class='own_names'>{{bargain_info.recordInfo.username}}</view>
-        <view class='advertise'>{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元拿好货，快来一起砍价吧！</view>
+        <view class='advertise'>{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainInfo1")}}</view>
         <view class='goods_info clearfix'>
           <view class='gf_left' bindtap='toItem'>
             <image src='{{bargain_info.recordInfo.goodsImg}}'></image>
@@ -38,20 +38,20 @@
               {{bargain_info.recordInfo.prdDesc}}
             </view>
             <view class='goods_price'>
-              <text class='zero'><text>{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元</text>砍走</text>
-              <text class='shop_pricess'> 原价￥{{bargain_info.recordInfo.prdPrice}}</text>
+              <text class='zero'><text>{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}</text>{{i18n.$t(localePack,"pages.bargain.bargainInfo2")}}</text>
+              <text class='shop_pricess'> {{i18n.$t(localePack,"pages.bargain.bargainInfo3")}}￥{{bargain_info.recordInfo.prdPrice}}</text>
             </view>
             <view class='time_ggon clearfix'>
-              <view class='daojishi' wx:if="{{bargain_info.recordInfo.remainingTime > 0}}">仅剩{{clock}}结束</view>
-              <view class='daojishi' wx:if="{{bargain_info.recordInfo.remainingTime <= 0}}">活动已结束</view>
-              <view class='go_buy' bindtap='to_buy'>直接购买>></view>
+              <view class='daojishi' wx:if="{{bargain_info.recordInfo.remainingTime > 0}}">{{i18n.$t(localePack,"pages.bargain.bargainInfo4")}}{{clock}}{{i18n.$t(localePack,"pages.bargain.bargainInfo5")}}</view>
+              <view class='daojishi' wx:if="{{bargain_info.recordInfo.remainingTime <= 0}}">{{i18n.$t(localePack,"pages.bargain.bargainInfo6")}}</view>
+              <view class='go_buy' bindtap='to_buy'>{{i18n.$t(localePack,"pages.bargain.bargainInfo7")}}>></view>
             </view>
           </view>
         </view>
       </view>
       <view class='bargain_rule clearfix' bindtap='toRule'>
         <image src='{{imageUrl}}image/wxapp/icon_disnotice.png' mode='widthFix'></image>
-        <text>砍价规则</text>
+        <text>{{i18n.$t(localePack,"pages.bargain.bargainRule")}}</text>
       </view>
       <image src='{{imageUrl}}image/wxapp/kanjia_info_bg.png' class='top_bg' mode='widthFix'></image>
     </view>
@@ -59,18 +59,18 @@
     <view class='get_persent'>
       <block wx:if = "{{bargain_info.recordInfo.bargainType == 1}}">
         <block wx:if='{{bargain_info.recordInfo.not_freee_monet > 0}}'>
-          <view class='tips_price'>已砍{{bargain_info.recordInfo.bargainMoney}}元，砍到{{bargain_info.recordInfo.expectationPrice}}元，即可下单</view>
+          <view class='tips_price'>{{i18n.$t(localePack,"pages.bargain.bargainProgress1")}}{{bargain_info.recordInfo.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress3")}}{{bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress4")}}</view>
         </block>
         <block wx:else>
           <view class='tips_price' wx:if='{{bargain_info.recordInfo.min_bargain_money > bargain_info.recordInfo.bargainMoney}}'>
-            已砍{{bargain_info.recordInfo.bargainMoney}}元，可“继续砍价”或“立即下单”
+            {{i18n.$t(localePack,"pages.bargain.bargainProgress1")}}{{bargain_info.recordInfo.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress5")}}
           </view>
-          <view class='tips_price' wx:else>已砍{{bargain_info.recordInfo.bargainMoney}}元，砍价成功，可“立即下单”</view>
+          <view class='tips_price' wx:else>{{i18n.$t(localePack,"pages.bargain.bargainProgress1")}}{{bargain_info.recordInfo.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress6")}}</view>
         </block>
       </block>
       <block wx:else>
-        <view class='tips_price' wx:if='{{bargain_info.recordInfo.not_freee_monet > 0}}'>已砍{{bargain_info.recordInfo.bargainMoney}}元，砍到{{bargain_info.recordInfo.expectationPrice}}元，即可下单</view>
-        <view class='tips_price' wx:else>已砍{{bargain_info.recordInfo.bargainMoney}}元，砍价成功，可“立即下单”</view>
+        <view class='tips_price' wx:if='{{bargain_info.recordInfo.not_freee_monet > 0}}'>{{i18n.$t(localePack,"pages.bargain.bargainProgress1")}}{{bargain_info.recordInfo.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress3")}}{{bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress4")}}</view>
+        <view class='tips_price' wx:else>{{i18n.$t(localePack,"pages.bargain.bargainProgress1")}}{{bargain_info.recordInfo.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，{{i18n.$t(localePack,"pages.bargain.bargainProgress6")}}</view>
       </block>
       <block wx:if='{{bargain_info.recordInfo.bargainType == 0}}'>
         <progress class='progress' style='border-radius:1000rpx;overflow:hidden' percent="{{bargain_info.recordInfo.progress_present}}" activeColor="#ff6666" stroke-width='13'></progress>
@@ -92,38 +92,38 @@
     <view class='btn_kanjia' wx:if='{{bargain_info.state == 0}}' style='position:relative;height:70rpx;padding:0'>
       <form report-submit='true' bindsubmit='toKnajia'>
         <block  wx:if="{{getsq == true || click_num == true}}">
-          <button formType="submit">帮TA砍一刀</button>
+          <button formType="submit">{{i18n.$t(localePack,"pages.bargain.bargainButton")}}</button>
         </block>
         <block wx:else>
-          <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">帮TA砍一刀</button>
+          <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">{{i18n.$t(localePack,"pages.bargain.bargainButton")}}</button>
         </block>
       </form>
     </view>
-    <view class='btn_kanjia' wx:if='{{bargain_info.state == 1}}' bindtap='toIndex'>活动不存在，随便逛逛</view>
-    <view class='btn_kanjia' wx:if='{{bargain_info.state == 2}}' bindtap='toIndex'>砍价失败，随便逛逛</view>
-    <view class='btn_kanjia' wx:if='{{bargain_info.state == 3}}' bindtap='toIndex'>活动未开始，随便逛逛</view>
-    <view class='btn_kanjia' wx:if='{{bargain_info.state == 4}}' bindtap='toIndex'>活动已结束，随便逛逛</view>
-    <view class='btn_kanjia' wx:if='{{bargain_info.state == 6}}' bindtap='toIndex'>商品已抢光，随便逛逛</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 1}}' bindtap='toIndex'>{{i18n.$t(localePack,"pages.bargain.bargainButton1")}}</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 2}}' bindtap='toIndex'>{{i18n.$t(localePack,"pages.bargain.bargainButton2")}}</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 3}}' bindtap='toIndex'>{{i18n.$t(localePack,"pages.bargain.bargainButton3")}}</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 4}}' bindtap='toIndex'>{{i18n.$t(localePack,"pages.bargain.bargainButton4")}}</view>
+    <view class='btn_kanjia' wx:if='{{bargain_info.state == 6}}' bindtap='toIndex'>{{i18n.$t(localePack,"pages.bargain.bargainButton5")}}</view>
     <form report-submit='true' bindsubmit='toCheckout'>
-      <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.state == 5}}'>砍价成功，立即完善订单</button>
+      <button class='btn_kanjia' formType="submit" wx:if='{{bargain_info.state == 5}}'>{{i18n.$t(localePack,"pages.bargain.bargainButton6")}}</button>
     </form>
     <block wx:if="{{ getsq == true || click_num == true}}">
       <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7}}'>
         <button open-type='share'></button>
-        邀请好友帮忙砍价
+        {{i18n.$t(localePack,"pages.bargain.bargainButton7")}}
       </view>
       <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 8}}'>
         <button open-type='share'></button>
-        立即邀请好友砍价，多砍{{bargain_info.stateMoney}}元
+        {{i18n.$t(localePack,"pages.bargain.bargainButton8")}}，{{i18n.$t(localePack,"pages.bargain.bargainSuccess3")}}{{bargain_info.stateMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}
       </view>
       <view class='have_two_btn clearfix' wx:if='{{bargain_info.state == 11}}'>
         <view class='btn_half has_btn'>
           <button open-type='share'></button>
-          邀请好友帮忙砍价
+          {{i18n.$t(localePack,"pages.bargain.bargainButton7")}}
         </view>
         <form report-submit='true' bindsubmit='toCheckout'>
           <button class='btn_half btn_to_pay' formType="submit">
-            立即下单
+            {{i18n.$t(localePack,"pages.bargain.bargainButton9")}}
           </button>
         </form>
       </view>
@@ -131,22 +131,22 @@
     <block wx:else>
       <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 7}}'>
         <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
-        邀请好友帮忙砍价
+        {{i18n.$t(localePack,"pages.bargain.bargainButton7")}}
       </view>
       <view class='btn_kanjia has_btn' wx:if='{{bargain_info.state == 8}}'>
         <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"></button>
-        立即邀请好友砍价，多砍{{bargain_info.stateMoney}}元
+        {{i18n.$t(localePack,"pages.bargain.bargainButton8")}}，{{i18n.$t(localePack,"pages.bargain.bargainSuccess3")}}{{bargain_info.stateMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}
       </view>
     </block>
-    <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.state == 9}}'>我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物</view>
-    <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.recordInfo.orderSn}}" wx:if='{{bargain_info.state == 10}}'>已完成订单,点击查看详情</view>
+    <view class='btn_kanjia' bindtap='toWhere' wx:if='{{bargain_info.state == 9}}'>{{i18n.$t(localePack,"pages.bargain.bargainButton10")}}{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainButton11")}}</view>
+    <view class='btn_kanjia' bindtap='toOrder' data-order_sn="{{bargain_info.recordInfo.orderSn}}" wx:if='{{bargain_info.state == 10}}'>{{i18n.$t(localePack,"pages.bargain.bargainButton12")}}</view>
     <!-- 砍价记录 -->
     <view class='kanjia_person' wx:if='{{bargain_info.recordUserList.length > 0}}'>
       <view class='list_title'>
-        <view class='neirong'>砍价记录</view>
+        <view class='neirong'>{{i18n.$t(localePack,"pages.bargain.bargainList1")}}</view>
         <!-- <view class='btn_more' bindtap='go_list' wx:if='{{bargain_info.recordUserList.length >= 20}}'> -->
         <view class='btn_more' bindtap='go_list'>
-          查看更多
+          {{i18n.$t(localePack,"pages.bargain.bargainList2")}}
           <image src='{{imageUrl}}image/wxapp/backward_right.png' mode='widthFix'></image>
         </view>
       </view>
@@ -159,7 +159,7 @@
           <view>{{item.show_time}}</view>
         </view>
         <view class='person_price'>
-          <image class='kanjiade_icon' src='{{imageUrl}}image/wxapp/kanjia_info_icon.png'></image>砍掉{{item.bargainMoney}}元</view>
+          <image class='kanjiade_icon' src='{{imageUrl}}image/wxapp/kanjia_info_icon.png'></image>{{i18n.$t(localePack,"pages.bargain.bargainList3")}}{{item.bargainMoney}}{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}</view>
       </view>
     </view>
 
@@ -196,22 +196,22 @@
       <view class='coupon_content'>
         <view class='kanjia_info'>
           <image src='{{imageUrl}}image/wxapp/kanjia_bg1.png'></image>
-          <view class='sentence1'>帮他砍了
-            <text>{{cut_money}}</text>元，</view>
-          <view class='sentence2'>一起来{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物吧~</view>
+          <view class='sentence1'>{{i18n.$t(localePack,"pages.bargain.bargainHelp1")}}
+            <text>{{cut_money}}</text>{{i18n.$t(localePack,"pages.bargain.bargainProgress2")}}，</view>
+          <view class='sentence2'>{{i18n.$t(localePack,"pages.bargain.bargainHelp2")}}{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainHelp3")}}</view>
           <block wx:if="{{ getsq == true || click_num == true}}">
             <view class='but_invite has_btn' bindtap='toWhere' wx:if='{{bargain_info.state != 6}}'>
-              我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
+              {{i18n.$t(localePack,"pages.bargain.bargainButton10")}}{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainButton11")}}
             </view>
           </block>
           <block wx:else>
             <button class='but_invite has_btn' data-kj="{{1}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo" wx:if='{{bargain_info.state != 6}}'>
-              我也要{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}元得好物
+              {{i18n.$t(localePack,"pages.bargain.bargainButton10")}}{{bargain_info.recordInfo.bargainType == 1 ? bargain_info.recordInfo.floorPrice : bargain_info.recordInfo.expectationPrice}}{{i18n.$t(localePack,"pages.bargain.bargainButton11")}}
             </button>
           </block>
 
           <view class='but_invite has_btn' bindtap='toIndex' wx:if='{{bargain_info.state == 6}}'>
-            商品已抢光，随便逛逛
+            {{i18n.$t(localePack,"pages.bargain.bargainButton5")}}
           </view>
         </view>
         <view class='btn_close' bindtap='guan1'>
@@ -225,8 +225,8 @@
       <view class='zhezhao' catchtap='not_show_share'></view>
       <view class='share_content'>
         <image src='{{pictorial}}'></image>
-        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
-        <view class='save_tips'>保存图片到本地相册</view>
+        <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>{{i18n.$t(localePack,"pages.bargain.bargainShare3")}}</view>
+        <view class='save_tips'>{{i18n.$t(localePack,"pages.bargain.bargainShare4")}}</view>
       </view>
     </view>
 
