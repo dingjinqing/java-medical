@@ -1,14 +1,13 @@
 package com.vpu.mp.service.pojo.shop.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 订单列表展示订单信息
@@ -100,4 +99,6 @@ public class OrderListInfoVo {
 	private Boolean canDeliver;
 	private Boolean canVerify;
     private Boolean showReturnInfo;
+    @JsonIgnore
+    private Integer scoreProportion;
 }

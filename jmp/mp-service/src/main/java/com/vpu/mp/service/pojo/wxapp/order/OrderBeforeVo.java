@@ -201,5 +201,8 @@ public class OrderBeforeVo {
             //营销活动订单
             orderRecord.setActivityId(getActivityId());
         }
+        if(getScoreProportion() != null) {
+            orderRecord.setScoreProportion(getScoreProportion());
+        }
     }
 }
