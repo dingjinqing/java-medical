@@ -196,6 +196,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Override
     public ExecuteResult execute(CreateParam param) {
         logger().info("下单start");
+        //初始化好友代付配置
+        param.setInsteadPayCfg(insteadPayConfig.getInsteadPayConfig());
         //vo
         CreateOrderVo createVo = new CreateOrderVo();
         //初始化bo
@@ -376,7 +378,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //好友代付校验
         if(param.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
-            InsteadPay cfg = insteadPayConfig.getInsteadPayConfig();
+            InsteadPay cfg = param.getInsteadPayCfg();
             if(Boolean.FALSE.equals(cfg.getStatus())) {
                 //不支持好友代付
                 throw new MpException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY);

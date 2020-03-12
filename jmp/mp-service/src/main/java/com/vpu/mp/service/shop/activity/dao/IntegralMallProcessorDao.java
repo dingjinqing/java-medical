@@ -197,9 +197,13 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
         param.setMemberCardNo(StringUtils.EMPTY);
         //免运费
         param.setIsFreeShippingAct(OrderConstant.YES);
+        //禁止好友代付
+        param.getInsteadPayCfg().setStatus(false);
         //禁用货到付款、积分支付
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
-        param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        if(param.getPaymentList() != null) {
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
+            param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
+        }
         //初始化输入积分
         param.setScoreDiscount(0);
         //计算价格
@@ -214,7 +218,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
                     BigDecimalUtil.divide(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
             goods.setGoodsScore(prd.getScore());
             //后台设置此次需要的积分
-            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore());
+            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore() * goods.getGoodsNumber());
         }
     }
 

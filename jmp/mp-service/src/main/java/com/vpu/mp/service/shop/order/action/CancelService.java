@@ -113,7 +113,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     public void returnOrder(OrderInfoVo order) throws MpException {
         if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
             //积分
-            refundUseAccount(order, order.getScoreDiscount());
+            refundScoreDiscount(order, order.getScoreDiscount());
         }
         if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
             refundUseAccount(order, order.getUseAccount());
@@ -202,7 +202,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
         }
         //金额换算成积分
         Integer score = BigDecimalUtil.multiplyOrDivide(
-            BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+            BigDecimalPlus.create(new BigDecimal(order.getScoreProportion()), Operator.multiply),
             BigDecimalPlus.create(money,null)
         ).intValue();
 
