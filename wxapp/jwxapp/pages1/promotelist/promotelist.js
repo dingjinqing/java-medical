@@ -41,15 +41,9 @@ global.wxPage({
     }
     that.data.page = that.data.page + 1;
     // util.api('/api/wxapp/promote/detailList', function (res) {
-    //   var servL = res.content;
-    //   that.data.last_page = servL.last_page;
-    //   var server_list_r = res.content.data;
-    //   var promote_list = [];
-    //   if (server_list_r.length > 0) {
-    //     promote_list = server_list_r;
-    //   }
     //   that.setData({
-    //     promote_list: that.data.promote_list.concat(promote_list),
+    //     promote_list: that.data.promote_list.concat(res.content),
+    //     last_page: res.content.page.last_page,
     //     is_load: 0
     //   });
     // }, { pageNo: that.data.page, launch_id: that.data.launch_id });
@@ -59,15 +53,9 @@ global.wxPage({
 function promote_request(that) {
   util.api('/api/wxapp/promote/detailList', function (res) {
     if (res.error == 0) {
-      // var servL = res.content;
-      // that.data.last_page = servL.last_page;
-      // var server_list_r = res.content.data;
-      // var promote_list = [];
-      // if (server_list_r.length > 0) {
-      //   promote_list = server_list_r;
-      // }
       that.setData({
-        promote_list: res.content,
+        promote_list: res.content
+        // last_page: res.content.page.last_page
       });
     }
   }, { pageNo: that.data.page, launchId: that.data.launch_id });

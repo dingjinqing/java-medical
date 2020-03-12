@@ -60,30 +60,30 @@
           </view>
           <!-- 倒计时提示 -->
           <view class='time_daojishi'>
-            <block wx:if='{{promote_info.promoteStatus == 0}}'>距结束仅剩 <text style='color:{{comColor}}' >{{clock}}</text></block>
-            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime > 0}}'>请在 <text style='color:{{comColor}}' >{{clock}}</text> 内领取，逾期未领取将失效</block>
-            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime <= 0}}'>奖品已失效</block>
-            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>已领取，请在订单中查看</block>
-            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>奖励已经放入您的优惠券包，去看看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
-            <block wx:if='{{promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4}}'>已结束,助力失败</block>
+            <block wx:if='{{promote_info.promoteStatus == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime2")}} <text style='color:{{comColor}}' >{{clock}}</text> {{i18n.$t(localePack,"page1.promote.promoteTime3")}}</block>
+            <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime <= 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime4")}}</block>
+            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteTime5")}}</block>
+            <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}'> <view bindtap='to_coupon'>{{i18n.$t(localePack,"page1.promote.promoteTime6")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix' style='width:15rpx;'></image> </view>  </block>
+            <block wx:if='{{promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4}}'>{{i18n.$t(localePack,"page1.promote.promoteTime7")}}</block>
           </view>
           <!-- 助力按钮 -->
           <form report-submit='true' bindsubmit='shareGoods'>
-            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == -1 && promote_info.launchFlag == 1}}'>发起助力</button>
+            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == -1 && promote_info.launchFlag == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton1")}}</button>
           </form>
           <form report-submit='true' bindsubmit='shareGoods'>
-            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 1}}'>邀请好友帮忙助力</button>
+            <button class='btn_launch' style='background:{{comColor}}' formType='submit' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton2")}}</button>
           </form>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime > 0}}'>立即领取</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime <= 0}}'>去逛逛</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1||promote_info.rewardType == 0)}}'>查看订单</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>去逛逛</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>助力好友得奖品</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>分享再得一次助力机会</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>我也要发起助力</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-coupon_sn="{{promote_info.couponInfo.couponSn}}">去使用</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_checkout' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton3")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && promote_info.rewardSpurTime <= 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton4")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_order' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1||promote_info.rewardType == 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteButton5")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_index' wx:if='{{(promote_info.promoteStatus == 3 || promote_info.promoteStatus == 4) && promote_info.launchFlag == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton4")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='friend_help' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton6")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 0  && promote_info.launchFlag == 2&&is_shares==0&&promote_info.canPromote.code == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton8")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-coupon_sn="{{promote_info.couponInfo.couponSn}}">{{i18n.$t(localePack,"page1.promote.promoteButton9")}}</button>
       </view>
    </view>
    <!-- 助力列表 -->
