@@ -49,7 +49,7 @@ public class PrizeRecordService extends ShopBaseService {
      * @param prdId
      * @param day
      */
-    public PrizeRecordRecord savePrize(Integer userId,Integer actId,Integer recordId,Byte type,Integer prdId,Integer day){
+    public PrizeRecordRecord savePrize(Integer userId,Integer actId,Integer recordId,Byte type,Integer prdId,Integer day,Timestamp expiredTime){
         PrizeRecordRecord prizeRecord =db().newRecord(PRIZE_RECORD);
         prizeRecord.setUserId(userId);
         prizeRecord.setActivityId(actId);
@@ -57,7 +57,12 @@ public class PrizeRecordService extends ShopBaseService {
         prizeRecord.setActivityType(type);
         prizeRecord.setPrdId(prdId);
         prizeRecord.setExpiredDay(day);
-        prizeRecord.setExpiredTime(DateUtil.getTimeStampPlus(day, ChronoUnit.DAYS));
+        if (expiredTime==null){
+            prizeRecord.setExpiredTime(DateUtil.getTimeStampPlus(day, ChronoUnit.DAYS));
+        }
+        else {
+            prizeRecord.setExpiredTime(expiredTime);
+        }
         prizeRecord.setPrizeStatus(PRIZE_STATUS_UNCLAIMED);
         prizeRecord.insert();
         return prizeRecord;

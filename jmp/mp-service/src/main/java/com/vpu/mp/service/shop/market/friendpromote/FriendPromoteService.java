@@ -570,6 +570,8 @@ public class FriendPromoteService extends ShopBaseService {
             promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
         }
         if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
+            //更新状态
+            upPromoteInfo(TWO,launchInfo.getId());
             String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
             if (orderSn!=null){
                 promoteInfo.setPromoteStatus((byte)2);
@@ -1408,9 +1410,10 @@ public class FriendPromoteService extends ShopBaseService {
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
                             //计算奖励过期时间
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-                            Integer day = durationSec.intValue()/(24*60*60);
+                            Long endSec = DateUtil.getLocalDateTime().getTime()+durationSec*1000;
+                            Timestamp expiredTime = new Timestamp(endSec);
                             //奖励入库
-                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),null,expiredTime);
                             if (prizeRecordRecord==null){
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
