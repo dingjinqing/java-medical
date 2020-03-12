@@ -12,8 +12,8 @@
                     <span class="tips">最多可填20个字</span>
                 </el-form-item>
                 <el-form-item label="权益图标:" :rules="[{required: true}]">
-                    <span class="add-image" @click="addImg">
-                         <img :src="$imageHost +'/image/admin/shop_beautify/add_decorete.png'">
+                    <span class="add-image" @click="addImg" >
+                         <img :src="getImgSrc" :class="{'img-wh': whFlag}">
                     </span>
                     <span class="tips">建议尺寸：30*30像素</span>
                 </el-form-item>
@@ -40,6 +40,7 @@
             pageIndex='userCardAdd'
             :tuneUp="imgDisable"
             :imageSize="[30, 30]"
+            @handleSelectImg="setImg"
         />
     </div>
 </template>
@@ -55,6 +56,12 @@ export default {
     }
   },
   computed: {
+    getImgSrc () {
+      if (this.imgUrl) {
+        return this.imgUrl
+      }
+      return this.$imageHost + '/image/admin/shop_beautify/add_decorete.png'
+    },
     dialogVisiable: {
       get () {
         return this.visible
@@ -67,12 +74,25 @@ export default {
   },
   data () {
     return {
-      imgDisable: false
+      // 图片弹窗
+      imgDisable: false,
+      imgPath: null,
+      imgUrl: null,
+      // 图片是否百分之百
+      whFlag: false
+    //
     }
   },
   methods: {
     addImg () {
       this.imgDisable = !this.imgDisable
+    },
+    setImg (res) {
+      console.log(res.imgUrl)
+      if (res) {
+        this.imgUrl = res.imgUrl
+      }
+      this.whFlag = Boolean(this.imgUrl)
     }
   }
 }
@@ -88,9 +108,15 @@ export default {
     line-height: 70px;
     margin-top: 10px;
     img{
+        // width: 100%;
+        // height: 100%;
         vertical-align: middle;
     }
     cursor: pointer;
+}
+.img-wh{
+    width: 100%;
+    height: 100%;
 }
 .add-image:hover{
     background: #f5f3f3;
