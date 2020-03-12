@@ -509,12 +509,6 @@ export default {
       if (newData === '1') {
         this.bottomDialogVisible = true
         this.isBottomClickIndex = 2 // 当前选中批量导出筛选的件商品
-        goodsExport({ exportRowStart: 1, exportRowEnd: this.pageParams.totalRows }).then(res => {
-          console.log(res)
-          let fileName = localStorage.getItem('V-content-disposition')
-          fileName = fileName.split(';')[1].split('=')[1]
-          download(res, decodeURIComponent(fileName))
-        })
       } else if (newData === '2') {
         let flag = this.handleToJudgeIsChecked()
         if (!flag) {
@@ -541,16 +535,6 @@ export default {
         })
         this.bottomDialogVisible = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
-        let arr = []
-        this.nowCheckAll.forEach((item, index) => {
-          arr.push(item.goodsId)
-        })
-        goodsExport({ exportRowStart: 1, exportRowEnd: this.nowCheckAll.length, goodsIds: arr }).then(res => {
-          console.log(res)
-          let fileName = localStorage.getItem('V-content-disposition')
-          fileName = fileName.split(';')[1].split('=')[1]
-          download(res, decodeURIComponent(fileName))
-        })
       }
     },
     lang () {
