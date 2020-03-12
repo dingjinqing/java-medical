@@ -90,6 +90,10 @@
 .goods_item > .goods_info > .goods_price{
   display: flex;
 }
+.goods_item > .goods_info > .goods_price > text{
+  word-break: keep-all;
+  word-wrap: break-word;
+}
 .goods_item > .goods_info > .goods_price > .num{
   flex: 1;
   text-align: right;
