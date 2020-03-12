@@ -113,6 +113,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private CouponService coupon;
     @Autowired
     private OrderRefundRecordService orderRefundRecord;
+    @Autowired
+    private ShopReturnConfigService returnCfg;
 
     @Override
 	public OrderServiceCode getServiceCode() {
@@ -581,7 +583,9 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord) throws MpException {
         List<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
-        //货到付款 、拼团抽奖未中奖（TODO）、退运费、手动退款
+        //售后商品库存配置
+        Byte autoReturnGoodsStock = returnCfg.getAutoReturnGoodsStock();
+        //货到付款 、拼团抽奖未中奖、退运费、手动退款
         if(OrderConstant.IS_COD_NO.equals(order.getIsCod()) ||
             (goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) && !groupDraw.IsWinDraw(order.getOrderSn())) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_SHIPPING_FEE) ||
@@ -589,16 +593,32 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             //不进行修改库存销量操作
             return;
         }
-        //是否恢复库存（仅限普通商品与赠品）->
-        // （(退款退货 || 换货) || (退款待发货)）
-        boolean isRestore = ((returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))
-            || (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
+        //是否恢复库存（仅限普通商品与赠品）->(配置可退 && (退款退货 || 换货)) || (退款待发货)）
+        boolean isRestore = (
+            (autoReturnGoodsStock == OrderConstant.YES && (returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))) ||
+                (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
         updateNormalStockAndSales(returnGoods, order, isRestore);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
+        //处理活动库存等
+        processAct(order, returnGoods, goodsType, isRestore);
+    }
+
+    /**
+     *
+     * @param order 订单
+     * @param returnGoods 退款商品
+     * @param goodsType 订单类型
+     * @param isRestore 是否可退
+     * @throws MpException
+     */
+    private void processAct(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, List<Byte> goodsType, boolean isRestore) throws MpException {
+        if(!isRestore) {
+            return;
+        }
         for (Byte type : goodsType) {
-            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type) && isRestore && OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()){
+            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
                 //赠品修改活动库存
                 orderCreateMpProcessorFactory.processReturnOrder(BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
             }else {
@@ -620,11 +640,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
 		List<Integer> proIds = returnGoods.stream().map(OrderReturnGoodsVo::getProductId).collect(Collectors.toList());
 		//查询规格
-		Map<Integer, GoodsSpecProductRecord> products = null;
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
-			//待发货涉及恢复规格库存
-			products = goodsSpecProduct.selectSpecByProIds(proIds);
-		}
+        Map<Integer, GoodsSpecProductRecord> products = goodsSpecProduct.selectSpecByProIds(proIds);
 		//更新规格数组
 		ArrayList<GoodsSpecProductRecord> updateProducts = new ArrayList<GoodsSpecProductRecord>();
 		//查询商品
