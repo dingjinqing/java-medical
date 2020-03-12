@@ -1,2 +1,6 @@
 <!--components/decorate/form/index/index.wxml-->
-<text>components/decorate/form/index/index.wxml</text>
+<view class="form-container">
+  <block>
+    <v-advertise></v-advertise>
+  </block>
+</view>
