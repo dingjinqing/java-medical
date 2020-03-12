@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vpu.mp.db.shop.Tables.*;
 
@@ -108,6 +107,7 @@ public class FriendPromoteService extends ShopBaseService {
 		if (FriendPromoteListParam.STOPPED.equals(param.getActState())) {
 			sql = sql.and(fpa.IS_BLOCK.eq((byte) 1));
 		}
+		sql.orderBy(fpa.ID.desc());
 		// 整合分页信息
 		PageResult<FriendPromoteListVo> pageResultVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				FriendPromoteListVo.class);
