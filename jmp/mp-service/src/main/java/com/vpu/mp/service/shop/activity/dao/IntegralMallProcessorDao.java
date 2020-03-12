@@ -216,7 +216,7 @@ public class IntegralMallProcessorDao extends IntegralConvertService {
                     BigDecimalUtil.divide(new BigDecimal(prd.getScore()), new BigDecimal(scoreCfgService.getScoreProportion()))));
             goods.setGoodsScore(prd.getScore());
             //后台设置此次需要的积分
-            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore());
+            param.setScoreDiscount(param.getScoreDiscount() + goods.getGoodsScore() * goods.getGoodsNumber());
         }
     }
 
