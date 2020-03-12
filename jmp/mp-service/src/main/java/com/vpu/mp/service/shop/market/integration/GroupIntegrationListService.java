@@ -5,10 +5,13 @@ import static com.vpu.mp.db.shop.tables.GroupIntegrationList.GROUP_INTEGRATION_L
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.jooq.DatePart;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
@@ -28,12 +31,14 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.IsGroupper;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationInfoPojo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListDetailParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums.IsGrouper;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums.IsNew;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListEnums.Status;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListParticipationVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationListPojo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationMaVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationSuccessVo;
@@ -410,7 +415,17 @@ public class GroupIntegrationListService extends ShopBaseService {
      * @return
      */
 	public int getExistGroup(int userId,int actId){
-	    return db().select(GROUP_INTEGRATION_LIST.GROUP_ID).from(GROUP_INTEGRATION_LIST.leftJoin(GROUP_INTEGRATION_DEFINE).on(GROUP_INTEGRATION_DEFINE.ID.eq(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID))).where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_INTEGRATION_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_INTEGRATION_LIST.STATUS.eq(Status.UNDERWAY.value())).and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGrouper.TRUE.value())).and(GROUP_INTEGRATION_LIST.USER_ID.eq(userId)).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId))).fetchOptionalInto(Integer.class).orElse(0);
+		 Integer groupId = db().select(GROUP_INTEGRATION_LIST.GROUP_ID)
+				.from(GROUP_INTEGRATION_LIST.leftJoin(GROUP_INTEGRATION_DEFINE)
+						.on(GROUP_INTEGRATION_DEFINE.ID.eq(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID)))
+				.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+						.and(GROUP_INTEGRATION_LIST.STATUS.eq(Status.UNDERWAY.value()))
+						.and(GROUP_INTEGRATION_LIST.IS_GROUPER.eq(IsGrouper.TRUE.value()))
+						.and(GROUP_INTEGRATION_LIST.USER_ID.eq(userId))
+						.and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(actId)))
+				.fetchOneInto(Integer.class);
+		return groupId==null?0:groupId;
     }
 	
 	public List<GroupIntegrationMaVo> getPinIntegrationGroupDetail(Integer id, Integer groupId) {
@@ -478,6 +493,45 @@ public class GroupIntegrationListService extends ShopBaseService {
 		return db().selectFrom(GROUP_INTEGRATION_LIST).where(GROUP_INTEGRATION_LIST.USER_ID.eq(userId).and(
 				GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId).and(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId))))
 				.fetchAny();
+	}
+
+	
+	public List<GroupIntegrationInfoPojo> getPinGroupByUser(Integer userId, Timestamp time) {
+		Date date = new Date(time.getTime());
+		return db().select(GROUP_INTEGRATION_LIST.fields())
+				.select(GROUP_INTEGRATION_DEFINE.ID.as("pinInteId"), GROUP_INTEGRATION_DEFINE.NAME,
+						GROUP_INTEGRATION_DEFINE.LIMIT_AMOUNT, GROUP_INTEGRATION_DEFINE.DIVIDE_TYPE)
+				.from(GROUP_INTEGRATION_LIST, GROUP_INTEGRATION_DEFINE)
+				.where(GROUP_INTEGRATION_LIST.USER_ID.eq(userId)
+						.and(GROUP_INTEGRATION_DEFINE.ID.eq(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID))
+						.and(DSL.dateAdd(GROUP_INTEGRATION_LIST.START_TIME.cast(Date.class), 5, DatePart.DAY).ge(date)))
+				.orderBy(GROUP_INTEGRATION_LIST.START_TIME.desc()).fetchInto(GroupIntegrationInfoPojo.class);
+	}
+	
+	public List<GroupIntegrationListPojo> getGroupInfo(Integer pinInteId, Integer groupId) {
+		return db().selectFrom(GROUP_INTEGRATION_LIST).where(
+				GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)))
+				.fetchInto(GroupIntegrationListPojo.class);
+	}
+	
+	/**
+	 * 开团
+	 * @param userId
+	 * @param pinInteId
+	 * @return
+	 */
+	public int startNewGroup(Integer userId, Integer pinInteId) {
+		List<Integer> existGroups = db().select(GROUP_INTEGRATION_LIST.GROUP_ID).from(GROUP_INTEGRATION_LIST)
+				.where(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)).groupBy(GROUP_INTEGRATION_LIST.GROUP_ID)
+				.fetchInto(Integer.class);
+		int groupId = 0;
+		if (existGroups.size() > 0) {
+			groupId = existGroups.size();
+		} else {
+			groupId = 1;
+		}
+		int addPinGroup = addPinGroup(groupId, userId, pinInteId, IsGrouper.TRUE.value(), IsNew.NO.value(), null);
+		return groupId;
 	}
 }
 
