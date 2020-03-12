@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 
@@ -80,6 +81,10 @@ public class NormalCardVo extends BaseCardVo {
 	 * 续费信息
 	 */
 	protected CardRenew cardRenew;
+	/**
+	 * 	自定义权益信息
+	 */
+	protected CardCustomRights customRights;
 
 	/**
 	 * 设置开关及是否过期
