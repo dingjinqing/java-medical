@@ -392,7 +392,7 @@
       <div
         class="bottomTip"
         :style="isBottomClickIndex===2 || isBottomClickIndex===3?'text-align:left':''"
-      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${screenNum}条数据,是否确认导出？`:`根据以下条件筛选出${nowCheckAll.length}条数据,是否确认导出？`}}</div>
+      >{{isBottomClickIndex===0?'确认要下架吗?':isBottomClickIndex===1?'确认要删除已选商品吗?':isBottomClickIndex===2?`根据以下条件筛选出${screenNum}条数据,是否确认导出？`:`根据以下条件筛选出${checkScreenNum}条数据,是否确认导出？`}}</div>
       <div
         style="margin-top:10px"
         v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
@@ -461,7 +461,8 @@ export default {
       nowCheckAll: [], // 当前选中的总数
       batchSetupVisible: false, // 批量设置弹窗flag
       exportRowEnd: null, // 导出的商品数量
-      screenNum: '' // 筛选得数量
+      screenNum: '', // 筛选得数量
+      checkScreenNum: '' // 根据已勾选查询的筛选数量
     }
   },
   computed: {
@@ -523,6 +524,21 @@ export default {
           })
           return
         }
+        // 查询筛选数量
+        let arr = []
+        this.nowCheckAll.forEach((item, index) => {
+          arr.push(item.goodsId)
+        })
+        let params = {}
+        this.filterData.exportRowStart = 1
+        params = Object.assign(this.filterData, { goodsIds: arr })
+        this.filterData.exportRowEnd = 5000
+        getExportTotalRows(params).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.checkScreenNum = res.content
+          }
+        })
         this.bottomDialogVisible = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
         let arr = []
@@ -883,7 +899,7 @@ export default {
           })
           let params = {}
           params = Object.assign(this.filterData, { goodsIds: arr1 })
-          this.filterData.exportRowEnd = arr1.length
+          this.filterData.exportRowEnd = this.checkScreenNum
           goodsExport(params).then(res => {
             console.log(res)
             let fileName = localStorage.getItem('V-content-disposition')
