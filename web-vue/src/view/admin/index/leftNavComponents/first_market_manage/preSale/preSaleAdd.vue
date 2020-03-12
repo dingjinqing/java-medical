@@ -6,8 +6,16 @@
 <template>
   <div>
     <div class="wrapper">
-      <el-form label-width="120px">
-        <el-form-item label="活动类型：">
+      <el-form
+        label-width="130px"
+        ref="param"
+        :model="param"
+        :rules="formRules"
+      >
+        <el-form-item
+          label="活动类型："
+          prop="presaleType"
+        >
           <el-radio
             v-for="(item, index) in presaleTypes"
             :key="index"
@@ -15,7 +23,10 @@
             :label="index"
           >{{item}}</el-radio>
         </el-form-item>
-        <el-form-item label="活动名称：">
+        <el-form-item
+          label="活动名称："
+          prop="presaleName"
+        >
           <el-input
             v-model="param.presaleName"
             size="small"
@@ -30,14 +41,20 @@
         >
           <template>
             <div style="color:#999">请设置定金支付时间以及尾款支付时间，最多可配置两个支付定金时段，定金支付的截止时间不能大于尾款支付的截止时间</div>
-            <el-form label-width="120px">
-              <el-form-item label="定金支付时间：">
+            <el-form label-width="130px">
+              <el-form-item
+                label="定金支付时间："
+                :rules="[{required: true}]"
+                prop="preTime1Range"
+              >
                 <el-date-picker
-                  v-model="preTime1Range"
+                  v-model="param.preTime1Range"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
+                  @change="dateChange(param.preTime1Range)"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   size="small"
                   :default-time="['00:00:00', '23:59:59']"
                 >
@@ -67,13 +84,19 @@
                   @click="param.prePayStep=1"
                 >删除</el-button>
               </el-form-item>
-              <el-form-item label="尾款支付时间：">
+              <el-form-item
+                label="尾款支付时间："
+                prop="tailPayTimeRange"
+                :rules="[{required: true}]"
+              >
                 <el-date-picker
-                  v-model="tailPayTimeRange"
+                  v-model="param.tailPayTimeRange"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
+                  @change="endMoneyTime(param.tailPayTimeRange)"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   size="small"
                   :default-time="['00:00:00', '23:59:59']"
                 >
@@ -88,7 +111,7 @@
           label="定金支付时间："
         >
           <el-date-picker
-            v-model="preTime1Range"
+            v-model="param.preTime1Range"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始时间"
@@ -98,7 +121,10 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="活动商品：">
+        <el-form-item
+          label="活动商品："
+          prop="goodsId"
+        >
           <el-input
             :disabled="true"
             v-model="goodsRow.goodsName"
@@ -120,7 +146,10 @@
           >选择商品
           </el-button>
         </el-form-item>
-        <el-form-item label="发货时间：">
+        <el-form-item
+          label="发货时间："
+          prop="deliverType"
+        >
           <div>
             <el-radio
               v-model="param.deliverType"
@@ -132,6 +161,7 @@
               size="small"
               style="width:190px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              :rule="[{message:'请指定发货开始时间', trigger:'blur'}]"
             >
             </el-date-picker>
           </div>
@@ -149,7 +179,10 @@
             <span style="margin-left:10px">天后发货</span>
           </div>
         </el-form-item>
-        <el-form-item label="优惠叠加策略：">
+        <el-form-item
+          label="优惠叠加策略："
+          prop="discountTypes"
+        >
           <el-radio
             v-model="param.discountType"
             v-for="(item, index) in discountTypes"
@@ -158,7 +191,10 @@
           >{{item}}</el-radio>
           <span class="textColor">预售商品结算时是否可与会员卡折扣、优惠券叠加使用</span>
         </el-form-item>
-        <el-form-item label="定金退款策略：">
+        <el-form-item
+          label="定金退款策略："
+          prop="returnType"
+        >
           <el-radio
             v-model="param.returnType"
             v-for="(item, index) in returnTypes"
@@ -167,7 +203,10 @@
           >{{item}}</el-radio>
           <span class="textColor">选择自动退回定金，则在指定时间内未支付尾款的订单，将退回定金到原支付账户</span>
         </el-form-item>
-        <el-form-item label="预售数量展示：">
+        <el-form-item
+          label="预售数量展示："
+          prop="showSaleNumber"
+        >
           <el-radio
             v-model="param.showSaleNumber"
             v-for="(item, index) in showSaleNumberTypes"
@@ -176,7 +215,10 @@
           >{{item}}</el-radio>
           <span class="textColor">当前活动商品的预售数量是否展示在商品详情页</span>
         </el-form-item>
-        <el-form-item label="商品购买方式：">
+        <el-form-item
+          label="商品购买方式："
+          prop="buyType"
+        >
           <el-radio
             v-model="param.buyType"
             v-for="(item, index) in buyTypes"
@@ -585,12 +627,10 @@ export default {
       showMore: true,
       // 活动状态,
       status: null,
-      // 1段定金时间
-      preTime1Range: [],
+
       // 2段定金时间
       preTime2Range: [],
-      // 尾款支付时间
-      tailPayTimeRange: [],
+
       // 全款支付时间
       payTimeRange: [],
       // 指定发货时间
@@ -623,6 +663,10 @@ export default {
        * 请求参数
        */
       param: {
+        // 1段定金时间
+        preTime1Range: [],
+        // 尾款支付时间
+        tailPayTimeRange: [],
         presaleType: 0,
         presaleName: '',
         prePayStep: 1,
@@ -646,6 +690,20 @@ export default {
         shareImgAction: 0,
         shareImg: '',
         products: []
+      },
+      formRules: {
+        presaleType: { required: true },
+        presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
+        preTime1Range: { message: '请填写定金支付时间', trigger: 'blur' },
+        tailPayTimeRange: { required: true, message: '请填写尾款支付时间', trigger: 'blur' },
+        goodsId: [
+          { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
+        ],
+        deliverType: { required: true },
+        discountTypes: { required: true },
+        returnType: { required: true },
+        showSaleNumber: { required: true },
+        buyType: { required: true }
       }
     }
   },
@@ -691,6 +749,16 @@ export default {
         callback()
       }
     },
+    dateChange (date) {
+      // console.log(val, 'get val--')
+      this.param.preStartTime = date[0]
+      this.param.preEndTime = date[1]
+    },
+    endMoneyTime (val) {
+      console.log(val, 'get val--')
+      this.param.startTime = val[0]
+      this.param.endTime = val[1]
+    },
     // 保存
     add () {
       const then = r => this.gotoHome()
@@ -710,17 +778,17 @@ export default {
       this.formatTimes()
     },
     formatTimes () {
-      const { isFullPay, payTimeRange, twoSteps, preTime1Range, preTime2Range, tailPayTimeRange } = this
+      const { isFullPay, payTimeRange, twoSteps, preTime2Range } = this
       if (isFullPay) {
         this.param.startTime = format(payTimeRange[0])
         this.param.endTime = format(payTimeRange[1])
-        this.param.preStartTime = format(preTime1Range[0])
-        this.param.preEndTime = format(preTime1Range[1])
+        this.param.preStartTime = format(this.param.preTime1Range[0])
+        this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
-        this.param.startTime = format(tailPayTimeRange[0])
-        this.param.endTime = format(tailPayTimeRange[1])
-        this.param.preStartTime = format(preTime1Range[0])
-        this.param.preEndTime = format(preTime1Range[1])
+        this.param.startTime = format(this.param.tailPayTimeRange[0])
+        this.param.endTime = format(this.param.tailPayTimeRange[1])
+        this.param.preStartTime = format(this.param.preTime1Range[0])
+        this.param.preEndTime = format(this.param.preTime1Range[1])
         if (twoSteps) {
           this.param.preStartTime2 = format(preTime2Range[0])
           this.param.preEndTime2 = format(preTime2Range[1])
@@ -741,14 +809,14 @@ export default {
         if (content) {
           if (content.presaleType === 1) {
             // 全款购买 - 定金支付时间
-            this.preTimeRange = [content.startTime, content.endTime]
+            this.param.preTimeRange = [content.startTime, content.endTime]
           } else {
             // 定金膨胀 - 定金支付时间
-            this.preTime1Range = [content.preStartTime, content.preEndTime]
+            this.param.preTime1Range = [content.preStartTime, content.preEndTime]
             this.preTime2Range = [content.preStartTimeTwo, content.preEndTimeTwo]
           }
           // 尾款支付时间
-          this.tailPayTimeRange = [content.startTime, content.endTime]
+          this.param.tailPayTimeRange = [content.startTime, content.endTime]
         }
       })
       // getDetail(id).then(res => {
