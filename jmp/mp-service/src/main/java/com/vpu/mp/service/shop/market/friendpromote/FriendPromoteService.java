@@ -499,9 +499,9 @@ public class FriendPromoteService extends ShopBaseService {
             CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
             promoteInfo.setCanLaunch(canLaunch.getCode());
             //助力完成或者失效装修页进入后
-            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
-                promoteInfo.setPromoteStatus((byte)-1);
-            }
+//            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
+//                promoteInfo.setPromoteStatus((byte)-1);
+//            }
             //好友助力榜
             if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
                 promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
@@ -569,8 +569,26 @@ public class FriendPromoteService extends ShopBaseService {
         if (launchInfo!=null){
             promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
         }
-
+        if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
+            String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
+            if (orderSn!=null){
+                promoteInfo.setPromoteStatus((byte)2);
+            }
+        }
         return promoteInfo;
+    }
+
+    /**
+     * 得到奖品订单
+     * @param id 奖品记录id
+     * @return 订单
+     */
+    public String getRewardOrderSn(Integer id){
+        String orderSn = db().select(PRIZE_RECORD.ORDER_SN)
+            .from(PRIZE_RECORD)
+            .where(PRIZE_RECORD.ID.eq(id))
+            .fetchOneInto(String.class);
+        return orderSn;
     }
 
     /**
