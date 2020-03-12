@@ -404,8 +404,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public List<FriendPromoteSelectVo> getPromoteFailedList(Integer hours) {
 		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
 		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
-		Result<Record> fetch = db()
-				.select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
+		Result<Record> fetch = db().select(fpl.asterisk(),fpa.ACT_CODE,fpa.ACT_NAME,fpa.REWARD_CONTENT,fpa.REWARD_TYPE,fpa.FAILED_SEND_TYPE,fpa.FAILED_SEND_CONTENT).from(fpl,
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
@@ -653,7 +652,7 @@ public class FriendPromoteService extends ShopBaseService {
             if (goodsInfo==null){
                 goodsInfo = new GoodsInfo();
             }
-            goodsInfo.setMarketPrice(record.getRewardType()==ZERO?rewardContent.getMarketPrice():BigDecimal.ZERO);
+            goodsInfo.setMarketPrice(record.getRewardType()==ONE?rewardContent.getMarketPrice():BigDecimal.ZERO);
             //设置商品信息
             promoteInfo.setGoodsInfo(goodsInfo);
             //检查活动库存是否发完
