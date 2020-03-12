@@ -211,7 +211,7 @@ public class GroupBuyService extends ShopBaseService {
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_SEARCH, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.GROUP_BOOKING.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_SEARCH.getPathUrl(pathParam));
         return vo;
     }
 
