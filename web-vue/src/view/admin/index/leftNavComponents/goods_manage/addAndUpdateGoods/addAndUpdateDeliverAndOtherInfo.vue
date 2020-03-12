@@ -537,7 +537,7 @@ export default {
         isOnSale: this.goodsProductInfo.saleType === 0 ? 1 : 0
       }
 
-      retData.goodsWeight = isNumberBlank(this.goodsProductInfo.goodsWeight) ? null : this.goodsProductInfo.goodsWeight
+      retData.goodsWeight = isNumberBlank(this.goodsProductInfo.goodsWeight) ? 0 : this.goodsProductInfo.goodsWeight
       retData.deliverPlace = this.goodsProductInfo.deliverPlace
 
       if (this.cardSelectedItems.length > 0) {
