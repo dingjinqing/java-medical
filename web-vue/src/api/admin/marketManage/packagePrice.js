@@ -59,3 +59,17 @@ export function addActivity (data) {
     data: data
   })
 }
+// 打包一口价 - 编辑活动数据回显
+export function getActivityInfo (id) {
+  return service({
+    url: `/api/admin/market/packsale/select/${id}`,
+    method: 'get'
+  })
+}
+// 打包一口价 - 更新活动
+export function updateActivity (id) {
+  return service({
+    url: `/api/admin/market/packsale/update/${id}`,
+    method: 'post'
+  })
+}

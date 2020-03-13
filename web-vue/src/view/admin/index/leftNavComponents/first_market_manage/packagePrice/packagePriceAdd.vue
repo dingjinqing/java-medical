@@ -1,3 +1,6 @@
+<!--
+* 打包一口价-新增打包一口价活动
+-->
 <template>
   <div class="content">
     <div class="mian">
@@ -10,8 +13,8 @@
         <el-form-item label="活动类型：">
           <div>
             <el-radio
-              :label=1
-              v-model="param.actType"
+              :label=0
+              v-model="param.packageType"
             >
               一口价结算
             </el-radio>
@@ -19,8 +22,8 @@
           </div>
           <div>
             <el-radio
-              :label=2
-              v-model="param.actType"
+              :label=1
+              v-model="param.packageType"
             >指定折扣结算</el-radio>
             <span class="font-color">用户选择多件商品，以商家设置的折扣进行打包购买</span>
           </div>
@@ -78,7 +81,7 @@
 
         <el-form-item
           label="结算总价格："
-          v-if="param.actType === 1"
+          v-if="param.packageType === 0"
         >
           <el-input
             size="small"
@@ -89,11 +92,12 @@
 
         <el-form-item
           label="指定折扣："
-          v-if="param.actType === 2"
+          v-if="param.packageType === 1"
         >
           <el-input
             size="small"
             style="width: 100px"
+            v-model="param.totalRatio"
           ></el-input>&nbsp;&nbsp;折
         </el-form-item>
 
@@ -182,149 +186,443 @@
           <div>
             <span class="font-color">请给每个商品组分别添加商品</span>
             <div class="goods-area">
-              <div
+              <!-- <div
                 style="display: flex"
                 class="goods-num"
               >
                 <div>商品组1</div>
                 <div v-if="param.group2 === true">商品组2</div>
                 <div v-if="param.group3 === true">商品组3</div>
-              </div>
-              <div
-                class="add-btn"
-                @click="addGoods"
-              >+ 添加商品</div>
-              <div v-if="goodsList && goodsList.length >0">
-                <table class="add-goods">
-                  <thead>
-                    <tr>
-                      <th width="45%">商品名称</th>
-                      <th width="15%">价格</th>
-                      <th width="15%">库存</th>
-                      <th width="15%">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="(item, index) in goodsList"
-                      :key="item.name"
+              </div> -->
+
+              <el-tabs v-model="activeName">
+                <el-tab-pane
+                  label="第一组"
+                  name="first"
+                >
+                  <section>
+                    <div
+                      class="add-btn"
+                      @click="addGoods"
+                    >+ 添加商品</div>
+                    <div v-if="goodsList && goodsList.length >0">
+                      <table class="add-goods">
+                        <thead>
+                          <tr>
+                            <th width="45%">商品名称</th>
+                            <th width="15%">价格</th>
+                            <th width="15%">库存</th>
+                            <th width="15%">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in goodsList"
+                            :key="item.name"
+                          >
+                            <td>
+                              <div class="goods-info">
+                                <div class="goods-img">
+                                  <img
+                                    :src="item.goodsImg"
+                                    alt=""
+                                  >
+                                </div>
+                                <div class="goods-name">{{item.goodsName}}</div>
+                              </div>
+                            </td>
+                            <td>￥{{item.shopPrice}}</td>
+                            <td>{{item.goodsNumber}}</td>
+                            <td @click="deleteGoods(index)">
+                              <span style="cursor:pointer">删除</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div
+                      class="add-btn"
+                      @click="addPlateForm"
+                    >+ 添加平台分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="platformList && platformList.length"
                     >
-                      <td>
-                        <div class="goods-info">
-                          <div class="goods-img">
-                            <img
-                              :src="item.goodsImg"
-                              alt=""
-                            >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            平台分类
+                            <div class="operate">
+                              <span
+                                class="edit-icon edit"
+                                @click="editPlateformClassification"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deletePlateformClassfication"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
                           </div>
-                          <div class="goods-name">{{item.goodsName}}</div>
-                        </div>
-                      </td>
-                      <td>￥{{item.shopPrice}}</td>
-                      <td>{{item.goodsNumber}}</td>
-                      <td @click="deleteGoods(index)">
-                        <span style="cursor:pointer">删除</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in platformList"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.catName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
 
-              <!-- v-if="platformList && platformList.length" -->
-              <div
-                class="add-btn"
-                @click="addPlateForm"
-              >+ 添加平台分类</div>
-              <table
-                class="brand_table"
-                v-if="platformList && platformList.length"
-              >
-                <tbody>
-                  <tr>
-                    <th
-                      style="border-bottom: 1px solid #ddd"
-                      width="100%"
-                    >
-                      平台分类
-                      <div class="operate">
-                        <span
-                          class="edit-icon edit"
-                          @click="editPlateformClassification"
-                          v-if="!param.id"
-                        >编辑</span>
-                        <span
-                          class="delete"
-                          @click="deletePlateformClassfication"
-                          v-if="!param.id"
-                        >删除</span>
-                      </div>
-                    </th>
-                  </tr>
-                  <tr>
-                    <div class="exampleWrapper">
-                      <span class="example">示例：</span>
-                      <span class="first_cat">一级分类</span>
-                      <span class="second_cat">二级分类</span>
-                      <span class="third_cat">三级分类</span>
-                    </div>
                     <div
-                      class="bussinessGoodsName"
-                      v-for="(item, index) in platformList"
-                      :key="index"
+                      class="add-btn"
+                      @click="selectBussiness"
+                      v-if="!param.id"
+                    >+ 添加商家分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="bussinessList && bussinessList.length > 0"
                     >
-                      <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.catName}}</span>
-                    </div>
-                  </tr>
-                </tbody>
-              </table>
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            商家分类
+                            <div class="operate">
+                              <span
+                                class="edit"
+                                @click="editBussinessClassification"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deleteBussinessClassfication"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
+                          </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in bussinessList"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.sortName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </section>
+                </el-tab-pane>
 
-              <div
-                class="add-btn"
-                @click="selectBussiness"
-                v-if="!param.id"
-              >+ 添加商家分类</div>
-              <table
-                class="brand_table"
-                v-if="bussinessList && bussinessList.length > 0"
-              >
-                <tbody>
-                  <tr>
-                    <th
-                      style="border-bottom: 1px solid #ddd"
-                      width="100%"
-                    >
-                      商家分类
-                      <div class="operate">
-                        <span
-                          class="edit"
-                          @click="editBussinessClassification"
-                          v-if="!param.id"
-                        >编辑</span>
-                        <span
-                          class="delete"
-                          @click="deleteBussinessClassfication"
-                          v-if="!param.id"
-                        >删除</span>
-                      </div>
-                    </th>
-                  </tr>
-                  <tr>
-                    <div class="exampleWrapper">
-                      <span class="example">示例：</span>
-                      <span class="first_cat">一级分类</span>
-                      <span class="second_cat">二级分类</span>
-                      <span class="third_cat">三级分类</span>
-                    </div>
+                <el-tab-pane
+                  label="第二组"
+                  name="second"
+                >
+                  <section>
                     <div
-                      class="bussinessGoodsName"
-                      v-for="(item, index) in bussinessList"
-                      :key="index"
-                    >
-                      <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.sortName}}</span>
+                      class="add-btn"
+                      @click="addGoods2"
+                    >+ 添加商品</div>
+                    <div v-if="goodsList2 && goodsList2.length >0">
+                      <table class="add-goods">
+                        <thead>
+                          <tr>
+                            <th width="45%">商品名称</th>
+                            <th width="15%">价格</th>
+                            <th width="15%">库存</th>
+                            <th width="15%">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in goodsList2"
+                            :key="item.name"
+                          >
+                            <td>
+                              <div class="goods-info">
+                                <div class="goods-img">
+                                  <img
+                                    :src="item.goodsImg"
+                                    alt=""
+                                  >
+                                </div>
+                                <div class="goods-name">{{item.goodsName}}</div>
+                              </div>
+                            </td>
+                            <td>￥{{item.shopPrice}}</td>
+                            <td>{{item.goodsNumber}}</td>
+                            <td @click="deleteGoods2(index)">
+                              <span style="cursor:pointer">删除</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                  </tr>
-                </tbody>
-              </table>
+
+                    <div
+                      class="add-btn"
+                      @click="addPlateForm2"
+                    >+ 添加平台分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="platformList2 && platformList2.length"
+                    >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            平台分类
+                            <div class="operate">
+                              <span
+                                class="edit-icon edit"
+                                @click="editPlateformClassification2"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deletePlateformClassfication2"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
+                          </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in platformList2"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.catName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <div
+                      class="add-btn"
+                      @click="selectBussiness2"
+                      v-if="!param.id"
+                    >+ 添加商家分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="bussinessList2 && bussinessList2.length > 0"
+                    >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            商家分类
+                            <div class="operate">
+                              <span
+                                class="edit"
+                                @click="editBussinessClassification2"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deleteBussinessClassfication2"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
+                          </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in bussinessList2"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.sortName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </section>
+                </el-tab-pane>
+
+                <el-tab-pane
+                  label="第三组"
+                  name="third"
+                >
+                  <section>
+                    <div
+                      class="add-btn"
+                      @click="addGoods3"
+                    >+ 添加商品</div>
+                    <div v-if="goodsList3 && goodsList3.length >0">
+                      <table class="add-goods">
+                        <thead>
+                          <tr>
+                            <th width="45%">商品名称</th>
+                            <th width="15%">价格</th>
+                            <th width="15%">库存</th>
+                            <th width="15%">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in goodsList3"
+                            :key="item.name"
+                          >
+                            <td>
+                              <div class="goods-info">
+                                <div class="goods-img">
+                                  <img
+                                    :src="item.goodsImg"
+                                    alt=""
+                                  >
+                                </div>
+                                <div class="goods-name">{{item.goodsName}}</div>
+                              </div>
+                            </td>
+                            <td>￥{{item.shopPrice}}</td>
+                            <td>{{item.goodsNumber}}</td>
+                            <td @click="deleteGoods3(index)">
+                              <span style="cursor:pointer">删除</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div
+                      class="add-btn"
+                      @click="addPlateForm3"
+                    >+ 添加平台分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="platformList3 && platformList3.length"
+                    >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            平台分类
+                            <div class="operate">
+                              <span
+                                class="edit-icon edit"
+                                @click="editPlateformClassification3"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deletePlateformClassfication3"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
+                          </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in platformList3"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.catName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <div
+                      class="add-btn"
+                      @click="selectBussiness3"
+                      v-if="!param.id"
+                    >+ 添加商家分类</div>
+                    <table
+                      class="brand_table"
+                      v-if="bussinessList3 && bussinessList3.length > 0"
+                    >
+                      <tbody>
+                        <tr>
+                          <th
+                            style="border-bottom: 1px solid #ddd"
+                            width="100%"
+                          >
+                            商家分类
+                            <div class="operate">
+                              <span
+                                class="edit"
+                                @click="editBussinessClassification3"
+                                v-if="!param.id"
+                              >编辑</span>
+                              <span
+                                class="delete"
+                                @click="deleteBussinessClassfication3"
+                                v-if="!param.id"
+                              >删除</span>
+                            </div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <div class="exampleWrapper">
+                            <span class="example">示例：</span>
+                            <span class="first_cat">一级分类</span>
+                            <span class="second_cat">二级分类</span>
+                            <span class="third_cat">三级分类</span>
+                          </div>
+                          <div
+                            class="bussinessGoodsName"
+                            v-for="(item, index) in bussinessList3"
+                            :key="index"
+                          >
+                            <span :class="{'first_cat': item.level === 0, 'second_cat': item.level === 1, 'third_cat': item.level === 2}">{{item.sortName}}</span>
+                          </div>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </section>
+                </el-tab-pane>
+              </el-tabs>
+
             </div>
           </div>
         </el-form-item>
@@ -346,6 +644,16 @@
       :chooseGoodsBack="selectedGoodsIdList"
       @resultGoodsDatas="returnGoodsData"
     />
+    <ChoosingGoods
+      :tuneUpChooseGoods='tuneUpChooseGoodsDialog2'
+      :chooseGoodsBack="selectedGoodsIdList2"
+      @resultGoodsDatas="returnGoodsData2"
+    />
+    <ChoosingGoods
+      :tuneUpChooseGoods='tuneUpChooseGoodsDialog3'
+      :chooseGoodsBack="selectedGoodsIdList3"
+      @resultGoodsDatas="returnGoodsData3"
+    />
 
     <!-- 选择平台分类弹窗 -->
     <AddingBusClassDialog
@@ -353,6 +661,18 @@
       :backDataArr='platformIdList'
       :classFlag="2"
       @BusClassTrueDetailData="returnPlateformData"
+    />
+    <AddingBusClassDialog
+      :dialogVisible.sync="tuneUpPlatformDialog2"
+      :backDataArr='platformIdList2'
+      :classFlag="2"
+      @BusClassTrueDetailData="returnPlateformData2"
+    />
+    <AddingBusClassDialog
+      :dialogVisible.sync="tuneUpPlatformDialog3"
+      :backDataArr='platformIdList3'
+      :classFlag="2"
+      @BusClassTrueDetailData="returnPlateformData3"
     />
 
     <!-- 选择商家分类弹窗  -->
@@ -362,6 +682,18 @@
       :classFlag="1"
       @BusClassTrueDetailData="returnBusinessData"
     />
+    <AddingBusClassDialog
+      :dialogVisible.sync="tuneUpBussDialog2"
+      :backDataArr='bussinessIdList2'
+      :classFlag="1"
+      @BusClassTrueDetailData="returnBusinessData2"
+    />
+    <AddingBusClassDialog
+      :dialogVisible.sync="tuneUpBussDialog3"
+      :backDataArr='bussinessIdList3'
+      :classFlag="1"
+      @BusClassTrueDetailData="returnBusinessData3"
+    />
 
   </div>
 
@@ -370,40 +702,53 @@
 <script>
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import AddingBusClassDialog from '@/components/admin/addingBusClassDialog'
-import { addActivity } from '@/api/admin/marketManage/packagePrice.js'
+import { addActivity, getActivityInfo, updateActivity } from '@/api/admin/marketManage/packagePrice.js'
 
 export default {
   components: { ChoosingGoods, AddingBusClassDialog },
+  props: ['isEdite', 'editId'],
+  mounted () {
+    // 编辑初始化
+    console.log(this.isEdite, 'get isEdit-----------------------------')
+    if (this.isEdite === true) {
+      this.editPackagePriceInit()
+      console.log('success-------------------------------------------')
+    } else {
+      console.log('fail-----------------------------------------------')
+    }
+    console.log('12345--------------')
+  },
   data () {
     return {
       param: {
         id: '',
-        actType: 1, // 活动类型
+        packageType: 0, // 活动类型
         packageName: '', // 活动名称
         validity: '', // 活动时间
         startTime: '',
         endTime: '',
+        totalRatio: '', // 指定折扣
         totalMoney: '', // 总结算价格
         group1: {
-          groupName: '', // 商品组名称
-          goodsNumber: '', // 至少需要选择件数
-          goodsIdList: [], // 商品ID列表
-          catIdList: [], // 平台分类列表
-          sortIdList: [] // 商家分类列表
+          // groupName: '', // 商品组名称
+          // goodsNumber: '', // 至少需要选择件数
+          // goodsIdList: [], // 商品ID列表
+          // catIdList: [], // 平台分类列表
+          // sortIdList: [] // 商家分类列表
         },
         group2: {
-          groupName: '', // 商品组名称
-          goodsNumber: '', // 至少需要选择件数
-          goodsIdList: [], // 商品ID列表
-          catIdList: [], // 平台分类列表
-          sortIdList: [] // 商家分类列表
+          // groupName: '', // 商品组名称
+          // goodsNumber: '', // 至少需要选择件数
+          // goodsIdList: [], // 商品ID列表
+          // catIdList: [], // 平台分类列表
+          // sortIdList: [] // 商家分类列表
         },
         group3: {
-          groupName: '', // 商品组名称
-          goodsNumber: '', // 至少需要选择件数
-          goodsIdList: [], // 商品ID列表
-          catIdList: [], // 平台分类列表
-          sortIdList: [] // 商家分类列表
+          // groupName: '', // 商品组名称
+          // goodsNumber: '', // 至少需要选择件数
+          // goodsIdList: [], // 商品ID列表
+          // catIdList: [], // 平台分类列表
+          // sortIdList: [] // 商家分类列表
         },
         groupName: '', // 商品组名称
         goodsNumber: '', // 至少需要选择件数
@@ -422,16 +767,44 @@ export default {
       tuneUpChooseGoodsDialog: false,
       goodsList: [],
       selectedGoodsIdList: [],
+
+      tuneUpChooseGoodsDialog2: false,
+      goodsList2: [],
+      selectedGoodsIdList2: [],
+
+      tuneUpChooseGoodsDialog3: false,
+      goodsList3: [],
+      selectedGoodsIdList3: [],
+
       // 选择平台分类
       tuneUpPlatformDialog: false,
       platformList: [],
       platformIdList: [],
+
+      tuneUpPlatformDialog2: false,
+      platformList2: [],
+      platformIdList2: [],
+
+      tuneUpPlatformDialog3: false,
+      platformList3: [],
+      platformIdList3: [],
+
       // 选择商家分类
       tuneUpBussDialog: false,
       bussinessList: [],
       bussinessIdList: [],
+
+      tuneUpBussDialog2: false,
+      bussinessList2: [],
+      bussinessIdList2: [],
+
+      tuneUpBussDialog3: false,
+      bussinessList3: [],
+      bussinessIdList3: [],
+
       checkout: true,
-      disabled: true
+      disabled: true,
+      activeName: 'second'
     }
   },
   methods: {
@@ -453,11 +826,42 @@ export default {
       this.selectedGoodsIdList.splice(index, 1)
     },
 
-    // 添加平台分类-调起
+    // 添加商品-弹窗唤起2
+    addGoods2 () {
+      this.tuneUpChooseGoodsDialog2 = !this.tuneUpChooseGoodsDialog2
+    },
+    returnGoodsData2 (val) {
+      console.log(val, 'goodsInfo')
+      this.goodsList2 = val
+      this.selectedGoodsIdList2 = val.map(item => item.goodsId)
+      console.log(this.selectedGoodsIdList, 'getid')
+    },
+    deleteGoods2 (index) {
+      console.log(index, 'index-data')
+      this.goodsList2.splice(index, 1)
+      this.selectedGoodsIdList2.splice(index, 1)
+    },
+
+    // 添加商品-弹窗唤起3
+    addGoods3 () {
+      this.tuneUpChooseGoodsDialog3 = !this.tuneUpChooseGoodsDialog3
+    },
+    returnGoodsData3 (val) {
+      console.log(val, 'goodsInfo')
+      this.goodsList3 = val
+      this.selectedGoodsIdList3 = val.map(item => item.goodsId)
+      console.log(this.selectedGoodsIdList, 'getid')
+    },
+    deleteGoods3 (index) {
+      console.log(index, 'index-data')
+      this.goodsList3.splice(index, 1)
+      this.selectedGoodsIdList3.splice(index, 1)
+    },
+
+    // 添加平台分类
     addPlateForm () {
       this.tuneUpPlatformDialog = !this.tuneUpPlatformDialog
     },
-    // 选择平台分类-弹窗数据回显
     returnPlateformData (val) {
       console.log(val, 'platform-data')
       this.platformList = val
@@ -469,6 +873,40 @@ export default {
     deletePlateformClassfication () {
       this.platformList = []
       this.platformIdList = []
+    },
+
+    // 添加平台分类2
+    addPlateForm2 () {
+      this.tuneUpPlatformDialog2 = !this.tuneUpPlatformDialog2
+    },
+    returnPlateformData2 (val) {
+      console.log(val, 'platform-data')
+      this.platformList2 = val
+      this.platformIdList2 = val.map(item => item.catId)
+    },
+    editPlateformClassification2 () {
+      this.tuneUpPlatformDialog2 = !this.tuneUpPlatformDialog2
+    },
+    deletePlateformClassfication2 () {
+      this.platformList2 = []
+      this.platformIdList2 = []
+    },
+
+    // 添加平台分类3
+    addPlateForm3 () {
+      this.tuneUpPlatformDialog3 = !this.tuneUpPlatformDialog3
+    },
+    returnPlateformData3 (val) {
+      console.log(val, 'platform-data')
+      this.platformList3 = val
+      this.platformIdList3 = val.map(item => item.catId)
+    },
+    editPlateformClassification3 () {
+      this.tuneUpPlatformDialog3 = !this.tuneUpPlatformDialog3
+    },
+    deletePlateformClassfication3 () {
+      this.platformList3 = []
+      this.platformIdList3 = []
     },
 
     // 商家分类弹窗相关逻辑处理
@@ -488,12 +926,48 @@ export default {
       this.bussinessList = []
       this.bussinessIdList = []
     },
+
+    // 添加商家分类2
+    selectBussiness2 () {
+      this.tuneUpBussDialog2 = !this.tuneUpBussDialog2
+    },
+    returnBusinessData2 (val) {
+      console.log(val, 'buiness data--')
+      this.bussinessList2 = val
+      this.bussinessIdList2 = val.map(item => item.sortId)
+    },
+    editBussinessClassification2 () {
+      this.tuneUpBussDialog2 = !this.tuneUpBussDialog2
+    },
+    deleteBussinessClassfication2 () {
+      this.bussinessList2 = []
+      this.bussinessIdList2 = []
+    },
+
+    // 添加商家分类3
+    selectBussiness3 () {
+      this.tuneUpBussDialog3 = !this.tuneUpBussDialog3
+    },
+    returnBusinessData3 (val) {
+      console.log(val, 'buiness data--')
+      this.bussinessList3 = val
+      this.bussinessIdList3 = val.map(item => item.sortId)
+    },
+    editBussinessClassification3 () {
+      this.tuneUpBussDialog3 = !this.tuneUpBussDialog3
+    },
+    deleteBussinessClassfication3 () {
+      this.bussinessList3 = []
+      this.bussinessIdList3 = []
+    },
     submitData () {
       let obj = {
+        'packageType': this.param.packageType,
         'packageName': this.param.packageName,
         'startTime': this.param.validity[0],
         'endTime': this.param.validity[1],
         'totalMoney': this.param.totalMoney,
+        'totalRatio': this.param.totalRatio,
         'group1': {
           'groupName': this.param.groupName,
           'goodsNumber': this.param.goodsNumber,
@@ -504,20 +978,54 @@ export default {
         'group2': {
           'groupName': this.param.groupName2,
           'goodsNumber': this.param.goodsNumber3,
-          'catIdList': [1, 3]
+          'goodsIdList': this.selectedGoodsIdList2,
+          'catIdList': this.platformIdList2,
+          'sortIdList': this.bussinessIdList2
         },
         'group3': {
           'groupName': this.param.groupName3,
           'goodsNumber': this.param.goodsNumber3,
-          'sortIdList': [3]
+          'goodsIdList': this.selectedGoodsIdList3,
+          'catIdList': this.platformIdList3,
+          'sortIdList': this.bussinessIdList3
         }
       }
       addActivity(obj).then(res => {
-        if (res && res.error === 0) {
+        if (res.error === 0) {
           console.log(res, 'add res')
-          this.$message.sucess('添加成功')
+          this.$message.success('添加成功')
+          this.$emit('packagePriceAddSubmit')
+        } else {
+          this.$message.error(res.message)
         }
       }).catch(err => console.log(err))
+    },
+
+    // 编辑初始化
+    editPackagePriceInit () {
+      getActivityInfo(this.editId).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          var data = res.content
+          this.param = data
+          this.param.validity = [data.startTime, data.endTime]
+          this.checkout = true
+          this.disabled = true
+          this.param.groupName = data.group1.groupName
+          this.param.goodsNumber = data.group1.goodsNumber
+          console.log(this.param.groupName)
+          console.log(this.param, 'get-return-data')
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+
+    // 更新活动
+    updateActivity () {
+      updateActivity().then((res) => {
+
+      })
     }
   }
 }

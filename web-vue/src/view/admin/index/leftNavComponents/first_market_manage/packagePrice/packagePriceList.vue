@@ -82,12 +82,11 @@
 
     <!-- 添加 / 编辑 -->
     <packagePriceAdd
-      isEdite="isEdite"
+      :isEdite="isEdite"
+      :editId="editId"
+      @packagePriceAddSubmit="packagePriceAddSubmit"
       v-if="tableListView === false"
     />
-
-    <!-- :editId="editId" -->
-    <!-- @addPackageSubmit="addPackageSubmit" -->
 
     <!-- 表格内容 -->
     <div
@@ -307,7 +306,8 @@ export default {
       },
       tableInfo: [],
       pageInfo: {},
-      isEdit: true // 编辑状态
+      isEdite: true, // 编辑状态
+      editId: ''
     }
   },
 
@@ -421,14 +421,19 @@ export default {
         })
       })
     },
+    packagePriceAddSubmit () {
+      this.param.activityStatus = '1'
+      this.initDataList()
+    },
 
     addActivity () {
-      this.isEdit = false
+      this.isEdite = false
       this.showTabAddGroup('添加打包一口价活动')
     },
     gotoEdit (id, row) {
+      console.log(id)
       this.editId = id
-      this.isEdit = true
+      this.isEdite = true
       this.showTabAddGroup('编辑打包一口价活动')
     },
     // 查看砍价订单
