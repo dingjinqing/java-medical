@@ -12,7 +12,11 @@ export const en = {
   scorePayDesOne: 'The number of points paid per order is less than',
   scorePayDesTwo: "Points, can't pay with points",
   print:
-    'Please fill in a value greater than 100 points and an integer multiple of 100 points',
+    'Please fill in a value greater than',
+  print2:
+    ' points and an integer multiple of ',
+  print3:
+    ' points',
   scoreScale: 'point deduction ratio',
   scoreScaleDesOne:
     "The user can use the points to deduct the amount of the order's discounted amount",
