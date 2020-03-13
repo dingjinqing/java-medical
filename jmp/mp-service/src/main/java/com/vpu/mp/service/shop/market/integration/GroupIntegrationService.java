@@ -683,6 +683,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupStartVo vo = new GroupStartVo();
 		BeanUtils.copyProperties(pinInteInfo, vo);
 		CanPinInte canPinInte = new CanPinInte();
+		vo.setInviteUser(inviteUser);
 		long endTime = pinInteInfo.getEndTime().getTime();
 		long nowTime = DateUtil.getLocalDateTime().getTime();
 		long remainingTime = endTime > nowTime ? endTime - nowTime : 0L;
@@ -698,6 +699,7 @@ public class GroupIntegrationService extends ShopBaseService {
 					canPinInte.setStatus(IS_DAY_DIVIDE_N);
 					// TODO 国际化
 					canPinInte.setMsg("已在团中");
+					vo.setInviteUser(gIntegrationMaVo.getInviteUser());
 					vo.setCanPin(canPinInte);
 					logger().info("已在团中");
 					return vo;
@@ -720,7 +722,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						IS_DAY_DIVIDE_Y, inviteUser);
 			}
 			if (addPinGroup == 0) {
-				canPinInte.setStatus(IS_DAY_DIVIDE_N);
+				canPinInte.setStatus(STATUS_EIGHT);
 				// TODO 国际化
 				canPinInte.setMsg("参团失败");
 				vo.setCanPin(canPinInte);
@@ -778,7 +780,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						}
 					}
 				}
-
+				logger().info("邀请人信息");
 				vo.setGroupId(groupId);
 				UserRecord userByUserId = userService.getUserByUserId(inviteUser);
 				String username = "未知小伙伴";
@@ -1068,6 +1070,9 @@ public class GroupIntegrationService extends ShopBaseService {
 			if(item.getIsGrouper().equals(STATUS_ONE)) {
 				groupIntegration=item;
 			}
+			if(item.getUserId().equals(userId)) {
+				inviteUser=item.getInviteUser();
+			}
 		}
 		long startTime = groupIntegration.getStartTime().getTime();
 		long endTime = groupIntegration.getGroupEndTime().getTime();
@@ -1119,7 +1124,6 @@ public class GroupIntegrationService extends ShopBaseService {
 				Integer canIntegration = groupInfo.get(0).getCanIntegration();
 				vo.setCanIntegration(canIntegration);
 				vo.setUserNum(groupInfo.size());
-				vo.setGroupInfo(groupInfo);
 				vo.setState(STATUS_ONE);
 				vo.setMsg("进行中");
 			}

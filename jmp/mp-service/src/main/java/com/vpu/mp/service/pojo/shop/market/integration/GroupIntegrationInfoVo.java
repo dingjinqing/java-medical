@@ -38,8 +38,6 @@ public class GroupIntegrationInfoVo {
 	private Byte state;
 	private String msg;
 	private Integer userNum;
-	/**进行中 state为1时候返回*/
-	private List<GroupIntegrationListPojo> groupInfo;
 	/**拼团成功 state为2时候返回*/
 	private List<GroupIntegrationMaVo> pinInteGroupInfo;
 }
