@@ -110,7 +110,8 @@ global.wxPage({
     this.setData({
       scrollIntoId: e.currentTarget.id,
       pageParams: null,
-      dataList: []
+      dataList: [],
+      searchInput:''
     });
     this.requestList();
   },

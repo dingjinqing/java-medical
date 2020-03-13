@@ -55,6 +55,11 @@ global.wxComponent({
         showSpec: true
       })
     },
+    setUnselectData(data){
+      this.setData({
+        unselect_spec_names:data.detail.unselect_spec_names
+      })
+    },
     getProductData(data) {
       this.setData({
         product: data.detail

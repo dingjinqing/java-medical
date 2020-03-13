@@ -3,14 +3,14 @@
   <v-goods-num-cfg wx:if="{{productsInfo.defaultPrd}}"  limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <view class="flex_box" wx:if="{{!productsInfo.defaultPrd}}" bindtap="specDialogShow">
     <view class="item_left">
-      选择
+      {{unselect_spec_names ? '请' : '已'}}选择
     </view>
-    <view class="item_middle">{{product.prdDesc}}</view>
+    <view class="item_middle">{{unselect_spec_names ? unselect_spec_names : product.prdDesc }}</view>
     <view class="item_right">></view>
   </view>
 </view>
 
-<v-spec-dialog show="{{showSpec}}" trigger-button="{{triggerButton}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData">
+<v-spec-dialog show="{{showSpec}}" trigger-button="{{triggerButton}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData" bindunselect="setUnselectData">
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <v-item-footer wx:if="{{showSpec}}" slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
+  <v-item-footer wx:if="{{showSpec}}" products="{{productsInfo.products}}" slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
 </v-spec-dialog>

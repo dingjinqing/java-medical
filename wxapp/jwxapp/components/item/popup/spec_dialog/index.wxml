@@ -27,8 +27,13 @@
             <text class="spec-price-tag" wx:if="{{productsInfo.activity.activityType === 22 || (productsInfo.activity.activityType === 98 && filter.getActPrd(checkedProduct,activityPrds).isGradePrice)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">会员价</text>
             <text class="price">{{productsInfo.activity.activityType !== 4 ? '￥' : ''}}{{checkedProduct.prdRealPrice}}</text>
           </text>
-          <text class="marking-price" wx:if="{{checkedProduct.prdLinePrice}}">￥{{checkedProduct.prdLinePrice}}</text>
-          <text>库存：{{checkedProduct.prdNumber}}</text>
+          <block wx:if="{{unselect_spec_names}}">
+            <text>请选择：{{unselect_spec_names}}</text>
+          </block>
+          <block wx:else>
+            <text class="marking-price" wx:if="{{checkedProduct.prdLinePrice}}">￥{{checkedProduct.prdLinePrice}}</text>
+            <text>库存：{{checkedProduct.prdNumber}}</text>
+          </block>
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>

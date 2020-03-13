@@ -215,7 +215,6 @@ global.wxComponent({
       value: null,
       observer(newVal) {
           console.log(newVal)
-          this.initFooter()
       }
     },
     triggerButton: {
@@ -230,7 +229,10 @@ global.wxComponent({
     },
     products:{
       type:Array,
-      value:null
+      value:null,
+      observer(val){
+        this.initFooter()
+      }
     }
   },
   /**

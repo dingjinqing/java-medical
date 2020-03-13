@@ -101,6 +101,7 @@ global.wxComponent({
       type: String,
       value: '',
       observer(val){
+        this.defaultSelectSpec()
         this.render()
       }
     }
@@ -131,8 +132,10 @@ global.wxComponent({
     },
     getDefaultSpec() {
       this.refresh()
+      console.log(this.skuList)
       for (var prd_specs in this.skuList) {
-        if (this.skuList[prd_specs]['prdNumber'] > 0) {
+        console.log(this.skuList[prd_specs])
+        if (this.getStockNum(this.skuList[prd_specs]) > 0) {
           return prd_specs
         }
       }
@@ -140,12 +143,12 @@ global.wxComponent({
     },
     // 渲染相关内容
     render() {
+      this.getUnSelSpecNames()
       this.refresh()
       this.getSelectPrd()
       this.setData({
         spec_list: this.specList
       })
-      console.log(this.data.spec_list)
     },
     refresh() {
       this.initSpecList()
@@ -171,6 +174,7 @@ global.wxComponent({
         if(this.data.productsInfo.activity && actPrdType[this.data.productsInfo.activity.activityType]['prdListName'])
         this.skuList[this.spec[n]['prdDesc']].actProduct = this.data.productsInfo.activity[actPrdType[this.data.productsInfo.activity.activityType]['prdListName']].find(item=>{return item.productId === this.spec[n].prdId})
       }
+      console.log(this.skuList)
       this.specList = {}
       Object.keys(this.skuList)
         .map(item => item.split(';'))
@@ -200,6 +204,7 @@ global.wxComponent({
     getSelectPrd() {
       this.select_prd = null
       var spec_list = this.specList
+      this.select_specs = this.select_specs ? this.select_specs : {}
       if (Object.keys(this.select_specs).length == Object.keys(spec_list).length) {
         var prd_list = this.skuList
         var specs = this.select_specs
@@ -266,11 +271,11 @@ global.wxComponent({
     },
     check(specName, valName) {
       var spec_list = this.specList
+      this.select_specs = this.select_specs || {}
       if (spec_list[specName][valName].gary) {
         console.error(`specName:${specName} valName:${valName} can not checked`)
         return
       }
-      this.select_specs = this.select_specs || {}
       var old_val = this.select_specs[specName]
       if (old_val) {
         delete this.select_specs[specName]
@@ -295,15 +300,7 @@ global.wxComponent({
           }
         }
         if (found) {
-          var stock = null
-          if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
-            stock = prd_list[prd_specs]['actProduct']['stock']
-          } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
-            stock = this.data.productsInfo.activity.stock
-          } else {
-            stock = prd_list[prd_specs]['prdNumber']
-          }
-          console.log(stock)
+          var stock = this.getStockNum(prd_list[prd_specs])
           if (stock >= min) return false
         }
       }
@@ -317,6 +314,31 @@ global.wxComponent({
     },
     bindClose() {
       this.triggerEvent('close')
-    }
+    },
+    getStockNum(prd_specs){
+      var stock = null
+      if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
+        stock = prd_specs['actProduct']['stock']
+      } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
+        stock = this.data.productsInfo.activity.stock
+      } else {
+        stock = prd_specs['prdNumber']
+      }
+      return stock
+    },
+    // 得到未选中的规格名
+    getUnSelSpecNames() {
+      var names = [];
+      var spec_list = this.spec_list;
+      for (var s1 in spec_list) {
+        if (!this.select_specs || !this.select_specs[s1]) {
+          names.push(s1);
+        }
+      }
+      this.setData({
+        unselect_spec_names:names.join(" ")
+      })
+      this.triggerEvent('unselect',{unselect_spec_names:this.data.unselect_spec_names})
+    },
   }
 })
