@@ -1,13 +1,14 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.DistributorLevel;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
@@ -19,15 +20,18 @@ import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * mp分销模块service
@@ -40,6 +44,15 @@ public class MpDistributionService extends ShopBaseService{
 
     @Autowired
     public BrokerageStatisticalService bs;
+
+    @Autowired
+    public UserTotalFanliService userTotalFanli;
+
+    @Autowired
+    public DistributorListService distributorList;
+
+    @Autowired
+    public DistributorGroupService distributorGroup;
 
     /**
      * 申请分销员页面信息
@@ -230,5 +243,94 @@ public class MpDistributionService extends ShopBaseService{
     public DistributionDocumentParam getDistributorDoc(){
         DistributionDocumentParam distributionDocument = distributionCfg.getDistributionDocument();
         return distributionDocument;
+    }
+
+    /**
+     * 分销个人中心
+     * @param userId
+     * @return
+     */
+    public RebateCenterVo rebateCenter(Integer userId){
+        RebateCenterVo rebateCenterVo = new RebateCenterVo();
+        //用户信息
+        BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
+        //返利信息
+        UserTotalFanliVo userRebate = this.userTotalFanli.getUserRebate(userId);
+        if(userRebate.getTotalMoney().compareTo(account)<0){
+            rebateCenterVo.setCanWithdraw(userRebate.getTotalMoney());
+        }else{
+            rebateCenterVo.setCanWithdraw(account);
+        }
+        rebateCenterVo.setTotalWithdraw(userRebate.getTotalMoney());
+        //待返利佣金
+        BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
+        rebateCenterVo.setWaitWithdraw(waitFanliMoney);
+        //邀请用户数
+        Integer inviteUserNum = this.inviteUserNum(userId);
+        rebateCenterVo.setInviteUserNum(inviteUserNum);
+        //返利订单数
+        Integer rebateOrderNum = distributorList.getRebateOrderNum(userId);
+        rebateCenterVo.setRebateOrderNum(rebateOrderNum);
+        //累积商品返利总额
+        BigDecimal TotalCanFanliMoney = this.TotalCanFanliMoney(userId);
+        rebateCenterVo.setTotalCanFanliMoney(TotalCanFanliMoney);
+        //我的等级
+        DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
+        rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
+        //我的分组
+        DistributorGroupListVo groupInfo = distributorGroup.getOneInfo(userId);
+        rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
+        return rebateCenterVo;
+
+    }
+
+    /**
+     * 待返利佣金金额
+     * @param userId
+     * @return
+     */
+    public BigDecimal waitFanliMoney(Integer userId){
+        //待返利佣金金额
+        BigDecimal waitFanliMoney = db().select(sum(ORDER_GOODS_REBATE.REAL_REBATE_MONEY).as("wait_fanli_money")).from(ORDER_GOODS_REBATE
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN)))
+            .where(ORDER_INFO.SETTLEMENT_FLAG.eq((byte)0))
+            .and(ORDER_INFO.ORDER_STATUS.ge((byte)3))
+            .and(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(userId))
+            .fetchOne().into(BigDecimal.class);
+        return waitFanliMoney;
+    }
+
+    /**
+     * 邀请用户数
+     * @param userId
+     * @return
+     */
+    public Integer inviteUserNum(Integer userId){
+        int inviteNum = db().selectCount().from(USER).where(USER.INVITE_ID.eq(userId)).fetchOne().into(Integer.class);
+        return inviteNum;
+    }
+
+    /**
+     * 累积返利商品总额
+     * @param userId
+     * @return
+     */
+    public BigDecimal TotalCanFanliMoney(Integer userId){
+        //累积返利商品总额
+        BigDecimal TotalCanFanliMoney = db().select(sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("can_fanli_goods_money"))
+            .from(USER_FANLI_STATISTICS).where(USER_FANLI_STATISTICS.FANLI_USER_ID.eq(userId))
+            .fetchOne().into(BigDecimal.class);
+        return TotalCanFanliMoney;
+    }
+
+    /**
+     * 分销员等级
+     * @param userId
+     * @return
+     */
+    public DistributorLevelParam distributorLevel(Integer userId){
+        DistributorLevelParam distributorLevelInfo = db().select(DISTRIBUTOR_LEVEL.LEVEL_NAME).from(USER.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
+            .where(USER.USER_ID.eq(userId)).fetchOne().into(DistributorLevelParam.class);
+        return distributorLevelInfo;
     }
 }
