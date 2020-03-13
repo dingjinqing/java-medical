@@ -48,10 +48,6 @@ import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
-import static com.vpu.mp.db.main.tables.ShopRenew.SHOP_RENEW;
-
-
-import jodd.util.StringUtil;
 
 /**
  * 
