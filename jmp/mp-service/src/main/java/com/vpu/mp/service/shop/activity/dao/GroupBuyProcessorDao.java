@@ -84,6 +84,8 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         }
         vo.setEndTime((groupBuyDefineRecord.getEndTime().getTime() - now.getTime())/1000);
 
+        /**拼团类型*/
+        vo.setGroupType(groupBuyDefineRecord.getActivityType());
         /**是否团长优惠*/
         vo.setIsGrouperCheap(groupBuyDefineRecord.getIsGrouperCheap());
         /**参团人数*/
