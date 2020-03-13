@@ -218,6 +218,9 @@ global.wxPage({
       serviceInfo.commImg = ''
     }
     let params = Object.assign({}, serviceInfo)
+    if (params.hasOwnProperty('commImgList')) {
+      delete params.commImgList
+    }
     util.api('/api/wxapp/store/service/createComment', function (e) {
       console.log(e)
       if (e.error === 0) {
