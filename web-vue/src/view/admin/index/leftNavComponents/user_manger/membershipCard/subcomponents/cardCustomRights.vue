@@ -94,8 +94,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .rightsContainer{
-    background: white;
-    height: 500px;
+    margin-bottom: 20px;
     /deep/ .el-form-item{
         margin-bottom: 2px;
     }

@@ -69,7 +69,8 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
@@ -261,6 +262,21 @@ public class MemberCardService extends ShopBaseService {
 			}
 			
 			List<CardRight> customRightsAll = customRights.getCustomRightsAll();
+			
+			// 将图片的URL处理成相对路径
+			for(CardRight right: customRightsAll) {
+				String imgUrl = right.getCrightImage();
+				if(!StringUtils.isBlank(imgUrl)) {
+					try {
+						URL url = new URL(imgUrl);
+						imgUrl = url.getPath();
+					} catch (MalformedURLException e) {
+						imgUrl = null;
+					}
+				}
+				right.setCrightImage(imgUrl);
+			}
+			
 			if(customRightsAll != null && customRightsAll.size()>0) {
 				rightsJson = Util.toJson(customRightsAll);
 			}
@@ -1099,6 +1115,14 @@ public class MemberCardService extends ShopBaseService {
 		
 		if(null != card.getCustomRightsFlag() ) {
 			flag = CardCustomRights.RightSwitch.values()[card.getCustomRightsFlag()];
+		}
+		// 处理图片路径
+		for(CardRight right: customRightsAll) {
+			String imgUrl = right.getCrightImage();
+			if(!StringUtils.isBlank(imgUrl)) {
+				imgUrl = domainConfig.imageUrl(imgUrl);
+			}
+			right.setCrightImage(imgUrl);
 		}
 		
 		return CardCustomRights.builder()
