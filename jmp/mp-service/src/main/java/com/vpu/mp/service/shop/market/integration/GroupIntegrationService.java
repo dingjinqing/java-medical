@@ -801,23 +801,22 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("已经存在的团id:{}",existGroup);
 			if ((groupId != null && groupId != 0)|| existGroup!=0) {
 				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
-				canPinInte.setStatus(STATUS_ZERO);
-				vo.setGroupId(existGroup);
-				// TODO 国际化
-				canPinInte.setMsg("已开团");
-				vo.setCanPin(canPinInte);
+				CanPinInte checkPin = checkPin(pinInteId, existGroup, userId);
+				if (checkPin != null) {
+					vo.setCanPin(checkPin);
+				} else {
+					canPinInte.setStatus(STATUS_ZERO);
+					vo.setGroupId(existGroup);
+					// TODO 国际化
+					canPinInte.setMsg("已开团");
+					vo.setCanPin(canPinInte);
+				}
 				return vo;
 			}else {
 				logger().info("开个团");
-
-				// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
-				CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
-				if (canApplyPinInte.getStatus() > 0) {
-					// vo.setGroupId(gIntegrationMaVo.getGroupId());
-					canPinInte.setStatus(canApplyPinInte.getStatus());
-					// TODO 国际化
-					canPinInte.setMsg(canApplyPinInte.getMsg());
-					vo.setCanPin(canPinInte);
+				CanPinInte checkPin = checkPin(pinInteId, groupId, userId);
+				if(checkPin!=null) {
+					vo.setCanPin(checkPin);
 					return vo;
 				}
 				int groupId1 = groupIntegrationList.startNewGroup(userId, pinInteId);
@@ -841,6 +840,20 @@ public class GroupIntegrationService extends ShopBaseService {
 		vo.setCanPin(canPinInte);
 		return vo;
 
+	}
+	
+	public CanPinInte checkPin(Integer pinInteId, Integer groupId,Integer userId) {
+		// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
+		CanPinInte canPinInte = new CanPinInte();
+		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
+		if (canApplyPinInte.getStatus() > 0) {
+			// vo.setGroupId(gIntegrationMaVo.getGroupId());
+			canPinInte.setStatus(canApplyPinInte.getStatus());
+			// TODO 国际化
+			canPinInte.setMsg(canApplyPinInte.getMsg());
+			return canPinInte;
+		}
+		return null;
 	}
 
 	public boolean successPinIntegration(Integer groupId, Integer pinInteId) {
