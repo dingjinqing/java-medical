@@ -673,7 +673,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void checkGoodsAndProduct(Goods goods) throws MpException {
         if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
             logger().error("checkGoodsAndProduct,商品不存在");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
         }
         if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
             logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());

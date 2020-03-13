@@ -23,10 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
@@ -176,5 +173,54 @@ public class AtomicOperation extends ShopBaseService {
         //更新库存锁
         orderInfo.updateStockLock(order, YES);
         log.info("AtomicOperation.updateStockAndSales订单库存销量更新end");
+    }
+
+    /**
+     *  检查及更新商品的库存
+     * @param goodsId 商品id
+     * @param productId 规格id
+     * @param number 数量
+     * @param limit 是否允许超买 允许true 不允许false
+     */
+    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
+    public void updataStockAndSalesByLock(@RedisLockKeys  Integer goodsId,Integer productId,Integer number,boolean limit) throws MpException {
+        List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>();
+        log.info("修改商品库存--开始");
+        GoodsSpecProductRecord productRecord = goodsSpecProduct.selectSpecByProId(productId);
+        Optional<GoodsRecord> goodsRecord = goodsService.getGoodsById(goodsId);
+        if (productRecord==null||goodsRecord.isPresent()){
+            log.error("商品或规格不存在goodsId:{},produco:{}",goodsId,productId);
+            //商品或规格row为null
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, null);
+        }
+        log.info("修改商品:{}的库存:{}，扣减库存：{}", goodsRecord.get().getGoodsName(),productRecord.getPrdNumber(), number);
+        //商品库存
+        int goodsStock = goodsRecord.get().getGoodsNumber() - number;
+        //商品销量
+        int goodsSales = goodsRecord.get().getGoodsSaleNum() + number;
+        //规格库存
+        int productStock =  goodsSpecProduct.getPrdNumberByPrdId(productId)- number;
+        if (productStock<0){
+            if(!limit) {
+                log.info("商品不允许超买");
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LOW_STOCK);
+            }
+            log.info("商品超买");
+            //不允许出现负值
+            if(goodsStock < 0) {
+                goodsStock = 0;
+            }
+            if(productStock < 0) {
+                productStock = 0;
+            }
+        }
+        List<ProductNumInfo> productNumInfoList= new ArrayList<>();
+        productNumInfoList.add(ProductNumInfo.builder().prdId(productId).prdNum(productStock).build());
+        BatchUpdateGoodsNumAndSaleNumForOrderParam goodsNumAndSaleNumForOrderParam = BatchUpdateGoodsNumAndSaleNumForOrderParam.builder().goodsId(goodsId)
+                .goodsNum(goodsStock).productsInfo(productNumInfoList)
+                .saleNum(goodsSales).build();
+        updateGoods.add(goodsNumAndSaleNumForOrderParam);
+        goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
+        log.info("修改商品库存--结束");
     }
 }
