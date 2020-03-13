@@ -1,6 +1,4 @@
 /* pages1/pinintegration/pinintegration.wxss */
-/* @import "/pages/login/login.wxss"; */
-/* @import "/pages/goodscommon/goodslabel.wxss"; */
 page{
   background: #f5f5f5;
 }
@@ -63,7 +61,7 @@ font-size:26rpx;
 line-height:60rpx;
 right:0;
 border-radius:30rpx 0rpx 0 30rpx;
-z-index:9999;
+z-index: 999;
 color:#fff;
 display:flex;
 justify-content:center;
@@ -419,7 +417,7 @@ color: transparent;
   top: 0;
   left: 0;
   overflow: hidden;
-  z-index:8;
+  z-index:9999;
 }
 .zhezhao{
   width: 100%;
@@ -430,8 +428,9 @@ color: transparent;
   width: 550rpx;
   height: 460rpx;
   position: absolute;
-  z-index: 8;
-  top: 320rpx;
+  z-index: 9999;
+  /* top: 320rpx; */
+  top: 40%;
   left: 100rpx;
   background: linear-gradient(top,#f18a4f,#e84532);
   background: -webkit-linear-gradient(top,#f18a4f,#e84532);
@@ -448,7 +447,7 @@ color: transparent;
 }
 .success_content4{
   position: absolute;
-  z-index: 8;
+  z-index: 9999;
   top: 165rpx;
   left: 25rpx;
   width: 696rpx;
@@ -456,7 +455,7 @@ color: transparent;
 }
 .success_content5{
   position: absolute;
-  z-index: 8;
+  z-index: 9999;
   top: 270rpx;
   left: 25rpx;
   width: 696rpx;
@@ -550,7 +549,7 @@ color: transparent;
   position: absolute;
   top:750rpx;
   left: 340rpx;
-  z-index: 50;
+  z-index: 9999;
 }
 .x2 {
   top: 700rpx;
@@ -621,7 +620,7 @@ color: transparent;
   top: 620rpx;
   right: 15rpx;
   color: #fff;
-  z-index: 9999;
+  z-index: 999;
   border-radius: 1000rpx;
   background: linear-gradient(top,#ff9d52,#ff785f);
   background: -webkit-linear-gradient(top,#ff9d52,#ff785f);
