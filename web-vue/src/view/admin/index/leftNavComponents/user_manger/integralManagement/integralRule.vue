@@ -140,7 +140,7 @@
                   :min="100"
                   :max="10000"
                 ></el-input-number>{{$t('scoreCfg.scorePayDesTwo')}}
-                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}</span>
+                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print2')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print3')}}</span>
               </span>
             </div>
           </el-form-item>
