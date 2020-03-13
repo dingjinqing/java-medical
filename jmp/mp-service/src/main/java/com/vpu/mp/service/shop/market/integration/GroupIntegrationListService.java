@@ -21,6 +21,8 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.shop.tables.GroupIntegrationDefine;
+import com.vpu.mp.db.shop.tables.GroupIntegrationList;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupIntegrationListRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
@@ -29,6 +31,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupInteGetEndVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationDefineEnums.IsGroupper;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationInfoPojo;
@@ -497,14 +500,13 @@ public class GroupIntegrationListService extends ShopBaseService {
 
 	
 	public List<GroupIntegrationInfoPojo> getPinGroupByUser(Integer userId, Timestamp time) {
-		Date date = new Date(time.getTime());
 		return db().select(GROUP_INTEGRATION_LIST.fields())
 				.select(GROUP_INTEGRATION_DEFINE.ID.as("pinInteId"), GROUP_INTEGRATION_DEFINE.NAME,
 						GROUP_INTEGRATION_DEFINE.LIMIT_AMOUNT, GROUP_INTEGRATION_DEFINE.DIVIDE_TYPE)
 				.from(GROUP_INTEGRATION_LIST, GROUP_INTEGRATION_DEFINE)
 				.where(GROUP_INTEGRATION_LIST.USER_ID.eq(userId)
 						.and(GROUP_INTEGRATION_DEFINE.ID.eq(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID))
-						.and(DSL.dateAdd(GROUP_INTEGRATION_LIST.START_TIME.cast(Date.class), 5, DatePart.DAY).ge(date)))
+						.and(DSL.timestampAdd(GROUP_INTEGRATION_LIST.START_TIME, 5, DatePart.DAY).ge(time)))
 				.orderBy(GROUP_INTEGRATION_LIST.START_TIME.desc()).fetchInto(GroupIntegrationInfoPojo.class);
 	}
 	
@@ -531,7 +533,34 @@ public class GroupIntegrationListService extends ShopBaseService {
 			groupId = 1;
 		}
 		int addPinGroup = addPinGroup(groupId, userId, pinInteId, IsGrouper.TRUE.value(), IsNew.NO.value(), null);
+		logger().info("groupId:{};开团结果：{}",groupId,addPinGroup);
+		if(addPinGroup==0) {
+			return 0;
+		}
 		return groupId;
 	}
+
+	/**
+	 * 得已经结束的拼团
+	 * 
+	 * @param dateTime
+	 * @return
+	 */
+	public List<GroupInteGetEndVo> getAlreadyEndPinGroup(Timestamp dateTime) {
+
+		GroupIntegrationDefine p = GROUP_INTEGRATION_DEFINE.as("p");
+		GroupIntegrationList g = GROUP_INTEGRATION_LIST.as("g");
+		List<GroupInteGetEndVo> fetchInto = db()
+				.select(p.ID, p.NAME, p.LIMIT_AMOUNT, p.DIVIDE_TYPE, g.GROUP_ID, g.CAN_INTEGRATION, g.START_TIME)
+				.from(g).leftJoin(p).on(p.ID.eq(g.INTE_ACTIVITY_ID))
+				.where(g.STATUS.eq(GroupIntegrationListEnums.Status.UNDERWAY.value()).and(g.IS_GROUPER
+						.eq(IsGrouper.TRUE.value())
+						.and((DSL.timestampAdd(g.START_TIME, 1, DatePart.DAY).lt(dateTime))
+								.or(p.END_TIME.lt(dateTime).or(p.IS_CONTINUE.eq(ZERO))))
+						.and(p.STATUS.eq(GroupIntegrationListEnums.Status.SUCCESS.value()).and(p.DEL_FLAG.eq(ZERO)))))
+				.fetchInto(GroupInteGetEndVo.class);
+		return fetchInto;
+	}
+	
 }
 

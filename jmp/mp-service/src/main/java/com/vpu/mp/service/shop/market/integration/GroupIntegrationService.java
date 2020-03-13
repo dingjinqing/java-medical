@@ -40,6 +40,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
 import com.vpu.mp.service.pojo.shop.market.integration.CanApplyPinInteVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupInteGetEndVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
@@ -857,6 +858,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	}
 
 	public boolean successPinIntegration(Integer groupId, Integer pinInteId) {
+		logger().info("successPinIntegration;groupId:{},pinInteId:{}",groupId,pinInteId);
 		GroupIntegrationDefineRecord pinInteInfo = getOneInfoByIdNoInto(pinInteId);
 		List<GroupIntegrationMaVo> groupInfo = groupIntegrationList.getPinIntegrationGroupDetail(pinInteId, groupId);
 		int userNum = groupInfo.size();
@@ -1152,5 +1154,19 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		return voList;
 		
+	}
+	
+	/**
+	 * 处理拼团结果  定时任务用
+	 */
+	public void updateState() {
+		Timestamp dateTime = DateUtil.getSqlTimestamp();
+		List<GroupInteGetEndVo> pinGroup = groupIntegrationList.getAlreadyEndPinGroup(dateTime);
+		System.out.println(pinGroup.size());
+		for (GroupInteGetEndVo item : pinGroup) {
+			System.out.println(item.getId());
+			System.out.println(item.getGroupId());
+			successPinIntegration(item.getGroupId(), item.getId());
+		}
 	}
 }
