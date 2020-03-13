@@ -2,12 +2,15 @@ package com.vpu.mp.service.pojo.wxapp.store;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jodd.util.StringUtil;
 import lombok.Data;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * @author liufei
@@ -21,6 +24,11 @@ public class StoreInfoParam {
     public Integer storeId;
     @NotNull(groups = {StorePayOrder.class})
     public Integer userId;
+
+    /**
+     * 小程序扫码进门店详情页带的参数
+     */
+    private String scene;
 
     // 以下字段为门店买单所需入参
     /**
@@ -49,4 +57,18 @@ public class StoreInfoParam {
      * "{"latitude":39.95933,"longitude":116.29845,"speed":-1,"accuracy":65,"verticalAccuracy":65,"horizontalAccuracy":65,"errMsg":"getLocation:ok"}"
      */
     public Location location;
+
+    public void setScene(){
+        if((this.storeId == null || this.storeId <= 0) && StringUtil.isNotBlank(this.scene)){
+            String scene = null;
+            try {
+                scene = URLDecoder.decode(this.scene,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+            }
+            if(StringUtil.isNotEmpty(scene)){
+                String[] sceneParam = scene.split("=",2);
+                this.storeId =  Integer.valueOf(sceneParam[1]);
+            }
+        }
+    }
 }

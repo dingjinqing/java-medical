@@ -7,6 +7,7 @@ var lon;
 var info;
 var all_serv = {};
 var id;
+var scene;
 global.wxPage({
 
   /**
@@ -26,6 +27,7 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     id = options.id;
+    scene = options.scene;
   },
 
   preview: function (e) {
@@ -108,7 +110,8 @@ global.wxPage({
       }
     }, {
       storeId: Number(id),
-      userId: 0
+      userId: 0,
+      scene:scene
     });
   },
   /**
