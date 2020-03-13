@@ -71,7 +71,11 @@
         @pagination="initDataList"
       />
     </div>
-
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+    />
   </div>
 </template>
 <script>
@@ -85,7 +89,8 @@ export default {
   components: {
     marketOrderSearchTab,
     pagination,
-    areaLinkage
+    areaLinkage,
+    exportForm: () => import('./seckillOrderExportConfirmDialog.vue')
   },
   data () {
     return {
@@ -110,7 +115,8 @@ export default {
         12: '送礼完成'
       },
       orderStatusMap: {},
-      createTime: '' // 创建时间
+      createTime: '', // 创建时间
+      showExportConfirm: false // 是否展示导出数据弹窗
     }
   },
   watch: {
@@ -169,15 +175,7 @@ export default {
 
     // 导出数据
     exportDataList () {
-      this.$confirm('此操作将导出数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.success({ message: '导出成功' })
-      }).catch(() => {
-        this.$message.info({ message: '已取消导出' })
-      })
+      this.showExportConfirm = true
     }
 
   }
