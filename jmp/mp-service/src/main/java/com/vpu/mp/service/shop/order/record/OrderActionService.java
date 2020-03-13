@@ -1,16 +1,17 @@
 package com.vpu.mp.service.shop.order.record;
 
-import static com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
-
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.OrderAction;
 import com.vpu.mp.db.shop.tables.records.OrderActionRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import org.springframework.stereotype.Service;
+
+import static com.vpu.mp.db.shop.tables.OrderAction.ORDER_ACTION;
+
+;
 
 /**
  * 	订单状态变化记录
@@ -28,19 +29,19 @@ public class OrderActionService extends ShopBaseService{
 		record.setShopId(getShopId());
 		record.setUserId(order.getUserId());
 		record.setOrderStatus(beforeStatus);
+		record.setActionNote(desc);
 		if(param.getAdminInfo() != null) {
 			record.setActionUser(param.getAdminInfo().getSysId() + "," + param.getAdminInfo().getUserName());
 		}
-		
 		if(param.getWxUserInfo() != null){
 			record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
 		}
-
-		record.setActionNote(desc);
-
         if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
             record.setActionUser("cron");
             record.setActionNote("自动任务," + record.getActionNote());
+        }else if (param.getIsMp() != null && OrderConstant.IS_MP_MQ == param.getIsMp()){
+            record.setActionUser("mq");
+            record.setActionNote("mq," + record.getActionNote());
         }
 		record.insert();
 	}
@@ -52,8 +53,20 @@ public class OrderActionService extends ShopBaseService{
 		record.setShopId(getShopId());
 		record.setUserId(order.getUserId());
 		record.setOrderStatus(beforeStatus);
-		record.setActionUser(param.getAdminInfo().getSysId()+param.getAdminInfo().getUserName());
-		record.setActionNote(desc);
+        record.setActionNote(desc);
+        if(param.getAdminInfo() != null) {
+            record.setActionUser(param.getAdminInfo().getSysId() + "," + param.getAdminInfo().getUserName());
+        }
+        if(param.getWxUserInfo() != null){
+            record.setUserOpenid(param.getWxUserInfo().getWxUser().getOpenId());
+        }
+        if(param.getIsMp() != null && OrderConstant.IS_MP_AUTO == param.getIsMp()){
+            record.setActionUser("cron");
+            record.setActionNote("自动任务," + record.getActionNote());
+        }else if (param.getIsMp() != null && OrderConstant.IS_MP_MQ == param.getIsMp()){
+            record.setActionUser("mq");
+            record.setActionNote("mq," + record.getActionNote());
+        }
 		record.insert();
 	}
 }

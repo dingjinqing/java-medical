@@ -113,6 +113,7 @@ export function seckillOrderListExport (data) {
   return service({
     url: '/api/admin/market/seckill/order/export',
     method: 'post',
-    data: data
+    data: data,
+    responseType: 'blob'
   })
 }

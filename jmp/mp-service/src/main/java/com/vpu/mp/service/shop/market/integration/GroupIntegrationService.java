@@ -683,6 +683,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupStartVo vo = new GroupStartVo();
 		BeanUtils.copyProperties(pinInteInfo, vo);
 		CanPinInte canPinInte = new CanPinInte();
+		vo.setInviteUser(inviteUser);
 		long endTime = pinInteInfo.getEndTime().getTime();
 		long nowTime = DateUtil.getLocalDateTime().getTime();
 		long remainingTime = endTime > nowTime ? endTime - nowTime : 0L;
@@ -698,6 +699,7 @@ public class GroupIntegrationService extends ShopBaseService {
 					canPinInte.setStatus(IS_DAY_DIVIDE_N);
 					// TODO 国际化
 					canPinInte.setMsg("已在团中");
+					vo.setInviteUser(gIntegrationMaVo.getInviteUser());
 					vo.setCanPin(canPinInte);
 					logger().info("已在团中");
 					return vo;
@@ -720,7 +722,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						IS_DAY_DIVIDE_Y, inviteUser);
 			}
 			if (addPinGroup == 0) {
-				canPinInte.setStatus(IS_DAY_DIVIDE_N);
+				canPinInte.setStatus(STATUS_EIGHT);
 				// TODO 国际化
 				canPinInte.setMsg("参团失败");
 				vo.setCanPin(canPinInte);
@@ -778,7 +780,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						}
 					}
 				}
-
+				logger().info("邀请人信息");
 				vo.setGroupId(groupId);
 				UserRecord userByUserId = userService.getUserByUserId(inviteUser);
 				String username = "未知小伙伴";
@@ -799,23 +801,22 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("已经存在的团id:{}",existGroup);
 			if ((groupId != null && groupId != 0)|| existGroup!=0) {
 				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
-				canPinInte.setStatus(STATUS_ZERO);
-				vo.setGroupId(existGroup);
-				// TODO 国际化
-				canPinInte.setMsg("已开团");
-				vo.setCanPin(canPinInte);
+				CanPinInte checkPin = checkPin(pinInteId, existGroup, userId);
+				if (checkPin != null) {
+					vo.setCanPin(checkPin);
+				} else {
+					canPinInte.setStatus(STATUS_ZERO);
+					vo.setGroupId(existGroup);
+					// TODO 国际化
+					canPinInte.setMsg("已开团");
+					vo.setCanPin(canPinInte);
+				}
 				return vo;
 			}else {
 				logger().info("开个团");
-
-				// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
-				CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
-				if (canApplyPinInte.getStatus() > 0) {
-					// vo.setGroupId(gIntegrationMaVo.getGroupId());
-					canPinInte.setStatus(canApplyPinInte.getStatus());
-					// TODO 国际化
-					canPinInte.setMsg(canApplyPinInte.getMsg());
-					vo.setCanPin(canPinInte);
+				CanPinInte checkPin = checkPin(pinInteId, groupId, userId);
+				if(checkPin!=null) {
+					vo.setCanPin(checkPin);
 					return vo;
 				}
 				int groupId1 = groupIntegrationList.startNewGroup(userId, pinInteId);
@@ -839,6 +840,20 @@ public class GroupIntegrationService extends ShopBaseService {
 		vo.setCanPin(canPinInte);
 		return vo;
 
+	}
+	
+	public CanPinInte checkPin(Integer pinInteId, Integer groupId,Integer userId) {
+		// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
+		CanPinInte canPinInte = new CanPinInte();
+		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
+		if (canApplyPinInte.getStatus() > 0) {
+			// vo.setGroupId(gIntegrationMaVo.getGroupId());
+			canPinInte.setStatus(canApplyPinInte.getStatus());
+			// TODO 国际化
+			canPinInte.setMsg(canApplyPinInte.getMsg());
+			return canPinInte;
+		}
+		return null;
 	}
 
 	public boolean successPinIntegration(Integer groupId, Integer pinInteId) {
@@ -1068,6 +1083,9 @@ public class GroupIntegrationService extends ShopBaseService {
 			if(item.getIsGrouper().equals(STATUS_ONE)) {
 				groupIntegration=item;
 			}
+			if(item.getUserId().equals(userId)) {
+				inviteUser=item.getInviteUser();
+			}
 		}
 		long startTime = groupIntegration.getStartTime().getTime();
 		long endTime = groupIntegration.getGroupEndTime().getTime();
@@ -1119,7 +1137,6 @@ public class GroupIntegrationService extends ShopBaseService {
 				Integer canIntegration = groupInfo.get(0).getCanIntegration();
 				vo.setCanIntegration(canIntegration);
 				vo.setUserNum(groupInfo.size());
-				vo.setGroupInfo(groupInfo);
 				vo.setState(STATUS_ONE);
 				vo.setMsg("进行中");
 			}

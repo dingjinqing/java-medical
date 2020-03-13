@@ -349,9 +349,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 自提时间
 
             // 会员卡
-            currencyMember(StringUtil.isBlank(param.getMemberCardNo()) ? null : userCard.userCardDao.getValidByCardNo(param.getMemberCardNo())).
+                currentMember(StringUtil.isBlank(param.getMemberCardNo()) ? null : userCard.userCardDao.getValidByCardNo(param.getMemberCardNo())).
             //优惠卷
-            currencyCupon(StringUtil.isBlank(param.getCouponSn()) ? null : coupon.getValidCoupons(param.getCouponSn())).
+                currentCupon(StringUtil.isBlank(param.getCouponSn()) ? null : coupon.getValidCoupons(param.getCouponSn())).
             orderType(type).
             build();
     }
@@ -369,11 +369,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             throw new MpException(JsonResultCode.CODE_ORDER_ADDRESS_NO_NULL);
         }
         //会员卡失效
-        if(StringUtil.isNotBlank(param.getMemberCardNo()) && bo.getCurrencyMember() == null) {
+        if(StringUtil.isNotBlank(param.getMemberCardNo()) && bo.getCurrentMember() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_CARD_INVALID);
         }
         //优惠卷失效
-        if(StringUtil.isNotBlank(param.getCouponSn()) && bo.getCurrencyCupon() == null) {
+        if(StringUtil.isNotBlank(param.getCouponSn()) && bo.getCurrentCupon() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_COUPON_INVALID);
         }
         //好友代付校验

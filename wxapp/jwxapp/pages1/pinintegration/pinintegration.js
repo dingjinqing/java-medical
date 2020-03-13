@@ -1,5 +1,6 @@
 var util = require('../../utils/util.js')
 var app = new getApp();
+var mobile = util.getCache('mobile');
 var set_time_out;
 global.wxPage({
   /**
@@ -7,23 +8,21 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    islogin: false, // 是否已登录
-    invite_user: 0,
-    gd: {},
-    choose_list: {},
-    inteGoods: {},
-    group_id: '', 
-    pinInte_id: null, // 组团id
-    pin_info: {}, // 成团信息
-    group_gd: {},
+    pinInte_id: '', // 活动id
+    group_id: null, // 团id
+    invite_user: null, // 邀请人
+
+    gd: {}, // 活动详情
+    pin_info: {}, // 活动信息
+    person: [], // 组团用户信息
+    limit: [], // 需要邀请团员人数
+    inteGoods: {}, // 积分商品列表
     total_micro_second: 0, // 倒计时总时间
-    person: [], // 团员信息
-    limit: [],
-    share_group: true,
-    display: false,
-    act_open: 0,
-    // show_user_modal: 0,
-    end: false,
+    choose_list: {}, // 活动规则
+    group_gd: {}, // 被邀请参与活动信息
+    end: false, // 倒计时结束
+    share: false, // 分享成功弹窗
+    share_group: true, // 被分享人弹窗
     is_share: 0, // 海报弹窗
     os_type: '', // 手机类型
     title_bgColor: "#f18a4f",
@@ -38,12 +37,10 @@ global.wxPage({
     var that = this;
     if (!util.check_setting(options)) return;
     that.setData({
-      pinInte_id: options.pinInte_id,
-      new_options: options,
-      choose_list: {}
+      pinInte_id: Number(options.pinInte_id),
+      group_id: options.group_id ? Number(options.group_id) : null,
+      invite_user: options.invite_user ? Number(options.invite_user) : null
     })
-    // new_options = options;
-    // choose_list = {};
     clearTimeout(set_time_out);
     request_pinIntegration(that);
     // 判断用户是否登录
@@ -53,13 +50,59 @@ global.wxPage({
       || user_name == util.getCache('openid') || !user_avatar
       || user_avatar.indexOf('image/admin/head_icon.png') > -1) {
       that.setData({
-        islogin: false,
+        getsq: false,
       })
     } else {
       that.setData({
-        islogin: true,
+        getsq: true,
       })
     }
+  },
+  // 活动规则
+  toRule: function () {
+    util.jumpToWeb('/wxapp/pinintegration/help', choose_list);
+  },
+  // 跳转参与活动列表
+  toActivity: function () {
+    wx: util.navigateTo({
+      url: '/pages/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
+    })
+  },
+  // 积分商品详情
+  to_integral: function (e) {
+    // var in_id = e.currentTarget.dataset.in_goods_id;
+    // util.navigateTo({
+    //   url: '/pages/integralitem/integralitem?integral_goods_id=' + in_id,
+    // })
+  },
+  // 关闭弹窗
+  close: function () {
+    var that = this;
+    that.setData({
+      share_group: false,
+      share: false,
+    })
+  },
+  // 活动参加上限按钮
+  iwantgo: function (e) {
+    // var group2 = '';
+    // util.api('/api/wxapp/pin/integration/start', function (res) {
+    //   if (res.content.canPin.status == 0) {
+    //     group2 = res.content.groupId;
+    //   }
+    //   if (res.content.canPin.status > 0) {
+    //     util.showModal('提示', res.content.canPin.msg, function () {
+    //     });
+    //     return;
+    //   }
+    //   util.navigateTo({
+    //     url: '/pages/pinintegration/pinintegration?pinInte_id=' + this.data.pinInte_id + '&group_id=' + group2,
+    //   })
+    // }, { pinInte_id: this.data.pinInte_id });
+  },
+  // 去首页
+  returnIndex: function () {
+    util.reLaunch({ url: '/pages/index/index' })
   },
   // 倒计时
   countdown: function (that) {
@@ -85,7 +128,7 @@ global.wxPage({
     // 秒数
     var second = Math.floor(micro_second);
     //天数位
-    var date = Math.floor(second / 86400);
+    var date = Math.floor(second / 86400 );
     // 小时位
     var hr = Math.floor((second - date * 24 * 3600) / 3600);
     if (hr < 10) { hr = "0" + hr }
@@ -175,39 +218,12 @@ global.wxPage({
     })
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
-      imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages/pinintegration/pinintegration?pinInte_id=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + that.data.group_id + '&invite_id=' + util.getCache('user_id'),
+      // imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
+      path: '/pages/pinintegration/pinintegration?pinInte_id=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + that.data.group_id,
     }
   },
-  
-  close: function () {
-    var that = this;
-    that.setData({
-      share_group: false,
-      share: false,
-    })
-  },
-
-  iwantgo: function (e) {
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
-    var group2 = '';
-    // util.api('/api/wxapp/pin/integration/start', function (res) {
-    //   if (res.content.can_pin.status == 0) {
-    //     group2 = res.content.group_id;
-    //   }
-    //   if (res.content.can_pin.status > 0) {
-    //     util.showModal('提示', res.content.can_pin.msg, function () {
-    //     });
-    //     return;
-    //   }
-    //   util.navigateTo({
-    //     url: '/pages/pinintegration/pinintegration?pinInte_id=' + this.data.pinInte_id + '&group_id=' + group2,
-    //   })
-    // }, { pinInte_id: this.data.pinInte_id, form_id: form_id, open_id: open_id });
-  },
   // 获取用户昵称 头像
-  onGotUserInfo: function (e) {
+  getUserInfo: function (e) {
     var that = this;
     if (e.detail.userInfo) {
       util.setCache("nickName", e.detail.userInfo.nickName);
@@ -217,48 +233,14 @@ global.wxPage({
       that.data.person[that.data.person.length - 1].user_avatar = util.getCache('avatarUrl');
       that.data.person[that.data.person.length - 1].username = util.getCache('nickName');
       that.setData({
-        islogin: true,
         share_group: false,
         person: that.data.person,
       });
     } else {
       that.setData({
-        islogin: false,
         share_group: false,
       });
     }
-  },
-
-  returnIndex: function () {
-    util.reLaunch({
-      url: '/pages/index/index',
-    })
-  },
-  // 活动规则
-  toRule: function () {
-    util.jumpToWeb('/wxapp/pinintegration/help', choose_list);
-  },
-  // 我参与的活动
-  toActivity: function () {
-    wx: util.navigateTo({
-      url: '/pages/pinintegrationdetail/pinintegrationdetail',
-    })
-    // wx: util.navigateTo({
-    //   url: '/pages/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
-    // })
-  },
-  // 积分商品列表
-  to_integral: function (e) {
-    var in_id = e.currentTarget.dataset.in_goods_id;
-    util.navigateTo({
-      url: '/pages/integralitem/integralitem?integral_goods_id=' + in_id,
-    })
-  },
-  not_show_share: function () {
-    var that = this;
-    that.setData({
-      is_share: 0
-    })
   },
   // 生成海报
   go_share: function () {
@@ -266,32 +248,31 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/pictorial', function (res) {
+    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    //   wx.hideLoading();
     //   if (res.error == 0) {
-    //     that.setData({ pictorial: res.content.pictorial })
-    //     
-
-    //     if (that.data.pictorial) {
-    //       util.api('/api/wxapp/upayyun/image', function (res) {
-    //         if (res.error == 0) {
-    //           that.data.pictorial = that.data.imageUrl + that.data.pictorial + "!big";
-    //           that.data.posterBase64 = res.content;
-    //           that.setData({
-    //             pictorial: that.data.posterBase64,
-    //             is_share: 1
-    //           })
-    //           wx.hideLoading();
-    //         }
-    //       }, { image_path: that.data.pictorial });
-    //     }
+    //     that.setData({
+    //       posterBase64: res.content,
+    //       pictorial: res.content,
+    //       is_share: 1
+    //     })
     //   } else {
-    //     wx.hideLoading();
     //     util.toast_fail(res.message);
     //     return false;
     //   }
-    // }, { action: 7, goods_id: that.data.pinInte_id, group_id: that.data.group_id })
+    // }, { 
+    //   activityId: that.data.pinInte_id,
+    //   pageType: 2
+    // })
   },
-
+  // 关闭海报
+  not_show_share: function () {
+    var that = this;
+    that.setData({
+      is_share: 0
+    })
+  },
+  // 保存图片
   saveImgToPhotosAlbumTap: function () {
     var that = this;
     if (posterBase64) {
@@ -318,163 +299,68 @@ global.wxPage({
   },
 })
 function request_pinIntegration(that) {
-  if (that.data.new_options.group_id) {
-    that.setData({
-      group_id: that.data.new_options.group_id
-    })
-  } else {
-    that.setData({
-      group_id: ''
-    })
-  }
   mobile = util.getCache('mobile');
-  if (that.data.new_options.invite_user) {
-    that.setData({
-      invite_user: that.data.new_options.invite_user
-    })
-    // util.api('/api/wxapp/pin/integration/start', function (res) {
-    //   var group_gd = res.content;
-    //   if (group_gd.can_pin.status == 0) {
-    //    that.setData({
-    //      group_id: group_gd.group_id
-    //    })
-    //   }
-    //   that.setData({
-    //     group_gd: group_gd,
-    //   })
-    //   util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //     var gd = ress.content;
-    //     if (ress.content) {
-    //       util.api('/api/wxapp/user_goods/record', function (res1) {
-
-    //       }, { goods_id: that.data.group_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
-    //     }
-    //     var pin_info = ress.content.pinInteInfo;
-    //     var inteGoods = ress.content.inteGoodsInfo;
-    //     that.data.choose_list['limit_amount'] = pin_info.limit_amount;
-    //     that.data.choose_list['inte_group'] = pin_info.inte_group;
-    //     that.data.choose_list['join_limit'] = pin_info.join_limit;
-    //     that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //     var num = pin_info.limit_amount - 1;
-    //     var person = ress.content.groupInfo;
-    //     var limit = [];
-    //     for (var i = 0; i < num; i++) {
-    //       limit.push(i);
-    //     }
-    //     that.setData({
-    //       gd: gd,
-    //       pin_info: pin_info,
-    //       inteGoods: inteGoods,
-    //       person: person,
-    //       limit: limit,
-    //     })
-    //     // 倒计时
-    //     if (that.data.gd.remain_time) {
-    //       that.setData({ total_micro_second: that.data.gd.remain_time })
-    //     }
-    //     if (that.data.total_micro_second > 0) {
-    //       that.countdown(that);
-    //       that.setData({
-    //         act_open: 1
-    //       });
-    //     }
-    //   }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id });
-    // }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id, invite_user: that.data.invite_user });
-  } else if (that.data.group_id != '') {
-    // util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //   var gd = ress.content;
-    //   if (ress.content) {
-    //     if (ress.content) {
-    //       util.api('/api/wxapp/user_goods/record', function (res1) {
-
-    //       }, { goods_id: that.data.pinInte_id, active_id: gd.pinInteInfo.id, active_type: 7, type: 1 })
-    //     }
-    //   }
-    //   var pin_info = ress.content.pinInteInfo;
-    //   that.data.choose_list['limit_amount'] = pin_info.limit_amount;
-    //   that.data.choose_list['inte_group'] = pin_info.inte_group;
-    //   that.data.choose_list['join_limit'] = pin_info.join_limit;
-    //   that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //   var num = pin_info.limit_amount - 1;
-    //   var person = ress.content.groupInfo;
-    //   var inteGoods = ress.content.inteGoodsInfo;
-    //   var limit = [];
-    //   for (var i = 0; i < num; i++) {
-    //     limit.push(i);
-    //   }
-    //   that.setData({
-    //     gd: gd,
-    //     pin_info: pin_info,
-    //     person: person,
-    //     limit: limit,
-    //     inteGoods: inteGoods,
-    //   })
-    //   // 倒计时
-    //   if (that.data.gd.remain_time) {
-    //     that.setData({ total_micro_second: that.data.gd.remain_time })
-    //   }
-    //   if (that.data.total_micro_second > 0) {
-    //     that.countdown(that);
-    //     that.setData({
-    //       act_open: 1
-    //     });
-
-    //   }
-    // }, { pinInte_id: that.data.new_options.pinInte_id, group_id: that.data.group_id });
-  } else {
-    // util.api('/api/wxapp/pin/integration/start', function (res) {
-    //   if (res.content.can_pin.status == 0) {
-    //     that.setData({ group_id: res.content.group_id })
-    //     util.api('/api/wxapp/pin/integration/detail', function (ress) {
-    //       var gd = ress.content;
-    //       var pin_info = ress.content.pinInteInfo;
-    //       that.data.choose_list['limit_amount'] = pin_info.limit_amount;
-    //       that.data.choose_list['inte_group'] = pin_info.inte_group;
-    //       that.data.choose_list['join_limit'] = pin_info.join_limit;
-    //       that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
-    //       var num = pin_info.limit_amount - 1;
-    //       var person = ress.content.groupInfo;
-    //       var inteGoods = ress.content.inteGoodsInfo;
-    //       var limit = [];
-    //       for (var i = 0; i < num; i++) {
-    //         limit.push(i);
-    //       }
-    //       that.setData({
-    //         gd: gd,
-    //         pin_info: pin_info,
-    //         person: person,
-    //         limit: limit,
-    //         inteGoods: inteGoods,
-    //       })
-    //       // 倒计时
-    //       if (that.data.gd.remain_time) {
-    //         that.setData({ total_micro_second: that.data.gd.remain_time })
-    //       }
-    //       if (that.data.total_micro_second > 0) {
-    //         that.countdown(that);
-    //         that.setData({
-    //           act_open: 1
-    //         });
-
-    //       }
-    //     }, { pinInte_id: that.data.pinInte_id, group_id: that.data.group_id });
-    //   }
-    //   if (res.content.can_pin.status > 0) {
-    //     // util.showModal('提示', res.content.can_pin.msg);
-    //     util.showModal('提示', res.content.can_pin.msg, function () {
-    //       wx.navigateBack({
-    //         delta: 1,
-    //         fail: function (e) {
-    //           util.navigateTo({
-    //             url: '/pages/index/index',
-    //           })
-    //         }
-    //       })
-    //     }, false);
-    //     return;
-    //   }
-    // }, {
-    //     pinInte_id: that.data.pinInte_id
-    //   });
-  }
+  // 发起活动
+  util.api('/api/wxapp/pin/integration/start', function (res) {
+    if (res.content.canPin.status == 0) {
+      that.setData({ group_id: res.content.groupId })
+      // 被邀请人
+      if (that.data.invite_user) {
+        that.setData({ group_gd: res.content })
+      }
+      // 获取活动详情
+      util.api('/api/wxapp/pin/integration/detail', function (ress) {
+        if (ress.error == 0) {
+          var gd = ress.content;
+          var pin_info = ress.content.pinInteInfo;
+          // that.data.choose_list['limit_amount'] = pin_info.limit_amount;
+          // that.data.choose_list['inte_group'] = pin_info.inte_group;
+          // that.data.choose_list['join_limit'] = pin_info.join_limit;
+          // that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
+          var num = pin_info.limitAmount - 1;
+          var person = ress.content.groupInfo;
+          // var inteGoods = ress.content.inteGoodsInfo;
+          var limit = [];
+          for (var i = 0; i < num; i++) {
+            limit.push(i);
+          }
+          that.setData({
+            gd: gd, // 全部信息
+            pin_info: pin_info, // 活动信息
+            person: person, // 团成员信息
+            limit: limit, // 邀请人数
+            // inteGoods: inteGoods, // 积分商品列表
+          })
+          // 单次活动时限
+          that.setData({ total_micro_second: parseInt(that.data.gd.remainTime / 1000) })
+          if (that.data.total_micro_second > 0) {
+            that.countdown(that);
+          }
+        } else {
+          util.showModal('提示', ress.message);
+          return;
+        }
+      }, {
+          pinInteId: that.data.pinInte_id,
+          groupId: that.data.group_id
+        });
+    }
+    if (res.content.canPin.status > 0) {
+      util.showModal('提示', res.content.canPin.msg, function () {
+        wx.navigateBack({
+          delta: 1,
+          fail: function (e) {
+            util.navigateTo({
+              url: '/pages/index/index',
+            })
+          }
+        })
+      }, false);
+      return;
+    }
+  }, {
+    pinInteId: that.data.pinInte_id,
+    groupId: that.data.group_id,
+    inviteUser: that.data.invite_user
+  });
 }

@@ -214,7 +214,11 @@ public class StoreService extends ShopBaseService {
      * @return StorePojo
      */
     public StorePojo getStore(Integer storeId) {
-        return db().fetchOne(STORE, STORE.STORE_ID.eq(storeId)).into(StorePojo.class);
+        StoreRecord r = db().fetchOne(STORE, STORE.STORE_ID.eq(storeId));
+        if(r == null){
+            return null;
+        }
+        return r.into(StorePojo.class);
     }
 
     /**
@@ -376,7 +380,7 @@ public class StoreService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.SHOP_SHARE.getUrl());
         return vo;
     }
 

@@ -4,23 +4,23 @@
   <!-- 活动列表 -->
   <view class='go_activity' wx:for="{{gd}}"  wx:key='key' data-index="{{index}}">
       <view class='go_title'>
-        <text>{{item.start_time}}</text>
-        <text wx:if="{{item.is_grouper == 1}}">我发起的活动</text>
+        <text>{{item.startTime}}</text>
+        <text wx:if="{{item.isGrouper == 1}}">我发起的活动</text>
         <text wx:else>我参与的活动</text>
       </view>
       <!-- 进行中的活动 -->
-      <view class='go_content' wx:if="{{item.state == 1}}" bindtap='toDetail' data-pininte_id="{{item.inte_activity_id}}" data-group_id="{{item.group_id}}">
+      <view class='go_content' wx:if="{{item.state == 1}}" bindtap='toDetail' data-pininte_id="{{item.inteActivityId}}" data-group_id="{{item.groupId}}">
           <view class='go_content_title'>进行中</view>
           <view class='go_content_con'>
               <view class='con_item'>
                 <view class='item'>
-                    <view>{{item.user_num}}</view>
+                    <view>{{item.userNum}}</view>
                     <view>参与人数</view>
                 </view>
               </view>
               <view class='con_item'>
                 <view class='item'>
-                    <view>{{item.can_integration}}</view>
+                    <view>{{item.canIntegration}}</view>
                     <view>瓜分总积分</view>
                 </view>
               </view>
@@ -38,7 +38,7 @@
         <view class='go_content_title'>活动失败</view>
         <view class='go_content_con1'>
           <view class='con_item1'>
-            <text>拼团不满{{item.limit_amount}}人,无法瓜分积分</text>
+            <text>拼团不满{{item.limitAmount}}人,无法瓜分积分</text>
           </view>
         </view>
       </view>
@@ -46,8 +46,8 @@
       <!-- 活动成功 -->
       <view class='go_content' wx:if="{{item.state == 2}}">
         <view class='go_content_title2'>
-          <text>{{item.user_num}}人参与瓜分{{item.can_integration}}积分</text>
-          <text wx:if="{{item.user_num < item.limit_amount}}">未满员</text>
+          <text>{{item.userNum}}人参与瓜分{{item.canIntegration}}积分</text>
+          <text wx:if="{{item.userNum < item.limitAmount}}">未满员</text>
           <text wx:else>满员</text>
         </view>
         <view class='go_content_con2'>
@@ -56,50 +56,44 @@
             <view>获得积分</view>
         </view>
         <view class='con_person'>
-          <!-- 单人 -->
+          <!-- 参与用户列表 -->
           <block wx:for="{{item.pinIntegroupInfo}}" wx:key='key' wx:for-index="idx" wx:for-item='person'>
-              <view class='person_item'  wx:if="{{idx == 0 || idx == 1 ||idx == 2 }}">
-                  <view class='name '>
-                        <view class='rank'  wx:if="{{idx == 0}}"><image src='{{imageUrl}}image/wxapp/pin/detail-1.png'></image></view>
-                        <view class='rank'  wx:if="{{idx == 1}}"><image src='{{imageUrl}}image/wxapp/pin/detail-2.png'></image></view>
-                        <view class='rank'  wx:if="{{idx == 2}}"><image src='{{imageUrl}}image/wxapp/pin/detail-3.png'></image></view>
-
-                        <block wx:if="{{person.user_avatar != '' && person.user_avatar != null}}">
-                          <view class='circle' style='background:url({{person.user_avatar}}) no-repeat ; background-size:100%;'>
-                          <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
-                      </view>
-                        </block>
-
-                        <block wx:else>
-                            <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;'>
-                          <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
-                      </view>
-                        </block>
-
-
-                      <view class='person_name' wx:if="{{person.username != '' && person.username != null}}">{{person.username}}</view>
-                      <view class='person_name' wx:else>神秘的小伙伴</view>
+            <view class='person_item'  wx:if="{{idx == 0 || idx == 1 ||idx == 2 }}">
+              <view class='name '>
+                <view class='rank'  wx:if="{{idx == 0}}"><image src='{{imageUrl}}image/wxapp/pin/detail-1.png'></image></view>
+                <view class='rank'  wx:if="{{idx == 1}}"><image src='{{imageUrl}}image/wxapp/pin/detail-2.png'></image></view>
+                <view class='rank'  wx:if="{{idx == 2}}"><image src='{{imageUrl}}image/wxapp/pin/detail-3.png'></image></view>
+                <block wx:if="{{person.userAvatar}}">
+                  <view class='circle' style='background:url({{person.userAvatar}}) no-repeat ; background-size:100%;'>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
                   </view>
-                  <view class='number'>{{person.invite_num}}</view>
-                  <view class='integral'>{{person.integration}}</view>
-                </view>
-
-
-                <view class='person_item'  wx:if="{{idx > 2 && isFold == false}}">
-                  <view class='name '>
-                        <view class='rank'><text class='rank_number'>{{idx + 1}}</text></view>
-                      <view class='circle' style='background:url({{person.user_avatar}}) no-repeat ; background-size:100%;' wx:if="{{person.user_avatar != '' && person.user_avatar != null}}">
-                            <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
-                      </view>
-                          <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;' wx:else>
-                            <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
-                      </view>
-                      <view class='person_name' wx:if="{{person.username != '' && person.username != null}}">{{person.username}}</view>
-                        <view class='person_name' wx:else>神秘的小伙伴</view>
+                </block>
+                <block wx:else>
+                  <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;'>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
                   </view>
-                  <view class='number'>{{person.invite_num}}</view>
-                  <view class='integral'>{{person.integration}}</view>
-                </view>
+                </block>
+                <view class='person_name' wx:if="{{person.username}}">{{person.username}}</view>
+                <view class='person_name' wx:else>神秘的小伙伴</view>
+              </view>
+              <view class='number'>{{person.inviteNum}}</view>
+              <view class='integral'>{{person.integration}}</view>
+            </view>
+            <view class='person_item'  wx:if="{{idx > 2 && isFold == false}}">
+              <view class='name'>
+                <view class='rank'><text class='rank_number'>{{idx + 1}}</text></view>
+                  <view class='circle' style='background:url({{person.user_avatar}}) no-repeat ; background-size:100%;' wx:if="{{person.user_avatar}}">
+                    <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
+                  </view>
+                  <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;' wx:else>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
+                  </view>
+                  <view class='person_name' wx:if="{{person.username}}">{{person.username}}</view>
+                  <view class='person_name' wx:else>神秘的小伙伴</view>
+              </view>
+              <view class='number'>{{person.inviteNum}}</view>
+              <view class='integral'>{{person.integration}}</view>
+            </view>
           </block>
 
           <!-- 展开收起 -->
