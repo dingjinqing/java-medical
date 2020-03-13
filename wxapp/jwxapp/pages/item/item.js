@@ -491,6 +491,11 @@ global.wxPage({
   },
   // 去拼团
   goGroup(e) {
+    let activity = this.data.specParams.activity
+    if(activity.groupType === 2 && !activity.isNewUser) {
+      util.showModal('提示','抱歉，您不是新用户')
+      return
+    }
     util.jumpLink(
       `pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`,
       'navigateTo'

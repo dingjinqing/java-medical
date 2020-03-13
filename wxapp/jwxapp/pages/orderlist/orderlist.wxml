@@ -5,7 +5,7 @@
     <view class="top_pixed" style="top:{{margin_top_nav + 8}}px;">
       <view class="top_search">
         <view class="search">
-          <input type="text" bindblur="getSearchInput" bindconfirm="handleSearch" value="{{searchInput}}" placeholder="请输入订单号或商品名称"></input>
+          <input type="text" bindinput="getSearchInput" bindconfirm="handleSearch" value="{{searchInput}}" placeholder="请输入订单号或商品名称"></input>
           <view class="cls_search" bindtap="clearSearchInput">
             <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix'></image>
           </view>
