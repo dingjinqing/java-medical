@@ -150,7 +150,7 @@ public class AdminSeckillController extends AdminBaseController {
      */
     @PostMapping("/api/admin/market/seckill/order/export")
     public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
-        Workbook workbook =shop().seckill.exportBargainOrderList(param,getLang());
+        Workbook workbook =shop().seckill.exportSeckillOrderList(param,getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.SECKILL_ORDER_LIST_FILENAME , OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
     }

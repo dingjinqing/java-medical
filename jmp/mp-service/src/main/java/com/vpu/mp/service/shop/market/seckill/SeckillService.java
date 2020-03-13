@@ -654,7 +654,7 @@ public class SeckillService extends ShopBaseService{
         db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.STOCK.sub(number)).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).execute();
     }
 
-    public Workbook exportBargainOrderList(MarketOrderListParam param, String lang){
+    public Workbook exportSeckillOrderList(MarketOrderListParam param, String lang){
         SecKillDefineRecord secKillDefineRecord = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getActivityId()));
         List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
