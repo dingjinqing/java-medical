@@ -80,7 +80,7 @@ public class GoodsSpecProductBak extends TableImpl<GoodsSpecProductBakRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product_bak.prd_market_price</code>. 市场价
      */
-    public final TableField<GoodsSpecProductBakRecord, BigDecimal> PRD_MARKET_PRICE = createField("prd_market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "市场价");
+    public final TableField<GoodsSpecProductBakRecord, BigDecimal> PRD_MARKET_PRICE = createField("prd_market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "市场价");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods_spec_product_bak.prd_cost_price</code>. 成本价
