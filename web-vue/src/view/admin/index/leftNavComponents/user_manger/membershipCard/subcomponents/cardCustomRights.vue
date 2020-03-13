@@ -5,19 +5,27 @@
                 <el-checkbox >自定义权益</el-checkbox>
             </el-form-item>
             <el-form-item>
-                <el-button size="small" @click="showDialog = !showDialog">自定义权益</el-button>
+                <el-button size="small" @click="callRightDialog(-1)">自定义权益</el-button>
                 <span class="rightTip">最多可添加10个自定义权益</span>
-                <div class="content-container">
-                    <div class="content">
-                        <span class="content-item">标签1</span>
-                        <i class="el-icon-edit-outline icon-style"></i>
-                        <i class="el-icon-delete icon-style"></i>
+                <div class="content-container" v-if="showContentOn">
+                    <div class="content" v-for="(item,index) in myRights"
+                        :key="index">
+                        <span class="content-item">{{item.crightName}}</span>
+                        <i class="el-icon-edit-outline icon-style" @click="callRightDialog(index)"></i>
+                        <i class="el-icon-delete icon-style" @click="deleteRight(index)"></i>
                     </div>
-
+                </div>
+                <div class="content-container no-content" v-else>
+                    <span>你还没有定义权益</span>
                 </div>
             </el-form-item>
         </el-form>
-        <cardCustomRightsDialog :visible.sync="showDialog"></cardCustomRightsDialog>
+        <cardCustomRightsDialog
+            :visible.sync="showDialog"
+            v-bind.sync="rightObj"
+            @createNewRight="setNewRight">
+
+        </cardCustomRightsDialog>
     </div>
 </template>
 <script>
@@ -25,9 +33,42 @@ export default {
   components: {
     cardCustomRightsDialog: () => import('./cardCustomRightsDialog')
   },
+  computed: {
+    rightObj () {
+      return this.myRights[this.currentIndex]
+    },
+    showContentOn () {
+      return this.myRights.length !== 0
+    }
+  },
   data () {
     return {
-      showDialog: false
+      showDialog: false,
+      myRights: [{
+        crightName: 'hhh1',
+        crightImage: null,
+        crightContent: 'Good Night'
+      },
+      {
+        crightName: 'hhh2',
+        crightImage: null,
+        crightContent: 'Good Night'
+      }],
+      // 当前的选项
+      currentIndex: -1
+    }
+  },
+  methods: {
+    callRightDialog (val) {
+      this.showDialog = !this.showDialog
+      this.currentIndex = val
+    },
+    setNewRight (res) {
+      console.log('receive', res)
+      this.myRights.push(res)
+    },
+    deleteRight (index) {
+      this.myRights.splice(index, 1)
     }
   }
 }
@@ -64,6 +105,10 @@ export default {
             }
         }
 
+    }
+    .no-content{
+        text-align: center;
+        color: #999;
     }
 
 }

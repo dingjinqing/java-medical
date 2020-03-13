@@ -8,7 +8,7 @@
 
             <el-form :inline-message="true">
                 <el-form-item label="权益名称:" :rules="[{required: true}]">
-                    <el-input size="small" style="width: 165px;"></el-input>
+                    <el-input :value="right.crightName" size="small" style="width: 165px;" @input="$emit('update:crightName',$event)"></el-input>
                     <span class="tips">最多可填20个字</span>
                 </el-form-item>
                 <el-form-item label="权益图标:" :rules="[{required: true}]">
@@ -25,15 +25,15 @@
                             maxlength="200"
                             show-word-limit
                             placeholder="请输入内容"
-                            v-model="textarea"
+                            v-model="right.crightContent"
                             style="width: 300px;">
                         </el-input>
                     </div>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleRights" size="small">确 定</el-button>
                 <el-button @click="dialogVisiable = false" size="small">取 消</el-button>
-                <el-button type="primary" @click="dialogVisiable = false" size="small">确 定</el-button>
             </div>
         </el-dialog>
         <ImageDialog
@@ -53,12 +53,24 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    crightName: {
+      type: String,
+      default: null
+    },
+    crightImage: {
+      type: String,
+      default: null
+    },
+    crightContent: {
+      type: String,
+      default: null
     }
   },
   computed: {
     getImgSrc () {
-      if (this.imgUrl) {
-        return this.imgUrl
+      if (this.crightImage) {
+        return this.crightImage
       }
       return this.$imageHost + '/image/admin/shop_beautify/add_decorete.png'
     },
@@ -67,32 +79,70 @@ export default {
         return this.visible
       },
       set (val) {
-        console.log(val)
         this.$emit('update:visible', val)
+      }
+    }
+  },
+  watch: {
+    visible (val) {
+      if (val) {
+        this.initRightData()
+        if (this.crightName) {
+          this.createNewFlag = false
+        } else {
+          this.createNewFlag = true
+        }
       }
     }
   },
   data () {
     return {
+      right: {
+        'crightName': null,
+        'crightImage': null,
+        'crightContent': null
+      },
       // 图片弹窗
       imgDisable: false,
       imgPath: null,
-      imgUrl: null,
       // 图片是否百分之百
-      whFlag: false
-    //
+      whFlag: false,
+      // 是否是返回新对象
+      createNewFlag: false
     }
   },
   methods: {
+    initRightData () {
+      this.right.crightName = this.crightName
+      this.right.crightImage = this.crightImage
+      this.right.crightContent = this.crightContent
+    },
     addImg () {
       this.imgDisable = !this.imgDisable
     },
     setImg (res) {
       console.log(res.imgUrl)
-      if (res) {
-        this.imgUrl = res.imgUrl
+      if (res && res.imgUrl) {
+        this.$emit('update:crightImage', res.imgUrl)
       }
-      this.whFlag = Boolean(this.imgUrl)
+      this.whFlag = Boolean(res && res.imgUrl)
+    },
+    handleRights () {
+      if (this.createNewFlag) {
+        // create
+        let obj = {
+          'crightName': this.crightName,
+          'crightImage': this.crightImage,
+          'crightContent': this.crightContent
+        }
+        console.log('send', obj)
+        this.$emit('createNewRight', obj)
+      } else {
+        // update
+
+      }
+
+      this.dialogVisiable = this.createNewFlag = false
     }
   }
 }
