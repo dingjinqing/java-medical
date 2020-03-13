@@ -753,10 +753,10 @@ export default {
         let { content: { page, dataList } } = res
 
         this.pageParams.totalRows = page.totalRows
-        console.log(this.pageParams.totalRows)
+        console.log(page)
         this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageRows = page.pageRows
-        this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + this.screenNum + this.$t('allGoods.bottomOptions.commodity')
+        this.pageParams.pageCount = page.pageRows
+        this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + this.pageParams.totalRows + this.$t('allGoods.bottomOptions.commodity')
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
           item.sourceName = item.source === 0 ? this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[1] : this.$t('allGoods.allGoodsHeaderData.goodsSourceOptions')[2]
