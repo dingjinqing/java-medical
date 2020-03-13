@@ -129,7 +129,10 @@ export default {
     },
     confrim () {
       if (!this.checkInput()) return
-      if (!this.isEdit) this.$emit('confrim', {goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct})
+      console.log(this.isEdit)
+      if (!this.isEdit) {
+        this.$emit('confrim', {goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct})
+      }
       this.productShow = false
     },
     checkInput () {

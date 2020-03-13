@@ -16,6 +16,8 @@ public class GoodsInfo {
     private Integer goodsId;
     /** 规格id */
     private Integer prdId;
+    /** 规格描述 */
+    private String prdDesc;
     /** 商品名称 */
     private String goodsName;
     /** 商品图片 */

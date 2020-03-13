@@ -2,6 +2,7 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,19 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
 
 /**
   *   好友助力活动控制器
@@ -139,4 +127,15 @@ public class AdminFriendPromoteController extends AdminBaseController{
 		shop().friendPromoteService.updateActivity(param);
 		return success();
 	}
+    /**
+     * 根据prdId查询商品信息
+     *
+     * @param param prdId
+     * @return goodsInfo
+     */
+    @PostMapping("/goodsInfo")
+    public JsonResult getGoodsInfoByPrdId(@RequestBody FriendPromoteUpdateParam param) {
+        GoodsInfo goodsInfo = shop().friendPromoteService.getGoodsInfo(param.getId());
+        return success(goodsInfo);
+    }
 }

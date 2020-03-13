@@ -1,11 +1,14 @@
 package com.vpu.mp.service.shop.store.postsale;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.vpu.mp.db.shop.tables.records.ServiceScheduleRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceTechnicianRecord;
+import com.vpu.mp.db.shop.tables.records.ServiceTechnicianScheduleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -19,6 +22,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -294,5 +298,30 @@ public class ServiceTechnicianService extends ShopBaseService {
                 return temp.contains(param.getServiceId());
             }).collect(Collectors.toList()));
         return result;
+    }
+
+    /**
+     * 校验技师在指定时间段是否有排班
+     * @param technicianId
+     * @param serviceDate
+     * @param servicePeriod
+     * @return
+     */
+    public boolean isTechnicianEnable(int technicianId, String serviceDate,String servicePeriod){
+        List<ServiceTechnicianScheduleRecord> list =
+            db().selectFrom(SERVICE_TECHNICIAN_SCHEDULE).where(SERVICE_TECHNICIAN_SCHEDULE.TECHNICIAN_ID.eq(technicianId)).
+            and(SERVICE_TECHNICIAN_SCHEDULE.WORK_DATE.eq(serviceDate)).fetch();
+        if(!list.isEmpty()){
+            for(ServiceTechnicianScheduleRecord t:list){
+                ServiceScheduleRecord serviceScheduleRecord = db().fetchAny(SERVICE_SCHEDULE,SERVICE_SCHEDULE.SCHEDULE_ID.eq(t.getScheduleId()));
+                if(serviceScheduleRecord != null){
+                    Timestamp time = DateUtil.convertToTimestamp(serviceDate + " " + servicePeriod);
+                    if(DateUtil.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getBegcreateTime() + ":00").before(time) && DateUtil.convertToTimestamp(serviceDate + " " + serviceScheduleRecord.getEndTime() + ":00").after(time)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

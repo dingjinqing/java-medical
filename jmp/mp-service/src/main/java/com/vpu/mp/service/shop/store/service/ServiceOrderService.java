@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -34,6 +35,7 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
@@ -128,6 +130,12 @@ public class ServiceOrderService extends ShopBaseService {
      */
     @Autowired
     public StoreReservation reservation;
+
+    /**
+     * 技师管理
+     */
+    @Autowired
+    public ServiceTechnicianService serviceTechnician;
 
     /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
@@ -345,6 +353,24 @@ public class ServiceOrderService extends ShopBaseService {
         record.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         this.assign(param, record);
         return db().executeInsert(record) > 0 ? true : false;
+    }
+
+    /**
+     * admin创建预约订单的校验
+     * @param param
+     * @return
+     */
+    public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
+        StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
+        if(storeServiceRecord.getServiceType() == 1){
+            if(param.getTechnicianId()  == null || param.getTechnicianId() <= 0 || !StringUtil.isNotEmpty(param.getTechnicianName())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL;
+            }
+            if(!serviceTechnician.isTechnicianEnable(param.getTechnicianId(),param.getServiceDate(),param.getServicePeriod())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE;
+            }
+        }
+        return JsonResultCode.CODE_SUCCESS;
     }
 
     /**

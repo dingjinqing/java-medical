@@ -504,6 +504,10 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/service/reserve/add")
     public JsonResult addServiceOrder(@RequestBody(required = true) @Valid ServiceOrderAddParam param) {
+        JsonResultCode checkRes = shop().store.serviceOrder.checkServiceOrderAdd(param);
+        if(checkRes != JsonResultCode.CODE_SUCCESS){
+            return fail(checkRes);
+        }
     	if(shop().store.serviceOrder.addServiceOrder(param)) {
     		return success();
     	}else {
