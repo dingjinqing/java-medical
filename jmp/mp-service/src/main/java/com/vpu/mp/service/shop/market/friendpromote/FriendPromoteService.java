@@ -183,12 +183,12 @@ public class FriendPromoteService extends ShopBaseService {
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> sql;
 		// 助力优惠券
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> couponSql = db()
-				.select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, fpl.SUCCESS_TIME.as("recTime"),
+				.select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, fpl.SUCCESS_TIME.as("rec_time"),
 						fpl.ORDER_SN)
 				.from(USER, fpl).where(fpl.PROMOTE_ID.eq(param.getPromoteId())).and(USER.USER_ID.eq(fpl.USER_ID));
 		// 助力商品
-		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE, fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.PAY_TIME.as("recTime"),
-						fpl.ORDER_SN)
+		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE,
+            fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.PAY_TIME.as("rec_time"), fpl.ORDER_SN)
 				.from(fpl).leftJoin(USER).on(USER.USER_ID.eq(fpl.USER_ID)).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(fpl.ORDER_SN)).where(fpl.PROMOTE_ID.eq(param.getPromoteId()));
 
@@ -231,8 +231,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
 		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db().select(fpl.ID,
-                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("joinNum"),
-						DSL.count(fpd.USER_ID).as("promoteTimes"), DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"),
+                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("join_num"),
+						DSL.count(fpd.USER_ID).as("promote_times"), DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId())).groupBy(fpl.ID,USER.USERNAME, USER.MOBILE,fpl.PROMOTE_STATUS);
@@ -250,7 +250,7 @@ public class FriendPromoteService extends ShopBaseService {
 			if (FriendPromoteReceiveParam.RECEIVED.equals(param.getPromoteStatus())) {
 				sql.having(fpl.PROMOTE_STATUS.equal( param.getPromoteStatus()));
 			}else {
-				sql.having(fpl.PROMOTE_STATUS.notEqual((byte) FriendPromoteReceiveParam.RECEIVED));
+				sql.having(fpl.PROMOTE_STATUS.notEqual( FriendPromoteReceiveParam.RECEIVED));
 			}
 		}
 		// 整合分页信息
@@ -271,15 +271,15 @@ public class FriendPromoteService extends ShopBaseService {
 		User b = USER.as("b");
 		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db().select(fpd.LAUNCH_ID,
                         a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
-						b.USERNAME.as("launchUsername"), DSL.count(fpd.USER_ID).as("promoteTimes"),
-						DSL.sum(fpd.PROMOTE_VALUE).as("promoteValue"))
+						b.USERNAME.as("launch_username"), DSL.count(fpd.USER_ID).as("promote_times"),
+						DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"))
 				.from(fpd)
 				.leftJoin(a).on(fpd.USER_ID.eq(a.USER_ID))
 				.leftJoin(fpl).on(fpd.LAUNCH_ID.eq(fpl.ID))
 				.leftJoin(b).on(fpl.USER_ID.eq(b.USER_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
 				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
-						b.USERNAME.as("launchUsername"));
+						b.USERNAME.as("launch_username"));
 		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
@@ -575,12 +575,22 @@ public class FriendPromoteService extends ShopBaseService {
             if (orderSn!=null){
                 //更新状态
                 upPromoteInfo(TWO,launchInfo.getId());
+                //更新订单号
+                upOrderSn(orderSn,launchInfo.getId());
                 promoteInfo.setPromoteStatus((byte)2);
             }
         }
         return promoteInfo;
     }
-
+    /**
+     * 修改助力状态
+     * @param orderSn 订单号
+     * @param id    发起id
+     * @return
+     */
+    public int upOrderSn(String orderSn,Integer id) {
+        return db().update(fpl).set(fpl.ORDER_SN,orderSn ).where(fpl.ID.eq(id)).execute();
+    }
     /**
      * 得到奖品订单
      * @param id 奖品记录id
