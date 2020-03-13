@@ -375,4 +375,8 @@ public class StoreServiceService extends ShopBaseService {
     public <T> T getSingleField(Integer serviceId, Field<T> field) {
         return db().select(field).from(STORE_SERVICE).where(STORE_SERVICE.ID.eq(serviceId)).fetchOne(field);
     }
+
+    public StoreServiceRecord getStoreServiceById(int id){
+        return db().fetchAny(STORE_SERVICE,STORE_SERVICE.ID.eq(id));
+    }
 }
