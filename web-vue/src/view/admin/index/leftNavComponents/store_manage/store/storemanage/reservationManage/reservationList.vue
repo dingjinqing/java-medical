@@ -555,6 +555,7 @@
 <script>
 import { getList, availableCard, getChargeAccount, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
 import { getAllService, getServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
+import '@/util/date.js'
 
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -823,15 +824,29 @@ export default {
     },
     // 添加预约
     add () {
+      // 校验是否在营业时间内
+      let businessHours = this.$route.query.businessHours
+      if (businessHours && this.dateTime) {
+        let datetime = new Date(this.dateTime)
+        let date = datetime.format('yyyy-MM-dd')
+        let times = businessHours.split('-')
+        let startTime = date + ' ' + times[0].trim() + ':00'
+        let endTime = date + ' ' + times[1].trim() + ':00'
+        console.log(times, startTime, endTime)
+        if (datetime < new Date(startTime) || datetime > new Date(endTime)) {
+          this.$message.warning('预约时间需在店铺营业时间' + businessHours + '内')
+          return false
+        }
+      }
       // 必填项校验
-      if (this.userRowData === {}) {
-        this.$message.info('必填项不可为空！')
-      } else if (this.mobile === '') {
-        this.$message.info('必填项不可为空！')
+      if (!this.userRowData.userName) {
+        this.$message.warning('预约人不能为空！')
+      } else if (this.reservation.mobile === '') {
+        this.$message.warning('手机号不能为空！')
       } else if (this.dateTime === '') {
-        this.$message.info('必填项不可为空！')
-      } else if (this.reservation.serviceId === 0) {
-        this.$message.info('必填项不可为空！')
+        this.$message.warning('预约时间不能为空！')
+      } else if (!this.reservation.serviceId) {
+        this.$message.warning('预约服务不能为空！')
       } else {
         console.log('技师列表：' + this.reservationTech)
         if (!this.reservationTech) {
