@@ -60,6 +60,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     GroupBuyListService groupBuyListService;
     @Autowired
     private OrderGoodsService orderGoodsService;
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     /*****处理器优先级*****/
     @Override
@@ -109,11 +111,17 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             log.debug("小程序-商品详情-拼团信息获取失败-拼团活动不存在[{}]-详情处理退出", param.getActivityId());
             return;
         }
+        if (param.getUserId() != null && orderInfoService.isNewUser(param.getUserId(), true)) {
+            groupBuyInfo.setIsNewUser(true);
+        } else {
+            groupBuyInfo.setIsNewUser(false);
+        }
+
 
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, x -> x));
 
         log.debug("小程序-商品详情-拼团规格信息获取开始");
-        List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId(),prdMap.keySet());
+        List<GroupBuyPrdMpVo> groupBuyPrdInfos = groupBuyProcessorDao.getGroupBuyPrdInfo(param.getActivityId(), prdMap.keySet());
         groupBuyInfo.setGroupBuyPrdMpVos(groupBuyPrdInfos);
 
         List<GoodsPrdMpVo> newPrdList = new ArrayList<>();
@@ -162,14 +170,14 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         //不允许使用货到付款
-        if(param.getPaymentList() != null){
+        if (param.getPaymentList() != null) {
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
         //拼团不使用优惠券和会员卡
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
         //不允许使用积分支付和货到付款
-        if(param.getPaymentList() != null){
+        if (param.getPaymentList() != null) {
             param.getPaymentList().remove(OrderConstant.PAY_CODE_SCORE_PAY);
             param.getPaymentList().remove(OrderConstant.PAY_CODE_COD);
         }
@@ -188,7 +196,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             throw new MpException(resultMessage.getJsonResultCode(), null, resultMessage.getMessages().toArray(new String[0]));
         }
         GroupBuyDefineRecord groupBuyRecord = groupBuyProcessorDao.getGroupBuyRecord(param.getActivityId());
-        if (groupBuyRecord.getShippingType().equals(OrderConstant.YES)){
+        if (groupBuyRecord.getShippingType().equals(OrderConstant.YES)) {
             param.setIsFreeShippingAct(OrderConstant.YES);
         }
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
@@ -204,7 +212,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
             }
             goods.setGoodsPriceAction(param.getActivityType());
             // 团长优惠价
-            if (groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y)&&isGrouper.equals(IS_GROUPER_Y)){
+            if (groupBuyRecord.getIsGrouperCheap().equals(IS_GROUPER_CHEAP_Y) && isGrouper.equals(IS_GROUPER_Y)) {
                 // (拼团价-团长价)*数量
                 goods.setGrouperTotalReduce(groupBuyProduct.getGroupPrice().subtract(groupBuyProduct.getGrouperPrice()).multiply(BigDecimal.valueOf(goods.getGoodsNumber())));
                 //拼团价-团长价
@@ -251,6 +259,7 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
 
     /**
      * 修改状态
+     *
      * @param param
      * @param order
      * @throws MpException
@@ -261,12 +270,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
-            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(),byOrder.getGroupId(),orderGoodsBos.get(0).getGoodsName());
+            groupBuyProcessorDao.groupBuySuccess(order.getActivityId(), byOrder.getGroupId(), orderGoodsBos.get(0).getGoodsName());
         }
     }
 
     /**
      * 修改库存
+     *
      * @param param
      * @param order
      * @throws MpException
@@ -283,7 +293,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
 
     /**
      * 退款
-     * @param activityId 活动id
+     *
+     * @param activityId  活动id
      * @param returnGoods 退款商品
      */
     @Override
