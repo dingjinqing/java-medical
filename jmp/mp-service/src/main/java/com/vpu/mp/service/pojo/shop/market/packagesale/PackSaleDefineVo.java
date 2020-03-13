@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 
@@ -30,8 +31,12 @@ public class PackSaleDefineVo {
 	private Timestamp startTime;
 	/** 结束时间 */
 	private Timestamp endTime;
+	/**活动类型**/
+	private Byte packageType;
 	/** 结算总价格 */
 	private BigDecimal totalMoney;
+	/**折扣比例**/
+	private BigDecimal totalRatio;
 	/** 商品组1 */
 	private GoodsGroupVo group1;
 	/** 商品组2 */
