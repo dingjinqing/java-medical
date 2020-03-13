@@ -84,7 +84,8 @@ public class NormalCardVo extends BaseCardVo {
 	/**
 	 * 	自定义权益信息
 	 */
-	protected CardCustomRights customRights;
+	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
+	protected CardCustomRights cardCustomRights;
 
 	/**
 	 * 设置开关及是否过期

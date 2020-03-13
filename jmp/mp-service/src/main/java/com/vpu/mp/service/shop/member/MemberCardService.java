@@ -1047,7 +1047,7 @@ public class MemberCardService extends ShopBaseService {
 		// 续费信息
 		normalCard.setCardRenew(getRenewData(card));
 		// 自定义权益信息
-		normalCard.setCustomRights(getCustomRights(card));
+		normalCard.setCardCustomRights(getCustomRights(card));
 		return normalCard;
 	}
 	
