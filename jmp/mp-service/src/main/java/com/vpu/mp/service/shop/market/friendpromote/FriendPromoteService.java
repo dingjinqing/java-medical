@@ -719,7 +719,7 @@ public class FriendPromoteService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsInfo getGoodsInfo(Integer prdId){
-        GoodsInfo goodsInfo = db().select(GOODS.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS.GOODS_NAME,
+        GoodsInfo goodsInfo = db().select(GOODS.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS.GOODS_NAME,
             GOODS_SPEC_PRODUCT.PRD_IMG.as("goods_img"),GOODS_SPEC_PRODUCT.PRD_PRICE.as("goods_price"),
             GOODS_SPEC_PRODUCT.PRD_NUMBER.as("goods_store"),GOODS.UPDATE_TIME)
             .from(GOODS)
