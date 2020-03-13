@@ -36,6 +36,7 @@
                   class="morelength"
                   size="small"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="isEditFlag"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -60,16 +61,19 @@
             <el-radio
               v-model="form.rewardType"
               label=0
+              :disabled="isEditFlag"
             >
               {{$t('promoteList.giftGoods')}}
             </el-radio>
             <el-radio
               v-model="form.rewardType"
               label=1
+              :disabled="isEditFlag"
             >{{$t('promoteList.discountGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
               label=2
+              :disabled="isEditFlag"
             >{{$t('promoteList.giftCoupons')}}</el-radio>
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
@@ -129,6 +133,7 @@
                   <el-input
                     v-model="data.row.market_store"
                     size="small"
+                    :disabled="isEditFlag"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -235,6 +240,7 @@
                 size="small"
                 style="margin-right: 10px"
                 v-model="form.promoteAmount"
+                :disabled="isEditFlag"
               ></el-input>
               <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
             </div>
@@ -248,6 +254,7 @@
                 size="small"
                 style="margin-right: 10px"
                 v-model="form.promoteTimes"
+                :disabled="isEditFlag"
               ></el-input>
               <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
             </div>
@@ -585,7 +592,7 @@
 <script>
 import { mapActions } from 'vuex'
 import choosingGoods from '@/components/admin/choosingGoods'
-import { addActive, selectOneInfo, updateInfo } from '@/api/admin/marketManage/friendHelp.js'
+import { addActive, selectOneInfo, updateInfo, getGoodsInfo} from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 import { selectGoodsApi } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods.js'
 import ImageDalog from '@/components/admin/imageDalog'
@@ -761,6 +768,7 @@ export default {
     this.form.launchLimitUnitSelect = this.form.launchLimitUnit[0].value
     this.promoteId = this.$route.params.id
     if (this.promoteId !== 'null') {
+      this.isEditFlag = true
       console.log('id:', this.promoteId)
       this.loadData(this.promoteId)
     }
@@ -805,33 +813,47 @@ export default {
           console.log('market_store???', this.form.rewardSet.market_store)
           // this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
           console.log('goods_ids???', this.form.rewardSet.goods_ids)
-          let goodsIdParam = {
-            'goodsId': this.form.rewardSet.goods_ids
+          // let goodsIdParam = {
+          //   'goodsId': this.form.rewardSet.goods_ids
+          // }
+          let idParam = {
+            'id': this.form.rewardSet.goods_ids
           }
-          selectGoodsApi(goodsIdParam).then(res => {
-            this.form.goodsInfo = [res.content]
-            this.form.goodsInfo.market_store = this.form.rewardSet.market_store
-            console.log('goodsInfo:', res.content)
+          getGoodsInfo(idParam).then(res => {
+            console.log('goodsInfoByPrdId:', res)
+            let goodsItem = {
+              'goodsName': res.content.goodsName,
+              'shopPrice': res.content.goodsPrice,
+              'prdNumber': res.content.goodsStore,
+              'market_store': this.form.rewardSet.market_store
+            }
+            this.form.goodsInfo = []
+            this.form.goodsInfo.push(goodsItem)
           })
+          // selectGoodsApi(goodsIdParam).then(res => {
+          //   this.form.goodsInfo = [res.content]
+          //   this.form.goodsInfo.market_store = this.form.rewardSet.market_store
+          //   console.log('goodsInfo:', res.content)
+          // })
         }
         if (this.form.rewardType === '1') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          this.form.rewardSet.market_price = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_price
-          this.form.rewardSet.goods_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).goods_ids
-          console.log(this.form.rewardSet.goods_ids)
-          let goodsIdParam = {
-            'goodsId': this.form.rewardSet.goods_ids
+          let idParam = {
+            'id': this.form.rewardSet.goods_ids
           }
-          selectGoodsApi(goodsIdParam).then(res => {
-            this.form.goodsInfo = [res.content]
-            this.form.goodsInfo[0].market_store = this.form.rewardSet.market_store
-            this.form.goodsInfo[0].market_price = this.form.rewardSet.market_price
-            console.log('goodsInfo:', res.content)
+          getGoodsInfo(idParam).then(res => {
+            console.log('goodsInfoByPrdId:', res)
+            let goodsItem = {
+              'goodsName': res.content.goodsName,
+              'shopPrice': res.content.goodsPrice,
+              'prdNumber': res.content.goodsStore,
+              'market_store': this.form.rewardSet.market_store,
+              'market_price': this.form.rewardSet.market_price
+            }
+            this.form.goodsInfo = []
+            this.form.goodsInfo.push(goodsItem)
           })
         }
         if (this.form.rewardType === '2') {
-          this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
-          this.form.rewardSet.reward_ids = JSON.parse(res.content[0].rewardContent.slice(1, -1)).reward_ids
           updateCoupon(this.form.rewardSet.reward_ids).then(res => {
             this.coupon_info = res.content
             this.coupon_info[0].send_num = this.form.rewardSet.market_store

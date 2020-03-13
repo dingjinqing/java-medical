@@ -325,7 +325,6 @@ export default {
       data.map((item, index) => {
         item.validDate = `${item.startTime}<br/>${this.$t('promoteList.to')}<br/>${item.endTime}`
         // var jsonObject = JSON.parse(item.rewardContent)
-        console.log('item是啥？', item)
         item.marketStore = item.fpRewardContent.market_store
       })
       this.tableData = data

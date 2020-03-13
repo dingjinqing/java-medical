@@ -72,3 +72,11 @@ export function updateInfo (data) {
     data: data
   })
 }
+// 根据prdId得到商品详情
+export function getGoodsInfo (data) {
+  return service({
+    url: '/api/admin/market/promote/goodsInfo',
+    method: 'post',
+    data: data
+  })
+}
