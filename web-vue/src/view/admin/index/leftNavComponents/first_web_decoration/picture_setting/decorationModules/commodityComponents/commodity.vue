@@ -194,7 +194,7 @@
                         ></span>
                         <span
                           style="text-decoration: line-through;color: #c0c0c0"
-                          v-if="data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
+                          v-if="item.linePrice&&data.show_market==='1'&&data.col_type!=='2'&&data.other_message==='1'"
                         >{{Number(item.linePrice).toFixed(2)}}</span>
                         <span
                           style="color: #c0c0c0"
