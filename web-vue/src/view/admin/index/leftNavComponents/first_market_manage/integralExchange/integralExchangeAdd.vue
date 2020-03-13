@@ -67,19 +67,19 @@
         </el-form-item>
         <el-form-item
           label="添加商品："
-          prop="checkGoods"
+          prop="checkGoodsName"
         >
           <div>
             <span
               class="addGoods"
               @click="handleToChooseGoods()"
-              v-if="!checkGoodsName"
+              v-if="!ruleForm.checkGoodsName"
             >
               + 选择商品
             </span>
-            <span v-if="checkGoodsName">{{checkGoodsName}}</span>
+            <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
             <span
-              v-if="checkGoodsName"
+              v-if="ruleForm.checkGoodsName"
               @click="handleToChooseGoods()"
               class="modify"
             >修改</span>
@@ -109,9 +109,9 @@
               align="center"
             >
               <template slot-scope="scope">
-                <div :class="scope.$index===(tableData.length-1)?'batchSetup':''">
-                  {{scope.$index===(tableData.length-1)?'':scope.row.originPrice}}
-                  <div v-if="scope.$index===(tableData.length-1)">
+                <div :class="scope.$index===(ruleForm.tableData.length-1)?'batchSetup':''">
+                  {{scope.$index===(ruleForm.tableData.length-1)?'':scope.row.originPrice}}
+                  <div v-if="scope.$index===(ruleForm.tableData.length-1)">
                     <span
                       class="batchSpan"
                       @click.stop="handleToClick(1)"
@@ -179,7 +179,7 @@
       <el-form
         :model="formBottom"
         :rules="rulesBottom"
-        ref="formBottom"
+        ref="formMore"
         label-width="100px"
         class="demo-ruleForm"
         v-if="showMoreFlag"
@@ -234,16 +234,18 @@
                 label="2"
               >自定义样式</el-radio>
             </div>
-            <div
-              class="cumtom"
-              v-if="formBottom.style==='2'"
-            >
-              <span>文案：</span>
-              <el-input
-                size="small"
-                v-model="copywriting"
-              ></el-input>
-            </div>
+            <el-form-item prop="copywriting">
+              <div
+                class="cumtom"
+                v-if="formBottom.style==='2'"
+              >
+                <span>文案：</span>
+                <el-input
+                  size="small"
+                  v-model="formBottom.copywriting"
+                ></el-input>
+              </div>
+            </el-form-item>
             <div
               class="cumtom"
               v-if="formBottom.style==='2'"
@@ -265,24 +267,29 @@
               </div>
             </div>
             <!--选择图片-->
-            <div
-              class="addImg"
-              v-if="sharedGraph==='2'&&formBottom.style==='2'"
-            >
-              <div
-                @click="handleToCheckImg()"
-                class="img"
-                :class="checkImgData?'holdImgTip':''"
-                :style="`background:url(${$imageHost}/image/admin/btn_add.png) no-repeat`"
-              >
-                <img
-                  v-if="checkImgData"
-                  :src="checkImgData.imgUrl"
+            <div class="checkoutImg">
+              <el-form-item prop="checkImgData">
+                <div
+                  class="addImg"
+                  v-if="sharedGraph==='2'&&formBottom.style==='2'"
                 >
-                <span>重新选择</span>
-              </div>
-              <span>建议尺寸: 800*800像素</span>
+                  <div
+                    @click="handleToCheckImg()"
+                    class="img"
+                    :class="formBottom.checkImgData?'holdImgTip':''"
+                    :style="`background:url(${$imageHost}/image/admin/btn_add.png) no-repeat`"
+                  >
+                    <img
+                      v-if="formBottom.checkImgData"
+                      :src="formBottom.checkImgData.imgUrl"
+                    >
+                    <span>重新选择</span>
+                  </div>
+                  <span>建议尺寸: 800*800像素</span>
+                </div>
+              </el-form-item>
             </div>
+
           </div>
 
         </el-form-item>
@@ -316,30 +323,59 @@
   </div>
 </template>
 <script>
-import { goodsSpecDetail } from '@/api/admin/marketManage/integralExchange'
+import { goodsSpecDetail, addIntegral } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
   },
   data () {
-    var validateTableData = (rule, value, callback) => {
+    var validateTableData1 = (rule, value, callback) => {
       console.log(value)
-      // if (value === '') {
-      //   callback(new Error('请输入密码'));
-      // } else {
-      //   if (this.ruleForm.checkPass !== '') {
-      //     this.$refs.ruleForm.validateField('checkPass');
-      //   }
-      //   callback();
-      // }
+      value.forEach((item, index) => {
+        if (index !== (value.length - 1)) {
+          if (!Number(item.stock)) {
+            callback(new Error('兑换商品库存不能为空'))
+          } else if (Number(item.stock) > item.goodsStock) {
+            callback(new Error('兑换商品库存不能大于商品库存'))
+          } else if (Number(item.exchange.money) > Number(item.originPrice)) {
+            callback(new Error('兑换所需金额不能大于原价'))
+          } else {
+            callback()
+          }
+        }
+      })
+    }
+    var validate2 = (rule, value, callback) => {
+      console.log(value)
+      if (this.formBottom.style === '2') {
+        if (value === '') {
+          callback(new Error('请输入文案'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    var validate3 = (rule, value, callback) => {
+      console.log(value)
+      if (this.formBottom.style === '2') {
+        if (this.sharedGraph === '2' && !this.formBottom.checkImgData) {
+          callback(new Error('请上传图片'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
     }
     return {
-      checkImgData: '', // 选中的图片数据
+      isSureTop: false,
+      isSureBottom: false,
       imageTuneUp: false, // 选择图片弹窗flag
       chooseFlag: false, // 选择商品弹窗flag
       chooseGoodsBack: [], // 选择商品回显
-      checkGoodsName: '', // 选中的商品名称
       sharedGraph: '1', // 分享图radio值
       copywriting: '', // 文案
       hoverFlag: -1, // 查看示例和下载海报点击flag
@@ -352,11 +388,15 @@ export default {
         customTime: '', // 有效期开始时间
         customTimeEnd: '', // 有效期结束时间
         maxExchangeNum: 1, // 单个用户最多可兑换数量
+        checkGoodsName: '', // 选中的商品名称
         tableData: [// 积分兑换设置表格数据
           {
             goodsName: '批量设置：',
             originPrice: '1',
-            exchange: '',
+            exchange: {
+              'money': '',
+              'score': ''
+            },
             goodsStock: '',
             stock: ''
           }
@@ -375,15 +415,25 @@ export default {
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
         ],
+        checkGoodsName: [
+          { required: true, message: '请选择商品', trigger: 'change' }
+        ],
         tableData: [
-          { validator: validateTableData, trigger: 'blur' }
+          { validator: validateTableData1, trigger: 'blur' }
         ]
       },
       formBottom: {
-        style: '1'
+        style: '1',
+        copywriting: '',
+        checkImgData: '' // 选中的图片数据
       },
       rulesBottom: {
-
+        copywriting: [
+          { validator: validate2, trigger: 'blur' }
+        ],
+        checkImgData: [
+          { validator: validate3, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -392,17 +442,42 @@ export default {
     handleToClickSave () {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.isSureTop = true
         } else {
-          console.log('error submit!!')
+          this.isSureTop = false
           return false
         }
       })
+      console.log(this.$refs)
+      if (this.showMoreFlag) {
+        this.$refs['formMore'].validate((valid) => {
+          if (valid) {
+            this.isSureBottom = true
+          } else {
+            this.isSureBottom = false
+            return false
+          }
+        })
+      }
+      if (this.isSureTop && this.isSureBottom) {
+        let params = {
+          name: this.ruleForm.name,
+          startTime: this.ruleForm.customTime,
+          endTime: this.ruleForm.customTimeEnd,
+          maxExchangeNum: '',
+          goodsId: '',
+          productParam: '',
+          configParam: ''
+        }
+        addIntegral(params).then(res => {
+          console.log(res)
+        })
+      }
     },
     // 表格末行合并处理
     arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
       console.log(row, column, rowIndex, columnIndex)
-      if (rowIndex === this.tableData.length - 1) {
+      if (rowIndex === this.ruleForm.tableData.length - 1) {
         if (columnIndex === 1) {
           return [1, 4]
         } else if (columnIndex === 2) {
@@ -438,7 +513,7 @@ export default {
     },
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
-      this.checkGoodsName = res.goodsName
+      this.ruleForm.checkGoodsName = res.goodsName
       goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -473,7 +548,15 @@ export default {
     },
     handleSelectImg (res) { // 选择图片弹窗返回数据
       console.log(res)
-      this.checkImgData = res
+      this.formBottom.checkImgData = res
+      this.$refs['formMore'].validate((valid) => {
+        if (valid) {
+          this.isSureBottom = true
+        } else {
+          this.isSureBottom = false
+          return false
+        }
+      })
     }
   }
 }
@@ -548,7 +631,7 @@ export default {
   .showMore {
     padding-left: 91px;
     color: #5a8bff;
-    margin-top: 10px;
+    margin-top: 20px;
     span {
       color: #5a8bff;
       cursor: pointer;
@@ -576,6 +659,7 @@ export default {
         color: #5a8bff;
         text-decoration: none;
         .hover_show {
+          width: 280px;
           position: absolute;
           left: 68px;
           padding: 20px;
@@ -658,6 +742,11 @@ export default {
       align-items: center;
       justify-content: flex-start;
       margin-left: 20px;
+    }
+  }
+  .checkoutImg {
+    /deep/ .el-form-item__error {
+      padding-left: 58px;
     }
   }
   .footer {

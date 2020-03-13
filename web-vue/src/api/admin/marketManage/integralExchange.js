@@ -16,3 +16,12 @@ export function goodsSpecDetail (data) {
     data: data
   })
 }
+
+// 添加积分兑换活动
+export function addIntegral (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/add',
+    method: 'post',
+    data: data
+  })
+}
