@@ -21,10 +21,8 @@ global.wxPage({
     choose_list: {}, // 活动规则
     group_gd: {}, // 被邀请参与活动信息
     end: false, // 倒计时结束
-    
-    share_group: true,
-
     share: false, // 分享成功弹窗
+    share_group: true, // 被分享人弹窗
     is_share: 0, // 海报弹窗
     os_type: '', // 手机类型
     title_bgColor: "#f18a4f",
@@ -56,7 +54,7 @@ global.wxPage({
       })
     } else {
       that.setData({
-        getsq: false,
+        getsq: true,
       })
     }
   },
@@ -250,30 +248,22 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    // util.api('/api/wxapp/pictorial', function (res) {
+    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    //   wx.hideLoading();
     //   if (res.error == 0) {
-    //     that.setData({ pictorial: res.content.pictorial })
-    //     
-
-    //     if (that.data.pictorial) {
-    //       util.api('/api/wxapp/upayyun/image', function (res) {
-    //         if (res.error == 0) {
-    //           that.data.pictorial = that.data.imageUrl + that.data.pictorial + "!big";
-    //           that.data.posterBase64 = res.content;
-    //           that.setData({
-    //             pictorial: that.data.posterBase64,
-    //             is_share: 1
-    //           })
-    //           wx.hideLoading();
-    //         }
-    //       }, { image_path: that.data.pictorial });
-    //     }
+    //     that.setData({
+    //       posterBase64: res.content,
+    //       pictorial: res.content,
+    //       is_share: 1
+    //     })
     //   } else {
-    //     wx.hideLoading();
     //     util.toast_fail(res.message);
     //     return false;
     //   }
-    // }, { action: 7, goods_id: that.data.pinInte_id, group_id: that.data.group_id })
+    // }, { 
+    //   activityId: that.data.pinInte_id,
+    //   pageType: 2
+    // })
   },
   // 关闭海报
   not_show_share: function () {
