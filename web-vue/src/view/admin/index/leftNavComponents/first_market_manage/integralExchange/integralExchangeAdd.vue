@@ -67,81 +67,111 @@
         </el-form-item>
         <el-form-item
           label="添加商品："
-          prop="checkGoods"
+          prop="checkGoodsName"
         >
           <div>
             <span
               class="addGoods"
               @click="handleToChooseGoods()"
+              v-if="!ruleForm.checkGoodsName"
             >
               + 选择商品
             </span>
-
+            <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
+            <span
+              v-if="ruleForm.checkGoodsName"
+              @click="handleToChooseGoods()"
+              class="modify"
+            >修改</span>
           </div>
         </el-form-item>
         <el-form-item
           label="积分兑换设置："
-          prop="checkGoods"
+          prop="tableData"
         >
+          <el-table
+            class="version-manage-table"
+            header-row-class-name="tableClss"
+            :data="ruleForm.tableData"
+            border
+            :span-method="arraySpanMethod"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="goodsName"
+              label="商品名称/规格"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="originPrice"
+              label="原价（元）"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div :class="scope.$index===(ruleForm.tableData.length-1)?'batchSetup':''">
+                  {{scope.$index===(ruleForm.tableData.length-1)?'':scope.row.originPrice}}
+                  <div v-if="scope.$index===(ruleForm.tableData.length-1)">
+                    <span
+                      class="batchSpan"
+                      @click.stop="handleToClick(1)"
+                      :style="batchFlag===1?'color: #606266':''"
+                    >商品兑换价格</span>
+                    <span
+                      class="batchSpan"
+                      @click.stop="handleToClick(2)"
+                      :style="batchFlag===2?'color: #606266':''"
+                    >商品兑换库存</span>
+                  </div>
+                </div>
+
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="exchange"
+              label="商品兑换价格"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div class="scoreDiv">
+                  <el-input
+                    size="small"
+                    v-model="scope.row.exchange.money"
+                    onkeyup="value=value.replace(/[^\d.]/g,'')"
+                  ></el-input>
+                  <span>元 +</span>
+                  <el-input
+                    size="small"
+                    v-model="scope.row.exchange.score"
+                    onkeyup="value=value.replace(/[^\d.]/g,'')"
+                  ></el-input>
+                  <span>积分</span>
+                </div>
+
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="goodsStock"
+              label="商品库存"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="stock"
+              label="兑换商品库存"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  size="small"
+                  v-model="scope.row.stock"
+                  onkeyup="value=value.replace(/[^\d.]/g,'')"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
       </el-form>
-      <el-table
-        class="version-manage-table"
-        header-row-class-name="tableClss"
-        :data="tableData"
-        border
-        :span-method="arraySpanMethod"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="goodsName"
-          label="商品名称/规格"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="originPrice"
-          label="原价（元）"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div :class="scope.$index===(tableData.length-1)?'batchSetup':''">
-              {{scope.$index===(tableData.length-1)?'':scope.row.originPrice}}
-              <div v-if="scope.$index===(tableData.length-1)">
-                <span
-                  class="batchSpan"
-                  @click.stop="handleToClick(1)"
-                  :style="batchFlag===1?'color: #606266':''"
-                >商品兑换价格</span>
-                <span
-                  class="batchSpan"
-                  @click.stop="handleToClick(2)"
-                  :style="batchFlag===2?'color: #606266':''"
-                >商品兑换库存</span>
-              </div>
-            </div>
-
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="exchange"
-          label="商品兑换价格"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="goodsStock"
-          label="商品库存"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="stock"
-          label="兑换商品库存"
-          align="center"
-        >
-        </el-table-column>
-      </el-table>
       <div class="showMore">
         <span @click="showMoreFlag = !showMoreFlag">{{showMoreFlag?'收起更多配置':'展开更多配置'}}</span>
         <img :src="showMoreFlag?($imageHost+'/image/admin/info_up.png'):($imageHost+'/image/admin/info_down.png')">
@@ -149,7 +179,7 @@
       <el-form
         :model="formBottom"
         :rules="rulesBottom"
-        ref="formBottom"
+        ref="formMore"
         label-width="100px"
         class="demo-ruleForm"
         v-if="showMoreFlag"
@@ -204,16 +234,18 @@
                 label="2"
               >自定义样式</el-radio>
             </div>
-            <div
-              class="cumtom"
-              v-if="formBottom.style==='2'"
-            >
-              <span>文案：</span>
-              <el-input
-                size="small"
-                v-model="copywriting"
-              ></el-input>
-            </div>
+            <el-form-item prop="copywriting">
+              <div
+                class="cumtom"
+                v-if="formBottom.style==='2'"
+              >
+                <span>文案：</span>
+                <el-input
+                  size="small"
+                  v-model="formBottom.copywriting"
+                ></el-input>
+              </div>
+            </el-form-item>
             <div
               class="cumtom"
               v-if="formBottom.style==='2'"
@@ -235,18 +267,29 @@
               </div>
             </div>
             <!--选择图片-->
-            <div
-              class="addImg"
-              v-if="sharedGraph==='2'&&formBottom.style==='2'"
-            >
-              <div
-                class="img"
-                :style="`background:url(${$imageHost}/image/admin/btn_add.png) no-repeat`"
-              >
-
-              </div>
-              <span>建议尺寸: 800*800像素</span>
+            <div class="checkoutImg">
+              <el-form-item prop="checkImgData">
+                <div
+                  class="addImg"
+                  v-if="sharedGraph==='2'&&formBottom.style==='2'"
+                >
+                  <div
+                    @click="handleToCheckImg()"
+                    class="img"
+                    :class="formBottom.checkImgData?'holdImgTip':''"
+                    :style="`background:url(${$imageHost}/image/admin/btn_add.png) no-repeat`"
+                  >
+                    <img
+                      v-if="formBottom.checkImgData"
+                      :src="formBottom.checkImgData.imgUrl"
+                    >
+                    <span>重新选择</span>
+                  </div>
+                  <span>建议尺寸: 800*800像素</span>
+                </div>
+              </el-form-item>
             </div>
+
           </div>
 
         </el-form-item>
@@ -270,16 +313,67 @@
       :chooseGoodsBack="chooseGoodsBack"
       @resultGoodsRow="resultGoodsRow"
     />
+    <!--选择图片弹窗-->
+    <ImageDalog
+      pageIndex="pictureSpace"
+      :tuneUp="imageTuneUp"
+      :imageSize="[800,800]"
+      @handleSelectImg="handleSelectImg"
+    />
   </div>
 </template>
 <script>
-import { goodsSpecDetail } from '@/api/admin/marketManage/integralExchange'
+import { goodsSpecDetail, addIntegral } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
-    ChoosingGoods: () => import('@/components/admin/choosingGoods') // 选择商品弹窗
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
+    ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
   },
   data () {
+    var validateTableData1 = (rule, value, callback) => {
+      console.log(value)
+      value.forEach((item, index) => {
+        if (index !== (value.length - 1)) {
+          if (!Number(item.stock)) {
+            callback(new Error('兑换商品库存不能为空'))
+          } else if (Number(item.stock) > item.goodsStock) {
+            callback(new Error('兑换商品库存不能大于商品库存'))
+          } else if (Number(item.exchange.money) > Number(item.originPrice)) {
+            callback(new Error('兑换所需金额不能大于原价'))
+          } else {
+            callback()
+          }
+        }
+      })
+    }
+    var validate2 = (rule, value, callback) => {
+      console.log(value)
+      if (this.formBottom.style === '2') {
+        if (value === '') {
+          callback(new Error('请输入文案'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
+    var validate3 = (rule, value, callback) => {
+      console.log(value)
+      if (this.formBottom.style === '2') {
+        if (this.sharedGraph === '2' && !this.formBottom.checkImgData) {
+          callback(new Error('请上传图片'))
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    }
     return {
+      isSureTop: false,
+      isSureBottom: false,
+      imageTuneUp: false, // 选择图片弹窗flag
       chooseFlag: false, // 选择商品弹窗flag
       chooseGoodsBack: [], // 选择商品回显
       sharedGraph: '1', // 分享图radio值
@@ -289,31 +383,24 @@ export default {
       holdToSeeLi: false, // 查看示例flag
       batchFlag: -1, // 点击批量设置子项
       showMoreFlag: false, // 展开flag
-      tableData: [// 积分兑换设置表格数据
-        {
-          goodsName: '腾飞测试',
-          originPrice: '100',
-          exchange: {
-            'money': '100',
-            'score': '50'
-          },
-          goodsStock: '20',
-          stock: '2'
-        },
-        {
-          goodsName: '批量设置：',
-          originPrice: '1',
-          exchange: '',
-          goodsStock: '',
-          stock: ''
-        }
-      ],
       ruleForm: { // 顶部表格数据
         name: '', // 活动名称
         customTime: '', // 有效期开始时间
         customTimeEnd: '', // 有效期结束时间
         maxExchangeNum: 1, // 单个用户最多可兑换数量
-        checkGoods: '' // 选择的商品
+        checkGoodsName: '', // 选中的商品名称
+        tableData: [// 积分兑换设置表格数据
+          {
+            goodsName: '批量设置：',
+            originPrice: '1',
+            exchange: {
+              'money': '',
+              'score': ''
+            },
+            goodsStock: '',
+            stock: ''
+          }
+        ] // 选择的商品
       },
       rules: {// 顶部表格数据校验
         name: [
@@ -328,15 +415,25 @@ export default {
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
         ],
-        checkGoods: [
-          { required: true, message: '请选择商品', trigger: 'blur' }
+        checkGoodsName: [
+          { required: true, message: '请选择商品', trigger: 'change' }
+        ],
+        tableData: [
+          { validator: validateTableData1, trigger: 'blur' }
         ]
       },
       formBottom: {
-        style: '1'
+        style: '1',
+        copywriting: '',
+        checkImgData: '' // 选中的图片数据
       },
       rulesBottom: {
-
+        copywriting: [
+          { validator: validate2, trigger: 'blur' }
+        ],
+        checkImgData: [
+          { validator: validate3, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -345,17 +442,42 @@ export default {
     handleToClickSave () {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.isSureTop = true
         } else {
-          console.log('error submit!!')
+          this.isSureTop = false
           return false
         }
       })
+      console.log(this.$refs)
+      if (this.showMoreFlag) {
+        this.$refs['formMore'].validate((valid) => {
+          if (valid) {
+            this.isSureBottom = true
+          } else {
+            this.isSureBottom = false
+            return false
+          }
+        })
+      }
+      if (this.isSureTop && this.isSureBottom) {
+        let params = {
+          name: this.ruleForm.name,
+          startTime: this.ruleForm.customTime,
+          endTime: this.ruleForm.customTimeEnd,
+          maxExchangeNum: '',
+          goodsId: '',
+          productParam: '',
+          configParam: ''
+        }
+        addIntegral(params).then(res => {
+          console.log(res)
+        })
+      }
     },
     // 表格末行合并处理
     arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
       console.log(row, column, rowIndex, columnIndex)
-      if (rowIndex === this.tableData.length - 1) {
+      if (rowIndex === this.ruleForm.tableData.length - 1) {
         if (columnIndex === 1) {
           return [1, 4]
         } else if (columnIndex === 2) {
@@ -391,8 +513,49 @@ export default {
     },
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
+      this.ruleForm.checkGoodsName = res.goodsName
       goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
         console.log(res)
+        if (res.error === 0) {
+          let arr = []
+          res.content.forEach((item, index) => {
+            let obj = {
+              goodsName: item.prdDesc,
+              originPrice: item.prdPrice,
+              exchange: {
+                'money': '',
+                'score': ''
+              },
+              goodsStock: item.prdNumber,
+              stock: ''
+            }
+            arr.push(obj)
+          })
+          let lastObj = {
+            goodsName: '批量设置：',
+            originPrice: '1',
+            exchange: '',
+            goodsStock: '',
+            stock: ''
+          }
+          arr.push(lastObj)
+          this.ruleForm.tableData = arr
+        }
+      })
+    },
+    handleToCheckImg () { // 调起图片让弹窗
+      this.imageTuneUp = !this.imageTuneUp
+    },
+    handleSelectImg (res) { // 选择图片弹窗返回数据
+      console.log(res)
+      this.formBottom.checkImgData = res
+      this.$refs['formMore'].validate((valid) => {
+        if (valid) {
+          this.isSureBottom = true
+        } else {
+          this.isSureBottom = false
+          return false
+        }
       })
     }
   }
@@ -468,10 +631,22 @@ export default {
   .showMore {
     padding-left: 91px;
     color: #5a8bff;
-    margin-top: 10px;
+    margin-top: 20px;
     span {
       color: #5a8bff;
       cursor: pointer;
+    }
+  }
+  .scoreDiv {
+    display: flex;
+    /deep/ .el-input {
+      width: 60px;
+    }
+    span {
+      display: flex !important;
+      align-items: center;
+      display: inline-block;
+      margin: 0 5px;
     }
   }
   .hiddleShare {
@@ -484,6 +659,7 @@ export default {
         color: #5a8bff;
         text-decoration: none;
         .hover_show {
+          width: 280px;
           position: absolute;
           left: 68px;
           padding: 20px;
@@ -496,6 +672,7 @@ export default {
             width: 240px;
             height: 355.74px;
             border: 1px solid #eee;
+            width: 100%;
           }
         }
         .hover_show:before {
@@ -522,6 +699,10 @@ export default {
   .cumtom {
     display: flex;
   }
+  .modify {
+    cursor: pointer;
+    color: #5a8bff;
+  }
   .addImg {
     padding-left: 58px;
     display: flex;
@@ -529,12 +710,43 @@ export default {
       width: 70px;
       height: 70px;
       cursor: pointer;
+      position: relative;
+      span {
+        display: none;
+        text-align: center;
+        width: 100%;
+        line-height: 18px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 0;
+      }
+      img {
+        width: 100%;
+      }
+    }
+    .holdImgTip {
+      &:hover {
+        span {
+          display: block;
+          width: 70px;
+        }
+      }
     }
     span {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       margin-left: 20px;
+    }
+  }
+  .checkoutImg {
+    /deep/ .el-form-item__error {
+      padding-left: 58px;
     }
   }
   .footer {

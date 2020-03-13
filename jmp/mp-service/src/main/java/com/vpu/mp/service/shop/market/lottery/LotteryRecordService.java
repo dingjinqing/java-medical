@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -89,6 +90,8 @@ public class LotteryRecordService extends ShopBaseService {
     private GoodsService goodsService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private AtomicOperation atomicOperation;
 
     /**
      * 抽奖记录查询
@@ -293,15 +296,15 @@ public class LotteryRecordService extends ShopBaseService {
             case LOTTERY_TYPE_GOODS:
                 logger().info("赠品");
                 GoodsView goodsView = goodsService.getGoodsViewByProductId(lotteryPrizeRecord.getPrdId());
+                atomicOperation.updataStockAndSalesByLock(goodsView.getGoodsId(),recordRecord.getPrdId(),1,true);
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
                 recordRecord.setLotteryAward("赠品:"+goodsView.getGoodsName());
                 Timestamp timeStampPlus = DateUtil.getTimeStampPlus(lotteryPrizeRecord.getPrdKeepDays().intValue(), ChronoUnit.DAYS);
                 recordRecord.setLotteryExpiredTime(timeStampPlus);
                 recordRecord.insert();
-
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(userId, lotteryRecord.getId(), recordRecord.getId(),
-                        PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue());
+                        PRIZE_SOURCE_LOTTERY, lotteryPrizeRecord.getPrdId(), lotteryPrizeRecord.getPrdKeepDays().intValue(),null);
                 joinValid.setPrizeId(prizeRecordRecord.getId());
                 joinValid.setLotteryAward("赠品:"+goodsView.getGoodsName());
                 joinValid.setGoodsImage(goodsView.getGoodsImg());

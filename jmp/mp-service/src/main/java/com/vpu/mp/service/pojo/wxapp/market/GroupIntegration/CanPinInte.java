@@ -12,7 +12,7 @@ import lombok.Data;
 public class CanPinInte {
 	/** 剩余时间 */
 	private Long remainingTime;
-	private Byte status;
+	private Byte status=0;
 	private String msg;
 	/** 1:是新人；0：不是新人 */
 	private Byte isNew;

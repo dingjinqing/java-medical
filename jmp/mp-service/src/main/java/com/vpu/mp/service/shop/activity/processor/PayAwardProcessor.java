@@ -227,7 +227,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getProductId().toString());
                 payAwardRecordRecord.setKeepDays(payAwardContentBo.getKeepDays());
                 payAwardRecordRecord.insert();
-                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays());
+                PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays(),null);
                 payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;
             case GIVE_TYPE_SCORE:

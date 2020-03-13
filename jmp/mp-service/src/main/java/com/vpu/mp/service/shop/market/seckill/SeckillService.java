@@ -6,6 +6,9 @@ import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -25,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
@@ -35,6 +39,7 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
@@ -649,5 +654,30 @@ public class SeckillService extends ShopBaseService{
         db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.STOCK.sub(number)).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).execute();
     }
 
+    public Workbook exportSeckillOrderList(MarketOrderListParam param, String lang){
+        SecKillDefineRecord secKillDefineRecord = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getActivityId()));
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+
+        List<SeckillOrderExportVo> res = new ArrayList<>();
+        list.forEach(order->{
+            SeckillOrderExportVo vo = new SeckillOrderExportVo();
+            vo.setActName(secKillDefineRecord.getName());
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoodsName(order.getGoods().get(0).getGoodsName());
+            vo.setGoodsPrice(order.getGoods().get(0).getGoodsPrice());
+            vo.setCreateTime(order.getCreateTime());
+            vo.setUsername(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
+            vo.setMoneyPaid(order.getMoneyPaid());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(res, SeckillOrderExportVo.class);
+        return workbook;
+    }
 
 }

@@ -3,7 +3,7 @@
     <view class='main-container'>
         <view class='list_top'>
             <view class='hr'></view>
-            <view>好友助力</view>
+            <view>{{i18n.$t(localePack,"page1.promote.promoteList1")}}</view>
             <view class='hr'></view>
         </view>
         <view class='each_area'>

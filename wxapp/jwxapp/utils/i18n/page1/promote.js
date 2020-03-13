@@ -69,5 +69,5 @@ module.exports = {
   "promoteShare3": "下载海报",
   "promoteShare4": "保存图片",
   "promoteShare5": "保存图片到本地相册",
-  
+
 }

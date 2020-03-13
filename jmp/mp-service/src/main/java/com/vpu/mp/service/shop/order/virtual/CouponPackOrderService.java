@@ -253,10 +253,9 @@ public class CouponPackOrderService extends VirtualOrderService {
         insertVirtualOrderRecord.setMemberCardBalance(param.getMemberCardBalance());
         insertVirtualOrderRecord.setCardNo(param.getCardNo());
         insertVirtualOrderRecord.setOrderAmount(param.getOrderAmount() == null ? BigDecimal.ZERO : param.getOrderAmount());
-        insertVirtualOrderRecord.setCurrency("CNY");//TODO 币种
         insertVirtualOrderRecord.setGoodsType(GOODS_TYPE_COUPON_PACK);
         insertVirtualOrderRecord.setAccessMode(couponPackRecord.getAccessMode());
-
+        insertVirtualOrderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
 
         insertVirtualOrderRecord.insert();
         WebPayVo vo = null;

@@ -339,7 +339,6 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     public int getMarketOrderListSize(MarketOrderListParam param, byte goodsType){
         SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param,goodsType);
-        select.groupBy(ORDER_INFO.ORDER_ID);
         return select.fetchOptionalInto(Integer.class).orElse(0);
     }
 

@@ -39,4 +39,5 @@ public class GroupStartVo {
 	private CanPinInte canPin;
 	private String inviteName;
 	private Integer addInte;
+	private Integer inviteUser;
 }

@@ -499,9 +499,9 @@ public class FriendPromoteService extends ShopBaseService {
             CanLaunch canLaunch = canLaunch(promoteInfo,launchInfo,param.getUserId());
             promoteInfo.setCanLaunch(canLaunch.getCode());
             //助力完成或者失效装修页进入后
-            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
-                promoteInfo.setPromoteStatus((byte)-1);
-            }
+//            if (param.getLaunchId()==null&&promoteInfo.getCanLaunch()==1){
+//                promoteInfo.setPromoteStatus((byte)-1);
+//            }
             //好友助力榜
             if(launchInfo!=null&&promoteInfo.getPromoteStatus()>=0){
                 promoteInfo.setPromoteDetailList(friendPromoteDetail(launchInfo.getId()));
@@ -569,8 +569,29 @@ public class FriendPromoteService extends ShopBaseService {
         if (launchInfo!=null){
             promoteInfo.setRewardRecordId(getRewardRecordId(param.getUserId(),promoteInfo.getId(),launchInfo.getId()));
         }
+        if (promoteInfo.getRewardRecordId()!=null&&promoteInfo.getRewardRecordId()!=0){
 
+            String orderSn = getRewardOrderSn(promoteInfo.getRewardRecordId());
+            if (orderSn!=null){
+                //更新状态
+                upPromoteInfo(TWO,launchInfo.getId());
+                promoteInfo.setPromoteStatus((byte)2);
+            }
+        }
         return promoteInfo;
+    }
+
+    /**
+     * 得到奖品订单
+     * @param id 奖品记录id
+     * @return 订单
+     */
+    public String getRewardOrderSn(Integer id){
+        String orderSn = db().select(PRIZE_RECORD.ORDER_SN)
+            .from(PRIZE_RECORD)
+            .where(PRIZE_RECORD.ID.eq(id))
+            .fetchOneInto(String.class);
+        return orderSn;
     }
 
     /**
@@ -698,7 +719,7 @@ public class FriendPromoteService extends ShopBaseService {
      * @return 商品信息
      */
     public GoodsInfo getGoodsInfo(Integer prdId){
-        GoodsInfo goodsInfo = db().select(GOODS.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS.GOODS_NAME,
+        GoodsInfo goodsInfo = db().select(GOODS.GOODS_ID,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS.GOODS_NAME,
             GOODS_SPEC_PRODUCT.PRD_IMG.as("goods_img"),GOODS_SPEC_PRODUCT.PRD_PRICE.as("goods_price"),
             GOODS_SPEC_PRODUCT.PRD_NUMBER.as("goods_store"),GOODS.UPDATE_TIME)
             .from(GOODS)
@@ -1390,9 +1411,10 @@ public class FriendPromoteService extends ShopBaseService {
                         if (prdRecord!=null&&prdRecord.getPrdNumber()>0){
                             //计算奖励过期时间
                             Long durationSec = promoteDurationSec(promoteInfo.getRewardDurationUnit(),promoteInfo.getRewardDuration());
-                            Integer day = durationSec.intValue()/(24*60*60);
+                            Long endSec = DateUtil.getLocalDateTime().getTime()+durationSec*1000;
+                            Timestamp expiredTime = new Timestamp(endSec);
                             //奖励入库
-                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),day);
+                            PrizeRecordRecord  prizeRecordRecord = prizeRecordService.savePrize(launchUserId,promoteInfo.getId(),launchId,(byte)1,promoteInfo.getRewardContent().getGoodsIds(),null,expiredTime);
                             if (prizeRecordRecord==null){
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);

@@ -189,6 +189,22 @@ public class JsonResultMessage {
     public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
     public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
 
+    /**
+     *  营销-砍价excel导出-秒杀订单
+     */
+    public static final String SECKILL_ORDER_LIST_FILENAME = "seckill.order.list.file_name";
+    public static final String SECKILL_ORDER_LIST_ACT_NAME = "seckill.order.list.act_name";
+    public static final String SECKILL_ORDER_LIST_ORDER_SN = "seckill.order.list.order_sn";
+    public static final String SECKILL_ORDER_LIST_GOODS_NAME = "seckill.order.list.goods_name";
+    public static final String SECKILL_ORDER_LIST_GOODS_PRICE = "seckill.order.list.goods_price";
+    public static final String SECKILL_ORDER_LIST_CREATE_TIME = "seckill.order.list.create_time";
+    public static final String SECKILL_ORDER_LIST_USERNAME = "seckill.order.list.username";
+    public static final String SECKILL_ORDER_LIST_CONSIGNEE = "seckill.order.list.consignee";
+    public static final String SECKILL_ORDER_LIST_MONEY_PAID = "seckill.order.list.money_paid";
+    public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
+
+
+
 
 
     /**
@@ -412,6 +428,8 @@ public class JsonResultMessage {
 	public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
 	public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
 	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL = "store.service.order.technician.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE = "store.service.order.technician.no.schedule";
 
     /**
      * 门店核销员列表导出列

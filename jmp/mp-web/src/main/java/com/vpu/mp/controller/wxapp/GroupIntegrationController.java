@@ -1,5 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
@@ -41,5 +44,19 @@ public class GroupIntegrationController extends WxAppBaseController {
 		return success(vo);
 		
 	}
+	
+	
+	/**
+	 * 我的活动
+	 * 
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/pin/integration/myact")
+	public JsonResult getMyActivity() {
+		List<GroupIntegrationInfoVo> vo = shop().groupIntegration.getMyActivity(wxAppAuth.user().getUserId());
+		return success(vo);
+
+	}
+
 
 }

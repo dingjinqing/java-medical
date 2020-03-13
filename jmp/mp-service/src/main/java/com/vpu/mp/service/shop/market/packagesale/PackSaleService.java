@@ -245,7 +245,7 @@ public class PackSaleService extends ShopBaseService {
 		if(record == null) {
 			return null;
 		}
-		PackSaleDefineVo defineVo = new PackSaleDefineVo(record.getId(), record.getPackageName(), record.getStartTime(), record.getEndTime(), record.getTotalMoney(),null, null, null);		
+		PackSaleDefineVo defineVo = record.into(PackSaleDefineVo.class);
 
 		GoodsGroupVo groupVo = convert2GoodsGroupVo(defineVo, record.getGroupName_1(), record.getGoodsNumber_1(), record.getGoodsIds_1(), record.getCatIds_1(), record.getSortIds_1());
 		defineVo.setGroup1(groupVo);

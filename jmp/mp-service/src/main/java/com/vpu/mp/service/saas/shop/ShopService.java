@@ -1,28 +1,5 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.jooq.DatePart;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record11;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
@@ -49,8 +26,28 @@ import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
-
 import jodd.util.StringUtil;
+import org.jooq.DatePart;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record11;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopChildRole.SHOP_CHILD_ROLE;
 
 /**
  * 
@@ -628,4 +625,16 @@ public class ShopService extends MainBaseService {
 		return vo;
 	}
 
+    /**
+     * 获取当前店铺币种
+     * @param shopId shopId
+     * @return currency
+     */
+	public String getCurrency(Integer shopId) {
+        String currency = db().select(SHOP.CURRENCY).from(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchOneInto(String.class);
+        if(currency == null) {
+            return "CNY";
+        }
+        return currency;
+    }
 }

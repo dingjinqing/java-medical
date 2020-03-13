@@ -94,6 +94,7 @@
               <th></th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopPrice')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
+              <th>市场价</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
@@ -106,17 +107,22 @@
               <td><input
                   :id="'prdPrice_'+item.prdDesc"
                   v-model.number="item.prdPrice"
-                  @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item)"
+                  @change="specPrdInputChange(item.prdPrice,'prdPrice_'+item.prdDesc,item,'prdPrice')"
                 /></td>
               <td><input
-                  :id="'prdCostPrice_'+item.prdCostPrice"
+                  :id="'prdCostPrice_'+item.prdDesc"
                   v-model.number="item.prdCostPrice"
-                  @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdCostPrice,item)"
+                  @change="specPrdInputChange(item.prdCostPrice,'prdCostPrice_'+item.prdDesc,item,'prdCostPrice')"
                 /></td>
               <td><input
-                  :id="'prdNumber_'+item.prdNumber"
+                :id="'prdMarketPrice_'+item.prdDesc"
+                v-model.number="item.prdMarketPrice"
+                @change="specPrdInputChange(item.prdMarketPrice,'prdMarketPrice_'+item.prdDesc,item,'prdMarketPrice')"
+              /></td>
+              <td><input
+                  :id="'prdNumber_'+item.prdDesc"
                   v-model.number="item.prdNumber"
-                  @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdNumber,item)"
+                  @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdDesc,item,'prdNumber')"
                 /></td>
               <td><input
                   :id="'prdSn_'+item.prdDesc"
@@ -146,6 +152,7 @@
             <span class="batchSpan ">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">市场价</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
@@ -196,6 +203,7 @@
           controls-position="right"
           :min="0"
           :precision="2"
+          :disabled="specInfoSwitch"
           style="width:170px;"
         />
       </el-form-item>
@@ -428,8 +436,6 @@ export default {
       imgDialogShow: false,
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
-        // 库存、价格信息
-        marketPrice: null,
         // 根据用户填写的goodsSpecs计算出来的笛卡尔集合：[{tempId:1,prdDesc:'color:red;size:x',prdPrice:0,prdCostPrice:0,prdSn:null,prdImg:null}]
         // 其中tempId是在新增的时候由页面内一个全局变量产生的递增值，仅用于前端页面辅助操作，比如传递给商品分销详情页面
         goodsSpecProducts: [],
@@ -442,6 +448,7 @@ export default {
         limitMaxNum: 0,
         baseSale: 0,
         /* 以下为使用默认规格时的辅助数据，最终会被整合到goodsSpecProducts传到后台 */
+        marketPrice: null,
         prdNumber: 0,
         prdPrice: 0,
         prdCost: 0,
@@ -537,21 +544,27 @@ export default {
       })
     },
     /* 商品规格价格、成本价格、库存发生变化变化 */
-    specPrdInputChange (val, inputId, item) {
+    specPrdInputChange (val, inputId, item, key) {
       if (typeof val !== 'number') {
+        if (inputId.indexOf('prdMarketPrice_') > -1 && !isNumberBlank(val)) {
+          item[key] = null
+        }
         if (inputId.indexOf('prdPrice_') > -1) {
-          item.prdPrice = 0
+          item[key] = 0
         }
         if (inputId.indexOf('prdCostPrice_') > -1) {
-          item.prdCostPrice = 0
+          item[key] = 0
         }
         if (inputId.indexOf('prdNumber_') > -1) {
-          item.prdNumber = 0
+          item[key] = 0
         }
         document.getElementById(inputId).focus()
       } else {
         if (inputId.indexOf('prdNumber_') > -1) {
-          item.prdNumber = parseInt(item.prdNumber)
+          item[key] = parseInt(item[key])
+        }
+        if (val < 0) {
+          item[key] = 0
         }
       }
     },
@@ -940,6 +953,7 @@ export default {
         prdId: null, // 更新接口需要数据
         prdPrice: 0, // sku价格 接口需要数据
         prdCostPrice: 0, // sku成本价 接口需要数据
+        prdMarketPrice: 0, // sku市场价 接口需要
         prdNumber: 0, // sku数量 接口需要数据
         prdSn: null, // sku sn码 用户输入项
         prdSnBak: null, // sku sn码 接口需要数据
@@ -1101,6 +1115,7 @@ export default {
           prdId: specPrd.prdId,
           prdPrice: specPrd.prdPrice,
           prdCostPrice: specPrd.prdCostPrice,
+          prdMarketPrice: specPrd.prdMarketPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
@@ -1121,6 +1136,7 @@ export default {
           prdId: specPrd.prdId,
           prdPrice: specPrd.prdPrice,
           prdCostPrice: specPrd.prdCostPrice,
+          prdMarketPrice: specPrd.prdMarketPrice,
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
@@ -1243,20 +1259,20 @@ export default {
       // 自定义情况验证
       if (this.specInfoSwitch) {
         // 验证商品规格信息
-        for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
-          let item = this.goodsProductInfo.goodsSpecProducts[i]
-          if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
-            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning' })
-            document.getElementById('prdPrice_' + item.prdDesc).focus()
-            return false
-          }
-
-          if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
-            this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning' })
-            document.getElementById('prdNumber_' + item.prdDesc).focus()
-            return false
-          }
-        }
+        // for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
+        //   let item = this.goodsProductInfo.goodsSpecProducts[i]
+        //   if (isNumberBlank(item.prdPrice) || item.prdPrice < 0) {
+        //     this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.priceIsWrong'), type: 'warning' })
+        //     document.getElementById('prdPrice_' + item.prdDesc).focus()
+        //     return false
+        //   }
+        //
+        //   if (isNumberBlank(item.prdNumber) || item.prdNumber < 0) {
+        //     this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.goodsSpec') + item.prdDescTemp + this.$t('goodsAddEditInfo.warningInfo.goodsNumIsWrong'), type: 'warning' })
+        //     document.getElementById('prdNumber_' + item.prdDesc).focus()
+        //     return false
+        //   }
+        // }
 
         // 验证会员价格
         for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
@@ -1382,7 +1398,7 @@ export default {
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
           prdCostPrice: this.goodsProductInfo.prdCost,
-          prdMarketPrice: this.goodsProductInfo.marketPrice | 0
+          prdMarketPrice: this.goodsProductInfo.marketPrice
         }]
       } else {
         retData.isDefaultProduct = 0
@@ -1401,7 +1417,7 @@ export default {
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice | 0,
             prdNumber: specProduct.prdNumber,
-            prdMarketPrice: this.goodsProductInfo.marketPrice | 0,
+            prdMarketPrice: specProduct.prdMarketPrice,
             prdSn: specProduct.prdSn,
             prdImg: specProduct.prdImg.imgPath
           })

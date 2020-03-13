@@ -13,11 +13,11 @@
       <view class='sign' style='background:{{comColor}}' wx:if="{{user_center[0].sign_score.is_open_sign == 1 && user_center[0].sign_score.sign_data.receive_score > 0}}" bindtap='to_integral'>
         <image src='{{imageUrl}}image/wxapp/sign_icon.png' mode='widthFix' />
         <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">
-          {{i18n.$t(localePack,"page1.usercenter.qrcTitle")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
+          {{i18n.$t(localePack,"page1.usercenter.available")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
           <text>{{i18n.$t(localePack,"page1.usercenter.signIn")}}</text>
         </block>
         <block wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==1}}">
-          {{i18n.$t(localePack,"page1.usercenter.available")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
+          {{i18n.$t(localePack,"page1.usercenter.qrcTitle")}} {{user_center[0].sign_score.sign_data.receive_score}} {{i18n.$t(localePack,"page1.usercenter.qrcTitleB")}}
           <text>
             {{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}} {{user_center[0].sign_score.sign_data.day}} {{i18n.$t(localePack,"page1.usercenter.day")}}
           </text>

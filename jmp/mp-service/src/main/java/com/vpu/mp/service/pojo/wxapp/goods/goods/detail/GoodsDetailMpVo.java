@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.goods.detail;
 
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
+import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
@@ -76,6 +77,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private CommentDetailVo comment;
     /**商品赠品*/
     private List<GoodsGiftMpVo> goodsGifts;
+    /**分销商品信息*/
+    private GoodsDistributionVo goodsDistribution;
     /**相关优惠券*/
     List<CouponDetailMpVo> coupons;
     /**商品专享会员卡*/

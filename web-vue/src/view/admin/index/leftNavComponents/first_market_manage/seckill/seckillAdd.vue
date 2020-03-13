@@ -614,23 +614,23 @@ export default {
       this.showSpecDialog = true
       console.log(this.showSpecDialog)
     },
-    changePriceInput (goodsInfo) {
+    changePriceInput (goodsInfo, isDialog = null) {
       if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
         goodsInfo.priceErrorMsg = null
         goodsInfo.goodsSpecProducts.forEach(item => {
-          item.secKillPrice = goodsInfo.secKillPrice
+          if (!isDialog) item.secKillPrice = goodsInfo.secKillPrice
           if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
             goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
           }
         })
       }
     },
-    changeStockInput (goodsInfo) {
+    changeStockInput (goodsInfo, isDialog = null) {
       if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
         goodsInfo.stockErrorMsg = null
         goodsInfo.totalStock = 0
         goodsInfo.goodsSpecProducts.forEach(item => {
-          item.stock = goodsInfo.stock
+          if (!isDialog) item.stock = goodsInfo.stock
           goodsInfo.totalStock += parseInt(item.stock)
           if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
             goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
@@ -749,10 +749,12 @@ export default {
       this.disabledFlag = false
     },
     getProductdata ({ goodsId, prdInfo }) {
+      console.log(goodsId, prdInfo)
       let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
+      console.log(target)
       target.goodsSpecProducts = prdInfo
-      this.changePriceInput(target)
-      this.changeStockInput(target)
+      this.changePriceInput(target, true)
+      this.changeStockInput(target, true)
     },
     initEditProduct (goods) {
       let newdata = []

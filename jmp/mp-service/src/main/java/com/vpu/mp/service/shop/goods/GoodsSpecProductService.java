@@ -349,6 +349,14 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 根据规格id查询规格明细 一跳规格
+     * @return
+     */
+    public GoodsSpecProductRecord selectSpecByProId(Integer proId) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(proId)).fetchAny();
+    }
+
+    /**
      * 下单查询规格
      *
      * @param proIds

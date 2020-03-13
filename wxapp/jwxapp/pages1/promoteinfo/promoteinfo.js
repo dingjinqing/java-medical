@@ -22,7 +22,7 @@ global.wxPage({
     launched_width: 0, // 助力进度
     total_micro_second: 0, // 倒计时总时间
     clock: '', // 倒计时
-    has_user: 1, // 需要授权才能助力
+    has_user: 1, // 授权弹窗
     is_shares: 0, // 是否有分享机会
     add_promote_value: 0, // 好友助力值
     modal_can_share: 0, // 好友助力可分享增加助力
@@ -304,7 +304,7 @@ global.wxPage({
         var user_name = e.detail.userInfo.nickName;
         util.setCache("nickName", user_name);
         util.setCache("avatarUrl", user_avatar);
-        if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promote_status == 0) {
+        if (promote_info.promoteCondition == 1 && promote_info.launchFlag == 2 && promote_info.promoteStatus == 0) {
           that.setData({
             has_user: 1
           })

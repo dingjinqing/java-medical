@@ -588,8 +588,13 @@ global.wxPage({
     }
   },
   // 提交订单
-  confirmOrder () {
-    util.getNeedTemplateId('add_order', () => {
+  confirmOrder() {
+    console.log(11111)
+    util.throttle(this.confirm,1000)()
+  },
+  confirm(){
+    console.log(2222)
+    util.getNeedTemplateId('add_order',()=>{
       let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
         this.data.orderInfo || {}
       let {

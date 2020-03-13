@@ -184,13 +184,13 @@ export default {
     handleToReset (index) {
       switch (index) {
         case 0:
-          this.data.box_color = null
+          this.data.box_color = '#eee'
           break
         case 1:
-          this.data.back_color = null
+          this.data.back_color = '#fff'
           break
         case 2:
-          this.data.sort_bg_color = null
+          this.data.sort_bg_color = '#666666'
       }
     }
   }
