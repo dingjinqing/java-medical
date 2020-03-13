@@ -71,7 +71,6 @@ public final class RedisLockAspect extends ShopBaseService {
         }
         logger().info("redis环绕批量锁调用代理方法end");
 
-
     }
 
     /**
