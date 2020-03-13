@@ -879,6 +879,7 @@ public class OrderInfoService extends ShopBaseService {
         if(param.getMust() != null) {
             param.getMust().setOrderSn(orderSn);
         }
+        order.setCurrency(saas().shop.getCurrency(getShopId()));
         return order;
     }
 
