@@ -42,7 +42,7 @@
             ref="freeship">
           </cardFreeshipCfg>
           <!-- 自定义权益 -->
-          <cardCustomRights>
+          <cardCustomRights v-bind.sync="customRights">
 
           </cardCustomRights>
           <cardEffectTime
@@ -282,6 +282,17 @@ export default {
         renewNum: null,
         renewTime: null,
         renewDateType: null
+      },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: [
+          {
+            crightName: 'hhh1',
+            crightImage: null,
+            crightContent: 'Good Night'
+          }
+        ]
       }
     }
   },

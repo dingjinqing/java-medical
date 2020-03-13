@@ -2,17 +2,21 @@
     <div class="rightsContainer">
         <el-form label-width="200px">
             <el-form-item>
-                <el-checkbox >自定义权益</el-checkbox>
+                <el-checkbox v-model="turnOn" >自定义权益</el-checkbox>
             </el-form-item>
-            <el-form-item>
+            <el-form-item v-if="turnOn">
                 <el-button size="small" @click="callRightDialog(-1)">自定义权益</el-button>
                 <span class="rightTip">最多可添加10个自定义权益</span>
                 <div class="content-container" v-if="showContentOn">
-                    <div class="content" v-for="(item,index) in myRights"
+                    <div class="content" v-for="(item,index) in customRightsAll"
                         :key="index">
                         <span class="content-item">{{item.crightName}}</span>
-                        <i class="el-icon-edit-outline icon-style" @click="callRightDialog(index)"></i>
-                        <i class="el-icon-delete icon-style" @click="deleteRight(index)"></i>
+                        <el-tooltip content="编辑" placement="top" effect="light">
+                            <i class="el-icon-edit-outline icon-style" @click="callRightDialog(index)"></i>
+                        </el-tooltip>
+                        <el-tooltip content="删除" placement="top" effect="light">
+                            <i class="el-icon-delete icon-style" @click="deleteRight(index)"></i>
+                        </el-tooltip>
                     </div>
                 </div>
                 <div class="content-container no-content" v-else>
@@ -33,42 +37,57 @@ export default {
   components: {
     cardCustomRightsDialog: () => import('./cardCustomRightsDialog')
   },
+  props: {
+    customRightsFlag: {
+      type: String,
+      default: 'off'
+    },
+    customRightsAll: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
+  },
   computed: {
+    turnOn: {
+      get () {
+        return this.customRightsFlag === 'on'
+      },
+      set (val) {
+        let result = val ? 'on' : 'off'
+        this.$emit('update:customRightsFlag', result)
+      }
+    },
     rightObj () {
-      return this.myRights[this.currentIndex]
+      return this.customRightsAll[this.currentIndex]
     },
     showContentOn () {
-      return this.myRights.length !== 0
+      return this.customRightsAll.length !== 0
     }
   },
   data () {
     return {
       showDialog: false,
-      myRights: [{
-        crightName: 'hhh1',
-        crightImage: null,
-        crightContent: 'Good Night'
-      },
-      {
-        crightName: 'hhh2',
-        crightImage: null,
-        crightContent: 'Good Night'
-      }],
       // 当前的选项
       currentIndex: -1
     }
   },
   methods: {
     callRightDialog (val) {
+      if (this.customRightsAll.length >= 10) {
+        this.$message.warning('已达上限')
+        return
+      }
       this.showDialog = !this.showDialog
       this.currentIndex = val
     },
     setNewRight (res) {
       console.log('receive', res)
-      this.myRights.push(res)
+      this.customRightsAll.push(res)
     },
     deleteRight (index) {
-      this.myRights.splice(index, 1)
+      this.customRightsAll.splice(index, 1)
     }
   }
 }
@@ -93,7 +112,7 @@ export default {
             padding: 10px 0 0 20px;
             .content-item{
                 display: inline-block;
-                width: 180px;
+                width: 270px;
             }
             .icon-style{
                 font-size: 22px;

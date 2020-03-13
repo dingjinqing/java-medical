@@ -5,10 +5,9 @@
             title="自定义权限"
             width="30%"
         >
-
             <el-form :inline-message="true">
                 <el-form-item label="权益名称:" :rules="[{required: true}]">
-                    <el-input :value="right.crightName" size="small" style="width: 165px;" @input="$emit('update:crightName',$event)"></el-input>
+                    <el-input v-model="right.crightName" size="small" style="width: 165px;" ></el-input>
                     <span class="tips">最多可填20个字</span>
                 </el-form-item>
                 <el-form-item label="权益图标:" :rules="[{required: true}]">
@@ -69,8 +68,8 @@ export default {
   },
   computed: {
     getImgSrc () {
-      if (this.crightImage) {
-        return this.crightImage
+      if (this.right.crightImage) {
+        return this.right.crightImage
       }
       return this.$imageHost + '/image/admin/shop_beautify/add_decorete.png'
     },
@@ -87,11 +86,6 @@ export default {
     visible (val) {
       if (val) {
         this.initRightData()
-        if (this.crightName) {
-          this.createNewFlag = false
-        } else {
-          this.createNewFlag = true
-        }
       }
     }
   },
@@ -113,6 +107,8 @@ export default {
   },
   methods: {
     initRightData () {
+      this.createNewFlag = !this.crightName
+      this.whFlag = Boolean(this.crightImage)
       this.right.crightName = this.crightName
       this.right.crightImage = this.crightImage
       this.right.crightContent = this.crightContent
@@ -123,23 +119,19 @@ export default {
     setImg (res) {
       console.log(res.imgUrl)
       if (res && res.imgUrl) {
-        this.$emit('update:crightImage', res.imgUrl)
+        this.right.crightImage = res.imgUrl
       }
       this.whFlag = Boolean(res && res.imgUrl)
     },
     handleRights () {
       if (this.createNewFlag) {
         // create
-        let obj = {
-          'crightName': this.crightName,
-          'crightImage': this.crightImage,
-          'crightContent': this.crightContent
-        }
-        console.log('send', obj)
-        this.$emit('createNewRight', obj)
+        this.$emit('createNewRight', {...this.right})
       } else {
         // update
-
+        for (const key in this.right) {
+          this.$emit(`update:${key}`, this.right[key])
+        }
       }
 
       this.dialogVisiable = this.createNewFlag = false
