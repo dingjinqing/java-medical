@@ -800,7 +800,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			if ((groupId != null && groupId != 0)|| existGroup!=0) {
 				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
 				canPinInte.setStatus(STATUS_ZERO);
-				vo.setGroupId(groupId);
+				vo.setGroupId(existGroup);
 				// TODO 国际化
 				canPinInte.setMsg("已开团");
 				vo.setCanPin(canPinInte);
