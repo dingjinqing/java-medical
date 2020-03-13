@@ -1,15 +1,7 @@
 // pages1/pinintegrationdetail/pinintegrationdetail.js
 var util = require('../../utils/util.js')
 var app = new getApp();
-var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var good_id = '';
 var mobile = util.getCache('mobile');
-var total_micro_second = 0;
-var pinInte_id;
-var group_id;
-var gd;
-
 global.wxPage({
 
   /**
@@ -17,8 +9,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    total_micro_second: 0,
-    isFold: true,
+    gd: {}, // 参与活动列表
+    isFold: true, // 展开列表
     title_bgColor: "#f18a4f"
   },
 
@@ -29,25 +21,22 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     mobile = util.getCache('mobile');
     var that = this;
-    // util.api('/api/wxapp/pin/integration/myact', function (res) {
-    //   gd = res.content;
-    //   if (res.content) {
-    //     util.api('/api/wxapp/user_goods/record', function (res1) {
-
-    //     }, { goods_id: group_id, active_id: options.pinInte_id, active_type: 7, type: 1 })
-    //   }
-    //   that.setData({
-    //     gd: gd,
-    //   })
-    // }, { pinInte_id: options.pinInte_id, group_id: group_id });
+    // 获取当前用户参与活动
+    util.api('/api/wxapp/pin/integration/myact', function (res) {
+      if (res.error == 0) {
+        that.setData({
+          gd: res.content,
+        })
+      }
+    });
   },
 
   // 查看进行中活动
   toDetail: function (e) {
     var pinInte_id = e.currentTarget.dataset.pininte_id;
-    var groupp_id = e.currentTarget.dataset.group_id;
+    var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      url: '/pages/pinintegration/pinintegration?pinInte_id=' + pinInte_id + '&group_id=' + groupp_id,
+      url: '/pages/pinintegration/pinintegration?pinInte_id=' + pinInte_id + '&group_id=' + group_id,
     })
   },
 
