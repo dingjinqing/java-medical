@@ -422,6 +422,10 @@ export default {
       if (data.cardRenew) {
         this.cardRenew = data.cardRenew
       }
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
+      }
 
       // 使用须知
       this.cardUsageCfgData.desc = data.desc
@@ -616,7 +620,8 @@ export default {
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
         'freeship': this.freeship,
-        'cardRenew': this.cardRenew
+        'cardRenew': this.cardRenew,
+        'customRights': this.customRights
       }
       if (this.cardId) {
         // 更新会员卡

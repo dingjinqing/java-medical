@@ -108,11 +108,12 @@ export default {
         border: 1px dashed #ccc;
         margin-right: 50%;
         margin-top: 10px;
+        padding-bottom: 10px;
         .content{
             padding: 10px 0 0 20px;
             .content-item{
                 display: inline-block;
-                width: 270px;
+                width: 230px;
             }
             .icon-style{
                 font-size: 22px;
