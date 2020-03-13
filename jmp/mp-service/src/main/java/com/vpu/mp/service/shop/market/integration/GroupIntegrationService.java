@@ -1074,7 +1074,9 @@ public class GroupIntegrationService extends ShopBaseService {
 		long add=24*60*60*1000L;
 		if(groupIntegration.getStatus().equals(STATUS_ZERO)) {
 			long time = startTime + add > endTime ? endTime : startTime + add;
-			vo.setRemainTime(time);
+			Timestamp time1 = DateUtil.getSqlTimestamp();
+			long now=time1.getTime();
+			vo.setRemainTime(time-now);
 		}
 		vo.setGroupInfo(groupInfo);
 		vo.setPinInteInfo(pinInteInfo);
