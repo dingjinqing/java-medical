@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -24,9 +25,12 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
@@ -65,7 +69,8 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
@@ -240,6 +245,48 @@ public class MemberCardService extends ShopBaseService {
 			cardBuilder.renewDateType((byte)dateType.ordinal());
 		}
 	}
+	
+	/**
+	 * 	初始化自定义权益信息
+	 */
+	private void initCustonRights(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化自定义权益信息");
+		CardCustomRights customRights = param.getCustomRights();
+		Byte flag = null;
+		String rightsJson = null;
+		
+		if(customRights != null) {
+			RightSwitch rightsFlag = customRights.getCustomRightsFlag();
+			if(rightsFlag != null) {
+				flag = (byte)rightsFlag.ordinal();
+			}
+			
+			List<CardRight> customRightsAll = customRights.getCustomRightsAll();
+			
+			// 将图片的URL处理成相对路径
+			for(CardRight right: customRightsAll) {
+				String imgUrl = right.getCrightImage();
+				if(!StringUtils.isBlank(imgUrl)) {
+					try {
+						URL url = new URL(imgUrl);
+						imgUrl = url.getPath();
+					} catch (MalformedURLException e) {
+						imgUrl = null;
+					}
+				}
+				right.setCrightImage(imgUrl);
+			}
+			
+			if(customRightsAll != null && customRightsAll.size()>0) {
+				rightsJson = Util.toJson(customRightsAll);
+			}
+		}
+		
+		cardBuilder
+			.customRightsFlag(flag)
+			.customRights(rightsJson);
+	}
+
 
 	/**
 	 * 会员卡发放总量和领取设置
@@ -708,10 +755,9 @@ public class MemberCardService extends ShopBaseService {
 		initReceiveCardCfg(param, cardBuilder);
 		initFreeshipCfg(param,cardBuilder);
 		initRenewCardCfg(param,cardBuilder);
+		initCustonRights(param,cardBuilder);
 	}
 
-
-	
 
 	/**
 	 * 初始化限次会员卡配置信息
@@ -1014,10 +1060,15 @@ public class MemberCardService extends ShopBaseService {
 		assignCoupon(normalCard);
 		// 包邮信息
 		normalCard.setFreeship(getFreeshipData(card));
+		// 续费信息
 		normalCard.setCardRenew(getRenewData(card));
+		// 自定义权益信息
+		normalCard.setCardCustomRights(getCustomRights(card));
 		return normalCard;
 	}
 	
+
+
 
 
 	/**
@@ -1048,6 +1099,36 @@ public class MemberCardService extends ShopBaseService {
 				 .renewTime(card.getRenewTime())
 				 .renewDateType(dateType)
 				 .build();
+	}
+	
+	/**
+	 * 	获取卡的自定义权益信息
+	 */
+	private CardCustomRights getCustomRights(MemberCardRecord card) {
+		List<CardRight> customRightsAll = null;
+		CardCustomRights.RightSwitch flag = CardCustomRights.RightSwitch.off;
+		
+		if(!StringUtils.isBlank(card.getCustomRights())) {
+			customRightsAll = Util.json2Object(card.getCustomRights(), new TypeReference<List<CardRight>>() {
+	        }, false);
+		}
+		
+		if(null != card.getCustomRightsFlag() ) {
+			flag = CardCustomRights.RightSwitch.values()[card.getCustomRightsFlag()];
+		}
+		// 处理图片路径
+		for(CardRight right: customRightsAll) {
+			String imgUrl = right.getCrightImage();
+			if(!StringUtils.isBlank(imgUrl)) {
+				imgUrl = domainConfig.imageUrl(imgUrl);
+			}
+			right.setCrightImage(imgUrl);
+		}
+		
+		return CardCustomRights.builder()
+					.customRightsAll(customRightsAll)
+					.customRightsFlag(flag)
+					.build();
 	}
 
 	private void changeCardJsonCfgToDetailType(BaseCardVo card) {

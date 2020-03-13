@@ -132,12 +132,17 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `renew_num` decimal(10, 2) DEFAULT 0.00
 ALTER TABLE `b2c_member_card` ADD COLUMN `renew_time` int(11) DEFAULT NULL COMMENT '续费时间' AFTER `renew_num`;
 ALTER TABLE `b2c_member_card` ADD COLUMN `renew_date_type` tinyint(1) DEFAULT NULL COMMENT '0:日，1:周 2: 月' AFTER `renew_time`;
 
+
 -- 商品表和规格表设置市场价字段可以为null
 ALTER TABLE b2c_goods MODIFY market_price DECIMAL(10,2) COMMENT '市场价格，多规格时取最高';
 ALTER TABLE b2c_goods_spec_product MODIFY prd_market_price DECIMAL(10,2) COMMENT '市场价格';
 ALTER TABLE b2c_goods_spec_product_bak MODIFY prd_market_price DECIMAL(10,2) COMMENT '市场价格';
 -- 恢复之前被他人误删的商品主键
 ALTER TABLE `b2c_goods` ADD PRIMARY KEY ( `goods_id` );
+-- 2020年03月12日 会员卡表添加不可与优惠券共用字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以' AFTER `renew_date_type`;
+-- 2020年03月12日 会员卡表添加自定义权益开关字段
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关' AFTER `cannot_use_coupon`;
 /***********************2.10*********************END*/
 -- 瓜分积分 添加活动规则说明
 ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';

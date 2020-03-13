@@ -41,6 +41,10 @@
             v-bind.sync="freeship"
             ref="freeship">
           </cardFreeshipCfg>
+          <!-- 自定义权益 -->
+          <cardCustomRights v-bind.sync="customRights">
+
+          </cardCustomRights>
           <cardEffectTime
             :val="cardEffectTime"
             @input="initCardEffectTimeData"
@@ -132,6 +136,9 @@ export default {
     ),
     cardRenewCfg: () => import(
       './subcomponents/cardRenewCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   computed: {
@@ -275,6 +282,17 @@ export default {
         renewNum: null,
         renewTime: null,
         renewDateType: null
+      },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: [
+          {
+            crightName: 'hhh1',
+            crightImage: null,
+            crightContent: 'Good Night'
+          }
+        ]
       }
     }
   },
@@ -403,6 +421,10 @@ export default {
       // 续费信息
       if (data.cardRenew) {
         this.cardRenew = data.cardRenew
+      }
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
       }
 
       // 使用须知
@@ -598,7 +620,8 @@ export default {
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
         'freeship': this.freeship,
-        'cardRenew': this.cardRenew
+        'cardRenew': this.cardRenew,
+        'customRights': this.customRights
       }
       if (this.cardId) {
         // 更新会员卡

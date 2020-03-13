@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 239792925;
+    private static final long serialVersionUID = 67270883;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -352,6 +352,16 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      * The column <code>jmini_shop_489258.b2c_member_card.renew_date_type</code>. 0:日，1:周 2: 月
      */
     public final TableField<MemberCardRecord, Byte> RENEW_DATE_TYPE = createField("renew_date_type", org.jooq.impl.SQLDataType.TINYINT, this, "0:日，1:周 2: 月");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.cannot_use_coupon</code>. 是否和会员卡一起使用0:可以1：不可以
+     */
+    public final TableField<MemberCardRecord, Byte> CANNOT_USE_COUPON = createField("cannot_use_coupon", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否和会员卡一起使用0:可以1：不可以");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.custom_rights_flag</code>. 自定义权益开关
+     */
+    public final TableField<MemberCardRecord, Byte> CUSTOM_RIGHTS_FLAG = createField("custom_rights_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "自定义权益开关");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference
