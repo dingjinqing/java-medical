@@ -87,91 +87,91 @@
         </el-form-item>
         <el-form-item
           label="积分兑换设置："
-          prop="checkGoods"
+          prop="tableData"
         >
+          <el-table
+            class="version-manage-table"
+            header-row-class-name="tableClss"
+            :data="ruleForm.tableData"
+            border
+            :span-method="arraySpanMethod"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="goodsName"
+              label="商品名称/规格"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="originPrice"
+              label="原价（元）"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div :class="scope.$index===(tableData.length-1)?'batchSetup':''">
+                  {{scope.$index===(tableData.length-1)?'':scope.row.originPrice}}
+                  <div v-if="scope.$index===(tableData.length-1)">
+                    <span
+                      class="batchSpan"
+                      @click.stop="handleToClick(1)"
+                      :style="batchFlag===1?'color: #606266':''"
+                    >商品兑换价格</span>
+                    <span
+                      class="batchSpan"
+                      @click.stop="handleToClick(2)"
+                      :style="batchFlag===2?'color: #606266':''"
+                    >商品兑换库存</span>
+                  </div>
+                </div>
+
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="exchange"
+              label="商品兑换价格"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div class="scoreDiv">
+                  <el-input
+                    size="small"
+                    v-model="scope.row.exchange.money"
+                    onkeyup="value=value.replace(/[^\d.]/g,'')"
+                  ></el-input>
+                  <span>元 +</span>
+                  <el-input
+                    size="small"
+                    v-model="scope.row.exchange.score"
+                    onkeyup="value=value.replace(/[^\d.]/g,'')"
+                  ></el-input>
+                  <span>积分</span>
+                </div>
+
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="goodsStock"
+              label="商品库存"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="stock"
+              label="兑换商品库存"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  size="small"
+                  v-model="scope.row.stock"
+                  onkeyup="value=value.replace(/[^\d.]/g,'')"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
       </el-form>
-      <el-table
-        class="version-manage-table"
-        header-row-class-name="tableClss"
-        :data="tableData"
-        border
-        :span-method="arraySpanMethod"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="goodsName"
-          label="商品名称/规格"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="originPrice"
-          label="原价（元）"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div :class="scope.$index===(tableData.length-1)?'batchSetup':''">
-              {{scope.$index===(tableData.length-1)?'':scope.row.originPrice}}
-              <div v-if="scope.$index===(tableData.length-1)">
-                <span
-                  class="batchSpan"
-                  @click.stop="handleToClick(1)"
-                  :style="batchFlag===1?'color: #606266':''"
-                >商品兑换价格</span>
-                <span
-                  class="batchSpan"
-                  @click.stop="handleToClick(2)"
-                  :style="batchFlag===2?'color: #606266':''"
-                >商品兑换库存</span>
-              </div>
-            </div>
-
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="exchange"
-          label="商品兑换价格"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <div class="scoreDiv">
-              <el-input
-                size="small"
-                v-model="scope.row.exchange.money"
-                onkeyup="value=value.replace(/[^\d.]/g,'')"
-              ></el-input>
-              <span>元 +</span>
-              <el-input
-                size="small"
-                v-model="scope.row.exchange.score"
-                onkeyup="value=value.replace(/[^\d.]/g,'')"
-              ></el-input>
-              <span>积分</span>
-            </div>
-
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="goodsStock"
-          label="商品库存"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="stock"
-          label="兑换商品库存"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-input
-              size="small"
-              v-model="scope.row.stock"
-              onkeyup="value=value.replace(/[^\d.]/g,'')"
-            ></el-input>
-          </template>
-        </el-table-column>
-      </el-table>
       <div class="showMore">
         <span @click="showMoreFlag = !showMoreFlag">{{showMoreFlag?'收起更多配置':'展开更多配置'}}</span>
         <img :src="showMoreFlag?($imageHost+'/image/admin/info_up.png'):($imageHost+'/image/admin/info_down.png')">
@@ -323,6 +323,17 @@ export default {
     ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
   },
   data () {
+    var validateTableData = (rule, value, callback) => {
+      console.log(value)
+      // if (value === '') {
+      //   callback(new Error('请输入密码'));
+      // } else {
+      //   if (this.ruleForm.checkPass !== '') {
+      //     this.$refs.ruleForm.validateField('checkPass');
+      //   }
+      //   callback();
+      // }
+    }
     return {
       checkImgData: '', // 选中的图片数据
       imageTuneUp: false, // 选择图片弹窗flag
@@ -336,21 +347,20 @@ export default {
       holdToSeeLi: false, // 查看示例flag
       batchFlag: -1, // 点击批量设置子项
       showMoreFlag: false, // 展开flag
-      tableData: [// 积分兑换设置表格数据
-        {
-          goodsName: '批量设置：',
-          originPrice: '1',
-          exchange: '',
-          goodsStock: '',
-          stock: ''
-        }
-      ],
       ruleForm: { // 顶部表格数据
         name: '', // 活动名称
         customTime: '', // 有效期开始时间
         customTimeEnd: '', // 有效期结束时间
         maxExchangeNum: 1, // 单个用户最多可兑换数量
-        checkGoods: '' // 选择的商品
+        tableData: [// 积分兑换设置表格数据
+          {
+            goodsName: '批量设置：',
+            originPrice: '1',
+            exchange: '',
+            goodsStock: '',
+            stock: ''
+          }
+        ] // 选择的商品
       },
       rules: {// 顶部表格数据校验
         name: [
@@ -365,8 +375,8 @@ export default {
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
         ],
-        checkGoods: [
-          { required: true, message: '请选择商品', trigger: 'blur' }
+        tableData: [
+          { validator: validateTableData, trigger: 'blur' }
         ]
       },
       formBottom: {
@@ -454,7 +464,7 @@ export default {
             stock: ''
           }
           arr.push(lastObj)
-          this.tableData = arr
+          this.ruleForm.tableData = arr
         }
       })
     },
