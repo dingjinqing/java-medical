@@ -403,7 +403,7 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setDelFlag(BYTE_ZERO);
         orderRecord.setCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
         orderRecord.setAliTradeNo(StringUtils.EMPTY);
-        orderRecord.setCurrency("CNY");
+        orderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
         return StoreOrderTran.builder()
             .account(accountParam)
             .cardConsumpData(cardConsumpData)

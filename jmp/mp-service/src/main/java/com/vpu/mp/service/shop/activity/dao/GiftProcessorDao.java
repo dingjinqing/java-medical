@@ -66,10 +66,23 @@ public class GiftProcessorDao extends GiftService {
 
     @Autowired
     private UserCardService userCard;
+
     @Autowired
     private GoodsMpService goodsMpService;
+
     @Autowired
     private ImageService imageService;
+
+    private final static List<Byte> ORDER_ACT_FILTER;
+    static {
+        //TODO 好友助力送商品，送礼多人送时过滤
+        ORDER_ACT_FILTER = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER
+        );
+    }
+
 
     /**
      * 获取商品的赠品信息
@@ -131,6 +144,12 @@ public class GiftProcessorDao extends GiftService {
      */
     public void getGifts(Integer userId, List<OrderGoodsBo> goodsBo, List<Byte> orderType){
         logger().info("下单获取赠品start");
+        for(Byte type : orderType) {
+            if (ORDER_ACT_FILTER.contains(type)) {
+                logger().info("该活动不可参与赠品活动，type:{}", type);
+                return;
+            }
+        }
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
