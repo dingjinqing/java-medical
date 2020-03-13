@@ -62,6 +62,7 @@
           <el-input
             size="small"
             v-model="ruleForm.maxExchangeNum"
+            onkeyup="value=value.replace(/[^\d.]/g,'')"
           ></el-input>
           <span class="tips">填0则不限制</span>
         </el-form-item>
@@ -323,8 +324,14 @@
   </div>
 </template>
 <script>
-import { goodsSpecDetail, addIntegral } from '@/api/admin/marketManage/integralExchange'
+import { goodsSpecDetail, addIntegral, integralDetail, integralUpdate } from '@/api/admin/marketManage/integralExchange'
 export default {
+  props: {
+    id: {
+      type: Number,
+      default: -1
+    }
+  },
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'), // 选择商品弹窗
     ImageDalog: () => import('@/components/admin/imageDalog') // 添加图片弹窗
@@ -370,9 +377,18 @@ export default {
         callback()
       }
     }
+    var validateTime = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        callback(new Error('请选择日期'))
+      } else {
+        callback()
+      }
+    }
     return {
       isSureTop: false,
       isSureBottom: false,
+      checkGoodsId: null, // 选中的商品id
       imageTuneUp: false, // 选择图片弹窗flag
       chooseFlag: false, // 选择商品弹窗flag
       chooseGoodsBack: [], // 选择商品回显
@@ -407,10 +423,10 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         customTime: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { validator: validateTime, required: true, trigger: 'change' }
         ],
         customTimeEnd: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { validator: validateTime, required: true, trigger: 'change' }
         ],
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
@@ -437,6 +453,40 @@ export default {
       }
     }
   },
+  watch: {
+    id: {
+      handler (newData) {
+        console.log(newData)
+        if (newData !== -1) {
+          this.isSureTop = true
+          this.isSureBottom = true
+          integralDetail({ id: newData }).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              let { name, startTime, endTime, maxExchangeNum, goodsId, goodsName, shareConfig } = res.content
+              this.ruleForm.name = name
+              this.ruleForm.customTime = startTime
+              this.ruleForm.customTimeEnd = endTime
+              this.ruleForm.maxExchangeNum = maxExchangeNum
+              this.ruleForm.checkGoodsName = goodsName
+              this.checkGoodsId = goodsId
+              // 处理底部展开的内容
+              let config = JSON.parse(shareConfig)
+              this.formBottom.style = JSON.stringify(config.shareAction)
+              if (this.formBottom.style === '2') {
+                this.showMoreFlag = true
+              }
+              this.formBottom.copywriting = config.share_doc
+              this.formBottom.sharedGraph = JSON.stringify(config.share_img_action)
+              this.formBottom.checkImgData = { imgUrl: config.share_img }
+              console.log(config)
+            }
+          })
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
     // 点击保存
     handleToClickSave () {
@@ -459,19 +509,68 @@ export default {
           }
         })
       }
+      console.log(this.isSureTop, this.isSureBottom)
       if (this.isSureTop && this.isSureBottom) {
+        let arr = []
+        this.ruleForm.tableData.forEach((item, index) => {
+          let obj = {
+            money: '',
+            score: '',
+            stock: ''
+          }
+          if (index !== (this.ruleForm.tableData.length - 1)) {
+            obj.money = item.exchange.money
+            obj.score = item.exchange.score
+            obj.stock = item.stock
+            arr.push(obj)
+          }
+        })
+        let url = ''
+        if (this.formBottom.checkImgData) {
+          url = this.formBottom.checkImgData.imgUrl
+        }
+        let configParamObj = {
+          shareAction: Number(this.formBottom.style),
+          shareDoc: this.formBottom.copywriting,
+          shareImgAction: Number(this.sharedGraph),
+          shareImg: url
+        }
         let params = {
           name: this.ruleForm.name,
           startTime: this.ruleForm.customTime,
           endTime: this.ruleForm.customTimeEnd,
-          maxExchangeNum: '',
-          goodsId: '',
-          productParam: '',
-          configParam: ''
+          maxExchangeNum: this.ruleForm.maxExchangeNum,
+          goodsId: this.checkGoodsId,
+          productParam: arr,
+          configParam: configParamObj
         }
-        addIntegral(params).then(res => {
-          console.log(res)
-        })
+        console.log(this.id)
+        if (this.id === -1) {
+          addIntegral(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$emit('backHome', true)
+            } else {
+              this.$message.error({
+                message: '保存失败',
+                showClose: true
+              })
+            }
+          })
+        } else {
+          params.id = this.id
+          integralUpdate(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$emit('backHome', true)
+            } else {
+              this.$message.error({
+                message: '保存失败',
+                showClose: true
+              })
+            }
+          })
+        }
       }
     },
     // 表格末行合并处理
@@ -514,6 +613,7 @@ export default {
     resultGoodsRow (res) { // 选中商品弹窗回传数据
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
+      this.checkGoodsId = res.goodsId
       goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
         console.log(res)
         if (res.error === 0) {

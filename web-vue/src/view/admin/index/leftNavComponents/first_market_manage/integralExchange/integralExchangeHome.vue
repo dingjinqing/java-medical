@@ -36,7 +36,10 @@
           name="sixth"
           v-if="showSix"
         >
-          <IntegralExchangeAdd @backHome="backHome" />
+          <IntegralExchangeAdd
+            :id="editId"
+            @backHome="backHome"
+          />
         </el-tab-pane>
       </el-tabs>
       <el-button
@@ -157,12 +160,30 @@
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
+                content="启用"
+                placement="top"
+              >
+                <span
+                  @click="handleToOption(scope.row,0)"
+                  class="iconfont iconqiyong iconSpan"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
+                content="删除"
+                placement="top"
+              >
+                <span
+                  class="iconfont iconshanchu2 iconSpan"
+                  @click="handleToOption(scope.row,1)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
                 content="编辑"
                 placement="top"
               >
                 <span
                   class="el-icon-edit-outline iconSpan"
-                  @click="gotoEdit(scope.row.id)"
+                  @click="handleToOption(scope.row,2)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -171,7 +192,7 @@
               >
                 <span
                   class="el-icon-share iconSpan"
-                  @click="shareHandle(scope.row.id)"
+                  @click="handleToOption(scope.row,3)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -179,7 +200,7 @@
                 placement="top"
               >
                 <span
-                  @click="puaseGroupIntegration(scope.row.id)"
+                  @click="handleToOption(scope.row,4)"
                   class="el-icon-circle-close iconSpan"
                 ></span>
               </el-tooltip>
@@ -189,7 +210,7 @@
                 placement="top"
               >
                 <span
-                  @click="gotoDetail(scope.row.id)"
+                  @click="handleToOption(scope.row,5)"
                   class="iconfont icondingdan iconSpan"
                 ></span>
               </el-tooltip>
@@ -198,7 +219,7 @@
                 placement="top"
               >
                 <span
-                  @click="gotoSuccess(scope.row.id)"
+                  @click="handleToOption(scope.row,6)"
                   class="el-icon-user iconSpan"
                 ></span>
               </el-tooltip>
@@ -207,7 +228,7 @@
                 placement="top"
               >
                 <span
-                  @click="gotoSuccess(scope.row.id)"
+                  @click="handleToOption(scope.row,7)"
                   class="iconfont iconmingxi1 iconSpan"
                 ></span>
               </el-tooltip>
@@ -219,11 +240,62 @@
         :page-params.sync="pageParams"
         @pagination="seacherGroupIntegrationList"
       />
+      <!--二次确认弹窗-->
+      <el-dialog
+        title="提示"
+        :visible.sync="secondaryVisible"
+        width="30%"
+      >
+        <div class="dialogTip">确认删除吗？</div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="secondaryVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="handleToSecondSure()"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+      <!--分享弹窗-->
+      <el-dialog
+        title="扫一扫分享给好友吧~"
+        :visible.sync="shareVisible"
+        width="30%"
+      >
+        <div class="copyContainer">
+          <img
+            :src="posterAddressImgUrl"
+            alt=""
+            style="width:160px;height:160px"
+            class="code_imgs"
+          >
+        </div>
+        <div
+          class="copyContainer"
+          style="color:#999"
+        >
+          下载海报码
+        </div>
+        <div class="copyContainer copyDiv">
+          <span>下载海报链接：</span>
+          <el-input
+            size="small"
+            v-model="posterAddress"
+            ref="qrCodePageUrlInput"
+          ></el-input>
+          <span
+            class="copy"
+            @click="handelToCopy"
+          >复制</span>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script>
-import { integralExchangeList } from '@/api/admin/marketManage/integralExchange'
+import { integralExchangeList, integralDel, integralDiscontinueUse } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页组件
@@ -243,7 +315,14 @@ export default {
       },
       showSix: false, // 是否显示第六个隐藏的tap
       isEditId: 0,
-      sixTitle: '添加积分兑换活动' // 隐藏tap文案
+      sixTitle: '添加积分兑换活动', // 隐藏tap文案
+      editId: -1, // 编辑id
+      secondaryVisible: false, // 二次确认弹窗flag
+      nowClickOptionFlag: null, // 当前点击的操作项
+      row: null, // 当前点击的项
+      shareVisible: false, // 分享弹窗flag
+      posterAddressImgUrl: 'http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/16/T16P197_20200313180742.jpg', // 分享图路径
+      posterAddress: 'pages/integralitem/integralitem?integral_goods_id=197&invite_id=' // 分享地址链接
     }
   },
   mounted () {
@@ -284,10 +363,6 @@ export default {
     seacherGroupIntegrationList () {
       this.handleToInit()
     },
-    // 对过期状态值设置对应显示
-    formatter (row, column) {
-
-    },
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
@@ -299,52 +374,100 @@ export default {
       })
       this.tableData = data
     },
+    // 处理
+    handleToOption (row, flag) {
+      this.row = row
+      this.nowClickOptionFlag = flag
+      switch (flag) {
+        case 0: // 启用
+          integralDiscontinueUse({ id: row.id }).then(res => {
+            if (res.error === 0) {
+              this.$message.success({
+                message: '启用成功',
+                showClose: true
+              })
+              this.handleToInit()
+            } else {
+              this.$message.error({
+                message: '启用失败',
+                showClose: true
+              })
+            }
+          })
+          break
+        case 1: // 删除
+          this.secondaryVisible = true
+          break
+        case 2: // 编辑
+          this.editId = row.id
+          this.showSix = true
+          this.activeName = 'sixth'
+          break
+        case 3: // 分享
+          this.shareVisible = true
+          break
+        case 4: // 停用
+          integralDiscontinueUse({ id: row.id }).then(res => {
+            if (res.error === 0) {
+              this.$message.success({
+                message: '停用成功',
+                showClose: true
+              })
+              this.handleToInit()
+            } else {
+              this.$message.error({
+                message: '停用失败',
+                showClose: true
+              })
+            }
+          })
+          break
+        case 5: // 查看积分兑换订单
 
-    // 停用瓜分积分活动
-    puaseGroupIntegration (id) {
+          break
+        case 6: // 获取新用户明细
 
+          break
+        case 7: // 查看积分兑换用户
+
+          break
+      }
     },
-    // 启用瓜分积分活动
-    upGroupIntegration (id) {
-
+    // 点击复制
+    handelToCopy () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
     },
-    // 删除瓜分积分活动
-    delGroupIntegration (id) {
-
+    // 二次确认弹窗处理事件
+    handleToSecondSure () {
+      switch (this.nowClickOptionFlag) {
+        case 1: // 删除积分兑换活动
+          integralDel({ id: this.row.id }).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.$message.success({
+                message: '删除成功',
+                showClose: true
+              })
+              this.handleToInit()
+            } else {
+              this.$message.error({
+                message: '删除失败',
+                showClose: true
+              })
+            }
+            this.secondaryVisible = false
+          })
+          break
+      }
     },
-    // 增加瓜分积分活动
-    addActivity () {
-      this.showSix = true
-      this.activeName = 'sixth'
-    },
-    // 分享活动
-    shareHandle (id) {
-
-    },
-    // 编辑活动
-    gotoEdit (id) {
-
-    },
-
-    // 前往参与瓜分积分活动的用户明细页面
-    gotoDetail (id) {
-
-    },
-    // 前往成团明细页面
-    gotoSuccess (id) {
-
-    },
-    gotoAnalysis (id) {
-
-    },
-    backHome (data) {
-      console.log(data)
-      // if (data.flag === 6) {
-      //   this.showSix = false
-      //   this.activeName = 'first'
-      //   this.type = 0
-      //   this.seacherGroupIntegrationList()
-      // }
+    backHome (flag) { // 添加积分兑换活动页面保存返回事件
+      console.log(flag)
+      if (flag) {
+        this.showSix = false
+        this.activeName = 'first'
+        this.handleToInit()
+      }
     }
   }
 }
@@ -454,6 +577,29 @@ export default {
     display: -webkit-box;
     margin-left: 12px;
     text-align: left;
+  }
+}
+.dialogTip {
+  display: flex;
+  justify-content: center;
+}
+.copyContainer {
+  display: flex;
+  justify-content: center;
+  .copy {
+    cursor: pointer;
+    color: #5a8bff;
+  }
+  /deep/ .el-input {
+    width: 200px;
+    margin: 0 10px;
+  }
+}
+.copyDiv {
+  align-items: center;
+  margin-top: 20px;
+  span {
+    white-space: nowrap;
   }
 }
 </style>
