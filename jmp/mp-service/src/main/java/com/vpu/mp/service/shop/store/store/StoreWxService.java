@@ -373,6 +373,7 @@ public class StoreWxService extends ShopBaseService {
      * @return the wxapp store detail
      */
     public StoreInfoVo getWxappStoreDetail(StoreInfoParam param) {
+        param.setScene();
         Integer storeId = param.getStoreId();
         Integer userId = param.getUserId();
         if (userId != null) {
