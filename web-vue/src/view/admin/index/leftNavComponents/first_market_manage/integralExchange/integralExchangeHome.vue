@@ -423,7 +423,14 @@ export default {
           })
           break
         case 5: // 查看积分兑换订单
-
+          console.log(row)
+          this.$router.push({
+            path: 'pointsExchangeOrder',
+            query: {
+              activityId: row.id,
+              activityName: row.name
+            }
+          })
           break
         case 6: // 获取新用户明细
 
@@ -437,6 +444,11 @@ export default {
     handelToCopy () {
       this.$refs.qrCodePageUrlInput.select()
       document.execCommand('Copy')
+    },
+    // 增加瓜分积分活动
+    addActivity () {
+      this.showSix = true
+      this.activeName = 'sixth'
     },
     // 二次确认弹窗处理事件
     handleToSecondSure () {
