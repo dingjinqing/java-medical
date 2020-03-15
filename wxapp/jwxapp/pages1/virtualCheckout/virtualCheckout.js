@@ -32,6 +32,9 @@ global.wxPage({
     if(options.packId) this.requestPackageData()
   },
   requestPackageData(){
+    this.setData({
+      page_name:'优惠券礼包结算'
+    })
     let {packId} = this.data.options
     let cardNo = this.data.chooseCardNo
     util.api(`/api/wxapp/coupon/pack/order`,res=>{
