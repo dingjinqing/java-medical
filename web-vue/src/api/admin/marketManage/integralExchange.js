@@ -61,3 +61,21 @@ export function integralDel (data) {
     data: data
   })
 }
+
+// 查看积分兑换订单
+export function integralOrder (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/order',
+    method: 'post',
+    data: data
+  })
+}
+
+// 积分兑换用户列表
+export function integralUserList (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/user',
+    method: 'post',
+    data: data
+  })
+}

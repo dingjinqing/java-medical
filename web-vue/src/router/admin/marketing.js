@@ -1476,6 +1476,32 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/pointsExchangeOrder'
       )
   },
+  // 积分兑换子页面--- 积分兑换用户列表
+  {
+    path: '/admin/home/main/pointsUserList',
+    name: 'pointsUserList',
+    meta: {
+      crumbTitle: 'router.pointsUserList',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/pointsUserList'
+      )
+  },
+  // 积分兑换子页面--- 获取新用户明细
+  {
+    path: '/admin/home/main/newUserDetails',
+    name: 'newUserDetails',
+    meta: {
+      crumbTitle: 'router.integralExchangeHome',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/integralExchange/subPages/newUserDetails'
+      )
+  },
   // 支付有礼
   {
     path: '/admin/home/main/payReward',

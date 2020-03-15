@@ -363,17 +363,6 @@ export default {
     seacherGroupIntegrationList () {
       this.handleToInit()
     },
-    // 表格数据处理
-    handleData (data) {
-      data.map((item, index) => {
-        item.content = `${item.limitAmount}人瓜分${item.inteGroup}`
-        item.totalIntegration = `${item.inteTotal}积分`
-        item.leftIntegration = `剩余：${item.inteRemain}积分`
-        // item.actDate = `${item.startTime}至${item.endTime}`
-        // item.expire = this.getExpireString(item.expire)
-      })
-      this.tableData = data
-    },
     // 处理
     handleToOption (row, flag) {
       this.row = row
@@ -433,10 +422,21 @@ export default {
           })
           break
         case 6: // 获取新用户明细
-
+          this.$router.push({
+            path: 'newUserDetails',
+            query: {
+              activityId: row.id,
+              activityName: row.name
+            }
+          })
           break
         case 7: // 查看积分兑换用户
-
+          this.$router.push({
+            path: 'pointsUserList',
+            query: {
+              activityId: row.id
+            }
+          })
           break
       }
     },
