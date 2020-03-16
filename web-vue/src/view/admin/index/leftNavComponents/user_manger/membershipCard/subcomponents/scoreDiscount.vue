@@ -26,6 +26,7 @@
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
+          <el-checkbox :value="true" class="score-coupon-cnf">{{$t('memberCard.scoreCouponCfg')}}</el-checkbox>
         </div>
       </el-form-item>
 
@@ -328,6 +329,9 @@ export default {
         /deep/ .el-input {
           width: 100%;
         }
+      }
+      .score-coupon-cnf{
+        margin-left: 10px;
       }
     }
     .equity {
