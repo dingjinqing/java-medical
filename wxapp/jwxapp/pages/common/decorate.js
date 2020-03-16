@@ -18,7 +18,7 @@ var decorate = {
     }, null, loading);
   },
 
-  requestFormPageData(page_id, cb) {
+  requestFormPageData(pageId, cb) {
     var _this = this;
     util.api('/api/wxapp/form/get', function (d) {
       if (d.error === 0) {
@@ -30,7 +30,7 @@ var decorate = {
         cb(pageContent);
       }
     }, {
-      page_id: page_id,
+      pageId: pageId,
     });
   }
 };

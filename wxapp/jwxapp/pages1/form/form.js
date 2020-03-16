@@ -21,7 +21,7 @@ global.wxPage({
     this.setData({
       _options:options
     })
-    this.requestFormPageData(options.page_id, this.requestCallback.bind(this))
+    this.requestFormPageData(options.pageId, this.requestCallback.bind(this))
   },
 
   requestCallback(pageContent) {

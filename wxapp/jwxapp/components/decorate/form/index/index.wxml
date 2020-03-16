@@ -1,6 +1,41 @@
 <!--components/decorate/form/index/index.wxml-->
 <view class="form-container">
   <block>
-    <v-advertise></v-advertise>
+    <!-- 姓名 -->
+    <v-input-name></v-input-name>
+    <!-- 手机号 -->
+    <v-input-mobile></v-input-mobile>
+    <!-- 省/市/区 -->
+    <v-address></v-address>
+    <!-- 邮箱 -->
+    <v-input-email></v-input-email>
+    <!-- 性别 -->
+    <v-sex></v-sex>
+    <!-- 下拉 -->
+    <v-slide></v-slide>
+    <!-- 输入框 -->
+    <v-input-text></v-input-text>
+    <!-- 选项 -->
+    <v-choose></v-choose>
+    <!-- 日期 -->
+    <v-date></v-date>
+    <!-- 图片上传 -->
+    <v-upimg></v-upimg>
+    <!-- 视频上传 -->
+    <v-upvideo></v-upvideo>
+    <!-- 轮播 -->
+    <v-carousel></v-carousel>
+    <!-- 富文本 -->
+    <v-rich-text></v-rich-text>
+    <!-- 图片广告 -->
+    <!-- 文本模块 -->
+    <v-text></v-text>
+    <!-- 辅助线 -->
+    <v-line></v-line>
+    <!-- 辅助空白 -->
+    <v-space></v-space>
+    <!-- 电话 -->
+    <v-input-mobile></v-input-mobile>
+    <!-- 公众号 -->
   </block>
 </view>
