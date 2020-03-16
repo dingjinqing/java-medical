@@ -237,6 +237,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.GET_GOODS)) {
+            logger().info(order.getCreateTime().toString(), order.getShippingTime().toString(), order.getConfirmTime().toString());
             mpData = new String[][] {{"亲，您买的宝贝已确认收货"}, {order.getOrderSn()}, {getGoodsName(orderGoods.getByOrderId(order.getOrderId()))}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getCreateTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getShippingTime())}, {DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, order.getConfirmTime())}, {"感谢您的支持与厚爱"}};
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
