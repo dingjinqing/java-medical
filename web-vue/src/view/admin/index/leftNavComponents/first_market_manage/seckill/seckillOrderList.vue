@@ -46,14 +46,22 @@
         ></el-table-column>
         <el-table-column
           :label="this.$t('seckill.username')"
-          prop="username"
           align="center"
-        ></el-table-column>
+        >
+          <template
+            slot-scope="scope"
+            @click="jumpUserInfo(scope.row.userId)"
+          >
+            <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="this.$t('seckill.consignee')"
-          prop="consignee"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
+          </template></el-table-column>
         <el-table-column
           :label="this.$t('seckill.moneyPaid')"
           prop="moneyPaid"
