@@ -528,7 +528,7 @@ public class GroupIntegrationListService extends ShopBaseService {
 				.fetchInto(Integer.class);
 		int groupId = 0;
 		if (existGroups.size() > 0) {
-			groupId = existGroups.size();
+			groupId = existGroups.size()+1;
 		} else {
 			groupId = 1;
 		}
