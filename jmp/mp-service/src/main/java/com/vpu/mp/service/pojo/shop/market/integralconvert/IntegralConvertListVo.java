@@ -42,5 +42,6 @@ public class IntegralConvertListVo {
 	private Byte status;
     /** 删除 */
     private Byte delFlag;
-
+    /** 0：全部活动 1：进行中 2：未开始 3：已过期 4：已停用*/
+    private Integer actStatus;
 }

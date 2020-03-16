@@ -132,7 +132,25 @@ public class IntegralConvertService extends ShopBaseService {
         .orderBy(imd.ID.desc());
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);
-
+        for (IntegralConvertListVo item:listVo.getDataList()){
+            //4 已停用
+            if (item.getStatus()==(byte)0){
+                item.setActStatus(4);
+            }else {
+                //1 进行中
+                if (nowTime.after(item.getStartTime())&&nowTime.before(item.getEndTime())){
+                    item.setActStatus(1);
+                }
+                //2 未开始
+                else if (nowTime.before(item.getStartTime())){
+                    item.setActStatus(2);
+                }
+                //3 已结束
+                else if (nowTime.after(item.getEndTime())){
+                    item.setActStatus(3);
+                }
+            }
+        }
 		return listVo;
 	}
 
