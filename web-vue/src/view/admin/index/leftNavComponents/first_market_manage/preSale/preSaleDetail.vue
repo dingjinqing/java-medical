@@ -26,6 +26,13 @@
           class="input_width"
         ></el-input>
       </div>
+      <div style="margin-left: 30px">
+        <el-button
+          size="small"
+          type="primary"
+          @click="initDataList"
+        >筛选</el-button>
+      </div>
     </div>
 
     <div class="table_list">
