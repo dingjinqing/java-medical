@@ -377,7 +377,23 @@ var helper = {
         }, delay);
       }
     }
-  }
+  },
+
+  // 整合参数
+  getUrlParams(obj) {
+    return Object.keys(obj).reduce((UrlStr, item, index) => {
+      if (index !== 0) UrlStr += `&`
+      return (UrlStr += `${item}=${obj[item]}`)
+    }, '?')
+  },
+  // 获取scene值
+  resetScene(scene){
+    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+      let params = item.split('=')
+      defaultData[params[0]] = params[1]
+      return defaultData
+    },{})
+  },
 }
 
 module.exports = helper;
