@@ -976,4 +976,12 @@ public class CouponService extends ShopBaseService {
             and(CUSTOMER_AVAIL_COUPONS.ACCESS_ORDER_SN.eq(orderSn)).
             fetchAnyInto(Timestamp.class);
     }
+
+    public Result<Record> getCouponDetailByCouponSnList(List<Integer> couponSns) {
+        return  db().select().from(CUSTOMER_AVAIL_COUPONS)
+                .leftJoin(MRKING_VOUCHER).on(MRKING_VOUCHER.ID.eq(CUSTOMER_AVAIL_COUPONS.ACT_ID))
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.in(couponSns))
+                .fetch();
+
+    }
 }
