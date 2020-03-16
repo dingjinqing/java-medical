@@ -535,7 +535,8 @@ public class GroupIntegrationService extends ShopBaseService {
 				return new CanApplyPinInteVo(STATUS_FIVE, "该团已结束");
 			}
 			int joinNum = groupIntegrationList.getJoinNum(pinInteId, userId);
-			if (joinNum == pinInteInfo.getJoinLimit() && pinInteInfo.getJoinLimit() > 0) {
+			logger().info("用户：{}，参加活动：{}，的次数：{}", userId, pinInteId, joinNum);
+			if (Objects.equals(pinInteInfo.getJoinLimit().intValue(), joinNum) && pinInteInfo.getJoinLimit() > 0) {
 				return new CanApplyPinInteVo(STATUS_SEVEN, "您已经参与过" + joinNum + "个活动，达到上限了哦！");
 			}
 		} else {
@@ -848,6 +849,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
 		CanPinInte canPinInte = new CanPinInte();
 		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
+		logger().info("返回的状态为：{}，信息为：{}",canApplyPinInte.getStatus(),canApplyPinInte.getMsg());
 		if (canApplyPinInte.getStatus() > 0) {
 			// vo.setGroupId(gIntegrationMaVo.getGroupId());
 			canPinInte.setStatus(canApplyPinInte.getStatus());
