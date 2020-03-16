@@ -200,6 +200,7 @@ export default {
         powerDiscount: true,
         discount: undefined,
         discountGoodsType: '1',
+        // 不可与优惠券公用
         cannotUseCoupon: false,
         choosedGoodsId: [],
         choosedStoreId: [],
