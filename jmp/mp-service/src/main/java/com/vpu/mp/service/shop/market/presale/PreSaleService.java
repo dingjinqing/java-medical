@@ -347,13 +347,13 @@ public class PreSaleService extends ShopBaseService {
         Tuple2<Timestamp, Timestamp> timePair = new Tuple2<>(param.getPreStartTime(), param.getPreEndTime());
         Tuple2<Timestamp, Timestamp> timePair2 = new Tuple2<>(param.getPreStartTime2(), param.getPreEndTime2());
         List<Tuple2<Timestamp, Timestamp>> timePairs = Arrays.asList(timePair, timePair2);
-        assertTimeNoConflict(timePairs, param.getId());
+        assertTimeNoConflict(timePairs, param.getId(),param.getGoodsId());
     }
 
     /**
      * 判断活动时间段是否冲突
      */
-    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id) {
+    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id,Integer goodsId) {
         Condition statusCondition = TABLE.DEL_FLAG.eq((byte) 0).and(TABLE.STATUS.eq((byte) 1));
         Condition timeCondition = DSL.or();
         for (Tuple2<Timestamp, Timestamp> timePair : timePairs) {
@@ -366,6 +366,7 @@ public class PreSaleService extends ShopBaseService {
         if (null != id) {
             query.and(TABLE.ID.ne(id));
         }
+        query.and(TABLE.GOODS_ID.eq(goodsId));
         if (db().fetchExists(query)) {
             throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
         }
