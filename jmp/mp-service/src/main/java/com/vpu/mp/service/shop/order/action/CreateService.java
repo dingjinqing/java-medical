@@ -933,6 +933,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //覆盖货到付款（小程序选择货到付款但是如果无需再支付时设置货到付款为否）
             logger().info("支付信息:货到付款");
             order.setIsCod(OrderConstant.IS_COD_NO);
+        }else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            order.setPayCode(OrderConstant.PAY_CODE_WX_PAY);
         }else {
             if (orderBo.getPayment() != null) {
                 logger().info("支付信息:{}", orderBo.getPayment());

@@ -599,8 +599,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                 (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
         updateNormalStockAndSales(returnGoods, order, isRestore);
-        //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
-        goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         //处理活动库存等
         processAct(order, returnGoods, goodsType, isRestore);
     }
@@ -617,6 +615,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         if(!isRestore) {
             return;
         }
+        //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
+        goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
         for (Byte type : goodsType) {
             if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
                 //赠品修改活动库存
