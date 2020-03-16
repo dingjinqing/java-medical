@@ -98,7 +98,7 @@ public class GoodsSpecService extends ShopBaseService {
                         .concat(SPEC.SPEC_ID)
                         .concat(DelFlag.DEL_ITEM_SPLITER)
                         .concat(SPEC.SPEC_NAME))
-                .where(SPEC.GOODS_ID.in(goodsIds))
+                .where(SPEC.GOODS_ID.in(goodsIds)).and(SPEC.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .execute();
 
         db.update(SPEC_VALS).set(SPEC_VALS.DEL_FLAG,DelFlag.DISABLE.getCode())
@@ -106,7 +106,7 @@ public class GoodsSpecService extends ShopBaseService {
                         .concat(SPEC_VALS.SPEC_ID)
                         .concat(DelFlag.DEL_ITEM_SPLITER)
                         .concat(SPEC_VALS.SPEC_VAL_NAME))
-                .where(SPEC_VALS.GOODS_ID.in(goodsIds))
+                .where(SPEC_VALS.GOODS_ID.in(goodsIds)).and(SPEC_VALS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .execute();
     }
 
@@ -143,7 +143,7 @@ public class GoodsSpecService extends ShopBaseService {
                     .concat(SPEC.SPEC_ID)
                     .concat(DelFlag.DEL_ITEM_SPLITER)
                     .concat(SPEC.SPEC_NAME))
-                .where(SPEC.GOODS_ID.eq(goodsId)).and(SPEC.SPEC_ID.notIn(specNameIds))
+                .where(SPEC.GOODS_ID.eq(goodsId)).and(SPEC.SPEC_ID.notIn(specNameIds)).and(SPEC.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .execute();
 
             db().update(SPEC_VALS).set(SPEC_VALS.DEL_FLAG,DelFlag.DISABLE.getCode())
@@ -151,7 +151,7 @@ public class GoodsSpecService extends ShopBaseService {
                     .concat(SPEC_VALS.SPEC_ID)
                     .concat(DelFlag.DEL_ITEM_SPLITER)
                     .concat(SPEC_VALS.SPEC_VAL_NAME))
-                .where(SPEC_VALS.GOODS_ID.eq(goodsId)).and(SPEC_VALS.SPEC_VAL_ID.notIn(specValIds))
+                .where(SPEC_VALS.GOODS_ID.eq(goodsId)).and(SPEC_VALS.SPEC_VAL_ID.notIn(specValIds)).and(SPEC_VALS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
                 .execute();
         }
     }

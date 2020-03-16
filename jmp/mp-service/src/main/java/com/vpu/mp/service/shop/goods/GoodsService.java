@@ -1303,7 +1303,9 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
 
         assign(goods, goodsRecord);
-
+        if (goods.getMarketPrice() == null) {
+            goodsRecord.setMarketPrice(null);
+        }
         goodsRecord.store();
     }
 
