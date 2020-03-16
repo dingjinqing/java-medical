@@ -195,10 +195,13 @@ public class PreSaleService extends ShopBaseService {
             query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
         }
         if (null != preStartTime) {
-            query.and(TABLE.PRE_START_TIME.ge(preStartTime));
+            query.and(
+                (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.gt(preStartTime)))
+                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.gt(preStartTime)))
+            );
         }
         if (null != preEndTime) {
-            query.and(TABLE.PRE_END_TIME.le(preEndTime));
+            query.and(TABLE.PRE_START_TIME.le(preEndTime));
         }
         if (null != startTime) {
             query.and(TABLE.START_TIME.ge(startTime));
