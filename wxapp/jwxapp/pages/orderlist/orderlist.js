@@ -75,7 +75,9 @@ global.wxPage({
         "isRemindShip",
         "isShowCommentType",
         "isDelete",
-        "isCancel"
+        "isCancel",
+        "isShowFriendPay",
+        "isShowEndPay"
       ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
