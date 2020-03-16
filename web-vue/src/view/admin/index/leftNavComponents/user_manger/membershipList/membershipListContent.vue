@@ -195,14 +195,24 @@
             >
             </el-date-picker>
           </div>
-          <div class="brand_title">
-            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
-            <div
-              class="choiseDivClass"
-              @click="handleClickChoiseGood()"
-            >
-              <img :src="choiseGoodImgUrl">
-              {{$t('membershipIntroduction.choiseGoods')}}
+          <div>
+            <div  class="brand_title">
+              <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
+              <div
+                class="choiseDivClass"
+                @click="handleClickChoiseGood()"
+              >
+                <img :src="choiseGoodImgUrl">
+                {{$t('membershipIntroduction.choiseGoods')}}
+              </div>
+            </div>
+            <div class="goods_list">
+
+                <div class="goods" v-for="(item,index) in chooseGoodsDatas"
+                  :key="index">
+                    <span class="name">{{item.goodsName}}</span>
+                    <span class="el-icon-circle-close my-close"></span>
+                </div>
             </div>
           </div>
         </li>
@@ -520,6 +530,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="chooseGoodsBack"
+      :checkedNumMax="3"
       @resultGoodsDatas="chooseGoodsHandle"
       @result="chooseGoodIdssHandle"
     />
@@ -1215,6 +1226,7 @@ export default {
     },
     // 商品选择后回调
     chooseGoodsHandle (goods) {
+      debugger
       console.log('goods:', goods)
       this.chooseGoodsDatas = goods
     },
@@ -1778,7 +1790,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped >
 .membershioListContent {
   padding: 10px;
   padding-bottom: 5px;
@@ -1874,6 +1886,41 @@ i {
   display: flex;
   justify-content: flex-start;
 }
+
+.goods_list{
+  margin-right: -195px;
+  padding-left: 117px;
+}
+.goods_list .goods{
+    margin-left: 20px;
+    width: 97px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    margin-top: 15px;
+    display: inline-block;
+    float: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    position: relative;
+}
+.goods_list .goods .name{
+  color: #5a8bff;
+  text-align: center;
+}
+.my-close{
+  position: absolute;
+  top: -1px;
+  right: -31px;
+  font-size: 17px;
+}
+
 .nameClass {
   white-space: nowrap;
   margin: 0 5px;
