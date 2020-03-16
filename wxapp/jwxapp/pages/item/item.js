@@ -147,6 +147,7 @@ global.wxPage({
    */
   onLoad: function(options) {
     console.log(options, '++++++++++++++++++++++++')
+    if (options.scene) options = this.resetScene(options.scene)
     if (!options.gid) return
     let { gid:goodsId, aid:activityId = null, atp:activityType = null } = options
     this.setData({
@@ -326,8 +327,7 @@ global.wxPage({
   // 关闭item页规格弹窗
   bindCloseSpec() {
     this.setData({
-      showSpec: false,
-      triggerButton: ''
+      showSpec: false
     })
   },
   // 获取活动信息
@@ -365,7 +365,9 @@ global.wxPage({
   },
   // 获取actBar价格
   getActBarPrice(products, activity, getPrice) {
-    if (actBaseInfo[activity.activityType].multiSkuAct) {
+    if (getPrice === 'prdLinePrice') {
+      return this.getMax(products.map(item => item.prdRealPrice))
+    } else if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(
         activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
           let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item
@@ -374,8 +376,6 @@ global.wxPage({
       )
     } else if (getPrice === 'prdRealPrice') {
       return activity[actBaseInfo[activity.activityType][getPrice]]
-    } else if (getPrice === 'prdLinePrice') {
-      return this.getMax(products.map(item => item.prdRealPrice))
     }
   },
   // 获取actBar活动倒计时
@@ -758,6 +758,13 @@ global.wxPage({
       'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
         JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
+  },
+  resetScene(scene){
+    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+      let params = item.split('=')
+      defaultData[params[0]] = params[1]
+      return defaultData
+    },{})
   },
   viewPreSaleRule(){
     this.setData({

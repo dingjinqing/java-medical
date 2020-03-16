@@ -291,12 +291,13 @@ public class SeckillService extends ShopBaseService{
      */
     public ShareQrCodeVo getMpQrCode(Integer skId) {
 
-        String pathParam="sk_id="+skId;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO, pathParam);
+        int goodsId = db().select(SEC_KILL_DEFINE.GOODS_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchAny().into(Integer.class);
+        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, skId, BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
 
@@ -509,10 +510,12 @@ public class SeckillService extends ShopBaseService{
                 vo.setState(BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY);
                 vo.setOrderSn(orderSn);
             }
-            int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
-            if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
-                vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
-                vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
+            if(secKill.getLimitAmount() != null && secKill.getLimitAmount() > 0){
+                int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
+                if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
+                    vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
+                    vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
+                }
             }
         }else{
             vo.setState(res);

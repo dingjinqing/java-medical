@@ -84,7 +84,9 @@ global.wxPage({
       "isRemindShip",
       "isShowCommentType",
       "isDelete",
-      "isCancel"
+      "isCancel",
+      "isShowFriendPay",
+      "isShowEndPay"
     ];
     order.operate = orderEvent.filterObj(order, filterArr);
     console.log(order);

@@ -41,7 +41,9 @@ module.exports = {
     "isShowCommentType-2": "评价有礼",
     "isShowCommentType-3": "商品评价",
     "orderInfo": "查看详情",
-    "returnCenter": "退货中心"
+    "returnCenter": "退货中心",
+    "isShowFriendPay": "好友代付",
+    "isShowEndPay": "付尾款"
   },
   "payCode": {
     "wxpay": "微信支付",
