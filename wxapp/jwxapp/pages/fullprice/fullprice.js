@@ -65,8 +65,6 @@ global.wxPage({
     can_del: 0,
     all_goods_doc: "",
     showSpec: false, // 规格弹窗
-    // triggerButton: 'left',
-    // specParams: {} // 规格信息
   },
 
   /**

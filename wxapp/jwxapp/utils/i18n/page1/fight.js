@@ -30,7 +30,7 @@ module.exports = {
   "oldHandNew": "“老带新团”只有新用户可以参团哦！可以去开个新团享受更多优惠。",
   "Iwant": "我要开团",
   "cancel": "取消",
-  "psSpec": "请选择规格！",
+  "psSpec": "选择规格",
   "inventoryShortage": "库存不足",
   "cannotPurch": "该商品库存不足，无法购买",
   "generating": "生成中",

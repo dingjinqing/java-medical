@@ -180,6 +180,8 @@ export const cn = {
   group_user_detail: ['营销管理', '拼团抽奖', '获取新用户明细'],
   // 营销管理 拼团抽奖 开团明细
   group_detail: ['营销管理', '拼团抽奖', '开团明细'],
+  // 营销管理 拼团抽奖 活动效果
+  group_effect: ['营销管理', '拼团抽奖', '效果数据'],
 
   // 营销管理 分销
   distribution_info: ['营销管理', '分销'],

@@ -14,6 +14,10 @@ import java.util.List;
 @Getter
 @Setter
 public class GroupBuyMpVo extends GoodsActivityDetailMp {
+    /**1普通团 2老带新*/
+    private Byte groupType;
+    /**当前用户是否是新用户*/
+    private Boolean isNewUser;
     /** 是否团长优惠 */
     private Byte isGrouperCheap;
 

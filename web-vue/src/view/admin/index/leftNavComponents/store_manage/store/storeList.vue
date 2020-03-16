@@ -377,7 +377,8 @@ export default {
             query: {
               id: id,
               businessHours: row.businessHours,
-              businessType: row.businessType
+              businessType: row.businessType,
+              businessState: row.businessState
             }
           })
           break

@@ -19,19 +19,30 @@ const orderStatusList = [
 var order = {
   // 好友代付
   // 退货中心
-  toReturnCenter ({ order_sn: orderSn, order_id: orderId, is_return: isReturn }) {
+  toReturnCenter({
+    order_sn: orderSn,
+    order_id: orderId,
+    is_return: isReturn
+  }) {
     if (!isReturn) util.jumpLink("/pages1/returnorder/returnorder?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
     if (isReturn) util.jumpLink("/pages1/returnorderlist/returnorderlist?order_sn=" + orderSn + "&order_id=" + orderId, "navigateTo");
   },
   // 查看详情
-  viewInfo ({ order_sn: orderSn, order_id: orderId }) {
+  viewInfo({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.jumpLink(
       `/pages/orderinfo/orderinfo?orderSn=${orderSn}`,
       "navigateTo"
     );
   },
   // 查看评价
-  viewComment({ order_sn: orderSn, order_id: orderId, operate_info: operate_info }) {
+  viewComment({
+    order_sn: orderSn,
+    order_id: orderId,
+    operate_info: operate_info
+  }) {
     console.log(operate_info)
     if (operate_info === 'isShowCommentType-2') {
       util.jumpLink(`/pages/comment/comment?orderSn=${orderSn}`, "navigateTo");
@@ -40,7 +51,10 @@ var order = {
     }
   },
   //发货
-  confirmation ({ order_sn: orderSn, order_id: orderId }) {
+  confirmation({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -50,8 +64,7 @@ var order = {
         } else {
           util.showModal("提示", res.message);
         }
-      },
-      {
+      }, {
         orderId: orderId,
         orderSn: orderSn,
         action: 6
@@ -59,7 +72,10 @@ var order = {
     )
   },
   // 再次购买
-  addCart ({ order_sn: orderSn, order_id: orderId }) {
+  addCart({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     console.log(orderSn, orderId);
     util.api(
       "/api/wxapp/order/Repurchase",
@@ -69,8 +85,7 @@ var order = {
         } else {
           util.showModal("提示", res.message);
         }
-      },
-      {
+      }, {
         orderId: orderId,
         orderSn: orderSn,
         action: 2
@@ -78,7 +93,10 @@ var order = {
     );
   },
   // 删除订单
-  delOrder ({ order_sn: orderSn, order_id: orderId }) {
+  delOrder({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.showModal(
       "提示",
       "是否删除该订单",
@@ -86,10 +104,8 @@ var order = {
         util.api(
           "/api/wxapp/order/operation",
           function (res) {
-            if (res.error == 0) {
-            }
-          },
-          {
+            if (res.error == 0) {}
+          }, {
             orderId: orderId,
             orderSn: orderSn,
             action: 9
@@ -100,7 +116,10 @@ var order = {
     );
   },
   // 提醒发货
-  remindOrder ({ order_sn: orderSn, order_id: orderId }) {
+  remindOrder({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.api(
       "/api/wxapp/order/operation",
       res => {
@@ -109,8 +128,7 @@ var order = {
         } else {
           util.toast_fail(res.message);
         }
-      },
-      {
+      }, {
         orderId: orderId,
         orderSn: orderSn,
         action: 8
@@ -118,7 +136,10 @@ var order = {
     );
   },
   // 取消订单
-  cancelOrder ({ order_sn: orderSn, order_id: orderId }) {
+  cancelOrder({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.showModal(
       "提示",
       "是否取消该订单",
@@ -127,10 +148,11 @@ var order = {
           "/api/wxapp/order/operation",
           function (res) {
             if (res.error == 0) {
-              util.navigateTo({ url: "/pages/orderlist/orderlist" });
+              util.navigateTo({
+                url: "/pages/orderlist/orderlist"
+              });
             }
-          },
-          {
+          }, {
             orderId: orderId,
             orderSn: orderSn,
             action: 2
@@ -141,7 +163,10 @@ var order = {
     );
   },
   // 立即支付
-  payOrder ({ order_sn: orderSn, order_id: orderId }) {
+  payOrder({
+    order_sn: orderSn,
+    order_id: orderId
+  }) {
     util.api('api/wxapp/order/pay', res => {
       console.log(res)
       if (res.error === 0) {
@@ -157,7 +182,7 @@ var order = {
           'fail': (res) => {
             util.toast_fail('支付失败');
           },
-          'complete': (res) => { }
+          'complete': (res) => {}
         });
       }
     }, {
@@ -166,8 +191,12 @@ var order = {
       orderSn
     })
   },
+  // 查看好友代付页面
+  viewFriendPay({order_sn: orderSn}){
+    util.jumpLink(`pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`,'navigateTo')
+  },
   // 过滤需要的参数
-  filterObj (obj, arr) {
+  filterObj(obj, arr) {
     if (typeof obj !== "object" || !Array.isArray(arr)) {
       throw new Error("参数格式不正确");
     }
@@ -184,7 +213,7 @@ var order = {
     return result;
   },
   // 订单下按钮事件
-  handleBtnEvent (e) {
+  handleBtnEvent(e) {
     console.log(e)
     let optionList = {
       orderInfo: (() => {
@@ -219,6 +248,12 @@ var order = {
       }),
       isShowPay: (() => {
         return this.payOrder;
+      }),
+      isShowFriendPay: (() => {
+        return this.viewFriendPay
+      }),
+      isShowEndPay: (() => {
+        return this.payOrder
       })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
@@ -228,12 +263,11 @@ var order = {
     }
     optionList[operate_info]().call(this, e.currentTarget.dataset)
   },
-  getOrderStatus (orderData) {
+  getOrderStatus(orderData) {
     let typeArray = orderData.orderType;
     if (
       typeArray.indexOf("17") != -1 &&
-      orderData.orderSn == orderData.mainOrderSn &&
-      [8, 10, 13].indexOf(orderData.orderStatus)
+      orderData.orderSn == orderData.mainOrderSn && [8, 10, 13].indexOf(orderData.orderStatus)
     ) {
       return "等待领取";
     } else {
@@ -262,12 +296,12 @@ var order = {
     }
     return "待发货";
   },
-  getOrderTypeIconName(orderItem){
-    if(orderItem.orderType.includes('1')){
+  getOrderTypeIconName(orderItem) {
+    if (orderItem.orderType.includes('1')) {
       return '拼团'
-    } else if(orderItem.orderType.includes('3')){
+    } else if (orderItem.orderType.includes('3')) {
       return '砍价'
-    } else if(orderItem.orderType.includes('5')){
+    } else if (orderItem.orderType.includes('5')) {
       return '秒杀'
     } else {
       return null

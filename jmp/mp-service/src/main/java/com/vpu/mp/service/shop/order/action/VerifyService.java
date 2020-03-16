@@ -100,7 +100,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		//action操作
 		orderAction.addRecord(order, param, OrderConstant.ORDER_WAIT_DELIVERY, param.getIsCheck() ? "核销" : "强制核销");
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_VERIFY.code }), new String[] {param.getOrderSn()});
-		sendMessage.sendSelfPickupSuccess(order);
+		sendMessage.sendSelfPickupSuccess(orderInfo.getRecord(param.getOrderId()));
 		return null;
 	}
 

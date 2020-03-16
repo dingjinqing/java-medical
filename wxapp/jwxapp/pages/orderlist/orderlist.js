@@ -75,7 +75,9 @@ global.wxPage({
         "isRemindShip",
         "isShowCommentType",
         "isDelete",
-        "isCancel"
+        "isCancel",
+        "isShowFriendPay",
+        "isShowEndPay"
       ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
@@ -110,7 +112,8 @@ global.wxPage({
     this.setData({
       scrollIntoId: e.currentTarget.id,
       pageParams: null,
-      dataList: []
+      dataList: [],
+      searchInput:''
     });
     this.requestList();
   },

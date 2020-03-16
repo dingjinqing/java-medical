@@ -177,8 +177,10 @@ global.wxPage({
     let newUser = this.data.groupbuyInfo.newUser
     if (activityType == 2 && !newUser) {
       util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.oldHandNew'), function () {
-        util.alert(that.$t('page1.fight.Iwant'))
-      }, true, that.$t('page1.fight.cancel'), that.$t('page1.fight.psSpec'))
+        util.navigateTo({
+          url: '/pages/item/item?gid='+that.data.groupbuyInfo.groupBuyDefineInfo.goodsId+'&atp=1&aid='+that.data.groupbuyInfo.groupBuyDefineInfo.id
+        })
+      }, true, that.$t('page1.fight.cancel'), that.$t('page1.fight.Iwant'))
       return false;
     } else {
       if (this.data.has_spec) {
@@ -254,7 +256,8 @@ global.wxPage({
     // 判断是否要去绑定手机号
     if (this.data.groupbuyInfo.bindMobile && util.getCache('mobile') === '') {
       util.checkSession(function () {
-        this.setData({
+        that.setData({
+          showSpec: false,
           isBlock: 1
         })
       })
