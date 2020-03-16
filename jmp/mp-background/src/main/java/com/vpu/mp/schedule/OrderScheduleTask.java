@@ -38,6 +38,7 @@ public class OrderScheduleTask {
         result.forEach((r)->{
             String uuid = Util.randomId();
             String key = JedisKeyConstant.TASK_JOB_LOCK_ORDER_GROUP_BUY + r.getShopId();
+            saas.getShopApp(r.getShopId()).groupIntegration.updateState();
             //订单处理时间可能较长，加锁防止重入
             if( jedisManager.addLock(key,uuid,1000*90) ){
                 saas.getShopApp(r.getShopId()).shopTaskService.groupBuyTaskService.monitorOrder();

@@ -1161,13 +1161,14 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * 处理拼团结果  定时任务用
 	 */
 	public void updateState() {
+		logger().info("处理组团瓜分积分结果  定时任务运行");
 		Timestamp dateTime = DateUtil.getSqlTimestamp();
 		List<GroupInteGetEndVo> pinGroup = groupIntegrationList.getAlreadyEndPinGroup(dateTime);
 		System.out.println(pinGroup.size());
 		for (GroupInteGetEndVo item : pinGroup) {
-			System.out.println(item.getId());
-			System.out.println(item.getGroupId());
+			logger().info("定时任务：组团瓜分积分groupId:{},pinId:{}",item.getGroupId(),item.getId());
 			successPinIntegration(item.getGroupId(), item.getId());
 		}
+		logger().info("处理组团瓜分积分结果  定时任务结束");
 	}
 }
