@@ -133,6 +133,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -162,6 +163,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -191,6 +193,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
