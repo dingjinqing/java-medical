@@ -207,7 +207,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	public JsonResultCode insertDefine(GroupIntegrationDefineParam param) {
 		Integer inteGroup = param.getInteGroup();
-		Short limitAmount = param.getLimitAmount();
+		Integer limitAmount = param.getLimitAmount().intValue();
 		Integer inteTotal = param.getInteTotal();
 		if (inteGroup < limitAmount) {
 			// 瓜分积分数需要大于成团人数
@@ -746,7 +746,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("更新inviNum:{}，结果：{}", inviteNum,update);
 				int num = groupInfo.size() + 1;
 				int canIntegration = 0;
-				if (num < pinInteInfo.getLimitAmount()) {
+				if (num < pinInteInfo.getLimitAmount().intValue()) {
 					Double paramN = pinInteInfo.getParamN();
 					double floor = Math.floor(Math.pow(paramN, Double.parseDouble(String.valueOf(num))) - paramN);
 					canIntegration = new Double(floor).intValue();
@@ -777,11 +777,13 @@ public class GroupIntegrationService extends ShopBaseService {
 							.where(GROUP_INTEGRATION_DEFINE.ID.eq(pinInteId)).execute();
 					logger().info("活动：{}更新剩余积分为：{};结果：{}", pinInteId, inteRemain, execute2);
 				}
-				if (pinInteInfo.getLimitAmount().equals(num)
+				if (Objects.equals(pinInteInfo.getLimitAmount().intValue(), num)
 						|| (isDayDivide.equals(IS_DAY_DIVIDE_Y) && inteRemain == 0 && pinInteInfo.getInteTotal() > 0)) {
+					logger().info("开奖");
 					successPinIntegration(groupId, pinInteId);
 					GroupIntegrationDefineRecord pinInteInfoNew = getOneInfoByIdNoInto(pinInteId);
 					if (pinInteInfoNew.getIsContinue().equals(STATUS_ZERO)) {
+						logger().info("IsContinue为0");
 						List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(pinInteId);
 						for (GroupIntegrationListRecord item : list) {
 							successPinIntegration(item.getGroupId(), pinInteId);
@@ -877,7 +879,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						.eq(groupId).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)))
 				.execute();
 		logger().info("活动id：{},团id：{}，更新结束时间结果：{}", pinInteId, groupId, execute);
-		if (pinInteInfo.getIsDayDivide().equals(IS_DAY_DIVIDE_N) && userNum < pinInteInfo.getLimitAmount()
+		if (pinInteInfo.getIsDayDivide().equals(IS_DAY_DIVIDE_N) && userNum < pinInteInfo.getLimitAmount().intValue()
 				|| canIntegration == 0) {
 			int execute2 = db().update(GROUP_INTEGRATION_LIST).set(GROUP_INTEGRATION_LIST.STATUS, STATUS_TWO)
 					.where(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId)
@@ -1115,6 +1117,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				pinInteUser.setIsLook(STATUS_ONE);
 				int update = pinInteUser.update();
 				logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+				pinInteUser.setIsLook(STATUS_ZERO);
 			}
 			vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));			
 		}
