@@ -26,7 +26,7 @@
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
-          <el-checkbox :value="true" class="score-coupon-cnf">{{$t('memberCard.scoreCouponCfg')}}</el-checkbox>
+          <el-checkbox v-model="ruleForm.cannotUseCoupon" class="score-coupon-cnf">{{$t('memberCard.scoreCouponCfg')}}</el-checkbox>
         </div>
       </el-form-item>
 

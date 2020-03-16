@@ -200,6 +200,7 @@ export default {
         powerDiscount: true,
         discount: undefined,
         discountGoodsType: '1',
+        cannotUseCoupon: false,
         choosedGoodsId: [],
         choosedStoreId: [],
         choosedPlatformId: [],
@@ -337,6 +338,7 @@ export default {
       this.disCountData.choosedStoreId = data.shopCategoryIds
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
+      this.disCountData.cannotUseCoupon = data.cannotUseCoupon === 1
 
       // 专享
       this.ownGoodsData.powerOwnGoods = data.powerPayOwnGood === 'on'
@@ -570,6 +572,7 @@ export default {
         'bgImg': this.cardNameAndBg.bgImg,
         'powerCount': this.disCountData.powerDiscount ? 1 : 0,
         'disCount': this.disCountData.discount,
+        'cannotUseCoupon': this.disCountData.cannotUseCoupon ? 1 : 0,
         'discountIsAll': this.disCountData.discountGoodsType,
         'goodsId': this.disCountData.choosedGoodsId,
         'shopCategoryIds': this.disCountData.choosedStoreId,
