@@ -49,6 +49,10 @@ public class NormalCardVo extends BaseCardVo {
 	/** 会员折扣 值为 0-10之间 */
 	@JsonProperty("disCount")
 	protected BigDecimal discount;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	private Byte cannotUseCoupon;
 
 	/** 会员专享商品 on表示打开 */
 	/** 是否专属购买商品 0不是 1是 */

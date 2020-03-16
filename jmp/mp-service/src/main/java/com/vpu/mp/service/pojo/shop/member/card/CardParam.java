@@ -39,6 +39,10 @@ public class CardParam {
 	private BigDecimal disCount;
 	/** 会员折扣: 全部商品；1代表全部商品，0代表指定商品 */
 	private Byte discountIsAll;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	private Byte cannotUseCoupon;
 
 
 	/** 折扣商品Id */

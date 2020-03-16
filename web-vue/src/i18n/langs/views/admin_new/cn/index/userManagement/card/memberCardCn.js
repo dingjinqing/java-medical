@@ -331,5 +331,6 @@ export const cn = {
   cardHolder: '持卡会员',
   timesFreeship: '次包邮',
   noLimitCoupon: '无库存限制',
-  couponErrorTip: '请选择开卡送优惠券'
+  couponErrorTip: '请选择开卡送优惠券',
+  scoreCouponCfg: '不可与优惠券共用'
 }
