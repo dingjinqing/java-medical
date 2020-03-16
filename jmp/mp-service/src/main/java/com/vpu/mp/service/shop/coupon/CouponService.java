@@ -16,10 +16,13 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
 import org.jooq.*;
@@ -59,6 +62,9 @@ public class CouponService extends ShopBaseService {
 
     @Autowired
     private ScoreDaoService scoreDao;
+
+    @Autowired
+    private QrCodeService qrCode;
 
     private String aliasCode;
 
@@ -395,6 +401,7 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public AvailCouponDetailVo getCouponDetail(AvailCouponDetailParam param) {
+        param.initScene();
         Record record;
         if(param.getCouponId() != null){
              record = db().select().from(MRKING_VOUCHER)
@@ -937,4 +944,17 @@ public class CouponService extends ShopBaseService {
 		into.setCouponRule(couponRule);
 		return into;
 	}
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer couponId) {
+        String pathParam=String.format("couponId=%d", couponId);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getUrl());
+        return vo;
+    }
 }
