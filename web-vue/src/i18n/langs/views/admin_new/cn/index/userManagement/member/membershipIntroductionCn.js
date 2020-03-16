@@ -128,7 +128,7 @@ export const cn = {
   enddate: '结束日期',
   chooseDate: '选择日期',
   purchasetimes: '累计购买次数',
-  designatedgoods: '累计指定商品',
+  designatedgoods: '购买指定商品',
   choiseGoods: '选择商品',
   setup: '设置',
   Forscreened: '对筛选出来的',
