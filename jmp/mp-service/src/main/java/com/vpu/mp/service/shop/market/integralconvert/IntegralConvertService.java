@@ -6,6 +6,7 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -171,7 +172,7 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 积分兑换用户列表
 	 *
-	 * @param IntegralConvertUserParam
+	 * @param param
 	 * @return PageResult<IntegralConvertUserVo>
 	 */
 	public PageResult<IntegralConvertUserVo> userList(IntegralConvertUserParam param) {
@@ -201,10 +202,10 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 返回指定商品规格详情
 	 *
-	 * @param IntegralConvertGoodsParam
+	 * @param param
 	 * @return List<IntegralConvertGoodsVo>
 	 */
-	public List<IntegralConvertGoodsVo> getproduct(IntegralConvertGoodsParam param) {
+	public List<IntegralConvertGoodsVo> getProduct(IntegralConvertGoodsParam param) {
 
 		List<IntegralConvertGoodsVo> sql = db().select().from(GOODS_SPEC_PRODUCT)
 				.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
@@ -216,46 +217,34 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 添加积分兑换活动
 	 *
-	 * @param IntegralConvertAddParam
-	 * @return
+	 * @param param 活动详情
 	 */
 	public void addAction(IntegralConvertAddParam param) {
 
-		try {
-			/* 入参对象解析为json字符串 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			String shareConfig = objectMapper.writeValueAsString(param.getConfigParam());
-			/* 添加数据-活动信息表 */
-			db().insertInto(INTEGRAL_MALL_DEFINE, INTEGRAL_MALL_DEFINE.NAME, INTEGRAL_MALL_DEFINE.START_TIME,
-					INTEGRAL_MALL_DEFINE.END_TIME, INTEGRAL_MALL_DEFINE.GOODS_ID, INTEGRAL_MALL_DEFINE.SHARE_CONFIG)
-					.values(param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(), shareConfig)
-					.execute();
-			/* 得到刚添加到活动表的活动id */
-			int imdId = db().lastID().intValue();
-			/* 查找指定商品的所有规格 */
-			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
-					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.fetchInto(Integer.class);
-			/* 添加数据-活动规格信息表 */
-			for (int i = 0; i < productIds.size(); i++) {
-				db().insertInto(INTEGRAL_MALL_PRODUCT, INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID,
-						INTEGRAL_MALL_PRODUCT.PRODUCT_ID, INTEGRAL_MALL_PRODUCT.MONEY, INTEGRAL_MALL_PRODUCT.SCORE,
-						INTEGRAL_MALL_PRODUCT.STOCK)
-						.values(imdId, productIds.get(i), param.getProductParam().get(i).getMoney(),
-								param.getProductParam().get(i).getScore(), param.getProductParam().get(i).getStock())
-						.execute();
-			}
+			// 入参对象解析为json字符串
+			String shareConfig = Util.toJson(param.getShareConfig());
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			// 添加数据-活动信息表
+			db().insertInto(INTEGRAL_MALL_DEFINE, imd.NAME, imd.START_TIME, imd.END_TIME, imd.MAX_EXCHANGE_NUM,
+                    imd.GOODS_ID, imd.SHARE_CONFIG)
+					.values(param.getName(), param.getStartTime(), param.getEndTime(),param.getMaxExchangeNum(),
+                        param.getGoodsId(), shareConfig)
+					.execute();
+			// 得到刚添加到活动表的活动id
+			int imdId = db().lastID().intValue();
+            // 添加数据-活动规格信息表
+			for (IntegralConvertProductVo item : param.getProduct()){
+                db().insertInto(imp, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
+                    .values(imdId, item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
+                    .execute();
+            }
 	}
 
 	/**
 	 * 查询指定活动信息
 	 *
-	 * @param
-	 * @return
+	 * @param param 活动id
+	 * @return 活动信息
 	 */
 	public IntegralConvertSelectVo selectOne(IntegralConvertSelectParam param) {
 
@@ -274,8 +263,8 @@ public class IntegralConvertService extends ShopBaseService {
 		for (Integer prdId : productIds){
             IntegralConvertProductVo listVo = db().select(imp.MONEY, imp.SCORE, imp.STOCK,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC
                 ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
-                .from(imp)
-                .leftJoin(GOODS_SPEC_PRODUCT).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .from(GOODS_SPEC_PRODUCT)
+                .leftJoin(imp).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
                 .where(imp.PRODUCT_ID.eq(prdId)).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
                 .fetchOneInto(IntegralConvertProductVo.class);
             productList.add(listVo);
@@ -288,40 +277,43 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 修改积分兑换活动
 	 *
-	 * @param IntegralConvertAddParam
-	 * @return
+	 * @param param 活动信息
 	 */
 	public void updateAction(IntegralConvertAddParam param) {
 
-		try {
-			/* 入参对象解析为json字符串 */
-			ObjectMapper objectMapper = new ObjectMapper();
-			String shareCondfig = objectMapper.writeValueAsString(param.getConfigParam());
-			/* 修改数据-活动信息表 */
-			db().update(INTEGRAL_MALL_DEFINE).set(INTEGRAL_MALL_DEFINE.NAME, param.getName())
-					.set(INTEGRAL_MALL_DEFINE.START_TIME, param.getStartTime())
-					.set(INTEGRAL_MALL_DEFINE.END_TIME, param.getEndTime())
-					.set(INTEGRAL_MALL_DEFINE.GOODS_ID, param.getGoodsId())
-					.set(INTEGRAL_MALL_DEFINE.SHARE_CONFIG, shareCondfig)
-					.where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId())).execute();
-
-			/* 查找指定商品的所有规格 */
-			List<Integer> productIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT)
-					.where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
-					.fetchInto(Integer.class);
-			/* 修改数据-活动规格信息表 */
-			for (int i = 0; i < productIds.size(); i++) {
-				db().update(INTEGRAL_MALL_PRODUCT).set(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID, param.getId())
-						.set(INTEGRAL_MALL_PRODUCT.MONEY, param.getProductParam().get(i).getMoney())
-						.set(INTEGRAL_MALL_PRODUCT.SCORE, param.getProductParam().get(i).getScore())
-						.set(INTEGRAL_MALL_PRODUCT.STOCK, param.getProductParam().get(i).getStock())
-						.where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
-						.and(INTEGRAL_MALL_PRODUCT.PRODUCT_ID.eq(productIds.get(i))).execute();
+        // 入参对象解析为json字符串
+        String shareConfig = Util.toJson(param.getShareConfig());
+			// 修改数据-活动信息表
+			db().update(imd).set(imd.NAME, param.getName())
+					.set(imd.START_TIME, param.getStartTime())
+					.set(imd.END_TIME, param.getEndTime())
+                    .set(imd.MAX_EXCHANGE_NUM,param.getMaxExchangeNum())
+					.set(imd.GOODS_ID, param.getGoodsId())
+					.set(imd.SHARE_CONFIG, shareConfig)
+					.where(imd.ID.eq(param.getId())).execute();
+			//修改数据-活动规格信息表
+			for (IntegralConvertProductVo item : param.getProduct()) {
+			    IntegralMallProductRecord record = db().select().from(imp)
+                    .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+                    .and(imp.PRODUCT_ID.eq(item.getPrdId()))
+                    .fetchOneInto(IntegralMallProductRecord.class);
+			    //不为空-更新
+			    if (record!=null){
+                    db().update(imp)
+                        .set(imp.MONEY, item.getMoney())
+                        .set(imp.SCORE, item.getScore())
+                        .set(imp.STOCK, item.getStock())
+                        .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+                        .and(imp.PRODUCT_ID.eq(item.getPrdId())).execute();
+                }
+			    //为空-插入
+				else {
+                    db().insertInto(imp, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
+                        .values(param.getId(), item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
+                        .execute();
+                }
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
