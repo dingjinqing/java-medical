@@ -862,11 +862,12 @@ export default {
         add(this.reservation).then(res => {
           if (res.error === 0) {
             this.$message.success('添加成功')
+            this.showReservation = false
             this.initDataList()
+          } else {
+            this.$message.error(res.message)
             this.showReservation = false
           }
-          this.$message.error('添加失败')
-          this.showReservation = false
         })
       }
     },
