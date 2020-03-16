@@ -231,6 +231,8 @@ export const en = {
   group_user_detail: ['Marketing management', 'raffle draw', 'Get new user details'],
   // 营销管理 拼团抽奖 开团明细
   group_detail: ['Marketing management', 'raffle draw', 'Opening details'],
+  // 营销管理 拼团抽奖 活动效果
+  group_effect: ['Marketing management', 'raffle draw', 'Effect data'],
 
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
