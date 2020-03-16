@@ -54,7 +54,7 @@
           </view>
           <view>{{item.commNote}}</view>
           <view class='com_img clearfix'>
-            <view class='fl' wx:for="{{item.commImg}}" wx:key="key" wx:for-item="item_img">
+            <view class='fl' wx:for="{{item.commImgList }}" wx:key="key" wx:for-item="item_img">
               <image src='{{ item_img }}!small?v=1' data-all='{{item.comm_img}}' bindtap='clickComment' data-src="{{ item_img }}"></image>
             </view>
           </view>
