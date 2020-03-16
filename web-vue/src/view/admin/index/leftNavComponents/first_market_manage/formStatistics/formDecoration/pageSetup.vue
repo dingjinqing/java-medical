@@ -1,7 +1,7 @@
 <template>
   <div class="decRightContainer">
     <div class="decRightTop">
-      <div>表单信息</div>
+      <div>{{$t('formDecorationHome.formFields')}}</div>
       <div
         @click="handleToChangeIcon"
         class="topRight"
@@ -151,9 +151,15 @@ export default {
       modulesData: {}, //  当前右侧模块显示数据
       sortIndex: -1,
       pageSet: {},
-      retract: '收起', // 收起文本
-      open: '展开', // 展开文本
       insertFlga: true // 解决模块自左插入当前高亮模块上部
+    }
+  },
+  computed: {
+    retract () {
+      return this.$t('formDecorationHome.retract')
+    },
+    open () {
+      return this.$t('formDecorationHome.open')
     }
   },
   watch: {

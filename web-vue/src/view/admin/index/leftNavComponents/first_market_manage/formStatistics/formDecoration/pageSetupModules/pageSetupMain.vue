@@ -1,22 +1,22 @@
 <template>
   <div class="pageSetupMain">
     <div class="listContainer">
-      <span>标题：</span>
+      <span>{{$t('formDecorationHome.title')}}：</span>
       <el-input
         size="small"
         v-model="ruleForm.page_name"
       ></el-input>
     </div>
     <div class="listContainer">
-      <span>有效期：</span>
+      <span>{{$t('formDecorationHome.termOfValidity')}}：</span>
       <el-radio
         v-model="ruleForm.is_forever_valid"
         label="1"
-      >永久有效</el-radio>
+      >{{$t('formDecorationHome.permanentValidity')}}</el-radio>
       <el-radio
         v-model="ruleForm.is_forever_valid"
         label="0"
-      >固定日期</el-radio>
+      >{{$t('formDecorationHome.fixedDate')}}</el-radio>
     </div>
     <!--选中固定日期显示的隐藏模块-->
     <div
@@ -26,12 +26,12 @@
       <span></span>
       <div class="fixedDate">
         <div class="timeContainer">
-          <div class="timeTitle">开始时间</div>
+          <div class="timeTitle">{{$t('formDecorationHome.startTime')}}</div>
           <el-date-picker
             size="small"
             v-model="ruleForm.start_time"
             type="datetime"
-            default-time="12:00:00"
+            default-time="00:00:00"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
@@ -41,12 +41,12 @@
           class="timeContainer"
           style="margin-top:10px"
         >
-          <div class="timeTitle">结束时间</div>
+          <div class="timeTitle">{{$t('formDecorationHome.endTime')}}</div>
           <el-date-picker
             size="small"
             v-model="ruleForm.start_time"
             type="datetime"
-            default-time="12:00:00"
+            default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
@@ -55,15 +55,15 @@
       </div>
     </div>
     <div class="listContainer">
-      <span>提交次数限制：</span>
+      <span>{{$t('formDecorationHome.submissionLimit')}}</span>
       <el-radio
         v-model="ruleForm.post_times"
         label="1"
-      >不限次数</el-radio>
+      >{{$t('formDecorationHome.unlimitedNumber')}}</el-radio>
       <el-radio
         v-model="ruleForm.post_times"
         label="0"
-      >限制次数</el-radio>
+      >{{$t('formDecorationHome.restrictionTimes')}}</el-radio>
     </div>
     <!--选中限制次数显示的隐藏模块-->
     <div
@@ -76,54 +76,54 @@
         style="width:308px"
       >
         <div class="top">
-          <div class="leftName">每天</div>
+          <div class="leftName">{{$t('formDecorationHome.daily')}}</div>
           <el-input
             v-model="ruleForm.day_times"
             size="small"
           ></el-input>
-          <div class="leftName">,累计</div>
+          <div class="leftName">,{{$t('formDecorationHome.cumulative')}}</div>
           <el-input
             v-model="ruleForm.total_times"
             size="small"
           ></el-input>
         </div>
         <div class="tips">
-          默认1次，0代表不限制，累计次数必须大于每天次数
+          {{$t('formDecorationHome.cumulativeTip')}}
         </div>
       </div>
     </div>
     <div class="listContainer">
-      <span>总反馈数量限制：</span>
-      <div class="totleNume">达<el-input
+      <span>{{$t('formDecorationHome.feedbacLimit')}}</span>
+      <div class="totleNume">{{$t('formDecorationHome.reach')}}<el-input
           size="small"
           v-model="ruleForm.get_times"
-        ></el-input>次后不可提交</div>
+        ></el-input>{{$t('formDecorationHome.cannotSubmitAfter')}}</div>
     </div>
     <div class="listContainer">
       <span></span>
-      <div style="color:#999">默认为0，0代表不限制</div>
+      <div style="color:#999">{{$t('formDecorationHome.cannotSubmitAfterTip')}}</div>
     </div>
     <div class="listContainer">
-      <span>底部导航：</span>
+      <span>{{$t('formDecorationHome.bottomNavigation')}}</span>
       <el-radio
         v-model="ruleForm.has_bottom"
         label="1"
-      >添加</el-radio>
+      >{{$t('formDecorationHome.addTo')}}</el-radio>
       <el-radio
         v-model="ruleForm.has_bottom"
         label="0"
-      >不添加</el-radio>
+      >{{$t('formDecorationHome.notAdd')}}</el-radio>
     </div>
     <div class="listContainer">
-      <span>提交按钮文字：</span>
+      <span>{{$t('formDecorationHome.submitText')}}</span>
       <el-input
         size="small"
         v-model="ruleForm.notice_name"
-        placeholder="请输入提交按钮文字"
+        :placeholder="$t('formDecorationHome.submitTextPlaceHolder')"
       ></el-input>
     </div>
     <div class="listContainer">
-      <span>提交按钮文字颜色：</span>
+      <span>{{$t('formDecorationHome.submitTextColor')}}</span>
       <el-color-picker
         v-model="ruleForm.font_color"
         show-alpha
@@ -132,7 +132,7 @@
       </el-color-picker>
     </div>
     <div class="listContainer">
-      <span>提交按钮背景颜色：</span>
+      <span>{{$t('formDecorationHome.submitBackgroundColor')}}</span>
       <el-color-picker
         v-model="ruleForm.bg_color"
         show-alpha
@@ -141,7 +141,7 @@
       </el-color-picker>
     </div>
     <div class="listContainer">
-      <span>表单海报背景图：</span>
+      <span>{{$t('formDecorationHome.posterBackground')}}</span>
       <div class="bottomDiv">
         <div class="bgBottom">
 
@@ -158,17 +158,17 @@
             @click="handleToAddImg(1)"
           >
         </div>
-        <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800*800像素</span>
+        <span class="sharePic">{{$t('pageSetUp.recommendedDimensions')}}:800*800{{$t('formDecorationHome.pixel')}}</span>
       </div>
     </div>
     <div class="listContainer">
-      <span>提交自定义跳转：</span>
-      <span style="color:#999;width:210px">提交成功可引导用户浏览其他内容</span>
+      <span>{{$t('formDecorationHome.submitCustomJump')}}</span>
+      <span style="color:#999;width:210px">{{$t('formDecorationHome.submitCustomJumpTip')}}</span>
     </div>
     <div class="listContainer">
       <span></span>
-      <el-checkbox v-model="ruleForm.set_own_link">自定义跳转</el-checkbox>
-      <div class="toCheck">查看示例
+      <el-checkbox v-model="ruleForm.set_own_link">{{$t('formDecorationHome.customJump')}}</el-checkbox>
+      <div class="toCheck">{{$t('formDecorationHome.viewExamples')}}
         <div class="examHidden">
           <img :src="$imageHost+'/image/admin/share/form_success_exapmle.jpg'">
         </div>
@@ -181,18 +181,18 @@
       <span></span>
       <div class="customLinks">
         <div class="customLinksList">
-          <div>按钮名称：</div>
+          <div>{{$t('formDecorationHome.buttonName')}}</div>
           <el-input
             size="small"
             v-model="ruleForm.custom_btn_name"
           ></el-input>
         </div>
         <div class="customLinksList">
-          <div>跳转链接：</div>
+          <div>{{$t('formDecorationHome.jumpLink')}}</div>
           <div
             class="toChoiseLink"
             @click="handleToClickLick()"
-          >{{ruleForm.custom_link_path?'重新选择':'选择跳转链接'}}</div>
+          >{{ruleForm.custom_link_path?$t('formDecorationHome.reSelection'):$t('formDecorationHome.selectJumpLink')}}</div>
         </div>
         <!--当跳转链接有值时显示模块-->
         <div>
@@ -205,21 +205,21 @@
       </div>
     </div>
     <div class="listContainer">
-      <span>用户授权：</span>
-      <el-checkbox v-model="ruleForm.authorized_name">授权手机号</el-checkbox>
-      <el-checkbox v-model="ruleForm.authorized_mobile">授权用户信息</el-checkbox>
+      <span>{{$t('formDecorationHome.userAuthorization')}}</span>
+      <el-checkbox v-model="ruleForm.authorized_name">{{$t('formDecorationHome.mobileNumber')}}</el-checkbox>
+      <el-checkbox v-model="ruleForm.authorized_mobile">{{$t('formDecorationHome.userInformation')}}</el-checkbox>
     </div>
     <div class="listContainer">
       <span></span>
-      <div style="color:#999;width:275px">勾选后好友需要先完成授权才能够提交表单</div>
+      <div style="color:#999;width:275px">{{$t('formDecorationHome.userInformationTip')}}</div>
     </div>
     <div class="listContainer linContainer">
       <div class="line"></div>
-      <div class="content">参与奖励</div>
+      <div class="content">{{$t('formDecorationHome.participationAward')}}</div>
       <div class="line"></div>
     </div>
     <div class="listContainer">
-      <el-checkbox v-model="ruleForm.send_coupon">参与送优惠卷</el-checkbox>
+      <el-checkbox v-model="ruleForm.send_coupon">{{$t('formDecorationHome.discountVolume')}}</el-checkbox>
     </div>
     <!--选中参与优惠卷显示的隐藏模块-->
     <div
@@ -273,26 +273,26 @@
             class="bgImgDiv"
             @click="handleToAddImg()"
           />
-          <p>添加优惠卷</p>
+          <p>{{$t('formDecorationHome.addDdiscountVolume')}}</p>
         </div>
       </div>
     </div>
     <div class="listContainer">
-      <div style="color:#999;width:400px;font-size:12px;padding-left:25px">最多可以添加5张优惠券，已过期和已停用的优惠券不能添加</div>
+      <div style="color:#999;width:400px;font-size:12px;padding-left:25px">{{$t('formDecorationHome.addDdiscountVolumeTip')}}</div>
     </div>
     <div class="listContainer sendScore">
-      <el-checkbox v-model="ruleForm.send_score">参与送积分</el-checkbox>
+      <el-checkbox v-model="ruleForm.send_score">{{$t('formDecorationHome.sendingPoints')}}</el-checkbox>
       &nbsp;&nbsp;
       <el-input
         size="small"
         v-model="ruleForm.send_score_number"
-      ></el-input>&nbsp;&nbsp;分
+      ></el-input>&nbsp;&nbsp;{{$t('formDecorationHome.branch')}}
     </div>
     <div class="sure">
       <el-button
         type="primary"
         size="small"
-      >确定</el-button>
+      >{{$t('formDecorationHome.Determine')}}</el-button>
     </div>
     <!--选择图片弹窗-->
     <ImageDialog
@@ -599,7 +599,9 @@ export default {
       }
       .sharePic {
         color: #999;
-        width: 155px;
+        width: 180px;
+        padding-left: 10px;
+        justify-content: flex-start !important;
       }
       /deep/ .el-button {
         margin-top: 10px;

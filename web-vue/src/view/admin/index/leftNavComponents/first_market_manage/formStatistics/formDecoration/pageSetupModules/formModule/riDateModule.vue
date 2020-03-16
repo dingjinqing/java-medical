@@ -4,7 +4,7 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
@@ -12,18 +12,18 @@
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list">
-          <span>时间格式：</span>
+          <span>{{$t('formDecorationModel.timeFormat')}}</span>
           <el-radio
             v-model="modulesSaveData.date_types"
             :label="0"
-          >年-月-日</el-radio>
+          >{{$t('formDecorationModel.yearToMonthDay')}}</el-radio>
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -31,7 +31,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -76,12 +76,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     // 点击确定按钮
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     }

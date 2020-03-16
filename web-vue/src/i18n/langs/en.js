@@ -361,10 +361,18 @@ import {
 import {
   en as evaluationGiftAdd
 } from './views/admin_new/en/index/marketManagement/evaluationGift/evaluationGiftAddEn'
+// 表单统计home页
+import {
+  en as formStatisticsHome
+} from './views/admin_new/en/index/marketManagement/formStatistics/formStatisticsHomeEn'
 // 表单装修主页
 import {
   en as formDecorationHome
 } from './views/admin_new/en/index/marketManagement/formStatistics/formDecoration/formDecorationHomeEn'
+// 表单装修所有模块
+import {
+  en as formDecorationModel
+} from './views/admin_new/en/index/marketManagement/formStatistics/formDecoration/formDecorationModelEn'
 // 订单管理系列模块化
 import {
   en as order
@@ -1095,6 +1103,8 @@ const en = {
   pictureHotSpot, // 图片热区
   carouselPicture, // 轮播图模块
   goodsStaticties, // 商品统计
-  formDecorationHome // 表单装修主页
+  formDecorationHome, // 表单装修主页
+  formStatisticsHome, // 表单列表主页
+  formDecorationModel // 表单装修所有模块
 }
 export default en
