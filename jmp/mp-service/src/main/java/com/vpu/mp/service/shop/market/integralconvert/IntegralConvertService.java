@@ -100,7 +100,7 @@ public class IntegralConvertService extends ShopBaseService {
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
 						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
-						DSL.count(imr.USER_ID).as("user_number"))
+						DSL.count(imr.USER_ID).as("user_number"),imd.STATUS,imd.DEL_FLAG)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
 				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
 				.where(imd.DEL_FLAG.equal(IntegralConvertConstant.NOT_DELETE));
@@ -234,7 +234,7 @@ public class IntegralConvertService extends ShopBaseService {
 			int imdId = db().lastID().intValue();
             // 添加数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()){
-                db().insertInto(imp, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
+                db().insertInto(INTEGRAL_MALL_PRODUCT, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
                     .values(imdId, item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
                     .execute();
             }
@@ -270,7 +270,7 @@ public class IntegralConvertService extends ShopBaseService {
             productList.add(listVo);
         }
 		selectVo.setProductVo(productList);
-
+        selectVo.setObjectShareConfig(Util.json2Object(selectVo.shareConfig,IntegralConvertShareConfig.class,false));
 		return selectVo;
 	}
 
@@ -308,7 +308,7 @@ public class IntegralConvertService extends ShopBaseService {
                 }
 			    //为空-插入
 				else {
-                    db().insertInto(imp, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
+                    db().insertInto(INTEGRAL_MALL_PRODUCT, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
                         .values(param.getId(), item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
                         .execute();
                 }
