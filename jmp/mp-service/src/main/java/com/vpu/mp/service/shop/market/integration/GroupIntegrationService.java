@@ -804,6 +804,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
 				CanPinInte checkPin = checkPin(pinInteId, existGroup, userId);
 				if (checkPin != null) {
+					vo.setGroupId(existGroup);
 					vo.setCanPin(checkPin);
 				} else {
 					canPinInte.setStatus(STATUS_ZERO);
