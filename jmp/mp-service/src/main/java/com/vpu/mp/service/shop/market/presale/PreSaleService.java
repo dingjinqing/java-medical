@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.presale;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Presale;
@@ -13,37 +14,22 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductParam;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
-import com.vpu.mp.service.pojo.shop.market.presale.StatusContainer;
+import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record14;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import jodd.util.StringUtil;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -51,10 +37,7 @@ import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
@@ -70,6 +53,9 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Service
 @Primary
 public class PreSaleService extends ShopBaseService {
+
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**全款付*/
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
@@ -121,10 +107,9 @@ public class PreSaleService extends ShopBaseService {
      * 获取定金膨胀活动列表
      */
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
-        SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp,
-            Timestamp, Integer, Integer, Integer, Integer, Serializable>> query =
+        SelectConditionStep<? extends Record> query =
             db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
-                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2,
+                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2"),
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
                     .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)).as(BARGAIN_PAID_QUANTITY),
@@ -199,9 +184,7 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 条件查询
      */
-    private void buildOptions(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp,
-        Timestamp, Byte, Timestamp, Timestamp, Integer, Integer,
-        Integer, Integer, Serializable>> query, PreSaleListParam param) {
+    private void buildOptions(SelectConditionStep<? extends Record> query, PreSaleListParam param) {
         String name = param.getName();
         Timestamp preStartTime = param.getPreStartTime();
         Timestamp preEndTime = param.getPreEndTime();
@@ -231,8 +214,7 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 状态转换
      */
-    private void andStatus(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp,
-        Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
+    private void andStatus(SelectConditionStep<? extends Record> query, Byte status) {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
             case NAVBAR_TYPE_ONGOING:
@@ -277,6 +259,10 @@ public class PreSaleService extends ShopBaseService {
         PresaleRecord presale = db.newRecord(TABLE, param);
         String config = shareConfigJson(param);
         presale.setShareConfig(config);
+        if(param.getPreStartTime2() != null && param.getPreEndTime2() != null){
+            presale.setPreStartTime_2(param.getPreStartTime2());
+            presale.setPreEndTime_2(param.getPreEndTime2());
+        }
         presale.insert();
         Integer id = presale.getId();
         this.insertPresaleProduct(db, param, id);
@@ -500,8 +486,11 @@ public class PreSaleService extends ShopBaseService {
      * 获取分享配置
      */
     private ShareConfig shareConfig(PreSaleVo preSaleVo) {
-        String shareConfig = preSaleVo.getShareConfig();
-        return Util.underLineStyleGson().fromJson(shareConfig, ShareConfig.class);
+        ShareConfig shareConfig =  Util.parseJson(preSaleVo.getShareConfig(),ShareConfig.class);
+        if(StringUtil.isNotBlank(shareConfig.getShareImg())){
+            shareConfig.setShareImg(domainConfig.imageUrl(shareConfig.getShareImg()));
+        }
+        return shareConfig;
     }
 
     /**
