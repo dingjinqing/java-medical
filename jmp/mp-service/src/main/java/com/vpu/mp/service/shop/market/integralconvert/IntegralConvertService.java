@@ -128,7 +128,7 @@ public class IntegralConvertService extends ShopBaseService {
 			sql.and(imd.STATUS.eq( IntegralConvertConstant.BLOCK));
 		}
 		sql.groupBy(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME, imd.END_TIME,
-				GOODS.GOODS_NUMBER, imp.STOCK)
+				GOODS.GOODS_NUMBER, imp.STOCK,imd.STATUS,imd.DEL_FLAG)
         .orderBy(imd.ID.desc());
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);
