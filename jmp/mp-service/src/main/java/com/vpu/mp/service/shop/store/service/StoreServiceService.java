@@ -308,7 +308,7 @@ public class StoreServiceService extends ShopBaseService {
 
     @Autowired
     QrCodeService qrCodeService;
-    private static final String PARAM = "service_id=";
+    private static final String PARAM = "serviceId=";
 
     /**
      * Share store service share qr code vo.分享门店服务
@@ -321,7 +321,7 @@ public class StoreServiceService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.SERVICE_APPOINTMENT, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getUrl());
         return vo;
     }
 

@@ -17,6 +17,16 @@ var init = {
     console.log("init onLoad path: ", this.currentUrl);
     // console.log(this.loading, this.bottom.status)
     //暂时注释
+
+
+    if (this._options.scene && this.currentUrl.indexOf('index/index') === -1) {
+      let scene = util.resetScene(this._options.scene)
+      delete options.scene
+      util.jumpLink(`${util.getCurrentPath(options)}${util.getUrlParams(scene)}`, 'reLaunch');
+      return false;
+    }
+
+
     if (this.loading) {
       if (!this.isBottomPage()) {
         var url = "/pages/bottom/bottom?url=" + encodeURIComponent(this.currentUrl);

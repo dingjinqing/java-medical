@@ -14,6 +14,7 @@ var input_vali;
 var goods_ids;
 var total_micro_second;
 var set_time_out;
+var scene;
 global.wxPage({
 
   /**
@@ -32,6 +33,7 @@ global.wxPage({
     clearTimeout(set_time_out);
     var _this = this;
     goods_ids = options.goods_id;
+    scene = options.scene;
 
     if (options.couponSn || options.id) {
       couponSn = options.couponSn
@@ -48,7 +50,7 @@ global.wxPage({
             })
           }, 2000);
         }
-      }, { couponSn, couponId })
+      }, { couponSn, couponId, scene: scene })
     }
   },
 

@@ -13,11 +13,11 @@ public enum QrCodeTypeEnum {
     /*商品*/
     GOODS_ITEM((byte) 2, "pages/item/item"),
     /*服务*/
-    SERVICE_APPOINTMENT((byte) 3, "pages/appointment/appointment"),
+    SERVICE_APPOINTMENT((byte) 3, "pages1/appointment/appointment"),
     /*会员卡*/
     USER_CARD_INFO((byte) 4, "pages/cardinfo/cardinfo"),
     /*优惠券*/
-    DISCOUN_COUPON((byte) 5, "pages/getcoupon/getcoupon"),
+    DISCOUN_COUPON((byte) 5, "pages/getCoupon/getCoupon"),
     /*门店买单*/
     SHOP_CHECKOUT((byte) 6, "pages/shopcheckout/shopcheckout"),
     /*小程序页面*/
