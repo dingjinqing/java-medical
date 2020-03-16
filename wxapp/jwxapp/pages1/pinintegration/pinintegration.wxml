@@ -48,7 +48,7 @@
       </view>
       <!-- 倒计时 -->
       <view class='pin_time'>
-        <block wx:if="{{gd.pinInteUser.status == 0 && gd.pinInteUser}}">
+        <block wx:if="{{(gd.pinInteUser.status == 0 && gd.pinInteUser) || end == false}}">
           <view class='end'>距结束:</view>
           <view wx:if='{{clock.length == 4}}' class='daojishis'>
             <text>{{clock[0]}}</text>天
@@ -62,7 +62,7 @@
             <text>{{clock[2]}}</text>
           </view>
         </block>
-        <block wx:if="{{gd.pinInteUser.status > 0}}">
+        <block wx:if="{{gd.pinInteUser.status > 0 || end == true}}">
           <view class='end'>已结束</view>
         </block>
       </view>
@@ -199,10 +199,7 @@
       <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
       <view class='text2'>您已经参与过{{pin_info.joinLimit}}个活动</view>
       <view class='text2'>达到上限了哦！</view> 
-      <view class='see' bindtap='iwantgo'>知道了</view>
-    </view>
-    <view class='x2' bindtap='close'>
-      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
+      <view class='see' bindtap='returnIndex'>知道了</view>
     </view>
   </view>
 </view>
@@ -215,26 +212,6 @@
       <view class='text3'>活动结束</view>
       <view class='text4'>感谢您的关注</view>
       <view class='see' bindtap='returnIndex'>知道了</view>
-    </view>
-    <view class='x' bindtap='close'>
-      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
-    </view>
-  </view>
-</view>
-
-<!-- 活动失败 -->
-<view class='success' wx:if="{{gd.pinInteUser.status == 2 && gd.pinInteUser.isLook == 0  && share_group == true}}">
-  <view class='zhezhao'>
-    <view class='success_content5' style='background:url({{imageUrl}}image/wxapp/pin/bad.png) no-repeat ; background-size:100%;'>
-      <view class='kaijiang2'>
-        <view class='kjjg2'>活动失败</view>
-        <view class='contra2'>拼团不满{{pin_info.limitAmount}}人，无法瓜分积分</view>
-        <view class='see3' bindtap='iwantgo'>知道了</view>
-        <view class='double'>参与活动时间：{{gd.pinInteUser.startTime}}</view>
-      </view>
-    </view>
-    <view class='x5' bindtap='close'>
-      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
     </view>
   </view>
 </view>
@@ -265,7 +242,21 @@
   </view>
 </view>
 
-<!-- 开奖弹框 -->
+<!-- 活动开奖失败 -->
+<view class='success' wx:if="{{gd.pinInteUser.status == 2 && gd.pinInteUser.isLook == 0  && share_group == true}}">
+  <view class='zhezhao'>
+    <view class='success_content5' style='background:url({{imageUrl}}image/wxapp/pin/bad.png) no-repeat ; background-size:100%;'>
+      <view class='kaijiang2'>
+        <view class='kjjg2'>活动失败</view>
+        <view class='contra2'>拼团不满{{pin_info.limitAmount}}人，无法瓜分积分</view>
+        <view class='see3' bindtap='iwantgo'>知道了</view>
+        <view class='double'>参与活动时间：{{gd.pinInteUser.startTime}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 活动开奖成功 -->
 <view class='success' wx:if="{{gd.pinInteUser.status == 1 && gd.pinInteUser.isLook == 0  && share_group == true}}">
   <view class='zhezhao'>
     <view class='success_content4' style='background:url({{imageUrl}}image/wxapp/pin/good.png) no-repeat ; background-size:100%;'>
@@ -277,9 +268,6 @@
         <view class='see2' bindtap='toActivity'>去看看</view>
         <view class='double'>参与活动时间：{{gd.pinInteUser.startTime}}</view>
       </view>
-    </view>
-    <view class='x4' bindtap='close'>
-      <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
     </view>
   </view>
 </view>
