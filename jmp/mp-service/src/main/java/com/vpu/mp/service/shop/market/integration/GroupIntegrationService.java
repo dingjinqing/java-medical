@@ -1110,14 +1110,16 @@ public class GroupIntegrationService extends ShopBaseService {
 		vo.setGroupInfo(groupInfo);
 		vo.setPinInteInfo(pinInteInfo);
 		int userNum=groupInfo.size();
-		if (pinInteUser.getStatus() > STATUS_ZERO && pinInteUser.getIsLook().equals(STATUS_ZERO)) {
-			pinInteUser.setIsLook(STATUS_ONE);
-			int update = pinInteUser.update();
-			logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+		if(pinInteUser!=null) {
+			if (pinInteUser.getStatus() > STATUS_ZERO && pinInteUser.getIsLook().equals(STATUS_ZERO)) {
+				pinInteUser.setIsLook(STATUS_ONE);
+				int update = pinInteUser.update();
+				logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+			}
+			vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));			
 		}
 		vo.setUserNum(userNum);
 		vo.setInviteUser(inviteUser);
-		vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));
 		UserRecord userByUserId = userService.getUserByUserId(userId);
 		vo.setScore(userByUserId.getScore());
 		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, null, userId, null);
