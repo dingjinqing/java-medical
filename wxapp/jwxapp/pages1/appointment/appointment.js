@@ -2,6 +2,7 @@
 let util = require('../../utils/util')
 let app = getApp()
 let imageUrl = app.globalData.imageUrl;
+var scene;
 
 global.wxPage({
   /**
@@ -217,6 +218,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let that = this
+    scene = options.scene;
     let serviceId = options.service_id
     if (!serviceId) {
       that.toBack()
@@ -281,7 +283,7 @@ global.wxPage({
       } else {
         that.toBack()
       }
-    }, { serviceId: serviceId })
+    }, { serviceId: serviceId, scene: scene })
   },
 
   /**
