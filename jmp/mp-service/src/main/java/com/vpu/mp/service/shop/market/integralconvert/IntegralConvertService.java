@@ -20,7 +20,6 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
-import com.vpu.mp.service.shop.order.OrderReadService;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -55,8 +54,6 @@ public class IntegralConvertService extends ShopBaseService {
 	public static final Byte NORMAL = 1;
     /** 默认查找上架和下架全部商品 */
     public static final Byte DEFAULT_SALE_STATUS = -1;
-	@Autowired
-	private OrderReadService orderReadService;
 	@Autowired
 	private MemberService memberService;
 	@Autowired
@@ -94,43 +91,44 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 积分兑换分页查询列表
 	 *
-	 * @param param
-	 * @return PageResult<IntegralConvertListVo>
+	 * @param param 活动状态
+	 * @return 活动列表
 	 */
 	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
 						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
-						DSL.count(imr.USER_ID).as("userNumber"))
+						DSL.count(imr.USER_ID).as("user_number"))
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
 				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
-				.where(imd.DEL_FLAG.equal((byte)IntegralConvertConstant.NOT_DELETE));
+				.where(imd.DEL_FLAG.equal(IntegralConvertConstant.NOT_DELETE));
 
-		/* 活动状态0全部 */
+		// 活动状态0全部
 		if (IntegralConvertConstant.ALL == param.getActState()) {
 
 		}
-		/* 活动状态1进行中 */
+		// 活动状态1进行中
 		if (IntegralConvertConstant.DOING == param.getActState()) {
-			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK)).and(imd.START_TIME.lessOrEqual(nowTime))
+			sql.and(imd.STATUS.eq(IntegralConvertConstant.NOT_BLOCK)).and(imd.START_TIME.lessOrEqual(nowTime))
 					.and(imd.END_TIME.greaterOrEqual(nowTime));
 		}
-		/* 活动状态2未开始 */
+		// 活动状态2未开始
 		if (IntegralConvertConstant.TODO == param.getActState()) {
-			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK))
+			sql.and(imd.STATUS.eq( IntegralConvertConstant.NOT_BLOCK))
 					.and(imd.START_TIME.greaterOrEqual(nowTime));
 		}
-		/* 活动状态3已过期 */
+		// 活动状态3已过期
 		if (IntegralConvertConstant.DID == param.getActState()) {
-			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.NOT_BLOCK)).and(imd.END_TIME.lessOrEqual(nowTime));
+			sql.and(imd.STATUS.eq( IntegralConvertConstant.NOT_BLOCK)).and(imd.END_TIME.lessOrEqual(nowTime));
 		}
-		/* 活动状态0已停用 */
+		// 活动状态0已停用
 		if (IntegralConvertConstant.STOP == param.getActState()) {
-			sql.and(imd.STATUS.eq((byte) IntegralConvertConstant.BLOCK));
+			sql.and(imd.STATUS.eq( IntegralConvertConstant.BLOCK));
 		}
 		sql.groupBy(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME, imd.END_TIME,
-				GOODS.GOODS_NUMBER, imp.STOCK);
+				GOODS.GOODS_NUMBER, imp.STOCK)
+        .orderBy(imd.ID.desc());
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);
 
@@ -140,21 +138,20 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 停用或启用活动
 	 *
-	 * @param IntegralConvertSwitchParam
-	 * @return
+	 * @param param 活动id
 	 */
-	public void startOrStop(IntegralConvertSwitchParam param) {
-		/* 判断当前状态 停用中or启用中 */
-		int status = db().select(imd.STATUS).from(imd).where(imd.ID.eq(param.getId())).fetchOptionalInto(Integer.class)
+	public void startOrStop(IntegralConvertId param) {
+		//判断当前状态 停用中or启用中
+		Byte status = db().select(imd.STATUS).from(imd).where(imd.ID.eq(param.getId())).fetchOptionalInto(Byte.class)
 				.get();
-		/* 若已停用 则启用 */
-		if (status == IntegralConvertConstant.BLOCK) {
-			db().update(imd).set(imd.STATUS, (byte) IntegralConvertConstant.NOT_BLOCK)
+		// 若已停用 则启用
+		if (IntegralConvertConstant.BLOCK.equals(status)) {
+			db().update(imd).set(imd.STATUS,  IntegralConvertConstant.NOT_BLOCK)
 					.where(imd.ID.eq(param.getId())).execute();
 		}
-		/* 若启用中 则停用 */
-		if (status == IntegralConvertConstant.NOT_BLOCK) {
-			db().update(imd).set(imd.STATUS, (byte) IntegralConvertConstant.BLOCK).where(imd.ID.eq(param.getId()))
+		// 若启用中 则停用
+		if (IntegralConvertConstant.NOT_BLOCK.equals(status)) {
+			db().update(imd).set(imd.STATUS,  IntegralConvertConstant.BLOCK).where(imd.ID.eq(param.getId()))
 					.execute();
 		}
 
@@ -163,14 +160,14 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 删除单个活动
 	 *
-	 * @param IntegralConvertSwitchParam
-	 * @return void
+	 * @param param 活动id
 	 */
-	public void deleteAct(IntegralConvertSwitchParam param) {
-		/* 修改del_flag */
-		db().update(imd).set(imd.DEL_FLAG, (byte) IntegralConvertConstant.DELETE).where(imd.ID.eq(param.getId()))
+	public void deleteAct(IntegralConvertId param) {
+		// 修改del_flag
+		db().update(imd).set(imd.DEL_FLAG, IntegralConvertConstant.DELETE).where(imd.ID.eq(param.getId()))
 				.execute();
 	}
+
 	/**
 	 * 积分兑换用户列表
 	 *
@@ -179,8 +176,8 @@ public class IntegralConvertService extends ShopBaseService {
 	 */
 	public PageResult<IntegralConvertUserVo> userList(IntegralConvertUserParam param) {
 
-		SelectConditionStep<? extends Record> sql = db()
-				.select(imr.USER_ID, imr.ORDER_SN, imr.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imr.MONEY,
+		SelectConditionStep<? extends Record> sql = db().select(imr.USER_ID, imr.ORDER_SN, imr.GOODS_ID, GOODS.GOODS_IMG,
+            GOODS.GOODS_NAME, imr.MONEY,
 						imr.SCORE, USER.USERNAME, USER.MOBILE, imr.NUMBER, imr.CREATE_TIME)
 				.from(imr).leftJoin(GOODS).on(imr.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER)
 				.on(imr.USER_ID.eq(USER.USER_ID)).where(imr.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()));
@@ -227,11 +224,11 @@ public class IntegralConvertService extends ShopBaseService {
 		try {
 			/* 入参对象解析为json字符串 */
 			ObjectMapper objectMapper = new ObjectMapper();
-			String shareCondfig = objectMapper.writeValueAsString(param.getConfigParam());
+			String shareConfig = objectMapper.writeValueAsString(param.getConfigParam());
 			/* 添加数据-活动信息表 */
 			db().insertInto(INTEGRAL_MALL_DEFINE, INTEGRAL_MALL_DEFINE.NAME, INTEGRAL_MALL_DEFINE.START_TIME,
 					INTEGRAL_MALL_DEFINE.END_TIME, INTEGRAL_MALL_DEFINE.GOODS_ID, INTEGRAL_MALL_DEFINE.SHARE_CONFIG)
-					.values(param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(), shareCondfig)
+					.values(param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(), shareConfig)
 					.execute();
 			/* 得到刚添加到活动表的活动id */
 			int imdId = db().lastID().intValue();

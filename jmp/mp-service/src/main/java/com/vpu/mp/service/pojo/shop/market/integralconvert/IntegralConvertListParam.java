@@ -17,7 +17,7 @@ public class IntegralConvertListParam {
 	private Integer actState = IntegralConvertConstant.DOING;
 	
 	/** 分页信息 */
-	private Integer currentPage;
-	private Integer pageRows;
+	private Integer currentPage =1;
+	private Integer pageRows =20;
 	
 }

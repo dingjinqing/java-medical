@@ -53,7 +53,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/switch")
-	public JsonResult startOrStop(@RequestBody IntegralConvertSwitchParam param) {
+	public JsonResult startOrStop(@RequestBody IntegralConvertId param) {
 		
 		shop().integralConvertService.startOrStop(param);
 		return success();
@@ -67,7 +67,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/delete")
-	public JsonResult deleteAct(@RequestBody IntegralConvertSwitchParam param) {
+	public JsonResult deleteAct(@RequestBody IntegralConvertId param) {
 		shop().integralConvertService.deleteAct(param);
 		return success();
 	}
