@@ -852,11 +852,15 @@ public class OrderInfoService extends ShopBaseService {
         //订单类型
         order.setGoodsType(getGoodsTypeToInsert(orderBo.getOrderType()));
         //补款状态
-        order.setBkOrderPaid(
-            beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ?
-                OrderConstant.BK_PAY_NO :
-                (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
-                    OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())) {
+            order.setBkOrderPaid(
+                beforeVo.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0 ?
+                    OrderConstant.BK_PAY_NO :
+                    (BigDecimalUtil.compareTo(beforeVo.getBkOrderMoney(), null) > 0 ?
+                        OrderConstant.BK_PAY_FRONT : OrderConstant.BK_PAY_FINISH));
+        }else {
+            order.setBkOrderPaid(OrderConstant.BK_PAY_NO);
+        }
         //TODO 推广信息
         order.setIsPromote((byte)0);
         //主订单号
