@@ -52,6 +52,10 @@ public class OrderListMpVo{
 	private Timestamp[] preSaleTimeInterval;
 	/**支付按钮是否显示*/
 	private Byte isShowPay;
+    /**好友代付支付按钮是否显示*/
+    private Byte isShowFriendPay;
+    /**补款支付按钮是否显示*/
+    private Byte isShowEndPay;
 	/**是否奖品订单*/
 	private Byte isLotteryGift;
 	/**是否退过*/
@@ -79,4 +83,6 @@ public class OrderListMpVo{
 	private List<OrderGoodsMpVo> goods;
 	private GroupOrderVo groupBuyInfo;
 	private List<String> orderType;
+    @JsonIgnore
+	private Byte orderPayWay;
 }

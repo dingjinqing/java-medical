@@ -62,7 +62,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
-import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawList;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
@@ -659,7 +658,7 @@ public class OrderReadService extends ShopBaseService {
 		//1.延长收货
 		order.setIsExtendReceive(OrderOperationJudgment.isExtendReceive(order, getExtendReceiveDays()) ? YES : NO);
 		//2.确认收货(order_status==4可以判断)
-		//3.好友代付（order_pay_way == 2）
+		//3.好友代付（order_pay_way == 2）;好友代付与立即支付关联加入到4处理
 		//4.待支付状态处理order_status==0 => 去付尾款(bk_order_paid == 1) 、 去付款
 		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY) {
 			setPayOperation(order);
@@ -696,19 +695,23 @@ public class OrderReadService extends ShopBaseService {
 	private void setPayOperation(OrderListMpVo order) {
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-			//预售、定金订单
+			//去付尾款
 			Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
 			if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
 				order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
 			}else {
-				order.setPayOperationTime(Long.valueOf(0));
+				order.setPayOperationTime(0L);
 				order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1() , timeInterval.value2()});
 			}
-		}else {
+            order.setIsShowEndPay(order.getPayOperationTime() > 0 ? YES : NO);
+		} else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
+            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+        } else {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
+            order.setIsShowPay(order.getPayOperationTime() > 0 ? YES : NO);
 		}
-		order.setIsShowPay(order.getPayOperationTime() > 0 ? YES : NO);
 	}
 
 	/**
