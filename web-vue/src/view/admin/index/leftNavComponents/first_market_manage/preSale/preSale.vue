@@ -21,6 +21,7 @@
               placeholder="活动名称"
               style="width:180px"
               size="small"
+              clearable
             ></el-input>
           </div>
           <div class="money_paytime">
@@ -32,6 +33,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -42,6 +44,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
           </div>
@@ -56,6 +59,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -66,6 +70,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
           </div>
@@ -108,6 +113,7 @@
         >
           <template slot-scope="scope">
             {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
+            {{scope.row.preStartTime2}}<br>至<br>{{scope.row.preEndTime2}}
           </template>
         </el-table-column>
         <el-table-column

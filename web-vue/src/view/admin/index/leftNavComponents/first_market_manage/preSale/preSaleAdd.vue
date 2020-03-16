@@ -44,7 +44,8 @@
             <el-form label-width="130px">
               <el-form-item
                 label="定金支付时间："
-                :rules="[{required: true}]"
+                :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
+                :inline-message="true"
                 prop="preTime1Range"
               >
                 <el-date-picker
@@ -67,16 +68,19 @@
               </el-form-item>
               <el-form-item
                 label="定金支付时间："
+                :rules="[{required: true}]"
                 v-show="twoSteps"
               >
                 <el-date-picker
-                  v-model="preTime2Range"
+                  v-model="param.preTime2Range"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始时间"
-                  size="small"
                   end-placeholder="结束时间"
+                  size="small"
                   :default-time="['00:00:00', '23:59:59']"
+                  @change="dateChange2(param.preTime2Range)"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                 >
                 </el-date-picker>
                 <el-button
@@ -181,11 +185,11 @@
         </el-form-item>
         <el-form-item
           label="优惠叠加策略："
-          prop="discountTypes"
+          prop="discountType"
         >
           <el-radio
             v-model="param.discountType"
-            v-for="(item, index) in discountTypes"
+            v-for="(item, index) in discountType"
             :key="index"
             :label="index"
           >{{item}}</el-radio>
@@ -439,7 +443,6 @@
             @click="setCurrent(5)"
           >2阶段定金可抵扣金额
           </a>
-
         </div>
       </el-table>
 
@@ -466,7 +469,6 @@
             <div style="display:flex">
               <span>单用户最多可以购买</span>
               <el-input
-                type="number"
                 v-model="param.buyNumber"
                 size="small"
                 style="width:180px;margin:0 10px;"
@@ -628,9 +630,6 @@ export default {
       // 活动状态,
       status: null,
 
-      // 2段定金时间
-      preTime2Range: [],
-
       // 全款支付时间
       payTimeRange: [],
       // 指定发货时间
@@ -638,7 +637,7 @@ export default {
       // 活动商品名称
       goodsName: '',
       presaleTypes: ['定金膨胀', '全款预售'],
-      discountTypes: ['可叠加', '不可叠加'],
+      discountType: ['可叠加', '不可叠加'],
       returnTypes: ['不自动退定金', '自动退定金'],
       showSaleNumberTypes: ['不展示', '展示'],
       buyTypes: ['不可原价购买', '可原价购买'],
@@ -646,7 +645,6 @@ export default {
       shareImgTypes: ['活动商品信息图', '自定义图片'],
       isShowChoosingGoodsDialog: false,
       showImageDialog: false,
-      props: ['isEdite'],
       srcList: {
         src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
@@ -663,28 +661,27 @@ export default {
        * 请求参数
        */
       param: {
-        // 1段定金时间
-        preTime1Range: [],
-        // 尾款支付时间
-        tailPayTimeRange: [],
-        presaleType: 0,
-        presaleName: '',
-        prePayStep: 1,
-        preStartTime: null,
+        preTime1Range: [], // 1段定金时间
+        preTime2Range: [], // 2段定金时间
+        tailPayTimeRange: [], // 尾款支付时间
+        presaleType: 0, // 活动类型
+        presaleName: '', // 活动名称
+        prePayStep: 1, // 定金期数
+        preStartTime: null, // 定金支付开始时间
         preEndTime: null,
-        preStartTime2: null,
+        preStartTime2: null, // 2段定金支付开始时间
         preEndTime2: null,
-        startTime: null,
+        startTime: null, // 尾款开始支付时间
         endTime: null,
         goodsId: '',
-        deliverType: 1,
-        deliverTime: null,
-        deliverDays: null,
-        discountType: 0,
-        returnType: 0,
-        showSaleNumber: 0,
-        buyType: 0,
-        buyNumber: 0,
+        deliverType: 1, // 发货时间类型 0：指定，1：尾款支付
+        deliverTime: null, // 发货时间
+        deliverDays: null, // 几天后发货
+        discountType: 0, // 优惠叠加策略
+        returnType: 0, // 定金退款策略
+        showSaleNumber: 0, // 预售数量展示
+        buyType: 0, // 商品购买方式
+        buyNumber: null, // 购买数量限制
         shareAction: 0,
         shareDoc: '',
         shareImgAction: 0,
@@ -694,13 +691,13 @@ export default {
       formRules: {
         presaleType: { required: true },
         presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        preTime1Range: { message: '请填写定金支付时间', trigger: 'blur' },
+        // preTime1Range: { requireed: true, message: '请填写定金支付时间', trigger: 'blur' },
         tailPayTimeRange: { required: true, message: '请填写尾款支付时间', trigger: 'blur' },
         goodsId: [
           { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
         ],
         deliverType: { required: true },
-        discountTypes: { required: true },
+        discountType: { required: true },
         returnType: { required: true },
         showSaleNumber: { required: true },
         buyType: { required: true }
@@ -722,10 +719,10 @@ export default {
     },
     twoSteps () {
       return this.param.prePayStep === 2
-    },
-    deliverTimeSpecified () {
-      return this.param.deliverType === 1
     }
+    // deliverTimeSpecified () {
+    //   return this.param.deliverType === 1
+    // }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
@@ -749,36 +746,54 @@ export default {
         callback()
       }
     },
+    // 一阶段定金支付时间
     dateChange (date) {
-      // console.log(val, 'get val--')
       this.param.preStartTime = date[0]
       this.param.preEndTime = date[1]
     },
+    // 二阶段定金支付时间
+    dateChange2 (date) {
+      this.param.preStartTime2 = date[0]
+      this.param.preEndTime2 = date[1]
+    },
     endMoneyTime (val) {
-      console.log(val, 'get val--')
       this.param.startTime = val[0]
       this.param.endTime = val[1]
     },
     // 保存
     add () {
-      const then = r => this.gotoHome()
+      // const then = r => this.gotoHome()
+      this.param.buyNumber = Number(this.param.buyNumber)
       const { param } = this
+
       console.log(param, 'get param')
       this.formatParam()
       if (!this.validateParam()) {
         return
       }
       if (this.update) {
-        updatePreSale(param).then(then)
+        updatePreSale(param).then(res => {
+          if (res.error === 0) {
+            console.log(res)
+            this.$message.success('更新成功')
+          } else {
+            this.$message.error(res.messages)
+          }
+        })
       } else {
-        createPreSale(param).then(then)
+        createPreSale(param).then(res => {
+          if (res.error === 0) {
+            console.log(res)
+            this.$message.success('添加成功')
+          }
+        })
       }
     },
     formatParam () {
       this.formatTimes()
     },
     formatTimes () {
-      const { isFullPay, payTimeRange, twoSteps, preTime2Range } = this
+      const { isFullPay, payTimeRange, twoSteps } = this
       if (isFullPay) {
         this.param.startTime = format(payTimeRange[0])
         this.param.endTime = format(payTimeRange[1])
@@ -790,19 +805,21 @@ export default {
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
         if (twoSteps) {
-          this.param.preStartTime2 = format(preTime2Range[0])
-          this.param.preEndTime2 = format(preTime2Range[1])
+          this.param.preStartTime2 = format(this.param.preTime2Range[0])
+          this.param.preEndTime2 = format(this.param.preTime2Range[1])
+          console.log('123----------------------------------')
         }
       }
       // if (deliverTimeSpecified) {
-      //   this.param.deliverTime = format(deliverTime)
+      //   this.param.deliverTime = format(this.param.deliverTime)
       // }
     },
-    // 回显数据加载
+    // 编辑活动初始化-回显数据加载
     loadData () {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
+
         this.loadStatus(content)
         this.loadingGoods(content)
         console.log(this.param, 'get return param')
@@ -813,7 +830,7 @@ export default {
           } else {
             // 定金膨胀 - 定金支付时间
             this.param.preTime1Range = [content.preStartTime, content.preEndTime]
-            this.preTime2Range = [content.preStartTimeTwo, content.preEndTimeTwo]
+            this.param.preTime2Range = [content.preStartTime2, content.preEndTime2]
           }
           // 尾款支付时间
           this.param.tailPayTimeRange = [content.startTime, content.endTime]
@@ -852,6 +869,7 @@ export default {
     setCurrent (index) {
       // 拷贝一份数据
       let price = JSON.parse(JSON.stringify(this.param.products))
+      console.log(this.price, 'get-price')
 
       switch (index) {
         case 1:
@@ -876,6 +894,7 @@ export default {
         case 4:
           price.forEach(row => {
             row.preDiscountMoney1 = Number(price[0].preDiscountMoney1)
+            console.log(row.preDiscountMoney1, 'get data--')
           })
           this.activeIndex = 4
           break
@@ -886,8 +905,6 @@ export default {
           this.activeIndex = 5
           break
       }
-      // console.log(price, 'setCurrent')
-
       this.param.products = price
     },
     // 改变"收起、展开更多配置"事件
@@ -923,12 +940,10 @@ export default {
     // 图片点击回调函数
     handleSelectImg (res) {
       if (res != null) {
+        console.log(res)
         this.param.shareImg = res.imgPath
       }
     }
-  },
-  watch: {
-
   },
   mounted () {
     const { id } = this.$route.params
@@ -938,9 +953,9 @@ export default {
       // 编辑回显
       this.loadData()
     }
-    // this.listenGoodsResult()
     this.langDefault()
     if (this.isEdite) {
+      console.log(this.isEdite)
       this.arrorFlag = false
     }
   }
