@@ -211,7 +211,7 @@
                 <div class="goods" v-for="(item,index) in chooseGoodsDatas"
                   :key="index">
                     <span class="name">{{item.goodsName}}</span>
-                    <span class="el-icon-circle-close my-close"></span>
+                    <span class="el-icon-circle-close my-close" @click="deleteChooseGood(index)"></span>
                 </div>
             </div>
           </div>
@@ -1226,9 +1226,13 @@ export default {
     },
     // 商品选择后回调
     chooseGoodsHandle (goods) {
-      debugger
       console.log('goods:', goods)
       this.chooseGoodsDatas = goods
+    },
+    // 删除选中商品
+    deleteChooseGood (index) {
+      this.chooseGoodsDatas.splice(index, 1)
+      this.chooseGoodsBack.splice(index, 1)
     },
     // 商品选择id后回调
     chooseGoodIdssHandle (ids) {
