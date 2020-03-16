@@ -708,6 +708,12 @@ public class GroupIntegrationService extends ShopBaseService {
 				}
 			}
 			logger().info("进入参加活动");
+			CanPinInte checkPin = checkPin(pinInteId, groupId, userId);
+			if (checkPin != null) {
+				vo.setGroupId(groupId);
+				vo.setCanPin(checkPin);
+				return vo;
+			}
 			UserRecord userPinInfo = groupIntegrationList.getinviteUser(pinInteId, userId);
 			boolean haveJoinGroup = groupIntegrationList.haveJoinGroup(userId);
 			logger().info("状态{}",haveJoinGroup);
