@@ -162,7 +162,7 @@
               <el-tooltip
                 content="启用"
                 placement="top"
-                v-if="scope.status===0&&scope.actStatus!==3"
+                v-if="scope.row.status===0&&scope.row.actStatus!==3"
               >
                 <span
                   @click="handleToOption(scope.row,0)"
@@ -172,7 +172,7 @@
               <el-tooltip
                 content="删除"
                 placement="top"
-                v-if="scope.actStatus===3 || scope.actStatus===4"
+                v-if="scope.row.actStatus===3 || scope.row.actStatus===4"
               >
                 <span
                   class="iconfont iconshanchu2 iconSpan"
@@ -182,7 +182,7 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
-                v-if="scope.actStatus===1"
+                v-if="scope.row.actStatus===1"
               >
                 <span
                   class="el-icon-edit-outline iconSpan"
@@ -201,7 +201,7 @@
               <el-tooltip
                 content="停用"
                 placement="top"
-                v-if="(scope.status===1&&scope.actStatus!==3)"
+                v-if="(scope.row.status===1&&scope.row.actStatus!==3)"
               >
                 <span
                   @click="handleToOption(scope.row,4)"
@@ -212,7 +212,7 @@
               <el-tooltip
                 content="查看积分兑换订单"
                 placement="top"
-                v-if="scope.status!==2"
+                v-if="scope.row.status!==2"
               >
                 <span
                   @click="handleToOption(scope.row,5)"
@@ -222,7 +222,7 @@
               <el-tooltip
                 content="获取新用户明细"
                 placement="top"
-                v-if="scope.status!==2"
+                v-if="scope.row.status!==2"
               >
                 <span
                   @click="handleToOption(scope.row,6)"
@@ -232,12 +232,12 @@
               <el-tooltip
                 content="查看积分兑换用户"
                 placement="top"
+                v-if="scope.row.status!==2"
               >
                 <span
-                  v-if="scope.status!==1"
                   @click="handleToOption(scope.row,7)"
                   class="iconfont iconmingxi1 iconSpan"
-                ></span>
+                >{{scope.status}}</span>
               </el-tooltip>
             </div>
           </template>
