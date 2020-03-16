@@ -132,6 +132,13 @@ public class FormConstant {
      * 表单配置项元素
      */
     public static final String BG_IMG = "bg_img";
+    public static final String GET_TIMES ="get_times";
+    public static final String POST_TIMES ="post_times";
+    public static final String DAY_TIMES ="day_times";
+    public static final String SEND_SCORE ="send_score";
+    public static final String SEND_SCORE_NUMBER ="send_score_number";
+    public static final String SEND_COUPON ="send_coupon";
+    public static final String TOTAL_TIMES ="total_times";
     public static final String PAGE_NAME = "page_name";
     public static final String FORM_DEFAULT_BG_IMG = "image/admin/pictorial/form_bg.png";
 

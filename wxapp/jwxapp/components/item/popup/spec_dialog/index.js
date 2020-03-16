@@ -59,50 +59,14 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-        console.log(val)
-        let productsInfo = this.data.productsInfo
-          if(productsInfo.defaultPrd === true){
-            let {limitBuyNum,limitMaxNum,activity} = productsInfo
-            this.setData({
-              checkedProduct: val.products[0]
-            })
-            if(activity && [1,4,5,10].includes(activity.activityType)){
-              val.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
-              if(activity.activityType === 1){
-                limitBuyNum = activity.limitBuyNum
-                limitMaxNum = activity.limitMaxNum
-              }
-              if([5,10].includes(activity.activityType)){
-                limitMaxNum = activity.limitAmount
-                limitBuyNum = 1
-              }
-            } else if (activity && activity.activityType === 3) {
-              val.products[0].prdNumber = activity.stock
-              limitBuyNum = 1
-            }
-            if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
-              limitMaxNum = activity.limitAmount
-            }
-            this.triggerEvent('productData', {
-              goodsId: val.goodsId,
-              ...val.products[0],
-              limitBuyNum,
-              limitMaxNum
-            })
-          } else {
-            this.spec = this.data.productsInfo.products
-            this.defaultSelectSpec()
-            this.render()
-          }
-        // }
+        this.init()
       }
     },
     triggerButton: {
       type: String,
       value: '',
       observer(val){
-        this.defaultSelectSpec()
-        this.render()
+        this.init()
       }
     }
   },
@@ -118,6 +82,48 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
+    init(){
+      this.spec=null
+      this.skuList=null
+      this.specList=null
+      this.inited=null
+      this.select_prd=null
+      this.select_specs=null
+      let productsInfo = this.data.productsInfo
+      if(productsInfo.defaultPrd === true){
+        let {limitBuyNum,limitMaxNum,activity} = productsInfo
+        this.setData({
+          checkedProduct: this.data.productsInfo.products[0]
+        })
+        if(activity && [1,4,5,10].includes(activity.activityType)){
+          this.data.productsInfo.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
+          if(activity.activityType === 1){
+            limitBuyNum = activity.limitBuyNum
+            limitMaxNum = activity.limitMaxNum
+          }
+          if([5,10].includes(activity.activityType)){
+            limitMaxNum = activity.limitAmount
+            limitBuyNum = 1
+          }
+        } else if (activity && activity.activityType === 3) {
+          this.data.productsInfo.products[0].prdNumber = activity.stock
+          limitBuyNum = 1
+        }
+        if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
+          limitMaxNum = activity.limitAmount
+        }
+        this.triggerEvent('productData', {
+          goodsId: this.data.productsInfo.goodsId,
+          ...this.data.productsInfo.products[0],
+          limitBuyNum,
+          limitMaxNum
+        })
+      } else {
+        this.spec = this.data.productsInfo.products
+        this.defaultSelectSpec()
+        this.render()
+      }
+    },
     // 默认选择的规格
     defaultSelectSpec() {
       var specs = this.getDefaultSpec()

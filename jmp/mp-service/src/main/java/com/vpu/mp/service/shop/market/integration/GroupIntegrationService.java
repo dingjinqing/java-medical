@@ -207,7 +207,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	public JsonResultCode insertDefine(GroupIntegrationDefineParam param) {
 		Integer inteGroup = param.getInteGroup();
-		Short limitAmount = param.getLimitAmount();
+		Integer limitAmount = param.getLimitAmount().intValue();
 		Integer inteTotal = param.getInteTotal();
 		if (inteGroup < limitAmount) {
 			// 瓜分积分数需要大于成团人数
@@ -535,7 +535,8 @@ public class GroupIntegrationService extends ShopBaseService {
 				return new CanApplyPinInteVo(STATUS_FIVE, "该团已结束");
 			}
 			int joinNum = groupIntegrationList.getJoinNum(pinInteId, userId);
-			if (joinNum == pinInteInfo.getJoinLimit() && pinInteInfo.getJoinLimit() > 0) {
+			logger().info("用户：{}，参加活动：{}，的次数：{}", userId, pinInteId, joinNum);
+			if (Objects.equals(pinInteInfo.getJoinLimit().intValue(), joinNum) && pinInteInfo.getJoinLimit() > 0) {
 				return new CanApplyPinInteVo(STATUS_SEVEN, "您已经参与过" + joinNum + "个活动，达到上限了哦！");
 			}
 		} else {
@@ -707,6 +708,12 @@ public class GroupIntegrationService extends ShopBaseService {
 				}
 			}
 			logger().info("进入参加活动");
+			CanPinInte checkPin = checkPin(pinInteId, groupId, userId);
+			if (checkPin != null) {
+				vo.setGroupId(groupId);
+				vo.setCanPin(checkPin);
+				return vo;
+			}
 			UserRecord userPinInfo = groupIntegrationList.getinviteUser(pinInteId, userId);
 			boolean haveJoinGroup = groupIntegrationList.haveJoinGroup(userId);
 			logger().info("状态{}",haveJoinGroup);
@@ -739,7 +746,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("更新inviNum:{}，结果：{}", inviteNum,update);
 				int num = groupInfo.size() + 1;
 				int canIntegration = 0;
-				if (num < pinInteInfo.getLimitAmount()) {
+				if (num < pinInteInfo.getLimitAmount().intValue()) {
 					Double paramN = pinInteInfo.getParamN();
 					double floor = Math.floor(Math.pow(paramN, Double.parseDouble(String.valueOf(num))) - paramN);
 					canIntegration = new Double(floor).intValue();
@@ -770,11 +777,13 @@ public class GroupIntegrationService extends ShopBaseService {
 							.where(GROUP_INTEGRATION_DEFINE.ID.eq(pinInteId)).execute();
 					logger().info("活动：{}更新剩余积分为：{};结果：{}", pinInteId, inteRemain, execute2);
 				}
-				if (pinInteInfo.getLimitAmount().equals(num)
+				if (Objects.equals(pinInteInfo.getLimitAmount().intValue(), num)
 						|| (isDayDivide.equals(IS_DAY_DIVIDE_Y) && inteRemain == 0 && pinInteInfo.getInteTotal() > 0)) {
+					logger().info("开奖");
 					successPinIntegration(groupId, pinInteId);
 					GroupIntegrationDefineRecord pinInteInfoNew = getOneInfoByIdNoInto(pinInteId);
 					if (pinInteInfoNew.getIsContinue().equals(STATUS_ZERO)) {
+						logger().info("IsContinue为0");
 						List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(pinInteId);
 						for (GroupIntegrationListRecord item : list) {
 							successPinIntegration(item.getGroupId(), pinInteId);
@@ -804,6 +813,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
 				CanPinInte checkPin = checkPin(pinInteId, existGroup, userId);
 				if (checkPin != null) {
+					vo.setGroupId(existGroup);
 					vo.setCanPin(checkPin);
 				} else {
 					canPinInte.setStatus(STATUS_ZERO);
@@ -847,6 +857,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		// 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
 		CanPinInte canPinInte = new CanPinInte();
 		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, groupId, userId, null);
+		logger().info("返回的状态为：{}，信息为：{}",canApplyPinInte.getStatus(),canApplyPinInte.getMsg());
 		if (canApplyPinInte.getStatus() > 0) {
 			// vo.setGroupId(gIntegrationMaVo.getGroupId());
 			canPinInte.setStatus(canApplyPinInte.getStatus());
@@ -868,7 +879,7 @@ public class GroupIntegrationService extends ShopBaseService {
 						.eq(groupId).and(GROUP_INTEGRATION_LIST.INTE_ACTIVITY_ID.eq(pinInteId)))
 				.execute();
 		logger().info("活动id：{},团id：{}，更新结束时间结果：{}", pinInteId, groupId, execute);
-		if (pinInteInfo.getIsDayDivide().equals(IS_DAY_DIVIDE_N) && userNum < pinInteInfo.getLimitAmount()
+		if (pinInteInfo.getIsDayDivide().equals(IS_DAY_DIVIDE_N) && userNum < pinInteInfo.getLimitAmount().intValue()
 				|| canIntegration == 0) {
 			int execute2 = db().update(GROUP_INTEGRATION_LIST).set(GROUP_INTEGRATION_LIST.STATUS, STATUS_TWO)
 					.where(GROUP_INTEGRATION_LIST.GROUP_ID.eq(groupId)
@@ -1101,14 +1112,17 @@ public class GroupIntegrationService extends ShopBaseService {
 		vo.setGroupInfo(groupInfo);
 		vo.setPinInteInfo(pinInteInfo);
 		int userNum=groupInfo.size();
-		if (pinInteUser.getStatus() > STATUS_ZERO && pinInteUser.getIsLook().equals(STATUS_ZERO)) {
-			pinInteUser.setIsLook(STATUS_ONE);
-			int update = pinInteUser.update();
-			logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+		if(pinInteUser!=null) {
+			if (pinInteUser.getStatus() > STATUS_ZERO && pinInteUser.getIsLook().equals(STATUS_ZERO)) {
+				pinInteUser.setIsLook(STATUS_ONE);
+				int update = pinInteUser.update();
+				logger().info("userId：{},pinInteId：{},groupId：{}，更新开奖状态为开奖结果{}",userId,pinInteId,groupId,update);
+				pinInteUser.setIsLook(STATUS_ZERO);
+			}
+			vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));			
 		}
 		vo.setUserNum(userNum);
 		vo.setInviteUser(inviteUser);
-		vo.setPinInteUser(pinInteUser.into(GroupIntegrationListPojo.class));
 		UserRecord userByUserId = userService.getUserByUserId(userId);
 		vo.setScore(userByUserId.getScore());
 		CanApplyPinInteVo canApplyPinInte = canApplyPinInte(pinInteId, null, userId, null);
@@ -1160,13 +1174,14 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * 处理拼团结果  定时任务用
 	 */
 	public void updateState() {
+		logger().info("处理组团瓜分积分结果  定时任务运行");
 		Timestamp dateTime = DateUtil.getSqlTimestamp();
 		List<GroupInteGetEndVo> pinGroup = groupIntegrationList.getAlreadyEndPinGroup(dateTime);
 		System.out.println(pinGroup.size());
 		for (GroupInteGetEndVo item : pinGroup) {
-			System.out.println(item.getId());
-			System.out.println(item.getGroupId());
+			logger().info("定时任务：组团瓜分积分groupId:{},pinId:{}",item.getGroupId(),item.getId());
 			successPinIntegration(item.getGroupId(), item.getId());
 		}
+		logger().info("处理组团瓜分积分结果  定时任务结束");
 	}
 }

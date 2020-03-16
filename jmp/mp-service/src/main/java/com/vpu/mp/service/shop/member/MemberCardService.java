@@ -451,6 +451,9 @@ public class MemberCardService extends ShopBaseService {
 			cardBuilder.discountIsAll(param.getDiscountIsAll());
 			initDiscountPartGoods(param, cardBuilder);
 		}
+		
+		// 3. 不可与优惠券公用
+		cardBuilder.cannotUseCoupon(param.getCannotUseCoupon());
 	}
 
 	/**

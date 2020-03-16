@@ -35,7 +35,7 @@
         <view class="com_info">
           <view class="clearfix">
             <view class="fl">
-              <image src='{{ item.anonymousflag == 0?item.user_avatar:item.user_avatar }}' mode='widthFix' />
+              <image src='{{ item.anonymousflag == 0?item.userAvatar:item.userAvatar }}' mode='widthFix' />
               <block wx:if="{{item.username!=''}}">
                 <text class="com_mobile" wx:if="{{item.anonymousflag == 0}}">{{item.username}}</text>
                 <text class="com_mobile" wx:if="{{item.anonymousflag == 1}}">匿名用户</text>
@@ -54,7 +54,7 @@
           </view>
           <view>{{item.commNote}}</view>
           <view class='com_img clearfix'>
-            <view class='fl' wx:for="{{item.commImg}}" wx:key="key" wx:for-item="item_img">
+            <view class='fl' wx:for="{{item.commImgList }}" wx:key="key" wx:for-item="item_img">
               <image src='{{ item_img }}!small?v=1' data-all='{{item.comm_img}}' bindtap='clickComment' data-src="{{ item_img }}"></image>
             </view>
           </view>

@@ -293,5 +293,6 @@ export const en = {
   cardHolder: 'cardHolder',
   timesFreeship: 'Times',
   noLimitCoupon: 'No limit',
-  couponErrorTip: 'Must choose.'
+  couponErrorTip: 'Must choose.',
+  scoreCouponCfg: 'Not coupon together'
 }

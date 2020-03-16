@@ -53,7 +53,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/switch")
-	public JsonResult startOrStop(@RequestBody IntegralConvertSwitchParam param) {
+	public JsonResult startOrStop(@RequestBody IntegralConvertId param) {
 		
 		shop().integralConvertService.startOrStop(param);
 		return success();
@@ -67,7 +67,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/delete")
-	public JsonResult deleteAct(@RequestBody IntegralConvertSwitchParam param) {
+	public JsonResult deleteAct(@RequestBody IntegralConvertId param) {
 		shop().integralConvertService.deleteAct(param);
 		return success();
 	}
@@ -105,9 +105,9 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	 * @return
 	 */
 	@PostMapping("/product")
-	public JsonResult getproduct(@RequestBody IntegralConvertGoodsParam param) {
+	public JsonResult getProduct(@RequestBody IntegralConvertGoodsParam param) {
 		
-		List<IntegralConvertGoodsVo> vo = shop().integralConvertService.getproduct(param);
+		List<IntegralConvertGoodsVo> vo = shop().integralConvertService.getProduct(param);
 		return success(vo);
 	}
 	
@@ -124,7 +124,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
 		return success(vo);
 	}
 	/**
-	 * 添加积分兑换活动
+	 * 编辑积分兑换活动
 	 *
 	 * @param param
 	 * @return

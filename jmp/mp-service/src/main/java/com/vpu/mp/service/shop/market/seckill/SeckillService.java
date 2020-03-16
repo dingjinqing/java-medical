@@ -498,10 +498,12 @@ public class SeckillService extends ShopBaseService{
                 vo.setState(BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY);
                 vo.setOrderSn(orderSn);
             }
-            int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
-            if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
-                vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
-                vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
+            if(secKill.getLimitAmount() != null && secKill.getLimitAmount() > 0){
+                int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
+                if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
+                    vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
+                    vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
+                }
             }
         }else{
             vo.setState(res);
