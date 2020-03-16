@@ -383,6 +383,7 @@
                 :placeholder="$t('reservationManage.chooseUser')"
                 v-model="userRowData.userName"
                 size="small"
+                class="new-input"
               >
               </el-input>
               <el-button
@@ -816,6 +817,10 @@ export default {
     // 添加预约弹窗-点击触发弹窗
     showMess3 (orderSn) {
       this.orderSn = orderSn
+      if (!Number(this.$route.query.businessState)) {
+        this.$message.warning('该店铺未营业，不能预约')
+        return false
+      }
       this.showReservation = true
     },
     // 关闭添加预约弹窗
@@ -1108,7 +1113,7 @@ export default {
   }
 }
 .new-input {
-  width: 170px;
+  width: 190px;
 }
 .add-dialog-text {
   line-height: 32px;
