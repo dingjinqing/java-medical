@@ -256,7 +256,8 @@ global.wxPage({
     // 判断是否要去绑定手机号
     if (this.data.groupbuyInfo.bindMobile && util.getCache('mobile') === '') {
       util.checkSession(function () {
-        this.setData({
+        that.setData({
+          showSpec: false,
           isBlock: 1
         })
       })
