@@ -108,7 +108,7 @@ public class PreSaleService extends ShopBaseService {
      */
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
         SelectConditionStep<? extends Record> query =
-            db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
+            db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,TABLE.PRE_PAY_STEP,
                 TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2"),
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
@@ -166,16 +166,10 @@ public class PreSaleService extends ShopBaseService {
             Timestamp now = Util.currentTimeStamp();
             if (now.before(preStartTime)) {
                 return NAVBAR_TYPE_NOT_STARTED;
-            } else if ((now.after(preStartTime) && now.before(preEndTime))) {
+            } else if (vo.getPrePayStep().equals(PRE_SALE_ONE_PHASE) && (now.after(preStartTime) && now.before(preEndTime))) {
                 return NAVBAR_TYPE_ONGOING;
-            } else if (null != startTime && null != endTime) {
-                if (now.after(startTime) && now.before(endTime)) {
-                    return NAVBAR_TYPE_ONGOING;
-                }
-            } else if (null != preStartTime2 && null != preEndTime2) {
-                if (now.after(preStartTime2) && now.before(preEndTime2)) {
-                    return NAVBAR_TYPE_ONGOING;
-                }
+            } else if (vo.getPrePayStep().equals(PRE_SALE_TWO_PHASE) && (now.after(preStartTime) && now.before(preEndTime2))) {
+                return NAVBAR_TYPE_ONGOING;
             }
             return NAVBAR_TYPE_FINISHED;
         }
