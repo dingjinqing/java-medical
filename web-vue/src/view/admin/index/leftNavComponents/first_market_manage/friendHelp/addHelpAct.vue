@@ -475,7 +475,7 @@
                     <el-button
                       slot="reference"
                       type="text"
-                      style="margin: 0 20 0 0px"
+                      style="margin: 0px 20px 0px 0px"
                     >{{$t('marketCommon.viewExample')}}</el-button>
                   </el-popover>
                   <el-popover
