@@ -681,7 +681,11 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasMobileCondition(boolean hasMobile) {
 		Condition condition = DSL.noCondition();
-		return hasMobile?condition.and(USER.MOBILE.isNotNull()):condition;
+		if(hasMobile) {
+			condition = condition.and(USER.MOBILE.isNotNull())
+						.and(USER.MOBILE.length().gt(0));
+		}
+		return condition;
 	}
 	
 	/**
@@ -689,7 +693,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasScoreCondition(boolean hasScore) {
 		Condition condition = DSL.noCondition();
-		return hasScore?condition.and(USER.SCORE.gt(NumberUtils.INTEGER_ZERO)):condition;
+		if(hasScore) {
+			condition = condition.and(USER.SCORE.gt(NumberUtils.INTEGER_ZERO));
+		}
+		return condition;
 	}
 	
 	/**
@@ -697,7 +704,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasBalance(boolean hasBalance) {
 		Condition condition = DSL.noCondition();
-		return hasBalance?condition.and(USER.ACCOUNT.gt(BigDecimal.ZERO)):condition;
+		if(hasBalance) {
+			condition = condition.and(USER.ACCOUNT.gt(BigDecimal.ZERO));
+		}
+		return condition;
 	}
 	
 	/**
@@ -713,11 +723,14 @@ public class MemberDaoService extends ShopBaseService {
 	}
 	
 	/**
-	 * 是否禁止条件
+	 * 是否禁止登录条件
 	 */
 	private Condition getIsForbidLoginCondition(boolean isLogin) {
 		Condition condition = DSL.noCondition();
-		return isLogin?condition.and(USER.DEL_FLAG.eq(LOGIN_FORBID)):condition;
+		if(isLogin) {
+			condition = condition.and(USER.DEL_FLAG.eq(LOGIN_FORBID));
+		}
+		return condition;
 	}
 	
 	/**
