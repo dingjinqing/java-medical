@@ -219,10 +219,10 @@
       </ul>
       <ul class="ulsThree">
         <li>
-          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.phoneNum')}}</el-checkbox>
-          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.integral')}}</el-checkbox>
-          <el-checkbox v-model="balance">{{$t('membershipIntroduction.Balance')}}</el-checkbox>
-          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.membershipCard')}}</el-checkbox>
+          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.alreadyPhone')}}</el-checkbox>
+          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.alreadyScore')}}</el-checkbox>
+          <el-checkbox v-model="balance">{{$t('membershipIntroduction.alreadyBalance')}}</el-checkbox>
+          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.alreadyCard')}}</el-checkbox>
           <el-checkbox v-model="noLanding">{{$t('membershipIntroduction.banLogin')}}</el-checkbox>
           <el-checkbox v-model="importMembership">{{$t('membershipIntroduction.importMembers')}}</el-checkbox>
         </li>
