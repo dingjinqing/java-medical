@@ -335,6 +335,12 @@ function request_pinIntegration(that) {
           that.setData({ total_micro_second: parseInt(that.data.gd.remainTime / 1000) })
           if (that.data.total_micro_second > 0) {
             that.countdown(that);
+          } else {
+            that.setData({
+              clock: "已结束",
+              end: true,
+              share_group: true
+            });
           }
         } else {
           util.showModal('提示', ress.message);

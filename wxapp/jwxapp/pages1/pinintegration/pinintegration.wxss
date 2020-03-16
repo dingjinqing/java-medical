@@ -448,7 +448,8 @@ color: transparent;
 .success_content4{
   position: absolute;
   z-index: 9999;
-  top: 165rpx;
+  /* top: 165rpx; */
+  top: 20%;
   left: 25rpx;
   width: 696rpx;
   height: 760rpx;
@@ -456,7 +457,8 @@ color: transparent;
 .success_content5{
   position: absolute;
   z-index: 9999;
-  top: 270rpx;
+  /* top: 270rpx; */
+  top: 30%;
   left: 25rpx;
   width: 696rpx;
   height: 760rpx;
@@ -547,18 +549,25 @@ color: transparent;
 
 .x ,.x4 ,.x5 ,.x2 {
   position: absolute;
-  top:750rpx;
+  /* top:750rpx; */
+  top: 40%;
   left: 340rpx;
   z-index: 9999;
 }
+.x {
+  top: calc(40% + 400rpx);
+}
 .x2 {
-  top: 700rpx;
+  /* top: 700rpx; */
+  top: calc(40% + 350rpx);
 }
 .x4 {
-  top: 970rpx;
+  /* top: 970rpx; */
+  top: calc(20% + 810rpx);
 }
 .x5 {
-  top: 850rpx;
+  /* top: 850rpx; */
+  top: calc(30% + 550rpx);
 }
 .x image,.x4 image,.x5 image,.x2 image{
   width: 68rpx;
