@@ -1175,7 +1175,7 @@ export default {
         'unitPriceHight': this.unitPriceRight,
         'buyCountLow': this.frequencyLeft,
         'buyCountHight': this.frequencyRight,
-        'goodsId': this.goodsIdsArr,
+        'goodsId': this.chooseGoodsBack,
         'currentPage': this.currentPage3,
         'pageRows': '20',
         'orderRule': this.orderRule
