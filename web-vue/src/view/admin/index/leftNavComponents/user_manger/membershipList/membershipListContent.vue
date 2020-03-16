@@ -1178,7 +1178,13 @@ export default {
         'goodsId': this.chooseGoodsBack,
         'currentPage': this.currentPage3,
         'pageRows': '20',
-        'orderRule': this.orderRule
+        'orderRule': this.orderRule,
+        'hasMobile': this.checkPhone,
+        'hasScore': this.checkIntegr,
+        'hasBalance': this.balance,
+        'hasCard': this.membershipCard,
+        'hasDelete': this.noLanding,
+        'hasImport': this.importMembership
       }
       console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
