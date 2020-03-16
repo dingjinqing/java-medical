@@ -616,7 +616,7 @@ const routes = [
     path: '/admin/home/main/lotteryDraw/lotteryEffect',
     name: 'lottery_effect_view',
     meta: {
-      // crumbTitle: 'router.resultSeckill',
+      crumbTitle: 'router.group_effect',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
