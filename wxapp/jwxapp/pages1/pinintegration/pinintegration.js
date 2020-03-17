@@ -37,8 +37,8 @@ global.wxPage({
     var that = this;
     if (!util.check_setting(options)) return;
     that.setData({
-      pinInte_id: Number(options.pinInte_id),
-      group_id: options.group_id ? Number(options.group_id) : null,
+      pinInte_id: Number(options.pid),
+      group_id: options.gid ? Number(options.gid) : null,
       invite_user: options.invite_user ? Number(options.invite_user) : null
     })
     clearTimeout(set_time_out);
@@ -65,7 +65,7 @@ global.wxPage({
   // 跳转参与活动列表
   toActivity: function () {
     wx: util.navigateTo({
-      url: '/pages/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
+      url: '/pages1/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
     })
   },
   // 积分商品详情
@@ -85,7 +85,7 @@ global.wxPage({
   },
   // 参加开团
   iwantgo: function (e) {
-    util.navigateTo('/pages/pinintegration/pinintegration?pinInte_id=' + this.data.pinInte_id);
+    util.navigateTo('/pages1/pinintegration/pinintegration?pid=' + this.data.pinInte_id);
   },
   // 去首页
   returnIndex: function () {
@@ -206,7 +206,7 @@ global.wxPage({
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
       // imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages/pinintegration/pinintegration?pinInte_id=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + that.data.group_id,
+      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
     }
   },
   // 获取用户昵称 头像

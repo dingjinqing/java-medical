@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.market.form;
 
+import com.vpu.mp.db.shop.tables.FormSubmitList;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class FormSuccessVo {
+
+    private FormSubmitList formSubmitList;
 
 
 }

@@ -1256,6 +1256,7 @@ CREATE TABLE `b2c_goods` (
   `deliver_place` varchar(191) DEFAULT NULL COMMENT '发货地址',
   `share_config` varchar(500) DEFAULT NULL COMMENT '分享配置',
   `is_default_product` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1默认规格，0自定义规格（多规格）',
+  PRIMARY KEY (`goods_id`),
   UNIQUE KEY `goods_id` (`goods_id`,`shop_id`),
   UNIQUE KEY `goods_sn` (`goods_sn`,`shop_id`),
   KEY `goods_id_2` (`goods_id`),
