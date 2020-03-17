@@ -1008,12 +1008,11 @@ public class CouponService extends ShopBaseService {
 
     /**
      * 获取小程序码
-     * @param id
+     * @param couponId
      * @return
      */
-    public ShareQrCodeVo getMpQrCode(Integer id){
-        CouponListVo couponInfo = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(CouponListVo.class);
-        String pathParam="code="+couponInfo.getAliasCode();
+    public ShareQrCodeVo getMpQrCode(Integer couponId){
+        String pathParam=String.format("couponId=%d", couponId);
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
