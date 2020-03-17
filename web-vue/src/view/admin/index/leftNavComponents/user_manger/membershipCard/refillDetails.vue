@@ -120,6 +120,9 @@ export default {
         pageRows: 20
       },
       cardId: null,
+      cardNo: null,
+      username: null,
+      userId: null,
       activeName: 'first',
       nackNameInput: '',
       phoneNumInput: '',
@@ -132,6 +135,11 @@ export default {
   },
   created () {
     this.cardId = this.$route.query.cardId
+    this.cardNo = this.$route.query.cardNo
+    this.cardType = this.$route.query.cardType
+    this.nackNameInput = this.$route.query.username
+    this.userId = this.$route.query.userId
+
     this.loadDefaultData()
   },
   watch: {
@@ -161,7 +169,10 @@ export default {
         'pageRows': this.pageParams.pageRows,
         'currentPage': this.pageParams.currentPage,
         'cardId': this.cardId,
+        'cardNo': this.cardNo,
+        'cardType': this.cardType,
         'username': this.nackNameInput,
+        'userId': this.userId,
         'mobile': this.phoneNumInput,
         'firstTime': this.dateValue ? this.dateValue[0] : null,
         'endTime': this.dateValue ? this.dateValue[1] : null
