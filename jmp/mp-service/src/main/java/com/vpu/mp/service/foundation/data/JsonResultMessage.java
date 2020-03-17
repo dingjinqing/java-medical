@@ -250,6 +250,8 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
     /**
      * 营销-秒杀
      */
