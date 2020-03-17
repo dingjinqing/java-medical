@@ -117,7 +117,7 @@
             >
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'secKillProduct.' + scope.$index+ '.secKillPrice'"
+                  :prop="'secKillProduct.'+scope.$index+'.secKillPrice'"
                   :rules="[
                     { required: true, message: '秒杀价不能为空', trigger: 'blur' },
                     { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
@@ -617,7 +617,7 @@ export default {
     changePriceInput (goodsInfo, isDialog = null) {
       if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
         goodsInfo.priceErrorMsg = null
-        goodsInfo.goodsSpecProducts.forEach(item => {
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.secKillPrice = goodsInfo.secKillPrice
           if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
             goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
@@ -629,7 +629,7 @@ export default {
       if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
         goodsInfo.stockErrorMsg = null
         goodsInfo.totalStock = 0
-        goodsInfo.goodsSpecProducts.forEach(item => {
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
           if (!isDialog) item.stock = goodsInfo.stock
           goodsInfo.totalStock += parseInt(item.stock)
           if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
@@ -751,7 +751,9 @@ export default {
     getProductdata ({ goodsId, prdInfo }) {
       console.log(goodsId, prdInfo)
       let target = this.form.secKillProduct.find(item => { return item.goodsId === goodsId })
-      console.log(target)
+      let index = this.form.secKillProduct.findIndex(item => { return item.goodsId === goodsId })
+      this.$set(this.form.secKillProduct[index], 'secKillPrice', prdInfo[0].secKillPrice)
+      this.$set(this.form.secKillProduct[index], 'stock', prdInfo[0].stock)
       target.goodsSpecProducts = prdInfo
       this.changePriceInput(target, true)
       this.changeStockInput(target, true)
@@ -812,6 +814,7 @@ export default {
 
     // 校验秒杀价格
     validateMoney (rule, value, callback, prdPrice) {
+      console.log(value)
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
@@ -824,6 +827,7 @@ export default {
 
     // 校验秒杀库存
     validateNum (rule, value, callback, prdNumber) {
+      console.log(value)
       var re = /^(0|\+?[1-9][0-9]*)$/
       if (!re.test(value)) {
         callback(new Error('请填写0或正整数'))

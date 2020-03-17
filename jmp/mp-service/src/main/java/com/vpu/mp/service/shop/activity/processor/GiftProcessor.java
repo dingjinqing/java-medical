@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
@@ -17,9 +18,13 @@ import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Record;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
+public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor,ActivityCartListStrategy {
 
     @Autowired
     private GiftProcessorDao giftDao;
@@ -110,4 +115,16 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
         }
     }
 
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车--赠品活动");
+        Timestamp nowTime =DateUtil.getLocalDateTime();
+        cartBo.getCartGoodsList().forEach(goods->{
+            Result<Record6<Integer, String, String, Integer, Integer, Integer>> giftsActivity = giftDao.getGiftsActivity(goods.getGoodsId(), nowTime);
+            giftsActivity.forEach(Record->{
+
+
+            });
+        });
+    }
 }

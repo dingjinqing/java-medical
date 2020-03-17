@@ -9,6 +9,9 @@ import com.vpu.mp.db.shop.tables.IntegralMallRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -20,7 +23,10 @@ import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -33,12 +39,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_DEFINE;
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_RECORD;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 积分兑换
@@ -378,7 +379,23 @@ public class IntegralConvertService extends ShopBaseService {
 				int score = db().select(DSL.sum(imr.SCORE)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
 						.fetchOptionalInto(Integer.class).get();
 				vo.setScore(score);
-				
+
+				Integer productId = db().select(ORDER_GOODS.PRODUCT_ID)
+                    .from(ORDER_GOODS)
+                    .where(ORDER_GOODS.ORDER_SN.eq(vo.getOrderSn()))
+                    .fetchOneInto(Integer.class);
+                OrderTempVo orderTempVo = db().select(GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS_SPEC_PRODUCT.PRD_DESC,
+                    GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
+                    .from(GOODS_SPEC_PRODUCT)
+                    .leftJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID))
+                    .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
+                    .fetchOneInto(OrderTempVo.class);
+                vo.setGoodsName(orderTempVo.getGoodsName());
+                vo.setGoodsImg(orderTempVo.getGoodsImg());
+                vo.setPrdDesc(orderTempVo.getPrdDesc());
+                vo.setGoodsPrice(orderTempVo.getPrdPrice());
+                vo.setNumber(orderTempVo.getPrdNumber());
+
 				newList.add(vo);
 			});
 		}
@@ -398,5 +415,56 @@ public class IntegralConvertService extends ShopBaseService {
     public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
 
         return moduleIntegral;
+    }
+
+    /**
+     * 订单详情表格导出
+     * @param param 查询信息
+     * @param lang 语言
+     * @return
+     */
+    public Workbook orderExport(MarketOrderListParam param, String lang){
+        List<IntegralOrderExport> orderExportList = new ArrayList<>();
+        PageResult<IntegralConvertOrderVo> pageResult = integralOrderList(param);
+        List<IntegralConvertOrderVo> tempList = pageResult.getDataList();
+        for (IntegralConvertOrderVo item:tempList){
+            IntegralOrderExport tempExport = new IntegralOrderExport();
+            tempExport.setOrderSn(item.getOrderSn());
+            tempExport.setGoods(item.getGoodsName()+" "+item.getPrdDesc());
+            tempExport.setGoodsPrice(item.getGoodsPrice());
+            tempExport.setNumber(item.getNumber());
+            tempExport.setMoney(item.getMoney());
+            tempExport.setScore(item.getScore());
+            tempExport.setUser(item.getUsername()+" "+item.getUserMobile());
+            tempExport.setReceiveUser(item.getConsignee()+" "+item.getMobile());
+            switch (item.getOrderStatus()){
+                case OrderConstant.ORDER_WAIT_PAY:
+                    tempExport.setOrderStatus("待付款");
+                    break;
+                case OrderConstant.ORDER_CANCELLED:
+                    tempExport.setOrderStatus("客户已取消");
+                    break;
+                case OrderConstant.ORDER_CLOSED:
+                    tempExport.setOrderStatus("卖家关闭");
+                    break;
+                case OrderConstant.ORDER_WAIT_DELIVERY:
+                    tempExport.setOrderStatus("待发货");
+                    break;
+                case OrderConstant.ORDER_SHIPPED:
+                    tempExport.setOrderStatus("已发货");
+                    break;
+                case OrderConstant.ORDER_FINISHED:
+                    tempExport.setOrderStatus("已完成");
+                    break;
+                default:
+                    tempExport.setOrderStatus("订单完成");
+            }
+            orderExportList.add(tempExport);
+        }
+        //表格导出
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(orderExportList, IntegralOrderExport.class);
+        return workbook;
     }
 }

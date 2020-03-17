@@ -187,8 +187,6 @@ public class GiftProcessorDao extends GiftService {
         logger().info("下单获取赠品end");
     }
 
-
-
     /**
      * 获取所有进行中的活动
      */
@@ -365,5 +363,21 @@ public class GiftProcessorDao extends GiftService {
             }
         }
         return false;
+    }
+
+    /**
+     * 赠品活动
+     * @param goodsId 商品id
+     * @return
+     */
+    public Result<Record6<Integer, String, String, Integer, Integer, Integer>> getGiftsActivity(Integer goodsId, Timestamp nowTime) {
+        Condition condition = GIFT.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GIFT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(GIFT.START_TIME.le(nowTime))
+                .and(GIFT.END_TIME.ge(nowTime))
+                .and(GIFT_PRODUCT.PRODUCT_NUMBER.gt(0))
+                .and(GIFT.GOODS_ID.isNull().or(DslPlus.findInSet(goodsId,GIFT.GOODS_ID)));
+        return db().select(GIFT.ID, GIFT.RULE, GIFT.EXPLAIN, GIFT_PRODUCT.ID, GIFT_PRODUCT.PRODUCT_ID, GIFT_PRODUCT.PRODUCT_NUMBER)
+                .from(GIFT).innerJoin(GIFT_PRODUCT).on(GIFT.ID.eq(GIFT_PRODUCT.GIFT_ID))
+                .where(condition).orderBy(GIFT.LEVEL.desc(), GIFT.CREATE_TIME.desc()).fetch();
     }
 }

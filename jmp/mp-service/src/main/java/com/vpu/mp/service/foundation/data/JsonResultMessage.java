@@ -250,6 +250,8 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
     /**
      * 营销-秒杀
      */
@@ -1008,6 +1010,18 @@ public class JsonResultMessage {
     public static final String FORM_FEED_MOBILE = "form.feed.mobile";
     public static final String FORM_FEED_CREATE_TIME = "form.feed.create.time";
 
-    //好友助力
+    /**好友助力*/
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
+
+    /**积分兑换*/
+    public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export";
+    public static final String INTEGRAL_MALL_ORDER_SN = "integral.mall.orderSn";
+    public static final String INTEGRAL_MALL_GOODS = "integral.mall.goods";
+    public static final String INTEGRAL_MALL_GOODS_PRICE = "integral.mall.goods.price";
+    public static final String INTEGRAL_MALL_GOODS_NUMBER = "integral.mall.goods.number";
+    public static final String INTEGRAL_MALL_MONEY = "integral.mall.money";
+    public static final String INTEGRAL_MALL_SCORE = "integral.mall.score";
+    public static final String INTEGRAL_MALL_USER = "integral.mall.user";
+    public static final String INTEGRAL_MALL_RECEIVER = "integral.mall.receiver";
+    public static final String INTEGRAL_MALL_ORDER_STATUS = "integral.mall.order.status";
 }
