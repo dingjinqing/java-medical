@@ -215,6 +215,7 @@ global.wxComponent({
       value: null,
       observer(newVal) {
           console.log(newVal)
+          this.initFooter()
       }
     },
     triggerButton: {
@@ -350,6 +351,7 @@ global.wxComponent({
           buttonData['buttonInfo']['left'].top = `${this.data.isDefaultPrd ? `￥${this.data.products[0].prdRealPrice}` : this.getProducesMinPrice()}`
         }
         if(this.data.activity && this.data.activity.activityType === 10){
+          console.log(this.data.productInfo)
             buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
           if(!this.data.activity.originalBuy){
             delete buttonData['buttonInfo']['left']
