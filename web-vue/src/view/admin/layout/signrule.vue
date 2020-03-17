@@ -28,7 +28,9 @@ export default {
       signRule: ''
     }
   },
+  inject: ['changeIsFillcontain'],
   mounted () {
+    this.changeIsFillcontain(true)
     console.log(window.location.href)
     let part = window.location.href.split('?')[1].split('&')
     let shopId = Number(part[0].split('=')[1])
