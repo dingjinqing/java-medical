@@ -386,8 +386,8 @@ export default {
       }
     }
     return {
-      isSureTop: false,
-      isSureBottom: false,
+      isSureTop: true,
+      isSureBottom: true,
       checkGoodsId: null, // 选中的商品id
       imageTuneUp: false, // 选择图片弹窗flag
       chooseFlag: false, // 选择商品弹窗flag
@@ -411,7 +411,8 @@ export default {
             originPrice: '1',
             exchange: {
               'money': '',
-              'score': ''
+              'score': '',
+              'prdId': ''
             },
             goodsStock: '',
             stock: ''
@@ -463,23 +464,47 @@ export default {
           integralDetail({ id: newData }).then(res => {
             console.log(res)
             if (res.error === 0) {
-              let { name, startTime, endTime, maxExchangeNum, goodsId, goodsName, shareConfig } = res.content
+              let { name, startTime, endTime, maxExchangeNum, goodsId, goodsName, productVo, objectShareConfig } = res.content
               this.ruleForm.name = name
               this.ruleForm.customTime = startTime
               this.ruleForm.customTimeEnd = endTime
               this.ruleForm.maxExchangeNum = maxExchangeNum
               this.ruleForm.checkGoodsName = goodsName
               this.checkGoodsId = goodsId
+              // 处理中部规格表格数据
+              let arr = []
+              productVo.forEach((item, index) => {
+                let obj = {
+                  goodsName: item.prdDesc,
+                  originPrice: item.prdPrice,
+                  exchange: {
+                    'money': item.money,
+                    'score': item.score,
+                    'prdId': item.prdId
+                  },
+                  goodsStock: item.prdNumber,
+                  stock: item.stock
+                }
+                arr.push(obj)
+              })
+              let lastObj = {
+                goodsName: '批量设置：',
+                originPrice: '1',
+                exchange: '',
+                goodsStock: '',
+                stock: ''
+              }
+              arr.push(lastObj)
+              this.ruleForm.tableData = arr
               // 处理底部展开的内容
-              let config = JSON.parse(shareConfig)
-              this.formBottom.style = JSON.stringify(config.shareAction)
+              this.formBottom.style = objectShareConfig.share_action
               if (this.formBottom.style === '2') {
                 this.showMoreFlag = true
               }
-              this.formBottom.copywriting = config.share_doc
-              this.formBottom.sharedGraph = JSON.stringify(config.share_img_action)
-              this.formBottom.checkImgData = { imgUrl: config.share_img }
-              console.log(config)
+              this.formBottom.copywriting = objectShareConfig.share_doc
+              this.formBottom.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
+              this.formBottom.checkImgData = { imgUrl: objectShareConfig.share_img }
+              console.log(objectShareConfig)
             }
           })
         }
@@ -501,6 +526,7 @@ export default {
       console.log(this.$refs)
       if (this.showMoreFlag) {
         this.$refs['formMore'].validate((valid) => {
+          console.log(valid)
           if (valid) {
             this.isSureBottom = true
           } else {
@@ -519,6 +545,7 @@ export default {
             stock: ''
           }
           if (index !== (this.ruleForm.tableData.length - 1)) {
+            console.log(item)
             obj.prdId = item.exchange.prdId
             obj.money = item.exchange.money
             obj.score = item.exchange.score
@@ -625,7 +652,8 @@ export default {
               originPrice: item.prdPrice,
               exchange: {
                 'money': '',
-                'score': ''
+                'score': '',
+                'prdId': item.prdId
               },
               goodsStock: item.prdNumber,
               stock: ''

@@ -182,7 +182,7 @@
               <el-tooltip
                 content="编辑"
                 placement="top"
-                v-if="scope.row.actStatus===1"
+                v-if="scope.row.actStatus===1 || scope.row.actStatus===2"
               >
                 <span
                   class="el-icon-edit-outline iconSpan"
@@ -192,6 +192,7 @@
               <el-tooltip
                 content="分享"
                 placement="top"
+                v-if="scope.row.actStatus!==3&&scope.row.actStatus!==4"
               >
                 <span
                   class="el-icon-share iconSpan"
@@ -456,6 +457,7 @@ export default {
     addActivity () {
       this.showSix = true
       this.activeName = 'sixth'
+      this.editId = -1
     },
     // 二次确认弹窗处理事件
     handleToSecondSure () {
