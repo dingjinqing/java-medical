@@ -6,9 +6,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
-import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -35,13 +36,15 @@ public class MpOrderInfoService extends OrderInfoService{
 	/**
 	 * 个人中心订单状态数量展示
 	 * @param userId
-	 * @param isContainSubOrder
-	 * @return
+	 * @param param
+     * @param isContainSubOrder
+     * @return
 	 */
-	public Map<Byte,Integer> getOrderStatusNum(Integer userId , boolean isContainSubOrder) {
+	public Map<Byte,Integer> getOrderStatusNum(Integer userId, OrderListParam param, boolean isContainSubOrder) {
 		//基础状态数量
-		Map<Byte, Integer> countMap = db().select(DSL.count() , TABLE.ORDER_STATUS).
-		from(TABLE).
+        SelectJoinStep<Record2<Integer, Byte>> countMapSelect = db().select(DSL.count(), TABLE.ORDER_STATUS).from(TABLE);
+        buildOptions(countMapSelect, param, false);
+        Map<Byte, Integer> countMap = countMapSelect.
 		where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)).
@@ -51,8 +54,9 @@ public class MpOrderInfoService extends OrderInfoService{
 		fetch().
 		intoMap(TABLE.ORDER_STATUS , DSL.count());
 		//退款退货中
-		Integer returning = db().select(DSL.count()).
-		from(TABLE).
+        SelectJoinStep<Record1<Integer>> returningSelect = db().select(DSL.count()).from(TABLE);
+        buildOptions(returningSelect, param, false);
+        Integer returning = returningSelect.
 		where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).
@@ -60,8 +64,9 @@ public class MpOrderInfoService extends OrderInfoService{
 				,isContainSubOrder)).
 		fetchOneInto(Integer.class);
 		//退款退货完成
-		Integer returnFinish = db().select(DSL.count()).
-		from(TABLE).
+        SelectJoinStep<Record1<Integer>> returnFinishSelect = db().select(DSL.count()).from(TABLE);
+        buildOptions(returnFinishSelect, param, false);
+        Integer returnFinish = returnFinishSelect.
 		where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)).
@@ -134,7 +139,10 @@ public class MpOrderInfoService extends OrderInfoService{
 	 * 构造查询条件
 	 */
 	public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderListParam param, boolean isContainSubOrder) {
-		select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
+	    if(param == null) {
+	        return select;
+        }
+        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
 		if(!StringUtils.isBlank(param.getSearch())) {
 			select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
 			where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
@@ -156,7 +164,6 @@ public class MpOrderInfoService extends OrderInfoService{
 			select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED).and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)));
 			break;
 		case OrderConstant.RETURNING:
-			//TODO 退款订单状态需要修改
 			select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
 			break;
 		default:
