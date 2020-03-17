@@ -129,7 +129,11 @@ global.wxPage({
         let cardInfo = res.content.cardInfo
         that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
-        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        if(!cardInfo.cardNo){
+          that.setData({
+            carStatus: "未领取"
+          })
+        }else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
