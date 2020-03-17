@@ -1,31 +1,31 @@
 <!--pages1/pinintegration/pinintegration.wxml-->
 <include src="/pages/common/header.wxml" />
-
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='main-container'>
   <!-- 下载海报 -->
   <block>
     <block wx:if="{{getsq == true || click_num == true}}">
       <view class='share_img_btn' wx:if="{{is_share == 0 }}" bindtap='go_share'>
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"page1.pinintegration.integrationShare1")}}</view>
+        <view>{{i18n.$t(localePack,"page1.pinintegration.integrationShare2")}}</view>
       </view>
     </block>
     <block wx:else>
       <button class='share_img_btn' open-type="getUserInfo" bindgetuserinfo="getUserInfo">
-        <view>下载</view>
-        <view>海报</view>
+        <view>{{i18n.$t(localePack,"page1.pinintegration.integrationShare1")}}</view>
+        <view>{{i18n.$t(localePack,"page1.pinintegration.integrationShare2")}}</view>
       </button>
     </block>
   </block>
 
   <!-- 积分头部 -->
   <view class='pin_header'>
-    <view class="rule" bindtap='toRule'>活动规则</view>
-    <view class="activity" bindtap='toActivity'>我的活动</view>
+    <view class="rule" bindtap='toRule'>{{i18n.$t(localePack,"page1.pinintegration.integrationRule")}}</view>
+    <view class="activity" bindtap='toActivity'>{{i18n.$t(localePack,"page1.pinintegration.integrationActivity")}}</view>
     <view class='top'>
       <view class='pin_invite' style='background:url({{imageUrl}}image/wxapp/pin/pin_bk.png) no-repeat ; background-size:100%;'>
         <view class='bk_title'>
-          <view>邀请好友一起<text>瓜分积分!</text>
+          <view>{{i18n.$t(localePack,"page1.pinintegration.integrationTitle1")}}<text>{{i18n.$t(localePack,"page1.pinintegration.integrationTitle2")}}!</text>
           </view>
         </view>
         <!-- 宣传语 -->
@@ -49,9 +49,9 @@
       <!-- 倒计时 -->
       <view class='pin_time'>
         <block wx:if="{{(gd.pinInteUser.status == 0 && gd.pinInteUser) || end == false}}">
-          <view class='end'>距结束:</view>
+          <view class='end'>{{i18n.$t(localePack,"page1.pinintegration.integrationTime1")}}:</view>
           <view wx:if='{{clock.length == 4}}' class='daojishis'>
-            <text>{{clock[0]}}</text>天
+            <text>{{clock[0]}}</text>{{i18n.$t(localePack,"page1.pinintegration.integrationTime2")}}
             <text>{{clock[1]}}</text>:
             <text>{{clock[2]}}</text>:
             <text>{{clock[3]}}</text>
@@ -63,27 +63,27 @@
           </view>
         </block>
         <block wx:if="{{gd.pinInteUser.status > 0 || end == true}}">
-          <view class='end'>已结束</view>
+          <view class='end'>{{i18n.$t(localePack,"page1.pinintegration.integrationTime3")}}</view>
         </block>
       </view>
       <!-- 成团数和瓜分数 -->
       <view class='pin_rect' style='background:url({{imageUrl}}image/wxapp/pin/rectangle.png) no-repeat ; background-size:100%;'>
-        <text>{{pin_info.limitAmount}}人成团，即可瓜分{{pin_info.inteGroup}}积分</text>
+        <text>{{pin_info.limitAmount}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup2")}}，{{i18n.$t(localePack,"page1.pinintegration.integrationGroup3")}}{{pin_info.inteGroup}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup4")}}</text>
       </view>
     </view>
     <!-- 团员 -->
     <view class='person_content'>
       <view class="person_top">
         <view class='person'>
-          <view class='invite_circle' wx:if="{{person[0].inviteNum != 0}}">邀请{{person[0].inviteNum}}人</view>
+          <view class='invite_circle' wx:if="{{person[0].inviteNum != 0}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson1")}}{{person[0].inviteNum}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}}</view>
           <view class='person_circle'>
             <image src='{{person[0].userAvatar}}' wx:if="{{person[0].userAvatar != '' && person[0].userAvatar != null }}"></image>
             <image src="{{imageUrl}}image/wxapp/pin/no_people.png" wx:else></image>
           </view>
           <view class="person_text">
-            <text class='person_tuan'>团长</text>
+            <text class='person_tuan'>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson2")}}</text>
             <text class='person_name1' wx:if="{{person[0].username != ''  && person[0].username != null}}">{{person[0].username}}</text>
-            <text class='person_name1' wx:else>神秘的小伙伴</text>
+            <text class='person_name1' wx:else>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson3")}}</text>
           </view>
         </view>
         <view class='person' wx:for="{{limit}}" wx:key='key' data-index='{{index}}'>
@@ -92,18 +92,18 @@
               <image src='{{imageUrl}}image/wxapp/pin/question.png'></image>
             </view>
             <view class="person_text">
-              <text class='person_name2'>待邀请</text>
+              <text class='person_name2'>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson4")}}</text>
             </view>
           </block>
           <block wx:else>
-            <view class='invite_circle' wx:if="{{person[index+1].inviteNum != 0}}">邀请{{person[index+1].inviteNum}}人</view>
+            <view class='invite_circle' wx:if="{{person[index+1].inviteNum != 0}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson1")}}{{person[index+1].inviteNum}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}}</view>
             <view class='person_circle'>
               <image src='{{person[index+1].userAvatar}}' wx:if="{{person[index+1].userAvatar != '' && person[index+1].userAvatar != null}}"></image>
               <image src="{{imageUrl}}image/wxapp/pin/no_people.png" wx:else></image>
             </view>
             <view class="person_text">
               <text class='person_name2' wx:if="{{person[index+1].username != '' && person[index+1].username != null}}">{{person[index+1].username}}</text>
-              <text class='person_name2' wx:else>神秘的小伙伴</text>
+              <text class='person_name2' wx:else>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson3")}}</text>
             </view>
           </block>
         </view>
@@ -111,18 +111,18 @@
         <view class='share_content'>
           <block wx:if="{{gd.pinInteUser.isGrouper == 1 && gd.pinInteUser.status == 0}}">
             <button class='pin_share' open-type="share">
-              <text>分享邀好友</text>
+              <text>{{i18n.$t(localePack,"page1.pinintegration.integrationButton1")}}</text>
             </button>
           </block>
           <block wx:if="{{gd.pinInteUser.isGrouper != 1 && gd.pinInteUser.status == 0}}">
             <button class='pin_share' open-type="share">
-              <text>帮TA邀好友</text>
+              <text>{{i18n.$t(localePack,"page1.pinintegration.integrationButton2")}}</text>
             </button>
           </block>
           <block wx:if="{{((gd.pinInteUser.status > 0 && gd.pinInteUser.isGrouper == 1) || (gd.pinInteUser.isGrouper != 1)) && (gd.canPin.status > 4 || gd.canPin.status == 0)}}">
           <form report-submit='true' bindsubmit='iwantgo'>
             <button class='pin_share' formType='submit'>
-              <text>我要开团</text>
+              <text>{{i18n.$t(localePack,"page1.pinintegration.integrationButton3")}}</text>
             </button>
           </form>
           </block>
@@ -134,9 +134,9 @@
   <!-- 积分底部 -->
   <view class='pin_footer'>
     <view class='pin_bottom' style='background:url({{imageUrl}}image/wxapp/pin/wave.png) no-repeat ; background-size:100%;'>
-      <view class='my_style'>积分
-        <text>·</text>商品</view>
-      <view class='my_grade'>我的积分：{{gd.score}}</view>
+      <view class='my_style'>{{i18n.$t(localePack,"page1.pinintegration.integrationGroup4")}}
+        <text>·</text>{{i18n.$t(localePack,"page1.pinintegration.integrationGoods1")}}</view>
+      <view class='my_grade'>{{i18n.$t(localePack,"page1.pinintegration.integrationGoods2")}}：{{gd.score}}</view>
     </view>
     <!-- 积分商品列表 -->
     <view class='reco_info'>
@@ -164,10 +164,10 @@
   <view class='zhezhao'>
     <view class='success_content3'>
       <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
-      <view class='text5'>快去邀请更多好友</view>
-      <view class='text5'>一起瓜分{{pin_info.inteGroup}}积分吧</view>
-      <button class='see' open-type="share">继续分享</button>
-      <view class='double'>邀请用户可瓜分更多积分</view>
+      <view class='text5'>{{i18n.$t(localePack,"page1.pinintegration.dialogShare1")}}</view>
+      <view class='text5'>{{i18n.$t(localePack,"page1.pinintegration.dialogShare2")}}{{pin_info.inteGroup}}{{i18n.$t(localePack,"page1.pinintegration.dialogShare3")}}</view>
+      <button class='see' open-type="share">{{i18n.$t(localePack,"page1.pinintegration.dialogShare4")}}</button>
+      <view class='double'>{{i18n.$t(localePack,"page1.pinintegration.dialogShare5")}}</view>
     </view>
     <view class='x' bindtap='close'>
       <image src='{{imageUrl}}image/wxapp/pin/x.png'></image>
@@ -180,14 +180,14 @@
   <view class='zhezhao'>
     <view class='success_content'>
       <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
-      <view class='text'>您被好友"
-        <text>{{group_gd.inviteName}}</text>"邀请</view>
-      <view class='text'>一起瓜分积分{{group_gd.inteGroup}}积分</view>
-      <view class='jc'>奖池 +
-        <text>{{group_gd.addInte}}</text>积分</view>
-      <button class='see' open-type='getUserInfo' bindgetuserinfo="getUserInfo" wx:if="{{group_gd.canPin.isNew == 1}}">去看看</button>
-      <button class='see' bindtap="close" wx:if="{{group_gd.canPin.isNew == 0}}">去看看</button>
-      <view class='double'>邀请用户可瓜分更多积分</view>
+      <view class='text'>{{i18n.$t(localePack,"page1.pinintegration.dialogGet1")}}"
+        <text>{{group_gd.inviteName}}</text>"{{i18n.$t(localePack,"page1.pinintegration.dialogGet2")}}</view>
+      <view class='text'>{{i18n.$t(localePack,"page1.pinintegration.dialogGet3")}}{{group_gd.inteGroup}}{{i18n.$t(localePack,"page1.pinintegration.dialogGet4")}}</view>
+      <view class='jc'>{{i18n.$t(localePack,"page1.pinintegration.dialogGet5")}} +
+        <text>{{group_gd.addInte}}</text>{{i18n.$t(localePack,"page1.pinintegration.dialogGet4")}}</view>
+      <button class='see' open-type='getUserInfo' bindgetuserinfo="getUserInfo" wx:if="{{group_gd.canPin.isNew == 1}}">{{i18n.$t(localePack,"page1.pinintegration.dialogGet6")}}</button>
+      <button class='see' bindtap="close" wx:if="{{group_gd.canPin.isNew == 0}}">{{i18n.$t(localePack,"page1.pinintegration.dialogGet6")}}</button>
+      <view class='double'>{{i18n.$t(localePack,"page1.pinintegration.dialogGet7")}}</view>
     </view>
   </view>
 </view>
@@ -197,9 +197,9 @@
   <view class='zhezhao'>
     <view class='success_content2'>
       <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
-      <view class='text2'>您已经参与过{{pin_info.joinLimit}}个活动</view>
-      <view class='text2'>达到上限了哦！</view> 
-      <view class='see' bindtap='returnIndex'>知道了</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit1")}}{{pin_info.joinLimit}}{{i18n.$t(localePack,"page1.pinintegration.dialogLimit2")}}{{i18n.$t(localePack,"page1.pinintegration.dialogLimit3")}}</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit4")}}！</view> 
+      <view class='see' bindtap='returnIndex'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit5")}}</view>
     </view>
   </view>
 </view>
@@ -209,9 +209,9 @@
   <view class='zhezhao'>
     <view class='success_content3'>
       <image src='{{imageUrl}}image/wxapp/pin/success.png' mode='widthFix' class='img1'></image>
-      <view class='text3'>活动结束</view>
-      <view class='text4'>感谢您的关注</view>
-      <view class='see' bindtap='returnIndex'>知道了</view>
+      <view class='text3'>{{i18n.$t(localePack,"page1.pinintegration.dialogEnd1")}}</view>
+      <view class='text4'>{{i18n.$t(localePack,"page1.pinintegration.dialogEnd2")}}</view>
+      <view class='see' bindtap='returnIndex'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit5")}}</view>
     </view>
   </view>
 </view>
@@ -221,10 +221,10 @@
   <view class='zhezhao'>
     <view class='success_content6'>
       <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
-      <view class='text6'>团队已结束</view>
-      <view class='text2'>尝试开启一个新团</view>
-      <view class='text2'>和好友一起瓜分积分吧！</view>
-      <view class='see' bindtap='iwantgo'>知道了</view>
+      <view class='text6'>{{i18n.$t(localePack,"page1.pinintegration.dialogGroupEnd1")}}</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogGroupEnd2")}}</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogGroupEnd3")}}</view>
+      <view class='see' bindtap='iwantgo'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit5")}}</view>
     </view>
   </view>
 </view>
@@ -234,10 +234,10 @@
   <view class='zhezhao'>
     <view class='success_content6'>
       <image src='{{imageUrl}}image/wxapp/pin/lose.png' mode='widthFix' class='img1'></image>
-      <view class='text6'>团队已满员</view>
-      <view class='text2'>尝试开启一个新团</view>
-      <view class='text2'>和好友一起瓜分积分吧！</view>
-      <view class='see' bindtap='iwantgo'>知道了</view>
+      <view class='text6'>{{i18n.$t(localePack,"page1.pinintegration.dialogFull")}}</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogGroupEnd2")}}</view>
+      <view class='text2'>{{i18n.$t(localePack,"page1.pinintegration.dialogGroupEnd3")}}</view>
+      <view class='see' bindtap='iwantgo'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit5")}}</view>
     </view>
   </view>
 </view>
@@ -247,10 +247,10 @@
   <view class='zhezhao'>
     <view class='success_content5' style='background:url({{imageUrl}}image/wxapp/pin/bad.png) no-repeat ; background-size:100%;'>
       <view class='kaijiang2'>
-        <view class='kjjg2'>活动失败</view>
-        <view class='contra2'>拼团不满{{pin_info.limitAmount}}人，无法瓜分积分</view>
-        <view class='see3' bindtap='iwantgo'>知道了</view>
-        <view class='double'>参与活动时间：{{gd.pinInteUser.startTime}}</view>
+        <view class='kjjg2'>{{i18n.$t(localePack,"page1.pinintegration.dialogFail1")}}</view>
+        <view class='contra2'>{{i18n.$t(localePack,"page1.pinintegration.dialogFail2")}}{{pin_info.limitAmount}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}}，{{i18n.$t(localePack,"page1.pinintegration.dialogFail3")}}</view>
+        <view class='see3' bindtap='iwantgo'>{{i18n.$t(localePack,"page1.pinintegration.dialogLimit5")}}</view>
+        <view class='double'>{{i18n.$t(localePack,"page1.pinintegration.dialogFail4")}}：{{gd.pinInteUser.startTime}}</view>
       </view>
     </view>
   </view>
@@ -261,12 +261,12 @@
   <view class='zhezhao'>
     <view class='success_content4' style='background:url({{imageUrl}}image/wxapp/pin/good.png) no-repeat ; background-size:100%;'>
       <view class='kaijiang'>
-        <view class='kjjg'>开奖结果</view>
-        <view class='contra'>恭喜您</view>
-        <view class='get'>获得
-          <text>{{gd.pinInteUser.integration}}</text>积分</view>
-        <view class='see2' bindtap='toActivity'>去看看</view>
-        <view class='double'>参与活动时间：{{gd.pinInteUser.startTime}}</view>
+        <view class='kjjg'>{{i18n.$t(localePack,"page1.pinintegration.dialogSuccess1")}}</view>
+        <view class='contra'>{{i18n.$t(localePack,"page1.pinintegration.dialogSuccess2")}}</view>
+        <view class='get'>{{i18n.$t(localePack,"page1.pinintegration.dialogSuccess3")}}
+          <text>{{gd.pinInteUser.integration}}</text>{{i18n.$t(localePack,"page1.pinintegration.dialogGet4")}}</view>
+        <view class='see2' bindtap='toActivity'>{{i18n.$t(localePack,"page1.pinintegration.dialogGet6")}}</view>
+        <view class='double'>{{i18n.$t(localePack,"page1.pinintegration.dialogFail4")}}：{{gd.pinInteUser.startTime}}</view>
       </view>
     </view>
   </view>
@@ -277,8 +277,8 @@
   <view class='zhezhao' catchtap='not_show_share'></view>
   <view class='share_content_share'>
     <image src='{{pictorial}}'></image>
-    <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>保存图片</view>
-    <view class='save_tips'>保存图片到本地相册</view>
+    <view class='btn_save_img' bindtap='saveImgToPhotosAlbumTap'>{{i18n.$t(localePack,"page1.pinintegration.integrationShare3")}}</view>
+    <view class='save_tips'>{{i18n.$t(localePack,"page1.pinintegration.integrationShare4")}}</view>
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />

@@ -1,33 +1,34 @@
 <!--pages1/pinintegrationdetail/pinintegrationdetail.wxml-->
 <include src="/pages/common/header.wxml"/>
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='main-container'>
   <!-- 活动列表 -->
   <view class='go_activity' wx:for="{{gd}}"  wx:key='key' data-index="{{index}}">
       <view class='go_title'>
         <text>{{item.startTime}}</text>
-        <text wx:if="{{item.isGrouper == 1}}">我发起的活动</text>
-        <text wx:else>我参与的活动</text>
+        <text wx:if="{{item.isGrouper == 1}}">{{i18n.$t(localePack,"page1.pinintegration.listTitle1")}}</text>
+        <text wx:else>{{i18n.$t(localePack,"page1.pinintegration.listTitle2")}}</text>
       </view>
       <!-- 进行中的活动 -->
       <view class='go_content' wx:if="{{item.state == 1}}" bindtap='toDetail' data-pininte_id="{{item.inteActivityId}}" data-group_id="{{item.groupId}}">
-          <view class='go_content_title'>进行中</view>
+          <view class='go_content_title'>{{i18n.$t(localePack,"page1.pinintegration.onGoing1")}}</view>
           <view class='go_content_con'>
               <view class='con_item'>
                 <view class='item'>
                     <view>{{item.userNum}}</view>
-                    <view>参与人数</view>
+                    <view>{{i18n.$t(localePack,"page1.pinintegration.onGoing2")}}</view>
                 </view>
               </view>
               <view class='con_item'>
                 <view class='item'>
                     <view>{{item.canIntegration}}</view>
-                    <view>瓜分总积分</view>
+                    <view>{{i18n.$t(localePack,"page1.pinintegration.onGoing3")}}</view>
                 </view>
               </view>
               <view class='con_item'>
                   <view class='item'>
-                    <view>未满员</view>
-                    <view>快去邀好友</view>
+                    <view>{{i18n.$t(localePack,"page1.pinintegration.onGoing4")}}</view>
+                    <view>{{i18n.$t(localePack,"page1.pinintegration.onGoing5")}}</view>
                 </view>
               </view>
           </view>
@@ -35,10 +36,10 @@
 
       <!--活动失败  -->
       <view class='go_content' wx:if="{{item.state == 0}}">
-        <view class='go_content_title'>活动失败</view>
+        <view class='go_content_title'>{{i18n.$t(localePack,"page1.pinintegration.dialogFail1")}}</view>
         <view class='go_content_con1'>
           <view class='con_item1'>
-            <text>拼团不满{{item.limitAmount}}人,无法瓜分积分</text>
+            <text>{{i18n.$t(localePack,"page1.pinintegration.dialogFail2")}}{{item.limitAmount}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}},{{i18n.$t(localePack,"page1.pinintegration.dialogFail3")}}</text>
           </view>
         </view>
       </view>
@@ -46,14 +47,14 @@
       <!-- 活动成功 -->
       <view class='go_content' wx:if="{{item.state == 2}}">
         <view class='go_content_title2'>
-          <text>{{item.userNum}}人参与瓜分{{item.canIntegration}}积分</text>
-          <text wx:if="{{item.userNum < item.limitAmount}}">未满员</text>
-          <text wx:else>满员</text>
+          <text>{{item.userNum}}{{i18n.$t(localePack,"page1.pinintegration.integrationGroup1")}}{{i18n.$t(localePack,"page1.pinintegration.successTip1")}}{{item.canIntegration}}{{i18n.$t(localePack,"page1.pinintegration.dialogGet4")}}</text>
+          <text wx:if="{{item.userNum < item.limitAmount}}">{{i18n.$t(localePack,"page1.pinintegration.successTip2")}}</text>
+          <text wx:else>{{i18n.$t(localePack,"page1.pinintegration.successTip3")}}</text>
         </view>
         <view class='go_content_con2'>
-            <view>参与用户</view>
-            <view>邀请人数</view>
-            <view>获得积分</view>
+            <view>{{i18n.$t(localePack,"page1.pinintegration.successTip4")}}</view>
+            <view>{{i18n.$t(localePack,"page1.pinintegration.successTip5")}}</view>
+            <view>{{i18n.$t(localePack,"page1.pinintegration.successTip6")}}</view>
         </view>
         <view class='con_person'>
           <!-- 参与用户列表 -->
@@ -65,16 +66,16 @@
                 <view class='rank'  wx:if="{{idx == 2}}"><image src='{{imageUrl}}image/wxapp/pin/detail-3.png'></image></view>
                 <block wx:if="{{person.userAvatar}}">
                   <view class='circle' style='background:url({{person.userAvatar}}) no-repeat ; background-size:100%;'>
-                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson2")}}</text>
                   </view>
                 </block>
                 <block wx:else>
                   <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;'>
-                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson2")}}</text>
                   </view>
                 </block>
                 <view class='person_name' wx:if="{{person.username}}">{{person.username}}</view>
-                <view class='person_name' wx:else>神秘的小伙伴</view>
+                <view class='person_name' wx:else>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson3")}}</view>
               </view>
               <view class='number'>{{person.inviteNum}}</view>
               <view class='integral'>{{person.integration}}</view>
@@ -83,13 +84,13 @@
               <view class='name'>
                 <view class='rank'><text class='rank_number'>{{idx + 1}}</text></view>
                   <view class='circle' style='background:url({{person.userAvatar}}) no-repeat ; background-size:100%;' wx:if="{{person.userAvatar}}">
-                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson2")}}</text>
                   </view>
                   <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;' wx:else>
-                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">{{i18n.$t(localePack,"page1.pinintegration.integrationPerson2")}}</text>
                   </view>
                   <view class='person_name' wx:if="{{person.username}}">{{person.username}}</view>
-                  <view class='person_name' wx:else>神秘的小伙伴</view>
+                  <view class='person_name' wx:else>{{i18n.$t(localePack,"page1.pinintegration.integrationPerson3")}}</view>
               </view>
               <view class='number'>{{person.inviteNum}}</view>
               <view class='integral'>{{person.integration}}</view>
@@ -99,16 +100,16 @@
           <!-- 展开收起 -->
           <view class='zk_sq' bindtap='showReply' wx:if="{{item.pinInteGroupInfo.length > 3}}" >
             <block wx:if="{{isFold == true}}">
-              <view >查看全部</view>
+              <view >{{i18n.$t(localePack,"page1.pinintegration.showTip1")}}</view>
               <image src='{{imageUrl}}image/wxapp/pin/detail-down.png'></image>
             </block>
             <block wx:else>
-                <view>收起</view>
+                <view>{{i18n.$t(localePack,"page1.pinintegration.showTip2")}}</view>
               <image src='{{imageUrl}}image/wxapp/pin/detail-top.png'></image>
             </block>
           </view>
         </view>
       </view>
   </view>
-  <view class='ac_footer'>只保留最近5天活动记录</view>
+  <view class='ac_footer'>{{i18n.$t(localePack,"page1.pinintegration.listTip")}}</view>
 </view>
