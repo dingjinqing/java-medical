@@ -14,5 +14,10 @@ export const en = {
   savedSuccessfully: 'Module saved successfully',
   // 日期模块
   timeFormat: 'Time format:',
-  yearToMonthDay: 'Year to month - day'
+  yearToMonthDay: 'Year to month - day',
+  // 选项模块
+  optionSettings: 'Option settings:',
+  option: 'option',
+  delete: 'delete',
+  addOptions: 'Add options'
 }

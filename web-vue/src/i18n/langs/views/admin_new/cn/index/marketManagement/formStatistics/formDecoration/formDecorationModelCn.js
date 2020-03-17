@@ -15,5 +15,10 @@ export const cn = {
   savedSuccessfully: '模块保存成功',
   // 日期模块
   timeFormat: '时间格式：',
-  yearToMonthDay: '年-月-日'
+  yearToMonthDay: '年-月-日',
+  // 选项模块
+  optionSettings: '选项设置：',
+  option: '选项',
+  delete: '删除',
+  addOptions: '添加选项'
 }

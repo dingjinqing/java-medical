@@ -4,7 +4,7 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
@@ -12,20 +12,20 @@
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div
           class="list"
           style="margin-bottom:0px"
         >
-          <span class="opTitle">选项设置：</span>
+          <span class="opTitle">{{$t('formDecorationModel.optionSettings')}}</span>
           <div class="options">
             <div
               class="optionsList"
               v-for="(value,key,index) in modulesSaveData.selects"
               :key="index"
             >
-              <div class="title">选项</div>
+              <div class="title">{{$t('formDecorationModel.option')}}</div>
               <el-input
                 v-model="modulesSaveData.selects[key]"
                 size="small"
@@ -34,7 +34,7 @@
                 class="title delete"
                 v-if="index>0"
                 @click="handleToDElete(key)"
-              >删除</div>
+              >{{$t('formDecorationModel.delete')}}</div>
             </div>
 
           </div>
@@ -46,12 +46,12 @@
             @click="handleToAddOption()"
           >
             <img :src="$imageHost+'/image/admin/icon_jia.png'">
-            添加选项
+            {{$t('formDecorationModel.addOptions')}}
           </div>
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -59,7 +59,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -107,12 +107,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   methods: {
     // 点击确定按钮
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     },
@@ -123,7 +127,7 @@ export default {
       })
       console.log(key)
       let newKey = Math.max(...key) + 1
-      this.$set(this.modulesSaveData.selects, newKey, `选项${newKey}`)
+      this.$set(this.modulesSaveData.selects, newKey, `${this.$t('formDecorationModel.option')}${newKey}`)
       console.log(this.modulesSaveData.selects)
     },
     // 点击删除

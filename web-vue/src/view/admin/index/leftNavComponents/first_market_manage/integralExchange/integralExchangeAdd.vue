@@ -497,7 +497,7 @@ export default {
               arr.push(lastObj)
               this.ruleForm.tableData = arr
               // 处理底部展开的内容
-              this.formBottom.style = objectShareConfig.share_action
+              this.formBottom.style = JSON.stringify(objectShareConfig.share_action)
               if (this.formBottom.style === '2') {
                 this.showMoreFlag = true
               }
