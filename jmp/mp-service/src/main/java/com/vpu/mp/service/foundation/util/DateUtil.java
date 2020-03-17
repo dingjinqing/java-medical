@@ -36,6 +36,11 @@ public final class DateUtil {
 	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
 
+    //时分秒最小
+    public static final LocalTime minTime = LocalTime.of(0, 0, 0);
+    //时分秒最大
+    public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
+
 	/**
 	 * 转换日期格式输出
 	 * @param format

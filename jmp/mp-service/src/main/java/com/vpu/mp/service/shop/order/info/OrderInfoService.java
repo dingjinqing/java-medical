@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
@@ -45,7 +46,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1007,6 +1010,71 @@ public class OrderInfoService extends ShopBaseService {
     public void updateStockLock(OrderInfoRecord order, Byte isLock) {
         order.setIsLock(isLock);
         order.update();
+    }
+
+    /**
+     * 计算改会员卡在当前周期使用次数
+     * @param userId userId
+     * @param cardId cardId
+     * @param freeLimit -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
+     * @return freeLimit = -1 / 0 / 1 -> 0
+     */
+    public int getCardFreeShipSum(Integer userId, Integer cardId, Byte freeLimit) {
+        if(freeLimit <= CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+            return 0;
+        }
+        Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
+        return db().
+            selectCount().
+            from(TABLE).
+            where(TABLE.USER_ID.eq(userId).
+                and(TABLE.IS_FREESHIP_CARD.eq(OrderConstant.YES)).
+                and(TABLE.MEMBER_CARD_ID.eq(cardId)).
+                and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
+                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
+                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
+            execute();
+    }
+
+    /**
+     * 获取指定条件时间周期
+     * @param freeLimit 2：年，3：季，4：月，5：周，6：日的
+     * @return Timestamp[2] = {start, end}
+     */
+    private Timestamp[] getCardFreeShipInterval(Byte freeLimit) {
+        LocalDate startDate = null, endDate = null;
+        LocalDate currentDate = LocalDate.now();
+        //初始化当前年月日
+        int year = currentDate.getYear(), month = currentDate.getMonthValue(), day = currentDate.getDayOfMonth();
+        if(CardFreeship.shipType.SHIP_YEAR.getType() == freeLimit) {
+            //年
+            startDate = LocalDate.of(year, 1 ,1);
+            endDate = LocalDate.of(year, 12, 1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_SEASON.getType() == freeLimit) {
+            //季
+            startDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3 -2),1);
+            endDate = LocalDate.of(year, (((month -1) / 3 + 1)* 3) ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_MONTH.getType() == freeLimit) {
+            //月
+            startDate = LocalDate.of(year, month, 1);
+            endDate = LocalDate.of(year, month ,1).with(TemporalAdjusters.lastDayOfMonth());
+        }else if(CardFreeship.shipType.SHIP_WEEK.getType() == freeLimit) {
+            //周(周一开始)
+            //the day-of-week, from 1 (Monday) to 7 (Sunday)
+            int dayOfWeek = currentDate.getDayOfWeek().getValue();
+            startDate = currentDate.plusDays(-dayOfWeek + 1);
+            endDate = currentDate.plusDays(7 -dayOfWeek);
+        }else if(CardFreeship.shipType.SHIP_DAY.getType() == freeLimit) {
+            //天
+            startDate = currentDate;
+            endDate = currentDate;
+        }else {
+            return null;
+        }
+        Timestamp[] startAndEnd =  new Timestamp[2];
+        startAndEnd[0] = Timestamp.valueOf(LocalDateTime.of(startDate, DateUtil.minTime));
+        startAndEnd[1] = Timestamp.valueOf(LocalDateTime.of(endDate, DateUtil.maxTime));
+        return startAndEnd;
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
