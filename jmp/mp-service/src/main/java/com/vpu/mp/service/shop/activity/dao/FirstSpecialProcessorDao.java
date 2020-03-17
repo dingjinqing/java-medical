@@ -49,7 +49,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
             .orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.CREATE_TIME.desc())
             .fetch().intoGroups(FIRST_SPECIAL_GOODS.GOODS_ID);
 
-        Condition condition = DSL.noCondition();
+        Condition condition = DSL.falseCondition();
         for (Map.Entry<Integer, Result<Record2<Integer, Integer>>> entry : firstSpecials.entrySet()) {
             Record2<Integer, Integer> value = entry.getValue().get(0);
             condition = condition.or(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(value.get(FIRST_SPECIAL.ID)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(value.get(FIRST_SPECIAL_GOODS.GOODS_ID))));
