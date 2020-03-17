@@ -54,8 +54,8 @@
             >
               <template slot-scope="scope">
                 <div class="goodsInfo">
-                  <img :src="scope.row.goodsImg">
-                  <div>{{scope.row.goodsName}}</div>
+                  <img :src="scope.row.goods_img">
+                  <div>{{scope.row.goods_name}}</div>
                 </div>
               </template>
             </el-table-column>
@@ -409,7 +409,26 @@ export default {
     },
     // 添加活动弹窗确定事件
     handleToSure () {
-      this.moduleData.integral_goods = this.selectData
+      console.log(this.selectData)
+      let arr = []
+      this.selectData.forEach((item, index) => {
+        let obj = {
+          'goods_id': item.goodsId,
+          'integral_goods_id': item.integralGoodsId,
+          'goods_img': item.goodsImg,
+          'goods_name': item.goodsName,
+          'stock_sum': item.stockSum,
+          'prd_price': item.prdPrice,
+          'money': item.money,
+          'score': item.score,
+          'start_time': item.startTime,
+          'end_time': item.endTime,
+          'is_on_sale': item.isOnSale,
+          'is_delete': item.isDelete
+        }
+        arr.push(obj)
+      })
+      this.moduleData.integral_goods = arr
       this.dialogVisible = false
     },
     // 搜索点击
@@ -576,6 +595,8 @@ export default {
   }
 }
 .dialogMain {
+  height: 425px;
+  overflow-y: auto;
   .goodsInfo {
     display: flex;
     img {
