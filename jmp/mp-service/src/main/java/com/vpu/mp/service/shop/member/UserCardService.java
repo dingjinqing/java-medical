@@ -1381,12 +1381,22 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			
+			// 卡的显示金额
+			if(StringUtils.isBlank(userCard.getCardNo())) {
+				userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+			}
+			
 			// 有效时间
 			setEffectTimeForJudgeCard(userCard);
 			userCard.setUserId(param.getUserId());
 			userCard.setCardId(param.getCardId());
 			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
+			
+			
+			
+			
 			return userCardJudgeVo;
 		}else{
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
