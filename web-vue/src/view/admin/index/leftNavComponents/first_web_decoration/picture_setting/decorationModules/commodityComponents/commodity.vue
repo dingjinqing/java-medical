@@ -364,14 +364,14 @@ export default {
           let turnToString = this.handleToTurnNumToStr(newData)
           console.log(turnToString)
           this.data = turnToString
-          this.$nextTick(() => {
-            let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
-            if (arr && arr.length) {
-              this.goodsFlag = true
-            } else {
-              this.goodsFlag = false
-            }
-          })
+          // this.$nextTick(() => {
+          let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
+          if (arr && arr.length) {
+            this.goodsFlag = true
+          } else {
+            this.goodsFlag = false
+          }
+          // })
           if (!this.initLoad) return
           let obj = {}
           let goodsId = []
