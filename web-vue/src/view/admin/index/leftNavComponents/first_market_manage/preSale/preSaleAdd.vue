@@ -361,7 +361,7 @@
                   :prop="'products.' +  scope.$index+ '.presaleMoney'"
                   :rules="[
                     { required: true, message: '定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateReadyMoney(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -391,7 +391,7 @@
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
                   :rules="[
                 { required: true, message: '1阶段定金不能为空'},
-                { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
               ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -422,7 +422,7 @@
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney2'"
                   :rules="[
                 { required: true, message: '2阶段定金不能为空'},
-                { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
               ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -776,31 +776,31 @@ export default {
         callback()
       }
     },
-    validateReadyMoney (rule, value, callback, prdPrice) {
+    validateReadyMoney (rule, value, callback, presalePrice) {
       var re = /^[1-9]\d*$/
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
-      } else if (value > prdPrice) {
+      } else if (value > presalePrice) {
         callback(new Error('定金不能大于活动价格'))
       } else {
         callback()
       }
     },
-    validateFirstStage (rule, value, callback, prdPrice) {
+    validateFirstStage (rule, value, callback, presalePrice) {
       var re = /^[1-9]\d*$/
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
-      } else if (value > prdPrice) {
+      } else if (value > presalePrice) {
         callback(new Error('1阶段定金不能大于商品价格'))
       } else {
         callback()
       }
     },
-    validateSecondStage (rule, value, callback, prdPrice) {
+    validateSecondStage (rule, value, callback, presalePrice) {
       var re = /^[1-9]\d*$/
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
-      } else if (value > prdPrice) {
+      } else if (value > presalePrice) {
         callback(new Error('2阶段定金不能大于商品价格'))
       } else {
         callback()
@@ -867,7 +867,6 @@ export default {
         if (twoSteps) {
           this.param.preStartTime2 = format(this.param.preTime2Range[0])
           this.param.preEndTime2 = format(this.param.preTime2Range[1])
-          console.log('123----------------------------------')
         }
       }
       // if (deliverTimeSpecified) {
@@ -888,7 +887,7 @@ export default {
         if (content) {
           if (content.presaleType === 1) {
             // 全款购买 - 定金支付时间
-            this.param.preTimeRange = [content.startTime, content.endTime]
+            this.param.preTime1Range = [content.preStartTime, content.preEndTime]
           } else {
             // 定金膨胀 - 定金支付时间
             this.param.preTime1Range = [content.preStartTime, content.preEndTime]
@@ -929,7 +928,6 @@ export default {
           // alert('222')
         }
       })
-
       return true
     },
     fail (message) {
@@ -1035,7 +1033,6 @@ export default {
     this.langDefault()
     if (this.isEdite) {
       console.log(this.isEdite)
-      this.arrorFlag = false
     }
   }
 }
