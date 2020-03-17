@@ -23,6 +23,10 @@ import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
+<<<<<<< Updated upstream
+=======
+import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
+>>>>>>> Stashed changes
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -39,6 +43,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.service.foundation.util.Util.listToString;
 import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -63,6 +68,9 @@ public class CouponService extends ShopBaseService {
     private QrCodeService qrCode;
 
     private String aliasCode;
+
+    @Autowired
+    private QrCodeService qrCode;
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
@@ -980,6 +988,7 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
+<<<<<<< Updated upstream
      * 获取优惠信息
      * @param couponSns
      * @return
@@ -1008,11 +1017,25 @@ public class CouponService extends ShopBaseService {
      */
     public ShareQrCodeVo getMpQrCode(Integer couponId) {
         String pathParam=String.format("couponId=%d", couponId);
+=======
+     *
+     * 获取优惠券小程序码
+     * @param id
+     * @return
+     */
+    public ShareQrCodeVo getMpQrCode(Integer id){
+        CouponListVo couponInfo = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(CouponListVo.class);
+        String pathParam="code="+couponInfo.getAliasCode();
+>>>>>>> Stashed changes
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
+<<<<<<< Updated upstream
         vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getUrl());
+=======
+        vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getPathUrl(pathParam));
+>>>>>>> Stashed changes
         return vo;
     }
 }
