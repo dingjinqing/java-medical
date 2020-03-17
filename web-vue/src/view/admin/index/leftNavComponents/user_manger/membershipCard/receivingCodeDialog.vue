@@ -10,7 +10,7 @@
         <el-dialog
           :title="$t('memberCard.generateCode')"
           :visible.sync="dialogVisible2"
-          width="30%"
+          width="530px"
           v-if="receiveAction===1"
         >
           <div class="top">
@@ -119,7 +119,7 @@
             slot="footer"
             class="dialog-footer"
           >
-            <el-button @click="$emit('update:dialogVisible', false)">{{$t('memberCard.cancel')}}</el-button>
+            <el-button @click="cancelDialog">{{$t('memberCard.cancel')}}</el-button>
             <el-button
               type="primary"
               @click="handleSure"
@@ -369,7 +369,7 @@ export default {
   },
   methods: {
     cancelDialog () {
-      this.$emit('update:dialogVisible', false)
+      this.dialogVisible2 = false
       this.clearData()
     },
     defalutData () {
