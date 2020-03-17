@@ -668,6 +668,15 @@ public class Util {
         }
         return Arrays.stream(idString.split(",")).map(Integer::valueOf).collect(Collectors.toList());
     }
+    /**
+     * String 转 List
+     */
+    public static List<String> stringToStringList(String idString) {
+        if (StringUtils.isBlank(idString)) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(idString.split(",")).map(String::valueOf).collect(Collectors.toList());
+    }
 
     /**
      * 当前时间戳
