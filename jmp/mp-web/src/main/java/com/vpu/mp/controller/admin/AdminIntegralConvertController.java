@@ -2,7 +2,12 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
+import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportParam;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +18,9 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 积分兑换控制器
@@ -157,5 +165,18 @@ public class AdminIntegralConvertController extends AdminBaseController{
     public JsonResult integralOrderList(@RequestBody MarketOrderListParam param) {
         PageResult<IntegralConvertOrderVo> pageList = shop().integralConvertService.integralOrderList(param);
         return success(pageList);
+    }
+
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+    /**
+     * 订单详情导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/order/export")
+    public void export(@Valid @RequestBody MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook = shop().integralConvertService.orderExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT, LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook, fileName, response);
     }
 }

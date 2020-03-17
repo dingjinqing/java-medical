@@ -1,9 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.integralconvert;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 
 import lombok.Data;
 
@@ -17,9 +15,13 @@ public class IntegralConvertOrderVo {
 	
 	/** 订单编号 */
 	private String orderSn;
-	private List<? extends OrderGoodsVo> goods;
+    private String goodsName;
+    private String prdDesc;
+    private String goodsImg;
+    private BigDecimal goodsPrice;
 	/** 商品数量 */
 	private Integer number;
+
 	/** 兑换现金 */
 	private BigDecimal money;
 	/** 兑换积分数量 */
