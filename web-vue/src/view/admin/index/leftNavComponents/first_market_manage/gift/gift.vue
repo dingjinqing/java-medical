@@ -100,18 +100,18 @@
           :label="$t('gift.level')"
           align="center"
         >
-        </el-table-column>
-        <el-table-column
-          prop="giftTimes"
-          :label="$t('gift.giftTimes')"
-          align="center"
-        >
           <template slot-scope="scope">
             <inputEdit
               v-model="scope.row.level"
               @update="updateGiftLevel(scope.row.id, scope.row.level)"
             />
           </template>
+        </el-table-column>
+        <el-table-column
+          prop="giftTimes"
+          :label="$t('gift.giftTimes')"
+          align="center"
+        >
         </el-table-column>
         <el-table-column
           prop="statusText"
@@ -253,8 +253,11 @@ export default {
 
     // 修改活动优先级
     updateGiftLevel (id, level) {
+      console.log(id, level)
       updateGiftLevel({ id, level }).then((res) => {
-        this.$message.success({ message: this.$t('gift.editSuccess') })
+        if (res.error === 0) {
+          this.$message.success({ message: this.$t('gift.editSuccess') })
+        }
       })
     },
 
