@@ -24,7 +24,7 @@ global.wxPage({
   useDetail () { // 左侧nav点击
     this.setData({
       page: 1,
-      show_type: 1,
+      show_type: -1,
       record_list: []
     })
     this.get_accout();
@@ -32,7 +32,7 @@ global.wxPage({
   chargeDetail () { //右侧nav点击
     this.setData({
       page: 1,
-      show_type: -1,
+      show_type: 1,
       record_list: []
     })
     this.get_accout();
