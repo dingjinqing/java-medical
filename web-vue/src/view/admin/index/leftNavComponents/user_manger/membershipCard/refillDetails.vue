@@ -134,6 +134,7 @@ export default {
     }
   },
   created () {
+    debugger
     this.cardId = this.$route.query.cardId
     this.cardNo = this.$route.query.cardNo
     this.cardType = this.$route.query.cardType
@@ -215,7 +216,7 @@ export default {
     // 4- taps切换
     handleClick (tab, event) {
       console.log(tab, event)
-      this.clearInputData()
+      // this.clearInputData()
       this.loadDefaultData()
     },
     // 5- clear input data
