@@ -155,7 +155,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
      */
     @PostMapping("/order")
     public JsonResult integralOrderList(@RequestBody MarketOrderListParam param) {
-        PageResult<IntegralConvertOrderVo> pageList = shop().integralConvertService.interalOrderList(param);
+        PageResult<IntegralConvertOrderVo> pageList = shop().integralConvertService.integralOrderList(param);
         return success(pageList);
     }
 }

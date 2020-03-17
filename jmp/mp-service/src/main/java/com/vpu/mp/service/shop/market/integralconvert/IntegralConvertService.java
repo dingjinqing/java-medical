@@ -357,10 +357,10 @@ public class IntegralConvertService extends ShopBaseService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public PageResult<IntegralConvertOrderVo> interalOrderList(MarketOrderListParam param) {
+	public PageResult<IntegralConvertOrderVo> integralOrderList(MarketOrderListParam param) {
 		PageResult<MarketOrderListVo> pageList = saas().getShopApp(getShopId()).readOrder.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_INTEGRAL);
 
-		List<IntegralConvertOrderVo> newList = new ArrayList<IntegralConvertOrderVo>(20);
+		List<IntegralConvertOrderVo> newList = new ArrayList<>(20);
 
 		if (pageList.getDataList() != null) {
 			pageList.getDataList().forEach(data -> {
@@ -382,7 +382,7 @@ public class IntegralConvertService extends ShopBaseService {
 				newList.add(vo);
 			});
 		}
-		PageResult<IntegralConvertOrderVo> pageResult = new PageResult<IntegralConvertOrderVo>();
+		PageResult<IntegralConvertOrderVo> pageResult = new PageResult<>();
 		pageResult.setDataList(newList);
 		pageResult.setPage(pageList.getPage());
 
