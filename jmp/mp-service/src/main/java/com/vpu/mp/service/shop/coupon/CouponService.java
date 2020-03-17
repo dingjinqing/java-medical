@@ -983,7 +983,6 @@ public class CouponService extends ShopBaseService {
     }
 
     /**
-<<<<<<< Updated upstream
      * 获取优惠信息
      * @param couponSns
      * @return
