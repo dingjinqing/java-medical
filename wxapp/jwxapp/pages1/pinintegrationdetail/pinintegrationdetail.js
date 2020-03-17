@@ -36,7 +36,7 @@ global.wxPage({
     var pinInte_id = e.currentTarget.dataset.pininte_id;
     var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      url: '/pages/pinintegration/pinintegration?pinInte_id=' + pinInte_id + '&group_id=' + group_id,
+      url: '/pages1/pinintegration/pinintegration?pid=' + pinInte_id + '&gid=' + group_id,
     })
   },
 
