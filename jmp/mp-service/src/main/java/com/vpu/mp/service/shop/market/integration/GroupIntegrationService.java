@@ -1163,6 +1163,10 @@ public class GroupIntegrationService extends ShopBaseService {
 				List<GroupIntegrationMaVo> pinInteGroupInfo = groupIntegrationList.getPinIntegrationGroupDetail(item.getInteActivityId(),item.getGroupId());
 				vo.setUserNum(pinInteGroupInfo.size());
 				vo.setPinInteGroupInfo(pinInteGroupInfo);
+				for (GroupIntegrationInfoVo item2 : voList) {
+					int inviteNum = groupIntegrationList.getInviteNum(item2.getGroupId(), item2.getUserId(), item2.getInteActivityId());
+					vo.setInviteNum(inviteNum);
+				}
 			}
 			voList.add(vo);
 		}
