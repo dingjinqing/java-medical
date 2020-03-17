@@ -565,7 +565,13 @@ global.wxPage({
           break;
         case 3:
           activityData.pageType = 1
-          activityData.realPrice = this.data.goodsInfo.activity.bargainPrice
+          activityData.realPrice = this.data.actBarInfo.prdRealPrice
+          activityData.linePrice = this.data.actBarInfo.prdLinePrice
+          break;
+        case 8:
+          activityData.pageType = 1
+          activityData.realPrice = this.data.actBarInfo.prdRealPrice
+          activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
         case 10:
           activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
@@ -677,7 +683,7 @@ global.wxPage({
           : lineMinPrice === lineMaxPrice
           ? lineMaxPrice
           : `${lineMinPrice}~${lineMaxPrice}`,
-        singleRealPrice: lineMinPrice,
+        singleRealPrice: realMinPrice,
         singleLinePrice: lineMaxPrice
       }
     }
