@@ -560,11 +560,13 @@ public class ScoreService extends ShopBaseService {
 	 * @return
 	 */
 	public Timestamp getScoreExpireTime() {
+		logger().info("获取积分过期时间");
 		Timestamp expireTime = null;
 		Byte scoreLimit = scoreCfgService.getScoreLimit();
 		LocalDate date=LocalDate.now();		
 		
 		if (SCORE_LT_YMD.equals(scoreLimit)) {
+			logger().info("根据年月日计算过期时间");
 			Integer scoreYear = scoreCfgService.getScoreYear();
 			Integer scoreMonth = scoreCfgService.getScoreMonth();
 			Integer scoreDay = scoreCfgService.getScoreDay();
@@ -573,6 +575,7 @@ public class ScoreService extends ShopBaseService {
 		}
 		
 		if (SCORE_LT_NOW.equals(scoreLimit)) {
+			logger().info("根据领取之日起计算有效时间");
 			Integer scoreLimitNumber = scoreCfgService.getScoreLimitNumber();
 			Integer scorePeriod = scoreCfgService.getScorePeriod();
 			
