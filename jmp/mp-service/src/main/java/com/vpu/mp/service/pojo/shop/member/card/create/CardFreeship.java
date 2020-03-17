@@ -3,20 +3,32 @@ package com.vpu.mp.service.pojo.shop.member.card.create;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.Util;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 /**
  * 	卡的包邮策略信息
  * @author 黄壮壮
  *
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CardFreeship {
 	/**
 	 *	 包邮类型
 	 */
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	public static enum shipType{
 		/**
 		 * 	不包邮
@@ -82,7 +94,10 @@ public class CardFreeship {
 	 * 	包邮的类型
 	 */
 	private Byte type;
-	
+	/**
+	 * 	包邮使用类型
+	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private static final List<String> CONS = new ArrayList<String>();;
 
 	/**

@@ -38,6 +38,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -122,6 +123,8 @@ public class MemberCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private GradeCardOpt gradeCardOpt;
+	@Autowired
+	private CardFreeShipService freeShipSvc;
 
     
 	/**
@@ -1078,13 +1081,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 	获取卡的包邮信息
 	 */
 	private CardFreeship getFreeshipData(MemberCardRecord card) {
-		CardFreeship cardFreeship = new CardFreeship();
-		Byte type = card.getFreeshipLimit();
-		cardFreeship.setType(type);
-		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
-			cardFreeship.setNum(card.getFreeshipNum());
-		}
-		return cardFreeship;
+		return freeShipSvc.getFreeshipData(card);
 	}
 	
 	/**
