@@ -10,22 +10,48 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
-import com.vpu.mp.service.pojo.shop.member.account.*;
+import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
+import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppCardExamineVo;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
+import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
+import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
-import com.vpu.mp.service.pojo.shop.member.exception.*;
+import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
+import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
+import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
+import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
+import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -39,7 +65,6 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
-import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -74,12 +99,33 @@ import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
 
 /**
  * @author 黄壮壮
@@ -1074,7 +1120,7 @@ public class UserCardService extends ShopBaseService {
                 new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE},
                 OrderConstant.MEMBER_CARD_ONLINE);
             for (OrderMemberVo orderMemberVo : temp) {
-               if(!defaultCards.get(0).getCardId().equals(orderMemberVo.getCardId())) {
+               if(!defaultCards.get(0).getInfo().getCardId().equals(orderMemberVo.getInfo().getCardId())) {
                    defaultCards.add(orderMemberVo);
                }
             }
@@ -1098,9 +1144,9 @@ public class UserCardService extends ShopBaseService {
 			// 折扣金额
 			BigDecimal discountAmount;
 			// 判断门店（无门店||全部门店||部分门店）
-			if (storeId == null || CardConstant.MCARD_STP_ALL.equals(Byte.valueOf(card.getStoreList()))
-					|| (CardConstant.MCARD_SUSE_OK.equals(card.getStoreUseSwitch())
-							&& Arrays.asList(card.getStoreList().split(",")).contains(storeId.toString()))) {
+			if (storeId == null || CardConstant.MCARD_STP_ALL.equals(Byte.valueOf(card.getInfo().getStoreList()))
+					|| (CardConstant.MCARD_SUSE_OK.equals(card.getInfo().getStoreUseSwitch())
+							&& Arrays.asList(card.getInfo().getStoreList().split(",")).contains(storeId.toString()))) {
 				// 折扣金额
 				discountAmount = getDiscountAmount(card, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
 			} else {
@@ -1111,7 +1157,7 @@ public class UserCardService extends ShopBaseService {
 			card.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
 			card.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
 			card.setTotalDiscount(discountAmount);
-			card.setIdentity(card.getCardNo());
+			card.setIdentity(card.getInfo().getCardNo());
 			card.initRatio();
             cards.add(card);
 		}
@@ -1158,10 +1204,10 @@ public class UserCardService extends ShopBaseService {
 	 * @return 折后总价
 	 */
 	public BigDecimal getDiscountAmount(OrderMemberVo card, BigDecimal totalPrice) {
-		if (CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
+		if (CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
 			// 限次卡
 			card.setTotalDiscount(totalPrice);
-		} else if (BigDecimalUtil.compareTo(card.getDiscount(), BigDecimal.ZERO) == -1) {
+		} else if (BigDecimalUtil.compareTo(card.getInfo().getDiscount(), BigDecimal.ZERO) == -1) {
 			// 如果没有打折权益则为十折
 			card.setTotalDiscount(BigDecimal.ZERO);
 		} else {
@@ -1172,7 +1218,7 @@ public class UserCardService extends ShopBaseService {
 					BigDecimalUtil.BigDecimalPlus.create(
 							BigDecimalUtil.addOrSubtrac(
 									BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, BigDecimalUtil.Operator.subtrac),
-									BigDecimalUtil.BigDecimalPlus.create(card.getDiscount(), null)),
+									BigDecimalUtil.BigDecimalPlus.create(card.getInfo().getDiscount(), null)),
 							BigDecimalUtil.Operator.divide),
 					BigDecimalUtil.BigDecimalPlus.create(BigDecimal.TEN, null))
             );

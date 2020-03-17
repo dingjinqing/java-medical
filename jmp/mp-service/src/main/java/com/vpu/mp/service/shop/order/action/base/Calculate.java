@@ -148,12 +148,12 @@ public class Calculate extends ShopBaseService {
                 if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) &&
                     defaultMarketing != null &&
                     OrderConstant.D_T_MEMBER_CARD.equals(defaultMarketing.getType()) &&
-                    !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getCardType())) {
+                    !CardConstant.MCARD_TP_LIMIT.equals(defaultMarketing.getCard().getInfo().getCardType())) {
                     //会员卡 and
                     // 临时存储默认营销信息!=null and
                     // 临时存储默认营销信息==card and
                     // 非限次卡
-                    if (!userCard.isContainsProduct(defaultMarketing.getCard().getCardId(), bo)) {
+                    if (!userCard.isContainsProduct(defaultMarketing.getCard().getInfo().getCardId(), bo)) {
                         //校验该卡是否可用该商品
                         continue;
                     }
@@ -189,7 +189,7 @@ public class Calculate extends ShopBaseService {
             logger().info("不可使用优惠券，end");
             return;
         }
-        if (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType())) {
+        if (vo.getDefaultMemberCard() == null || !CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getInfo().getCardType())) {
             logger().info("该次下单可以用优惠卷，准备获取优惠卷");
             //可用优惠卷
             List<OrderCouponVo> coupons = coupon.getValidCoupons(param.getWxUserInfo().getUserId());
@@ -283,9 +283,9 @@ public class Calculate extends ShopBaseService {
         if (param.getMemberCardNo() != null) {
             /**使用会员卡，其中cardNo==0为使用默认会员卡*/
             OrderMemberVo card = userCard.userCardDao.getValidByCardNo(param.getMemberCardNo());
-            if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getCardType())) {
+            if (card != null && CardConstant.MCARD_TP_LIMIT.equals(card.getInfo().getCardType())) {
                 //限次卡
-                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), card == null ? null : Lists.newArrayList(card));
+                List<OrderMemberVo> validCardList = userCard.getValidCardList(param.getWxUserInfo().getUserId(), param.getBos(), param.getStoreId(), Lists.newArrayList(card));
                 vo.setDefaultMemberCard(card);
                 vo.setMemberCards(validCardList);
             } else {

@@ -770,6 +770,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //活动免运费
         activityFreeDelivery(vo, param.getIsFreeShippingAct());
+        //会员卡免运费
+        memberCardFreeDelivery(vo);
         //折扣商品金额
         BigDecimal tolalDiscountAfterPrice = BigDecimalUtil.addOrSubtrac(
             BigDecimalUtil.BigDecimalPlus.create(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], BigDecimalUtil.Operator.subtrac),
@@ -838,9 +840,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setOrderGoods(bos);
         vo.setUserScore(user.getScore());
         vo.setUserAccount(user.getAccount());
-        vo.setMemberCardMoney(vo.getDefaultMemberCard() == null ? BigDecimal.ZERO : vo.getDefaultMemberCard().getMoney());
+        vo.setMemberCardMoney(vo.getDefaultMemberCard() == null ? BigDecimal.ZERO : vo.getDefaultMemberCard().getInfo().getMoney());
         vo.setMoneyAfterDiscount(moneyAfterDiscount);
-        vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()) ? YES : NO));
+        vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getInfo().getCardType()) ? YES : NO));
         vo.setScoreMaxDiscount(scoreMaxDiscount);
         vo.setScoreProportion(scoreProportion);
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
@@ -854,6 +856,18 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         logger().info("金额处理赋值(processOrderBeforeVo),end");
+    }
+
+    /**
+     * 会员卡包邮
+     * @param vo
+     */
+    private void memberCardFreeDelivery(OrderBeforeVo vo) {
+        //TODO
+        if(vo.getDefaultMemberCard() != null && vo.getDefaultMemberCard().getInfo() != null) {
+            vo.setShippingFee(BigDecimal.ZERO);
+            vo.setIsFreeshipCard(YES);
+        }
     }
 
     /**

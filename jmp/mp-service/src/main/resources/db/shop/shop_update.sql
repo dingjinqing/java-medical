@@ -143,6 +143,8 @@ ALTER TABLE `b2c_goods` ADD PRIMARY KEY ( `goods_id` );
 ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_coupon` tinyint(1) DEFAULT 0 COMMENT '是否和会员卡一起使用0:可以1：不可以' AFTER `renew_date_type`;
 -- 2020年03月12日 会员卡表添加自定义权益开关字段
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_rights_flag` tinyint(1) DEFAULT 0 COMMENT '自定义权益开关' AFTER `cannot_use_coupon`;
+--2020-03-17 订单增加会员卡包邮标识
+ALTER TABLE `b2c_order_info` ADD  COLUMN `is_freeship_card` tinyint(1) DEFAULT '0' COMMENT '0否，1是';
 /***********************2.10*********************END*/
 -- 瓜分积分 添加活动规则说明
 ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEXT COMMENT '活动规则说明';

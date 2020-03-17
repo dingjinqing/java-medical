@@ -869,8 +869,8 @@ public class OrderInfoService extends ShopBaseService {
         }
         //会员卡
         if(beforeVo.getDefaultMemberCard() != null){
-            order.setMemberCardId(beforeVo.getDefaultMemberCard().getCardId());
-            order.setCardNo(beforeVo.getDefaultMemberCard().getCardNo());
+            order.setMemberCardId(beforeVo.getDefaultMemberCard().getInfo().getCardId());
+            order.setCardNo(beforeVo.getDefaultMemberCard().getInfo().getCardNo());
         }
         //门店
         if (orderBo.getStore() != null) {

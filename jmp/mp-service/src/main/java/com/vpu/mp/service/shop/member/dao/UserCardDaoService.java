@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
@@ -560,30 +561,14 @@ public class UserCardDaoService extends ShopBaseService{
      * @return result
      */
     public OrderMemberVo getOrderGradeCard(Integer userId){
-        OrderMemberVo card = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
-            .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-            .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
-            .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
-            )
-            .and(
-                (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
-                    .or(MEMBER_CARD.USE_TIME.isNull())
-            )
-            .and(
-                ((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX)).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))
-            )
-            .and(
-                (MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_YES).and(USER_CARD.ACTIVATION_TIME.isNotNull()))
-                    .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
-                    .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
-            ).fetchAnyInto(OrderMemberVo.class);
-
-        if(card == null) {
-            return card;
+        List<ValidUserCardBean> validCardList = getValidCardList(userId,
+            new Byte[] {CardConstant.MCARD_TP_GRADE },
+            OrderConstant.MEMBER_CARD_ONLINE);
+        if(CollectionUtils.isEmpty(validCardList)) {
+            return null;
         }else {
+            //等级卡只有一个
+            ValidUserCardBean card = validCardList.get(0);
             card.setAvatar(userCardService.getCardAvatar());
             // 快照时间
             EffectTimeParam etParam = new EffectTimeParam();
@@ -593,7 +578,7 @@ public class UserCardDaoService extends ShopBaseService{
             // 背景处理
             CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
             BeanUtils.copyProperties(bg, card);
-            return card.init();
+            return new OrderMemberVo().init(card);
         }
     }
 

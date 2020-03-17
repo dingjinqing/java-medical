@@ -148,6 +148,7 @@ public class OrderBeforeVo {
     private BigDecimal tolalDiscountAfterPrice;
     private InsteadPay insteadPayCfg;
     private Byte insteadPayNum;
+    private Byte isFreeshipCard;
 
     /**
      * 默认配送方式 0 ，1 ，2
@@ -203,6 +204,9 @@ public class OrderBeforeVo {
         }
         if(getScoreProportion() != null) {
             orderRecord.setScoreProportion(getScoreProportion());
+        }
+        if(getIsFreeshipCard() != null) {
+            orderRecord.setIsFreeshipCard(getIsFreeshipCard());
         }
     }
 }
