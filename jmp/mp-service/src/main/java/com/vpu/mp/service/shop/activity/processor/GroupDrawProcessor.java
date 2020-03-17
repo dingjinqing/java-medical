@@ -9,7 +9,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupdraw.GroupDrawMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -65,11 +64,6 @@ public class GroupDrawProcessor implements CreateOrderProcessor,GoodsDetailProce
             log.debug("小程序-商品详情-拼团抽奖信息获取失败-拼团抽奖活动不存在[{}]-详情处理退出", param.getActivityId());
             return;
         }
-        List<GoodsPrdMpVo> products = capsule.getProducts();
-        products.forEach(product->{
-            product.setPrdLinePrice(product.getPrdRealPrice());
-            product.setPrdRealPrice(groupDrawMpVo.getPayMoney());
-        });
         capsule.setActivity(groupDrawMpVo);
     }
 
