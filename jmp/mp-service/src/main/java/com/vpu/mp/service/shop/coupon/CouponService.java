@@ -23,10 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
-<<<<<<< Updated upstream
-=======
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
->>>>>>> Stashed changes
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -69,8 +66,6 @@ public class CouponService extends ShopBaseService {
 
     private String aliasCode;
 
-    @Autowired
-    private QrCodeService qrCode;
 
     /**可用会员卡*/
     public static final byte COUPON_IS_USED_STATUS_AVAIL = 0;
@@ -413,7 +408,7 @@ public class CouponService extends ShopBaseService {
         }else{
              record = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
                 CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.LEAST_CONSUME,
-                MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE)
+                MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,MRKING_VOUCHER.USE_CONSUME_RESTRICT,MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.VALIDATION_CODE,MRKING_VOUCHER.CARD_ID)
                 .from(CUSTOMER_AVAIL_COUPONS
                     .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)))
                 .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(param.couponSn))
@@ -1014,28 +1009,18 @@ public class CouponService extends ShopBaseService {
 
     /**
      * 获取小程序码
-     */
-    public ShareQrCodeVo getMpQrCode(Integer couponId) {
-        String pathParam=String.format("couponId=%d", couponId);
-=======
-     *
-     * 获取优惠券小程序码
      * @param id
      * @return
      */
     public ShareQrCodeVo getMpQrCode(Integer id){
         CouponListVo couponInfo = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(id)).fetchOne().into(CouponListVo.class);
         String pathParam="code="+couponInfo.getAliasCode();
->>>>>>> Stashed changes
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-<<<<<<< Updated upstream
         vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getUrl());
-=======
         vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getPathUrl(pathParam));
->>>>>>> Stashed changes
         return vo;
     }
 }
