@@ -197,7 +197,7 @@ public class CardDaoService extends ShopBaseService {
 	 */
 	public PageResult<ChargeVo> getChargeList(ChargeParam param,String language) {
 		SelectJoinStep<?> select = db()
-				.select(USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE.as("money"), CHARGE_MONEY.REASON,
+				.select(USER.USERNAME, USER.MOBILE, CHARGE_MONEY.CHARGE.as("money"), CHARGE_MONEY.REASON,CHARGE_MONEY.REASON_ID,
 						CHARGE_MONEY.CHARGE,CHARGE_MONEY.TYPE,CHARGE_MONEY.COUNT,CHARGE_MONEY.EXCHANG_COUNT,
 						CHARGE_MONEY.CREATE_TIME, CHARGE_MONEY.MESSAGE)
 				.from(CHARGE_MONEY.leftJoin(USER).on(CHARGE_MONEY.USER_ID.eq(USER.USER_ID)));
@@ -264,7 +264,7 @@ public class CardDaoService extends ShopBaseService {
 	 */
 	public PageResult<ChargeVo> getConsumeList(ChargeParam param,String language) {
 		SelectJoinStep<?> select = db()
-				.select(USER.USERNAME, USER.MOBILE, CARD_CONSUMER.MONEY, CARD_CONSUMER.REASON,CARD_CONSUMER.TYPE,CARD_CONSUMER.EXCHANG_COUNT,CARD_CONSUMER.COUNT,
+				.select(USER.USERNAME, USER.MOBILE, CARD_CONSUMER.MONEY, CARD_CONSUMER.REASON,CARD_CONSUMER.REASON_ID,CARD_CONSUMER.TYPE,CARD_CONSUMER.EXCHANG_COUNT,CARD_CONSUMER.COUNT,
 						CARD_CONSUMER.CREATE_TIME, CARD_CONSUMER.MESSAGE)
 				.from(CARD_CONSUMER.leftJoin(USER).on(CARD_CONSUMER.USER_ID.eq(USER.USER_ID)));
 		buildOptionsForConsume(param, select);
