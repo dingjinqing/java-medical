@@ -71,7 +71,7 @@ public enum QrCodeTypeEnum {
     /*优惠券礼包*/
     DISCOUNT_COUPON_PAGCKAGE((byte) 31, "pages1/couponpackage/couponpackage"),
     /*满包邮*/
-    FULL_SHIP((byte) 32, "pages/fullship/fullship"),
+    FULL_SHIP((byte) 32, "pages1/fullship/fullship"),
     /*多人抽奖*/
     PIN_LOTTERY((byte) 33, "pages/pinlotterylist/pinlotterylist"),
     /*我要送礼*/
