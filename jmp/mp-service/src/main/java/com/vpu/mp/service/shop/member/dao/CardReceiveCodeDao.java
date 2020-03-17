@@ -53,7 +53,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	 */
 	public void addCardIdToCardBatch(Integer cardId,Set<Integer> batchIdList) {
 		this.transaction(()->{
-			logger().info("添加卡id到批次");
+			logger().info("绑定CardId到批次与领取码信息，以便激活");
 			bindCardIdToBatch(cardId,batchIdList);
 			bindCardIdToReceiveCode(cardId,batchIdList);
 		});
@@ -74,6 +74,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	 * 绑定卡id到领取码
 	 */
 	private void bindCardIdToReceiveCode(Integer cardId,Set<Integer> batchIdList) {
+		logger().info("激活领取码|卡号+密码");
 		db().update(CARD_RECEIVE_CODE)
 		.set(CARD_RECEIVE_CODE.CARD_ID,cardId)
 		.set(CARD_RECEIVE_CODE.STATUS,NumberUtils.BYTE_ONE)
