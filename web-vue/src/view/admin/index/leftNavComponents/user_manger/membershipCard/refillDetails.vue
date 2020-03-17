@@ -134,7 +134,6 @@ export default {
     }
   },
   created () {
-    debugger
     this.cardId = this.$route.query.cardId
     this.cardNo = this.$route.query.cardNo
     this.cardType = this.$route.query.cardType
