@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 /**
  * 
@@ -60,5 +62,24 @@ public class HelpController extends HelpBaseController {
 		checkId();
 		CheckSignVo sCheckSignVo = saas.getShopApp(shop_id).userCard.scoreService.checkSignInScore(user_id);
 		return success(sCheckSignVo);
+	}
+	
+	/**
+	 * 组团瓜分积分活动说明
+	 * @param shop_id
+	 * @param pid
+	 * @return
+	 */
+	@GetMapping("/api/wxapp/pinintegration/help")
+	public JsonResult getGroupInfo(@RequestParam Integer shop_id,@RequestParam Integer pid) {
+		log.info("进入签到帮助页");
+		checkId();
+		GroupInteMaVo vo = saas.getShopApp(shop_id).groupIntegration.getActivityCopywriting(pid);
+		if(vo==null) {
+			return fail();
+		}else {
+			return success(vo);			
+		}
+		
 	}
 }

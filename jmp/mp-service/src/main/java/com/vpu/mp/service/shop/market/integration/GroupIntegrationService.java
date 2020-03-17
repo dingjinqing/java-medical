@@ -41,6 +41,7 @@ import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
 import com.vpu.mp.service.pojo.shop.market.integration.CanApplyPinInteVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteGetEndVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
@@ -1092,7 +1093,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		GroupIntegrationMaVo groupIntegration = groupInfo.get(0);
 		for (GroupIntegrationMaVo item : groupInfo) {
 			int inviteNum = groupIntegrationList.getInviteNum(groupId, item.getUserId(), pinInteId);
-			item.setInviteNum((short)inviteNum);
+			item.setInviteNum(inviteNum);
 			if(item.getIsGrouper().equals(STATUS_ONE)) {
 				groupIntegration=item;
 			}
@@ -1162,11 +1163,11 @@ public class GroupIntegrationService extends ShopBaseService {
 				vo.setMsg("拼团成功");
 				List<GroupIntegrationMaVo> pinInteGroupInfo = groupIntegrationList.getPinIntegrationGroupDetail(item.getInteActivityId(),item.getGroupId());
 				vo.setUserNum(pinInteGroupInfo.size());
-				vo.setPinInteGroupInfo(pinInteGroupInfo);
-				for (GroupIntegrationInfoVo item2 : voList) {
+				for (GroupIntegrationMaVo item2 : pinInteGroupInfo) {
 					int inviteNum = groupIntegrationList.getInviteNum(item2.getGroupId(), item2.getUserId(), item2.getInteActivityId());
-					vo.setInviteNum(inviteNum);
+					item2.setInviteNum(inviteNum);
 				}
+				vo.setPinInteGroupInfo(pinInteGroupInfo);
 			}
 			voList.add(vo);
 		}
@@ -1187,5 +1188,28 @@ public class GroupIntegrationService extends ShopBaseService {
 			successPinIntegration(item.getGroupId(), item.getId());
 		}
 		logger().info("处理组团瓜分积分结果  定时任务结束");
+	}
+	
+	/**
+	 * 组团瓜分积分的规则说明
+	 * @param pintInId
+	 * @return
+	 */
+	public GroupInteMaVo getActivityCopywriting(Integer pintInId) {
+		GroupIntegrationDefineRecord record = getOneInfoByIdNoInto(pintInId);
+		if(record==null) {
+			return null;
+		}
+		GroupInteMaVo vo = record.into(GroupInteMaVo.class);
+		String activityCopywriting = record.getActivityCopywriting();
+		if(StringUtils.isEmpty(activityCopywriting)||Objects.equals(activityCopywriting, "null")) {
+			ActivityCopywriting activityCopywriting2 = new ActivityCopywriting();
+			activityCopywriting2.setIsUseDefault("2");
+			vo.setActivityInfo(activityCopywriting2);
+		}else {
+			ActivityCopywriting parseJson = Util.parseJson(activityCopywriting, ActivityCopywriting.class);
+			vo.setActivityInfo(parseJson);
+		}
+		return vo;
 	}
 }
