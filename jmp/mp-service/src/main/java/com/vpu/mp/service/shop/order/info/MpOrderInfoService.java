@@ -42,16 +42,16 @@ public class MpOrderInfoService extends OrderInfoService{
         //搜索条件
         Condition condition = DSL.noCondition();
         if(param != null && !StringUtils.isBlank(param.getSearch())) {
-            condition.and(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
+            condition = condition.and(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
         }
         //基础状态数量
-        Map<Byte, Integer> countMap = setIsContainSearch(db().select(DSL.count(), TABLE.ORDER_STATUS).from(TABLE), param).
+        Map<Byte, Integer> countMap = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID), TABLE.ORDER_STATUS).from(TABLE), param).
             where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(TABLE.USER_ID.eq(userId)), isContainSubOrder).and(condition)).
             groupBy(TABLE.ORDER_STATUS).
             fetch().
             intoMap(TABLE.ORDER_STATUS , DSL.count());
         //退款退货
-        Integer refund = setIsContainSearch(db().select(DSL.count()).from(TABLE), param).
+        Integer refund = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID)).from(TABLE), param).
             where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS)).and(TABLE.USER_ID.eq(userId)),isContainSubOrder).and(condition)).
             fetchOneInto(Integer.class);
         //初始化不可变map
