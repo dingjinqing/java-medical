@@ -55,6 +55,12 @@ global.wxComponent({
         showSpec: true
       })
     },
+    specDialogShowNoTrigger(){
+      this.setData({
+        triggerButton:'',
+      })
+      this.specDialogShow()
+    },
     setUnselectData(data){
       this.setData({
         unselect_spec_names:data.detail.unselect_spec_names
