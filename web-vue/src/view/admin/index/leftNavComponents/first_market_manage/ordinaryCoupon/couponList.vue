@@ -301,7 +301,7 @@
 // 引入分页
 import pagination from '@/components/admin/pagination/pagination'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
-import { couponList, pauseCoupon, deleteCoupon, startCoupon } from '@/api/admin/marketManage/couponList.js'
+import { couponList, pauseCoupon, deleteCoupon, startCoupon, shareCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     statusTab, pagination
@@ -463,6 +463,12 @@ export default {
     // 分享优惠券
     shareCoupon (id) {
       this.shareDialog = true
+      shareCoupon(id).then(res => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+        }
+      })
     },
 
     // 复制
