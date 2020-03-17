@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 
@@ -22,6 +23,9 @@ public class ModuleIntegral extends ModuleBase {
 
     @JsonProperty("show_goods_price")
     private Boolean showGoodsPrice=true;
+
+    @JsonProperty("integral_goods")
+    private List<IntegralGoods> integralGoods;
 
     @Getter
     @Setter

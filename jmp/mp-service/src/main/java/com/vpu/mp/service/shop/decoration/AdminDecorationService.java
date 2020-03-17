@@ -658,6 +658,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
                     }
                     return moduleGroupDraw;
+                case ModuleConstant.M_INTEGRAL:
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    if(!moduleIntegral.getIntegralGoods().isEmpty()){
+                        for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
+                            if(StringUtil.isNotEmpty(g.getGoodsImg())){
+                                g.setGoodsImg(new URL(g.getGoodsImg()).getPath());
+                            }
+                        }
+                    }
+                    return moduleIntegral;
 
                 //TODO 其他保存前需要处理的模块
                 default:

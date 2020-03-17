@@ -497,7 +497,7 @@ public class PreSaleService extends ShopBaseService {
     public void updatePreSale(PreSaleParam param) {
         Integer presaleId = param.getId();
         Assert.notNull(presaleId, "Missing parameter id");
-        PreSaleListVo presale = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
+        PreSaleListVo presale = db().select(TABLE.fields()).select(TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2")).from(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
         Byte status = getStatusOf(presale);
         String shareConfiguration = shareConfigJson(param);
         if (NAVBAR_TYPE_ONGOING == status) {
