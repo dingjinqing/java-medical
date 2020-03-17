@@ -1120,12 +1120,14 @@ public class MemberCardService extends ShopBaseService {
 			flag = CardCustomRights.RightSwitch.values()[card.getCustomRightsFlag()];
 		}
 		// 处理图片路径
-		for(CardRight right: customRightsAll) {
-			String imgUrl = right.getCrightImage();
-			if(!StringUtils.isBlank(imgUrl)) {
-				imgUrl = domainConfig.imageUrl(imgUrl);
+		if(customRightsAll != null) {
+			for(CardRight right: customRightsAll) {
+				String imgUrl = right.getCrightImage();
+				if(!StringUtils.isBlank(imgUrl)) {
+					imgUrl = domainConfig.imageUrl(imgUrl);
+				}
+				right.setCrightImage(imgUrl);
 			}
-			right.setCrightImage(imgUrl);
 		}
 		
 		return CardCustomRights.builder()
