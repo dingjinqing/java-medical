@@ -21,7 +21,7 @@ public class GroupIntegrationMaVo {
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Integer integration;
-	private Short inviteNum;
+	private Integer inviteNum;
 	private Integer inviteUser;
 	private Byte isNew;
 	private Byte isLook;

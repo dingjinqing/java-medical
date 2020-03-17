@@ -37,8 +37,8 @@ global.wxPage({
     var that = this;
     if (!util.check_setting(options)) return;
     that.setData({
-      pinInte_id: Number(options.pinInte_id),
-      group_id: options.group_id ? Number(options.group_id) : null,
+      pinInte_id: Number(options.pid),
+      group_id: options.gid ? Number(options.gid) : null,
       invite_user: options.invite_user ? Number(options.invite_user) : null
     })
     clearTimeout(set_time_out);
@@ -65,7 +65,7 @@ global.wxPage({
   // 跳转参与活动列表
   toActivity: function () {
     wx: util.navigateTo({
-      url: '/pages/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
+      url: '/pages1/pinintegrationdetail/pinintegrationdetail?user_id=' + util.getCache('user_id'),
     })
   },
   // 积分商品详情
@@ -83,22 +83,9 @@ global.wxPage({
       share: false,
     })
   },
-  // 活动参加上限按钮
+  // 参加开团
   iwantgo: function (e) {
-    // var group2 = '';
-    // util.api('/api/wxapp/pin/integration/start', function (res) {
-    //   if (res.content.canPin.status == 0) {
-    //     group2 = res.content.groupId;
-    //   }
-    //   if (res.content.canPin.status > 0) {
-    //     util.showModal('提示', res.content.canPin.msg, function () {
-    //     });
-    //     return;
-    //   }
-    //   util.navigateTo({
-    //     url: '/pages/pinintegration/pinintegration?pinInte_id=' + this.data.pinInte_id + '&group_id=' + group2,
-    //   })
-    // }, { pinInte_id: this.data.pinInte_id });
+    util.navigateTo('/pages1/pinintegration/pinintegration?pid=' + this.data.pinInte_id);
   },
   // 去首页
   returnIndex: function () {
@@ -219,7 +206,7 @@ global.wxPage({
     return {
       title: "【" + usernames + "@你】与我一起瓜分积分！",
       // imageUrl: that.data.imageUrl + '/image/admin/poster_image/pin_inte_bg1.png',
-      path: '/pages/pinintegration/pinintegration?pinInte_id=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&group_id=' + that.data.group_id,
+      path: '/pages1/pinintegration/pinintegration?pid=' + that.data.pinInte_id + '&invite_user=' + util.getCache('user_id') + '&gid=' + that.data.group_id,
     }
   },
   // 获取用户昵称 头像
@@ -300,15 +287,13 @@ global.wxPage({
 })
 function request_pinIntegration(that) {
   mobile = util.getCache('mobile');
-  // 发起活动
-  util.api('/api/wxapp/pin/integration/start', function (res) {
-    if (res.content.canPin.status == 0) {
-      that.setData({ group_id: res.content.groupId })
-      // 被邀请人
-      if (that.data.invite_user) {
-        that.setData({ group_gd: res.content })
+  if (that.data.invite_user || that.data.group_id) {
+    // 有邀请者
+    util.api('/api/wxapp/pin/integration/start', function (res) {
+      that.setData({ group_gd: res.content })
+      if (res.content.canPin.status == 0) {
+        that.setData({ group_id: res.content.groupId })
       }
-      // 获取活动详情
       util.api('/api/wxapp/pin/integration/detail', function (ress) {
         if (ress.error == 0) {
           var gd = ress.content;
@@ -350,23 +335,83 @@ function request_pinIntegration(that) {
           pinInteId: that.data.pinInte_id,
           groupId: that.data.group_id
         });
-    }
-    if (res.content.canPin.status > 0) {
-      util.showModal('提示', res.content.canPin.msg, function () {
-        wx.navigateBack({
-          delta: 1,
-          fail: function (e) {
-            util.navigateTo({
-              url: '/pages/index/index',
+    }, {
+      pinInteId: that.data.pinInte_id,
+      groupId: that.data.group_id,
+      inviteUser: that.data.invite_user
+    })
+  } else {
+    util.api('/api/wxapp/pin/integration/start', function (res) {
+      if (res.content.canPin.status == 0) {
+        that.setData({ group_id: res.content.groupId })
+        util.api('/api/wxapp/pin/integration/detail', function (ress) {
+          if (ress.error == 0) {
+            var gd = ress.content;
+            var pin_info = ress.content.pinInteInfo;
+            // that.data.choose_list['limit_amount'] = pin_info.limit_amount;
+            // that.data.choose_list['inte_group'] = pin_info.inte_group;
+            // that.data.choose_list['join_limit'] = pin_info.join_limit;
+            // that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
+            var num = pin_info.limitAmount - 1;
+            var person = ress.content.groupInfo;
+            // var inteGoods = ress.content.inteGoodsInfo;
+            var limit = [];
+            for (var i = 0; i < num; i++) {
+              limit.push(i);
+            }
+            that.setData({
+              gd: gd, // 全部信息
+              pin_info: pin_info, // 活动信息
+              person: person, // 团成员信息
+              limit: limit, // 邀请人数
+              // inteGoods: inteGoods, // 积分商品列表
             })
+            // 单次活动时限
+            that.setData({ total_micro_second: parseInt(that.data.gd.remainTime / 1000) })
+            if (that.data.total_micro_second > 0) {
+              that.countdown(that);
+            } else {
+              that.setData({
+                clock: "已结束",
+                end: true,
+                share_group: true
+              });
+            }
+          } else {
+            util.showModal('提示', ress.message);
+            return;
           }
-        })
-      }, false);
-      return;
-    }
-  }, {
-    pinInteId: that.data.pinInte_id,
-    groupId: that.data.group_id,
-    inviteUser: that.data.invite_user
-  });
+        }, {
+            pinInteId: that.data.pinInte_id,
+            groupId: that.data.group_id
+          });
+      }
+      if (res.content.canPin.status > 0) {
+        util.showModal('提示', res.content.canPin.msg, function () {
+          wx.navigateBack({
+            delta: 1,
+            fail: function (e) {
+              util.navigateTo({
+                url: '/pages/index/index',
+              })
+            }
+          })
+        }, false);
+        return;
+      }
+    }, {
+        pinInteId: that.data.pinInte_id
+      });
+  }
+
+
+
+
+
+
+
+
+
+  
+  
 }

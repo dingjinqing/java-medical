@@ -25,10 +25,6 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     @JsonIgnore
     private Integer baseSale;
 
-    /**上下架状态*/
-    @JsonIgnore
-    private Byte isOnSale;
-
     /**是否分销改价*/
     @JsonIgnore
     private Byte canRebate;
@@ -59,7 +55,6 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     public String toString() {
         return "GoodsDetailMpBo{" +
             ", baseSale=" + baseSale +
-            ", isOnSale=" + isOnSale +
             ", canRebate=" + canRebate +
             ", goodsVideoId=" + goodsVideoId +
             ", gradeCardPrice=" + gradeCardPrice +

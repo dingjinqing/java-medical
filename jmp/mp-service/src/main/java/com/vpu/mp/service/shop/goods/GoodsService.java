@@ -1303,7 +1303,9 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
 
         assign(goods, goodsRecord);
-
+        if (goods.getMarketPrice() == null) {
+            goodsRecord.setMarketPrice(null);
+        }
         goodsRecord.store();
     }
 
@@ -2127,7 +2129,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品分享信息
      */
     public GoodsVo selectGoodsShareInfo(Integer goodsId) {
-        Record3<String, String, String> record = db().select(GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
             .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny();
 

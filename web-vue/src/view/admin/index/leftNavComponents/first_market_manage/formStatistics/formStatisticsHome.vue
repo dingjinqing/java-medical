@@ -5,8 +5,8 @@
         size="small"
         type="primary"
         @click="handleToAddForm()"
-      >添加表单</el-button>
-      <div class="tipsDiv">当前版本为旗舰版,不限制表单个数<img :src="this.$imageHost + '/image/admin/system_icon.png'">
+      >{{$t('formStatisticsHome.addFform')}}</el-button>
+      <div class="tipsDiv">{{$t('formStatisticsHome.addFformTip')}}<img :src="this.$imageHost + '/image/admin/system_icon.png'">
         <div class="tipsHidden">
           <div class="tipsTop">
             <p>
@@ -17,7 +17,7 @@
             <el-button
               type="primary"
               size="small"
-            >了解更多</el-button>
+            >{{$t('formStatisticsHome.learnMore')}}</el-button>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
     <div class="formStatisticsBottom">
       <div class="formStatisticsTop">
         <div class="list">
-          <span>状态</span>
+          <span>{{$t('formStatisticsHome.status')}}</span>
           <el-select
             v-model="statusValue"
             size="small"
@@ -40,27 +40,27 @@
           </el-select>
         </div>
         <div
-          class="list"
+          class="list formStatisData"
           style="margin-left:10px"
         >
-          <span>创建时间</span>
+          <span>{{$t('formStatisticsHome.creationTime')}}</span>
           <el-date-picker
             size="small"
             v-model="createStartTime"
             type="datetime"
             :placeholder="$t('allGoods.batchDialog.selectDateTime')"
-            default-time="12:00:00"
+            default-time="00:00:00"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
-          至
+          {{$t('formStatisticsHome.to')}}
           <el-date-picker
             size="small"
             v-model="createEndTime"
             type="datetime"
             :placeholder="$t('allGoods.batchDialog.selectDateTime')"
-            default-time="12:00:00"
+            default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
           >
@@ -70,18 +70,18 @@
           class="list"
           style="margin-left:10px"
         >
-          <span>表单名称</span>
+          <span>{{$t('formStatisticsHome.formName')}}</span>
           <el-input
             size="small"
             v-model="formNameInput"
-            placeholder="请输入表单名称"
+            :placeholder="$t('formStatisticsHome.formNamePlaceHolder')"
           ></el-input>
         </div>
         <el-button
           size="small"
           type="primary"
           @click="handleToScreen()"
-        >筛选</el-button>
+        >{{$t('formStatisticsHome.screen')}}</el-button>
       </div>
       <div class="formStatisticsBottom">
         <el-table
@@ -93,7 +93,7 @@
         >
           <el-table-column
             prop="pageName"
-            label="表单名称"
+            :label="$t('formStatisticsHome.formName')"
             align="center"
           >
           </el-table-column>
@@ -105,26 +105,26 @@
           </el-table-column>
           <el-table-column
             prop="submitNum"
-            label="反馈数"
+            :label="$t('formStatisticsHome.feedbackNumber')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="status"
-            label="状态"
+            :label="$t('formStatisticsHome.status')"
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.status===0?'未发布':scope.row.status===1?'已发布':scope.row.status===2?'已关闭':'已删除'}}</span>
+              <span>{{scope.row.status===0?$t('formStatisticsHome.unpublished'):scope.row.status===1?$t('formStatisticsHome.hasBeenReleased'):scope.row.status===2?$t('formStatisticsHome.closed'):$t('formStatisticsHome.deleted')}}</span>
             </template>
           </el-table-column>
           <el-table-column
             prop="validityPeriod"
-            label="有效期"
+            :label="$t('formStatisticsHome.termOfValidity')"
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.validityPeriod===1?'永久有效':'期限内有效'}}</span>
+              <span>{{scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -136,7 +136,7 @@
             <template slot-scope="scope">
               <div class="operation">
                 <el-tooltip
-                  :content="scope.row.status===0?$t('pictureSetting.edtitText'):'查看'"
+                  :content="scope.row.status===0?$t('pictureSetting.edtitText'):$t('formStatisticsHome.see')"
                   placement="top"
                 >
                   <span
@@ -145,7 +145,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="发布"
+                  :content="$t('formStatisticsHome.release')"
                   placement="top"
                   v-if="scope.row.status===0"
                 >
@@ -175,7 +175,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="查看反馈"
+                  :content="$t('formStatisticsHome.viewFeedback')"
                   placement="top"
                   v-if="scope.row.status===1"
                 >
@@ -185,7 +185,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="反馈统计"
+                  :content="$t('formStatisticsHome.feedbackStatistics')"
                   placement="top"
                   v-if="scope.row.status===1"
                 >
@@ -195,7 +195,7 @@
                   ></span>
                 </el-tooltip>
                 <el-tooltip
-                  content="关闭"
+                  :content="$t('formStatisticsHome.close')"
                   placement="top"
                   v-if="scope.row.status===1"
                 >
@@ -229,7 +229,7 @@
           </el-table-column>
         </el-table>
         <div class="footer">
-          <span>当前页面{{currentPage}}/{{totalPage}}，总记录{{totalRows}}条</span>
+          <span>{{$t('formStatisticsHome.currentPage')}}{{currentPage}}/{{totalPage}}，{{$t('formStatisticsHome.generalRecord')}}{{totalRows}}{{$t('formStatisticsHome.strip')}}</span>
           <el-pagination
             @current-change="handleDetailCurrentChange"
             :current-page.sync="currentPage"
@@ -243,7 +243,7 @@
     </div>
     <!--二次确认弹窗-->
     <el-dialog
-      title="提示"
+      :title="$t('formStatisticsHome.tips')"
       :visible.sync="dialogTwoVisible"
       width="20%"
     >
@@ -252,16 +252,16 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogTwoVisible = false">取 消</el-button>
+        <el-button @click="dialogTwoVisible = false">{{$t('formStatisticsHome.cancellation')}}</el-button>
         <el-button
           type="primary"
           @click="handleToSureTwo()"
-        >确 定</el-button>
+        >{{$t('formStatisticsHome.determine')}}</el-button>
       </span>
     </el-dialog>
     <!--分享弹窗-->
     <el-dialog
-      title="扫一扫分享给好友吧~"
+      :title="$t('formStatisticsHome.shareTitle')"
       :visible.sync="shareVisible"
       width="30%"
     >
@@ -277,10 +277,10 @@
         class="copyContainer"
         style="color:#999"
       >
-        下载海报码
+        {{$t('formStatisticsHome.posterCode')}}
       </div>
       <div class="copyContainer copyDiv">
-        <span>下载海报链接：</span>
+        <span>{{$t('formStatisticsHome.posterLink')}}：</span>
         <el-input
           size="small"
           v-model="posterAddress"
@@ -289,7 +289,7 @@
         <span
           class="copy"
           @click="handelToCopy"
-        >复制</span>
+        >{{$t('formStatisticsHome.copy')}}</span>
       </div>
     </el-dialog>
   </div>
@@ -297,22 +297,14 @@
 <script>
 import { formListQuery, delCloseListQuery, shareFormQuery } from '@/api/admin/marketManage/formDecoration'
 export default {
+  computed: {
+    statusOptions () {
+      return this.$t('formStatisticsHome.statusOptions')
+    }
+  },
   data () {
     return {
       statusValue: null, // 状态
-      statusOptions: [{
-        value: null,
-        label: '全部'
-      }, {
-        value: 0,
-        label: '未发布'
-      }, {
-        value: 1,
-        label: '已发布'
-      }, {
-        value: 2,
-        label: '已关闭'
-      }],
       createStartTime: '', // 创建开始时间
       createEndTime: '', // 创建结束时间
       formNameInput: '', // 表单名称input值
@@ -383,12 +375,12 @@ export default {
           })
           break
         case 2: // 发布
-          this.twoSureText = '确认要发布吗？'
+          this.twoSureText = this.$t('formStatisticsHome.surePublish')
           this.dialogTwoVisible = true
 
           break
         case 3: // 删除
-          this.twoSureText = '确认要删除吗？'
+          this.twoSureText = this.$t('formStatisticsHome.sureDelete')
           this.dialogTwoVisible = true
 
           break
@@ -412,7 +404,7 @@ export default {
           })
           break
         case 6: // 关闭
-          this.twoSureText = '确认要关闭吗？'
+          this.twoSureText = this.$t('formStatisticsHome.sureClose')
           this.dialogTwoVisible = true
           break
         case 7: // 查看反馈
@@ -445,15 +437,15 @@ export default {
       switch (this.noClickFlag) {
         case 3:
           status = 3
-          message = '删除成功'
+          message = this.$t('formStatisticsHome.deleteSuccessful')
           break
         case 2:
           status = 1
-          message = '发布成功'
+          message = this.$t('formStatisticsHome.releasedSuccessfully')
           break
         case 6:
           status = 2
-          message = '关闭成功'
+          message = this.$t('formStatisticsHome.shutSuccessfully')
           break
       }
       delCloseListQuery({ pageId: this.nowClickRow.pageId, formStatus: status }).then(res => {
@@ -595,6 +587,11 @@ export default {
   margin-top: 20px;
   span {
     white-space: nowrap;
+  }
+}
+.formStatisData {
+  /deep/ .el-input {
+    width: 182px !important;
   }
 }
 </style>

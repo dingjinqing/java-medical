@@ -89,6 +89,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/reservation")
     public JsonResult reservation(@RequestBody @Validated ReservationParam param) {
+        param.initScene();
         return this.success(shop().store.reservation.reservationDetail(param.getServiceId()));
     }
 

@@ -57,7 +57,7 @@
         </view>
         <view class='con_person'>
           <!-- 参与用户列表 -->
-          <block wx:for="{{item.pinIntegroupInfo}}" wx:key='key' wx:for-index="idx" wx:for-item='person'>
+          <block wx:for="{{item.pinInteGroupInfo}}" wx:key='key' wx:for-index="idx" wx:for-item='person'>
             <view class='person_item'  wx:if="{{idx == 0 || idx == 1 ||idx == 2 }}">
               <view class='name '>
                 <view class='rank'  wx:if="{{idx == 0}}"><image src='{{imageUrl}}image/wxapp/pin/detail-1.png'></image></view>
@@ -82,8 +82,8 @@
             <view class='person_item'  wx:if="{{idx > 2 && isFold == false}}">
               <view class='name'>
                 <view class='rank'><text class='rank_number'>{{idx + 1}}</text></view>
-                  <view class='circle' style='background:url({{person.user_avatar}}) no-repeat ; background-size:100%;' wx:if="{{person.user_avatar}}">
-                    <text class='tuan' wx:if="{{person.is_grouper == 1}}">团长</text>
+                  <view class='circle' style='background:url({{person.userAvatar}}) no-repeat ; background-size:100%;' wx:if="{{person.userAvatar}}">
+                    <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
                   </view>
                   <view class='circle' style='background:url({{imageUrl}}image/wxapp/pin/no_people_40.png) no-repeat ; background-size:100%;' wx:else>
                     <text class='tuan' wx:if="{{person.isGrouper == 1}}">团长</text>
@@ -97,7 +97,7 @@
           </block>
 
           <!-- 展开收起 -->
-          <view class='zk_sq' bindtap='showReply' wx:if="{{item.pinIntegroupInfo.length > 3}}" >
+          <view class='zk_sq' bindtap='showReply' wx:if="{{item.pinInteGroupInfo.length > 3}}" >
             <block wx:if="{{isFold == true}}">
               <view >查看全部</view>
               <image src='{{imageUrl}}image/wxapp/pin/detail-down.png'></image>

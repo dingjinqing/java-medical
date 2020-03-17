@@ -16,11 +16,13 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
-import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -58,7 +60,7 @@ public class CouponService extends ShopBaseService {
     public CouponHoldService couponHold;
 
     @Autowired
-    private ScoreDaoService scoreDao;
+    private QrCodeService qrCode;
 
     private String aliasCode;
 
@@ -977,11 +979,40 @@ public class CouponService extends ShopBaseService {
             fetchAnyInto(Timestamp.class);
     }
 
-    public Result<Record> getCouponDetailByCouponSnList(List<Integer> couponSns) {
-        return  db().select().from(CUSTOMER_AVAIL_COUPONS)
+    /**
+     * 获取优惠信息
+     * @param couponSns
+     * @return
+     */
+    public List<CouponAndVoucherDetailVo> getCouponDetailByCouponSnList(List<String> couponSns) {
+        Result<Record> fetch = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(),
+                MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.DENOMINATION,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,
+                MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.DEL_FLAG,
+                MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,
+                MRKING_VOUCHER.RANDOM_MAX,MRKING_VOUCHER.RANDOM_MIN,MRKING_VOUCHER.TYPE.as("couponType"),
+                MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RECEIVE_NUM)
+                .from(CUSTOMER_AVAIL_COUPONS)
                 .leftJoin(MRKING_VOUCHER).on(MRKING_VOUCHER.ID.eq(CUSTOMER_AVAIL_COUPONS.ACT_ID))
                 .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.in(couponSns))
                 .fetch();
+        List<CouponAndVoucherDetailVo> into = new ArrayList<>();
+        if (fetch != null) {
+            into = fetch.into(CouponAndVoucherDetailVo.class);
+        }
+        return into;
+    }
 
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer couponId) {
+        String pathParam=String.format("couponId=%d", couponId);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.DISCOUN_COUPON, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getUrl());
+        return vo;
     }
 }

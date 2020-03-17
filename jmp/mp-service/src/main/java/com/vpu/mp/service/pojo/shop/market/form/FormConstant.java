@@ -119,7 +119,7 @@ public class FormConstant {
     /**
      * 新建表单配置的参与送积分值
      */
-    public static final String SEND_SCORE_NUM = "send_score_num";
+//    public static final String SEND_SCORE_NUM = "send_score_num";
     /**
      * 优惠券活动id
      */

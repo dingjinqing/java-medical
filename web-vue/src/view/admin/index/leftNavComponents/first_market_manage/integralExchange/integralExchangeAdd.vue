@@ -33,7 +33,7 @@
                 v-model="ruleForm.customTime"
                 type="datetime"
                 :placeholder="$t('allGoods.batchDialog.selectDateTime')"
-                default-time="12:00:00"
+                default-time="00:00:00"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
@@ -46,7 +46,7 @@
                 v-model="ruleForm.customTimeEnd"
                 type="datetime"
                 :placeholder="$t('allGoods.batchDialog.selectDateTime')"
-                default-time="12:00:00"
+                default-time="23:59:59"
                 format="yyyy-MM-dd HH:mm:ss"
                 value-format="yyyy-MM-dd HH:mm:ss"
               >
@@ -519,6 +519,7 @@ export default {
             stock: ''
           }
           if (index !== (this.ruleForm.tableData.length - 1)) {
+            obj.prdId = item.exchange.prdId
             obj.money = item.exchange.money
             obj.score = item.exchange.score
             obj.stock = item.stock
@@ -530,10 +531,10 @@ export default {
           url = this.formBottom.checkImgData.imgUrl
         }
         let configParamObj = {
-          shareAction: Number(this.formBottom.style),
-          shareDoc: this.formBottom.copywriting,
-          shareImgAction: Number(this.sharedGraph),
-          shareImg: url
+          share_action: Number(this.formBottom.style),
+          share_doc: this.formBottom.copywriting,
+          share_img_action: Number(this.sharedGraph),
+          share_img: url
         }
         let params = {
           name: this.ruleForm.name,
@@ -541,8 +542,8 @@ export default {
           endTime: this.ruleForm.customTimeEnd,
           maxExchangeNum: this.ruleForm.maxExchangeNum,
           goodsId: this.checkGoodsId,
-          productParam: arr,
-          configParam: configParamObj
+          product: arr,
+          shareConfig: configParamObj
         }
         console.log(this.id)
         if (this.id === -1) {

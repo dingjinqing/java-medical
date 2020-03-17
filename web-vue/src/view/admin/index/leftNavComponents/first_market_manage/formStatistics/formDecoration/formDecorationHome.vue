@@ -4,7 +4,7 @@
       <div class="decLeft">
         <div class="decLeftDrag">
           <div class="title">
-            表单元素
+            {{$t('formDecorationHome.formElementsTitle')}}
           </div>
           <div class="dragContainer">
             <div
@@ -21,7 +21,7 @@
         </div>
         <div class="decLeftDrag">
           <div class="title">
-            图文类
+            {{$t('formDecorationHome.graphicCategoryTitle')}}
           </div>
           <div class="dragContainer">
             <div
@@ -99,7 +99,7 @@
               class="btn_tijiao"
               :style="`color:${pageSetData.font_color?pageSetData.font_color:'#fff'};background-color: ${pageSetData.bg_color?pageSetData.bg_color:'#ff6666'}`"
             >
-              {{pageSetData.notice_name?pageSetData.notice_name:'提交'}}</div>
+              {{pageSetData.notice_name?pageSetData.notice_name:$t('formDecorationHome.submission')}}</div>
           </div>
         </vue-scroll>
       </div>
@@ -144,12 +144,12 @@
           type="primary"
           size="small"
           @click="handleToClickSave(0)"
-        >保存</el-button>
+        >{{$t('formDecorationHome.preservation')}}</el-button>
         <el-button
           size="small"
           @click="handleToClickSave(1)"
-        >保存并发布</el-button>
-        <span>发布后不可更改</span>
+        >{{$t('formDecorationHome.saveAndPublish')}}</el-button>
+        <span>{{$t('formDecorationHome.cannotBeChanged')}}</span>
       </div>
     </div>
   </div>
@@ -1014,7 +1014,7 @@ export default {
       }
     }
     .decRight {
-      width: 41.4%;
+      width: 44.4%;
       margin-left: 20px;
     }
   }

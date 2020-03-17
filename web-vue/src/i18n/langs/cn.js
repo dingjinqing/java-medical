@@ -318,6 +318,14 @@ import {
 import {
   cn as distribution
 } from './views/admin_new/cn/index/marketManagement/distribution/distributionCn'
+// 表单统计home页
+import {
+  cn as formStatisticsHome
+} from './views/admin_new/cn/index/marketManagement/formStatistics/formStatisticsHomeCn'
+// 表单统计所有模块
+import {
+  cn as formDecorationModel
+} from './views/admin_new/cn/index/marketManagement/formStatistics/formDecoration/formDecorationModelCn'
 // 定向发券
 import {
   cn as couponGive
@@ -1103,7 +1111,9 @@ const cn = {
   pictureHotSpot, //  图片热区
   carouselPicture, // 轮播图模块
   goodsStaticties, // 商品统计
-  formDecorationHome //  表单装修主页
+  formDecorationHome, //  表单装修主页
+  formStatisticsHome, // 表单统计列表主页
+  formDecorationModel // 表单统计装修所有模块
 }
 
 export default cn

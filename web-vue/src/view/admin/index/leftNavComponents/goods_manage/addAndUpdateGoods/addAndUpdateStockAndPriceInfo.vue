@@ -448,7 +448,7 @@ export default {
         limitMaxNum: 0,
         baseSale: 0,
         /* 以下为使用默认规格时的辅助数据，最终会被整合到goodsSpecProducts传到后台 */
-        marketPrice: null,
+        marketPrice: undefined,
         prdNumber: 0,
         prdPrice: 0,
         prdCost: 0,
@@ -953,7 +953,7 @@ export default {
         prdId: null, // 更新接口需要数据
         prdPrice: 0, // sku价格 接口需要数据
         prdCostPrice: 0, // sku成本价 接口需要数据
-        prdMarketPrice: 0, // sku市场价 接口需要
+        prdMarketPrice: null, // sku市场价 接口需要
         prdNumber: 0, // sku数量 接口需要数据
         prdSn: null, // sku sn码 用户输入项
         prdSnBak: null, // sku sn码 接口需要数据
@@ -1188,13 +1188,14 @@ export default {
     },
     /* 初始化商品库存，价格，成本等数据 */
     _initOtherData (goodsData, isUseDefaultPrd) {
-      this.goodsProductInfo.marketPrice = goodsData.marketPrice
       this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
       this.goodsProductInfo.limitMaxNum = goodsData.limitMaxNum
       this.goodsProductInfo.baseSale = goodsData.baseSale
       if (isUseDefaultPrd) {
         this.goodsProductInfo.prdNumber = goodsData.goodsNumber
         this.goodsProductInfo.prdPrice = goodsData.shopPrice
+        // 如果使用null的话vue那个组件认为你想要的是默认值 0，其实我是想显示空白
+        this.goodsProductInfo.marketPrice = goodsData.marketPrice === null ? undefined : goodsData.marketPrice
         this.goodsProductInfo.prdCost = goodsData.costPrice
         this.goodsProductInfo.prdSn = goodsData.goodsSpecProducts[0].prdSn
       }

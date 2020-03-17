@@ -123,7 +123,7 @@
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
                       v-if="item.linePrice&&data.show_market==='1'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >￥{{Number(item.linePrice).toFixed(2)}}</span>
+                    >￥{{Number(item.linePrice).toFixed(2)==='0.00'?'':Number(item.linePrice).toFixed(2)}}</span>
                     <span
                       style="color: #c0c0c0"
                       v-if="data.show_market==='2'&&data.other_message==='0'&&data.shop_style!=='2'"

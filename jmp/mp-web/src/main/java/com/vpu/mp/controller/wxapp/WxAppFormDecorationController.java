@@ -27,7 +27,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/get")
-    private JsonResult getInfo(@RequestBody @Validated FormGetParam param){
+    public JsonResult getInfo(@RequestBody @Validated FormGetParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
         FormDetailVo formDecorationInfo = shop().formService.getFormDecorationInfo(param.getPageId(), param.getUserId());
@@ -39,7 +39,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/submit")
-    private JsonResult submitFormData(@RequestBody @Validated FormSubmitDataParam param) throws MpException {
+    public JsonResult submitFormData(@RequestBody @Validated FormSubmitDataParam param) throws MpException {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUser(user);
         shop().formService.submitFormDate(param);
@@ -50,9 +50,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
      * 表单提交成功
      */
     @PostMapping("/success")
-    private JsonResult submitSuccess(@RequestBody @Validated FormSuccessParam param){
-        shop().formService.submitSuccess(param);
-        return success();
+    public JsonResult submitSuccess(@RequestBody @Validated FormSuccessParam param){
+        return success(shop().formService.submitSuccess(param));
     }
-
 }

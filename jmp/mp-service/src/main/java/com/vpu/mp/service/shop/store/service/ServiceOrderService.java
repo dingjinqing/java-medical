@@ -362,6 +362,17 @@ public class ServiceOrderService extends ShopBaseService {
      */
     public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
         StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
+        Timestamp serviceTime = DateUtil.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
+
+        if(serviceTime.after(storeServiceRecord.getStartDate()) && serviceTime.before(storeServiceRecord.getEndDate())){
+            Timestamp storeServiceStartDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
+            Timestamp storeServiceEndDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
+            if(serviceTime.before(storeServiceStartDate) || serviceTime.after(storeServiceEndDate)){
+                return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+            }
+        }else{
+            return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+        }
         if(storeServiceRecord.getServiceType() == 1){
             if(param.getTechnicianId()  == null || param.getTechnicianId() <= 0 || !StringUtil.isNotEmpty(param.getTechnicianName())){
                 return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL;

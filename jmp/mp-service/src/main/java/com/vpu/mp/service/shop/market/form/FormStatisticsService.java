@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataParam;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessParam;
+import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessVo;
 import com.vpu.mp.service.pojo.wxapp.share.FormPictorialRule;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialFormImgPx;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -558,7 +560,7 @@ public class FormStatisticsService extends ShopBaseService {
         }
         try {
             JsonNode cfg = MAPPER.readTree(formCfg);
-            listRecord.setSendScore(cfg.get(SEND_SCORE_NUM).intValue());
+            listRecord.setSendScore(cfg.get(SEND_SCORE_NUMBER).intValue());
             Iterator<JsonNode> iterator = cfg.get(SEND_COUPON_LIST).elements();
             StringBuffer sBuffer = new StringBuffer();
             while (iterator.hasNext()) {
@@ -580,8 +582,8 @@ public class FormStatisticsService extends ShopBaseService {
      * @return 优惠券编号列表字符串
      */
     private String getCouponSn(Integer couponId, Integer userId) {
-        String couponSn = couponGiveService.collectingCoupons(couponId, userId);
-        log.debug("反馈信息提交后会给用户插入一条相应的领取优惠券记录并生成优惠券编号 [{}] 供后续使用", couponSn);
+//        String couponSn = couponGiveService.collectingCoupons(couponId, userId);
+        log.debug("反馈信息提交后会给用户插入一条相应的领取优惠券记录并生成优惠券编号 [{}] 供后续使用", couponId);
         String[] couponArray = db().select(cac.COUPON_SN).from(cac).where(cac.USER_ID.eq(userId)).and(cac.ACT_ID.eq(couponId)).fetchArray(cac.COUPON_SN, String.class);
         return String.join(",", couponArray);
     }
@@ -681,17 +683,24 @@ public class FormStatisticsService extends ShopBaseService {
             scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_FORM_DECORATION_GIFT.val(), TRADE_FLOW_IN.val());
 
         }
-        int sendCoupon = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_COUPON));
-        int sendCouponList =Integer.parseInt( getValueFromFormCfgByKey(formCfg, SEND_COUPON_LIST));
-        if (sendCoupon==1&&sendCouponList>0){
-            log.info("送优惠券");
+        try {
+            int sendCoupon = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_COUPON));
+            JsonNode cfg = MAPPER.readTree(formCfg);
+            Iterator<JsonNode> iterator = cfg.get(SEND_COUPON_LIST).elements();
+            if (sendCoupon==1&&iterator.hasNext()){
+                log.info("送优惠券");
+                //todo 送优惠券
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         //TODO 更新库存
     }
 
     private void saveSubmitForm(FormSubmitDataParam param) {
         db().transaction(configuration -> {
-            FormSubmitListRecord listRecord = new FormSubmitListRecord();
+            FormSubmitListRecord listRecord =db().newRecord(  fsl);
             listRecord.setPageId(param.getPageId());
             listRecord.setUserId(param.getUser().getUserId());
             listRecord.setNickName(param.getUser().getUsername());
@@ -721,17 +730,20 @@ public class FormStatisticsService extends ShopBaseService {
     /**
      * 表单提交成功
      * @param param
+     * @return
      */
-    public void submitSuccess(FormSuccessParam param) {
+    public FormSuccessVo submitSuccess(FormSuccessParam param) {
         FormSubmitListRecord formSubmit = db().selectFrom(fsl).where(fsl.SUBMIT_ID.eq(param.getId())).fetchAny();
         if (formSubmit==null){
             log.error("我查询到数据");
         }
+        FormSuccessVo formSuccessVo = formSubmit.into(FormSuccessVo.class);
         String sendCoupons = formSubmit.getSendCoupons();
         if (!Strings.isEmpty(sendCoupons)){
-            List<Integer> couponSns = Util.stringToList(sendCoupons);
-            couponService.getCouponDetailByCouponSnList(couponSns).into();
+            List<String> couponSns = Util.stringToStringList(sendCoupons);
+            List<CouponAndVoucherDetailVo> couponDetailByCouponSnList = couponService.getCouponDetailByCouponSnList(couponSns);
+            formSuccessVo.setCouponList(couponDetailByCouponSnList);
         }
-
+        return formSuccessVo;
     }
 }

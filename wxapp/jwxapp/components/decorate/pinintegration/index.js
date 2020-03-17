@@ -12,7 +12,7 @@ global.wxComponent({
     bindToPinIntegration (e) {
       var act_id = e.currentTarget.dataset.act_id;
       console.log(act_id)
-      util.jumpLink('/pages/pinintegration/pinintegration?pinInte_id=' + act_id);
+      util.jumpLink('/pages1/pinintegration/pinintegration?pid=' + act_id);
     }
   }
 });
