@@ -306,9 +306,9 @@
                   <div class="grade_condition">
                     <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
                     <div class="grade_detail">
-                      <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}</p>
+                      <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
                       <p>{{$t('memberCard.or')}}</p>
-                      <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}</p>
+                      <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
                     </div>
                   </div>
                   </div>
