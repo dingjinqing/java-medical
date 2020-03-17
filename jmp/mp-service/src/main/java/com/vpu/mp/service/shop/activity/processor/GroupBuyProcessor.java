@@ -286,7 +286,8 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(param.getActivityId(), goods.getProductId(), goods.getGoodsNumber());
             if (!b) {
-                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX);
+                log.error("拼团改库存失败,商品名称:{}",goods.getGoodsInfo().getGoodsName());
+                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT);
             }
         }
     }
@@ -298,12 +299,13 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      * @param returnGoods 退款商品
      */
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         log.info("拼团退款-退库存");
         for (OrderReturnGoodsVo returnGoodsVo : returnGoods) {
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(activityId, returnGoodsVo.getProductId(), -returnGoodsVo.getGoodsNumber());
             if (!b) {
                 log.error("拼团退款,退库存-失败");
+                throw new MpException(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED);
             }
         }
     }
