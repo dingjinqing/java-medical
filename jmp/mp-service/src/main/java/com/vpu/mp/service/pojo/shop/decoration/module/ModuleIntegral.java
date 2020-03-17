@@ -23,6 +23,9 @@ public class ModuleIntegral extends ModuleBase {
     @JsonProperty("show_goods_price")
     private Boolean showGoodsPrice=true;
 
+    @JsonProperty("integral_goods")
+    private IntegralGoods integralGoods;
+
     @Getter
     @Setter
     public static class IntegralGoods{
