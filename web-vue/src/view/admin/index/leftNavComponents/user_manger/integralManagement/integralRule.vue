@@ -137,8 +137,7 @@
                   size="small"
                   v-model="form.scorePayNum"
                   controls-position="right"
-                  :min="100"
-                  :max="10000"
+                  :min="1"
                 ></el-input-number>{{$t('scoreCfg.scorePayDesTwo')}}
                 <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print2')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print3')}}</span>
               </span>
@@ -383,13 +382,10 @@ export default {
       }
     }
     var validatePayLimit = (rule, value, callback) => {
-      var re = /^[1-9]\d*00$/
       if (!value) {
         callback(new Error('请选择积分支付限制'))
       } else if (value === '1' && !this.form.scorePayNum) {
         callback(new Error('请完整填写积分支付限制'))
-      } else if (value === '1' && !re.test(this.form.scorePayNum)) {
-        callback(new Error('请正确填写积分支付限制'))
       } else {
         callback()
       }
@@ -785,6 +781,10 @@ export default {
     saveScoreHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if (!this.checkScorePayNum()) {
+            console.log('错了')
+            return
+          }
           // 购物送积分
           if (this.form.scoreType === '0') {
             this.form.buy = []
@@ -815,7 +815,19 @@ export default {
       })
       this.submitStatus = false
     },
-
+    checkScorePayNum () {
+      if (this.form.scorePayLimit === '1') {
+        let scoreProportion = Number(this.form.scoreProportion)
+        let scorePayNum = Number(this.form.scorePayNum)
+        if (scorePayNum < scoreProportion || scorePayNum % scoreProportion !== 0) {
+          this.$message.error('积分支付限制应大于等于' + scoreProportion + ',且为' + scorePayNum + '的整数倍')
+          return false
+        } else {
+          return true
+        }
+      }
+      return true
+    },
     // 3- 添加购物满
     handleToAddIntegral () {
       this.shopFullArr.push({

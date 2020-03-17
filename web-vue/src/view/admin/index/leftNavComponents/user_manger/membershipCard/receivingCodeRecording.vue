@@ -4,7 +4,7 @@
   :title="$t('memberCard.title')"
     :visible.sync="dialogVisible"
         center
-  width="30%">
+  width="530px">
   <div>
   <span>{{$t('memberCard.batchId')}}：{{this.otherData.batchName}}</span>
   <span style="float: right;">{{$t('memberCard.total')}}：{{this.otherData.successNum}}/10000</span>
