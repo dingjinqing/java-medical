@@ -497,6 +497,16 @@ export default {
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }
+      // 处理领取码
+      let batchIds = null
+      if (Number(this.cardReceiveCfgData.receiveAction) === 1) {
+        // 领取码
+        batchIds = this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId)
+      } else {
+        // 卡号+密码
+        batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
+      }
+
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -551,7 +561,7 @@ export default {
         'payMoney': this.cardReceiveCfgData.payMoney,
         'payScore': this.cardReceiveCfgData.payScore,
         'receiveAction': this.cardReceiveCfgData.receiveAction,
-        'batchIdList': this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId),
+        'batchIdList': batchIds,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine
