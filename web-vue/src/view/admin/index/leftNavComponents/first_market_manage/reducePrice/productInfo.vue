@@ -92,7 +92,7 @@ export default {
       if (val === true) {
         this.reducePriceProduct = JSON.parse(JSON.stringify(this.productInfo.reducePriceProduct))
         this.reducePriceProduct.forEach((item, index) => {
-          item.lastPrice = item.originalPrice - this.productInfo.reducePrice
+          item.lastPrice = item.prdPrice
         })
       }
     },
