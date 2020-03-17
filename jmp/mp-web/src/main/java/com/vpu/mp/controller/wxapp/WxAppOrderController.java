@@ -2,7 +2,6 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
@@ -15,7 +14,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
@@ -134,8 +132,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	@PostMapping("/list")
 	public JsonResult list(@RequestBody @Valid OrderListParam param) {
 		param.setWxUserInfo(wxAppAuth.user());
-		PageResult<OrderListMpVo> result = shop().readOrder.getPageList(param);
-		return success(result);
+		return success(shop().readOrder.getPageList(param));
 	}
 
 	/**
