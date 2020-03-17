@@ -607,17 +607,14 @@ public class OrderReadService extends ShopBaseService {
 		// 拼团
 		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
-			//未退款
-			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
-                Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
-                List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
-                order.setGroupBuyUserInfos(pinUserList);
-                order.setGroupId(groupOrder.getGroupId());
-				GroupOrderVo groupOrderVo =new GroupOrderVo();
-				groupOrderVo.setStatus(groupOrder.getStatus());
-				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
-                order.setGroupBuyInfo(groupOrderVo);
-            }
+			Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
+			List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
+			order.setGroupBuyUserInfos(pinUserList);
+			order.setGroupId(groupOrder.getGroupId());
+			GroupOrderVo groupOrderVo =new GroupOrderVo();
+			groupOrderVo.setStatus(groupOrder.getStatus());
+			groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
+			order.setGroupBuyInfo(groupOrderVo);
 		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
