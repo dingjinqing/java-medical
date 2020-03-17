@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -153,6 +154,6 @@ public class AdminCouponController extends AdminBaseController{
      */
     @GetMapping("/admin/coupon/share")
     public JsonResult getCouponShareCode(Integer couponId) {
-        return success(shop().coupon.getMpQrCode(couponId));
+        return this.success(shop().coupon.getMpQrCode(couponId));
     }
 }
