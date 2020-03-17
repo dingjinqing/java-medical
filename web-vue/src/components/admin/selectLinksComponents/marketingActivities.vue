@@ -111,7 +111,7 @@ export default {
                 } else {
                   this.tbodyFlag = true
                 }
-                this.path = 'pages1/pinintegration/pinintegration?pinInte_id='
+                this.path = 'pages1/pinintegration/pinintegration?pid='
                 this.trList = res.content
               } else if (res.error === -1) this.tbodyFlag = false
               console.log(res)
