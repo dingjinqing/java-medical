@@ -8,11 +8,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -32,18 +28,8 @@ import java.util.List;
 import static com.vpu.mp.db.main.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
 import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_ALL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
-import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_MONEY;
-import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM;
-import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM_MONEY;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.*;
 
 /**
  * 免邮费
@@ -279,14 +265,15 @@ public class FreeShippingService extends ShopBaseService {
     /**
      * 分享满包邮活动
      *
-     * @param id
+     * @param ruleId
      * @return
      */
-    public ShareQrCodeVo shareFreeShipping(Integer id) {
-        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FULL_SHIP, id.toString());
+    public ShareQrCodeVo shareFreeShipping(Integer ruleId) {
+        String pathParam=String.format("ruleId=%d", ruleId);
+        String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.FULL_SHIP, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.FULL_SHIP.getPathUrl(imageUrl));
+        vo.setPagePath(QrCodeTypeEnum.FULL_SHIP.getUrl());
         return vo;
     }
 
