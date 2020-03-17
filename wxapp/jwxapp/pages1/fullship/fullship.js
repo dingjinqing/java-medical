@@ -1,4 +1,5 @@
 var util = require('../../utils/util.js')
+var scene;
 global.wxPage({
 
   /**
@@ -14,6 +15,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let {ruleId} = options
+    scene = options.scene
     this.setData({
       ruleId
     })
@@ -44,6 +46,7 @@ global.wxPage({
       ruleId:this.data.ruleId,
       currentPage: currentPage,
       pageRows: 20,
+      scene: scene
     })
   },
   requestCartGoodsList(){

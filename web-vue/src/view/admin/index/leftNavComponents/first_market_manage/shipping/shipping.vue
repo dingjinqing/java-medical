@@ -129,7 +129,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-share"
-                  @click="shareHandler(scope.row.id)"
+                  @click="shareHandler(scope.row.ruleList[0].id)"
                 ></span>
               </el-tooltip>
               <el-tooltip
@@ -310,9 +310,9 @@ export default {
     },
 
     // 分享
-    shareHandler (id) {
+    shareHandler (ruleId) {
       this.shareDialog = !this.shareDialog
-      shareShipping({ id: id }).then((res) => {
+      shareShipping(ruleId).then((res) => {
         if (res.error === 0) {
           this.shareImg = res.content.imageUrl
           this.sharePath = res.content.pagePath

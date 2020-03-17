@@ -44,8 +44,8 @@ export default {
       lang: '',
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
-      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'lottery_effect_view', 'lottery_group_view', 'lottery_user_view', 'lottery_order_view', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'bargain_record_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'seckill_order_view', 'seckill_detail_view', 'seckill_user_view', 'seckill_effect_view'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'bargain_bargain_user', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill']// 跳转池
+      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'lottery_effect_view', 'lottery_group_view', 'lottery_user_view', 'lottery_order_view', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'seckill_order_view', 'seckill_detail_view', 'seckill_user_view', 'seckill_effect_view', 'lottery_detail_view', 'gift_detail_view', 'gift_add_view'], // name池,
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift']// 跳转池
     }
   },
   watch: {
@@ -257,9 +257,19 @@ export default {
             })
           } else {
             console.log(this.$route.name, this.nameArr.indexOf(this.$route.name), this.turnArr[this.nameArr.indexOf(this.$route.name)])
-            this.$router.push({
-              name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
-            })
+            if (name === '发起砍价用户列表') {
+              this.$router.push({
+                name: 'bargain_bargain_user'
+              })
+            } else if (name === '砍价') {
+              this.$router.push({
+                name: 'bargain'
+              })
+            } else {
+              this.$router.push({
+                name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
+              })
+            }
           }
         }
       }

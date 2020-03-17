@@ -311,6 +311,9 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getEndTime() != null) {
 			select.where(CARD_CONSUMER.CREATE_TIME.le(param.getEndTime()));
 		}
+		if(!StringUtils.isBlank(param.getCardNo())) {
+			select.where(CARD_CONSUMER.CARD_NO.eq(param.getCardNo()));
+		}
 	}
 
 	/**
