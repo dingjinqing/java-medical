@@ -72,7 +72,7 @@ public class HelpController extends HelpBaseController {
 	 */
 	@GetMapping("/api/wxapp/pinintegration/help")
 	public JsonResult getGroupInfo(@RequestParam Integer shop_id,@RequestParam Integer pid) {
-		log.info("进入签到帮助页");
+		log.info("进入组团瓜分积分活动说明");
 		checkId();
 		GroupInteMaVo vo = saas.getShopApp(shop_id).groupIntegration.getActivityCopywriting(pid);
 		if(vo==null) {

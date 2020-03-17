@@ -235,8 +235,7 @@ global.wxComponent({
     getPrdInfo() {
       let select_prd = JSON.parse(JSON.stringify(this.select_prd))
       let { limitBuyNum, limitMaxNum,activity} = this.data.productsInfo
-      // 商品价格
-      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3 && activity.activityType !== 8 && activity.activityType !== 4){
+      if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType !== 3 && activity.activityType !== 8 && activity.activityType !== 4 || (activity && [6,18,22,98].includes(activity.activityType))){
         select_prd.prdRealPrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdRealPrice']]
         select_prd.prdLinePrice = select_prd['actProduct'][actPrdType[activity.activityType]['prdLinePrice']]
         if(activity.activityType === 1){

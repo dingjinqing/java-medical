@@ -118,7 +118,7 @@
           >
             <el-input-number
               v-model="form.first"
-              :min='0'
+              :min='1'
               controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
@@ -164,8 +164,10 @@
             required
           >
             <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
-            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span @click="onlySelectGoodsHandle" style="color: #e4393c"
-            >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
+            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span
+                @click="onlySelectGoodsHandle"
+                style="color: #e4393c"
+              >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
           </el-form-item>
           <!-- 设置商品首单优惠 -->
           <div
@@ -672,6 +674,7 @@ export default {
         this.tableData = this.tableData.filter(function (item, i) {
           return item.goodsId !== goodsId
         })
+        this.goodsIdList = this.tableData.map(item => item.goodsId)
       })
     },
     handleSelectionChange (rows) {
@@ -870,6 +873,7 @@ export default {
             return item
           }
         })
+        that.goodsIdList = that.tableData.map(item => item.goodsId)
       })
     },
     // 批量价格取整
@@ -887,14 +891,16 @@ export default {
         if (that.selectGoods.length > 0) {
           that.selectGoods.forEach(function (item, i) {
             let index = that.tableData.findIndex((row, j) => row.goodsId === item.goodsId)
-            let batchFinalPrice = Math.ceil(that.tableData[index].batchFinalPrice)
+            let batchFinalPrice = Math.round(that.tableData[index].batchFinalPrice)
             item.batchFinalPrice = batchFinalPrice
-            item.goodsProductParams = item.goodsProductParams.map((good, k) => {
-              if (good.prdPrice) {
-                good.prdPrice = Math.ceil(good.prdPrice)
-              }
-              return good
-            })
+            if (item.goodsProductParams && item.goodsProductParams.length > 0) {
+              item.goodsProductParams = item.goodsProductParams.map((good, k) => {
+                if (good.prdPrice) {
+                  good.prdPrice = Math.round(good.prdPrice)
+                }
+                return good
+              })
+            }
             that.$set(that.tableData, index, item)
             console.log(that.tableData[index])
           })

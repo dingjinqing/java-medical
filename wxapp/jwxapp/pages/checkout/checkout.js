@@ -96,9 +96,11 @@ global.wxPage({
       res => {
         if (res.error === 0) {
           let orderInfo = res.content
+          this.setCardData(orderInfo)
           this.setData({
             orderInfo
           })
+          console.log(this.data.orderInfo)
           if(orderInfo.activityType === 4){ //积分兑换数据
             this.setScoreRedeemData(orderInfo)
           }
@@ -745,6 +747,16 @@ global.wxPage({
         orderSn
       })
     })
+  },
+  setCardData(orderInfo){
+    if(orderInfo.defaultMemberCard){
+      orderInfo.defaultMemberCard = {...orderInfo.defaultMemberCard,...orderInfo.defaultMemberCard.info}
+    }
+    if(orderInfo.memberCards){
+      orderInfo.memberCards = orderInfo.memberCards.map(item=>{
+        return {...item,...item.info}
+      })
+    }
   },
   // 积分兑换数据
   setScoreRedeemData(orderInfo){

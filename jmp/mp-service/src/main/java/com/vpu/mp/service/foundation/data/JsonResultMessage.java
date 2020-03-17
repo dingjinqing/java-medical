@@ -1010,6 +1010,18 @@ public class JsonResultMessage {
     public static final String FORM_FEED_MOBILE = "form.feed.mobile";
     public static final String FORM_FEED_CREATE_TIME = "form.feed.create.time";
 
-    //好友助力
+    /**好友助力*/
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
+
+    /**积分兑换*/
+    public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export";
+    public static final String INTEGRAL_MALL_ORDER_SN = "integral.mall.orderSn";
+    public static final String INTEGRAL_MALL_GOODS = "integral.mall.goods";
+    public static final String INTEGRAL_MALL_GOODS_PRICE = "integral.mall.goods.price";
+    public static final String INTEGRAL_MALL_GOODS_NUMBER = "integral.mall.goods.number";
+    public static final String INTEGRAL_MALL_MONEY = "integral.mall.money";
+    public static final String INTEGRAL_MALL_SCORE = "integral.mall.score";
+    public static final String INTEGRAL_MALL_USER = "integral.mall.user";
+    public static final String INTEGRAL_MALL_RECEIVER = "integral.mall.receiver";
+    public static final String INTEGRAL_MALL_ORDER_STATUS = "integral.mall.order.status";
 }

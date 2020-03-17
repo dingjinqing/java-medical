@@ -34,16 +34,28 @@ global.wxComponent({
           api:'/api/wxapp/bargain/pictorial/info',
           params:['realPrice','linePrice','activityId','pageType']
         },
+        6:{ //限时降价
+          api:'/api/wxapp/reduceprice/pictorial/info',
+          params:['realPrice','linePrice','activityId','targetId']
+        },
+        8:{ //拼团抽奖
+          api:'/api/wxapp/groupdraw/pictorial/info',
+          params:['realPrice','linePrice','activityId','targetId']
+        },
         10:{ //定金膨胀
           api:'/api/wxapp/presale/pictorial/info',
           params:['realPrice','linePrice','activityId','targetId','depositPrice']
+        },
+        18:{ //首单特惠
+          api:'/api/wxapp/firstspecial/pictorial/info',
+          params:['realPrice','activityId','targetId']
         },
         'default':{ //普通商品
           api:'/api/wxapp/goods/pictorial/info',
           params:['realPrice','linePrice','activityId','targetId']
         } 
       }
-      let target = [1,3,5,10].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
+      let target = [1,3,5,6,8,10,18].includes(this.data.shareData.activityType) ? apiInfo[this.data.shareData.activityType] : apiInfo['default']
       let params = this.filterObj(this.data.shareData,target.params)
       wx.showLoading({
         title: '生成中',
