@@ -433,7 +433,10 @@ export default {
         name: 'refillDetailsItem',
         query: {
           cardNo: item.cardNo,
-          cardType: item.cardType
+          cardType: item.cardType,
+          cardId: item.cardId,
+          userId: item.userId,
+          username: item.username
         }
       })
     }
