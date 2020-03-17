@@ -264,18 +264,21 @@ public class MemberCardService extends ShopBaseService {
 			List<CardRight> customRightsAll = customRights.getCustomRightsAll();
 			
 			// 将图片的URL处理成相对路径
-			for(CardRight right: customRightsAll) {
-				String imgUrl = right.getCrightImage();
-				if(!StringUtils.isBlank(imgUrl)) {
-					try {
-						URL url = new URL(imgUrl);
-						imgUrl = url.getPath();
-					} catch (MalformedURLException e) {
-						imgUrl = null;
+			if(customRightsAll != null) {
+				for(CardRight right: customRightsAll) {
+					String imgUrl = right.getCrightImage();
+					if(!StringUtils.isBlank(imgUrl)) {
+						try {
+							URL url = new URL(imgUrl);
+							imgUrl = url.getPath();
+						} catch (MalformedURLException e) {
+							imgUrl = null;
+						}
 					}
+					right.setCrightImage(imgUrl);
 				}
-				right.setCrightImage(imgUrl);
 			}
+
 			
 			if(customRightsAll != null && customRightsAll.size()>0) {
 				rightsJson = Util.toJson(customRightsAll);
