@@ -162,8 +162,8 @@
               </td>
               <td class="link">
                 <div class="operateDiv">
-                  <span @click="jumpToChargeDetail(item)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
-                  <span>-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
+                  <span @click="jumpToChargeDetail(item,1)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
+                  <span @click="jumpToChargeDetail(item,2)">-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
                   <span
                     v-if="!item.deleteShow"
                     @click="deleteUserCard(item)"
@@ -427,7 +427,7 @@ export default {
       this.modifyDialogData.visiable = false
     },
 
-    jumpToChargeDetail (item) {
+    jumpToChargeDetail (item, flag) {
       // 充值明细
       this.$router.push({
         name: 'refillDetailsItem',
@@ -436,7 +436,8 @@ export default {
           cardType: item.cardType,
           cardId: item.cardId,
           userId: item.userId,
-          username: item.username
+          username: item.username,
+          activeName: flag
         }
       })
     }
