@@ -18,7 +18,6 @@ global.wxPage({
     limit: [], // 需要邀请团员人数
     inteGoods: {}, // 积分商品列表
     total_micro_second: 0, // 倒计时总时间
-    choose_list: {}, // 活动规则
     group_gd: {}, // 被邀请参与活动信息
     end: false, // 倒计时结束
     share: false, // 分享成功弹窗
@@ -60,7 +59,7 @@ global.wxPage({
   },
   // 活动规则
   toRule: function () {
-    util.jumpToWeb('/wxapp/pinintegration/help', choose_list);
+    util.jumpToWeb('/wxapp/pinintegration/help', '&pid=' + this.data.pinInte_id);
   },
   // 跳转参与活动列表
   toActivity: function () {
@@ -298,13 +297,8 @@ function request_pinIntegration(that) {
         if (ress.error == 0) {
           var gd = ress.content;
           var pin_info = ress.content.pinInteInfo;
-          // that.data.choose_list['limit_amount'] = pin_info.limit_amount;
-          // that.data.choose_list['inte_group'] = pin_info.inte_group;
-          // that.data.choose_list['join_limit'] = pin_info.join_limit;
-          // that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
           var num = pin_info.limitAmount - 1;
           var person = ress.content.groupInfo;
-          // var inteGoods = ress.content.inteGoodsInfo;
           var limit = [];
           for (var i = 0; i < num; i++) {
             limit.push(i);
@@ -313,8 +307,7 @@ function request_pinIntegration(that) {
             gd: gd, // 全部信息
             pin_info: pin_info, // 活动信息
             person: person, // 团成员信息
-            limit: limit, // 邀请人数
-            // inteGoods: inteGoods, // 积分商品列表
+            limit: limit // 邀请人数
           })
           // 单次活动时限
           that.setData({ total_micro_second: parseInt(that.data.gd.remainTime / 1000) })
@@ -348,13 +341,8 @@ function request_pinIntegration(that) {
           if (ress.error == 0) {
             var gd = ress.content;
             var pin_info = ress.content.pinInteInfo;
-            // that.data.choose_list['limit_amount'] = pin_info.limit_amount;
-            // that.data.choose_list['inte_group'] = pin_info.inte_group;
-            // that.data.choose_list['join_limit'] = pin_info.join_limit;
-            // that.data.choose_list['is_day_divide'] = pin_info.is_day_divide;
             var num = pin_info.limitAmount - 1;
             var person = ress.content.groupInfo;
-            // var inteGoods = ress.content.inteGoodsInfo;
             var limit = [];
             for (var i = 0; i < num; i++) {
               limit.push(i);
@@ -363,8 +351,7 @@ function request_pinIntegration(that) {
               gd: gd, // 全部信息
               pin_info: pin_info, // 活动信息
               person: person, // 团成员信息
-              limit: limit, // 邀请人数
-              // inteGoods: inteGoods, // 积分商品列表
+              limit: limit // 邀请人数
             })
             // 单次活动时限
             that.setData({ total_micro_second: parseInt(that.data.gd.remainTime / 1000) })

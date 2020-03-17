@@ -11,6 +11,7 @@ var usercenter = require('./page1/usercenter.js') // 个人中心
 var pinlottery = require('./page1/pinlottery.js') // 拼团抽奖
 var coupon = require('./pages/coupon.js') // 优惠券
 var promote = require('./page1/promote.js') // 好友助力
+var pinintegration = require('./page1/pinintegration.js') // 瓜分积分
 var decorate = require('./components/decorate/decorate.js')
 var item = require('./pages/item.js')
 var zh_CN = {
@@ -67,7 +68,8 @@ var zh_CN = {
     "reserve": reserve,
     "usercenter": usercenter,
     'pinlottery': pinlottery,
-    'promote': promote
+    'promote': promote,
+    'pinintegration': pinintegration
   },
   "page2": {
 

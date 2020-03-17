@@ -33,3 +33,11 @@ export function tichTextUpLoadRequest (data) {
     data: data
   })
 }
+
+// 小程序瓜分积分规则接口
+export function integrationRules (data) {
+  return service({
+    url: `/api/wxapp/pinintegration/help?shop_id=${data.shop_id}&pid=${data.pid}`,
+    method: 'get'
+  })
+}
