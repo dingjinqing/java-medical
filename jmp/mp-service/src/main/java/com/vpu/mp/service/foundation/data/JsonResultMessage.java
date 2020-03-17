@@ -430,6 +430,7 @@ public class JsonResultMessage {
 	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
     public static final String CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL = "store.service.order.technician.is.null";
     public static final String CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE = "store.service.order.technician.no.schedule";
+    public static final String CODE_SERVICE_ORDER_WRONG_SERVICE_DATE = "store.service.order.wrong.service.date";
 
     /**
      * 门店核销员列表导出列
