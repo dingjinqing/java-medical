@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -740,7 +741,8 @@ public class FormStatisticsService extends ShopBaseService {
         String sendCoupons = formSubmit.getSendCoupons();
         if (!Strings.isEmpty(sendCoupons)){
             List<String> couponSns = Util.stringToStringList(sendCoupons);
-            couponService.getCouponDetailByCouponSnList(couponSns).into();
+            List<CouponAndVoucherDetailVo> couponDetailByCouponSnList = couponService.getCouponDetailByCouponSnList(couponSns);
+            formSuccessVo.setCouponList(couponDetailByCouponSnList);
         }
         return formSuccessVo;
     }

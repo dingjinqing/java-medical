@@ -979,12 +979,28 @@ public class CouponService extends ShopBaseService {
             fetchAnyInto(Timestamp.class);
     }
 
-    public Result<Record> getCouponDetailByCouponSnList(List<String> couponSns) {
-        return  db().select().from(CUSTOMER_AVAIL_COUPONS)
+    /**
+     * 获取优惠信息
+     * @param couponSns
+     * @return
+     */
+    public List<CouponAndVoucherDetailVo> getCouponDetailByCouponSnList(List<String> couponSns) {
+        Result<Record> fetch = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(),
+                MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.DENOMINATION,MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.USE_EXPLAIN,MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,
+                MRKING_VOUCHER.USE_SCORE,MRKING_VOUCHER.SCORE_NUMBER,MRKING_VOUCHER.DEL_FLAG,
+                MRKING_VOUCHER.VALIDITY,MRKING_VOUCHER.VALIDITY_HOUR,MRKING_VOUCHER.VALIDITY_MINUTE,
+                MRKING_VOUCHER.RANDOM_MAX,MRKING_VOUCHER.RANDOM_MIN,MRKING_VOUCHER.TYPE.as("couponType"),
+                MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RECEIVE_NUM)
+                .from(CUSTOMER_AVAIL_COUPONS)
                 .leftJoin(MRKING_VOUCHER).on(MRKING_VOUCHER.ID.eq(CUSTOMER_AVAIL_COUPONS.ACT_ID))
                 .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.in(couponSns))
                 .fetch();
-
+        List<CouponAndVoucherDetailVo> into = new ArrayList<>();
+        if (fetch != null) {
+            into = fetch.into(CouponAndVoucherDetailVo.class);
+        }
+        return into;
     }
 
     /**
