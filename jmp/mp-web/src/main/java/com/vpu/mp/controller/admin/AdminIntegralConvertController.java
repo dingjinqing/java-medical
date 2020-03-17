@@ -35,8 +35,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 查询积分兑换活动分页列表
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动状态 默认查进行中
+	 * @return 活动分页信息
 	 */
 	@PostMapping("/list")
 	public JsonResult getList(@RequestBody IntegralConvertListParam param) {
@@ -49,8 +49,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 停用或启用活动
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动id
+	 * @return void
 	 */
 	@PostMapping("/switch")
 	public JsonResult startOrStop(@RequestBody IntegralConvertId param) {
@@ -63,8 +63,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 删除单个活动
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动id
+	 * @return void
 	 */
 	@PostMapping("/delete")
 	public JsonResult deleteAct(@RequestBody IntegralConvertId param) {
@@ -75,8 +75,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 积分兑换用户列表
 	 *
-	 * @param param
-	 * @return
+	 * @param param 用户名or手机号
+	 * @return 用户参与信息
 	 */
 	@PostMapping("/user")
 	public JsonResult userList(@RequestBody IntegralConvertUserParam param) {
@@ -88,8 +88,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 添加积分兑换活动
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动详情
+	 * @return void
 	 */
 	@PostMapping("/add")
 	public JsonResult addAction(@RequestBody IntegralConvertAddParam param) {
@@ -101,8 +101,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 返回指定商品规格详情
 	 *
-	 * @param param
-	 * @return
+	 * @param param 商品id
+	 * @return 对应规格详情
 	 */
 	@PostMapping("/product")
 	public JsonResult getProduct(@RequestBody IntegralConvertGoodsParam param) {
@@ -114,8 +114,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 查询指定积分兑换活动详情
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动id
+	 * @return 活动详情
 	 */
 	@PostMapping("/select")
 	public JsonResult selectOne(@RequestBody IntegralConvertSelectParam param) {
@@ -126,8 +126,8 @@ public class AdminIntegralConvertController extends AdminBaseController{
 	/**
 	 * 编辑积分兑换活动
 	 *
-	 * @param param
-	 * @return
+	 * @param param 活动详情
+	 * @return void
 	 */
 	@PostMapping("/update")
 	public JsonResult updateAction(@RequestBody IntegralConvertAddParam param) {

@@ -190,27 +190,26 @@ public class IntegralConvertService extends ShopBaseService {
 	/**
 	 * 积分兑换用户列表
 	 *
-	 * @param param
-	 * @return PageResult<IntegralConvertUserVo>
+	 * @param param 用户名or手机号
+	 * @return 用户/订单/积分兑换信息
 	 */
 	public PageResult<IntegralConvertUserVo> userList(IntegralConvertUserParam param) {
 
 		SelectConditionStep<? extends Record> sql = db().select(imr.USER_ID, imr.ORDER_SN, imr.GOODS_ID, GOODS.GOODS_IMG,
-            GOODS.GOODS_NAME, imr.MONEY,
-						imr.SCORE, USER.USERNAME, USER.MOBILE, imr.NUMBER, imr.CREATE_TIME)
+            GOODS.GOODS_NAME, imr.MONEY, imr.SCORE, USER.USERNAME, USER.MOBILE, imr.NUMBER, imr.CREATE_TIME)
 				.from(imr).leftJoin(GOODS).on(imr.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(USER)
 				.on(imr.USER_ID.eq(USER.USER_ID)).where(imr.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()));
-		/* 查询条件 */
-		/* 用户昵称 */
+		// 用户昵称
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.and(USER.USERNAME.like(this.likeValue(param.getUsername())));
 		}
-		/* 手机号 */
+		// 手机号
 		if (!StringUtils.isNullOrEmpty(param.getMobile())) {
 			sql.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
 		}
-
-		/* 整合分页信息 */
+        //降序排序
+        sql.orderBy(imr.ID.desc());
+		// 整合分页信息
 		PageResult<IntegralConvertUserVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertUserVo.class);
 
