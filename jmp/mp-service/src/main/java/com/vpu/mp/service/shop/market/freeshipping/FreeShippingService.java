@@ -322,6 +322,9 @@ public class FreeShippingService extends ShopBaseService {
      * @return
      */
     public boolean checkedFreeshipCondition(UserAddressVo address, BigDecimal[] tolalNumberAndPrice, List<FreeShippingRuleVo> ruleList) {
+        if (address==null){
+            return false;
+        }
         for (FreeShippingRuleVo rule : ruleList) {
             List<Integer> districtCode = Util.stringToList(rule.getArea());
             if (matchDistrictCode(address.getDistrictCode(),districtCode)) {
