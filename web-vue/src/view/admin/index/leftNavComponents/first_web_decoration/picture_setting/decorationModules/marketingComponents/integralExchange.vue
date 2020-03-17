@@ -19,15 +19,15 @@
             >
               <div
                 class="liTop"
-                :style="(!item.goodsImg?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles===1?';width:100px;height:100px;padding:5px':'')"
+                :style="(!item.goods_img?'background:#eaf2ff url('+$imageHost+'/image/admin/shop_beautify/decorate_model.png) center no-repeat':'backgroundColor:#fff')+(modulesData.list_styles===1?';width:100px;height:100px;padding:5px':'')"
               >
-                <img :src="item.goodsImg">
+                <img :src="item.goods_img">
               </div>
               <div
                 class="liBottom"
                 :style="modulesData.list_styles===1?'flex:1':''"
               >
-                <div class="goodsName">{{item.goodsName}}</div>
+                <div class="goodsName">{{item.goods_name}}</div>
                 <div
                   class="integral_info_head "
                   :style="modulesData.list_styles===1?'margin-top:37px':''"
@@ -42,7 +42,7 @@
                   <div
                     class="orignakl_orice"
                     v-if="modulesData.show_goods_price"
-                  >￥{{item.prdPrice}}</div>
+                  >￥{{item.prd_price}}</div>
                   <div
                     v-else
                     style="height:25px"
@@ -62,7 +62,7 @@
         class="item_module_title"
         :style="hoverTips?'width:140px':''"
       >
-        <span>{{$t('commoditySearch.commodity')}}</span>
+        <span>积分兑换</span>
       </div>
       <div class="item_operation">
         <img
@@ -163,12 +163,14 @@ export default {
     backData: { // 模块公共
       handler (newData) {
         if (newData) {
-          this.modulesData = newData
-          if (newData.integral_goods.length) {
-            this.showData = newData.integral_goods
-          } else {
-            this.showData = this.occupyingData
-          }
+          this.$nextTick(() => {
+            this.modulesData = newData
+            if (newData.integral_goods.length) {
+              this.showData = newData.integral_goods
+            } else {
+              this.showData = this.occupyingData
+            }
+          })
         }
         console.log(newData)
       },
