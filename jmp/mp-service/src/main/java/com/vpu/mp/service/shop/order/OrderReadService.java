@@ -22,7 +22,6 @@ import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
@@ -63,6 +62,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOrderVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoByOsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderCenter;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -128,7 +128,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_GET;
 import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
@@ -528,16 +527,21 @@ public class OrderReadService extends ShopBaseService {
 	 * mp端查询订单
 	 * @param param
 	 */
-	public PageResult<OrderListMpVo> getPageList(OrderListParam param) {
+	public OrderCenter getPageList(OrderListParam param) {
 		logger.info("mp订单列表查询"+param.toString());
-		PageResult<OrderListMpVo> result = mpOrderInfo.getPageList(param);
-		if(CollectionUtils.isEmpty(result.dataList)) {
+        OrderCenter result = new OrderCenter();
+        PageResult<OrderListMpVo> orders = mpOrderInfo.getPageList(param);
+        result.setOrders(orders);
+        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+        result.setOrderStatuCount(orderStatusNum);
+        if(CollectionUtils.isEmpty(orders.dataList)) {
+
 		 return result;
 		}
-		List<Integer> ids = result.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
+		List<Integer> ids = orders.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
 		//商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
-		for(OrderListMpVo order : result.dataList) {
+		for(OrderListMpVo order : orders.dataList) {
 			//订单类型
 			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
 			//奖品订单判断
@@ -799,7 +803,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public Map<Byte, Integer> statistic(OrderListParam param) {
-		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
+		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
 	}
 
     /**

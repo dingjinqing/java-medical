@@ -8,6 +8,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
@@ -34,24 +36,23 @@ public class MpOrderInfoService extends OrderInfoService{
 	/**
 	 * 个人中心订单状态数量展示
 	 * @param userId
-	 * @param isContainSubOrder
-	 * @return
+	 * @param param
+     * @param isContainSubOrder
+     * @return
 	 */
-	public Map<Byte,Integer> getOrderStatusNum(Integer userId , boolean isContainSubOrder) {
+	public Map<Byte,Integer> getOrderStatusNum(Integer userId, OrderListParam param, boolean isContainSubOrder) {
 		//基础状态数量
-		Map<Byte, Integer> countMap = db().select(DSL.count() , TABLE.ORDER_STATUS).
-		    from(TABLE).
-		    where(setIsContainSubOrder(
-				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
-				and(TABLE.USER_ID.eq(userId))
-				, isContainSubOrder)).
-		groupBy(TABLE.ORDER_STATUS).
-		fetch().
-		intoMap(TABLE.ORDER_STATUS , DSL.count());
+        SelectJoinStep<Record2<Integer, Byte>> countMapSelect = db().select(DSL.count(), TABLE.ORDER_STATUS).from(TABLE);
+        buildOptions(countMapSelect, param, false);
+        Map<Byte, Integer> countMap = countMapSelect.
+            where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(TABLE.USER_ID.eq(userId)), isContainSubOrder)).
+            groupBy(TABLE.ORDER_STATUS).
+            fetch().
+            intoMap(TABLE.ORDER_STATUS , DSL.count());
 		//退款退货
-		Integer refund = db().select(DSL.count()).
-		    from(TABLE).
-		    where(setIsContainSubOrder(
+        SelectJoinStep<Record1<Integer>> refundSelect = db().select(DSL.count()).from(TABLE);
+        buildOptions(refundSelect, param, false);
+        Integer refund = refundSelect.where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS)).
 				and(TABLE.USER_ID.eq(userId))
@@ -122,7 +123,10 @@ public class MpOrderInfoService extends OrderInfoService{
 	 * 构造查询条件
 	 */
 	public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderListParam param, boolean isContainSubOrder) {
-		select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
+	    if(param == null) {
+	        return select;
+        }
+        select.where(setIsContainSubOrder(TABLE.USER_ID.eq(param.getWxUserInfo().getUserId()).and(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())), isContainSubOrder));
 		if(!StringUtils.isBlank(param.getSearch())) {
 			select.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).
 			where(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
