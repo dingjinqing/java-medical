@@ -42,11 +42,11 @@ public class MpOrderInfoService extends OrderInfoService{
 	    //搜索条件
         Condition condition = DSL.noCondition();
         if(param != null && !StringUtils.isBlank(param.getSearch())) {
-            condition.and(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
+            condition = condition.and(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
         }
         //基础状态数量
         Map<Byte, Integer> countMap =
-            setIsContainSearch(db().select(DSL.count(), TABLE.ORDER_STATUS).from(TABLE), param).
+            setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID), TABLE.ORDER_STATUS).from(TABLE), param).
             where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_DEFAULT_STATUS)).
@@ -56,7 +56,7 @@ public class MpOrderInfoService extends OrderInfoService{
 		fetch().
 		intoMap(TABLE.ORDER_STATUS , DSL.count());
 		//退款退货中
-        Integer returning = setIsContainSearch(db().select(DSL.count()).from(TABLE), param).
+        Integer returning = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID)).from(TABLE), param).
             where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH)).
@@ -64,7 +64,7 @@ public class MpOrderInfoService extends OrderInfoService{
 				,isContainSubOrder).and(condition)).
 		fetchOneInto(Integer.class);
 		//退款退货完成
-        Integer returnFinish = setIsContainSearch(db().select(DSL.count()).from(TABLE), param).
+        Integer returnFinish = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID)).from(TABLE), param).
             where(setIsContainSubOrder(
 				TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).
 				and(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING , OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS , OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING , OrderConstant.REFUND_STATUS_FINISH , OrderConstant.REFUND_STATUS_REFUSE)).
