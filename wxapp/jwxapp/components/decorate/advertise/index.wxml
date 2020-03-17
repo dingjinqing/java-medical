@@ -1,0 +1,6 @@
+<view class="advertise-container" catchtap="bindJumpLink" data-link_type="{{m.link_type}}" data-url="{{m.title_link}}" style='margin-bottom:{{m.margin_bot}}rpx'>
+  <image src='{{m.img_url}}' mode='widthFix' data-src='{{m.img_url}}' data-skip='{{m.is_preview != 1 || m.title_link}}' bindtap='bindPriviewImage' lazy-load="{{true}}"></image>
+  <view class='advertise-content' wx:if="{{m.title}}">
+    <text>{{m.title}}</text>
+  </view>
+</view>

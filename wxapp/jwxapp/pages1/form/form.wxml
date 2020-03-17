@@ -2,5 +2,13 @@
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <v-form name='v-form' class="v-form" page_content="{{pageContent}}" />
+  <block wx:if='{{pageContent.status == 0}}'>
+    <view class='zhezhaoceng'></view>
+    <view class='tankuang'>
+      <image src='{{imageUrl}}/image/wxapp/no_form.png'></image>
+      <view style='padding:0 15rpx'>{{pageContent.statusText}}，暂时不支持填写哦</view>
+      <view class='btn_close' bindtap='bindToIndex'>关闭</view>
+    </view>
+  </block>
 </view>
 <include src="/pages/common/footer.wxml" />

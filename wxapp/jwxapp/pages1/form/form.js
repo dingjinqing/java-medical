@@ -1,6 +1,7 @@
 // pages1/form/form.js
 var util = require("../../utils/util.js")
 var decorate = require("../../pages/common/decorate.js")
+let app =  getApp();
 
 global.wxPage({
   mixins: [decorate],
@@ -9,6 +10,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    imageUrl: app.globalData.imageUrl,
     _options: {},
     pageContent: {}
   },
@@ -17,7 +19,6 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(options)
     this.setData({
       _options:options
     })
@@ -25,9 +26,28 @@ global.wxPage({
   },
 
   requestCallback(pageContent) {
+    // 判断是否已发布
+    if (pageContent.status == 1) {
+      this.setData({
+        page_name: pageContent.pageName
+      })
+      // 是否显示底部导航
+      if (pageContent.pageCfg && pageContent.pageCfg.has_bottom === 1 && !this.data.show_bottom) {
+        this.setData({
+          show_back: false,
+          show_bottom: true
+        })
+      }
+    } else {
+      pageContent.statusText = '该表单未发布'
+    }
     this.setData({
       pageContent: pageContent
     })
+  },
+
+  bindToIndex(e) {
+    util.jumpLink('/pages/index/index', 'reLaunch');
   },
 
   /**

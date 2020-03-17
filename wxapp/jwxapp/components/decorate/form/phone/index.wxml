@@ -1,0 +1,23 @@
+<view class="phone-container" bindtap='bindPhoneCall' data-mobiles="{{m.title}}" style='margin-bottom:{{m.show_type == 1?"0":m.margin_bot}}rpx'>
+  <block wx:if='{{m.show_type == 0}}'>
+    <view class="main-title clearfix" style='text-align:center;background:{{m.background_color}};color:{{m.color}}' wx:if="{{m.align_type == 1}}">
+      <image src='{{m.imgUrl}}/image/wxapp/deco_phone_icon.png' style='width:40rpx;height:40rpx;'></image>
+      <text style='position:relative;top:2rpx;'>{{m.title}}</text>
+      <view class='clock_more'>
+        <image src='{{m.imgUrl}}image/wxapp/right_into.png' style='width:20rpx;height:30rpx;'></image>
+      </view>
+    </view>
+    <view class="main-title clearfix" style='background:{{m.background_color}};color:{{m.color}}' wx:if="{{m.align_type == 0}}">
+      <image src='{{m.imgUrl}}/image/wxapp/deco_phone_icon.png' style='width:40rpx;height:40rpx;'></image>
+      <text style='position:relative;top:2rpx;'>{{m.title}}</text>
+      <view class='clock_more'>
+        <image style='width:20rpx;height:30rpx;' src='{{m.imgUrl}}image/wxapp/right_into.png'></image>
+      </view>
+    </view>
+  </block>
+  <block wx:if='{{m.show_type == 1}}'>
+    <view class='xunfude other-phone'>
+      <image style='width:120rpx;height:120rpx;' src='{{m.imgUrl}}{{m.sps_icon}}'></image>
+    </view>
+  </block>
+</view>

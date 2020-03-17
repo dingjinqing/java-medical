@@ -23,14 +23,15 @@ var decorate = {
     util.api('/api/wxapp/form/get', function (d) {
       if (d.error === 0) {
         var pageContent = d.content;
-        pageContent.page_info = JSON.parse(pageContent.page_content || '{}');
-        pageContent.page_cfg = pageContent.form_cfg || [];
-        pageContent.page_id = page_id;
+        pageContent.pageInfo = JSON.parse(pageContent.pageContent || '{}');
+        pageContent.pageCfg = JSON.parse(pageContent.formCfg || '{}');
+        pageContent.pageId = pageId;
+
         pageContent.main_setting = _this._getColors();
         cb(pageContent);
       }
     }, {
-      pageId: pageId,
+      pageId: pageId
     });
   }
 };
