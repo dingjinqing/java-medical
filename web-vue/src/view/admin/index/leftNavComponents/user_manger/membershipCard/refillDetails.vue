@@ -139,7 +139,8 @@ export default {
     this.cardType = this.$route.query.cardType
     this.nackNameInput = this.$route.query.username
     this.userId = this.$route.query.userId
-
+    let flag = this.$route.query.activeName
+    this.activeName = flag === 1 ? 'first' : 'second'
     this.loadDefaultData()
   },
   watch: {
