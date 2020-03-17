@@ -259,7 +259,7 @@
 <view class='zhezhao' wx:if="{{is_sign == 1}}" bindtap='closeSign'></view>
 <view class='modal_sign' wx:if="{{is_sign == 1}}">
   <view>
-    <image src='{{imageUrl}}/image/wxapp/look_rule.png' mode='widthFix' class='look_rule' data-rule="{{user_center[0].sign_score.sign_rule}}" bindtap='lookRule' />
+    <image src='{{imageUrl}}image/wxapp/look_rule.png' mode='widthFix' class='look_rule' data-rule="{{user_center[0].sign_score.sign_rule}}" bindtap='lookRule' />
     <view class='modal_sign_head' wx:if="{{user_center[0].sign_score.sign_data.is_sign_in==0}}">
       {{i18n.$t(localePack,"page1.usercenter.continuouslySignedIn")}}
     </view>
