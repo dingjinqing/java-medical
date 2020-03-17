@@ -7,6 +7,7 @@ var list_info = [];
 var total_micro_second = 0;
 var set_time_out;
 var group_draw_id;
+var scene;
 global.wxPage({
 
   /**
@@ -25,6 +26,7 @@ global.wxPage({
     if (!util.check_setting(options)) return;
     var that = this;
     group_draw_id = options.group_draw_id;
+    scene = options.scene;
     clearTimeout(set_time_out);
     util.api('/api/wxapp/groupdraw/list', function (res) {
       if (res.error == 0) {
@@ -55,7 +57,7 @@ global.wxPage({
         });
         return false;
       }
-    }, { group_draw_id: group_draw_id })
+    }, { group_draw_id: group_draw_id, scene: scene })
   },
   // 去商品详情
   to_item: function (e) {
