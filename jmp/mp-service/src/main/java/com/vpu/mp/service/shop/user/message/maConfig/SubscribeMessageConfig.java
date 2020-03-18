@@ -43,9 +43,27 @@ public enum SubscribeMessageConfig {
 			new int[] { 2, 4, 3, 5, 6 }),
 
 	balance_change_307(SubcribeTemplateCategory.BALANCE_CHANGE, 307, 1972, "余额变动提醒",
-			"变动金额{{amount1.DATA}}账户余额{{amount2.DATA}}变动时间{{time3.DATA}}变动原因{{thing4.DATA}}", new int[] { 1, 2, 3, 4 });
-
+			"变动金额{{amount1.DATA}}账户余额{{amount2.DATA}}变动时间{{time3.DATA}}变动原因{{thing4.DATA}}", new int[] { 1, 2, 3, 4 }),
 	/** 服装/鞋/箱包 307结束 **/
+
+	
+	/** 食品 321开始 **/
+	audit_321(SubcribeTemplateCategory.AUDIT, 321, 1492, "审核结果通知",
+			"审核结果{{phrase1.DATA}}审核内容{{thing3.DATA}}审核时间{{date5.DATA}}", new int[] { 1, 3, 5 }),
+
+	order_deliver_321(SubcribeTemplateCategory.ORDER_DELIVER, 321, 1368, "订单发货通知",
+			"订单编号{{character_string1.DATA}}物流服务{{phrase4.DATA}}快递单号{{character_string5.DATA}}收货地址{{thing7.DATA}}发货时间{{time9.DATA}}",
+			new int[] { 1, 4, 5, 7, 9 }),
+
+	refund_result_321(SubcribeTemplateCategory.REFUND_RESULT, 321, 1480, "退款通知",
+			"退款名称{{thing2.DATA}}退款金额{{amount3.DATA}}退款时间{{time4.DATA}}退款状态{{thing9.DATA}}", new int[] { 2, 3, 4, 9 }),
+	/** 食品 321结束 **/
+
+	
+	/** 美妆/洗护 786开始 */
+	order_deliver_786(SubcribeTemplateCategory.ORDER_DELIVER, 786, 1856, "订单发货通知",
+			"商品名称{{thing5.DATA}}快递单号{{character_string3.DATA}}", new int[] { 5, 3 });
+	/** 美妆/洗护 786结束 */
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */
 	private String templeName;
