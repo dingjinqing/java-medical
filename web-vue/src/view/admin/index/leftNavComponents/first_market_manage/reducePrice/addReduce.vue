@@ -672,11 +672,13 @@ export default {
       this.productInfo = data
       console.log(this.productInfo)
     },
+    // 规格价格弹窗回调
     getProductdata (goodsId, ProductInfo) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return goodsId === item.goodsId
       })
       this.pageShowGoodsList[goodsTarget].reducePriceProduct = ProductInfo
+      this.pageShowGoodsList[goodsTarget].goodsSpecProducts = ProductInfo
     },
     batchSet () {
       console.log(this.$refs.multipleTable.selection)

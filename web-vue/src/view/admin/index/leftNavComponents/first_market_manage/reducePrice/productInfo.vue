@@ -25,12 +25,14 @@
           v-if="item.index === 3"
         >
           <template slot-scope="scope">
-            <el-input
-              v-model="scope.row.lastPrice"
+            <el-input-number
+              v-model="scope.row.prdPrice"
+              :controls="false"
+              :min="0"
               :disabled="isEdit"
               size="small"
               class="small_input"
-            ></el-input>
+            ></el-input-number>
             元
           </template>
         </el-table-column>
@@ -91,9 +93,6 @@ export default {
       this.$emit('update:productDialog', val)
       if (val === true) {
         this.reducePriceProduct = JSON.parse(JSON.stringify(this.productInfo.reducePriceProduct))
-        this.reducePriceProduct.forEach((item, index) => {
-          item.lastPrice = item.prdPrice
-        })
       }
     },
     productDialog (val) {
