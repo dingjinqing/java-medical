@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListVo;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
 import org.jooq.Record13;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -61,13 +62,11 @@ public class PreSaleOrderService extends ShopBaseService {
     /**
      * 查询订单
      */
-    private SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Short,
-        String, BigDecimal, BigDecimal, BigDecimal>> orderQuery(OrderListParam param) {
-        SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp, String, String, Short,
-            String, BigDecimal, BigDecimal, BigDecimal>> query = db().select(ORDER_INFO.ORDER_SN,
+    private SelectConditionStep<? extends Record> orderQuery(OrderListParam param) {
+        SelectConditionStep<? extends Record> query = db().select(ORDER_INFO.ORDER_SN,
             ORDER_GOODS.GOODS_NAME, ORDER_GOODS.GOODS_IMG, ORDER_INFO.USER_ID, ORDER_GOODS.ORDER_ID,
             ORDER_INFO.CREATE_TIME, ORDER_INFO.MOBILE, ORDER_MUST.CONSIGNEE_REAL_NAME, ORDER_INFO.GOODS_AMOUNT,
-            ORDER_INFO.ORDER_STATUS_NAME, ORDER_INFO.ORDER_AMOUNT, ORDER_INFO.MONEY_PAID, ORDER_INFO.SHIPPING_FEE)
+            ORDER_INFO.CONSIGNEE,ORDER_INFO.ORDER_STATUS,ORDER_INFO.ORDER_STATUS_NAME, ORDER_INFO.ORDER_AMOUNT, ORDER_INFO.MONEY_PAID, ORDER_INFO.SHIPPING_FEE,USER.USERNAME)
             .from(ORDER_INFO)
             .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER_INFO.ORDER_ID))
             .leftJoin(ORDER_MUST).on(ORDER_MUST.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
@@ -79,8 +78,7 @@ public class PreSaleOrderService extends ShopBaseService {
         return query;
     }
 
-    private void buildOptions(SelectConditionStep<Record13<String, String, String, Integer, Integer, Timestamp,
-        String, String, Short, String, BigDecimal, BigDecimal, BigDecimal>> select, OrderListParam param) {
+    private void buildOptions(SelectConditionStep<? extends Record> select, OrderListParam param) {
         String goodsName = param.getGoodsName();
         String consigneeName = param.getConsigneeName();
         String mobile = param.getMobile();

@@ -1,6 +1,8 @@
 // components/decorate/decorate/index.js
 var util = require("../../../utils/util.js")
+var addCart = require("../../../pages/common/addCart")
 global.wxComponent({
+  mixins: [addCart],
   externalClasses: [],
   /**
    * 页面的初始数据

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
@@ -23,7 +24,6 @@ public class UserCardVo {
 	private Integer exchangSurplus;
 	private Timestamp activationTime;
 	private Timestamp uCreateTime;
-	
 	
 	private Integer id;
 	private String cardName;
@@ -80,6 +80,23 @@ public class UserCardVo {
 	private Byte sendCouponSwitch;
 	private Byte sendCouponType;
 	private String sendCouponIds;
+	/**
+	 * freeship_limit包邮周期类型 -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
+	 */
+	protected Byte freeshipLimit;
+	/**
+	 * freeship_num 周期内包邮次数
+	 */
+	protected Integer freeshipNum;
+	/**
+	 * 	自定义权益
+	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected Byte customRightsFlag;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String customRights;
+	
+	
 	
 	// 用户是否有此卡
 	private Boolean isGet;
@@ -111,4 +128,14 @@ public class UserCardVo {
 	private NextGradeCardVo next;
 	private Timestamp buyTime;
 	private WxAppCardExamineVo isExamine;
+	
+	/**
+	 *	 包邮信息描述
+	 */
+	protected String freeshipDesc;
+	/**
+	 * 	自定义权益信息列表
+	 */
+	@JsonProperty("customRights")
+	protected CardCustomRights cardCustomRights;
 }

@@ -54,5 +54,16 @@ public class ModuleIntegral extends ModuleBase {
         private Byte actDelFlag;
         @JsonProperty("goods_is_delete")
         private Byte goodsIsDelete;
+
+        /**
+         * 实时状态。0正常可用，1商品已删除，2活动已删除，3活动已停用，4活动未开始，5活动已过期
+         */
+        private Byte tip;
+        /**最小的积分 */
+        private Integer score;
+        /** 最小积分的对应金额 */
+        private BigDecimal money;
+        /**商品库存 */
+        private Integer goodsNumber;
     }
 }

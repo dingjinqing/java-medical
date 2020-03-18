@@ -500,40 +500,13 @@ global.wxPage({
     util.api('/api/wxapp/card/code/receive', function (res) {
       console.log(res)
       if (res.error == 0) {
-        if (res.content.isMostGrade) {
-          util.toast_fail('当前等级已最高');
-          return;
-        } else if (res.content.gradeCard) {
-          var text = '没有达到该卡的条件';
-          if (res.content.gradeCard.score > 0) {
-            text = '累积积分未达到' + res.content.gradeCard.score + '积分';
-          }
-          if (res.content.gradeCard.amount > 0) {
-            text = text + ' 累积消费金额未达到' + res.content.gradeCard.amount + '元';
-          }
-          util.showModal('提示', text, function (res) {
-            return false;
-          }, false);
-          return;
-        } else if (res.content == -1) {
-          util.toast_fail('此卡已存在');
-        } else {
-          util.toast_success('领取成功', function () {
-            if (that.data.carInfo.activation) {
-              setTimeout(function () {
-                util.navigateTo({
-                  url: '/pages/memberinfo/memberinfo?act=1&card_no=' + res.content + '&examine=' + that.data.cardInfo.examine,
-                })
-              }, 2000);
-            } else {
-              setTimeout(function () {
-                util.redirectTo({
-                  url: '/pages/usercardlist/usercardlist',
-                })
-              }, 2000);
-            }
-          });
-        }
+        util.toast_success('领取成功', function () {
+          setTimeout(function () {
+            util.redirectTo({
+              url: '/pages/cardlist/cardlist',
+            })
+          }, 2000);
+        });
       } else {
         util.showModal('', res.message, function () {
           return false;

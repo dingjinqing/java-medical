@@ -49,6 +49,8 @@ public class RemarkMessage {
 	public static final String SYSTEM_UPGRADE = "member.card.system.upgrade";
 	/**	剩余可享包邮{0}次 */
 	public static final String FREESHIP_NUM = "member.card.freeship.num";
+	/** 可享受包邮{0}次 */
+	public static final String FREESHIP_TOTAL_NUM = "member.card.freeship.total.num";
 
 
 

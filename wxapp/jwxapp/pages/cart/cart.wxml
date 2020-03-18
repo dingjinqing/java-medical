@@ -161,6 +161,7 @@
                 <movable-area>
                   <movable-view damping="100" x="{{item.x}}" out-of-bounds="true" direction="horizontal" bindchange="handleTouchChange" bindtouchend="handleTouchEnd" data-index="{{index}}">
                     <view class="flex_goods">
+                      <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">失效</view>
                       <view class="goods_item">
                           <view class="goods_img">
                               <image src="{{imageUrl}}{{item.goodsImg}}"/>
@@ -179,6 +180,7 @@
                               </view>
                               <view class="goods_price">
                                 <view class="price">商品已删除</view>
+                                <!-- <view class="price">商品已下架</view> -->
                                 <!-- <view class="price" style="color:{{comColor}}">￥{{item.goodsPrice}}</view>
                                 <view class="num_cfg">
                                   <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}" disabled="true">-</view>

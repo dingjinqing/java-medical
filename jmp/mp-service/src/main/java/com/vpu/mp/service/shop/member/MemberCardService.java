@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
@@ -38,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -122,6 +124,8 @@ public class MemberCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private GradeCardOpt gradeCardOpt;
+	@Autowired
+	private CardFreeShipService freeShipSvc;
 
     
 	/**
@@ -1081,13 +1085,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 	获取卡的包邮信息
 	 */
 	private CardFreeship getFreeshipData(MemberCardRecord card) {
-		CardFreeship cardFreeship = new CardFreeship();
-		Byte type = card.getFreeshipLimit();
-		cardFreeship.setType(type);
-		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
-			cardFreeship.setNum(card.getFreeshipNum());
-		}
-		return cardFreeship;
+		return freeShipSvc.getFreeshipData(card,null);
 	}
 	
 	/**
@@ -1110,7 +1108,8 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 	获取卡的自定义权益信息
 	 */
-	private CardCustomRights getCustomRights(MemberCardRecord card) {
+	public CardCustomRights getCustomRights(MemberCardRecord card) {
+		logger().info("获取卡的自定义权益信息");
 		List<CardRight> customRightsAll = null;
 		CardCustomRights.RightSwitch flag = CardCustomRights.RightSwitch.off;
 		
@@ -2142,12 +2141,12 @@ public class MemberCardService extends ShopBaseService {
     /**
      * 	小程序装修会员卡模块显示异步调用
      * status : -1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
-     * @param cardId
+     * @param moduleCard
      * @param userId
      * @return
      */
-	public MemberCardPageDecorationVo getPageIndexMemberCard(int cardId,int userId){
-        MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchSingle().into(MemberCardPageDecorationVo.class);
+	public MemberCardPageDecorationVo getPageIndexMemberCard(ModuleCard moduleCard, int userId){
+        MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(moduleCard.getCardId())).fetchSingle().into(MemberCardPageDecorationVo.class);
 
         if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
             //已停用
@@ -2158,10 +2157,10 @@ public class MemberCardService extends ShopBaseService {
         }
 
         //用户已经领取该卡的数量
-        int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
+        int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,moduleCard.getCardId());
         if(vo.getCardType().equals(MCARD_TP_LIMIT)){
             //限次卡，还有库存 或 不限库存
-        	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
+        	int hasSend = userCardService.userCardDao.calcNumCardById(moduleCard.getCardId());
         	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();
             if(vo.getStock() == 0 || canSend){
                 if(vo.getLimit() == null || vo.getLimit() == 0 || userHasGotNumber < vo.getLimit()){
@@ -2177,7 +2176,7 @@ public class MemberCardService extends ShopBaseService {
         }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
             //只要拥有一张等级卡，就认为是已领取
         	MemberCardRecord mCard = userCardService.userCardDao.getUserGradeCard(userId);
-            if( mCard != null && cardId == mCard.getId()){
+            if( mCard != null && moduleCard.getCardId() == mCard.getId()){
             	if(CardUtil.isStopUsing(mCard.getFlag())) {
             		vo.setStatus((byte)3);
             	}else {
@@ -2208,6 +2207,8 @@ public class MemberCardService extends ShopBaseService {
         if(StringUtil.isNotEmpty(vo.getBgImg())){
             vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
         }
+
+        vo.setHiddenCard(moduleCard.getHiddenCard());
 
         return vo;
     }

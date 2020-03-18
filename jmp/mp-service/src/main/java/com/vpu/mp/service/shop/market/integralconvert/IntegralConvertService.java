@@ -1,11 +1,12 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.IntegralMallDefineRecord;
 import com.vpu.mp.db.shop.tables.records.IntegralMallProductRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -13,6 +14,7 @@ import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -24,7 +26,7 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportVo;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +36,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class IntegralConvertService extends ShopBaseService {
 	private MemberService memberService;
 	@Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 积分兑换弹窗
@@ -416,12 +419,59 @@ public class IntegralConvertService extends ShopBaseService {
     public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
         if(!moduleIntegral.getIntegralGoods().isEmpty()){
             for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
-                if(StringUtil.isNotEmpty(g.getGoodsImg())){
-                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                IntegralMallDefineRecord integralMallDefineRecord = db().fetchAny(imd,imd.ID.eq(g.getIntegralGoodsId()));
+                GoodsRecord goodsRecord = goodsService.getGoodsRecordById(g.getGoodsId());
+                if(goodsRecord == null || goodsRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+                    g.setTip((byte)1);
+                }else if(integralMallDefineRecord == null || integralMallDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+                    g.setTip((byte)2);
+                }else if(integralMallDefineRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
+                    g.setTip((byte)3);
+                }else if(integralMallDefineRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+                    g.setTip((byte)4);
+                }else if(integralMallDefineRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+                    g.setTip((byte)5);
+                }else {
+                    g.setTip((byte)0);
                 }
+
+                if(integralMallDefineRecord != null){
+                    g.setActDelFlag(integralMallDefineRecord.getDelFlag());
+                    g.setStartTime(integralMallDefineRecord.getStartTime());
+                    g.setEndTime(integralMallDefineRecord.getEndTime());
+                }
+                IntegralMallProductRecord integralMallProductRecord = getMinScoreIntegralMallProduct(g.getIntegralGoodsId());
+                g.setScore(integralMallProductRecord.getScore());
+                g.setMoney(integralMallProductRecord.getMoney());
+
+                if(goodsRecord != null){
+                    g.setGoodsIsDelete(goodsRecord.getDelFlag());
+                }
+
+                if(goodsRecord != null){
+                    g.setGoodsId(goodsRecord.getGoodsId());
+                    g.setGoodsName(goodsRecord.getGoodsName());
+                    g.setGoodsIsDelete(goodsRecord.getDelFlag());
+                    g.setGoodsNumber(goodsRecord.getGoodsNumber());
+                    if(StringUtil.isNotEmpty(goodsRecord.getGoodsImg())){
+                        g.setGoodsImg(domainConfig.imageUrl(goodsRecord.getGoodsImg()));
+                    }
+                    g.setPrdPrice(goodsService.goodsSpecProductService.getMaxPrdPrice(g.getGoodsId()));
+                }
+
             }
         }
+
         return moduleIntegral;
+    }
+
+    /**
+     * 积分最小的一个
+     * @param integralMallDefineId
+     * @return
+     */
+    private IntegralMallProductRecord getMinScoreIntegralMallProduct(int integralMallDefineId){
+        return db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(integralMallDefineId)).orderBy(imp.SCORE.asc()).fetchAny();
     }
 
     /**
@@ -472,6 +522,27 @@ public class IntegralConvertService extends ShopBaseService {
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(orderExportList, IntegralOrderExport.class);
+        return workbook;
+    }
+
+    /**
+     * 用户列表表格导出
+     * @param param 查询信息
+     * @param lang 语言
+     * @return
+     */
+    public Workbook userExport(IntegralConvertUserParam param, String lang){
+        List<IntegralUserExport> exportList = new ArrayList<>();
+        PageResult<IntegralConvertUserVo> userList = userList(param);
+        for (IntegralConvertUserVo item : userList.getDataList()){
+            IntegralUserExport export = new IntegralUserExport();
+            FieldsUtil.assignNotNull(item,export);
+            exportList.add(export);
+        }
+        //表格导出
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(exportList, IntegralUserExport.class);
         return workbook;
     }
 }
