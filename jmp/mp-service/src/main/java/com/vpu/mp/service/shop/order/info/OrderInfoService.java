@@ -1020,10 +1020,15 @@ public class OrderInfoService extends ShopBaseService {
      * @return freeLimit = -1 / 0 / 1 -> 0
      */
     public int getCardFreeShipSum(Integer userId, Integer cardId, Byte freeLimit) {
-        if(freeLimit <= CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+        logger().info("计算改会员卡在当前周期使用次数");
+    	if(freeLimit <= CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
             return 0;
         }
         Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
+        if(cardFreeShipInterval == null) {
+        	logger().info("cardFreeShipInterval为null");
+        	return null;
+        }
         return db().
             selectCount().
             from(TABLE).
