@@ -100,6 +100,13 @@ public class UserCardParam {
 	protected Integer stock;
 	protected Integer limit;
 	protected String discountBrandId;
+	/**
+	 * 	自定义权益
+	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected Byte customRightsFlag;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String customRights;
 
 	/**
 	 * freeship_limit包邮周期类型 -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日

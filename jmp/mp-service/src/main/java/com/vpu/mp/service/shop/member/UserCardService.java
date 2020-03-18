@@ -47,6 +47,7 @@ import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
 import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
@@ -869,6 +870,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param,String lang) throws UserCardNullException {
+		logger().info("获取卡的详细信息");
 		WxAppUserCardVo card = null;
 		if(param.getCardId() != null) {
 			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getUserId(),param.getCardId());
@@ -906,8 +908,12 @@ public class UserCardService extends ShopBaseService {
 		
 		// 包邮信息
 		dealWithFreeShipInfo(card,lang);
-		
-		
+		// 自定义权益
+		MemberCardRecord mCard = new MemberCardRecord();
+		mCard.setCustomRights(card.getCustomRights());
+		mCard.setCustomRightsFlag(card.getCustomRightsFlag());
+		CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+		card.setCardCustomRights(customRights);
 		return card;
 	}
 
