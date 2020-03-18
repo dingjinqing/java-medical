@@ -1,0 +1,9 @@
+<view class="mobile-container">
+  <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>
+  <view class="icon_mobile" wx:if='{{m.image_type == 1}}'>
+    <image src='{{m.imgUrl}}image/wxapp/mobile_change.png' mode='widthFix' wx:if='{{!m.mobile_url}}' />
+    <image src='{{m.mobile_url}}' mode='widthFix' wx:if='{{m.mobile_url}}' />
+  </view>
+  <view class='mobile_title'>{{m.form_title}}</view>
+  <input type='text' placeholder='请输入{{m.form_title}}' bindblur='bindCheckMobile' data-cur_idx='{{m.idx}}'></input>
+</view>

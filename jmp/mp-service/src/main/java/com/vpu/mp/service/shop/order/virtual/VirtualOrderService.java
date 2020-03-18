@@ -68,7 +68,7 @@ public class VirtualOrderService extends ShopBaseService {
     	VirtualOrderPayInfo payInfo = getOrderPayInfo(param.getOrderId());
     	
         /** 是否退款成功 */
-        boolean successFlag = false;
+        boolean successFlag = true;
         try {
         	transaction(() -> {
     			if (param.getAccount().compareTo(BigDecimal.ZERO) > 0) {

@@ -502,7 +502,7 @@ public class PreSaleService extends ShopBaseService {
         String shareConfiguration = shareConfigJson(param);
         if (NAVBAR_TYPE_ONGOING == status) {
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName())
-                .set(TABLE.SHARE_CONFIG, shareConfiguration);
+                .set(TABLE.SHARE_CONFIG, shareConfiguration).where(TABLE.ID.eq(presaleId)).execute();
         } else if (NAVBAR_TYPE_NOT_STARTED == status) {
             validateParam(param);
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName()).set(TABLE.PRE_START_TIME,

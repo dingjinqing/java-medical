@@ -88,6 +88,14 @@ public class CouponPackOrderService extends VirtualOrderService {
 		}
 		for (CouponPackOrderVo couponPackOrderVo : dataList) {
 			couponPackOrderVo.setSurplusAmount(getSurplusAmount(couponPackOrderVo.getVirtualGoodsId(), couponPackOrderVo.getOrderSn()));
+			if(couponPackOrderVo.getReturnFlag().equals(REFUND_STATUS_SUCCESS) && couponPackOrderVo.getOrderAmount().compareTo(BigDecimal.ZERO) == 0 && couponPackOrderVo.getUseScore() > 0 && couponPackOrderVo.getUseScore() > couponPackOrderVo.getReturnScore()){
+			    //积分支付的礼包，积分没有全退完时，标记成部分退款
+                couponPackOrderVo.setReturnFlag((byte)3);
+            }
+			if(couponPackOrderVo.getReturnFlag().equals(REFUND_STATUS_SUCCESS) && couponPackOrderVo.getOrderAmount().compareTo(couponPackOrderVo.getReturnAccount().add(couponPackOrderVo.getReturnCardBalance()).add(couponPackOrderVo.getReturnMoney())) > 0){
+                //现金支付的礼包，现金没有全退完时，标记成部分退款
+                couponPackOrderVo.setReturnFlag((byte)3);
+            }
 		}
 		return pageResult;
 	}
@@ -120,7 +128,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 condition.and(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_SUCCESS).or(VIRTUAL_ORDER.RETURN_FLAG.eq(REFUND_STATUS_FAILED)));
             }
         }
-		condition.orderBy(VIRTUAL_ORDER.CREATE_TIME);
+		condition.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc());
 		return condition;
 	}
 	

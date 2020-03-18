@@ -264,18 +264,21 @@ public class MemberCardService extends ShopBaseService {
 			List<CardRight> customRightsAll = customRights.getCustomRightsAll();
 			
 			// 将图片的URL处理成相对路径
-			for(CardRight right: customRightsAll) {
-				String imgUrl = right.getCrightImage();
-				if(!StringUtils.isBlank(imgUrl)) {
-					try {
-						URL url = new URL(imgUrl);
-						imgUrl = url.getPath();
-					} catch (MalformedURLException e) {
-						imgUrl = null;
+			if(customRightsAll != null) {
+				for(CardRight right: customRightsAll) {
+					String imgUrl = right.getCrightImage();
+					if(!StringUtils.isBlank(imgUrl)) {
+						try {
+							URL url = new URL(imgUrl);
+							imgUrl = url.getPath();
+						} catch (MalformedURLException e) {
+							imgUrl = null;
+						}
 					}
+					right.setCrightImage(imgUrl);
 				}
-				right.setCrightImage(imgUrl);
 			}
+
 			
 			if(customRightsAll != null && customRightsAll.size()>0) {
 				rightsJson = Util.toJson(customRightsAll);
@@ -1120,12 +1123,14 @@ public class MemberCardService extends ShopBaseService {
 			flag = CardCustomRights.RightSwitch.values()[card.getCustomRightsFlag()];
 		}
 		// 处理图片路径
-		for(CardRight right: customRightsAll) {
-			String imgUrl = right.getCrightImage();
-			if(!StringUtils.isBlank(imgUrl)) {
-				imgUrl = domainConfig.imageUrl(imgUrl);
+		if(customRightsAll != null) {
+			for(CardRight right: customRightsAll) {
+				String imgUrl = right.getCrightImage();
+				if(!StringUtils.isBlank(imgUrl)) {
+					imgUrl = domainConfig.imageUrl(imgUrl);
+				}
+				right.setCrightImage(imgUrl);
 			}
-			right.setCrightImage(imgUrl);
 		}
 		
 		return CardCustomRights.builder()
@@ -2227,6 +2232,7 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	public void sendCoupon(Integer userId, Integer cardId) {
+		logger().info("开卡赠送优惠券或优惠券礼包");
 		MemberCardRecord mCard = getCardById(cardId);
 		if(mCard==null) {
 			return;

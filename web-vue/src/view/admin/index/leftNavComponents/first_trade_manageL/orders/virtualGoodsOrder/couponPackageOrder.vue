@@ -215,22 +215,19 @@ export default {
       let orderInfo = this.couponPackageOrderList.find(item => {
         return item.orderSn === orderSn
       })
-      if (orderInfo.returnFlag === 0 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > 0)) {
+      if (orderInfo.returnFlag === 0 || orderInfo.returnFlag === 1) {
         return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
-      } else if (orderInfo.returnFlag === 0) {
-        return `<div>${this.$t('orderCommon.orderFinished')}<div/>`
-      } else if (orderInfo.returnFlag === 1 && (orderInfo.moneyPaid + orderInfo.useAccount + orderInfo.useScore > orderInfo.returnScore + orderInfo.returnAccount + orderInfo.returnMoney)) {
-        return `<div><a class="refund">${this.$t('orderCommon.manualRefund')}</a><br/><a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
-      } else if (orderInfo.returnFlag === 1) {
-        return `<div>${this.$t('orderCommon.refundFailed')}</div>`
-      } else {
+      } else if (orderInfo.returnFlag === 3) {
+        return `<div>${this.$t('orderCommon.orderFinished')}<br/><a class="refund" >${this.$t('orderCommon.manualRefund')}</a></div>`
+      } else if (orderInfo.returnFlag === 2) {
         return `<div>${this.$t('orderCommon.refundCompleted')}<br/> <a class="view">${this.$t('orderCommon.checkRefund')}</a></div>`
       }
     },
     processRefunds (orderSn, event) {
-      this.refundInfo = this.couponPackageOrderList.find(item => {
+      this.refundInfo = this.originalData.find(item => {
         return item.orderSn === orderSn
       })
+      console.log(this.refundInfo)
       this.$set(this.refundInfo, 'viewOrderType', 'couponPackage')
       if (event.target.className === 'view') {
         this.$set(this.refundInfo, 'action', 'view')

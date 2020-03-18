@@ -1,0 +1,70 @@
+.input-container{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-size: 30rpx;
+  overflow-x: hidden;
+}
+.clearfix::after{
+  content: "";
+  display: block;
+  clear: both
+}
+.input-container .box1{
+  width: 100%;
+  margin-top: 20rpx;
+   padding: 20rpx 0;
+background:#fff;
+}
+ .input-container .box1 .input_title{
+  height: 60rpx;
+  line-height: 60rpx;
+  float: left;
+  padding-left: 25rpx;
+  font-size: 30rpx;
+}
+.input-container .box1 .input_1{
+  font-size: 30rpx;
+  width: 490rpx;
+  margin-top: 5rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.input_title{
+  width: 200rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*纵向  */
+.input_title1{
+  width: 725rpx;
+  height: 85rpx;
+  line-height: 85rpx;
+  background: #f5f5f5;
+  padding-left: 25rpx;
+  font-size: 30rpx;
+}
+.input_con1{
+  width: 100%;
+  background: #fff;
+  padding: 20rpx 0;
+}
+.input_con1 input{
+    height: 60rpx;
+    line-height: 60rpx;
+    padding-left: 25rpx;
+}
+  /*多行  */
+.box3 .input_con2{
+  width: 100%;
+  background: #fff;
+  padding: 20rpx 0;
+}
+.box3 .input_con2 textarea{
+  height: 180rpx;
+  width: 700rpx;
+  padding-left: 25rpx;
+}

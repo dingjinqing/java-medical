@@ -552,7 +552,7 @@ public class UserService extends ShopBaseService {
      * @return
 	 */
 	public List<Map<String, Object>> parseMyOrder(Integer userId, List<Map<String, Object>> data) {
-		Map<Byte, Integer> orderStatusNum = mpOrderInfoService.getOrderStatusNum(userId, false);
+		Map<Byte, Integer> orderStatusNum = mpOrderInfoService.getOrderStatusNum(userId, null, false);
 		for (Map<String, Object> iconItem : data) {
 			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if (iconItem.get("icon_name").equals("wait_pay")) {

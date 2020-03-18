@@ -127,15 +127,15 @@ export default {
         postData.virtualOrderRefundParam = this.refundData
         refundCouponPackageOrder(postData).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: this.$t('marketCommon.successfulOperation')
+            this.$message.success({
+              message: this.$t('marketCommon.successfulOperation'),
+              showClose: true
             })
             this.dialogShow = false
           } else {
-            this.$message({
-              type: 'error',
-              message: res.message
+            this.$message.error({
+              message: res.message,
+              showClose: true
             })
           }
         })

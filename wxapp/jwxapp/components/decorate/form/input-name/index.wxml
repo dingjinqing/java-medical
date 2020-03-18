@@ -1,0 +1,11 @@
+<view class="name-container">
+  <text style='color:red' wx:if="{{m.confirm == 1}}">*</text>
+  <view class="icon_name" wx:if='{{m.image_type == 1}}'>
+    <image src='{{m.imgUrl}}image/wxapp/name_change.png' mode='widthFix' wx:if='{{!m.name_url}}' />
+    <image src='{{m.name_url}}' mode='widthFix' wx:if='{{m.name_url}}' />
+  </view>
+  <view class='name_title'>
+    {{m.form_title}}
+  </view>
+  <input type='text' placeholder='请输入{{m.form_title}}' data-cur_idx='{{m.idx}}' bindblur='bindCheckName'></input>
+</view>

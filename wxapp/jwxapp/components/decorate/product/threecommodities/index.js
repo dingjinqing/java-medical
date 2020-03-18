@@ -8,9 +8,6 @@ global.wxComponent({
       console.log(newVal, 'three')
       // 处理活动
       this.handleToGoodsActivities(newVal.goodsListData)
-    },
-    bindMenuClick (e) {
-
-    },
+    }
   }
 });

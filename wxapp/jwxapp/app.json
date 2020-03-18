@@ -95,7 +95,8 @@
         "pinintegrationdetail/pinintegrationdetail",
         "insteadinfo/insteadinfo",
         "insteadcheckout/insteadcheckout",
-        "appointcomment/appointcomment"
+        "appointcomment/appointcomment",
+        "form/form"
       ]
     }
   ],
