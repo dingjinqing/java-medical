@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -129,7 +129,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

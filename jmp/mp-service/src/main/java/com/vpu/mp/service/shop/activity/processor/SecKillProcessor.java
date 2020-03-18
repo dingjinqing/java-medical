@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -158,7 +158,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
         secKillProcessorDao.processReturn(activityId,returnGoods);
     }
 

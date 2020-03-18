@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -318,7 +319,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.goods;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ public class OrderGoodsVo {
 	private Integer mainRecId;
 	private Integer orderId;
 	private String orderSn;
+    @RedisLockField
 	private Integer goodsId;
 	/**货号*/
 	private String goodsSn;

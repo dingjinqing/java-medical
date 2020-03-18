@@ -164,7 +164,7 @@ public class OrderOperationJudgment {
 			//2待发货  且 余额支付  且 系统金额为0(。。。不可以取消)
 			//|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_BALANCE_PAY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0
 			//3待发货  且  货到付款(。。。不可以取消)
-			//|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_COD
+			|| order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && order.getPayCode() == OrderConstant.PAY_CODE_COD
 			) {
 			return true;
 		}

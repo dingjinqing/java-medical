@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -363,7 +364,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
 
     }
 }

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
@@ -119,7 +120,7 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         Map<Integer, Integer> updateParam = returnGoods.stream().filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber));
         updateParam.forEach((k, v)->updateParam.put(k, -v));
         if(updateParam.size() != 0){

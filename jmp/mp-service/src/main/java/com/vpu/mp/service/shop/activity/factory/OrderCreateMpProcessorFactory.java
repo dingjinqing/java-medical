@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -170,7 +171,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 保存数据（该方法不要在并发情况下出现临界资源）
+     * 更新活动库存（存在特例）
      *
      * @param param
      * @param order
@@ -198,7 +199,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（库存、活动状态相关）
+     * 订单生效后（微信支付、其他支付、货到付款等）的营销后续处理（活动状态相关）
      *
      * @param param
      * @param order
@@ -221,18 +222,19 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 退款成功调用活动库存销量修改方法
+     * 退款成功调用活动库存销量修改、活动记录修改方法
+     *
+     * @param returnOrderRecord
      * @param activityType 活动类型
      * @param activityId 活动id（赠品活动id在）
      * @param returnOrderGoods 退款商品
      * @throws MpException
      */
-    public void processReturnOrder(Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
+    public void processReturnOrder(ReturnOrderRecord returnOrderRecord, Byte activityType, Integer activityId, List<OrderReturnGoodsVo> returnOrderGoods) throws MpException {
         CreateOrderProcessor process = processorReturnMap.get(activityType);
         if(process != null){
-            process.processReturn(activityId, returnOrderGoods);
+            process.processReturn(returnOrderRecord, activityId, returnOrderGoods);
         }
-
     }
 }
 

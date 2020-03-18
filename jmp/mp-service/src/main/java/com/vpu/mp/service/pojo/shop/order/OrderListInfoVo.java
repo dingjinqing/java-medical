@@ -101,4 +101,6 @@ public class OrderListInfoVo {
     private Boolean showReturnInfo;
     @JsonIgnore
     private Integer scoreProportion;
+    @JsonIgnore
+    private Byte isLock;
 }

@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.google.common.collect.Maps;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -18,7 +19,6 @@ import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Record;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +94,7 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor,
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException{
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException{
         if(CollectionUtils.isEmpty(returnGoods)){
             return;
         }

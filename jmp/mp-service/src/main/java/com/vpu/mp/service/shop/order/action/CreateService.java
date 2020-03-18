@@ -74,6 +74,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1012,8 +1013,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
         //确认收货后order_timeout_days天，订单完成
         order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
-        //是否下单减库存(秒杀下单减库存)
-        order.setIsLock(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_SEC_KILL) ? YES : tradeCfg.getIsLock());
+        //是否下单减库存
+        order.setIsLock(Collections.disjoint(AtomicOperation.ACT_IS_LOCK,orderBo.getOrderType()) ? tradeCfg.getIsLock() : YES);
     }
 
     /**

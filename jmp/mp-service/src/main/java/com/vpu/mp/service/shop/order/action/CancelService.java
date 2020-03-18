@@ -10,7 +10,6 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
@@ -38,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -227,16 +227,16 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 	TODO 需要问一下   更新库存和销量
+     * 	秒杀、砍价、奖品
      * @param order
      */
     public void updateStockAndSales(OrderInfoVo order) {
         //TODO 对接pos erp未完成
         boolean isErpPos = false;
         //订单类型
-        List<Integer> orderType = Util.splitValueToList(order.getGoodsType());
+        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
         Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(order.getOrderId());
-        if(order.getPayCode() == OrderConstant.PAY_CODE_COD) {
+        if(order.getPayCode().equals(OrderConstant.PAY_CODE_COD)) {
             List<Integer> goodsIds = oGoods.stream().map(OrderGoodsRecord::getGoodsId).collect(Collectors.toList());
             List<Integer> proIds = oGoods.stream().map(OrderGoodsRecord::getProductId).collect(Collectors.toList());
             //查询规格

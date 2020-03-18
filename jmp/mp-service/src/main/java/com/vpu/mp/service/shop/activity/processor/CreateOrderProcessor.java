@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -48,9 +49,10 @@ public interface CreateOrderProcessor extends Processor {
     void processUpdateStock(OrderBeforeParam param,OrderInfoRecord order) throws MpException;
 
     /**
-     * 退货成功时更新
+     * 退货、取消、关闭时更新（returnOrderRecord ！= null为关闭或取消）
+     * @param returnOrderRecord
      * @param activityId 活动id
      * @param returnGoods 退款商品
      */
-    void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods)throws MpException;
+    void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods)throws MpException;
 }

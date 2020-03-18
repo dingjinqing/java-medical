@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -295,11 +296,12 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     /**
      * 退款
      *
+     * @param returnOrderRecord
      * @param activityId  活动id
      * @param returnGoods 退款商品
      */
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         log.info("拼团退款-退库存");
         for (OrderReturnGoodsVo returnGoodsVo : returnGoods) {
             boolean b = groupBuyProcessorDao.updateGroupBuyStock(activityId, returnGoodsVo.getProductId(), -returnGoodsVo.getGoodsNumber());

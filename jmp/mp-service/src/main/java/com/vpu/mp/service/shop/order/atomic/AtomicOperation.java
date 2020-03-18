@@ -15,6 +15,9 @@ import com.vpu.mp.service.foundation.util.lock.annotation.operation.AddRedisLock
 import com.vpu.mp.service.foundation.util.lock.annotation.operation.ReleaseRedisLocks;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.BatchUpdateGoodsNumAndSaleNumForOrderParam.ProductNumInfo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -45,6 +48,24 @@ public class AtomicOperation extends ShopBaseService {
     @Autowired
     private OrderInfoService orderInfo;
 
+    @Autowired
+    private GoodsService goods;
+
+    /**
+     * 下单扣库存或者下单前就已经扣了库存
+     */
+    public static List<Byte> ACT_IS_LOCK = null;
+    static {
+        ACT_IS_LOCK = Lists.newArrayList(
+            BaseConstant.ACTIVITY_TYPE_BARGAIN,
+            BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+            BaseConstant.ACTIVITY_TYPE_MY_PRIZE,
+            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+            BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER
+        );
+    }
     /**
      * 该活动库存通过其他方式更新
      */
@@ -168,7 +189,7 @@ public class AtomicOperation extends ShopBaseService {
         }
         //商品更新list
         List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>(updateGoodsMap.values());
-        //商品库存更新
+        //商品库存更新(订单出现规格相同的可以处理)
         goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
         //更新库存锁
         orderInfo.updateStockLock(order, YES);
@@ -222,5 +243,72 @@ public class AtomicOperation extends ShopBaseService {
         updateGoods.add(goodsNumAndSaleNumForOrderParam);
         goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
         log.info("修改商品库存--结束");
+    }
+
+    /**
+     * 	退款时更新库存和销量
+     * @param returnGoods
+     * @param order
+     * @param isRestore 是否恢复库存
+     */
+    @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
+    public void updateStockAndSales(@RedisLockKeys List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
+        //TODO 对接pos erp未完成
+
+        List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
+        List<Integer> proIds = returnGoods.stream().map(OrderReturnGoodsVo::getProductId).collect(Collectors.toList());
+        //查询规格
+        Map<Integer, GoodsSpecProductRecord> products = goodsSpecProduct.selectSpecByProIds(proIds);
+        //查询商品
+        Map<Integer, GoodsRecord> normalGoods = goods.getGoodsByIds(goodsIds);
+        //商品更新map
+        Map<Integer , BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoodsMap = new HashMap<>(goodsIds.size());
+        //聚合returnGoods
+        Map<Integer, Integer> collect = returnGoods.stream().collect(Collectors.toMap(OrderReturnGoodsVo::getProductId, OrderReturnGoodsVo::getGoodsNumber, Integer::sum));
+        for (Map.Entry<Integer, Integer> rGoods : collect.entrySet()) {
+            if(rGoods.getValue() == 0 ) {
+                continue;
+            }
+            if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
+                if(isRestore) {
+                    //规格
+                    GoodsSpecProductRecord product = products.get(rGoods.getKey());
+                    if(product == null) {
+                        continue;
+                    }
+                    //商品
+                    GoodsRecord goods = normalGoods.get(product.getGoodsId());
+                    if(goods == null) {
+                        continue;
+                    }
+                    //update goods
+                    BatchUpdateGoodsNumAndSaleNumForOrderParam updateGoods = updateGoodsMap.get(product.getGoodsId());
+                    if(updateGoods == null) {
+                        updateGoods = BatchUpdateGoodsNumAndSaleNumForOrderParam.builder().goodsId(product.getGoodsId()).build();
+                        updateGoodsMap.put(product.getGoodsId(), updateGoods);
+                    }
+                    //退数量
+                    Integer num = rGoods.getKey();
+                    //商品库存
+                    int goodsStock = goods.getGoodsNumber() + num;
+                    //商品销量
+                    int goodsSales = Math.max(goods.getGoodsSaleNum() - num, 0);
+                    //规格库存
+                    int productStock = product.getPrdNumber() + num;
+                    //内存修改
+                    goods.setGoodsNumber(goodsStock);
+                    goods.setGoodsSaleNum(goodsSales);
+                    product.setPrdNumber(productStock);
+                    //updateGoods 赋值
+                    updateGoods.setGoodsNum(goodsStock);
+                    updateGoods.setSaleNum(goodsSales);
+                    updateGoods.addProductsInfo(ProductNumInfo.builder().prdId(product.getPrdId()).prdNum(productStock).build());
+                }
+            }
+        }
+        //商品更新list
+        List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>(updateGoodsMap.values());
+        //商品库存更新
+        goodsService.batchUpdateGoodsNumsAndSaleNumsForOrder(updateGoods);
     }
 }

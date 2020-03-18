@@ -1,8 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
@@ -39,6 +37,7 @@ import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
@@ -115,7 +114,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     private OrderRefundRecordService orderRefundRecord;
     @Autowired
     private ShopReturnConfigService returnCfg;
-
+    @Autowired
+    private AtomicOperation atomicOperation;
     @Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.RETURN;
@@ -598,20 +598,22 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             (autoReturnGoodsStock == OrderConstant.YES && (returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))) ||
                 (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
-        updateNormalStockAndSales(returnGoods, order, isRestore);
+        atomicOperation.updateStockAndSales(returnGoods, order, isRestore);
         //处理活动库存等
-        processAct(order, returnGoods, goodsType, isRestore);
+        processAct(returnOrderRecord, order, returnGoods, goodsType, isRestore);
     }
 
     /**
      *
+     *
+     * @param returnOrderRecord
      * @param order 订单
      * @param returnGoods 退款商品
      * @param goodsType 订单类型
      * @param isRestore 是否可退
      * @throws MpException
      */
-    private void processAct(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, List<Byte> goodsType, boolean isRestore) throws MpException {
+    private void processAct(ReturnOrderRecord returnOrderRecord, OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, List<Byte> goodsType, boolean isRestore) throws MpException {
         if(!isRestore) {
             return;
         }
@@ -620,64 +622,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         for (Byte type : goodsType) {
             if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
                 //赠品修改活动库存
-                orderCreateMpProcessorFactory.processReturnOrder(BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
+                orderCreateMpProcessorFactory.processReturnOrder(returnOrderRecord,BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
             }else {
                 //修改活动库存
-                orderCreateMpProcessorFactory.processReturnOrder(type, order.getActivityId(), returnGoods.stream().filter(x->OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toList()));
+                orderCreateMpProcessorFactory.processReturnOrder(returnOrderRecord, type, order.getActivityId(), returnGoods.stream().filter(x->OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toList()));
             }
         }
     }
-
-    /**
-	 * 	更新库存和销量
-	 * @param returnGoods
-	 * @param order
-	 * @param isRestore 是否恢复库存
-	 */
-	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
-		//TODO 对接pos erp未完成
-		
-		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
-		List<Integer> proIds = returnGoods.stream().map(OrderReturnGoodsVo::getProductId).collect(Collectors.toList());
-		//查询规格
-        Map<Integer, GoodsSpecProductRecord> products = goodsSpecProduct.selectSpecByProIds(proIds);
-		//更新规格数组
-		ArrayList<GoodsSpecProductRecord> updateProducts = new ArrayList<GoodsSpecProductRecord>();
-		//查询商品
-		Map<Integer, GoodsRecord> normalGoods = goods.getGoodsByIds(goodsIds);
-		//更新商品数组
-		ArrayList<GoodsRecord> updateNormalGoods = new ArrayList<GoodsRecord>(normalGoods.size());
-		for (OrderReturnGoodsVo rGoods : returnGoods) {
-			if(rGoods.getGoodsNumber() == 0 ) {
-				continue;
-			}
-			if(OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()) {
-				//待发货
-				if(isRestore && products.get(rGoods.getProductId()) != null) {
-					//待发货+规格库存
-					GoodsSpecProductRecord product = products.get(rGoods.getProductId());
-					product.setPrdNumber(product.getPrdNumber() + rGoods.getGoodsNumber());
-					//规格库存加入更新数组
-					updateProducts.add(product);
-					//待发货+商品库存
-					GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-					goods.setGoodsNumber(goods.getGoodsNumber() + rGoods.getGoodsNumber());
-			    }
-                //销量修改
-                GoodsRecord goods = normalGoods.get(rGoods.getGoodsId());
-                if(goods != null){
-                    goods.setGoodsSaleNum(goods.getGoodsSaleNum() - rGoods.getGoodsNumber());
-                    updateNormalGoods.add(goods);
-                }
-			}
-		}
-		if(updateProducts.size() > 0) {
-			db().batchUpdate(updateProducts);
-		}
-		if(updateNormalGoods.size() > 0) {
-			db().batchUpdate(updateNormalGoods);
-		}
-	}
 
 	/**
 	 * 	非仅退运费生成退款订单及校验
