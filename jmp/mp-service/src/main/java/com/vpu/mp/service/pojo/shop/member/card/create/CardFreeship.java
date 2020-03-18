@@ -86,14 +86,25 @@ public class CardFreeship {
 	}
 	
 	/**
-	 * 	包邮的次数
+	 * 	一个周期内允许适用的最大包邮次数
 	 */
 	private Integer num;
+	/**
+	 * 	一个周期内剩余的包邮次数
+	 */
+	private Integer remainNum;
 	
 	/**
 	 * 	包邮的类型
 	 */
 	private Byte type;
+	
+	/**
+	 * 	包邮说明
+	 */
+	private String desc;
+	
+	
 	/**
 	 * 	包邮使用类型
 	 */
