@@ -1,12 +1,13 @@
 package com.vpu.mp.service.shop.user.message.maConfig;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 
@@ -113,7 +114,7 @@ public enum SubscribeMessageConfig {
 	 * @return
 	 */
 	public static Set<Integer> getSecondIdList() {
-		Set<Integer> sets = new HashSet<Integer>();
+		Set<Integer> sets = new LinkedHashSet<Integer>();
 		SubscribeMessageConfig[] subscribeMessageConfigs = SubscribeMessageConfig.values();
 		for (int i = 0; i < subscribeMessageConfigs.length; i++) {
 			sets.add(subscribeMessageConfigs[i].id);
