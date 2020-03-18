@@ -887,6 +887,7 @@ public class MemberService extends ShopBaseService {
 	 * @return
 	 */
 	public List<UserCardDetailVo> getAllUserCardDetail(UserCardDetailParam param) {
+		logger().info("处理会员的会员卡列表详情");
 		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(param);
 		List<UserCardDetailVo> res = allUserCardDetail.into(UserCardDetailVo.class);
 		Map<String, UserCardParam> cardMap = allUserCardDetail.intoMap(USER_CARD.CARD_NO, UserCardParam.class);
