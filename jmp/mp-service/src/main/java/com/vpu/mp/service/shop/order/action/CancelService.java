@@ -1,8 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -19,8 +17,10 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -28,18 +28,16 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -71,6 +69,11 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private CouponService coupon;
 
+    @Autowired
+    private  AtomicOperation atomicOperation;
+    @Autowired
+    private OrderCreateMpProcessorFactory orderCreateMpProcessorFactory;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.CANCEL;
@@ -101,6 +104,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
                     coupon.releaserCoupon(order.getOrderSn());
                 }
                 //库存更新
+                updateStockAndStatus(order);
             });
         } catch (Exception e) {
             return ExecuteResult.create(JsonResultCode.CODE_ORDER_CANCEL_FAIL, null);
@@ -230,42 +234,24 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
      * 	秒杀、砍价、奖品
      * @param order
      */
-    public void updateStockAndSales(OrderInfoVo order) {
-        //TODO 对接pos erp未完成
-        boolean isErpPos = false;
+    public void updateStockAndStatus(OrderInfoVo order) throws MpException {
+        List<OrderReturnGoodsVo> goods = orderGoods.getByOrderId(order.getOrderId()).into(OrderReturnGoodsVo.class);
+        if(order.getIsLock().equals(OrderConstant.YES)) {
+            //下单流程或者下单前已经扣减库存，需恢复设配库存销量
+            atomicOperation.updateStockAndSales(goods, order, true);
+        }
         //订单类型
-        List<Byte> orderType = Arrays.asList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
-        Result<OrderGoodsRecord> oGoods = orderGoods.getByOrderId(order.getOrderId());
-        if(order.getPayCode().equals(OrderConstant.PAY_CODE_COD)) {
-            List<Integer> goodsIds = oGoods.stream().map(OrderGoodsRecord::getGoodsId).collect(Collectors.toList());
-            List<Integer> proIds = oGoods.stream().map(OrderGoodsRecord::getProductId).collect(Collectors.toList());
-            //查询规格
-            Map<Integer, GoodsSpecProductRecord> products = goodsSpecProduct.selectSpecByProIds(proIds);
-            //查询商品
-            Map<Integer, GoodsRecord> normalGoods = goods.getGoodsByIds(goodsIds);
-            for (OrderGoodsRecord record : oGoods) {
-                Integer saleNum = normalGoods.get(record.getGoodsId()).getGoodsSaleNum() - record.getGoodsNumber();
-                Integer prdNum = products.get(record.getProductId()).getPrdNumber() + record.getGoodsNumber();
-                //自提或者对接外系统
-                if(order.getDeliverType() == OrderConstant.DELIVER_TYPE_SELF || isErpPos) {
-                    //原操作还更新商品库存
-                    normalGoods.get(record.getGoodsId()).setGoodsSaleNum(saleNum);
-                    products.get(record.getProductId()).setPrdNumber(prdNum);
-                }
-                if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
-                    //拼团库存修改
-                }
-
-                if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_SEC_KILL))) {
-                    //秒杀
-                }
+        List<Byte> orderType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
+        //活动更新状态或库存(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
+        orderType.retainAll(OrderCreateMpProcessorFactory.CANCEL_ACTIVITY);
+        for (Byte type : orderType) {
+            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
+                //赠品修改活动库存
+                orderCreateMpProcessorFactory.processReturnOrder(null,BaseConstant.ACTIVITY_TYPE_GIFT,null,goods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
+            }else {
+                //修改活动库存
+                orderCreateMpProcessorFactory.processReturnOrder(null, type, order.getActivityId(), goods.stream().filter(x->OrderConstant.IS_GIFT_N.equals(x.getIsGift())).collect(Collectors.toList()));
             }
-        }else if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_SEC_KILL))){
-            //秒杀库存
-            saas.getShopApp(getShopId()).seckill.seckillList.cancelSeckillOrderStock(order,oGoods.get(0));
-        }else if(orderType.contains(Integer.valueOf(BaseConstant.ACTIVITY_TYPE_BARGAIN))){
-            //砍价库存
-            saas.getShopApp(getShopId()).bargain.bargainRecord.bargainUser.cancelBargainOrderStock(order);
         }
     }
 }

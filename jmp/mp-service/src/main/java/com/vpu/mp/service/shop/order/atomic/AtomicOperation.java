@@ -246,7 +246,7 @@ public class AtomicOperation extends ShopBaseService {
     }
 
     /**
-     * 	退款时更新库存和销量
+     * 	退款(关闭，取消)时更新库存和销量
      * @param returnGoods
      * @param order
      * @param isRestore 是否恢复库存

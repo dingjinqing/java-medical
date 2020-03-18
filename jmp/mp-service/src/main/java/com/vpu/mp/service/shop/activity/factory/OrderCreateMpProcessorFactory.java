@@ -75,7 +75,21 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         BaseConstant.ACTIVITY_TYPE_INTEGRAL,
         BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
         BaseConstant.ACTIVITY_TYPE_PRE_SALE
+    );
 
+    /**
+     * 取消
+     */
+    public final static List<Byte> CANCEL_ACTIVITY = Arrays.asList(
+        BaseConstant.ACTIVITY_TYPE_GIFT,
+        BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+        BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+        BaseConstant.ACTIVITY_TYPE_BARGAIN,
+        BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+        BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
+        BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+        BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+        BaseConstant.ACTIVITY_TYPE_PRE_SALE
     );
 
     /**
@@ -222,7 +236,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     }
 
     /**
-     * 退款成功调用活动库存销量修改、活动记录修改方法
+     * 退款\取消、关闭成功调用活动库存销量修改、活动记录修改方法
      *
      * @param returnOrderRecord
      * @param activityType 活动类型
