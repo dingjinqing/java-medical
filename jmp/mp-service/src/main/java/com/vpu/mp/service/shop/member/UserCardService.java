@@ -1516,8 +1516,14 @@ public class UserCardService extends ShopBaseService {
 		logger().info("开卡送券");
 		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
 			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
+			if(couponIds == null && couponIds.size()==0) {
+				return;
+			}
 			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
 			List<UserCardCoupon> couponListTwo = new ArrayList<>();
+			if(couponList == null || couponList.size()==0) {
+				return;
+			}
 			for (CouponView coupon : couponList) {
 				// 国际化 UserCardCoupon
 				UserCardCoupon uc = new UserCardCoupon();
