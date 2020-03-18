@@ -57,14 +57,14 @@ public class CardFreeShipService extends ShopBaseService{
 	 */
 	public CardFreeship getFreeshipData(UserCardParam card,String lang) {
 		logger().info("获取用户卡的包邮信息");
-		if(card==null || card.getFreeshipLimit()==null) {
+		if(card==null || card.getFreeLimit()==null) {
 			return new CardFreeship();
 		}
 		String desc=null;
 		// 剩余的包邮次数
 		Integer remainNum = card.getFreeNum();
 		List<String> freeShipDescs = CardFreeship.getFreeShipDesc(lang);
-		if(NumberUtils.BYTE_ZERO.equals(card.getFreeshipLimit())) {
+		if(NumberUtils.BYTE_ZERO.equals(card.getFreeLimit())) {
 			desc = freeShipDescs.get(0);
 		}else if(card.getFreeshipLimit()>0) {
 			// 使用包邮次数，以便计算剩余的包邮次数
