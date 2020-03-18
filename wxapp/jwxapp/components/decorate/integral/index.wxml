@@ -5,7 +5,7 @@
     <view class='each_twos' wx:for='{{m.integral_goods}}' wx:key='key' data-tips='{{item.tip}}' data-goods_id="{{item.goods_id}}" data-in_goods_id="{{item.integral_goods_id}}" bindtap='bindToInegral'>
       <view class='two_imgs'>
         <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
-        <image class="image" src='{{m.imageUrl}}{{item.goods_img}}'></image>
+        <image class="image" src='{{item.goods_img}}'></image>
         <view class="tips" wx:if="{{item.tip && !item.tips }}">{{item.tip}}</view>
       </view>
       <view class='tow_names'>{{item.goods_name}}</view>
@@ -33,7 +33,7 @@
     <view class='each_one clearfix' wx:for='{{m.integral_goods}}' data-tips='{{item.tip}}' wx:key='key' data-in_goods_id="{{item.integral_goods_id}}" data-goods_id="{{item.goods_id}}" bindtap='bindToInegral'>
       <view class='one_img'>
         <image class="sell_out" wx:if ='{{item.goods_number == 0}}'  src="{{m.imgUrl}}image/wxapp/goods_sell_out.png"></image>
-        <image class="image" src='{{m.imageUrl}}{{item.goods_img}}'></image>
+        <image class="image" src='{{item.goods_img}}'></image>
         <view class="tips" wx:if="{{item.tip && !item.tips}}">{{item.tip}}</view>
       </view>
       <view class='one_info'>

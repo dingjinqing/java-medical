@@ -22,7 +22,7 @@ global.wxComponent({
         }
         return false;
       }
-      // util.jumpLink('/pages/item/item?aid={{d.act_id}}&&atp=4&&gid={{d.goods_id}}');
+      util.jumpLink(`/pages/item/item?aid=${d.in_goods_id}&&atp=4&&gid=${d.goods_id}`);
     },
   }
 });
