@@ -27,11 +27,25 @@
             prop=""
             required
           >
+
+<!--            <el-date-picker-->
+<!--              v-model="form.timeInterval"-->
+<!--              type="datetimerange"-->
+<!--              size="small"-->
+<!--              range-separator="至"-->
+<!--              start-placeholder="开始时间"-->
+<!--              end-placeholder="结束时间"-->
+<!--              format="yyyy-MM-dd HH:mm:ss"-->
+<!--              value-format="yyyy-MM-dd HH:mm:ss"-->
+<!--              :default-time="['00:00:00', '23:59:59']"-->
+<!--              :disabled="isEditFlag"-->
+<!--            ></el-date-picker>-->
+
             <section style="display: flex">
               <el-form-item prop="startTime">
                 <el-date-picker
                   v-model="form.startTime"
-                  type="datetime"
+                  type="date"
                   :placeholder="$t('promoteList.startTime')"
                   class="morelength"
                   size="small"
@@ -44,11 +58,12 @@
               <el-form-item prop="endTime">
                 <el-date-picker
                   v-model="form.endTime"
-                  type="datetime"
+                  type="date"
                   :placeholder="$t('promoteList.endTime')"
                   class="morelength"
                   size="small"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="isEditFlag"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -256,7 +271,7 @@
                 v-model="form.promoteTimes"
                 :disabled="isEditFlag"
               ></el-input>
-              <div class="gray">{{$t('promoteList.requiredPromoteValueText')}}</div>
+              <div class="gray">{{$t('promoteList.requiredPromoteTimes')}}</div>
             </div>
           </el-form-item>
           <el-form-item
@@ -630,6 +645,7 @@ export default {
       },
       // 表单
       form: {
+        timeInterval: [],
         test: '',
         actName: '',
         rewardType: '0',
@@ -723,31 +739,34 @@ export default {
       // 表单约束
       formRules: {
         actName: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '活动名称不能为空', trigger: 'blur' }
         ],
         startTime: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+          { required: true, message: '开始时间不能为空', trigger: 'change' }
         ],
         endTime: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+          { required: true, message: '结束时间不能为空', trigger: 'change' }
         ],
         rewardDuration: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '奖励有效期不能为空', trigger: 'blur' }
         ],
         promoteAmount: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '所需助力值不能为空', trigger: 'blur' }
         ],
         promoteTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '所需助力次数不能为空', trigger: 'blur' }
         ],
         launchLimitDuration: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '发起次数限制不能为空', trigger: 'blur' }
         ],
         launchLimitTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '发起次数限制不能为空', trigger: 'blur' }
         ],
         shareCreateTimes: [
-          { required: true, message: this.$t('promoteList.check'), trigger: 'blur' }
+          { required: true, message: '助力机会不能为空', trigger: 'blur' }
+        ],
+        promoteTimesPerDay: [
+          { required: true, message: '助力次数限制不能为空', trigger: 'blur' }
         ]
       },
       srcList: {
@@ -887,6 +906,9 @@ export default {
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
+      if (this.form.endTime !== '') {
+        this.form.endTime = this.form.endTime.toString().substring(0, 11) + '23:59:59'
+      }
       let addParam = {
         'id': this.promoteId,
         'actName': this.form.actName,
@@ -914,6 +936,7 @@ export default {
         'customImgPath': this.srcList.src,
         'promoteTimesPerDay': this.form.promoteTimesPerDay
       }
+      console.log('submit', this.form)
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
         if (valid) {
@@ -945,7 +968,7 @@ export default {
             })
           }
         } else {
-          this.$message.error(this.$t('promoteList.validCheck'))
+          // this.$message.error(this.$t('promoteList.validCheck'))
           return false
         }
       })

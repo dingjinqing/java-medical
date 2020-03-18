@@ -59,8 +59,10 @@ public class TaskJobsConstant {
         /**关闭订单 */
         WX_CLOSEORDER(1010, RabbitConfig.EXCHANGE_WX, RabbitConfig.BINDING_EXCHANGE_CLOSE_ORDER_KEY),
         /**关闭订单 */
-        RETURN_SUB_ORDER(1011, RabbitConfig.EXCHANGE_ORDER, RabbitConfig.BINDING_EXCHANGE_RETURN_SUB_ORDER_KEY);
-    	
+        RETURN_SUB_ORDER(1011, RabbitConfig.EXCHANGE_ORDER, RabbitConfig.BINDING_EXCHANGE_RETURN_SUB_ORDER_KEY),
+        /**微铺宝excel模板导入*/
+        GOODS_VPU_EXCEL_IMPORT(1012,RabbitConfig.EXCHANGE_GOODS_IMPORT,RabbitConfig.BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY);
+
         private Integer executionType;
         private String exchangeName;
         private String routingKey;

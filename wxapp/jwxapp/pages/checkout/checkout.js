@@ -489,7 +489,7 @@ global.wxPage({
         break
       default:
         this.setData({
-          'must.must': value
+          'must.custom': value
         })
         break
     }
@@ -554,17 +554,16 @@ global.wxPage({
       })
       return false
     }
-    if (
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom)
-    ) {
-      wx.showToast({
-        title: '请输入必填项',
-        icon: 'none'
-      })
+    console.log(this.data.orderInfo.must)
+    console.log(this.data.must)
+    let mustTips = ''
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) mustTips = '下单人身份证为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) mustTips = '下单人姓名为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom) mustTips = `${this.data.orderInfo.must.custom}为必填项，请输入`
+    if(mustTips){
+      util.showModal('提示',mustTips)
       return false
     }
     return true
@@ -595,7 +594,7 @@ global.wxPage({
     util.throttle(this.confirm,1000)()
   },
   confirm(){
-    console.log(2222)
+    if(!this.canSubmit()) return
     util.getNeedTemplateId('add_order',()=>{
       let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
         this.data.orderInfo || {}
@@ -620,7 +619,6 @@ global.wxPage({
         delete addParams.insteadPayNum
       }
       console.log(addParams)
-      if (!this.canSubmit()) return
       let params = {
         goods,
         action: 10,
@@ -630,7 +628,7 @@ global.wxPage({
         cardBalance,
         scoreDiscount,
         deliverType: this.data.params.deliverType,
-        orderPayWay: this.data.choosePayType === 4 ? 0 : this.data.choosePayType,
+        orderPayWay: this.data.choosePayType === 3 ? 0 : this.data.choosePayType,
         couponSn,
         message: this.data.message,
         memberCardNo,

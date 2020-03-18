@@ -92,10 +92,11 @@ public class SubscribeMessageService extends ShopBaseService {
 		//已经定义的类目ID
 		Set<Integer> idList = SubscribeMessageConfig.getSecondIdList();
 		int id=0;
-		for (Integer ids : getcategoryList) {
-			for (Integer haveId:idList) {
-				if(ids.equals(haveId)) {
-					id=haveId;
+		//自己定义的顺序为第一优先级
+		for (Integer haveId : idList) {
+			for (Integer ids : getcategoryList) {
+				if (ids.equals(haveId)) {
+					id = haveId;
 				}
 			}
 		}

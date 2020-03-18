@@ -29,5 +29,7 @@ public class SubcribeTemplateCategory {
 	public static final String REFUND_RESULT = "refund_result";
 	/** 邀请成功通知 */
 	public static final String INVITE_SUCCESS = "invite_success";
+	/** 余额变动 */
+	public static final String BALANCE_CHANGE = "balance_change"; 
 
 }

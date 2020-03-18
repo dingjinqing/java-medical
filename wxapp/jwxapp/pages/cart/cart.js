@@ -198,18 +198,6 @@ global.wxPage({
     }
   },
 
-  // //计算商品价格
-  // getCartPrice(){
-  //   const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
-  //   let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
-  //     return accumulator += currentValue.cartPrice * currentValue.cartNumber
-  //   },0)
-  //   let realPrice = totalPrice.toFixed(3)
-  //   this.setData({
-  //     totalPrice: realPrice.substring(0, realPrice.length - 1)
-  //   })
-  // },
-
   //  去结算
   toCheckOut () {
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item => {
@@ -333,18 +321,19 @@ global.wxPage({
 
   // 跳转满折满减商品
   to_fullpage: function (e) {
-    var activity_id = e.currentTarget.dataset.activity_id;
+    var activityId = e.currentTarget.dataset.activity_id;
+    var storeId = e.currentTarget.dataset.store_id;
     util.navigateTo({
-      url: '/pages/fullprice/fullprice?identity_id=' + activity_id,
+      url: '/pages/fullprice/fullprice?strategy_id=' + activityId + '&store_id=' + storeId,
     })
   },
 
   // 跳转加价购商品列表
   to_purchase: function (e) {
-    var activity_id = e.currentTarget.dataset.activity_id;
-    var store_id = e.currentTarget.dataset.store_id;
+    var activityId = e.currentTarget.dataset.activity_id;
+    var storeId = e.currentTarget.dataset.store_id;
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activity_id + '&store_id=' + store_id,
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId,
     })
   },
 

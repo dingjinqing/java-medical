@@ -1,14 +1,5 @@
 package com.vpu.mp.service.foundation.excel;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import com.vpu.mp.service.foundation.excel.bean.ExcelColumnBean;
 import com.vpu.mp.service.foundation.excel.bean.ExcelSheetBean;
 import com.vpu.mp.service.foundation.excel.exception.IllegalExcelDataException;
@@ -16,6 +7,15 @@ import com.vpu.mp.service.foundation.excel.exception.IllegalExcelHeaderException
 import com.vpu.mp.service.foundation.excel.exception.IllegalSheetPositionException;
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李晓冰
@@ -89,7 +89,7 @@ public class ExcelReader extends AbstractExcelDisposer {
         Sheet sheet = workbook.getSheetAt(sheetBean.sheetNum);
 
         if (sheet == null) {
-            illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalSheetBinder(sheetBean.sheetNum, workbook));
+            illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalSheetBinder());
             throw new IllegalSheetPositionException();
         }
 
@@ -112,7 +112,7 @@ public class ExcelReader extends AbstractExcelDisposer {
             //设置了列索引，但是越界了
             boolean isWrongIndex = columnIndex != -1 && (columnIndex < firstCellNum || columnIndex >= lastCellNum);
             if (isWrongIndex) {
-                IllegalExcelBinder.createIllegalHeadInfo(headRow);
+                illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
                 throw new IllegalExcelHeaderException();
             }
 
@@ -126,6 +126,7 @@ public class ExcelReader extends AbstractExcelDisposer {
             //至此，model的该字段未设置sheet对应列的索引
             String columnName = columnBean.columnName;
 
+            int j = -1;
             //根据设置的列名称查找对应索引
             for (int i = firstCellNum; i < lastCellNum; i++) {
                 Cell cell = headRow.getCell(i);
@@ -134,10 +135,10 @@ public class ExcelReader extends AbstractExcelDisposer {
                 if (cellValue == null || !cellValue.equals(columnName)) {
                     continue;
                 }
-                columnBean.columnIndex = i;
+                j = i;
             }
             //类字段在excel head里没有对应索引
-            if (columnBean.columnIndex == -1) {
+            if (j == -1 || columnBean.columnIndex != j) {
                 illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalHeadInfo(headRow));
                 throw new IllegalExcelHeaderException();
             }
@@ -150,12 +151,12 @@ public class ExcelReader extends AbstractExcelDisposer {
         for (Map.Entry<String, ExcelColumnBean> entry : headParamMap.entrySet()) {
             String filedName = entry.getKey();
             int columnIndex = entry.getValue().columnIndex;
-            boolean notNull = entry.getValue().notNull;
+            boolean notBeNull = entry.getValue().notNull;
 
             Cell cell = row.getCell(columnIndex);
 
             if (cell == null) {
-                if (!notNull) {
+                if (!notBeNull) {
                     continue;
                 } else {
                     illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalDataInfo(row));
@@ -164,8 +165,8 @@ public class ExcelReader extends AbstractExcelDisposer {
             }
             String cellValue = ExcelUtil.getCellStringValue(cell, workbook);
 
-            if (cellValue == null) {
-                if (!notNull) {
+            if (StringUtils.isBlank(cellValue)) {
+                if (!notBeNull) {
                     continue;
                 } else {
                     illegalHandler.handleIllegalParse(IllegalExcelBinder.createIllegalDataInfo(row));
