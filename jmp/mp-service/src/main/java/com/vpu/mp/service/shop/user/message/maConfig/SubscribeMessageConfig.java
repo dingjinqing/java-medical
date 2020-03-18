@@ -40,7 +40,11 @@ public enum SubscribeMessageConfig {
 
 	refund_result_307(SubcribeTemplateCategory.REFUND_RESULT, 307, 1435, "退款通知",
 			"退款金额{{amount2.DATA}}订单号{{character_string4.DATA}}申请时间{{date3.DATA}}商品名称{{thing5.DATA}}退款状态{{thing6.DATA}}",
-			new int[] { 2,4,3,5,6 });
+			new int[] { 2, 4, 3, 5, 6 }),
+
+	balance_change_307(SubcribeTemplateCategory.BALANCE_CHANGE, 307, 1972, "余额变动提醒",
+			"变动金额{{amount1.DATA}}账户余额{{amount2.DATA}}变动时间{{time3.DATA}}变动原因{{thing4.DATA}}", new int[] { 1, 2, 3, 4 });
+
 	/** 服装/鞋/箱包 307结束 **/
 
 	/** 模板名称，小程序端发送名称找对应要用那个 */
@@ -56,15 +60,16 @@ public enum SubscribeMessageConfig {
 	/** 开发者自行组合好的模板关键词列表 */
 	private int[] kidList;
 
-    @JsonCreator
-    public static SubscribeMessageConfig getConfig(String id){
-        for(SubscribeMessageConfig item : values()){
-            if(item.getId().equals(id) ){
-                return item;
-            }
-        }
-        return null;
-    }
+	@JsonCreator
+	public static SubscribeMessageConfig getConfig(String id) {
+		for (SubscribeMessageConfig item : values()) {
+			if (item.getId().equals(id)) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * 根据类目和模板名称找到需要的模板
 	 * 
@@ -97,9 +102,10 @@ public enum SubscribeMessageConfig {
 		}
 		return sets;
 	}
-	
+
 	/**
 	 * 根据templeName找tid，因为所有templeName相同的tid都一样。匹配到一个就行
+	 * 
 	 * @param templeName
 	 * @return
 	 */
