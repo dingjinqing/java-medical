@@ -630,7 +630,7 @@ global.wxPage({
         cardBalance,
         scoreDiscount,
         deliverType: this.data.params.deliverType,
-        orderPayWay: this.data.choosePayType === 4 ? 0 : this.data.choosePayType,
+        orderPayWay: this.data.choosePayType === 3 ? 0 : this.data.choosePayType,
         couponSn,
         message: this.data.message,
         memberCardNo,
