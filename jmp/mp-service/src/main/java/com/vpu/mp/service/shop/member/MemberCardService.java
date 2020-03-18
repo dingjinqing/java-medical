@@ -2232,6 +2232,7 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	public void sendCoupon(Integer userId, Integer cardId) {
+		logger().info("开卡赠送优惠券或优惠券礼包");
 		MemberCardRecord mCard = getCardById(cardId);
 		if(mCard==null) {
 			return;

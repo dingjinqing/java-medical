@@ -122,6 +122,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DUR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
@@ -943,7 +944,10 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public MemberCardRecord getGradeCardByGrade(String grade) {
-		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.GRADE.eq(grade)).fetchAny();
+		return db().selectFrom(MEMBER_CARD)
+				   .where(MEMBER_CARD.GRADE.eq(grade))
+				   .and(MEMBER_CARD.DEL_FLAG.eq(MCARD_DF_NO))
+				   .fetchAny();
 	}
 
 	private void setQrCode(WxAppUserCardVo card) {
