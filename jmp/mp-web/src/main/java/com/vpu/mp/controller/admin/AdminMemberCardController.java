@@ -293,6 +293,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/generatecode")
 	public JsonResult generateCardCode(@RequestBody CardBatchParam param) {
+		logger().info("添加领取码");
 		CardBatchVo vo = shop().member.card.generateCardCode(param);
 		return success(vo);
 	}

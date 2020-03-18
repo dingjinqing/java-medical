@@ -1,7 +1,7 @@
 <view class="flex_outside_box">
   <slot name="service-promises" />
   <v-goods-num-cfg wx:if="{{productsInfo.defaultPrd}}"  limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <view class="flex_box" wx:if="{{!productsInfo.defaultPrd}}" bindtap="specDialogShow">
+  <view class="flex_box" wx:if="{{!productsInfo.defaultPrd}}" bindtap="specDialogShowNoTrigger">
     <view class="item_left">
       {{unselect_spec_names ? '请' : '已'}}选择
     </view>

@@ -210,13 +210,6 @@ global.wxPage({
     }, { couponId: couponId }, '', true)
   },
 
-  // 立即使用
-  to_search: function () {
-    util.navigateTo({
-      url: '/pages/searchs/search?coupon_sn=' + coupon_sn
-    })
-  },
-
   // 我的优惠券
   myCoupon: function () {
     util.navigateTo({

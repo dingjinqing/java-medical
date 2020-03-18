@@ -202,17 +202,21 @@ public class PreSaleProcessorDao extends PreSaleService {
                     // 有两个阶段 且处于第一阶段结束，第二阶段未开始 活动未开始状态
                     if (presaleRecord.getPreEndTime().compareTo(now) < 0 && presaleRecord.getPreStartTime_2().compareTo(now) > 0) {
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_START);
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动未开始");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "处于第一阶段结束，第二阶段未开始");
                         vo.setStartTime((presaleRecord.getPreStartTime_2().getTime() - now.getTime()) / 1000);
                         vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
                     } else if (presaleRecord.getPreStartTime_2().compareTo(now) < 0 && presaleRecord.getPreEndTime_2().compareTo(now) > 0) {
                         // 第二阶段活动进行中
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动进行中");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第二阶段活动进行中");
                         vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
-                    } else {
+                    } else if (presaleRecord.getPreEndTime_2().compareTo(now) < 0) {
                         // 第二阶段都结束了
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第二阶段都结束了");
+                    } else {
+                        // 第一阶段进行中
+                        vo.setEndTime((presaleRecord.getPreEndTime().getTime() - now.getTime()) / 1000);
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第一阶段进行中");
                     }
                 }
             }

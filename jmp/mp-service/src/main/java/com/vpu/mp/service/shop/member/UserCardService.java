@@ -5,6 +5,8 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
@@ -910,7 +912,11 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public MemberCardRecord getGradeCardByGrade(String grade) {
-		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.GRADE.eq(grade)).fetchAny();
+		return db().selectFrom(MEMBER_CARD)
+				   .where(MEMBER_CARD.GRADE.eq(grade))
+				   .and(MEMBER_CARD.DEL_FLAG.eq(MCARD_DF_NO))
+				   .and(MEMBER_CARD.FLAG.equal(MCARD_FLAG_USING))
+				   .fetchAny();
 	}
 
 	private void setQrCode(WxAppUserCardVo card) {
@@ -1348,12 +1354,22 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			
+			// 卡的显示金额
+			if(StringUtils.isBlank(userCard.getCardNo())) {
+				userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+			}
+			
 			// 有效时间
 			setEffectTimeForJudgeCard(userCard);
 			userCard.setUserId(param.getUserId());
 			userCard.setCardId(param.getCardId());
 			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
+			
+			
+			
+			
 			return userCardJudgeVo;
 		}else{
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
@@ -1466,8 +1482,14 @@ public class UserCardService extends ShopBaseService {
 		logger().info("开卡送券");
 		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
 			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
+			if(couponIds == null && couponIds.size()==0) {
+				return;
+			}
 			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
 			List<UserCardCoupon> couponListTwo = new ArrayList<>();
+			if(couponList == null || couponList.size()==0) {
+				return;
+			}
 			for (CouponView coupon : couponList) {
 				// 国际化 UserCardCoupon
 				UserCardCoupon uc = new UserCardCoupon();

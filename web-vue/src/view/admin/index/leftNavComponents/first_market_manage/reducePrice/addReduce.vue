@@ -107,7 +107,9 @@
         >
           <i class="el-icon-plus"></i> {{$t('marketCommon.selectGoods')}}
         </el-button>
-        <span @click="onlyShowChoosingGoods" style="color: #e4393c"
+        <span
+          @click="onlyShowChoosingGoods"
+          style="color: #e4393c"
         >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span>
       </el-form-item>
       <div
@@ -642,6 +644,8 @@ export default {
             if (item.reducePriceProduct != null && item.reducePriceProduct.length > 0) {
               item.reducePriceProduct.forEach(spec => {
                 spec.originalPrice = spec.prdPrice
+
+                spec.prdPrice = item.goodsPrice
               })
             }
           })
@@ -653,6 +657,10 @@ export default {
       })
     },
     delReduceData (id) {
+      let index = this.goodsIdList.findIndex(item => {
+        return item === id
+      })
+      this.goodsIdList.splice(index, 1)
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return id === item.goodsId
       })
@@ -664,11 +672,13 @@ export default {
       this.productInfo = data
       console.log(this.productInfo)
     },
+    // 规格价格弹窗回调
     getProductdata (goodsId, ProductInfo) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
         return goodsId === item.goodsId
       })
       this.pageShowGoodsList[goodsTarget].reducePriceProduct = ProductInfo
+      this.pageShowGoodsList[goodsTarget].goodsSpecProducts = ProductInfo
     },
     batchSet () {
       console.log(this.$refs.multipleTable.selection)
@@ -765,13 +775,13 @@ export default {
       let reducePriceFloat = parseFloat(shopPrice - goodsPriceFloat).toFixed(3)
       itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
       itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
-      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-        itemData.reducePriceProduct.map(item => {
-          let originalPrice = item.originalPrice
-          let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
-          item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
-        })
-      }
+      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+      //   itemData.reducePriceProduct.map(item => {
+      //     let originalPrice = item.originalPrice
+      //     let prdPriceFloat = (originalPrice * (parseFloat(rowData.discount / 10))).toFixed(3)
+      //     item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+      //   })
+      // }
     },
     changeItemReducePrice (rowData) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
@@ -783,13 +793,13 @@ export default {
       let discountFloat = (parseFloat(goodsPriceFloat / shopPrice) * 10).toFixed(3)
       itemData.goodsPrice = parseFloat(goodsPriceFloat.substring(0, goodsPriceFloat.length - 1))
       itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-        itemData.reducePriceProduct.map(item => {
-          let originalPrice = item.originalPrice
-          let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
-          item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
-        })
-      }
+      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+      //   itemData.reducePriceProduct.map(item => {
+      //     let originalPrice = item.originalPrice
+      //     let prdPriceFloat = parseFloat(originalPrice - rowData.reducePrice).toFixed(3)
+      //     item.prdPrice = parseFloat(prdPriceFloat.substring(0, prdPriceFloat.length - 1))
+      //   })
+      // }
     },
     changeItemGoodsPrice (rowData) {
       let goodsTarget = this.pageShowGoodsList.findIndex(item => {
@@ -801,11 +811,11 @@ export default {
       let discountFloat = (parseFloat(rowData.goodsPrice / shopPrice) * 10).toFixed(3)
       itemData.reducePrice = parseFloat(reducePriceFloat.substring(0, reducePriceFloat.length - 1))
       itemData.discount = parseFloat(discountFloat.substring(0, discountFloat.length - 1))
-      if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
-        itemData.reducePriceProduct.map(item => {
-          item.prdPrice = rowData.goodsPrice
-        })
-      }
+      // if (itemData.reducePriceProduct && itemData.reducePriceProduct.length) {
+      //   itemData.reducePriceProduct.map(item => {
+      //     item.prdPrice = rowData.goodsPrice
+      //   })
+      // }
     },
     reduceError (rowData) {
       if (rowData.discount || rowData.reducePrice || rowData.goodsPrice) {
@@ -856,6 +866,12 @@ export default {
             item.shopPrice = item.goodsView.shopPrice
           })
           this.pageShowGoodsList = res.content.reducePriceGoods
+
+          // 商品弹窗回显
+          this.goodsIdList = []
+          this.pageShowGoodsList.forEach(item => {
+            this.goodsIdList.push(item.goodsId)
+          })
         } else {
           this.$message.warning(res.message)
         }

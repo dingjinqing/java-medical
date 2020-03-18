@@ -283,12 +283,20 @@ export default {
             this.$message.warning(this.$t('memberCard.inputMoney'))
             this.payMoneyError = true
             this.payScoreError = false
+          } else {
+            this.payMoneyError = false
+            this.payScoreError = false
+            this.ruleForm.valid = flag
           }
         } else if (this.ruleForm.payType === '1') {
           if (typeof this.ruleForm.payScore === 'undefined') {
             this.$message.warning(this.$t('memberCard.inputScore'))
             this.payScoreError = true
             this.payMoneyError = false
+          } else {
+            this.payMoneyError = false
+            this.payScoreError = false
+            this.ruleForm.valid = flag
           }
         } else {
           this.payMoneyError = false
