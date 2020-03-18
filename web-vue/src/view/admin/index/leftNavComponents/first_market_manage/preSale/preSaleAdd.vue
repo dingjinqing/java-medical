@@ -1,7 +1,6 @@
 <!--
 * 创建定金膨胀活动
-*
-* @author 郑保乐
+* @author 赵鑫
 -->
 <template>
   <div>
@@ -17,6 +16,7 @@
           prop="presaleType"
         >
           <el-radio
+            :disabled="isEditeFlag"
             v-for="(item, index) in presaleTypes"
             :key="index"
             v-model="param.presaleType"
@@ -49,6 +49,7 @@
               prop="preTime1Range"
             >
               <el-date-picker
+                :disabled="isEditeFlag"
                 v-model="param.preTime1Range"
                 type="datetimerange"
                 range-separator="至"
@@ -80,6 +81,7 @@
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
                 size="small"
+                :disabled="isEditeFlag"
                 :default-time="['00:00:00', '23:59:59']"
                 @change="dateChange2(param.preTime2Range)"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -105,6 +107,7 @@
                 @change="endMoneyTime(param.tailPayTimeRange)"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 size="small"
+                :disabled="isEditeFlag"
                 :default-time="['00:00:00', '23:59:59']"
               >
               </el-date-picker>
@@ -126,6 +129,7 @@
             start-placeholder="开始时间"
             end-placeholder="结束时间"
             size="small"
+            :disabled="isEditeFlag"
             :default-time="['00:00:00', '23:59:59']"
           >
           </el-date-picker>
@@ -149,16 +153,13 @@
             style="width: 170px;"
           ></el-input>
           <el-button
-            :disabled="isEdite"
+            :disabled="isEditeFlag"
             size="small"
             @click="showChoosingGoods"
           >选择商品
           </el-button>
         </el-form-item>
-        <el-form-item
-          label="发货时间："
-          prop="deliverType"
-        >
+        <el-form-item label="发货时间：">
           <div style="display: flex">
             <el-radio
               v-model="param.deliverType"
@@ -188,9 +189,12 @@
             >&nbsp;尾款支付完成</el-radio>
             <el-form-item
               prop="deliverDays"
-              :rules="[{required: true, message:'请指定发货时间', trigger: ['blur','change']}]"
+              :rules="[
+                { required: true,trigger: 'blur' },
+              ]"
               :inline-message="true"
             >
+              <!-- { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] } -->
               <el-input
                 v-model="param.deliverDays"
                 type="number"
@@ -207,6 +211,7 @@
           prop="discountType"
         >
           <el-radio
+            :disabled="isEditeFlag"
             v-model="param.discountType"
             v-for="(item, index) in discountType"
             :key="index"
@@ -219,6 +224,7 @@
           prop="returnType"
         >
           <el-radio
+            :disabled="isEditeFlag"
             v-model="param.returnType"
             v-for="(item, index) in returnTypes"
             :key="index"
@@ -231,6 +237,7 @@
           prop="showSaleNumber"
         >
           <el-radio
+            :disabled="isEditeFlag"
             v-model="param.showSaleNumber"
             v-for="(item, index) in showSaleNumberTypes"
             :key="index"
@@ -243,6 +250,7 @@
           prop="buyType"
         >
           <el-radio
+            :disabled="isEditeFlag"
             v-model="param.buyType"
             v-for="(item, index) in buyTypes"
             :key="index"
@@ -497,6 +505,7 @@
             <div style="display:flex">
               <span>单用户最多可以购买</span>
               <el-input
+                :disabled="isEditeFlag"
                 v-model="param.buyNumber"
                 size="small"
                 style="width:180px;margin:0 10px;"
@@ -512,7 +521,7 @@
             <div>
               <el-radio
                 v-model="param.shareAction"
-                :label=0
+                :label=1
               >默认样式</el-radio>
               <el-popover
                 placement="right-start"
@@ -541,10 +550,10 @@
             <div>
               <el-radio
                 v-model="param.shareAction"
-                :label=1
+                :label=2
               >自定义样式</el-radio>
               <div
-                v-if="param.shareAction === 1"
+                v-if="param.shareAction === 2"
                 style="margin-left: 25px"
               >
                 <span>文案：</span>
@@ -555,25 +564,25 @@
                 ></el-input>
               </div>
               <div
-                v-if="param.shareAction === 1"
+                v-if="param.shareAction === 2"
                 style="margin-left: 25px"
               >
                 <!-- <span>分享图：</span> -->
                 <span>分享图：</span>
                 <el-radio
                   v-model="param.shareImgAction"
-                  :label=0
+                  :label=1
                 >活动商品信息图</el-radio>
                 <div style="margin-left: 60px;">
                   <el-radio
                     v-model="param.shareImgAction"
-                    :label=1
+                    :label=2
                   >自定义图片</el-radio>
                 </div>
 
                 <div
                   style="display: flex"
-                  v-if="param.shareImgAction === 1"
+                  v-if="param.shareImgAction === 2"
                 >
                   <div
                     class="imgContent"
@@ -674,8 +683,8 @@ export default {
       isShowChoosingGoodsDialog: false,
       showImageDialog: false,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/presale_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/presale_pictorial.jpg`
       },
       ArrowArr: [
         { img_1: this.$imageHost + '/image/admin/show_more.png' },
@@ -684,6 +693,7 @@ export default {
       arrorFlag: true,
       activeIndex: 0,
       goodsRow: {},
+      isEditeFlag: false,
 
       /**
        * 请求参数
@@ -702,7 +712,7 @@ export default {
         startTime: null, // 尾款开始支付时间
         endTime: null,
         goodsId: '',
-        deliverType: 1, // 发货时间类型 0：指定，1：尾款支付
+        deliverType: 1, // 发货时间类型 1：指定，2：尾款支付
         deliverTime: null, // 发货时间
         deliverDays: null, // 几天后发货
         discountType: 0, // 优惠叠加策略
@@ -710,9 +720,9 @@ export default {
         showSaleNumber: 0, // 预售数量展示
         buyType: 0, // 商品购买方式
         buyNumber: null, // 购买数量限制
-        shareAction: 0,
+        shareAction: 1,
         shareDoc: '',
-        shareImgAction: 0,
+        shareImgAction: 1,
         shareImg: '',
         products: []
       },
@@ -791,7 +801,7 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
       } else if (value > presalePrice) {
-        callback(new Error('1阶段定金不能大于商品价格'))
+        callback(new Error('1阶段定金不能大于活动价格'))
       } else {
         callback()
       }
@@ -801,11 +811,20 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
       } else if (value > presalePrice) {
-        callback(new Error('2阶段定金不能大于商品价格'))
+        callback(new Error('2阶段定金不能大于活动价格'))
       } else {
         callback()
       }
     },
+    // // 验证尾款支付完成
+    // validatePayment (rule, value, callback) {
+    //   console.log(value)
+    //   if (!value && this.param.deliverType === 2) {
+    //     callback(new Error('请指定发货时间'))
+    //   } else {
+    //     callback()
+    //   }
+    // },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -837,7 +856,7 @@ export default {
             console.log(res)
             this.$message.success('更新成功')
           } else {
-            this.$message.error(res.messages)
+            this.$message.error('更新失败')
           }
         })
       } else {
@@ -882,7 +901,7 @@ export default {
         console.log(this.param.shareImg)
 
         this.loadStatus(content)
-        this.loadingGoods(content)
+        // this.loadingGoods(content)
         console.log(this.param, 'get return param')
         if (content) {
           if (content.presaleType === 1) {
@@ -904,9 +923,9 @@ export default {
     loadStatus: ({ status }) => {
       this.status = status
     },
-    loadingGoods: ({ goodsName }) => {
-      this.goodsName = goodsName
-    },
+    // loadingGoods: ({ goodsName }) => {
+    //   this.goodsName = goodsName
+    // },
     // 参数校验
     validateParam () {
       this.formatParam()
@@ -1033,6 +1052,10 @@ export default {
     this.langDefault()
     if (this.isEdite) {
       console.log(this.isEdite)
+    }
+    if (this.$route.query.id > 0) {
+      // 编辑定金膨胀活动
+      this.isEditeFlag = true // 编辑时部分信息不可以修改
     }
   }
 }

@@ -400,9 +400,7 @@ global.wxPage({
     const state = new Map([
       [
         { actState: 'endTime', second: true },
-        () => {
-          this.setDealtAct(0)
-        }
+        () => {}
       ],
       [
         { actState: 'endTime', second: false },
@@ -411,7 +409,8 @@ global.wxPage({
             return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'
           })
           this.setData({
-            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
+            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
+            'specParams.activity.actState':Number(actState)
           })
           this.setDealtAct(4)
           clearTimeout(this.actBartime)
@@ -425,9 +424,7 @@ global.wxPage({
       ],
       [
         { actState: 'startTime', second: true },
-        () => {
-          this.setDealtAct(3)
-        }
+        () => {}
       ],
       [
         { actState: 'startTime', second: false },
@@ -436,9 +433,9 @@ global.wxPage({
             return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'
           })
           this.setData({
-            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
+            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
+            'specParams.activity.actState':Number(actState)
           })
-          this.setDealtAct(0)
           clearTimeout(this.actBartime)
           this.getCountDown({
             activityType,

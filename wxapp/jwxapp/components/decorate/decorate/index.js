@@ -1,6 +1,8 @@
 // components/decorate/decorate/index.js
 var util = require("../../../utils/util.js")
+var addCart = require("../../../pages/common/addCart")
 global.wxComponent({
+  mixins: [addCart],
   externalClasses: [],
   /**
    * 页面的初始数据
@@ -36,6 +38,9 @@ global.wxComponent({
         // 转化模块名称
         let componentName = this._convertComponentName(module['module_name']);
         if (!componentName) continue;
+        if (componentName === '') {
+
+        }
         // 模块名称
         module['component_name'] = componentName
         module.elapse_secs = 0;
@@ -174,6 +179,10 @@ global.wxComponent({
       if (!m) return m;
       if (m.component_name == 'v-bargain' || m.component_name == 'v-pinlottery') {
         m.elapse_secs = this.elapse_secs
+      }
+      console.log(m.module_name)
+      if (m.module_name === 'm_card') {
+        if ((m.status == 1 || m.status == 4) && m.hidden_card == 1) return null;
       }
       return m;
     },
