@@ -69,6 +69,11 @@ public class RabbitConfig {
     public static final String QUEUE_CLOSE_ORDER = "order.close";
     /**代付订单退款*/
     public static final String QUEUE_RETURN_SUB_ORDER = "order.return_sub";
+    /*************商品各种导入处理队列start************/
+    /**微铺宝商品excel模板导入*/
+    public static final String QUEUE_GOODS_VPU_EXCEL_IMPORT = "goods.vpu.excel.import";
+    /*************商品各种导入处理队列end************/
+
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -82,8 +87,8 @@ public class RabbitConfig {
     public static final String EXCHANGE_WX = "direct.wx";
     /**订单的路由*/
     public static final String EXCHANGE_ORDER = "direct.order";
-
-
+    /**商品导入路由*/
+    public static final String EXCHANGE_GOODS_IMPORT = "direct.goods";
 
 
     /** 发送失败路由键 */
@@ -116,6 +121,8 @@ public class RabbitConfig {
     public static final String BINDING_EXCHANGE_CLOSE_ORDER_KEY = "bind.wx.closeorder";
     /**代付订单退款 */
     public static final String BINDING_EXCHANGE_RETURN_SUB_ORDER_KEY = "bind.exchange.return.sub.order.key";
+    /**微铺宝商品excel模板导入*/
+    public static final String BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY  = "bind.exchange.goods.vpu.excel.import.key";
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -263,6 +270,15 @@ public class RabbitConfig {
     public Queue returnSubOrderQueue() {
         return new Queue(QUEUE_RETURN_SUB_ORDER,true,false,false);
     }
+
+    /**
+     * 微铺宝excel商品模板导入
+     * @return
+     */
+    @Bean
+    public Queue goodsVpuExcelImportQueue() {
+        return new Queue(QUEUE_GOODS_VPU_EXCEL_IMPORT,true,false,false);
+    }
     /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -301,7 +317,13 @@ public class RabbitConfig {
         return new DirectExchange(EXCHANGE_WX,true,false);
     }
 
-
+    /**
+     * @return 商品导入使用的路由器
+     */
+    @Bean
+    public DirectExchange goodsImportExchange() {
+        return new DirectExchange(EXCHANGE_GOODS_IMPORT,true,false);
+    }
 
     /**
      * @return 路由和队列绑定
@@ -375,5 +397,9 @@ public class RabbitConfig {
     @Bean
     public Binding bindingReturnSubOrderQueue() {
         return BindingBuilder.bind(returnSubOrderQueue()).to(orderExchange()).with(BINDING_EXCHANGE_RETURN_SUB_ORDER_KEY);
+    }
+    @Bean
+    public Binding bindingGoodsVpuExcelImportQueue() {
+        return BindingBuilder.bind(goodsVpuExcelImportQueue()).to(goodsImportExchange()).with(BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY);
     }
 }
