@@ -22,6 +22,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
  */
 @Service
 public class CardFreeShipService extends ShopBaseService{
+	private static final String REMARK_I18N = "remark";
 	@Autowired
 	private MemberCardService mCardSvc;
 	@Autowired
@@ -41,7 +42,7 @@ public class CardFreeShipService extends ShopBaseService{
 		if(type != null && type>=CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
 			num = card.getFreeshipNum();
 		}
-		String desc = Util.translateMessage(lang, RemarkMessage.FREESHIP_TOTAL_NUM, null, card.getFreeshipNum());
+		String desc = Util.translateMessage(lang, RemarkMessage.FREESHIP_TOTAL_NUM, REMARK_I18N, card.getFreeshipNum());
 		return CardFreeship.builder()
 					.num(num)
 					.desc(desc)
@@ -67,11 +68,11 @@ public class CardFreeShipService extends ShopBaseService{
 			desc = freeShipDescs.get(0);
 		}else if(card.getFreeshipLimit()>0) {
 			// 使用包邮次数，以便计算剩余的包邮次数
-			//Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getUserId(),card.getCardId(),card.getFreeLimit());
-			Integer hasFree = 0;
+			Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getUserId(),card.getCardId(),card.getFreeLimit());
+			
 			// 剩余包邮次数多少
 			remainNum -= hasFree;
-			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, null, remainNum);
+			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, REMARK_I18N, remainNum);
 			desc = freeShipDescs.get(card.getFreeshipLimit())+remainStr;
 			logger().info(desc);
 		}
