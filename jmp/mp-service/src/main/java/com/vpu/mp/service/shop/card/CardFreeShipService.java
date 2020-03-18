@@ -66,14 +66,14 @@ public class CardFreeShipService extends ShopBaseService{
 		List<String> freeShipDescs = CardFreeship.getFreeShipDesc(lang);
 		if(NumberUtils.BYTE_ZERO.equals(card.getFreeLimit())) {
 			desc = freeShipDescs.get(0);
-		}else if(card.getFreeshipLimit()>0) {
+		}else if(card.getFreeLimit()>0) {
 			// 使用包邮次数，以便计算剩余的包邮次数
 			Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getUserId(),card.getCardId(),card.getFreeLimit());
 			
 			// 剩余包邮次数多少
 			remainNum -= hasFree;
 			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, REMARK_I18N, remainNum);
-			desc = freeShipDescs.get(card.getFreeshipLimit())+remainStr;
+			desc = freeShipDescs.get(card.getFreeLimit())+remainStr;
 			logger().info(desc);
 		}
 		
