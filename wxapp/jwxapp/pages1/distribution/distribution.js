@@ -109,9 +109,9 @@ global.wxPage({
     })
   },
   to_search: function () {
-    util.navigateTo({
-      url: "/pages/searchs/search?is_rebate=1"
-    })
+    // util.navigateTo({
+    //   url: "/pages/searchs/search?is_rebate=1"
+    // })
   },
   toPromotion: function () {
     util.navigateTo({
