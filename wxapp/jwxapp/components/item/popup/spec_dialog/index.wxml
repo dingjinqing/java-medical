@@ -19,7 +19,7 @@
 <v-popup show="{{show}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="bottom" bindtap='bindClose'>
   <view class="dialog-box">
     <view class="desc-box">
-      <image class="prd-img" src="{{checkedProduct.prdImg ? checkedProduct.prdImg : productsInfo.goodsImgs[0]}}"></image>
+      <image class="prd-img" src="{{checkedProduct.prdImg ? imageUrl +'/'+ checkedProduct.prdImg : productsInfo.goodsImgs[0]}}"></image>
       <view class="desc-info">
         <view class="info">
           <text class="goods-price" style="color:{{main_setting.comColor}};">
