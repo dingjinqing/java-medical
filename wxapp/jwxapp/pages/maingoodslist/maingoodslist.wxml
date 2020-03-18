@@ -25,7 +25,7 @@
     </view>
     <!-- 活动列表 -->
     <view class='goods_content'>
-      <view class='each_goods clearfix' wx:for='{{main_goods_info.goods.dataList}}' wx:key='key' wx:if="{{item.isCardExclusive == 0}}">
+      <view class='each_goods clearfix' wx:for='{{add_goods_info}}' wx:key='key' wx:if="{{item.isCardExclusive == 0}}">
         <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goodsId}}">
           <image src='{{item.goodsImg}}'></image>
           <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
@@ -44,7 +44,7 @@
               </view>
               <view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != ""}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id="{{item.prdId}}">
+            <view class='btn_add_cart' bindtap='add_to_cart' data-item="{{item}}" data-goods_id='{{item.goodsId}}' data-prd_id='{{item.prdId}}'>
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>
@@ -111,12 +111,6 @@
       </view>
     </view>
   </action-sheet>
-  <!--  选择规格（包含无规格情况）  -->
-  <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" />
-
-  <!-- <v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell='true' bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
-    <view slot="footer-nav" class='modal_footer' style='height:{{isIpx == 1?"160rpx;":"100rpx;"}}'>
-      <button bindtap='bindAddCart' style='background:{{comColor}}'>加入购物车</button>
-    </view>
-  </v-sel-spec> -->
+  <!-- 选择规格（包含无规格情况 -->
+  <v-sel-spec show="{{showSpec}}" trigger-button="{{triggerButton}}" bind:close="bindCloseSpec" products-info="{{specParams}}" bindproduct="getProduct" limit-info="{{limitInfo}}"></v-sel-spec>
 </view>

@@ -5,7 +5,7 @@
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
             <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
               <!-- 满折满减 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-ids='{{item1.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}" data-ids='{{item1.identity_id}}'>
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
