@@ -26,8 +26,7 @@ import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.DSLContext;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.db.shop.Tables.GIFT;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -391,13 +391,15 @@ public class GiftService extends ShopBaseService {
      * 列表查询
      */
     private SelectConditionStep<?> getPageListQuery() {
-        return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes"))
-            .from(TABLE)
-            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1)
-                .and(ORDER_GOODS.ACTIVITY_ID.eq(TABLE.ID)
-                    .and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT))))
-            .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        Table<Record2<Integer, Integer>> giftTimes = db().select(ORDER_GOODS.GIFT_ID, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(ORDER_GOODS)
+                .where(ORDER_GOODS.IS_GIFT.eq(BaseConstant.YES.intValue())).groupBy(ORDER_GOODS.GIFT_ID).asTable("t");
+        SelectConditionStep<? extends Record7<Integer, String, Timestamp, Timestamp, Short, Byte, ?>> query = db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, giftTimes.field("giftTimes"))
+                .from(TABLE)
+                .leftJoin(giftTimes).on(giftTimes.field(ORDER_GOODS.GIFT_ID).eq(TABLE.ID))
+                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
+                TABLE.LEVEL, TABLE.STATUS,giftTimes.field("giftTimes"));
+        return query;
     }
 
     /**
@@ -412,8 +414,7 @@ public class GiftService extends ShopBaseService {
         if (isNotEmpty(name)) {
             query.and(TABLE.NAME.like(format("%s%%", name)));
         }
-        query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS);
+
     }
 
     /**

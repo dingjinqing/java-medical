@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     private PrizeRecordService prizeRecordService;
     @Autowired
     private JedisManager jedisManager;
+    @Autowired
+    private AtomicOperation atomicOperation;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
@@ -227,6 +230,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getProductId().toString());
                 payAwardRecordRecord.setKeepDays(payAwardContentBo.getKeepDays());
                 payAwardRecordRecord.insert();
+                //扣商品库存
+                atomicOperation.updataStockAndSalesByLock(payAwardContentBo.getProduct().getGoodsId(),payAwardContentBo.getProductId(),1,true);
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays(),null);
                 payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;
