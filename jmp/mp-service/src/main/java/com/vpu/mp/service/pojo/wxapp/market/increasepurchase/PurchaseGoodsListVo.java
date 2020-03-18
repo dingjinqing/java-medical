@@ -61,6 +61,15 @@ public class PurchaseGoodsListVo {
         private Integer sortId;
         private Integer catId;
 
+        /**
+         * 1默认规格，0自定义规格（多规格）
+         */
+        private Byte isDefaultProduct;
+        /**
+         * 单规格商品的规格ID
+         */
+        private Integer prdId;
+
         //活动数据
         /**
          * 取价结果类型，0商品原价，1等级会员价，2限时降价，3首单特惠价
