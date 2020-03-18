@@ -43,7 +43,6 @@ public class WxAppUserCardVo extends UserCardParam {
 	protected String freeshipDesc;
 	
 	
-	
 	// 使用商品列表
 	protected List<GoodsSmallVo> goodsList;
 	// 门店id 

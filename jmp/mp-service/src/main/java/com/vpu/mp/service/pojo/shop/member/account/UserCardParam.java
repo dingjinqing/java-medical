@@ -109,6 +109,16 @@ public class UserCardParam {
 	 * freeship_num 周期内包邮次数
 	 */
 	protected Integer freeshipNum;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	protected Byte cannotUseCoupon;
+	/**
+	 * 0:不可续费，1:可续费
+	 */
+	protected Byte renewMemberCard;
+	
+	
 	
 	/**
 	 * 是否支持需要用现金购买
