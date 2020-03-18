@@ -51,7 +51,10 @@
 		<!--魔方多图-->
 		<v-window wx:elif="{{module.component_name == 'v-window'}}" module="{{module}}" />
 		<!--商品分组-->
-		<v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" module="{{module}}" />
+		<v-goods-group class="v-goods-group" wx:elif="{{module.component_name == 'v-goods-group'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
 	</block>
 </view>
-
+<v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <v-item-footer slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" bindclose="bindCloseSpec" />
+</v-spec-dialog>

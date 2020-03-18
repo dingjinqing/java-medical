@@ -381,14 +381,14 @@ export default {
         console.log(this.tableData, this.moduleData.integral_goods)
         let arr = []
         this.tableData.forEach((item, index) => {
-          arr.push(item.goodsId)
+          arr.push(item.integralGoodsId)
         })
         console.log(this.moduleData.integral_goods, arr)
         this.$refs.addActTable.clearSelection()
         if (this.moduleData.integral_goods.length) {
           arr.forEach((item, index) => {
             this.moduleData.integral_goods.forEach((itemC, indexC) => {
-              if (item === itemC.goodsId) {
+              if (item === itemC.integral_goods_id) {
                 this.$refs.addActTable.toggleRowSelection(this.tableData[index], true)
               }
             })

@@ -198,18 +198,6 @@ global.wxPage({
     }
   },
 
-  // //计算商品价格
-  // getCartPrice(){
-  //   const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
-  //   let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
-  //     return accumulator += currentValue.cartPrice * currentValue.cartNumber
-  //   },0)
-  //   let realPrice = totalPrice.toFixed(3)
-  //   this.setData({
-  //     totalPrice: realPrice.substring(0, realPrice.length - 1)
-  //   })
-  // },
-
   //  去结算
   toCheckOut() {
     let goodsList = this.data.canBuyGoodsList.filter(item => item.isChecked === 1).map(item => {

@@ -205,10 +205,9 @@ global.wxPage({
   },
 
   // 立即使用
-  to_search: function () {
-    util.navigateTo({
-      url: '/pages/searchs/search?coupon_sn=' + coupon_sn
-    })
+  to_search: function (e) {
+    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
   },
 
   // 我的优惠券
