@@ -1,29 +1,35 @@
-<!--活动明细页面-->
+<!--
+* 定金膨胀-活动明细页面
+* @author:赵鑫
+-->
 <template>
   <div class="wrapper">
     <div class="info_content">
       <div>
-        <span>商品名称：</span>
+        <span>用户名：</span>
         <el-input
-          v-model="pageParams.id"
+          v-model="pageParams.username"
           size="small"
           class="input_width"
+          clearable
+        ></el-input>
+      </div>
+      <div>
+        <span>手机号：</span>
+        <el-input
+          v-model="pageParams.mobile"
+          size="small"
+          class="input_width"
+          clearable
         ></el-input>
       </div>
       <div>
         <span>订单号：</span>
         <el-input
-          v-model="pageParams.mobile"
-          size="small"
-          class="input_width"
-        ></el-input>
-      </div>
-      <div>
-        <span>订单类型：</span>
-        <el-input
           v-model="pageParams.orderSn"
           size="small"
           class="input_width"
+          clearable
         ></el-input>
       </div>
       <div style="margin-left: 30px">
@@ -38,37 +44,79 @@
     <div class="table_list">
       <el-table
         header-row-class-name="tableHeader"
+        :data="tableData"
         border
         style="width: 100%"
       >
         <el-table-column
           prop="userId"
+          label="用户ID"
+          align="center"
+          width="130"
+        ></el-table-column>
+
+        <!-- <el-table-column
+          prop="userId"
+          label="用户昵称"
+          align="center"
+        ></el-table-column> -->
+
+        <el-table-column
+          prop="mobile"
+          label="手机号"
+          align="center"
+        ></el-table-column>
+
+        <el-table-column
+          prop="orderSn"
           label="订单号"
           align="center"
         ></el-table-column>
+
         <el-table-column
-          prop="presaleName"
-          label="商品信息"
+          prop="goodsName"
+          label="下单商品"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div class="goodImge">
+              <div>
+                <img :src="$imageHost+'/'+scope.row.goodsImg">
+              </div>
+              <div class="name">
+                {{scope.row.goodsName}}
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+
         <el-table-column
-          prop="mobile"
+          prop="goodsAmount"
           label="商品数量"
           align="center"
         ></el-table-column>
+
         <el-table-column
-          prop="orderId"
+          prop="createTime"
           label="下单时间"
           align="center"
         ></el-table-column>
-        <el-table-column
+
+        <!-- <el-table-column
           prop="goodsName"
           label="收货人信息"
           align="center"
-        ></el-table-column>
+        ></el-table-column> -->
+
         <el-table-column
-          prop="goodsAmount"
+          prop="orderStatusName"
           label="订单状态"
+          align="center"
+        ></el-table-column>
+
+        <el-table-column
+          prop="orderAmount"
+          label="下单金额"
           align="center"
         ></el-table-column>
       </el-table>
@@ -90,14 +138,17 @@ export default {
   },
   mounted () {
     console.log(this.$route.query.id)
+    this.initDataList()
   },
   data () {
     return {
       pageParams: {
-        id: '',
+        id: this.$route.query.id,
+        username: '',
         mobile: '',
         orderSn: ''
-      }
+      },
+      tableData: []
     }
   },
   methods: {
@@ -105,8 +156,11 @@ export default {
       getDetailPageList(this.pageParams).then(res => {
         if (res.error === 0) {
           console.log(res)
+          this.tableData = res.content.dataList
         }
-      }).catch(err => console.log(err))
+      }).catch((res) => {
+        this.$messge.error(res.error)
+      })
     }
   }
 }
@@ -121,7 +175,7 @@ export default {
     display: flex;
     background: #fff;
     .input_width {
-      width: 175px;
+      width: 180px;
     }
     :nth-of-type(2) {
       margin: 0 50px;
@@ -141,6 +195,27 @@ export default {
     height: 36px;
     color: #000;
     padding: 8px 10px;
+  }
+
+  .goodImge {
+    display: flex;
+    img {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      border: 1px solid #ccc;
+    }
+    .name {
+      width: 115px;
+      height: 40px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      margin-left: 12px;
+      text-align: left;
+    }
   }
 }
 </style>
