@@ -24,6 +24,13 @@ public class UserCardVo {
 	private Integer exchangSurplus;
 	private Timestamp activationTime;
 	private Timestamp uCreateTime;
+	/**
+	 * 	用户卡的快照包邮信息
+	 */
+	// 包邮周期类型 
+	protected Byte freeLimit;
+	// 包邮次数
+	protected Integer freeNum; 
 	
 	private Integer id;
 	private String cardName;

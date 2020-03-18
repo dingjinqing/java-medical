@@ -1409,10 +1409,6 @@ public class UserCardService extends ShopBaseService {
 			userCard.setCardId(param.getCardId());
 			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
-			
-			
-			
-			
 			return userCardJudgeVo;
 		}else{
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
@@ -1489,6 +1485,13 @@ public class UserCardService extends ShopBaseService {
 					}
 				}
 			}
+			// 包邮信息
+			dealWithJudgeFreeship(lang, uCard);
+			// 自定义权益信息
+
+			CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+			uCard.setCardCustomRights(customRights);
+						
 			dealSendCouponInfo(uCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
@@ -1504,11 +1507,24 @@ public class UserCardService extends ShopBaseService {
 
 	private void dealWithJudgeFreeship(String lang, UserCardVo userCard) {
 		logger().info("处理判断卡的包邮信息");
-		MemberCardRecord mCardRec = new MemberCardRecord();
-		mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
-		mCardRec.setFreeshipNum(userCard.getFreeshipNum());
-		CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
-		userCard.setFreeshipDesc(freeshipData.getDesc());
+		if(StringUtils.isBlank(userCard.getCardNo())) {
+			logger().info("取会员卡的包邮信息");
+			MemberCardRecord mCardRec = new MemberCardRecord();
+			mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
+			mCardRec.setFreeshipNum(userCard.getFreeshipNum());
+			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
+			userCard.setFreeshipDesc(freeshipData.getDesc());
+		}else {
+			logger().info("取用户卡的包邮信息");
+			UserCardParam cardParam = new UserCardParam();
+			cardParam.setUserId(userCard.getUserId());
+			cardParam.setCardId(userCard.getCardId());
+			cardParam.setFreeLimit(userCard.getFreeLimit());
+			cardParam.setFreeNum(userCard.getFreeNum());
+			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(cardParam,lang);
+			userCard.setFreeshipDesc(freeshipData.getDesc());
+		}
+		
 	}
 
 	/**
