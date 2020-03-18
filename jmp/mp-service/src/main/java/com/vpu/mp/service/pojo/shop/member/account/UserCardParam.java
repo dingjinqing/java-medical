@@ -40,6 +40,13 @@ public class UserCardParam {
 	protected Integer exchangSurplus;
 	protected Timestamp userCardCreateTime;
 	protected Timestamp userCardUpdateTime;
+	/**
+	 * 	用户卡的快照包邮信息
+	 */
+	// 包邮周期类型 
+	protected Byte freeLimit;
+	// 包邮次数
+	protected Integer freeNum;
 	
 	/** member_card bean */
 	protected Integer mId;

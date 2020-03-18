@@ -150,7 +150,7 @@ public class AdminCouponController extends AdminBaseController{
     }
 
     /**
-     * 取活动分享二维码
+     * 	取活动分享二维码
      */
     @GetMapping("/admin/coupon/share")
     public JsonResult getCouponShareCode(Integer couponId) {

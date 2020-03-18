@@ -65,6 +65,7 @@ import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
@@ -192,6 +193,8 @@ public class UserCardService extends ShopBaseService {
 	private GradeCardOpt gradeCardOpt;
 	@Autowired 
 	private CardUserOpt cardUserOpt;
+	@Autowired
+	private CardFreeShipService cardFreeShipSvc;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -797,6 +800,7 @@ public class UserCardService extends ShopBaseService {
 	 *
 	 */
 	public PageResult<WxAppUserCardVo> getAllCardsOfUser(SearchCardParam param,String lang) {
+		logger().info("获取用户所有的会员卡列表");
 		PageResult<WxAppUserCardVo> cardList = userCardDao.getCardList(param);
 		String avatar = getCardAvatar();
 		for (WxAppUserCardVo card : cardList.dataList) {
@@ -813,21 +817,8 @@ public class UserCardService extends ShopBaseService {
 	 * 	处理卡的包邮信息
 	 */
 	private void dealWithFreeShipInfo(WxAppUserCardVo card,String lang) {
-		
-		if(card.getFreeshipLimit()==null) {
-			return;
-		}
-		String desc=null;
-		List<String> freeShipDescs = CardFreeship.getFreeShipDesc(lang);
-		if(NumberUtils.BYTE_ZERO.equals(card.getFreeshipLimit())) {
-			desc = freeShipDescs.get(0);
-		}else if(card.getFreeshipLimit()>0) {
-			// TODO user card 使用包邮次数，以便计算剩余的包邮次数
-			// 剩余包邮次数多少
-			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, null, card.getFreeshipNum());
-			desc = freeShipDescs.get(card.getFreeshipLimit())+remainStr;
-		}
-		card.setFreeshipDesc(desc);
+		CardFreeship freeShip = cardFreeShipSvc.getFreeshipData(card, lang);
+		card.setFreeshipDesc(freeShip.getDesc());
 	}
 
 	/**
@@ -877,7 +868,7 @@ public class UserCardService extends ShopBaseService {
 		}
 	}
 
-	public WxAppUserCardVo getUserCardDetail(UserCardParam param) throws UserCardNullException {
+	public WxAppUserCardVo getUserCardDetail(UserCardParam param,String lang) throws UserCardNullException {
 		WxAppUserCardVo card = null;
 		if(param.getCardId() != null) {
 			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getUserId(),param.getCardId());
@@ -912,7 +903,11 @@ public class UserCardService extends ShopBaseService {
 			NextGradeCardVo nextGradeCard = getNextGradeCard(card.getGrade());
 			card.setNextGradeCard(nextGradeCard);
 		}
-
+		
+		// 包邮信息
+		dealWithFreeShipInfo(card,lang);
+		
+		
 		return card;
 	}
 
@@ -1292,6 +1287,7 @@ public class UserCardService extends ShopBaseService {
 	}
 	
 	public UserCardJudgeVo userCardJudgement(UserIdAndCardIdParam param,String lang) {
+		logger().info("判断用户卡");
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
 		// null
@@ -1383,7 +1379,11 @@ public class UserCardService extends ShopBaseService {
 				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
 				userCard.setStoreInfoList(storeList);
 			}
-
+			
+			// 包邮信息
+			dealWithJudgeFreeship(lang, userCard);
+			
+			
 			logger().info("开卡送券");
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
@@ -1491,6 +1491,15 @@ public class UserCardService extends ShopBaseService {
 			
 			return userCardJudgeVo;
 		}
+	}
+
+	private void dealWithJudgeFreeship(String lang, UserCardVo userCard) {
+		logger().info("处理判断卡的包邮信息");
+		MemberCardRecord mCardRec = new MemberCardRecord();
+		mCardRec.setFreeshipLimit(userCard.getFreeshipLimit());
+		mCardRec.setFreeshipNum(userCard.getFreeshipNum());
+		CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(mCardRec, lang);
+		userCard.setFreeshipDesc(freeshipData.getDesc());
 	}
 
 	/**
