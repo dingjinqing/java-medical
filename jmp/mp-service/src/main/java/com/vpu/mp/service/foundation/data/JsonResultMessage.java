@@ -190,7 +190,7 @@ public class JsonResultMessage {
     public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
 
     /**
-     *  营销-砍价excel导出-秒杀订单
+     *  营销-秒杀excel导出-秒杀订单
      */
     public static final String SECKILL_ORDER_LIST_FILENAME = "seckill.order.list.file_name";
     public static final String SECKILL_ORDER_LIST_ACT_NAME = "seckill.order.list.act_name";
@@ -202,6 +202,11 @@ public class JsonResultMessage {
     public static final String SECKILL_ORDER_LIST_CONSIGNEE = "seckill.order.list.consignee";
     public static final String SECKILL_ORDER_LIST_MONEY_PAID = "seckill.order.list.money_paid";
     public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
+
+    /**
+     *  营销-预售excel导出-秒杀订单
+     */
+    public static final String PRESALE_ORDER_LIST_FILENAME = "presale.order.list.file_name";
 
 
 
