@@ -153,11 +153,11 @@
       </view>
     </view>
     <view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-      <view class="content_item goods_item">
-        <image class="goods_img" src="{{imageUrl}}image/wxapp/goods_icon.png"></image>
+      <view class="content_item goods_item" wx:for="{{cardInfo.goodsList}}" wx:for-item="goodsListItem" wx:for-index="goodsListIndex" wx:key="goodsListIndex">
+        <image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}"></image>
         <view class="goods_right">
-          <view class="goods_name">天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞天高任鸟飞</view>
-          <view class="goods_price" style="color:{{comColor}}">￥900.00</view>
+          <view class="goods_name">{{goodsListItem.goodsName}}</view>
+          <view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
         </view>
       </view>
     </view>
