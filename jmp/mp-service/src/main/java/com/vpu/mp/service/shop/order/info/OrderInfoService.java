@@ -1027,7 +1027,7 @@ public class OrderInfoService extends ShopBaseService {
         Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
         if(cardFreeShipInterval == null) {
         	logger().info("cardFreeShipInterval为null");
-        	return null;
+        	return 0;
         }
         return db().
             selectCount().
