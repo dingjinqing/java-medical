@@ -373,6 +373,8 @@ public class MpDecorationService extends ShopBaseService {
                     return this.convertMapForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SHOP:
                     return this.convertShopBgForIndex(objectMapper, node, user);
+                case ModuleConstant.M_INTEGRAL:
+                    return this.convertIntegralForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -933,5 +935,19 @@ public class MpDecorationService extends ShopBaseService {
         	moduleShop.setShopBgPath("/"+shopInfo.getShopAvatar());
         }
 		return moduleShop;
+    }
+
+    /**
+     * 店招模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+        moduleIntegral.setNeedRequest(true);
+        return moduleIntegral;
     }
 }
