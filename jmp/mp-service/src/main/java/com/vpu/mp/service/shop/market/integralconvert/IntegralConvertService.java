@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
@@ -24,7 +23,6 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportVo;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,7 +32,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -472,6 +469,27 @@ public class IntegralConvertService extends ShopBaseService {
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(orderExportList, IntegralOrderExport.class);
+        return workbook;
+    }
+
+    /**
+     * 用户列表表格导出
+     * @param param 查询信息
+     * @param lang 语言
+     * @return
+     */
+    public Workbook userExport(IntegralConvertUserParam param, String lang){
+        List<IntegralUserExport> exportList = new ArrayList<>();
+        PageResult<IntegralConvertUserVo> userList = userList(param);
+        for (IntegralConvertUserVo item : userList.getDataList()){
+            IntegralUserExport export = new IntegralUserExport();
+            FieldsUtil.assignNotNull(item,export);
+            exportList.add(export);
+        }
+        //表格导出
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(exportList, IntegralUserExport.class);
         return workbook;
     }
 }

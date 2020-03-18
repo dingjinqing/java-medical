@@ -12,8 +12,8 @@ import java.math.BigDecimal;
  * @author liangchen
  * @date 2020.03.17
  */
-@Data
 @ExcelSheet
+@Data
 public class IntegralOrderExport {
 	
 	/** 订单号 */

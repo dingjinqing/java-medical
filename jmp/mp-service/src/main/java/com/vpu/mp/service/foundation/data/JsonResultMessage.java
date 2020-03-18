@@ -1014,7 +1014,8 @@ public class JsonResultMessage {
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
 
     /**积分兑换*/
-    public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export";
+    public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export.order";
+    public static final String INTEGRAL_MALL_EXPORT_USER = "integral.mall.export.user";
     public static final String INTEGRAL_MALL_ORDER_SN = "integral.mall.orderSn";
     public static final String INTEGRAL_MALL_GOODS = "integral.mall.goods";
     public static final String INTEGRAL_MALL_GOODS_PRICE = "integral.mall.goods.price";
@@ -1024,4 +1025,10 @@ public class JsonResultMessage {
     public static final String INTEGRAL_MALL_USER = "integral.mall.user";
     public static final String INTEGRAL_MALL_RECEIVER = "integral.mall.receiver";
     public static final String INTEGRAL_MALL_ORDER_STATUS = "integral.mall.order.status";
+    public static final String INTEGRAL_MALL_USER_ID = "integral.mall.userId";
+    public static final String INTEGRAL_MALL_GOODS_NAME = "integral.mall.goods.name";
+    public static final String INTEGRAL_MALL_USER_NAME = "integral.mall.user.name";
+    public static final String INTEGRAL_MALL_MOBILE = "integral.mall.mobile";
+    public static final String INTEGRAL_MALL_EXCHANGE_GOODS_NUMBER = "integral.mall.exchange.goods.number";
+    public static final String INTEGRAL_MALL_EXCHANGE_TIME = "integral.mall.exchange.time";
 }

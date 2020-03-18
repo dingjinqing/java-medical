@@ -6,8 +6,8 @@ import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
-import com.vpu.mp.service.pojo.shop.summary.visit.VisitExportParam;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -174,9 +174,20 @@ public class AdminIntegralConvertController extends AdminBaseController{
      * @return
      */
     @PostMapping("/order/export")
-    public void export(@Valid @RequestBody MarketOrderListParam param, HttpServletResponse response) {
+    public void orderExport(@Valid @RequestBody MarketOrderListParam param, HttpServletResponse response) {
         Workbook workbook = shop().integralConvertService.orderExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT, LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT, LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook, fileName, response);
+    }
+    /**
+     * 用户列表导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/user/export")
+    public void userExport(@Validated @RequestBody IntegralConvertUserParam param, HttpServletResponse response) {
+        Workbook workbook = shop().integralConvertService.userExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT_USER, LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
 }
