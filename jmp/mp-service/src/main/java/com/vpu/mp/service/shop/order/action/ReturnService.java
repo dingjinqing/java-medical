@@ -586,7 +586,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         //售后商品库存配置
         Byte autoReturnGoodsStock = returnCfg.getAutoReturnGoodsStock();
         //货到付款 、拼团抽奖未中奖、退运费、手动退款
-        if(OrderConstant.IS_COD_NO.equals(order.getIsCod()) ||
+        if(OrderConstant.IS_COD_YES.equals(order.getIsCod()) ||
             (goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) && !groupDraw.IsWinDraw(order.getOrderSn())) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_SHIPPING_FEE) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_MANUAL)) {
