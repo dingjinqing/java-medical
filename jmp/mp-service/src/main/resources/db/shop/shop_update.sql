@@ -151,8 +151,8 @@ ALTER TABLE `b2c_group_integration_define` ADD COLUMN `activity_copywriting` TEX
 
 
 -- 2020-03-17 用户卡表添加包邮快照信息字段
-ALTER TABLE `b2c_user_card` ADD COLUMN `free_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日' AFTER `id`;
-ALTER TABLE `b2c_user_card` ADD COLUMN `free_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数' AFTER `free_limit`;
+-- ALTER TABLE `b2c_user_card` ADD COLUMN `free_limit` tinyint(3) DEFAULT -1 COMMENT '-1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日' AFTER `id`;
+-- ALTER TABLE `b2c_user_card` ADD COLUMN `free_num` int(11) DEFAULT 0 COMMENT '周期内包邮次数' AFTER `free_limit`;
 
 
 
