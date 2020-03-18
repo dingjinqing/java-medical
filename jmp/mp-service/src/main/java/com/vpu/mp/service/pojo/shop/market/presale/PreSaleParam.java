@@ -20,13 +20,13 @@ public class PreSaleParam {
     /** 全款购买 **/
     public static final byte FULL = 1;
     /** 默认样式 **/
-    public static final byte STYLE_DEFAULT = 0;
+    public static final byte STYLE_DEFAULT = 1;
     /** 自定义样式 **/
-    public static final byte STYLE_CUSTOMIZE = 1;
+    public static final byte STYLE_CUSTOMIZE = 2;
     /** 分享活动商品图 **/
-    public static final byte SHARE_GOODS_IMG = 0;
+    public static final byte SHARE_GOODS_IMG = 1;
     /** 分享自定义图片 **/
-    public static final byte SHARE_CUSTOMIZE_IMG = 1;
+    public static final byte SHARE_CUSTOMIZE_IMG = 2;
     /** 指定时间发货 **/
     public static final byte DELIVER_SPECIFIC = 1;
     /** 尾款支付完成几天后发货 **/
