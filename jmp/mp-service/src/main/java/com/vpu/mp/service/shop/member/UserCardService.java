@@ -6,6 +6,7 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
@@ -914,6 +915,7 @@ public class UserCardService extends ShopBaseService {
 		return db().selectFrom(MEMBER_CARD)
 				   .where(MEMBER_CARD.GRADE.eq(grade))
 				   .and(MEMBER_CARD.DEL_FLAG.eq(MCARD_DF_NO))
+				   .and(MEMBER_CARD.FLAG.equal(MCARD_FLAG_USING))
 				   .fetchAny();
 	}
 
