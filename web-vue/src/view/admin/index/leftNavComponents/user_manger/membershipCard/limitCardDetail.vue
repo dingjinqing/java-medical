@@ -388,6 +388,7 @@ export default {
       this.$refs.cardStoreCfgData.$emit('checkRule')
       this.$refs.cardReceiveCfgData.$emit('checkRule')
       this.$refs.cardActiveCfgData.$emit('checkRule')
+
       if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid &&
            this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
         this.prepareCardData()
