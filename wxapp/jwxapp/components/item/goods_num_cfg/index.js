@@ -14,6 +14,10 @@ global.wxComponent({
         console.log(val)
         this.init();
       }
+    },
+    triggerButton: {
+      type: String,
+      value: ''
     }
   },
 
