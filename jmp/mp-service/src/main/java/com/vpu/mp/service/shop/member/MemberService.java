@@ -79,14 +79,17 @@ import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
 import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
 import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
 import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.saas.area.AreaSelectService;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
@@ -150,6 +153,8 @@ public class MemberService extends ShopBaseService {
 	public UserExportService userExpSvc;
 	@Autowired
 	public RecordAdminActionService recordAdminActionSvc;
+	@Autowired 
+	public CardFreeShipService freeShipSvc;
 	/**
 	 * 导出会员
 	 */
@@ -883,8 +888,16 @@ public class MemberService extends ShopBaseService {
 	 */
 	public List<UserCardDetailVo> getAllUserCardDetail(UserCardDetailParam param) {
 		Result<Record> allUserCardDetail = memberDao.getAllUserCardDetailSql(param);
-		return allUserCardDetail.into(UserCardDetailVo.class);
-		
+		List<UserCardDetailVo> res = allUserCardDetail.into(UserCardDetailVo.class);
+		Map<String, UserCardParam> cardMap = allUserCardDetail.intoMap(USER_CARD.CARD_NO, UserCardParam.class);
+		 // 处理包邮信息
+		 String cardNo = null;
+		 for(UserCardDetailVo vo: res) {
+			 UserCardParam card = cardMap.get(vo.getCardNo());
+			 CardFreeship freeshipData = freeShipSvc.getFreeshipData(card, null);
+			 vo.setFreeShip(freeshipData);			 
+		 }
+		 return res;
 	}
 	
 	/**
