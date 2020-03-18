@@ -129,11 +129,11 @@ global.wxPage({
         let cardInfo = res.content.cardInfo
         that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
-        if(!cardInfo.cardNo){
+        if (!cardInfo.cardNo) {
           that.setData({
             carStatus: "未领取"
           })
-        }else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        } else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
@@ -497,7 +497,7 @@ global.wxPage({
           return false;
         }, false);
       }
-    }, { cardId: that.data.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
+    }, { cardId: Number(that.data.cardId), code: card_code, cardNo: card_num, cardPwd: card_pwd })
   },
   // 点击使用门店
   toStoreList () {
