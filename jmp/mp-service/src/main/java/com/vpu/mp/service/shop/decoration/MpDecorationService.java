@@ -740,6 +740,8 @@ public class MpDecorationService extends ShopBaseService {
                             return  this.convertPinIntegrationForModule(objectMapper, node, user);
                         case ModuleConstant.M_GROUP_DRAW:
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
+                        case ModuleConstant.M_INTEGRAL:
+                            return  this.convertIntegralForModule(objectMapper, node, user);
                         //TODO case
                         default:
                     }
@@ -916,6 +918,22 @@ public class MpDecorationService extends ShopBaseService {
 
         // 转换实时信息
         return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
+    }
+
+    /**
+     * 积分兑换模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
     }
     
     /**
