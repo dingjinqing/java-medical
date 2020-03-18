@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
@@ -50,6 +51,7 @@ public class FriendPromoteService extends ShopBaseService {
     @Autowired CouponGiveService couponGiveService;
     @Autowired PrizeRecordService prizeRecordService;
     @Autowired MaMpScheduleTaskService maMpScheduleTaskService;
+    @Autowired AtomicOperation atomicOperation;
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
@@ -1429,19 +1431,13 @@ public class FriendPromoteService extends ShopBaseService {
                                 logger().info("商品发放失败");
                                 throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
                             }
-
-                            //更新商品规格库存
-                            Integer updatePrdRows = updatePrdNum(promoteInfo.getRewardContent().getGoodsIds(),1);
-                            if (updatePrdRows==0){
-                                logger().info("规格库存更新失败");
-                                throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
-                            }
-                            //更新商品库存
-                            Integer updateGoodsRows = updateGoodsNum(promoteInfo.getRewardContent().getGoodsIds(),1);
-                            if (updateGoodsRows==0){
-                                logger().info("商品库存更新失败");
-                                throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
-                            }
+                            //得到goodsId
+                            Integer goodsId = db().select(GOODS_SPEC_PRODUCT.GOODS_ID)
+                                .from(GOODS_SPEC_PRODUCT)
+                                .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(promoteInfo.getRewardContent().getGoodsIds()))
+                                .fetchOneInto(Integer.class);
+                            //更新库存
+                            atomicOperation.updataStockAndSalesByLock(goodsId,promoteInfo.getRewardContent().getGoodsIds(),1,false);
                         }else {
                             logger().info("商品库存不足");
                             throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
