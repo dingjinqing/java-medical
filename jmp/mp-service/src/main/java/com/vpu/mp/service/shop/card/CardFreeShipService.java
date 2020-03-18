@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 /**
  *	卡的包邮服务
  *	@author 黄壮壮
@@ -25,6 +26,8 @@ public class CardFreeShipService extends ShopBaseService{
 	private MemberCardService mCardSvc;
 	@Autowired
 	private UserCardService uCardSvc;
+	@Autowired
+	private OrderInfoService orderInfoSvc;
 	/**
 	 *	返回会员卡的包邮配置
 	 * @param card MemberCardRecord
@@ -63,8 +66,8 @@ public class CardFreeShipService extends ShopBaseService{
 		if(NumberUtils.BYTE_ZERO.equals(card.getFreeshipLimit())) {
 			desc = freeShipDescs.get(0);
 		}else if(card.getFreeshipLimit()>0) {
-			// TODO 王帅使用包邮次数，以便计算剩余的包邮次数
-			Integer hasFree = 0;
+			// 使用包邮次数，以便计算剩余的包邮次数
+			Integer hasFree = orderInfoSvc.getCardFreeShipSum(card.getUserId(),card.getCardId(),card.getFreeLimit());
 			// 剩余包邮次数多少
 			remainNum -= hasFree;
 			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, null, remainNum);
