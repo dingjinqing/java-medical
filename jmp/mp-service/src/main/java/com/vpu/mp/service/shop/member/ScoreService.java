@@ -107,7 +107,8 @@ public class ScoreService extends ShopBaseService {
 				if (score < 0) {
 					// 消耗积分
 					if(Math.abs(score)>dbUser.getScore()) {
-						logger().info("消耗的积分超出可用积分");
+						logger().info("消耗的积分超出可用积分:");
+						logger().info("当前需要消耗积分："+Math.abs(score)+"用户目前拥有积分： "+dbUser.getScore());
 						throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 					}
 					
