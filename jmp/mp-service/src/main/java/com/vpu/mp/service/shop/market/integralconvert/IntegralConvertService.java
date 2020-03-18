@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.OrderReadService;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -396,6 +397,13 @@ public class IntegralConvertService extends ShopBaseService {
      * @return
      */
     public ModuleIntegral getPageIndexIntegral(ModuleIntegral moduleIntegral){
+        if(!moduleIntegral.getIntegralGoods().isEmpty()){
+            for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
+                if(StringUtil.isNotEmpty(g.getGoodsImg())){
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            }
+        }
 
         return moduleIntegral;
     }
