@@ -32,18 +32,21 @@ global.wxComponent({
       return time_arr;
     },
     handleToBargain (e) {
-      var _this = this;
-      if (this.data.m.bottom.subscribe_message) {
-        console.log('有订阅消息')
-        var d = _this.eventData(e);
-        util.toSubscribeMessage(d.template_ids, 'invite', function () {
-          console.log(111);
-          _this.bindToBargain(e);
-        })
-      } else {
-        console.log('没有订阅消息')
+      util.getNeedTemplateId('invite', ()=>{
         this.bindToBargain(e)
-      }
+      })
+      // var _this = this;
+      // if (this.data.m.bottom.subscribe_message) {
+      //   console.log('有订阅消息')
+      //   var d = _this.eventData(e);
+      //   util.toSubscribeMessage(d.template_ids, 'invite', function () {
+      //     console.log(111);
+      //     _this.bindToBargain(e);
+      //   })
+      // } else {
+      //   console.log('没有订阅消息')
+      //   this.bindToBargain(e)
+      // }
     },
     bindToBargain (e) {
       var _this = this
