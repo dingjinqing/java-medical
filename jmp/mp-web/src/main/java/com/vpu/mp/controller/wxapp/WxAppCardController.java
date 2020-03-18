@@ -58,7 +58,7 @@ public class WxAppCardController extends WxAppBaseController {
 		param.setUserId(wxAppAuth.user().getUserId());
 		WxAppUserCardVo userCardDetail;
 		try {
-			userCardDetail = shop().user.userCard.getUserCardDetail(param);
+			userCardDetail = shop().user.userCard.getUserCardDetail(param,getLang());
 		} catch (UserCardNullException e) {
 			return fail(e.getErrorCode());
 		}
