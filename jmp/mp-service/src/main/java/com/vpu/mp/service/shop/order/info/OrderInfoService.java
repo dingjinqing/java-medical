@@ -1025,6 +1025,7 @@ public class OrderInfoService extends ShopBaseService {
             return 0;
         }
         Timestamp[] cardFreeShipInterval = getCardFreeShipInterval(freeLimit);
+        
         if(cardFreeShipInterval == null) {
         	logger().info("cardFreeShipInterval为null");
         	return 0;
