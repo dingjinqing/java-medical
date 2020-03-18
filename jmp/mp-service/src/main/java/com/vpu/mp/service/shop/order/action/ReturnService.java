@@ -805,7 +805,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
         OrderInfoRecord orderInfoRecord = orderInfo.getOrderByOrderSn(order.getOrderSn());
         if(BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0
             && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)
-            && (orderInfoRecord.getRefundStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getRefundStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
+            && (orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
             coupon.releaserCoupon(order.getOrderSn());
         }
     }
