@@ -1081,7 +1081,7 @@ public class MemberCardService extends ShopBaseService {
 	 * 	获取卡的包邮信息
 	 */
 	private CardFreeship getFreeshipData(MemberCardRecord card) {
-		return freeShipSvc.getFreeshipData(card);
+		return freeShipSvc.getFreeshipData(card,null);
 	}
 	
 	/**
