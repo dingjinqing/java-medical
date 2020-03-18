@@ -1388,6 +1388,9 @@ public class UserCardService extends ShopBaseService {
 			
 			// 包邮信息
 			dealWithJudgeFreeship(lang, userCard);
+			// 自定义权益信息
+			CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+			userCard.setCardCustomRights(customRights);
 			
 			
 			logger().info("开卡送券");
