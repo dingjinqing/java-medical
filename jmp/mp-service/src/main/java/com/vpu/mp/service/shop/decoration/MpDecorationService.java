@@ -373,6 +373,8 @@ public class MpDecorationService extends ShopBaseService {
                     return this.convertMapForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SHOP:
                     return this.convertShopBgForIndex(objectMapper, node, user);
+                case ModuleConstant.M_INTEGRAL:
+                    return this.convertIntegralForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -738,6 +740,8 @@ public class MpDecorationService extends ShopBaseService {
                             return  this.convertPinIntegrationForModule(objectMapper, node, user);
                         case ModuleConstant.M_GROUP_DRAW:
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
+                        case ModuleConstant.M_INTEGRAL:
+                            return  this.convertIntegralForModule(objectMapper, node, user);
                         //TODO case
                         default:
                     }
@@ -849,7 +853,7 @@ public class MpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
 
         // 转换实时信息
-        return member.card.getPageIndexMemberCard(moduleCard.getCardId(), userId);
+        return member.card.getPageIndexMemberCard(moduleCard, userId);
     }
 
     /**
@@ -915,6 +919,22 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
         return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
     }
+
+    /**
+     * 积分兑换模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+    }
     
     /**
      * 店招模块
@@ -933,5 +953,19 @@ public class MpDecorationService extends ShopBaseService {
         	moduleShop.setShopBgPath("/"+shopInfo.getShopAvatar());
         }
 		return moduleShop;
+    }
+
+    /**
+     * 店招模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+        moduleIntegral.setNeedRequest(true);
+        return moduleIntegral;
     }
 }

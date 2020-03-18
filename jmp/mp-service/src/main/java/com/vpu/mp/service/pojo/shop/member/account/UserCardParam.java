@@ -100,6 +100,13 @@ public class UserCardParam {
 	protected Integer stock;
 	protected Integer limit;
 	protected String discountBrandId;
+	/**
+	 * 	自定义权益
+	 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected Byte customRightsFlag;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String customRights;
 
 	/**
 	 * freeship_limit包邮周期类型 -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
@@ -109,6 +116,16 @@ public class UserCardParam {
 	 * freeship_num 周期内包邮次数
 	 */
 	protected Integer freeshipNum;
+	/**
+	 * 	是否和会员卡一起使用0:可以1：不可以
+	 */
+	protected Byte cannotUseCoupon;
+	/**
+	 * 0:不可续费，1:可续费
+	 */
+	protected Byte renewMemberCard;
+	
+	
 	
 	/**
 	 * 是否支持需要用现金购买

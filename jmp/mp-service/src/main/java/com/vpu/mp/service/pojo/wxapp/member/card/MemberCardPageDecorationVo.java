@@ -39,4 +39,6 @@ public class MemberCardPageDecorationVo {
     private Integer stock;
     private String shipImg;
 
+    private Byte hiddenCard=0;
+
 }
