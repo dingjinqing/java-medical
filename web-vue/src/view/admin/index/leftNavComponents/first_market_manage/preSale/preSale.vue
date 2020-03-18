@@ -1,7 +1,6 @@
 <!--
 * 定金膨胀活动列表
-*
-* @author 郑保乐
+* @author 赵鑫
 -->
 <template>
   <div class="container">
@@ -320,17 +319,20 @@ export default {
     gotoAdd () {
       this.$router.push('/admin/home/main/presale/add')
     },
-    // 变价活动
+    // 编辑活动
     gotoEdit (id) {
       console.log(12345)
       console.log(id, 'get id')
       this.$router.push({
-        path: `/admin/home/main/presale/edit/${id}`
+        path: `/admin/home/main/presale/edit/${id}`,
+        query: {
+          id: id
+        }
       })
     },
     // 分享活动
     share (id) {
-      alert(id)
+      // alert(id)
       sharePreSale(id).then(res => {
         if (res.error === 0) {
           this.shareImg = res.content.imageUrl
@@ -393,7 +395,12 @@ export default {
     // 领取明细
     receiveDetails (id) {
       console.log(id)
-      this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
+      this.$router.push({
+        path: `/admin/home/main/presale/order_detail/${id}`,
+        query: {
+          id: id
+        }
+      })
     },
     // 活动明细
     activityDetails (id) {
