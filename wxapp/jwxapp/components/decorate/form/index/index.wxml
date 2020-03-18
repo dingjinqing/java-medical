@@ -1,6 +1,6 @@
 <!--components/decorate/form/index/index.wxml-->
 <view class="form-container">
-  <block wx:for="{{pageData}}" wx:key="idx" wx:for-item="module">
+  <block wx:for="{{pageData}}" wx:key="key" wx:for-item="module">
     <!-- 姓名 -->
     <v-input-name bind:attached="bindComponentAttached" wx:if="{{module.component_name == 'v-input-name'}}" module="{{module}}"></v-input-name>
     <!-- 手机号 -->

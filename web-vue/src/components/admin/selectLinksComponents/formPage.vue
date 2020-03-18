@@ -58,7 +58,7 @@
             <td>{{item.pageName}}</td>
 
             <td class="tb_decorate_a">
-              pages/form/form?page_id={{item.pageId}}
+              pages1/form/form?pageId={{item.pageId}}
             </td>
           </tr>
         </tbody>

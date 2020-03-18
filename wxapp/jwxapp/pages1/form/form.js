@@ -19,6 +19,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      console.log(scene)
+      options.pageId = scene[0].split('=')[1]
+    }
     this.setData({
       _options:options
     })
