@@ -1107,7 +1107,8 @@ public class MemberCardService extends ShopBaseService {
 	/**
 	 * 	获取卡的自定义权益信息
 	 */
-	private CardCustomRights getCustomRights(MemberCardRecord card) {
+	public CardCustomRights getCustomRights(MemberCardRecord card) {
+		logger().info("获取卡的自定义权益信息");
 		List<CardRight> customRightsAll = null;
 		CardCustomRights.RightSwitch flag = CardCustomRights.RightSwitch.off;
 		

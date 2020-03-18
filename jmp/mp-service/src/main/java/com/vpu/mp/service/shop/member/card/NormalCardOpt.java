@@ -49,6 +49,8 @@ public class NormalCardOpt extends CardOpt {
 			.userId(userId)
 			.cardId(cardId)
 			.cardNo(cardService.generateCardNo(cardId))
+			.freeLimit(card.getFreeshipLimit())
+			.freeNum(card.getFreeshipNum())
 			.createTime(DateUtil.getLocalDateTime())
 			.expireTime(userCardService.calcCardExpireTime(card))
 			.build();
@@ -57,7 +59,7 @@ public class NormalCardOpt extends CardOpt {
 		//	开卡送卡余额
 		if(card.getSendMoney() != null) {
 			uCard.setMoney(new BigDecimal(card.getSendMoney()));
-		}
+		}		
 		
 		//	设置激活
 		if(isActivate || !CardUtil.isNeedActive(card.getActivation())) {
