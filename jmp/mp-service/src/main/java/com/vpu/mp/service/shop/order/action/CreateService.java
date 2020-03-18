@@ -1012,8 +1012,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
         //确认收货后order_timeout_days天，订单完成
         order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
-        //是否下单减库存
-        order.setIsLock(tradeCfg.getIsLock());
+        //是否下单减库存(秒杀下单减库存)
+        order.setIsLock(orderBo.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_SEC_KILL) ? YES : tradeCfg.getIsLock());
     }
 
     /**
@@ -1186,15 +1186,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @throws MpException
      */
     private void processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
-        //lock
-        boolean flag = false;
         try{
             if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY) || order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING) ||
                 (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && order.getBkOrderPaid() > OrderConstant.BK_PAY_NO)) {
                 logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
                 //加锁
                 atomicOperation.addLock(orderBo.getOrderGoodsBo());
-                flag = true;
                 //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
                 marketProcessorFactory.processOrderEffective(param,order);
                 //更新活动库存
@@ -1203,7 +1200,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
                 logger().info("更新成功{}",order.getOrderSn());
             }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
-                logger().info("下单时待付款且配置为下单减库存调用更新库存方法");
+                logger().info("下单时待付款且配置为下单减库存或者为秒杀时调用更新库存方法");
                 //加锁
                 atomicOperation.addLock(orderBo.getOrderGoodsBo());
                 //下单减库存
