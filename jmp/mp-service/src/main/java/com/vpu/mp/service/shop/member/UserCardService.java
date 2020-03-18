@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.member;
 
+
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
@@ -123,6 +124,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
@@ -947,6 +949,7 @@ public class UserCardService extends ShopBaseService {
 		return db().selectFrom(MEMBER_CARD)
 				   .where(MEMBER_CARD.GRADE.eq(grade))
 				   .and(MEMBER_CARD.DEL_FLAG.eq(MCARD_DF_NO))
+				   .and(MEMBER_CARD.FLAG.equal(MCARD_FLAG_USING))
 				   .fetchAny();
 	}
 
