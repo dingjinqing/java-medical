@@ -851,7 +851,7 @@ public class MpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
 
         // 转换实时信息
-        return member.card.getPageIndexMemberCard(moduleCard.getCardId(), userId);
+        return member.card.getPageIndexMemberCard(moduleCard, userId);
     }
 
     /**
