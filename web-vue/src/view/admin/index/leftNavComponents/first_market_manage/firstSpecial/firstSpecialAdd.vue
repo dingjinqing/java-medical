@@ -119,6 +119,7 @@
             <el-input-number
               v-model="form.first"
               :min='1'
+              :max='127'
               controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
