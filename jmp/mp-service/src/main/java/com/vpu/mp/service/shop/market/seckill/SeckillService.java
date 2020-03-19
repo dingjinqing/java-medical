@@ -576,7 +576,7 @@ public class SeckillService extends ShopBaseService{
         List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
         List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
         List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
-        validCardIds.removeAll(seckillCardIds);
+        validCardIds.retainAll(seckillCardIds);
         return (validCardIds != null && validCardIds.size() > 0);
     }
 

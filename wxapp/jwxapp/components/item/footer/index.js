@@ -175,6 +175,7 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
+        console.log(val)
       }
     },
     products:{

@@ -13,7 +13,7 @@ global.wxComponent({
     },
     bindToInegral (e) {
       var d = this.eventData(e);
-      console.log(d.tips)
+      console.log(d)
       if (d.tips) {
         if (d.tips == this.$t("components.decorate.goodsDeleted")) {
           util.showModal(this.$t("components.decorate.tips"), this.$t("components.decorate.goodsDeleted"));
@@ -22,7 +22,7 @@ global.wxComponent({
         }
         return false;
       }
-      util.jumpLink('/pages/item/item');
+      util.jumpLink(`/pages/item/item?aid=${d.in_goods_id}&&atp=4&&gid=${d.goods_id}`);
     },
   }
 });

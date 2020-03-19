@@ -61,6 +61,16 @@ global.wxPage({
     this.initCommentData()
   },
 
+  clickComment(e) {
+    console.log(e)
+    let src = e.currentTarget.dataset.src
+    let list = e.currentTarget.dataset.all
+    wx.previewImage({
+      current: src,
+      urls: list
+    })
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

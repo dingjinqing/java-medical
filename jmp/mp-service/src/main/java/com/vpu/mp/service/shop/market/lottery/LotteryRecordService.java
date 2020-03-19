@@ -296,6 +296,7 @@ public class LotteryRecordService extends ShopBaseService {
             case LOTTERY_TYPE_GOODS:
                 logger().info("赠品");
                 GoodsView goodsView = goodsService.getGoodsViewByProductId(lotteryPrizeRecord.getPrdId());
+                //扣商品库存
                 atomicOperation.updataStockAndSalesByLock(goodsView.getGoodsId(),recordRecord.getPrdId(),1,true);
                 recordRecord.setPrdId(lotteryPrizeRecord.getPrdId());
                 recordRecord.setPresentStatus(LOTTERY_PRIZE_STATUS_UNCLAIMED);
