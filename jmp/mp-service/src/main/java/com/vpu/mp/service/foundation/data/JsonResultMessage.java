@@ -589,7 +589,16 @@ public class JsonResultMessage {
     public static final String UEXP_LEVEL_NAME = "user.export.level_name";
     public static final String UEXP_GROUP_NAM = "user.export.group_name";
     
-
+    // 会员卡优惠券信息
+    public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
+    public static final String CARD_COUPON_DAY = "card.receive.day";
+    public static final String CARD_COUPON_HOUR = "card.receive.hour";
+    public static final String CARD_COUPON_MINUTE = "card.receive.minute";
+    public static final String CARD_COUPON_NOLIMIT = "card.coupon.nolimit";
+    public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
+    public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
+    public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
+    
     
 	/**
 	 * 概览
