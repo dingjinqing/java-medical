@@ -98,7 +98,7 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
     	for (Integer secondId : secondIdList) {
     		String fieldName="data"+secondId;
 			JsonNode findValue = jsonNode.findValue(fieldName);
-			String[][] array = assemblyMaArray(findValue);
+			Object array = assemblyMaArray(findValue);
 			log.info("解析出的数据：{}",array);
 			try {
 				PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);
@@ -118,6 +118,7 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
         for (int i = 0; i < size; i++) {
             JsonNode i_node = mData.get(i);
             for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
+            	log.info("值:{}",i_node.get(j).asText());
                 data[i][j] = i_node.get(j).asText();
             }
         }
