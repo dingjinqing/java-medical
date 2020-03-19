@@ -57,7 +57,7 @@ global.wxPage({
   to_item: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: 'pages/item/item?aid=' + this.data.group_draw_id + '&&atp=1&&gid=' + goods_id
+      url: 'pages/item/item?aid=' + this.data.group_draw_id + '&&atp=8&&gid=' + goods_id
     })
   },
   //倒计时
