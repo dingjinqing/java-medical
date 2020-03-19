@@ -78,8 +78,8 @@ global.wxPage({
           applicationTime = orderInfo.shippingOrRefundTime
         }
         // 申请时凭证图
-        let goodsImages = JSON.parse(orderInfo.goodsImages) || []
-        let voucherImages = JSON.parse(orderInfo.voucherImages) || []
+        let goodsImages = JSON.parse(orderInfo.goodsImages || '[]')
+        let voucherImages = JSON.parse(orderInfo.voucherImages || '[]')
         // 活动类型
         // 商品活动
         let activityName = '', goodsType = '';
