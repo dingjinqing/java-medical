@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.*;
@@ -498,8 +499,9 @@ public class GroupBuyService extends ShopBaseService {
             {groupBuyName},
             {prizeName},
             {Util.getdate("yyyy-MM-dd HH:mm:ss")}};
+        MaSubscribeData build = MaSubscribeData.builder().data307(data1).build();
         RabbitMessageParam param1 = RabbitMessageParam.builder()
-            .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data1).build())
+            .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(build).build())
             .page(page).shopId(getShopId()).userIdList(userIds)
             .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
         saas.taskJobMainService.dispatchImmediately(param1, RabbitMessageParam.class.getName(), getShopId(),

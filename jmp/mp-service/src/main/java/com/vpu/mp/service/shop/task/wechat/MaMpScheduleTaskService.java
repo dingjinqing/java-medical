@@ -35,6 +35,7 @@ import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.store.service.order.StoreAppointmentRemindVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -473,10 +474,11 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			String[][] data = new String[][] { { vo.getActName() }, { name2 }, { date } };
 			List<Integer> userIdList = new ArrayList<Integer>();
 			userIdList.add(vo.getUserId());
+			MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
 			//发的小程序
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.maTemplateData(
-							MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
+							MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
 					.page(page).shopId(getShopId())
 					.userIdList(userIdList)
 					.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();

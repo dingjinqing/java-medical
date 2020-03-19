@@ -1,9 +1,12 @@
 package com.vpu.mp.service.pojo.shop.market.message;
 
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -11,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 
@@ -47,7 +51,7 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
             }else if( "maTemplateData".equals(key) )  {
                 JsonNode maData = j_node.findValue(key);
                 if( maData.size()>0 ){
-                    String[][] data = assemblyArray(maData);
+                	MaSubscribeData data = reSetMaData(maData);
                     MaTemplateData ma = MaTemplateData.builder()
                         .data(data)
                         .config(maData.findValue("config").textValue())
@@ -78,6 +82,36 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
         String[][] data = new String[size][3];
         for (int i = 0; i < size; i++) {
             JsonNode i_node = mData.findValue("data").get(i);
+            for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
+                data[i][j] = i_node.get(j).asText();
+            }
+        }
+        return data;
+    }
+    private MaSubscribeData reSetMaData(JsonNode jsonNode) {
+    	Set<Integer> secondIdList = SubscribeMessageConfig.getSecondIdList();
+    	MaSubscribeData data=new MaSubscribeData();
+    	Class<?> clazz = data.getClass();
+    	for (Integer secondId : secondIdList) {
+    		String fieldName="data"+secondId;
+			JsonNode findValue = jsonNode.findValue(fieldName);
+			String[][] array = assemblyMaArray(findValue);
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);
+				Method method = pd.getWriteMethod();
+				method.invoke(data, array);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+    	return data;
+    }
+    
+    private String[][] assemblyMaArray(JsonNode mData){
+        int size = mData.size();
+        String[][] data = new String[size][3];
+        for (int i = 0; i < size; i++) {
+            JsonNode i_node = mData.get(i);
             for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
                 data[i][j] = i_node.get(j).asText();
             }
