@@ -40,6 +40,19 @@ public class CartConstant {
      * 专享
      */
     public final static byte GOODS_STATUS_EXCLUSIVE = 5;
+    /**
+     * 失效
+     */
+    public final static byte GOODS_STATUS_DISABLED = 6;
+    /**
+     * 商品规格删除
+     */
+    public final static byte GOODS_STATUS_PRODUCT_DELETE = 7;
+    /**
+     * 商品没有规格
+     */
+    public final static byte GOODS_STATUS_PRODUCT_CHANGE = 8;
+
 
     //******************************************活动状态 0 失效 1 生效
     /**
