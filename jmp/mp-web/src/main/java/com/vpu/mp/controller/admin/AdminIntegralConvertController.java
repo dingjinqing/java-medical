@@ -17,7 +17,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -189,5 +188,14 @@ public class AdminIntegralConvertController extends AdminBaseController{
         Workbook workbook = shop().integralConvertService.userExport(param,getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT_USER, LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
+    }
+    /**
+     * 分享
+     * @param param 活动id
+     * @return 二维码信息
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid IntegralConvertId param){
+        return success(shop().integralConvertService.getMpQRCode(param));
     }
 }
