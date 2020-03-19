@@ -73,7 +73,7 @@ public class GiftProcessorDao extends GiftService {
     @Autowired
     private ImageService imageService;
 
-    private final static List<Byte> ORDER_ACT_FILTER;
+    public final static List<Byte> ORDER_ACT_FILTER;
     static {
         //TODO 好友助力送商品，送礼多人送时过滤
         ORDER_ACT_FILTER = Arrays.asList(
@@ -190,7 +190,7 @@ public class GiftProcessorDao extends GiftService {
     /**
      * 获取所有进行中的活动
      */
-    private List<GiftVo> getActiveActivity(){
+    public List<GiftVo> getActiveActivity(){
         Timestamp now = DateUtil.getSqlTimestamp();
         return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, TABLE.GOODS_ID, TABLE.RULE, TABLE.EXPLAIN)
             .from(TABLE)
@@ -213,7 +213,7 @@ public class GiftProcessorDao extends GiftService {
      * @param noJoinRecord
      * @return
      */
-    private List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
+    public List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
         RuleVo rules = giftVo.getRules();
         if(rules.getFullPrice() != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && rules.getFullPrice() <= price.doubleValue()){
             logger().info("赠品：满金额满足,活动id:{}", giftVo.getId());
