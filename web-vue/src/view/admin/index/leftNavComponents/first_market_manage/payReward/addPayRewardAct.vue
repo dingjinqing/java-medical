@@ -122,8 +122,10 @@
                     v-for="(item,index) in noneBlockDiscArr"
                     :key="index"
                   >
-                    <div class="noneBlockLeft"
-                         @click="hanldeToAddGoodS(index)">
+                    <div
+                      class="noneBlockLeft"
+                      @click="hanldeToAddGoodS(index)"
+                    >
                       <img :src="$imageHost+'/image/admin/icon_jia.png'">
                       {{item.name}}
                     </div>
@@ -1181,6 +1183,9 @@ export default {
         }
       })
     },
+    gotoHome () {
+      this.$router.push('/admin/home/main/payReward')
+    },
 
     // 新增支付有礼活动
     addActivity (requestParams) {
@@ -1188,6 +1193,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.$message.success('保存成功')
+          this.gotoHome()
         } else {
           this.$message.warning('保存失败')
         }
@@ -1209,6 +1215,7 @@ export default {
       updatePayReward(requestParams).then(res => {
         if (res.error === 0) {
           this.$message.success('更新成功')
+          this.gotoHome()
         } else {
           this.$message.warning('更新失败')
         }
