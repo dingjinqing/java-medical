@@ -24,11 +24,6 @@
         </div>
         <div>
           <span>订单状态：</span>
-          <!-- <el-input
-            v-model="params.orderSn"
-            size="small"
-            class="input_width"
-          ></el-input> -->
           <el-select
             v-model="orderStatus"
             placeholder="请选择"
@@ -129,18 +124,18 @@
         ></el-table-column>
 
         <el-table-column
-          prop="orderStatusName"
+          prop=""
           label="收货人信息"
           align="center"
         >
           <template slot-scope="scope">
-            <div>{{scope.row.consigneeRealName}}</div>
+            <div>{{scope.row.consignee}}</div>
             <div>{{scope.row.mobile}}</div>
           </template>
         </el-table-column>
 
         <el-table-column
-          prop="orderAmount"
+          prop="orderStatusText"
           label="订单状态"
           align="center"
         ></el-table-column>
@@ -192,19 +187,30 @@ export default {
     areaLinkage
   },
   mounted () {
-    console.log(this.$route.query.id)
-    this.initDataList()
+    if (this.$route.query.id > 0) {
+      this.initDataList()
+      this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
+    }
   },
   data () {
     return {
+      // pageParams: {
+      //   currentPage: 1,
+      //   pageRows: 20
+      // },
       params: {
-        id: this.$route.query.id,
+        id: Number(this.$route.query.id),
         goodsName: '',
         mobile: '',
         orderSn: '',
+        orderStatus: '',
+        consignee: '',
         provinceCode: '',
         cityCode: '',
-        districtCode: ''
+        districtCode: '',
+        createTime: '',
+        currentPage: 1,
+        pageRows: 20
       },
       areaLinkage: {
         provinceCode: '',
@@ -214,6 +220,7 @@ export default {
       tableData: [],
       dialogVisible: false,
       orderStatus: -1,
+      orderStatusMap: {},
       orderStatusOptions: [{
         value: -1,
         label: '全部订单'
@@ -261,9 +268,15 @@ export default {
   },
   methods: {
     initDataList () {
+      // Object.assign(this.params, this.pageParams
       getOrderList(this.params).then(res => {
         if (res.error === 0) {
           this.tableData = res.content.dataList
+          // this.pageParams = res.content.page
+          let data = res.content.dataList
+          data.forEach(item => {
+            item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
+          })
         }
       }).catch(err => console.log(err))
     },
