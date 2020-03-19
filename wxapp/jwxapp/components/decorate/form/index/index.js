@@ -179,14 +179,14 @@ global.wxComponent({
         if (typeof item === 'object' && item.module_value) {
           pageDatas.push({
             moduleName: item.module_name,
-            moduleValue: item.module_value,
+            moduleValue: JSON.stringify(item.module_value),
             moduleType: item.form_title,
             curIdx: item.idx
           })
         }
       }
       util.api('/api/wxapp/form/submit', function(res) {
-        if (res.error == 0 && res.content > 0) {
+        if (res.error == 0) {
           util.jumpLink('/pages1/formsuccess/formsuccess?submit_id=' + res.content);
         } else {
           util.showModal('提示', '表单提交失败');

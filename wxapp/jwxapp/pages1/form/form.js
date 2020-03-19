@@ -32,7 +32,7 @@ global.wxPage({
 
   requestCallback(pageContent) {
     // 判断是否已发布
-    if (pageContent.status == 1) {
+    if (pageContent.status === 0) {
       this.setData({
         page_name: pageContent.pageName
       })
@@ -44,7 +44,7 @@ global.wxPage({
         })
       }
     } else {
-      pageContent.statusText = '该表单未发布'
+      pageContent.statusText = pageContent.statusText || '该表单未发布'
     }
     this.setData({
       pageContent: pageContent
