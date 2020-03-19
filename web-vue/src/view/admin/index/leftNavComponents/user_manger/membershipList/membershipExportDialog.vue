@@ -1,19 +1,19 @@
 <template>
   <div class="member-ship-export-dialog">
     <el-dialog
-      title="导出表格"
+      :title="$t('membershipIntroduction.exportTable')"
       :visible.sync="visible"
       width="700px"
     >
       <div class="dialog-content">
         <el-alert
-          :title="'根据以下条件筛选出' + cfgInfo.avail_num + '条数据，是否确认导出?'"
+          :title="$t('membershipIntroduction.filterOnFollowing') + cfgInfo.avail_num + $t('membershipIntroduction.articleData')+','+ $t('membershipIntroduction.ayExport')+'?'"
           type="warning"
           :closable="false"
           show-icon
         >
         </el-alert>
-        <p style="margin-top:20px;">筛选条件：</p>
+        <p style="margin-top:20px;">{{ $t('membershipIntroduction.filterCirteria') }}：</p>
         <div class="filters">
           <ul>
             <li
@@ -26,7 +26,7 @@
           </ul>
         </div>
         <div class="dashed-line"></div>
-        <div style="margin:10px 0;">导出条数(一次最多导出{{cfgInfo.max_num?cfgInfo.max_num:0}}条数据)</div>
+        <div style="margin:10px 0;">{{ $t('membershipIntroduction.numExports') }}{{cfgInfo.max_num?cfgInfo.max_num:0}}{{ $t('membershipIntroduction.articleDatas') }})</div>
         <div>
           <el-input-number
             size="small"
@@ -35,7 +35,7 @@
             style="width:100px;"
             :max="cfgInfo.avail_num"
           ></el-input-number>
-          至
+          {{ $t('membershipIntroduction.to') }}
           <el-input-number
             size="small"
             v-model="cfgInfo.avail_num"
@@ -56,7 +56,7 @@
                     :indeterminate="baseisIndeterminate"
                     v-model="baseCheck"
                     @change="baseCheckAllChange"
-                  >基础信息:</el-checkbox>
+                  >{{ $t('membershipIntroduction.basicInformation') }}:</el-checkbox>
                 </td>
                 <td class="table-list">
                   <el-checkbox-group
@@ -66,49 +66,49 @@
                     <ul class="check-list">
 
                       <li style="color:red;">
-                        <el-checkbox label="user_id">用户id</el-checkbox>
+                        <el-checkbox label="user_id">{{ $t('membershipIntroduction.userId2') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="username">昵称</el-checkbox>
+                        <el-checkbox label="username">{{ $t('membershipIntroduction.nickname2') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="mobile">手机号</el-checkbox>
+                        <el-checkbox label="mobile">{{ $t('membershipIntroduction.phone') }}</el-checkbox>
                       </li>
                       <li>
                         <el-checkbox label="wx_openid">OpenID</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="account">余额</el-checkbox>
+                        <el-checkbox label="account">{{ $t('membershipIntroduction.balance') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="score">积分</el-checkbox>
+                        <el-checkbox label="score">{{ $t('membershipIntroduction.integral2') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="user_source">用户来源</el-checkbox>
+                        <el-checkbox label="user_source">{{ $t('membershipIntroduction.userSource') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="create_time">注册时间</el-checkbox>
+                        <el-checkbox label="create_time">{{ $t('membershipIntroduction.registrationTime2') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="user_card">会员卡</el-checkbox>
+                        <el-checkbox label="user_card">{{ $t('membershipIntroduction.memberShip') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="user_address">地址</el-checkbox>
+                        <el-checkbox label="user_address">{{ $t('membershipIntroduction.address2') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="order_account">累计消费金额</el-checkbox>
+                        <el-checkbox label="order_account">{{ $t('membershipIntroduction.cumulativeSpending') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="order">累计消费单数</el-checkbox>
+                        <el-checkbox label="order">{{ $t('membershipIntroduction.cumulativeConsumption') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="return_order_money">累计退款金额</el-checkbox>
+                        <el-checkbox label="return_order_money">{{ $t('membershipIntroduction.cumulativeRefund') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="return_order">累计退款订单数</el-checkbox>
+                        <el-checkbox label="return_order">{{ $t('membershipIntroduction.cumulativeOrder') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="remark">备注</el-checkbox>
+                        <el-checkbox label="remark">{{ $t('membershipIntroduction.remarks') }}</el-checkbox>
                       </li>
                     </ul>
                   </el-checkbox-group>
@@ -120,7 +120,7 @@
                     :indeterminate="distributionIndeterminate"
                     v-model="distributionCheck"
                     @change="distributionCheckAllChange"
-                  >分销信息：</el-checkbox>
+                  >{{ $t('membershipIntroduction.distributionIntro') }}：</el-checkbox>
                 </td>
                 <td class="table-list">
                   <el-checkbox-group
@@ -129,34 +129,34 @@
                   >
                     <ul class="check-list">
                       <li>
-                        <el-checkbox label="invite_user_name">邀请人</el-checkbox>
+                        <el-checkbox label="invite_user_name">{{ $t('membershipIntroduction.invitePe') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="invite_mobile">邀请人手机号</el-checkbox>
+                        <el-checkbox label="invite_mobile">{{ $t('membershipIntroduction.inviteMobile') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="invite_group_name">邀请人分销员分组</el-checkbox>
+                        <el-checkbox label="invite_group_name">{{ $t('membershipIntroduction.invitedDistribut') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="rebate_order_num">获返利订单数量</el-checkbox>
+                        <el-checkbox label="rebate_order_num">{{ $t('membershipIntroduction.numRebate') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="calculate_money">返利商品总金额</el-checkbox>
+                        <el-checkbox label="calculate_money">{{ $t('membershipIntroduction.rebateProducts') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="rebate_money">获返利订单佣金总额</el-checkbox>
+                        <el-checkbox label="rebate_money">{{ $t('membershipIntroduction.totalRebate') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="withdraw_money">已提现佣金总额</el-checkbox>
+                        <el-checkbox label="withdraw_money">{{ $t('membershipIntroduction.totalCommission') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="sublayer_number">下级用户数</el-checkbox>
+                        <el-checkbox label="sublayer_number">{{ $t('membershipIntroduction.numSubordinate') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="level_name">分销员等级</el-checkbox>
+                        <el-checkbox label="level_name">{{ $t('membershipIntroduction.distributorLevel') }}</el-checkbox>
                       </li>
                       <li>
-                        <el-checkbox label="group_name">分销员分组</el-checkbox>
+                        <el-checkbox label="group_name">{{ $t('membershipIntroduction.distributorGroup') }}</el-checkbox>
                       </li>
                     </ul>
                   </el-checkbox-group>
@@ -174,11 +174,11 @@
           size="small"
           type="primary"
           @click="determineDialog"
-        >确定</el-button>
+        >{{ $t('membershipIntroduction.determine') }}</el-button>
         <el-button
           size="small"
           @click="cancelDialog"
-        >取消</el-button>
+        >{{ $t('membershipIntroduction.cancel2') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -370,9 +370,13 @@ export default {
           this.distributionChecked = distributionChecked
           if (baseChecked.length > 0 && baseChecked.length < this.baseOptions.length) {
             this.baseisIndeterminate = true
+          } else if (baseChecked.length === this.baseOptions.length) {
+            this.baseCheck = true
           }
           if (distributionChecked.length > 0 && distributionChecked.length < this.distributionOptions.length) {
             this.distributionIndeterminate = true
+          } else if (distributionChecked.length === this.distributionOptions.length) {
+            this.distributionCheck = true
           }
         } else {
           this.$message.error(res.message)
