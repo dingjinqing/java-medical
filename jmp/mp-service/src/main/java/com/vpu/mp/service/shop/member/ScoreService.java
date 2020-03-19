@@ -81,6 +81,7 @@ public class ScoreService extends ShopBaseService {
 
 	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
 			Byte tradeFlow) throws MpException {
+		logger().info("用户积分更新");
 		UserScoreRecord userScoreRecord = populateUserScoreRecord(param, adminUser);
 		UserRecord dbUser = member.getUserRecordById(param.getUserId());
 
