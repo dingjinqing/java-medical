@@ -119,6 +119,7 @@
             <el-input-number
               v-model="form.first"
               :min='1'
+              :max='127'
               controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
@@ -314,7 +315,7 @@
                   ></el-input>
                   <el-button
                     type="text"
-                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
+                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0 && row.isDefaultProduct != 1"
                     @click="getProductInfo(row)"
                   >{{row.goodsProductParams?row.goodsProductParams.length:0}}{{$t('firstSpecialAdd.specialPrice')}}</el-button>
                 </template>
