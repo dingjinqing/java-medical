@@ -721,6 +721,16 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 取单个GoodsSmallVo
+     */
+    public GoodsSmallVo getGoodsSmallVo(Integer goodsId) {
+        GoodsSmallVo goods = db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).
+            fetchAnyInto(GoodsSmallVo.class);
+        goods.setGoodsImg(getImgFullUrlUtil(goods.getGoodsImg()));
+        return goods;
+    }
+
+    /**
      * 获取所有商品所关联的有效品牌id集合
      * @return 品牌id集合
      */
