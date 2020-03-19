@@ -144,7 +144,7 @@
                 <el-input-number
                   v-model="form.limitAmount"
                   :disabled="!limit"
-                  :min='1'
+                  :min="0"
                   style="margin-left: 10px;"
                   controls-position="right"
                 ></el-input-number>
@@ -161,6 +161,7 @@
           <!-- 活动商品 -->
           <el-form-item
             :label="$t('firstSpecialAdd.activeGoods')+'：'"
+            v-if="!isEditFlag"
             required
           >
             <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
@@ -229,6 +230,7 @@
                 <el-button
                   type="text"
                   @click="deleteSelectGoods"
+                  v-if="!isEditFlag"
                 >{{$t('firstSpecialAdd.batchDeletion')}}</el-button>
                 <el-button
                   type="text"
@@ -320,6 +322,7 @@
               <el-table-column
                 :label="$t('firstSpecialAdd.operate')"
                 align="center"
+                v-if="!isEditFlag"
               >
                 <template slot-scope="{row}">
                   <div style="align: center;">
@@ -342,7 +345,7 @@
           </el-button>
           <div
             class="more-setting"
-            v-if="showmore"
+            v-show="showmore"
           >
             <el-form-item
               :label="$t('firstSpecialAdd.sharing')"

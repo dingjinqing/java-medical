@@ -49,7 +49,7 @@ public interface CreateOrderProcessor extends Processor {
     void processUpdateStock(OrderBeforeParam param,OrderInfoRecord order) throws MpException;
 
     /**
-     * 退货、取消、关闭时更新（returnOrderRecord ！= null为关闭或取消）
+     * 退货、取消、关闭时更新（returnOrderRecord == null为关闭或取消）
      * @param returnOrderRecord
      * @param activityId 活动id
      * @param returnGoods 退款商品

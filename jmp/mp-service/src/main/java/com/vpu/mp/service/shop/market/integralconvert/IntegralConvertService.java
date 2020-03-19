@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleIntegral;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
@@ -26,7 +27,9 @@ import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -64,7 +67,8 @@ public class IntegralConvertService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private GoodsService goodsService;
-
+    @Autowired
+    private QrCodeService qrCode;
     /**
      * 积分兑换弹窗
      * @param param 商品名称 是否上架
@@ -560,5 +564,23 @@ public class IntegralConvertService extends ShopBaseService {
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(exportList, IntegralUserExport.class);
         return workbook;
+    }
+
+    /**
+     * 分享
+     * @param param 活动id
+     * @retuen 二维码信息
+     */
+    public ShareQrCodeVo getMpQRCode(IntegralConvertId param) {
+        Integer goodsId = db().select(INTEGRAL_MALL_DEFINE.GOODS_ID)
+            .from(INTEGRAL_MALL_DEFINE)
+            .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))
+            .fetchOneInto(Integer.class);
+        String pathParam = "integralGoodsId="+ goodsId +"&invite_id=";
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INTEGRAL_ITEM_INFO, pathParam);
+        ShareQrCodeVo share =new ShareQrCodeVo();
+        share.setImageUrl(imageUrl);
+        share.setPagePath(QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getPathUrl(pathParam));
+        return share;
     }
 }

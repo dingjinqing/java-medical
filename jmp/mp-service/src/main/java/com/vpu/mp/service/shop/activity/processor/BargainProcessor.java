@@ -122,7 +122,7 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
     }
 
     @Override
-    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
         bargainProcessorDao.processReturn(activityId,returnGoods);
     }
 }

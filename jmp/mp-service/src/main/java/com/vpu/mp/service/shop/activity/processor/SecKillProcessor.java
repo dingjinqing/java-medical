@@ -159,7 +159,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) {
-        secKillProcessorDao.processReturn(activityId,returnGoods);
+        secKillProcessorDao.processReturn(returnOrderRecord,activityId,returnGoods);
     }
 
 }

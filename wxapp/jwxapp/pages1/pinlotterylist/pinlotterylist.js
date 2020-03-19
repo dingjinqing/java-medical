@@ -1,13 +1,8 @@
 // pages/pinlotterylist/pinlotterylist.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var mobile = util.getCache('mobile');
-var list_info = [];
-var total_micro_second = 0;
-var set_time_out;
 var group_draw_id;
-var scene;
+var set_time_out;
 global.wxPage({
 
   /**
@@ -15,7 +10,8 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    list_info: [],
+    list_info: [], // 列表数据
+    group_draw_id: '', // 活动id
     total_micro_second: 0,
   },
 
@@ -25,20 +21,18 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    group_draw_id = options.group_draw_id;
-    scene = options.scene;
+    that.setData({
+      group_draw_id: options.group_draw_id,
+    })
     clearTimeout(set_time_out);
     util.api('/api/wxapp/groupdraw/list', function (res) {
       if (res.error == 0) {
-        list_info = res.content;
-        if (res.content) {
-          // util.api('/api/wxapp/user_goods/record', function (res1) {
-
-          // }, { goods_id: 0, active_id: list_info.groupDraw.id, active_type: 8, type: 1 })
-        }
+        var list_info = res.content;
         if (list_info.groupDraw.surplusSecond && list_info.groupDraw.surplusSecond != undefined) {
-          total_micro_second = list_info.groupDraw.surplusSecond;
-          if (total_micro_second > 0) {
+          that.setData({
+            total_micro_second: list_info.groupDraw.surplusSecond
+          })
+          if (that.data.total_micro_second > 0) {
             that.countdown(that);
             that.setData({
               act_open: 1
@@ -57,24 +51,21 @@ global.wxPage({
         });
         return false;
       }
-    }, { group_draw_id: group_draw_id, scene: scene })
+    }, { group_draw_id: that.data.group_draw_id })
   },
   // 去商品详情
   to_item: function (e) {
-    console.log(e)
     var goods_id = e.currentTarget.dataset.goods_id;
-    var group_id = e.currentTarget.dataset.group_id;
     util.navigateTo({
-      url: 'pages/item/item?aid=' + group_draw_id + '&&atp=8&&gid=' + goods_id
-      // url: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=3"
+      url: 'pages/item/item?aid=' + this.data.group_draw_id + '&&atp=8&&gid=' + goods_id
     })
   },
   //倒计时
   countdown: function (that) {
     that.setData({
-      clock: that.dateformat(total_micro_second)
+      clock: that.dateformat(that.data.total_micro_second)
     });
-    if (total_micro_second <= 0) {
+    if (that.data.total_micro_second <= 0) {
       that.setData({
         clock: that.$t('page1.pinlottery.over')
       });
@@ -82,7 +73,7 @@ global.wxPage({
     }
     set_time_out = setTimeout(function () {
       // 放在最后--
-      total_micro_second -= 1;
+      that.data.total_micro_second -= 1;
       that.countdown(that);
     }, 1000)
   },
