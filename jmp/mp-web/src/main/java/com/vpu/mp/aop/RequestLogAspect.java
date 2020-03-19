@@ -5,6 +5,7 @@ import com.google.common.base.Stopwatch;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +79,7 @@ public class RequestLogAspect {
             log.info(logResponseStr.toString());
         }catch (Throwable e){
             // 如果是自定义的业务异常, 继续抛出让ExceptionControllerHandler去捕获, 这样可以回显前端详细的错误信息, 而不是简单的"操作失败"
-            if (e instanceof BusinessException) {
+            if (e instanceof BusinessException || e instanceof MpException) {
                 throw e;
             }
             StringBuilder logErrorStr = new StringBuilder();

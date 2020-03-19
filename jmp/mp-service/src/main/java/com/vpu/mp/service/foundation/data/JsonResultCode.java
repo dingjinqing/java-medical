@@ -34,6 +34,7 @@ public enum JsonResultCode {
 	CODE_SUCCESS(0, JsonResultMessage.MSG_SUCCESS),
 	CODE_FAIL(-1, JsonResultMessage.MSG_FAIL),
 	CODE_PARAM_ERROR(-3, JsonResultMessage.MSG_PARAM_ERROR),
+    CODE_API_NO_RESUBMIT(-4, JsonResultMessage.MSG_API_NO_RESUBMIT),
 
 	// 账号
 	CODE_ACCOUNT_OR_PASSWORD_INCRRECT(100001, JsonResultMessage.MSG_ACCOUNT_OR_PASSWORD_INCRRECT),

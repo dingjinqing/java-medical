@@ -35,6 +35,6 @@ public class JedisKeyConstant {
         /**
          * 下单锁（同一个用户同时只会存在一个正常可以完成的下单请求）+shopId+userid
          */
-        public static final String ORDER_SUBMIT = "lock:orderSubmit:";
+        public static final String ORDER_SUBMIT = "lock:orderSubmit";
     }
 }

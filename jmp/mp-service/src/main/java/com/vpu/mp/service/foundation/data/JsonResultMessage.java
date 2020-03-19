@@ -7,7 +7,7 @@ public class JsonResultMessage {
     public static final String MSG_SUCCESS = "common.success";
     public static final String MSG_FAIL = "common.fail";
     public static final String MSG_PARAM_ERROR = "common.param.error";
-
+    public static final String  MSG_API_NO_RESUBMIT = "api.no.resubmit";
     // 账号
 
 	public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";

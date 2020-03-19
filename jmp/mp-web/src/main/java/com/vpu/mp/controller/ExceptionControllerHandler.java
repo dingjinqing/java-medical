@@ -4,6 +4,7 @@ import com.vpu.mp.config.ValidatorConfig;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -134,5 +135,10 @@ public class ExceptionControllerHandler extends BaseController {
         } else {
             return fail(e.getErrorMessage());
         }
+    }
+
+    @ExceptionHandler({MpException.class})
+    public JsonResult procesMpException(MpException e){
+        return fail(e.getErrorCode(), e.getCodeParam());
     }
 }

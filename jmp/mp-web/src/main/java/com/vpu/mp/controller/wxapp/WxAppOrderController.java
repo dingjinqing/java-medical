@@ -2,7 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
@@ -55,6 +57,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * 	结算页面提交
      */
     @PostMapping("/submit")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ORDER_SUBMIT, noResubmit = true)
     public JsonResult submit(@RequestBody @Validated(CreateOrderValidatedGroup.class) CreateParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
