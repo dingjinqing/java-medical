@@ -280,8 +280,6 @@ export default {
         flag = true
         console.log(flag)
       }
-      debugger
-      console.log(flag)
       if (this.ruleForm.isPay === '1') {
         // check crash
         if (this.ruleForm.payType === '0') {
