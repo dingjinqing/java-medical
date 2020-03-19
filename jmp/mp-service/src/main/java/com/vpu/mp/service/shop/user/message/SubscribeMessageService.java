@@ -223,6 +223,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		String content = config.getContent();
 		List<String> names = RegexUtil.getSubStrList("{{", ".", content);
 		List<WxMaSubscribeMessageData> wxDatalist = new ArrayList<WxMaSubscribeMessageData>();
+		logger().info("传入的data：{}",data.toString());
 		String[][] stringData = getSubscribeData(data, secondId);
 		if(stringData==null) {
 			logger().info("未解析出小程序中塞入需要的值，类目id：{}",secondId);
@@ -256,7 +257,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			Object invoke = method.invoke(data);
 			stringData=(String[][]) invoke;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger().info(e.getMessage(),e);
 			return stringData;
 		}
 		return stringData;
@@ -441,8 +442,8 @@ public class SubscribeMessageService extends ShopBaseService {
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
 			Boolean flag = false;
 			for (WxOpenSubscribeTemplate template : data) {
-				logger().info("循环的template："+template);
 				if (template.getPriTmplId().equals(templateId)) {
+					logger().info("循环的template："+template);
 					flag=true;
 				}
 			}
