@@ -83,5 +83,4 @@ public class GoodsVpuExcelImportBo {
     /**默认发货地*/
     @ExcelColumn(columnIndex = 16, columnName = "vpu.import.goods.deliver.place")
     private String deliverPlace;
-
 }

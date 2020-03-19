@@ -19,6 +19,11 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    if (options.scene) {
+      let scene = decodeURIComponent(options.scene).split('&')
+      console.log(scene)
+      options.pageId = scene[0].split('=')[1]
+    }
     this.setData({
       _options:options
     })
@@ -27,7 +32,7 @@ global.wxPage({
 
   requestCallback(pageContent) {
     // 判断是否已发布
-    if (pageContent.status == 1) {
+    if (pageContent.status === 0) {
       this.setData({
         page_name: pageContent.pageName
       })
@@ -39,7 +44,7 @@ global.wxPage({
         })
       }
     } else {
-      pageContent.statusText = '该表单未发布'
+      pageContent.statusText = pageContent.statusText || '该表单未发布'
     }
     this.setData({
       pageContent: pageContent

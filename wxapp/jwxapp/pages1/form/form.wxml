@@ -2,7 +2,7 @@
 <include src="/pages/common/header.wxml" />
 <view class='main-container'>
   <v-form name='v-form' class="v-form" page_content="{{pageContent}}" />
-  <block wx:if='{{pageContent.status == 0}}'>
+  <block wx:if='{{pageContent.status > 0}}'>
     <view class='zhezhaoceng'></view>
     <view class='tankuang'>
       <image src='{{imageUrl}}/image/wxapp/no_form.png'></image>

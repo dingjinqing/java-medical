@@ -27,18 +27,13 @@ global.wxPage({
     main_goods_info: [], // 主商品全部信息
     add_goods_info: [], // 主商品列表
     change_goods_info: [], // 换购列表
+    pIds: [], // 换购已选择规格id
     is_load: 0,
     searchText: "", // 搜索内容
     page: 1,
     last_page: 1,
     get_price: '',
     get_doc: "",
-    specMove: true,
-    kucun: true,
-    spec_array: [],
-    spec_id_list: {},
-    limit_buy_num: 1,
-    limit_max_num: 0,
     showSpec: false, // 规格弹窗
     // triggerButton: 'left',
     specParams: {} // 规格信息
@@ -53,6 +48,7 @@ global.wxPage({
     that.setData({
       identity_id: Number(options.identity_id),
       store_id: Number(options.store_id),
+      pIds: JSON.parse(options.pIds),
       purchase_change_goods: {},
       searchText: ''
     })
@@ -78,18 +74,28 @@ global.wxPage({
   },
   // 获取换购商品
   showGoods: function (e) {
+    
     var that = this;
+    console.log(that.data.pIds)
     that.setData({
       changeMove: false
     })
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
         var change_goods_info = res.content;
-        for (var i = 0; i < change_goods_info.list.length; i++) {
-          if (change_goods_info.list[i].is_checked == 1) {
-            purchase_change_goods[change_goods_info.list[i].prd_id] = change_goods_info.list[i].purchase_rule_id;
+        // 已选个数
+        change_goods_info.alreadyChangeNum = that.data.pIds.length 
+        change_goods_info.list.forEach(item => {
+          // 已选换购商品
+          that.data.pIds.forEach(val => {
+            if (item.prdId == val) {
+              item.isChecked = 1
+            }
+          })
+          if (item.isChecked == 1) {
+            purchase_change_goods[item.prdId] = item.purchaseRuleId
           }
-        }
+        })
         that.setData({
           change_goods_info: change_goods_info
         })
@@ -147,14 +153,21 @@ global.wxPage({
   // 确认换购商品
   btn_confirm_change: function () {
     var that = this;
-    var prdIds = [];
-    that.data.change_goods_info.list.forEach((item, index) => {
+    var prdIds = []
+    that.data.change_goods_info.list.forEach(item => {
       if (item.isChecked == 1) {
         prdIds.push(item.prdId)
       }
     })
-    prdIds.forEach((item, index) => {
-      that.add_cart(item)
+    prdIds.forEach(item => {
+      if (that.data.pIds.indexOf(item) == -1) {
+        that.add_cart(item)
+      }
+    })
+    that.data.change_goods_info.alreadyChangeNum = prdIds.length
+    that.setData({
+      pIds: prdIds,
+      changeMove: true,
     })
   },
   // 添加换购商品到购物车

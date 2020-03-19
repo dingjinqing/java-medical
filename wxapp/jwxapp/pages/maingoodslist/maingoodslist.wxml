@@ -101,10 +101,10 @@
         <view class='empty_tips'>暂无可换购商品！</view>
       </view>
       <view class='change_gooter clearfix'>
-        <view class='cf_left' wx:if='{{change_goods_info.max_change_purchase != null && change_goods_info.max_change_purchase != 0}}'>
+        <view class='cf_left' wx:if='{{change_goods_info.maxChangePurchase != null && change_goods_info.maxChangePurchase != 0}}'>
           已换购：{{change_goods_info.alreadyChangeNum}}/{{change_goods_info.maxChangePurchase}}
         </view>
-        <view class='cf_left' wx:if='{{change_goods_info.max_change_purchase == null || change_goods_info.max_change_purchase == 0}}'>
+        <view class='cf_left' wx:if='{{change_goods_info.maxChangePurchase == null || change_goods_info.maxChangePurchase == 0}}'>
           已换购：{{change_goods_info.alreadyChangeNum}}
         </view>
         <view class='cf_right' bindtap='btn_confirm_change' style='background:{{comColor}};border-top-color:{{comColor}}'>确定</view>

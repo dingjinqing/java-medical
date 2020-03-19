@@ -18,6 +18,10 @@
       <text>购物车</text>
       <view class="cart_goods_num" style="color:{{main_setting.comColor}};border-color:{{main_setting.comColor}}">{{cartNum}}</view>
     </view>
+    <view class="small_view" wx:if="{{customService}}">
+      <image class="image" mode="widthFix" src="{{imageUrl}}image/wxapp/server_icon.png"></image>
+      <text>客服</text>
+    </view>
   </block>
   <!-- <view class="footer_flex_view" bindtap="leftClick" wx:if="{{leftButtonShow}}" style='color:{{(main_setting.comColor != "#ff6666" || !main_setting.comColor)?"#fff":"#f66"}};background:{{main_setting.commonColor}}'>
     <text>{{leftButtonName}}</text>

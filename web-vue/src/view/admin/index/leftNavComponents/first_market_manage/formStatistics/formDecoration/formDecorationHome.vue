@@ -15,7 +15,7 @@
               @click="handleToClickLeftModule(item.id,item.flag)"
             >
               <img :src="item.imgUrl">
-              <span>{{item.text}}</span>
+              <span class="dragText">{{item.text}}</span>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
               @click="handleToClickLeftModule(item.id,item.flag)"
             >
               <img :src="item.imgUrl">
-              <span>{{item.text}}</span>
+              <span class="dragText">{{item.text}}</span>
             </div>
           </div>
         </div>
@@ -1031,6 +1031,9 @@ export default {
       color: #999;
       font-size: 12px;
     }
+  }
+  .dragText {
+    line-height: 16px;
   }
 }
 </style>

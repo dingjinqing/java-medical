@@ -226,7 +226,7 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-        console.log(val)
+        // this.setButtonStyle()
       }
     },
     products:{
@@ -235,6 +235,10 @@ global.wxComponent({
       observer(val){
         this.initFooter()
       }
+    },
+    customService:{ //展示客服按钮
+      type:Number,
+      value:0
     }
   },
   /**
@@ -258,10 +262,10 @@ global.wxComponent({
    */
   methods: {
     initFooter(){
-      console.log(111)
       this.setData({
         buttonData : this.getButtonData()
       })
+      this.setButtonStyle()
     },
     checkPosition(position) {
       if (this.data.position === 'footer' && !this.data.isDefaultPrd) {
@@ -283,10 +287,12 @@ global.wxComponent({
       this.toCheckOut()
     },
     checkBargain(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.goBargain()
     },
     checkGroup(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
@@ -295,10 +301,12 @@ global.wxComponent({
       this.actCheckOut()
     },
     checkSkill(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
     checkPreSale(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
@@ -511,6 +519,36 @@ global.wxComponent({
           goodsNumber
         })
       })
+    },
+    setButtonStyle(){
+      let activity = this.data.activity
+      if(activity && [1,3,4,5,8,10].includes(activity.activityType) && [1,2,3,4,5,6].includes(activity.actState) && (this.data.position === 'footer' || this.data.triggerButton !== 'left')){
+        console.log(this.data.buttonData)
+        if(this.data.buttonData && this.data.buttonData.buttonInfo.right){
+          this.setData({
+            'buttonData.buttonInfo.right.style':'background-color:#666'
+          })
+        }
+      } else {
+        this.setData({
+          'buttonData.buttonInfo.right.style':''
+        })
+      }
+    },
+    checkActStatus(){
+      let activity = this.data.activity
+      let goodsId = this.data.productInfo.goodsId
+      if(activity && [1,3,4,5,8,10].includes(activity.activityType) && [1,2,3,4,5,6].includes(activity.actState) && (this.data.position === 'footer' || this.data.triggerButton !== 'left')){
+          let tipStr = '';
+          let ActName =  {1:'拼团',3:'砍价',4:'积分兑换',5:'秒杀',8:'拼团抽奖',10:'预售'};
+          let actStatus = {1:'活动不存在',2:'活动已停用',3:'活动未开始',4:'活动已结束',5:'活动商品已抢光',6:'活动，您已达参与上限'};
+          tipStr = `抱歉，该${ActName[activity.activityType]}${actStatus[activity.actState]}`
+          util.showModal('提示',tipStr,()=>{
+            util.jumpLink(`/pages/item/item?gid=${goodsId}`,'redirectTo')
+          },false,'','原价购买')
+          return false
+      }
+      return true
     },
     // 返回首页
     backHome() {

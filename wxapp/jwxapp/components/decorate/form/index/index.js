@@ -163,17 +163,38 @@ global.wxComponent({
       if (this.submit) return false;
       this.submit = true;
       var _this = this;
-      var pagesData = JSON.stringify(this.data.pageData);
-      console.log(pagesData)
+      let pageDatas = []
+      // debugger
+      // this.data.pageData.forEach(item => {
+      //   console.log(item)
+      //   pageDatas.push({
+      //     moduleName: item.module_name,
+      //     moduleValue: item.module_value,
+      //     moduleType: item.form_title,
+      //     curIdx: item.idx
+      //   })
+      // })
+      for (const key in this.data.pageData) {
+        const item = this.data.pageData[key];
+        if (typeof item === 'object' && item.module_value) {
+          pageDatas.push({
+            moduleName: item.module_name,
+            moduleValue: JSON.stringify(item.module_value),
+            moduleType: item.form_title,
+            curIdx: item.idx
+          })
+        }
+      }
       util.api('/api/wxapp/form/submit', function(res) {
-        if (res.error == 0 && res.content > 0) {
-          util.jumpLink('/pages/formsuccess/formsuccess?submit_id=' + res.content);
+        if (res.error == 0) {
+          util.jumpLink('/pages1/formsuccess/formsuccess?submit_id=' + res.content);
         } else {
           util.showModal('提示', '表单提交失败');
         }
       }, {
-        pagesData: pagesData,
-        page_id: this.data.pageData.page_id,
+        detailList: pageDatas,
+        pageId: this.data.pageData.pageId,
+        userId: util.getCache('user_id')
       });
     }
   }

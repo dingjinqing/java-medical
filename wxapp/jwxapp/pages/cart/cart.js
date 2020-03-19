@@ -15,7 +15,8 @@ global.wxPage({
     activityType: null, // 正在参与的活动类型
     proPurchaseInfo: [],
     cartId: '', // 切换促销活动当前购物车id
-    isType: 0 // 判断当前参与活动类型
+    isType: 0, // 判断当前参与活动类型
+    repurchaseList: [] // 换购商品列表
   },
 
   /**
@@ -38,6 +39,7 @@ global.wxPage({
           totalPrice
         })
 
+        var repurchaseList = []
         this.data.canBuyGoodsList.forEach((item, index) => {
           item.isSales = 0
           item.isMemPrice = 0
@@ -76,14 +78,25 @@ global.wxPage({
                   }
                 }
               }
+              // 换购列表
+              // dataList.forEach((val2, key2) => {
+              //   if (val.activityType == 7 && val.activityId == val2.activityId) {
+              //     val.cartActivityInfos.push(val2)
+              //   }
+              // })
             })
           }
-
+          // 换购商品列表
+          if (item.activityType == 97) {
+            repurchaseList.push(item)
+          }
         })
         this.setData({
           canBuyGoodsList: this.data.canBuyGoodsList,
+          repurchaseList: repurchaseList
         })
         console.log(this.data.canBuyGoodsList)
+        console.log(this.data.repurchaseList)
       }
     })
   },
@@ -332,8 +345,16 @@ global.wxPage({
   to_purchase: function (e) {
     var activityId = e.currentTarget.dataset.activity_id;
     var storeId = e.currentTarget.dataset.store_id;
+    // 已选换购规格id
+    var pIds = []
+    this.data.repurchaseList.forEach(item => {
+      if (item.activityId == activityId) {
+        pIds.push(item.productId)
+      }
+    })
+    console.log(pIds)
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId,
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&pIds=' + JSON.stringify(pIds),
     })
   },
 

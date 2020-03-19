@@ -17,7 +17,7 @@
   </block>
   <block wx:if='{{m.show_type == 1}}'>
     <view class='xunfude other-phone'>
-      <image style='width:120rpx;height:120rpx;' src='{{m.imgUrl}}{{m.sps_icon}}'></image>
+      <image style='width:120rpx;height:120rpx;' src='{{m.sps_icon}}'></image>
     </view>
   </block>
 </view>

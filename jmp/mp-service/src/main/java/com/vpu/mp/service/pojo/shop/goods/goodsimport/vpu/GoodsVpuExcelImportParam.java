@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu;
 
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,4 +15,9 @@ public class GoodsVpuExcelImportParam {
     private MultipartFile file;
     /**是否是更新操作*/
     private Boolean isUpdate;
+
+    /**excel类型，controller层设置*/
+    private ExcelTypeEnum excelTypeEnum;
+    /**语言类型，controller层设置*/
+    private String lang;
 }

@@ -120,7 +120,7 @@
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 10 && goodsInfo.activity.showPreSaleNumber}}">
           已预定：{{goodsInfo.activity.saleNumber || 0}}
         </view>
-        <view class="flex-item" wx:if="{{!filter.includes([1,3,4,5,8,10],goodsInfo.activity.activityType)}}">
+        <view class="flex-item" wx:if="{{!filter.includes([1,3,4,5,8,10],goodsInfo.activity.activityType) && goodsInfo.showSalesNumber === 1}}">
           销量：{{goodsInfo.goodsSaleNum}}
         </view>
         <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
@@ -232,7 +232,7 @@
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
   </view>
-  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 

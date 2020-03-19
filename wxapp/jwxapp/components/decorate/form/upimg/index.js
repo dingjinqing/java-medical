@@ -16,17 +16,15 @@ global.wxComponent({
       var m = this.data.m;
       util.uploadImage(1, function(con) {
         var data = JSON.parse(con.data);
-        for (var i in data.content) {
-          if (m.size_types == 1) {
-            var real_width = data.content[i].img_width;
-            var real_height = data.content[i].img_height;
-            if (real_width > m.width_size || real_height > m.height_size) {
-              util.showModal('提示', '上传图片宽高不符合要求');
-              return false;
-            }
+        if (m.size_types == 1) {
+          var real_width = data.content.imgWidth;
+          var real_height = data.content.imgHeight;
+          if (real_width > m.width_size || real_height > m.height_size) {
+            util.showModal('提示', '上传图片宽高不符合要求');
+            return false;
           }
-          m.img_arr.push(data.content[i].img_url);
         }
+        m.img_arr.push(data.content.imgUrl);
         m.img_len = parseInt(m.img_arr.length);
         m.image = true;
         m.module_value = m.img_arr;

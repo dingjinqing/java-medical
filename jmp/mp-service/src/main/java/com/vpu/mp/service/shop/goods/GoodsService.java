@@ -125,6 +125,8 @@ public class GoodsService extends ShopBaseService {
     @Autowired
     private EsUtilSearchService esUtilSearchService;
     @Autowired
+    public GoodsImportService goodsImportService;
+    @Autowired
     private ConfigService configService;
     @Autowired
     private SecKillProcessorDao secKillProcessorDao;

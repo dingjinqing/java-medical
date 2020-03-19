@@ -589,7 +589,16 @@ public class JsonResultMessage {
     public static final String UEXP_LEVEL_NAME = "user.export.level_name";
     public static final String UEXP_GROUP_NAM = "user.export.group_name";
     
-
+    // 会员卡优惠券信息
+    public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
+    public static final String CARD_COUPON_DAY = "card.receive.day";
+    public static final String CARD_COUPON_HOUR = "card.receive.hour";
+    public static final String CARD_COUPON_MINUTE = "card.receive.minute";
+    public static final String CARD_COUPON_NOLIMIT = "card.coupon.nolimit";
+    public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
+    public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
+    public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
+    
     
 	/**
 	 * 概览
@@ -1045,4 +1054,13 @@ public class JsonResultMessage {
     public static final String INTEGRAL_MALL_MOBILE = "integral.mall.mobile";
     public static final String INTEGRAL_MALL_EXCHANGE_GOODS_NUMBER = "integral.mall.exchange.goods.number";
     public static final String INTEGRAL_MALL_EXCHANGE_TIME = "integral.mall.exchange.time";
+
+    /**商品导入开始*/
+    public static final String GOODS_EXCEL_IMPORT_WORKBOOK_CREATE_FAIL = "goods.excel.import.workbook.create.fail";
+    /**excel sheet位置错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_WRONG_INDEX = "goods.excel.import.sheet.wrong.index";
+    /**excel sheet头所在行位置错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX = "goods.excel.import.sheet.header.wrong.index";
+    /**excel sheet 列和定义的pojo字段位置对应错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO = "goods.excel.import.sheet.column.not.map.pojo";
 }
