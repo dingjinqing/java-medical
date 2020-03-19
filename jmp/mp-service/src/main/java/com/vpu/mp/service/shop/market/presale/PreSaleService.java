@@ -13,9 +13,12 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
 import org.jooq.*;
@@ -56,6 +59,8 @@ public class PreSaleService extends ShopBaseService {
 
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private QrCodeService qrCode;
 
     /**全款付*/
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
@@ -629,6 +634,21 @@ public class PreSaleService extends ShopBaseService {
 	public PresaleRecord getPresaleRecord(Integer activityId){
         return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer id) {
+
+        int goodsId = db().select(PRESALE.GOODS_ID).from(PRESALE).where(PRESALE.ID.eq(id)).fetchAny().into(Integer.class);
+        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
+        return vo;
     }
 	
 }
