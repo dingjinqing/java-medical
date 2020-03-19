@@ -13,8 +13,10 @@ import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,7 +50,7 @@ public class UserCardDaoService extends ShopBaseService{
 	public final static Byte CARD_ONLINE = 0;
     public final static Byte CARD_OFFLINE = 1;
 	@Autowired private  UserCardService userCardService;
-
+	@Autowired private CardFreeShipService freeshipSvc;
 
     /**
 	 * 获取用户持有的等级卡
@@ -540,22 +542,44 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(ValidUserCardBean.class);
+        
+        
+        
+        
         if(card != null) {
-            card.setAvatar(userCardService.getCardAvatar());
-            // 快照时间
-            EffectTimeParam etParam = new EffectTimeParam();
-            BeanUtils.copyProperties(card, etParam);
-            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-            BeanUtils.copyProperties(etBean, card);
-            // 背景处理
-            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-            BeanUtils.copyProperties(bg, card);
+        	// 处理卡的有效时间
+            dealWithValidUserCardEffectimeAndBgImg(card);
+            // 处理包邮信息
+            dealWithValidUserCardFreeship(card);
             return new OrderMemberVo().init(card);
         }
         return null;
     }
 
-    /**
+    private void dealWithValidUserCardFreeship(ValidUserCardBean card) {
+		logger().info("处理有效卡的包邮信息");
+		// TODO 小程序端语言国际化处理
+		String lang = null;
+		UserCardParam param = new UserCardParam();
+		BeanUtils.copyProperties(card,param);
+		CardFreeship freeshipData = freeshipSvc.getFreeshipData(param, lang);
+		card.setCardFreeShip(freeshipData);		
+	}
+
+	private void dealWithValidUserCardEffectimeAndBgImg(ValidUserCardBean card) {
+		logger().info("计算卡的有效时间和背景");
+		card.setAvatar(userCardService.getCardAvatar());
+        // 快照时间
+        EffectTimeParam etParam = new EffectTimeParam();
+        BeanUtils.copyProperties(card, etParam);
+        EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+        BeanUtils.copyProperties(etBean, card);
+        // 背景处理
+        CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
+        BeanUtils.copyProperties(bg, card);
+	}
+
+	/**
      * 王帅
      * 获取等级卡
      * @param userId id
