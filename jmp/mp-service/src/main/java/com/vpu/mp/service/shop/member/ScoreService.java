@@ -571,11 +571,11 @@ public class ScoreService extends ShopBaseService {
 			LocalDateTime localDateTime=LocalDateTime.now();
 			
 			if(DAY.equals(scorePeriod)) {
-				localDateTime.plusDays(scoreLimitNumber);
+				localDateTime = localDateTime.plusDays(scoreLimitNumber);
 			}else if(WEEK.equals(scorePeriod)) {
-				localDateTime.plusWeeks(scoreLimitNumber);
+				localDateTime = localDateTime.plusWeeks(scoreLimitNumber);
 			}else if(MONTH.equals(scorePeriod)) {
-				localDateTime.plusMonths(scoreLimitNumber);
+				localDateTime = localDateTime.plusMonths(scoreLimitNumber);
 			}
 			expireTime = Timestamp.valueOf(localDateTime);
 		}
