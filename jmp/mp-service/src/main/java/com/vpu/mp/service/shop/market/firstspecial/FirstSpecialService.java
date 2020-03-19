@@ -239,7 +239,7 @@ public class FirstSpecialService extends ShopBaseService {
         List<FirstSpecialGoodsVo> res = db().select(FIRST_SPECIAL_GOODS.ID,FIRST_SPECIAL_GOODS.GOODS_ID,FIRST_SPECIAL_GOODS.DISCOUNT,FIRST_SPECIAL_GOODS.REDUCE_PRICE,FIRST_SPECIAL_GOODS.GOODS_PRICE).from(FIRST_SPECIAL_GOODS).where(FIRST_SPECIAL_GOODS.FIRST_SPECIAL_ID.eq(id)).fetchInto(FirstSpecialGoodsVo.class);
         if(!res.isEmpty()){
             for(FirstSpecialGoodsVo firstSpecialGoods : res){
-                firstSpecialGoods.setGoodsView(saas().getShopApp(getShopId()).goods.getGoodsView(firstSpecialGoods.getGoodsId()));
+                firstSpecialGoods.setGoodsView(saas().getShopApp(getShopId()).goods.getGoodsSmallVo(firstSpecialGoods.getGoodsId()));
                 List<FirstSpecialProductVo> firstSpecialProduct = db().select(FIRST_SPECIAL_PRODUCT.ID,FIRST_SPECIAL_PRODUCT.PRD_ID,FIRST_SPECIAL_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_PRICE.as("originalPrice")).from(FIRST_SPECIAL_PRODUCT).innerJoin(GOODS_SPEC_PRODUCT).on(FIRST_SPECIAL_PRODUCT.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID)).where(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(id)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(firstSpecialGoods.getGoodsId())).fetchInto(FirstSpecialProductVo.class);
                 firstSpecialGoods.setFirstSpecialProduct(firstSpecialProduct);
             }
