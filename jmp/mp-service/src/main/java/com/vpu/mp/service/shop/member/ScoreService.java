@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -54,6 +55,7 @@ import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
 import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
@@ -72,8 +74,6 @@ public class ScoreService extends ShopBaseService {
 	@Autowired
 	private ScoreDaoService scoreDao;
 	
-	@Autowired
-	public ScoreCfgService score;
 	@Autowired
 	public UserCardService userCardService;
 	
@@ -162,18 +162,19 @@ public class ScoreService extends ShopBaseService {
 				}
 
 				if (adminUser == 0) {
-					//TODO 等待luguangyao bug修复
-//					String strScore = score>=0? "+"+score:""+score;
-//					saas().getShopApp(getShopId()).record.insertRecord(
-//							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
-//							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
+					String strScore = (param.getScore()>=0) ? "+"+param.getScore():""+param.getScore();
+					saas().getShopApp(getShopId()).record.insertRecord(
+							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
+							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
 				}
 
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
-			System.out.println(e);
-			MpException cause = (MpException)e.getCause();
-			throw cause;
+			Throwable cause = e.getCause();
+			if(cause instanceof MpException) {
+				throw (MpException)cause;
+			}
+			throw e;
 		}
 	}
 
@@ -604,7 +605,7 @@ public class ScoreService extends ShopBaseService {
 	 */
 	public CheckSignVo checkSignInScore(Integer userId) {
 		logger().info("进入检查签到送积分");
-		UserScoreSetValue signInScore = score.getScoreValueThird("sign_in_score");
+		UserScoreSetValue signInScore = scoreCfgService.getScoreValueThird("sign_in_score");
 		int days = 0;
 		int scoreValue = 0;
 		int isSignIn = 0;
@@ -766,15 +767,15 @@ public class ScoreService extends ShopBaseService {
 	 * @return 
 	 */
 	public ExpireVo getUserScoreCfg(Integer userId) {
-		ShopCfgRecord scoreLimitRecord = score.getScoreNum("score_limit");
+		ShopCfgRecord scoreLimitRecord = scoreCfgService.getScoreNum("score_limit");
 		ExpireVo vo=new ExpireVo();
 		if (scoreLimitRecord != null) {
 			if (scoreLimitRecord.getV().equals("1")) {
-				int scoreYear = Integer.parseInt(score.getScoreNum("score_year").getV());
+				int scoreYear = Integer.parseInt(scoreCfgService.getScoreNum("score_year").getV());
 				int year = LocalDateTime.now().getYear();
 				year=year+scoreYear;
-				String month = score.getScoreNum("score_month").getV();
-				String day = score.getScoreNum("score_day").getV();
+				String month = scoreCfgService.getScoreNum("score_month").getV();
+				String day = scoreCfgService.getScoreNum("score_day").getV();
 				if(Integer.parseInt(month)<10) {
 					month="0"+month;
 				}
