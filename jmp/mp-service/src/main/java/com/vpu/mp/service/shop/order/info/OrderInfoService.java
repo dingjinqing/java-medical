@@ -651,7 +651,7 @@ public class OrderInfoService extends ShopBaseService {
 				entry.setValue(BigDecimal.ZERO);
 				continue;
 			}
-			// TODO 这里逻辑有问题，但不会有问题，稍后修改
+			// TODO 这里逻辑有问题，但不会出现这种情况，稍后修改
 			// 设置当前key的可退金额（增加双重校验，实际上实际退款时已经判断，不会出现amount<currentKeyCanReturn）
 			entry.setValue(BigDecimalUtil.compareTo(amount, currentKeyCanReturn) > 0 ? currentKeyCanReturn : amount);
 			// 设置下次循环的amount

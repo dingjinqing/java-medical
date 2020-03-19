@@ -1,6 +1,5 @@
 package com.vpu.mp.service.foundation.util.lock.annotation;
 
-import javax.validation.constraints.NotBlank;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -43,4 +42,9 @@ public @interface RedisLock {
      * key前缀
      */
     String prefix();
+
+    /**
+     * key前缀
+     */
+    boolean noResubmit() default false;
 }

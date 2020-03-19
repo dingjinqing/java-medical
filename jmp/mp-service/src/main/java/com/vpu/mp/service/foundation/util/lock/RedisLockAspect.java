@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
@@ -48,6 +49,8 @@ public final class RedisLockAspect extends ShopBaseService {
     private ThreadLocal<String> currentValue = new ThreadLocal<>();
 
     private ThreadLocal<List<String>> currentKeys = new ThreadLocal<>();
+
+    @Autowired protected HttpServletRequest request;
 
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
     public void around(ProceedingJoinPoint joinPoint) throws MpException {
@@ -84,6 +87,11 @@ public final class RedisLockAspect extends ShopBaseService {
      */
     private List<String> getKeys(Object[] args, MethodSignature methodSignature) throws MpException {
         List<String> keys = Lists.newArrayList();
+        //防重复提交策略
+        List<String> noResubmitKey = getNoResubmitKey(methodSignature);
+        if(CollectionUtils.isNotEmpty(noResubmitKey)) {
+            return noResubmitKey;
+        }
         //形参
         Parameter[] parameters = methodSignature.getMethod().getParameters();
         //key所在形参索引
@@ -109,13 +117,19 @@ public final class RedisLockAspect extends ShopBaseService {
                 }
             }else {
                 //获取fields
-                Field[] keyObjFields = keyObjs.get(0).getClass().getDeclaredFields();
+                Class className = keyObjs.get(0).getClass();
                 //key field name
                 String keyFieldName = null;
                 //
-                for (int i = 0, length = keyObjFields.length; i < length; i++) {
-                    if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
-                        keyFieldName = keyObjFields[i].getName();
+                for (; className != Object.class; className = className.getSuperclass()) {
+                    Field[] keyObjFields = className.getDeclaredFields();
+                    for (int i = 0, length = keyObjFields.length; i < length; i++) {
+                        if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
+                            keyFieldName = keyObjFields[i].getName();
+                            break;
+                        }
+                    }
+                    if(keyFieldName != null) {
                         break;
                     }
                 }
@@ -138,13 +152,19 @@ public final class RedisLockAspect extends ShopBaseService {
             keys.add(args[keyIndex.intValue()].toString());
         } else {
             //非集合类但是为自定义类型
-            //获取fields
-            Field[] keyObjFields = args[keyIndex.intValue()].getClass().getDeclaredFields();
+            Class className = args[keyIndex.intValue()].getClass();
+            //key field name
             String keyFieldName = null;
             //
-            for (int i = 0, length = keyObjFields.length; i < length; i++) {
-                if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
-                    keyFieldName = keyObjFields[i].getName();
+            for (; className != Object.class; className = className.getSuperclass()) {
+                Field[] keyObjFields = className.getDeclaredFields();
+                for (int i = 0, length = keyObjFields.length; i < length; i++) {
+                    if(keyObjFields[i].isAnnotationPresent(RedisLockField.class)){
+                        keyFieldName = keyObjFields[i].getName();
+                        break;
+                    }
+                }
+                if(keyFieldName != null) {
                     break;
                 }
             }
@@ -158,6 +178,18 @@ public final class RedisLockAspect extends ShopBaseService {
             }
         }
         return keys;
+    }
+
+    private List<String> getNoResubmitKey(MethodSignature signature) {
+        RedisLock redisLock = ((MethodSignature)signature).getMethod().getAnnotation(RedisLock.class);
+        if(redisLock == null || !redisLock.noResubmit()) {
+            return null;
+        }
+        logger().info("接口防重复提交开始");
+        //getCurrentAdminLoginUser()
+
+
+        return null;
     }
 
     /**
@@ -219,7 +251,6 @@ public final class RedisLockAspect extends ShopBaseService {
         }
         currentValue.set(Util.randomId());
         //获取注解
-        ((MethodSignature) signature).getMethod().getAnnotations();
         RedisLock redisLockAnnotation = ((MethodSignature) signature).getMethod().getAnnotation(RedisLock.class);
         if(redisLockAnnotation == null){
             AddRedisLocks addRedisLocks = ((MethodSignature) signature).getMethod().getAnnotation(AddRedisLocks.class);
