@@ -7,6 +7,7 @@ import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -99,7 +100,7 @@ public class FormStatisticsService extends ShopBaseService {
     private static final String PARAM = "page_id=";
     public static final String PLUS = "+";
     public static final String COPY_TEXT = "副本";
-
+    private static final String MESSAGE = "messages";
     private static FormPage fp = FormPage.FORM_PAGE.as("fp");
     private static FormSubmitDetails fsd = FormSubmitDetails.FORM_SUBMIT_DETAILS.as("fsd");
     private static FormSubmitList fsl = FormSubmitList.FORM_SUBMIT_LIST.as("fsl");
@@ -601,32 +602,33 @@ public class FormStatisticsService extends ShopBaseService {
      *  state 0未发布，1已发布 2已关闭 3 已删除
      * @param pageId 表单id
      * @param userId 用户id
+     * @param lang
      * @return  表单详情
      */
-    public FormDetailVo getFormDecorationInfo(Integer pageId, Integer userId) {
+    public FormDetailVo getFormDecorationInfo(Integer pageId, Integer userId, String lang) {
         Timestamp nowDate = DateUtil.getLocalDateTime();
         FormPageRecord formRecord = getFormRecord(pageId);
         if (formRecord==null){
             log.error("改表单为找到");
             FormDetailVo formDetailVo =new FormDetailVo();
             formDetailVo.setStatus((byte) 1);
-            formDetailVo.setStatusText("该表单不存在");
+            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_INEXISTENCE,MESSAGE));
             return formDetailVo;
         }
         FormDetailVo formDetailVo = formRecord.into(FormDetailVo.class);
         if (formRecord.getState()==0){
            log.error("该表单未发布");
            formDetailVo.setStatus((byte) 2);
-           formDetailVo.setStatusText("该表单未发布");
+           formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_UNPUBLISHED,MESSAGE));
        }else if (formRecord.getState()==1){
             if (formRecord.getIsForeverValid()==0&&formRecord.getStartTime().after(nowDate)){
                 log.error("改表单未开始!");
                 formDetailVo.setStatus(3);
-                formDetailVo.setStatusText("改表单未开始");
+                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_NOT_STARTED,MESSAGE));
             }else if (formRecord.getIsForeverValid()==0&&formRecord.getEndTime().before(nowDate)){
                 log.error("该表单已过期");
                 formDetailVo.setStatus(4);
-                formDetailVo.setStatusText("该表单已过期");
+                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_EXPIRED,MESSAGE));
             }else {
                     String formCfg = formRecord.getFormCfg();
                     Integer totalTimes = getFromSubmitListCount(pageId);
@@ -634,7 +636,7 @@ public class FormStatisticsService extends ShopBaseService {
                     if (cfgGetTimes>0&&totalTimes>cfgGetTimes){
                         log.info("该表单提交次数达到上限");
                         formDetailVo.setStatus(5);
-                        formDetailVo.setStatusText("该表单提交次数达到上限");
+                        formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
                     }else {
                         Integer totalSubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId))
                                 .and(fsl.PAGE_ID.eq(pageId)).fetchAny().component1();
@@ -643,7 +645,7 @@ public class FormStatisticsService extends ShopBaseService {
                         if (cfgPostTimes==0&&totalSubmitTimes>cfgTotalTimes){
                             log.info("提交次数达到上限");
                             formDetailVo.setStatus(6);
-                            formDetailVo.setStatusText("提交次数达到上限");
+                            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_FAIL_SUBMIT_LIMIT,MESSAGE));
                         }else {
                             Integer daySubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId)).and(fsl.PAGE_ID.eq(pageId))
                                     .and(DslPlus.dateFormatDay(fsl.CREATE_TIME).eq(nowDate.toString().substring(0, 10))).fetchAny().component1();
@@ -651,21 +653,22 @@ public class FormStatisticsService extends ShopBaseService {
                             if (cfgPostTimes==0&&daySubmitTimes>cfgDayTimes){
                                 log.info("今日提交次数达到上限");
                                 formDetailVo.setStatus(7);
-                                formDetailVo.setStatusText("今日提交次数达到上限");
+                                formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DAY_SUBMIT_LIMIT,MESSAGE));
                             }else {
                                 log.info("活动校验完成");
                                 formDetailVo.setStatus(0);
-
                             }
                         }
                     }
             }
        }else if(formRecord.getState()==2){
            log.info("该表单已关闭");
-       }else {
+            formDetailVo.setStatus(8);
+            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_CLOSE,MESSAGE));
+        }else {
             log.info("该表单已删除");
             formDetailVo.setStatus(9);
-            formDetailVo.setStatusText("该表单已删除");
+            formDetailVo.setStatusText(Util.translateMessage(lang, JsonResultMessage.FORM_STATISTICS_DELETE,MESSAGE));
         }
         //TODO 增加商品记录
         return formDetailVo;

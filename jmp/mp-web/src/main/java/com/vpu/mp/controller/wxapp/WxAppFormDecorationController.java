@@ -30,7 +30,7 @@ public class WxAppFormDecorationController extends WxAppBaseController{
     public JsonResult getInfo(@RequestBody @Validated FormGetParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        FormDetailVo formDecorationInfo = shop().formService.getFormDecorationInfo(param.getPageId(), param.getUserId());
+        FormDetailVo formDecorationInfo = shop().formService.getFormDecorationInfo(param.getPageId(), param.getUserId(),getLang());
         return success(formDecorationInfo);
     }
 

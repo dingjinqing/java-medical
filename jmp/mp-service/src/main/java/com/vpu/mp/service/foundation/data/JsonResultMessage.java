@@ -1017,8 +1017,17 @@ public class JsonResultMessage {
 
     /**好友助力*/
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
+	/**表单统计*/
+	public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
+	public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";
+	public static final String FORM_STATISTICS_NOT_STARTED = "form.statistics.not.started";
+	public static final String FORM_STATISTICS_EXPIRED = "form.statistics.expired";
+	public static final String FORM_STATISTICS_FAIL_SUBMIT_LIMIT = "form.statistics.fail.submit.limit";
+	public static final String FORM_STATISTICS_DAY_SUBMIT_LIMIT = "form.statistics.fail.day.submit.limit";
+	public static final String FORM_STATISTICS_DELETE = "form.statistics.fail.delete";
+	public static final String FORM_STATISTICS_CLOSE = "form.statistics.fail.close";
 
-    /**积分兑换*/
+	/**积分兑换*/
     public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export.order";
     public static final String INTEGRAL_MALL_EXPORT_USER = "integral.mall.export.user";
     public static final String INTEGRAL_MALL_ORDER_SN = "integral.mall.orderSn";
