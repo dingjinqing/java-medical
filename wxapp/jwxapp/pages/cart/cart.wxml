@@ -3,9 +3,9 @@
     <view class="main-container">
         <!-- 可购买商品列表 -->
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
-            <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index">
+            <view class="cart-goods_item" wx:for="{{canBuyGoodsList}}" wx:key="index" wx:if="{{item.activityType != 97}}">
               <!-- 满折满减 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}" data-ids='{{item1.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}">
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
@@ -19,7 +19,7 @@
               </view>
             
               <!-- 加价购 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}" data-ids='{{item3.identity_id}}'>
+              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}">
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
@@ -104,7 +104,7 @@
                     </view>
                   </movable-view>
                 </movable-area>
-                <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}">
+                <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}" style='background:{{comColor}}'>
                   删除
                 </view>
               </view> 
@@ -124,26 +124,25 @@
               </view>
 
               <!-- 换购商品部分 -->
-              <view wx:for="{{item.cartActivityInfos}}" wx:for-item="val" wx:key="index" wx:if="{{item.activityId == val.activityId && val.activityType == 97}}">
+              <view wx:for="{{repurchaseList}}" wx:for-item="val" wx:key="index" wx:if="{{item.activityId == val.activityId && item.activityType == 7}}">
                 <view class='change_goods_area'>
                   <view class='each_cga_goods clearfix'>
                     <view class='cga_left'>
-                      <image src='{{item.goodsImg}}' class='cg_img'></image>
-                      <!-- <image wx:if='{{item4.tip}}' class='no_change_img' src='{{imageUrl}}/image/wxapp/no_change_icon.png'></image> -->
+                      <image src='{{val.goodsImg}}' class='cg_img'></image>
                     </view>
                     <view class='cga_right'>
                       <view class='cga_names'>
-                        <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>换购</text>{{item.goodsName}}
+                        <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>换购</text>{{val.goodsName}}
                       </view>
-                      <view class='cga_specs' wx:if="{{item.prdDesc!=''}}">{{item.prdDesc}}</view>
+                      <view class='cga_specs' wx:if="{{item.prdDesc!=''}}">{{val.prdDesc}}</view>
                       <view class='cga_price_info'>
                         <view class='cga_rice'>
-                          <view class='cga_market' style='color:{{comColor}}'>￥{{item.prdPrice}}</view>
+                          <view class='cga_market' style='color:{{comColor}}'>￥{{val.prdPrice}}</view>
                         </view>
-                        <view class='cga_nums'>X{{item.cartNumber}}</view>
+                        <view class='cga_nums'>X{{val.cartNumber}}</view>
                       </view>
                     </view>
-                    <view class='del_btn' data-del_id="{{item4.rec_id}}" bindtap='good_del' style='background:{{comColor}}'>删除</view>
+                    <view class='del_btn' bindtap='delCartGoods' data-cart_id="{{val.cartId}}"  style='background:{{comColor}}'>删除</view>
                   </view>
                 </view>
               </view>
@@ -194,7 +193,7 @@
                     </view>
                   </movable-view>
                 </movable-area>
-                <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}">
+                <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}" style='background:{{comColor}}'>
                   删除
                 </view>
             </view> 
