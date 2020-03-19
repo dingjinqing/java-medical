@@ -7,6 +7,7 @@
           <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
+            :maxlength="20"
             size="small"
           ></el-input>
         </div>
