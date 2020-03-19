@@ -129,6 +129,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
 
         //销量展示开关
         goodsDetailMpBo.setShowSalesNumber(shopCommonConfigService.getSalesNumber());
+        //客服按钮展示开关
+        goodsDetailMpBo.setCustomService(shopCommonConfigService.getCustomService());
 
         // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
         if (goodsDetailMpBo.getProducts().size() != 0) {

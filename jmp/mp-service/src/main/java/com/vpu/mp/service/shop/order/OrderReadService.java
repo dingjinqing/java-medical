@@ -70,6 +70,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -196,6 +197,8 @@ public class OrderReadService extends ShopBaseService {
     public SubOrderService subOrderService;
     @Autowired
     private GroupDrawService groupDrawService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 	/**
 	 * 订单查询
 	 * @param param
@@ -436,6 +439,9 @@ public class OrderReadService extends ShopBaseService {
 		setReturnCfg(vo, rOrder);
 		//设置订单类型
         vo.setOrderType(OrderInfoService.orderTypeToArray(order.getGoodsType()));
+        //客服按钮展示开关
+        vo.setReturnService(shopCommonConfigService.getReturnService());
+
 		return vo;
 	}
 
