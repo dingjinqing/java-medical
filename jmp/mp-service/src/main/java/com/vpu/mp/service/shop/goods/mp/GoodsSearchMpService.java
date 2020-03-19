@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -46,6 +47,8 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     @Autowired
     GroupBuyService groupBuyService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 小程序端-商品搜索界面-可使用搜索条件数据初始化
@@ -206,21 +209,44 @@ public class GoodsSearchMpService extends ShopBaseService {
     protected List<SortField<?>> buildSearchOrderFields(GoodsSearchMpParam param) {
         List<SortField<?>> list = new ArrayList<>(2);
 
-        if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
-            if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
-                list.add(GOODS.GOODS_SALE_NUM.desc());
+        if(param.getSortItem() != null){
+            //目前用户可以指定销量和价格两种排序方式
+            if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
+                if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
+                    list.add(GOODS.GOODS_SALE_NUM.desc());
+                } else {
+                    list.add(GOODS.GOODS_SALE_NUM.asc());
+                }
             } else {
-                list.add(GOODS.GOODS_SALE_NUM.asc());
+                // 默认价格排序
+                if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
+                    list.add(GOODS.SHOP_PRICE.desc());
+                } else {
+                    list.add(GOODS.SHOP_PRICE.asc());
+                }
             }
-        } else {
-            // 默认价格排序
-            if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
-                list.add(GOODS.SHOP_PRICE.desc());
-            } else {
-                list.add(GOODS.SHOP_PRICE.asc());
+            list.add(GOODS.CREATE_TIME.desc());
+        }else{
+            //由商家指定的默认排序规则
+            String sort = shopCommonConfigService.getGoodsSort();
+            switch (sort){
+                case "add_time":
+                    list.add(GOODS.CREATE_TIME.desc());
+                    break;
+                case "goods_sale_num":
+                    list.add(GOODS.GOODS_SALE_NUM.desc());
+                    break;
+                case "comment_num":
+                    list.add(GOODS.COMMENT_NUM.desc());
+                    break;
+                case "pv":
+                    list.add(GOODS.PV.desc());
+                    break;
+                default:
+                    list.add(GOODS.CREATE_TIME.desc());
             }
         }
-        list.add(GOODS.CREATE_TIME.desc());
+
         return list;
     }
 }

@@ -2248,4 +2248,13 @@ public class GoodsService extends ShopBaseService {
     public List<Integer> getAllExclusiveGoodsIds() {
         return db().select(GOODS.GOODS_ID).from(GOODS).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(GOODS.IS_CARD_EXCLUSIVE.eq(GoodsConstant.CARD_EXCLUSIVE)).fetchInto(Integer.class);
     }
+
+    /**
+     * 刷新goods表里的comment_num
+     * @param goodsId
+     */
+    public void updateGoodsCommentNum(int goodsId){
+        int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
+        db().update(GOODS).set(GOODS.COMMENT_NUM,goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+    }
 }
