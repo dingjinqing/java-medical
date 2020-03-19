@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.activity.dao;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
@@ -217,13 +219,20 @@ public class SecKillProcessorDao extends ShopBaseService {
 
     }
 
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods){
-        returnGoods.forEach(g->{
+    public void processReturn(ReturnOrderRecord returnOrderRecord,Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+        String orderSn = null;
+        for (OrderReturnGoodsVo g : returnGoods){
             //不是赠品行，返还活动库存
             if(g.getIsGift().equals(OrderConstant.IS_GIFT_N)){
+                orderSn = g.getOrderSn();
                 seckillService.updateSeckillStock(activityId,g.getProductId(),- g.getGoodsNumber());
             }
-        });
+        }
+        if(returnOrderRecord == null && orderSn != null){
+            //取消或关闭订单时
+            //删除秒杀记录
+            db().update(SEC_KILL_LIST).set(SEC_KILL_LIST.DEL_FLAG,DelFlag.DISABLE_VALUE).where(SEC_KILL_LIST.ORDER_SN.eq(orderSn)).execute();
+        }
     }
 
     /**
