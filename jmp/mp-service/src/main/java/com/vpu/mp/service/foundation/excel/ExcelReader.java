@@ -132,7 +132,7 @@ public class ExcelReader extends AbstractExcelDisposer {
                 Cell cell = headRow.getCell(i);
                 String cellValue = ExcelUtil.getCellStringValue(cell);
 
-                if (cellValue == null || !cellValue.equals(columnName)) {
+                if (cellValue == null || !cellValue.trim().equals(columnName)) {
                     continue;
                 }
                 j = i;

@@ -1045,4 +1045,13 @@ public class JsonResultMessage {
     public static final String INTEGRAL_MALL_MOBILE = "integral.mall.mobile";
     public static final String INTEGRAL_MALL_EXCHANGE_GOODS_NUMBER = "integral.mall.exchange.goods.number";
     public static final String INTEGRAL_MALL_EXCHANGE_TIME = "integral.mall.exchange.time";
+
+    /**商品导入开始*/
+    public static final String GOODS_EXCEL_IMPORT_WORKBOOK_CREATE_FAIL = "goods.excel.import.workbook.create.fail";
+    /**excel sheet位置错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_WRONG_INDEX = "goods.excel.import.sheet.wrong.index";
+    /**excel sheet头所在行位置错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX = "goods.excel.import.sheet.header.wrong.index";
+    /**excel sheet 列和定义的pojo字段位置对应错误*/
+    public static final String GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO = "goods.excel.import.sheet.column.not.map.pojo";
 }
