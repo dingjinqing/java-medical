@@ -148,8 +148,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			logger().info("userId：" + userId + " 在店铺：" + getShopId() + "不存在");
 			return false;
 		}
-		
-		
+		logger().info("开始获取类目id");
 		// 类目ID
 		Integer secondId = getcategoryId();
 		if (secondId==0) {
@@ -158,6 +157,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			// TODO发送到公众号
 			return false;
 		}
+		logger().info("获取当前帐号下的个人模板列表");
 		// 获取当前帐号下的个人模板列表
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		if (!templateList.isSuccess()) {
