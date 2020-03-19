@@ -106,7 +106,8 @@ public class ScoreService extends ShopBaseService {
 						boolean result = useUserScore(param.getUserId(), Math.abs(score),
 															param.getOrderSn()!=null?param.getOrderSn():"");
 						if(!result) {
-							logger().info("消耗积分异常");
+							logger().info("消耗积分异常,积分过期");
+							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 						}
 					}
 					userScoreRecord.setStatus(USED_SCORE_STATUS);
