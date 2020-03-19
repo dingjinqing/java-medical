@@ -76,7 +76,7 @@ public class GiftService extends ShopBaseService {
     protected static final Byte CONDITION_ALL = 0;
 
     /**只赠送其中优先级最高的活动赠品*/
-    protected static final Byte CONDITION_PRIORITY = 1;
+    public static final Byte CONDITION_PRIORITY = 1;
 
     /**
      * 添加赠品活动
@@ -260,7 +260,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 出参格式转换
      */
-    protected void transformVo(GiftVo giftVo) {
+    public void transformVo(GiftVo giftVo) {
         giftVo.setGoodsIds(stringToList(giftVo.getGoodsId()));
         String rule = giftVo.getRule();
         RuleJson ruleJson = underLineStyleGson().fromJson(rule, RuleJson.class);
