@@ -107,9 +107,9 @@ public class ScoreService extends ShopBaseService {
 				Integer score = param.getScore();
 				if (score < 0) {
 					// 消耗积分
+					logger().info("当前需要消耗积分："+Math.abs(score)+"用户目前拥有积分： "+dbUser.getScore());
 					if(Math.abs(score)>dbUser.getScore()) {
 						logger().info("消耗的积分超出可用积分:");
-						logger().info("当前需要消耗积分："+Math.abs(score)+"用户目前拥有积分： "+dbUser.getScore());
 						throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
 					}
 					
@@ -139,11 +139,7 @@ public class ScoreService extends ShopBaseService {
 				}
 				
 				userScoreRecord.insert();
-				
-				//更新用户积分
-				Integer totalScore = getTotalAvailableScoreById(param.getUserId());
-				updateUserScore(param.getUserId(), totalScore);
-
+				updateUserScore(param);
 			});
 			
 			
@@ -172,10 +168,22 @@ public class ScoreService extends ShopBaseService {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			Throwable cause = e.getCause();
 			if(cause instanceof MpException) {
-				throw (MpException)cause;
+				MpException mpEx = (MpException)cause;
+				if(mpEx.getErrorCode().getCode() == JsonResultCode.CODE_MEMBER_SCORE_EXPIRED.getCode()) {
+					logger().info("刷新用户积分，去掉过期积分");
+					updateUserScore(param);
+				}				
+				throw mpEx;
 			}
 			throw e;
 		}
+	}
+
+	//更新用户积分
+	private void updateUserScore(ScoreParam param) {
+		logger().info("更新用户积分");
+		Integer totalScore = getTotalAvailableScoreById(param.getUserId());
+		updateUserScore(param.getUserId(), totalScore);
 	}
 
 
@@ -313,10 +321,10 @@ public class ScoreService extends ShopBaseService {
 				break;
 			} else {
 				/** 4. 更新要插入的数据值,设置记录状态为已使用 并且 可用积分为0  */
+				score = score - userRecord.getUsableScore();
 				userRecord.setStatus(USED_SCORE_STATUS);
 				userRecord.setUsableScore(0);
 				updateUserScoreRecord(userRecord);
-				score = score - userRecord.getUsableScore();
 				if (score <= 0) {
 					break;
 				}
