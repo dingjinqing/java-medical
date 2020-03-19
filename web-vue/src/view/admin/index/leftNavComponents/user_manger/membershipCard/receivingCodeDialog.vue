@@ -355,10 +355,9 @@ export default {
       console.log(data)
       console.log(this.batchName)
       console.log(this.batchId)
-      if (data) {
-        if (this.batchId) {
-          this.getBatch(this.batchId)
-        }
+
+      if (this.batchId) {
+        this.getBatch(this.batchId)
       }
     }
   },
