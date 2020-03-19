@@ -235,6 +235,10 @@ global.wxComponent({
       observer(val){
         this.initFooter()
       }
+    },
+    customService:{ //展示客服按钮
+      type:Number,
+      value:0
     }
   },
   /**

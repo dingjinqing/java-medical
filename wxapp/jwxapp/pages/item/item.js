@@ -240,7 +240,9 @@ global.wxPage({
               limitBuyNum,
               limitMaxNum,
               goodsId,
-              goodsGifts
+              goodsGifts,
+              showSalesNumber,
+              customService
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -270,6 +272,8 @@ global.wxPage({
               isCollected,
               goodsName,
               deliverPrice,
+              showSalesNumber,
+              customService,
               ...specParams
             }
             this.setData({
