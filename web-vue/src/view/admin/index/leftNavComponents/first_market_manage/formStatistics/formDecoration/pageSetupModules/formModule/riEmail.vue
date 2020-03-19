@@ -4,33 +4,34 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
+            :maxlength="20"
           ></el-input>
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list">
-          <span>展现形式：</span>
+          <span>{{$t('formDecorationModel.presentationForm')}}</span>
           <el-radio
             v-model="modulesSaveData.image_type"
             :label="1"
-          >有图标</el-radio>
+          >{{$t('formDecorationModel.icons')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.image_type"
             :label="0"
-          >无图标</el-radio>
+          >{{$t('formDecorationModel.noIcon')}}</el-radio>
         </div>
         <!--展现形式选择有图标时显示的隐藏模块-->
         <div
           class="list"
           v-if="modulesSaveData.image_type===1"
         >
-          <span class="iconSpan">图标：</span>
+          <span class="iconSpan">{{$t('formDecorationModel.icon')}}</span>
           <div class="icon">
             <div
               class="iconContainer"
@@ -39,19 +40,19 @@
               <div
                 class="click_to_change"
                 @click="handleToImageDialog()"
-              >更换图标</div>
+              >{{$t('formDecorationModel.changeIcon')}}</div>
               <img
                 v-if="modulesSaveData.name_url"
                 :src="modulesSaveData.name_url"
               >
             </div>
-            <div class="iconTips">建议尺寸：36X36</div>
+            <div class="iconTips">{{$t('formDecorationModel.recommendedDimensions')}}：36X36</div>
           </div>
 
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -59,7 +60,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -95,6 +96,10 @@ export default {
       } // 模块保存数据
     }
   },
+  mounted () {
+    // 初始化语言
+    this.langDefault()
+  },
   watch: {
     // 中间模块当前高亮index
     sortIndex: { // 模块公共
@@ -129,7 +134,7 @@ export default {
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     }
