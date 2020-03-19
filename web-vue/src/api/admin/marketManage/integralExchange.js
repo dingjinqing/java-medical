@@ -79,3 +79,11 @@ export function integralUserList (data) {
     data: data
   })
 }
+// 获取新用户列表
+export function integralNewUserList (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/newuser',
+    method: 'post',
+    data: data
+  })
+}

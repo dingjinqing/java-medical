@@ -24,6 +24,7 @@
               <el-button
                 type="primary"
                 size="small"
+                @click="handleToSearch()"
               >筛选</el-button>
               <el-button
                 type="info"
@@ -61,7 +62,7 @@
               <template slot-scope="scope">
                 <div class="opt">
                   <div class="left">
-                    <img :src="scope.row.goodsImg">
+                    <img :src="$imageHost+'/'+scope.row.goodsImg">
                   </div>
                   <div class="right">
                     <p>{{scope.row.goodsName}}</p>
@@ -184,58 +185,14 @@ export default {
       integralUserList(params).then(res => {
         console.log(res)
         if (res.error === 0) {
-          // 模拟
-          res.content.page.pageCount = 1
-          res.content.page.totalRows = 2
           this.pageParams = res.content.page
+          this.tableData = res.content.dataList
         }
-        // 模拟数据
-        // let arr = [
-        //   {
-        //     'orderSn': 'P201908030105372897',
-        //     'goods': [
-        //       {
-        //         'recId': null,
-        //         'orderId': 17,
-        //         'orderSn': 'P201908030105372897',
-        //         'goodsId': 2,
-        //         'goodsSn': '',
-        //         'goodsName': '连衣裙',
-        //         'goodsNumber': 1,
-        //         'goodsPrice': 888.00,
-        //         'goodsAttr': '黑色，XL',
-        //         'productId': 1,
-        //         'goodsImg': '/image/admin/head_icon.png',
-        //         'sendNumber': null
-        //       },
-        //       {
-        //         'recId': null,
-        //         'orderId': 17,
-        //         'orderSn': 'P201908030105372897',
-        //         'goodsId': 2,
-        //         'goodsSn': '',
-        //         'goodsName': '连衣裙',
-        //         'goodsNumber': 1,
-        //         'goodsPrice': 688.00,
-        //         'goodsAttr': '黑色，XXL',
-        //         'productId': 2,
-        //         'goodsImg': '/image/admin/head_icon.png',
-        //         'sendNumber': null
-        //       }
-        //     ],
-        //     'number': 2,
-        //     'money': 108000.00,
-        //     'score': 7500,
-        //     'consignee': '小张',
-        //     'mobile': '15535865178',
-        //     'orderStatus': 5
-        //   }
-        // ]
       })
     },
-    // 点击复制收件人信息
-    handleToCopy (row) {
-
+    // 点击筛选
+    handleToSearch () {
+      this.initDataList()
     }
   }
 }

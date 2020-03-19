@@ -55,11 +55,15 @@
           </div>
           <div class="filters_item">
             <span>下单时间：</span>
-            <el-input
+            <el-date-picker
               size="small"
               v-model="orderTime"
+              type="date"
               placeholder="下单时间"
-            ></el-input>
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+            >
+            </el-date-picker>
           </div>
         </div>
         <div class="bottom">
@@ -67,12 +71,14 @@
           <areaLinkage
             :areaCode="areaLinkage"
             @areaData="handleAreaData"
+            @areaChange="handleAreaDataDetail"
             style="width:365px"
           />
           <div style="margin-left:20px">
             <el-button
               type="primary"
               size="small"
+              @click="initDataList()"
             >筛选</el-button>
             <el-button
               type="info"
@@ -114,7 +120,7 @@
               <template slot-scope="scope">
                 <div class="opt">
                   <div class="left">
-                    <img :src="scope.row.goodsImg">
+                    <img :src="$imageHost+'/'+scope.row.goodsImg">
                   </div>
                   <div class="right">
                     <p>{{scope.row.goodsName}}</p>
@@ -128,7 +134,7 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="goodsNumber"
+              prop="number"
               label="商品数量"
               align="center"
             >
@@ -156,10 +162,10 @@
                   style="color:#5a8bff;cursor:pointer"
                 >
                   <div>
-                    {{scope.row.xdrName}}
+                    {{scope.row.username}}
                   </div>
                   <div>
-                    {{scope.row.xdrMobile}}
+                    {{scope.row.userMobile}}
                   </div>
                 </div>
               </template>
@@ -199,7 +205,7 @@
               align="center"
             >
               <template slot-scope="scope">
-                {{scope.row.orderStatus === 1?'待发货':''}}
+                {{scope.row.orderStatus === 0?'待付款':scope.row.orderStatus === 1?'客户已取消':scope.row.orderStatus === 2?'卖家已关闭':scope.row.orderStatus === 3?'待发货':scope.row.orderStatus === 4?'已发货':scope.row.orderStatus === 5?'已收货':scope.row.orderStatus === 6?'已完成':''}}
               </template>
             </el-table-column>
           </el-table>
@@ -313,39 +319,22 @@ export default {
         districtCode: ''
       },
       tableData: [
-        {
-          orderSn: 'P201909031128006589',
-          goodsImg: 'http://mpdevimg2.weipubao.cn/upload/7893594/image/20190812/73XTie739D31ubXW.jpeg',
-          goodsName: '大号saddle马鞍包系列2019新款D字手拎时尚洋气帆啊啊啊',
-          goodsPrice: '198.00',
-          goodsNumber: '1',
-          money: '0.1',
-          score: '100',
-          xdrName: '腾飞',
-          xdrMobile: '13167356120',
-          consignee: '小张',
-          mobile: '15535865178',
-          orderStatus: 1
-        },
-        {
-          orderSn: 'P201909031128006589',
-          goodsImg: 'http://mpdevimg2.weipubao.cn/upload/7893594/image/20190812/73XTie739D31ubXW.jpeg',
-          goodsName: '大号saddle马鞍包系列2019新款D字手拎时尚洋气帆啊啊啊',
-          goodsPrice: '198.00',
-          goodsNumber: '1',
-          money: '0.1',
-          score: '100',
-          xdrName: '腾飞2',
-          xdrMobile: '13167356120',
-          consignee: '小张2',
-          mobile: '15535865178',
-          orderStatus: 1
-        }
+
       ], // 列表表格数据
       pageParams: {}, // 分页
       dialogVisible: false, // 筛选导出弹窗
       modelFlag: false, // 遮罩弹窗
-      modelData: '' // 遮罩弹窗数据
+      modelData: '', // 遮罩弹窗数据
+      selectArea: { // 省市区
+        province: '',
+        city: '',
+        district: ''
+      },
+      areaDetail: {
+        province: '',
+        city: '',
+        district: ''
+      }
     }
   },
   mounted () {
@@ -357,11 +346,28 @@ export default {
     // 省市区选中回传
     handleAreaData (data) {
       console.log(data)
+      this.selectArea = data
     },
     // 初始化请求数据
     initDataList () {
+      let startTime = ''
+      let endTime = ''
+      if (this.orderTime) {
+        startTime = this.orderTime + ' 00:00:00'
+        endTime = this.orderTime + ' 23:59:59'
+      }
       let params = {
-        activityId: '14',
+        activityId: this.$route.query.activityId,
+        goodsName: this.goodsNameInput,
+        orderSn: this.goodsNameInput,
+        orderStatus: this.orderStatus === -1 ? '' : this.orderStatus,
+        mobile: this.consigneePhone,
+        consignee: this.consigneeName,
+        startTime: startTime,
+        endTime: endTime,
+        provinceCode: this.selectArea.province,
+        cityCode: this.selectArea.city,
+        districtCode: this.selectArea.district,
         page: {
           'currentPage': this.pageParams.currentPage,
           'pageRows': this.pageParams.pageRows
@@ -370,60 +376,34 @@ export default {
       integralOrder(params).then(res => {
         console.log(res)
         if (res.error === 0) {
-          // 模拟
-          res.content.page.pageCount = 1
-          res.content.page.totalRows = 2
           this.pageParams = res.content.page
+          this.tableData = res.content.dataList
         }
-        // 模拟数据
-        // let arr = [
-        //   {
-        //     'orderSn': 'P201908030105372897',
-        //     'goods': [
-        //       {
-        //         'recId': null,
-        //         'orderId': 17,
-        //         'orderSn': 'P201908030105372897',
-        //         'goodsId': 2,
-        //         'goodsSn': '',
-        //         'goodsName': '连衣裙',
-        //         'goodsNumber': 1,
-        //         'goodsPrice': 888.00,
-        //         'goodsAttr': '黑色，XL',
-        //         'productId': 1,
-        //         'goodsImg': '/image/admin/head_icon.png',
-        //         'sendNumber': null
-        //       },
-        //       {
-        //         'recId': null,
-        //         'orderId': 17,
-        //         'orderSn': 'P201908030105372897',
-        //         'goodsId': 2,
-        //         'goodsSn': '',
-        //         'goodsName': '连衣裙',
-        //         'goodsNumber': 1,
-        //         'goodsPrice': 688.00,
-        //         'goodsAttr': '黑色，XXL',
-        //         'productId': 2,
-        //         'goodsImg': '/image/admin/head_icon.png',
-        //         'sendNumber': null
-        //       }
-        //     ],
-        //     'number': 2,
-        //     'money': 108000.00,
-        //     'score': 7500,
-        //     'consignee': '小张',
-        //     'mobile': '15535865178',
-        //     'orderStatus': 5
-        //   }
-        // ]
       })
+    },
+    // 省市区详细数据
+    handleAreaDataDetail (res) {
+      console.log(res)
+      let obj = {
+        province: '',
+        city: '',
+        district: ''
+      }
+      Object.keys(res).forEach((item, index) => {
+        console.log(res[item])
+        if (res[item].name) {
+          obj[item] = res[item].name
+        }
+      })
+      console.log(obj)
+      this.areaDetail = obj
     },
     // 点击复制收件人信息
     handleToCopy (row) {
       // this.$refs.qrCodePageUrlInput.select()
       //       document.execCommand('Copy')
-      let str = row.consignee + row.mobile
+      let area = this.areaDetail.province + this.areaDetail.city + this.areaDetail.district
+      let str = row.consignee + ' ' + row.mobile + ' ' + area
       this.modelData = str
       let oInput = document.createElement('input')
       oInput.value = str
@@ -483,9 +463,9 @@ export default {
           min-width: 320px;
           margin-bottom: 20px;
           max-width: 328px;
-          /deep/ .el-input__inner {
-            width: auto;
-          }
+          // /deep/ .el-input__inner {
+          //   width: auto;
+          // }
           /deep/ .el-input {
             width: 188px;
           }
