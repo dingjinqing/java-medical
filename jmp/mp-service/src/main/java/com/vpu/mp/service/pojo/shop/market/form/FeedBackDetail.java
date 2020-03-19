@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.market.form;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author liufei
@@ -8,6 +9,7 @@ import lombok.Data;
  * @description
  */
 @Data
+@NoArgsConstructor
 public class FeedBackDetail {
     public String moduleName;
     public String moduleType;

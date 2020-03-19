@@ -598,6 +598,7 @@ public class FormStatisticsService extends ShopBaseService {
 
     /**
      * 获取表单信息-小程序
+     *  state 0未发布，1已发布 2已关闭 3 已删除
      * @param pageId 表单id
      * @param userId 用户id
      * @return  表单详情
@@ -607,20 +608,33 @@ public class FormStatisticsService extends ShopBaseService {
         FormPageRecord formRecord = getFormRecord(pageId);
         if (formRecord==null){
             log.error("改表单为找到");
+            FormDetailVo formDetailVo =new FormDetailVo();
+            formDetailVo.setStatus((byte) 1);
+            formDetailVo.setStatusText("该表单不存在");
+            return formDetailVo;
         }
-       if (formRecord.getState()==0){
+        FormDetailVo formDetailVo = formRecord.into(FormDetailVo.class);
+        if (formRecord.getState()==0){
            log.error("该表单未发布");
+           formDetailVo.setStatus((byte) 2);
+           formDetailVo.setStatusText("该表单未发布");
        }else if (formRecord.getState()==1){
             if (formRecord.getIsForeverValid()==0&&formRecord.getStartTime().after(nowDate)){
-                log.info("改表单未开始!");
+                log.error("改表单未开始!");
+                formDetailVo.setStatus(3);
+                formDetailVo.setStatusText("改表单未开始");
             }else if (formRecord.getIsForeverValid()==0&&formRecord.getEndTime().before(nowDate)){
-                log.info("该表单已过期");
+                log.error("该表单已过期");
+                formDetailVo.setStatus(4);
+                formDetailVo.setStatusText("该表单已过期");
             }else {
                     String formCfg = formRecord.getFormCfg();
                     Integer totalTimes = getFromSubmitListCount(pageId);
                     Integer cfgGetTimes = Integer.valueOf(getValueFromFormCfgByKey(formCfg, GET_TIMES));
                     if (cfgGetTimes>0&&totalTimes>cfgGetTimes){
                         log.info("该表单提交次数达到上限");
+                        formDetailVo.setStatus(5);
+                        formDetailVo.setStatusText("该表单提交次数达到上限");
                     }else {
                         Integer totalSubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId))
                                 .and(fsl.PAGE_ID.eq(pageId)).fetchAny().component1();
@@ -628,14 +642,20 @@ public class FormStatisticsService extends ShopBaseService {
                         Integer cfgTotalTimes = Integer.valueOf(getValueFromFormCfgByKey(formCfg, TOTAL_TIMES));
                         if (cfgPostTimes==0&&totalSubmitTimes>cfgTotalTimes){
                             log.info("提交次数达到上限");
+                            formDetailVo.setStatus(6);
+                            formDetailVo.setStatusText("提交次数达到上限");
                         }else {
                             Integer daySubmitTimes = db().selectCount().from(fsl).where(fsl.USER_ID.eq(userId)).and(fsl.PAGE_ID.eq(pageId))
                                     .and(DslPlus.dateFormatDay(fsl.CREATE_TIME).eq(nowDate.toString().substring(0, 10))).fetchAny().component1();
                             int cfgDayTimes = Integer.parseInt(getValueFromFormCfgByKey(formCfg, DAY_TIMES));
                             if (cfgPostTimes==0&&daySubmitTimes>cfgDayTimes){
                                 log.info("今日提交次数达到上限");
+                                formDetailVo.setStatus(7);
+                                formDetailVo.setStatusText("今日提交次数达到上限");
                             }else {
                                 log.info("活动校验完成");
+                                formDetailVo.setStatus(0);
+
                             }
                         }
                     }
@@ -643,14 +663,12 @@ public class FormStatisticsService extends ShopBaseService {
        }else if(formRecord.getState()==2){
            log.info("该表单已关闭");
        }else {
-           log.info("该表单已删除");
-       }
+            log.info("该表单已删除");
+            formDetailVo.setStatus(9);
+            formDetailVo.setStatusText("该表单已删除");
+        }
         //TODO 增加商品记录
-        return db().selectFrom(fp)
-                .where(fp.PAGE_ID.eq(pageId))
-                .fetchOptionalInto(FormDetailVo.class)
-                .orElseThrow(() -> new BusinessException(JsonResultCode.CODE_DATA_NOT_EXIST
-                        , String.join(StringUtils.SPACE, "Form",pageId.toString())));
+        return formDetailVo;
     }
 
     /**
