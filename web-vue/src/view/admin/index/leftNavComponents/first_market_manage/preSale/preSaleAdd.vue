@@ -38,10 +38,10 @@
         <el-form-item
           v-show="!isFullPay"
           label="活动时间："
+          :rules="[{required: true}]"
         >
           <template>
             <div style="color:#999">请设置定金支付时间以及尾款支付时间，最多可配置两个支付定金时段，定金支付的截止时间不能大于尾款支付的截止时间</div>
-            <!-- <el-form label-width="130px"> -->
             <el-form-item
               label="定金支付时间："
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
@@ -67,6 +67,8 @@
                 @click="param.prePayStep=2"
               >添加定金支付时段</el-button>
             </el-form-item>
+
+            <!-- 定金支付时间 -->
             <el-form-item
               label="定金支付时间："
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
@@ -92,6 +94,8 @@
                 @click="param.prePayStep=1"
               >删除</el-button>
             </el-form-item>
+
+            <!-- 尾款支付时间 -->
             <el-form-item
               label="尾款支付时间："
               prop="tailPayTimeRange"
@@ -112,9 +116,9 @@
               >
               </el-date-picker>
             </el-form-item>
-            <!-- </el-form> -->
           </template>
         </el-form-item>
+
         <!-- 全款预售 -->
         <el-form-item
           v-show="isFullPay"
@@ -134,17 +138,20 @@
           >
           </el-date-picker>
         </el-form-item>
+
+        <!-- 活动商品 -->
         <el-form-item
           label="活动商品："
           prop="goodsId"
         >
           <el-input
             :disabled="true"
-            v-model="goodsRow.goodsName"
-            v-if="goodsRow.ischecked"
+            v-model="param.goodsName"
+            v-if="param.goodsName"
             size="small"
             style="width: 170px;"
           ></el-input>
+
           <el-input
             :disabled="true"
             v-if="false"
@@ -159,27 +166,30 @@
           >选择商品
           </el-button>
         </el-form-item>
-        <el-form-item label="发货时间：">
+        <el-form-item
+          label="发货时间："
+          prop="deliverType"
+        >
           <div style="display: flex">
             <el-radio
               v-model="param.deliverType"
               :label="1"
               style="line-height: 40px"
             >&nbsp;指定发货开始时间</el-radio>
-            <el-form-item
+            <!-- <el-form-item
               prop="deliverTime"
               :rules="[{required: true, message:'请填写发货开始时间', trigger: ['blur','change']}]"
               :inline-message="true"
+            > -->
+            <el-date-picker
+              v-model="param.deliverTime"
+              type="datetime"
+              size="small"
+              style="width:190px"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
-              <el-date-picker
-                v-model="param.deliverTime"
-                type="datetime"
-                size="small"
-                style="width:190px"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
-            </el-form-item>
+            </el-date-picker>
+            <!-- </el-form-item> -->
           </div>
           <div style="display:flex">
             <el-radio
@@ -187,23 +197,23 @@
               :label="2"
               style="line-height:40px"
             >&nbsp;尾款支付完成</el-radio>
-            <el-form-item
+            <!-- <el-form-item
               prop="deliverDays"
               :rules="[
                 { required: true,trigger: 'blur' },
+                { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] }
               ]"
               :inline-message="true"
-            >
-              <!-- { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] } -->
-              <el-input
-                v-model="param.deliverDays"
-                type="number"
-                size="small"
-                style="width:180px"
-                :min=0
-              />
-              <span style="margin-left:10px">天后发货</span>
-            </el-form-item>
+            > -->
+
+            <el-input
+              v-model="param.deliverDays"
+              size="small"
+              style="width:180px"
+              :min=0
+            />
+            <span style="margin-left:10px">天后发货</span>
+            <!-- </el-form-item> -->
           </div>
         </el-form-item>
         <el-form-item
@@ -398,9 +408,9 @@
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
                   :rules="[
-                { required: true, message: '1阶段定金不能为空'},
-                { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
-              ]"
+                    { required: true, message: '1阶段定金不能为空'},
+                    { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
+                  ]"
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
@@ -474,6 +484,7 @@
               <a
                 :class="activeIndex === 5 ? '' : 'settings'"
                 @click="setCurrent(5)"
+                v-show="twoSteps"
               >2阶段定金可抵扣金额
               </a>
             </div>
@@ -623,7 +634,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[param.goodsId]"
+        :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -637,7 +648,6 @@
         :imageSize="[800, 800]"
       />
     </div>
-
   </div>
 </template>
 <script>
@@ -656,8 +666,24 @@ export default {
     choosingGoods,
     ImageDalog
   },
-  props: ['isEdite', 'editData'],
   data () {
+    // 活动商品校验
+    var checkGoods = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请选择活动商品'))
+      }
+    }
+    // 发货时间校验
+    var checkDeliverType = (rule, value, callback) => {
+      // console.log(value)
+      if (value === 1 && !this.param.deliverTime) {
+        callback(new Error('请选择发货开始时间'))
+      } else if (value === 2 && (!this.param.deliverDays || this.param.deliverDays === null)) {
+        callback(new Error('请填写尾款发货时间'))
+      } else {
+        callback()
+      }
+    }
     return {
       id: null,
       // 当前页为编辑页
@@ -666,13 +692,9 @@ export default {
       showMore: true,
       // 活动状态,
       status: null,
-
       // 全款支付时间
       payTimeRange: [],
-      // 指定发货时间
-      deliverTime: null,
       // 活动商品名称
-      goodsName: '',
       presaleTypes: ['定金膨胀', '全款预售'],
       discountType: ['可叠加', '不可叠加'],
       returnTypes: ['不自动退定金', '自动退定金'],
@@ -692,8 +714,8 @@ export default {
       ],
       arrorFlag: true,
       activeIndex: 0,
-      goodsRow: {},
       isEditeFlag: false,
+      goodsIdList: [],
 
       /**
        * 请求参数
@@ -724,17 +746,14 @@ export default {
         shareDoc: '',
         shareImgAction: 1,
         shareImg: '',
-        products: []
+        products: [],
+        goodsName: ''
       },
       formRules: {
         presaleType: { required: true },
         presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        // preTime1Range: { requireed: true, message: '请填写定金支付时间', trigger: 'blur' },
-        // tailPayTimeRange: { required: true, message: '请填写尾款支付时间', trigger: 'blur' },
-        goodsId: [
-          { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
-        ],
-        deliverType: { required: true },
+        goodsId: [{ required: true, validator: checkGoods, trigger: 'change' }],
+        deliverType: { required: true, validator: checkDeliverType, trigger: 'change' },
         discountType: { required: true },
         returnType: { required: true },
         showSaleNumber: { required: true },
@@ -746,24 +765,16 @@ export default {
     ongoing () {
       return this.status === status[1].status
     },
-    goodsBtnName () {
-      if (this.ongoing) {
-        return '查看商品'
-      }
-      return '添加商品'
-    },
     isFullPay () {
       return this.param.presaleType === 1
     },
     twoSteps () {
       return this.param.prePayStep === 2
     }
-    // deliverTimeSpecified () {
-    //   return this.param.deliverType === 1
-    // }
   },
   methods: {
     ...mapActions(['transmitEditGoodsId']),
+    // 验证是否选择了商品
     validateMoney (rule, value, callback, prdPrice) {
       console.log(value, 'value')
       console.log(1111, '111--')
@@ -816,15 +827,15 @@ export default {
         callback()
       }
     },
-    // // 验证尾款支付完成
-    // validatePayment (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverType === 2) {
-    //     callback(new Error('请指定发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
+    // 验证尾款支付完成
+    validatePayment (rule, value, callback) {
+      console.log(value)
+      if (!value && this.param.deliverType === 2) {
+        callback(new Error('请指定发货时间'))
+      } else {
+        callback()
+      }
+    },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -841,7 +852,6 @@ export default {
     },
     // 保存
     add () {
-      // const then = r => this.gotoHome()
       this.param.buyNumber = Number(this.param.buyNumber)
       const { param } = this
 
@@ -855,6 +865,7 @@ export default {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('更新成功')
+            // this.gotoHome()
           } else {
             this.$message.error('更新失败')
           }
@@ -864,6 +875,7 @@ export default {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('添加成功')
+            // this.gotoHome()
           }
         })
       }
@@ -888,9 +900,6 @@ export default {
           this.param.preEndTime2 = format(this.param.preTime2Range[1])
         }
       }
-      // if (deliverTimeSpecified) {
-      //   this.param.deliverTime = format(this.param.deliverTime)
-      // }
     },
     // 编辑活动初始化-回显数据加载
     loadData () {
@@ -916,16 +925,10 @@ export default {
           this.param.tailPayTimeRange = [content.startTime, content.endTime]
         }
       })
-      // getDetail(id).then(res => {
-      //   console.log(res)
-      // })
     },
     loadStatus: ({ status }) => {
       this.status = status
     },
-    // loadingGoods: ({ goodsName }) => {
-    //   this.goodsName = goodsName
-    // },
     // 参数校验
     validateParam () {
       this.formatParam()
@@ -949,18 +952,11 @@ export default {
       })
       return true
     },
-    fail (message) {
-      this.$message({
-        showClose: true,
-        message,
-        type: 'warning'
-      })
-    },
     showChoosingGoods () {
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     gotoHome () {
-      // this.$router.replace('/admin/home/main/presale')
+      this.$router.push('/admin/home/main/presale')
     },
     setCurrent (index) {
       // 拷贝一份数据
@@ -969,7 +965,6 @@ export default {
 
       switch (index) {
         case 1:
-          // console.log(price, 'setCurrent')
           price.forEach(row => {
             row.presalePrice = Number(price[0].presalePrice)
           })
@@ -990,7 +985,6 @@ export default {
         case 4:
           price.forEach(row => {
             row.preDiscountMoney1 = Number(price[0].preDiscountMoney1)
-            console.log(row.preDiscountMoney1, 'get data--')
           })
           this.activeIndex = 4
           break
@@ -1010,13 +1004,9 @@ export default {
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'goodsInfo')
-
-      this.goodsRow = row
-      // this.param.products.push(this.goodsRow)
+      this.param.goodsName = row.goodsName
       this.param.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
-        return
-      }
+      this.goodsIdList.push(row.goodsId)
 
       // 初始化规格表格
       getAllGoodsProductList(this.param.goodsId).then(res => {
@@ -1029,15 +1019,26 @@ export default {
         console.log(this.param.products, 'this.form.products')
       })
     },
-    // 调起图片弹窗
+    // 分享 - 调起图片弹窗
     addGoodsImg () {
       this.showImageDialog = !this.showImageDialog
     },
     // 图片点击回调函数
     handleSelectImg (res) {
       if (res != null) {
-        console.log(res)
         this.param.shareImg = res.imgPath
+      }
+    }
+  },
+  watch: {
+    'param.goodsId': function (value) {
+      if (value) {
+        this.$refs.param.validateField('goodsId')
+      }
+    },
+    'param.deliverType': function (value) {
+      if (value) {
+        this.$refs.param.validateField('deliverType')
       }
     }
   },
@@ -1050,9 +1051,6 @@ export default {
       this.loadData()
     }
     this.langDefault()
-    if (this.isEdite) {
-      console.log(this.isEdite)
-    }
     if (this.$route.query.id > 0) {
       // 编辑定金膨胀活动
       this.isEditeFlag = true // 编辑时部分信息不可以修改

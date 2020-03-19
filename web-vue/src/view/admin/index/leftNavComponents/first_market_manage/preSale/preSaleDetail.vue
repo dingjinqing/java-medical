@@ -8,7 +8,7 @@
       <div>
         <span>用户名：</span>
         <el-input
-          v-model="pageParams.username"
+          v-model="params.username"
           size="small"
           class="input_width"
           clearable
@@ -17,7 +17,7 @@
       <div>
         <span>手机号：</span>
         <el-input
-          v-model="pageParams.mobile"
+          v-model="params.mobile"
           size="small"
           class="input_width"
           clearable
@@ -26,7 +26,7 @@
       <div>
         <span>订单号：</span>
         <el-input
-          v-model="pageParams.orderSn"
+          v-model="params.orderSn"
           size="small"
           class="input_width"
           clearable
@@ -142,8 +142,9 @@ export default {
   },
   data () {
     return {
-      pageParams: {
-        id: this.$route.query.id,
+      pageParams: {},
+      params: {
+        id: Number(this.$route.query.id),
         username: '',
         mobile: '',
         orderSn: ''
@@ -153,7 +154,7 @@ export default {
   },
   methods: {
     initDataList () {
-      getDetailPageList(this.pageParams).then(res => {
+      getDetailPageList(Object.assign(this.pageParams, this.params)).then(res => {
         if (res.error === 0) {
           console.log(res)
           this.tableData = res.content.dataList
