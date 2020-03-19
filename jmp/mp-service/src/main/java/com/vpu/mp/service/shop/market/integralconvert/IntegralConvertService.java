@@ -344,15 +344,31 @@ public class IntegralConvertService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public PageResult<MemberInfoVo> integralNewUserList(MarketSourceUserListParam param) {
+	public PageResult<IntegralNewUser> integralNewUserList(MarketSourceUserListParam param) {
 		MemberPageListParam pageListParam = new MemberPageListParam();
 		pageListParam.setCurrentPage(param.getCurrentPage());
 		pageListParam.setPageRows(param.getPageRows());
 		pageListParam.setMobile(param.getMobile());
 		pageListParam.setUsername(param.getUserName());
 		pageListParam.setInviteUserName(param.getInviteUserName());
-		return memberService.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_INTEGRAL,
+        PageResult<MemberInfoVo> result =  memberService.getSourceActList(pageListParam, MemberService.INVITE_SOURCE_INTEGRAL,
 				param.getActivityId());
+        String actName = db().select(INTEGRAL_MALL_DEFINE.NAME).from(INTEGRAL_MALL_DEFINE)
+            .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getActivityId()))
+            .fetchOptionalInto(String.class).get();
+        List<IntegralNewUser> userList = new ArrayList<>();
+        if (result.getDataList()!=null&&result.getDataList().size()>0){
+            for (MemberInfoVo item:result.getDataList()){
+                IntegralNewUser newUser = new IntegralNewUser();
+                FieldsUtil.assignNotNull(item,newUser);
+                newUser.setActName(actName);
+                userList.add(newUser);
+            }
+        }
+        PageResult<IntegralNewUser> pageResult = new PageResult<>();
+        pageResult.setDataList(userList);
+        pageResult.setPage(result.getPage());
+        return pageResult;
 	}
 
 	/**

@@ -151,7 +151,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
      */
     @PostMapping("/newuser")
     public JsonResult integralNewUserList(@RequestBody MarketSourceUserListParam param) {
-        PageResult<MemberInfoVo> pageResult = shop().integralConvertService.integralNewUserList(param);
+        PageResult<IntegralNewUser> pageResult = shop().integralConvertService.integralNewUserList(param);
         return success(pageResult);
     }
 
