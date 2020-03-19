@@ -34,6 +34,15 @@
             <text class="marking-price" wx:if="{{checkedProduct.prdLinePrice}}">￥{{checkedProduct.prdLinePrice}}</text>
             <text>库存：{{checkedProduct.prdNumber}}</text>
           </block>
+          <block wx:if="{{productsInfo.activity.activityType === 10 && productsInfo.activity.preSaleType === 0 && triggerButton !== 'left'}}">
+            <view class="pre-sale-view" style="color:{{main_setting.comColor}}">
+                <text>定金：</text>
+                <view>
+                  <text>￥{{checkedProduct.actProduct.depositPrice}}</text>
+                  <text>(可抵￥{{checkedProduct.actProduct.discountPrice}})</text>
+                </view>
+            </view>
+          </block>
         </view>
         <image class="close-img" src="{{imageUrl}}image/wxapp/close_icon.png" bindtap="bindClose"></image>
       </view>
