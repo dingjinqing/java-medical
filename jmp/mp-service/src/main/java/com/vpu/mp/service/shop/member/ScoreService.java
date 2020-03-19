@@ -158,7 +158,9 @@ public class ScoreService extends ShopBaseService {
 
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
-			throw e;
+			System.out.println(e);
+			MpException cause = (MpException)e.getCause();
+			throw cause;
 		}
 	}
 
