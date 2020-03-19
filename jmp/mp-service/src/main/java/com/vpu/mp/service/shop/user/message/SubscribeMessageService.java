@@ -157,6 +157,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			// TODO发送到公众号
 			return false;
 		}
+		logger().info("获取的类目id：{}",secondId);
 		logger().info("获取当前帐号下的个人模板列表");
 		// 获取当前帐号下的个人模板列表
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
@@ -173,14 +174,15 @@ public class SubscribeMessageService extends ShopBaseService {
 			return false;
 		}
 		String templateId = templateIdRecord.getTemplateId();
-		
 		// 小程序中是否配置了这个模板
 		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
+		logger().info("对应消息的模板templateId：{}",templateId);
 		//拼装报文
 		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid(),secondId);
 		if(postData==null) {
 			return false;
 		}
+		logger().info("开始发送：{}",postData.toJson());
 		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
 		logger().info("发送结果" + success);
