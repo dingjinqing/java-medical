@@ -591,7 +591,7 @@ global.wxPage({
   // 提交订单
   confirmOrder() {
     console.log(11111)
-    util.throttle(this.confirm,1000)()
+    util.throttle(this.confirm,5000)()
   },
   confirm(){
     if(!this.canSubmit()) return
