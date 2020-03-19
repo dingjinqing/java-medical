@@ -76,7 +76,8 @@ public class ScoreService extends ShopBaseService {
 	
 	@Autowired
 	public UserCardService userCardService;
-	
+	@Autowired
+	public ScoreCfgService score;
 	@Autowired
 	public ScoreCfgService scoreCfgService;
 	@Autowired
