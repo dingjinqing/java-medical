@@ -98,6 +98,11 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
      */
     private  List<PledgeInfo> pledgeList;
 
+    /**
+     * 销量展示开关
+     */
+    private Byte showSalesNumber;
+
     @Override
     public String toString() {
         return "GoodsDetailMpVo{" +
