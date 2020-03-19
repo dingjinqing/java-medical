@@ -1,20 +1,11 @@
 // pages1/pinlotteryinfo/pinlotteryinfo.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var mobile = util.getCache('mobile');
 var group_draw_id;
 var goods_id;
 var group_id;
-var group_info = [];
-var user_arr = [];
-var total_micro_second = 0;
+// var group_info = [];
 var set_time_out;
-var prd_id;
-var order_sn;
-var show_user_modal;
-var share_img;
 global.wxPage({
 
   /**
@@ -22,11 +13,15 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    user_arr: [],
     total_micro_second: 0,
     group_info: [],
     show_user_modal: 0,
     nickName: util.getCache('nickName'),
     click_num: false,
+    is_show_modal: 0, // 分享弹窗
+    order_sn: '', // 订单号
+    share_img: '', // 分享图片
   },
 
   /**
@@ -38,6 +33,7 @@ global.wxPage({
     goods_id = options.goods_id;
     group_id = options.group_id;
     var that = this;
+    // 判断用户是否登录
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
     if (!user_name || user_name == '用户' + parseInt(util.getCache('user_id') + 10000)
@@ -56,19 +52,15 @@ global.wxPage({
         show_user_modal: 1
       })
     }
-    that.data.is_show_modal = 0;
     clearTimeout(set_time_out);
-
+    // 获取活动详情
     util.api('/api/wxapp/groupdraw/info', function (res) {
       if (res.error == 0) {
-        group_info = res.content;
-        if (res.content) {
-          // util.api('/api/wxapp/user_goods/record', function (res1) {
-
-          // }, { goods_id: goods_id, active_id: group_draw_id, active_type: 8, type: 1 })
-        }
+        var group_info = res.content;
         if (group_info.userGroupInfo) {
-          order_sn = group_info.userGroupInfo.orderSn;
+          that.setData({
+            order_sn: group_info.userGroupInfo.orderSn
+          })
         }
 
         // 判断更多抽奖活动的个数
@@ -79,13 +71,15 @@ global.wxPage({
         }
         // 倒计时
         if (group_info.surplusSecond) {
-          total_micro_second = group_info.surplusSecond;
-          if (total_micro_second > 0) {
+          that.setData({
+            total_micro_second: group_info.surplusSecond
+          })
+          if (that.data.total_micro_second > 0) {
             that.countdown(that);
           }
         }
         if (group_info.groupJoinDetail.userList.length > 0) {
-          user_arr = group_info.groupJoinDetail.userList.slice(1);
+          var user_arr = group_info.groupJoinDetail.userList.slice(1);
         }
         that.setData({
           group_info: group_info,
@@ -109,13 +103,10 @@ global.wxPage({
         group_id: group_id
       } 
     })
-
-    // util.api('/api/wxapp/groupdraw/shareimg', function (res) {
-    //   share_img = res.content;
-    // }, { goods_id: goods_id, group_draw_id: group_draw_id, group_id: group_id });
   },
+  // 查看活动列表
   to_lists: function () {
-    if (group_info.group_draw.status == 2) {
+    if (this.data.group_info.groupDraw.status == 2) {
       util.reLaunch({
         url: '/pages/index/index',
       })
@@ -125,41 +116,46 @@ global.wxPage({
       })
     }
   },
-  // 去详情页
+  // 更多活动去详情页
   to_group: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;
     var group_draw_id = e.currentTarget.dataset.draw_id;
     util.navigateTo({
-      url: '/pages/pinlotteryitem/pinlotteryitem?goods_id=' + goods_id + "&group_draw_id=" + group_draw_id,
+      url: 'pages/item/item?aid=' + group_draw_id + '&&atp=1&&gid=' + goods_id
     })
   },
   // 去参团
   to_join: function () {
-    var choose_list = {};
-    choose_list['goods_id'] = goods_id;
-    choose_list['group_draw_id'] = group_draw_id;
-    choose_list['group_id'] = group_id;
-    choose_list['user_id'] = util.getCache("user_id");
-    choose_list['product_id'] = group_info.group_draw.product_id;
-    choose_list['goods_number'] = 1;
+    let goodsList = [{
+      goodsId: goods_id,
+      prdRealPrice: this.data.group_info.groupDraw.payMoney,
+      goodsPrice: this.data.group_info.goods.shopPricee,
+      goodsNum: 1,
+      prdId: this.data.group_info.groupDraw.productId,
+      productId: this.data.group_info.groupDraw.productId
+    }]
+    console.log(goodsList)
     util.navigateTo({
-      url: "/pages/goodsCheckout/goodsCheckout?order_type=group_draw&choose_list=" + JSON.stringify(choose_list),
+      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&groupid=" + Number(group_id) + "&goodsList=" + JSON.stringify(goodsList)
     })
   },
   // 去开团
   to_open: function () {
-    var choose_list = {};
-    choose_list['goods_id'] = goods_id;
-    choose_list['group_draw_id'] = group_draw_id;
-    choose_list['user_id'] = util.getCache("user_id");
-    choose_list['product_id'] = group_info.group_draw.product_id;
-    choose_list['goods_number'] = 1;
+    let goodsList = [{
+      goodsId: goods_id,
+      prdRealPrice: this.data.group_info.groupDraw.payMoney,
+      goodsPrice: this.data.group_info.goods.shopPricee,
+      goodsNum: 1,
+      prdId: this.data.group_info.groupDraw.productId,
+      productId: this.data.group_info.groupDraw.productId
+    }]
+    console.log(goodsList)
     util.navigateTo({
-      url: "/pages/goodsCheckout/goodsCheckout?order_type=group_draw&choose_list=" + JSON.stringify(choose_list),
+      url: "/pages/checkout/checkout?activityType=8&activityId=" + Number(group_draw_id) + "&goodsList=" + JSON.stringify(goodsList)
     })
   },
+  // 关闭分享弹窗
   close_this: function () {
-    this.data.is_show_modal = 0;
     this.setData({
       is_show_modal: 0
     })
@@ -167,16 +163,16 @@ global.wxPage({
   // 倒计时
   countdown: function (that) {
     that.setData({
-      clock: that.dateformat(total_micro_second)
+      clock: that.dateformat(that.data.total_micro_second)
     });
-    if (total_micro_second <= 0) {
+    if (that.data.total_micro_second <= 0) {
       that.setData({
         clock: "已经截止"
       });
       return;
     }
     set_time_out = setTimeout(function () {
-      total_micro_second -= 1;
+      that.data.total_micro_second -= 1;
       that.countdown(that);
     }
       , 1000)
@@ -215,12 +211,11 @@ global.wxPage({
         var user_name = e.detail.userInfo.nickName;
         util.setCache("nickName", user_name);
         util.setCache("avatarUrl", user_avatar);
-        util.api('/api/wxapp/account/updateUser', function (res) {
-        }, {
-
-            username: user_name,
-            user_avatar: user_avatar
-          });
+        // util.api('/api/wxapp/account/updateUser', function (res) {
+        // }, {
+        //     username: user_name,
+        //     user_avatar: user_avatar
+        //   });
       } else {
         wx.getUserInfo({
           success: res => {
@@ -228,12 +223,11 @@ global.wxPage({
             var user_name = e.detail.userInfo.nickName;
             util.setCache("nickName", user_name);
             util.setCache("avatarUrl", user_avatar);
-            util.api('/api/wxapp/account/updateUser', function (res) {
-            }, {
-
-                username: user_name,
-                user_avatar: user_avatar
-              });
+            // util.api('/api/wxapp/account/updateUser', function (res) {
+            // }, {
+            //     username: user_name,
+            //     user_avatar: user_avatar
+            //   });
           }
         })
       }
@@ -292,23 +286,29 @@ global.wxPage({
   onReachBottom: function () {
 
   },
+  // 查看订单详情
   to_orderinfo: function () {
-    if (group_info.group_draw.status == 2) {
+    if (this.data.group_info.groupDraw.status == 2) {
       util.reLaunch({
         url: '/pages/index/index',
       })
     } else {
       util.navigateTo({
-        url: '/pages/orderinfo/orderinfo?order_sn=' + order_sn,
+        url: '/pages/orderinfo/orderinfo?orderSn=' + this.data.order_sn,
       })
     }
   },
+  // 退款详情
   to_orderinfos: function () {
     util.navigateTo({
-      url: '/pages/orderinfo/orderinfo?order_sn=' + order_sn,
+      url: '/pages/orderinfo/orderinfo?orderSn=' + this.data.order_sn,
     })
   },
-  // 去规则页
+  // 查看优惠券列表
+  to_coupon_list: function () {
+    util.jumpLink('pages/coupon/coupon');
+  },
+  // 查看活动规则
   to_rule: function () {
     util.jumpToWeb('/wxapp/pinlottery/help');
   },
@@ -317,16 +317,11 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     var that = this;
-    util.api("/api/wxapp/share/record", function (d) {
-
-    }, { activity_id: group_draw_id, activity_type: 8 });
     return {
-      title: "快来参与" + group_info.group_draw.pay_money + "元拼团大抽奖吧",
-      imageUrl: imageUrl + share_img,
+      title: "快来参与" + that.data.group_info.group_draw.pay_money + "元拼团大抽奖吧",
+      // imageUrl: that.data.imageUrl + that.data.share_img,
       path: '/pages/pinlotteryinfo/pinlotteryinfo?group_draw_id=' + group_draw_id + "&goods_id=" + goods_id + "&group_id=" + group_id + '&invite_id=' + util.getCache('user_id'),
     }
   },
-  to_coupon_list: function () {
-    util.jumpLink('pages/couponlist/couponlist');
-  }
+  
 })

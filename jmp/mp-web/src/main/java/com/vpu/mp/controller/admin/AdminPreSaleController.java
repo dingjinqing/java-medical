@@ -5,13 +5,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
 
@@ -131,11 +129,6 @@ public class AdminPreSaleController extends AdminBaseController {
      */
     @PostMapping("/share/{id}")
     public JsonResult sharePreSale(@PathVariable Integer id) {
-        String pagePath = shop().preSale.sharePreSale(id);
-        String code = shop().qrCode.getMpQrCode(QrCodeTypeEnum.DOWN_PAYMENT_INFO, pagePath);
-        ShareQrCodeVo vo = new ShareQrCodeVo();
-        vo.setImageUrl(code);
-        vo.setPagePath(pagePath);
-        return success(vo);
+        return success(shop().preSale.getMpQrCode(id));
     }
 }
