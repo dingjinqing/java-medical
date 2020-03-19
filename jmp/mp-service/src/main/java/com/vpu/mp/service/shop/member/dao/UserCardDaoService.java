@@ -542,10 +542,7 @@ public class UserCardDaoService extends ShopBaseService{
                     .or(MEMBER_CARD.ACTIVATION.eq(MCARD_ACT_NO))
                     .or(MEMBER_CARD.ACTIVATION_CFG.isNull())
             ).fetchAnyInto(ValidUserCardBean.class);
-        
-        
-        
-        
+
         if(card != null) {
         	// 处理卡的有效时间
             dealWithValidUserCardEffectimeAndBgImg(card);
@@ -553,7 +550,7 @@ public class UserCardDaoService extends ShopBaseService{
             dealWithValidUserCardFreeship(card);
             return new OrderMemberVo().init(card);
         }
-        return null;
+        return null; 
     }
 
     private void dealWithValidUserCardFreeship(ValidUserCardBean card) {

@@ -74,7 +74,7 @@ public class CardFreeShipService extends ShopBaseService{
 			remainNum -= hasFree;
 			String remainStr = Util.translateMessage(lang, RemarkMessage.FREESHIP_NUM, REMARK_I18N, remainNum);
 			desc = freeShipDescs.get(card.getFreeLimit())+remainStr;
-			logger().info(desc);
+			logger().info(desc); 
 		}
 		
 		return CardFreeship.builder()

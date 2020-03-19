@@ -1028,18 +1028,19 @@ public class OrderInfoService extends ShopBaseService {
         
         if(cardFreeShipInterval == null) {
         	logger().info("cardFreeShipInterval为null");
-        	return 0;
+        	return 0; 
         }
-        return db().
-            selectCount().
-            from(TABLE).
-            where(TABLE.USER_ID.eq(userId).
-                and(TABLE.IS_FREESHIP_CARD.eq(OrderConstant.YES)).
-                and(TABLE.MEMBER_CARD_ID.eq(cardId)).
-                and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
-                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
-                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
-            execute();
+        int result = db().
+	            selectCount().
+	            from(TABLE).
+	            where(TABLE.USER_ID.eq(userId).
+	                and(TABLE.IS_FREESHIP_CARD.eq(OrderConstant.YES)).
+	                and(TABLE.MEMBER_CARD_ID.eq(cardId)).
+	                and(TABLE.ORDER_STATUS.gt(OrderConstant.ORDER_CLOSED)).
+	                and(TABLE.CREATE_TIME.ge(cardFreeShipInterval[0])).
+	                and(TABLE.CREATE_TIME.le(cardFreeShipInterval[1]))).
+	            fetchOne(0,int.class);
+        return  result;
     }
 
     /**
