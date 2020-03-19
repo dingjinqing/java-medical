@@ -479,7 +479,7 @@ public class JsonResultMessage {
 	public static final String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
 	public static final String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
 	public static final String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE = "member.score.not.be.negative";
-
+	public static final String MSG_MEMBER_SCORE_EXPIRED = "member.score.expired";
 	/**
 	 * 会员余额
 	 */
