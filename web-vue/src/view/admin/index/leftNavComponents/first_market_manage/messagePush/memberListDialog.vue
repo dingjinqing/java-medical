@@ -26,10 +26,10 @@
           </el-form-item>
           <el-form-item
             :label="labels.label2"
-            prop="userName"
+            prop="username"
           >
             <el-input
-              v-model="pageParams.userName"
+              v-model="pageParams.username"
               size="small"
               style="width:150px"
             ></el-input>
@@ -75,7 +75,7 @@
           </el-table-column>
           <el-table-column
             label="昵称"
-            prop="userName"
+            prop="username"
           >
           </el-table-column>
           <el-table-column
@@ -139,7 +139,7 @@ export default {
         'pageRows': null,
         'mobile': null,
         'userId': null,
-        'userName': null
+        'username': null
       },
       /**
        * 翻页的时候将questions的数据在allSelecteds判断是否存在,存在就设置为选中
