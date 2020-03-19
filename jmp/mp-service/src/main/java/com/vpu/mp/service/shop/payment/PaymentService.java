@@ -34,6 +34,7 @@ import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -91,6 +92,7 @@ public class PaymentService extends ShopBaseService {
     public ServiceOrderService serviceOrderService;
 
     @Autowired
+    @Lazy
     private StoreOrderService storeOrder;
 
     @Autowired

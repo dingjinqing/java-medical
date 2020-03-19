@@ -2,76 +2,86 @@
   <div class="actDetails">
     <!-- 筛选条件部分 -->
     <div class="mainContent">
-      <div
-        style="display: flex"
-        class="item"
-      >
-        <span>{{$t('payReward.getTime')}}</span>
-        <div :style="{'display': 'flex'}">
-          <el-date-picker
-            v-model="params.receiveTimeBegin"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            size="small"
-            :placeholder="$t('payReward.selectStartTime')"
-            style="width:150px"
-          >
-          </el-date-picker>
-          <span class="to">{{$t('payReward.to')}}</span>
-          <el-date-picker
-            v-model="params.receiveTimeEnd"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            size="small"
-            :placeholder="$t('payReward.selectEndTime')"
-            style="width:150px"
-          >
-          </el-date-picker>
-        </div>
-      </div>
-      <div>
-        <span>{{$t('payReward.mobilePhone')}}</span>
-        <el-input
-          v-model="params.mobile"
-          class="inputBox"
-          size="small"
-          :placeholder="$t('payReward.mobilePlaceholder')"
-        ></el-input>
-      </div>
-      <div>
-        <span>{{$t('payReward.nickName')}}</span>
-        <el-input
-          v-model="params.userName"
-          class="inputBox"
-          size="small"
-          :placeholder="$t('payReward.inputNickName')"
-        ></el-input>
-      </div>
-      <div>
-        <span>{{$t('payReward.activityReward')}}</span>
-        <el-select
-          v-model="params.awardType"
-          :placeholder="$t('payReward.pleaceSelect')"
-          size="small"
-          class="inputBox"
-          clearable
+      <section style="display:flex">
+        <div
+          class="item"
+          style="display: flex"
         >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+          <span>{{$t('payReward.getTime')+"："}}</span>
+          <div style="display: flex">
+            <el-date-picker
+              v-model="params.receiveTimeBegin"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              size="small"
+              :placeholder="$t('payReward.selectStartTime')"
+              style="width:150px"
+            >
+            </el-date-picker>
+            <span class="to">{{$t('payReward.to')}}</span>
+            <el-date-picker
+              v-model="params.receiveTimeEnd"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              size="small"
+              :placeholder="$t('payReward.selectEndTime')"
+              style="width:150px"
+            >
+            </el-date-picker>
+          </div>
+        </div>
+
+        <div style="margin:0 50px 0 40px">
+          <span>{{$t('payReward.mobilePhone')+"："}}</span>
+          <el-input
+            v-model="params.mobile"
+            class="inputBox"
+            size="small"
+            :placeholder="$t('payReward.mobilePlaceholder')"
+          ></el-input>
+        </div>
+
+        <div>
+          <span>{{$t('payReward.nickName')+"："}}</span>
+          <el-input
+            v-model="params.userName"
+            class="inputBox"
+            size="small"
+            :placeholder="$t('payReward.inputNickName')"
+          ></el-input>
+        </div>
+
+      </section>
+
+      <section style="margin-top:20px;display: flex">
+
+        <div style="margin-right:15px">
+          <span>{{$t('payReward.activityReward')+"："}}</span>
+          <el-select
+            v-model="params.awardType"
+            :placeholder="$t('payReward.pleaceSelect')"
+            size="small"
+            class="inputBox"
+            clearable
           >
-          </el-option>
-        </el-select>
-      </div>
-      <div class="item">
-        <el-button
-          size="small"
-          type="primary"
-          @click="handleSearch"
-        >{{$t('payReward.query')}}</el-button>
-      </div>
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div class="item">
+          <el-button
+            size="small"
+            type="primary"
+            @click="handleSearch"
+          >{{$t('payReward.query')}}</el-button>
+        </div>
+      </section>
     </div>
 
     <!-- tab表格内容部分 -->
@@ -240,11 +250,10 @@ export default {
   .mainContent {
     background: #fff;
     padding: 25px 30px;
-    display: flex;
     .item {
-      margin-right: 30px;
+      margin-right: 20px;
       span {
-        margin-right: 8px;
+        margin-right: 10px;
       }
     }
     :nth-of-type(1) {

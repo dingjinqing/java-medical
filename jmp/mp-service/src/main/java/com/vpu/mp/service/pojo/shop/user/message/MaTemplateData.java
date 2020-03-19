@@ -10,5 +10,5 @@ public class MaTemplateData {
 	/**参考SubcribeTemplateCategory*/
     private String config;
 
-    private String[][] data;
+    private MaSubscribeData data;
 }

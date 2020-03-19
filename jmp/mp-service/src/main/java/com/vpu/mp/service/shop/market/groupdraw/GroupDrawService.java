@@ -39,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.DrawUser;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawBotton;
@@ -1185,9 +1186,11 @@ public class GroupDrawService extends ShopBaseService {
 		String[][] mpData = new String[][] { { first, "#173177" }, { goodsInfo.getGoodsName(), "#173177" },
 				{ grouper.getUsername(), "#173177" }, { String.valueOf(groupDraw.getLimitAmount()), "#173177" },
 				{ "", "#173177" } };
+				
+		MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
-						MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(maData).build())
+						MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(mpData).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList)
 				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();

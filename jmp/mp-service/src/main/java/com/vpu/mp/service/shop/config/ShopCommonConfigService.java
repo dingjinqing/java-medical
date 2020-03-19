@@ -95,11 +95,12 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	final public static String K_DEL_MARKET = "del_market";
 
     /**
-	 * 客服入口开关
+	 * 商品详情页客服入口开关
 	 */
 	final public static String K_CUSTOM_SERVICE = "custom_service";
+
     /**
-     *
+     * 售后中心客服入口开关
      */
     final public static String K_RETURN_SERVICE = "return_service";
 

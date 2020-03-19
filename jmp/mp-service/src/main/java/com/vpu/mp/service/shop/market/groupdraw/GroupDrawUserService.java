@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.coupon.CouponMpService;
@@ -328,9 +329,10 @@ public class GroupDrawUserService extends ShopBaseService {
 		String[][] data = new String[][] { { marketName }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { msg } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(userId);
+		MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
-						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
+						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(buildData).build())
 				.page(page).shopId(getShopId()).userIdList(arrayList)
 				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),

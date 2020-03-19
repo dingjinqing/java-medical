@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.config.message.MessageConfigService;
@@ -77,8 +78,11 @@ public class OrderOperateSendMessage extends ShopBaseService {
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SEND)) {
             mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
         }
+        //TODO MaSubscribeData中加上SubscribeMessageConfig.order_deliver_321的相关信息
+        String[][] maData2=null;
+        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
-            .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(maData).build())
+            .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(buildData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
@@ -109,15 +113,17 @@ public class OrderOperateSendMessage extends ShopBaseService {
         if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
             //TODO 成功(积分兑换特殊处理)
             //小程序数据
-            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
+            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" } };
+			String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "卖家已同意退款,将原路退回到你的账户" } };
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
                 mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
             }
             //参数
+            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).build();
             param = RabbitMessageParam.builder()
-                .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
+                .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(buildData).build())
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
                 .page(page)
                 .shopId(getShopId())
@@ -129,15 +135,17 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //拒绝申请/退款原因
             String refuseReason = returnOrder.getApplyNotPassReason() != null ? returnOrder.getApplyNotPassReason() : returnOrder.getRefundRefuseReason();
             //小程序数据
-            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { refuseReason }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
+            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { refuseReason }};
+            String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { refuseReason } };
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.FAIL_RETURN_MONEY)) {
                 mpData = new String[][] { { "您的退款审核被拒绝" }, { returnOrder.getOrderSn() }, { applyTime }, { money }, { refuseReason }, { "具体信息请查看详情" }};
             }
+            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).build();
             //参数：
             param = RabbitMessageParam.builder()
-                .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(maData).build())
+                .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(buildData).build())
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND_FAIL).data(mpData).build())
                 .page(page)
                 .shopId(getShopId())

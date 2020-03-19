@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.user.message.maConfig;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -134,6 +135,26 @@ public enum SubscribeMessageConfig {
 			SubscribeMessageConfig subscribeMessageConfig = subscribeMessageConfigs[i];
 			if (subscribeMessageConfig.getTempleName().equals(templeName)) {
 				return subscribeMessageConfig.getTid();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 类目下是否有匹配的templeName
+	 * @param getcategoryList
+	 * @param templeName
+	 * @return
+	 */
+	public static SubscribeMessageConfig getIsExeit(List<Integer> getcategoryList, String templeName) {
+		SubscribeMessageConfig[] subscribeMessageConfigs = SubscribeMessageConfig.values();
+		for (SubscribeMessageConfig subscribeMessageConfig : subscribeMessageConfigs) {
+			if (subscribeMessageConfig.getTempleName().equals(templeName)) {
+				for (Integer id : getcategoryList) {
+					if(subscribeMessageConfig.getId().equals(id)) {
+						return subscribeMessageConfig;
+					}
+				}
 			}
 		}
 		return null;

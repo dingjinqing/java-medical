@@ -1,12 +1,12 @@
 let util = require('../../utils/util.js');
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
+    imageUrl: app.globalData.imageUrl,
     canBuyGoodsList: null,
     invalidGoodsList: null,
     totalPrice: 0,

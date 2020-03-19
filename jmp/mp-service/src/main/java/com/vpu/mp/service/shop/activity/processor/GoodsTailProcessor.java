@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.TailProcessorDao;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
@@ -47,6 +48,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     private Calculate calculate;
     @Autowired
     MpDistributionGoodsService distributionGoods;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /*****处理器优先级*****/
     @Override
@@ -123,6 +126,11 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         PledgeBo pledgeList = tailProcessorDao.getPledgeList();
         goodsDetailMpBo.setPledgeSwitch(Integer.parseInt(pledgeList.getPledgeSwitch()));
         goodsDetailMpBo.setPledgeList(pledgeList.getPledgeList());
+
+        //销量展示开关
+        goodsDetailMpBo.setShowSalesNumber(shopCommonConfigService.getSalesNumber());
+        //客服按钮展示开关
+        goodsDetailMpBo.setCustomService(shopCommonConfigService.getCustomService());
 
         // 商品信息在活动创建后又进行了修改，导致两者的规格交集为空
         if (goodsDetailMpBo.getProducts().size() != 0) {

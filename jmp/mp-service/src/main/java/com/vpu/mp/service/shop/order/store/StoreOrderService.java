@@ -42,6 +42,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
@@ -118,6 +119,7 @@ public class StoreOrderService extends ShopBaseService {
      * The Payment service.
      */
     @Autowired
+    @Lazy
     public PaymentService paymentService;
 
     /**

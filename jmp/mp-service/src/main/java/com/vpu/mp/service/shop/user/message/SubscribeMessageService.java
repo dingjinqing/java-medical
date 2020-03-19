@@ -1,10 +1,24 @@
 package com.vpu.mp.service.shop.user.message;
 
+import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.RegexUtil;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
@@ -17,17 +31,9 @@ import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult.Wx
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult.WxOpenSubscribeTemplate;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubscribeAddTemplateResult;
+
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 
 /**
  * 小程序订阅消息
@@ -97,6 +103,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			for (Integer ids : getcategoryList) {
 				if (ids.equals(haveId)) {
 					id = haveId;
+					return id;
 				}
 			}
 		}
@@ -135,15 +142,14 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public Boolean sendMessage(Integer userId,String templateName,String[][] data,
+	public Boolean sendMessage(Integer userId,String templateName,MaSubscribeData data,
 			String page) throws WxErrorException {
 		UserRecord user = userService.getUserByUserId(userId);
 		if (null == user) {
 			logger().info("userId：" + userId + " 在店铺：" + getShopId() + "不存在");
 			return false;
 		}
-		
-		
+		logger().info("开始获取类目id");
 		// 类目ID
 		Integer secondId = getcategoryId();
 		if (secondId==0) {
@@ -152,6 +158,8 @@ public class SubscribeMessageService extends ShopBaseService {
 			// TODO发送到公众号
 			return false;
 		}
+		logger().info("获取的类目id：{}",secondId);
+		logger().info("获取当前帐号下的个人模板列表");
 		// 获取当前帐号下的个人模板列表
 		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
 		if (!templateList.isSuccess()) {
@@ -161,17 +169,29 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		
 		SubscribeMessageConfig config = SubscribeMessageConfig.getByTempleName(secondId, templateName);
+		if(config==null) {
+			logger().info("类目：{};下没有模板：{}",secondId,templateName);
+			config = SubscribeMessageConfig.getIsExeit(getcategoryList(), templateName);
+			if(config==null) {
+				logger().info("小程序：{}；的所有类目下没有模板：{}",getMaAppId(),templateName);
+				return false;
+			}
+		}
 		// 发送用的TemplateId
 		SubscribeMessageRecord templateIdRecord = getCommonTemplateId(user, String.valueOf(config.getTid()));
 		if (StringUtils.isEmpty(templateIdRecord)) {
 			return false;
 		}
 		String templateId = templateIdRecord.getTemplateId();
-		
 		// 小程序中是否配置了这个模板
 		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
+		logger().info("对应消息的模板templateId：{}",templateId);
 		//拼装报文
-		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid());
+		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid(),secondId);
+		if(postData==null) {
+			return false;
+		}
+		logger().info("开始发送：{}",postData.toJson());
 		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
 		logger().info("发送结果" + success);
@@ -198,13 +218,19 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 */
 	
-	private WxMaSubscribeMessage assembleData(String[][] data,SubscribeMessageConfig config,String page,String templateId,String touser) {
+	private WxMaSubscribeMessage assembleData(MaSubscribeData data,SubscribeMessageConfig config,String page,String templateId,String touser,Integer secondId) {
 		WxMaSubscribeMessage postData=new WxMaSubscribeMessage();
 		String content = config.getContent();
 		List<String> names = RegexUtil.getSubStrList("{{", ".", content);
 		List<WxMaSubscribeMessageData> wxDatalist = new ArrayList<WxMaSubscribeMessageData>();
-		for (int i = 0, len = data.length; i < len; i++) {
-			String[] values = data[i];
+		logger().info("传入的data：{}",data.toString());
+		String[][] stringData = getSubscribeData(data, secondId);
+		if(stringData==null) {
+			logger().info("未解析出小程序中塞入需要的值，类目id：{}",secondId);
+			return null;
+		}
+		for (int i = 0, len = stringData.length; i < len; i++) {
+			String[] values = stringData[i];
 			wxDatalist.add(new WxMaSubscribeMessageData(names.get(i), values[0]));
 		}
 		postData.setData(wxDatalist);
@@ -213,6 +239,28 @@ public class SubscribeMessageService extends ShopBaseService {
 		postData.setTouser(touser);
 		return postData;
 		
+	}
+
+	/**
+	 * 根据类目id解析出对应的data数组
+	 * @param data
+	 * @param secondId
+	 * @return
+	 */
+	private String[][] getSubscribeData(MaSubscribeData data, Integer secondId){
+		Class<? extends MaSubscribeData> clazz = data.getClass();
+		String methodName="data"+secondId;
+		String[][] stringData = null;
+		try {
+			PropertyDescriptor pd = new PropertyDescriptor(methodName, clazz);
+			Method method = pd.getReadMethod();
+			Object invoke = method.invoke(data);
+			stringData=(String[][]) invoke;
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
+			return stringData;
+		}
+		return stringData;
 	}
 	
 	/**
@@ -394,8 +442,8 @@ public class SubscribeMessageService extends ShopBaseService {
 			List<WxOpenSubscribeTemplate> data = templateList.getData();
 			Boolean flag = false;
 			for (WxOpenSubscribeTemplate template : data) {
-				logger().info("循环的template："+template);
 				if (template.getPriTmplId().equals(templateId)) {
+					logger().info("循环的template："+template);
 					flag=true;
 				}
 			}

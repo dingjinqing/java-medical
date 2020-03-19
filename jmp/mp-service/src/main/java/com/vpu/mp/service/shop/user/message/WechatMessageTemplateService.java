@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.WxUserInfo;
 import com.vpu.mp.service.saas.shop.MpAuthShopService;
@@ -124,7 +125,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
      */
     public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info) {
     	MaTemplateData maTemplateData = param.getMaTemplateData();
-    	String[][] data = maTemplateData.getData();
+    	MaSubscribeData data = maTemplateData.getData();
     	Boolean sendMessage=Boolean.FALSE;
     	try {
 			sendMessage = subscribeMessageService.sendMessage(info.getUserId(), maTemplateData.getConfig(), data, param.getPage());

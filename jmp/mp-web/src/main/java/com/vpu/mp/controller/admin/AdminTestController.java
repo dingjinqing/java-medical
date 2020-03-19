@@ -19,6 +19,8 @@ import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.summary.portrait.MaPortraitResult;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData.MaSubscribeDataBuilder;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
@@ -125,9 +127,11 @@ public class AdminTestController extends AdminBaseController {
 		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
 		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		Boolean sendMessage=false;
+		MaSubscribeData build = MaSubscribeData.builder().data307(data).build();
+		MaSubscribeData build2 = MaSubscribeData.builder().data307(data2).build();
 		try {
-			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, data, null);
-			 sendMessage = subservice.sendMessage(195,  SubcribeTemplateCategory.INVITE_SUCCESS, data2, null);
+			 sendMessage = subservice.sendMessage(195, SubcribeTemplateCategory.DRAW_RESULT, build, null);
+			 sendMessage = subservice.sendMessage(195,  SubcribeTemplateCategory.INVITE_SUCCESS, build2, null);
 		} catch (WxErrorException e) {
 			
 			e.printStackTrace();
@@ -153,9 +157,10 @@ public class AdminTestController extends AdminBaseController {
 	
 	@RequestMapping(value = "/api/admin/test/sendTestByMq/{id}")
 	public JsonResult testSendByMq(@PathVariable Integer id) {
-		String[][] data = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
+		String[][] data2 = new String[][] { { "金坷垃抽奖" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { "获得一车金坷垃" } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(id);
+		MaSubscribeData data=MaSubscribeData.builder().data307(data2).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
@@ -163,7 +168,7 @@ public class AdminTestController extends AdminBaseController {
 				.userIdList(arrayList)
 				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
-		String[][] data2 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
+		String[][] data3 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		return success();
 		
 	}
@@ -184,9 +189,10 @@ public class AdminTestController extends AdminBaseController {
 				{ Util.getdate("yyyy-MM-dd HH:mm:ss"), "#173177" }, { "", "#173177" } };
 		ArrayList<Integer> arrayList = new ArrayList<Integer>();
 		arrayList.add(id);
+		MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.maTemplateData(
-						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(maData).build())
+						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(mpData).build())
 				.page(page).shopId(adminAuth.user().getLoginShopId()).userIdList(arrayList)
 				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
@@ -205,6 +211,13 @@ public class AdminTestController extends AdminBaseController {
     @RequestMapping(value = "/api/admin/test/testWxData")
     public JsonResult testWxData() {
         saas.getShopApp(245547).shopTaskService.wechatTaskService.test();
+        return null;
+
+    }
+    
+    @RequestMapping(value = "/api/admin/test/testPin")
+    public JsonResult testGroup() {
+        saas.getShopApp(8984736).groupIntegration.updateState();
         return null;
 
     }
