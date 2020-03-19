@@ -940,6 +940,12 @@ export default {
     },
     paramsAssign () {
       this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {
+        if (!item.goodsProductParams) {
+          item.goodsProductParams = [{
+            productId: item.prdId,
+            prdPrice: Number(item.batchFinalPrice || item.shopPrice)
+          }]
+        }
         let param = {
           goodsId: item.goodsId,
           goodsName: item.goodsName,
