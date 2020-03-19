@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,7 +21,7 @@ public class FirstSpecialGoodsVo {
     private Integer goodsId;
 
     /** 商品信息 */
-    private GoodsView goodsView;
+    private GoodsSmallVo goodsView;
 
     /** 折扣 */
     private BigDecimal discount;

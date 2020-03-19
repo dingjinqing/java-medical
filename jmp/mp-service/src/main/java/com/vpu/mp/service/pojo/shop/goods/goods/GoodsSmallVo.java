@@ -1,8 +1,8 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
-import java.math.BigDecimal;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
 * @author 黄壮壮
@@ -47,5 +47,12 @@ public class GoodsSmallVo {
      * 是否会员专享
      */
     private Byte isCardExclusive;
+
+    /** 单位 */
+    private String unit;
+    /**
+     * 1默认规格，0自定义规格（多规格）
+     */
+    private Byte isDefaultProduct;
 	
 }
