@@ -669,8 +669,11 @@ export default {
   data () {
     // 活动商品校验
     var checkGoods = (rule, value, callback) => {
-      if (!value) {
+      console.log(value)
+      if (!this.param.goodsId) {
         return callback(new Error('请选择活动商品'))
+      } else {
+        callback()
       }
     }
     // 发货时间校验
@@ -752,7 +755,7 @@ export default {
       formRules: {
         presaleType: { required: true },
         presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        goodsId: [{ required: true, validator: checkGoods, trigger: 'change' }],
+        goodsId: { required: true, validator: checkGoods, trigger: 'change' },
         deliverType: { required: true, validator: checkDeliverType, trigger: 'change' },
         discountType: { required: true },
         returnType: { required: true },
