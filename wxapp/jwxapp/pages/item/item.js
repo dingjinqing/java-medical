@@ -383,6 +383,8 @@ global.wxPage({
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second =
       actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
+    console.log(total_micro_second)
+    console.log(actBaseInfo[activityType]['countDownInfo'][actState])
     this.countdown(total_micro_second, actState, activityType)
   },
   // 倒计时
@@ -405,14 +407,13 @@ global.wxPage({
       [
         { actState: 'endTime', second: false },
         () => {
-          let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
+          let actState = Number(Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
             return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'
-          })
+          }))
           this.setData({
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
-            'specParams.activity.actState':Number(actState)
+            'specParams.activity.actState':actState
           })
-          this.setDealtAct(4)
           clearTimeout(this.actBartime)
           this.getCountDown({
             activityType,
@@ -429,14 +430,15 @@ global.wxPage({
       [
         { actState: 'startTime', second: false },
         () => {
-          let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
+          let actState = Number(Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
             return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'
-          })
+          }))
           this.setData({
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
-            'specParams.activity.actState':Number(actState)
+            'specParams.activity.actState':actState
           })
           clearTimeout(this.actBartime)
+          console.log(activityType,actState)
           this.getCountDown({
             activityType,
             actState,
