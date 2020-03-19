@@ -91,6 +91,7 @@ global.wxComponent({
       this.select_specs=null
       let productsInfo = this.data.productsInfo
       if(productsInfo.defaultPrd === true){
+        let actProduct = {}
         let {limitBuyNum,limitMaxNum,activity} = productsInfo
         this.setData({
           checkedProduct: this.data.productsInfo.products[0]
@@ -102,6 +103,7 @@ global.wxComponent({
             limitMaxNum = activity.limitMaxNum
           }
           if([5,10].includes(activity.activityType)){
+            actProduct = activity[actPrdType[activity.activityType]['prdListName']][0]
             limitMaxNum = activity.limitAmount
             limitBuyNum = 1
           }
@@ -116,7 +118,8 @@ global.wxComponent({
           goodsId: this.data.productsInfo.goodsId,
           ...this.data.productsInfo.products[0],
           limitBuyNum,
-          limitMaxNum
+          limitMaxNum,
+          actProduct
         })
       } else {
         this.spec = this.data.productsInfo.products

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.task;
 
 import com.vpu.mp.service.shop.task.goods.FootprintDeleteTaskService;
+import com.vpu.mp.service.shop.task.goods.GoodsPvUpdateTaskService;
 import com.vpu.mp.service.shop.task.market.*;
 import com.vpu.mp.service.shop.task.order.OrderTaskService;
 import com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService;
@@ -59,5 +60,8 @@ public class ShopTaskService {
     public MaMpScheduleTaskService maMpScheduleTaskService;
     @Autowired
     public TableTaskService tableTaskService;
+
+    @Autowired
+    public GoodsPvUpdateTaskService goodsPvUpdateTaskService;
 }
 

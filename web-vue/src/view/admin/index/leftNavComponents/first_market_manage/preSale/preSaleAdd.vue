@@ -909,8 +909,9 @@ export default {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
-        this.param.shareImg = content.shareImg.split('.cn/')[1]
+        // this.param.shareImg = content.shareImg.split('.cn/')[1]
         console.log(this.param.shareImg)
+        this.getImgeUrl(content.shareImg)
 
         this.loadStatus(content)
         // this.loadingGoods(content)
@@ -1031,6 +1032,11 @@ export default {
       if (res != null) {
         this.param.shareImg = res.imgPath
       }
+    },
+    getImgeUrl (data) {
+      console.log(data)
+      var imgUrl = data.split('//').pop().split('/').slice(1).join('/')
+      this.param.shareImg = imgUrl
     }
   },
   watch: {

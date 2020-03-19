@@ -1400,7 +1400,9 @@ public class UserCardService extends ShopBaseService {
 			
 			// 卡的显示金额
 			if(StringUtils.isBlank(userCard.getCardNo())) {
-				userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+				if(userCard.getSendMoney() != null) {
+					userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+				}
 			}
 			
 			// 有效时间

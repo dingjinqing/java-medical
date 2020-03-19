@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Goods extends TableImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 1492278567;
+    private static final long serialVersionUID = -2080875319;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_goods</code>
@@ -95,7 +106,7 @@ public class Goods extends TableImpl<GoodsRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_goods.market_price</code>.
      */
-    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "");
+    public final TableField<GoodsRecord, BigDecimal> MARKET_PRICE = createField("market_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_goods.shop_price</code>.
@@ -281,6 +292,16 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>mini_shop_471752.b2c_goods.is_default_product</code>. 1默认规格，0自定义规格（多规格）
      */
     public final TableField<GoodsRecord, Byte> IS_DEFAULT_PRODUCT = createField("is_default_product", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1默认规格，0自定义规格（多规格）");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.pv</code>. 7天访问量
+     */
+    public final TableField<GoodsRecord, Integer> PV = createField("pv", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "7天访问量");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_goods.comment_num</code>. 评论数
+     */
+    public final TableField<GoodsRecord, Integer> COMMENT_NUM = createField("comment_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "评论数");
 
     /**
      * Create a <code>mini_shop_471752.b2c_goods</code> table reference

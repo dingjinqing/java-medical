@@ -3,8 +3,6 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.CommentGoods;
 import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -191,6 +189,8 @@ public class GoodsCommentService extends ShopBaseService {
         .set(COMMENT_GOODS.DEL_FLAG, NumberUtils.BYTE_ONE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
+      int goodsId = db().select(COMMENT_GOODS.GOODS_ID).from(COMMENT_GOODS).where(COMMENT_GOODS.ID.eq(goodsCommentId.getId())).fetchOneInto(Integer.class);
+      saas.getShopApp(getShopId()).goods.updateGoodsCommentNum(goodsId);
   }
 
   /**
@@ -228,6 +228,8 @@ public class GoodsCommentService extends ShopBaseService {
         .set(COMMENT_GOODS.FLAG, GoodsCommentPageListParam.FLAG_PASS_VALUE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
+      int goodsId = db().select(COMMENT_GOODS.GOODS_ID).from(COMMENT_GOODS).where(COMMENT_GOODS.ID.eq(goodsCommentId.getId())).fetchOneInto(Integer.class);
+      saas.getShopApp(getShopId()).goods.updateGoodsCommentNum(goodsId);
   }
     /**
      * 修改评价审核状态
@@ -239,6 +241,8 @@ public class GoodsCommentService extends ShopBaseService {
         .set(COMMENT_GOODS.FLAG, GoodsCommentPageListParam.FLAG_REFUSE_VALUE)
         .where(COMMENT_GOODS.ID.eq(goodsCommentId.getId()))
         .execute();
+      int goodsId = db().select(COMMENT_GOODS.GOODS_ID).from(COMMENT_GOODS).where(COMMENT_GOODS.ID.eq(goodsCommentId.getId())).fetchOneInto(Integer.class);
+      saas.getShopApp(getShopId()).goods.updateGoodsCommentNum(goodsId);
   }
 
   /**
@@ -349,7 +353,7 @@ public class GoodsCommentService extends ShopBaseService {
           }
 
           //手动添加评价
-          return db().insertInto(
+          db().insertInto(
               COMMENT_GOODS,
               COMMENT_GOODS.USER_ID,
               COMMENT_GOODS.SHOP_ID,
@@ -381,6 +385,8 @@ public class GoodsCommentService extends ShopBaseService {
                   flag,
                   NumberUtils.INTEGER_ZERO.toString())
               .execute();
+          saas.getShopApp(getShopId()).goods.updateGoodsCommentNum(goodsCommentAddComm.getGoodsId());
+          return 1;
       }
       //没有权限
         else {
@@ -917,6 +923,8 @@ public class GoodsCommentService extends ShopBaseService {
             }
         }
     }
+
+      saas.getShopApp(getShopId()).goods.updateGoodsCommentNum(param.getGoodsId());
   }
 
   /**
@@ -995,5 +1003,25 @@ public class GoodsCommentService extends ShopBaseService {
             .and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
             .and(COMMENT_GOODS.CREATE_TIME.add(nDays).lessThan(Timestamp.valueOf(LocalDateTime.now())));
         return db().select(COMMENT_GOODS.ID).from(COMMENT_GOODS).where(condition).fetchSet(COMMENT_GOODS.ID);
+    }
+
+    /**
+     * 商品评价数
+     * @param goodsId
+     * @return
+     */
+    public int getGoodsCommentNum(int goodsId){
+        Byte commSwitch = commentConfigService.getCommentConfig();
+        Byte commStatusSwitch = commentConfigService.getSwitchConfig();
+        SelectConditionStep<? extends Record> select = db().selectCount().from(COMMENT_GOODS).where(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(COMMENT_GOODS.GOODS_ID.eq(goodsId));
+        if(commSwitch.equals(Byte.valueOf((byte)2))){
+            select.and(COMMENT_GOODS.FLAG.eq(BYTE_ONE));
+        }else {
+            select.and(COMMENT_GOODS.FLAG.notEqual(Byte.valueOf((byte)2)));
+        }
+        if(commStatusSwitch.equals(BYTE_ZERO)){
+            select.and(COMMENT_GOODS.COMM_NOTE.isNotNull()).and(COMMENT_GOODS.COMM_NOTE.notEqual(""));
+        }
+        return select.fetchOptionalInto(Integer.class).orElse(0);
     }
 }

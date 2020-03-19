@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<block wx:if="{{m.status==-1}}">
+<block wx:if="{{m.status==-1 || m.status == 5}}">
   <view class='card' wx:if="{{m.card_id}}" style='margin-bottom:{{m.margin_bot}}rpx'>
     <view class="view" style="background:{{m.bg}} no-repeat;background-size:cover;">
       <view class="card_type" wx:if="{{m.card_type==0}}">{{i18n.$t(localePack,'components.decorate.ordinaryCard')}}</view>
