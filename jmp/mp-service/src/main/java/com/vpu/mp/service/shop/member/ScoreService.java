@@ -91,7 +91,7 @@ public class ScoreService extends ShopBaseService {
 	 * @throws MpException 
 	 */
 	
-
+ 
 	public void updateMemberScore(ScoreParam param, Integer adminUser,Byte tradeType,
 			Byte tradeFlow) throws MpException {
 		logger().info("用户积分更新");
@@ -120,7 +120,7 @@ public class ScoreService extends ShopBaseService {
 															param.getOrderSn()!=null?param.getOrderSn():"");
 						if(!result) {
 							logger().info("消耗积分异常,积分过期");
-							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_ERROR);
+							throw new MpException(JsonResultCode.CODE_MEMBER_SCORE_EXPIRED);
 						}
 					}
 					userScoreRecord.setStatus(USED_SCORE_STATUS);
