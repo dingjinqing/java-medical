@@ -62,6 +62,9 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
     @Autowired
     private CouponService coupon;
 
+    @Autowired
+    private CancelService cancelService;
+
 	@Override
 	public OrderServiceCode getServiceCode() {
 		return OrderServiceCode.CLOSE;
@@ -93,7 +96,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
                 if(BigDecimalUtil.compareTo(order.getDiscount() , null) > 0) {
                     coupon.releaserCoupon(order.getOrderSn());
                 }
-
+                cancelService.updateStockAndStatus(order);
 			});
 		} catch (Exception e) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_CLOSE_FAIL, null);

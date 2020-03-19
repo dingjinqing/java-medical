@@ -71,6 +71,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private  AtomicOperation atomicOperation;
+
     @Autowired
     private OrderCreateMpProcessorFactory orderCreateMpProcessorFactory;
 
@@ -231,7 +232,7 @@ public class CancelService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 	秒杀、砍价、奖品
+     * 更新库存与活动状态
      * @param order
      */
     public void updateStockAndStatus(OrderInfoVo order) throws MpException {
