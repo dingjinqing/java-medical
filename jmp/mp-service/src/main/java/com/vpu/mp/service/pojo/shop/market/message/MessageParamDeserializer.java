@@ -18,6 +18,8 @@ import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * 消息专用反序列化
@@ -25,6 +27,7 @@ import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
  * @date 2019-08-26 16:22
  *
 */
+@Slf4j
 public class MessageParamDeserializer extends JsonDeserializer<RabbitMessageParam> {
 
     @Override
@@ -96,6 +99,7 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
     		String fieldName="data"+secondId;
 			JsonNode findValue = jsonNode.findValue(fieldName);
 			String[][] array = assemblyMaArray(findValue);
+			log.info("解析出的数据：{}",array);
 			try {
 				PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);
 				Method method = pd.getWriteMethod();
@@ -104,12 +108,13 @@ public class MessageParamDeserializer extends JsonDeserializer<RabbitMessagePara
 				e.printStackTrace();
 			}
 		}
+    	log.info("返回的data：{}",data.toString());
     	return data;
     }
     
     private String[][] assemblyMaArray(JsonNode mData){
         int size = mData.size();
-        String[][] data = new String[size][3];
+        String[][] data = new String[size][1];
         for (int i = 0; i < size; i++) {
             JsonNode i_node = mData.get(i);
             for (int j = 0,j_len=i_node.size(); j < j_len ; j++) {
