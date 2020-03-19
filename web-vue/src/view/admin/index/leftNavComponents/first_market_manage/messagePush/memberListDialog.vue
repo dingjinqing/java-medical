@@ -75,7 +75,7 @@
           </el-table-column>
           <el-table-column
             label="昵称"
-            prop="username"
+            prop="userName"
           >
           </el-table-column>
           <el-table-column
@@ -137,9 +137,9 @@ export default {
       pageParams: {
         'currentPage': null,
         'pageRows': null,
-        'mobile': null,
-        'userId': null,
-        'username': null
+        'mobile': '',
+        'userId': '',
+        'username': ''
       },
       /**
        * 翻页的时候将questions的数据在allSelecteds判断是否存在,存在就设置为选中
