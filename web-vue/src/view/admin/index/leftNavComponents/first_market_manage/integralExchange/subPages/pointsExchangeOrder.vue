@@ -225,7 +225,7 @@
       width="30%"
     >
       <div class="export_title ">
-        <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出37条数据,是否确认导出？</span></p>
+        <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出{{screenLength}}条数据,是否确认导出？</span></p>
       </div>
       <div class="export_title ">
         <p>筛选条件：无</p>
@@ -257,7 +257,8 @@
   </div>
 </template>
 <script>
-import { integralOrder } from '@/api/admin/marketManage/integralExchange'
+import { download } from '@/util/excelUtil.js'
+import { integralOrder, orderListExport } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'), // 省市区弹窗
@@ -334,7 +335,8 @@ export default {
         province: '',
         city: '',
         district: ''
-      }
+      },
+      screenLength: 0
     }
   },
   mounted () {
@@ -378,6 +380,9 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.tableData = res.content.dataList
+          if (res.content.dataList.length) {
+            this.screenLength = res.content.dataList.length
+          }
         }
       })
     },
@@ -420,11 +425,35 @@ export default {
     },
     // 点击导出
     handleToExport () {
+      this.initDataList()
       this.dialogVisible = true
     },
     // 导出弹窗确定事件
     handleToClickSure () {
-
+      let startTime = ''
+      let endTime = ''
+      if (this.orderTime) {
+        startTime = this.orderTime + ' 00:00:00'
+        endTime = this.orderTime + ' 23:59:59'
+      }
+      let params = {
+        activityId: this.$route.query.activityId,
+        goodsName: this.goodsNameInput,
+        orderSn: this.goodsNameInput,
+        orderStatus: this.orderStatus,
+        mobile: this.consigneePhone,
+        consignee: this.consigneeName,
+        startTime: startTime,
+        endTime: endTime,
+        provinceCode: this.selectArea.province,
+        cityCode: this.selectArea.city,
+        districtCode: this.selectArea.district
+      }
+      orderListExport(params).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
     },
     // 点击表格订单号
     handleToClickOrderSn (row) {

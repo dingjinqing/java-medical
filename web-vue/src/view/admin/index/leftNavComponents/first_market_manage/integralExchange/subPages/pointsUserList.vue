@@ -30,6 +30,7 @@
                 type="info"
                 size="small"
                 plain
+                @click="handleToExport()"
               >导出表格</el-button>
             </div>
           </div>
@@ -120,7 +121,8 @@
   </div>
 </template>
 <script>
-import { integralUserList } from '@/api/admin/marketManage/integralExchange'
+import { download } from '@/util/excelUtil.js'
+import { integralUserList, userListExport } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
     areaLinkage: () => import('@/components/admin/areaLinkage/areaLinkage.vue'), // 省市区弹窗
@@ -131,32 +133,7 @@ export default {
       userName: '', // 用户昵称
       mobileNum: '', // 手机号
       tableData: [
-        {
-          'userId': 11,
-          'orderSn': 'P201908141509486074',
-          'goodsId': 1,
-          'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/7893594/image/20190812/73XTie739D31ubXW.jpeg',
-          'goodsName': '风扇',
-          'money': 5.00,
-          'score': 10,
-          'username': '十一',
-          'mobile': '13366370708',
-          'number': 1,
-          'createTime': '2019-08-14 15:43:18'
-        },
-        {
-          'userId': 11,
-          'orderSn': 'P201908141509486074',
-          'goodsId': 1,
-          'goodsImg': 'http://mpdevimg2.weipubao.cn/upload/7893594/image/20190812/73XTie739D31ubXW.jpeg',
-          'goodsName': '风扇',
-          'money': 5.00,
-          'score': 10,
-          'username': '十一',
-          'mobile': '13366370708',
-          'number': 1,
-          'createTime': '2019-08-14 15:43:18'
-        }
+
       ], // 列表表格数据
       pageParams: {} // 分页
     }
@@ -167,6 +144,20 @@ export default {
     this.initDataList()
   },
   methods: {
+    // 点击导出
+    handleToExport () {
+      let params = {
+        id: this.$route.query.activityId,
+        username: this.userName,
+        mobile: this.mobileNum
+      }
+      userListExport(params).then(res => {
+        console.log(res)
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      })
+    },
     // 省市区选中回传
     handleAreaData (data) {
       console.log(data)

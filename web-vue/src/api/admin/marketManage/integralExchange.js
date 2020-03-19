@@ -87,3 +87,29 @@ export function integralNewUserList (data) {
     data: data
   })
 }
+// 积分兑换用户列表导出
+export function userListExport (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/user/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 订单列表数据导出
+export function orderListExport (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 积分兑换分享
+export function integralshare (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/share',
+    method: 'post',
+    data: data
+  })
+}

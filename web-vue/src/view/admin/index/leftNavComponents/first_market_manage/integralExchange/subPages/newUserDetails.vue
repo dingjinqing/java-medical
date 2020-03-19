@@ -34,11 +34,6 @@
                 size="small"
                 @click="handleToSearch()"
               >筛选</el-button>
-              <el-button
-                type="info"
-                size="small"
-                plain
-              >导出表格</el-button>
             </div>
           </div>
         </div>

@@ -303,7 +303,7 @@
   </div>
 </template>
 <script>
-import { integralExchangeList, integralDel, integralDiscontinueUse } from '@/api/admin/marketManage/integralExchange'
+import { integralExchangeList, integralDel, integralDiscontinueUse, integralshare } from '@/api/admin/marketManage/integralExchange'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页组件
@@ -329,8 +329,8 @@ export default {
       nowClickOptionFlag: null, // 当前点击的操作项
       row: null, // 当前点击的项
       shareVisible: false, // 分享弹窗flag
-      posterAddressImgUrl: 'http://mpdevimg2.weipubao.cn/upload/4748160/qrcode/16/T16P197_20200313180742.jpg', // 分享图路径
-      posterAddress: 'pages/integralitem/integralitem?integral_goods_id=197&invite_id=' // 分享地址链接
+      posterAddressImgUrl: '', // 分享图路径
+      posterAddress: '' // 分享地址链接
     }
   },
   mounted () {
@@ -401,7 +401,15 @@ export default {
           this.activeName = 'sixth'
           break
         case 3: // 分享
+          integralshare({ activityId: row.id }).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.posterAddressImgUrl = res.content.imageUrl
+              this.posterAddress = res.content.pagePath
+            }
+          })
           this.shareVisible = true
+
           break
         case 4: // 停用
           integralDiscontinueUse({ id: row.id }).then(res => {
