@@ -103,6 +103,7 @@ public class SubscribeMessageService extends ShopBaseService {
 			for (Integer ids : getcategoryList) {
 				if (ids.equals(haveId)) {
 					id = haveId;
+					return id;
 				}
 			}
 		}
@@ -168,6 +169,14 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		
 		SubscribeMessageConfig config = SubscribeMessageConfig.getByTempleName(secondId, templateName);
+		if(config==null) {
+			logger().info("类目：{};下没有模板：{}",secondId,templateName);
+			config = SubscribeMessageConfig.getIsExeit(getcategoryList(), templateName);
+			if(config==null) {
+				logger().info("小程序：{}；的所有类目下没有模板：{}",getMaAppId(),templateName);
+				return false;
+			}
+		}
 		// 发送用的TemplateId
 		SubscribeMessageRecord templateIdRecord = getCommonTemplateId(user, String.valueOf(config.getTid()));
 		if (StringUtils.isEmpty(templateIdRecord)) {
