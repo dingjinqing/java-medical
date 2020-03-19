@@ -1,7 +1,7 @@
 <template>
   <div class="returnGoodsConfigure">
     <!--售后配置-->
-    <section class="configureWrapper">
+    <section :class="returnParam.post_sale_status === true ?'configureWrapper':'configureWrapper-close'">
       <div class="title">
         <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
@@ -493,7 +493,6 @@ export default {
     },
     initData () {
       returnSelect().then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.returnParam = res.content
           this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
@@ -506,6 +505,8 @@ export default {
           this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
           this.platN = this.platClass.length
+          this.returnParam.post_sale_status = Boolean(res.content.post_sale_status)
+          this.returnParam.order_can_exchange = Boolean(res.content.order_can_exchange)
         } else {
           this.$message.error('请求数据失败，请稍后重试！')
         }
@@ -605,6 +606,16 @@ export default {
           }
         }
       }
+    }
+  }
+  .configureWrapper-close {
+    font-size: 13px;
+    .title {
+      height: 40px;
+      line-height: 40px;
+      background: #eef1f6;
+      padding-left: 16px;
+      margin-bottom: 20px;
     }
   }
   .configureWrapper {
