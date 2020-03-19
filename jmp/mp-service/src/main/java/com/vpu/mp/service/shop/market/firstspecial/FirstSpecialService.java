@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.firstspecial;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
@@ -10,7 +11,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,6 +42,9 @@ import static org.jooq.impl.DSL.sum;
  **/
 @Service
 public class FirstSpecialService extends ShopBaseService {
+    @Autowired
+    private DomainConfig domainConfig;
+
     /**
      * 启用状态
      */
@@ -139,7 +144,11 @@ public class FirstSpecialService extends ShopBaseService {
             FIRST_SPECIAL.LIMIT_AMOUNT,FIRST_SPECIAL.LIMIT_FLAG,FIRST_SPECIAL.SHARE_CONFIG).
             from(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(id)).fetchOneInto(FirstSpecialRecord.class);
         FirstSpecialVo res = record.into(FirstSpecialVo.class);
-        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), ShopShareConfig.class));
+        res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
+        if(res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())){
+            res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+            res.getShopShareConfig().setShareImg(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
+        }
         res.setFirstSpecialGoods(getFirstSpecialGoodsVoList(id));
 
         return res;

@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-
-import lombok.Data;
 
 
 /**
@@ -43,5 +42,6 @@ public class FirstSpecialVo {
     private List<FirstSpecialGoodsVo> firstSpecialGoods;
 
     /** 分享设置 */
-    private ShopShareConfig shopShareConfig;
+    private String shareConfig;
+    private PictorialShareConfigVo shopShareConfig;
 }
