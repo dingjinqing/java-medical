@@ -314,7 +314,7 @@
                   ></el-input>
                   <el-button
                     type="text"
-                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
+                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0 && row.isDefaultProduct != 1"
                     @click="getProductInfo(row)"
                   >{{row.goodsProductParams?row.goodsProductParams.length:0}}{{$t('firstSpecialAdd.specialPrice')}}</el-button>
                 </template>
