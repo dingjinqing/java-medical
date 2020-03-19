@@ -55,8 +55,9 @@
                         <view class="goods_item">
                             <view class="goods_img">
                                 <image src="{{item.goodsImg}}" />
-                                <!-- 会员专享标签 -->
-                                <view wx:if="{{ item.cartActivityInfos.length > 0 }}" class="member_tip">
+                                <!-- 会员专享标签 / 已告罄标签 -->
+                                <view class="member_tip" wx:if="{{item.goodsStatus == 4}}">已告罄</view>
+                                <view wx:if="{{ item.goodsStatus != 4 && item.cartActivityInfos.length > 0 }}" class="member_tip">
                                   <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
                                     <view wx:if="{{ item.activityType == null && val.activityType == 23 }}">专享商品</view>
                                   </view>
@@ -123,7 +124,7 @@
               </view>
 
               <!-- 换购商品部分 -->
-              <view wx:for="{{item.cartActivityInfos}}" wx:for-item="val" wx:key="index" wx:if="{{item.activityId == val.activityId && val.activityType == 7}}">
+              <view wx:for="{{item.cartActivityInfos}}" wx:for-item="val" wx:key="index" wx:if="{{item.activityId == val.activityId && val.activityType == 97}}">
                 <view class='change_goods_area'>
                   <view class='each_cga_goods clearfix'>
                     <view class='cga_left'>
@@ -179,8 +180,8 @@
                                   </view>
                               </view>
                               <view class="goods_price">
-                                <view class="price">商品已删除</view>
-                                <!-- <view class="price">商品已下架</view> -->
+                                <view class="price" wx:if="{{item.goodsStatus == 2}}">商品已下架</view>
+                                <view class="price" wx:else>商品已删除</view>
                                 <!-- <view class="price" style="color:{{comColor}}">￥{{item.goodsPrice}}</view>
                                 <view class="num_cfg">
                                   <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}" disabled="true">-</view>
