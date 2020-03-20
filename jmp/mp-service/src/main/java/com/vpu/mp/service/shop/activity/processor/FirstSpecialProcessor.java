@@ -229,20 +229,6 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             }
 
         }
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
-            if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
-                log.info("首单特惠修商品{},改购物车表示",cartGoods.getGoodsName());
-                cartGoods.setActivityId(actInfo.getActivityId());
-                cartGoods.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            }else if(actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_INVALID)){
-                cartGoods.setActivityId(actInfo.getActivityId());
-                cartGoods.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            }else {
-                cartGoods.setActivityType(null);
-                cartGoods.setActivityId(null);
-            }
-        });
     }
 
     /**
