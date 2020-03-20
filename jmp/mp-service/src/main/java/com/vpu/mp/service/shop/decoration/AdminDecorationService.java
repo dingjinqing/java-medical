@@ -531,7 +531,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
             record.setPageId(page.getPageId());
-            return record.update();
+            if(record.update() > 0){
+                return record.getPageId();
+            }
         }else {
             if(record.insert() > 0){
                 page.setPageId(record.getPageId());
@@ -658,6 +660,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
                     }
                     return moduleGroupDraw;
+                case ModuleConstant.M_INTEGRAL:
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    if(!moduleIntegral.getIntegralGoods().isEmpty()){
+                        for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
+                            if(StringUtil.isNotEmpty(g.getGoodsImg())){
+                                g.setGoodsImg(new URL(g.getGoodsImg()).getPath());
+                            }
+                        }
+                    }
+                    return moduleIntegral;
 
                 //TODO 其他保存前需要处理的模块
                 default:

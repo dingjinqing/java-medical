@@ -84,21 +84,21 @@
         </view>
         <view class="pay_list_item" wx:if="{{orderInfo.defaultMemberCard.money > 0}}" bindtap="cardBalanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useCardBalance})}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useCardBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useCardBalance || '0'})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{cardBalanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{cardBalanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" wx:if="{{orderInfo.paymentList.balance}}" bindtap="balanceTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}{{}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useBalance})}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useBalance > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:usePayInfo.useBalance || '0'})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{balanceStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{balanceStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
         </view>
         <view class="pay_list_item" wx:if="{{orderInfo.paymentList.score}}" bindtap="scoreTap">
           <text class="pay_list_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:useScoreMoney})}}</text>
+          <text class="pay_list_content" wx:if="{{usePayInfo.useScore > 0}}">{{i18n.$t(localePack,"pages.checkout.reduce",{price:useScoreMoney || '0'})}}</text>
           <view class="pay_list_right">
             <text class="iconfont {{scoreStatus ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="{{scoreStatus ? 'color:'+comColor+';' : ''}}"></text>
           </view>
@@ -184,39 +184,39 @@
       <view class="checkout_detail">
         <view class="detail_item">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.order")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.orderAmount || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.tolalDiscountAfterPrice > 0}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.discount")+i18n.$t(localePack,"pages.checkout.goods")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.tolalDiscountAfterPrice})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.tolalDiscountAfterPrice || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice > 0}}">
           <text class="detail_title">定金抵扣</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:preSaleInfo.preSalePrdInfo.discountPrice-preSaleInfo.preSalePrdInfo.depositPrice || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.shippingFee}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.freight")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">+{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.shippingFee})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">+{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.shippingFee || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.memberCardReduce}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.memberCardReduce})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.memberCardReduce || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.discount}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.coupon")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.discount})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:orderInfo.discount || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{cardBalanceStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useCardBalance})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useCardBalance || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{balanceStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useBalance})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:usePayInfo.useBalance || '0'})}}</text>
         </view>
         <view class="detail_item" wx:if="{{scoreStatus}}">
           <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.integral")+i18n.$t(localePack,"pages.checkout.deduction")}}</text>
-          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:useScoreMoney})}}</text>
+          <text class="detail_content" style="color:{{comColor}};">-{{i18n.$t(localePack,"pages.checkout.currency",{price:useScoreMoney || '0'})}}</text>
         </view>
       </view>
 

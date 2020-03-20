@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class PreSaleProcessorDao extends PreSaleService {
     public Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsPreSaleListInfo(List<Integer> goodsIds, Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
-        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
+        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
 
         return db().select(PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
@@ -73,18 +74,18 @@ public class PreSaleProcessorDao extends PreSaleService {
      * @param date       日期
      * @return
      */
-    public Map<Integer, List<Record4<Integer, Integer, Integer, BigDecimal>>> getGoodsPreSaleList(List<Integer> productIds, Timestamp date) {
+    public Map<Integer, List<Record5<Integer, Integer, Integer, Integer, BigDecimal>>> getGoodsPreSaleList(List<Integer> productIds, Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
-        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
+        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
 
-        return db().select(PRESALE.ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+        return db().select(PRESALE.ID,PRESALE_PRODUCT.PRODUCT_ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
-            .where(PRESALE_PRODUCT.PRESALE_ID.in(productIds))
+            .where(PRESALE_PRODUCT.PRODUCT_ID.in(productIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(condition)
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.PRESALE_ID)));
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.PRODUCT_ID)));
     }
 
     /**
@@ -202,17 +203,21 @@ public class PreSaleProcessorDao extends PreSaleService {
                     // 有两个阶段 且处于第一阶段结束，第二阶段未开始 活动未开始状态
                     if (presaleRecord.getPreEndTime().compareTo(now) < 0 && presaleRecord.getPreStartTime_2().compareTo(now) > 0) {
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_START);
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动未开始");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "处于第一阶段结束，第二阶段未开始");
                         vo.setStartTime((presaleRecord.getPreStartTime_2().getTime() - now.getTime()) / 1000);
                         vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
                     } else if (presaleRecord.getPreStartTime_2().compareTo(now) < 0 && presaleRecord.getPreEndTime_2().compareTo(now) > 0) {
                         // 第二阶段活动进行中
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动进行中");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第二阶段活动进行中");
                         vo.setEndTime((presaleRecord.getPreEndTime_2().getTime() - now.getTime()) / 1000);
-                    } else {
+                    } else if (presaleRecord.getPreEndTime_2().compareTo(now) < 0) {
                         // 第二阶段都结束了
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
-                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第二阶段都结束了");
+                    } else {
+                        // 第一阶段进行中
+                        vo.setEndTime((presaleRecord.getPreEndTime().getTime() - now.getTime()) / 1000);
+                        logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "第一阶段进行中");
                     }
                 }
             }

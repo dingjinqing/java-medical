@@ -878,6 +878,7 @@ public class OrderInfoService extends ShopBaseService {
         if(param.getMust() != null) {
             param.getMust().setOrderSn(orderSn);
         }
+        order.setCurrency(saas().shop.getCurrency(getShopId()));
         return order;
     }
 
@@ -991,6 +992,11 @@ public class OrderInfoService extends ShopBaseService {
 
     public Byte getOrderIsReturnCoupon(Integer orderId) {
         return db().select(TABLE.IS_REFUND_COUPON).where(TABLE.ORDER_ID.eq(orderId)).fetchOneInto(Byte.class);
+    }
+
+    public void updateStockLock(OrderInfoRecord order, Byte isLock) {
+        order.setIsLock(isLock);
+        order.update();
     }
 
     /******************************************分割线以下与订单模块没有*直接*联系*********************************************/
@@ -1280,7 +1286,8 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public List<OrderExportVo> getExportOrderList(OrderExportQueryParam param) {
 		SelectJoinStep<? extends Record> select = db()
-				.select(ORDER_INFO.asterisk(), ORDER_GOODS.REC_ID, ORDER_GOODS.GOODS_ID, ORDER_GOODS.GOODS_SN,
+				.select(ORDER_INFO.fields()).
+        select(ORDER_GOODS.REC_ID, ORDER_GOODS.GOODS_ID, ORDER_GOODS.GOODS_SN,
 						ORDER_GOODS.PRODUCT_ID, ORDER_GOODS.PRODUCT_SN, ORDER_GOODS.GOODS_NAME,
 						ORDER_GOODS.GOODS_NUMBER, ORDER_GOODS.MARKET_PRICE, ORDER_GOODS.GOODS_PRICE,
 						ORDER_GOODS.DISCOUNTED_GOODS_PRICE, ORDER_GOODS.GOODS_ATTR, ORDER_GOODS.SEND_NUMBER,

@@ -565,11 +565,11 @@ export default {
           this.form.goodsId = data.goods.goodsId
           this.getGoodsInfo(data.goodsId)
           this.form.secKillProduct = data.secKillProduct
-          this.form.secKillProduct.forEach((item, index) => {
-            if (item.prdDesc === '') {
-              item.prdDesc = data.goods.goodsName
-            }
-          })
+          // this.form.secKillProduct.forEach((item, index) => {
+          //   if (item.prdDesc === '') {
+          //     item.prdDesc = data.goods.goodsName
+          //   }
+          // })
           this.form.startTime = data.startTime
           this.form.endTime = data.endTime
           this.form.validity = [data.startTime, data.endTime]

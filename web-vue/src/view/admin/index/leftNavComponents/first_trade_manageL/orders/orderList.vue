@@ -821,6 +821,7 @@ export default {
       moreFilters: false,
       pageParams: {},
       searchParams: {
+        activityId: this.$route.query.id,
         pinStatus: [],
         goodsName: '',
         orderSn: '',
@@ -943,7 +944,7 @@ export default {
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     search () {
-      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus.split(',') : []
+      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0

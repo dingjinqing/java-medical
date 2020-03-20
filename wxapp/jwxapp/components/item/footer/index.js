@@ -33,7 +33,7 @@ let actType = {
   3:{
     footerButtonName:{
       left:{name:'单独购买',event:'checkBuy',},
-      right:{name:'砍价拿',event:'ckeckBargain',}
+      right:{name:'砍价拿',event:'checkBargain',}
     },
     dialogButtonName:{
       left:{
@@ -175,18 +175,15 @@ global.wxComponent({
       type: Object,
       value: null,
       observer(val) {
-      }
-    },
-    dealtAct: {
-      type: Object,
-      value: null,
-      observer(val) {
-        this.initFooter()
+        // this.setButtonStyle()
       }
     },
     products:{
       type:Array,
-      value:null
+      value:null,
+      observer(val){
+        this.initFooter()
+      }
     }
   },
   /**
@@ -213,6 +210,7 @@ global.wxComponent({
       this.setData({
         buttonData : this.getButtonData()
       })
+      this.setButtonStyle()
     },
     checkPosition(position) {
       if (this.data.position === 'footer' && !this.data.isDefaultPrd) {
@@ -233,19 +231,23 @@ global.wxComponent({
       if(this.checkPosition('left')) return
       this.toCheckOut()
     },
-    ckeckBargain(){
+    checkBargain(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.goBargain()
     },
     checkGroup(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
     checkSkill(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
     checkPreSale(){
+      if(!this.checkActStatus()) return
       if(this.checkPosition('right')) return
       this.actCheckOut()
     },
@@ -291,6 +293,7 @@ global.wxComponent({
           buttonData['buttonInfo']['right'].top = `￥${this.data.activity.bargainPrice}`
         }
         if(this.data.activity && this.data.activity.activityType === 10){
+          console.log(this.data.productInfo)
             buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
           if(!this.data.activity.originalBuy){
             delete buttonData['buttonInfo']['left']
@@ -307,7 +310,7 @@ global.wxComponent({
         }
       }
       buttonData.activityType = this.data.activity ? this.data.activity.activityType : null
-      this.checkDealtAct(buttonData)
+      console.log(buttonData)
       return buttonData
     },
     getCartNum() {
@@ -349,12 +352,15 @@ global.wxComponent({
       util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]) })}`, "navigateTo")
       this.triggerEvent('close')
     },
-    actCheckOut(){
+    async actCheckOut(){
       let params = {
         goodsList: JSON.stringify([this.data.productInfo]), 
         activityType: this.data.activity ? this.data.activity.activityType : null, 
         activityId: this.data.activity ? this.data.activity.activityId : null
       }
+      let actFlag = await this.checkActLimit(this.data.activity,this.data.productInfo)
+      console.log(actFlag)
+      if(!actFlag) return;
       if(this.data.activity && this.data.activity.activityType === 10){
         params.preSaleInfo = {...this.data.activity,preSalePrdInfo:this.data.productInfo.actProduct}
         delete params.preSaleInfo.preSalePrdMpVos
@@ -393,112 +399,86 @@ global.wxComponent({
     getMax(arr) {
       return Math.max(...arr)
     },
-    checkDealtAct(buttonData){
-      let {dealtAct,triggerButton} = this.data
-      let {buttonInfo} = buttonData
-      if(this.data.position === 'footer'){
-        if(buttonData.activityType && buttonData.activityType === 1){
-          if(dealtAct && dealtAct.error === 1){
-            buttonInfo['left']['canBuy'] = true
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-          } else if(dealtAct && dealtAct.error === 2){
-            buttonInfo['left']['canBuy'] = false
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['left']['errorMessage'] = dealtAct.errorMessage
-            buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
+    async checkActLimit(activity,productInfo){
+      if(activity && activity.activityType === 5) return(await this.checkSkillLimit(activity,productInfo))
+      return true
+    },
+    checkSkillLimit({activityId:skId},{prdId:productId,goodsNum: goodsNumber,goodsId}){
+      return new Promise(resolve=>{
+        util.api('/api/wxapp/seckill/check',res=>{
+          console.log(res)
+          if(res.error === 0 && res.content && res.content.state === 0){
+            resolve(true)
           } else {
-            buttonInfo['left']['canBuy'] = true
-            buttonInfo['right']['canBuy'] = true
+            let status =  {
+              1:`抱歉，此秒杀活动不存在`,
+              2:`抱歉，此秒杀活动已停用`,
+              3:`抱歉，此秒杀活动未开始`,
+              4:`抱歉，此秒杀活动已结束`,
+              5:`抱歉，商品已抢光`,
+              6:`抱歉，您已超出此活动购买限额。`,
+              7:`抱歉，该秒杀活动为会员专享活动。请检查是否有对应会员卡`,
+              8:`抱歉，当前选中规格库存已抢空`,
+              9:`您好，您有待支付秒杀订单，请支付后再试。`
+            }
+            let tips = res.error === 0 ? status[res.content.state] : res.message
+            if (res.content.state === 6) {
+              if(res.content.diffNumber){
+                tips += ('当前还可购买' + res.content.diffNumber + '个'); 
+                util.showModal('提示',tips)
+              } else {
+                util.showModal('提示',tips,()=>{
+                  util.jumpLink(`/pages/item/item?gid=${goodsId}`,'redirectTo')
+                },false,'','原价购买')
+              }
+            } else  if (res.content.state === 9) {
+              util.showModal('提示',tips,()=>{
+                util.jumpLink(
+                  `/pages/orderinfo/orderinfo?orderSn=${res.content.orderSn}`,
+                  "navigateTo"
+                );
+              },true,'取消','去查看')
+            } else {
+              util.showModal('提示',tips)
+            }
+            resolve(false)
           }
-        } else if (buttonData.activityType && buttonData.activityType === 3){
-          if(dealtAct && dealtAct.error === 1){
-            buttonInfo['left']['canBuy'] = true
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-          } else if(dealtAct && dealtAct.error === 2){
-            buttonInfo['left']['canBuy'] = false
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['left']['errorMessage'] = dealtAct.errorMessage
-            buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-          } else {
-            buttonInfo['left']['canBuy'] = true
-            buttonInfo['right']['canBuy'] = true
-          }
-        } else if (buttonData.activityType && buttonData.activityType === 5){
-          if(dealtAct && dealtAct.error === 1){
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-          } else if(dealtAct && dealtAct.error === 2){
-            buttonInfo['right']['canBuy'] = false
-            buttonInfo['right']['errorMessage'] = '活动商品库存为0'
-          } else {
-            buttonInfo['right']['canBuy'] = true
-          }
-        } else if (buttonData.activityType && buttonData.activityType === 10) {
-          buttonInfo['right']['canBuy'] = true
-        } else {
-          buttonInfo['left']['canBuy'] = true
-          buttonInfo['right']['canBuy'] = true
+        },{
+          skId,
+          productId,
+          goodsNumber
+        })
+      })
+    },
+    setButtonStyle(){
+      let activity = this.data.activity
+      if(activity && [1,3,4,5,8,10].includes(activity.activityType) && [1,2,3,4,5,6].includes(activity.actState) && (this.data.position === 'footer' || this.data.triggerButton !== 'left')){
+        console.log(this.data.buttonData)
+        if(this.data.buttonData && this.data.buttonData.buttonInfo.right){
+          this.setData({
+            'buttonData.buttonInfo.right.style':'background-color:#666'
+          })
         }
-      } else if(this.data.position === 'spec') {
-        if(buttonData.activityType && buttonData.activityType === 1){
-          if(triggerButton === 'right' || !triggerButton){
-            if(dealtAct && dealtAct.error === 2){
-              buttonInfo['right']['canBuy'] = false
-            } else {
-              buttonInfo['right']['canBuy'] = true
-            }
-          } else if(triggerButton === 'left') {
-            if(dealtAct && dealtAct.error === 2){
-              buttonInfo['right']['canBuy'] = false
-            } else {
-              buttonInfo['right']['canBuy'] = true
-            }
-          }
-        } else if (buttonData.activityType && buttonData.activityType === 3){
-          if(triggerButton === 'right' || !triggerButton){
-            buttonInfo['right']['canBuy'] = true
-          } else if (triggerButton === 'left') {
-            if(dealtAct && dealtAct.error === 2){
-              buttonInfo['left']['canBuy'] = false
-              buttonInfo['right']['canBuy'] = false
-              buttonInfo['left']['errorMessage'] = dealtAct.errorMessage
-              buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-            } else {
-              buttonInfo['left']['canBuy'] = true
-              buttonInfo['right']['canBuy'] = true
-            }
-          }
-        } else if (buttonData.activityType && buttonData.activityType === 5){
-          if(triggerButton === 'right' || !triggerButton){
-            if(dealtAct && dealtAct.error === 1){
-              buttonInfo['right']['canBuy'] = false
-              buttonInfo['right']['errorMessage'] = dealtAct.errorMessage
-            } else if(dealtAct && dealtAct.error === 2){
-              buttonInfo['right']['canBuy'] = false
-              buttonInfo['right']['errorMessage'] = '活动商品库存为0'
-            } else {
-              buttonInfo['right']['canBuy'] = true
-            }
-          }
-        } else if (buttonData.activityType && buttonData.activityType === 10) {
-          buttonInfo['right']['canBuy'] = true
-        } else {
-          if(triggerButton === 'right'){
-            buttonInfo['right']['canBuy'] = true
-          } else if (triggerButton === 'left'){
-            buttonInfo['left']['canBuy'] = true
-          } else {
-            buttonInfo['left']['canBuy'] = true
-            buttonInfo['right']['canBuy'] = true
-          }
-        }
+      } else {
+        this.setData({
+          'buttonData.buttonInfo.right.style':''
+        })
       }
     },
-    notBuyTips(){
-      let {dealtAct} = this.data
-      util.showModal(this.$t("components.decorate.tips"), dealtAct.errorMessage);
+    checkActStatus(){
+      let activity = this.data.activity
+      let goodsId = this.data.productInfo.goodsId
+      if(activity && [1,3,4,5,8,10].includes(activity.activityType) && [1,2,3,4,5,6].includes(activity.actState) && (this.data.position === 'footer' || this.data.triggerButton !== 'left')){
+          let tipStr = '';
+          let ActName =  {1:'拼团',3:'砍价',4:'积分兑换',5:'秒杀',8:'拼团抽奖',10:'预售'};
+          let actStatus = {1:'活动不存在',2:'活动已停用',3:'活动未开始',4:'活动已结束',5:'活动商品已抢光',6:'活动，您已达参与上限'};
+          tipStr = `抱歉，该${ActName[activity.activityType]}${actStatus[activity.actState]}`
+          util.showModal('提示',tipStr,()=>{
+            util.jumpLink(`/pages/item/item?gid=${goodsId}`,'redirectTo')
+          },false,'','原价购买')
+          return false
+      }
+      return true
     },
     // 返回首页
     backHome() {

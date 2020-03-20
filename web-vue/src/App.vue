@@ -30,8 +30,10 @@ export default {
         this.isRouterAlive = true
       })
     },
-    changeIsFillcontain () {
-      this.isFillcontain = false
+    changeIsFillcontain (flag) {
+      if (flag) {
+        this.isFillcontain = false
+      }
     }
   }
 }

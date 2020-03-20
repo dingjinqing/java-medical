@@ -133,6 +133,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -162,6 +163,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -191,28 +193,39 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
           </div>
-          <div class="brand_title">
-            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
-            <div
-              class="choiseDivClass"
-              @click="handleClickChoiseGood()"
-            >
-              <img :src="choiseGoodImgUrl">
-              {{$t('membershipIntroduction.choiseGoods')}}
+          <div>
+            <div  class="brand_title">
+              <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
+              <div
+                class="choiseDivClass"
+                @click="handleClickChoiseGood()"
+              >
+                <img :src="choiseGoodImgUrl">
+                {{$t('membershipIntroduction.choiseGoods')}}
+              </div>
+            </div>
+            <div class="goods_list">
+
+                <div class="goods" v-for="(item,index) in chooseGoodsDatas"
+                  :key="index">
+                    <span class="name">{{item.goodsName}}</span>
+                    <span class="el-icon-circle-close my-close" @click="deleteChooseGood(index)"></span>
+                </div>
             </div>
           </div>
         </li>
       </ul>
       <ul class="ulsThree">
         <li>
-          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.phoneNum')}}</el-checkbox>
-          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.integral')}}</el-checkbox>
-          <el-checkbox v-model="balance">{{$t('membershipIntroduction.Balance')}}</el-checkbox>
-          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.membershipCard')}}</el-checkbox>
+          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.alreadyPhone')}}</el-checkbox>
+          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.alreadyScore')}}</el-checkbox>
+          <el-checkbox v-model="balance">{{$t('membershipIntroduction.alreadyBalance')}}</el-checkbox>
+          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.alreadyCard')}}</el-checkbox>
           <el-checkbox v-model="noLanding">{{$t('membershipIntroduction.banLogin')}}</el-checkbox>
           <el-checkbox v-model="importMembership">{{$t('membershipIntroduction.importMembers')}}</el-checkbox>
         </li>
@@ -520,6 +533,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="chooseGoodsBack"
+      :checkedNumMax="3"
       @resultGoodsDatas="chooseGoodsHandle"
       @result="chooseGoodIdssHandle"
     />
@@ -1164,10 +1178,16 @@ export default {
         'unitPriceHight': this.unitPriceRight,
         'buyCountLow': this.frequencyLeft,
         'buyCountHight': this.frequencyRight,
-        'goodsId': this.goodsIdsArr,
+        'goodsId': this.chooseGoodsBack,
         'currentPage': this.currentPage3,
         'pageRows': '20',
-        'orderRule': this.orderRule
+        'orderRule': this.orderRule,
+        'hasMobile': this.checkPhone,
+        'hasScore': this.checkIntegr,
+        'hasBalance': this.balance,
+        'hasCard': this.membershipCard,
+        'hasDelete': this.noLanding,
+        'hasImport': this.importMembership
       }
       console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
@@ -1217,6 +1237,11 @@ export default {
     chooseGoodsHandle (goods) {
       console.log('goods:', goods)
       this.chooseGoodsDatas = goods
+    },
+    // 删除选中商品
+    deleteChooseGood (index) {
+      this.chooseGoodsDatas.splice(index, 1)
+      this.chooseGoodsBack.splice(index, 1)
     },
     // 商品选择id后回调
     chooseGoodIdssHandle (ids) {
@@ -1778,7 +1803,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped >
 .membershioListContent {
   padding: 10px;
   padding-bottom: 5px;
@@ -1874,6 +1899,41 @@ i {
   display: flex;
   justify-content: flex-start;
 }
+
+.goods_list{
+  margin-right: -195px;
+  padding-left: 117px;
+}
+.goods_list .goods{
+    margin-left: 20px;
+    width: 97px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    margin-top: 15px;
+    display: inline-block;
+    float: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    position: relative;
+}
+.goods_list .goods .name{
+  color: #5a8bff;
+  text-align: center;
+}
+.my-close{
+  position: absolute;
+  top: -1px;
+  right: -31px;
+  font-size: 17px;
+}
+
 .nameClass {
   white-space: nowrap;
   margin: 0 5px;

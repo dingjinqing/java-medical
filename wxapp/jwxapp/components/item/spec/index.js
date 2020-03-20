@@ -5,7 +5,10 @@ global.wxComponent({
   properties: {
     productsInfo: {
       type: Object,
-      value: null
+      value: null,
+      observer(val){
+        console.log(val)
+      }
     },
     limitInfo: {
       type: Object,
@@ -52,10 +55,22 @@ global.wxComponent({
         showSpec: true
       })
     },
+    specDialogShowNoTrigger(){
+      this.setData({
+        triggerButton:'',
+      })
+      this.specDialogShow()
+    },
+    setUnselectData(data){
+      this.setData({
+        unselect_spec_names:data.detail.unselect_spec_names
+      })
+    },
     getProductData(data) {
       this.setData({
         product: data.detail
       })
+      console.log(this.data.product)
       this.triggerEvent('product', data.detail)
     },
     getGoodsNum(data) {

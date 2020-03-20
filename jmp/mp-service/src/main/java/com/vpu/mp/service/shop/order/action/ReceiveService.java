@@ -86,7 +86,7 @@ public class ReceiveService extends ShopBaseService implements IorderOperate<Ord
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RECEIVE.code }), new String[] {param.getOrderSn()});
 		//消息推送
         if(param.getIsMp() != OrderConstant.IS_MP_AUTO) {
-            sendMessage.sendReceived(order);
+            sendMessage.sendReceived(orderInfo.getRecord(param.getOrderId()));
         }
 		return null;
 	}

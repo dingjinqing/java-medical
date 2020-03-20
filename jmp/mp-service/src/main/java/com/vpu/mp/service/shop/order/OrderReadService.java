@@ -1,10 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
-import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -21,28 +17,17 @@ import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
-import com.vpu.mp.service.pojo.shop.member.InviteSourceConstant;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
-import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.order.OrderParam;
-import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
+import com.vpu.mp.service.pojo.shop.order.*;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
-import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
-import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
+import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -55,6 +40,7 @@ import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderCenter;
 import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -105,22 +91,11 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_WAIT_PAY;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.NOT_GET;
-import static com.vpu.mp.service.pojo.shop.member.SourceNameEnum.SRC_BACK_STAGE;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
@@ -514,16 +489,21 @@ public class OrderReadService extends ShopBaseService {
 	 * mp端查询订单
 	 * @param param
 	 */
-	public PageResult<OrderListMpVo> getPageList(OrderListParam param) {
+	public OrderCenter getPageList(OrderListParam param) {
 		logger.info("mp订单列表查询"+param.toString());
-		PageResult<OrderListMpVo> result = mpOrderInfo.getPageList(param);
-		if(CollectionUtils.isEmpty(result.dataList)) {
+        OrderCenter result = new OrderCenter();
+        PageResult<OrderListMpVo> orders = mpOrderInfo.getPageList(param);
+        result.setOrders(orders);
+        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+        result.setOrderStatuCount(orderStatusNum);
+        if(CollectionUtils.isEmpty(orders.dataList)) {
+
 		 return result;
 		}
-		List<Integer> ids = result.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
+		List<Integer> ids = orders.dataList.stream().map(OrderListMpVo::getOrderId).collect(Collectors.toList());
 		//商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(ids.toArray(new Integer[ids.size()])).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
-		for(OrderListMpVo order : result.dataList) {
+		for(OrderListMpVo order : orders.dataList) {
 			//订单类型
 			order.setOrderType(Arrays.asList(OrderInfoService.orderTypeToArray(order.getGoodsType())));
 			//奖品订单判断
@@ -607,17 +587,14 @@ public class OrderReadService extends ShopBaseService {
 		// 拼团
 		if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY).toString()) != -1){
 			GroupOrderVo groupOrder = groupBuyList.getByOrder(order.getOrderSn());
-			//未退款
-			if (!groupOrder.getStatus().equals(GroupBuyConstant.STATUS_FAILED)&&!groupOrder.getStatus().equals(STATUS_WAIT_PAY)){
-                Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
-                List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
-                order.setGroupBuyUserInfos(pinUserList);
-                order.setGroupId(groupOrder.getGroupId());
-				GroupOrderVo groupOrderVo =new GroupOrderVo();
-				groupOrderVo.setStatus(groupOrder.getStatus());
-				groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
-                order.setGroupBuyInfo(groupOrderVo);
-            }
+			Integer groupBuyLimitAmout = groupBuyService.getGroupBuyLimitAmout(groupOrder.getActivityId());
+			List<GroupBuyUserInfo> pinUserList = groupBuyList.getGroupUserList(groupOrder.getGroupId());
+			order.setGroupBuyUserInfos(pinUserList);
+			order.setGroupId(groupOrder.getGroupId());
+			GroupOrderVo groupOrderVo =new GroupOrderVo();
+			groupOrderVo.setStatus(groupOrder.getStatus());
+			groupOrderVo.setGroupBuyLimitAmout(groupBuyLimitAmout);
+			order.setGroupBuyInfo(groupOrderVo);
 		}else if(orderType.indexOf(Byte.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW).toString()) != -1) {
 
 		}
@@ -778,7 +755,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @return
 	 */
 	public Map<Byte, Integer> statistic(OrderListParam param) {
-		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), false);
+		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
 	}
 
     /**
@@ -935,49 +912,33 @@ public class OrderReadService extends ShopBaseService {
                 StringBuffer payNames = new StringBuffer();
                 if(order.getIsCod() > 0){
                     //货到付款
-                    if(payNames.capacity() == 0){
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }else{
-                        payNames.append(",");
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }
+                    payNames.append(",");
+                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_COD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getMoneyPaid().compareTo(BigDecimal.ZERO) > 0){
                     //微信支付
-                    if(payNames.capacity() == 0){
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }else{
-                        payNames.append(",");
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }
+                    payNames.append(",");
+                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_WXPAY ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getUseAccount().compareTo(BigDecimal.ZERO) > 0){
                     //余额支付
-                    if(payNames.capacity() == 0){
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }else{
-                        payNames.append(",");
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }
+                    payNames.append(",");
+                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_BALANCE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getScoreDiscount().compareTo(BigDecimal.ZERO) > 0){
                     //积分支付
-                    if(payNames.capacity() == 0){
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }else{
-                        payNames.append(",");
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }
+                    payNames.append(",");
+                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_SCORE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
                 if(order.getMemberCardReduce().compareTo(BigDecimal.ZERO) > 0){
                     //会员卡支付
-                    if(payNames.capacity() == 0){
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }else{
-                        payNames.append(",");
-                        payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                    }
+                    payNames.append(",");
+                    payNames.append(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_PAY_TYPE_MEMBER_CARD ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
                 }
+                if(payNames.length() > 0){
+                    payNames.deleteCharAt(0);
+                }
+                order.setPayNames(payNames.toString());
             }
             if(columns.contains(OrderExportVo.PRD_COST_PRICE)){
                 //成本价
@@ -1041,18 +1002,22 @@ public class OrderReadService extends ShopBaseService {
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
-                if(SRC_BACK_STAGE.getCode().equals(order.getUserSource())){
-                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_ADMIN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(NOT_GET.getCode().equals(order.getUserSource()) && order.getInviteSource() != null && !order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
-                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_UNKNOWN ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
-                }
-                if(order.getUserSource() != null && order.getUserSource() > SRC_BACK_STAGE.getCode()){
-                    order.setUserSourceString(saas.getShopApp(getShopId()).store.getStoreName(order.getUserSource()));
-                }
-                if(order.getInviteSource() != null && order.getInviteSource().equals(InviteSourceConstant.INVITE_SOURCE_CHANNEL)){
-                    String channelName = saas.getShopApp(getShopId()).channelService.selectChannelName(order.getInviteActId());
-                    order.setUserSourceString(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_USER_SOURCE_CHANNEL ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL,channelName));
+                MemberInfoVo memberInfo = user.getUserByUserId(order.getUserId()).into(MemberInfoVo.class);
+                order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+            }
+            if(columns.contains(OrderExportVo.DELIVER_TYPE_NAME)){
+                //配送类型
+                switch (order.getDeliverType()){
+                    case OrderConstant.DELIVER_TYPE_COURIER:
+                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_COURIER ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                        break;
+                    case OrderConstant.DELIVER_TYPE_SELF:
+                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_DELIVER_TYPE_SELF ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                        break;
+                    case OrderConstant.CITY_EXPRESS_SERVICE:
+                        order.setDeliverTypeName(Util.translateMessage(lang, JsonResultMessage.ORDER_EXPORT_CITY_EXPRESS_SERVICE ,OrderExportVo.LANGUAGE_TYPE_EXCEL,OrderExportVo.LANGUAGE_TYPE_EXCEL));
+                        break;
+                    default:
                 }
             }
             if(columns.contains(OrderExportVo.USER_TAG)){

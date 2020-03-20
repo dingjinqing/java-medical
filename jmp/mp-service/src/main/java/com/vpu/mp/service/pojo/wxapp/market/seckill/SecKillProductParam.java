@@ -17,4 +17,8 @@ public class SecKillProductParam {
     /** 秒杀规格ID */
     @NotNull
     private Integer productId;
+
+    /** 数量 */
+    @NotNull
+    private Integer goodsNumber;
 }

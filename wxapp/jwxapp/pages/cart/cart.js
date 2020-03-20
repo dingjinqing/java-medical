@@ -1,12 +1,12 @@
 let util = require('../../utils/util.js');
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
 global.wxPage({
 
   /**
    * 页面的初始数据
    */
   data: {
+    imageUrl: app.globalData.imageUrl,
     canBuyGoodsList: null,
     invalidGoodsList: null,
     totalPrice: 0,
@@ -37,6 +37,11 @@ global.wxPage({
           isAllCheck,
           totalPrice
         })
+
+        // 首单特惠添加商品个数限制
+        if (res.content.noticeStatus == 1) {
+          util.showModal('提示', res.content.notice);
+        }
 
         this.data.canBuyGoodsList.forEach((item, index) => {
           item.isSales = 0
@@ -69,7 +74,7 @@ global.wxPage({
                   }
                 } else if (val.activityType == 7) {
                   val.purchasePrice.purchasePriceRule.forEach((pitem, pindex) => {
-                    item.ruleList += '满' + pitem.fullPrice + '元另加' + pitem.purchasePrice + '元即可换购商品' + ','
+                    item.ruleList += pitem.name + '或'
                   })
                   if (item.ruleList.length > 0) {
                     item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
@@ -197,18 +202,6 @@ global.wxPage({
       });
     }
   },
-
-  // //计算商品价格
-  // getCartPrice(){
-  //   const canBuyList = this.data.canBuyGoodsList.filter(item => { return item.isChecked === 1 })
-  //   let totalPrice = canBuyList.reduce((accumulator, currentValue)=>{
-  //     return accumulator += currentValue.cartPrice * currentValue.cartNumber
-  //   },0)
-  //   let realPrice = totalPrice.toFixed(3)
-  //   this.setData({
-  //     totalPrice: realPrice.substring(0, realPrice.length - 1)
-  //   })
-  // },
 
   //  去结算
   toCheckOut() {

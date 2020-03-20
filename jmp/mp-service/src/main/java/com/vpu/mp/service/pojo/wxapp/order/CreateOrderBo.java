@@ -1,11 +1,9 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
-import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
@@ -17,8 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,8 +31,8 @@ public class CreateOrderBo {
     private UserAddressVo address;
     private PaymentVo payment;
     private InvoiceVo invoice;
-    private OrderMemberVo currencyMember;
-    private OrderCouponVo currencyCupon;
+    private OrderMemberVo currentMember;
+    private OrderCouponVo currentCupon;
     @Builder.Default
     private List<OrderGoodsBo> orderGoodsBo = null;
     private Integer orderId;

@@ -1,6 +1,5 @@
 package com.vpu.mp.service.pojo.shop.market.presale;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -36,8 +35,8 @@ public class PreSaleListVo implements StatusContainer {
     private Integer orderUserQuantity;
     private Byte status;
 
-    @JsonIgnore
     private Timestamp preStartTime2;
-    @JsonIgnore
     private Timestamp preEndTime2;
+
+    private Byte prePayStep;
 }

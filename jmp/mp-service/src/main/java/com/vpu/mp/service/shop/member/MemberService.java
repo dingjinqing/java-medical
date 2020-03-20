@@ -175,7 +175,20 @@ public class MemberService extends ShopBaseService {
 	 * 获取会员列表的基本信息 
 	 */
 	private PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
-		return memberDao.getMemberList(param);
+		PageResult<MemberInfoVo> memberList = memberDao.getMemberList(param);
+		logger().info("积分检查");
+		for(MemberInfoVo vo: memberList.dataList) {
+			// 积分缓存
+			Integer currentScore = vo.getScore();
+			// 实际积分
+			Integer actualScore = score.getTotalAvailableScoreById(vo.getUserId());
+			if(!currentScore.equals(actualScore)) {
+				// 缓存积分失效需要更新
+				vo.setScore(actualScore);
+				score.updateUserScore(vo.getUserId(), actualScore);
+			}
+		}
+		return memberList;
 	}
 
 	/**

@@ -364,7 +364,7 @@ public class StoreOrderService extends ShopBaseService {
                 setScoreDis(userInfo.getScore());
                 setUserId(userInfo.getUserId());
                 // 积分变动数额
-                setScore(scoreValue);
+                setScore(-scoreValue);
                 setOrderSn(orderSn);
                 setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
@@ -403,7 +403,7 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setDelFlag(BYTE_ZERO);
         orderRecord.setCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
         orderRecord.setAliTradeNo(StringUtils.EMPTY);
-        orderRecord.setCurrency("CNY");
+        orderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
         return StoreOrderTran.builder()
             .account(accountParam)
             .cardConsumpData(cardConsumpData)
@@ -527,29 +527,33 @@ public class StoreOrderService extends ShopBaseService {
 //            购物满
             if (scoreType == CONDITION_ZERO) {
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, totalMoney.toString());
-                // 满...金额
-                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
-                // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
-                if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
-                    return;
+                if(record2s != null){
+                    // 满...金额
+                    String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                    // 送...积分
+                    String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
+                    if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                        giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                        return;
+                    }
+                    sendScore = Integer.parseInt(setVal2);
+                    log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
                 }
-                sendScore = Integer.parseInt(setVal2);
-                log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else if (scoreType == CONDITION_ONE) {
 //                购物每满
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
-                // 每满...金额
-                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
-                // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
-                if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
-                    return;
+                if(record2s != null){
+                    // 每满...金额
+                    String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                    // 送...积分
+                    String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
+                    if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                        giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                        return;
+                    }
+                    sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
+                    log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
                 }
-                sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
-                log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else {
                 giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
                 return;

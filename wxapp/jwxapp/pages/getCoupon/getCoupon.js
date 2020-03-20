@@ -14,6 +14,7 @@ var input_vali;
 var goods_ids;
 var total_micro_second;
 var set_time_out;
+var scene;
 global.wxPage({
 
   /**
@@ -32,6 +33,7 @@ global.wxPage({
     clearTimeout(set_time_out);
     var _this = this;
     goods_ids = options.goods_id;
+    scene = options.scene;
 
     if (options.couponSn || options.id) {
       couponSn = options.couponSn
@@ -48,7 +50,7 @@ global.wxPage({
             })
           }, 2000);
         }
-      }, { couponSn, couponId })
+      }, { couponSn, couponId, scene: scene })
     }
   },
 
@@ -203,10 +205,9 @@ global.wxPage({
   },
 
   // 立即使用
-  to_search: function () {
-    util.navigateTo({
-      url: '/pages/searchs/search?coupon_sn=' + coupon_sn
-    })
+  to_search: function (e) {
+    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
   },
 
   // 我的优惠券

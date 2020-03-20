@@ -14,13 +14,19 @@ global.wxComponent({
         console.log(val)
         this.init();
       }
+    },
+    triggerButton: {
+      type: String,
+      value: ''
     }
   },
 
   /**
    * 组件的初始数据
    */
-  data: {},
+  data: {
+    goodsNum:1
+  },
 
   /**
    * 组件的方法列表
@@ -29,7 +35,7 @@ global.wxComponent({
     init() {
       let { limitBuyNum,limitMaxNum,prdNumber } = this.data.limitInfo
       let goodsNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
-      limitMaxNum = limitMaxNum && limitMaxNum > 0 ? limitMaxNum : prdNumber
+      limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
       let canMinus = false;
       let canPlus = goodsNum < limitMaxNum ? true : false
       this.setData({
@@ -44,7 +50,7 @@ global.wxComponent({
         let { prdNumber, limitBuyNum, limitMaxNum } = this.data.limitInfo;
         let goodsNum = d.type === "plus" ? this.data.goodsNum + 1 : this.data.goodsNum - 1
         limitBuyNum = (limitBuyNum && limitBuyNum > 0) ?  limitBuyNum : 1;
-        limitMaxNum = limitMaxNum && limitMaxNum > 0 ? limitMaxNum : prdNumber
+        limitMaxNum = limitMaxNum && limitMaxNum > 0 && prdNumber > limitMaxNum ? limitMaxNum : prdNumber
         console.log(goodsNum,limitMaxNum,limitBuyNum)
         this.setData({
           canMinus: goodsNum <= limitBuyNum ? false : true,

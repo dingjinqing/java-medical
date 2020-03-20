@@ -414,12 +414,12 @@ global.wxPage({
     }
   },
   // 预览图片
-  bindPreviewImage (e) {
+  previewImage (e) {
     let src = e.currentTarget.dataset.src;
     let srcarr = e.currentTarget.dataset.srcarr;
     let arrs = [];
     for (let i in srcarr) {
-      arrs.push(srcarr[i])
+      arrs.push(this.data.imageUrl + srcarr[i])
     }
     if (src) {
       wx.previewImage({

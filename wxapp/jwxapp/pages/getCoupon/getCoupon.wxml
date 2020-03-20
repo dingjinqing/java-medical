@@ -138,16 +138,16 @@
               <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>
             </view>
             <view class="coupon-vw-btn" wx:if="{{act_info.canReceive == 0}}">
-              <button class="coupon-button" style='margin-top:0' bindtap="to_search" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
+              <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
             </view>
             <view class="coupon-vw-btn" wx:if="{{act_info.canReceive == 1}}">
-              <button class="coupon-button" style='margin-top:0' bindtap="fetch_coupon" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.collectImmediately")}}</button>       
+              <button class="coupon-button" bindtap="fetch_coupon" style='color:{{comColor}};border-color:{{comColor}};margin-top:0'>{{i18n.$t(localePack,"pages.coupon.collectImmediately")}}</button>       
             </view> 
           </block>
 
           <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}">
             <view class="coupon-vw-btn">
-              <button class="coupon-button" style='margin-top:0' bindtap="to_search" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
+              <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
             </view> 
           </block>
 

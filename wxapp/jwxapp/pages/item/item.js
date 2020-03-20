@@ -147,6 +147,7 @@ global.wxPage({
    */
   onLoad: function(options) {
     console.log(options, '++++++++++++++++++++++++')
+    if (options.scene) options = this.resetScene(options.scene)
     if (!options.gid) return
     let { gid:goodsId, aid:activityId = null, atp:activityType = null } = options
     this.setData({
@@ -245,7 +246,7 @@ global.wxPage({
               }
             })
             if(activity && activity.activityType === 3 && activity.actState === 6){
-              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'navigateTo')
+              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'redirectTo')
             }
             // 限时降价状态栏
             if (res.content.activity && [6, 98].includes(res.content.activity.activityType)) {
@@ -300,7 +301,8 @@ global.wxPage({
       limitInfo: {
         prdNumber,
         limitBuyNum,
-        limitMaxNum
+        limitMaxNum,
+        activityType:this.data.specParams.activity ? this.data.specParams.activity.activityType : null
       }
     })
   },
@@ -309,6 +311,7 @@ global.wxPage({
     this.setData({
       productInfo: data.detail
     })
+    console.log(this.data.productInfo)
     if(this.data.specParams.activity && this.data.specParams.activity.activityType === 10){
       this.getPreSaleAct()
     }
@@ -324,8 +327,7 @@ global.wxPage({
   // 关闭item页规格弹窗
   bindCloseSpec() {
     this.setData({
-      showSpec: false,
-      triggerButton: ''
+      showSpec: false
     })
   },
   // 获取活动信息
@@ -363,7 +365,9 @@ global.wxPage({
   },
   // 获取actBar价格
   getActBarPrice(products, activity, getPrice) {
-    if (actBaseInfo[activity.activityType].multiSkuAct) {
+    if (getPrice === 'prdLinePrice') {
+      return this.getMax(products.map(item => item.prdRealPrice))
+    } else if (actBaseInfo[activity.activityType].multiSkuAct) {
       return this.getMin(
         activity[[actBaseInfo[activity.activityType]['prdListName']]].map(item => {
           let { [actBaseInfo[activity.activityType]['prdPriceName'][getPrice]]: price } = item
@@ -372,8 +376,6 @@ global.wxPage({
       )
     } else if (getPrice === 'prdRealPrice') {
       return activity[actBaseInfo[activity.activityType][getPrice]]
-    } else if (getPrice === 'prdLinePrice') {
-      return this.getMin(products.map(item => item.prdRealPrice))
     }
   },
   // 获取actBar活动倒计时
@@ -381,6 +383,8 @@ global.wxPage({
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second =
       actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
+    console.log(total_micro_second)
+    console.log(actBaseInfo[activityType]['countDownInfo'][actState])
     this.countdown(total_micro_second, actState, activityType)
   },
   // 倒计时
@@ -398,20 +402,18 @@ global.wxPage({
     const state = new Map([
       [
         { actState: 'endTime', second: true },
-        () => {
-          this.setDealtAct(0)
-        }
+        () => {}
       ],
       [
         { actState: 'endTime', second: false },
         () => {
-          let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
+          let actState = Number(Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
             return actBaseInfo[activityType]['actStatus'][k] === '活动已结束'
-          })
+          }))
           this.setData({
-            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
+            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
+            'specParams.activity.actState':actState
           })
-          this.setDealtAct(4)
           clearTimeout(this.actBartime)
           this.getCountDown({
             activityType,
@@ -423,21 +425,20 @@ global.wxPage({
       ],
       [
         { actState: 'startTime', second: true },
-        () => {
-          this.setDealtAct(3)
-        }
+        () => {}
       ],
       [
         { actState: 'startTime', second: false },
         () => {
-          let actState = Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
+          let actState = Number(Object.keys(actBaseInfo[activityType]['actStatus']).find(k => {
             return actBaseInfo[activityType]['actStatus'][k] === '距结束仅剩'
-          })
+          }))
           this.setData({
-            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState })
+            'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
+            'specParams.activity.actState':actState
           })
-          this.setDealtAct(0)
           clearTimeout(this.actBartime)
+          console.log(activityType,actState)
           this.getCountDown({
             activityType,
             actState,
@@ -489,6 +490,11 @@ global.wxPage({
   },
   // 去拼团
   goGroup(e) {
+    let activity = this.data.specParams.activity
+    if(activity.groupType === 2 && !activity.isNewUser) {
+      util.showModal('提示','抱歉，您不是新用户')
+      return
+    }
     util.jumpLink(
       `pages1/groupbuyinfo/groupbuyinfo?group_id=${e.currentTarget.dataset.groupId}`,
       'navigateTo'
@@ -591,7 +597,7 @@ global.wxPage({
       prdLinePrice: data.defaultPrd
         ? linePrice[0]
         : lineMinPrice === lineMaxPrice
-        ? lineMinPrice
+        ? lineMaxPrice
         : `${lineMinPrice}~${lineMaxPrice}`,
       singleRealPrice: lineMinPrice,
       singleLinePrice: lineMaxPrice
@@ -724,6 +730,7 @@ global.wxPage({
   },
   getPreSaleAct(){
     let preActBarStr = ''
+    console.log(this.data.productInfo)
     if(this.data.specParams.activity.preSaleType !== 1){
       preActBarStr = `付定金立减:￥${this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice}`
     } else {
@@ -751,6 +758,13 @@ global.wxPage({
       'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
         JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
+  },
+  resetScene(scene){
+    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+      let params = item.split('=')
+      defaultData[params[0]] = params[1]
+      return defaultData
+    },{})
   },
   viewPreSaleRule(){
     this.setData({

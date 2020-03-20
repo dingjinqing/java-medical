@@ -695,10 +695,7 @@ export default {
       innerVisible: false, // 内层
       judgeIsEdit: false, // 判断商品价格是否被修改过
       initSortCatParams: {
-        needGoodsNum: true,
-        isOnSale: 1,
-        isSaleOut: false,
-        selectType: 1
+        needGoodsNum: false
       },
       sortId: null,
       templateOptions: [],

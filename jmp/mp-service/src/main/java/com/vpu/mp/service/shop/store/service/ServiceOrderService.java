@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -34,8 +35,10 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
@@ -129,6 +132,12 @@ public class ServiceOrderService extends ShopBaseService {
     public StoreReservation reservation;
 
     /**
+     * 技师管理
+     */
+    @Autowired
+    public ServiceTechnicianService serviceTechnician;
+
+    /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
      */
     public static final Byte ORDER_STATUS_WAIT_PAY = 0;
@@ -180,11 +189,22 @@ public class ServiceOrderService extends ShopBaseService {
                 , SERVICE_ORDER.SUBSCRIBER
                 , STORE_SERVICE.SERVICE_NAME
                 , SERVICE_ORDER.MOBILE
+                , SERVICE_ORDER.CREATE_TIME
                 , SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
                 from(SERVICE_ORDER).
                 leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
         select = this.buildOptions(select, param);
-        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId())).orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
+
+        if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.asc(),SERVICE_ORDER.SERVICE_PERIOD.asc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.DESC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.desc(),SERVICE_ORDER.SERVICE_PERIOD.desc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.CREATE_TIME) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.asc());
+        }else{
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        }
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceOrderListQueryVo.class);
     }
 
@@ -333,6 +353,35 @@ public class ServiceOrderService extends ShopBaseService {
         record.setOrderStatusName(ORDER_STATUS_NAME_WAIT_PAY);
         this.assign(param, record);
         return db().executeInsert(record) > 0 ? true : false;
+    }
+
+    /**
+     * admin创建预约订单的校验
+     * @param param
+     * @return
+     */
+    public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
+        StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
+        Timestamp serviceTime = DateUtil.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
+
+        if(serviceTime.after(storeServiceRecord.getStartDate()) && serviceTime.before(storeServiceRecord.getEndDate())){
+            Timestamp storeServiceStartDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
+            Timestamp storeServiceEndDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
+            if(serviceTime.before(storeServiceStartDate) || serviceTime.after(storeServiceEndDate)){
+                return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+            }
+        }else{
+            return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+        }
+        if(storeServiceRecord.getServiceType() == 1){
+            if(param.getTechnicianId()  == null || param.getTechnicianId() <= 0 || !StringUtil.isNotEmpty(param.getTechnicianName())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL;
+            }
+            if(!serviceTechnician.isTechnicianEnable(param.getTechnicianId(),param.getServiceDate(),param.getServicePeriod())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE;
+            }
+        }
+        return JsonResultCode.CODE_SUCCESS;
     }
 
     /**

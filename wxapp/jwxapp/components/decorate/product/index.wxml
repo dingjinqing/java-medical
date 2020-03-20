@@ -1,12 +1,16 @@
 <view class="product-container person_reconmmend" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
   <!-- 单列商品 -->
-  <v-single-colGoods wx:if="{{m.col_type =='4'}}" module="{{module}}" />
+  <v-single-colGoods wx:if="{{m.col_type =='4'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 双列商品 -->
-  <v-double-colGoods wx:if="{{m.col_type =='1'}}" module="{{module}}" />
+  <v-double-colGoods wx:if="{{m.col_type =='1'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 三列商品 -->
-  <v-three-commodities wx:if="{{m.col_type =='2'}}" module="{{module}}" />
+  <v-three-commodities wx:if="{{m.col_type =='2'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 多列商品 -->
-  <v-multiple-pommodities wx:if="{{m.col_type =='3'}}" module="{{module}}" />
+  <v-multiple-pommodities wx:if="{{m.col_type =='3'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 大图商品 -->
-  <v-big-pictureGoods wx:if="{{m.col_type =='0'}}" module="{{module}}" />
+  <v-big-pictureGoods wx:if="{{m.col_type =='0'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
 </view>
+<v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
+  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+  <v-item-footer slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" bindclose="bindCloseSpec" />
+</v-spec-dialog>

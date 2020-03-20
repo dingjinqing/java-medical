@@ -72,7 +72,7 @@
           <text>￥</text>
           <text>{{goodsInfo.prdRealPrice}}</text>
         </view>
-        <view class="marking_price">
+        <view class="marking_price" wx:if="{{goodsInfo.prdLinePrice}}">
           ￥
           <text>{{goodsInfo.prdLinePrice}}</text>
         </view>
@@ -85,12 +85,12 @@
       <view wx:if="{{goodsInfo.activity.activityType === 10}}" class="flex-wrap pre-sale-content" style="background-color:{{speColor}};">
         <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{PreSaleDiscountPrice}}</view>
         <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">尾款支付时间：{{filter.substring(goodsInfo.activity.finalPaymentStart,5,16)}} - {{filter.substring(goodsInfo.activity.finalPaymentEnd,5,16)}}</view>
-        <view>{{goodsInfo.activity.deliverType === 0 ? '发货时间：' + filter.substring(goodsInfo.activity.deliverTime,0,10)  : '发货时间：尾款支付完成'+goodsInfo.activity.deliverDays+'天后发货'}}</view>
+        <view>{{goodsInfo.activity.deliverType === 1 ? '发货时间：' + filter.substring(goodsInfo.activity.deliverTime,0,10)  : '发货时间：尾款支付完成'+goodsInfo.activity.deliverDays+'天后发货'}}</view>
         <view bindtap="viewPreSaleRule">
           {{goodsInfo.activity.preSaleType === 0 ? '活动规则：支付定金-支付尾款-等待发货':'活动规则：支付定金-等待发货'}}
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: sub;"></image>
         </view>
-        <view wx:if="{{goodsInfo.activity.preSaleType === 1}}">退定金规则：逾期未付尾款，定金{{gd.preSale.returnDeposit?'可':'不予'}}退还</view>
+        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{gd.preSale.returnDeposit?'可':'不予'}}退还</view>
       </view>
       <view class="flex-wrap">
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
@@ -202,7 +202,7 @@
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
   </view>
-  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 

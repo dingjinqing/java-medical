@@ -1,28 +1,49 @@
 package com.vpu.mp.service.shop.activity.processor;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.GiftProcessorDao;
+import com.vpu.mp.service.shop.config.GiftConfigService;
+import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Record;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.service.shop.activity.dao.GiftProcessorDao.ORDER_ACT_FILTER;
+import static com.vpu.mp.service.shop.market.gift.GiftService.CONDITION_PRIORITY;
 
 /**
  * 赠品
@@ -30,12 +51,14 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
+public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor,ActivityCartListStrategy {
 
     @Autowired
     private GiftProcessorDao giftDao;
     @Autowired
     private OrderGoodsService orderGoods;
+    @Autowired
+    private GiftConfigService giftConfigService;
     @Override
     public Byte getPriority() {
         return 0;
@@ -110,4 +133,61 @@ public class GiftProcessor implements GoodsDetailProcessor,CreateOrderProcessor{
         }
     }
 
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车--赠品活动");
+        Timestamp nowTime =DateUtil.getLocalDateTime();
+        //0：赠送满足赠品条件的所有赠品;1：只赠送其中优先级最高的活动赠品
+        Byte cfg = giftConfigService.getCfg();
+        List<GiftVo> activeActivity = giftDao.getActiveActivity();
+        //k->goodsId;v->数量
+        Map<Integer, Integer> goodsMapCount = cartBo.getCartGoodsList().stream().collect(Collectors.toMap(WxAppCartGoods::getGoodsId, WxAppCartGoods::getCartNumber, (ov, nv) -> ov + nv));
+        //商品未参与赠品记录
+        Set<Integer> noJoinRecord = cartBo.getCartGoodsList().stream().map(WxAppCartGoods::getGoodsId).collect(Collectors.toSet());
+        activeActivity.forEach(giftVo -> {
+            cartBo.getCartGoodsList().forEach(goods->{
+                if (giftVo.getGoodsId().contains(goods.getGoodsId().toString())){
+                    CartActivityInfo cartActivityInfo =new CartActivityInfo();
+                    cartActivityInfo.setActivityId(giftVo.getId());
+                    cartActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_GIFT);
+                    goods.getCartActivityInfos().add(cartActivityInfo);
+                }
+            });
+        });
+        activeActivity.forEach(giftVo->{
+            log.info("赠品活动{},id:{},判断",giftVo.getName(),giftVo.getId());
+            if(CONDITION_PRIORITY.equals(cfg) && noJoinRecord.size() == 0){
+                //只送最高优先级：如果当前未参与商品为0则
+                return;
+            }
+            giftDao.transformVo(giftVo);
+            //参加活动商品数量
+            final int[] number = {0};
+            //参加活动商品金额
+            final BigDecimal[] price = {BigDecimal.ZERO};
+            //当前活动参与商品
+            Set<Integer> joinRecord = Sets.newHashSet();
+            cartBo.getCartGoodsList().forEach(goods->{
+                //活动商品
+                if((CollectionUtils.isEmpty(giftVo.getGoodsIds()) || giftVo.getGoodsIds().contains(goods.getGoodsId()))){
+                    number[0] = number[0] + goods.getCartNumber();
+                    price[0] = price[0].add(goods.getPrdPrice());
+                    joinRecord.add(goods.getGoodsId());
+                }
+            });
+            if(number[0] > 0){
+                List<OrderGoodsBo> orderGoodsBos = giftDao.packageAndCheckGift(cartBo.getUserId(), giftVo, price[0], number[0], goodsMapCount,  Lists.newArrayList(), noJoinRecord);
+                if(CollectionUtils.isNotEmpty(orderGoodsBos)){
+                    log.info("赠品活动{},生效,适合的商品有",giftVo.getName());
+                    orderGoodsBos.forEach(orderGoods ->{
+                        WxAppCartGoods cartGoods = giftDao.getOrderGoodsToCartGoods(orderGoods, giftVo, cartBo.getUserId());
+                        cartBo.getCartGoodsList().add(cartGoods);
+                    });
+                    noJoinRecord.removeAll(joinRecord);
+                }
+            }
+        });
+
+        log.info("购物车--赠品活动结束");
+    }
 }

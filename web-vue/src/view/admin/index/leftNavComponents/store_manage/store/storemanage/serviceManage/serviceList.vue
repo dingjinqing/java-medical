@@ -309,6 +309,8 @@ export default {
         return this.$t('serviceList.unShelf')
       } else if (row.serviceShelf === 1) {
         return this.$t('serviceList.shelf')
+      } else if (Number(row.serviceShelf) === 2) {
+        return this.$t('serviceList.expired')
       } else {
         return ''
       }
@@ -427,7 +429,6 @@ export default {
       let params = Object.assign({}, this.queryParams, this.pageParams)
       getServiceList(params).then(res => {
         if (res.error === 0) {
-          console.log(res.content)
           this.pageParams = res.content.page
           this.tableData = [...res.content.dataList]
         }

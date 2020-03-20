@@ -319,6 +319,6 @@ global.wxPage({
    */
   to_search: function (opt) {
     var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?coupon_sn=' + coupon_sn);
+    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
   }
 })

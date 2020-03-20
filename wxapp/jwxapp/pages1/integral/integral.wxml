@@ -21,7 +21,7 @@
           </view>
           <view class="score_time">{{user_center.sign_score.sign_data.sign_in_rules == 1 ? '本轮已连续签到' : '已经连续签到' }}
             <text>{{user_center.sign_score.sign_data.day}}</text> 天
-            <image src='{{imageUrl}}/image/wxapp/look_rule.png' class="score_question"  data-rule="{{user_center.sign_score.sign_rule}}" bindtap='lookRule'></image>
+            <image src='{{imageUrl}}image/wxapp/look_rule.png' class="score_question"  data-rule="{{user_center.sign_score.sign_rule}}" bindtap='lookRule'></image>
           </view>
         </block>
       </view>

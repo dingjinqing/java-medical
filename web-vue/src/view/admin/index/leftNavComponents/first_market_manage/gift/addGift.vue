@@ -98,7 +98,11 @@
                   v-show="param.goodsRange===1"
                   @click="showChoosingGoods"
                 >{{goodsBtnName}}</el-button>
-                <span v-show="param.goodsRange===1" @click="onlyShowChoosingGoods" >{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
+                <span
+                  style="color: #e4393c; cursor: pointer;"
+                  v-show="param.goodsRange===1"
+                  @click="onlyShowChoosingGoods"
+                >{{ $t('gift.selected') }}：{{goodslength}} {{ $t('gift.selectedNUm') }}</span>
               </el-form-item>
               <el-form-item
                 :label="$t('gift.giftConditions') + '：'"
@@ -302,7 +306,7 @@
               type="primary"
               @click="showChoosingGoods"
             >{{ $t('gift.addFreebies') }}</el-button>
-            <span class="remarks" >{{ $t('gift.addTip') }}</span>
+            <span class="remarks">{{ $t('gift.addTip') }}</span>
           </el-col>
         </el-row>
         <el-row style="margin-top: 10px;">
@@ -865,20 +869,20 @@ export default {
     // 选择商品弹窗
     showChoosingGoods () {
       if (this.step === 1) {
+        this.isOnlyShowChooseGoods = false
         this.tuneUpGoods = !this.tuneUpGoods
       } else {
-        this.isOnlyShowChooseGoods = false
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
         console.log(this.specsIds)
       }
     },
 
-    // 选择商品弹窗
+    // 选择商品弹窗-部分
     onlyShowChoosingGoods () {
       if (this.step === 1) {
+        this.isOnlyShowChooseGoods = true
         this.tuneUpGoods = !this.tuneUpGoods
       } else {
-        this.isOnlyShowChooseGoods = true
         this.tuneUpChooseGoods = !this.tuneUpChooseGoods
         console.log(this.specsIds)
       }

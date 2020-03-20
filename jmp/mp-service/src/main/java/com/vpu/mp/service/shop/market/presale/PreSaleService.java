@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.presale;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.db.shop.tables.Presale;
@@ -12,38 +13,26 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductParam;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
-import com.vpu.mp.service.pojo.shop.market.presale.StatusContainer;
+import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record14;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import jodd.util.StringUtil;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.lambda.tuple.Tuple2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -51,10 +40,7 @@ import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
@@ -70,6 +56,11 @@ import static org.springframework.util.StringUtils.isEmpty;
 @Service
 @Primary
 public class PreSaleService extends ShopBaseService {
+
+    @Autowired
+    private DomainConfig domainConfig;
+    @Autowired
+    private QrCodeService qrCode;
 
     /**全款付*/
     public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
@@ -121,10 +112,9 @@ public class PreSaleService extends ShopBaseService {
      * 获取定金膨胀活动列表
      */
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
-        SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp, Byte, Timestamp,
-            Timestamp, Integer, Integer, Integer, Integer, Serializable>> query =
-            db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,
-                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2,
+        SelectConditionStep<? extends Record> query =
+            db().select(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,TABLE.PRE_PAY_STEP,
+                TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2"),
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
                 DSL.count(ORDER.ORDER_ID)
                     .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)).as(BARGAIN_PAID_QUANTITY),
@@ -141,7 +131,7 @@ public class PreSaleService extends ShopBaseService {
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
         buildOptions(query, param);
-        query.groupBy(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.START_TIME,
+        query.groupBy(TABLE.ID, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
             TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2);
         query.orderBy(TABLE.CREATE_TIME.desc());
         PageResult<PreSaleListVo> page = getPageResult(query, param, PreSaleListVo.class);
@@ -181,16 +171,10 @@ public class PreSaleService extends ShopBaseService {
             Timestamp now = Util.currentTimeStamp();
             if (now.before(preStartTime)) {
                 return NAVBAR_TYPE_NOT_STARTED;
-            } else if ((now.after(preStartTime) && now.before(preEndTime))) {
+            } else if (vo.getPrePayStep().equals(PRE_SALE_ONE_PHASE) && (now.after(preStartTime) && now.before(preEndTime))) {
                 return NAVBAR_TYPE_ONGOING;
-            } else if (null != startTime && null != endTime) {
-                if (now.after(startTime) && now.before(endTime)) {
-                    return NAVBAR_TYPE_ONGOING;
-                }
-            } else if (null != preStartTime2 && null != preEndTime2) {
-                if (now.after(preStartTime2) && now.before(preEndTime2)) {
-                    return NAVBAR_TYPE_ONGOING;
-                }
+            } else if (vo.getPrePayStep().equals(PRE_SALE_TWO_PHASE) && (now.after(preStartTime) && now.before(preEndTime2))) {
+                return NAVBAR_TYPE_ONGOING;
             }
             return NAVBAR_TYPE_FINISHED;
         }
@@ -199,9 +183,7 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 条件查询
      */
-    private void buildOptions(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp,
-        Timestamp, Byte, Timestamp, Timestamp, Integer, Integer,
-        Integer, Integer, Serializable>> query, PreSaleListParam param) {
+    private void buildOptions(SelectConditionStep<? extends Record> query, PreSaleListParam param) {
         String name = param.getName();
         Timestamp preStartTime = param.getPreStartTime();
         Timestamp preEndTime = param.getPreEndTime();
@@ -212,10 +194,13 @@ public class PreSaleService extends ShopBaseService {
             query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
         }
         if (null != preStartTime) {
-            query.and(TABLE.PRE_START_TIME.ge(preStartTime));
+            query.and(
+                (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.gt(preStartTime)))
+                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.gt(preStartTime)))
+            );
         }
         if (null != preEndTime) {
-            query.and(TABLE.PRE_END_TIME.le(preEndTime));
+            query.and(TABLE.PRE_START_TIME.le(preEndTime));
         }
         if (null != startTime) {
             query.and(TABLE.START_TIME.ge(startTime));
@@ -231,8 +216,7 @@ public class PreSaleService extends ShopBaseService {
     /**
      * 状态转换
      */
-    private void andStatus(SelectConditionStep<Record14<Integer, String, Timestamp, Timestamp, Timestamp, Timestamp,
-        Byte, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Serializable>> query, Byte status) {
+    private void andStatus(SelectConditionStep<? extends Record> query, Byte status) {
         Timestamp now = Util.currentTimeStamp();
         switch (status) {
             case NAVBAR_TYPE_ONGOING:
@@ -277,6 +261,10 @@ public class PreSaleService extends ShopBaseService {
         PresaleRecord presale = db.newRecord(TABLE, param);
         String config = shareConfigJson(param);
         presale.setShareConfig(config);
+        if(param.getPreStartTime2() != null && param.getPreEndTime2() != null){
+            presale.setPreStartTime_2(param.getPreStartTime2());
+            presale.setPreEndTime_2(param.getPreEndTime2());
+        }
         presale.insert();
         Integer id = presale.getId();
         this.insertPresaleProduct(db, param, id);
@@ -364,13 +352,13 @@ public class PreSaleService extends ShopBaseService {
         Tuple2<Timestamp, Timestamp> timePair = new Tuple2<>(param.getPreStartTime(), param.getPreEndTime());
         Tuple2<Timestamp, Timestamp> timePair2 = new Tuple2<>(param.getPreStartTime2(), param.getPreEndTime2());
         List<Tuple2<Timestamp, Timestamp>> timePairs = Arrays.asList(timePair, timePair2);
-        assertTimeNoConflict(timePairs, param.getId());
+        assertTimeNoConflict(timePairs, param.getId(),param.getGoodsId());
     }
 
     /**
      * 判断活动时间段是否冲突
      */
-    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id) {
+    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id,Integer goodsId) {
         Condition statusCondition = TABLE.DEL_FLAG.eq((byte) 0).and(TABLE.STATUS.eq((byte) 1));
         Condition timeCondition = DSL.or();
         for (Tuple2<Timestamp, Timestamp> timePair : timePairs) {
@@ -383,6 +371,7 @@ public class PreSaleService extends ShopBaseService {
         if (null != id) {
             query.and(TABLE.ID.ne(id));
         }
+        query.and(TABLE.GOODS_ID.eq(goodsId));
         if (db().fetchExists(query)) {
             throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
         }
@@ -500,8 +489,11 @@ public class PreSaleService extends ShopBaseService {
      * 获取分享配置
      */
     private ShareConfig shareConfig(PreSaleVo preSaleVo) {
-        String shareConfig = preSaleVo.getShareConfig();
-        return Util.underLineStyleGson().fromJson(shareConfig, ShareConfig.class);
+        ShareConfig shareConfig =  Util.parseJson(preSaleVo.getShareConfig(),ShareConfig.class);
+        if(StringUtil.isNotBlank(shareConfig.getShareImg())){
+            shareConfig.setShareImg(domainConfig.imageUrl(shareConfig.getShareImg()));
+        }
+        return shareConfig;
     }
 
     /**
@@ -510,12 +502,12 @@ public class PreSaleService extends ShopBaseService {
     public void updatePreSale(PreSaleParam param) {
         Integer presaleId = param.getId();
         Assert.notNull(presaleId, "Missing parameter id");
-        PreSaleListVo presale = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
+        PreSaleListVo presale = db().select(TABLE.fields()).select(TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2")).from(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
         Byte status = getStatusOf(presale);
         String shareConfiguration = shareConfigJson(param);
         if (NAVBAR_TYPE_ONGOING == status) {
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName())
-                .set(TABLE.SHARE_CONFIG, shareConfiguration);
+                .set(TABLE.SHARE_CONFIG, shareConfiguration).where(TABLE.ID.eq(presaleId)).execute();
         } else if (NAVBAR_TYPE_NOT_STARTED == status) {
             validateParam(param);
             db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName()).set(TABLE.PRE_START_TIME,
@@ -642,6 +634,21 @@ public class PreSaleService extends ShopBaseService {
 	public PresaleRecord getPresaleRecord(Integer activityId){
         return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    /**
+     * 获取小程序码
+     */
+    public ShareQrCodeVo getMpQrCode(Integer id) {
+
+        int goodsId = db().select(PRESALE.GOODS_ID).from(PRESALE).where(PRESALE.ID.eq(id)).fetchAny().into(Integer.class);
+        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
+
+        ShareQrCodeVo vo = new ShareQrCodeVo();
+        vo.setImageUrl(imageUrl);
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
+        return vo;
     }
 	
 }

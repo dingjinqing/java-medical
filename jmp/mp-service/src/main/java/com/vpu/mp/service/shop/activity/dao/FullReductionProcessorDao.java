@@ -263,7 +263,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     for (OrderGoodsBo bo : bos) {
                         if (bo.getGoodsNumber() >= condition.getAmount()) {
                             temp = temp == null ? BigDecimal.ZERO : temp;
-                            temp.add(
+                            temp = temp.add(
                                 bo.getDiscountedGoodsPrice().subtract(
                                     BigDecimalUtil.multiplyOrDivide(
                                         BigDecimalUtil.BigDecimalPlus.create(bo.getDiscountedGoodsPrice(), BigDecimalUtil.Operator.multiply),

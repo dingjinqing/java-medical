@@ -157,7 +157,7 @@
               >
                 <i
                   @click="disabledFirstSpecial(scope.row.id)"
-                  class="el-icon-remove-outline"
+                  class="el-icon-circle-close"
                 ></i>
               </el-tooltip>
               <el-tooltip

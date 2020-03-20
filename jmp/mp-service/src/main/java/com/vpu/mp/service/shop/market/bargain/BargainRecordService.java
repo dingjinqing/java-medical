@@ -422,9 +422,9 @@ public class BargainRecordService extends ShopBaseService {
         if(recordInfo.getEndTime().before(DateUtil.getLocalDateTime())){
             return 4;
         }
-        if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
-            return 6;
-        }
+
+        BigDecimal remainMoney = recordInfo.getGoodsPrice().subtract(recordInfo.getBargainMoney()).subtract(recordInfo.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? recordInfo.getFloorPrice() : BigDecimal.ZERO);
+
         //自己的砍价详情
         if(userId == recordInfo.getUserId()){
             if(recordInfo.getStatus().equals(STATUS_FAILED)){
@@ -433,7 +433,6 @@ public class BargainRecordService extends ShopBaseService {
             //区间结算
             if(recordInfo.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM)){
                 //已下单
-                BigDecimal remainMoney = recordInfo.getGoodsPrice().subtract(recordInfo.getBargainMoney()).subtract(recordInfo.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? recordInfo.getFloorPrice() : BigDecimal.ZERO);
                 if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y)){
                     OrderInfoRecord order = orderInfo.getOrderByOrderSn(recordInfo.getOrderSn());
                     if(order.getOrderAmount().equals(recordInfo.getFloorPrice()) || order.getOrderStatus() > OrderConstant.ORDER_CLOSED){
@@ -462,6 +461,13 @@ public class BargainRecordService extends ShopBaseService {
                 }
             }
         }
+        if(recordInfo.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) && recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0 && userId != recordInfo.getUserId()){
+            //如果是成功状态，库存肯定已经锁定了，还有剩余金额，允许再砍一次
+            return 0;
+        }
+        if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
+            return 6;
+        }
 
         int userNumber = bargainUser.getUserBargainNumber(userId,recordInfo.getId());
         if(userId == recordInfo.getUserId()){
@@ -481,7 +487,6 @@ public class BargainRecordService extends ShopBaseService {
                         if(order.getOrderAmount().equals(recordInfo.getFloorPrice()) || order.getOrderStatus() > OrderConstant.ORDER_CLOSED){
                             return 9;
                         }else{
-                            BigDecimal remainMoney = recordInfo.getGoodsPrice().subtract(recordInfo.getBargainMoney()).subtract(recordInfo.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? recordInfo.getFloorPrice() : BigDecimal.ZERO);
                             if(remainMoney.compareTo(BigDecimal.ZERO) > 0){
                                 return 9;
                             }

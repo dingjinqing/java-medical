@@ -6,6 +6,9 @@ import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -25,14 +28,18 @@ import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
+import com.vpu.mp.service.pojo.wxapp.market.seckill.SeckillCheckVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record3;
@@ -284,12 +291,13 @@ public class SeckillService extends ShopBaseService{
      */
     public ShareQrCodeVo getMpQrCode(Integer skId) {
 
-        String pathParam="sk_id="+skId;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO, pathParam);
+        int goodsId = db().select(SEC_KILL_DEFINE.GOODS_ID).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchAny().into(Integer.class);
+        String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, skId, BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
 
@@ -481,25 +489,38 @@ public class SeckillService extends ShopBaseService{
 
     /**
      * 判断秒杀规格的可用状态
-     * @param skId 秒杀ID
-     * @param productId 规格ID
+     * @param param
      * @param userId
      * @return 0正常可用;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;
      *          7该秒杀为会员专属，该用户没有对应会员卡；8该规格无库存；9有待支付的秒杀订单
      */
-    public Byte canApplySecKill(Integer skId,Integer productId,Integer userId) {
-        SecKillDefineRecord secKill = db().select(SEC_KILL_DEFINE.asterisk()).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
+    public SeckillCheckVo canApplySecKill(SecKillProductParam param, Integer userId) {
+        SeckillCheckVo vo = new SeckillCheckVo();
+
+        SecKillDefineRecord secKill = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getSkId()));
         int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsView(secKill.getGoodsId()).getGoodsNumber();
         byte res = this.canApplySecKill(secKill,goodsNumber,userId);
+
         if(res == 0){
-            if(!this.checkSeckillProductStock(skId,productId)){
-                return BaseConstant.ACTIVITY_STATUS_PRD_NOT_HAS_NUM;
+            if(!this.checkSeckillProductStock(param.getSkId(),param.getProductId())){
+                vo.setState(BaseConstant.ACTIVITY_STATUS_PRD_NOT_HAS_NUM);
             }
-            if(seckillList.checkSeckillOrderWaitPay(skId,userId) != null){
-                return BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY;
+            String orderSn = seckillList.checkSeckillOrderWaitPay(param.getSkId(),userId);
+            if(orderSn != null){
+                vo.setState(BaseConstant.ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY);
+                vo.setOrderSn(orderSn);
             }
+            if(secKill.getLimitAmount() != null && secKill.getLimitAmount() > 0){
+                int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
+                if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
+                    vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
+                    vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
+                }
+            }
+        }else{
+            vo.setState(res);
         }
-        return res;
+        return vo;
     }
 
     /**
@@ -555,7 +576,7 @@ public class SeckillService extends ShopBaseService{
         List<ValidUserCardBean> cards = saas.getShopApp(getShopId()).userCard.userCardDao.getValidCardList(userId);
         List<Integer> validCardIds = cards.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
         List<Integer> seckillCardIds = Util.splitValueToList(cardIds);
-        validCardIds.removeAll(seckillCardIds);
+        validCardIds.retainAll(seckillCardIds);
         return (validCardIds != null && validCardIds.size() > 0);
     }
 
@@ -607,7 +628,7 @@ public class SeckillService extends ShopBaseService{
             seckillGoods.setActStatus(seckill.getStatus());
             seckillGoods.setSeckillSaleNum(seckill.getSaleNum());
             seckillGoods.setSeckillNum(seckill.getStock() > goodsInfo.getGoodsNumber() ? goodsInfo.getGoodsNumber() : seckill.getStock());
-            seckillGoods.setBaseSale(goodsInfo.getBaseSale() > 0 ? goodsInfo.getBaseSale() : 0);
+            seckillGoods.setBaseSale(seckill.getBaseSale() > 0 ? seckill.getBaseSale() : 0);
             seckillGoods.setSecPrice(getMinProductSecPrice(seckill.getSkId()));
             seckillGoods.setSecPriceInt(new BigDecimal(seckillGoods.getSecPrice().intValue()).compareTo(seckillGoods.getSecPrice()) == 0 ? (byte)1 : (byte)0);
 
@@ -647,5 +668,30 @@ public class SeckillService extends ShopBaseService{
         db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.STOCK.sub(number)).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).execute();
     }
 
+    public Workbook exportSeckillOrderList(MarketOrderListParam param, String lang){
+        SecKillDefineRecord secKillDefineRecord = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getActivityId()));
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_SEC_KILL);
+
+        List<SeckillOrderExportVo> res = new ArrayList<>();
+        list.forEach(order->{
+            SeckillOrderExportVo vo = new SeckillOrderExportVo();
+            vo.setActName(secKillDefineRecord.getName());
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoodsName(order.getGoods().get(0).getGoodsName());
+            vo.setGoodsPrice(order.getGoods().get(0).getGoodsPrice());
+            vo.setCreateTime(order.getCreateTime());
+            vo.setUsername(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
+            vo.setMoneyPaid(order.getMoneyPaid());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(res, SeckillOrderExportVo.class);
+        return workbook;
+    }
 
 }

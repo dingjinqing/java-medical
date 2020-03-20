@@ -1,11 +1,10 @@
 package com.vpu.mp.service.pojo.shop.store.service.order;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-
-import lombok.Data;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author 王兵兵
@@ -26,9 +25,7 @@ public class ServiceOrderAddParam {
     private String     mobile;
     @NotNull
     private Integer    serviceId;
-    @NotNull
     private Integer    technicianId;
-    @NotNull
     private String     technicianName;
     @NotNull
     private String     serviceDate;

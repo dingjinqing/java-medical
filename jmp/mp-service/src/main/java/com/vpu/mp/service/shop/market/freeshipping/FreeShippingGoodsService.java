@@ -55,6 +55,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
      * @return
      */
     public FreeShipGoodsSearchVo freeShipGoodsList(FreeShippingGoodsListParam param,String lang){
+        param.initScene();
         /*
          * 活动查询
          */

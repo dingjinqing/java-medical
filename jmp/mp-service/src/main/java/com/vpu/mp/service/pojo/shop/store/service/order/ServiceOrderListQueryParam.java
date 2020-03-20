@@ -1,10 +1,9 @@
 package com.vpu.mp.service.pojo.shop.store.service.order;
 
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.service.foundation.util.Page;
-
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 王兵兵
@@ -13,6 +12,17 @@ import lombok.Data;
  */
 @Data
 public class ServiceOrderListQueryParam {
+
+    /**
+     * 前台传入的控制排序方向
+     */
+    public static final String ASC="asc";
+    public static final String DESC="desc";
+    /**
+     * 	待排序字段
+     */
+    public static final String CREATE_TIME="createTime";
+    public static final String SERVICE_DATE="serviceDate";
 	
 	@NotNull
 	private Integer storeId;
@@ -34,6 +44,15 @@ public class ServiceOrderListQueryParam {
 	 * 预约人姓名或服务名称
 	 */
 	private String keywords;
+
+    /**
+     * 排序依据列，createTime预约提交时间，serviceDate预约到店时间，默认createTime
+     */
+	private String orderField;
+    /**
+     * 排序规则，desc倒叙，asc正序，默认desc
+     */
+	private String orderDirection;
 	
 	/**
      * 	分页信息

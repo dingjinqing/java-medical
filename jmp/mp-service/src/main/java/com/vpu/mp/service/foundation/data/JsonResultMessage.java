@@ -189,6 +189,27 @@ public class JsonResultMessage {
     public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
     public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
 
+    /**
+     *  营销-秒杀excel导出-秒杀订单
+     */
+    public static final String SECKILL_ORDER_LIST_FILENAME = "seckill.order.list.file_name";
+    public static final String SECKILL_ORDER_LIST_ACT_NAME = "seckill.order.list.act_name";
+    public static final String SECKILL_ORDER_LIST_ORDER_SN = "seckill.order.list.order_sn";
+    public static final String SECKILL_ORDER_LIST_GOODS_NAME = "seckill.order.list.goods_name";
+    public static final String SECKILL_ORDER_LIST_GOODS_PRICE = "seckill.order.list.goods_price";
+    public static final String SECKILL_ORDER_LIST_CREATE_TIME = "seckill.order.list.create_time";
+    public static final String SECKILL_ORDER_LIST_USERNAME = "seckill.order.list.username";
+    public static final String SECKILL_ORDER_LIST_CONSIGNEE = "seckill.order.list.consignee";
+    public static final String SECKILL_ORDER_LIST_MONEY_PAID = "seckill.order.list.money_paid";
+    public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
+
+    /**
+     *  营销-预售excel导出-秒杀订单
+     */
+    public static final String PRESALE_ORDER_LIST_FILENAME = "presale.order.list.file_name";
+
+
+
 
 
     /**
@@ -234,6 +255,8 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
     /**
      * 营销-秒杀
      */
@@ -406,6 +429,9 @@ public class JsonResultMessage {
 	public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
 	public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
 	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL = "store.service.order.technician.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE = "store.service.order.technician.no.schedule";
+    public static final String CODE_SERVICE_ORDER_WRONG_SERVICE_DATE = "store.service.order.wrong.service.date";
 
     /**
      * 门店核销员列表导出列
@@ -453,7 +479,7 @@ public class JsonResultMessage {
 	public static final String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
 	public static final String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
 	public static final String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE = "member.score.not.be.negative";
-
+	public static final String MSG_MEMBER_SCORE_EXPIRED = "member.score.expired";
 	/**
 	 * 会员余额
 	 */
@@ -546,7 +572,16 @@ public class JsonResultMessage {
     public static final String UEXP_LEVEL_NAME = "user.export.level_name";
     public static final String UEXP_GROUP_NAM = "user.export.group_name";
     
-
+    // 会员卡优惠券信息
+    public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
+    public static final String CARD_COUPON_DAY = "card.receive.day";
+    public static final String CARD_COUPON_HOUR = "card.receive.hour";
+    public static final String CARD_COUPON_MINUTE = "card.receive.minute";
+    public static final String CARD_COUPON_NOLIMIT = "card.coupon.nolimit";
+    public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
+    public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
+    public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
+    
     
 	/**
 	 * 概览
@@ -799,6 +834,10 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_USER_SOURCE_ADMIN = "order.export.user.source.admin";
     public static final String ORDER_EXPORT_USER_SOURCE_UNKNOWN = "order.export.user.source.unknown";
     public static final String ORDER_EXPORT_USER_SOURCE_CHANNEL = "order.export.user.source.channel";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_COURIER = "order.export.deliver.type.courier";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_SELF = "order.export.deliver.type.self";
+    public static final String ORDER_EXPORT_CITY_EXPRESS_SERVICE = "order.export.deliver.type.express";
+
     /**
      * 下单必填信息的title
      */

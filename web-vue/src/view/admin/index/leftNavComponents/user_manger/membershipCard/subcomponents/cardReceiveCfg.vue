@@ -37,7 +37,7 @@
           <el-form
               :model="ruleForm"
               :rules="rules"
-              ref="ruleForm"
+              ref="ruleFormm"
               label-width="100px"
             >
             <el-form-item style="margin-left: -100px;" prop="payMoney">
@@ -262,9 +262,13 @@ export default {
   mounted () {
     this.langDefault()
     this.$on('checkRule', () => {
+      debugger
       let flag = false
       if (this.ruleForm.cardType === 1) {
-        this.$refs.ruleForm.validate((valid) => {
+        this.$refs['ruleForm'].validate((valid) => {
+          debugger
+          console.log(valid)
+
           if (!valid) {
             this.$message.warning(this.$t('memberCard.inputInfomation'))
             this.ruleForm.valid = false
@@ -274,8 +278,8 @@ export default {
         })
       } else {
         flag = true
+        console.log(flag)
       }
-
       if (this.ruleForm.isPay === '1') {
         // check crash
         if (this.ruleForm.payType === '0') {
@@ -283,12 +287,20 @@ export default {
             this.$message.warning(this.$t('memberCard.inputMoney'))
             this.payMoneyError = true
             this.payScoreError = false
+          } else {
+            this.payMoneyError = false
+            this.payScoreError = false
+            this.ruleForm.valid = flag
           }
         } else if (this.ruleForm.payType === '1') {
           if (typeof this.ruleForm.payScore === 'undefined') {
             this.$message.warning(this.$t('memberCard.inputScore'))
             this.payScoreError = true
             this.payMoneyError = false
+          } else {
+            this.payMoneyError = false
+            this.payScoreError = false
+            this.ruleForm.valid = flag
           }
         } else {
           this.payMoneyError = false

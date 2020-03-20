@@ -5,6 +5,8 @@ import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
@@ -51,6 +53,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -910,7 +913,11 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public MemberCardRecord getGradeCardByGrade(String grade) {
-		return db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.GRADE.eq(grade)).fetchAny();
+		return db().selectFrom(MEMBER_CARD)
+				   .where(MEMBER_CARD.GRADE.eq(grade))
+				   .and(MEMBER_CARD.DEL_FLAG.eq(MCARD_DF_NO))
+				   .and(MEMBER_CARD.FLAG.equal(MCARD_FLAG_USING))
+				   .fetchAny();
 	}
 
 	private void setQrCode(WxAppUserCardVo card) {
@@ -1252,6 +1259,7 @@ public class UserCardService extends ShopBaseService {
 	}
 	
 	public UserCardJudgeVo userCardJudgement(UserIdAndCardIdParam param,String lang) {
+		logger().info("用户卡判断");
 		UserCardVo userCard = getUserCardJudge(param);
 		MemberCardRecord mCard = cardDao.getCardById(param.getCardId());
 		// null
@@ -1348,12 +1356,21 @@ public class UserCardService extends ShopBaseService {
 			dealSendCouponInfo(userCard,lang);
 			UserCardJudgeVo userCardJudgeVo = new UserCardJudgeVo();
 			userCardJudgeVo.setStatus(1);
+			
+			// 卡的显示金额
+			if(StringUtils.isBlank(userCard.getCardNo())) {
+				if(userCard.getSendMoney() != null) {
+					userCard.setMoney(BigDecimal.valueOf(userCard.getSendMoney()));
+				}
+			}
+			
 			// 有效时间
 			setEffectTimeForJudgeCard(userCard);
 			userCard.setUserId(param.getUserId());
 			userCard.setCardId(param.getCardId());
 			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
+
 			return userCardJudgeVo;
 		}else{
 			UserCardVo uCard = getUserCardByCardNo(userCard.getCardNo());
@@ -1461,70 +1478,108 @@ public class UserCardService extends ShopBaseService {
 		userCard.setEndTime(etBean.getEndTime());
 		userCard.setExpireType(etBean.getExpireType());
 	}
-
-	private void dealSendCouponInfo(UserCardVo userCard, String lang) {
-		logger().info("开卡送券");
+	
+	/**
+	 * 	处理会员卡相应的优惠券信息
+	 * @param userCard
+	 * @param lang
+	 */
+	public void dealSendCouponInfo(UserCardVo userCard, String lang) {
+		logger().info("处理会员卡相应的优惠券信息");
+		if(userCard == null) {
+			return;
+		}
 		if (CardUtil.isSendCoupon(userCard.getSendCouponType())) {
+			logger().info("正在生成优惠券信息");
 			List<Integer> couponIds = CardUtil.parseCouponList(userCard.getSendCouponIds());
-			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
-			List<UserCardCoupon> couponListTwo = new ArrayList<>();
-			for (CouponView coupon : couponList) {
-				// 国际化 UserCardCoupon
-				UserCardCoupon uc = new UserCardCoupon();
-				if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
-					uc.setCouponCondition(Util.translateMessage(lang, "user.card.coupon.condition.all", "member"));
-				} else {
-					uc.setCouponCondition(Util.translateMessage(lang, "user.card.coupon.condition.part", "member"));
-				}
-				logger().info("优惠券过期时间");
-				if (coupon.getValidity() > 0 || coupon.getValidityHour() > 0 || coupon.getValidityMinute() > 0) {
-					StringBuilder con = new StringBuilder();
-					String receiveInfo = Util.translateMessage(lang, "card.receive.day.start", "member");
-					con.append(receiveInfo);
-					if (coupon.getValidity() > 0) {
-						String val = Util.translateMessage(lang, "card.receive.day", "member", coupon.getValidity());
-						con.append(val);
-					}
-					if (coupon.getValidityHour() > 0) {
-						String val = Util.translateMessage(lang, "card.receive.hour", "member",
-								coupon.getValidityHour());
-						con.append(val);
-					}
-					if (coupon.getValidityMinute() > 0) {
-						String val = Util.translateMessage(lang, "card.receive.minute", "member",
-								coupon.getValidityMinute());
-						con.append(val);
-					}
-					uc.setExpireTime(con.toString());
-				} else {
-					String startTime = coupon.getStartTime().toLocalDateTime().toLocalDate().toString();
-					String endTime = coupon.getEndTime().toLocalDateTime().toLocalDate().toString();
-					String tmp = startTime + "--" + endTime;
-					uc.setExpireTime(tmp);
-				}
-
-				logger().info("处理使用条件");
-
-				if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
-					uc.setUseConsumeRestrict(Util.translateMessage(lang, "card.coupon.nolimit", "member"));
-				} else {
-					uc.setUseConsumeRestrict(
-							Util.translateMessage(lang, "card.coupon.satisfiy", "member", coupon.getLeastConsume()));
-				}
-				couponListTwo.add(uc);
+			if(couponIds == null || couponIds.size()==0) {
+				return;
 			}
-			userCard.setCoupons(couponListTwo);
+			// 优惠券信息列表
+			List<CouponView> couponList = couponService.getCouponViewByIds(couponIds);
+			userCard.setCoupons(cardCouponI18N(lang, couponList));
 		} else if (CardUtil.isSendCouponPack(userCard.getSendCouponType())) {
 			logger().info("处理优惠券礼包");
 			if (!StringUtils.isBlank(userCard.getSendCouponIds())) {
 				int id = Integer.parseInt(userCard.getSendCouponIds());
 				CouponPackUpdateVo couponPack = couponPackService.getCouponPackById(id);
 				UserCardCouponPack pack = new UserCardCouponPack();
-				pack.setId(couponPack.getId());
-				pack.setActName(couponPack.getActName());
+				if(couponPack != null) {
+					pack = UserCardCouponPack.builder()
+							.id(couponPack.getId())
+							.actName(couponPack.getActName())
+							.packName(couponPack.getPackName())
+							.build();
+				}
 				userCard.setCouponPack(pack);
 			}
 		}
+	}
+	/**
+	 * 	处理会员卡优惠券显示信息
+	 */
+	private List<UserCardCoupon> cardCouponI18N(String lang, List<CouponView> couponList) {
+		logger().info("处理会员卡优惠券信息国际化");
+		String i18nfile = "member";
+		List<UserCardCoupon> res = new ArrayList<>();
+		if(couponList == null || couponList.size()==0) {
+			return res;
+		}
+		for (CouponView coupon : couponList) {
+			// 1-优惠券使用范围
+			String couponCon = null;
+			if (NumberUtils.BYTE_ZERO.equals(coupon.getSuitGoods())) {
+				// 全部商品可用
+				couponCon = JsonResultMessage.CARD_COUPON_CON_ALL;
+			} else {
+				// 部分商品可用
+				couponCon = JsonResultMessage.CARD_COUPON_CON_PART;
+			}
+			couponCon = Util.translateMessage(lang, couponCon, i18nfile);
+			
+			// 2-优惠券过期时间
+			Integer day = coupon.getValidity();
+			Integer hour = coupon.getValidityHour();
+			Integer minute = coupon.getValidityMinute();
+			String couponExpireTimeDesc = null;
+			if (day > 0 || hour > 0 || minute > 0) {
+				StringBuilder con = new StringBuilder();
+				// 领券日起
+				String receiveInfo = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_RECEIVE_DAY_START, i18nfile);
+				con.append(receiveInfo);
+				
+				if (day> 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_DAY, i18nfile, day));
+				}
+				if (hour > 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_HOUR, i18nfile,hour));
+				}
+				if (minute > 0) {
+					con.append(Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_MINUTE, i18nfile,minute));
+				}
+				couponExpireTimeDesc = con.toString();
+			} else {
+				String startTime = coupon.getStartTime().toLocalDateTime().toLocalDate().toString();
+				String endTime = coupon.getEndTime().toLocalDateTime().toLocalDate().toString();
+				couponExpireTimeDesc = startTime + "--" + endTime;
+			}
+			
+			// 3-优惠券使用条件限制
+			String restrict = null;
+			if (NumberUtils.INTEGER_ZERO.equals(coupon.getUseConsumeRestrict())) {
+				restrict = Util.translateMessage(lang,JsonResultMessage.CARD_COUPON_NOLIMIT, i18nfile);
+			} else {
+				restrict = Util.translateMessage(lang, JsonResultMessage.CARD_COUPON_SATISFY, i18nfile, coupon.getLeastConsume());
+			}
+			res.add(
+					UserCardCoupon.builder()
+						.couponCondition(couponCon)
+						.expireTime(couponExpireTimeDesc)
+						.useConsumeRestrict(restrict)
+						.build()
+					);
+		}
+		return res;
 	}
 	
 	/**

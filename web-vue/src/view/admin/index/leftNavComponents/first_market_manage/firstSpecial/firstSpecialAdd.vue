@@ -118,7 +118,8 @@
           >
             <el-input-number
               v-model="form.first"
-              :min='0'
+              :min='1'
+              :max='127'
               controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
@@ -144,7 +145,7 @@
                 <el-input-number
                   v-model="form.limitAmount"
                   :disabled="!limit"
-                  :min='1'
+                  :min="0"
                   style="margin-left: 10px;"
                   controls-position="right"
                 ></el-input-number>
@@ -161,11 +162,14 @@
           <!-- 活动商品 -->
           <el-form-item
             :label="$t('firstSpecialAdd.activeGoods')+'：'"
+            v-if="!isEditFlag"
             required
           >
             <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
-            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span @click="onlySelectGoodsHandle" style="color: #e4393c"
-            >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
+            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span
+                @click="onlySelectGoodsHandle"
+                style="color: #e4393c"
+              >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
           </el-form-item>
           <!-- 设置商品首单优惠 -->
           <div
@@ -227,6 +231,7 @@
                 <el-button
                   type="text"
                   @click="deleteSelectGoods"
+                  v-if="!isEditFlag"
                 >{{$t('firstSpecialAdd.batchDeletion')}}</el-button>
                 <el-button
                   type="text"
@@ -310,7 +315,7 @@
                   ></el-input>
                   <el-button
                     type="text"
-                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
+                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0 && row.isDefaultProduct != 1"
                     @click="getProductInfo(row)"
                   >{{row.goodsProductParams?row.goodsProductParams.length:0}}{{$t('firstSpecialAdd.specialPrice')}}</el-button>
                 </template>
@@ -318,6 +323,7 @@
               <el-table-column
                 :label="$t('firstSpecialAdd.operate')"
                 align="center"
+                v-if="!isEditFlag"
               >
                 <template slot-scope="{row}">
                   <div style="align: center;">
@@ -340,7 +346,7 @@
           </el-button>
           <div
             class="more-setting"
-            v-if="showmore"
+            v-show="showmore"
           >
             <el-form-item
               :label="$t('firstSpecialAdd.sharing')"
@@ -672,6 +678,7 @@ export default {
         this.tableData = this.tableData.filter(function (item, i) {
           return item.goodsId !== goodsId
         })
+        this.goodsIdList = this.tableData.map(item => item.goodsId)
       })
     },
     handleSelectionChange (rows) {
@@ -870,6 +877,7 @@ export default {
             return item
           }
         })
+        that.goodsIdList = that.tableData.map(item => item.goodsId)
       })
     },
     // 批量价格取整
@@ -887,14 +895,16 @@ export default {
         if (that.selectGoods.length > 0) {
           that.selectGoods.forEach(function (item, i) {
             let index = that.tableData.findIndex((row, j) => row.goodsId === item.goodsId)
-            let batchFinalPrice = Math.ceil(that.tableData[index].batchFinalPrice)
+            let batchFinalPrice = Math.round(that.tableData[index].batchFinalPrice)
             item.batchFinalPrice = batchFinalPrice
-            item.goodsProductParams = item.goodsProductParams.map((good, k) => {
-              if (good.prdPrice) {
-                good.prdPrice = Math.ceil(good.prdPrice)
-              }
-              return good
-            })
+            if (item.goodsProductParams && item.goodsProductParams.length > 0) {
+              item.goodsProductParams = item.goodsProductParams.map((good, k) => {
+                if (good.prdPrice) {
+                  good.prdPrice = Math.round(good.prdPrice)
+                }
+                return good
+              })
+            }
             that.$set(that.tableData, index, item)
             console.log(that.tableData[index])
           })
@@ -931,6 +941,13 @@ export default {
     },
     paramsAssign () {
       this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {
+        if (!item.goodsProductParams) {
+          item.goodsProductParams = [{
+            prdId: item.prdId,
+            productId: item.prdId,
+            prdPrice: Number(item.batchFinalPrice || item.shopPrice)
+          }]
+        }
         let param = {
           goodsId: item.goodsId,
           goodsName: item.goodsName,

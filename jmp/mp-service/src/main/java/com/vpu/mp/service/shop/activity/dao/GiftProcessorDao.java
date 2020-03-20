@@ -66,10 +66,23 @@ public class GiftProcessorDao extends GiftService {
 
     @Autowired
     private UserCardService userCard;
+
     @Autowired
     private GoodsMpService goodsMpService;
+
     @Autowired
     private ImageService imageService;
+
+    public final static List<Byte> ORDER_ACT_FILTER;
+    static {
+        //TODO 好友助力送商品，送礼多人送时过滤
+        ORDER_ACT_FILTER = Arrays.asList(
+            BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+            BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
+            BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER
+        );
+    }
+
 
     /**
      * 获取商品的赠品信息
@@ -131,6 +144,12 @@ public class GiftProcessorDao extends GiftService {
      */
     public void getGifts(Integer userId, List<OrderGoodsBo> goodsBo, List<Byte> orderType){
         logger().info("下单获取赠品start");
+        for(Byte type : orderType) {
+            if (ORDER_ACT_FILTER.contains(type)) {
+                logger().info("该活动不可参与赠品活动，type:{}", type);
+                return;
+            }
+        }
         //googsBo转map,聚合相同规格(k->prdId;v->数量)
         Map<Integer, Integer> goodsMapCount = goodsBo.stream().collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber, (ov, nv) -> ov + nv));
         //商品未参与赠品记录
@@ -168,12 +187,10 @@ public class GiftProcessorDao extends GiftService {
         logger().info("下单获取赠品end");
     }
 
-
-
     /**
      * 获取所有进行中的活动
      */
-    private List<GiftVo> getActiveActivity(){
+    public List<GiftVo> getActiveActivity(){
         Timestamp now = DateUtil.getSqlTimestamp();
         return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, TABLE.GOODS_ID, TABLE.RULE, TABLE.EXPLAIN)
             .from(TABLE)
@@ -196,7 +213,7 @@ public class GiftProcessorDao extends GiftService {
      * @param noJoinRecord
      * @return
      */
-    private List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
+    public List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
         RuleVo rules = giftVo.getRules();
         if(rules.getFullPrice() != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && rules.getFullPrice() <= price.doubleValue()){
             logger().info("赠品：满金额满足,活动id:{}", giftVo.getId());
@@ -345,5 +362,21 @@ public class GiftProcessorDao extends GiftService {
             }
         }
         return false;
+    }
+
+    /**
+     * 赠品活动
+     * @param goodsId 商品id
+     * @return
+     */
+    public Result<Record6<Integer, String, String, Integer, Integer, Integer>> getGiftsActivity(Integer goodsId, Timestamp nowTime) {
+        Condition condition = GIFT.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GIFT.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(GIFT.START_TIME.le(nowTime))
+                .and(GIFT.END_TIME.ge(nowTime))
+                .and(GIFT_PRODUCT.PRODUCT_NUMBER.gt(0))
+                .and(GIFT.GOODS_ID.isNull().or(DslPlus.findInSet(goodsId,GIFT.GOODS_ID)));
+        return db().select(GIFT.ID, GIFT.RULE, GIFT.EXPLAIN, GIFT_PRODUCT.ID, GIFT_PRODUCT.PRODUCT_ID, GIFT_PRODUCT.PRODUCT_NUMBER)
+                .from(GIFT).innerJoin(GIFT_PRODUCT).on(GIFT.ID.eq(GIFT_PRODUCT.GIFT_ID))
+                .where(condition).orderBy(GIFT.LEVEL.desc(), GIFT.CREATE_TIME.desc()).fetch();
     }
 }

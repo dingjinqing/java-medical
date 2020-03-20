@@ -1,17 +1,16 @@
 package com.vpu.mp.controller.wxapp;
 
-import javax.validation.Valid;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawInfoParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawParam;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawReturn;
 import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * 拼团抽奖
@@ -30,6 +29,7 @@ public class WxAppGroupDrawController extends WxAppBaseController {
 	 */
 	@PostMapping(value = "/api/wxapp/groupdraw/list")
 	public JsonResult groupDrawList(@RequestBody GroupDrawParam param) {
+	    param.initScene();
 		GroupDrawVo vo = shop().groupDraw.groupDrawList(param.getGroupDrawId());
 		if (vo == null) {
 			// 活动不存在或没有可参与的活动商品
