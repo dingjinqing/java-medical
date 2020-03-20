@@ -619,7 +619,7 @@
 
 <script>
 import {
-  returnInfo, handleReturnInfo
+  returnInfo, handleReturnInfo, getDefaultAddress
 } from '@/api/admin/orderManage/order.js'
 export default {
   data () {
@@ -748,6 +748,15 @@ export default {
         this.setAutoTime()
       }).catch(() => {
       })
+      getDefaultAddress().then(res => {
+        if (res.error === 0) {
+          let {consignee, merchant_telephone: merchantTelephone, zip_code: zipCode, return_address: returnAddress} = res.content
+          this.$set(this.returnAddressInfo, 'consignee', consignee)
+          this.$set(this.returnAddressInfo, 'merchantTelephone', merchantTelephone)
+          this.$set(this.returnAddressInfo, 'zipCode', zipCode)
+          this.$set(this.returnAddressInfo, 'returnAddress', returnAddress)
+        }
+      })
     },
     setRecordLogicStatus (operatorRecord) {
       operatorRecord.forEach(record => {
@@ -788,8 +797,8 @@ export default {
       if (this.returnInfo.returnAddressDays != null) {
         this.autoTime = this.returnInfo.returnAddressDays
       }
-      if (this.returnInfo.returnShoppingDays != null) {
-        this.autoTime = this.returnInfo.returnShoppingDays
+      if (this.returnInfo.returnShippingDays != null) {
+        this.autoTime = this.returnInfo.returnShippingDays
       }
       if (this.returnInfo.returnAuditPassNotShoppingDays != null) {
         this.autoTime = this.returnInfo.returnAuditPassNotShoppingDays

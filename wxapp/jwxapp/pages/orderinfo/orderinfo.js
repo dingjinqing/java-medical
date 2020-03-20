@@ -45,6 +45,10 @@ global.wxPage({
                 orderInfo.activityName = that.$t('pages.order.bargain')
               } else if (item == 5) {
                 orderInfo.activityName = that.$t('pages.order.seckill')
+              } else if (item == 10) {
+                this.setData({
+                  isPreSaleOrder:true
+                })
               }
             })
           }
