@@ -1645,14 +1645,25 @@ public class FriendPromoteService extends ShopBaseService {
     }
 
     public ActEffectDataVo getEffectData(FriendPromoteSelectParam param){
-        //当前活动信息
-        FriendPromoteActivityRecord record = db().select().from(FRIEND_PROMOTE_ACTIVITY)
-            .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
-            .fetchOneInto(FriendPromoteActivityRecord.class);
-        //设置筛选起止时间
-        Timestamp todayTime = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,DateUtil.getLocalDateTime()));
-        Timestamp startTime = record.getStartTime();
-        Timestamp endTime = record.getEndTime().before(todayTime)?record.getEndTime():todayTime;
+        Timestamp startTime;
+        Timestamp endTime;
+        if (param.getStartTime()!=null&&param.getEndTime()!=null){
+            startTime = param.getStartTime();
+            endTime = param.getEndTime();
+        }
+        else {
+            //当前活动信息
+            FriendPromoteActivityRecord record = db().select().from(FRIEND_PROMOTE_ACTIVITY)
+                .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
+                .fetchOneInto(FriendPromoteActivityRecord.class);
+            //设置筛选起止时间
+            Timestamp todayTime = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,DateUtil.getLocalDateTime()));
+            startTime = record.getStartTime();
+            endTime = record.getEndTime().before(todayTime)?record.getEndTime():todayTime;
+        }
+        ActEffectDataVo vo = new ActEffectDataVo();
+        vo.setStartTime(startTime);
+        vo.setEndTime(endTime);
         List<ActEffectData> dataList = new ArrayList<>();
         while (startTime.before(endTime)){
             Timestamp tempEnd = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,startTime));
@@ -1699,7 +1710,7 @@ public class FriendPromoteService extends ShopBaseService {
             startTime = new Timestamp(longTime);
         }
         //处理dataList
-        ActEffectDataVo vo = new ActEffectDataVo();
+
         Integer launchTotal = 0;
         Integer promoteTotal = 0;
         Integer successTotal = 0;

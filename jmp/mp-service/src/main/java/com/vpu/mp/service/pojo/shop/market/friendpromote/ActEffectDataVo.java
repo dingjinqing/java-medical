@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.friendpromote;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -29,4 +30,8 @@ public class ActEffectDataVo {
     private Integer successTotal;
     /** 拉新用户数 */
     private Integer newUserTotal;
+    /** 开始时间 */
+    private Timestamp startTime;
+    /** 结束时间 */
+    private Timestamp endTime;
 }
