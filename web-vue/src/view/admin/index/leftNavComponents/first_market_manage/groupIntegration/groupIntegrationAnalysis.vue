@@ -40,7 +40,7 @@
             <el-tooltip
               class="item"
               effect="light"
-              content="活动带来的付款订单数（包括退款部分）"
+              content="活动已被瓜分的积分数"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
