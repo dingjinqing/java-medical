@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.integration;
 import static com.vpu.mp.db.shop.tables.GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupIntegrationList.GROUP_INTEGRATION_LIST;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
@@ -36,12 +37,17 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaAllVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallProductMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.MinScoreMoney;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
 import com.vpu.mp.service.pojo.shop.market.integration.CanApplyPinInteVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteGetEndVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
+import com.vpu.mp.service.pojo.shop.market.integration.GroupInteRabbitParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisListVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationAnalysisVo;
@@ -71,11 +77,10 @@ import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.user.user.UserService;
-
-import lombok.Data;
 
 /**
  * @author huangronggang
@@ -342,10 +347,15 @@ public class GroupIntegrationService extends ShopBaseService {
 		}
 		record.setStatus(status);
 		int result = db().executeUpdate(record);
-		// 停用操作需要进行奖池分配 TODO 放入队列里
-		List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(id);
-		list.forEach(
-				item -> groupIntegrationList.asyncSuccessGroupIntegration(item.getGroupId(), item.getInteActivityId()));
+		// 停用操作需要进行奖池分配
+		if (status.equals(GroupIntegrationDefineEnums.Status.STOPPED.value()) && result > 0) {
+			List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(id);
+			for (GroupIntegrationListRecord item : list) {
+				GroupInteRabbitParam param = new GroupInteRabbitParam(item.getGroupId(), item.getInteActivityId(),getShopId(),null);
+				saas.taskJobMainService.dispatchImmediately(param, GroupInteRabbitParam.class.getName(), getShopId(),
+						TaskJobEnum.GROUP_INTEGRATION_MQ.getExecutionType());
+			}			
+		}
 		return result;
 	}
 
@@ -473,8 +483,8 @@ public class GroupIntegrationService extends ShopBaseService {
 				.setHideTime(moduleGroupIntegration.getHideTime() == null ? 0 : moduleGroupIntegration.getHideTime());
 		moduleGroupIntegration.setHideActive(
 				moduleGroupIntegration.getHideActive() == null ? 0 : moduleGroupIntegration.getHideActive());
-
-		moduleGroupIntegration.setCanPin(canApplyPinInte(groupIntegrationDefine, userId));
+		//canApplyPinInte(groupIntegrationDefine, userId)
+		moduleGroupIntegration.setCanPin(canApplyPinInte(groupIntegrationDefine.getId(), 0, userId, null).getStatus());
 		return moduleGroupIntegration;
 	}
 
@@ -485,6 +495,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	 * @param userId
 	 * @return 0正常，1活动不存在，2活动已停用，3活动未开始，4活动已结束
 	 */
+	@Deprecated
 	private byte canApplyPinInte(GroupIntegrationDefineRecord groupIntegrationDefine, int userId) {
 		if (groupIntegrationDefine == null) {
 			return 1;
@@ -787,7 +798,9 @@ public class GroupIntegrationService extends ShopBaseService {
 						logger().info("IsContinue为0");
 						List<GroupIntegrationListRecord> list = groupIntegrationList.getOnGoingGrouperInfo(pinInteId);
 						for (GroupIntegrationListRecord item : list) {
-							successPinIntegration(item.getGroupId(), pinInteId);
+							GroupInteRabbitParam param2 = new GroupInteRabbitParam(item.getGroupId(), pinInteId, getShopId(), null);
+							saas.taskJobMainService.dispatchImmediately(param2, GroupInteRabbitParam.class.getName(),
+									getShopId(), TaskJobEnum.GROUP_INTEGRATION_MQ.getExecutionType());
 						}
 					}
 				}
@@ -1211,5 +1224,40 @@ public class GroupIntegrationService extends ShopBaseService {
 			vo.setActivityInfo(parseJson);
 		}
 		return vo;
+	}
+	
+	/**
+	 * 发队列的开奖
+	 * @param groupId
+	 * @param actId
+	 */
+	public void asyncSuccessGroupIntegration(GroupInteRabbitParam param) {
+		successPinIntegration(param.getGroupId(), param.getPinInteId());
+	}
+	
+	/**
+	 * 获取积分商品
+	 * @return
+	 */
+	public List<IntegralMallMaAllVo> getGoods() {
+		IntegralConvertService integralConvertService = saas.getShopApp(getShopId()).integralConvertService;
+		List<IntegralMallMaVo> inteGoodsInfo = integralConvertService.getIsGoingActivityGoodsInfo(null);
+		List<IntegralMallMaAllVo> voInfo = new ArrayList<IntegralMallMaAllVo>();
+		for (IntegralMallMaVo item : inteGoodsInfo) {
+			IntegralMallMaAllVo vo = new IntegralMallMaAllVo();
+			BeanUtils.copyProperties(item, vo);
+			Integer id = item.getId();
+			Integer totalByProduct = integralConvertService.getTotalByProduct(id);
+			List<IntegralMallProductMaVo> specProduct = integralConvertService.getIntegralSpecProduct(id);
+			BigDecimal prdPrice = specProduct.stream().filter(x -> x.getPrdPrice() != null)
+					.map(IntegralMallProductMaVo::getPrdPrice).distinct().max((e1, e2) -> e1.compareTo(e2)).get();
+			vo.setPrdPrice(prdPrice);
+			MinScoreMoney MinArr = integralConvertService.getIntegralScoreMoney(id);
+			vo.setScore(MinArr.getMinScore());
+			vo.setMoney(MinArr.getMinMoney());
+			vo.setStockSum(totalByProduct);
+			voInfo.add(vo);
+		}
+		return voInfo;
 	}
 }

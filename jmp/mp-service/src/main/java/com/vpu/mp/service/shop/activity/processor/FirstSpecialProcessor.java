@@ -195,17 +195,16 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                     firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                 } else {
                                     //不可继续添加
-                                    log.info("商品数量超过活动数量限制,不可选中[getCartNumber:" + cartGoods.getCartNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
-//                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                                    log.info("商品数量超过活动数量限制,修改数量并提出警告[getCartNumber:" + cartGoods.getCartNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
                                     cartGoods.setCartNumber(firstActivityInfo.getFirstSpecialNumber());
                                     //修改购物车商品数量
-                                    log.info("修改商品数量");
-//                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
                                     cartService.changeGoodsNumber(cartBo.getUserId(),0,cartGoods.getCartId(),cartGoods.getProductId(),firstSpecial.getLimitAmount());
-                                    firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                     //提示前端
                                     cartBo.setNoticeStatus(CartConstant.CART_NOTICE_STATUS_WARNINGS);
                                     cartBo.setNotice("活动限购"+firstSpecial.getLimitAmount()+"个");
+//                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+//                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
+//                                    firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                                 }
                             }
                             goodsNum.updateAndGet(v -> v + 1);
@@ -239,20 +238,6 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
             }
 
         }
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
-            if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
-                log.info("首单特惠修商品{},改购物车表示",cartGoods.getGoodsName());
-                cartGoods.setActivityId(actInfo.getActivityId());
-                cartGoods.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            }else if(actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_INVALID)){
-                cartGoods.setActivityId(actInfo.getActivityId());
-                cartGoods.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-            }else {
-                cartGoods.setActivityType(null);
-                cartGoods.setActivityId(null);
-            }
-        });
     }
 
     /**

@@ -492,10 +492,13 @@ global.wxPage({
     }
   },
   toSave: function (e) {
-    var that = this;
-    setTimeout(function () {
-      that.bind_submit(e)
-    }, 100);
+    util.getNeedTemplateId('audit_upgrade', () => {
+      var that = this;
+      setTimeout(function () {
+        that.bind_submit(e)
+      }, 100);
+    })
+    
   },
   // 提交审核申请
   bind_submit: function (e) {

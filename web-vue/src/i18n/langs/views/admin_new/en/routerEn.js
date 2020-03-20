@@ -213,6 +213,12 @@ export const en = {
     'Friend promote',
     'Participate details'
   ],
+  // 营销管理 好友助力效果数据
+  promote_effect_data: [
+    'Marketing management',
+    'Friend promote',
+    'Effect data'
+  ],
   // 营销管理 普通优惠券
   ordinary_coupon: ['Marketing management', 'ordinary coupon'],
   // 营销管理 普通优惠券 领取明细

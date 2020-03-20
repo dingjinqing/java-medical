@@ -44,7 +44,7 @@
         <div>
           <span>收货人姓名：</span>
           <el-input
-            v-model="params.consigneeName"
+            v-model="params.consignee"
             size="small"
             class="input_width"
           ></el-input>
@@ -60,7 +60,6 @@
       </div>
       <div class="info3">
         <div>
-          <!-- {{$t('order.shippingAddress')}}： -->
           <span style="margin-top:7px">收获地址：</span>
           <areaLinkage
             :areaCode="areaLinkage"
@@ -95,17 +94,16 @@
         ></el-table-column>
 
         <el-table-column
-          prop="goodsName"
           label="商品信息"
           align="center"
         >
           <template slot-scope="scope">
             <div class="goodImge">
               <div>
-                <img :src="$imageHost+'/'+scope.row.goodsImg">
+                <img :src="$imageHost+'/'+scope.row.goods[0].goodsImg">
               </div>
               <div class="name">
-                {{scope.row.goodsName}}
+                {{scope.row.goods[0].goodsName}}
               </div>
             </div>
           </template>
@@ -115,7 +113,13 @@
           prop="goodsAmount"
           label="商品数量"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div>
+              {{scope.row.goods[0].goodsNumber}}
+            </div>
+          </template>
+        </el-table-column>
 
         <el-table-column
           prop="createTime"
@@ -153,10 +157,21 @@
       width="30%"
     >
       <div class="export_title ">
-        <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出37条数据,是否确认导出？</span></p>
+        <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出{{screenLength}}条数据,是否确认导出？</span></p>
       </div>
       <div class="export_title ">
         <p>筛选条件：无</p>
+        <!-- <div
+          class="have_export_info"
+          v-if="this.params"
+        >
+          <p>筛选条件：</p>
+          <p v-show="params.goodsName">商品名称：{{params.goodsName}}</p>
+          <p v-show="params.orderSn">订单号：{{params.orderSn}}</p>
+          <p v-show="params.orderStatus">订单状态：{{params.orderStatus}}</p>
+          <p v-show="params.consignee">收货人姓名：{{params.consignee}}</p>
+          <p v-show="params.mobile">收货人手机号：{{params.mobile}}</p>
+        </div> -->
       </div>
       <div class="export_title ">
         <p style="font-weight: bold;">导出数据</p>
@@ -176,10 +191,10 @@
 </template>
 
 <script>
+import { download } from '@/util/excelUtil.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
-
-import { getOrderList } from '@/api/admin/marketManage/preSale'
+import { getOrderList, exporOrderExcel } from '@/api/admin/marketManage/preSale'
 
 export default {
   components: {
@@ -194,12 +209,8 @@ export default {
   },
   data () {
     return {
-      // pageParams: {
-      //   currentPage: 1,
-      //   pageRows: 20
-      // },
       params: {
-        id: Number(this.$route.query.id),
+        activityId: Number(this.$route.query.id),
         goodsName: '',
         mobile: '',
         orderSn: '',
@@ -263,32 +274,40 @@ export default {
       }, {
         value: 12,
         label: '已取件-配送中'
-      }]
+      }],
+      screenLength: 0,
+      showFilterInfo: false
     }
   },
   methods: {
     initDataList () {
-      // Object.assign(this.params, this.pageParams
       getOrderList(this.params).then(res => {
         if (res.error === 0) {
+          console.log(res)
           this.tableData = res.content.dataList
-          // this.pageParams = res.content.page
           let data = res.content.dataList
           data.forEach(item => {
             item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
           })
+          if (data.length) {
+            this.screenLength = data.length
+          }
         }
       }).catch(err => console.log(err))
     },
     handleAreaData (data) {
-      console.log(data)
-      this.params.provinceCode = data.province
+      let returnProvince = data.province
+      if (returnProvince === 1) {
+        this.params.provinceCode = ''
+      } else {
+        this.params.provinceCode = returnProvince
+      }
       this.params.cityCode = data.city
       this.params.districtCode = data.district
     },
     // 筛选
     filter () {
-
+      this.initDataList()
     },
     // 导出
     handleToExport () {
@@ -296,7 +315,12 @@ export default {
     },
     // 导出弹窗确定事件
     handleToClickSure () {
-
+      exporOrderExcel(this.params).then(res => {
+        console.log(res)
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName.split(';')[1].split('=')[1]
+        download(res, decodeURIComponent(fileName))
+      }).catch(err => console.log(err))
     }
   }
 }
@@ -367,6 +391,11 @@ export default {
   }
   .export_title {
     margin-bottom: 10px;
+  }
+  .have_export_info {
+    p {
+      margin-bottom: 10px;
+    }
   }
   .goodImge {
     display: flex;

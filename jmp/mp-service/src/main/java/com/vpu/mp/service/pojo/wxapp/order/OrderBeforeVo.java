@@ -149,7 +149,7 @@ public class OrderBeforeVo {
     private InsteadPay insteadPayCfg;
     private Byte insteadPayNum;
     private Byte isFreeshipCard;
-
+    private BigDecimal freeshipCardMoney;
     /**
      * 默认配送方式 0 ，1 ，2
      * @return

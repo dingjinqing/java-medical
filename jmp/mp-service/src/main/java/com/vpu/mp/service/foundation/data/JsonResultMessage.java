@@ -855,6 +855,10 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_USER_SOURCE_ADMIN = "order.export.user.source.admin";
     public static final String ORDER_EXPORT_USER_SOURCE_UNKNOWN = "order.export.user.source.unknown";
     public static final String ORDER_EXPORT_USER_SOURCE_CHANNEL = "order.export.user.source.channel";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_COURIER = "order.export.deliver.type.courier";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_SELF = "order.export.deliver.type.self";
+    public static final String ORDER_EXPORT_CITY_EXPRESS_SERVICE = "order.export.deliver.type.express";
+
     /**
      * 下单必填信息的title
      */

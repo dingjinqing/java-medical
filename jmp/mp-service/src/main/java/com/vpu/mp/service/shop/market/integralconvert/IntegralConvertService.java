@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.market.integralconvert;
 
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.IntegralMallDefine;
 import com.vpu.mp.db.shop.tables.IntegralMallProduct;
 import com.vpu.mp.db.shop.tables.IntegralMallRecord;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.IntegralMallDefine.INTEGRAL_MALL_DEFINE;
 
 /**
  * 积分兑换
@@ -583,4 +585,63 @@ public class IntegralConvertService extends ShopBaseService {
         share.setPagePath(QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getPathUrl(pathParam));
         return share;
     }
+    
+    
+    /**
+     * 获得在积分活动中的商品信息
+     * @param goodsId
+     * @return
+     */
+    public List<IntegralMallMaVo> getIsGoingActivityGoodsInfo(Integer goodsId) {
+    	IntegralMallDefine a = INTEGRAL_MALL_DEFINE.as("a");
+    	Goods b = GOODS.as("b");
+    	Timestamp currentTimeStamp = Util.currentTimeStamp();
+		SelectConditionStep<Record> selectAction = db().select(a.fields()).select(b.GOODS_NAME, b.GOODS_IMG, b.SHOP_PRICE)
+				.from(a).leftJoin(b).on(a.GOODS_ID.eq(b.GOODS_ID))
+				.where(a.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(
+						a.STATUS.eq(NORMAL).and(a.START_TIME.lt(currentTimeStamp).and(a.END_TIME.gt(currentTimeStamp)
+								.and(b.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(b.GOODS_NUMBER.gt(0)))))));
+		if (goodsId != null && goodsId != 0) {
+			selectAction.and(a.GOODS_ID.eq(goodsId));
+		}
+		List<IntegralMallMaVo> fetchInto = selectAction.fetchInto(IntegralMallMaVo.class);
+		for (IntegralMallMaVo integralMallMaVo : fetchInto) {
+			integralMallMaVo.setGoodsImg(qrCode.imageUrl(integralMallMaVo.getGoodsImg()));
+		}
+		return fetchInto;
+    }
+    
+    /**
+     * 获得活动总库存
+     * @param defineId
+     * @return
+     */
+	public Integer getTotalByProduct(Integer defineId) {
+		return db().select(DSL.sum(imp.STOCK)).from(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(defineId))
+				.fetchAnyInto(Integer.class);
+	}
+	
+	
+	/**
+	 * 获得活动下的积分商品规格
+	 * @param defineId
+	 * @return
+	 */
+	public List<IntegralMallProductMaVo> getIntegralSpecProduct(Integer defineId) {
+		return db().select(imp.fields()).select(GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER).from(imp)
+				.leftJoin(GOODS_SPEC_PRODUCT).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+				.where(imp.INTEGRAL_MALL_DEFINE_ID.eq(defineId)).fetchInto(IntegralMallProductMaVo.class);
+	}
+	
+	/**
+	 * 
+	 * @param defineId
+	 * @return
+	 */
+	public MinScoreMoney getIntegralScoreMoney(Integer defineId) {
+		List<IntegralMallProductMaVo> list = db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(defineId)).orderBy(imp.SCORE.desc()).fetchInto(IntegralMallProductMaVo.class);
+		Integer minScore = list.stream().filter(x->x.getScore()!=null).map(IntegralMallProductMaVo::getScore).distinct().min((e1, e2) -> e1.compareTo(e2)).get();
+		BigDecimal minMoney = list.stream().filter(x->x.getScore().equals(minScore)).map(IntegralMallProductMaVo::getMoney).distinct().min((e1, e2) -> e1.compareTo(e2)).get();
+		return new MinScoreMoney(minScore,minMoney);
+	}
 }

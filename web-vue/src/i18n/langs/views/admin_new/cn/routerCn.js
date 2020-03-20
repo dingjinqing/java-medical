@@ -160,6 +160,8 @@ export const cn = {
   promote_launch_details: ['营销管理', '好友助力', '好友助力活动发起明细'],
   // 营销管理 好友助力参与明细
   promote_participate_details: ['营销管理', '好友助力', '好友助力活动参与明细'],
+  // 营销管理 好友助力活动效果
+  promote_effect_data: ['营销管理', '好友助力', '好友助力活动效果数据'],
   // 营销管理 分享有礼
   share_polite: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼 领取明细

@@ -583,6 +583,19 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/participateDetails'
       )
   },
+  // 好友助力活动效果
+  {
+    path: '/admin/home/main/friendHelp/effectData/:id',
+    name: 'promote_effect_data',
+    meta: {
+      crumbTitle: 'router.promote_effect_data',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/effectData'
+      )
+  },
   // 添加优惠券活动
   {
     path: '/admin/home/main/addyCoupon',
