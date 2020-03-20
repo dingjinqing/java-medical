@@ -1,5 +1,5 @@
 const util = require("../../../utils/util.js");
-let actType = {
+const actType = {
   1:{
     footerButtonName:{
       left:{name:'单独购买',event:'checkBuy'},
@@ -378,6 +378,7 @@ global.wxComponent({
         if(this.data.activity && this.data.activity.activityType === 10 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
         }
+        console.log(buttonData)
       }
       buttonData.activityType = this.data.activity ? this.data.activity.activityType : null
       console.log(buttonData)
@@ -530,9 +531,11 @@ global.wxComponent({
           })
         }
       } else {
-        this.setData({
-          'buttonData.buttonInfo.right.style':''
-        })
+        if(this.data.buttonData && this.data.buttonData.buttonInfo.right && this.data.buttonData.buttonInfo.right.style){
+          this.setData({
+            'buttonData.buttonInfo.right.style':''
+          })
+        }
       }
     },
     checkActStatus(){

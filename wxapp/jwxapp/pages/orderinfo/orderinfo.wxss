@@ -294,3 +294,84 @@
   height: 80rpx;
   border-radius: 50%;
 }
+.checkout_detail{
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 0 20rpx;
+  margin-top: 20rpx;
+}
+.checkout_detail > .detail_item{
+  display: flex;
+  height: 60rpx;
+  align-items: center;
+}
+.detail_item > .detail_content{
+  flex: 1;
+  text-align: right;
+}
+.presale-info .dotted{
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  background-color: #ccc;
+}
+.presale-info > .detail_item{
+  position: relative;
+}
+.presale-info > .detail_item+.detail_item{
+  margin-top: 14rpx;
+}
+.presale-info > .detail_item+.detail_item::before{
+  content: '';
+  height: 25rpx;
+  width: 2rpx;
+  background: #ccc;
+  position: absolute;
+  top: -19rpx;
+  left: 13rpx;
+}
+.presale-info .rule{
+  border-top: 2rpx solid #eee;
+}
+.presale-info > .detail_item:last-of-type::before{
+  content: none;
+}
+.presale-info .rule .detail_title{
+  color: #999;
+}
+.pre-sale-info{
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -16rpx;
+  margin-top: 16rpx;
+}
+.pre-sale-info .info-top{
+  display: flex;
+  padding: 20rpx 16rpx;
+  justify-content: space-between;
+}
+.pre-sale-info .info-top .status-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.status-item > view{
+  margin-bottom: 20rpx;
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  border: 10rpx solid #fff;
+  background-color: #ccc;
+}
+.status-item > text{
+  color: #ccc;
+}
+.pre-sale-info .info-top .line{
+  flex: 1;
+  height: 2rpx;
+  background-color: #ccc;
+  margin-top: 20rpx;
+}

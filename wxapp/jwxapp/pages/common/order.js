@@ -238,7 +238,7 @@ var order = {
         return this.addCart;
       }),
       isPayEndPayment: (() => {
-        return this.viewComment;
+        return this.payOrder;
       }),
       confirmation: (() => {
         return this.confirmation;
@@ -251,9 +251,6 @@ var order = {
       }),
       isShowFriendPay: (() => {
         return this.viewFriendPay
-      }),
-      isShowEndPay: (() => {
-        return this.payOrder
       })
     };
     let operate_info = e.currentTarget.dataset.operate_info;
@@ -274,9 +271,9 @@ var order = {
       if (orderData.orderStatus != 3 && orderData.orderStatus != 5) {
         if (orderData.orderStatus == 0 && typeArray.indexOf("10") != -1) {
           if (orderData.bkOrderPaid == 0) {
-            return "代付定金";
+            return "待付定金";
           } else {
-            return "代付尾款";
+            return "待付尾款";
           }
         } else {
           let orderStatusMap = new Map(orderStatusList);
