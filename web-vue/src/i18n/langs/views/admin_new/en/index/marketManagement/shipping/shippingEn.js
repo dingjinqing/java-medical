@@ -47,18 +47,20 @@ export const en = {
   option: 'Option',
 
   // 添加 / 编辑
-  storeArr: [{
-    name: 'Add merchandise',
-    value: '1'
-  },
-  {
-    name: 'Add product category',
-    value: '2'
-  },
-  {
-    name: 'Add platform category',
-    value: '3'
-  }],
+  storeArr: [
+    {
+      name: 'Add merchandise',
+      value: '1'
+    },
+    {
+      name: 'Add product category',
+      value: '2'
+    }
+    // {
+    //   name: 'Add platform category',
+    //   value: '3'
+    // }
+  ],
   nameTip: 'Please fill in the activity name',
   activeTime: 'ActivityTime',
   expireTypeFixed: 'Fixed time period',

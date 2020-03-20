@@ -41,6 +41,7 @@ import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
+import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;

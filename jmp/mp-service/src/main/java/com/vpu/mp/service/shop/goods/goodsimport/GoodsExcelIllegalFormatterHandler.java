@@ -1,4 +1,4 @@
-package com.vpu.mp.service.pojo.shop.goods.goodsimport;
+package com.vpu.mp.service.shop.goods.goodsimport;
 
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelHandler;

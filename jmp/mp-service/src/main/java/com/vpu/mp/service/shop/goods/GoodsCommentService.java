@@ -341,16 +341,16 @@ public class GoodsCommentService extends ShopBaseService {
       //有权限
       if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
           //查询审核配置
-          Byte commSwitch = commentConfigService.getCommentConfig();
-          Byte flag;
-          //不用审核 先发后审
-          if (commSwitch.equals(BYTE_ONE)||commSwitch.equals(BYTE_ZERO)){
-              flag = 1;
-          }
-          //先审后发
-          else {
-              flag = 0;
-          }
+//          Byte commSwitch = commentConfigService.getCommentConfig();
+          Byte flag =1;
+//          //不用审核 先发后审
+//          if (commSwitch.equals(BYTE_ONE)||commSwitch.equals(BYTE_ZERO)){
+//              flag = 1;
+//          }
+//          //先审后发
+//          else {
+//              flag = 0;
+//          }
 
           //手动添加评价
           db().insertInto(
