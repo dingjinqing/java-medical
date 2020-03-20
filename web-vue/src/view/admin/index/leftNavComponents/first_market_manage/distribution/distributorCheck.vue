@@ -130,7 +130,7 @@
               class="middle"
             >{{ $t('distribution.reviewTip') }}</td>
             <td
-              :rowspan="5 + item.activationFields.custom_options.length"
+              :rowspan="5 + item.rowLength"
               class="middle"
               v-if="activeName === '0'"
             >
@@ -147,16 +147,16 @@
               >{{ $t('distribution.reviewSet') }}</p>
             </td>
             <td
-              :rowspan="5 + item.activationFields.custom_options.length"
+              :rowspan="5 + item.rowLength"
               class="middle"
               v-if="activeName !== '0'"
             >{{ item.updateTime }}</td>
             <td
-              :rowspan="5 + item.activationFields.custom_options.length"
+              :rowspan="5 + item.rowLength"
               class="middle"
             >{{ item.status }}</td>
             <td
-              :rowspan="5 + item.activationFields.custom_options.length"
+              :rowspan="5 + item.rowLength"
               class="middle"
               v-if="activeName === '0'"
             >
@@ -175,7 +175,7 @@
               >{{ $t('distribution.noPassBtn') }}</el-button>
             </td>
             <td
-              :rowspan="5 + item.activationFields.custom_options.length"
+              :rowspan="5 + item.rowLength"
               class="middle"
               v-if="activeName === '2'"
             >{{ item.msg }}</td>
@@ -410,6 +410,11 @@ export default {
         // data.groupData = {}
         // 审核项
         item.activationFields = JSON.parse(item.activationFields)
+        if (item.activationFields.custom_options && item.activationFields.custom_options.length) {
+          item.rowLength = item.activationFields.custom_options.length
+        } else {
+          item.rowLength = 0
+        }
         // 生日
         if (item.activationFields.birthday_day) {
           item.activationFields.birthday = item.activationFields.birthday_year + '-' + item.activationFields.birthday_month + '-' + item.activationFields.birthday_day
