@@ -18,6 +18,8 @@ import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -864,11 +866,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param vo
      */
     private void memberCardFreeDelivery(OrderBeforeVo vo) {
-        //TODO
+        logger().info("卡包邮计算start");
         if(vo.getDefaultMemberCard() != null && vo.getDefaultMemberCard().getInfo() != null) {
-            vo.setShippingFee(BigDecimal.ZERO);
+            ValidUserCardBean info = vo.getDefaultMemberCard().getInfo();
+            if(info.getFreeshipLimit() == CardFreeship.shipType.SHIP_NOT_AVAIL.getType()) {
+                //无此权益
+                logger().info("卡包邮计算,无此权益");
+                return;
+            }else if (info.getFreeshipLimit() > CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+                CardFreeship rule = info.getCardFreeShip();
+                if(rule != null && rule.getRemainNum() <= 0) {
+                    logger().info("卡包邮计算,次数用完");
+                    return;
+                }
+            }
             vo.setIsFreeshipCard(YES);
+            vo.setFreeshipCardMoney(vo.getShippingFee());
+            vo.setShippingFee(BigDecimal.ZERO);
         }
+        logger().info("卡包邮计算end");
     }
 
     /**
