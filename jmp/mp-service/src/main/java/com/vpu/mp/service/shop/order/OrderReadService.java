@@ -560,10 +560,6 @@ public class OrderReadService extends ShopBaseService {
 			if(order.getOrderType().contains(BaseConstant.ACTIVITY_TYPE_GROUP_BUY.toString())) {
 				order.setGroupBuyInfo(groupBuyList.getByOrder(order.getOrderSn()));
 			}
-			//补款设置时间
-			if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-				setBkPayOperation(order);
-			}
 			//是否退过款
 			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 		}
@@ -577,8 +573,10 @@ public class OrderReadService extends ShopBaseService {
 		order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1(),timeInterval.value2()});
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
+            order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
 			order.setIsPayEndPayment(NumberUtils.BYTE_ONE);
 		}else {
+            order.setPayOperationTime(0L);
 			order.setIsPayEndPayment(NumberUtils.BYTE_ZERO);
 		}
 	}
@@ -702,15 +700,8 @@ public class OrderReadService extends ShopBaseService {
 	private void setPayOperation(OrderListMpVo order) {
 		long currenTmilliseconds  = Instant.now().toEpochMilli();
 		if(order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
-			//去付尾款
-			Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-			if(timeInterval.value1().getTime() < currenTmilliseconds && currenTmilliseconds < timeInterval.value2().getTime() ) {
-				order.setPayOperationTime(timeInterval.value2().getTime() - currenTmilliseconds);
-			}else {
-				order.setPayOperationTime(0L);
-				order.setPreSaleTimeInterval(new Timestamp[] {timeInterval.value1() , timeInterval.value2()});
-			}
-            order.setIsShowEndPay(order.getPayOperationTime() > 0 ? YES : NO);
+            //补款设置时间与补款是否可支付
+            setBkPayOperation(order);
 		} else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
             order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
             order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
