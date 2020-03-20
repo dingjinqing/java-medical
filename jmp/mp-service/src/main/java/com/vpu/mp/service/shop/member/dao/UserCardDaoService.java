@@ -591,15 +591,10 @@ public class UserCardDaoService extends ShopBaseService{
         }else {
             //等级卡只有一个
             ValidUserCardBean card = validCardList.get(0);
-            card.setAvatar(userCardService.getCardAvatar());
-            // 快照时间
-            EffectTimeParam etParam = new EffectTimeParam();
-            BeanUtils.copyProperties(card, etParam);
-            EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-            BeanUtils.copyProperties(etBean, card);
-            // 背景处理
-            CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-            BeanUtils.copyProperties(bg, card);
+            //处理卡的有效时间
+            dealWithValidUserCardEffectimeAndBgImg(card);
+            // 处理卡的包邮信息
+            dealWithValidUserCardFreeship(card);
             return new OrderMemberVo().init(card);
         }
     }
@@ -614,20 +609,13 @@ public class UserCardDaoService extends ShopBaseService{
     public List<OrderMemberVo> getOrderMembers(Integer userId,Byte[] cardType,Byte type) {
         List<ValidUserCardBean> validCardList = getValidCardList(userId, cardType, type);
         // 会员卡头像处理
-        String cardAvatar = userCardService.getCardAvatar();
+        
         for(ValidUserCardBean card: validCardList) {
-        	card.setAvatar(cardAvatar);
-        	// 快照时间
-        	EffectTimeParam etParam = new EffectTimeParam();
-        	BeanUtils.copyProperties(card, etParam);
-        	EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-        	BeanUtils.copyProperties(etBean, card);
-        	// 背景处理
-        	CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
-        	BeanUtils.copyProperties(bg, card);
+        	// 处理卡的有效时间
+        	dealWithValidUserCardEffectimeAndBgImg(card);
+        	// 处理卡的包邮信息
+            dealWithValidUserCardFreeship(card);
         }
-        
-        
         if(CollectionUtils.isEmpty(validCardList)){
             return Lists.newArrayList();
         }

@@ -53,14 +53,14 @@
             <div>
               <el-form-item
                 prop='startTime'
-                style="margin-bottom:0"
+                style="margin-bottom:0;"
               >
                 <el-date-picker
                   v-model="activity.startTime"
                   type="datetime"
                   placeholder="选择开始时间"
                   size="small"
-                  style="width: 160px;"
+                  style="width: 186px;"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   :disabled="edit"
                 >
@@ -78,8 +78,9 @@
                   type="datetime"
                   size="small"
                   placeholder="选择结束时间"
-                  style="width: 160px;"
+                  style="width: 186px;"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  default-time="23:59:59"
                   :disabled="edit"
                 >
                 </el-date-picker>
