@@ -138,4 +138,18 @@ public class AdminFriendPromoteController extends AdminBaseController{
         GoodsInfo goodsInfo = shop().friendPromoteService.getGoodsInfo(param.getId());
         return success(goodsInfo);
     }
+
+    /**
+     * 活动效果展示
+     *
+     * @param param 发起id
+     * @return 活动效果
+     */
+    @PostMapping("/analysis")
+    public JsonResult getEffectData(@RequestBody FriendPromoteSelectParam param) {
+
+        ActEffectDataVo vo = shop().friendPromoteService.getEffectData(param);
+
+        return success(vo);
+    }
 }

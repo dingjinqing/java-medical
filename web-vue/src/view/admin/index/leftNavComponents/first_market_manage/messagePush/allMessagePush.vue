@@ -30,10 +30,25 @@
           ></el-input>
         </el-form-item>
         <el-form-item :label="labels.label3">
-          <dateTimePicker
-            @time="handleGetTime"
-            :showPicker=1
-          />
+          <el-date-picker
+            size="small"
+            v-model="startTime"
+            type="datetime"
+            style="width:200px "
+            value-format="yyyy-MM-dd HH:mm:ss"
+            default-time='00:00:00'
+          >
+          </el-date-picker>
+          &nbsp;至&nbsp;
+          <el-date-picker
+            size="small"
+            v-model="endTime"
+            type="datetime"
+            style="width:200px "
+            value-format="yyyy-MM-dd HH:mm:ss"
+            default-time='23:59:59'
+          >
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -58,36 +73,49 @@
         <el-table-column
           prop="name"
           :label="$t(`messagePush.name`)"
+          align="center"
+          width="200"
         >
         </el-table-column>
         <el-table-column
           prop="title"
           :label="$t(`messagePush.thebusinessTitle`)"
+          width="200"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="startTime"
           :label="$t(`messagePush.sendtime`)"
+          width="300"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="sentNumber"
           :label="$t(`messagePush.sentNumber`)"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="clickedNumber"
           :label="$t(`messagePush.returnTheNumber`)"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="percentage"
           :label="$t(`messagePush.rateOfReturn`)"
+          align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.percentage}}%
+          </template>
         </el-table-column>
         <el-table-column
           prop="sendStatus"
           :label="$t(`messagePush.sendStatus`)"
+          align="center"
         >
           <template slot-scope="data">
             <div>
@@ -98,44 +126,40 @@
         <el-table-column
           prop="id"
           :label="$t(`messagePush.operation`)"
+          width="120"
+          align="center"
         >
           <template slot-scope="data">
-            <div>
+            <div class="operationTip">
               <el-tooltip
                 :content="$t(`messagePush.viewDetail`)"
                 placement="top"
               >
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-view"
-                  circle
+                <span
+                  class="iconfont iconchakanxiangqing iconSpan"
                   @click="handleGetDetails(data.row)"
-                ></el-button>
+                >
+                </span>
               </el-tooltip>
               <el-tooltip
                 :content="$t(`messagePush.sendTheRecord`)"
                 placement="top"
               >
-                <el-button
-                  size="mini"
-                  type="primary"
+                <span
+                  class="iconfont iconmingxi1 iconSpan"
                   @click="handleSendRecord(data.row)"
-                  icon="el-icon-s-unfold"
-                  circle
-                ></el-button>
+                >
+                </span>
               </el-tooltip>
               <el-tooltip
                 :content="$t(`messagePush.delete`)"
                 placement="top"
               >
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-delete"
-                  circle
-                  @click="handleDelTemplate(data.row.id)"
-                ></el-button>
+                <span
+                  class="iconfont iconshanchu2 iconSpan"
+                  @click="handleDelTemplate(data.row)"
+                >
+                </span>
               </el-tooltip>
               <!-- <i class="el-icon-view"></i>
                 <i class="el-icon-s-unfold"></i>
@@ -267,12 +291,6 @@ export default {
         }
       }).catch(err => console.log(err))
     },
-    // 获取筛选的时间
-    handleGetTime (val) {
-      const { startTime, endTime } = val
-      this.startTime = startTime
-      this.endTime = endTime
-    },
     // 发送记录
     handleSendRecord (row) {
       console.log(row)
@@ -322,6 +340,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .messagePush {
   padding: 10px;
   /deep/ .tableClass th {
@@ -331,6 +350,16 @@ export default {
     font-weight: bold;
     color: #000;
     padding: 8px 10px;
+  }
+  .operationTip {
+    display: flex;
+    justify-content: space-between;
+    .iconSpan {
+      font-size: 22px;
+      color: #5a8bff;
+      cursor: pointer !important;
+      margin-top: 5px;
+    }
   }
 }
 </style>

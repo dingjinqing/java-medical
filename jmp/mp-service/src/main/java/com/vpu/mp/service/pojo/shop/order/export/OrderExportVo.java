@@ -161,6 +161,9 @@ public class OrderExportVo {
     /** 邀请来源活动id */
     @ExcelIgnore
     private Integer inviteActId;
+    /** 配送类型 */
+    @ExcelIgnore
+    private Byte deliverType;
 
     //列名常量
     public static final String ORDER_SN = "orderSn";
