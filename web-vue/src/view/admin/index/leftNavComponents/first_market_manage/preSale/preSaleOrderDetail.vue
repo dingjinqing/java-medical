@@ -95,17 +95,16 @@
         ></el-table-column>
 
         <el-table-column
-          prop="goodsName"
           label="商品信息"
           align="center"
         >
           <template slot-scope="scope">
             <div class="goodImge">
               <div>
-                <img :src="$imageHost+'/'+scope.row.goodsImg">
+                <img :src="$imageHost+'/'+scope.row.goods[0].goodsImg">
               </div>
               <div class="name">
-                {{scope.row.goodsName}}
+                {{scope.row.goods[0].goodsName}}
               </div>
             </div>
           </template>
@@ -115,7 +114,14 @@
           prop="goodsAmount"
           label="商品数量"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div>
+              {{scope.row.goods[0].goodsNumber}}
+            </div>
+          </template>
+
+        </el-table-column>
 
         <el-table-column
           prop="createTime"
@@ -179,7 +185,7 @@
 import pagination from '@/components/admin/pagination/pagination.vue'
 import areaLinkage from '@/components/admin/areaLinkage/areaLinkage.vue'
 
-import { getOrderList } from '@/api/admin/marketManage/preSale'
+import { getOrderList, exporOrderExcel } from '@/api/admin/marketManage/preSale'
 
 export default {
   components: {
@@ -199,7 +205,7 @@ export default {
       //   pageRows: 20
       // },
       params: {
-        id: Number(this.$route.query.id),
+        activityId: Number(this.$route.query.id),
         goodsName: '',
         mobile: '',
         orderSn: '',
@@ -271,6 +277,7 @@ export default {
       // Object.assign(this.params, this.pageParams
       getOrderList(this.params).then(res => {
         if (res.error === 0) {
+          console.log(res)
           this.tableData = res.content.dataList
           // this.pageParams = res.content.page
           let data = res.content.dataList
@@ -296,7 +303,12 @@ export default {
     },
     // 导出弹窗确定事件
     handleToClickSure () {
-
+      exporOrderExcel(this.params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // console.log(res)
+        }
+      }).catch(err => console.log(err))
     }
   }
 }
