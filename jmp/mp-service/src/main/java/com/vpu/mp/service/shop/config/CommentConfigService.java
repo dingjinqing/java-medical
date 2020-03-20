@@ -10,8 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 
 public class CommentConfigService extends BaseShopConfigService{
-	
+
+    /**
+     * 0不用审核，1先发后审，2先审后发
+     */
 	private final static String K_COMMENT = "comment";
+    /**
+     * 设置前端是否隐藏未填写心得的评价，0关，1开
+     */
 	private final static String K_COMMENT_STATE = "comment_state";
 	
 	 /**
