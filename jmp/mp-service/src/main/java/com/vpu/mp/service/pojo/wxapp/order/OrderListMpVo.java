@@ -54,8 +54,6 @@ public class OrderListMpVo{
 	private Byte isShowPay;
     /**好友代付支付按钮是否显示*/
     private Byte isShowFriendPay;
-    /**补款支付按钮是否显示*/
-    private Byte isShowEndPay;
 	/**是否奖品订单*/
 	private Byte isLotteryGift;
 	/**是否退过*/

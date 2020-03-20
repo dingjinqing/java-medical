@@ -288,7 +288,7 @@ public class AtomicOperation extends ShopBaseService {
                         updateGoodsMap.put(product.getGoodsId(), updateGoods);
                     }
                     //退数量
-                    Integer num = rGoods.getKey();
+                    Integer num = rGoods.getValue();
                     //商品库存
                     int goodsStock = goods.getGoodsNumber() + num;
                     //商品销量

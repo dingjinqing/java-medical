@@ -25,7 +25,7 @@ public enum QrCodeTypeEnum {
     /*拼团*/
     GROUP_BOOKING((byte) 8, "pages/groupbuyitem/groupbuyitem"),
     /*表单*/
-    FORM((byte) 9, "pages/form/form"),
+    FORM((byte) 9, "pages1/form/form"),
     /*砍价商品*/
     BARGAIN_ITEM((byte) 10, "pages/bargainitem/bargainitem"),
     /*海报-商品*/

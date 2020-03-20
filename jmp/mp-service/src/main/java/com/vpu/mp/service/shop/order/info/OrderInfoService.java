@@ -1371,7 +1371,8 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public List<OrderExportVo> getExportOrderList(OrderExportQueryParam param) {
 		SelectJoinStep<? extends Record> select = db()
-				.select(ORDER_INFO.asterisk(), ORDER_GOODS.REC_ID, ORDER_GOODS.GOODS_ID, ORDER_GOODS.GOODS_SN,
+				.select(ORDER_INFO.fields()).
+        select(ORDER_GOODS.REC_ID, ORDER_GOODS.GOODS_ID, ORDER_GOODS.GOODS_SN,
 						ORDER_GOODS.PRODUCT_ID, ORDER_GOODS.PRODUCT_SN, ORDER_GOODS.GOODS_NAME,
 						ORDER_GOODS.GOODS_NUMBER, ORDER_GOODS.MARKET_PRICE, ORDER_GOODS.GOODS_PRICE,
 						ORDER_GOODS.DISCOUNTED_GOODS_PRICE, ORDER_GOODS.GOODS_ATTR, ORDER_GOODS.SEND_NUMBER,

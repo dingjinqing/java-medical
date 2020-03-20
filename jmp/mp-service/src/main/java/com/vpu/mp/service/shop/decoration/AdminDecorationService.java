@@ -531,7 +531,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
             record.setPageId(page.getPageId());
-            return record.update();
+            if(record.update() > 0){
+                return record.getPageId();
+            }
         }else {
             if(record.insert() > 0){
                 page.setPageId(record.getPageId());

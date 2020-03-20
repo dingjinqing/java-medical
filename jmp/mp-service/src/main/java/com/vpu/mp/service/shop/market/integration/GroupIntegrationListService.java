@@ -245,11 +245,12 @@ public class GroupIntegrationListService extends ShopBaseService {
 		return fetch;
 	}
 	/**
-	 * 给参加某活动的某一个团进行结算 
+	 * 给参加某活动的某一个团进行结算  废了
 	 * @param groupId
 	 * @param actId
 	 * TODO 待指定线程池
 	 */
+	@Deprecated
 	public void asyncSuccessGroupIntegration(Integer groupId,Integer actId) {
 //		活动内容 
 		GroupIntegrationDefineRecord defineRecord = saas().getShopApp(getShopId()).groupIntegration.selectDefineById(actId);
