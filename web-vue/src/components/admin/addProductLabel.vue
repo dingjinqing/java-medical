@@ -197,7 +197,14 @@ export default {
         this.$refs.labelTable.toggleRowSelection(val.pop())
       } else {
         console.log(val)
-        this.checkBoxData = val
+        let obj = []
+        val.forEach((item, index) => {
+          console.log()
+          if (typeof item === 'object') {
+            obj.push(item)
+          }
+        })
+        this.checkBoxData = obj
       }
     },
     // 当前页改变
@@ -212,6 +219,7 @@ export default {
       //     arr.push(item)
       //   }
       // })
+      console.log(this.checkBoxData)
       this.$emit('handleToGetBackData', this.checkBoxData)
       this.visible = false
     }

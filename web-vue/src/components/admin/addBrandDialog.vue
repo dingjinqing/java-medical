@@ -360,7 +360,7 @@ export default {
             }
           })
         } else {
-          this.$emit('handleToGetBackData', arr)
+          this.$emit('handleToGetBackData', this.checkBoxData)
         }
       }
       this.$emit('update:callAddBrand', false)
