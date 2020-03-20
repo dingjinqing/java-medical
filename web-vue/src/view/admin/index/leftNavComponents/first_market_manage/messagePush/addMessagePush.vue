@@ -157,7 +157,7 @@
                       v-model="params.onClickNoPay"
                       @change="handleOnClickNoPayChange"
                     >加购人群</el-checkbox>
-                    <span style="color:#999;fontSize:12px;margin-left:-15px">30天内在本店内有加入购物车行为，但没有支付的用户</span>
+                    <span style="color:#999;fontSize:12px;">30天内在本店内有加入购物车行为，但没有支付的用户</span>
                   </div>
                   <div>
                     <el-checkbox
@@ -314,6 +314,10 @@
                       :showPicker=1
                       @time="getTime"
                     />
+                    <div
+                      class="mask"
+                      :style="senAction===2?'display:none':''"
+                    ></div>
                   </div>
                   <div style="color:#999;fontSize:12px;margin:5px 0">
                     所有可送达的用户均会第一时间收到一次此消息
@@ -324,11 +328,15 @@
                       v-model="senAction"
                     >定时发送</el-radio>
                   </div>
-                  <div>
+                  <div class="timePicker">
                     <dateTimePicker
                       :showPicker=2
                       @startTime="getTime2"
                     />
+                    <div
+                      class="mask"
+                      :style="senAction===4?'display:none':''"
+                    ></div>
                   </div>
                 </el-form-item>
               </el-form>
@@ -603,7 +611,6 @@ export default {
       userNumber: 0,
       tuneUpChooseGoods: false,
       tuneUpSelectLink: false
-
     }
   },
   watch: {
@@ -674,23 +681,25 @@ export default {
       }
       console.log(params)
       console.log(this.$refs.form)
-      // 验证输入框是否为空
-      if (this.formData.name === `` || this.formData.title === `` || this.formData.content === ``) {
-        return
-      }
-      addMessageApi(params).then(res => {
-        const { error } = res
-        if (error === 0) {
-          this.$message.success({
-            type: 'success',
-            message: `保存成功`
-          })
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          addMessageApi(params).then(res => {
+            const { error } = res
+            if (error === 0) {
+              this.$message.success({
+                type: 'success',
+                message: `保存成功`
+              })
 
-          this.$router.push({
-            name: `all_message_push`
-          })
+              this.$router.push({
+                name: `all_message_push`
+              })
+            }
+          }).catch(err => console.log(err))
+        } else {
+          return false
         }
-      }).catch(err => console.log(err))
+      })
     },
     // 获取时间
     getTime (val) {
@@ -1186,6 +1195,21 @@ export default {
           }
         }
       }
+    }
+  }
+}
+.timePicker {
+  position: relative;
+  .mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f7fa;
+    z-index: 10;
+    top: 0;
+    opacity: 0.6;
+    &:hover {
+      cursor: not-allowed;
     }
   }
 }

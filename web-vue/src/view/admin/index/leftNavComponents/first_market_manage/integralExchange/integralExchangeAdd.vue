@@ -343,7 +343,7 @@ export default {
         if (index !== (value.length - 1)) {
           if (!Number(item.stock)) {
             callback(new Error('兑换商品库存不能为空'))
-          } else if (Number(item.stock) > item.goodsStock) {
+          } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
             callback(new Error('兑换商品库存不能大于商品库存'))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
             callback(new Error('兑换所需金额不能大于原价'))
@@ -708,7 +708,7 @@ export default {
   .date {
     display: flex;
     /deep/ .el-input__inner {
-      width: 188px;
+      width: 188px !important;
     }
     /deep/ .el-form-item {
       margin-bottom: 0 !important;
