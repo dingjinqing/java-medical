@@ -104,7 +104,10 @@ public class WxAppCartGoods {
     private List<CartActivityInfo> cartActivityInfos = new ArrayList<>();
 
     public CartActivityInfo getActivity(Byte activityType) {
-        return cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getStatus().equals(activityType)).findFirst().get();
+        if (cartActivityInfos==null||cartActivityInfos.size()==0){
+            return null;
+        }
+        return cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityType().equals(activityType)).findFirst().orElse(null);
     }
 
 

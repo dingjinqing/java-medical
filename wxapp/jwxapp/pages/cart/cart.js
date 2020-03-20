@@ -38,6 +38,11 @@ global.wxPage({
           totalPrice
         })
 
+        // 首单特惠添加商品个数限制
+        if (res.content.noticeStatus == 1) {
+          util.showModal('提示', res.content.notice);
+        }
+
         this.data.canBuyGoodsList.forEach((item, index) => {
           item.isSales = 0
           item.isMemPrice = 0
