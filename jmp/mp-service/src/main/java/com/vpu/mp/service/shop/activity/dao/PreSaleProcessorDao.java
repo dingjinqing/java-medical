@@ -55,7 +55,7 @@ public class PreSaleProcessorDao extends PreSaleService {
     public Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsPreSaleListInfo(List<Integer> goodsIds, Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
-        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
+        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
 
         return db().select(PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
@@ -77,7 +77,7 @@ public class PreSaleProcessorDao extends PreSaleService {
     public Map<Integer, List<Record5<Integer, Integer, Integer, Integer, BigDecimal>>> getGoodsPreSaleList(List<Integer> productIds, Timestamp date) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
-        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.gt(date).and(PRESALE.PRE_END_TIME_2.lt(date)));
+        Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
 
         return db().select(PRESALE.ID,PRESALE_PRODUCT.PRODUCT_ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
             .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
