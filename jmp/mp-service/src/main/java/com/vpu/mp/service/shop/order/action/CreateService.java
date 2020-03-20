@@ -869,13 +869,16 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         logger().info("卡包邮计算start");
         if(vo.getDefaultMemberCard() != null && vo.getDefaultMemberCard().getInfo() != null) {
             ValidUserCardBean info = vo.getDefaultMemberCard().getInfo();
-            if(info.getFreeshipLimit() == CardFreeship.shipType.SHIP_NOT_AVAIL.getType()) {
+            if(info.getCardFreeShip() == null) {
                 //无此权益
                 logger().info("卡包邮计算,无此权益");
                 return;
-            }else if (info.getFreeshipLimit() > CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
-                CardFreeship rule = info.getCardFreeShip();
-                if(rule != null && rule.getRemainNum() <= 0) {
+            } else if(info.getCardFreeShip().getType() == CardFreeship.shipType.SHIP_NOT_AVAIL.getType()) {
+                //无此权益
+                logger().info("卡包邮计算,无此权益");
+                return;
+            }else if (info.getCardFreeShip().getType() > CardFreeship.shipType.SHIP_IN_EFFECTTIME.getType()) {
+                if(info.getCardFreeShip().getRemainNum() <= 0) {
                     logger().info("卡包邮计算,次数用完");
                     return;
                 }
