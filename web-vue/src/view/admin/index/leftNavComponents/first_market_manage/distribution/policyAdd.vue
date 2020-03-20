@@ -195,29 +195,39 @@
         </el-form-item>
 
         <div style="height: 40px;line-height: 40px;background: #f8f8f8;padding-left: 10px;margin-bottom: 20px;">分销商品</div>
-        <div style="margin-left: 120px;">
-          <el-radio-group v-model="form.recommendType">
-            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
-            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
-          </el-radio-group>
-          <div v-if="form.recommendType === 1">
-            <div
-              v-for="(item,index) in storeArr"
-              :key="index"
-              class="storeContent"
-            >
-              <el-button
-                @click="hanldeToAddGoodS(index)"
-                size="small"
+        <el-form-item
+          label=""
+          style="margin-left: -120px;"
+          prop="recommendType"
+        >
+          <div>
+            <el-radio-group v-model="form.recommendType">
+              <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
+              <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
+            </el-radio-group>
+            <div v-if="form.recommendType === 1">
+              <div
+                v-for="(item,index) in storeArr"
+                :key="index"
+                class="storeContent"
               >
-                <i class="el-icon-plus"></i> {{ item.name }}
-              </el-button>
-              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
-              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+                <el-button
+                  @click="hanldeToAddGoodS(index)"
+                  size="small"
+                >
+                  <i class="el-icon-plus"></i> {{ item.name }}
+                </el-button>
+                <span
+                  style="color: #e4393c; cursor: pointer;"
+                  v-if="index === 0"
+                  @click="onlyHanldeToAddGoodS(index)"
+                >{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+                <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+                <!-- <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span> -->
+              </div>
             </div>
           </div>
-        </div>
+        </el-form-item>
 
       </el-form>
 
@@ -237,6 +247,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
@@ -259,6 +270,14 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 自定义校验可使用商品
+    var validateRecommendType = (rule, value, callback) => {
+      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
+        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
+      } else {
+        callback()
+      }
+    }
     return {
       // 表单
       form: {
@@ -281,7 +300,8 @@ export default {
         strategyName: { required: true, message: '请填写返利策略名称', trigger: 'blur' },
         strategyLevel: { required: true, message: '请填写返利策略优先级', trigger: 'blur' },
         validity: { required: true, message: '请填写有效期', trigger: 'change' },
-        selfPurchase: { required: true, message: '请选择是否开启自购返利', trigger: 'change' }
+        selfPurchase: { required: true, message: '请选择是否开启自购返利', trigger: 'change' },
+        recommendType: { required: true, validator: validateRecommendType, trigger: 'change' }
       },
       tipContent: `
         <p>成本价保护：</p>
@@ -324,6 +344,7 @@ export default {
       }],
       storeArr: [], // 分销商品
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -435,13 +456,13 @@ export default {
           this.tableData[4].firstRatio = data.firstRatio_5
 
           // 返利商品
-          this.goodsInfo = data.recommendGoodsId.split(',')
+          this.goodsInfo = data.recommendGoodsId === '' ? [] : data.recommendGoodsId.split(',')
           this.goodsInfo = this.goodsInfo.map(Number)
 
-          this.busClass = data.recommendCatId.split(',')
+          this.busClass = data.recommendCatId === '' ? [] : data.recommendCatId.split(',')
           this.busClass = this.busClass.map(Number)
 
-          this.platClass = data.recommendSortId.split(',')
+          this.platClass = data.recommendSortId === '' ? [] : data.recommendSortId.split(',')
           this.platClass = this.platClass.map(Number)
 
           this.handleData(this.tableData)
@@ -531,6 +552,7 @@ export default {
     hanldeToAddGoodS (index) {
       switch (index) {
         case 0:
+          this.isOnlyShowChooseGoods = false
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:
@@ -548,6 +570,29 @@ export default {
       }
     },
 
+    // 点击指定商品出现的添加类弹窗汇总--部分
+    onlyHanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.isOnlyShowChooseGoods = true
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+    },
+
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
@@ -556,6 +601,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.$refs['form'].validateField('recommendType')
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
@@ -575,6 +621,7 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+      this.$refs['form'].validateField('recommendType')
     },
 
     // 直接间接返利比例
