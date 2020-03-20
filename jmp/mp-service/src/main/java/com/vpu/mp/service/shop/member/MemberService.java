@@ -271,9 +271,23 @@ public class MemberService extends ShopBaseService {
 
 		return select;
 	}
-
+	
+	/**
+	 *  获取用户信息
+	 */
 	public UserRecord getUserRecordById(Integer userId) {
 		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchAny();
+		// 积分缓存
+		Integer currentScore = user.getScore();
+		// 实际积分
+		Integer actualScore = score.getTotalAvailableScoreById(userId);
+		if(!currentScore.equals(actualScore)) {
+			// 缓存积分失效需要更新
+			logger().info("缓存积分失效需要更新");
+			user.setScore(actualScore);
+			score.updateUserScore(userId, actualScore);
+		}
+		
 		return user;
 	}
 
