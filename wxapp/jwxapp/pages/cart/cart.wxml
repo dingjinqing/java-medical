@@ -79,9 +79,9 @@
                                 <!-- 降价提示 -->
                                 <view wx:if="{{ item.cartActivityInfos.length > 0 }}">
                                   <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
-                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == null && val.activityType == 22 }}" style="color:{{comColor}}">比加入时降了{{ item.goodsPrice - val.memberPriceType }}元</view>
-                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == 18 && val.activityType == 18 }}" style="color:{{comColor}}">比加入时降了{{ item.goodsPrice - val.firstSpecialPrice }}元</view>
-                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == 6 && val.activityType == 6 }}" style="color:{{comColor}}">比加入时降了{{ item.goodsPrice - val.firstSpecialPrice }}元</view>
+                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == null && val.activityType == 22 }}" style="color:{{comColor}}">比加入时降了{{ item.originalPrice - val.memberPriceType }}元</view>
+                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == 18 && val.activityType == 18 }}" style="color:{{comColor}}">比加入时降了{{ item.originalPrice - val.firstSpecialPrice }}元</view>
+                                    <view class="ng_goods_jiang" wx:if="{{ item.activityType == 6 && val.activityType == 6 }}" style="color:{{comColor}}">比加入时降了{{ item.originalPrice - val.firstSpecialPrice }}元</view>
                                   </view>
                                 </view>
                                 <view class="goods_price">

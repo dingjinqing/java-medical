@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -232,18 +233,18 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         List<Integer> productList = cartBo.getCartGoodsList().stream()
                 .filter(goods -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goods.getGoodsRecord().getGoodsType()))
                 .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
-        Map<Integer, List<Record4<Integer, Integer, Integer, BigDecimal>>> goodsPreSaleList = preSaleProcessorDao.getGoodsPreSaleList(productList, cartBo.getDate());
+        Map<Integer, List<Record5<Integer, Integer, Integer, Integer, BigDecimal>>> goodsPreSaleList = preSaleProcessorDao.getGoodsPreSaleList(productList, cartBo.getDate());
         if (goodsPreSaleList!=null&&goodsPreSaleList.size()>0){
             cartBo.getCartGoodsList().forEach(goods->{
                 if (goodsPreSaleList.get(goods.getProductId())!=null){
-                    Record4<Integer, Integer, Integer, BigDecimal> record4s = goodsPreSaleList.get(goods.getProductId()).get(0);
+                    Record5<Integer, Integer,Integer, Integer, BigDecimal> record5s = goodsPreSaleList.get(goods.getProductId()).get(0);
                     CartActivityInfo seckillProductInfo =new CartActivityInfo();
                     seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-                    seckillProductInfo.setActivityId(record4s.get(PRESALE.ID));
-                    seckillProductInfo.setSecKillPrice(record4s.get(PRESALE_PRODUCT.PRESALE_PRICE));
+                    seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
+                    seckillProductInfo.setSecKillPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
                     goods.getCartActivityInfos().add(seckillProductInfo);
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-                    goods.setActivityId(record4s.get(PRESALE.ID));
+                    goods.setActivityId(record5s.get(PRESALE.ID));
                     goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 }
             });

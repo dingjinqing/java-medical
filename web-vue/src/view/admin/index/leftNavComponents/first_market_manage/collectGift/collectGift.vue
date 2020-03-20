@@ -39,7 +39,7 @@
               :key="index"
             >
               <img
-                :src="item.src"
+                :src="$imageHost + item.src"
                 alt=""
                 style="height: 100%; width: 100%;"
               >
@@ -281,9 +281,9 @@ export default {
         reward: ''
       },
       carouselList: [
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide1.png' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide2.png' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/collect_slide3.jpg' }
+        { src: '/image/admin/collect_slide1.png' },
+        { src: '/image/admin/collect_slide2.png' },
+        { src: '/image/admin/collect_slide3.jpg' }
       ],
       collectGiftImage: '/image/wxapp/collect_gifts.png',
       // 表单校验

@@ -70,6 +70,9 @@ public class ExceptionControllerHandler extends BaseController {
                 paramMessage = Util.translateMessage(getLang(), field, null, LANGUAGE_TYPE_PARAM);
             }
         }
+        if (StringUtils.isEmpty(paramMessage)){
+            paramMessage=field;
+        }
         return paramMessage;
     }
 

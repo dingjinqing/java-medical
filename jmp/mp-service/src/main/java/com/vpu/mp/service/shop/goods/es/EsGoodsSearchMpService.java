@@ -174,26 +174,30 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         }
         Map<Short,List<GoodsSortCacheInfo>> sortInfoMap =sortDataHelper.getAndGroup(sortIds);
         if( !sortInfoMap.isEmpty() ){
-
-            Map<Integer,List<GoodsSortCacheInfo>> childGroupMap = sortInfoMap.get(GoodsConstant.SECOND_LEVEL).stream().
-                collect(Collectors.groupingBy(GoodsSortCacheInfo::getParentId));
-            sortInfoMap.get(GoodsConstant.ROOT_LEVEL).forEach(x->{
-                GoodsSearchSortMpVo sortVo = new GoodsSearchSortMpVo(x.getSortId(),x.getSortName());
-                Long numbers = sortNumberMap.getOrDefault(x.getSortId(),0L);
-                List<GoodsSortCacheInfo> childSortInfos = childGroupMap.get(x.getSortId());
-                if( childSortInfos != null && !childGroupMap.isEmpty() ){
-                    List<GoodsSearchSortMpVo> childVos = Lists.newArrayList();
-                    for(GoodsSortCacheInfo y: childSortInfos  ){
-                        Long childNum = sortNumberMap.getOrDefault(y.getSortId(),0L);
-                        childVos.add(new GoodsSearchSortMpVo(y.getSortId(),y.getSortName(),childNum));
-                        numbers+=childNum;
+            List<GoodsSortCacheInfo> childList= sortInfoMap.get(GoodsConstant.SECOND_LEVEL);
+            List<GoodsSortCacheInfo> parentList= sortInfoMap.get(GoodsConstant.ROOT_LEVEL);
+            if ( !CollectionUtils.isEmpty(childList) && !CollectionUtils.isEmpty(parentList)){
+                Map<Integer,List<GoodsSortCacheInfo>> childGroupMap = childList.stream().
+                    collect(Collectors.groupingBy(GoodsSortCacheInfo::getParentId));
+                parentList.forEach(x->{
+                    GoodsSearchSortMpVo sortVo = new GoodsSearchSortMpVo(x.getSortId(),x.getSortName());
+                    Long numbers = sortNumberMap.getOrDefault(x.getSortId(),0L);
+                    List<GoodsSortCacheInfo> childSortInfos = childGroupMap.get(x.getSortId());
+                    if( childSortInfos != null && !childGroupMap.isEmpty() ){
+                        List<GoodsSearchSortMpVo> childVos = Lists.newArrayList();
+                        for(GoodsSortCacheInfo y: childSortInfos  ){
+                            Long childNum = sortNumberMap.getOrDefault(y.getSortId(),0L);
+                            childVos.add(new GoodsSearchSortMpVo(y.getSortId(),y.getSortName(),childNum));
+                            numbers+=childNum;
+                        }
+                        sortVo.setGoodsNum(numbers);
+                        sortVo.setChildren(childVos);
                     }
-                    sortVo.setGoodsNum(numbers);
-                    sortVo.setChildren(childVos);
-                }
-                sortVos.add(sortVo);
-            });
-            vo.setSorts(sortVos);
+                    sortVos.add(sortVo);
+                });
+                vo.setSorts(sortVos);
+            }
+
         }
 
 

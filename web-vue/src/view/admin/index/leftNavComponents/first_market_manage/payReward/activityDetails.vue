@@ -2,10 +2,10 @@
   <div class="actDetails">
     <!-- 筛选条件部分 -->
     <div class="mainContent">
-      <section style="display:flex">
+      <section style="display:flex;">
         <div
           class="item"
-          style="display: flex"
+          style="display: flex;"
         >
           <span>{{$t('payReward.getTime')+"："}}</span>
           <div style="display: flex">
@@ -15,7 +15,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               size="small"
               :placeholder="$t('payReward.selectStartTime')"
-              style="width:150px"
+              style="width:185px"
             >
             </el-date-picker>
             <span class="to">{{$t('payReward.to')}}</span>
@@ -25,13 +25,14 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               size="small"
               :placeholder="$t('payReward.selectEndTime')"
-              style="width:150px"
+              default-time="23:59:59"
+              style="width:185px"
             >
             </el-date-picker>
           </div>
         </div>
 
-        <div style="margin:0 50px 0 40px">
+        <div>
           <span>{{$t('payReward.mobilePhone')+"："}}</span>
           <el-input
             v-model="params.mobile"
@@ -74,7 +75,7 @@
           </el-select>
         </div>
 
-        <div class="item">
+        <div class="item btn">
           <el-button
             size="small"
             type="primary"
@@ -251,10 +252,13 @@ export default {
     background: #fff;
     padding: 25px 30px;
     .item {
-      margin-right: 20px;
+      margin-right: 30px;
       span {
-        margin-right: 10px;
+        margin-right: 5px;
       }
+    }
+    .btn {
+      margin-left: -5px;
     }
     :nth-of-type(1) {
       span {
@@ -265,8 +269,8 @@ export default {
       }
     }
     .inputBox {
-      width: 150px;
-      margin: 0 10px 0 5px;
+      width: 170px;
+      margin: 0 30px 0 0px;
     }
   }
   /deep/ .tableClss th {
