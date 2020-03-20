@@ -97,7 +97,7 @@
           {{i18n.$t(localePack,"page1.afterSale.submitDeliveryTime")}}：{{orderInfo.shippingOrRefundTime}}
         </view>
         <view class='main_cen_left'>
-          {{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：{{orderInfo.shippingType}}
+          {{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：{{orderInfo.shippingName}}
         </view>
         <view class='main_cen_left'>
           {{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：{{orderInfo.shippingNo}}
