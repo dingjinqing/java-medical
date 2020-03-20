@@ -739,7 +739,8 @@ public class FormStatisticsService extends ShopBaseService {
             listRecord.setOpenId(param.getUser().getWxUser().getOpenId());
             String formCfg = db().select(fp.FORM_CFG).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchAny().component1();
             getCouponList(formCfg, listRecord);
-            submitId[0] =listRecord.insert();
+            listRecord.insert();
+            submitId[0]=listRecord.getSubmitId();
             log.info("表单记录保存");
             List<FormSubmitDetailsRecord> records = new ArrayList<>();
             param.getDetailList().forEach((e) -> {
