@@ -12,7 +12,7 @@
       {{$t('order.filterCondition')}}
     </div>
     <div
-      v-for="(item,key,index) in param"
+      v-for="(item,key,index) in searchParam"
       :key="index"
       style="margin-top: 10px;"
     >
@@ -24,6 +24,42 @@
             :key="status"
           >
             {{orderStatusMap.get(status)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'goodsType'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{goodsTypeMap.get(item)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'deliverType'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{deliverTypeMap.get(item)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'paymentType'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{paymentTypeMap.get(item)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'provinceCode'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{getProvince(item)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'cityCode'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{getCity(item)}}
+          </span>
+        </div>
+        <div v-else-if="key === 'districtCode'">
+          {{$t('orderSearch.'+key)}}:
+          <span>
+            {{getDistrict(item)}}
           </span>
         </div>
         <div
@@ -54,7 +90,7 @@
         placeholder=""
         size="small"
         :min="exportRowStart"
-        :max="param.exportRowEnd"
+        :max="searchParam.exportRowEnd"
         :precision="0"
         style="width: 150px;"
         controls-position="right"
@@ -81,6 +117,8 @@
 <script>
 import { download } from '@/util/excelUtil.js'
 import { orderExport, getExportTotalRows } from '@/api/admin/orderManage/order.js'
+import { deepCloneObj } from '@/util/deepCloneObj'
+import chinaData from '@/assets/china-data'
 export default {
   data () {
     return {
@@ -88,24 +126,43 @@ export default {
       showNodes: false,
       loading: false,
       orderStatusMap: new Map(this.$t('order.orderStatusList')),
+      goodsTypeMap: new Map(this.$t('order.goodsTypeList')),
+      deliverTypeMap: new Map(this.$t('order.deliverTypeList')),
+      paymentTypeMap: new Map(this.$t('order.paymentTypeList')),
       exportRowStart: 1,
-      exportRowEnd: 5000
+      exportRowEnd: 5000,
+      searchParam: '',
+      area: {},
+      city: {},
+      district: {}
+
     }
+  },
+  mounted () {
+    this.initArea()
   },
   props: {
     show: Boolean,
     param: Object
   },
   methods: {
+    initArea () {
+      this.area = deepCloneObj(chinaData)
+    },
     initData () {
-      this.param.exportRowStart = this.exportRowStart
-      this.param.exportRowEnd = this.exportRowEnd
-      getExportTotalRows(this.param).then(res => {
+      this.searchParam = this.param
+      console.log(this.searchParam)
+      this.searchParam.exportRowStart = this.exportRowStart
+      this.searchParam.exportRowEnd = this.exportRowEnd
+      if (this.searchParam.orderStatus) {
+        this.searchParam.orderStatus = [this.searchParam.orderStatus]
+      }
+      getExportTotalRows(this.searchParam).then(res => {
         if (res.error === 0) {
           this.totalRows = res.content
           if (this.totalRows < 5000) {
             this.exportRowEnd = this.totalRows
-            this.param.exportRowEnd = this.totalRows
+            this.searchParam.exportRowEnd = this.totalRows
           }
         }
       }).catch(() => {
@@ -116,9 +173,9 @@ export default {
     },
     confirm () {
       this.loading = true
-      this.param.exportRowStart = this.exportRowStart
-      this.param.exportRowEnd = this.exportRowEnd
-      orderExport(this.param).then(res => {
+      this.searchParam.exportRowStart = this.exportRowStart
+      this.searchParam.exportRowEnd = this.exportRowEnd
+      orderExport(this.searchParam).then(res => {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         this.loading = false
@@ -137,6 +194,19 @@ export default {
         if (item) return true
       }
       return false
+    },
+    getProvince (code) {
+      let province = this.area.find((item1, index1) => code === item1['provinceId'])
+      this.city = province.areaCity
+      return province.provinceName
+    },
+    getCity (code) {
+      let thisCity = this.city.find((item1, index1) => code === item1['cityId'])
+      this.district = thisCity.areaDistrict
+      return thisCity.cityName
+    },
+    getDistrict (code) {
+      return this.district.find((item1, index1) => code === item1['districtId'])['districtName']
     }
   },
   watch: {

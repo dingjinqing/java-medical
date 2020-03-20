@@ -19,5 +19,6 @@ export const cn = {
   finishedTimeEnd: '完成结束时间',
   provinceCode: '收货省',
   cityCode: '收货市',
-  districtCode: '收货地区'
+  districtCode: '收货地区',
+  shippingNo: '物流单号'
 }
