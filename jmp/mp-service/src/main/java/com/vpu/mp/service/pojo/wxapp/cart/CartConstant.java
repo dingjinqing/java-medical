@@ -63,4 +63,15 @@ public class CartConstant {
      * 生效
      */
     public final static byte ACTIVITY_STATUS_VALID = 1;
+
+    //***************************************购物车消息状态
+    /**
+     * 无
+     */
+    public final static byte CART_NOTICE_STATUS_COMMON = 0;
+    /**
+     * 警告
+     */
+    public final static byte CART_NOTICE_STATUS_WARNINGS = 1;
+
 }

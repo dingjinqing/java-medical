@@ -187,13 +187,16 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 } else {
                                     //不可继续添加
                                     log.info("商品数量超过活动数量限制,不可选中[getCartNumber:" + cartGoods.getCartNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
-                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+//                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
                                     cartGoods.setCartNumber(firstActivityInfo.getFirstSpecialNumber());
                                     //修改购物车商品数量
-                                    log.info("修改商品数量和取消选中状态");
-                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
+                                    log.info("修改商品数量");
+//                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
                                     cartService.changeGoodsNumber(cartBo.getUserId(),0,cartGoods.getCartId(),cartGoods.getProductId(),firstSpecial.getLimitAmount());
                                     firstActivityInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
+                                    //提示前端
+                                    cartBo.setNoticeStatus(CartConstant.CART_NOTICE_STATUS_WARNINGS);
+                                    cartBo.setNotice("活动限购"+firstSpecial.getLimitAmount()+"个");
                                 }
                             }
                             goodsNum.updateAndGet(v -> v + 1);
