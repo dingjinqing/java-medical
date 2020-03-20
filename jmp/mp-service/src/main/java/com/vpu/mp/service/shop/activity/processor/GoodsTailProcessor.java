@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -23,7 +24,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -156,9 +160,15 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            //首单特惠
+            CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
+            if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
+               cartGoods.setPrdPrice(actInfo.getFirstSpecialPrice());
+            }
+        });
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
-
 
     }
 

@@ -150,7 +150,7 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
                     goods.setActivityId(k);
                     goods.setPrdPrice(rule.getPurchasePrice());
                     goodsNum+=goodsNum+goods.getCartNumber();
-                    if (purchaseInfo.getMaxChangePurchase()!=0||purchaseInfo.getMaxChangePurchase()<goodsNum){
+                    if (purchaseInfo.getMaxChangePurchase()!=0&&purchaseInfo.getMaxChangePurchase()<goodsNum){
                         log.info("加价商品数量大于规则数量:{}",purchaseInfo.getMaxChangePurchase());
                         for (int i=goodsNum-purchaseInfo.getMaxChangePurchase();i>0;i--){
                             if (goods.getCartNumber()>1){
