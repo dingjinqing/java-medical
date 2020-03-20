@@ -74,5 +74,6 @@ export const sharePreSale = id => service({
 export const exporOrderExcel = data => service({
   url: '/api/admin/market/pre_sale/order/export',
   method: 'post',
-  data
+  data: data,
+  responseType: 'blob'
 })
