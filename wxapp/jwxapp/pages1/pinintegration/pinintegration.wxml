@@ -149,7 +149,6 @@
               <view class='sale_prices'>
                 <text>{{item.money != 0 ? '￥' + item.money + '+': ''}}{{item.score}}积分</text>
               </view>
-              <!-- <view class="ori_prices">￥{{item.prd_price}}</view> -->
             </view>
           </view>
         </view>

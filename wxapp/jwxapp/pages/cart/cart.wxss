@@ -55,7 +55,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   overflow-wrap: break-word;
   word-break: break-all;
@@ -65,9 +65,14 @@
   color: #888;
   font-size: 24rpx;
   margin-top: 10rpx;
-  /* overflow: hidden; */
-  /* white-space: nowrap; */
-  /* text-overflow: ellipsis; */
+
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 .goods_info .goods_price{
   display: flex;
