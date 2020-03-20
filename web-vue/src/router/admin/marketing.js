@@ -594,7 +594,7 @@ const routes = [
     component: () =>
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/friendHelp/effectData'
-        )
+      )
   },
   // 添加优惠券活动
   {
