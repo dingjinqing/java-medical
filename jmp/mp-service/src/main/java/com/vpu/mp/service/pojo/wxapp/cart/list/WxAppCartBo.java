@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +44,14 @@ public class WxAppCartBo {
      * 购物车 - 失效商品
      */
     private List<WxAppCartGoods> invalidCartList;
+    /**
+     * 消息状态 0正常 1有提示信息
+     */
+    private Byte noticeStatus = CartConstant.CART_NOTICE_STATUS_COMMON;
+    /**
+     * 提示信息
+     */
+    private String notice ;
 
     @JsonIgnore
     private Byte activityType;
