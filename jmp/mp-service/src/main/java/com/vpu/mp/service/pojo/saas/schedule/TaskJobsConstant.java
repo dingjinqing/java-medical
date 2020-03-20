@@ -61,8 +61,10 @@ public class TaskJobsConstant {
         /**关闭订单 */
         RETURN_SUB_ORDER(1011, RabbitConfig.EXCHANGE_ORDER, RabbitConfig.BINDING_EXCHANGE_RETURN_SUB_ORDER_KEY),
         /**微铺宝excel模板导入*/
-        GOODS_VPU_EXCEL_IMPORT(1012,RabbitConfig.EXCHANGE_GOODS_IMPORT,RabbitConfig.BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY);
-
+        GOODS_VPU_EXCEL_IMPORT(1012,RabbitConfig.EXCHANGE_GOODS_IMPORT,RabbitConfig.BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY),
+    	/** 组团瓜分积分开奖的异步操作*/
+    	GROUP_INTEGRATION_MQ(1013, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY);
+    	
         private Integer executionType;
         private String exchangeName;
         private String routingKey;
