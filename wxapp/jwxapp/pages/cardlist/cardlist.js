@@ -150,6 +150,7 @@ global.wxPage({
           '/api/wxapp/card/del',
           function (res) {
             if (res.error === 0) {
+              this.requestList();
             }
           },
           { card_no: card_no }

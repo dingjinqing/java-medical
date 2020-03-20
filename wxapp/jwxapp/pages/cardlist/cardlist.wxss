@@ -133,9 +133,7 @@
   width: 130rpx;
 }
 .right_renew {
-  position: absolute;
-  bottom: 13rpx;
-  left: 150rpx;
+  margin-top: 5rpx;
   width: 130rpx;
   height: 44rpx;
   background: rgba(0, 0, 0, 0.1);
