@@ -1643,4 +1643,111 @@ public class FriendPromoteService extends ShopBaseService {
             .orElse(0);
         return id;
     }
+
+    public ActEffectDataVo getEffectData(FriendPromoteSelectParam param){
+        //当前活动信息
+        FriendPromoteActivityRecord record = db().select().from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
+            .fetchOneInto(FriendPromoteActivityRecord.class);
+        //设置筛选起止时间
+        Timestamp todayTime = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,DateUtil.getLocalDateTime()));
+        Timestamp startTime = record.getStartTime();
+        Timestamp endTime = record.getEndTime().before(todayTime)?record.getEndTime():todayTime;
+        List<ActEffectData> dataList = new ArrayList<>();
+        while (startTime.before(endTime)){
+            Timestamp tempEnd = Timestamp.valueOf(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_END,startTime));
+            Integer launch = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("launch"))
+                .from(FRIEND_PROMOTE_LAUNCH)
+                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            Integer promote = db().select(DSL.count(FRIEND_PROMOTE_DETAIL.ID).as("promote"))
+                .from(FRIEND_PROMOTE_DETAIL)
+                .where(FRIEND_PROMOTE_DETAIL.PROMOTE_ID.eq(param.getId()))
+                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.greaterOrEqual(startTime))
+                .and(FRIEND_PROMOTE_DETAIL.CREATE_TIME.lessOrEqual(tempEnd))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            Integer success = db().select(DSL.count(FRIEND_PROMOTE_LAUNCH.ID).as("success"))
+                .from(FRIEND_PROMOTE_LAUNCH)
+                .where(FRIEND_PROMOTE_LAUNCH.PROMOTE_ID.eq(param.getId()))
+                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.greaterOrEqual(startTime))
+                .and(FRIEND_PROMOTE_LAUNCH.LAUNCH_TIME.lessOrEqual(tempEnd))
+                .and(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)1).or(FRIEND_PROMOTE_LAUNCH.PROMOTE_STATUS.eq((byte)2)))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            Integer newUser = db().select(DSL.count(USER.USER_ID).as("new_user"))
+                .from(USER)
+                .where(USER.INVITE_ACT_ID.eq(param.getId()))
+                .and(USER.INVITE_SOURCE.eq(MemberService.INVITE_SOURCE_PROMOTE))
+                .and(USER.CREATE_TIME.greaterOrEqual(startTime))
+                .and(USER.CREATE_TIME.lessOrEqual(tempEnd))
+                .fetchOptionalInto(Integer.class)
+                .orElse(0);
+            String date = startTime.toString().substring(0,10);
+            ActEffectData actEffectData = new ActEffectData();
+            actEffectData.setDate(date);
+            actEffectData.setLaunch(launch);
+            actEffectData.setPromote(promote);
+            actEffectData.setSuccess(success);
+            actEffectData.setNewUser(newUser);
+            dataList.add(actEffectData);
+            //时间+1
+            Long longTime = startTime.getTime()+(long)1000*3600*24;
+            startTime = new Timestamp(longTime);
+        }
+        //处理dataList
+        ActEffectDataVo vo = new ActEffectDataVo();
+        Integer launchTotal = 0;
+        Integer promoteTotal = 0;
+        Integer successTotal = 0;
+        Integer newUserTotal = 0;
+        for (ActEffectData item:dataList){
+            List<String> tempDate = new ArrayList<>();
+            if (vo.getDate()!=null){
+                tempDate=vo.getDate();
+            }
+            tempDate.add(item.getDate());
+            vo.setDate(tempDate);
+
+            List<Integer> tempLaunch = new ArrayList<>();
+            if (vo.getLaunch()!=null){
+                tempLaunch = vo.getLaunch();
+            }
+            tempLaunch.add(item.getLaunch());
+            vo.setLaunch(tempLaunch);
+            launchTotal += item.getLaunch();
+
+            List<Integer> tempPromote = new ArrayList<>();
+            if (vo.getPromote()!=null){
+                tempPromote = vo.getPromote();
+            }
+            tempPromote.add(item.getPromote());
+            vo.setPromote(tempPromote);
+            promoteTotal += item.getPromote();
+
+            List<Integer> tempSuccess = new ArrayList<>();
+            if (vo.getSuccess()!=null){
+                tempSuccess = vo.getSuccess();
+            }
+            tempSuccess.add(item.getSuccess());
+            vo.setSuccess(tempSuccess);
+            successTotal += item.getSuccess();
+
+            List<Integer> tempNewUser = new ArrayList<>();
+            if (vo.getNewUser()!=null){
+                tempNewUser = vo.getNewUser();
+            }
+            tempNewUser.add(item.getNewUser());
+            vo.setNewUser(tempNewUser);
+            newUserTotal += item.getNewUser();
+        }
+        vo.setLaunchTotal(launchTotal);
+        vo.setPromoteTotal(promoteTotal);
+        vo.setSuccessTotal(successTotal);
+        vo.setNewUserTotal(newUserTotal);
+        return vo;
+    }
 }
