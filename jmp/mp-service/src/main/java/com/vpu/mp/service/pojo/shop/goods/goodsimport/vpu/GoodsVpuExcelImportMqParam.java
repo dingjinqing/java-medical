@@ -17,6 +17,7 @@ import java.util.List;
 public class GoodsVpuExcelImportMqParam {
     private List<GoodsVpuExcelImportBo> goodsVpuExcelImportBos;
     private String lang;
+    private Integer batchId;
     private Integer shopId;
     /**
      * 任务id

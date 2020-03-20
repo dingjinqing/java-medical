@@ -65,7 +65,7 @@ public class GoodsImportService extends ShopBaseService {
             }
         } else {
             code = JsonResultCode.CODE_SUCCESS;
-            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsVpuExcelImportBos,param.getLang(), getShopId(),null);
+            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsVpuExcelImportBos,param.getLang(), null,getShopId(),null);
             // 调用消息队列
 //            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
 //                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
