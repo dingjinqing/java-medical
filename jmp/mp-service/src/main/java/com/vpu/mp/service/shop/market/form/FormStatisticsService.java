@@ -97,7 +97,7 @@ public class FormStatisticsService extends ShopBaseService {
     /**
      * 分享二维码页面显示图片路径
      */
-    private static final String PARAM = "page_id=";
+    private static final String PARAM = "pageId=";
     public static final String PLUS = "+";
     public static final String COPY_TEXT = "副本";
     private static final String MESSAGE = "messages";
