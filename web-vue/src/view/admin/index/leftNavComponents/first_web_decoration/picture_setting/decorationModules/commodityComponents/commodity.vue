@@ -325,8 +325,8 @@ export default {
       data: {
         goodsListData: []
       },
-      initLoad: true //  是否首次加载
-
+      initLoad: true, //  是否首次加载
+      contentData: []
     }
   },
   watch: {
@@ -361,58 +361,7 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData) {
-          let turnToString = this.handleToTurnNumToStr(newData)
-          console.log(turnToString)
-          this.data = turnToString
-          // this.$nextTick(() => {
-          let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
-          if (arr && arr.length) {
-            this.goodsFlag = true
-          } else {
-            this.goodsFlag = false
-          }
-          // })
-          if (!this.initLoad) return
-          let obj = {}
-          let goodsId = []
-          if (this.data.goodsListData) {
-            this.data.goodsListData.forEach(item => {
-              goodsId.push(item.goodsId)
-            })
-          }
-
-          if (this.data.recommend_type === '1') {
-            obj['goods_num'] = this.data.goods_num
-            obj['recommend_type'] = '1'
-            obj['goods_items'] = goodsId
-          } else {
-            obj = {
-              'recommend_type': this.data.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
-              'goods_num': this.data.goods_num, // 商品数量
-              'min_price': this.data.min_price, // 商品最低价格
-              'max_price': this.data.max_price, // 商品最高价格
-              'keywords': this.data.keywords, // 关键词
-              'goods_area': this.data.goods_area, // 商品范围
-              'goods_area_data': this.data.goods_area_data, // 商品范围选定后弹窗选定的数据
-              'goods_type': Number(this.data.goods_type), // 活动类型
-              'sort_type': Number(this.data.sort_type), // 排序规则
-              'goods_items': goodsId // 商品列表数据
-            }
-          }
-          queryDataList(obj).then((res) => {
-            console.log(res)
-            if (res.error === 0) {
-              if (this.data.recommend_type === '1') {
-                this.data.goodsListData = res.content
-                this.data.goods_items = res.content
-              } else {
-                this.data.goodsListData = res.content
-              }
-              // 处理显示活动
-              this.handleToActivity(res.content)
-              this.initLoad = false
-            }
-          })
+          this.handleToQuery(newData)
         }
         console.log(newData, this.goodsFlag)
       },
@@ -425,8 +374,88 @@ export default {
     this.langDefault()
     // 初始化数据
     this.defaultData()
+    // this.handleToQuery(this.backData)
   },
   methods: {
+    // 数据请求
+    handleToQuery (newData) {
+      let turnToString = this.handleToTurnNumToStr(newData)
+      console.log(turnToString)
+      this.data = turnToString
+      // this.$nextTick(() => {
+      let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
+      if (arr && arr.length) {
+        this.goodsFlag = true
+      } else {
+        this.goodsFlag = false
+      }
+      // })
+      // if (!this.initLoad) return
+      let obj = {}
+      let goodsId = []
+      if (this.data.goodsListData) {
+        this.data.goodsListData.forEach(item => {
+          goodsId.push(item.goodsId)
+        })
+      }
+
+      if (this.data.recommend_type === '1') {
+        obj['goods_num'] = this.data.goods_num
+        obj['recommend_type'] = '1'
+        obj['goods_items'] = goodsId
+      } else {
+        let goodsArea = ''
+        switch (this.data.goods_area) {
+          case '1':
+            goodsArea = 'sort'
+            break
+          case '2':
+            goodsArea = 'cat'
+            break
+          case '3':
+            goodsArea = 'brand'
+            break
+          case '4':
+            goodsArea = 'label'
+            break
+        }
+        if (goodsArea === '') {
+          goodsArea = this.data.goods_area
+        }
+        obj = {
+          'recommend_type': this.data.recommend_type, // 商品显示方式 0自动推荐 1手动推荐
+          'goods_num': this.data.goods_num, // 商品数量
+          'min_price': this.data.min_price, // 商品最低价格
+          'max_price': this.data.max_price, // 商品最高价格
+          'keywords': this.data.keywords, // 关键词
+          'goods_area': goodsArea, // 商品范围
+          'goods_area_data': this.data.goods_area_data, // 商品范围选定后弹窗选定的数据
+          'goods_type': Number(this.data.goods_type), // 活动类型
+          'sort_type': Number(this.data.sort_type), // 排序规则
+          'goods_items': goodsId // 商品列表数据
+        }
+      }
+      queryDataList(obj).then((res) => {
+        console.log(res)
+        if (res.error === 0) {
+          if (this.data.recommend_type === '1') {
+            this.data.goods_items = res.content
+          }
+          console.log(res.content)
+          this.data.goodsListData = res.content
+          if (res.content.length) {
+            this.goodsFlag = true
+          } else {
+            this.goodsFlag = false
+          }
+
+          // 处理显示活动
+          this.handleToActivity(res.content)
+
+          // this.initLoad = false
+        }
+      })
+    },
     defaultData () {
       this.bgColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
       console.log(this.bgColor)

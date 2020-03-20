@@ -510,17 +510,20 @@
     <AddingBusClassDialog
       :dialogVisible.sync="dialogVisible"
       :classFlag="classFlag"
+      :backDataArr="BusClassBackData"
       @BusClassTrueArr="handleToGetBackData"
     />
     <!--添加商品品牌弹窗-->
     <AddBrandDialog
-      @handleToGetBackData='handleToGetBackData'
+      @handleToGetBackData='handleToGetBackBrandData'
       :callAddBrand.sync='callAddBrand'
+      :brandBackData="brandBackData"
     />
     <!--添加商品标签弹窗-->
     <AddProductLabel
-      @handleToGetBackData='handleToGetBackData'
+      @handleToGetBackData='handleToGetBackLabel'
       :callAddProductLabel.sync='callAddProductLabel'
+      :brandBackData="labelBackData"
     />
   </div>
 </template>
@@ -735,7 +738,7 @@ export default {
       goodsList: [ // 手动推荐显示模块商品列表数据
       ],
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
-      rangeData: [null, { data: [] }, { data: [] }, { data: [] }, { data: [] }], // 商品范围四类弹框选中数据池
+      rangeData: [null, [], [], [], []], // 商品范围四类弹框选中数据池
       needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
       goodsListData: [],
       isClickGoodsUpOrDownIcon: false, // 是否点击了模块推荐里商品列表的上下icon按钮
@@ -780,7 +783,10 @@ export default {
       temporaryRightGoods: [],
       isToChangeData: false, // 是否需要转换goods_items字段
       GoodsBack: [], // 选择商品弹窗回显数据
-      zbGoodsBack: []
+      zbGoodsBack: [],
+      brandBackData: [], // 选择商品品牌弹窗回显数据
+      labelBackData: [], // 选择商品标签弹窗回显数据
+      BusClassBackData: [] // 商家分类、平台分类回显
     }
   },
   watch: {
@@ -818,10 +824,26 @@ export default {
               this.$set(this.data, item, getModulesData[item])
             })
             console.log(turnToString)
-            // 如果是初次回显则处理自动推荐数据
+            // 如果是初次回显则处理手动推荐数据
+
             if (turnToString.recommend_type === '1') {
               this.isToChangeData = true
               this.handleToGetModulesGoods(turnToString, true, true)
+            } else {
+              if (turnToString.goods_area === 'brand') {
+                this.rangeData[3] = this.data.goods_area_data
+                this.brandBackData = this.data.goods_area_data
+              } else if (turnToString.goods_area === 'label') {
+                this.labelBackData = this.data.goods_area_data
+                this.rangeData[4] = this.data.goods_area_data
+              } else if (turnToString.goods_area === 'sort') {
+                this.BusClassBackData = this.data.goods_area_data
+                this.rangeData[1] = this.data.goods_area_data
+              } else if (turnToString.goods_area === 'cat') {
+                this.BusClassBackData = this.data.goods_area_data
+                this.rangeData[1] = this.data.goods_area_data
+              }
+              this.handleToSelectRange()
             }
             // 初始化调取模块推荐接口
             if (!turnToString.goodsListData.length) {
@@ -865,6 +887,10 @@ export default {
       } else {
         this.GoodsBack = []
       }
+    },
+    'data.goods_area' (newData) {
+      console.log(newData)
+      this.data.goods_area_data = this.rangeData[Number(newData)]
     },
     // 监控该模块右边数据操作
     copyData: {
@@ -1316,6 +1342,7 @@ export default {
     // 商品范围下拉框选中值变化事件
     handleToSelectRange () {
       console.log(this.data.goods_area)
+      console.log(this.rangeData, Number(this.data.goods_area))
       this.rangeCheckData = this.rangeData[Number(this.data.goods_area)]
       console.log(this.rangeCheckData)
       switch (Number(this.data.goods_area)) {
@@ -1338,6 +1365,32 @@ export default {
       console.log(data)
       this.handleToSelectRange()
       this.data.goods_area_data = data
+      console.log(this.data.goods_area_data)
+      let arr = this.rangeData[Number(this.data.goods_area)] = data
+      this.rangeCheckData = arr
+      this.BusClassBackData = arr
+    },
+    handleToGetBackBrandData (data) {
+      let arr1 = []
+      data.forEach((item, index) => {
+        arr1.push(item.id)
+      })
+      this.handleToSelectRange()
+      this.brandBackData = arr1
+      this.data.goods_area_data = arr1
+      console.log(this.data.goods_area_data)
+      let arr = this.rangeData[Number(this.data.goods_area)] = data
+      this.rangeCheckData = arr
+    },
+    handleToGetBackLabel (data) {
+      console.log(data)
+      let arr1 = []
+      data.forEach((item, index) => {
+        arr1.push(item.id)
+      })
+      this.handleToSelectRange()
+      this.labelBackData = arr1
+      this.data.goods_area_data = arr1
       console.log(this.data.goods_area_data)
       let arr = this.rangeData[Number(this.data.goods_area)] = data
       this.rangeCheckData = arr
