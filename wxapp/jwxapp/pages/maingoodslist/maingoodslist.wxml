@@ -10,15 +10,15 @@
   <view class='main_goods_content' style='padding-bottom:{{is_load == 1?"0":"100rpx"}}'>
     <!-- 限时降价提示 -->
     <view class='pro_tips' wx:if='{{main_goods_info.is_show_reduce_doc == 1}}' style='padding-bottom:0'>
-      限时降价：购买超出限购数量以结算价为准
+      {{i18n.$t(localePack,"pages.cart.activeTip1")}}
     </view>
     <!-- 活动规则 -->
     <view class='pro_tips'>
       <view style="overflow: hidden;">
-        <view style="float: left;">限时促销：</view>
+        <view style="float: left;">{{i18n.$t(localePack,"pages.cart.mainRule1")}}：</view>
         <view style="float: left;">
           <view wx:for="{{main_goods_info.rules}}" wx:key="index">
-            满{{item.fullPrice}}元另加{{item.purchasePrice}}元即可换购商品
+            {{i18n.$t(localePack,"pages.cart.mainRule2")}}{{item.fullPrice}}{{i18n.$t(localePack,"pages.cart.mainRule3")}}{{i18n.$t(localePack,"pages.cart.mainRule4")}}{{item.purchasePrice}}{{i18n.$t(localePack,"pages.cart.mainRule3")}}{{i18n.$t(localePack,"pages.cart.mainRule5")}}
           </view>
         </view>
       </view>
@@ -29,13 +29,13 @@
         <view class='goods_lefts' bindtap='to_items' data-goods_id="{{item.goodsId}}">
           <image src='{{item.goodsImg}}'></image>
           <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
-          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
-          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
         </view>
         <view class='goods_right'>
           <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goodsId}}">{{item.goodsName}}</view>
           <!-- <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limitAmount > 0}}'>限购1件</view> -->
-          <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>会员价</view>
+          <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>{{i18n.$t(localePack,"pages.cart.activeLabel3")}}</view>
           <view class='price_info clearfix'>
             <view class='jiaqian'>
               <!-- <view class='member_icon' wx:if='{{item.goodsPriceAction == 1}}'>会员专享</view> -->
@@ -54,23 +54,23 @@
     <!-- 底部 -->
     <view class='main_footers clearfix' style='background:#fff;height:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
       <view class='foot_left'>
-        <view class='fl_top'>已选
+        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}
           <text style='color:{{comColor}}'>￥{{get_price}}</text>
         </view>
         <view class='fl_bottom'>{{get_doc}}</view>
       </view>
       <form report-submit='true' bindsubmit='showGoods'>
-        <button class='foot_center' formType='submit' style='background:{{commonColor}};color:#fff;border-top-color:{{commonColor}}'>换购商品</button>
+        <button class='foot_center' formType='submit' style='background:{{commonColor}};color:#fff;border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.mainFooter1")}}</button>
       </form>
-      <view class='foot_right' bindtap='click_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>去购物车</view>
+      <view class='foot_right' bindtap='click_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeFooter2")}}</view>
     </view>
   </view>
-  <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+  <view class='load_style' wx:if="{{is_load == 1}}">{{i18n.$t(localePack,"pages.cart.activeLoad")}}</view>
   <!-- 换购商品的弹框 -->
   <action-sheet hidden="{{ changeMove }}" bindchange='proActionChange'>
     <view class='promotion' style='padding-bottom:{{isIpx == 1 ? "60rpx":"0"}}'>
       <view class='pro_title'>
-        换购商品
+        {{i18n.$t(localePack,"pages.cart.mainFooter1")}}
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='close_change' />
       </view>
       <view class='pro_content clearfix' wx:if='{{change_goods_info.list != ""}}'>
@@ -98,16 +98,16 @@
       </view>
       <view class='pro_content_no' wx:if='{{change_goods_info.list == ""}}'>
         <image src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix'></image>
-        <view class='empty_tips'>暂无可换购商品！</view>
+        <view class='empty_tips'>{{i18n.$t(localePack,"pages.cart.mainDialog1")}}</view>
       </view>
       <view class='change_gooter clearfix'>
         <view class='cf_left' wx:if='{{change_goods_info.maxChangePurchase != null && change_goods_info.maxChangePurchase != 0}}'>
-          已换购：{{change_goods_info.alreadyChangeNum}}/{{change_goods_info.maxChangePurchase}}
+          {{i18n.$t(localePack,"pages.cart.mainDialog2")}}：{{change_goods_info.alreadyChangeNum}}/{{change_goods_info.maxChangePurchase}}
         </view>
         <view class='cf_left' wx:if='{{change_goods_info.maxChangePurchase == null || change_goods_info.maxChangePurchase == 0}}'>
-          已换购：{{change_goods_info.alreadyChangeNum}}
+          {{i18n.$t(localePack,"pages.cart.mainDialog2")}}：{{change_goods_info.alreadyChangeNum}}
         </view>
-        <view class='cf_right' bindtap='btn_confirm_change' style='background:{{comColor}};border-top-color:{{comColor}}'>确定</view>
+        <view class='cf_right' bindtap='btn_confirm_change' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeSure")}}</view>
       </view>
     </view>
   </action-sheet>

@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataParam;
+import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataVo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessParam;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessVo;
 import com.vpu.mp.service.pojo.wxapp.share.FormPictorialRule;
@@ -97,7 +98,7 @@ public class FormStatisticsService extends ShopBaseService {
     /**
      * 分享二维码页面显示图片路径
      */
-    private static final String PARAM = "page_id=";
+    private static final String PARAM = "pageId=";
     public static final String PLUS = "+";
     public static final String COPY_TEXT = "副本";
     private static final String MESSAGE = "messages";
@@ -677,8 +678,9 @@ public class FormStatisticsService extends ShopBaseService {
     /**
      * 提交填写表单
      * @param param
+     * @return
      */
-    public void submitFormDate(FormSubmitDataParam param) throws MpException {
+    public FormSubmitDataVo submitFormDate(FormSubmitDataParam param) throws MpException {
         FormPageRecord formRecord = getFormRecord(param.getPageId());
         if (formRecord==null){
             log.error("表单提交错误");
@@ -689,7 +691,7 @@ public class FormStatisticsService extends ShopBaseService {
             log.error("每个表单每分钟只能提交一次");
         }
         //保存提交表单
-        saveSubmitForm(param);
+        Integer submitFormId = saveSubmitForm(param);
         //送积分
         String formCfg = formRecord.getFormCfg();
         int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE));
@@ -717,9 +719,18 @@ public class FormStatisticsService extends ShopBaseService {
             e.printStackTrace();
         }
         //TODO 更新库存
+        FormSubmitDataVo formSubmitDataVo =new FormSubmitDataVo();
+        formSubmitDataVo.setSubmitId(submitFormId);
+        return formSubmitDataVo;
     }
 
-    private void saveSubmitForm(FormSubmitDataParam param) {
+    /**
+     *  保存
+     * @param param param
+     * @return 保存记录
+     */
+    private Integer saveSubmitForm(FormSubmitDataParam param) {
+        final Integer[] submitId = {new Integer(0)};
         db().transaction(configuration -> {
             FormSubmitListRecord listRecord =db().newRecord(  fsl);
             listRecord.setPageId(param.getPageId());
@@ -728,7 +739,7 @@ public class FormStatisticsService extends ShopBaseService {
             listRecord.setOpenId(param.getUser().getWxUser().getOpenId());
             String formCfg = db().select(fp.FORM_CFG).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchAny().component1();
             getCouponList(formCfg, listRecord);
-            listRecord.insert();
+            submitId[0] =listRecord.insert();
             log.info("表单记录保存");
             List<FormSubmitDetailsRecord> records = new ArrayList<>();
             param.getDetailList().forEach((e) -> {
@@ -746,6 +757,7 @@ public class FormStatisticsService extends ShopBaseService {
             log.info("保单填写数量更新");
             db().update(fp).set(fp.SUBMIT_NUM,fp.SUBMIT_NUM.add(1)).where(fp.PAGE_ID.eq(param.getPageId())).execute();
         });
+        return submitId[0];
     }
 
     /**

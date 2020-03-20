@@ -10,13 +10,13 @@
   <view class='main_goods_content' style='padding-bottom:{{is_load == 1?"0":"100rpx"}}'>
     <!-- 限时降价提示 -->
     <view class='pro_tips' wx:if='{{full_info.is_show_reduce_doc == 1}}' style='padding-bottom:0'>
-      限时降价：购买超出限购数量以结算价为准
+      {{i18n.$t(localePack,"pages.cart.activeTip1")}}
     </view>
     <!-- 活动规则 -->
     <view class='pro_tips'>
-      <view class='full_member_icon' wx:if='{{full_info.is_exclusive == 1 && full_info.is_can_buy == 0}}'>会员</view>
+      <view class='full_member_icon' wx:if='{{full_info.is_exclusive == 1 && full_info.is_can_buy == 0}}'>{{i18n.$t(localePack,"pages.cart.fullRule1")}}</view>
       <view style="overflow: hidden;">
-        <view style="float: left;">以下商品：</view>
+        <view style="float: left;">{{i18n.$t(localePack,"pages.cart.fullRule2")}}：</view>
         <view style="float: left;">
           <view wx:for="{{full_info.condition}}" wx:key="index">
             <view wx:if="{{full_info.type == 1}}">
@@ -42,13 +42,13 @@
           <image src='{{item.goodsImg}}'></image>
          
           <image class="sell_out" wx:if='{{item.goodsNumber == 0}}' src="{{imageUrl}}image/wxapp/goods_sell_out.png"></image>
-          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>限时降价，立即查看</view>
-          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>新人专享,首单特惠</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 2}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
+          <view class='reduce_price' wx:if="{{item.goodsPriceAction == 3}}" style='background:{{linColor}};color:#fff;font-size:20rpx;'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
         </view>
         <view class='goods_right'>
           <view class='goods_name' bindtap='to_items' data-goods_id="{{item.goodsId}}">{{item.goodsName}}</view>
           <!-- <view class="amount_num" style='color:{{comColor}}' wx:if='{{item.limitAmount > 0}}'>限购1件</view> -->
-          <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>会员价</view>
+          <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>{{i18n.$t(localePack,"pages.cart.activeLabel3")}}</view>
           <view class='price_info clearfix'>
             <view class='jiaqian'>
               <!-- <view class='member_icon' wx:if='{{item.goodsPriceAction == 1}}'>会员专享</view> -->
@@ -67,32 +67,32 @@
     <!-- 底部 -->
     <view class='main_footers clearfix' style='height:{{isIpx == 1 ? "160rpx":"100rpx"}};background:#fff'>
       <view class='foot_left'>
-        <view class='fl_top'>已选
+        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}
           <text style='color:{{comColor}}'>￥{{al_goods_prices}}</text>
         </view>
         <view class='fl_bottom' wx:if="{{full_info.state == 0}}">{{all_goods_doc}}</view>
-        <view class='fl_bottom' wx:if="{{full_info.state == 4}}">开通会员，即可参与</view>
+        <view class='fl_bottom' wx:if="{{full_info.state == 4}}">{{i18n.$t(localePack,"pages.cart.fullFooter1")}}</view>
       </view>
       <block wx:if="{{full_info.state == 4}}">
-        <view class='to_member' bindtap='to_member' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};footborder-top-color:{{commonColor}}'>开通会员</view>
+        <view class='to_member' bindtap='to_member' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};footborder-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.fullFooter2")}}</view>
       </block>
       <block wx:if="{{full_info.state == 0}}">
         <form report-submit='true' bindsubmit='showCheck'>
-          <button class='foot_center' formType='submit' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};border-top-color:{{commonColor}}'>查看已选商品</button>
+          <button class='foot_center' formType='submit' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.fullFooter3")}}</button>
         </form>
-        <view class='foot_right' bindtap='go_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>去购物车</view>
+        <view class='foot_right' bindtap='go_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeFooter2")}}</view>
       </block>
 
     </view>
   </view>
-  <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+  <view class='load_style' wx:if="{{is_load == 1}}">{{i18n.$t(localePack,"pages.cart.activeLoad")}}</view>
   <!-- 换购商品的弹框 -->
   <action-sheet hidden="{{ checkMode }}" bindchange="proActionChange">
     <view class='promotion' style='padding-bottom:{{isIpx == 1 ? "60rpx":"0"}}'>
       <view class='pro_title'>
-        已选商品
-        <text wx:if='{{can_del == 0 && full_change_info.count != 0}}' bindtap='to_del_goods'>编辑</text>
-        <text wx:if='{{can_del == 1 && full_change_info.count != 0}}' bindtap='to_del_goods'>完成</text>
+        {{i18n.$t(localePack,"pages.cart.fullDialog1")}}
+        <text wx:if='{{can_del == 0 && full_change_info.count != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog2")}}</text>
+        <text wx:if='{{can_del == 1 && full_change_info.count != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog3")}}</text>
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='closeCheck' />
       </view>
       <view class='pro_content clearfix' wx:if='{{full_change_info.list != ""}}'>
@@ -104,14 +104,14 @@
             <view class='eg_lefts'>
               <image src='{{item.goods_img}}' wx:if='{{item.prd_img == ""}}'></image>
               <image src='{{item.prd_img}}' wx:if='{{item.prd_img != ""}}'></image>
-              <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>限时降价，立即查看</view>
-              <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>新人专享,首单特惠</view>
+              <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
+              <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
               <view></view>
             </view>
             <view class='eg_right' style='width:{{can_del == 0?"490rpx":"430rpx;"}}'>
               <view class='goods_name'>{{item.goods_name}}</view>
               <view class='goods_desc'>{{item.prd_desc}}</view>
-              <view class='goods_amount' wx:if='{{item.limit_amount > 0}}' style='color:{{comColor}};'>限购{{item.limit_amount}}件</view>
+              <view class='goods_amount' wx:if='{{item.limit_amount > 0}}' style='color:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.fullDialog4")}}{{item.limit_amount}}{{i18n.$t(localePack,"pages.cart.fullDialog5")}}</view>
               <view class='goods_bottom clearfix'>
                 <view class='price_info clearfix'>
                   <view class='sale_price' style='color:{{comColor}}'>￥
@@ -134,11 +134,11 @@
       </view>
       <view class='pro_content_no' wx:if='{{full_change_info.list == ""}}'>
         <image src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix'></image>
-        <view class='empty_tips'>还没有已选商品，快去选购吧！</view>
+        <view class='empty_tips'>{{i18n.$t(localePack,"pages.cart.fullDialog6")}}</view>
       </view>
       <view class='change_gooter clearfix'>
-        <view class='cf_left'>已选：{{full_change_info.count}}</view>
-        <view class='cf_right' bindtap='closeCheck' style='background:{{comColor}};border-top-color:{{comColor}}'>确定</view>
+        <view class='cf_left'>{{i18n.$t(localePack,"pages.cart.fullDialog7")}}：{{full_change_info.count}}</view>
+        <view class='cf_right' bindtap='closeCheck' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeSure")}}</view>
       </view>
     </view>
   </action-sheet>
