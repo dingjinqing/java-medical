@@ -24,7 +24,11 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
+import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -33,6 +37,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.function.Supplier;
@@ -65,6 +70,8 @@ import static org.springframework.util.StringUtils.isEmpty;
 public class GiftService extends ShopBaseService {
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    protected ImageService imageService;
 
     public static final Gift TABLE = Gift.GIFT;
     public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
@@ -521,5 +528,46 @@ public class GiftService extends ShopBaseService {
                     )
                 )
             ).fetchOneInto(Integer.class);
+    }
+
+    /**
+     * 订单-购物车 商品转换
+     * @param orderGoods 订单商品
+     * @param giftVo 赠品活动
+     * @param userId
+     */
+    public WxAppCartGoods getOrderGoodsToCartGoods(OrderGoodsBo orderGoods, GiftVo giftVo, Integer userId) {
+        WxAppCartGoods cartGoods =new WxAppCartGoods();
+        cartGoods.setPrdPrice(BigDecimal.ZERO);
+        cartGoods.setGoodsPrice(orderGoods.getGoodsPrice());
+        cartGoods.setOriginalPrice(orderGoods.getGoodsPrice());
+        cartGoods.setCartNumber(1);
+        cartGoods.setType(cartGoods.getType());
+        cartGoods.setExtendId(giftVo.getId());
+        cartGoods.setStoreId(0);
+        cartGoods.setUserId(userId);
+        cartGoods.setGoodsId(orderGoods.getGoodsId());
+        cartGoods.setGoodsSn(orderGoods.getGoodsSn());
+        cartGoods.setGoodsName(orderGoods.getGoodsName());
+        cartGoods.setGoodsImg(getImgFullUrlUtil(orderGoods.getGoodsImg()));
+        cartGoods.setPrdDesc("");
+        cartGoods.setProductId(orderGoods.getProductId());
+        cartGoods.setActivityType(BaseConstant.ACTIVITY_TYPE_GIFT);
+        cartGoods.setActivityId(giftVo.getId());
+        return cartGoods;
+    }
+
+    /**
+     * 将相对路劲修改为全路径
+     *
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
+        }
     }
 }
