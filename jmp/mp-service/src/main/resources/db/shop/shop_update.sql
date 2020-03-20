@@ -159,7 +159,7 @@ ALTER TABLE `b2c_goods` ADD COLUMN `pv` int(11) DEFAULT '0' COMMENT '7天访问�
 ALTER TABLE `b2c_goods` ADD COLUMN `comment_num` int(11) DEFAULT '0' COMMENT '评论数';
 
 -- 2020-03-20 商品导入信息结果详情表修改字段
-ALTER TABLE b2c_goods_import_detail CHANGE error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
+-- ALTER TABLE b2c_goods_import_detail CHANGE error_msg error_code TINYINT(3) NOT NULL DEFAULT 0 COMMENT '导入数据错误码，0表示正确 非0对应错误码';
 /***********************2.10*********************END*/
 
 
