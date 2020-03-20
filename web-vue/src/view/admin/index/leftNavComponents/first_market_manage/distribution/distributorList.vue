@@ -670,10 +670,7 @@ export default {
       }).then(() => {
         delDistributor(userId).then(res => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
-              message: '清除成功!'
-            })
+            this.$message.success('清除成功!')
             this.initDataList()
           }
         })
