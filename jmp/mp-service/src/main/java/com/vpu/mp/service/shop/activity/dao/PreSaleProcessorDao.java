@@ -19,7 +19,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,7 +98,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内
         //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
-        Condition condition = (PRESALE.PRE_START_TIME.lt(now).and(PRESALE.PRE_END_TIME.gt(now))).or(PRESALE.PRE_START_TIME_2.gt(now).and(PRESALE.PRE_END_TIME_2.lt(now)));
+        Condition condition = (PRESALE.PRE_START_TIME.lt(now).and(PRESALE.PRE_END_TIME.gt(now))).or(PRESALE.PRE_START_TIME_2.lt(now).and(PRESALE.PRE_END_TIME_2.gt(now)));
 
         PresaleRecord presaleRecord = db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)).and(condition))
             .fetchAny();
