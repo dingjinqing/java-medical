@@ -22,7 +22,7 @@
               :key="index"
             >
               <img
-                :src="item.src"
+                :src="$imageHost + item.src"
                 alt=""
                 style="height: 100%; width: 100%;"
               >
@@ -110,12 +110,12 @@
               <div>
                 <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label=1>{{$t('payReward.allGoods')}}</el-radio>
-                  <el-radio :label=2>{{$t('payReward.partOfGoods')}}</el-radio>
+                  <el-radio :label=0>{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label=1>{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
-                  v-if="params.goodsAreaType === 2"
+                  v-if="params.goodsAreaType === 1"
                 >
                   <div
                     class="noneBlockList"
@@ -276,7 +276,7 @@
                     <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
-                      style="font-size:12px"
+                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                     >
                       <span v-if="itemC.scoreNumber === 0">领取</span>
                       <div v-if="itemC.scoreNumber !== 0">
@@ -351,7 +351,7 @@
                     <div class="coupon_center_number">剩余{{itemD.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
-                      style="font-size:12px"
+                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                     >
                       <span v-if="itemD.scoreNumber === 0">领取</span>
                       <div v-if="itemD.scoreNumber !== 0">
@@ -741,9 +741,9 @@ export default {
       AtreeType: null,
       idInfo: null,
       carouselList: [
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift2.jpg' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift3.jpg' }
+        { src: '/image/admin/pay_gift1.jpg' },
+        { src: '/image/admin/pay_gift2.jpg' },
+        { src: '/image/admin/pay_gift3.jpg' }
       ],
       options: [],
       noneBlockDiscArr: [
@@ -776,7 +776,7 @@ export default {
         startTime: '',
         endTime: '',
         actFirst: '', //  优先级
-        goodsAreaType: 1, // 商品范围类型
+        goodsAreaType: 0, // 商品范围类型
         goodsIds: '', // 商品id
         goodsCatIds: '', // 商品平台分类
         goodsSortIds: '', // 商品商家分类
@@ -1567,11 +1567,11 @@ export default {
               .coupon_list_bottom {
                 height: 24px;
                 line-height: 30px;
+                font-size: 12px;
                 border-bottom-left-radius: 8px;
                 border-bottom-right-radius: 8px;
                 color: #fff;
                 background: #f66;
-                background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
                 background-repeat: repeat-x;
               }
             }
