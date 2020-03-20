@@ -80,3 +80,11 @@ export function getGoodsInfo (data) {
     data: data
   })
 }
+// 活动效果
+export function effectData (data) {
+  return service({
+    url: '/api/admin/market/promote/analysis',
+    method: 'post',
+    data: data
+  })
+}

@@ -26,7 +26,7 @@
           :label="$t('promoteList.actId')"
         >
           <el-input
-            :placeholder="$t('promoteList.actIdPlaceHolder')"
+            :placeholder="$t('promoteList.actIdPlaceholder')"
             v-model="id"
           ></el-input>
         </el-form-item>

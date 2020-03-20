@@ -231,7 +231,17 @@
                   @click="delAct(scope.row.id)"
                 ></i>
               </el-tooltip>
-
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="查看活动效果展示"
+                placement="top"
+              >
+                <i
+                  class="el-icon-picture-outline"
+                  @click="effectData(scope.row.id)"
+                ></i>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>
@@ -405,6 +415,10 @@ export default {
       this.$router.push({
         path: `/admin/home/main/friendHelp/participateDetails/${id}/${null}`
       })
+    },
+    // 活动效果
+    effectData (id) {
+      this.$router.push(`/admin/home/main/friendHelp/effectData/${id}`)
     }
   }
 }
