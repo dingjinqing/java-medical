@@ -164,9 +164,15 @@
                       v-model="params.onClickGoods"
                       @change="handleOnClickGoodsChange"
                     >指定购买商品人群 </el-checkbox>
-                    <span style="color:#999;fontSize:12px">最多可选择3件商品</span>
+                    <span
+                      v-if="params.onClickGoods"
+                      style="color:#999;fontSize:12px"
+                    >最多可选择3件商品</span>
                   </div>
-                  <div class="chooseGoods">
+                  <div
+                    class="chooseGoods"
+                    v-if="params.onClickGoods"
+                  >
                     <div class="chooseGoodsLeft">选择商品</div>
                     <ul class="imgList">
                       <li
@@ -205,13 +211,15 @@
                       v-model="params.onClickUser"
                       @change="handleOnClickUserChange"
                     >选择指定的会员 </el-checkbox>
-                    <span style="margin-left:-15px">
-                      <el-button
-                        @click="handleAddMember"
-                        type="text"
-                      >+ 添加会员</el-button>
+                    <span v-if="params.onClickUser">
+                      <span style="margin-left:-15px">
+                        <el-button
+                          @click="handleAddMember"
+                          type="text"
+                        >+ 添加会员</el-button>
+                      </span>
+                      <span>已选择会员{{memberNum}}人</span>
                     </span>
-                    <span>已选择会员{{memberNum}}人</span>
                   </div>
                   <div>
                     <el-checkbox
@@ -610,7 +618,9 @@ export default {
       imgsList: [],
       userNumber: 0,
       tuneUpChooseGoods: false,
-      tuneUpSelectLink: false
+      tuneUpSelectLink: false,
+      isJudgeStartTimeOne: '',
+      isJudgeStartTimeTwo: ''
     }
   },
   watch: {
@@ -683,19 +693,21 @@ export default {
       console.log(this.$refs.form)
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          addMessageApi(params).then(res => {
-            const { error } = res
-            if (error === 0) {
-              this.$message.success({
-                type: 'success',
-                message: `保存成功`
-              })
+          if (this.handleToJudge()) {
+            addMessageApi(params).then(res => {
+              const { error } = res
+              if (error === 0) {
+                this.$message.success({
+                  type: 'success',
+                  message: `保存成功`
+                })
 
-              this.$router.push({
-                name: `all_message_push`
-              })
-            }
-          }).catch(err => console.log(err))
+                this.$router.push({
+                  name: `all_message_push`
+                })
+              }
+            }).catch(err => console.log(err))
+          }
         } else {
           return false
         }
@@ -706,10 +718,12 @@ export default {
       this.time = val
       this.startTime = val.startTime
       this.endTime = val.endTime
+      this.isJudgeStartTimeOne = val.startTime
     },
     getTime2 (val) {
       this.time = val
       this.startTime = val.startTime
+      this.isJudgeStartTimeTwo = val.startTime
     },
     // 关闭会员弹窗
     closeDialog () {
@@ -899,6 +913,7 @@ export default {
       this.params.cardIdsList = cardIdsList
       this.params.onClickTag = onClickTag
       this.params.tagIdList = tagIdList
+      console.log(onClickCard, onClickTag)
       // 请选择会员卡
       switch (onClickCard) {
         case true:
@@ -966,6 +981,73 @@ export default {
       this.params.customRuleInfo.loginStart = this.loginStart
       this.params.customRuleInfo.loginEnd = this.loginEnd
       this.fetchUserList(this.params)
+    },
+    // 参与活动人群以及发送时间校验
+    handleToJudge () {
+      let isNone = true
+      console.log(this.params)
+      if (this.params.onClickNoPay) {
+        isNone = false
+      } else if (this.params.onClickGoods) {
+        if (!this.imgsList.length) {
+          this.$message.error({
+            message: '请选择指定商品',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickCard) {
+        if (!this.params.cardIdsList.length) {
+          this.$message.error({
+            message: '请选择会员卡',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickTag) {
+        if (!this.params.tagIdList.length) {
+          this.$message.error({
+            message: '请选择会员标签',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.params.onClickUser) {
+        if (!this.memberNum) {
+          this.$message.error({
+            message: '请选择指定会员',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.senAction === 2) {
+        if (!this.isJudgeStartTimeOne) {
+          this.$message.error({
+            message: '持续发送请选择日期区间',
+            showClose: true
+          })
+        }
+        isNone = false
+      } else if (this.senAction === 4) {
+        if (!this.isJudgeStartTimeTwo) {
+          this.$message.error({
+            message: '定时发送请选择发送日期',
+            showClose: true
+          })
+        }
+        isNone = false
+      }
+      // 判空
+      if (isNone) {
+        this.$message.error({
+          message: '请至少选择一种类型活动人群',
+          showClose: true
+        })
+        return false
+      } else {
+        console.log('sssss')
+        return true
+      }
     }
   }
 }
