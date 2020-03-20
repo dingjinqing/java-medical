@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaAllVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
@@ -58,5 +59,16 @@ public class GroupIntegrationController extends WxAppBaseController {
 
 	}
 
+	
+	/**
+	 * 瓜分积分拼团详情中的积分商品
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/pin/integration/goodDetail")
+	public JsonResult inteGoodsInfoDetail() {
+		List<IntegralMallMaAllVo> goods = shop().groupIntegration.getGoods();
+		return success(goods);
+		
+	}
 
 }

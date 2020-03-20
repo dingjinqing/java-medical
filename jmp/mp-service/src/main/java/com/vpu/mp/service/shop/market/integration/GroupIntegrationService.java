@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.market.integration;
 import static com.vpu.mp.db.shop.tables.GroupIntegrationDefine.GROUP_INTEGRATION_DEFINE;
 import static com.vpu.mp.db.shop.tables.GroupIntegrationList.GROUP_INTEGRATION_LIST;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
@@ -36,6 +37,10 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupIntegration;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaAllVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallProductMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.MinScoreMoney;
 import com.vpu.mp.service.pojo.shop.market.integration.ActSelectList;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.market.integration.ActivityInfo;
@@ -59,7 +64,6 @@ import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationPojo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupIntegrationVo;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupperInfoPojo;
-import com.vpu.mp.service.pojo.shop.market.message.BindOARabbitParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -73,6 +77,7 @@ import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartParam;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupStartVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -1228,5 +1233,31 @@ public class GroupIntegrationService extends ShopBaseService {
 	 */
 	public void asyncSuccessGroupIntegration(GroupInteRabbitParam param) {
 		successPinIntegration(param.getGroupId(), param.getPinInteId());
+	}
+	
+	/**
+	 * 获取积分商品
+	 * @return
+	 */
+	public List<IntegralMallMaAllVo> getGoods() {
+		IntegralConvertService integralConvertService = saas.getShopApp(getShopId()).integralConvertService;
+		List<IntegralMallMaVo> inteGoodsInfo = integralConvertService.getIsGoingActivityGoodsInfo(null);
+		List<IntegralMallMaAllVo> voInfo = new ArrayList<IntegralMallMaAllVo>();
+		for (IntegralMallMaVo item : inteGoodsInfo) {
+			IntegralMallMaAllVo vo = new IntegralMallMaAllVo();
+			BeanUtils.copyProperties(item, vo);
+			Integer id = item.getId();
+			Integer totalByProduct = integralConvertService.getTotalByProduct(id);
+			List<IntegralMallProductMaVo> specProduct = integralConvertService.getIntegralSpecProduct(id);
+			BigDecimal prdPrice = specProduct.stream().filter(x -> x.getPrdPrice() != null)
+					.map(IntegralMallProductMaVo::getPrdPrice).distinct().max((e1, e2) -> e1.compareTo(e2)).get();
+			vo.setPrdPrice(prdPrice);
+			MinScoreMoney MinArr = integralConvertService.getIntegralScoreMoney(id);
+			vo.setScore(MinArr.getMinScore());
+			vo.setMoney(MinArr.getMinMoney());
+			vo.setStockSum(totalByProduct);
+			voInfo.add(vo);
+		}
+		return voInfo;
 	}
 }

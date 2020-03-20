@@ -22,4 +22,7 @@ public class TypesNames {
 	
 	/** 退款通知 */
 	public static final String ORDER_REFUND = "order_refund";
+	
+	/** 余额提现那用的*/
+	public static final String WITH_DRAW = "with_draw";
 }
