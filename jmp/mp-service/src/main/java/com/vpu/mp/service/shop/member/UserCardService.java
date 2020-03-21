@@ -1396,10 +1396,7 @@ public class UserCardService extends ShopBaseService {
 			}
 
 			if(!StringUtil.isBlank(userCard.getStoreList()) && CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
-				logger().info("获取门店信息");
-				List<Integer> storeIdList = CardUtil.parseStoreList(userCard.getStoreList());
-				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
-				userCard.setStoreInfoList(storeList);
+				dealWithCardStore(userCard);
 			}
 			
 			// 包邮信息
@@ -1459,13 +1456,7 @@ public class UserCardService extends ShopBaseService {
 				uCard.setNext(nextGradeCard);
 			}
 			if(!CardUtil.isGradeCard(uCard.getCardType()) && !StringUtil.isBlank(uCard.getStoreList()) && CardUtil.canUseInStore(uCard.getStoreUseSwitch())) {
-				logger().info("获取门店信息");
-				Byte useStoreType = CardUtil.getUseStoreType(uCard.getStoreUseSwitch(), uCard.getStoreList());
-				uCard.setStoreUseSwitch(useStoreType);
-				List<Integer> storeIdList = CardUtil.parseStoreList(uCard.getStoreList());
-				uCard.setStoreIdList(storeIdList);
-				List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
-				uCard.setStoreInfoList(storeList);
+				dealWithCardStore(uCard);
 			}
 			// 会员卡头像
 
@@ -1523,6 +1514,7 @@ public class UserCardService extends ShopBaseService {
 		}
 	}
 
+
 	private void dealWithJudgeFreeship(String lang, UserCardVo userCard) {
 		logger().info("处理判断卡的包邮信息");
 		if(StringUtils.isBlank(userCard.getCardNo())) {
@@ -1542,7 +1534,20 @@ public class UserCardService extends ShopBaseService {
 			CardFreeship freeshipData = cardFreeShipSvc.getFreeshipData(cardParam,lang);
 			userCard.setFreeshipDesc(freeshipData.getDesc());
 		}
-		
+	}
+
+	private void dealWithCardStore(UserCardVo userCard) {
+		logger().info("获取门店信息");
+		// 门店使用类型
+		Byte useStoreType = CardUtil.getUseStoreType(userCard.getStoreUseSwitch(), userCard.getStoreList());
+		userCard.setStoreUseSwitch(useStoreType);
+		// 门店Id
+		List<Integer> storeIdList = CardUtil.parseStoreList(userCard.getStoreList());
+		userCard.setStoreIdList(storeIdList);
+		// 门店具体信息
+		List<StoreBasicVo> storeList = storeService.getStoreListByStoreIds(storeIdList);
+		userCard.setStoreInfoList(storeList);
+
 	}
 
 	/**
