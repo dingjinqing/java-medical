@@ -9,7 +9,10 @@
           <view class="card_name_box">
             <view class="card_name">{{cardInfo.cardName}} <text class="get_status">{{carStatus}}</text></view>
             <view class="card_exp" >
-            <text wx:if="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
+            <text wx:if="{{cardInfo.expireType == 0}}">
+              有效期：{{cardInfo.cardExpireTime}}
+            </text>
+            <text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
             <text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
             </view>
           </view>
