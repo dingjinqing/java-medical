@@ -1320,6 +1320,7 @@ public class UserCardService extends ShopBaseService {
 		}
 
 		if (!isGet) {
+			// 返回新卡也就是memberCard的配置详情信息
 			logger().info("用户有此限次卡但是还可以继续领取，或者没有此卡");
 			if (!CardUtil.isNeedToBuy(mCard.getIsPay())) {
 				userCard.setPayFee(null);
@@ -1559,18 +1560,34 @@ public class UserCardService extends ShopBaseService {
 	 * @param userCard
 	 */
 	private void setEffectTimeForJudgeCard(UserCardVo userCard) {
-		EffectTimeParam etParam = new EffectTimeParam();
-		etParam.setStartTime(userCard.getStartTime());
-		etParam.setEndTime(userCard.getEndTime());
-		etParam.setCreateTime(userCard.getUCreateTime());
-		etParam.setExpireTime(userCard.getExpireTime());
-		etParam.setExpireType(userCard.getExpireType());
-		EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
-		userCard.setStartDate(etBean.getStartDate());
-		userCard.setStartTime(etBean.getStartTime());
-		userCard.setEndDate(etBean.getEndDate());
-		userCard.setEndTime(etBean.getEndTime());
-		userCard.setExpireType(etBean.getExpireType());
+		
+		if(StringUtils.isBlank(userCard.getCardNo())) {
+			logger().info("直接设置会员卡的配置有效期");
+			userCard.setStartDate(CardUtil.timeToLocalDate(userCard.getStartTime()));
+			userCard.setEndDate(CardUtil.timeToLocalDate(userCard.getEndTime()));
+			// 兼容 
+			Byte expireType = userCard.getExpireType();
+			if(CardUtil.isCardFixTime(expireType)) {
+				userCard.setExpireType(NumberUtils.BYTE_ONE);
+			}else if(CardUtil.isCardTimeStartFrom(expireType)) {
+				userCard.setExpireType(NumberUtils.BYTE_ZERO);
+			}
+		}else {
+			logger().info("处理用户卡的有效快照时间");
+			EffectTimeParam etParam = new EffectTimeParam();
+			etParam.setStartTime(userCard.getStartTime());
+			etParam.setEndTime(userCard.getEndTime());
+			etParam.setCreateTime(userCard.getUCreateTime());
+			etParam.setExpireTime(userCard.getExpireTime());
+			etParam.setExpireType(userCard.getExpireType());
+			EffectTimeBean etBean = CardUtil.getUserCardEffectTime(etParam);
+			userCard.setStartDate(etBean.getStartDate());
+			userCard.setStartTime(etBean.getStartTime());
+			userCard.setEndDate(etBean.getEndDate());
+			userCard.setEndTime(etBean.getEndTime());
+			userCard.setExpireType(etBean.getExpireType());
+		}
+		
 	}
 	
 	/**
