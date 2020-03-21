@@ -171,7 +171,6 @@
 		 wx:for-index="indexC"
 		 wx:for-item="itemC"
 		>
-
 			<view class="card_item_title"  data-index="{{indexC}}">
 				<view class="item_title_left">
 					<image src="{{itemC.crightImage}}" mode='widthFix' />
@@ -205,7 +204,8 @@
 				适用商品
 			</view>
 			<view class="item_title_right">
-				查看 >
+				<view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
+        <view wx:else>查看 ></view>
 			</view>
 		</view>
 		<view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
@@ -306,7 +306,6 @@
 			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 		</view>
 	</view>
-
 	<view class="flex_footer">
 		<view
 		 class="footer_btn"
