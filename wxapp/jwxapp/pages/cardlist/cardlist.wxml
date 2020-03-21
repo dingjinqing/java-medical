@@ -52,7 +52,7 @@
                 <block wx:if="{{ item.cardType == 0 || item.cardType == 1 }}">
                   <view class="item_row" wx:if="{{item.expire == 0}}">
                     有效期：<text wx:if="{{item.expireType == 2}}">永久有效</text>
-                            <text wx:else>{{ item.startTime }} 至 {{ item.endTime }}</text>
+                            <text wx:else>{{ item.startDate }} 至 {{ item.endDate }}</text>
                   </view>
                   <view class="item_row" wx:else style="padding-right:80rpx;">有效期：此卡已过期，如需继续使用请联系商家</view>
                 </block>

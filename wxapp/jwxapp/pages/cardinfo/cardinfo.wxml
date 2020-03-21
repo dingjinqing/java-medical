@@ -32,6 +32,7 @@
 					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
 						<!-- ￥10000 -->
 						<image
+             wx:if="{{cardInfo.cardNo !== null}}"
 						 mode="widthFix"
 						 class="qrcode"
 						 bindtap="showQrCode"
