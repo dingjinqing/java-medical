@@ -1351,10 +1351,7 @@ public class UserCardService extends ShopBaseService {
 				}
 				// 商品兑换次数
 				if(CardUtil.canExchangGoods(userCard.getIsExchang())) {
-					// 部分商品
-					if(CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang())) {
-						userCard.setExchangSurplus(userCard.getExchangCount());
-					}
+					userCard.setExchangSurplus(userCard.getExchangCount());
 				}
 				
 			}
