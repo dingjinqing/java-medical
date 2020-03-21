@@ -56,7 +56,7 @@
                   </view>
                   <view class="item_row" wx:else style="padding-right:80rpx;">有效期：此卡已过期，如需继续使用请联系商家</view>
                 </block>
-                <view class="right_renew" wx:if='{{item.renewal == 1}}' catchtap="to_renew" data-card_no='{{item.cardNo}}'>
+                <view class="right_renew" wx:if='{{item.renewal == 1 && item.cardType == 0}}' catchtap="to_renew" data-card_no='{{item.cardNo}}'>
                 立即续费
               </view>
 							</view>
