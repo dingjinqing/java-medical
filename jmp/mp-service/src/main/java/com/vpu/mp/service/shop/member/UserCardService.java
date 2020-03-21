@@ -1372,11 +1372,25 @@ public class UserCardService extends ShopBaseService {
 						userCard.setExchangCount(userCard.getExchangCount());
 					}
 				}
-
-			if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
-				if(userCard.getSurplus()==null) {
-					userCard.setSurplus(userCard.getCount());
+			// 处理限次兑换次数
+			String cardNo = userCard.getCardNo();
+			boolean toGetCard = StringUtils.isBlank(cardNo);
+			// 没有领取卡取卡的配置，已经领卡取用户卡的快照信息
+			if(CardUtil.isLimitCard(userCard.getCardType()) && toGetCard ) {
+				// 门店兑换次数
+				if(CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
+					if(userCard.getSurplus()==null) {
+						userCard.setSurplus(userCard.getCount());
+					}
 				}
+				// 商品兑换次数
+				if(CardUtil.canExchangGoods(userCard.getIsExchang())) {
+					// 部分商品
+					if(CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang())) {
+						userCard.setExchangSurplus(userCard.getExchangCount());
+					}
+				}
+				
 			}
 
 			if(!StringUtil.isBlank(userCard.getStoreList()) && CardUtil.canUseInStore(userCard.getStoreUseSwitch())) {
