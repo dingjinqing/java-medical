@@ -1280,7 +1280,7 @@ public class UserCardService extends ShopBaseService {
 				isGet = true;
 			}else{
 				// 能继续领取限次卡
-				userCard.setCardNo(null);
+				userCard = mCard.into(UserCardVo.class);
 				isGet = false;
 			}
 		}
