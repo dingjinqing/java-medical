@@ -1067,4 +1067,9 @@ public class JsonResultMessage {
     public static final String GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX = "goods.excel.import.sheet.header.wrong.index";
     /**excel sheet 列和定义的pojo字段位置对应错误*/
     public static final String GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO = "goods.excel.import.sheet.column.not.map.pojo";
+    /**以下未国际化*/
+    public static final String GOODS_EXCEL_UPLOAD_UPYUN_WRONG = "goods.excel.upload.upyun.wrong";
+    public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
+    public static final String GOODS_EXCEL_IMPORT_GOODS_NAME_REPEATED = "goods.excel.import.goods.name.repeated";
+    public static final String GOODS_EXCEL_IMPORT_GOODS_PRD_SN_REPEATED = "goods.excel.import.goods.prd.sn.repeated";
 }

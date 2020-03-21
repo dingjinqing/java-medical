@@ -3,11 +3,14 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.recommend.SkuAttrList;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryVo;
 import com.vpu.mp.service.shop.store.store.StoreGoodsService;
@@ -20,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,12 +85,14 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据 =规格id获取规格信息
+     *
      * @param prdIds
      * @return
      */
-    public Map<Integer, GoodsSpecProductRecord> goodsSpecProductByIds(List<Integer> prdIds){
+    public Map<Integer, GoodsSpecProductRecord> goodsSpecProductByIds(List<Integer> prdIds) {
         return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.in(prdIds)).fetchMap(GOODS_SPEC_PRODUCT.PRD_ID);
     }
+
     /**
      * 根据处理后的商品规格名值数据插入规格项（sku）,在插入前动态计算其prdSpec
      *
@@ -244,7 +250,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             item = goodsSpecProducts.get(i);
             addedCount++;
             batchStep = batchStep.bind(item.getPrdPrice(), item.getPrdMarketPrice(), item.getPrdCostPrice(), item.getPrdNumber(), item.getPrdSn(),
-                item.getPrdSpecs(), item.getPrdDesc(),item.getPrdImg(), item.getPrdId());
+                item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(), item.getPrdId());
 
             if (addedCount == batchCount) {
                 batchStep.execute();
@@ -350,6 +356,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据规格id查询规格明细 一跳规格
+     *
      * @return
      */
     public GoodsSpecProductRecord selectSpecByProId(Integer proId) {
@@ -532,4 +539,125 @@ public class GoodsSpecProductService extends ShopBaseService {
     public int getDefaultPrdId(int goodsId) {
         return db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
     }
+
+    /**
+     * 查询传入的prdSn集合中哪些是数据库中已经存在的
+     * @param prdSn
+     * @return
+     */
+    public List<String> findSkuPrdSnExist(List<String> prdSn) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_SN).from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn))
+            .fetch(GOODS_SPEC_PRODUCT.PRD_SN);
+    }
+
+    /**
+     * 判断商品规格名和规格值是否内部自重复
+     * @param specs 商品规格
+     * @return {@link JsonResult#getError()}!=0表示存在重复
+     */
+    public JsonResultCode isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
+        //在选择默认规格的情况下该字段可以是空
+        if (specs == null) {
+            return JsonResultCode.CODE_SUCCESS;
+        }
+
+        Map<String, Object> specNameRepeatMap = new HashMap<>(specs.size());
+
+        for (GoodsSpec goodsSpec : specs) {
+
+            specNameRepeatMap.put(goodsSpec.getSpecName(), null);
+            //检查同一规格下规格值是否重复
+            List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
+            if (goodsSpecVals == null) {
+                continue;
+            }
+            Map<String, Object> specValRepeatMap = new HashMap<>(goodsSpecVals.size());
+            for (GoodsSpecVal goodsSpecVal : goodsSpecVals) {
+                specValRepeatMap.put(goodsSpecVal.getSpecValName(), null);
+            }
+            if (specValRepeatMap.size() != goodsSpecVals.size()) {
+                return JsonResultCode.GOODS_SPEC_VAL_REPETITION;
+            }
+        }
+        if (specs.size() != specNameRepeatMap.size()) {
+            return JsonResultCode.GOODS_SPEC_NAME_REPETITION;
+        }
+
+        return JsonResultCode.CODE_SUCCESS;
+    }
+
+
+    /**
+     * 验证输入的商品规格属性和商品规格键值的正确性，
+     * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
+     * @param goodsSpecProducts 商品规格属性
+     * @param goodsSpecs        商品规格键值
+     * @return JsonResultCode
+     */
+    public JsonResultCode isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
+
+        //判断是否是默认sku
+        boolean isDefaultSku = goodsSpecProducts.size() == 1 &&
+            org.apache.commons.lang3.StringUtils.isBlank(goodsSpecProducts.get(0).getPrdDesc()) &&
+            (goodsSpecs == null || goodsSpecs.size() == 0);
+
+        //是默认sku直接返回
+        if (isDefaultSku) {
+            return JsonResultCode.CODE_SUCCESS;
+        }
+
+        //根据商品规格值计算出应该有多少规格数据，计算笛卡尔积
+        int cartesianNum = 1;
+        for (GoodsSpec goodsSpec : goodsSpecs) {
+            //商品写了规格名称但是未设置规格值
+            if (goodsSpec.getGoodsSpecVals() == null || goodsSpec.getGoodsSpecVals().size() == 0) {
+                return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+            }
+            //笛卡尔积计算
+            cartesianNum *= goodsSpec.getGoodsSpecVals().size();
+        }
+
+        //传入的规格属性条目和根据规格名值计算出来的数据不对应
+        if (cartesianNum != goodsSpecProducts.size()) {
+            return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+        }
+
+        //验证传入的prdDesc的正确性，拆解prdDesc，检查对应的名和值是否咋goodsSpec中都存在
+        List<String> specDescs = goodsSpecProducts.stream().map(GoodsSpecProduct::getPrdDesc).collect(Collectors.toList());
+        Map<String, List<GoodsSpecVal>> specs = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, GoodsSpec::getGoodsSpecVals));
+
+        for (String prdDesc : specDescs) {
+            if (prdDesc == null) {
+                return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+            }
+            String[] splits = prdDesc.split(GoodsSpecProductService.PRD_DESC_DELIMITER);
+
+            for (String split : splits) {
+                String[] s = split.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
+
+                if (s.length < 2 || org.apache.commons.lang3.StringUtils.isBlank(s[0]) || org.apache.commons.lang3.StringUtils.isBlank(s[1])) {
+                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                }
+
+                String speck = s[0], specv = s[1];
+
+                //检查规格名称是否存在
+                List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
+                //规格名称不存在
+                if (goodsSpecVals == null) {
+                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                }
+
+                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> org.apache.commons.lang3.StringUtils.equals(specv, goodsSpecVal.getSpecValName()));
+
+                if (!b) {
+                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                }
+            }
+        }
+        return JsonResultCode.CODE_SUCCESS;
+    }
+
+
 }

@@ -15,7 +15,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsGroupListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,12 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author 李晓冰
@@ -176,74 +173,31 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
 
-        //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
-        JsonResult result = isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
-        //传入的规格属性的prdDesc存在错误
-        if (result.getError() != 0) {
-            return result;
-        }
+        GoodsService goodsService = shop().goods;
+        JsonResultCode code;
+//        //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
+//        JsonResultCode code = goodsService.goodsSpecProductService.isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
+//        //传入的规格属性的prdDesc存在错误
+//        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
+//            return fail(code);
+//        }
+//
+//        //检查规格名称是否存在重复
+//        code =goodsService.goodsSpecProductService.isSpecNameOrValueRepeat(goods.getGoodsSpecs());
+//        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
+//            return fail(code);
+//        }
 
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        result = isGradePrdPriceOk(goods);
-        if (result.getError() != 0) {
-            return result;
+        code = goodsService.isGradePrdPriceOk(goods);
+        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
+            return fail(code);
         }
-
-        //存在重复值则直接返回
-        result = columnValueExistCheckForInsert(goods);
-        if (result.getError() != 0) {
-            return result;
+        code = shop().goods.insert(goods);
+        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
+            return fail(code);
         }
-
-        shop().goods.insert(goods);
-
-        result.setContent(goods.getGoodsId());
-
-        return result;
-    }
-
-    /**
-     * 商品新增接口数据重复检查（非原子操作）
-     *
-     * @param goods 商品
-     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
-     */
-    private JsonResult columnValueExistCheckForInsert(Goods goods) {
-        GoodsService goodsService = shop().goods;
-
-        GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
-
-        //检查商品名称是否重复
-        gcep.setGoodsName(goods.getGoodsName());
-        if (goodsService.isColumnValueExist(gcep)) {
-            return fail(JsonResultCode.GOODS_NAME_EXIST);
-        }
-        gcep.setGoodsName(null);
-
-        //用户输入了商品货号则进行检查是否重复
-        if (goods.getGoodsSn() != null) {
-            gcep.setGoodsSn(goods.getGoodsSn());
-            if (goodsService.isColumnValueExist(gcep)) {
-                return fail(JsonResultCode.GOODS_SN_EXIST);
-            }
-            gcep.setGoodsSn(null);
-        }
-
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
-
-        //检查sku sn是否重复
-        for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
-            if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
-                gcep.setPrdSn(goodsSpecProduct.getPrdSn());
-                if (goodsService.isColumnValueExist(gcep)) {
-                    return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
-                }
-            }
-        }
-
-        //检查规格名称是否存在重复
-        return isSpecNameOrValueRepeat(goods.getGoodsSpecs());
+        return success();
     }
 
     /**
@@ -319,29 +273,11 @@ public class AdminGoodsController extends AdminBaseController {
         if (StringUtils.isBlank(goods.getGoodsImg())) {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
-
-        JsonResult result = success();
-            //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
-//        result = isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
-        //传入的规格属性的prdDesc存在错误
-        if (result.getError() != 0) {
-            return result;
+        //ps:此处省略规格组，规格名值,因为加上后出现过操作超时的现象
+        JsonResultCode code = shop().goods.update(goods);
+        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
+            return fail(code);
         }
-
-        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        result = isGradePrdPriceOk(goods);
-        if (result.getError() != 0) {
-            return result;
-        }
-
-        //存在重复值则直接返回
-        result = columnValueExistCheckForUpdate(goods);
-        if (result.getError() != 0) {
-            return result;
-        }
-
-        shop().goods.update(goods);
-
         return success();
     }
 
@@ -429,7 +365,6 @@ public class AdminGoodsController extends AdminBaseController {
 
     /**
      * 判断商品规格名和规格值是否内部自重复
-     *
      * @param specs 商品规格
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
@@ -461,106 +396,6 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SPEC_NAME_REPETITION);
         }
 
-        return success();
-    }
-
-    /**
-     * 判断商品会员卡价格是否正确
-     *
-     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
-     * @return
-     */
-    private JsonResult isGradePrdPriceOk(Goods goods) {
-        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
-            Map<String, BigDecimal> collect =
-                goods.getGoodsSpecProducts()
-                    .stream()
-                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
-
-            boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
-                if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
-                    return true;
-                }
-                return goodsGradePrd.getGradePrice().compareTo(collect.get(goodsGradePrd.getPrdDesc())) > 0;
-            });
-
-            if (r) {
-                return fail(JsonResultCode.CODE_PARAM_ERROR);
-            }
-        }
-        return success();
-    }
-
-    /**
-     * 验证出入的商品规格属性和商品规格键值的正确性，
-     * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
-     *
-     * @param goodsSpecProducts 商品规格属性
-     * @param goodsSpecs        商品规格键值
-     * @return {@link JsonResult#getError()}!=0表示存在错误
-     */
-    private JsonResult isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
-
-        //判断是否是默认sku
-        boolean isDefaultSku = goodsSpecProducts.size() == 1 &&
-            StringUtils.isBlank(goodsSpecProducts.get(0).getPrdDesc()) &&
-            (goodsSpecs == null || goodsSpecs.size() == 0);
-
-        //是默认sku直接返回
-        if (isDefaultSku) {
-            return success();
-        }
-
-        //根据商品规格值计算出应该有多少规格数据，计算笛卡尔积
-        int cartesianNum = 1;
-        for (GoodsSpec goodsSpec : goodsSpecs) {
-            //商品写了规格名称但是未设置规格值
-            if (goodsSpec.getGoodsSpecVals() == null || goodsSpec.getGoodsSpecVals().size() == 0) {
-                return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-            }
-            //笛卡尔积计算
-            cartesianNum *= goodsSpec.getGoodsSpecVals().size();
-        }
-
-        //传入的规格属性条目和根据规格名值计算出来的数据不对应
-        if (cartesianNum != goodsSpecProducts.size()) {
-            return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-        }
-
-        //验证传入的prdDesc的正确性，拆解prdDesc，检查对应的名和值是否咋goodsSpec中都存在
-        List<String> specDescs = goodsSpecProducts.stream().map(GoodsSpecProduct::getPrdDesc).collect(Collectors.toList());
-        Map<String, List<GoodsSpecVal>> specs = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, GoodsSpec::getGoodsSpecVals));
-
-        for (String prdDesc : specDescs) {
-            if (prdDesc == null) {
-                return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-            }
-            String[] splits = prdDesc.split(GoodsSpecProductService.PRD_DESC_DELIMITER);
-
-            for (String split : splits) {
-                String[] s = split.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
-
-                if (s.length < 2 || StringUtils.isBlank(s[0]) || StringUtils.isBlank(s[1])) {
-                    return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-                }
-
-                String speck = s[0], specv = s[1];
-
-                //检查规格名称是否存在
-                List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
-                //规格名称不存在
-                if (goodsSpecVals == null) {
-                    return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-                }
-
-                boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> StringUtils.equals(specv, goodsSpecVal.getSpecValName()));
-
-                if (!b) {
-                    return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
-                }
-            }
-        }
         return success();
     }
 

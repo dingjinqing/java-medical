@@ -7,17 +7,17 @@ package com.vpu.mp.service.pojo.shop.goods.goodsimport;
  */
 public enum GoodsImportDataIIllegalEnum {
     /**货品编号为null*/
-    GOODS_SN_NULL(1,"goods.sn.is.null"),
+    GOODS_SN_NULL((byte)1,"goods.sn.is.null"),
     /**商品名称为null*/
-    GOODS_NAME_NULL(2,"goods.name.is.null"),
+    GOODS_NAME_NULL((byte)2,"goods.name.is.null"),
     /**商家编码为null*/
-    GOODS_PRD_SN_NULL(3,"goods.prd.sn.is.null");
+    GOODS_PRD_SN_NULL((byte)3,"goods.prd.sn.is.null");
 
 
-    private int errorCode;
+    private byte errorCode;
     private String errorMsg;
 
-    GoodsImportDataIIllegalEnum(int errorCode, String errorMsg) {
+    GoodsImportDataIIllegalEnum(byte errorCode, String errorMsg) {
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
@@ -26,7 +26,7 @@ public enum GoodsImportDataIIllegalEnum {
         return errorMsg;
     }
 
-    public int getErrorCode() {
+    public byte getErrorCode() {
         return errorCode;
     }
 }
