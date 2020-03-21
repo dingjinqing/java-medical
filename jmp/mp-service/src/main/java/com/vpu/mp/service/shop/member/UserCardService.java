@@ -930,7 +930,7 @@ public class UserCardService extends ShopBaseService {
 		logger().info("处理wx 用户会员卡数据详情");
 		dealWithUserCardBasicInfo(card);
 		dealWithUserCardAvailableStore(card);
-		dealWithExchangGoods(card);
+		card.setGoodsList(getExchangGoodsDetail(card));
 	}
 
 	public void dealWithUserCardAvailableStore(WxAppUserCardVo card) {
@@ -965,33 +965,42 @@ public class UserCardService extends ShopBaseService {
 	/**
 	 * 处理可兑换的商品
 	 */
-	public void dealWithExchangGoods(WxAppUserCardVo card) {
+	public List<GoodsSmallVo> getExchangGoodsDetail(WxAppUserCardVo userCard) {
+		List<GoodsSmallVo> res = Collections.<GoodsSmallVo>emptyList();
+		if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canExchangGoods(userCard.getIsExchang())) {
+			logger().info("处理限次卡兑换的商品");
+			boolean partGoodsFlag = CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang());
+			if(partGoodsFlag) {
+				// 部分商品
+				if(!StringUtils.isBlank(userCard.getExchangGoods())) {
+					List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
+					res = goodsService.getGoodsList(goodsIdList, false);
+				}
+			}else {
+				// 全部商品，只取两个进行展示
+				GoodsPageListParam goodsParam = new GoodsPageListParam();
+				goodsParam.setPageRows(2);
+				goodsParam.setCurrentPage(1);
+				PageResult<GoodsPageListVo> goodsPageList = goodsService.getPageList(goodsParam);
+				List<Integer> goodsIdList = new ArrayList<>();
+				for(GoodsPageListVo goodsVo: goodsPageList.dataList) {
+					goodsIdList.add(goodsVo.getGoodsId());
+				}
+				res = goodsService.getGoodsList(goodsIdList, false);
+			}
 
-		if (card.hasAvailableExchangGoods()) {
-			card.setGoodsList(getAvailGoodsForCard(card));
-			// 两位小数
-			if (card.getGoodsList() != null) {
-				for (GoodsSmallVo good : card.getGoodsList()) {
-					good.setShopPrice(good.getShopPrice().setScale(2));
+			if(res.size()>0) {
+				logger().info("价格处理为两位小数");
+				for(GoodsSmallVo goodsVo: res) {
+					BigDecimal shopPrice = goodsVo.getShopPrice();
+					goodsVo.setShopPrice(shopPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN));
 				}
 			}
 		}
+		
+		return res;
 	}
 
-	public List<GoodsSmallVo> getAvailGoodsForCard(WxAppUserCardVo card) {
-		logger().info("正在获取可兑换的商品");
-		// 获取兑换的商品id
-		List<Integer> goodsIds = new ArrayList<Integer>();
-		if (!StringUtils.isBlank(card.getExchangGoods())) {
-			goodsIds = card.retrieveExchangGoods();
-		} else {
-			PageResult<GoodsPageListVo> pageList = goodsService.getPageList(new GoodsPageListParam());
-			for (GoodsPageListVo goods : pageList.dataList) {
-				goodsIds.add(goods.getGoodsId());
-			}
-		}
-		return goodsService.getGoodsList(goodsIds, true);
-	}
 
 	/**
 	 * 王帅 get card type
@@ -1303,51 +1312,21 @@ public class UserCardService extends ShopBaseService {
 						userCard.setStartDate(userCard.getStartTime().toLocalDateTime().toLocalDate());
 						userCard.setEndDate(userCard.getEndTime().toLocalDateTime().toLocalDate());
 					}
-				} else {
-					userCard.setStatus(1);
-				}
+			} else {
+				userCard.setStatus(1);
+			}
 
-				userCard.setShopAvatar(getCardAvatar());
-				userCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
-				userCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
-				userCard.setBindMobile(shopCommonConfigService.getBindMobile());
+			userCard.setShopAvatar(getCardAvatar());
+			userCard.setScoreAmount(scoreService.getAccumulationScore(param.getUserId()));
+			userCard.setPaidAmount(orderInfoService.getAllConsumpAmount(param.getUserId()));
+			userCard.setBindMobile(shopCommonConfigService.getBindMobile());
 
-				if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canExchangGoods(userCard.getIsExchang())) {
-					logger().info("处理限次卡兑换的商品");
-					boolean partGoodsFlag = CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang());
-					if(partGoodsFlag) {
-						if(!StringUtils.isBlank(userCard.getExchangGoods())) {
-							List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
-							List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
-							userCard.setGoodsList(goodsList);
-						}else {
-							userCard.setGoodsList(Collections.<GoodsSmallVo>emptyList());
-						}
-					}else {
-						GoodsPageListParam goodsParam = new GoodsPageListParam();
-						goodsParam.setPageRows(2);
-						goodsParam.setCurrentPage(1);
-						PageResult<GoodsPageListVo> goodsPageList = goodsService.getPageList(goodsParam);
-						List<Integer> goodsIdList = new ArrayList<>();
-						for(GoodsPageListVo goodsVo: goodsPageList.dataList) {
-							goodsIdList.add(goodsVo.getGoodsId());
-						}
-						List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
-						userCard.setGoodsList(goodsList);
-					}
-
-					if(userCard.getGoodsList()!=null) {
-						logger().info("价格处理为两位小数");
-						for(GoodsSmallVo goodsVo: userCard.getGoodsList()) {
-							BigDecimal shopPrice = goodsVo.getShopPrice();
-							goodsVo.setShopPrice(shopPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						}
-					}
-
-					if(userCard.getExchangCount()==null) {
-						userCard.setExchangCount(userCard.getExchangCount());
-					}
-				}
+			//兑换商品
+			WxAppUserCardVo vo = new WxAppUserCardVo();
+			vo.setCardType(userCard.getCardType());
+			vo.setIsExchang(userCard.getIsExchang());
+			vo.setExchangGoods(userCard.getExchangGoods());
+			userCard.setGoodsList(getExchangGoodsDetail(vo));
 			// 处理限次兑换次数
 			String cardNo = userCard.getCardNo();
 			boolean toGetCard = StringUtils.isBlank(cardNo);
