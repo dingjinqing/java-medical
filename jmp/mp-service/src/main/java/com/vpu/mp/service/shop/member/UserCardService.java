@@ -1311,12 +1311,16 @@ public class UserCardService extends ShopBaseService {
 		if (CardUtil.isLimitCard(userCard.getCardType())) {
 			if (!canSendLimitCard(param.getUserId(), mCard)) {
 				logger().info("限次卡领取次数用完");
+				isGet = true;
+			}else{
+				// 能继续领取限次卡
+				userCard.setCardNo(null);
 				isGet = false;
 			}
 		}
 
-		if ((isGet && CardUtil.isLimitCard(userCard.getCardType())) || !isGet) {
-			logger().info("用户有此限次卡，或者没有此卡");
+		if (!isGet) {
+			logger().info("用户有此限次卡但是还可以继续领取，或者没有此卡");
 			if (!CardUtil.isNeedToBuy(mCard.getIsPay())) {
 				userCard.setPayFee(null);
 			}
