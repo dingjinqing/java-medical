@@ -1343,10 +1343,15 @@ public class UserCardService extends ShopBaseService {
 
 				if(CardUtil.isLimitCard(userCard.getCardType()) && CardUtil.canExchangGoods(userCard.getIsExchang())) {
 					logger().info("处理限次卡兑换的商品");
-					if(!StringUtils.isBlank(userCard.getExchangGoods())) {
-						List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
-						List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
-						userCard.setGoodsList(goodsList);
+					boolean partGoodsFlag = CardConstant.MCARD_ISE_PART.equals(userCard.getIsExchang());
+					if(partGoodsFlag) {
+						if(!StringUtils.isBlank(userCard.getExchangGoods())) {
+							List<Integer> goodsIdList = Util.splitValueToList(userCard.getExchangGoods());
+							List<GoodsSmallVo> goodsList = goodsService.getGoodsList(goodsIdList, false);
+							userCard.setGoodsList(goodsList);
+						}else {
+							userCard.setGoodsList(Collections.<GoodsSmallVo>emptyList());
+						}
 					}else {
 						GoodsPageListParam goodsParam = new GoodsPageListParam();
 						goodsParam.setPageRows(2);
