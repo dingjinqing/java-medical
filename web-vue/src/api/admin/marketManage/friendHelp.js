@@ -88,3 +88,11 @@ export function effectData (data) {
     data: data
   })
 }
+// 分享
+export function shareAct (data) {
+  return service({
+    url: '/api/admin/market/promote/share',
+    method: 'post',
+    data: data
+  })
+}
