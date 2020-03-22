@@ -51,12 +51,12 @@
                  <!-- 有效期 -->
                 <block wx:if="{{ item.cardType == 0 || item.cardType == 1 }}">
                   <view class="item_row" wx:if="{{item.expire == 0}}">
-                    有效期：<text wx:if="{{item.expireType == 2  && item.expireType == null}}">永久有效</text>
-                            <text wx:else>{{ item.startTime }} 至 {{ item.endTime }}</text>
+                    有效期：<text wx:if="{{item.expireType == 2}}">永久有效</text>
+                            <text wx:else>{{ item.startDate }} 至 {{ item.endDate }}</text>
                   </view>
                   <view class="item_row" wx:else style="padding-right:80rpx;">有效期：此卡已过期，如需继续使用请联系商家</view>
                 </block>
-                <view class="right_renew" wx:if='{{item.renewal == 1}}' catchtap="to_renew" data-card_no='{{item.cardNo}}'>
+                <view class="right_renew" wx:if='{{item.renewal == 1 && item.cardType == 0}}' catchtap="to_renew" data-card_no='{{item.cardNo}}'>
                 立即续费
               </view>
 							</view>

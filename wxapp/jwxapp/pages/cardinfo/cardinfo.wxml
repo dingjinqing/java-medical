@@ -11,7 +11,10 @@
 							<text class="get_status">{{carStatus}}</text>
 						</view>
 						<view class="card_exp">
-							<text wx:if="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
+              <text wx:if="{{cardInfo.expireType == 0}}">
+                有效期：{{cardInfo.cardExpireTime}}
+              </text>
+							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
 							<text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
 						</view>
 					</view>
@@ -29,6 +32,7 @@
 					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
 						<!-- ￥10000 -->
 						<image
+             wx:if="{{cardInfo.cardNo !== null}}"
 						 mode="widthFix"
 						 class="qrcode"
 						 bindtap="showQrCode"
@@ -41,7 +45,6 @@
 				</view>
 			</view>
 		</view>
-
 		<view class="card_item_title" wx:if="{{cardInfo.userCardCreateTime}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_get_time.png" />
