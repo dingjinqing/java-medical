@@ -565,13 +565,15 @@ public class UserCardService extends ShopBaseService {
 			if(CardUtil.canUseInStore(card.getStoreUseSwitch())) {
 				// 管理员发卡 - 门店服务次数
 				builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code));
+				builder.build().insert();
 			}
 			
 			if (CardUtil.canExchangGoods(card.getIsExchang())) {
 				// 管理员发卡 - 兑换商品数量
-				builder.exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
+				builder.count((short) 0).exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
+				builder.build().insert();
 			}
-			builder.build().insert();
+			
 		}
 	}
 
