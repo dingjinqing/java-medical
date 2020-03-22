@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 
+import javax.validation.Valid;
+
 /**
   *   好友助力活动控制器
  * @author liangchen
@@ -151,5 +153,14 @@ public class AdminFriendPromoteController extends AdminBaseController{
         ActEffectDataVo vo = shop().friendPromoteService.getEffectData(param);
 
         return success(vo);
+    }
+    /**
+     * 分享
+     * @param param 活动id
+     * @return 二维码信息
+     */
+    @PostMapping("/share")
+    public JsonResult share(@RequestBody @Valid FriendPromoteSelectParam param){
+        return success(shop().friendPromoteService.getQrCode(param));
     }
 }
