@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.Tables.USER_TAG;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -170,4 +171,36 @@ public class TagService extends ShopBaseService {
 	public List<Integer> getId(String name){
 		return tagDao.getId(name);
 	}
+	
+	
+	
+	/**
+	 * 获取用户标签
+	 * @return  List<TagVo> 不会为null
+	 */
+	public List<TagVo> getUserTag(Integer userId) {
+		return db().select(TAG.TAG_ID,TAG.TAG_NAME)
+			.from(USER_TAG)
+			.leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
+			.where(USER_TAG.USER_ID.eq(userId))
+			.orderBy(USER_TAG.TAG_ID.asc())
+			.fetchInto(TagVo.class);
+	}
+	
+	/**
+	 * 查询用户对应的标签
+	 * @param userIds
+	 * @return Map<Integer, List<TagVo>> 用户对应的标签，不会为null
+	 */
+	public Map<Integer, List<TagVo>> getUserTag(List<Integer> userIds) {
+		// TODO 测试看看需不需要查询USER_ID
+		Map<Integer, List<TagVo>> res = db().select(TAG.TAG_ID,TAG.TAG_NAME,USER_TAG.USER_ID)
+				.from(USER_TAG)
+				.leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
+				.where(USER_TAG.USER_ID.in(userIds))
+				.orderBy(USER_TAG.TAG_ID.asc())
+				.fetchGroups(USER_TAG.USER_ID, TagVo.class);
+		return res;
+	}
+
 }
