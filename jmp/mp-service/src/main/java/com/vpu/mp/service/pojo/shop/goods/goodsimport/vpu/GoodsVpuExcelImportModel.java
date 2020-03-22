@@ -62,7 +62,7 @@ public class GoodsVpuExcelImportModel {
     private Integer limitBuyNum;
     /**商品重量，不填默认是0*/
     @ExcelColumn(columnIndex = 12, columnName = "vpu.import.first.goods.weight")
-    private Integer goodsWeight;
+    private BigDecimal goodsWeight;
     /**商品计价单位*/
     @ExcelColumn(columnIndex = 13, columnName = "vpu.import.goods.unit")
     private String unit;

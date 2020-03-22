@@ -25,7 +25,7 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private BigDecimal shopPrice;
     private Byte isOnSale;
     private Integer limitBuyNum;
-    private Integer goodsWeight;
+    private BigDecimal goodsWeight;
     private String unit;
     /**商品图片使用;分隔*/
     private String goodsImgsStr;

@@ -8,7 +8,6 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -84,7 +83,6 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 // TODO:1.所有操作添加操作记录
-// TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
 @Slf4j
 public class GoodsService extends ShopBaseService {
 
@@ -775,22 +773,33 @@ public class GoodsService extends ShopBaseService {
      * 新增和修改时存储JsonResultCode使用
      */
     private class ResultWrap{
-        JsonResultCode code = JsonResultCode.CODE_SUCCESS;
+        GoodsDataIIllegalEnum code = GoodsDataIIllegalEnum.GOODS_OK;
     }
+
     /**
+     * 添加商品加锁函数
+     * @param shopId，加锁使用
+     * @param goods 商品信息
+     * @return
+     */
+    public GoodsDataIIllegalEnum insertWithLock(Integer shopId, Goods goods) {
+        return insert(goods);
+    }
+
+    /**
+     * 添加商品无锁函数
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
      * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
-     *
      * @param goods 商品信息
      */
-    public JsonResultCode insert(Goods goods) {
+    public GoodsDataIIllegalEnum insert(Goods goods) {
         ResultWrap codeWrap = new ResultWrap();
 
         transaction(() -> {
             try {
                 //存在重复值则直接返回
                 codeWrap.code = columnValueExistCheckForInsert(goods);
-                if (!JsonResultCode.CODE_SUCCESS.equals(codeWrap.code)) {
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
                     return;
                 }
 
@@ -818,12 +827,12 @@ public class GoodsService extends ShopBaseService {
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
-                codeWrap.code = JsonResultCode.CODE_FAIL;
+                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
                 return ;
             }
         });
 
-        if (!JsonResultCode.CODE_SUCCESS.equals(codeWrap.code)) {
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
             return codeWrap.code;
         }
 
@@ -835,9 +844,9 @@ public class GoodsService extends ShopBaseService {
             }
         } catch (Exception e) {
             logger().debug("商品新增-同步es数据异常：" + e.getMessage());
-            return JsonResultCode.CODE_FAIL;
+            return GoodsDataIIllegalEnum.GOODS_FAIL;
         }
-        return JsonResultCode.CODE_SUCCESS;
+        return GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /**
@@ -1010,14 +1019,14 @@ public class GoodsService extends ShopBaseService {
      *
      * @param goods
      */
-    public JsonResultCode update(Goods goods) {
+    public GoodsDataIIllegalEnum update(Goods goods) {
         ResultWrap codeWrap = new ResultWrap();
 
         transaction(() -> {
             try {
                 //存在重复值则直接返回
                 codeWrap.code = columnValueExistCheckForUpdate(goods);
-                if (!JsonResultCode.CODE_SUCCESS.equals(codeWrap.code)) {
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
                     return;
                 }
 
@@ -1036,10 +1045,10 @@ public class GoodsService extends ShopBaseService {
                 updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
-                codeWrap.code = JsonResultCode.CODE_FAIL;
+                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
             }
         });
-        if (!JsonResultCode.CODE_SUCCESS.equals(codeWrap.code)) {
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
             return codeWrap.code;
         }
         //es更新
@@ -1050,9 +1059,9 @@ public class GoodsService extends ShopBaseService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return JsonResultCode.CODE_FAIL;
+            return GoodsDataIIllegalEnum.GOODS_FAIL;
         }
-        return JsonResultCode.CODE_SUCCESS;
+        return GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /**
@@ -1192,7 +1201,7 @@ public class GoodsService extends ShopBaseService {
      * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
      * @return
      */
-    public JsonResultCode isGradePrdPriceOk(Goods goods) {
+    public boolean isGradePrdPriceOk(Goods goods) {
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
         if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
             Map<String, BigDecimal> collect =
@@ -1208,10 +1217,10 @@ public class GoodsService extends ShopBaseService {
             });
 
             if (r) {
-                return JsonResultCode.CODE_PARAM_ERROR;
+                return false;
             }
         }
-        return JsonResultCode.CODE_SUCCESS;
+        return true;
     }
 
 
@@ -1221,14 +1230,14 @@ public class GoodsService extends ShopBaseService {
      * @param goods 商品
      * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
      */
-    private JsonResultCode columnValueExistCheckForInsert(Goods goods) {
+    private GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
         //检查商品名称是否重复
         gcep.setGoodsName(goods.getGoodsName());
         if (isColumnValueExist(gcep)) {
-            return JsonResultCode.GOODS_NAME_EXIST;
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
         }
         gcep.setGoodsName(null);
 
@@ -1236,23 +1245,18 @@ public class GoodsService extends ShopBaseService {
         if (goods.getGoodsSn() != null) {
             gcep.setGoodsSn(goods.getGoodsSn());
             if (isColumnValueExist(gcep)) {
-                return JsonResultCode.GOODS_SN_EXIST;
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
             }
             gcep.setGoodsSn(null);
         }
 
-        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
-
-        //检查sku sn是否重复
-        for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
-            if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
-                gcep.setPrdSn(goodsSpecProduct.getPrdSn());
-                if (isColumnValueExist(gcep)) {
-                    return JsonResultCode.GOODS_SPEC_PRD_SN_EXIST;
-                }
-            }
+        List<String> prdSns = goods.getGoodsSpecProducts().stream().filter(x -> !StringUtils.isBlank(x.getPrdSn())).map(GoodsSpecProduct::getPrdSn).collect(Collectors.toList());
+        List<String> skuPrdSnExist = goodsSpecProductService.findSkuPrdSnExist(prdSns);
+        if (skuPrdSnExist.size() > 0) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
         }
-        return JsonResultCode.CODE_SUCCESS;
+
+        return GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /**
@@ -1261,7 +1265,7 @@ public class GoodsService extends ShopBaseService {
      * @param goods 商品
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
-    private JsonResultCode columnValueExistCheckForUpdate(Goods goods) {
+    private GoodsDataIIllegalEnum columnValueExistCheckForUpdate(Goods goods) {
         GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
 
@@ -1269,7 +1273,7 @@ public class GoodsService extends ShopBaseService {
         gcep.setGoodsName(goods.getGoodsName());
         gcep.setGoodsId(goods.getGoodsId());
         if (isColumnValueExist(gcep)) {
-            return JsonResultCode.GOODS_NAME_EXIST;
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
         }
         gcep.setGoodsName(null);
         gcep.setGoodsId(null);
@@ -1279,7 +1283,7 @@ public class GoodsService extends ShopBaseService {
             gcep.setGoodsSn(goods.getGoodsSn());
             gcep.setGoodsId(goods.getGoodsId());
             if (isColumnValueExist(gcep)) {
-                return JsonResultCode.GOODS_SN_EXIST;
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
             }
             gcep.setGoodsSn(null);
             gcep.setGoodsId(null);
@@ -1292,11 +1296,11 @@ public class GoodsService extends ShopBaseService {
                 gcep.setPrdSn(goodsSpecProduct.getPrdSn());
                 gcep.setPrdId(goodsSpecProduct.getPrdId());
                 if (isColumnValueExist(gcep)) {
-                    return JsonResultCode.GOODS_SPEC_PRD_SN_EXIST;
+                    return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
                 }
             }
         }
-        return JsonResultCode.CODE_SUCCESS;
+        return GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /*************结束*************/

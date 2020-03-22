@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.StoreGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
@@ -35,13 +34,10 @@ import static com.vpu.mp.db.shop.Tables.*;
  * @date 2019年07月05日
  */
 @Service
-
 public class GoodsSpecProductService extends ShopBaseService {
 
     @Autowired
     private GoodsSpecService goodsSpecService;
-    @Autowired
-    private GoodsService goodsService;
     /**
      * 规格名值描述分割符
      */
@@ -450,7 +446,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             .fetchInto(GoodsPageListVo.class);
         GoodsPageListParam pageListParam = new GoodsPageListParam();
         pageListParam.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
-        goodsService.disposeGoodsPageListVo(goodsPageListVos, pageListParam);
+        saas().getShopApp(getShopId()).goods.disposeGoodsPageListVo(goodsPageListVos, pageListParam);
         return goodsPageListVos;
     }
 
@@ -556,10 +552,10 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @param specs 商品规格
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
-    public JsonResultCode isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
+    public boolean isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
         //在选择默认规格的情况下该字段可以是空
         if (specs == null) {
-            return JsonResultCode.CODE_SUCCESS;
+            return true;
         }
 
         Map<String, Object> specNameRepeatMap = new HashMap<>(specs.size());
@@ -577,14 +573,14 @@ public class GoodsSpecProductService extends ShopBaseService {
                 specValRepeatMap.put(goodsSpecVal.getSpecValName(), null);
             }
             if (specValRepeatMap.size() != goodsSpecVals.size()) {
-                return JsonResultCode.GOODS_SPEC_VAL_REPETITION;
+                return false;
             }
         }
         if (specs.size() != specNameRepeatMap.size()) {
-            return JsonResultCode.GOODS_SPEC_NAME_REPETITION;
+            return false;
         }
 
-        return JsonResultCode.CODE_SUCCESS;
+        return true;
     }
 
 
@@ -595,7 +591,7 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @param goodsSpecs        商品规格键值
      * @return JsonResultCode
      */
-    public JsonResultCode isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
+    public boolean isGoodsSpecProductDescRight(List<GoodsSpecProduct> goodsSpecProducts, List<GoodsSpec> goodsSpecs) {
 
         //判断是否是默认sku
         boolean isDefaultSku = goodsSpecProducts.size() == 1 &&
@@ -604,7 +600,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         //是默认sku直接返回
         if (isDefaultSku) {
-            return JsonResultCode.CODE_SUCCESS;
+            return true;
         }
 
         //根据商品规格值计算出应该有多少规格数据，计算笛卡尔积
@@ -612,7 +608,7 @@ public class GoodsSpecProductService extends ShopBaseService {
         for (GoodsSpec goodsSpec : goodsSpecs) {
             //商品写了规格名称但是未设置规格值
             if (goodsSpec.getGoodsSpecVals() == null || goodsSpec.getGoodsSpecVals().size() == 0) {
-                return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                return false;
             }
             //笛卡尔积计算
             cartesianNum *= goodsSpec.getGoodsSpecVals().size();
@@ -620,7 +616,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         //传入的规格属性条目和根据规格名值计算出来的数据不对应
         if (cartesianNum != goodsSpecProducts.size()) {
-            return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+            return false;
         }
 
         //验证传入的prdDesc的正确性，拆解prdDesc，检查对应的名和值是否咋goodsSpec中都存在
@@ -629,7 +625,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
         for (String prdDesc : specDescs) {
             if (prdDesc == null) {
-                return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                return false;
             }
             String[] splits = prdDesc.split(GoodsSpecProductService.PRD_DESC_DELIMITER);
 
@@ -637,7 +633,7 @@ public class GoodsSpecProductService extends ShopBaseService {
                 String[] s = split.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
 
                 if (s.length < 2 || org.apache.commons.lang3.StringUtils.isBlank(s[0]) || org.apache.commons.lang3.StringUtils.isBlank(s[1])) {
-                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                    return false;
                 }
 
                 String speck = s[0], specv = s[1];
@@ -646,17 +642,17 @@ public class GoodsSpecProductService extends ShopBaseService {
                 List<GoodsSpecVal> goodsSpecVals = specs.get(speck);
                 //规格名称不存在
                 if (goodsSpecVals == null) {
-                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                    return false;
                 }
 
                 boolean b = goodsSpecVals.stream().anyMatch(goodsSpecVal -> org.apache.commons.lang3.StringUtils.equals(specv, goodsSpecVal.getSpecValName()));
 
                 if (!b) {
-                    return JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT;
+                    return false;
                 }
             }
         }
-        return JsonResultCode.CODE_SUCCESS;
+        return true;
     }
 
 

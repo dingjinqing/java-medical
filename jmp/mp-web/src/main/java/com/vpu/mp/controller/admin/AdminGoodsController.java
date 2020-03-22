@@ -174,30 +174,27 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         GoodsService goodsService = shop().goods;
-        JsonResultCode code;
-//        //判断商品的规格属性的prdDesc和传入的规格键值是否能对应上
-//        JsonResultCode code = goodsService.goodsSpecProductService.isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
-//        //传入的规格属性的prdDesc存在错误
-//        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
-//            return fail(code);
-//        }
-//
-//        //检查规格名称是否存在重复
-//        code =goodsService.goodsSpecProductService.isSpecNameOrValueRepeat(goods.getGoodsSpecs());
-//        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
-//            return fail(code);
-//        }
-
         //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
-        code = goodsService.isGradePrdPriceOk(goods);
-        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
-            return fail(code);
+        if (!goodsService.isGradePrdPriceOk(goods)) {
+            return fail(JsonResultCode.GOODS_NAME_IS_NULL);
         }
-        code = shop().goods.insert(goods);
-        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
-            return fail(code);
+
+        GoodsDataIIllegalEnum code = shop().goods.insertWithLock(shopId(),goods);
+        if (GoodsDataIIllegalEnum.GOODS_NAME_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_NAME_EXIST);
         }
-        return success();
+        if (GoodsDataIIllegalEnum.GOODS_SN_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+
+        if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
+            return success();
+        } else {
+            return fail();
+        }
     }
 
     /**
@@ -274,11 +271,22 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
         //ps:此处省略规格组，规格名值,因为加上后出现过操作超时的现象
-        JsonResultCode code = shop().goods.update(goods);
-        if (!JsonResultCode.CODE_SUCCESS.equals(code)) {
-            return fail(code);
+        GoodsDataIIllegalEnum code = shop().goods.update(goods);
+        if (GoodsDataIIllegalEnum.GOODS_NAME_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_NAME_EXIST);
         }
-        return success();
+        if (GoodsDataIIllegalEnum.GOODS_SN_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+
+        if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
+            return success();
+        } else {
+            return fail();
+        }
     }
 
     /**
