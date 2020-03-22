@@ -109,7 +109,7 @@
         ></el-table-column> -->
 
         <el-table-column
-          prop="orderStatusName"
+          prop="orderStatusText"
           label="订单状态"
           align="center"
         ></el-table-column>
@@ -139,6 +139,7 @@ export default {
   mounted () {
     console.log(this.$route.query.id)
     this.initDataList()
+    this.orderStatusMap = new Map(this.$t('order.orderStatusList'))
   },
   data () {
     return {
@@ -149,7 +150,8 @@ export default {
         mobile: '',
         orderSn: ''
       },
-      tableData: []
+      tableData: [],
+      orderStatusMap: {}
     }
   },
   methods: {
@@ -157,6 +159,9 @@ export default {
       getDetailPageList(Object.assign(this.pageParams, this.params)).then(res => {
         if (res.error === 0) {
           console.log(res)
+          res.content.dataList.forEach(item => {
+            item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
+          })
           this.tableData = res.content.dataList
         }
       }).catch((res) => {

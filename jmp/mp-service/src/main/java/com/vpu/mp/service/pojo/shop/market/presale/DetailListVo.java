@@ -29,6 +29,8 @@ public class DetailListVo {
     private String consigneeRealName;
     /** 收货人姓名 **/
     private Timestamp createTime;
+    /** 订单状态 **/
+    private Byte orderStatus;
     /** 订单状态名 **/
     private String orderStatusName;
     /** 商品数量 **/

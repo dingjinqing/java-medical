@@ -28,8 +28,11 @@
         </div>
         <div v-else-if="key === 'goodsType'">
           {{$t('orderSearch.'+key)}}:
-          <span>
-            {{goodsTypeMap.get(item)}}
+          <span
+            v-for="type in item"
+            :key="type"
+          >
+            {{goodsTypeMap.get(type)}}
           </span>
         </div>
         <div v-else-if="key === 'deliverType'">
@@ -131,16 +134,14 @@ export default {
       paymentTypeMap: new Map(this.$t('order.paymentTypeList')),
       exportRowStart: 1,
       exportRowEnd: 5000,
-      searchParam: '',
+      searchParam: {},
       area: {},
       city: {},
       district: {}
 
     }
   },
-  mounted () {
-    this.initArea()
-  },
+
   props: {
     show: Boolean,
     param: Object
@@ -150,12 +151,16 @@ export default {
       this.area = deepCloneObj(chinaData)
     },
     initData () {
-      this.searchParam = this.param
+      this.searchParam = JSON.parse(JSON.stringify(this.param))
+      // this.searchParam = this.param
       console.log(this.searchParam)
       this.searchParam.exportRowStart = this.exportRowStart
       this.searchParam.exportRowEnd = this.exportRowEnd
       if (this.searchParam.orderStatus) {
         this.searchParam.orderStatus = [this.searchParam.orderStatus]
+      }
+      if (this.searchParam.goodsType) {
+        this.searchParam.goodsType = [this.searchParam.goodsType]
       }
       getExportTotalRows(this.searchParam).then(res => {
         if (res.error === 0) {
@@ -196,17 +201,24 @@ export default {
       return false
     },
     getProvince (code) {
-      let province = this.area.find((item1, index1) => code === item1['provinceId'])
-      this.city = province.areaCity
-      return province.provinceName
+      console.log(code)
+      if (code) {
+        let province = this.area.find((item1, index1) => code === item1['provinceId'])
+        this.city = province.areaCity
+        return province.provinceName
+      }
     },
     getCity (code) {
-      let thisCity = this.city.find((item1, index1) => code === item1['cityId'])
-      this.district = thisCity.areaDistrict
-      return thisCity.cityName
+      if (code) {
+        let thisCity = this.city.find((item1, index1) => code === item1['cityId'])
+        this.district = thisCity.areaDistrict
+        return thisCity.cityName
+      }
     },
     getDistrict (code) {
-      return this.district.find((item1, index1) => code === item1['districtId'])['districtName']
+      if (code) {
+        return this.district.find((item1, index1) => code === item1['districtId'])['districtName']
+      }
     }
   },
   watch: {
@@ -216,6 +228,7 @@ export default {
     show (newVal) {
       if (newVal === true) {
         this.showNodes = true
+        this.initArea()
         this.initData()
       }
     }
