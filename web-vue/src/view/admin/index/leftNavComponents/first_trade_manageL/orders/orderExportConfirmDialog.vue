@@ -28,8 +28,11 @@
         </div>
         <div v-else-if="key === 'goodsType'">
           {{$t('orderSearch.'+key)}}:
-          <span>
-            {{goodsTypeMap.get(item)}}
+          <span
+            v-for="type in item"
+            :key="type"
+          >
+            {{goodsTypeMap.get(type)}}
           </span>
         </div>
         <div v-else-if="key === 'deliverType'">
