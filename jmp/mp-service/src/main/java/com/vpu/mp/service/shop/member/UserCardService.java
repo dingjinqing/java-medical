@@ -558,12 +558,9 @@ public class UserCardService extends ShopBaseService {
 	 * @param userCard
 	 */
 	public void addChargeMoney(MemberCardRecord card, UserCardRecord userCard) {
-		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
-				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
-				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
-
-		
+		logger().info("生成会员卡余额，门店，商品兑换次数记录");
 		if (CardUtil.isNormalCard(card.getCardType()) && card.getSendMoney() != null) {
+			ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
 			//  管理员发卡
 			builder.charge(new BigDecimal(card.getSendMoney())).reasonId(String.valueOf(RemarkTemplate.ADMIN_SEND_CARD.code)).build().insert();
 
@@ -571,17 +568,26 @@ public class UserCardService extends ShopBaseService {
 		if (CardUtil.isLimitCard(card.getCardType())) {
 			if(CardUtil.canUseInStore(card.getStoreUseSwitch())) {
 				// 管理员发卡 - 门店服务次数
+				ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
 				builder.count(card.getCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.SEND_CARD_REASON.code));
 				builder.build().insert();
 			}
 			
 			if (CardUtil.canExchangGoods(card.getIsExchang())) {
 				// 管理员发卡 - 兑换商品数量
+				ChargeMoneyRecordBuilder builder = getPreparedChargeMoneyBuilder(card, userCard);
 				builder.count((short) 0).exchangCount(card.getExchangCount().shortValue()).reasonId(String.valueOf(RemarkTemplate.ADMIN_EXCHANGE_GOODS.code));
 				builder.build().insert();
 			}
 			
 		}
+	}
+
+	private ChargeMoneyRecordBuilder getPreparedChargeMoneyBuilder(MemberCardRecord card, UserCardRecord userCard) {
+		ChargeMoneyRecordBuilder builder = ChargeMoneyRecordBuilder.create(db().newRecord(CHARGE_MONEY))
+				.userId(userCard.getUserId()).cardId(userCard.getCardId()).type(card.getCardType())
+				.cardNo(userCard.getCardNo()).payment("store.payment").createTime(DateUtil.getLocalDateTime());
+		return builder;
 	}
 
 	private UserCardRecord createNewUserCard(Integer userId, MemberCardRecord card, boolean isActivate) {
