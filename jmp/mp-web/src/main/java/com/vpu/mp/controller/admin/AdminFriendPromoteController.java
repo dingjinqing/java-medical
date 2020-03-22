@@ -2,7 +2,11 @@ package com.vpu.mp.controller.admin;
 
 import java.util.List;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -162,5 +167,17 @@ public class AdminFriendPromoteController extends AdminBaseController{
     @PostMapping("/share")
     public JsonResult share(@RequestBody @Valid FriendPromoteSelectParam param){
         return success(shop().friendPromoteService.getQrCode(param));
+    }
+    private static final String LANGUAGE_TYPE_EXCEL = "excel";
+    /**
+     * 发起明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/launch/export")
+    public void launchExport(@RequestBody @Valid FriendPromoteLaunchParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.launchExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
     }
 }

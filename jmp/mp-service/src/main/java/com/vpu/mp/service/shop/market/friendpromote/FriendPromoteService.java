@@ -7,6 +7,9 @@ import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -26,6 +29,8 @@ import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1781,5 +1786,28 @@ public class FriendPromoteService extends ShopBaseService {
         share.setImageUrl(imgUrl);
         share.setPagePath(QrCodeTypeEnum.FRIEND_HELP_SHARE.getPathUrl(pathParam));
         return share;
+    }
+    /**
+     * 发起明细导出
+     * @param param 查询信息
+     * @param lang 语言
+     */
+    public Workbook launchExport(FriendPromoteLaunchParam param,String lang){
+        List<FriendPromoteLaunchVo> vo = new ArrayList<>();
+        PageResult<FriendPromoteLaunchVo> pageResult = launchDetail(param);
+        for (FriendPromoteLaunchVo item : pageResult.getDataList()){
+            FriendPromoteLaunchVo tempVo = new FriendPromoteLaunchVo();
+            FieldsUtil.assignNotNull(item,tempVo);
+            if (item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2){
+                tempVo.setIsSuccess("是");
+            }else {
+                tempVo.setIsSuccess("否");
+            }
+            vo.add(tempVo);
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(vo,FriendPromoteLaunchVo.class);
+        return workbook;
     }
 }

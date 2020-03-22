@@ -1031,6 +1031,14 @@ public class JsonResultMessage {
 
     /**好友助力*/
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
+    public static final String FRIEND_PROMOTE_LAUNCH_DETAIL = "friend.promote.launch.detail";
+    public static final String FRIEND_PROMOTE_LAUNCH_USER_NAME = "friend.promote.launch.user.name";
+    public static final String FRIEND_PROMOTE_LAUNCH_USER_MOBILE = "friend.promote.launch.user.mobile";
+    public static final String FRIEND_PROMOTE_LAUNCH_ACT_ID = "friend.promote.launch.act.id";
+    public static final String FRIEND_PROMOTE_JOIN_NUM = "friend.promote.join.num";
+    public static final String FRIEND_PROMOTE_PROMOTE_NUM = "friend.promote.promote.num";
+    public static final String FRIEND_PROMOTE_PROMOTE_VALUE = "friend.promote.promote.value";
+    public static final String FRIEND_PROMOTE_IS_SUCCESS = "friend.promote.is.success";
     /**表单统计*/
     public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
     public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";
