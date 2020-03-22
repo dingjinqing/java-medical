@@ -10,6 +10,7 @@ import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
@@ -102,7 +103,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 	 * @return Map<String,Object> 激活的选项值
 	 */
 	public Map<String, Object> filterActiveOption(List<String> fields, Object obj) {
-		if(obj == null) {
+		if(obj == null || obj instanceof NullNode) {
 			return null;
 		}
 		Map<String, Object> userMap = Util.convertPojoToMap(obj);
@@ -184,6 +185,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 				// send coupon
 				memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
 			});
+		}else {
+			logger().info("没有传入激活数据,actovateOption=NullNode");
+			throw new CardActivateException();
 		}
 		
 	}
