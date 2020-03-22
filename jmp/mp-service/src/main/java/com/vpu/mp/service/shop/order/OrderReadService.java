@@ -1048,8 +1048,11 @@ public class OrderReadService extends ShopBaseService {
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
-                MemberInfoVo memberInfo = user.getUserByUserId(order.getUserId()).into(MemberInfoVo.class);
-                order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+                UserRecord userRecord = user.getUserByUserId(order.getUserId());
+                if(userRecord != null){
+                    MemberInfoVo memberInfo = userRecord.into(MemberInfoVo.class);
+                    order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+                }
             }
             if(columns.contains(OrderExportVo.DELIVER_TYPE_NAME)){
                 //配送类型
