@@ -3,8 +3,8 @@ var util = require('../../utils/util.js')
 var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
-var submit_id;
-var success_info = [];
+var submitId;
+var successInfo = [];
 global.wxPage({
 
   /**
@@ -12,7 +12,7 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    success_info:[]
+    successInfo:[]
   },
 
   /**
@@ -21,22 +21,24 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    submit_id = options.submit_id;
+    submitId = options.submitId;
     util.api("/api/wxapp/form/success",function(res){
       if(res.error == 0){
-        success_info = res.content;
-        for (var i in success_info.send_coupon_list){
-          success_info.send_coupon_list[i].start_time = success_info.send_coupon_list[i].start_time.substring(0,10);
-          success_info.send_coupon_list[i].end_time = success_info.send_coupon_list[i].end_time.substring(0, 10);
+        successInfo = res.content;
+        for (var i in successInfo.couponList){
+          if (successInfo.couponList[i].startTime && successInfo.couponList[i].endTime) {
+            successInfo.couponList[i].startTime = successInfo.couponList[i].startTime.substring(0,10);
+            successInfo.couponList[i].endTime = successInfo.couponList[i].endTime.substring(0, 10);
+          }
         }
         that.setData({
-          success_info: success_info
+          successInfo: successInfo
         })
       }else{
         util.showModal("提示",res.content);
         return false;
       }
-    }, { submit_id: submit_id})
+    }, { id: submitId})
   },
 
   to_index:function(e){
@@ -61,7 +63,7 @@ global.wxPage({
     let form_id = e.detail.formId;
     let open_id = util.getCache("openid");
     util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id });
-    util.jumpLink(success_info.form_data.form_cfg.custom_link_path);
+    util.jumpLink(successInfo.form_data.form_cfg.custom_link_path);
   },
 
   /**

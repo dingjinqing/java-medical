@@ -187,7 +187,7 @@ global.wxComponent({
       }
       util.api('/api/wxapp/form/submit', function(res) {
         if (res.error == 0) {
-          util.jumpLink('/pages1/formsuccess/formsuccess?submit_id=' + res.content);
+          util.jumpLink('/pages1/formsuccess/formsuccess?submitId=' + res.content.submitId);
         } else {
           util.showModal('提示', '表单提交失败');
         }
