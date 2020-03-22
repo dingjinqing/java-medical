@@ -31,7 +31,7 @@
 					<view class='fr' wx:if="{{ item.type == 0 }}" style='color:{{comColor}}'>+{{ item.charge }}</view>
 					<view class='fr' wx:if="{{ item.type == 1 }}" style='color:{{comColor}}'>+
 						<block wx:if="{{item.count > 0}}">{{ item.count }}</block>
-						<block wx:elif="{{item.exchang_count > 0}}">{{ item.exchangCount }}</block>
+						<block wx:elif="{{item.exchangCount > 0}}">{{ item.exchangCount }}</block>
 					</view>
 				</view>
 				<text class='add_time'>{{ item.createTime }}</text>
@@ -42,7 +42,7 @@
 					<view class='fr' wx:if="{{ item.type == 0 }}" style='color:{{comColor}}'>{{ item.money }}</view>
 					<view class='fr' wx:if="{{ item.type == 1 }}" style='color:{{comColor}}'>
 						<block wx:if="{{item.count < 0}}">{{ item.count }}</block>
-						<block wx:elif="{{item.exchang_count < 0}}">{{ item.exchangCount }}</block>
+						<block wx:elif="{{item.exchangCount < 0}}">{{ item.exchangCount }}</block>
 					</view>
 				</view>
 				<text>{{ item.createTime }}</text>
