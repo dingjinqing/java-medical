@@ -333,7 +333,13 @@ public class OrderGoodsService extends ShopBaseService{
         for (OrderGoodsBo bo : bos) {
             bo.setOrderId(order.getOrderId());
             bo.setOrderSn(order.getOrderSn());
-            records.add(db().newRecord(TABLE, bo));
+            OrderGoodsRecord record = db().newRecord(TABLE, bo);
+            if(bo.getFirstSpecialId() != null && bo.getFirstSpecialId() > 0) {
+                //设置首单特惠在等等商品表记录，目前orderGoods中actId.type只记录首单特惠，后期考虑记录全部非叠加型活动
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+                record.setActivityId(bo.getFirstSpecialId());
+            }
+            records.add(record);
         }
         db().batchInsert(records).execute();
     }
