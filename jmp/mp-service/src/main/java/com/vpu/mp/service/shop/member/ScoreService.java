@@ -22,7 +22,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -51,9 +53,12 @@ import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageInfo;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSignParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSignVo;
 import com.vpu.mp.service.pojo.shop.member.score.SignData;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.wxapp.score.ExpireVo;
@@ -81,6 +86,9 @@ public class ScoreService extends ShopBaseService {
 	public ScoreCfgService scoreCfgService;
 	@Autowired
 	public MemberService member;	
+	@Autowired
+	public TagService tagSvc;
+	
 	/**
 	 *   创建用户积分表,增加，消耗用户积分
 	 * @param param 积分变动相关数据
@@ -811,5 +819,45 @@ public class ScoreService extends ShopBaseService {
 	public int getUserScore(int userId){
 	    return db().select(USER.SCORE).from(USER).where(USER.USER_ID.eq(userId)).fetchOptionalInto(Integer.class).orElse(0);
     }
+	
+	/**
+	 * 获取用户签到积分
+	 */
+	public PageResult<ScoreSignVo> userSign(ScoreSignParam param) {
+		logger().info("获取用户连续签到相关信息");
+		PageResult<ScoreSignVo> res = new PageResult<>();
+		PageResult<? extends Record> signList = scoreDao.getAllSignList(param);
+		res.setPage(signList.getPage());
+		res.setDataList(new ArrayList<ScoreSignVo>());
+		
+		// 一次性查询用户所拥有的标签
+		List<Integer> userIds = signList.dataList.stream().map(r->r.get(USER_SCORE.USER_ID)).distinct().collect(Collectors.toList());
+		Map<Integer, List<TagVo>> tagMap = tagSvc.getUserTag(userIds);
+		
+		for(Record record: signList.dataList) {
+			ScoreSignVo vo = record.into(ScoreSignVo.class);
+			// 处理连续签到的天数和积分数
+			Map<String, Integer> map = scoreDao.checkDays(record.get(USER_SCORE.USER_ID), record.get(USER_SCORE.CREATE_TIME), record.get(USER_SCORE.USABLE_SCORE));
+			vo.setContinueDays(map.get(scoreDao.SIGN_DAY));
+			vo.setTotalScore(map.get(scoreDao.SIGN_SCORE));
+			// 处理用户标签
+			List<TagVo> tags = tagMap.get(record.get(USER_SCORE.USER_ID));
+			StringBuilder userTag = new StringBuilder(),userShowTag = new StringBuilder();
+			for(TagVo tag: tags) {
+				int i = 0;
+				userTag.append(tag.getTagName()).append(";");
+				if(i<=5) {
+					userShowTag.append(tag.getTagName()).append(";");
+				}else if(i == 6) {
+					// showTag最多显示个标签
+					userShowTag.append("...");
+				}
+			}
+			vo.setUserTag(userTag.toString());
+			vo.setUserShowTag(userShowTag.toString());
+			res.dataList.add(vo);
+		}
+		return res;
+	}
 	
 }
