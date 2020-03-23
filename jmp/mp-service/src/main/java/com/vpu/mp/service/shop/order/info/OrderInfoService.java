@@ -457,7 +457,12 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public SelectWhereStep<?> activeBuildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
 		if (param.activityId != null) {
-			select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
+		    if(param.goodsType != null && param.goodsType.length != 0 && Arrays.asList(param.getGoodsType()).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)){
+		        //首单特惠的活动ID记录在订单商品行内
+		        select.where(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_GOODS.ACTIVITY_ID.eq(param.getActivityId()));
+            }else{
+                select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
+            }
 		}
 		return select;
 	}
