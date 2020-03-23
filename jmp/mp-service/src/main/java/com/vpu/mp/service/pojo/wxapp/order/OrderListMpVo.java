@@ -83,4 +83,10 @@ public class OrderListMpVo{
 	private List<String> orderType;
     @JsonIgnore
 	private Byte orderPayWay;
+    /**补款*/
+    private BigDecimal bkReturnType;
+    /**定金抵扣金额*/
+    private BigDecimal preDiscountMoney;
+    /**预售订单预计发货时间*/
+    private Timestamp bkShippingTime;
 }
