@@ -29,7 +29,7 @@ public class MessageTemplateParam {
     /** 发送人群标识 */
     private String userKey;
     /** 发送类型 */
-    private Byte senAction;
+    private Byte sendAction;
     /** 发送状态 */
     private Byte sendStatus;
     /** 开始日期 */
