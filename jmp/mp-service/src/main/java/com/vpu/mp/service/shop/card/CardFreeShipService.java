@@ -44,6 +44,7 @@ public class CardFreeShipService extends ShopBaseService{
 		}
 		String desc = Util.translateMessage(lang, RemarkMessage.FREESHIP_TOTAL_NUM, REMARK_I18N, card.getFreeshipNum());
 		return CardFreeship.builder()
+					.type(type)
 					.num(num)
 					.desc(desc)
 					.build();
