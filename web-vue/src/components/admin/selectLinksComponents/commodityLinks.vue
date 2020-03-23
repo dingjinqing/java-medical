@@ -41,7 +41,7 @@
             </td>
             <td>{{item.goodsSn}}</td>
             <td class="tb_decorate_a">
-              pages/item/item?goodsId={{item.goodsId}}
+              pages/item/item?gid={{item.goodsId}}
             </td>
           </tr>
         </tbody>
@@ -139,8 +139,9 @@ export default {
     // 行选中高亮
     handleClick (index, item) {
       this.clickIindex = index
-      console.log('选中', item)
-      let path = `pages/item/item?goodsId=${this.trList[index].goodsId}`
+      // aid={{item.act_id}}&&atp=3&&gid={{item.goods_id}}
+      console.log('选中', item, this.trList)
+      let path = `pages/item/item?gid=${this.trList[index].goodsId}`
       this.choisePagePath(path)
       this.$emit('handleToGetDetailData', item)
     },

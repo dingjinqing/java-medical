@@ -6,7 +6,8 @@ global.wxComponent({
     bindJumpLink (e) {
       console.log(e.currentTarget.dataset)
       var d = this.eventData(e);
-      util.jumpLink(d.link);
+      console.log(d)
+      util.jumpLink(d.url);
     }
   }
 });
