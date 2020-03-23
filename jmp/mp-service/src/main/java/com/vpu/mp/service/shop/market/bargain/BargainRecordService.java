@@ -510,17 +510,20 @@ public class BargainRecordService extends ShopBaseService {
      */
     public BargainCutVo getBargainCut(int userId,int recordId){
         BargainCutVo vo = new BargainCutVo();
+        BargainRecordInfo recordInfo = getRecordInfo(recordId);
 
-        //判断今天砍价次数
-        int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
-        int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
-        if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
-            vo.setState((byte)12);
-            return vo;
+        if(recordInfo.getUserId() != userId){
+            //判断今天砍价次数
+            int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
+            int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
+            if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
+                vo.setState((byte)12);
+                return vo;
+            }
         }
 
         //可用状态过滤
-        byte canCutStatus = userBargainRecordStatus(userId,getRecordInfo(recordId));
+        byte canCutStatus = userBargainRecordStatus(userId,recordInfo);
         if(canCutStatus != 0 && canCutStatus != 8){
             vo.setState(canCutStatus);
             return vo;
