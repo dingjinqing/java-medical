@@ -39,7 +39,7 @@ export function startCoupon (data) {
 // 分享
 export function shareCoupon (data) {
   return service({
-    url: `/api/admin/market/seckill/share?id=${data}`,
+    url: `/api/admin/coupon/share?couponId=${data}`,
     method: 'get',
     data: data
   })
