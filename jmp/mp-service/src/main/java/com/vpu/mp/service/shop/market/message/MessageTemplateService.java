@@ -14,11 +14,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,10 +190,11 @@ public class MessageTemplateService extends ShopBaseService {
 
     public PageResult<MessageTemplateVo> getPageByParam(MessageTemplateQuery param) {
         PageResult<MessageTemplateVo> resultPage = new PageResult<>();
-        SelectConditionStep<Record> select  = db().select()
+        SelectLimitStep<Record> select  = db().select()
             .from(TEMPLATE_CONFIG)
             .where(buildParams(param))
-            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0));
+            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0))
+            .orderBy(TEMPLATE_CONFIG.CREATE_TIME.desc());
         PageResult<TemplateConfigRecord> templatePage = getPageResult(select,param.getCurrentPage(),param.getPageRows(),TemplateConfigRecord.class);
         BeanUtils.copyProperties(templatePage,resultPage);
         return buildPageVo(resultPage,templatePage);
