@@ -26,6 +26,8 @@ global.wxComponent({
               "video_id": res.content.videoId
             };
             _this.$set();
+          } else {
+            _this.$message.error(res.message)
           }
       })
     },
