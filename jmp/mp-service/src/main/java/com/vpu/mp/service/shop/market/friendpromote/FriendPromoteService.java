@@ -1798,7 +1798,7 @@ public class FriendPromoteService extends ShopBaseService {
         for (FriendPromoteLaunchVo item : pageResult.getDataList()){
             FriendPromoteLaunchVo tempVo = new FriendPromoteLaunchVo();
             FieldsUtil.assignNotNull(item,tempVo);
-            if (item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2){
+            if (item.getPromoteStatus()!=null&&(item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2)){
                 tempVo.setIsSuccess("是");
             }else {
                 tempVo.setIsSuccess("否");
@@ -1831,6 +1831,30 @@ public class FriendPromoteService extends ShopBaseService {
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(vo,FriendPromoteParticipateVo.class);
+        return workbook;
+    }
+    /**
+     * 参与明细导出
+     * @param param 查询信息
+     * @param lang 语言
+     */
+    public Workbook receiveExport(FriendPromoteReceiveParam param,String lang){
+        List<FriendPromoteReceiveVo> vo = new ArrayList<>();
+        PageResult<FriendPromoteReceiveVo> pageResult = receiveDetail(param);
+        for (FriendPromoteReceiveVo item : pageResult.getDataList()){
+            FriendPromoteReceiveVo tempVo = new FriendPromoteReceiveVo();
+            FieldsUtil.assignNotNull(item,tempVo);
+            if (tempVo.getPromoteStatus()!=null&&tempVo.getPromoteStatus()==(byte)2){
+                tempVo.setIsReceive("是");
+            }else {
+                tempVo.setIsReceive("否");
+            }
+            vo.add(tempVo);
+        }
+
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(vo,FriendPromoteReceiveVo.class);
         return workbook;
     }
 }
