@@ -130,6 +130,7 @@
                   <view class='each_cga_goods clearfix'>
                     <view class='cga_left'>
                       <image src='{{val.goodsImg}}' class='cg_img'></image>
+                      <!-- <image class='no_change_img' src='{{imageUrl}}/image/wxapp/no_change_icon.png'></image> -->
                     </view>
                     <view class='cga_right'>
                       <view class='cga_names'>
