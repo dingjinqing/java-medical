@@ -163,6 +163,9 @@ public class FirstSpecialService extends ShopBaseService {
             FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
             assign(param,record);
             if(param.getShareConfig() != null) {
+                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
             db().executeUpdate(record);
