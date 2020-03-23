@@ -1050,6 +1050,12 @@ public class JsonResultMessage {
     public static final String FRIEND_PROMOTE_JOIN_USER_NAME = "friend.promote.join.user.name";
     public static final String FRIEND_PROMOTE_JOIN_USER_MOBILE = "friend.promote.join.user.mobile";
     public static final String FRIEND_PROMOTE_IS_NEW = "friend.promote.is.new";
+    public static final String FRIEND_PROMOTE_RECEIVE_DETAIL = "friend.promote.receive.detail";
+    public static final String FRIEND_PROMOTE_RECEIVE_USER_NAME = "friend.promote.receive.user.name";
+    public static final String FRIEND_PROMOTE_RECEIVE_USER_MOBILE = "friend.promote.receive.user.mobile";
+    public static final String FRIEND_PROMOTE_IS_RECEIVE = "friend.promote.is.receive";
+    public static final String FRIEND_PROMOTE_RECEIVE_TIME = "friend.promote.receive.time";
+    public static final String FRIEND_PROMOTE_ORDER_SN = "friend.promote.orderSn";
     /**表单统计*/
     public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
     public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";

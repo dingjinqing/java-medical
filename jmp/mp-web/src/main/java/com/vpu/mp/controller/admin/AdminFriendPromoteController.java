@@ -191,4 +191,15 @@ public class AdminFriendPromoteController extends AdminBaseController{
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_JOIN_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook,fileName,response);
     }
+    /**
+     * 领取明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/receive/export")
+    public void receiveExport(@RequestBody @Valid FriendPromoteReceiveParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.receiveExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_RECEIVE_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
+    }
 }
