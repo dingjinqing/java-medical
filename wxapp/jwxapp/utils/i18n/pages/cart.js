@@ -50,8 +50,8 @@ module.exports = {
   "activeSearch": "请输入搜索关键字",
   "activeTip1": "限时降价：购买超出限购数量以结算价为准",
   "activeLabel1": "限时降价，立即查看",
-  "activeLabel2": "新人专享,首单特惠", 
-  "activeLabel3": "会员价", 
+  "activeLabel2": "新人专享,首单特惠",
+  "activeLabel3": "会员价",
 
   "activeFooter1": "已选",
   "activeFooter2": "去购物车",
@@ -61,6 +61,14 @@ module.exports = {
   // 满折满减活动页
   "fullRule1": "会员",
   "fullRule2": "以下商品",
+  "fullRule3": "每满",
+  "fullRule4": "满",
+  "fullRule5": "元",
+  "fullRule6": "件",
+  "fullRule7": "减",
+  "fullRule8": "打",
+  "fullRule9": "折",
+  "fullRule10": "仅第",
 
   "fullFooter1": "开通会员，即可参与",
   "fullFooter2": "开通会员",

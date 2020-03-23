@@ -20,15 +20,15 @@
         <view style="float: left;">
           <view wx:for="{{full_info.condition}}" wx:key="index">
             <view wx:if="{{full_info.type == 1}}">
-              每满<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}元</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}件</text>减{{item.reduceMoney}}元<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
+              {{i18n.$t(localePack,"pages.cart.fullRule3")}}<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}{{i18n.$t(localePack,"pages.cart.fullRule5")}}</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}{{i18n.$t(localePack,"pages.cart.fullRule6")}}</text>{{i18n.$t(localePack,"pages.cart.fullRule7")}}{{item.reduceMoney}}{{i18n.$t(localePack,"pages.cart.fullRule5")}}<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
             </view>
             <view wx:if="{{full_info.type == 2}}">
-              满<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}元</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}件</text>减{{item.reduceMoney}}元<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
+              {{i18n.$t(localePack,"pages.cart.fullRule4")}}<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}{{i18n.$t(localePack,"pages.cart.fullRule5")}}</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}{{i18n.$t(localePack,"pages.cart.fullRule6")}}</text>{{i18n.$t(localePack,"pages.cart.fullRule7")}}{{item.reduceMoney}}{{i18n.$t(localePack,"pages.cart.fullRule5")}}<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
             </view>
             <view wx:if="{{full_info.type == 3}}">
-              满<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}元</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}件</text>打{{item.discount}}折<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
+              {{i18n.$t(localePack,"pages.cart.fullRule4")}}<text wx:if="{{item.fullMoney && !item.amount}}">{{item.fullMoney}}{{i18n.$t(localePack,"pages.cart.fullRule5")}}</text><text wx:if="{{!item.fullMoney && item.amount}}">{{item.amount}}{{i18n.$t(localePack,"pages.cart.fullRule6")}}</text>{{i18n.$t(localePack,"pages.cart.fullRule8")}}{{item.discount}}{{i18n.$t(localePack,"pages.cart.fullRule9")}}<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text>
             </view>
-            <view wx:if="{{full_info.type == 4}}">仅第{{item.amount}}件打{{item.discount}}折<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text></view>
+            <view wx:if="{{full_info.type == 4}}">{{i18n.$t(localePack,"pages.cart.fullRule10")}}{{item.amount}}{{i18n.$t(localePack,"pages.cart.fullRule6")}}{{i18n.$t(localePack,"pages.cart.fullRule8")}}{{item.discount}}{{i18n.$t(localePack,"pages.cart.fullRule9")}}<text wx:if="{{index != (full_info.condition.length - 1)}}">，</text></view>
           </view>
         </view>
       </view>
