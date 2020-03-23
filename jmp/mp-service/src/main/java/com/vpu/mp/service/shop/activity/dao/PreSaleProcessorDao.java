@@ -305,6 +305,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         OrderBeforeParam.Goods goods = param.getGoods().get(0);
         for (ProductVo productVo : activityInfo.getProducts()) {
             if (productVo.getProductId().equals(goods.getProductId())) {
+                goods.setGoodsPrice(new BigDecimal((productVo.getPresalePrice().toString())));
                 goods.setProductPrice(new BigDecimal((productVo.getPresalePrice().toString())));
                 break;
             }

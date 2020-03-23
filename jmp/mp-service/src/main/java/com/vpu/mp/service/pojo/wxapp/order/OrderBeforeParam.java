@@ -119,6 +119,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 	public static class Goods{
 		@NotNull
 		private Integer goodsId;
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
 		private BigDecimal goodsPrice;
 		/**购买数量*/
 		@NotNull(message = JsonResultMessage.MSG_ORDER_GOODS_NO_ZERO)
