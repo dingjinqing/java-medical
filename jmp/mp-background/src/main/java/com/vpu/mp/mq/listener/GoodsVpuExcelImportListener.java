@@ -29,7 +29,7 @@ public class GoodsVpuExcelImportListener implements BaseRabbitHandler {
 
     @RabbitHandler
     public void handler(@Payload GoodsVpuExcelImportMqParam param, Message message, Channel channel){
-        saas.getShopApp(param.getShopId()).goods.goodsImportService.goodsVpuExcelImportMqCallback(param);
+        saas.getShopApp(param.getShopId()).goodsImportService.goodsVpuExcelImportMqCallback(param);
         //更新taskJob进度和状态
         saas.taskJobMainService.updateProgress(Util.toJson(param), param.getTaskJobId(), 0,1);
     }
