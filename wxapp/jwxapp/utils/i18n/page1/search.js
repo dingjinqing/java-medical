@@ -1,0 +1,30 @@
+module.exports = {
+  "searchPlaceholder":'请输入搜索关键字',
+  "condition":{
+    "salesVolume":"销量",
+    "price":"价格",
+    "filter":"筛选",
+  },
+  "errorTips":"抱歉！没有找到相关的商品",
+  "activityName":{
+    "1":'多人拼团',
+    "3":'砍价',
+    "4":"积分兑换",
+    "5":'秒杀',
+    "6":'限时降价',
+    "10":'定金膨胀'
+  },
+  "priceRange":"价格区间",
+  "minPrice":"最低价",
+  "maxPrice":"最高价",
+  "goodsSort":"商品分类",
+  "more":"更多",
+  "brand":"品牌",
+  "actGoods":"活动商品",
+  "goodsLabel":"商品标签",
+  "reset":"重置",
+  "confirm":"确认",
+  "moreSort":"更多分类",
+  "all":"全部",
+  "moreBrands":"更多品牌"
+}
