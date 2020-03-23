@@ -61,6 +61,8 @@ public class GoodsSearchMpParam extends BasePageParam {
     public static final Byte PAGE_FROM_GROUP_LIST = 0;
     /**admin拼团活动分享码跳转 pageFrom =1*/
     public static final Byte PAGE_FROM_GROUP_BUY = BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
+    /**admin秒杀活动分享码跳转 pageFrom =5*/
+    public static final Byte PAGE_FROM_SEC_KILL = BaseConstant.ACTIVITY_TYPE_SEC_KILL;
     /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;
     /**用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId*/

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.market.seckill;
 
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillProductDefineRecord;
@@ -345,13 +346,12 @@ public class SeckillService extends ShopBaseService{
      * 获取小程序码
      */
     public ShareQrCodeVo getMpQrCode(Integer skId) {
-
-        String pathParam="sk_id="+skId;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO, pathParam);
+        String pathParam = "pageFrom=5&actId=" + skId;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_SEARCH, pathParam);
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GOODS_SEARCH.getPathUrl(pathParam));
         return vo;
     }
 
@@ -680,6 +680,41 @@ public class SeckillService extends ShopBaseService{
         ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
         excelWriter.writeModelList(res, SeckillOrderExportVo.class);
         return workbook;
+    }
+
+    /**
+     * 从admin扫码活动码查看活动下的商品信息
+     * @param activityId 活动id
+     * @param baseCondition 过滤商品id基础条件
+     * @return 可用商品id集合
+     */
+    public List<Integer> getSecKillCanUseGoodsIds(Integer activityId, Condition baseCondition) {
+        Timestamp now = DateUtil.getLocalDateTime();
+        SecKillDefineRecord record = getSeckillActById(activityId);
+        if (record == null || record.getEndTime().compareTo(now) <= 0) {
+            logger().debug("小程序-admin-seckill-扫码进小程序搜索列表页-活动已删除或停止");
+            return null;
+        }
+
+        List<Integer> goodsIds = db().selectDistinct(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
+            .from(SEC_KILL_PRODUCT_DEFINE).innerJoin(Tables.GOODS).on(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.eq(Tables.GOODS.GOODS_ID))
+            .where(baseCondition.and(Tables.GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(activityId)))
+            .fetch(SEC_KILL_PRODUCT_DEFINE.GOODS_ID);
+
+        Byte first = record.getFirst();
+        // 未删除，停止，时间有效的活动
+        Condition activityCondition = SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(SEC_KILL_DEFINE.END_TIME.gt(now));
+        // 时间上有交集
+        Condition timeCondition = SEC_KILL_DEFINE.START_TIME.le(record.getEndTime()).and(SEC_KILL_DEFINE.START_TIME.gt(record.getStartTime())).or(SEC_KILL_DEFINE.END_TIME.gt(record.getStartTime()).and(SEC_KILL_DEFINE.END_TIME.lt(record.getEndTime())));
+        // 级别要高，或者级别相同但是创建的较晚
+        Condition levelCondition = SEC_KILL_DEFINE.FIRST.gt(first).or(SEC_KILL_DEFINE.FIRST.eq(first).and(SEC_KILL_DEFINE.CREATE_TIME.gt(record.getCreateTime())));
+
+        List<Integer> otherGoodsIds = db().selectDistinct(SEC_KILL_PRODUCT_DEFINE.GOODS_ID).from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+            .where(activityCondition.and(timeCondition).and(levelCondition).and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds)))
+            .fetch(SEC_KILL_PRODUCT_DEFINE.GOODS_ID);
+
+        goodsIds.removeAll(otherGoodsIds);
+        return goodsIds;
     }
 
 }
