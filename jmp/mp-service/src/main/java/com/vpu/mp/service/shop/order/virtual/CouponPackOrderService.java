@@ -311,6 +311,7 @@ public class CouponPackOrderService extends VirtualOrderService {
             scoreParam.setUserId(orderRecord.getUserId());
             scoreParam.setOrderSn(orderRecord.getOrderSn());
             scoreParam.setRemarkCode(RemarkTemplate.ORDER_MAKE.code);
+            scoreParam.setRemarkData(orderRecord.getOrderSn());
             try {
                 memberService.score.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY.val(), TRADE_FLOW_OUT.val());
             } catch (MpException e) {
@@ -325,6 +326,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 setPayment(PAY_CODE_BALANCE_PAY);
                 setIsPaid(UACCOUNT_CONSUMPTION.val());
                 setRemarkId(RemarkTemplate.ORDER_MAKE.code);
+                setRemarkData(orderRecord.getOrderSn());
             }};
             TradeOptParam tradeOptParam = TradeOptParam.builder()
                 .tradeType(TYPE_CRASH_ACCOUNT_PAY.val())
