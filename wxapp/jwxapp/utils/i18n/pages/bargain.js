@@ -13,7 +13,7 @@ module.exports = {
   "bargainInfo4": "仅剩",
   "bargainInfo5": "结束",
   "bargainInfo6": "活动已结束",
-  "bargainInfo6": "直接购买",
+  "bargainInfo7": "直接购买",
 
   "bargainProgress1": "已砍",
   "bargainProgress2": "元",
