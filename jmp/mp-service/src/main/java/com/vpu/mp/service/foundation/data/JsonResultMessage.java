@@ -1046,6 +1046,10 @@ public class JsonResultMessage {
     public static final String FRIEND_PROMOTE_PROMOTE_NUM = "friend.promote.promote.num";
     public static final String FRIEND_PROMOTE_PROMOTE_VALUE = "friend.promote.promote.value";
     public static final String FRIEND_PROMOTE_IS_SUCCESS = "friend.promote.is.success";
+    public static final String FRIEND_PROMOTE_JOIN_DETAIL = "friend.promote.join.detail";
+    public static final String FRIEND_PROMOTE_JOIN_USER_NAME = "friend.promote.join.user.name";
+    public static final String FRIEND_PROMOTE_JOIN_USER_MOBILE = "friend.promote.join.user.mobile";
+    public static final String FRIEND_PROMOTE_IS_NEW = "friend.promote.is.new";
     /**表单统计*/
     public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
     public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";

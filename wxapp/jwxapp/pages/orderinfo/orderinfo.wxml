@@ -1,3 +1,11 @@
+<wxs module="filter">
+  substring = function (str,start,end) {
+    return str.substring(start,end)
+  }
+  module.exports = {
+    substring:substring
+  }
+</wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="../common/header.wxml" />
@@ -15,7 +23,7 @@
         <view>请在{{clock}}内完成支付</view>
       </view>
       <view class="count-down" wx:if="{{isPreSaleOrder && orderInfo.payOperationTime === 0}}">
-        <view>尾款支付时间：{{orderInfo.preSaleTimeInterval[0] + '-' + orderInfo.preSaleTimeInterval[1]}}</view>
+        <view>尾款支付时间：{{filter.substring(filter.substring(orderInfo.preSaleTimeInterval[0],5),0,11) + ' - ' + filter.substring(filter.substring(orderInfo.preSaleTimeInterval[1],5),0,11)}}</view>
       </view>
     </view>
     <view class="shipping_info">

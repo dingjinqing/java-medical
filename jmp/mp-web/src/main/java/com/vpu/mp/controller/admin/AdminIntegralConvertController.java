@@ -175,7 +175,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
     @PostMapping("/order/export")
     public void orderExport(@Valid @RequestBody MarketOrderListParam param, HttpServletResponse response) {
         Workbook workbook = shop().integralConvertService.orderExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT, LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
     /**
@@ -186,7 +186,7 @@ public class AdminIntegralConvertController extends AdminBaseController{
     @PostMapping("/user/export")
     public void userExport(@Validated @RequestBody IntegralConvertUserParam param, HttpServletResponse response) {
         Workbook workbook = shop().integralConvertService.userExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT_USER, LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.INTEGRAL_MALL_EXPORT_USER, LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook, fileName, response);
     }
     /**
