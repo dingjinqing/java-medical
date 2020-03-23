@@ -271,7 +271,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                         goods.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
                         goods.setActivityId(goods.getExtendId());
                         //活动记录
-                        getFullReductionGoodsBo(ruleCartIdMap, goods);
+                        fullReductionProcessorDao.getFullReductionGoodsBo(ruleCartIdMap, goods);
                     } else {
                         //活动失效 todo 购物车操作
                     }
@@ -279,7 +279,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
             }
         }
         //当前活动选择规则
-        fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
+        fullReductionProcessorDao.fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
         //给商品分配规则
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
@@ -295,6 +295,8 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 });
             }
         }
+        //活动是否生效
+
         //国际化
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             goods.getCartActivityInfos().forEach(cartActivityInfo -> {
@@ -304,11 +306,11 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                         CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRule();
                         //当前选中的国际化
                         if (fullReductionRule!=null){
-                            String message = fullReductionRuleToString(fullReduction,fullReductionRule);
+                            String message = fullReductionProcessorDao.fullReductionRuleToString(fullReduction,fullReductionRule);
                             fullReduction.setCondition(message);
                         }
                         fullReduction.getRules().forEach(rule->{
-                            rule.setName(fullReductionRuleToString(fullReduction,rule));
+                            rule.setName(fullReductionProcessorDao.fullReductionRuleToString(fullReduction,rule));
                         });
                     }
                 }
@@ -318,124 +320,5 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
 
     }
 
-    /**
-     * 国际化
-     *
-     * @param fullReduction
-     * @param rule 满折满减规则
-     * @return 国际化
-     */
-    private String fullReductionRuleToString(CartActivityInfo.FullReduction fullReduction, CartActivityInfo.FullReductionRule rule) {
-        //满减
-        switch (fullReduction.getFullReductiontype()){
-            case 1://每满减
-                if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
-                    return "每满"+rule.getFullMoney()+"元,减"+rule.getReduceMoney()+"元";
-                }
-                if (rule.getAmount()>0&&rule.getReduceMoney()!=null){
-                    return "每满"+rule.getAmount()+"件,减"+rule.getReduceMoney()+"元";
-                }
-                break;
-            case 2://满减
-                if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
-                    return "满"+rule.getFullMoney()+"元,减"+rule.getReduceMoney()+"元";
-                }
-                if (rule.getAmount()>0&&rule.getReduceMoney()!=null){
-                    return "满"+rule.getAmount()+"件,减"+rule.getReduceMoney()+"元";
-                }
-                break;
-            case 3://3满折
-                if (rule.getFullMoney().compareTo(BigDecimal.ZERO)>0&&rule.getReduceMoney()!=null){
-                    return "满"+rule.getFullMoney()+"折,打"+rule.getReduceMoney()+"折";
-                }
-                if (rule.getAmount()>0&&rule.getReduceMoney()!=null){
-                    return "满"+rule.getAmount()+"折,打"+rule.getReduceMoney()+"折";
-                }
-                break;
-            case 4://第几件=
-                if (rule.getAmount()>0&&rule.getReduceMoney()!=null){
-                    return "满"+rule.getAmount()+"折,打"+rule.getReduceMoney()+"折";
-                }
-                break;
-                default:
-        }
-        return "";
-    }
-
-    /**
-     * 活动选择
-     * @param ruleCartIdMap
-     * @param cartActivityInfos
-     */
-    private void fullReductionRuleOption(Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap, Set<CartActivityInfo> cartActivityInfos) {
-        //判断商品参与活动信息
-        for (Map.Entry<Integer, List<FullReductionGoodsCartBo>> entry : ruleCartIdMap.entrySet()) {
-            Integer ruleId = entry.getKey();
-            List<FullReductionGoodsCartBo> fullReductionGoodsList = entry.getValue();
-            Optional<CartActivityInfo> rule = cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
-            if (rule.isPresent()) {
-                CartActivityInfo cartActivityInfo = rule.get();
-                CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
-                CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRules().get(0);
-                /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
-                switch (fullReduction.getFullReductiontype()) {
-                    case 1:
-                        break;
-                    case 2://满减
-                    case 3://3满折
-                        List<CartActivityInfo.FullReductionRule> fullReductionRuleList = fullReduction.getRules();
-                        CartActivityInfo.FullReductionRule first = fullReductionRuleList.stream().findFirst().get();
-                        if (first.getAmount() != null && first.getAmount() > 0) {
-                            //满件数
-                            int sum = fullReductionGoodsList.stream().mapToInt(FullReductionGoodsCartBo::getNum).sum();
-                            for (CartActivityInfo.FullReductionRule fullRule : fullReductionRuleList) {
-                                if (fullRule.getAmount() <= sum) {
-                                    if (fullReductionRule.getAmount() < sum) {
-                                        if (fullRule.getAmount() > fullReductionRule.getAmount()) {
-                                            fullReductionRule = fullRule;
-                                        }
-                                    } else {
-                                        fullReductionRule = fullRule;
-                                    }
-                                }
-                            }
-                        } else {//满金额
-                            BigDecimal moneySums = fullReductionGoodsList.stream().map(FullReductionGoodsCartBo::getMoney)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-                            for (CartActivityInfo.FullReductionRule fullRule : fullReductionRuleList) {
-                                if (moneySums.compareTo(fullRule.getFullMoney()) >= 0) {
-                                    if (moneySums.compareTo(fullReductionRule.getFullMoney()) >= 0) {
-                                        if (fullReductionRule.getFullMoney().compareTo(fullRule.getFullMoney()) > 0) {
-                                            fullReductionRule = fullRule;
-                                        }
-                                    } else {
-                                        fullReductionRule = fullRule;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case 4:
-                        break;
-                    default:
-                }
-                for (FullReductionGoodsCartBo goods : fullReductionGoodsList) {
-                    goods.setFullReductionRule(fullReductionRule);
-                }
-            }
-        }
-
-    }
-
-    private void getFullReductionGoodsBo(Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap, WxAppCartGoods goods) {
-        List<FullReductionGoodsCartBo> fullGoods = ruleCartIdMap.get(goods.getExtendId()) != null ? ruleCartIdMap.get(goods.getExtendId()) : new ArrayList<>();
-        FullReductionGoodsCartBo FullReductionGoodsCartBo =new FullReductionGoodsCartBo();
-        FullReductionGoodsCartBo.setCartId(goods.getCartId());
-        FullReductionGoodsCartBo.setProductId(goods.getProductId());
-        FullReductionGoodsCartBo.setNum(goods.getCartNumber());
-        FullReductionGoodsCartBo.setMoney(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-        fullGoods.add(FullReductionGoodsCartBo);
-        ruleCartIdMap.put(goods.getExtendId(), fullGoods);
-    }
 
 }

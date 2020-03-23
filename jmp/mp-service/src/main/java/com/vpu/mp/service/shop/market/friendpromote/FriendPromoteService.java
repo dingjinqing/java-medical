@@ -1446,7 +1446,7 @@ public class FriendPromoteService extends ShopBaseService {
                                 .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(promoteInfo.getRewardContent().getGoodsIds()))
                                 .fetchOneInto(Integer.class);
                             //更新库存
-                            atomicOperation.updataStockAndSalesByLock(goodsId,promoteInfo.getRewardContent().getGoodsIds(),1,false);
+                            atomicOperation.updateStockAndSalesByLock(goodsId,promoteInfo.getRewardContent().getGoodsIds(),1,false);
                         }else {
                             logger().info("商品库存不足");
                             throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);

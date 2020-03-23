@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,8 @@ public class PayAwardService extends ShopBaseService {
     private CouponService couponService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private AtomicOperation atomicOperation;
     @Autowired
     private LotteryService lotteryService;
     @Autowired
@@ -389,6 +393,12 @@ public class PayAwardService extends ShopBaseService {
                 logger().info("奖品");
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.getById(Integer.valueOf(payAwardRecord.getSendData()));
                 ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(prizeRecordRecord.getPrdId());
+                try {
+                    atomicOperation.updateStockAndSalesByLock(product.getGoodsId(),prizeRecordRecord.getPrdId(),1,true);
+                } catch (MpException e) {
+                    e.printStackTrace();
+                    logger().error("奖品扣库存失败");
+                }
                 prizeVo.setProduct(product);
                 prizeVo.setProductId(Integer.parseInt(payAwardRecord.getAwardData()));
                 prizeVo.setKeepDays(payAwardRecord.getKeepDays());
