@@ -135,7 +135,6 @@ public class MessageTemplateService extends ShopBaseService {
         String sendConditionStr = Util.toJson(param.getUserInfo());
         TemplateConfigRecord record = db().newRecord(TEMPLATE_CONFIG,param);
         record.setToUser(userIdStr);
-        record.setSendAction(param.getAction());
         record.setSendCondition(sendConditionStr);
         TemplateConfigRecord templateConfigRecord =db().insertInto(TEMPLATE_CONFIG)
             .set(record)
@@ -250,19 +249,18 @@ public class MessageTemplateService extends ShopBaseService {
     }
     /**
      * 根据推送消息id获取已发送人数
-     * @param templateIdList 推送消息id集合
      * @return 推送消息id和对应的发送人数
      */
-    private Map<String,Integer> createSentPersonByTemplateId(List<Integer> templateIdList){
-        return db()
-            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
-            .from(SERVICE_MESSAGE_RECORD)
-            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
-            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
-            .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
-            .fetch()
-            .stream()
-            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
+    private void createSentPersonByTemplateId(String userStr,Integer templateId){
+//        return db()
+//            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
+//            .from(SERVICE_MESSAGE_RECORD)
+//            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
+//            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+//            .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
+//            .fetch()
+//            .stream()
+//            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
     }
 
     /**
@@ -420,6 +418,7 @@ public class MessageTemplateService extends ShopBaseService {
     public void updateTemplateStatus(Integer id){
 
     }
+
 
     public void addContentTemplate(ContentMessageParam param) {
         db().newRecord(MESSAGE_TEMPLATE,param).insert();
