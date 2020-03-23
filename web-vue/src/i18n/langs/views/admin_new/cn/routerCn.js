@@ -250,9 +250,9 @@ export const cn = {
   // 营销管理 定金膨胀修改
   presale_edit: ['营销管理', '修改定金膨胀活动'],
   // 营销管理 定金膨胀订单
-  presale_order_detail: ['营销管理', '查看活动订单'],
+  presale_order_detail: ['营销管理', '定金膨胀', '查看活动订单'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['营销管理', '活动明细'],
+  presale_detail: ['营销管理', '定金膨胀', '活动明细'],
   // 营销活动 普通优惠券
   ordinaryCoupon: ['营销管理', '普通优惠券'],
   // 营销管理 秒杀
