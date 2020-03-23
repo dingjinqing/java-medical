@@ -33,7 +33,7 @@ global.wxPage({
   },
   requestPackageData(){
     this.setData({
-      page_name:'优惠券礼包结算'
+      page_name:this.$t("page1.virtualCheckout.title")
     })
     let {packId} = this.data.options
     let cardNo = this.data.chooseCardNo

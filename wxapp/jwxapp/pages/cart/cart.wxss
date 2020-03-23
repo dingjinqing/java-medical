@@ -492,6 +492,13 @@ movable-view{
   width: 120rpx;
   height: 120rpx;
 }
+.cga_left .no_change_img{
+  position: absolute;
+  top: 10rpx;
+  left: 10rpx;
+  width: 100rpx;
+  height: 100rpx;
+}
 .cga_right {
   float: right;
   width: 510rpx;

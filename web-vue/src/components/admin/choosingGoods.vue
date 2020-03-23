@@ -88,6 +88,7 @@
             <li>商品品牌：
               <el-select
                 v-model="requestParam.brandId"
+                value-key="id"
                 placeholder="请选择商品品牌"
                 size="small"
                 style="width:140px"
@@ -398,15 +399,15 @@ export default {
         }
         switch (this.initialConditionRender[0]) {
           case 0:
-            this.requestParam.sortId = this.initialConditionRender[1]
+            this.requestParam.sortId = { id: this.initialConditionRender[1] }
             this.showItem.sortId = false
             break
           case 1:
-            this.requestParam.labelId = this.initialConditionRender[1]
+            this.requestParam.labelId = { id: this.initialConditionRender[1] }
             this.showItem.labelId = false
             break
           case 2:
-            this.requestParam.brandId = this.initialConditionRender[1]
+            this.requestParam.brandId = { id: this.initialConditionRender[1] }
             this.showItem.brandId = false
             break
         }

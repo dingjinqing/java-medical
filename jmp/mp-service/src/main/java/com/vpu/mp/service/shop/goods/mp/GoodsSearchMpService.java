@@ -10,6 +10,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
+import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.Record2;
@@ -47,6 +48,8 @@ public class GoodsSearchMpService extends ShopBaseService {
 
     @Autowired
     GroupBuyService groupBuyService;
+    @Autowired
+    SeckillService seckillService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
 
@@ -92,11 +95,18 @@ public class GoodsSearchMpService extends ShopBaseService {
      */
     public GoodsSearchContentVo searchGoodsGate(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
-        if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
-            pageResult = searchGoodsForGroupBuyQrCode(param);
-        } else {
+        if(param.getPageFrom() != null && param.getPageFrom() > 0){
+            if (GoodsSearchMpParam.PAGE_FROM_GROUP_BUY.equals(param.getPageFrom())) {
+                pageResult = searchGoodsForGroupBuyQrCode(param);
+            } else if(GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
+                pageResult = searchGoodsForSecKillQrCode(param);
+            }else{
+                pageResult = searchGoods(param);
+            }
+        }else{
             pageResult = searchGoods(param);
         }
+
 
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
@@ -116,6 +126,21 @@ public class GoodsSearchMpService extends ShopBaseService {
         int activityId = param.getActId();
         Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
         List<Integer> goodsIds = groupBuyService.getGroupBuyCanUseGoodsIds(activityId, goodsBaseCondition);
+
+        List<SortField<?>> sortFields = buildSearchOrderFields(param);
+
+        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    }
+
+    /**
+     * admin秒杀活动扫码进入
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private PageResult<GoodsListMpBo> searchGoodsForSecKillQrCode(GoodsSearchMpParam param) {
+        int activityId = param.getActId();
+        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
+        List<Integer> goodsIds = seckillService.getSecKillCanUseGoodsIds(activityId, goodsBaseCondition);
 
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 

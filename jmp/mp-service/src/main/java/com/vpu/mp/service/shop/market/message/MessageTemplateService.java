@@ -284,7 +284,7 @@ public class MessageTemplateService extends ShopBaseService {
         if( StringUtils.isNotBlank(param.getUserName()) ){
             result.add(USER.USERNAME.contains(param.getUserName()));
         }
-        if(param.getSendType() != 0 ){
+        if(  null != param.getSendType()&& param.getSendType() != 0 ){
             result.add(SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM.eq(param.getSendType().byteValue()));
         }
         return result;
@@ -404,6 +404,10 @@ public class MessageTemplateService extends ShopBaseService {
 
 
     public void updateTemplateStatus(Integer userId,Integer templateId){
+        db().update(SERVICE_MESSAGE_RECORD).
+            set(SERVICE_MESSAGE_RECORD.SEND_STATUS,(byte)1).
+            where(SERVICE_MESSAGE_RECORD.USER_ID.eq(userId)).
+            and(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.eq(templateId.toString())).execute();
 
     }
 
@@ -424,5 +428,10 @@ public class MessageTemplateService extends ShopBaseService {
             .executionType(TaskJobsConstant.TaskJobEnum.GIVE_COUPON)
             .builder();
         taskJobMainService.dispatch(info);
+    }
+
+    public static void main(String[] args) {
+        Integer a = 0;
+        System.out.println(a.byteValue());
     }
 }

@@ -33,21 +33,21 @@ global.wxPage({
     packList.forEach(item=>{
       let packDoc = '';
       if(item.immediatelyGrantAmount){
-        packDoc = `领取后立即发放${item.immediatelyGrantAmount}张`
+        packDoc = this.$t("page1.virtualCheckout.getLimitOne",{num:item.immediatelyGrantAmount||'0'})
       }
       if(item.timingEvery && item.timingAmount){
-        let timingUnit = item.timingUnit === 1 ? '周' : (item.timingUnit === 2 ? '月' : '天');
+        let timingUnit = item.timingUnit === 1 ? this.$t("page1.virtualCheckout.week") : (item.timingUnit === 2 ? this.$t("page1.virtualCheckout.month") : this.$t("page1.virtualCheckout.day"));
         packDoc = packDoc ? packDoc+'，' : '';
-        packDoc += `领取后每${item.timingEvery}${timingUnit}发放${item.timingAmount}张`
+        packDoc += this.$t("page1.virtualCheckout.getLimitTwo",{provideInfo:item.timingEvery+timingUnit,num:item.timingAmount||'0'})
       }
       item.packDoc = packDoc
       let alGetCou = parseFloat(item.totalAmount) * buyCount;
       if(buyCount > 0 && alGetCou === item.grantCount){
-        item.sendIconText='已发放'
+        item.sendIconText=this.$t("page1.virtualCheckout.issued")
       } else if (buyCount > 0 && alGetCou !== item.grantCount && item.grantCount != 0){
-        item.sendIconText='部分发放'
+        item.sendIconText=this.$t("page1.virtualCheckout.partiallyIssued")
       } else if (buyCount > 0 && item.grantCount === 0){
-        item.sendIconText='待发放'
+        item.sendIconText=this.$t("page1.virtualCheckout.toBeIssued")
       }
     })
   },
@@ -56,22 +56,22 @@ global.wxPage({
       let style = 'btn-buy'
       switch (packInfo.accessMode) {
         case 0:
-          return {style,name:`${packInfo.accessCost}元购买`}
+          return {style,name:`${packInfo.accessCost}${this.$t("page1.virtualCheckout.yuan")+this.$t("page1.virtualCheckout.buy")}`}
         case 1:
-          return {style,name:`${packInfo.accessCost}积分购买`}
+          return {style,name:`${packInfo.accessCost}${this.$t("page1.virtualCheckout.score")+this.$t("page1.virtualCheckout.buy")}`}
         case 2:
-          return {style,name:`立即领取`}
+          return {style,name:this.$t("page1.virtualCheckout.rightNow")+this.$t("page1.virtualCheckout.getIt")}
       }
     }
     if(buyCount > 0 && (buyCount < packInfo.limitGetTimes || packInfo.limitGetTimes === 0)){
       let style = 'buy_again'
       switch (packInfo.accessMode) {
         case 0:
-          return {style,name:`${packInfo.accessCost}元再次购买`}
+          return {style,name:`${packInfo.accessCost}${this.$t("page1.virtualCheckout.yuan")+this.$t("page1.virtualCheckout.again")+this.$t("page1.virtualCheckout.buy")}`}
         case 1:
-          return {style,name:`${packInfo.accessCost}积分再次购买`}
+          return {style,name:`${packInfo.accessCost}${this.$t("page1.virtualCheckout.score")+this.$t("page1.virtualCheckout.again")+this.$t("page1.virtualCheckout.buy")}`}
         case 2:
-          return {style,name:`再次领取`}
+          return {style,name:this.$t("page1.virtualCheckout.again")+this.$t("page1.virtualCheckout.getIt")}
       }
     }
     return null

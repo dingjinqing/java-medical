@@ -66,6 +66,7 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 import static com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam.ASC;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
@@ -2324,7 +2325,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsSecKillListInfo = secKillProcessorDao.getGoodsSecKillListInfo(Collections.singletonList(goodsId), now);
         if (goodsSecKillListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsSecKillListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(SEC_KILL_DEFINE.SK_ID));
+            type.setActivityId(record3.get(SEC_KILL_PRODUCT_DEFINE.SK_ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
             return type;
         }
@@ -2350,7 +2351,7 @@ public class GoodsService extends ShopBaseService {
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsGroupBuyListInfo = groupBuyProcessorDao.getGoodsGroupBuyListInfo(Collections.singletonList(goodsId), now);
         if (goodsGroupBuyListInfo.containsKey(goodsId)) {
             Record3<Integer, Integer, BigDecimal> record3 = goodsGroupBuyListInfo.get(goodsId).get(0);
-            type.setActivityId(record3.get(GROUP_BUY_DEFINE.ID));
+            type.setActivityId(record3.get(GROUP_BUY_PRODUCT_DEFINE.ID));
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
             return type;
         }

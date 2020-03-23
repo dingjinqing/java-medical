@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="/pages/common/header.wxml"/>
   <view class="main-container" wx:if="{{pageParams}}">
@@ -6,13 +7,13 @@
         <view>
         <icon size="13" type="search" role="img"></icon>
         </view>
-        <input placeholder="请输入搜索关键字" bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
+        <input placeholder='{{i18n.$t(localePack,"page1.search.searchPlaceholder")}}' bindconfirm="inputSearch" bindinput="changeInput" value="{{keyWords}}"></input>
       </view>
     </view>
     <view class="condition">
-      <view class="condition-item"><text>销量</text></view>
-      <view class="condition-item"><text>价格</text></view>
-      <view class="condition-item" bindtap="showFilter"><text>筛选</text><image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image></view>
+      <view class="condition-item"><text>{{i18n.$t(localePack,"page1.search.condition.salesVolume")}}</text></view>
+      <view class="condition-item"><text>{{i18n.$t(localePack,"page1.search.condition.price")}}</text></view>
+      <view class="condition-item" bindtap="showFilter"><text>{{i18n.$t(localePack,"page1.search.condition.filter")}}</text><image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image></view>
     </view>
     <view class="content">
       <block wx:if="{{dataList[0].length}}">
@@ -27,7 +28,7 @@
       <block wx:else>
         <view class="is-null" >
           <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
-          <text>抱歉！没有找到相关的商品</text>
+          <text>{{i18n.$t(localePack,"page1.search.errorTips")}}</text>
         </view>
       </block>
     </view>

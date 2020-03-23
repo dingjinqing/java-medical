@@ -101,7 +101,7 @@
     </view>
   </block>
   <view class="order-footer">
-    <form report-submit='true' bindsubmit='submitRefund' class='ipx_en' wx:if='{{ (returnType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
+    <form bindsubmit='submitRefund' class='ipx_en' wx:if='{{ (returnType == 4 && bottom.subscribe_message) || !bottom.subscribe_message }}'>
       <button form-type='submit' class='footer-btn' style='background:{{comColor}};bottom:{{isIpx == 1?"60rpx;":"0rpx;"}}'>{{i18n.$t(localePack,'page1.afterSale.submitApplication')}}</button>
     </form>
     <!-- 换货提交 -->

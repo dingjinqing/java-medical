@@ -115,6 +115,7 @@ function uploadVideo (backfun, data, sourceType) {
     success: function (res) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       if (res) {
+        console.log('res:', res)
         if (res.size > parseInt(10 * 1024 * 1024)) {
           wx.showToast({ title: i18n.trans("common.video.sizeGt10M"), image: '/images/fail.png', duration: 2000 });
           return false;
@@ -122,10 +123,16 @@ function uploadVideo (backfun, data, sourceType) {
           wx.showToast({ title: i18n.trans("common.video.durationGt3Minites"), image: '/images/fail.png', duration: 2000 });
           return false;
         }
-        data = data || {};
-        data.video_cat_id = -1;
+        var params = {
+          userId: cache.getCache('user_id'),
+          videoCatId: -1,
+          videoWidth: res.width,
+          videoHeight: res.height,
+          uploadFileId: res.tempFilePath
+        }
+        data = Object.assign({}, params, data)
         wx.showLoading({ title: '上传中' })
-        uploadFile(nav.getUrl('/api/wxapp/manage/video/upload'), res.tempFilePath, data, function (e) {
+        uploadFile(nav.getUrl('/api/wxapp/video/upload/one'), res.tempFilePath, data, function (e) {
           wx.hideLoading();
           let res_data = JSON.parse(e.data)
           res_data.video = res;

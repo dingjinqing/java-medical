@@ -519,6 +519,26 @@ global.wxPage({
       userId: this.data.userId,
       orderInfo: payInfo
     }
+    // 买单服务通知
+    let types = []
+    if (Number(payInfo.balanceAmount) > 0) {
+      types.push('balance_change')
+    }
+    if (Number(payInfo.scoreAmount) > 0) {
+      types.push('score_change')
+    }
+    types = types.join(',')
+    if (types !== '') {
+      util.getNeedTemplateId(types, () => {
+        that.confirmPay(params, payInfo)
+      })
+    } else {
+      that.confirmPay(params, payInfo)
+    }
+  },
+
+  confirmPay (params, payInfo) {
+    let that = this
     util.api('/api/wxapp/store/confirmPay', function (res) {
       if (res.error == 0) {
         if (payInfo.moneyPaid > 0) {

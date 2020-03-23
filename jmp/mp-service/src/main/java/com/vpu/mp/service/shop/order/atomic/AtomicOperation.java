@@ -209,7 +209,7 @@ public class AtomicOperation extends ShopBaseService {
         log.info("修改商品库存--开始");
         GoodsSpecProductRecord productRecord = goodsSpecProduct.selectSpecByProId(productId);
         Optional<GoodsRecord> goodsRecord = goodsService.getGoodsById(goodsId);
-        if (productRecord==null||goodsRecord.isPresent()){
+        if (productRecord==null||!goodsRecord.isPresent()){
             log.error("商品或规格不存在goodsId:{},produco:{}",goodsId,productId);
             //商品或规格row为null
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, null);

@@ -244,7 +244,7 @@ public class CouponPackOrderService extends VirtualOrderService {
 
         BigDecimal moneyPaid = param.getOrderAmount() == null ? BigDecimal.ZERO : (param.getOrderAmount().subtract(param.getAccountDiscount() == null ? BigDecimal.ZERO : param.getAccountDiscount()).subtract(param.getMemberCardBalance() == null ? BigDecimal.ZERO : param.getMemberCardBalance()).setScale(2,BigDecimal.ROUND_HALF_UP));
         String payCode = moneyPaid.compareTo(BigDecimal.ZERO) > 0 ? OrderConstant.PAY_CODE_WX_PAY : (param.getScoreDiscount() > 0 ? OrderConstant.PAY_CODE_SCORE_PAY : OrderConstant.PAY_CODE_BALANCE_PAY);
-        String orderSn = IncrSequenceUtil.generateOrderSn("M");
+        String orderSn = IncrSequenceUtil.generateOrderSn(COUPON_PACK_ORDER_SN_PREFIX);
 
 
         VirtualOrderRecord insertVirtualOrderRecord = db().newRecord(VIRTUAL_ORDER);

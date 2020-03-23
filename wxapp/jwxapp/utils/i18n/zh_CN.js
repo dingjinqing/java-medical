@@ -15,6 +15,8 @@ var promote = require('./page1/promote.js') // 好友助力
 var pinintegration = require('./page1/pinintegration.js') // 瓜分积分
 var decorate = require('./components/decorate/decorate.js')
 var item = require('./pages/item.js')
+var search = require('./page1/search.js') //搜索页
+var virtualCheckout = require('./page1/virtualCheckout.js') //虚拟商品结算
 var zh_CN = {
   "common": {
     "info": {
@@ -71,7 +73,9 @@ var zh_CN = {
     "usercenter": usercenter,
     'pinlottery': pinlottery,
     'promote': promote,
-    'pinintegration': pinintegration
+    'pinintegration': pinintegration,
+    'search': search,
+    'virtualCheckout': virtualCheckout
   },
   "page2": {
 

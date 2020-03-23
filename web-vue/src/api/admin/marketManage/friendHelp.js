@@ -96,3 +96,30 @@ export function shareAct (data) {
     data: data
   })
 }
+// 发起明细导出
+export function launchExport (data) {
+  return service({
+    url: '/api/admin/market/promote/launch/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 参与明细导出
+export function joinExport (data) {
+  return service({
+    url: '/api/admin/market/promote/participate/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+// 领取明细导出
+export function receiveExport (data) {
+  return service({
+    url: '/api/admin/market/promote/receive/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}

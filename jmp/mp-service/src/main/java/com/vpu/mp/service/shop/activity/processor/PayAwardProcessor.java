@@ -312,17 +312,17 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId(), 60000,
+            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
                     () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-            int circleTimes = (joinAwardCount+1) / payAwardSize;
-            logger().info("循环次数:{}", circleTimes);
-            if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
+            int circleTimes = (joinAwardCount) / payAwardSize+1;
+            int currentAward = joinAwardCount % payAwardSize;
+            logger().info("当前第:{}轮,第:{}次", circleTimes,currentAward);
+            if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*payAwardSize < joinAwardCount) {
                 jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
                 logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
                 return;
             }
-            int currentAward = joinAwardCount % payAwardSize;
             logger().info("当前的奖励层级:{}", currentAward);
             PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward);
             logger().info("当前奖励:" + payAwardContentBo.toString());

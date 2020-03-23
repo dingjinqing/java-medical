@@ -18,10 +18,16 @@ global.wxComponent({
           if(res.error == 0){
             m.video = true;
             console.log(res);
-            m.video_data = res.video.tempFilePath;
-            m.video_img = res.video.thumbTempFilePath;
-            m.module_value = { "video_src": res.content[0].video_path, "video_img_src": res.content[0].video_snap_path, "video_id": res.content[0].video_id};
+            m.video_data = res.content.videoUrl;
+            m.video_img = res.content.videoSnapPath;
+            m.module_value = { 
+              "video_src": res.content.videoUrl,
+              "video_img_src": res.content.videoSnapPath,
+              "video_id": res.content.videoId
+            };
             _this.$set();
+          } else {
+            _this.$message.error(res.message)
           }
       })
     },

@@ -12,30 +12,30 @@
   <!-- 优惠券礼包样式 -->
   <block wx:if="{{options.packId}}">
     <view class="coupon-package-content">
-      <view class="coupon-package-title">优惠券礼包</view>
+      <view class="coupon-package-title">{{i18n.$t(localePack,"page1.virtualCheckout.couponPackage")}}</view>
       <view class="package-list">
         <block wx:for="{{couponData}}" wx:for-item="couponItem" wx:for-index="couponIndex" wx:key="id">
           <view class="coupon-item">
             <view class="item-left" style="background-color:{{comColor}};">
               <view class="coupon-money" wx:if="{{couponItem.actCode === 'voucher'}}">￥<text>{{couponItem.denomination}}</text></view>
-              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'discount'}}"><text>{{couponItem.denomination}}</text>折</view>
-              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'random'}}"><text>{{couponItem.randomMax}}</text>最高</view>
+              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'discount'}}"><text>{{couponItem.denomination}}</text>{{i18n.$t(localePack,"page1.virtualCheckout.discount")}}</view>
+              <view class="coupon-money" wx:elif="{{couponItem.actCode === 'random'}}"><text>{{couponItem.randomMax}}</text>{{i18n.$t(localePack,"page1.virtualCheckout.randomMax")}}</view>
               <view class="coupon-limit">
-                {{couponItem.leastConsume ? '满'+couponItem.leastConsume+'元可用' : '无门槛'}}
+                {{couponItem.leastConsume ? i18n.$t(localePack,"page1.virtualCheckout.limitTips",{price:couponItem.leastConsume || '0.00'}) : i18n.$t(localePack,"page1.virtualCheckout.nolimit")}}
               </view>
               <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
             </view>
             <view class="item-right">
               <view class='coupon-name'>{{couponItem.actName}}</view>
               <view class='coupon-goods-limit'>
-                {{couponItem.isAllGoodsUse ? '全部商品可用' : '部分商品可用'}}
+                {{couponItem.isAllGoodsUse ? i18n.$t(localePack,"page1.virtualCheckout.useGoodsLimit.all") : i18n.$t(localePack,"page1.virtualCheckout.useGoodsLimit.portion")}}
                 <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
               </view>
               <view class="send-rule">{{couponItem.packDoc}}</view>
               <view class="coupon-time">
                 {{filter.substring(couponItem.startTime,0,10)}} ~ {{filter.substring(couponItem.endTime,0,10)}}
               </view>
-              <view class="coupon-num">{{couponItem.totalAmount}}张</view>
+              <view class="coupon-num">{{couponItem.totalAmount}}{{i18n.$t(localePack,"page1.virtualCheckout.piece")}}</view>
             </view>
           </view>
         </block>
@@ -51,11 +51,11 @@
         <image mode="widthFix" class="shop_img" src="{{item.avatar}}"></image>
         <view class="info_item">
           <view class="item_row card_name">{{item.cardName}}</view>
-          <view class="item_row" wx:if="{{item.cardType !== 1 && item.discount}}">折扣：{{item.discount}}折</view>
-          <view class="item_row">卡号：{{item.cardNo}}</view>
+          <view class="item_row" wx:if="{{item.cardType !== 1 && item.discount}}">{{i18n.$t(localePack,"page1.virtualCheckout.discountComplete,{discount:item.discount || '0'}")}}</view>
+          <view class="item_row">{{i18n.$t(localePack,"page1.virtualCheckout.cardNo")}}：{{item.cardNo}}</view>
           <block wx:if="{{item.cardType === 1}}">
-            <view class="item_row" wx:if="{{item.exchangSurplus}}">剩余可兑换商品数量：{{item.exchangSurplus}}</view>
-            <view class="item_row" wx:if="{{item.surplus}}">剩余可使用服务次数：{{item.surplus}}</view>
+            <view class="item_row" wx:if="{{item.exchangSurplus}}">{{i18n.$t(localePack,"page1.virtualCheckout.remainderGoods")}}：{{item.exchangSurplus}}</view>
+            <view class="item_row" wx:if="{{item.surplus}}">{{i18n.$t(localePack,"page1.virtualCheckout.remainderService")}}：{{item.surplus}}</view>
           </block>
         </view>
       </view>
@@ -89,10 +89,10 @@
       </view>
     </view>
     <view class="pay_list_item score" wx:if="{{isScorePay}}">
-      <text class="pay_list_title">积分支付</text>
+      <text class="pay_list_title">{{i18n.$t(localePack,"page1.virtualCheckout.scorePay")}}</text>
       <text class="pay_list_content"></text>
       <view class="pay_list_right">
-        {{orderPayScore}}积分
+        {{orderPayScore}}{{i18n.$t(localePack,"page1.virtualCheckout.score")}}
       </view>
     </view>
   </view>
@@ -100,7 +100,7 @@
   <view class="checkout_detail">
     <view class="detail_item">
       <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.order")+i18n.$t(localePack,"pages.checkout.total")}}</text>
-      <text class="detail_content" style="color:{{comColor}};">{{isScorePay ? orderPayScore + '积分' : i18n.$t(localePack,"pages.checkout.currency",{price:orderAmount})}}</text>
+      <text class="detail_content" style="color:{{comColor}};">{{isScorePay ? orderPayScore + i18n.$t(localePack,"page1.virtualCheckout.score") : i18n.$t(localePack,"pages.checkout.currency",{price:orderAmount})}}</text>
     </view>
     <view class="detail_item" wx:if="{{cardBalanceStatus}}">
       <text class="detail_title">{{i18n.$t(localePack,"pages.checkout.membershipCard")+i18n.$t(localePack,"pages.checkout.balance")+i18n.$t(localePack,"pages.checkout.pay")}}</text>
@@ -117,7 +117,7 @@
    </view>
    <view class="checkout_footer">
       <text class="footer_content" wx:if="{{!isScorePay}}" style="color:{{comColor}};">{{i18n.$t(localePack,"pages.checkout.actualPay",{price:usePayInfo.moneyPaid || "0"})}}</text>
-      <text class="footer_content" wx:elif="{{isScorePay}}" style="color:{{comColor}};">应付积分：{{orderPayScore}}积分</text>
+      <text class="footer_content" wx:elif="{{isScorePay}}" style="color:{{comColor}};">{{i18n.$t(localePack,"page1.virtualCheckout.shouldPayScore")}}：{{orderPayScore}}{{i18n.$t(localePack,"page1.virtualCheckout.score")}}</text>
       <text class="footer_button" style="background-color:{{comColor}};" bindtap="confirmOrder">{{i18n.$t(localePack,"pages.checkout.submitOrder")}}</text>
    </view>
    <include src="/pages/common/footer.wxml" />

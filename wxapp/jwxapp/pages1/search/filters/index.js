@@ -45,14 +45,7 @@ global.wxComponent({
    */
   data: {
     showSortDialog:false,
-    showBrandDialog:false,
-    activityName:{
-      1:'多人拼团',
-      3:'砍价',
-      5:'秒杀',
-      6:'限时降价',
-      10:'定金膨胀'
-    }
+    showBrandDialog:false
   },
 
   /**

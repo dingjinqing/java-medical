@@ -239,7 +239,7 @@
         <view class="detail_item">
           <text class="dotted" style="background-color:{{comColor}}"></text>
           <text class="detail_title">定金（{{orderInfo.bkOrderPaid === 1 ? '已付' : '待付款'}}）</text>
-          <text class="detail_content" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.moneyPaid+orderInfo.scoreDiscount+orderInfo.useAccount+orderInfo.memberCardBalance}}(可抵￥{{orderInfo.moneyPaid+orderInfo.scoreDiscount+orderInfo.useAccount+orderInfo.memberCardBalance+orderInfo.preSaleDiscount}})</text>
         </view>
         <view class="detail_item" wx:if="{{orderInfo.orderPayWay === 1}}">
           <text class="dotted"></text>

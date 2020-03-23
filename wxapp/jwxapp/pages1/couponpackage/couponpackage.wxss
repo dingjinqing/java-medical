@@ -160,7 +160,7 @@ page{
   -o-transform: rotate(40deg);
   margin-bottom: 0;
 }
-.send-icon{
+.item-right .send-icon{
   color: #f66;
   position: absolute;
   line-height: 40rpx;
@@ -168,6 +168,6 @@ page{
   border: 2rpx solid;
   border-radius: 20rpx;
   right: 30rpx;
-  top: 70rpx;
+  top: 55rpx;
   margin-bottom: 0;
 }
