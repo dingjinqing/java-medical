@@ -149,7 +149,7 @@ public class ChooseLinkService extends ShopBaseService {
         Result<? extends Record> record = db().select().from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
             .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
-            .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)0))).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1))
+            .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1)))
             .and(MRKING_VOUCHER.ENABLED.eq((byte)1))
             .fetch();
         if(record != null){
