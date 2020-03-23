@@ -36,6 +36,15 @@ export function startCoupon (data) {
   })
 }
 
+// 分享
+export function shareCoupon (data) {
+  return service({
+    url: `/api/admin/coupon/share?couponId=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
 // 删除优惠券
 export function deleteCoupon (data) {
   return service({
@@ -93,15 +102,6 @@ export function couponGetDetail (data) {
 export function deleteCouponDetail (data) {
   return service({
     url: `/api/admin/avail/coupon/del?id=${data}`,
-    method: 'get',
-    data: data
-  })
-}
-
-// 分享
-export function shareCoupon (data) {
-  return service({
-    url: `/api/admin/market/seckill/share?id=${data}`,
     method: 'get',
     data: data
   })
