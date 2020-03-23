@@ -49,7 +49,7 @@ export const en = {
   no: 'No',
   inviteNum: 'Number of invited users',
   minIntegration: 'Share points',
-  to: '到',
+  to: 'to',
   isNew: 'Are new users',
   groupId: 'Group ID',
   pleaseGroupId: 'Please enter group ID',
