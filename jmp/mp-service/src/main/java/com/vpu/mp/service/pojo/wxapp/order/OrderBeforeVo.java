@@ -127,8 +127,7 @@ public class OrderBeforeVo {
     @Builder.Default
     private BigDecimal grouperCheapReduce = BigDecimalUtil.BIGDECIMAL_ZERO;
     /**预售折扣*/
-    @Builder.Default
-    private BigDecimal preSaleDiscount = BigDecimalUtil.BIGDECIMAL_ZERO;
+    private BigDecimal preSaleDiscount;
     /**补款金额*/
     private BigDecimal bkOrderMoney;
     /**补款订单发货开始时间*/
