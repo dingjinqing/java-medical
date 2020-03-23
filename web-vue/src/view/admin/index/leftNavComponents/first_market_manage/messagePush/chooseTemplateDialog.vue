@@ -25,7 +25,7 @@
               :key="index"
             >
               <el-radio
-                :label="item.content"
+                :label="item.id"
                 style="min-width:750px"
               >{{item.content}}</el-radio>
             </li>
@@ -105,7 +105,7 @@ export default {
     // 获取模板内容选中的值
     handleChange (val) {
       console.log(val)
-      const res = this.content.find(item => item.content === val)
+      const res = this.content.find(item => item.id === val)
       this.val = res
     },
     /**

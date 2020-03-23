@@ -131,12 +131,7 @@
                     >添加为模板</el-button>
                   </div>
                 </el-form-item>
-                <el-form-item
-                  :label="labels.label5"
-                  :rules="[
-                {required: true}
-                ]"
-                >
+                <el-form-item :label="labels.label5">
                   <div>
                     <el-button
                       size="small"
@@ -684,7 +679,7 @@ export default {
         content: this.formData.content,
         pageLink: this.pageLink,
         userInfo: this.params,
-        senAction: this.senAction,
+        sendAction: this.senAction,
         userKey: this.userKey,
         startTime: this.startTime,
         endTime: this.endTime

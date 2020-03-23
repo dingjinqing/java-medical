@@ -118,9 +118,26 @@
                     <span style="color:#999;fontSize:12px">以下筛选条件为“或”关系</span>
                   </div>
                   <ul class="ulList">
-                    <li>12 天内有交易记录</li>
-                    <li>30天内在本店内有加入购物车行为，但没有支付的用户</li>
-                    <li>指定的会员</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.payedDay!==null">{{detailData.userInfo.customRuleInfo.payedDay}}&nbsp;内有交易记录</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.noPayDay!==null">{{detailData.userInfo.customRuleInfo.noPayDay}}&nbsp;内有无交易记录</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.buyTimesMore!==null">累计购买次数大于&nbsp;{{detailData.userInfo.customRuleInfo.buyTimesMore}}&nbsp;次</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.buyTimesLess!==null">累计购买次数小于&nbsp;{{detailData.userInfo.customRuleInfo.buyTimesLess}}&nbsp;次</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.moneyAvgMore!==null">购买商品均价大于&nbsp;{{detailData.userInfo.customRuleInfo.moneyAvgMore}}&nbsp;元</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.moneyAvgLess!==null">购买商品均价小于&nbsp;{{detailData.userInfo.customRuleInfo.moneyAvgLess}}&nbsp;元</li>
+                    <li v-if="detailData.userInfo.customRuleInfo.loginStart!==null&&detailData.userInfo.customRuleInfo.loginEnd!==null">指定&nbsp;{{detailData.userInfo.customRuleInfo.loginStart}}--{{detailData.userInfo.customRuleInfo.loginEnd}}&nbsp;有登记记录的</li>
+                    <li v-if="detailData.userInfo.onClickNoPay">30天内在本店内有加入购物车行为，但没有支付的用户</li>
+                    <li v-if="detailData.userInfo.onClickGoods">指定商品购买人群</li>
+                    <li v-if="detailData.userInfo.onClickUser">指定的会员</li>
+                    <li
+                      v-for="(item,index) in cardListArr"
+                      :key="index"
+                      :style="index>0?'list-style:none':''"
+                    >持有{{item.cardName}}会员卡</li>
+                    <li
+                      v-for="(item,index) in cardLabelListArr"
+                      :key="index"
+                      :style="index>0?'list-style:none':''"
+                    >属于{{item.cardName}}会员标签</li>
                   </ul>
 
                 </el-form-item>
@@ -199,7 +216,7 @@
 <script>
 import RulesMixins from '@/mixins/RulesMixins'
 import dateTimePicker from '@/components/admin/dateTimePicker/dateTimePicker'
-import { getDetailApi } from '@/api/admin/marketManage/messagePush.js'
+import { getDetailApi, getUserIdsData, getIdsLabelData } from '@/api/admin/marketManage/messagePush.js'
 export default {
   name: 'addMessagePush',
   /**
@@ -261,7 +278,9 @@ export default {
           { validator: this.checkMessageContent, trigger: 'blur', required: true }
 
         ]
-      }
+      },
+      cardListArr: [], // 会员卡列表
+      cardLabelListArr: [] // 会员标签列表
 
     }
   },
@@ -294,7 +313,33 @@ export default {
         const { error, content } = res
         if (error === 0) {
           this.detailData = content
-          console.log(this.detailData)
+          console.log(res, this.detailData.userInfo)
+          // 用id查询会员卡信息
+          if (content.userInfo.onClickCard) {
+            this.handleToQuerCard(content.userInfo.cardIdsList)
+          }
+          // 用id查询标签
+          if (content.userInfo.onClickTag) {
+            this.handleToQuerCard(content.userInfo.tagIdList)
+          }
+        }
+      }).catch(err => console.log(err))
+    },
+    // 查询会员卡详细信息
+    handleToQuerCard (cardArr) {
+      getUserIdsData(cardArr).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.cardListArr = res.content
+        }
+      }).catch(err => console.log(err))
+    },
+    // 查询标签信息
+    handleToQuerLabel (labelArr) {
+      getIdsLabelData(labelArr).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.cardLabelListArr = res.content
         }
       }).catch(err => console.log(err))
     }
@@ -431,6 +476,7 @@ export default {
         background-color: #f8f8f8;
         margin-left: 20px;
         padding-top: 15px;
+        padding-right: 20px;
         .mainContentRightForm {
           .detailDataName {
             height: 30px;
