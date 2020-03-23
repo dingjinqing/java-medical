@@ -275,7 +275,7 @@ export default {
       // 包邮信息
       freeship: {
         num: null,
-        type: 3,
+        type: null,
         valid: false
       },
       cardRenew: {
@@ -416,6 +416,7 @@ export default {
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
       debugger
       // 包邮信息
+      debugger
       if (data.freeship) {
         this.freeship = data.freeship
       }

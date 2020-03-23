@@ -175,6 +175,7 @@ export default {
         // this.shipTimeVal = ''
       } else {
         this.shipTimeVal = this.type
+        console.log(this.shipTimeVal)
       }
     }
   },
