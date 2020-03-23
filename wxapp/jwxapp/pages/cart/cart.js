@@ -209,6 +209,10 @@ global.wxPage({
       let { goodsId, prdPrice: prdRealPrice, cartNumber: goodsNum, productId: prdId } = item
       return { goodsId, prdRealPrice, goodsNum, prdId, isCart: 1 }
     })
+    if (goodsList.length == 0) {
+      util.showModal("提示", "请选择您想要购买的商品");
+      return false;
+    }
     util.jumpLink(`pages/checkout/checkout?goodsList=${JSON.stringify(goodsList)}`, "navigateTo")
   },
 
