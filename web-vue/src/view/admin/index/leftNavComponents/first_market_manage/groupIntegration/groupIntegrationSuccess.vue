@@ -2,36 +2,36 @@
   <div class="content">
     <div class="main">
       <el-form :inline="true">
-        <el-form-item label="团ID">
+        <el-form-item :label="$t('groupIntegration.groupId')">
           <el-input
             size="small"
-            placeholder="请输入团ID"
+            :placeholder="$t('groupIntegration.pleaseGroupId')"
             v-model="condition.groupId"
           ></el-input>
         </el-form-item>
-        <el-form-item label="成团状态">
+        <el-form-item :label="$t('groupIntegration.status')">
           <el-select
             v-model="condition.status"
             size="small"
           >
             <el-option
               value=""
-              label="请选择"
+              :label="$t('groupIntegration.pleaseSelect')"
             >
             </el-option>
             <el-option
               value="1"
-              label="是"
+              :label="$t('groupIntegration.yes')"
             >
             </el-option>
             <el-option
               value="0"
-              label="否"
+             :label="$t('groupIntegration.no')"
             >
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="结束时间">
+        <el-form-item  :label="$t('groupIntegration.endTime')">
           <el-date-picker
             style="width: 300px"
             size="small"
@@ -44,7 +44,7 @@
           size="small"
           type="primary"
           @click="onSubmit"
-        >查询</el-button>
+        >{{$t('groupIntegration.find')}}</el-button>
       </el-form>
     </div>
     <div class="table_list">
@@ -57,11 +57,11 @@
       >
         <el-table-column
           prop="groupId"
-          label="团ID"
+          :label="$t('groupIntegration.groupId')"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="团人数"
+          :label="$t('groupIntegration.groupNum')"
           align="center"
         >
           <template slot-scope="scope">
@@ -73,32 +73,32 @@
         </el-table-column>
         <el-table-column
           prop="useIntegration"
-          label="消耗积分"
+          :label="$t('groupIntegration.useIntegration')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="startTime"
-          label="开团时间"
+         :label="$t('groupIntegration.startTime')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="endTime"
-          label="结束时间"
+         :label="$t('groupIntegration.endTime')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="grouperName"
-          label="团长昵称"
+          :label="$t('groupIntegration.grouperName')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="mobile"
-          label="团长手机号"
+          :label="$t('groupIntegration.grouperMobile')"
           align="center"
         ></el-table-column>
         <el-table-column
           prop="statusName"
-          label="成团状态"
+         :label="$t('groupIntegration.status')"
           align="center"
         ></el-table-column>
       </el-table>
@@ -110,7 +110,7 @@
 
     <!-- 点击参团人数链接弹窗 -->
     <el-dialog
-      title="参团用户明细"
+      :title="$t('groupIntegration.participantUserDetails')"
       :visible.sync="dialogVisible"
       center
       width="60%"
@@ -125,48 +125,48 @@
         >
           <el-table-column
             prop="userId"
-            label="用户ID"
+            :label="$t('groupIntegration.userId')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="username"
-            label="用户昵称"
+            :label="$t('groupIntegration.username')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号码"
+            :label="$t('groupIntegration.mobile')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="isNew"
-            label="是否新用户"
+            :label="$t('groupIntegration.isNew')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="startTime"
-            label="参团时间"
+            :label="$t('groupIntegration.joinTime')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="groupId"
-            label="团ID"
+           :label="$t('groupIntegration.groupId')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="inviteNum"
-            label="邀请用户数量"
+            :label="$t('groupIntegration.inviteNum')"
             align="center"
           ></el-table-column>
 
           <el-table-column
             prop="integration"
-            label="消耗积分"
+           :label="$t('groupIntegration.useIntegration')"
             align="center"
           ></el-table-column>
           <el-table-column
             prop="isGrouper"
-            label="是否团长"
+            :label="$t('groupIntegration.isGrouper')"
             align="center"
           ></el-table-column>
         </el-table>
@@ -182,7 +182,7 @@
         <el-button
           type="primary"
           @click="dialogVisible = false"
-        >确 定</el-button>
+        >{{$t('groupIntegration.ok')}}</el-button>
       </span>
     </el-dialog>
 
@@ -261,11 +261,11 @@ export default {
     handData (data) {
       data.map((item, index) => {
         switch (item.status) {
-          case 0: item.statusName = '拼团中'
+          case 0: item.statusName = this.$t('groupIntegration.inGroup')
             break
-          case 1: item.statusName = '拼团成功'
+          case 1: item.statusName = this.$t('groupIntegration.groupSuccess')
             break
-          case 2: item.statusName = '拼团失败'
+          case 2: item.statusName = this.$t('groupIntegration.groupFail')
             break
         }
       })
@@ -274,14 +274,14 @@ export default {
     handDialog (data) {
       data.map((item, index) => {
         if (item.isNew === 1) {
-          item.isNew = '是'
+          item.isNew = this.$t('groupIntegration.yes')
         } else {
-          item.isNew = '否'
+          item.isNew = this.$t('groupIntegration.no')
         }
         if (item.isGrouper === 1) {
-          item.isGrouper = '是'
+          item.isGrouper = this.$t('groupIntegration.yes')
         } else {
-          item.isGrouper = '否'
+          item.isGrouper = this.$t('groupIntegration.no')
         }
       })
       this.dialogTableData = data

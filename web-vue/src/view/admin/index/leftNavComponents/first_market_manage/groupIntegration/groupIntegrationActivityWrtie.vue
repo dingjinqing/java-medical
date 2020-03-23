@@ -7,7 +7,7 @@
           <el-col :span="24">
             <div class="warnThing">
               <el-alert
-                title="注：请按活动设置如实编辑活动规则。编辑后的活动规则文本将替换系统默认规则文本，默认规则文本中的活动参数将失效"
+                :title="$t('groupIntegration.warnThing')"
                 type="warning"
                 show-icon
                 center
@@ -30,10 +30,10 @@
           <el-col :span="17">
             <div class="right">
               <el-form ref="form" label-width="80px">
-                <el-form-item label="页面内容:">
+                <el-form-item :label="$t('groupIntegration.pageInfo')+':'">
                   <el-radio-group v-model="isUseDefault" @change="changeRadio">
-                      <el-radio :label="1">使用模板文案</el-radio>
-                      <el-radio :label="0">自定义模板</el-radio>
+                      <el-radio :label="1">{{$t('groupIntegration.title1')}}</el-radio>
+                      <el-radio :label="0">{{$t('groupIntegration.title0')}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-form>
@@ -53,7 +53,7 @@
                   <div
                     class="save"
                     @click="saveMsg"
-                  >保存</div>
+                  >{{$t('groupIntegration.save')}}</div>
                 </div>
           </el-col>
         </el-row>
@@ -80,7 +80,7 @@ export default {
       editMsg: null,
       isUseDefault: 0,
       disabled: false,
-      msg: this.$t('scoreCfg.templateData')
+      msg: this.$t('groupIntegration.templateData')
     }
   },
   methods: {
@@ -113,11 +113,11 @@ export default {
     },
     checkInfo () {
       if (this.isEmpty(this.isUseDefault)) {
-        this.$message.warning('请选择页面内容')
+        this.$message.warning(this.$t('groupIntegration.pleasePageInfo'))
         return false
       }
       if (this.isEmpty(this.editMsg)) {
-        this.$message.warning('请填写页面内容')
+        this.$message.warning(this.$t('groupIntegration.pleaseWritePageInfo'))
         return false
       }
       return true

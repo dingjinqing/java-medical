@@ -1,14 +1,22 @@
 // cn.js
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 // 全局消息国际化配置
-import { cn as messageHint } from './views/admin_new/cn/messageHintCn'
+import {
+  cn as messageHint
+} from './views/admin_new/cn/messageHintCn'
 // 选择链接弹窗国际化
-import { cn as selectLinks } from './views/admin_new/cn/components/selectLinks/selectLinksCn'
+import {
+  cn as selectLinks
+} from './views/admin_new/cn/components/selectLinks/selectLinksCn'
 // 官网
 // 申请试用国际化
-import { cn as indexApply } from './views/index/cn/applyCn'
+import {
+  cn as indexApply
+} from './views/index/cn/applyCn'
 // 官网首页移动端国际化
-import { cn as indexMobile } from './views/index/cn/indexMobileCn'
+import {
+  cn as indexMobile
+} from './views/index/cn/indexMobileCn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -201,7 +209,9 @@ import {
   cn as titleModule
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleCn'
 // 小程序页面装修店铺公告、公众号、客服模块、电话模块国际化
-import { cn as shopNotices } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesCn'
+import {
+  cn as shopNotices
+} from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesCn'
 
 // 商品管理系列国际化
 // 商品管理/全部商品
@@ -229,7 +239,9 @@ import {
 import {
   cn as recommend
 } from './views/admin_new/cn/index/goodsManagement/recommendCn'
-import { cn as brandManagement } from './views/admin_new/cn/index/goodsManagement/brandManagementCn'
+import {
+  cn as brandManagement
+} from './views/admin_new/cn/index/goodsManagement/brandManagementCn'
 // 营销管理系列国际化
 // 营销管理通用词汇
 import {
@@ -385,6 +397,11 @@ import {
 import {
   cn as packagePrice
 } from './views/admin_new/cn/index/marketManagement/packagePrice/packagePriceList'
+// 组团瓜分积分
+import {
+  cn as groupIntegration
+} from './views/admin_new/cn/index/marketManagement/groupIntegration/groupIntegrationCn'
+
 // 订单管理系列模块化
 // 订单通用
 import {
@@ -1044,6 +1061,7 @@ const cn = {
   evaluationGiftList, // 评价有礼列表
   evaluationGiftAdd,
   packagePrice, // 打包一口价
+  groupIntegration, // 组团瓜分积分
 
   // 会员管理
   memberCard, // 会员管理-会员卡
