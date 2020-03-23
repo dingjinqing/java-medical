@@ -32,9 +32,9 @@
           >
             <el-option
               v-for="item in orderStatusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item[0]"
+              :label="item[1]"
+              :value="item[0]"
             >
             </el-option>
           </el-select>
@@ -214,7 +214,7 @@ export default {
         goodsName: '',
         mobile: '',
         orderSn: '',
-        selectedOrderStatus: -1,
+        selectedOrderStatus: null,
         consignee: '',
         provinceCode: '',
         cityCode: '',
@@ -231,37 +231,26 @@ export default {
       tableData: [],
       dialogVisible: false,
       orderStatusMap: {},
-      orderStatusOptions: [{
-        value: -1,
-        label: '全部订单'
-      }, {
-        value: 0,
-        label: '待付款'
-      }, {
-        value: 1,
-        label: '订单取消'
-      }, {
-        value: 2,
-        label: '订单关闭'
-      }, {
-        value: 3,
-        label: '待发货/待核销'
-      }, {
-        value: 4,
-        label: '已发货'
-      }, {
-        value: 5,
-        label: '已发货/已自提'
-      }, {
-        value: 6,
-        label: '订单完成'
-      }],
+      orderStatusOptions: [
+        [null, '全部订单'],
+        [0, '待付款'],
+        [1, '订单取消'],
+        [2, '订单关闭'],
+        [3, '待发货/待核销'],
+        [4, '已发货'],
+        [5, '已收货/已自提'],
+        [6, '订单完成']
+      ],
       screenLength: 0,
       showFilterInfo: false
     }
   },
   methods: {
     initDataList () {
+      if (this.params.selectedOrderStatus) {
+        this.params.orderStatus = []
+        this.params.orderStatus.push(this.params.selectedOrderStatus)
+      }
       getOrderList(this.params).then(res => {
         if (res.error === 0) {
           console.log(res)
