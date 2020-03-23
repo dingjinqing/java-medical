@@ -97,3 +97,12 @@ export function deleteCouponDetail (data) {
     data: data
   })
 }
+
+// 分享
+export function shareCoupon (data) {
+  return service({
+    url: `/api/admin/market/seckill/share?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
