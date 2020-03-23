@@ -183,7 +183,7 @@ public class AtomicOperation extends ShopBaseService {
      * @param limit 是否允许超买 允许true 不允许false
      */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
-    public void updataStockAndSalesByLock(@RedisLockKeys  Integer goodsId,Integer productId,Integer number,boolean limit) throws MpException {
+    public void updateStockAndSalesByLock(@RedisLockKeys  Integer goodsId,Integer productId,Integer number,boolean limit) throws MpException {
         List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>();
         log.info("修改商品库存--开始");
         GoodsSpecProductRecord productRecord = goodsSpecProduct.selectSpecByProId(productId);
