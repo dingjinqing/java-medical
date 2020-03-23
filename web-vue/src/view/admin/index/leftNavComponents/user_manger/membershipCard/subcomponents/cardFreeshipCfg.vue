@@ -107,8 +107,6 @@ export default {
           res = val
         }
         this.$emit('update:type', Number(res))
-        console.log('set', res)
-        debugger
         this.checkOn = !(res === '0')
         if (res === '0') {
           this.firstTimeCheck = false
@@ -121,9 +119,6 @@ export default {
   },
   data () {
     let validShipNum = (rule, value, callback) => {
-      debugger
-      console.log(this.checkOn, this.firstTimeCheck)
-
       console.log(value)
       if (this.checkOn || this.firstTimeCheck) {
         // 1-7位数校验
