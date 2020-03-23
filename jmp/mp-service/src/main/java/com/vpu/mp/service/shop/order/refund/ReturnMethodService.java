@@ -320,7 +320,7 @@ public class ReturnMethodService extends ShopBaseService{
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_NO_RECORD);
             }
             //微信金额单为为分需单位换算
-            refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, payRecord.getTotalFee().intValue() * OrderConstant.TUAN_FEN_RATIO, money.intValue() * OrderConstant.TUAN_FEN_RATIO);
+            refundByApi(payRecord.getPayCode(), payRecord.getTradeNo(), refundSn, BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(), BigDecimalUtil.multiply(money, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue());
             //TODO
             //addRecord();
 		}
