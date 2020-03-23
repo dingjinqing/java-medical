@@ -27,7 +27,7 @@
             >
               <el-option
                 label="全部"
-                value="全部"
+                :value="0"
               >
               </el-option>
               <el-option
@@ -43,12 +43,12 @@
             <el-select
               style="width:120px"
               placeholder="请选择"
-              v-model="queryParams.sendType"
+              v-model="queryParams.isOnClick"
               @change="isOnClickValueChange"
             >
               <el-option
                 label="全部"
-                value="全部"
+                :value="0"
               >
               </el-option>
 
@@ -132,8 +132,8 @@ export default {
       queryParams: {
         templateId: Number(this.$route.query.id),
         userName: '',
-        sendType: null,
-        isOnClick: null
+        sendType: 0,
+        isOnClick: 0
       },
       pageParams: {
         currentPage: 1
@@ -248,6 +248,7 @@ export default {
       // const params = {
       //   templateId: Number(this.)
       // }
+      this.fetchData()
     },
     //
     sendTypeValueChange (val) {
