@@ -164,7 +164,9 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             //首单特惠
             CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
             if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
-               cartGoods.setPrdPrice(actInfo.getFirstSpecialPrice());
+                if (cartGoods.getPrdPrice().compareTo(actInfo.getFirstSpecialPrice())>0){
+                    cartGoods.setPrdPrice(actInfo.getFirstSpecialPrice());
+                }
             }
         });
         cartBo.setTotalPrice(totalPrice);

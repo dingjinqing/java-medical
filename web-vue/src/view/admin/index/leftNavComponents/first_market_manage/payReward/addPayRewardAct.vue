@@ -748,8 +748,8 @@ export default {
       options: [],
       noneBlockDiscArr: [
         { name: '选择商品', num: 0 },
-        { name: '选择商家分类', num: 0 },
-        { name: '选择平台分类', num: 0 }
+        { name: '选择商家分类', num: 0 }
+        // { name: '选择平台分类', num: 0 }
       ],
       controlChoosingGoodsDialog: false,
       userDialogFlag: null,

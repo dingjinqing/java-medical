@@ -269,6 +269,7 @@
           class="noneBlockList"
           @click="showBusClassDialog(2)"
           style="margin: 10px 0"
+          v-if="false"
         >
           <div class="noneBlockLeft">
             <img :src="src">
