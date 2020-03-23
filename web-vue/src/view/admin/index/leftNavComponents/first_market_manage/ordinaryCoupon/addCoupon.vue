@@ -891,14 +891,14 @@ export default {
           if (data.recommendGoodsId !== '' || data.recommendCatId !== '' || data.recommendSortId !== '') {
             // 指定商品
             this.param.availableGoods = 1
-            this.goodsInfo = data.recommendGoodsId === '' ? [] : data.recommendGoodsId.split(',')
+            this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
             this.goodsInfo = this.goodsInfo.map(Number)
 
-            this.busClass = data.recommendCatId === '' ? [] : data.recommendCatId.split(',')
+            this.busClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
             this.busClass = this.busClass.map(Number)
 
-            this.platClass = data.recommendSortId === '' ? [] : data.recommendSortId.split(',')
-            this.platClass = this.platClass.map(Number)
+            // this.platClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
+            // this.platClass = this.platClass.map(Number)
           } else {
             // 全部商品
             this.param.availableGoods = 0

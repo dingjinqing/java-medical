@@ -379,9 +379,9 @@ export default {
           this.form.level = data.level
           this.form.type = data.type
           if (this.form.type === 0) {
-            this.goodsInfo = data.recommendGoodsId === '' ? [] : data.recommendGoodsId.split(',')
-            this.busClass = data.recommendCatId === '' ? [] : data.recommendCatId.split(',')
-            this.platClass = data.recommendSortId === '' ? [] : data.recommendSortId.split(',')
+            this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
+            this.busClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
+            // this.platClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
           }
           this.form.ruleList = data.ruleList
 
