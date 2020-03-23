@@ -102,6 +102,7 @@ public class GoodsImportRecordService extends ShopBaseService {
             record.setPrdDesc(bo.getPrdDesc());
             record.setIsSuccess((byte) (isSuccess?1:0));
             record.setErrorCode(e.getErrorCode());
+            records.add(record);
         }
         return records;
     }
