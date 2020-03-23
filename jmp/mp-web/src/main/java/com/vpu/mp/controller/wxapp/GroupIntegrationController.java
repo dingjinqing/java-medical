@@ -30,7 +30,7 @@ public class GroupIntegrationController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/pin/integration/start")
 	public JsonResult startPinIntegrationGroup(@RequestBody @Valid GroupStartParam param) {
-		GroupStartVo vo = shop().groupIntegration.startPinIntegrationGroup(param, wxAppAuth.user().getUserId());
+		GroupStartVo vo = shop().groupIntegration.startPinIntegrationGroup(param, wxAppAuth.user().getUserId(),getLang());
 		return success(vo);
 		
 	}
@@ -41,7 +41,7 @@ public class GroupIntegrationController extends WxAppBaseController {
 	 */
 	@PostMapping("/api/wxapp/pin/integration/detail")
 	public JsonResult pinIntegrationDetail(@RequestBody @Valid GroupStartParam param) {
-		GroupDetailVo vo = shop().groupIntegration.pinIntegrationDetail(param, wxAppAuth.user().getUserId());
+		GroupDetailVo vo = shop().groupIntegration.pinIntegrationDetail(param, wxAppAuth.user().getUserId(),getLang());
 		return success(vo);
 		
 	}

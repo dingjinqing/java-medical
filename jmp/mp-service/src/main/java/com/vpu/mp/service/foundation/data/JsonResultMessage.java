@@ -308,6 +308,13 @@ public class JsonResultMessage {
      */
     public static final String GROUP_INTEGRATION_INTE = "group.integration.inte";
     public static final String GROUP_INTEGRATION_TOTAL = "group.integration.total";
+	public static final String GROUP_INTEGRATION_NOT_EXIST = "group.integration.not.exist";
+	public static final String GROUP_INTEGRATION_DISABLED = "group.integration.disabled";
+	public static final String GROUP_INTEGRATION_NOT_STARTED = "group.integration.not.started";
+	public static final String GROUP_INTEGRATION_ENDED = "group.integration.ended";
+	public static final String GROUP_INTEGRATION_IS_FULL = "group.integration.is.full";
+	public static final String GROUP_INTEGRATION_HAS_ENDED = "group.integration.has.ended";
+	public static final String GROUP_INTEGRATION_LIMIT = "group.integration.limit";
 
     /**
      * 营销- 支付有礼
