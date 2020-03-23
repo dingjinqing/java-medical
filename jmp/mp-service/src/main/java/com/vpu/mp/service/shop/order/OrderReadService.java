@@ -1039,7 +1039,9 @@ public class OrderReadService extends ShopBaseService {
                 }
             }
             if(columns.contains(OrderExportVo.SHIPPING_NAME)){
-                order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+                if(order.getShippingId() != null && order.getShippingId() > 0){
+                    order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+                }
             }
 
         }
