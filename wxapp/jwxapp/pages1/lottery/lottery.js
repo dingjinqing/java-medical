@@ -304,15 +304,17 @@ global.wxPage({
   },
 
   // 立即抽奖
-  async drawNow () {
+   drawNow () {
     let that = this
-    this.setData({
-      hasClick: true
+    util.getNeedTemplateId('group_draw',async function() {
+      that.setData({
+        hasClick: true
+      })
+      let join = await that.lotteryJoinRequest()
+      that.lotteryRequest()
+      let { startStep, endStep, content } = join
+      that.rolling(startStep, endStep, content)
     })
-    let join = await that.lotteryJoinRequest()
-    that.lotteryRequest()
-    let { startStep, endStep, content } = join
-    that.rolling(startStep, endStep, content)
   },
 
   /**
