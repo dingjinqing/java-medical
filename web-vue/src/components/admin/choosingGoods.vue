@@ -20,14 +20,14 @@
             style="padding-left:30px;display: flex;"
             class="chooseCondiction"
           >
-            <sortCatTreeSelect
-              ref="catTree"
-              :filterGoodsInfo="initSortCatParams"
-              treeType="cat"
-              :treeStyle="initPlateformWidth"
-              :selectedId.sync="requestParam.catId"
-            />
-            <div style="margin: 0 30px;">
+            <!--<sortCatTreeSelect-->
+              <!--ref="catTree"-->
+              <!--:filterGoodsInfo="initSortCatParams"-->
+              <!--treeType="cat"-->
+              <!--:treeStyle="initPlateformWidth"-->
+              <!--:selectedId.sync="requestParam.catId"-->
+            <!--/>-->
+            <div style="margin-right: 30px;">
               <sortCatTreeSelect
                 ref="sortTree"
                 :filterGoodsInfo="initSortCatParams"
@@ -139,7 +139,7 @@
                 <td>商品货号</td>
                 <td>售价</td>
                 <td>库存</td>
-                <td>平台分类</td>
+                <!--<td>平台分类</td>-->
                 <td>商家分类</td>
                 <td>商品标签</td>
                 <td>品牌</td>
@@ -178,9 +178,9 @@
                   <span v-if="!loadProduct">{{item.goodsNumber}}</span>
                   <span v-if="loadProduct">{{item.prdNumber}}</span>
                 </td>
-                <td class="tb_decorate_a">
-                  {{item.catName}}
-                </td>
+                <!--<td class="tb_decorate_a">-->
+                  <!--{{item.catName}}-->
+                <!--</td>-->
                 <td class="tb_decorate_a">
                   {{item.sortName}}
                 </td>
@@ -508,7 +508,7 @@ export default {
         isOnSale: 1,
         isSaleOut: false
       }
-      this.$refs['catTree'].clearData()
+      // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
       this.selectGoodsData()
     },

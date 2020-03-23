@@ -47,6 +47,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/filterItem/list")
     public JsonResult getGoodsFilterItem(@RequestBody GoodsFilterItemInitParam param) {
+        param.setNeedSysCategory(false);
         GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
         return success(vo);
     }
@@ -164,9 +165,10 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断平台分类是否为空
-        if (goods.getCatId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
+//        if (goods.getCatId() == null) {
+//            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+//        }
+        goods.setCatId(0);
 
         //判断商品主图是否为空
         if (StringUtils.isBlank(goods.getGoodsImg())) {
@@ -262,9 +264,10 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断平台分类是否为空
-        if (goods.getCatId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
+//        if (goods.getCatId() == null) {
+//            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+//        }
+        goods.setCatId(0);
 
         //判断商品主图是否为空
         if (StringUtils.isBlank(goods.getGoodsImg())) {

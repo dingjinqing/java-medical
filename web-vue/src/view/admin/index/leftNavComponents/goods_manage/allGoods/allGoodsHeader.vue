@@ -23,12 +23,12 @@
           />
         </el-form-item>
         <!--平台分类树-->
-        <sortCatTreeSelect
-          ref="catTree"
-          :filterGoodsInfo="initSortCatParams"
-          treeType="cat"
-          :selectedId.sync="goodsFilterFormData.catId"
-        />
+        <!--<sortCatTreeSelect-->
+          <!--ref="catTree"-->
+          <!--:filterGoodsInfo="initSortCatParams"-->
+          <!--treeType="cat"-->
+          <!--:selectedId.sync="goodsFilterFormData.catId"-->
+        <!--/>-->
         <!--商家分类树-->
         <sortCatTreeSelect
           ref="sortTree"
@@ -357,7 +357,7 @@ export default {
     /* 清空过滤条件 */
     resetFormData () {
       this.$refs['goodsFilterForm'].resetFields()
-      this.$refs['catTree'].clearData()
+      // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
       this.goodsFilterFormData.lowShopPrice = null
       this.goodsFilterFormData.highShopPrice = null
@@ -365,7 +365,8 @@ export default {
       this.goodsFilterFormData.saleTimeEnd = null
     },
     getCatName () {
-      return this.$refs['catTree'].getSelectedText()
+      // return this.$refs['catTree'].getSelectedText()
+      return null
     },
     getSortName () {
       return this.$refs['sortTree'].getSelectedText()
