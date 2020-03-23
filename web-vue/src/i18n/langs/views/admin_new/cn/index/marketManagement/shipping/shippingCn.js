@@ -47,18 +47,20 @@ export const cn = {
   option: '操作',
 
   // 添加 / 编辑
-  storeArr: [{
-    name: '添加商品',
-    value: '1'
-  },
-  {
-    name: '添加商品分类',
-    value: '2'
-  },
-  {
-    name: '添加平台分类',
-    value: '3'
-  }],
+  storeArr: [
+    {
+      name: '添加商品',
+      value: '1'
+    },
+    {
+      name: '添加商品分类',
+      value: '2'
+    }
+    // {
+    //   name: '添加平台分类',
+    //   value: '3'
+    // }
+  ],
   nameTip: '请填写活动名称',
   activeTime: '活动时间',
   expireTypeFixed: '固定时间段',
