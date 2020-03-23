@@ -133,8 +133,8 @@ public class ScoreDaoService extends ShopBaseService {
 				
 		SelectSeekStep1<Record, Timestamp> select = db().select(myFields)
 			.from(USER_SCORE.leftJoin(USER).on(USER_SCORE.USER_ID.eq(USER.USER_ID)).leftJoin(USER_TAG).on(USER_SCORE.USER_ID.eq(USER_TAG.USER_ID)))
-			.where(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE))
-			.and(condition)
+			.where(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE).and(condition))
+			.groupBy(myFields)
 			.orderBy(USER_SCORE.CREATE_TIME.desc());
 		
 		PageResult<? extends Record> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
@@ -147,14 +147,16 @@ public class ScoreDaoService extends ShopBaseService {
 	private Condition buildSignPageCondition(ScoreSignParam param) {
 		Condition condition = DSL.noCondition();
 		if(!StringUtils.isBlank(param.getSearch())) {
-			condition = condition.and(USER.USERNAME.like(likeValue(param.getSearch())));
+			condition = condition.and(USER.USERNAME.like(likeValue(param.getSearch()))
+									.or(USER.MOBILE.like(likeValue(param.getSearch()))));
+					
 		}
 		if(null != param.getStartTime()) {
-			condition = condition.and(USER.CREATE_TIME.greaterOrEqual(param.getStartTime()));
+			condition = condition.and(USER_SCORE.CREATE_TIME.greaterOrEqual(param.getStartTime()));
 		}
 		
 		if(null != param.getEndTime()) {
-			condition = condition.and(USER.CREATE_TIME.lessOrEqual(param.getEndTime()));
+			condition = condition.and(USER_SCORE.CREATE_TIME.lessOrEqual(param.getEndTime()));
 		}
 		
 		if(param.getTagIds()!=null && param.getTagIds().size()>0) {
