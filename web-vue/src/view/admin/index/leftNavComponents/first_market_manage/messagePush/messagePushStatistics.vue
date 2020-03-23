@@ -117,7 +117,7 @@ export default {
   data () {
     this.chartSettings = {
       axisSite: { right: ['回访率'] },
-      yAxisType: ['KMB', 'percent'],
+      yAxisType: ['KMB', 'KMB'],
       yAxisName: ['数量', '百分比']
     }
     return {

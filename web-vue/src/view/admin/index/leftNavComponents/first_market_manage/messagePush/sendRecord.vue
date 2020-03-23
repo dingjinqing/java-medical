@@ -15,7 +15,7 @@
             <el-input
               style="width:120px"
               size="small"
-              v-model="formData.userName"
+              v-model="queryParams.userName"
             ></el-input>
           </el-form-item>
           <el-form-item :label="labels.templatePlatfrom">
@@ -23,7 +23,7 @@
               style="width:120px"
               placeholder="请选择"
               @change="sendTypeValueChange"
-              v-model="sendTypeValue"
+              v-model="queryParams.sendType"
             >
               <el-option
                 label="全部"
@@ -43,7 +43,7 @@
             <el-select
               style="width:120px"
               placeholder="请选择"
-              v-model="isOnClickValue"
+              v-model="queryParams.sendType"
               @change="isOnClickValueChange"
             >
               <el-option
@@ -73,9 +73,10 @@
       </div>
       <div>
         <el-table
-          :data="tableDataFake"
+          :data="tableData"
           style="width: 100%"
           center
+          header-row-class-name="tableClass"
         >
           <el-table-column
             prop="name"
@@ -128,8 +129,15 @@ export default {
   components: { pagination },
   data () {
     return {
+      queryParams: {
+        templateId: Number(this.$route.query.id),
+        userName: '',
+        sendType: null,
+        isOnClick: null
+      },
       pageParams: {
-        templateId: Number(this.$route.query.id)
+        currentPage: 1
+
       },
       labels: {
         name: `用户昵称`,
@@ -223,8 +231,9 @@ export default {
   },
   methods: {
     fetchData () {
-      console.log(this.pageParams)
-      recordListApi(this.pageParams).then(res => {
+      console.log(this.queryParams)
+      recordListApi(this.queryParams).then(res => {
+        console.log(res)
         const { content, content: { page }, error } = res
         if (error === 0) {
           this.tableData = content.dataList
@@ -260,5 +269,13 @@ export default {
 <style lang="scss" scoped>
 .sendRecord {
   padding: 10px;
+  /deep/ .tableClass th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
 }
 </style>
