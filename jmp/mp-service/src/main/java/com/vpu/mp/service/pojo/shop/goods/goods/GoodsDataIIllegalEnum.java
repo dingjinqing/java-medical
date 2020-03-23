@@ -27,7 +27,12 @@ public enum GoodsDataIIllegalEnum {
     /**商品规格项名称或值填写重复*/
     GOODS_SPEC_K_V_REPEATED((byte)8,"goods.spec.k.v.repeated"),
     /**商品的规格项填写错误*/
-    GOODS_PRD_DESC_WRONG((byte)9,"goods.prd.desc.wrong");
+    GOODS_PRD_DESC_WRONG((byte)9,"goods.prd.desc.wrong"),
+    /**以下未国际化*/
+    /**商品主图不存在*/
+    GOODS_IMG_IS_NULL((byte)10,"goods.img.is.null"),
+    /**商品零售价格不存在*/
+    GOODS_SHOP_PRICE_IS_NULL((byte)11,"goods.shop.price.is.null");
 
 
     private byte errorCode;

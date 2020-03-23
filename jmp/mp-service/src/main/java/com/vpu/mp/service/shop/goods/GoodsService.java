@@ -772,14 +772,15 @@ public class GoodsService extends ShopBaseService {
     /**
      * 新增和修改时存储JsonResultCode使用
      */
-    private class ResultWrap{
+    private class ResultWrap {
         GoodsDataIIllegalEnum code = GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /**
      * 添加商品加锁函数
+     *
      * @param shopId，加锁使用
-     * @param goods 商品信息
+     * @param goods       商品信息
      * @return
      */
     public GoodsDataIIllegalEnum insertWithLock(Integer shopId, Goods goods) {
@@ -790,6 +791,7 @@ public class GoodsService extends ShopBaseService {
      * 添加商品无锁函数
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
      * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
+     *
      * @param goods 商品信息
      */
     public GoodsDataIIllegalEnum insert(Goods goods) {
@@ -828,7 +830,7 @@ public class GoodsService extends ShopBaseService {
             } catch (Exception e) {
                 e.printStackTrace();
                 codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
-                return ;
+                return;
             }
         });
 
@@ -1003,14 +1005,14 @@ public class GoodsService extends ShopBaseService {
             if (specProduct.getPrdMarketPrice() != null && largestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) < 0) {
                 largestMarketPrice = specProduct.getPrdMarketPrice();
             }
-            if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+            if (specProduct.getPrdCostPrice() != null && smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
                 smallestCostPrice = specProduct.getPrdCostPrice();
             }
         }
         goods.setGoodsNumber(goodsSumNumber);
         goods.setShopPrice(smallestGoodsPrice);
-        goods.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice)==0 ? null:largestMarketPrice);
-        goods.setCostPrice(smallestCostPrice);
+        goods.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice) == 0 ? null : largestMarketPrice);
+        goods.setCostPrice(BigDecimal.valueOf(Double.MAX_VALUE).compareTo(smallestCostPrice) == 0 ? null : smallestCostPrice);
     }
 
 
@@ -2093,7 +2095,7 @@ public class GoodsService extends ShopBaseService {
      * 商品图片列表
      *
      * @param goodsIds goods id
-     * @return Map<goodsid   ,       List       <       url>>
+     * @return Map<goodsid       ,               List               <               url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
@@ -2274,7 +2276,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品分享信息
      */
     public GoodsVo selectGoodsShareInfo(Integer goodsId) {
-        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
             .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny();
 
@@ -2407,10 +2409,11 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 刷新goods表里的comment_num
+     *
      * @param goodsId
      */
-    public void updateGoodsCommentNum(int goodsId){
+    public void updateGoodsCommentNum(int goodsId) {
         int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
-        db().update(GOODS).set(GOODS.COMMENT_NUM,goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+        db().update(GOODS).set(GOODS.COMMENT_NUM, goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
     }
 }

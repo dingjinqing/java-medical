@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportPar
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,8 @@ public class GoodsImportService extends ShopBaseService {
     ImageService imageService;
     @Autowired
     GoodsImportRecordService importRecordService;
+    @Autowired
+    GoodsService goodsService;
     /**
      * 最大导入数量
      */
@@ -152,7 +155,11 @@ public class GoodsImportService extends ShopBaseService {
                 return true;
             }
             if (StringUtils.isBlank(goodsBo.getGoodsImgsStr())) {
-                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_PRD_SN_NULL, batchId));
+                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_IMG_IS_NULL, batchId));
+                return true;
+            }
+            if (goodsBo.getShopPrice() == null) {
+                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL, batchId));
                 return true;
             }
             return false;
@@ -255,22 +262,21 @@ public class GoodsImportService extends ShopBaseService {
      * @return
      */
     private List<? extends GoodsExcelImportBase> getSkuPrdSnDbExist(List<? extends GoodsExcelImportBase> goodsSkus) {
-//        List<GoodsExcelImportBase> returnList = new ArrayList<>();
-//        List<String> prdSnList = goodsSkus.stream().map(GoodsExcelImportBase::getPrdSn).collect(Collectors.toList());
-//
-//        List<String> existPrdsn = goods.goodsSpecProductService.findSkuPrdSnExist(prdSnList);
-//        if (existPrdsn.size() != 0) {
-//            goodsSkus.removeIf(sku -> {
-//                if (existPrdsn.contains(sku.getPrdSn())) {
-//                    returnList.add(sku);
-//                    return true;
-//                } else {
-//                    return false;
-//                }
-//            });
-//        }
-//        return returnList;
-        return null;
+        List<GoodsExcelImportBase> returnList = new ArrayList<>();
+        List<String> prdSnList = goodsSkus.stream().map(GoodsExcelImportBase::getPrdSn).collect(Collectors.toList());
+
+        List<String> existPrdsn = goodsService.goodsSpecProductService.findSkuPrdSnExist(prdSnList);
+        if (existPrdsn.size() != 0) {
+            goodsSkus.removeIf(sku -> {
+                if (existPrdsn.contains(sku.getPrdSn())) {
+                    returnList.add(sku);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+        return returnList;
     }
 
     /**
@@ -286,27 +292,26 @@ public class GoodsImportService extends ShopBaseService {
      * @return
      */
     private GoodsDataIIllegalEnum goodsImportInsert(List<GoodsVpuExcelImportBo> importBos) {
-//        Goods goods = convertGoodsExcelImportBosToGoodsWithSku(importBos);
-//        // 检查规格名称是否存在重复
-//        boolean isOk = this.goods.goodsSpecProductService.isSpecNameOrValueRepeat(goods.getGoodsSpecs());
-//        if (!isOk) {
-//            return GoodsDataIIllegalEnum.GOODS_SPEC_K_V_REPEATED;
-//        }
-//        // 校验输入的规格组是否正确
-//        isOk = this.goods.goodsSpecProductService.isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
-//        if (!isOk) {
-//            return GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG;
-//        }
-//        ResultWrap wrap = new ResultWrap();
-//        transaction(() -> {
-//            // 这个地方是为了避免报异常
-//            goods.setCatId(0);
-//            // 处理商家分类
-//            wrap.code = this.goods.insert(goods);
-//        });
-//
-//        return wrap.code;
-        return null;
+        Goods goods = convertGoodsExcelImportBosToGoodsWithSku(importBos);
+        // 检查规格名称是否存在重复
+        boolean isOk = goodsService.goodsSpecProductService.isSpecNameOrValueRepeat(goods.getGoodsSpecs());
+        if (!isOk) {
+            return GoodsDataIIllegalEnum.GOODS_SPEC_K_V_REPEATED;
+        }
+        // 校验输入的规格组是否正确
+        isOk = goodsService.goodsSpecProductService.isGoodsSpecProductDescRight(goods.getGoodsSpecProducts(), goods.getGoodsSpecs());
+        if (!isOk) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG;
+        }
+        ResultWrap wrap = new ResultWrap();
+        transaction(() -> {
+            // 这个地方是为了避免报异常
+            goods.setCatId(0);
+            // 处理商家分类
+            wrap.code = goodsService.insert(goods);
+        });
+
+        return wrap.code;
     }
 
     /**
