@@ -278,8 +278,11 @@ global.wxPage({
         productId: specInfo.prdId
       }]
       console.log(goodsList)
-      util.navigateTo({
-        url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
+      // 请求拼团消息通知权限
+      util.getNeedTemplateId('group_draw', () => {
+        util.navigateTo({
+          url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
+        })
       })
     }
   },

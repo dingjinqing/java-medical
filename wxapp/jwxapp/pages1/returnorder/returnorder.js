@@ -268,20 +268,22 @@ global.wxPage({
       goodsImages: JSON.stringify(uploadedImgs),// 退款退货凭证图片
       returnGoods: selectGoods
     }
-    console.log(params)
     if (selectGoods.length === 0) {
       util.showModal(that.$t("page1.afterSale.prompt"), that.$t("page1.afterSale.sProduct"))
       return false
     }
-    util.api('/api/wxapp/order/refund', function (res) {
-      if (res.error === 0) {
-        let content = res.content
-        util.toast_success(that.$t("page1.afterSale.successApply"))
-        util.redirectTo({
-          url: '/pages1/returndetail/returndetail?return_sn=' + content
-        })
-      }
-    }, params)
+    // 请求发送通知
+    util.getNeedTemplateId('order_refund', () => {
+      util.api('/api/wxapp/order/refund', function (res) {
+        if (res.error === 0) {
+          let content = res.content
+          util.toast_success(that.$t("page1.afterSale.successApply"))
+          util.redirectTo({
+            url: '/pages1/returndetail/returndetail?return_sn=' + content
+          })
+        }
+      }, params)
+    })
   },
 
   /**
