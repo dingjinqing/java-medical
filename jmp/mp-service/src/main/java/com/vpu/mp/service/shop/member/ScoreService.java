@@ -834,19 +834,21 @@ public class ScoreService extends ShopBaseService {
 			vo.setTotalScore(map.get(scoreDao.SIGN_SCORE));
 			// 处理用户标签
 			List<TagVo> tags = tagMap.get(record.get(USER_SCORE.USER_ID));
-			StringBuilder userTag = new StringBuilder(),userShowTag = new StringBuilder();
-			for(TagVo tag: tags) {
-				int i = 0;
-				userTag.append(tag.getTagName()).append(";");
-				if(i<=5) {
-					userShowTag.append(tag.getTagName()).append(";");
-				}else if(i == 6) {
-					// showTag最多显示个标签
-					userShowTag.append("...");
+			if(tags != null && tags.size()>0) {
+				StringBuilder userTag = new StringBuilder(),userShowTag = new StringBuilder();
+				for(TagVo tag: tags) {
+					int i = 0;
+					userTag.append(tag.getTagName()).append(";");
+					if(i<=5) {
+						userShowTag.append(tag.getTagName()).append(";");
+					}else if(i == 6) {
+						// showTag最多显示个标签
+						userShowTag.append("...");
+					}
 				}
+				vo.setUserTag(userTag.toString());
+				vo.setUserShowTag(userShowTag.toString());
 			}
-			vo.setUserTag(userTag.toString());
-			vo.setUserShowTag(userShowTag.toString());
 			res.dataList.add(vo);
 		}
 		return res;
