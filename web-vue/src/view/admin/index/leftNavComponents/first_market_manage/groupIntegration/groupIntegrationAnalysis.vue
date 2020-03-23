@@ -36,11 +36,11 @@
       <section>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">已瓜分积分数</div>
+            <div class="titless">{{$t('groupIntegration.dividedPoints')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动已被瓜分的积分数"
+              :content="$t('groupIntegration.dividedPointsInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -57,11 +57,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">参与用户数</div>
+            <div class="titless">{{$t('groupIntegration.numberUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="参与活动的用户数（包括开团及参团用户）"
+              :content="$t('groupIntegration.numberUsersInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -78,11 +78,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">成团用户数</div>
+            <div class="titless">{{$t('groupIntegration.groupUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="活动已成团用户数"
+              :content="$t('groupIntegration.groupUsersInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -99,11 +99,11 @@
         </div>
         <div class="fromInfo">
           <div style="display:flex">
-            <div class="titless">拉新用户数</div>
+            <div class="titless">{{$t('groupIntegration.pullNewUsers')}}</div>
             <el-tooltip
               class="item"
               effect="light"
-              content="在店铺没有过访问记录，通过活动首次访问店铺的用户数"
+              :content="$t('groupIntegration.pullNewUsersInfo')"
               placement="top"
             >
               <i class="el-icon-warning-outline icons"></i>
@@ -138,18 +138,18 @@ export default {
   data () {
     this.chartSettings = {
       labelMap: {
-        'dateTime': '日期',
-        'integrationNum': '已瓜分积分数',
-        'joinNum': '参与用户数',
-        'successUserNum': '成团用户数',
-        'newUser': '拉新用户数'
+        'dateTime': this.$t('groupIntegration.date'),
+        'integrationNum': this.$t('groupIntegration.dividedPoints'),
+        'joinNum': this.$t('groupIntegration.numberUsers'),
+        'successUserNum': this.$t('groupIntegration.groupUsers'),
+        'newUser': this.$t('groupIntegration.pullNewUsers')
       },
       legendName: {
-        'dateTime': '日期',
-        'integrationNum': '已瓜分积分数',
-        'joinNum': '参与用户数',
-        'successUserNum': '成团用户数',
-        'newUser': '拉新用户数'
+        'dateTime': this.$t('groupIntegration.date'),
+        'integrationNum': this.$t('groupIntegration.dividedPoints'),
+        'joinNum': this.$t('groupIntegration.numberUsers'),
+        'successUserNum': this.$t('groupIntegration.groupUsers'),
+        'newUser': this.$t('groupIntegration.pullNewUsers')
       }
     }
     return {

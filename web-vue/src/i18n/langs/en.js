@@ -1,14 +1,22 @@
 // en.js
 import enLocale from 'element-ui/lib/locale/lang/en'
 // 全局消息国际化配置
-import { en as messageHint } from './views/admin_new/en/messageHintEn'
+import {
+  en as messageHint
+} from './views/admin_new/en/messageHintEn'
 // 选择链接弹窗国际化
-import { en as selectLinks } from './views/admin_new/en/components/selectLinks/selectLinksEn'
+import {
+  en as selectLinks
+} from './views/admin_new/en/components/selectLinks/selectLinksEn'
 // 官网
 // 申请试用国际化
-import { en as indexApply } from './views/index/en/applyEn'
+import {
+  en as indexApply
+} from './views/index/en/applyEn'
 // 官网首页移动端国际化
-import { en as indexMobile } from './views/index/en/indexMobileEn'
+import {
+  en as indexMobile
+} from './views/index/en/indexMobileEn'
 // system 店铺管理系列国际化
 // 小程序版本
 import {
@@ -75,7 +83,9 @@ import {
 import {
   en as recommend
 } from './views/admin_new/en/index/goodsManagement/recommendEn'
-import { en as brandManagement } from './views/admin_new/en/index/goodsManagement/brandManagementEn'
+import {
+  en as brandManagement
+} from './views/admin_new/en/index/goodsManagement/brandManagementEn'
 // 概览系列国际化
 // 商城概览
 import {
@@ -224,7 +234,9 @@ import {
   en as titleModule
 } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/titleModuleEn'
 // 小程序页面装修店铺公告系列国际化
-import { en as shopNotices } from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesEn'
+import {
+  en as shopNotices
+} from './views/admin_new/en/index/miniProgramManagement/pictureSetting/decorationModules/graphicAndTextComponents/shopNoticesEn'
 
 // 营销管理系列模块化
 // 营销管理通用词汇
@@ -401,6 +413,10 @@ import {
 import {
   en as packagePrice
 } from './views/admin_new/en/index/marketManagement/packagePrice/packagePriceList'
+// 组团瓜分积分
+import {
+  en as groupIntegration
+} from './views/admin_new/en/index/marketManagement/groupIntegration/groupIntegrationEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -1037,6 +1053,7 @@ const en = {
   evaluationGiftAdd, // 评价有礼新增编辑
   packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
+  groupIntegration, // 组团瓜分积分
 
   // 会员管理
   memberCard, // 会员管理-会员卡

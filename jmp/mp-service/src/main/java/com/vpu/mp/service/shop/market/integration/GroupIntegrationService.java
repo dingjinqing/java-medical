@@ -285,6 +285,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				.set(GROUP_INTEGRATION_DEFINE.JOIN_LIMIT, param.getJoinLimit())
 				.set(GROUP_INTEGRATION_DEFINE.DIVIDE_TYPE, param.getDivideType())
 				.set(GROUP_INTEGRATION_DEFINE.IS_DAY_DIVIDE, param.getIsDayDivide())
+				.set(GROUP_INTEGRATION_DEFINE.ACTIVITY_COPYWRITING,Util.toJson(param.getActivityCopywriting()))
 				.where(GROUP_INTEGRATION_DEFINE.ID.eq(param.getId()))
 				.and(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).execute();
 		return execute;

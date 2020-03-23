@@ -6,49 +6,49 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部瓜分活动"
+          :label="$t('groupIntegration.allActivities')"
           name="first"
         >
           <el-button
             type="primary"
             @click="addActivity"
-          >添加瓜分积分活动</el-button>
+          >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-          label="进行中"
+          :label="$t('groupIntegration.processing')"
           name="second"
         >
           <el-button
             type="primary"
             @click="addActivity"
-          >添加瓜分积分活动</el-button>
+          >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-          label="未开始"
+         :label="$t('groupIntegration.notStarted')"
           name="third"
         >
           <el-button
             type="primary"
             @click="addActivity"
-          >添加瓜分积分活动</el-button>
+          >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-          label="已过期"
+         :label="$t('groupIntegration.expired')"
           name="fourth"
         >
           <el-button
             type="primary"
             @click="addActivity"
-          >添加瓜分积分活动</el-button>
+          >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-          label="已停用"
+           :label="$t('groupIntegration.terminated')"
           name="fifth"
         >
           <el-button
             type="primary"
             @click="addActivity"
-          >添加瓜分积分活动</el-button>
+          >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
           :label="sixTitle"
@@ -71,19 +71,19 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('groupIntegration.name')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="content"
-          label="活动内容"
+         :label="$t('groupIntegration.content')"
           align="center"
         >
         </el-table-column>
         <el-table-column
-          label="活动积分总量"
+          :label="$t('groupIntegration.totalIntegration')"
           align="center"
         >
           <template slot-scope="scope">
@@ -96,7 +96,7 @@
         </el-table-column>
         <el-table-column
           prop="actDate"
-          label="有效期"
+          :label="$t('groupIntegration.actDate')"
           align="center"
         >
           <template slot-scope="scope">
@@ -105,7 +105,7 @@
         </el-table-column>
         <el-table-column
           prop="expire"
-          label="活动状态"
+         :label="$t('groupIntegration.expireStatus')"
           align="center"
           width="80"
           :formatter="formatter"
@@ -114,33 +114,33 @@
         </el-table-column>
         <el-table-column
           prop="inteUserSum"
-          label="参与人数"
+          :label="$t('groupIntegration.inteUserSum')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="inteGroupSum"
-          label="团数量"
+          :label="$t('groupIntegration.inteGroupSum')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="useIntegration"
-          label="消耗积分"
+          :label="$t('groupIntegration.useIntegration')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
-          label="操作"
+         :label="$t('groupIntegration.options')"
           align="center"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="编辑"
+                :content="$t('groupIntegration.edit')"
                 placement="top"
                 v-if="scope.row.expire===1||scope.row.expire===2"
               >
@@ -150,7 +150,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('groupIntegration.share')"
                 placement="top"
               >
                 <span
@@ -159,7 +159,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('groupIntegration.stop')"
                 placement="top"
                  v-if="scope.row.expire===1||scope.row.expire===2"
               >
@@ -169,7 +169,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="启用"
+               :content="$t('groupIntegration.statrt')"
                 placement="top"
                  v-if="scope.row.expire===4"
               >
@@ -179,7 +179,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="参与明细"
+                :content="$t('groupIntegration.participationDetails')"
                 placement="top"
               >
                 <span
@@ -188,7 +188,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="成团明细"
+               :content="$t('groupIntegration.groupDetails')"
                 placement="top"
               >
                 <span
@@ -197,7 +197,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('groupIntegration.delete')"
                 placement="top"
                 v-if="scope.row.expire===4||scope.row.expire===3"
               >
@@ -207,7 +207,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="活动效果数据"
+                :content="$t('groupIntegration.activityPerformanceData')"
                 placement="top"
               >
                 <span
@@ -253,7 +253,7 @@ export default {
       },
       showSix: false,
       isEditId: 0,
-      sixTitle: '添加瓜分积分活动'
+      sixTitle: this.$t('groupIntegration.addActivities')
     }
   },
   mounted () {
@@ -291,21 +291,21 @@ export default {
     formatter (row, column) {
       let expire = row.expire
       if (expire === 1) {
-        return '进行中'
+        return this.$t('groupIntegration.processing')
       } else if (expire === 2) {
-        return '未开始'
+        return this.$t('groupIntegration.notStarted')
       } else if (expire === 3) {
-        return '已过期'
+        return this.$t('groupIntegration.expired')
       } else if (expire === 4) {
-        return '已停用'
+        return this.$t('groupIntegration.terminated')
       }
     },
     // 表格数据处理
     handleData (data) {
       data.map((item, index) => {
-        item.content = `${item.limitAmount}人瓜分${item.inteGroup}`
-        item.totalIntegration = `${item.inteTotal}积分`
-        item.leftIntegration = `剩余：${item.inteRemain}积分`
+        item.content = `${item.limitAmount}` + this.$t('groupIntegration.tip1') + `${item.inteGroup}`
+        item.totalIntegration = `${item.inteTotal}` + this.$t('groupIntegration.tip2')
+        item.leftIntegration = this.$t('groupIntegration.tip3') + `：${item.inteRemain}` + this.$t('groupIntegration.tip2')
         // item.actDate = `${item.startTime}至${item.endTime}`
         // item.expire = this.getExpireString(item.expire)
       })
@@ -314,9 +314,9 @@ export default {
 
     // 停用瓜分积分活动
     puaseGroupIntegration (id) {
-      this.$alert('确定要停用吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$alert(this.$t('groupIntegration.stopTip1') + '?', this.$t('groupIntegration.stopTip2'), {
+        confirmButtonText: this.$t('groupIntegration.ok'),
+        cancelButtonText: this.$t('groupIntegration.cancle'),
         type: 'warning' }).then(() => {
         let data = {
           'id': id,
@@ -325,19 +325,19 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message.success('停用成功')
+            this.$message.success(this.$t('groupIntegration.stopTip3'))
             this.seacherGroupIntegrationList()
           } else {
-            this.$message.error('停用失败')
+            this.$message.error(this.$t('groupIntegration.stopTip4'))
           }
         })
       })
     },
     // 启用瓜分积分活动
     upGroupIntegration (id) {
-      this.$alert('确定要启用吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$alert(this.$t('groupIntegration.statertTip1') + '?', this.$t('groupIntegration.stopTip2'), {
+        confirmButtonText: this.$t('groupIntegration.ok'),
+        cancelButtonText: this.$t('groupIntegration.cancle'),
         type: 'warning' }).then(() => {
         let data = {
           'id': id,
@@ -346,26 +346,26 @@ export default {
         changeGroupIntegrationStatus(data).then(res => {
           console.log(res)
           if (res.error === 0) {
-            this.$message.success('启用成功')
+            this.$message.success(this.$t('groupIntegration.statertTip2'))
             this.seacherGroupIntegrationList()
           } else {
-            this.$message.error('启用失败')
+            this.$message.error(this.$t('groupIntegration.statertTip3'))
           }
         })
       })
     },
     // 删除瓜分积分活动
     delGroupIntegration (id) {
-      this.$alert('确定要删除吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$alert(this.$t('groupIntegration.delTip1') + '?', this.$t('groupIntegration.stopTip2'), {
+        confirmButtonText: this.$t('groupIntegration.ok'),
+        cancelButtonText: this.$t('groupIntegration.cancle'),
         type: 'warning' }).then(() => {
         delGroupIntegration(id).then(res => {
           if (res.error === 0) {
-            this.$message.success('删除成功')
+            this.$message.success(this.$t('groupIntegration.delTip2'))
             this.seacherGroupIntegrationList()
           } else {
-            this.$message.error('删除失败')
+            this.$message.error(this.$t('groupIntegration.delTip3'))
           }
         })
       })
@@ -392,7 +392,7 @@ export default {
     // 编辑活动
     gotoEdit (id) {
       // this.$router.push(`/admin/home/main/integration/edit/${id}`)
-      this.sixTitle = '编辑瓜分积分活动'
+      this.sixTitle = this.$t('groupIntegration.eidtActivity')
       this.showSix = true
       this.isEditId = id
       this.activeName = 'sixth'
