@@ -53,8 +53,9 @@
           <div
             v-for="(item,index) in noneBlockDiscArr"
             :key="index"
-            class="noneBlockList"
           >
+          <!-- 去掉平台分类 -->
+          <div class="noneBlockList" v-if="index !== 2">
             <div
               class="noneBlockLeft"
               @click="handleToAddGoods(index, false)"
@@ -68,6 +69,8 @@
               @click="handleToAddGoods(index, true)"
             >
               {{ item.info }}：{{item.num}}{{ item.unit  }}
+            </div>
+
             </div>
           </div>
         </div>

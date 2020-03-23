@@ -18,6 +18,7 @@
             v-for="(item,index) in noneBlockVipArr"
             :key="index"
           >
+          <!-- 去掉平台分类 -->
             <div  class="noneBlockList" v-if="index !== 2">
               <div
                 class="noneBlockLeft"
