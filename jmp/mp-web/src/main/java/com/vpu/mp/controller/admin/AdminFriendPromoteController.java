@@ -177,7 +177,18 @@ public class AdminFriendPromoteController extends AdminBaseController{
     @PostMapping("/launch/export")
     public void launchExport(@RequestBody @Valid FriendPromoteLaunchParam param, HttpServletResponse response){
         Workbook workbook = shop().friendPromoteService.launchExport(param,getLang());
-        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,"messages")+ DateUtil.getLocalDateTime().toString();
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_LAUNCH_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
+        export2Excel(workbook,fileName,response);
+    }
+    /**
+     * 参与明细导出表格
+     * @param param
+     * @return
+     */
+    @PostMapping("/participate/export")
+    public void joinExport(@RequestBody @Valid FriendPromoteParticipateParam param, HttpServletResponse response){
+        Workbook workbook = shop().friendPromoteService.joinExport(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.FRIEND_PROMOTE_JOIN_DETAIL,LANGUAGE_TYPE_EXCEL,LANGUAGE_TYPE_EXCEL)+ DateUtil.getLocalDateTime().toString();
         export2Excel(workbook,fileName,response);
     }
 }
