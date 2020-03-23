@@ -195,6 +195,7 @@ export default {
     // 筛选
     filterTableData () {
       let obj = {
+        currentPage: this.pageParams.currentPage,
         search: this.MemberInforInput,
         startTime: this.date ? this.date[0] : null,
         endTime: this.date ? this.date[1] : null,
@@ -211,7 +212,7 @@ export default {
       })
     },
     search (data) {
-      console.log(data)
+      this.filterTableData()
     },
     // 跳转会员信息编辑页面
     handleToUserDetail (row) {
