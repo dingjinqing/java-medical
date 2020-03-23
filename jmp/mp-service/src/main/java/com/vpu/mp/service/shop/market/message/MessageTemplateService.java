@@ -178,7 +178,7 @@ public class MessageTemplateService extends ShopBaseService {
      */
     private void createTaskJob(Integer shopId,RabbitMessageParam messageTemplateParam,MessageTemplateParam param){
         TaskJobInfo  info = TaskJobInfo.builder(shopId)
-            .type(param.getSenAction())
+            .type(param.getSendAction())
             .content(messageTemplateParam)
             .className(messageTemplateParam.getClass().getName())
             .startTime(param.getStartTime())
@@ -247,21 +247,6 @@ public class MessageTemplateService extends ShopBaseService {
             .stream()
             .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
     }
-    /**
-     * 根据推送消息id获取已发送人数
-     * @return 推送消息id和对应的发送人数
-     */
-    private void createSentPersonByTemplateId(String userStr,Integer templateId){
-//        return db()
-//            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
-//            .from(SERVICE_MESSAGE_RECORD)
-//            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
-//            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
-//            .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
-//            .fetch()
-//            .stream()
-//            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
-    }
 
     /**
      * 根据推送消息id获取对应的访问人数
@@ -298,6 +283,9 @@ public class MessageTemplateService extends ShopBaseService {
         }
         if( StringUtils.isNotBlank(param.getUserName()) ){
             result.add(USER.USERNAME.contains(param.getUserName()));
+        }
+        if(param.getSendType() != 0 ){
+            result.add(SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM.eq(param.getSendType().byteValue()));
         }
         return result;
     }
@@ -415,7 +403,7 @@ public class MessageTemplateService extends ShopBaseService {
     }
 
 
-    public void updateTemplateStatus(Integer id){
+    public void updateTemplateStatus(Integer userId,Integer templateId){
 
     }
 
