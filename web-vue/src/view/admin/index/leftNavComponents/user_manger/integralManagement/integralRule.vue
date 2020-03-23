@@ -1049,10 +1049,13 @@ export default {
 }
 // 结束
 .footer {
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
   background: #fff;
   border-top: 1px solid #e4e7ed;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
 }
 </style>
