@@ -1,6 +1,10 @@
 package com.vpu.mp.controller.admin;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -115,6 +119,35 @@ public class AdminTagController extends AdminBaseController {
 	public JsonResult getAllTag() {
 		List<TagVo> allTag = shop().tag.getAllTag();
 		return success(allTag);
+	}
+	
+	/**
+	 * 根据用户id获取标签
+	 */
+	@PostMapping(value="/api/admin/user/tag/all/get")
+	public JsonResult getAllTagByUserIds(@RequestBody List<Integer> param) {
+		logger().info("获取所有会员的所有标签");
+		Map<Integer, List<TagVo>> userTag = shop().tag.getUserTag(param);
+		Map<Integer,List<String>> res = new HashMap<Integer,List<String>>();
+		
+		for(Integer id: param) {
+			if(userTag.get(id) == null) {
+				res.put(id, Collections.emptyList());
+			}else {
+				List<String> tags = userTag.get(id).stream().map(r->r.getTagName()).collect(Collectors.toList());
+				res.put(id, tags);
+			}
+		}
+		return success(res);
+	}
+	
+	/**
+	 * 根据标签id获取标签
+	 */
+	@PostMapping(value="/api/admin/tags/get")
+	public JsonResult getTagsById(@RequestBody List<Integer> param) {
+		logger().info("根据标签id获取标签");
+		return success(shop().tag.getTagsById(param));
 	}
 	
 	

@@ -186,7 +186,7 @@ public class OrderBeforeVo {
             orderRecord.setBkShippingTime(getBkShippingTime());
         }
         if(getBkReturnType() != null){
-            orderRecord.setReturnTypeCfg(getBkReturnType());
+            orderRecord.setBkReturnType(getBkReturnType());
         }
         if(insteadPayNum != null) {
             orderRecord.setInsteadPayNum(insteadPayNum.shortValue());
