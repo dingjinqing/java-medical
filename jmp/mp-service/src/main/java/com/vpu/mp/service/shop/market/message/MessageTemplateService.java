@@ -14,11 +14,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record3;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +135,7 @@ public class MessageTemplateService extends ShopBaseService {
         String sendConditionStr = Util.toJson(param.getUserInfo());
         TemplateConfigRecord record = db().newRecord(TEMPLATE_CONFIG,param);
         record.setToUser(userIdStr);
+        record.setSendAction(param.getAction());
         record.setSendCondition(sendConditionStr);
         TemplateConfigRecord templateConfigRecord =db().insertInto(TEMPLATE_CONFIG)
             .set(record)
@@ -194,10 +191,11 @@ public class MessageTemplateService extends ShopBaseService {
 
     public PageResult<MessageTemplateVo> getPageByParam(MessageTemplateQuery param) {
         PageResult<MessageTemplateVo> resultPage = new PageResult<>();
-        SelectConditionStep<Record> select  = db().select()
+        SelectLimitStep<Record> select  = db().select()
             .from(TEMPLATE_CONFIG)
             .where(buildParams(param))
-            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0));
+            .and(TEMPLATE_CONFIG.DEL_FLAG.eq((byte)0))
+            .orderBy(TEMPLATE_CONFIG.CREATE_TIME.desc());
         PageResult<TemplateConfigRecord> templatePage = getPageResult(select,param.getCurrentPage(),param.getPageRows(),TemplateConfigRecord.class);
         BeanUtils.copyProperties(templatePage,resultPage);
         return buildPageVo(resultPage,templatePage);
@@ -240,6 +238,22 @@ public class MessageTemplateService extends ShopBaseService {
      * @return 推送消息id和对应的发送人数
      */
     private Map<String,Integer> getSentPersonByTemplateId(List<Integer> templateIdList){
+        return db()
+            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .from(SERVICE_MESSAGE_RECORD)
+            .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
+            .fetch()
+            .stream()
+            .collect(Collectors.toMap(x->x.get(SERVICE_MESSAGE_RECORD.LINK_IDENTITY),x->Integer.parseInt(x.get("number").toString())));
+    }
+    /**
+     * 根据推送消息id获取已发送人数
+     * @param templateIdList 推送消息id集合
+     * @return 推送消息id和对应的发送人数
+     */
+    private Map<String,Integer> createSentPersonByTemplateId(List<Integer> templateIdList){
         return db()
             .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
             .from(SERVICE_MESSAGE_RECORD)
@@ -401,6 +415,12 @@ public class MessageTemplateService extends ShopBaseService {
             .where(MESSAGE_TEMPLATE.ACTION.eq(param.getAction()))
             .fetchInto(ContentMessageVo.class);
     }
+
+
+    public void updateTemplateStatus(Integer id){
+
+    }
+
     public void addContentTemplate(ContentMessageParam param) {
         db().newRecord(MESSAGE_TEMPLATE,param).insert();
     }
