@@ -15,23 +15,24 @@
         </div>
         <div v-if="ruleForm.powerOwnGoods">
           <div
-            class="noneBlockList"
             v-for="(item,index) in noneBlockVipArr"
             :key="index"
           >
-            <div
-              class="noneBlockLeft"
-              @click="handleToAddGoods(index, false)"
-            >
-              <img :src="loadAddSymbol()">
-              {{item.name}}
-            </div>
-            <div
-              v-if="item.num"
-              class="noneBlockRight"
-              @click="handleToAddGoods(index, true)"
-            >
-              {{ item.info }}：{{item.num}}{{ item.unit }}
+            <div  class="noneBlockList" v-if="index !== 2">
+              <div
+                class="noneBlockLeft"
+                @click="handleToAddGoods(index, false)"
+              >
+                <img :src="loadAddSymbol()">
+                {{item.name}}
+              </div>
+              <div
+                v-if="item.num"
+                class="noneBlockRight"
+                @click="handleToAddGoods(index, true)"
+              >
+                {{ item.info }}：{{item.num}}{{ item.unit }}
+              </div>
             </div>
           </div>
 
