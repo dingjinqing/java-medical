@@ -86,7 +86,7 @@ public class OrderListMpVo{
     /**定金是否退款*/
     private Byte bkReturnType;
     /**定金抵扣金额*/
-    private BigDecimal preDiscountMoney;
+    private BigDecimal preSaleDiscount;
     /**预售订单预计发货时间*/
     private Timestamp bkShippingTime;
 }
