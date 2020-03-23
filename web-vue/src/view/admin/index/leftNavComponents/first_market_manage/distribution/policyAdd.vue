@@ -456,14 +456,14 @@ export default {
           this.tableData[4].firstRatio = data.firstRatio_5
 
           // 返利商品
-          this.goodsInfo = data.recommendGoodsId === '' ? [] : data.recommendGoodsId.split(',')
+          this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
           this.goodsInfo = this.goodsInfo.map(Number)
 
-          this.busClass = data.recommendCatId === '' ? [] : data.recommendCatId.split(',')
+          this.busClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
           this.busClass = this.busClass.map(Number)
 
-          this.platClass = data.recommendSortId === '' ? [] : data.recommendSortId.split(',')
-          this.platClass = this.platClass.map(Number)
+          // this.platClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
+          // this.platClass = this.platClass.map(Number)
 
           this.handleData(this.tableData)
         }
