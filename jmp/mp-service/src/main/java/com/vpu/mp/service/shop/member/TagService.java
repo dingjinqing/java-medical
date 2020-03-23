@@ -193,7 +193,6 @@ public class TagService extends ShopBaseService {
 	 * @return Map<Integer, List<TagVo>> 用户对应的标签，不会为null
 	 */
 	public Map<Integer, List<TagVo>> getUserTag(List<Integer> userIds) {
-		// TODO 测试看看需不需要查询USER_ID
 		Map<Integer, List<TagVo>> res = db().select(TAG.TAG_ID,TAG.TAG_NAME,USER_TAG.USER_ID)
 				.from(USER_TAG)
 				.leftJoin(TAG).on(USER_TAG.TAG_ID.eq(TAG.TAG_ID))
