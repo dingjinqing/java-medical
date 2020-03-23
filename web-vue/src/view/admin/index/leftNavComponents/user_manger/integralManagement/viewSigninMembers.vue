@@ -59,72 +59,62 @@
           style="width: 100%"
         >
           <el-table-column
-            prop="userID"
             align="center"
-            label="会员ID"
-            width="120"
+            label="会员昵称"
+            width="200px"
           >
-          </el-table-column>
-          <el-table-column
-            label="昵称"
-            align="center"
-          >
-            <template slot-scope="scope">
+          <template slot-scope="scope">
               <span
                 @click="handleToUserDetail(scope.row)"
                 style="cursor:pointer;color:#5a8bff"
               >
-                {{scope.row.sickName}}
+                {{scope.row.username}}
               </span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
+            prop="mobile"
             label="手机号"
             align="center"
+            width="200px"
           >
-          </el-table-column>
-          <el-table-column
-            prop="inviter"
-            label="邀请人"
-            width="120"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="date"
-            label="领卡时间"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="cardNum"
-            label="会员卡号"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            label="卡状态"
-            width="120"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <div class="operation">
-                <span
-                  v-for="(item,index) in operation"
-                  :key="index"
-                  @click="handleToOperation(scope.row,index)"
-                >{{item}}</span>
-              </div>
-            </template>
-          </el-table-column>
 
+          </el-table-column>
+          <el-table-column
+            prop="userShowTag"
+            align="center"
+            width="300"
+            icon="el-icon-delete"
+          >
+          <template slot="header">
+            会员标签
+          </template>
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="签到时间"
+            align="center"
+            width="250"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="usableScore"
+            label="获得积分数"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="continueDays"
+            label="连续签到天数"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="totalScore"
+            label="本次签到累计获得积分数"
+            align="center"
+          >
+          </el-table-column>
         </el-table>
         <Pagination
           :page-params.sync="pageParams"
@@ -135,42 +125,18 @@
   </div>
 </template>
 <script>
+import { userScoreSign } from '@/api/admin/memberManage/scoreManage/scoreCfg.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
+  mounted () {
+    this.initTableData()
+  },
   data () {
     return {
       MemberInforInput: '',
       date: '',
       labelInput: '',
-      tableData: [
-        {
-          userID: '51',
-          phoneNum: '18811309193',
-          sickName: '啦啦啦',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '12',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        },
-        {
-          userID: '43',
-          sickName: '啦啦啦',
-          phoneNum: '18811309193',
-          inviter: '帅飞',
-          date: '20190828 14:40:44',
-          cardNum: '2342342334235',
-          status: '正常'
-        }
-      ],
+      tableData: [],
       pageParams: {
         totalRows: 10,
         currentPage: 1,
@@ -179,6 +145,17 @@ export default {
     }
   },
   methods: {
+    // 初始化数据
+    initTableData () {
+      this.loadData({})
+    },
+    loadData (obj) {
+      userScoreSign(obj).then(res => {
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+        }
+      })
+    },
     search (data) {
       console.log(data)
     },
