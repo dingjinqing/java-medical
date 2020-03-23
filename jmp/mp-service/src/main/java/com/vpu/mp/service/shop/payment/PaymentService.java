@@ -151,6 +151,7 @@ public class PaymentService extends ShopBaseService {
                 break;
             case "C":
                 //会员卡充值订单统一支付回调
+                //todo
                 break;
             case MemberCardOrderService.MEMBER_CARD_ORDER_SN_PREFIX:
                 //购买会员卡虚拟订单统一支付回调
