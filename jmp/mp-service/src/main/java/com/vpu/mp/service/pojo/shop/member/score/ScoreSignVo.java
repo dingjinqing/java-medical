@@ -1,5 +1,9 @@
 package com.vpu.mp.service.pojo.shop.member.score;
 
+
+
+import java.sql.Timestamp;
+
 import lombok.Data;
 
 /**
@@ -9,6 +13,7 @@ import lombok.Data;
  */
 @Data
 public class ScoreSignVo {
+	private Integer userId;
 	/**
 	 * 用户名
 	 */
@@ -42,5 +47,10 @@ public class ScoreSignVo {
 	 * 本次连续签到获得的总积分
 	 */
 	private Integer totalScore;
+	
+	/**
+	 * 签到时间
+	 */
+	private Timestamp createTime;
 	
 }
