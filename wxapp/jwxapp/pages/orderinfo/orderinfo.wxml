@@ -14,7 +14,9 @@
       <view class="count-down" wx:elif="{{clock}}">
         <view>请在{{clock}}内完成支付</view>
       </view>
-      
+      <view class="count-down" wx:if="{{isPreSaleOrder && orderInfo.payOperationTime === 0}}">
+        <view>尾款支付时间：{{orderInfo.preSaleTimeInterval[0] + '-' + orderInfo.preSaleTimeInterval[1]}}</view>
+      </view>
     </view>
     <view class="shipping_info">
       <navigator wx:if="{{orderInfo.shippingInfo}}">
@@ -231,7 +233,7 @@
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
-    <view class="fixed_footer">
+    <view class="fixed_footer" wx:if="{{orderInfo.operate.length > 0 || orderInfo.orderStatusName === '已发货' || orderInfo.isReturnMoney || orderInfo.isReturnGoods}}">
       <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{orderInfo.orderSn}}" data-order_id="{{orderInfo.orderId}}">
         确认收货
       </view>
