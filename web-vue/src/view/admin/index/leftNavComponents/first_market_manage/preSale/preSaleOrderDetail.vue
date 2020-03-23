@@ -25,7 +25,7 @@
         <div>
           <span>订单状态：</span>
           <el-select
-            v-model="orderStatus"
+            v-model="params.selectedOrderStatus"
             placeholder="请选择"
             size="small"
             class="input_width"
@@ -214,7 +214,7 @@ export default {
         goodsName: '',
         mobile: '',
         orderSn: '',
-        orderStatus: '',
+        selectedOrderStatus: -1,
         consignee: '',
         provinceCode: '',
         cityCode: '',
@@ -230,7 +230,6 @@ export default {
       },
       tableData: [],
       dialogVisible: false,
-      orderStatus: -1,
       orderStatusMap: {},
       orderStatusOptions: [{
         value: -1,
@@ -256,24 +255,6 @@ export default {
       }, {
         value: 6,
         label: '订单完成'
-      }, {
-        value: 7,
-        label: '售后中'
-      }, {
-        value: 8,
-        label: '售后完成'
-      }, {
-        value: 9,
-        label: '送礼完成'
-      }, {
-        value: 10,
-        label: '待接单'
-      }, {
-        value: 11,
-        label: '待接单-取件中'
-      }, {
-        value: 12,
-        label: '已取件-配送中'
       }],
       screenLength: 0,
       showFilterInfo: false

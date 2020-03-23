@@ -379,9 +379,9 @@ export const en = {
   // 营销管理 定金膨胀修改
   presale_edit: ['Marketing Management', 'Edit Pre Sale'],
   // 营销管理 定金膨胀订单
-  presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
+  presale_order_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Order Detail'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
+  presale_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Detail'],
   // 营销活动 普通优惠券
   ordinaryCoupon: ['Marketing Management', 'General Coupons'],
   // 营销管理 秒杀
