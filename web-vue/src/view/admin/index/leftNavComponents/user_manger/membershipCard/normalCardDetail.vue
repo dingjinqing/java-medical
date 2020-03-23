@@ -414,13 +414,10 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
-      debugger
       // 包邮信息
-      debugger
       if (data.freeship) {
         this.freeship = data.freeship
       }
-      console.log(this.freeship)
 
       this.freeship.valid = false
 
