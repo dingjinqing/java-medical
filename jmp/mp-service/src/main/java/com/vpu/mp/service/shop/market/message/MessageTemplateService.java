@@ -133,6 +133,7 @@ public class MessageTemplateService extends ShopBaseService {
             .map(UserInfoByRedis::getUserId)
             .map(Objects::toString)
             .collect(Collectors.joining(","));
+
         Integer shopId = getShopId();
 //        String userIdStr = "12,";
         String sendConditionStr = Util.toJson(param.getUserInfo());
@@ -143,8 +144,7 @@ public class MessageTemplateService extends ShopBaseService {
             .set(record)
             .returning(TEMPLATE_CONFIG.ID,TEMPLATE_CONFIG.PAGE_LINK,TEMPLATE_CONFIG.TITLE,TEMPLATE_CONFIG.CONTENT)
             .fetchOne();
-        //TODO 需要改
-       // createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
+        createTaskJob(shopId, assemblyRabbitMessageParam(templateConfigRecord,userIdStr,shopId),param);
     }
 
     /**
@@ -154,32 +154,25 @@ public class MessageTemplateService extends ShopBaseService {
      * @param shopId 门店ID
      * @return {@link RabbitMessageParam}
      */
-//    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
-//        return RabbitMessageParam.builder()
-//            .shopId(shopId)
-//            .type(RabbitParamConstant.Type.GENERAL_TYPE)
-//            .page(templateConfigRecord.getPageLink())
-//            .messageTemplateId(templateConfigRecord.getId())
-//            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
-//            .maTemplateData(MaTemplateData.builder()
-//                .config(MaTemplateConfig.ACTIVITY_CONFIG)
-//                .data(new String[][]{
-//                    {templateConfigRecord.getTitle()},
-//                    {templateConfigRecord.getContent()}
-//                })
-//                .build())
-//            .mpTemplateData(MpTemplateData.builder()
-//                .config(MpTemplateConfig.ACTIVITY_CONFIG)
-//                .data(new String[][]{
-//                    {""},
-//                    {templateConfigRecord.getTitle()},
-//                    {templateConfigRecord.getContent()},
-//                    {DateUtil.getLocalDateTime().toString()},
-//                    {"点击查看详情"}
-//                })
-//                .build())
-//            .build();
-//    }
+    private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
+        return RabbitMessageParam.builder()
+            .shopId(shopId)
+            .type(RabbitParamConstant.Type.GENERAL_TYPE)
+            .page(templateConfigRecord.getPageLink())
+            .messageTemplateId(templateConfigRecord.getId())
+            .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
+            .mpTemplateData(MpTemplateData.builder()
+                .config(MpTemplateConfig.ACTIVITY_CONFIG)
+                .data(new String[][]{
+                    {""},
+                    {templateConfigRecord.getTitle()},
+                    {templateConfigRecord.getContent()},
+                    {DateUtil.getLocalDateTime().toString()},
+                    {"点击查看详情"}
+                })
+                .build())
+            .build();
+    }
 
     /**
      * 创建TaskJob
@@ -414,8 +407,6 @@ public class MessageTemplateService extends ShopBaseService {
     /**
      * 创建定向发券TaskJob
      * @param shopId 门店ID
-     * @param messageTemplateParam 消息内容
-     * @param param 消息的一些配置参数
      */
     public void createCouponTaskJob(Integer shopId,CouponGiveQueueParam couponGiveQueueParam,Timestamp startTime){
         TaskJobInfo  info = TaskJobInfo.builder(shopId)

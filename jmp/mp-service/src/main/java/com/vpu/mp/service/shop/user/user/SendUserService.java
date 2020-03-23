@@ -71,8 +71,11 @@ public class SendUserService extends ShopBaseService {
      * @return 从redis获取的数据
      */
     public List<UserInfoByRedis> getAndDeleteSendUserIdByRedisKey(String key){
+        List<UserInfoByRedis> results = Util.readValue(jedisManager.get(key),List.class,UserInfoByRedis.class);
         jedisManager.delete(key);
-        return Util.readValue(jedisManager.get(key),List.class,UserInfoByRedis.class);
+        return results;
+
+
     }
 
     /**
