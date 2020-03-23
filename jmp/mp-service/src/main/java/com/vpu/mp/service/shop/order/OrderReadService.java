@@ -1077,6 +1077,19 @@ public class OrderReadService extends ShopBaseService {
                 }
                 order.setUserTag(tags.toString());
             }
+
+            if(columns.contains(OrderExportVo.RETURN_TIME)){
+                ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
+                if(returnOrderGoodsRecord != null){
+                    order.setReturnTime(returnOrderGoodsRecord.getCreateTime());
+                    order.setReturnOrderMoney(returnOrderGoodsRecord.getReturnMoney());
+                }
+            }
+            if(columns.contains(OrderExportVo.SHIPPING_NAME)){
+                if(order.getShippingId() != null && order.getShippingId() > 0){
+                    order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+                }
+            }
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);

@@ -328,5 +328,14 @@ public class ReturnOrderGoodsService extends ShopBaseService{
     public BigDecimal getReturnGoodsMoney(Integer recId){
         return db().select(DSL.sum(RETURN_ORDER_GOODS.RETURN_MONEY)).from(RETURN_ORDER_GOODS).where(RETURN_ORDER_GOODS.REC_ID.eq(recId).and(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_RETURNING).or(RETURN_ORDER_GOODS.SUCCESS.eq(OrderConstant.SUCCESS_COMPLETE)))).fetchOne().into(BigDecimal.class);
     }
+
+    /**
+     * 根据订单行recId，取最近申请的一次记录
+     * @param recId
+     * @return
+     */
+    public ReturnOrderGoodsRecord getByRecId(int recId){
+        return db().selectFrom(RETURN_ORDER_GOODS).where(RETURN_ORDER_GOODS.REC_ID.eq(recId)).orderBy(RETURN_ORDER_GOODS.CREATE_TIME.desc()).fetchAny();
+    }
 }
 

@@ -456,7 +456,6 @@ export default {
       * 动态获取人数的参数集合
       */
       params: {
-        userKey: null,
         onClickNoPay: false,
         onClickGoods: false,
         // 商品列表idList
@@ -620,7 +619,8 @@ export default {
       tuneUpChooseGoods: false,
       tuneUpSelectLink: false,
       isJudgeStartTimeOne: '',
-      isJudgeStartTimeTwo: ''
+      isJudgeStartTimeTwo: '',
+      userKey: null
     }
   },
   watch: {
@@ -685,7 +685,7 @@ export default {
         pageLink: this.pageLink,
         userInfo: this.params,
         senAction: this.senAction,
-        userKey: this.params.userKey,
+        userKey: this.userKey,
         startTime: this.startTime,
         endTime: this.endTime
       }
@@ -693,8 +693,10 @@ export default {
       console.log(this.$refs.form)
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          console.log(this.handleToJudge())
           if (this.handleToJudge()) {
             addMessageApi(params).then(res => {
+              console.log(res)
               const { error } = res
               if (error === 0) {
                 this.$message.success({
@@ -950,7 +952,7 @@ export default {
           const { userKey, userNumber } = content
           console.log(`key+num${userKey}, ${userNumber}`)
           this.userNumber = userNumber
-          this.params.userKey = userKey
+          this.userKey = userKey
         }
       }).catch(err => console.log(err))
     },

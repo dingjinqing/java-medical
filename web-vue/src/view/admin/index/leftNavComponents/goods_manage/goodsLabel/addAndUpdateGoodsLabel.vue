@@ -152,10 +152,10 @@
                 <el-button  size="small">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
                 <span>已选{{selectedSortList.length}}件商家</span>
               </div>
-              <div @click="tuneUpChooseCat=true" class="pointGoodsItemBtnWrap">
-                <el-button size="small">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>
-                <span>已选{{selectedCatList.length}}件平台</span>
-              </div>
+              <!--<div @click="tuneUpChooseCat=true" class="pointGoodsItemBtnWrap">-->
+                <!--<el-button size="small">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>-->
+                <!--<span>已选{{selectedCatList.length}}件平台</span>-->
+              <!--</div>-->
             </div>
           </div>
         </el-form-item>
@@ -174,7 +174,7 @@
       :chooseGoodsBack="selectedGoodsList"
     />
     <catSortDialog @BusClassTrueArr="sortResultChoosed" :classFlag="1" :backDataArr="selectedSortList" :dialogVisible.sync="tuneUpChooseSort"/>
-    <catSortDialog @BusClassTrueArr="catResultChoosed" :classFlag="2" :backDataArr="selectedCatList" :dialogVisible.sync="tuneUpChooseCat"/>
+    <!--<catSortDialog @BusClassTrueArr="catResultChoosed" :classFlag="2" :backDataArr="selectedCatList" :dialogVisible.sync="tuneUpChooseCat"/>-->
   </div>
 </template>
 
@@ -306,7 +306,7 @@ export default {
         if (this.goodsLabelData.isAll === 0) {
           this.selectedGoodsList = labelData.goodsIds
           this.selectedSortList = labelData.sortIds
-          this.selectedCatList = labelData.catIds
+          // this.selectedCatList = labelData.catIds
         }
       })
     },
@@ -346,7 +346,8 @@ export default {
       if (this.goodsLabelData.isAll === 0) {
         params.goodsIds = this.selectedGoodsList
         params.sortIds = this.selectedSortList
-        params.catIds = this.selectedCatList
+        // params.catIds = this.selectedCatList
+        params.catIds = []
       }
       return params
     },

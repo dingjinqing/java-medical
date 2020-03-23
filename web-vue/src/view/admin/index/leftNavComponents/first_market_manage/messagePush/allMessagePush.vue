@@ -311,14 +311,14 @@ export default {
       })
     },
     // 删除消息推送
-    handleDelTemplate (id) {
-      console.log(id)
+    handleDelTemplate (row) {
+      console.log(row)
       this.$confirm('此操作将永久删除该消息推送, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        templateDeleteApi(id).then(res => {
+        templateDeleteApi(row.id).then(res => {
           console.log(res)
           const { error } = res
           if (error === 0) {

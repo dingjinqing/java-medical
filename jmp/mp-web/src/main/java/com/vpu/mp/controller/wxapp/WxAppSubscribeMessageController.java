@@ -1,5 +1,8 @@
 package com.vpu.mp.controller.wxapp;
 
+import java.lang.reflect.Field;
+import java.util.Objects;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,8 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 			return fail();
 		}
 		String[] data= {};
-		switch (param.getTyps()) {
+		String typs = param.getTyps();
+		switch (typs) {
 		case TypesNames.AUDIT_UPGRADE:
 			data= new String[]{SubcribeTemplateCategory.AUDIT,SubcribeTemplateCategory.USER_GRADE};
 			break;
@@ -62,6 +66,7 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 			logger().info(param.getTyps()+"没有匹配");
 			break;
 		}
+		data = getData(data, typs);
 		Integer shopId = wxAppAuth.shopId();
 		ShopApplication shopApp = saas.getShopApp(shopId);
 		TemplateVo[] templateId= {};
@@ -72,6 +77,34 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 			return fail();
 		}
 		return success(templateId);
+	}
+
+	private String[] getData(String[] data, String typs) {
+		if ((!StringUtils.isEmpty(typs)) && data.length == 0) {
+			String[] typesNames= {};
+			if (typs.contains(",")) {
+				typesNames = typs.split(",");
+			}else {
+				typesNames=new String[]{typs};
+			}
+			data = new String[typesNames.length];
+			Field[] declaredFields = SubcribeTemplateCategory.class.getDeclaredFields();
+			for (int i = 0; i < typesNames.length; i++) {
+				for (Field field : declaredFields) {
+					Object object = null;
+					try {
+						object = field.get(field.getName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (Objects.equals(typesNames[i], object)) {
+						data[i] = typesNames[i];
+					}
+					
+				}
+			}
+		}
+		return data;
 	}
 	
 	/**

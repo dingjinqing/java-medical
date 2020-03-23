@@ -1810,4 +1810,27 @@ public class FriendPromoteService extends ShopBaseService {
         excelWriter.writeModelList(vo,FriendPromoteLaunchVo.class);
         return workbook;
     }
+    /**
+     * 参与明细导出
+     * @param param 查询信息
+     * @param lang 语言
+     */
+    public Workbook joinExport(FriendPromoteParticipateParam param,String lang){
+        List<FriendPromoteParticipateVo> vo = new ArrayList<>();
+        PageResult<FriendPromoteParticipateVo> pageResult = participateDetail(param);
+        for (FriendPromoteParticipateVo item : pageResult.getDataList()){
+            FriendPromoteParticipateVo tempVo = new FriendPromoteParticipateVo();
+            FieldsUtil.assignNotNull(item,tempVo);
+            if (tempVo.getInviteSource()!=null&&tempVo.getInviteSource().equals(MemberService.INVITE_SOURCE_PROMOTE)){
+                tempVo.setIsNew("是");
+            }else {
+                tempVo.setIsNew("否");
+            }
+            vo.add(tempVo);
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(vo,FriendPromoteParticipateVo.class);
+        return workbook;
+    }
 }

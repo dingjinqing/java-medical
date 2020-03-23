@@ -855,7 +855,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsCardPay(tradeCfg.getCardFirst());
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
-
+        vo.setPreSaleDiscount(preSaleDiscount);
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
         logger().info("金额处理赋值(processOrderBeforeVo),end");
