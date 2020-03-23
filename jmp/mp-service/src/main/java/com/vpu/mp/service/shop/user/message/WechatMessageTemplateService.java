@@ -82,13 +82,13 @@ public class WechatMessageTemplateService extends ShopBaseService {
         //String formId = getFormId(info.getUserId());
     	logger().info("小程序和公众号发送其中一个");
         Boolean success = Boolean.TRUE;
-//        if( param.getMaTemplateData() != null && (type>2000)){
-//        	logger().info("发小程序");
-//            success = sendMaMessage(param,info);
-//            logger().info("发小程序结果："+success);
-//        }
+        if( param.getMaTemplateData() != null && (type>2000)){
+        	logger().info("发小程序");
+            success = sendMaMessage(param,info);
+            logger().info("发小程序结果："+success);
+        }
 
-		if ((param.getMpTemplateData() != null && type < 2000)) {
+        if ((param.getMpTemplateData() != null && type < 2000)|| (!success && param.getMpTemplateData() != null)) {
 			logger().info("发公众号");
             success = sendMpMessage(param,info);
             logger().info("发公众号结果："+success);
