@@ -238,18 +238,20 @@ export const en = {
   goodsTip3: 'Several businesses',
   goodsTip4: 'Several platforms',
 
-  storeArr: [{
-    name: 'Add merchandise',
-    value: '1'
-  },
-  {
-    name: 'Add product category',
-    value: '2'
-  },
-  {
-    name: 'Add platform category',
-    value: '3'
-  }],
+  storeArr: [
+    {
+      name: 'Add merchandise',
+      value: '1'
+    },
+    {
+      name: 'Add product category',
+      value: '2'
+    }
+    // {
+    //   name: 'Add platform category',
+    //   value: '3'
+    // }
+  ],
 
   addSuccess: 'Add Success!',
   addFail: 'Add Fail!',

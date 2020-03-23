@@ -294,7 +294,7 @@ global.wxComponent({
         }
         if(this.data.activity && this.data.activity.activityType === 10){
           console.log(this.data.productInfo)
-            buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
+            buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
           if(!this.data.activity.originalBuy){
             delete buttonData['buttonInfo']['left']
           }
@@ -309,8 +309,8 @@ global.wxComponent({
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`
         }
-        if(this.data.activity && this.data.activity.activityType === 10 && this.data.triggerButton === 'right'){
-          buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
+        if(this.data.activity && this.data.activity.activityType === 10 && (!this.data.triggerButton || this.data.triggerButton === 'right')){
+          buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
         }
         console.log(buttonData)
       }

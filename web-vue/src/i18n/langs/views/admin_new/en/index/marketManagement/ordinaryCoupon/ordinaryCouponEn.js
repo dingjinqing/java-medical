@@ -85,12 +85,12 @@ export const en = {
       name: 'Add product category',
       value: '2',
       num: ''
-    },
-    {
-      name: 'Add platform category',
-      value: '3',
-      num: ''
     }
+    // {
+    //   name: 'Add platform category',
+    //   value: '3',
+    //   num: ''
+    // }
   ],
 
   save: 'Save',
