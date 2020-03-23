@@ -838,7 +838,7 @@ export default {
                 this.rangeData[1] = this.data.goods_area_data
               } else if (turnToString.goods_area === 'cat') {
                 this.BusClassBackData = this.data.goods_area_data
-                this.rangeData[1] = this.data.goods_area_data
+                this.rangeData[2] = this.data.goods_area_data
               }
               this.handleToSelectRange()
             }

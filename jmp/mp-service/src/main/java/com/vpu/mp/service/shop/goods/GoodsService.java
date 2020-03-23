@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -478,12 +477,12 @@ public class GoodsService extends ShopBaseService {
      */
     private Condition buildSortCatOpitons(Condition condition, GoodsPageListParam goodsPageListParam) {
         // 平台分类，首先需要根据当前平台分类id查询出所有的子孙节点
-        if (goodsPageListParam.getCatId() != null) {
-            List<Integer> catIds = new ArrayList<>();
-            catIds.add(goodsPageListParam.getCatId());
-            List<Integer> childrenId = saas.sysCate.findChildrenByParentId(catIds);
-            condition = condition.and(GOODS.CAT_ID.in(childrenId));
-        }
+//        if (goodsPageListParam.getCatId() != null) {
+//            List<Integer> catIds = new ArrayList<>();
+//            catIds.add(goodsPageListParam.getCatId());
+//            List<Integer> childrenId = saas.sysCate.findChildrenByParentId(catIds);
+//            condition = condition.and(GOODS.CAT_ID.in(childrenId));
+//        }
         // 商家分类
         if (goodsPageListParam.getSortId() != null) {
             List<Integer> childrenId = goodsSort.getChildrenIdByParentIdsDao(Collections.singletonList(goodsPageListParam.getSortId()));
@@ -515,11 +514,11 @@ public class GoodsService extends ShopBaseService {
                 labelCondition = labelCondition.or(GOODS.SORT_ID.in(sortChildrenId));
             }
             // 处理标签打在平台分类上
-            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
-            if (integers != null && integers.size() > 0) {
-                List<Integer> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
-                labelCondition = labelCondition.or(GOODS.CAT_ID.in(catChildrenId));
-            }
+//            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+//            if (integers != null && integers.size() > 0) {
+//                List<Integer> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
+//                labelCondition = labelCondition.or(GOODS.CAT_ID.in(catChildrenId));
+//            }
             condition = condition.and(labelCondition);
         }
         return condition;
@@ -1686,7 +1685,7 @@ public class GoodsService extends ShopBaseService {
 
         //循环处理需要处理的列
         for (GoodsExportVo goods : list) {
-            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
+//            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
 
             SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
             if (sort != null) {

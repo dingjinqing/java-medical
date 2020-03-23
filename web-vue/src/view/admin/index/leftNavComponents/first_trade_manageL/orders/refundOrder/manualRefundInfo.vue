@@ -393,7 +393,19 @@ export default {
       }
       console.log(obj)
       manualReturn(obj).then(res => {
-        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({ message: '退款成功',
+            onClose: () => {
+              this.$router.push({
+                name: 'order_return',
+                query: {
+                  orderSn: this.$route.query.orderSn
+                }
+              })
+            } })
+        } else {
+          this.$message.warning({ message: '退款失败' })
+        }
       })
     },
     formatMoney (row, column, cellValue) {

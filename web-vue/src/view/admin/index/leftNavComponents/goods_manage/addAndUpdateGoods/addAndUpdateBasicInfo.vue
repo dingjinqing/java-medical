@@ -41,74 +41,74 @@
           <span class="inputTip">{{$t("goodsAddEditInfo.basicInfo.goodsSnTip")}}</span>
         </el-form-item>
         <!--平台分类-->
-        <el-form-item
-          :label="$t('goodsAddEditInfo.basicInfo.catId')"
-          prop="catId"
-        >
-          <el-select
-            ref="catSelect"
-            v-model="catIdTemp.firstCatId"
-            size="small"
-            @change="catIdSelectChange(1,$event)"
-            style="width:170px;"
-          >
-            <el-option
-              :value="null"
-              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
-            />
-            <el-option
-              v-for="item in catIdTemp.firstCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
-          </el-select>
-          <el-select
-            v-if="!!catIdTemp.firstCatId"
-            v-model="catIdTemp.secondCatId"
-            size="small"
-            @change="catIdSelectChange(2,$event)"
-            style="width:170px;"
-          >
-            <el-option
-              :value="null"
-              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
-            />
-            <el-option
-              v-for="item in catIdTemp.secondCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
-          </el-select>
-          <el-select
-            v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"
-            v-model="catIdTemp.thirdCatId"
-            size="small"
-            @change="catIdSelectChange(3,$event)"
-            style="width:170px;"
-          >
-            <el-option
-              :value="null"
-              :label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"
-            />
-            <el-option
-              v-for="item in catIdTemp.thirdCatData"
-              :label="item.catName"
-              :value="item.catId"
-              :key="item.catId"
-            />
-          </el-select>
-          <span class="inputTip">
-            {{$t("goodsAddEditInfo.basicInfo.catIdTip")}}
-          </span>
-          <el-link
-            type="primary"
-            :underline="false"
-            href="#"
-            target="_blank"
-          >{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>
-        </el-form-item>
+        <!--<el-form-item-->
+          <!--:label="$t('goodsAddEditInfo.basicInfo.catId')"-->
+          <!--prop="catId"-->
+        <!--&gt;-->
+          <!--<el-select-->
+            <!--ref="catSelect"-->
+            <!--v-model="catIdTemp.firstCatId"-->
+            <!--size="small"-->
+            <!--@change="catIdSelectChange(1,$event)"-->
+            <!--style="width:170px;"-->
+          <!--&gt;-->
+            <!--<el-option-->
+              <!--:value="null"-->
+              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
+            <!--/>-->
+            <!--<el-option-->
+              <!--v-for="item in catIdTemp.firstCatData"-->
+              <!--:label="item.catName"-->
+              <!--:value="item.catId"-->
+              <!--:key="item.catId"-->
+            <!--/>-->
+          <!--</el-select>-->
+          <!--<el-select-->
+            <!--v-if="!!catIdTemp.firstCatId"-->
+            <!--v-model="catIdTemp.secondCatId"-->
+            <!--size="small"-->
+            <!--@change="catIdSelectChange(2,$event)"-->
+            <!--style="width:170px;"-->
+          <!--&gt;-->
+            <!--<el-option-->
+              <!--:value="null"-->
+              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
+            <!--/>-->
+            <!--<el-option-->
+              <!--v-for="item in catIdTemp.secondCatData"-->
+              <!--:label="item.catName"-->
+              <!--:value="item.catId"-->
+              <!--:key="item.catId"-->
+            <!--/>-->
+          <!--</el-select>-->
+          <!--<el-select-->
+            <!--v-if="!!catIdTemp.firstCatId&&!!catIdTemp.secondCatId"-->
+            <!--v-model="catIdTemp.thirdCatId"-->
+            <!--size="small"-->
+            <!--@change="catIdSelectChange(3,$event)"-->
+            <!--style="width:170px;"-->
+          <!--&gt;-->
+            <!--<el-option-->
+              <!--:value="null"-->
+              <!--:label="$t('goodsAddEditInfo.basicInfo.catIdSelectDefault')"-->
+            <!--/>-->
+            <!--<el-option-->
+              <!--v-for="item in catIdTemp.thirdCatData"-->
+              <!--:label="item.catName"-->
+              <!--:value="item.catId"-->
+              <!--:key="item.catId"-->
+            <!--/>-->
+          <!--</el-select>-->
+          <!--<span class="inputTip">-->
+            <!--{{$t("goodsAddEditInfo.basicInfo.catIdTip")}}-->
+          <!--</span>-->
+          <!--<el-link-->
+            <!--type="primary"-->
+            <!--:underline="false"-->
+            <!--href="#"-->
+            <!--target="_blank"-->
+          <!--&gt;{{$t("goodsAddEditInfo.basicInfo.catIdGo")}}</el-link>-->
+        <!--</el-form-item>-->
         <!--商品图片-->
         <el-form-item :label="$t('goodsAddEditInfo.basicInfo.goodsImg')">
           <div style="display: flex;align-items: center;flex-wrap: wrap;">
@@ -953,9 +953,9 @@ export default {
         this.goodsProductInfo.goodsAd = goodsData.goodsAd
         this.goodsProductInfo.goodsSn = goodsData.goodsSn
         this.goodsProductInfo.goodsSnBak = goodsData.goodsSn
-        this.goodsProductInfo.catId = goodsData.catId
+        // this.goodsProductInfo.catId = goodsData.catId
         // 初始化平台分类
-        this._initCatId(goodsData)
+        // this._initCatId(goodsData)
         // 初始化图片
         this._initGoodsImgs(goodsData)
         // 初始化视频
@@ -985,7 +985,7 @@ export default {
     initDataForInsert () {
       this.isUpdate = false
       // 初始化第一级平台分类下拉项
-      this._catFirstInit()
+      // this._catFirstInit()
       // 商家分类和品牌初始化
       this._sortAndLabelSelectInit()
     },
@@ -998,11 +998,11 @@ export default {
         return false
       }
       // 平台分类未选中
-      if (this.goodsProductInfo.catId === null) {
-        this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
-        this.$refs.catSelect.focus()
-        return false
-      }
+      // if (this.goodsProductInfo.catId === null) {
+      //   this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requirePlatformClassify'), type: 'warning' })
+      //   this.$refs.catSelect.focus()
+      //   return false
+      // }
       // 未选择商品图片
       if (this.goodsProductInfo.goodsImgs.length === 0) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage'), type: 'warning' })
