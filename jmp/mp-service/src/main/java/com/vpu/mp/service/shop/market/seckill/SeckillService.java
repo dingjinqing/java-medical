@@ -698,7 +698,7 @@ public class SeckillService extends ShopBaseService{
 
         List<Integer> goodsIds = db().selectDistinct(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
             .from(SEC_KILL_PRODUCT_DEFINE).innerJoin(Tables.GOODS).on(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.eq(Tables.GOODS.GOODS_ID))
-            .where(baseCondition.and(Tables.GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GROUP_BUY)).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(activityId)))
+            .where(baseCondition.and(Tables.GOODS.GOODS_TYPE.eq(BaseConstant.ACTIVITY_TYPE_SEC_KILL)).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(activityId)))
             .fetch(SEC_KILL_PRODUCT_DEFINE.GOODS_ID);
 
         Byte first = record.getFirst();
