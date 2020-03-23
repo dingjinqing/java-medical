@@ -58,7 +58,7 @@ global.wxPage({
             }
             item.cartActivityInfos.forEach((val, key) => {
               // 判断是否参加活动
-              if ((val.activityType == 7 || val.activityType == 21) && item.activityType != 5) {
+              if ((val.activityType == 7 || val.activityType == 21) && item.activityType != 5 && item.activityType != 6 && item.activityType != 18 && item.activityType != 10) {
                 item.isSales = 1
               }
               // 判断是否存在会员价

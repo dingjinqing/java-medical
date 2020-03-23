@@ -107,8 +107,6 @@ export default {
           res = val
         }
         this.$emit('update:type', Number(res))
-        console.log('set', res)
-
         this.checkOn = !(res === '0')
         if (res === '0') {
           this.firstTimeCheck = false
@@ -144,7 +142,7 @@ export default {
       shipTimeVal: null,
       shipNum: null,
       // 默认关闭校验
-      firstTimeCheck: true,
+      firstTimeCheck: false,
       checkOn: false,
       // 校验规则
       shipRules: {
@@ -177,6 +175,7 @@ export default {
         // this.shipTimeVal = ''
       } else {
         this.shipTimeVal = this.type
+        console.log(this.shipTimeVal)
       }
     }
   },
@@ -211,13 +210,17 @@ export default {
       })
     },
     handleToSave (val) {
-      this.$refs[val].validate((valid) => {
-        console.log(valid)
-        if (!valid) {
-          this.$message.warning(this.$t('memberCard.shipNumValidO'))
-        }
-        this.$emit('update:valid', valid)
-      })
+      if (this.type === -1) {
+        this.$emit('update:valid', true)
+      } else {
+        this.$refs[val].validate((valid) => {
+          console.log(valid)
+          if (!valid) {
+            this.$message.warning(this.$t('memberCard.shipNumValidO'))
+          }
+          this.$emit('update:valid', valid)
+        })
+      }
     },
     /**
      * 包邮选择框

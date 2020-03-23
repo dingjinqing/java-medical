@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.spec;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
  * @date 2019年07月05日
  */
 @Data
+@NoArgsConstructor
 public class GoodsSpecVal {
     private Integer specValId;
     private Integer specId;
@@ -17,4 +19,8 @@ public class GoodsSpecVal {
     private Integer goodsId;
     private Timestamp createTime;
     private Timestamp updateTime;
+
+    public GoodsSpecVal(String specValName) {
+        this.specValName = specValName;
+    }
 }

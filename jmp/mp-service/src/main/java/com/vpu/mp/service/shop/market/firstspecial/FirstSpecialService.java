@@ -120,7 +120,7 @@ public class FirstSpecialService extends ShopBaseService {
                 default:
             }
         }
-        select.where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(FIRST_SPECIAL.CREATE_TIME.desc());
+        select.where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.CREATE_TIME.desc());
         PageResult<FirstSpecialPageListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),FirstSpecialPageListQueryVo.class);
 
         /**查询活动商品数量、订单付款数、付款用户数、付款总金额 */

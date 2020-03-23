@@ -199,7 +199,7 @@ public class BargainUserService extends ShopBaseService{
                 //砍价成功了
                 //库存更新
                 saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),1);
-                atomicOperation.updataStockAndSalesByLock(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1,false);
+                atomicOperation.updateStockAndSalesByLock(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1,false);
 
                 //砍价record的状态更新
                 db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.STATUS,BargainRecordService.STATUS_SUCCESS).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();

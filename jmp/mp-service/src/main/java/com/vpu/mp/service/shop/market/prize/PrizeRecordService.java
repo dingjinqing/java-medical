@@ -1,16 +1,20 @@
 package com.vpu.mp.service.shop.market.prize;
 
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.wxapp.market.prize.PrizeRecordParam;
 import com.vpu.mp.service.pojo.wxapp.market.prize.PrizeRecordVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,8 @@ public class PrizeRecordService extends ShopBaseService {
     private OrderGoodsService orderGoodsService;
     @Autowired
     private GoodsService  goodsService;
+    @Autowired
+    private AtomicOperation atomicOperation;
 
 
     /**
@@ -130,6 +136,18 @@ public class PrizeRecordService extends ShopBaseService {
      */
     public void closePrizeGoods() {
         Timestamp localDateTime = DateUtil.getLocalDateTime();
+        Result<PrizeRecordRecord> fetch = db().selectFrom(PRIZE_RECORD).where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
+                .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).fetch();
+        fetch.forEach(prizeRecord->{
+            GoodsView goodsView = goodsService.getGoodsViewByProductId(prizeRecord.getPrdId());
+            try {
+                atomicOperation.updateStockAndSalesByLock(goodsView.getGoodsId(),prizeRecord.getPrdId(),-1,true);
+            } catch (MpException e) {
+                e.printStackTrace();
+                logger().error("我的奖品过期--归还商品库存失败");
+            }
+        });
+        logger().info("修改我的奖品记录状态");
         db().update(PRIZE_RECORD).set(PRIZE_RECORD.PRIZE_STATUS,PRIZE_STATUS_EXPIRE)
                 .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).execute();

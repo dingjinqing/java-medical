@@ -42,6 +42,8 @@ global.wxPage({
     })
     clearTimeout(set_time_out);
     request_pinIntegration(that);
+    // 获取积分商品列表
+    request_integrationList(that);
     // 判断用户是否登录
     var user_name = util.getCache('nickName');
     var user_avatar = util.getCache('avatarUrl');
@@ -69,10 +71,11 @@ global.wxPage({
   },
   // 积分商品详情
   to_integral: function (e) {
-    // var in_id = e.currentTarget.dataset.in_goods_id;
-    // util.navigateTo({
-    //   url: '/pages/integralitem/integralitem?integral_goods_id=' + in_id,
-    // })
+    var in_goods_id = e.currentTarget.dataset.in_goods_id;
+    var goods_id = e.currentTarget.dataset.goods_id;
+    util.navigateTo({
+      url: '/pages/item/item?aid=' + in_goods_id + '&atp=4&gid=' + goods_id,
+    })
   },
   // 关闭弹窗
   close: function () {
@@ -401,4 +404,15 @@ function request_pinIntegration(that) {
 
   
   
+}
+function request_integrationList(that) {
+  util.api('/api/wxapp/pin/integration/goodDetail', function (res) {
+    if (res.error == 0) {
+      that.setData({
+        inteGoods: res.content
+      })
+    } else {
+      util.showModal('提示', res.message)
+    }
+  })
 }

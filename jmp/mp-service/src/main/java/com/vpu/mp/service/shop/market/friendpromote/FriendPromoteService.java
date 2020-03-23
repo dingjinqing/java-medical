@@ -7,6 +7,9 @@ import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -15,14 +18,19 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +55,12 @@ import static com.vpu.mp.db.shop.Tables.*;
  */
 @Service
 public class FriendPromoteService extends ShopBaseService {
-    @Autowired ImageService imageService;
-    @Autowired CouponGiveService couponGiveService;
-    @Autowired PrizeRecordService prizeRecordService;
-    @Autowired MaMpScheduleTaskService maMpScheduleTaskService;
-    @Autowired AtomicOperation atomicOperation;
+    @Autowired private ImageService imageService;
+    @Autowired private CouponGiveService couponGiveService;
+    @Autowired private PrizeRecordService prizeRecordService;
+    @Autowired private MaMpScheduleTaskService maMpScheduleTaskService;
+    @Autowired private AtomicOperation atomicOperation;
+    @Autowired private QrCodeService qrCode;
 	private static FriendPromoteActivity fpa = FriendPromoteActivity.FRIEND_PROMOTE_ACTIVITY.as("fpa");
 	private static FriendPromoteLaunch fpl = FriendPromoteLaunch.FRIEND_PROMOTE_LAUNCH.as("fpl");
 	private static FriendPromoteDetail fpd = FriendPromoteDetail.FRIEND_PROMOTE_DETAIL.as("fpd");
@@ -1437,7 +1446,7 @@ public class FriendPromoteService extends ShopBaseService {
                                 .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(promoteInfo.getRewardContent().getGoodsIds()))
                                 .fetchOneInto(Integer.class);
                             //更新库存
-                            atomicOperation.updataStockAndSalesByLock(goodsId,promoteInfo.getRewardContent().getGoodsIds(),1,false);
+                            atomicOperation.updateStockAndSalesByLock(goodsId,promoteInfo.getRewardContent().getGoodsIds(),1,false);
                         }else {
                             logger().info("商品库存不足");
                             throw new BusinessException(JsonResultCode.FRIEND_PROMOTE_FAIL);
@@ -1760,5 +1769,45 @@ public class FriendPromoteService extends ShopBaseService {
         vo.setSuccessTotal(successTotal);
         vo.setNewUserTotal(newUserTotal);
         return vo;
+    }
+    /**
+     * 分享
+     * @param param 活动id
+     * @retuen 二维码信息
+     */
+    public ShareQrCodeVo getQrCode(FriendPromoteSelectParam param){
+        String actCode = db().select(FRIEND_PROMOTE_ACTIVITY.ACT_CODE)
+            .from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
+            .fetchOneInto(String.class);
+        String pathParam = "actCode="+actCode+"&launchId="+0+"&inviteId=";
+        String imgUrl = qrCode.getMpQrCode(QrCodeTypeEnum.FRIEND_HELP_SHARE,pathParam);
+        ShareQrCodeVo share = new ShareQrCodeVo();
+        share.setImageUrl(imgUrl);
+        share.setPagePath(QrCodeTypeEnum.FRIEND_HELP_SHARE.getPathUrl(pathParam));
+        return share;
+    }
+    /**
+     * 发起明细导出
+     * @param param 查询信息
+     * @param lang 语言
+     */
+    public Workbook launchExport(FriendPromoteLaunchParam param,String lang){
+        List<FriendPromoteLaunchVo> vo = new ArrayList<>();
+        PageResult<FriendPromoteLaunchVo> pageResult = launchDetail(param);
+        for (FriendPromoteLaunchVo item : pageResult.getDataList()){
+            FriendPromoteLaunchVo tempVo = new FriendPromoteLaunchVo();
+            FieldsUtil.assignNotNull(item,tempVo);
+            if (item.getPromoteStatus()==(byte)1||item.getPromoteStatus()==(byte)2){
+                tempVo.setIsSuccess("是");
+            }else {
+                tempVo.setIsSuccess("否");
+            }
+            vo.add(tempVo);
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        excelWriter.writeModelList(vo,FriendPromoteLaunchVo.class);
+        return workbook;
     }
 }

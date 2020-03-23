@@ -394,6 +394,7 @@
               align="center"
               prop="preDiscountMoney1"
               label="1阶段定金可抵扣金额"
+              v-if="!isFullPay"
             >
               <template slot="append">
                 <span>1阶段定金可抵扣金额</span>
@@ -424,7 +425,7 @@
               align="center"
               prop="preDiscountMoney2"
               label="2阶段定金可抵扣金额"
-              v-if="twoSteps"
+              v-if="twoSteps&&!isFullPay"
             >
               <template slot="append">
                 <span>2阶段定金可抵扣金额</span>
@@ -479,12 +480,13 @@
               <a
                 :class="activeIndex === 4 ? '' : 'settings'"
                 @click="setCurrent(4)"
+                v-show="!isFullPay"
               >1阶段定金可抵扣金额
               </a>
               <a
                 :class="activeIndex === 5 ? '' : 'settings'"
                 @click="setCurrent(5)"
-                v-show="twoSteps"
+                v-show="twoSteps&&!isFullPay"
               >2阶段定金可抵扣金额
               </a>
             </div>
@@ -699,7 +701,7 @@ export default {
       payTimeRange: [],
       // 活动商品名称
       presaleTypes: ['定金膨胀', '全款预售'],
-      discountType: ['可叠加', '不可叠加'],
+      discountType: ['不可叠加', '可叠加'],
       returnTypes: ['不自动退定金', '自动退定金'],
       showSaleNumberTypes: ['不展示', '展示'],
       buyTypes: ['不可原价购买', '可原价购买'],

@@ -10,111 +10,112 @@ public class JsonResultMessage {
     public static final String  MSG_API_NO_RESUBMIT = "api.no.resubmit";
     // 账号
 
-	public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
-	public static final String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
-	public static final String MSG_ACCOUNT_MODILE_REGISTERED = "account.mobile.registered";
-	public static final String MSG_ACCOUNT_MODILE_NOT_NULL = "account.mobile.notNull";
-	public static final String MSG_ACCOUNT_LOGIN_EXPIRED = "account.login.expired";
-	public static final String MSG_ACCOUNT_ROLE__AUTH_INSUFFICIENT = "account.role.auth.insufficient";
-	public static final String MSG_ACCOUNT_ROLE__SHOP_SELECT = "account.role.shop.select";
-	public static final String MSG_ACCOUNT_NAME_NOT_NULL = "account.name.notNull";
-	public static final String MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL = "account.isSubLogin.notNull";
-	public static final String MSG_ACCOUNT_SAME = "account.name.same";
-	public static final String MSG_MOBILE_SAME = "account.mobile.same";
-	public static final String MSG_ACCOUNT_SHOP_NULL = "account.shop.null";
-	public static final String MSG_ACCOUNT_SHOP_EXPIRE = "account.shop.expire";
-	public static final String MSG_ACCOUNT_SHOPAVATAR_NOT_NULL = "account.shopAvatar.notNull";
-	public static final String MSG_ACCOUNT_ACCOUNTNAME_NOT_NULL = "account.accountName.notNull";
-	public static final String MSG_ACCOUNT_PASSWD_NO_SAME = "account.passwd.noSame";
-	public static final String MSG_ACCOUNT_OLD_PASSWD_ERROR = "account.account.oldPasswd.error";
-	public static final String MSG_ACCOUNT_OLD_NEW_PASSWD_NO_SAME = "account.oldAndNew.passwd.noSame";
-	public static final String MSG_ACCOUNT_PASSWD_NOT_NULL = "account.passwd.notNull";
-	public static final String MSG_ACCOUNT_NEWPASSWD_NOT_NULL = "account.newpasswd.notNull";
-	public static final String MSG_ACCOUNT_CONFNEWPASSWD_NOT_NULL = "account.confnewpasswd.notNull";
-	public static final String MSG_ACCOUNT_PASSWD_LENGTH_LIMIT = "account.passwd.length.limit";
-	public static final String MSG_ACCOUNT_USERNAME_NOT_NULL = "account.username.not.null";
-	public static final String MSG_ACCOUNT_SHOPID_NOT_NULL = "account.shopId.not.null";
-	public static final String MSG_ACCOUNT_PASSWD_ERROR = "account.passwd.error";
-	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT = "account.shop.role.insufficient";
-	public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_OCCUPY = "account.shop.role.occupy";
-	public static final String MSG_CODE_ACCOUNT_ASSIGNED_ROLE = "account.assigned.role";
-	public static final String MSG_CODE_ACCOUNT_SELECT_SHOP = "account.select.shop";
-	public static final String MSG_CODE_NEED_PRIVILEGEPASS = "account.need.privilegePass";
-	public static final String MSG_CODE_ACCOUNT_SYSID_IS_NULL = "account.sysId.is.null";
-	public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
-	public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
-	public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
-	public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
+    public static final String MSG_ACCOUNT_OR_PASSWORD_INCRRECT = "account.accountOrPassword.incrrect";
+    public static final String MSG_ACCOUNT_MODILE_APPLIED = "account.mobile.applied";
+    public static final String MSG_ACCOUNT_MODILE_REGISTERED = "account.mobile.registered";
+    public static final String MSG_ACCOUNT_MODILE_NOT_NULL = "account.mobile.notNull";
+    public static final String MSG_ACCOUNT_LOGIN_EXPIRED = "account.login.expired";
+    public static final String MSG_ACCOUNT_ROLE__AUTH_INSUFFICIENT = "account.role.auth.insufficient";
+    public static final String MSG_ACCOUNT_ROLE__SHOP_SELECT = "account.role.shop.select";
+    public static final String MSG_ACCOUNT_NAME_NOT_NULL = "account.name.notNull";
+    public static final String MSG_ACCOUNT_ISSUBLOGIN_NOT_NULL = "account.isSubLogin.notNull";
+    public static final String MSG_ACCOUNT_SAME = "account.name.same";
+    public static final String MSG_MOBILE_SAME = "account.mobile.same";
+    public static final String MSG_ACCOUNT_SHOP_NULL = "account.shop.null";
+    public static final String MSG_ACCOUNT_SHOP_EXPIRE = "account.shop.expire";
+    public static final String MSG_ACCOUNT_SHOPAVATAR_NOT_NULL = "account.shopAvatar.notNull";
+    public static final String MSG_ACCOUNT_ACCOUNTNAME_NOT_NULL = "account.accountName.notNull";
+    public static final String MSG_ACCOUNT_PASSWD_NO_SAME = "account.passwd.noSame";
+    public static final String MSG_ACCOUNT_OLD_PASSWD_ERROR = "account.account.oldPasswd.error";
+    public static final String MSG_ACCOUNT_OLD_NEW_PASSWD_NO_SAME = "account.oldAndNew.passwd.noSame";
+    public static final String MSG_ACCOUNT_PASSWD_NOT_NULL = "account.passwd.notNull";
+    public static final String MSG_ACCOUNT_NEWPASSWD_NOT_NULL = "account.newpasswd.notNull";
+    public static final String MSG_ACCOUNT_CONFNEWPASSWD_NOT_NULL = "account.confnewpasswd.notNull";
+    public static final String MSG_ACCOUNT_PASSWD_LENGTH_LIMIT = "account.passwd.length.limit";
+    public static final String MSG_ACCOUNT_USERNAME_NOT_NULL = "account.username.not.null";
+    public static final String MSG_ACCOUNT_SHOPID_NOT_NULL = "account.shopId.not.null";
+    public static final String MSG_ACCOUNT_PASSWD_ERROR = "account.passwd.error";
+    public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_INSUFFICIENT = "account.shop.role.insufficient";
+    public static final String MSG_CODE_ACCOUNT_SHOP_ROLE_OCCUPY = "account.shop.role.occupy";
+    public static final String MSG_CODE_ACCOUNT_ASSIGNED_ROLE = "account.assigned.role";
+    public static final String MSG_CODE_ACCOUNT_SELECT_SHOP = "account.select.shop";
+    public static final String MSG_CODE_NEED_PRIVILEGEPASS = "account.need.privilegePass";
+    public static final String MSG_CODE_ACCOUNT_SYSID_IS_NULL = "account.sysId.is.null";
+    public static final String MSG_CODE_ACCOUNT_VERSIN_NO_POWER = "account.version.no.power";
+    public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
+    public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
+    public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
 
-	// 图片
+    // 图片
 
-	public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
-	public static final String MSG_IMGAE_FORMAT_INVALID = "image.format.invalid";
-	public static final String MSG_IMGAE_CROP_FAILED = "image.crop.failed";
-	public static final String MSG_IMGAE_UPLOAD_GT_5M = "image.upload.gt5m";
-	public static final String MSG_IMGAE_UPLOAD_EQ_WIDTH = "image.upload.eqWidth";
-	public static final String MSG_IMGAE_UPLOAD_EQ_HEIGHT = "image.upload.eqHeight";
+    public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
+    public static final String MSG_IMGAE_FORMAT_INVALID = "image.format.invalid";
+    public static final String MSG_IMGAE_CROP_FAILED = "image.crop.failed";
+    public static final String MSG_IMGAE_UPLOAD_GT_5M = "image.upload.gt5m";
+    public static final String MSG_IMGAE_UPLOAD_EQ_WIDTH = "image.upload.eqWidth";
+    public static final String MSG_IMGAE_UPLOAD_EQ_HEIGHT = "image.upload.eqHeight";
 
-	public static final String MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL = "image.category.imgCatId.notNull";
-	public static final String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL = "image.category.imgCatParentId.notNull";
-	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL = "image.category.imgCatName.notNull";
-	public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME = "image.category.imgCatName.root.name";
+    public static final String MSG_IMAGE_CATEGORY_IMGCATID_NOT_NULL = "image.category.imgCatId.notNull";
+    public static final String MSG_IMAGE_CATEGORY_IMGCATPARENTID_NOT_NULL = "image.category.imgCatParentId.notNull";
+    public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_NOT_NULL = "image.category.imgCatName.notNull";
+    public static final String MSG_IMAGE_CATEGORY_IMGCATNAME_ROOT_NAME = "image.category.imgCatName.root.name";
 
-	public static final String MSG_VIDEO_UPLOAD_FAILED = "video.upload.failed";
-	public static final String MSG_VIDEO_FORMAT_INVALID = "video.format.invalid";
-	public static final String MSG_VIDEO_CATEGORY_VIDEOCATID_NOT_NULL = "video.category.videoCatId.notNull";
-	public static final String MSG_VIDEO_CATEGORY_VIDEOCATPARENTID_NOT_NULL = "video.category.videoCatParentId.notNull";
-	public static final String MSG_VIDEO_CATEGORY_VIDEOCATNAME_NOT_NULL = "video.category.videoCatName.notNull";
-	public static final String MSG_VIDEO_UPLOAD_GT_10M = "video.upload.gt10m";
+    public static final String MSG_VIDEO_UPLOAD_FAILED = "video.upload.failed";
+    public static final String MSG_VIDEO_FORMAT_INVALID = "video.format.invalid";
+    public static final String MSG_VIDEO_CATEGORY_VIDEOCATID_NOT_NULL = "video.category.videoCatId.notNull";
+    public static final String MSG_VIDEO_CATEGORY_VIDEOCATPARENTID_NOT_NULL = "video.category.videoCatParentId.notNull";
+    public static final String MSG_VIDEO_CATEGORY_VIDEOCATNAME_NOT_NULL = "video.category.videoCatName.notNull";
+    public static final String MSG_VIDEO_UPLOAD_GT_10M = "video.upload.gt10m";
 
-	/**
-	 * 商品
-	 */
-	public static final String GOODS_ID_IS_NULL = "goods.id.is.null";
+    /**
+     * 商品
+     */
+    public static final String GOODS_ID_IS_NULL = "goods.id.is.null";
     public static final String GOODS_NAME_EXIST = "goods.name.exist";
     public static final String GOODS_NAME_IS_NULL="goods.name.is.null";
     public static final String GOODS_SN_EXIST = "goods.sn.exist";
+    public static final String GOODS_GRADE_PRICE_WRONG = "goods.grade.price.wrong";
     public static final String GOODS_MAIN_IMG_IS_NULL="goods.main.img.is.null";
-	/**
-	 * 商品品牌
-	 */
-	public static final String GOODS_BRAND_NAME_EXIST = "goods.brand.name.exist";
-	public static final String GOODS_BRAND_NAME_IS_NULL = "goods.brand.name.is.null";
-	public static final String GOODS_BRAND_ID_IS_NULL = "goods.brand.id.is.null";
-	public static final String GOODS_BRAND_CALSSIFY_NAME_EXIST = "goods.brand.classify.name.exist";
-	public static final String GOODS_BRAND_ALSSIFY_NAME_IS_NULL = "goods.brand.classify.name.is.null";
-	public static final String GOODS_BRAND_ALSSIFY_ID_IS_NULL = "goods.brand.classify.id.is.null";
+    /**
+     * 商品品牌
+     */
+    public static final String GOODS_BRAND_NAME_EXIST = "goods.brand.name.exist";
+    public static final String GOODS_BRAND_NAME_IS_NULL = "goods.brand.name.is.null";
+    public static final String GOODS_BRAND_ID_IS_NULL = "goods.brand.id.is.null";
+    public static final String GOODS_BRAND_CALSSIFY_NAME_EXIST = "goods.brand.classify.name.exist";
+    public static final String GOODS_BRAND_ALSSIFY_NAME_IS_NULL = "goods.brand.classify.name.is.null";
+    public static final String GOODS_BRAND_ALSSIFY_ID_IS_NULL = "goods.brand.classify.id.is.null";
 
-	/**
-	 * 商品分类
-	 */
-	public static final String GOODS_SORT_NAME_EXIST = "goods.sort.name.exist";
-	public static final String GOODS_SORT_NAME_IS_NULL = "goods.sort.name.is.null";
-	public static final String GOODS_SORT_ID_IS_NULL = "goods.sort.id.is.null";
-	public static final String GOODS_RECOMMEND_SORT_CHILDREN_NOT_NULL="goods.recommend.sort.children.not.null";
+    /**
+     * 商品分类
+     */
+    public static final String GOODS_SORT_NAME_EXIST = "goods.sort.name.exist";
+    public static final String GOODS_SORT_NAME_IS_NULL = "goods.sort.name.is.null";
+    public static final String GOODS_SORT_ID_IS_NULL = "goods.sort.id.is.null";
+    public static final String GOODS_RECOMMEND_SORT_CHILDREN_NOT_NULL="goods.recommend.sort.children.not.null";
 
-	public static final String GOODS_LABEL_NAME_EXIST = "goods.label.name.exist";
-	public static final String GOODS_LABEL_NOT_EXIST = "goods.label.not.exist";
-	public static final String GOODS_LABEL_ID_NOT_NULL = "goods.label.id.notNull";
-	public static final String GOODS_LABEL_NAME_NOT_NULL = "goods.label.name.notNull";
+    public static final String GOODS_LABEL_NAME_EXIST = "goods.label.name.exist";
+    public static final String GOODS_LABEL_NOT_EXIST = "goods.label.not.exist";
+    public static final String GOODS_LABEL_ID_NOT_NULL = "goods.label.id.notNull";
+    public static final String GOODS_LABEL_NAME_NOT_NULL = "goods.label.name.notNull";
 
     /**
      * 商品规格
      */
-	public static final String GOODS_SPEC_PRD_SN_EXIST = "goods.spec.prd.sn.exist";
-	public static final String GOODS_SPEC_NAME_REPETITION = "goods.spec.name.repetition";
-	public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
-	public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
+    public static final String GOODS_SPEC_PRD_SN_EXIST = "goods.spec.prd.sn.exist";
+    public static final String GOODS_SPEC_NAME_REPETITION = "goods.spec.name.repetition";
+    public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
+    public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
 
-  public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
-  public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
-  public static final String GOODS_RECOMMEND_NAME_EXIST = "goods.recommend.name.exist";
-  public static final String GOODS_RECOMMEND_ID_NOT_EXIST = "goods.recommend.id.notexist";
-  public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
-  public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
-      "goods.recommend.choose_type.notNull";
-  public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
-  public static final String GOODS_RECOMMEND_NO_RECOMMENDED_GOODS = "goods.recommend.no.recommended.goods";
+    public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
+    public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
+    public static final String GOODS_RECOMMEND_NAME_EXIST = "goods.recommend.name.exist";
+    public static final String GOODS_RECOMMEND_ID_NOT_EXIST = "goods.recommend.id.notexist";
+    public static final String GOODS_RECOMMEND_NOT_EXIST = "goods.recommend.id.notexist";
+    public static final String GOODS_RECOMMEND_CHOOSE_TYPE_NOT_NULL =
+        "goods.recommend.choose_type.notNull";
+    public static final String GOODS_RECOMMEND_NUMBER_NOT_NULL = "goods.recommend.number.notNull";
+    public static final String GOODS_RECOMMEND_NO_RECOMMENDED_GOODS = "goods.recommend.no.recommended.goods";
 
     /**
      * 商品导出
@@ -241,22 +242,22 @@ public class JsonResultMessage {
     public static final String INSTEAD_PAY_VALUE_OVER_RANGE = "instead.pay.value.over.range";
     public static final String INSTEAD_PAY_STATUS_IS_NULL= "instead.pay.status.is.null";
 
-	/**
-	 * 营销-拼团
-	 */
-	public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
-	public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
-	public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
-	public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
-	public static final String GROUP_BUY_ACTIVITY_STATUS_NOTSTART="group.buy.activity.status.not.start";
-	public static final String GROUP_BUY_ACTIVITY_STATUS_END="group.buy.activity.status.end";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL="group.buy.activity.group.status.cancel";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
-	public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
+    /**
+     * 营销-拼团
+     */
+    public static final String GROUP_BUY_ADD_ACTIVITY_STOP_STATUS="group.buy.add.activity.stop.status";
+    public static final String GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING="group.buy.activity.goods.overlapping";
+    public static final String GROUP_BUY_GROUPID_DOES_NOT_EXIST="group.buy.groupId.does.not.exist";
+    public static final String GROUP_BUY_ACTIVITY_STATUS_DISABLE="group.buy.activity.status.disable";
+    public static final String GROUP_BUY_ACTIVITY_STATUS_NOTSTART="group.buy.activity.status.not.start";
+    public static final String GROUP_BUY_ACTIVITY_STATUS_END="group.buy.activity.status.end";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_STATUS_CANCEL="group.buy.activity.group.status.cancel";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_OPEN_LIMIT_MAX="group.buy.activity.group.open.limit.max";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
     /**
      * 营销-秒杀
      */
@@ -271,47 +272,47 @@ public class JsonResultMessage {
     public static final String BARGAIN_NOT_YET_SUCCESSFUL="bargain.not.yet.successful";
     public static final String BARGAIN_RECORD_ORDERED="bargain.record.ordered";
 
-	/**
-	 *营销-我的奖品
-	 */
-	public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
+    /**
+     *营销-我的奖品
+     */
+    public static final String MY_PRIZE_ACTIVITY_RECEIVED="my.prize.activity.goods.received";
     public static final String MY_PRIZE_ACTIVITY_EXPIRED="my.prize.activity.goods.expired";
     /**拼团抽奖活动 */
     public static final String GROUP_DRAW_FAIL = "group.draw.fail";
-	public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
-	public static final String PRODUCT_NOT_EXIST = "product.not.exist";
-	public static final String INFORMATION_NOT_EXIST = "information.not.exist";
-	public static final String EVENT_IS_OVER = "event.is.over";
-	public static final String EVENT_NOT_STARTED = "event_not_started";
-	public static final String HAVE_UNPAID_ORDERS = "have.unpaid.orders";
-	public static final String PARTICIPATED_IN_EVENT = "participated.in.event";
-	public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
-	public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
-	public static final String GROUP_ONLY_ONE = "group.only.one";
+    public static final String ACTIVITY_NOT_EXIST = "activity.not.exist";
+    public static final String PRODUCT_NOT_EXIST = "product.not.exist";
+    public static final String INFORMATION_NOT_EXIST = "information.not.exist";
+    public static final String EVENT_IS_OVER = "event.is.over";
+    public static final String EVENT_NOT_STARTED = "event_not_started";
+    public static final String HAVE_UNPAID_ORDERS = "have.unpaid.orders";
+    public static final String PARTICIPATED_IN_EVENT = "participated.in.event";
+    public static final String PARTICIPANTS_IS_MAX = "participated.is.max";
+    public static final String GROUP_UPPER_LIMIT = "group.upper.limit";
+    public static final String GROUP_ONLY_ONE = "group.only.one";
 
-	/**
-	 * 幸运大抽奖
-	 */
-	public static final String LOTTERY_ACTIVITY_FAIL="lottery.activity.fail";
-	public static final String LOTTERY_ACTIVITY_STOP="lottery.activity.stop";
-	public static final String LOTTERY_ACTIVITY_NOT_BEGIN="lottery.activity.not.begin";
-	public static final String LOTTERY_ACTIVITY_OUT_DATE="lottery.activity.out.date";
-	public static final String LOTTERY_SHARE_TIME_USE_UP="lottery.share.time.use.up";
-	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
-	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
-	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
-	
-	
-	/**
-	 * 瓜分积分
-	 */
-	public static final String GROUP_INTEGRATION_INTE = "group.integration.inte";
-	public static final String GROUP_INTEGRATION_TOTAL = "group.integration.total";
+    /**
+     * 幸运大抽奖
+     */
+    public static final String LOTTERY_ACTIVITY_FAIL="lottery.activity.fail";
+    public static final String LOTTERY_ACTIVITY_STOP="lottery.activity.stop";
+    public static final String LOTTERY_ACTIVITY_NOT_BEGIN="lottery.activity.not.begin";
+    public static final String LOTTERY_ACTIVITY_OUT_DATE="lottery.activity.out.date";
+    public static final String LOTTERY_SHARE_TIME_USE_UP="lottery.share.time.use.up";
+    public static final String LOTTERY_SCORE_LESS="lottery.score.less";
+    public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
+    public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
 
-	/**
-	 * 营销- 支付有礼
-	 */
-	public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
+
+    /**
+     * 瓜分积分
+     */
+    public static final String GROUP_INTEGRATION_INTE = "group.integration.inte";
+    public static final String GROUP_INTEGRATION_TOTAL = "group.integration.total";
+
+    /**
+     * 营销- 支付有礼
+     */
+    public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_UNCONDITIONAL = "pay.award.activity.message.multiple.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_CONDITIONAL = "pay.award.activity.message.multiple.conditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_UNCONDITIONAL = "pay.award.activity.message.multiple.finally.unconditional";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_MULTIPLE_FINALLY_CONDITIONAL = "pay.award.activity.message.multiple.finally.conditional";
@@ -324,19 +325,19 @@ public class JsonResultMessage {
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_SCORE = "pay.award.activity.message.amount.score";
     public static final String PAY_AWARD_ACTIVITY_MESSAGE_AMOUNT_CUSTOM = "pay.award.activity.message.amount.custom";
 
-	/**
-	 * 营销--满包邮
-	 */
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED = "free.shipping.activity.message.expire.fixed";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER = "free.shipping.activity.message.expire.never";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL = "free.shipping.activity.message.goods.all";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART = "free.shipping.activity.message.goods.part";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT = "free.shipping.activity.message.condition.account";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
-	public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
+    /**
+     * 营销--满包邮
+     */
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_FIXED = "free.shipping.activity.message.expire.fixed";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_EXPIRE_NEVER = "free.shipping.activity.message.expire.never";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_ALL = "free.shipping.activity.message.goods.all";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_GOODS_PART = "free.shipping.activity.message.goods.part";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT = "free.shipping.activity.message.condition.account";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
+    public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
 
-	/**
+    /**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";
@@ -346,42 +347,42 @@ public class JsonResultMessage {
     public static final String ARTICLE_ARTICLEID_ISNULL = "api.code.article_articleId_isNull";
     public static final String ARTICLE_CATEGORY_UPDATE_FAILED = "api.code_article_category_update_failed";
 
-	/**
-	 * 小程序管理
-	 */
-	public static final String PAGE_CLASSIFICAIION_EXIST = "applets.page.classification.exist";
-	public static final String PAGE_CLASSIFICAIION_INSERT_FAILED = "applets.page.classification.insert.failed";
-	public static final String PAGE_CLASSIFICAIION_NOT_EXIST = "applets.page.classification.not.exist";
-	public static final String PAGE_CLASSIFICATION_UPDATE_FAILED = "applets.page.classification.update.failed";
-	public static final String PAGE_CLASSIFICATION_DELETE_FAILED = "applets.page.classification.delete.failed";
+    /**
+     * 小程序管理
+     */
+    public static final String PAGE_CLASSIFICAIION_EXIST = "applets.page.classification.exist";
+    public static final String PAGE_CLASSIFICAIION_INSERT_FAILED = "applets.page.classification.insert.failed";
+    public static final String PAGE_CLASSIFICAIION_NOT_EXIST = "applets.page.classification.not.exist";
+    public static final String PAGE_CLASSIFICATION_UPDATE_FAILED = "applets.page.classification.update.failed";
+    public static final String PAGE_CLASSIFICATION_DELETE_FAILED = "applets.page.classification.delete.failed";
     public static final String CODE_APPLET_QR_CODE_GET_FAILED = "applets.qr.code.get.failed";
 
-	public static final String DECORATE_BOTTOM_ISNOTJSON = "applets.bottom.is_not_json";
-	public static final String DECORATE_STYLE_ISNOTJSON = "applets.style.is_not_json";
-	public static final String DECORATE_STYLE_PARAM_UPDATE_ID_NULL = "applets.style.param_update_id_null";
-	public static final String DECORATE_STYLE_PARAM_UPDATE_VALUE_NULL = "applets.style.param_update_value_null";
-	public static final String DECORATE_URL_ILLEGAL = "applets.url.illegal";
+    public static final String DECORATE_BOTTOM_ISNOTJSON = "applets.bottom.is_not_json";
+    public static final String DECORATE_STYLE_ISNOTJSON = "applets.style.is_not_json";
+    public static final String DECORATE_STYLE_PARAM_UPDATE_ID_NULL = "applets.style.param_update_id_null";
+    public static final String DECORATE_STYLE_PARAM_UPDATE_VALUE_NULL = "applets.style.param_update_value_null";
+    public static final String DECORATE_URL_ILLEGAL = "applets.url.illegal";
 
-	public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
-	public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
+    public static final String BINDING_MINI_NO_SAME = "binding.mini.no.same";
+    public static final String BINDING_MINI_HAVEBIND = "binding.mini.havebind";
 
-	public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
-	public static final String WX_MA_TEMPLATE_ID_NOT_NULL = "wx.ma.app_template_id.not.null";
-	public static final String WX_MA_PACKAGE_VERSION_NOT_NULL = "wx.ma.package_version.not.null";
-	public static final String WX_MA_NEED_AUTHORIZATION = "wx.ma.neew.authorization";
-	public static final String WX_ERROR_EXCEPTION = "wx.error.exception";
-	public static final String WX_MA_NEED_UPLOADCODE = "wx.ma.need.uploadcode";
-	public static final String WX_MA_NEED_AUDITING_CODE_SUCCESS = "wx.ma.need.auditing.success";
-	public static final String WX_MA_SHOP_HAS_NO_APP="wx.ma.shop.has.no.app";
-	public static final String WX_MA_FEATURE_NOT_OPEN="wx.ma.feature.not.open";
-	public static final String WX_MA_ISSUBMERCHANT_ISNULL = "wx.ma.isSubMerchant.is.null";
-	public static final String WX_MA_TABLE_ISNULL = "wx.ma.table.is.null";
-	public static final String WX_MP_NO_ACCESS = "wx.mp.no.access";
-	public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
-	public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
-	public static final String WX_NO_REQUIRED = "wx.no.request";
-	public static final String WX_ONLY_ONE = "wx.only.one";
-	public static final String WX_JOB_PROBLEM = "wx.job.problem";
+    public static final String WX_MA_APP_ID_NOT_AUTH = "wx.ma.app_id.not.auth";
+    public static final String WX_MA_TEMPLATE_ID_NOT_NULL = "wx.ma.app_template_id.not.null";
+    public static final String WX_MA_PACKAGE_VERSION_NOT_NULL = "wx.ma.package_version.not.null";
+    public static final String WX_MA_NEED_AUTHORIZATION = "wx.ma.neew.authorization";
+    public static final String WX_ERROR_EXCEPTION = "wx.error.exception";
+    public static final String WX_MA_NEED_UPLOADCODE = "wx.ma.need.uploadcode";
+    public static final String WX_MA_NEED_AUDITING_CODE_SUCCESS = "wx.ma.need.auditing.success";
+    public static final String WX_MA_SHOP_HAS_NO_APP="wx.ma.shop.has.no.app";
+    public static final String WX_MA_FEATURE_NOT_OPEN="wx.ma.feature.not.open";
+    public static final String WX_MA_ISSUBMERCHANT_ISNULL = "wx.ma.isSubMerchant.is.null";
+    public static final String WX_MA_TABLE_ISNULL = "wx.ma.table.is.null";
+    public static final String WX_MP_NO_ACCESS = "wx.mp.no.access";
+    public static final String WX_MA_HAVE_MP = "wx.ma.have.mp";
+    public static final String WX_MP_NEED_CHOOSE_RIGHT = "wx.mp.need.choose.right";
+    public static final String WX_NO_REQUIRED = "wx.no.request";
+    public static final String WX_ONLY_ONE = "wx.only.one";
+    public static final String WX_JOB_PROBLEM = "wx.job.problem";
 
     public static final String WX_9300529 = "wx.ma.account.already.bind";
     public static final String WX_9300530 = "wx.ma.biz_id.not.exist";
@@ -389,18 +390,18 @@ public class JsonResultMessage {
     public static final String WX_9300532 = "wx.ma.under.review";
     public static final String SEARCHCFG_HOTWORDS_LIMIT = "searchcfg.hotwords.limit";
     public static final String SEARCHCFG_TITLECUSTOM_NOTNULL = "searchcfg.titleCustom.not.null";
-	public static final String WX_GETQRCODE_FAIL = "wx.getqrcode.fail";
-	public static final String WX_READQRCODE_FAIL = "wx.readqrcode.fail";
-	public static final String WX_GETHEAD_FAIL = "wx.gethead.fail";
-	public static final String WX_GETBG_FAIL =  "wx.getbg.fail";
-	public static final String WX_SHARESHOP = "wx.share.shop";
-	public static final String WX_SCAN_QRSHOP = "wx.scan.qrshop";
+    public static final String WX_GETQRCODE_FAIL = "wx.getqrcode.fail";
+    public static final String WX_READQRCODE_FAIL = "wx.readqrcode.fail";
+    public static final String WX_GETHEAD_FAIL = "wx.gethead.fail";
+    public static final String WX_GETBG_FAIL =  "wx.getbg.fail";
+    public static final String WX_SHARESHOP = "wx.share.shop";
+    public static final String WX_SCAN_QRSHOP = "wx.scan.qrshop";
 
-	/**
-	 * 门店管理
-	 */
-	public static final String STORE_GROUP_NAME_EXIST = "store.group.name.exist";
-	public static final String STORE_POS_SHOP_ID_EXIST = "store.pos.shop.id.exist";
+    /**
+     * 门店管理
+     */
+    public static final String STORE_GROUP_NAME_EXIST = "store.group.name.exist";
+    public static final String STORE_POS_SHOP_ID_EXIST = "store.pos.shop.id.exist";
     public static final String CODE_DATA_NOT_EXIST = "data.not.exist";
     public static final String CODE_STORE_NOT_EXIST = "store.not.exist";
     public static final String CODE_STORE_SERVICE_NOT_EXIST = "store.service.not.exist";
@@ -420,21 +421,21 @@ public class JsonResultMessage {
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
 
     /**
-	 * 门店技师管理
-	 */
-	public static final String STORE_STORE_ID_NULL = "store.store.id.null";
-	public static final String STORE_TECHNICIAN_NAME_NULL = "store.technician.name.null";
-	public static final String STORE_TECHNICIAN_TELEPHONE_ILLEGAL = "store.tenchnician.telephone.illegal";
-	public static final String STORE_TECHNICIAN_TELEPHONE_NULL = "store.tenchnician.telephone.null";
+     * 门店技师管理
+     */
+    public static final String STORE_STORE_ID_NULL = "store.store.id.null";
+    public static final String STORE_TECHNICIAN_NAME_NULL = "store.technician.name.null";
+    public static final String STORE_TECHNICIAN_TELEPHONE_ILLEGAL = "store.tenchnician.telephone.illegal";
+    public static final String STORE_TECHNICIAN_TELEPHONE_NULL = "store.tenchnician.telephone.null";
 
-	/**
-	 * 门店预约
-	 */
-	public static final String SERVICE_ORDER_VERIFY_CODE_ERROR = "store.service.order.verify.code.error";
-	public static final String SERVICE_ORDER_VERIFY_BALANCE_IS_NULL = "store.service.order.verify.balance.is.null";
-	public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
-	public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
-	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
+    /**
+     * 门店预约
+     */
+    public static final String SERVICE_ORDER_VERIFY_CODE_ERROR = "store.service.order.verify.code.error";
+    public static final String SERVICE_ORDER_VERIFY_BALANCE_IS_NULL = "store.service.order.verify.balance.is.null";
+    public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
+    public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
+    public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
     public static final String CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL = "store.service.order.technician.is.null";
     public static final String CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE = "store.service.order.technician.no.schedule";
     public static final String CODE_SERVICE_ORDER_WRONG_SERVICE_DATE = "store.service.order.wrong.service.date";
@@ -448,120 +449,120 @@ public class JsonResultMessage {
     public static final String STORE_VERIFIER_LIST_MOBILE = "store.verifier.list.mobile";
     public static final String STORE_VERIFIER_LIST_VERIFIER_ORDERS = "store.verifier.list.verify_orders";
 
-	/**
-	 * 基础配置
-	 */
-	public static final String CONFIG_PLEDGE_EXCEED = "config.pledge.numbers.exceed";
-	public static final String CONFIG_PLEDGE_NAME_NULL = "config.pledge.name.null";
-	public static final String CONFIG_PLEDGE_NAME_LENGTH = "config.pledge.name.length";
-	public static final String CONFIG_PLEDGE_CONTENT_NULL = "config.pledge.content.null";
-	public static final String CONFIG_PLEDGE_CONTENT_LENGTH = "config.pledge.content.length";
-	public static final String CONFIG_PLEDGE_LOGO_NULL = "config.pledge.logo.null";
+    /**
+     * 基础配置
+     */
+    public static final String CONFIG_PLEDGE_EXCEED = "config.pledge.numbers.exceed";
+    public static final String CONFIG_PLEDGE_NAME_NULL = "config.pledge.name.null";
+    public static final String CONFIG_PLEDGE_NAME_LENGTH = "config.pledge.name.length";
+    public static final String CONFIG_PLEDGE_CONTENT_NULL = "config.pledge.content.null";
+    public static final String CONFIG_PLEDGE_CONTENT_LENGTH = "config.pledge.content.length";
+    public static final String CONFIG_PLEDGE_LOGO_NULL = "config.pledge.logo.null";
 
-	public static final String AUTH_SHOP_NOT_EXIST = "config.auth.shop.appId.not.exist";
-	public static final String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "config.order.process.config.update.failed";
-	public static final String WECAHT_PAY_CONFIG_UPDATE_DAILED = "config.wechat.pay.config.update.failed";
-	public static final String RETURN_CONFIG_UPDATE_FAILED = "config.return.config.update.failed";
-	public static final String PAYMENT_CONFIG_IS_NULL = "config.payment.config.is.null";
-	public static final String ORDER_PROCESS_CONFIG_IS_NULL = "config.order.process.config.is.null";
+    public static final String AUTH_SHOP_NOT_EXIST = "config.auth.shop.appId.not.exist";
+    public static final String ORDER_PROCESS_CONFIG_UDPATE_FAILED = "config.order.process.config.update.failed";
+    public static final String WECAHT_PAY_CONFIG_UPDATE_DAILED = "config.wechat.pay.config.update.failed";
+    public static final String RETURN_CONFIG_UPDATE_FAILED = "config.return.config.update.failed";
+    public static final String PAYMENT_CONFIG_IS_NULL = "config.payment.config.is.null";
+    public static final String ORDER_PROCESS_CONFIG_IS_NULL = "config.order.process.config.is.null";
     public static final String RETURN_CONFIG_SELECT_FAILED = "config.return.config.select.failed";
-	public static final String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
-	public static final String CONFIG_A_NUM_GREATER = "config.a.num.greater";
-	public static final String CONFIG_B_NUM_GREATER = "config.b.num.greater";
-	public static final String CODE_CONFIG_UPDATE_FAILED = "config update failed";
+    public static final String WXPAY_CONFIG_IS_NULL = "wxpay.config.is.null";
+    public static final String CONFIG_A_NUM_GREATER = "config.a.num.greater";
+    public static final String CONFIG_B_NUM_GREATER = "config.b.num.greater";
+    public static final String CODE_CONFIG_UPDATE_FAILED = "config update failed";
 
-	/**
-	 * 会员管理
-	 */
-	public static final String MSG_MEMBER_TAG_LENGTH_LIMIT = "member.tag.length.limit";
-	public static final String MSG_MEMBER_TAG_NOT_NULL = "member.tag.notnull";
-	public static final String MSG_MEMBER_TAG_NAME_EXIST = "member.tag.name.exists";
-	public static final String MSG_MEMBER_TAG_ADD_SUCCESS = "member.tag.add.success";
-	public static final String MSG_MEMBER_TAG_ID_NOT_NULL = "member.tag.id.notnull";
+    /**
+     * 会员管理
+     */
+    public static final String MSG_MEMBER_TAG_LENGTH_LIMIT = "member.tag.length.limit";
+    public static final String MSG_MEMBER_TAG_NOT_NULL = "member.tag.notnull";
+    public static final String MSG_MEMBER_TAG_NAME_EXIST = "member.tag.name.exists";
+    public static final String MSG_MEMBER_TAG_ADD_SUCCESS = "member.tag.add.success";
+    public static final String MSG_MEMBER_TAG_ID_NOT_NULL = "member.tag.id.notnull";
 
-	public static final String MSG_MEMBER_NOT_EXIST = "member.not.exist";
-	public static final String MSG_SCORE_NOT_SAME = "member.score.not.same";
-	public static final String MSG_MEMBER_SCORE_ERROR = "member.score.error";
-	public static final String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
-	public static final String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
-	public static final String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE = "member.score.not.be.negative";
-	public static final String MSG_MEMBER_SCORE_EXPIRED = "member.score.expired";
-	/**
-	 * 会员余额
-	 */
-	public static final String MSG_MEMBER_ACCOUNT_UPDATE_FAIL = "member.account.update.fail";
-	public static final String MSG_MEMBER_CARD_ACCOUNT_UPDATE_FAIL = "member.card.account.update.fail";
-	public static final String MSG_MEMBER_CARD_SURPLUS_UPDATE_FAIL = "member.card.surplus.update.fail";
-	public static final String MSG_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL = "member.card.exchangsurplus.update.fail";
+    public static final String MSG_MEMBER_NOT_EXIST = "member.not.exist";
+    public static final String MSG_SCORE_NOT_SAME = "member.score.not.same";
+    public static final String MSG_MEMBER_SCORE_ERROR = "member.score.error";
+    public static final String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
+    public static final String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
+    public static final String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE = "member.score.not.be.negative";
+    public static final String MSG_MEMBER_SCORE_EXPIRED = "member.score.expired";
+    /**
+     * 会员余额
+     */
+    public static final String MSG_MEMBER_ACCOUNT_UPDATE_FAIL = "member.account.update.fail";
+    public static final String MSG_MEMBER_CARD_ACCOUNT_UPDATE_FAIL = "member.card.account.update.fail";
+    public static final String MSG_MEMBER_CARD_SURPLUS_UPDATE_FAIL = "member.card.surplus.update.fail";
+    public static final String MSG_MEMBER_CARD_EXCHANGSURPLUS_UPDATE_FAIL = "member.card.exchangsurplus.update.fail";
 
-	/**
-	 * 会员卡
-	 */
+    /**
+     * 会员卡
+     */
 
-	public static final String MSG_MEMBER_CARD_RIGHTS_EMPTY = "member.card.rights.empty";
-	public static final String MSG_MEMBER_CARD_ID_EMPTY = "member.card.id.empty";
-	public static final String MSG_CARD_ACTIVATE_SUCCESS = "card.activate.success";
-	public static final String MSG_MEMBER_CARD_DELETE = "member.card.delete";
-	public static final String MSG_CARD_ACTIVATE_FAIL = "card.activate.fail";
+    public static final String MSG_MEMBER_CARD_RIGHTS_EMPTY = "member.card.rights.empty";
+    public static final String MSG_MEMBER_CARD_ID_EMPTY = "member.card.id.empty";
+    public static final String MSG_CARD_ACTIVATE_SUCCESS = "card.activate.success";
+    public static final String MSG_MEMBER_CARD_DELETE = "member.card.delete";
+    public static final String MSG_CARD_ACTIVATE_FAIL = "card.activate.fail";
 
-	public static final String MSG_LIMIT_CARD_AVAIL_SEND_NONE="card.avail.send.none";
-	public static final String MSG_LIMIT_CARD_AVAIL_SEND_ALL="card.avail.send.all";
-	public static final String MSG_CARD_SEND_REPEAT="card.send.repeat";
-	public static final String MSG_CARD_GRADE_NONE="card.grade.none";
+    public static final String MSG_LIMIT_CARD_AVAIL_SEND_NONE="card.avail.send.none";
+    public static final String MSG_LIMIT_CARD_AVAIL_SEND_ALL="card.avail.send.all";
+    public static final String MSG_CARD_SEND_REPEAT="card.send.repeat";
+    public static final String MSG_CARD_GRADE_NONE="card.grade.none";
 
-	// 用户卡
-	public static final String USER_CARD_NONE = "user.card.none";
-	public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
-	public static final String MSG_CARD_RECEIVE_INVALID = "member.card.receive.invalid";
-	public static final String MSG_CARD_RECEIVE_NOCODE  = "member.card.receive.nocode";
-	public static final String MSG_CARD_RECEIVE_GENERATE  = "member.card.receive.generate";
-	public static final String MSG_CARD_RECEIVE_ALREADYHAS  = "member.card.receive.alreadyHas";
-	public static final String MSG_CARD_RECEIVE_PWD  = "member.card.receive.pwd";
-	public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
-	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
-	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
-	public static final String CODE_CARD_NO = "code.card.no";
-	/**
-	 * 	用户卡包邮信息
-	 */
-	public static final String CARD_SHIP_NOT_AVAIL = "card.ship.not.avail";
-	public static final String CARD_SHIP_VIP = "card.ship.vip";
-	public static final String CARD_SHIP_IN_EFFECTTIME = "card.ship.in.effecttime";
-	public static final String CARD_SHIP_YEAR = "card.ship.year";
-	public static final String CARD_SHIP_SEASON = "card.ship.season";
-	public static final String CARD_SHIP_DAY = "card.ship.day";
-	public static final String CARD_SHIP_MONTH = "card.ship.month";
-	public static final String CARD_SHIP_WEEK = "card.ship.week";
-	
-	//会员导入
-	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
-	public static final String CODE_NEED_ONE = "code.need.one";
-	public static final String GET_TEMPLATE_NAME = "get.template.name";
-	public static final String CODE_EXCEL_ERRO = "code.excel.name";
-	public static final String EXPORT_TEMPLATE_NAME = "export.template.name";
-	public static final String EXPORT_TEMPLATE_ACTIVE_NAME = "export.template.active.name";
-	public static final String CODE_EXCEL_EXAMPLE_USERNAME = "example.username";
-	public static final String CODE_EXCEL_EXAMPLE_SEX = "example.sex";
-	public static final String CODE_EXCEL_EXAMPLE_PROVINCE = "examplepProvince";
-	public static final String CODE_EXCEL_EXAMPLE_CITY = "example.city";
-	public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
-	public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
-	public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
-	public static final String CODE_EXCEL_VOUCHER = "example.voucher";
-	public static final String CODE_EXCEL_RANDOM = "example.random";
-	public static final String CODE_EXCEL_OTHER = "example.other";
-	public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
-	public static final String CODE_EXCEL_SORRY = "excel.sorry";
-	public static final String CODE_EXCEL_OK = "excel.ok";
-	public static final String BATCHID_NOT_NULL = "batchId.not.null";
-	public static final String CODE_EXCEL_READ_ERRO = "code.excel.read.erro";
-	public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
-	public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
-	public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
-	
-	/**
-	 *  会员列表导出
-	 */
+    // 用户卡
+    public static final String USER_CARD_NONE = "user.card.none";
+    public static final String MSG_CARD_RECEIVE_FAIL = "card.receive.fail";
+    public static final String MSG_CARD_RECEIVE_INVALID = "member.card.receive.invalid";
+    public static final String MSG_CARD_RECEIVE_NOCODE  = "member.card.receive.nocode";
+    public static final String MSG_CARD_RECEIVE_GENERATE  = "member.card.receive.generate";
+    public static final String MSG_CARD_RECEIVE_ALREADYHAS  = "member.card.receive.alreadyHas";
+    public static final String MSG_CARD_RECEIVE_PWD  = "member.card.receive.pwd";
+    public static final String MSG_CARD_RECEIVE_GOTOLOOK  = "member.card.receive.gotolook";
+    public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
+    public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
+    public static final String CODE_CARD_NO = "code.card.no";
+    /**
+     * 	用户卡包邮信息
+     */
+    public static final String CARD_SHIP_NOT_AVAIL = "card.ship.not.avail";
+    public static final String CARD_SHIP_VIP = "card.ship.vip";
+    public static final String CARD_SHIP_IN_EFFECTTIME = "card.ship.in.effecttime";
+    public static final String CARD_SHIP_YEAR = "card.ship.year";
+    public static final String CARD_SHIP_SEASON = "card.ship.season";
+    public static final String CARD_SHIP_DAY = "card.ship.day";
+    public static final String CARD_SHIP_MONTH = "card.ship.month";
+    public static final String CARD_SHIP_WEEK = "card.ship.week";
+
+    //会员导入
+    public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
+    public static final String CODE_NEED_ONE = "code.need.one";
+    public static final String GET_TEMPLATE_NAME = "get.template.name";
+    public static final String CODE_EXCEL_ERRO = "code.excel.name";
+    public static final String EXPORT_TEMPLATE_NAME = "export.template.name";
+    public static final String EXPORT_TEMPLATE_ACTIVE_NAME = "export.template.active.name";
+    public static final String CODE_EXCEL_EXAMPLE_USERNAME = "example.username";
+    public static final String CODE_EXCEL_EXAMPLE_SEX = "example.sex";
+    public static final String CODE_EXCEL_EXAMPLE_PROVINCE = "examplepProvince";
+    public static final String CODE_EXCEL_EXAMPLE_CITY = "example.city";
+    public static final String CODE_EXCEL_EXAMPLE_DISTRICT = "example.district";
+    public static final String CODE_EXCEL_EXAMPLE_MARRIAGE = "example.marriage";
+    public static final String CODE_EXCEL_EXAMPLE_ADDRESS = "example.address";
+    public static final String CODE_EXCEL_VOUCHER = "example.voucher";
+    public static final String CODE_EXCEL_RANDOM = "example.random";
+    public static final String CODE_EXCEL_OTHER = "example.other";
+    public static final String CODE_EXCEL_NEED_MOBILE = "excel.need.mobile";
+    public static final String CODE_EXCEL_SORRY = "excel.sorry";
+    public static final String CODE_EXCEL_OK = "excel.ok";
+    public static final String BATCHID_NOT_NULL = "batchId.not.null";
+    public static final String CODE_EXCEL_READ_ERRO = "code.excel.read.erro";
+    public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
+    public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
+    public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
+
+    /**
+     *  会员列表导出
+     */
     public static final String USER_EXPORT="user.export";
     public static final String UEXP_USER_ID = "user.export.user_id";
     public static final String UEXP_USERNAME = "user.export.username";
@@ -588,7 +589,7 @@ public class JsonResultMessage {
     public static final String UEXP_SUBLAYER_NUMBER = "user.export.sublayer_number";
     public static final String UEXP_LEVEL_NAME = "user.export.level_name";
     public static final String UEXP_GROUP_NAM = "user.export.group_name";
-    
+
     // 会员卡优惠券信息
     public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
     public static final String CARD_COUPON_DAY = "card.receive.day";
@@ -598,16 +599,16 @@ public class JsonResultMessage {
     public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
     public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
     public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
-    
-    
-	/**
-	 * 概览
-	 */
-	public static final String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
-	public static final String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
-	public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
-	public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
-	public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+
+
+    /**
+     * 概览
+     */
+    public static final String OVERVIEW_MALL_DATADEMONSTRATION_GET_FAILED = "overview.mall.datademonstration.get.failed";
+    public static final String OVERVIEW_MALL_BING_UNBING_FAILED = "overview.mall.bind.unbind.failed";
+    public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
+    public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
+    public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
     /**
      * 访问分析导出
      */
@@ -634,8 +635,8 @@ public class JsonResultMessage {
     public static final String ASSETS_EXPORT_COLUMN_MOBILE = "overview.asset.management.mobile";
 
     /**
-	 * 订单
-	 */
+     * 订单
+     */
     public static final String MSG_ORDER = "order";
     public static final String MSG_ORDER_ORDER_SN_NOT_NULL = "order.sn.not.null";
     public static final String MSG_ORDER_ORDER_ID_NOT_NULL = "order.id.not.null";
@@ -749,10 +750,10 @@ public class JsonResultMessage {
 
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
-	public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
-	public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
-	public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
-	public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
+    public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";
+    public static final String INVALID_REFUND_AMOUNT = "order.refund.invalid_refund_amount";
+    public static final String REFUND_ACCOUNT_LARGER_THAN_ACCOUNT_PAID = "order.refund.account_larger_than_paid";
+    public static final String REFUND_SCORE_LARGER_THAN_SCORE_PAID = "order.refund.score_larger_than_paid";
     public static final String REFUND_REQUEST_PARAMETER_ERROR = "order.virtual.order.refund.param.error";
 
     /**
@@ -868,10 +869,10 @@ public class JsonResultMessage {
     public static final String ORDER_MUST_CONSIGNEE_CID = "order.must.consignee_cid";
 
 
-	/**
-	 * 虚拟订单
-	 */
-	public static final String ORDER_VIRTUAL_COUPONPACK_REFUND_SCORE = "order.virtual.couponpack.refund.score";
+    /**
+     * 虚拟订单
+     */
+    public static final String ORDER_VIRTUAL_COUPONPACK_REFUND_SCORE = "order.virtual.couponpack.refund.score";
 
     /**
      * 开屏有礼
@@ -918,23 +919,23 @@ public class JsonResultMessage {
     /**
      * WxAppCode
      */
-	public static final String ERR_CODE_INVALID_SIGN = "invalid.credential";
-	public static final String ERR_CODE_TOKEN_ERROR = "invalid.grant_type";
-	public static final String ERR_CODE_EXCEPTION = "invalid.openid";
-	public static final String ERR_CODE_OPERATION_FAILED = "invalid.media.type";
-	public static final String ERR_CODE_LOGIN_FAILED = "login.failed";
-	public static final String ERR_CODE_PAY_FAILED = "pay.failed";
-	public static final String ERR_CODE_CODE_SING = "code.code.sign";
-	public static final String ERR_CODE_HAVE_SING = "code.have.sign";
-	public static final String ERR_CODE_CODE_SING_ERRO = "coed.sign.erro";
+    public static final String ERR_CODE_INVALID_SIGN = "invalid.credential";
+    public static final String ERR_CODE_TOKEN_ERROR = "invalid.grant_type";
+    public static final String ERR_CODE_EXCEPTION = "invalid.openid";
+    public static final String ERR_CODE_OPERATION_FAILED = "invalid.media.type";
+    public static final String ERR_CODE_LOGIN_FAILED = "login.failed";
+    public static final String ERR_CODE_PAY_FAILED = "pay.failed";
+    public static final String ERR_CODE_CODE_SING = "code.code.sign";
+    public static final String ERR_CODE_HAVE_SING = "code.have.sign";
+    public static final String ERR_CODE_CODE_SING_ERRO = "coed.sign.erro";
 
-	/**
-	 *  小程序购物车
-	 */
-	public static final String CART_GOODS_NO_LONGER_VALID ="cart.goods.no.longer.valid";
-	public static final String CART_THERE_IS_STILL_INVENTORY ="cart.there.is.still.inventory";
-	public static final String CART_MINIMUM_PURCHASE ="cart.minimum.purchase";
-	public static final String CART_MAXIMUM_PURCHASE ="cart.maximum.purchase";
+    /**
+     *  小程序购物车
+     */
+    public static final String CART_GOODS_NO_LONGER_VALID ="cart.goods.no.longer.valid";
+    public static final String CART_THERE_IS_STILL_INVENTORY ="cart.there.is.still.inventory";
+    public static final String CART_MINIMUM_PURCHASE ="cart.minimum.purchase";
+    public static final String CART_MAXIMUM_PURCHASE ="cart.maximum.purchase";
 
     /**
      *  微信支付
@@ -985,11 +986,11 @@ public class JsonResultMessage {
     public static final String USER_CARD_ONOK = "user.card.onok";
     public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
     public static final String USER_CARD_ABOLITION = "user.card.abolition";
-    
+
     public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
     public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
     public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
-    
+
     // 商品效果导出
     public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
     public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
@@ -1030,17 +1031,25 @@ public class JsonResultMessage {
 
     /**好友助力*/
     public static final String FRIEND_PROMOTE_FAIL = "friend.promote.fail";
-	/**表单统计*/
-	public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
-	public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";
-	public static final String FORM_STATISTICS_NOT_STARTED = "form.statistics.not.started";
-	public static final String FORM_STATISTICS_EXPIRED = "form.statistics.expired";
-	public static final String FORM_STATISTICS_FAIL_SUBMIT_LIMIT = "form.statistics.fail.submit.limit";
-	public static final String FORM_STATISTICS_DAY_SUBMIT_LIMIT = "form.statistics.fail.day.submit.limit";
-	public static final String FORM_STATISTICS_DELETE = "form.statistics.fail.delete";
-	public static final String FORM_STATISTICS_CLOSE = "form.statistics.fail.close";
+    public static final String FRIEND_PROMOTE_LAUNCH_DETAIL = "friend.promote.launch.detail";
+    public static final String FRIEND_PROMOTE_LAUNCH_USER_NAME = "friend.promote.launch.user.name";
+    public static final String FRIEND_PROMOTE_LAUNCH_USER_MOBILE = "friend.promote.launch.user.mobile";
+    public static final String FRIEND_PROMOTE_LAUNCH_ACT_ID = "friend.promote.launch.act.id";
+    public static final String FRIEND_PROMOTE_JOIN_NUM = "friend.promote.join.num";
+    public static final String FRIEND_PROMOTE_PROMOTE_NUM = "friend.promote.promote.num";
+    public static final String FRIEND_PROMOTE_PROMOTE_VALUE = "friend.promote.promote.value";
+    public static final String FRIEND_PROMOTE_IS_SUCCESS = "friend.promote.is.success";
+    /**表单统计*/
+    public static final String FORM_STATISTICS_INEXISTENCE = "form.statistics.inexistence";
+    public static final String FORM_STATISTICS_UNPUBLISHED = "form.statistics.unpublished";
+    public static final String FORM_STATISTICS_NOT_STARTED = "form.statistics.not.started";
+    public static final String FORM_STATISTICS_EXPIRED = "form.statistics.expired";
+    public static final String FORM_STATISTICS_FAIL_SUBMIT_LIMIT = "form.statistics.fail.submit.limit";
+    public static final String FORM_STATISTICS_DAY_SUBMIT_LIMIT = "form.statistics.fail.day.submit.limit";
+    public static final String FORM_STATISTICS_DELETE = "form.statistics.fail.delete";
+    public static final String FORM_STATISTICS_CLOSE = "form.statistics.fail.close";
 
-	/**积分兑换*/
+    /**积分兑换*/
     public static final String INTEGRAL_MALL_EXPORT = "integral.mall.export.order";
     public static final String INTEGRAL_MALL_EXPORT_USER = "integral.mall.export.user";
     public static final String INTEGRAL_MALL_ORDER_SN = "integral.mall.orderSn";
@@ -1067,4 +1076,7 @@ public class JsonResultMessage {
     public static final String GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX = "goods.excel.import.sheet.header.wrong.index";
     /**excel sheet 列和定义的pojo字段位置对应错误*/
     public static final String GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO = "goods.excel.import.sheet.column.not.map.pojo";
+    /**以下未国际化*/
+    public static final String GOODS_EXCEL_UPLOAD_UPYUN_WRONG = "goods.excel.upload.upyun.wrong";
+    public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
 }

@@ -160,7 +160,9 @@
                 :content="$t('promoteList.share')"
                 placement="top"
               >
-                <i class="el-icon-share"></i>
+                <i
+                  class="el-icon-share"
+                   @click="shareActivity(scope.row.id)"></i>
               </el-tooltip>
               <el-tooltip
                 class="item"
@@ -253,11 +255,44 @@
       />
 
     </div>
+
+    <!-- 分享活动弹窗 -->
+    <el-dialog
+      title="扫一扫，分享给好友吧~"
+      :visible.sync="shareDialogVisible"
+      width="400px"
+      custom-class="share-dialog"
+    >
+      <el-image
+        :src="shareInfo.imageUrl"
+        style="width:160px;height:160px;margin:0 auto;"
+        fit="fill"
+      ></el-image>
+      <a
+        class="share-dialog-a"
+        :href="shareInfo.imageUrl"
+        download
+      >下载二维码</a>
+      <div class="share-dialog-footer">
+        <el-input
+          size="small"
+          v-model="shareInfo.pagePath"
+        ></el-input>
+        <el-button
+          type="text"
+          style="margin-left:10px;"
+          v-clipboard:copy="shareInfo.pagePath"
+          v-clipboard:success="onCopySuccess"
+          v-clipboard:error="onCopyError"
+        >复制</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 
 </template>
 <script>
-import { friendHelpList, deleteActive, switchAct } from '@/api/admin/marketManage/friendHelp.js'
+import { friendHelpList, deleteActive, switchAct, shareAct } from '@/api/admin/marketManage/friendHelp.js'
 import pagination from '@/components/admin/pagination/pagination'
 import addHelpAct from './addHelpAct'
 export default {
@@ -267,6 +302,8 @@ export default {
   },
   data () {
     return {
+      shareDialogVisible: false,
+      shareInfo: {},
       startTime: '',
       endTime: '',
       actName: '',
@@ -307,7 +344,28 @@ export default {
     handleCurrentChange () {
       console.log(this.currentPage)
     },
-
+    // 分享
+    shareActivity (id) {
+      // this.loading = true
+      shareAct({
+        id: id
+      }).then(res => {
+        console.log('res???', res)
+        // this.loading = false
+        if (res.error === 0) {
+          this.shareInfo = res.content
+          this.shareDialogVisible = true
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    onCopySuccess () {
+      this.$message.success('已复制')
+    },
+    onCopyError () {
+      this.$message.error('复制失败')
+    },
     handleClick () {
       console.log('this.tabSwitch：', this.tabSwitch)
       this.pageParams.rewardType = this.rewardType
@@ -434,6 +492,9 @@ export default {
     background-color: #fff;
     padding: 10px 20px 10px 20px;
   }
+  .share-dialog-footer {
+    display: flex;
+  }
 }
 /deep/ .tableClss th {
   background-color: #f5f5f5;
@@ -510,5 +571,6 @@ export default {
     color: #66b1ff;
     cursor: pointer;
   }
+
 }
 </style>

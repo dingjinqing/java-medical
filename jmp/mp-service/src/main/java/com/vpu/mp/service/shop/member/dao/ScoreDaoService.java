@@ -1,21 +1,36 @@
 package com.vpu.mp.service.shop.member.dao;
 
+
+import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.UserScoreRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSignParam;
 
 import static org.jooq.impl.DSL.sum;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import static com.vpu.mp.db.shop.Tables.USER_SCORE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFUND_SCORE_STATUS;
 
@@ -28,6 +43,14 @@ import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.REFU
 public class ScoreDaoService extends ShopBaseService {
 	/** -积分有效的状态 列表*/
 	final static List<Byte> AVAILABLE_SCORE_STATUS_LIST = new ArrayList<>(Arrays.asList(NO_USE_SCORE_STATUS, REFUND_SCORE_STATUS ));
+	/**
+	 * 连续签到天数
+	 */
+	public final static String  SIGN_DAY = "day";
+	/**
+	 * 连续签到获得积分数
+	 */
+	public final static String SIGN_SCORE = "score";
 	/**
 	 * 计算用户的所有累积分
 	 * @param id
@@ -94,4 +117,92 @@ public class ScoreDaoService extends ShopBaseService {
 	private boolean isNotNull(Object obj) {
 		return obj!=null;
 	}
+	
+	/**
+	 * 获取所有签到积分
+	 */
+	public PageResult<? extends Record> getAllSignList(ScoreSignParam param) {
+		Condition condition = buildSignPageCondition(param);
+		// 定义查询的数据属性
+		Field<?>[] fields = USER_SCORE.fields();
+		List<Field<?>> f = new ArrayList<>(Arrays.asList(fields));
+		f.add(USER.USERNAME);
+		f.add(USER.MOBILE);
+		Field<?>[] myFields = f.toArray(new Field<?>[0]);
+		Record myRecord = db().newRecord(myFields);
+				
+		SelectSeekStep1<Record, Timestamp> select = db().select(myFields)
+			.from(USER_SCORE.leftJoin(USER).on(USER_SCORE.USER_ID.eq(USER.USER_ID)).leftJoin(USER_TAG).on(USER_SCORE.USER_ID.eq(USER_TAG.USER_ID)))
+			.where(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE))
+			.and(condition)
+			.orderBy(USER_SCORE.CREATE_TIME.desc());
+		
+		PageResult<? extends Record> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
+		return pageResult;
+	}
+	
+	/**
+	 * 构建会员签到列表查询条件
+	 */
+	private Condition buildSignPageCondition(ScoreSignParam param) {
+		Condition condition = DSL.noCondition();
+		if(!StringUtils.isBlank(param.getSearch())) {
+			condition = condition.and(USER.USERNAME.like(likeValue(param.getSearch())));
+		}
+		if(null != param.getStartTime()) {
+			condition = condition.and(USER.CREATE_TIME.greaterOrEqual(param.getStartTime()));
+		}
+		
+		if(null != param.getEndTime()) {
+			condition = condition.and(USER.CREATE_TIME.lessOrEqual(param.getEndTime()));
+		}
+		
+		if(param.getTagIds()!=null && param.getTagIds().size()>0) {
+			condition = condition.and(USER_TAG.TAG_ID.in(param.getTagIds()));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 获取连续签到天数
+	 * @return Map day=连续签到天数; score=连续签到获得的积分
+	 */
+	public Map<String,Integer> checkDays(Integer userId,Timestamp time,Integer score) {
+		logger().info("获取连续签到的天数");
+		Map<String,Integer> map = new HashMap<>();
+		map.put(SIGN_DAY, 0);
+		map.put(SIGN_SCORE,0);
+		if(time == null) {
+			return map;
+		}
+		
+		int day = 1;
+		
+		LocalDateTime refTime = time.toLocalDateTime();
+		do{
+			map.put(SIGN_DAY, day);
+			map.put(SIGN_SCORE,score);
+			
+			LocalDateTime pastTime = refTime.minusDays(day);
+			LocalDateTime pastStartTime = pastTime.withHour(0).withMinute(0).withSecond(0);
+			LocalDateTime pastEndTime = pastTime.withHour(23).withMinute(59).withSecond(59);
+			
+			UserScoreRecord record = db().selectFrom(USER_SCORE)
+				.where(USER_SCORE.USER_ID.eq(userId))
+				.and(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE))
+				.and(USER_SCORE.CREATE_TIME.greaterOrEqual(Timestamp.valueOf(pastStartTime)))
+				.and(USER_SCORE.CREATE_TIME.lessOrEqual(Timestamp.valueOf(pastEndTime)))
+				.fetchOne();
+
+			if(record == null) {
+				break;
+			}else {
+				day += 1;
+				score += record.getUsableScore();
+			}
+		}while(true);
+		
+		return map;
+	}
+	
 }

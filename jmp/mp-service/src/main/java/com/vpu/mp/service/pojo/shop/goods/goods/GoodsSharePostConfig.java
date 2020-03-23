@@ -13,7 +13,7 @@ public class GoodsSharePostConfig {
     /**
      * 海报样式1默认样式，2自定义样式
      */
-    private Byte shareAction;
+    private Byte shareAction = DEFAULT_ACTION;
 
     /**
      * 文档

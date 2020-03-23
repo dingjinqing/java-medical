@@ -35,7 +35,7 @@ public class AdminGoodsImportController extends AdminBaseController{
         param.setLang(getLang());
         param.setExcelTypeEnum(excelTypeEnum);
 
-        JsonResultCode jsonResultCode = shop().goods.goodsImportService.goodsVpuExcelImport(param);
+        JsonResultCode jsonResultCode = shop().goodsImportService.goodsVpuExcelImport(param);
         if (JsonResultCode.CODE_SUCCESS.equals(jsonResultCode)) {
             return success();
         } else {

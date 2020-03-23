@@ -563,7 +563,7 @@ export default {
           item.exchangCountLegal = ''
           break
         case 9:
-          item.exchangCountLegal = `开卡赠送${item.exchangCountLegal}次门店服务机会`
+          item.exchangCountLegal = `开卡赠送${item.legal[0]}次门店服务机会`
           item.legal = ''
           break
         case 10:

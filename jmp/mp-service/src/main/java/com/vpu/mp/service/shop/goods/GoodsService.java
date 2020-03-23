@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
@@ -41,7 +42,6 @@ import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
-import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -83,7 +83,6 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 // TODO:1.所有操作添加操作记录
-// TODO:2.自定义商品上架时间的时候在新增删除修改的时候修改定时任务
 @Slf4j
 public class GoodsService extends ShopBaseService {
 
@@ -125,8 +124,6 @@ public class GoodsService extends ShopBaseService {
     private EsGoodsLabelCreateService esGoodsLabelCreateService;
     @Autowired
     private EsUtilSearchService esUtilSearchService;
-    @Autowired
-    public GoodsImportService goodsImportService;
     @Autowired
     private ConfigService configService;
     @Autowired
@@ -773,14 +770,41 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 新增和修改时存储JsonResultCode使用
+     */
+    private class ResultWrap {
+        GoodsDataIIllegalEnum code = GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /**
+     * 添加商品加锁函数
+     *
+     * @param shopId，加锁使用
+     * @param goods       商品信息
+     * @return
+     */
+    public GoodsDataIIllegalEnum insertWithLock(Integer shopId, Goods goods) {
+        return insert(goods);
+    }
+
+    /**
+     * 添加商品无锁函数
      * 先插入商品，从而得到商品的id， 然后插入商品规格的属性和规格值，
      * 从而得到规格属性和规格值的id, 最后拼凑出prdSpecs再插入具体的商品规格
      *
      * @param goods 商品信息
      */
-    public void insert(Goods goods) {
+    public GoodsDataIIllegalEnum insert(Goods goods) {
+        ResultWrap codeWrap = new ResultWrap();
+
         transaction(() -> {
             try {
+                //存在重复值则直接返回
+                codeWrap.code = columnValueExistCheckForInsert(goods);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+                    return;
+                }
+
                 insertGoods(goods);
 
                 // 商品图片增加
@@ -805,8 +829,15 @@ public class GoodsService extends ShopBaseService {
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
+                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
+                return;
             }
         });
+
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+            return codeWrap.code;
+        }
+
         //更新es
         try {
             if (esUtilSearchService.esState()) {
@@ -815,7 +846,9 @@ public class GoodsService extends ShopBaseService {
             }
         } catch (Exception e) {
             logger().debug("商品新增-同步es数据异常：" + e.getMessage());
+            return GoodsDataIIllegalEnum.GOODS_FAIL;
         }
+        return GoodsDataIIllegalEnum.GOODS_OK;
     }
 
     /**
@@ -972,15 +1005,307 @@ public class GoodsService extends ShopBaseService {
             if (specProduct.getPrdMarketPrice() != null && largestMarketPrice.compareTo(specProduct.getPrdMarketPrice()) < 0) {
                 largestMarketPrice = specProduct.getPrdMarketPrice();
             }
-            if (smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
+            if (specProduct.getPrdCostPrice() != null && smallestCostPrice.compareTo(specProduct.getPrdCostPrice()) > 0) {
                 smallestCostPrice = specProduct.getPrdCostPrice();
             }
         }
         goods.setGoodsNumber(goodsSumNumber);
         goods.setShopPrice(smallestGoodsPrice);
-        goods.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice)==0 ? null:largestMarketPrice);
-        goods.setCostPrice(smallestCostPrice);
+        goods.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).compareTo(largestMarketPrice) == 0 ? null : largestMarketPrice);
+        goods.setCostPrice(BigDecimal.valueOf(Double.MAX_VALUE).compareTo(smallestCostPrice) == 0 ? null : smallestCostPrice);
     }
+
+
+    /**
+     * 商品修改
+     *
+     * @param goods
+     */
+    public GoodsDataIIllegalEnum update(Goods goods) {
+        ResultWrap codeWrap = new ResultWrap();
+
+        transaction(() -> {
+            try {
+                //存在重复值则直接返回
+                codeWrap.code = columnValueExistCheckForUpdate(goods);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+                    return;
+                }
+
+                updateGoods(goods);
+                // 商品图片修改
+                updateImgs(goods);
+                // 商品关联标签添加
+                updateLabels(goods);
+                // 修改商品规格
+                updateSpecPrd(goods);
+                // 修改商品规格会员价
+                updateGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                // 修改专属会员卡
+                updateMemberCards(goods);
+                //修改分销改价
+                updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
+            }
+        });
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+            return codeWrap.code;
+        }
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return GoodsDataIIllegalEnum.GOODS_FAIL;
+        }
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /**
+     * 修改商品表
+     *
+     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
+     */
+    private void updateGoods(Goods goods) {
+        //计算商品的价格和库存量
+        calculateGoodsPriceAndNumber(goods);
+
+        //设置商品分享海报配置信息
+        setGoodsShareConfig(goods);
+
+        GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
+
+        assign(goods, goodsRecord);
+        if (goods.getMarketPrice() == null) {
+            goodsRecord.setMarketPrice(null);
+        }
+        goodsRecord.store();
+    }
+
+    /**
+     * 修改商品规格对应的会员卡价格，由于是一种关联表，每次修改可以先删除旧的然后再新增
+     *
+     * @param goodsGradePrds    商品规格对应会员卡
+     * @param goodsSpecProducts 商品规格
+     * @param goodsId           商品id
+     */
+    private void updateGradePrd(List<GoodsGradePrd> goodsGradePrds, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
+        // 删除旧的项，
+        db().update(GRADE_PRD).set(GRADE_PRD.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GRADE_PRD.GOODS_ID.eq(goodsId)).execute();
+        insertGradePrd(goodsGradePrds, goodsSpecProducts, goodsId);
+    }
+
+    /**
+     * 修改商品专属会员卡
+     *
+     * @param goods
+     */
+    private void updateMemberCards(Goods goods) {
+        //删除关联会员专属信息
+        memberCardService.deleteOwnEnjoyGoodsByGcta(Arrays.asList(goods.getGoodsId()), CardConstant.COUPLE_TP_GOODS);
+        insertMemberCards(goods);
+    }
+
+    /**
+     * 插入商品分销改价信息
+     *
+     * @param goodsRebatePrices
+     * @param goodsSpecProducts
+     * @param goodsId
+     */
+    private void updateGoodsRebatePrices(List<GoodsRebatePrice> goodsRebatePrices, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
+        db().update(GOODS_REBATE_PRICE)
+            .set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GOODS_REBATE_PRICE.GOODS_ID.eq(goodsId)).execute();
+        insertGoodsRebatePrices(goodsRebatePrices, goodsSpecProducts, goodsId);
+    }
+
+    /**
+     * 修改商品图片
+     *
+     * @param goods
+     */
+    private void updateImgs(Goods goods) {
+        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
+
+        deleteImg(goodsIds);
+
+        if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
+            insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
+        }
+    }
+
+    /**
+     * 修改商品标签
+     *
+     * @param goods
+     */
+    private void updateLabels(Goods goods) {
+        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
+
+        goodsLabelCouple.deleteByGoodsIds(goodsIds);
+
+        if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
+            insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
+        }
+    }
+
+    /**
+     * 修改商品sku
+     *
+     * @param goods 商品项
+     */
+    private void updateSpecPrd(Goods goods) {
+        List<GoodsSpecProduct> oldPrds = filterOldGoodsSpecProduct(goods.getGoodsSpecProducts());
+
+        List<GoodsSpecProduct> newPrds = filterNewGoodsSpecProduct(goods.getGoodsSpecProducts());
+
+        // 用户在修该商品的时候删除了部分规格项则并修改了部分规格项，则需要将无效规格从数据库删除，并更新相应规格项
+        goodsSpecProductService.updateAndDeleteForGoodsUpdate(oldPrds, goods.getGoodsSpecs(), goods.getGoodsId());
+
+        // 用户从默认规格改为自定义规格或者新增加了规格值或规格项(可能newPrds是空数组，没有新增规格)
+        goodsSpecProductService.insertForUpdate(newPrds, goods.getGoodsSpecs(), goods.getGoodsId());
+    }
+
+    /**
+     * 根据对象是否存prdId值提取出原有的规格对象（用来执行update操作，可能存在被删除项）
+     *
+     * @param goodsSpecProducts 前端出入的全部规格对象
+     * @return 原有的规格对象
+     */
+    private List<GoodsSpecProduct> filterOldGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
+        List<GoodsSpecProduct> oldPrds = goodsSpecProducts.stream()
+            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() != null).collect(Collectors.toList());
+        return oldPrds;
+    }
+
+    /**
+     * 根据对象是否存prdId值提取出新的规格对象（用来执行insert操作）
+     *
+     * @param goodsSpecProducts 前端出入的全部规格对象
+     * @return 新的规格对象
+     */
+    private List<GoodsSpecProduct> filterNewGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
+        List<GoodsSpecProduct> newPrds = goodsSpecProducts.stream()
+            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() == null).collect(Collectors.toList());
+        return newPrds;
+    }
+
+
+    /*************商品相关信息验证代码*************/
+    /**
+     * 判断商品会员卡价格是否正确
+     *
+     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
+     * @return
+     */
+    public boolean isGradePrdPriceOk(Goods goods) {
+        //判断商品特定等级会员卡的价格是否存在大于对应规格价钱的情况
+        if (goods.getGoodsGradePrds() != null && goods.getGoodsGradePrds().size() > 0) {
+            Map<String, BigDecimal> collect =
+                goods.getGoodsSpecProducts()
+                    .stream()
+                    .collect(Collectors.toMap(GoodsSpecProduct::getPrdDesc, GoodsSpecProduct::getPrdPrice));
+
+            boolean r = goods.getGoodsGradePrds().stream().anyMatch(goodsGradePrd -> {
+                if (goodsGradePrd.getGradePrice() == null || goodsGradePrd.getGrade() == null) {
+                    return true;
+                }
+                return goodsGradePrd.getGradePrice().compareTo(collect.get(goodsGradePrd.getPrdDesc())) > 0;
+            });
+
+            if (r) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 商品新增接口数据重复检查（非原子操作）
+     *
+     * @param goods 商品
+     * @return {@link com.vpu.mp.service.foundation.data.JsonResult}
+     */
+    private GoodsDataIIllegalEnum columnValueExistCheckForInsert(Goods goods) {
+        GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+
+        //检查商品名称是否重复
+        gcep.setGoodsName(goods.getGoodsName());
+        if (isColumnValueExist(gcep)) {
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
+        }
+        gcep.setGoodsName(null);
+
+        //用户输入了商品货号则进行检查是否重复
+        if (goods.getGoodsSn() != null) {
+            gcep.setGoodsSn(goods.getGoodsSn());
+            if (isColumnValueExist(gcep)) {
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
+            }
+            gcep.setGoodsSn(null);
+        }
+
+        List<String> prdSns = goods.getGoodsSpecProducts().stream().filter(x -> !StringUtils.isBlank(x.getPrdSn())).map(GoodsSpecProduct::getPrdSn).collect(Collectors.toList());
+        List<String> skuPrdSnExist = goodsSpecProductService.findSkuPrdSnExist(prdSns);
+        if (skuPrdSnExist.size() > 0) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+        }
+
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /**
+     * 更新数据时判断传入的商品名称、货号，sku码和规格名值是否重复。
+     *
+     * @param goods 商品
+     * @return {@link JsonResult#getError()}!=0表示存在重复
+     */
+    private GoodsDataIIllegalEnum columnValueExistCheckForUpdate(Goods goods) {
+        GoodsColumnCheckExistParam gcep = new GoodsColumnCheckExistParam();
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+
+        //检查商品名称是否重复
+        gcep.setGoodsName(goods.getGoodsName());
+        gcep.setGoodsId(goods.getGoodsId());
+        if (isColumnValueExist(gcep)) {
+            return GoodsDataIIllegalEnum.GOODS_NAME_EXIST;
+        }
+        gcep.setGoodsName(null);
+        gcep.setGoodsId(null);
+
+        //用户输入了商品货号则进行检查是否重复
+        if (goods.getGoodsSn() != null) {
+            gcep.setGoodsSn(goods.getGoodsSn());
+            gcep.setGoodsId(goods.getGoodsId());
+            if (isColumnValueExist(gcep)) {
+                return GoodsDataIIllegalEnum.GOODS_SN_EXIST;
+            }
+            gcep.setGoodsSn(null);
+            gcep.setGoodsId(null);
+        }
+
+        gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
+        //检查sku sn是否重复
+        for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
+            if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
+                gcep.setPrdSn(goodsSpecProduct.getPrdSn());
+                gcep.setPrdId(goodsSpecProduct.getPrdId());
+                if (isColumnValueExist(gcep)) {
+                    return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+                }
+            }
+        }
+        return GoodsDataIIllegalEnum.GOODS_OK;
+    }
+
+    /*************结束*************/
 
     /**
      * 判断字段值是否重复
@@ -1260,174 +1585,6 @@ public class GoodsService extends ShopBaseService {
     private void deleteGoodsRebatePrices(List<Integer> goodsIds) {
         db().update(GOODS_REBATE_PRICE).set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode())
             .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
-    }
-
-    /**
-     * 商品修改
-     *
-     * @param goods
-     */
-    public void update(Goods goods) {
-        transaction(() -> {
-
-            updateGoods(goods);
-
-            // 商品图片修改
-            updateImgs(goods);
-
-            // 商品关联标签添加
-            updateLabels(goods);
-
-            // 修改商品规格
-            updateSpecPrd(goods);
-
-            // 修改商品规格会员价
-            updateGradePrd(goods.getGoodsGradePrds(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-
-            // 修改专属会员卡
-            updateMemberCards(goods);
-
-            //修改分销改价
-            updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-        });
-        //es更新
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 修改商品表
-     *
-     * @param goods {@link com.vpu.mp.service.pojo.shop.goods.goods}
-     */
-    private void updateGoods(Goods goods) {
-        //计算商品的价格和库存量
-        calculateGoodsPriceAndNumber(goods);
-
-        //设置商品分享海报配置信息
-        setGoodsShareConfig(goods);
-
-        GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
-
-        assign(goods, goodsRecord);
-        if (goods.getMarketPrice() == null) {
-            goodsRecord.setMarketPrice(null);
-        }
-        goodsRecord.store();
-    }
-
-    /**
-     * 修改商品规格对应的会员卡价格，由于是一种关联表，每次修改可以先删除旧的然后再新增
-     *
-     * @param goodsGradePrds    商品规格对应会员卡
-     * @param goodsSpecProducts 商品规格
-     * @param goodsId           商品id
-     */
-    private void updateGradePrd(List<GoodsGradePrd> goodsGradePrds, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
-        // 删除旧的项，
-        db().update(GRADE_PRD).set(GRADE_PRD.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GRADE_PRD.GOODS_ID.eq(goodsId)).execute();
-        insertGradePrd(goodsGradePrds, goodsSpecProducts, goodsId);
-    }
-
-    /**
-     * 修改商品专属会员卡
-     *
-     * @param goods
-     */
-    private void updateMemberCards(Goods goods) {
-        //删除关联会员专属信息
-        memberCardService.deleteOwnEnjoyGoodsByGcta(Arrays.asList(goods.getGoodsId()), CardConstant.COUPLE_TP_GOODS);
-        insertMemberCards(goods);
-    }
-
-    /**
-     * 插入商品分销改价信息
-     *
-     * @param goodsRebatePrices
-     * @param goodsSpecProducts
-     * @param goodsId
-     */
-    private void updateGoodsRebatePrices(List<GoodsRebatePrice> goodsRebatePrices, List<GoodsSpecProduct> goodsSpecProducts, Integer goodsId) {
-        db().update(GOODS_REBATE_PRICE)
-            .set(GOODS_REBATE_PRICE.DEL_FLAG, DelFlag.DISABLE.getCode()).where(GOODS_REBATE_PRICE.GOODS_ID.eq(goodsId)).execute();
-        insertGoodsRebatePrices(goodsRebatePrices, goodsSpecProducts, goodsId);
-    }
-
-    /**
-     * 修改商品图片
-     *
-     * @param goods
-     */
-    private void updateImgs(Goods goods) {
-        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
-
-        deleteImg(goodsIds);
-
-        if (goods.getGoodsImgs() != null && goods.getGoodsImgs().size() != 0) {
-            insertGoodsImgs(goods.getGoodsImgs(), goods.getGoodsId());
-        }
-    }
-
-    /**
-     * 修改商品标签
-     *
-     * @param goods
-     */
-    private void updateLabels(Goods goods) {
-        List<Integer> goodsIds = Arrays.asList(goods.getGoodsId());
-
-        goodsLabelCouple.deleteByGoodsIds(goodsIds);
-
-        if (goods.getGoodsLabels() != null && goods.getGoodsLabels().size() != 0) {
-            insertGoodsLabels(goods.getGoodsLabels(), goods.getGoodsId());
-        }
-    }
-
-    /**
-     * 修改商品sku
-     *
-     * @param goods 商品项
-     */
-    private void updateSpecPrd(Goods goods) {
-        List<GoodsSpecProduct> oldPrds = filterOldGoodsSpecProduct(goods.getGoodsSpecProducts());
-
-        List<GoodsSpecProduct> newPrds = filterNewGoodsSpecProduct(goods.getGoodsSpecProducts());
-
-        // 用户在修该商品的时候删除了部分规格项则并修改了部分规格项，则需要将无效规格从数据库删除，并更新相应规格项
-        goodsSpecProductService.updateAndDeleteForGoodsUpdate(oldPrds, goods.getGoodsSpecs(), goods.getGoodsId());
-
-        // 用户从默认规格改为自定义规格或者新增加了规格值或规格项(可能newPrds是空数组，没有新增规格)
-        goodsSpecProductService.insertForUpdate(newPrds, goods.getGoodsSpecs(), goods.getGoodsId());
-    }
-
-    /**
-     * 根据对象是否存prdId值提取出原有的规格对象（用来执行update操作，可能存在被删除项）
-     *
-     * @param goodsSpecProducts 前端出入的全部规格对象
-     * @return 原有的规格对象
-     */
-    private List<GoodsSpecProduct> filterOldGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
-        List<GoodsSpecProduct> oldPrds = goodsSpecProducts.stream()
-            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() != null).collect(Collectors.toList());
-        return oldPrds;
-    }
-
-    /**
-     * 根据对象是否存prdId值提取出新的规格对象（用来执行insert操作）
-     *
-     * @param goodsSpecProducts 前端出入的全部规格对象
-     * @return 新的规格对象
-     */
-    private List<GoodsSpecProduct> filterNewGoodsSpecProduct(List<GoodsSpecProduct> goodsSpecProducts) {
-        List<GoodsSpecProduct> newPrds = goodsSpecProducts.stream()
-            .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() == null).collect(Collectors.toList());
-        return newPrds;
     }
 
     /**
@@ -1938,7 +2095,7 @@ public class GoodsService extends ShopBaseService {
      * 商品图片列表
      *
      * @param goodsIds goods id
-     * @return Map<goodsid   ,       List       <       url>>
+     * @return Map<goodsid       ,               List               <               url>>
      */
     public Map<Integer, List<String>> getGoodsImageList(List<Integer> goodsIds) {
         Map<Integer, Result<GoodsImgRecord>> fetch = db().selectFrom(GOODS_IMG)
@@ -2119,7 +2276,7 @@ public class GoodsService extends ShopBaseService {
      * @return 商品分享信息
      */
     public GoodsVo selectGoodsShareInfo(Integer goodsId) {
-        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
+        Record4<Integer, String, String, String> record = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.SHARE_CONFIG)
             .from(GOODS).where(GOODS.GOODS_ID.eq(goodsId).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny();
 
@@ -2252,10 +2409,11 @@ public class GoodsService extends ShopBaseService {
 
     /**
      * 刷新goods表里的comment_num
+     *
      * @param goodsId
      */
-    public void updateGoodsCommentNum(int goodsId){
+    public void updateGoodsCommentNum(int goodsId) {
         int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
-        db().update(GOODS).set(GOODS.COMMENT_NUM,goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+        db().update(GOODS).set(GOODS.COMMENT_NUM, goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
     }
 }

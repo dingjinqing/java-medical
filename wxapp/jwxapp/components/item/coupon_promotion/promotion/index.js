@@ -21,11 +21,10 @@ global.wxComponent({
   methods: {
     goPromotion(e){
       let {id,type} = e.currentTarget.dataset
-      if(type === '19') return
+      if(type === '19' || type === '18') return
       const linkData = {
         7:{},
         15:{url:'pages1/fullship/fullship',params:{ruleId:id}},
-        18:{},
         21:{}
       }
       util.jumpLink(`${linkData[type].url}${this.getUrlParams(linkData[type].params)}`,'navigateTo')

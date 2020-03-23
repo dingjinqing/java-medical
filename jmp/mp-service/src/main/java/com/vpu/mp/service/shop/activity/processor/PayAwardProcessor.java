@@ -232,7 +232,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 payAwardRecordRecord.setKeepDays(payAwardContentBo.getKeepDays());
                 payAwardRecordRecord.insert();
                 //扣商品库存
-                atomicOperation.updataStockAndSalesByLock(payAwardContentBo.getProduct().getGoodsId(),payAwardContentBo.getProductId(),1,true);
+                atomicOperation.updateStockAndSalesByLock(payAwardContentBo.getProduct().getGoodsId(),payAwardContentBo.getProductId(),1,true);
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays(),null);
                 payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;

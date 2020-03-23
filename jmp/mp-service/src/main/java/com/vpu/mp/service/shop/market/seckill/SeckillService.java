@@ -91,7 +91,7 @@ public class SeckillService extends ShopBaseService{
             SEC_KILL_DEFINE.STATUS,SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.BASE_SALE).
             from(SEC_KILL_DEFINE);
         select = buildOptions(select,param);
-        select.orderBy(SEC_KILL_DEFINE.CREATE_TIME.desc());
+        select.orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_DEFINE.CREATE_TIME.desc());
         PageResult<SeckillPageListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),SeckillPageListQueryVo.class);
         for(SeckillPageListQueryVo vo : res.dataList){
             vo.setCurrentState(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));

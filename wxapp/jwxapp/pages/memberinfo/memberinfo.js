@@ -692,9 +692,17 @@ global.wxPage({
 
       } else {
         console.log(card_no)
+        console.log(user_info)
         util.api('/api/wxapp/activation/card', function (res) {
           console.log(res)
           if (res.error === 0) {
+            util.toast_success('激活成功', function () {
+              setTimeout(function () {
+                util.redirectTo({
+                  url: '/pages/cardlist/cardlist',
+                })
+              }, 2000);
+            });
             that.data.template_ids = res.content.template_ids || [];
             var user_info = res.content.data;
             var fi_arr = res.content.fields;
@@ -811,7 +819,7 @@ global.wxPage({
           that.setData({
             user_block: 1
           })
-        }, { cardNo: card_no, isSetting: 0 })
+        }, { cardNo: card_no, isSetting: 1, activateOption:user_info})
 
 
 

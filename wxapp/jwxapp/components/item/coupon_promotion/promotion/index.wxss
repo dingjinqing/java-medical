@@ -21,6 +21,7 @@
   border-bottom:1rpx solid #eee;
   align-items: center;
   color: #666;
+  min-width: 0;
 }
 .promotion-tag{
   margin-right: 10rpx;
@@ -31,9 +32,12 @@
 }
 .promotion-desc{
   flex: 1;
-  white-space: nowrap;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
   overflow:hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 .right-arrow{
   width: 20rpx;

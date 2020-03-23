@@ -11,7 +11,10 @@
 							<text class="get_status">{{carStatus}}</text>
 						</view>
 						<view class="card_exp">
-							<text wx:if="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
+              <text wx:if="{{cardInfo.expireType == 0}}">
+                有效期：{{cardInfo.cardExpireTime}}
+              </text>
+							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
 							<text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
 						</view>
 					</view>
@@ -29,6 +32,7 @@
 					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
 						<!-- ￥10000 -->
 						<image
+             wx:if="{{cardInfo.cardNo !== null}}"
 						 mode="widthFix"
 						 class="qrcode"
 						 bindtap="showQrCode"
@@ -41,7 +45,6 @@
 				</view>
 			</view>
 		</view>
-
 		<view class="card_item_title" wx:if="{{cardInfo.userCardCreateTime}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_get_time.png" />
@@ -171,7 +174,6 @@
 		 wx:for-index="indexC"
 		 wx:for-item="itemC"
 		>
-
 			<view class="card_item_title"  data-index="{{indexC}}">
 				<view class="item_title_left">
 					<image src="{{itemC.crightImage}}" mode='widthFix' />
@@ -205,7 +207,8 @@
 				适用商品
 			</view>
 			<view class="item_title_right">
-				查看 >
+				<view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
+        <view wx:else>查看 ></view>
 			</view>
 		</view>
 		<view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
@@ -306,7 +309,6 @@
 			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 		</view>
 	</view>
-
 	<view class="flex_footer">
 		<view
 		 class="footer_btn"

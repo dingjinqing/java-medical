@@ -14,7 +14,9 @@
       <view class="count-down" wx:elif="{{clock}}">
         <view>请在{{clock}}内完成支付</view>
       </view>
-      
+      <view class="count-down" wx:if="{{isPreSaleOrder && orderInfo.payOperationTime === 0}}">
+        <view>尾款支付时间：{{orderInfo.preSaleTimeInterval[0] + '-' + orderInfo.preSaleTimeInterval[1]}}</view>
+      </view>
     </view>
     <view class="shipping_info">
       <navigator wx:if="{{orderInfo.shippingInfo}}">
@@ -99,6 +101,31 @@
         </view>
        </block>
       </view>
+    </view>
+    
+    <view class="pre-sale-info" wx:if="{{isPreSaleOrder}}">
+      <view class="info-top">
+        <view class="status-item">
+          <view style="{{orderInfo.bkOrderPaid === 1 ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{orderInfo.bkOrderPaid === 1 ? 'color:'+comColor+';' : ''}}">付定金</text>
+        </view>
+        <view class="line" wx:if="{{orderInfo.orderPayWay === 1}}" style="{{orderInfo.bkOrderPaid === 2 ? 'background-color:'+comColor+';' : ''}}"></view>
+        <view class="status-item" wx:if="{{orderInfo.orderPayWay === 1}}">
+          <view style="{{orderInfo.bkOrderPaid === 2 ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{orderInfo.bkOrderPaid === 2 ? 'color:'+comColor+';' : ''}}">付尾款</text>
+        </view>
+        <view class="line" style="{{orderInfo.orderStatusName === '已发货' ? 'background-color:'+comColor+';' : ''}}"></view>
+        <view class="status-item">
+          <view style="{{orderInfo.orderStatusName === '已发货' ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{orderInfo.orderStatusName === '已发货' ? 'color:'+comColor+';' : ''}}">商家发货</text>
+        </view>
+        <view class="line" style="{{orderInfo.orderStatusName === '订单完成' ? 'background-color:'+comColor+';' : ''}}"></view>
+        <view class="status-item">
+          <view style="{{orderInfo.orderStatusName === '订单完成' ? 'background-color:'+comColor+';border-color:rgba(255,255,255,0.8);':''}}"></view>
+          <text style="{{orderInfo.orderStatusName === '订单完成' ? 'color:'+comColor+';' : ''}}">交易完成</text>
+        </view>
+      </view>
+      <view class="info-bottom"></view>
     </view>
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
@@ -199,6 +226,25 @@
         <text style="color:{{comColor}}">￥{{orderInfo.moneyPaid}}</text>
       </view>
     </view>
+
+    <view class="checkout_detail presale-info" wx:if="{{isPreSaleOrder}}">
+        <view class="detail_item">
+          <text class="dotted" style="background-color:{{comColor}}"></text>
+          <text class="detail_title">定金（{{orderInfo.bkOrderPaid === 1 ? '已付' : '待付款'}}）</text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})</text>
+        </view>
+        <view class="detail_item" wx:if="{{orderInfo.orderPayWay === 1}}">
+          <text class="dotted"></text>
+          <text class="detail_title">尾款（{{orderInfo.bkOrderPaid === 2 ? '已付' : '待付款'}}）</text>
+          <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.bkOrderMoney}}</text>
+        </view>
+        <!-- <view class="detail_item rule">
+          <text class="detail_title" bindtap="viewPreSaleRule">{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
+          <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
+        </view> -->
+      </view>
+
+
     <view class="order_info">
       <text class="title">{{i18n.$t(localePack,"pages.order.orderDetail")}}</text>
       <view class="order_item" selectable>
@@ -207,7 +253,7 @@
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
-    <view class="fixed_footer">
+    <view class="fixed_footer" wx:if="{{orderInfo.operate.length > 0 || orderInfo.orderStatusName === '已发货' || orderInfo.isReturnMoney || orderInfo.isReturnGoods}}">
       <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{orderInfo.orderSn}}" data-order_id="{{orderInfo.orderId}}">
         确认收货
       </view>

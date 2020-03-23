@@ -275,7 +275,7 @@ export default {
       // 包邮信息
       freeship: {
         num: null,
-        type: 3,
+        type: null,
         valid: false
       },
       cardRenew: {
@@ -414,11 +414,11 @@ export default {
       console.log(this.cardEffectTime.fixedDate)
       this.cardEffectTime.receiveDay = data.receiveDay
       this.cardEffectTime.dateType = data.dateType ? String(data.dateType) : '0'
-
       // 包邮信息
       if (data.freeship) {
         this.freeship = data.freeship
       }
+
       this.freeship.valid = false
 
       // 续费信息
