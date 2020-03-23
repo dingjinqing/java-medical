@@ -108,6 +108,7 @@ public class CommentAwardService extends ShopBaseService {
                 .from(COMMENT_AWARD)
                 .where(COMMENT_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildParam(select,param);
+        select.orderBy(COMMENT_AWARD.LEVEL.desc(),COMMENT_AWARD.CREATE_TIME.desc());
         PageResult<CommentAwardListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), CommentAwardListVo.class);
         pageResult.getDataList().forEach(commentaward->{
             commentaward.setCurrentStatus(Util.getActStatus(commentaward.getStatus(),commentaward.getStartTime(),commentaward.getEndTime(),commentaward.getIsForever()));
