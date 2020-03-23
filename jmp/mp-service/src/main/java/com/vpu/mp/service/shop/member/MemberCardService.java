@@ -2667,5 +2667,10 @@ public class MemberCardService extends ShopBaseService {
 		vo.setPagePath(QrCodeTypeEnum.USER_CARD_INFO.getPathUrl(paramStr));
 		return vo;
 	}
+
+	public List<CardBasicVo> getCardById(List<Integer> param) {
+		return  db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.in(param))
+			.fetchInto(CardBasicVo.class);
+	}
 	
 }
