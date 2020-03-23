@@ -1,15 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.firstspecial;
 
-import java.sql.Timestamp;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-
-import lombok.Data;
+import java.sql.Timestamp;
 
 /**
  * @author: 王兵兵
@@ -48,7 +46,7 @@ public class FirstSpecialUpdateParam {
     private FirstSpecialGoodsParam[] firstSpecialGoodsParams;
 
     /** 分享设置 */
-    private ShopShareConfig shareConfig;
+    private PictorialShareConfig shareConfig;
 
     /** 状态：1：启用 0：禁用 */
     @Min(0)
