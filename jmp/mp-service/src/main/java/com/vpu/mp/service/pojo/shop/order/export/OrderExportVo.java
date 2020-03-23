@@ -164,6 +164,9 @@ public class OrderExportVo {
     /** 配送类型 */
     @ExcelIgnore
     private Byte deliverType;
+    /** 物流公司ID */
+    @ExcelIgnore
+    private Byte shippingId;
 
     //列名常量
     public static final String ORDER_SN = "orderSn";
