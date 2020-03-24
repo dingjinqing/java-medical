@@ -166,7 +166,7 @@ public class ChooseLinkService extends ShopBaseService {
 	public List<ActivityVo> getCardList() {
 		 List<ActivityVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME)
 				.from(MEMBER_CARD)
-				.where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+                .where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
 				.fetch().into(ActivityVo.class);
 		return list;
