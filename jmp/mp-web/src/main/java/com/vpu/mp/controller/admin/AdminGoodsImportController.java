@@ -4,11 +4,16 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
+import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author 李晓冰
@@ -41,5 +46,12 @@ public class AdminGoodsImportController extends AdminBaseController{
         } else {
             return fail(jsonResultCode);
         }
+    }
+
+    @RequestMapping("/api/admin/goods/vpu/excel/text")
+    public JsonResult test(@RequestBody GoodsVpuExcelImportParam param) throws IOException {
+        DownloadImageBo downloadImageBo = shop().image.downloadImgAndUpload(param.getUrl());
+        System.out.println(Util.toJson(downloadImageBo));
+        return success(downloadImageBo);
     }
 }

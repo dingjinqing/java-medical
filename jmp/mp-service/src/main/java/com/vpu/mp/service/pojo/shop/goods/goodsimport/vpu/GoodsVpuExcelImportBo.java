@@ -16,7 +16,6 @@ import java.util.List;
 public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private String firstSortName;
     private String secondSortName;
-    private Integer sortId;
     /**sku对应的规格组合id编号*/
     private String prdSpecs;
     private String goodsAd;
