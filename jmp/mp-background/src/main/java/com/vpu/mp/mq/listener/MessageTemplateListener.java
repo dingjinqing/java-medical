@@ -4,6 +4,7 @@ package com.vpu.mp.mq.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -45,8 +46,15 @@ public class MessageTemplateListener implements BaseRabbitHandler {
         List<WxUserInfo> userInfoList = saas.getShopApp(param.getShopId())
             .wechatMessageTemplateService.getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId());
         int allSize = userInfoList.size();
+        if( allSize  != param.getUserIdList().size() ){
+            log.info("推送消息接收人数不对");
+        }
         userInfoList.stream().forEach(info->{
             if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
+                //自定义模版消息更新发送记录状态
+                if( param.getType().equals(RabbitParamConstant.Type.GENERAL_TYPE) ){
+                    saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateStatus(info.getUserId(),param.getMessageTemplateId());
+                }
 
             }else{
                 failList.add(info.getUserId());
