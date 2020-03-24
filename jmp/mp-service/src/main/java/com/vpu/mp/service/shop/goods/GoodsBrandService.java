@@ -174,9 +174,7 @@ public class GoodsBrandService extends ShopBaseService {
             .where(GOODS_BRAND.ID.in(brandIds))
             .execute();
 
-        db().update(GOODS).set(GOODS.BRAND_ID, DEFAULT_GOODS_BRAND_ID)
-            .where(GOODS.BRAND_ID.in(brandIds))
-            .execute();
+        saas().getShopApp(getShopId()).goods.clearBrandId(brandIds);
         //cache update
         goodsBrandDataHelper.delete(brandIds);
     }
