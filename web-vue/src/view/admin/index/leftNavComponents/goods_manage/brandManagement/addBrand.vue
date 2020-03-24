@@ -171,6 +171,7 @@
     <ChoosingGoods
       @result='handleToGetGoods'
       :tuneUpChooseGoods='tuneUpChooseGoods'
+      :chooseGoodsBack="ruleForm.goodsIdsArr"
     />
   </div>
 </template>
@@ -198,6 +199,7 @@ export default {
       }
     }
     return {
+      goodsBack: [], // 选择商品弹窗回显
       ruleForm: { // 表单数据
         name: '', // 品牌名称
         NameEnlishInput: '', // 品牌英文名称
