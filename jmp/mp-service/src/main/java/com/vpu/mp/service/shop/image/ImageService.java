@@ -457,7 +457,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         bo.setHeight(height);
         bo.setSize(size);
         bo.setRelativeFilePath(uploadPath.getRelativeFilePath());
-        bo.setFullPath(uploadPath.getFullPath());
+        bo.setImgUrl(uploadPath.getImageUrl());
 
         return bo;
     }
