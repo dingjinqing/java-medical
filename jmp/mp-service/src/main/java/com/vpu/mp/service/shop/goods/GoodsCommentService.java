@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -340,17 +341,8 @@ public class GoodsCommentService extends ShopBaseService {
   public int addComment(GoodsCommentAddCommParam goodsCommentAddComm) {
       //有权限
       if (commentSwitch.getAddCommentSwitch(getSysId()).equals(NumberUtils.INTEGER_ONE)){
-          //查询审核配置
-//          Byte commSwitch = commentConfigService.getCommentConfig();
+
           Byte flag =1;
-//          //不用审核 先发后审
-//          if (commSwitch.equals(BYTE_ONE)||commSwitch.equals(BYTE_ZERO)){
-//              flag = 1;
-//          }
-//          //先审后发
-//          else {
-//              flag = 0;
-//          }
 
           //手动添加评价
           db().insertInto(
@@ -1023,5 +1015,30 @@ public class GoodsCommentService extends ShopBaseService {
             select.and(COMMENT_GOODS.COMM_NOTE.isNotNull()).and(COMMENT_GOODS.COMM_NOTE.notEqual(""));
         }
         return select.fetchOptionalInto(Integer.class).orElse(0);
+    }
+
+    /**
+     * 将评论置顶
+     * @param param 评价记录id
+     */
+    public void setTop(GoodsCommentIdParam param){
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_TOP,(byte)1)
+            .set(COMMENT_GOODS.TOP_TIME, DateUtil.getSqlTimestamp())
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
+    }
+
+    /**
+     * 取消评论置顶
+     * @param param 评价记录id
+     */
+    public void cancelTop(GoodsCommentIdParam param){
+        Timestamp topTime = null;
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_TOP,(byte)0)
+            .set(COMMENT_GOODS.TOP_TIME, topTime)
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
     }
 }

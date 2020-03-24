@@ -201,5 +201,26 @@ public class AdminGoodsCommentController extends AdminBaseController {
         }
 		return success();
 	}
-	
+
+    /**
+     * 评论置顶
+     * @param param 评价记录id
+     * @return
+     */
+	@PostMapping("/setTop")
+    public JsonResult setTop(@RequestBody GoodsCommentIdParam param){
+	    shop().goods.goodsComment.setTop(param);
+	    return success();
+    }
+
+    /**
+     * 取消评论置顶
+     * @param param 评价记录id
+     * @return
+     */
+    @PostMapping("/cancelTop")
+    public JsonResult cancelTop(@RequestBody GoodsCommentIdParam param){
+        shop().goods.goodsComment.cancelTop(param);
+        return success();
+    }
 }
