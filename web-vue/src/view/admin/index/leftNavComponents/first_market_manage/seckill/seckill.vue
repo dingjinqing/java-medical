@@ -188,7 +188,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-s-data"
-                  @click="seckillEffectHandler(scope.row.skId)"
+                  @click="seckillEffectHandler(scope.row.skId, scope.row.startTime, scope.row.endTime)"
                 ></span>
               </el-tooltip>
             </div>
@@ -412,8 +412,8 @@ export default {
     },
 
     // 查看活动数据效果
-    seckillEffectHandler (id) {
-      this.$router.push({ name: 'seckill_effect_view', query: { id: id } })
+    seckillEffectHandler (id, startTime, endTime) {
+      this.$router.push({ name: 'seckill_effect_view', query: { id: id, startTime: startTime, endTime: endTime } })
     }
 
   }

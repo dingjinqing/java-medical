@@ -244,7 +244,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-s-data"
-                  @click="effectHandler(scope.row.id)"
+                  @click="effectHandler(scope.row.id, scope.row.startTime, scope.row.endTime)"
                 ></span>
               </el-tooltip>
             </div>
@@ -453,8 +453,8 @@ export default {
     },
 
     // 查看活动数据效果
-    effectHandler (id) {
-      this.$router.push({ name: 'lottery_effect_view', query: { id: id } })
+    effectHandler (id, startTime, endTime) {
+      this.$router.push({ name: 'lottery_effect_view', query: { id: id, startTime: startTime, endTime: endTime } })
     }
   }
 
