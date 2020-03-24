@@ -88,7 +88,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
             logger().info("发小程序结果："+success);
         }
 
-        if ((param.getMpTemplateData() != null && type < 2000)|| (!success && param.getMpTemplateData() != null)) {
+        if( param.getMpTemplateData() != null && type < 2000 && (type.equals(RabbitParamConstant.Type.GENERAL_TYPE) || !success ) ){
 			logger().info("发公众号");
             success = sendMpMessage(param,info);
             logger().info("发公众号结果："+success);
