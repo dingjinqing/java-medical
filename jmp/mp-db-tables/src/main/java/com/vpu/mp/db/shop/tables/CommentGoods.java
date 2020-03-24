@@ -8,14 +8,25 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CommentGoodsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +42,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommentGoods extends TableImpl<CommentGoodsRecord> {
 
-    private static final long serialVersionUID = 506261517;
+    private static final long serialVersionUID = 1272196790;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_comment_goods</code>
@@ -150,6 +161,16 @@ public class CommentGoods extends TableImpl<CommentGoodsRecord> {
      * The column <code>mini_shop_471752.b2c_comment_goods.prd_id</code>. 商品规格id
      */
     public final TableField<CommentGoodsRecord, Integer> PRD_ID = createField("prd_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品规格id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.is_top</code>. 是否置顶
+     */
+    public final TableField<CommentGoodsRecord, Byte> IS_TOP = createField("is_top", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否置顶");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_comment_goods.top_time</code>. 置顶时间
+     */
+    public final TableField<CommentGoodsRecord, Timestamp> TOP_TIME = createField("top_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "置顶时间");
 
     /**
      * Create a <code>mini_shop_471752.b2c_comment_goods</code> table reference
