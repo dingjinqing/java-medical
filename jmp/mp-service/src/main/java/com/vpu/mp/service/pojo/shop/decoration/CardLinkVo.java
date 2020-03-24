@@ -18,7 +18,7 @@ public class CardLinkVo {
     /**
      * 过期类型 0:固定日期 1：自领取之日起 2:不过期
      */
-    private Byte expire_type;
+    private Byte expireType;
     /**
      * 有效期开始时间
      */
