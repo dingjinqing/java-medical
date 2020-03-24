@@ -184,7 +184,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_comment' && isShowOrder=='1'"
+                  v-if="val.icon_name=='wait_comment' && (isShowOrder=='1' || (isShowOrder=='2' && orderRadio=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -198,7 +198,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='refund'"
+                  v-if="val.icon_name=='refund' && (isShowOrder=='1' || (isShowOrder=='2' && orderRadio=='2'))"
                 >
                   <div class="item_img">
                     <img
@@ -353,6 +353,21 @@
                   style="display: flex;"
                   v-for="(val, key) in item.content"
                   :key="key"
+                  v-if="key==0 && val.is_show=='1'"
+                >
+                  <div class="serve_img">
+                    <img
+                      :src="imgHost + val.icon"
+                      alt=""
+                    >
+                  </div>
+                  <div class="serve_word">{{ $t('personalCenter.wait5') }}</div>
+                </div>
+                <div
+                  class="each_serve"
+                  style="display: flex;"
+                  v-for="(val, key) in item.content"
+                  :key="key"
                   v-if="val.icon_name==='distribution' && val.is_show=='1'"
                 >
                   <div class="serve_img">
@@ -473,7 +488,7 @@
                   style="display: flex;"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="key>7 && val.is_show=='1'"
+                  v-if="key>8 && val.is_show=='1'"
                 >
                   <div class="serve_img">
                     <img
@@ -755,6 +770,15 @@
                     </div>
                   </el-form-item>
                   <el-form-item :label="$t('personalCenter.waitComment')">
+                    <label
+                      slot="label"
+                      v-if="item.module_style === '2'"
+                    >
+                      <el-radio
+                        v-model="orderRadio"
+                        label="1"
+                      >{{$t('personalCenter.waitComment')}}</el-radio>
+                    </label>
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -781,6 +805,15 @@
                     </div>
                   </el-form-item>
                   <el-form-item :label="$t('personalCenter.refund')">
+                    <label
+                      slot="label"
+                      v-if="item.module_style === '2'"
+                    >
+                      <el-radio
+                        v-model="orderRadio"
+                        label="2"
+                      >{{$t('personalCenter.refund')}}</el-radio>
+                    </label>
                     <div
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
@@ -937,10 +970,43 @@
                     <p>{{ $t('personalCenter.serveTitle') }}</p>
                   </el-form-item>
                   <el-form-item
-                    :label="$t('personalCenter.distribution') + '：'"
+                    :label="$t('personalCenter.wait5') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
                     v-if="key==0"
+                  >
+                    <el-radio-group
+                      v-model="val.is_show"
+                      @change="changeAccountItem(item.module_name, val.icon_name, val.is_show)"
+                    >
+                      <el-radio label="1">{{ $t('personalCenter.show') }}</el-radio>
+                      <el-radio label="0">{{ $t('personalCenter.noShow') }}</el-radio>
+                    </el-radio-group>
+                    <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
+                      <div
+                        class="imgContainter"
+                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                      >
+                        <el-image
+                          fit="scale-down"
+                          :src="imgHost + val.icon"
+                        />
+                        <div class="selectIcon">{{ $t('personalCenter.changeIcon') }}</div>
+                      </div>
+                      <div style="margin-left: 10px;">
+                        <p style="color: #999;">{{ $t('personalCenter.iconTip') }}</p>
+                        <el-button
+                          type="text"
+                          @click="resetIconHandler(item.module_name, val.icon_name, '/image/admin/uc_config/icon_after.png')"
+                        >{{ $t('personalCenter.resetIcon') }}</el-button>
+                      </div>
+                    </div>
+                  </el-form-item>
+                  <el-form-item
+                    :label="$t('personalCenter.distribution') + '：'"
+                    v-for="(val, key) in item.content"
+                    :key="key"
+                    v-if="val.icon_name==='distribution'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -973,7 +1039,7 @@
                     :label="$t('personalCenter.bargain') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==1"
+                    v-if="val.icon_name==='bargain'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1006,7 +1072,7 @@
                     :label="$t('personalCenter.award') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==2"
+                    v-if="val.icon_name==='award'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1040,7 +1106,7 @@
                     :label="$t('personalCenter.commentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==3"
+                    v-if="val.icon_name==='comment_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1073,7 +1139,7 @@
                     :label="$t('personalCenter.storeList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==4"
+                    v-if="val.icon_name==='store_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1106,7 +1172,7 @@
                     :label="$t('personalCenter.userActivate') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==5"
+                    v-if="val.icon_name==='user_activate'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1139,7 +1205,7 @@
                     :label="$t('personalCenter.orderVerify') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==6"
+                    v-if="val.icon_name==='order_verify'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1172,7 +1238,7 @@
                     :label="$t('personalCenter.presentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==7"
+                    v-if="val.icon_name==='present_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1206,7 +1272,7 @@
                     :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key>7"
+                    v-if="key>8"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1322,6 +1388,7 @@ export default {
       templateTitle: '', // 自定义模板标题
       imageSize: [], // 图片大小
       isDraggable: false, // 是否支持多选
+      orderRadio: '1',
 
       leftData: [{
         module_name: 'global',
@@ -1401,6 +1468,13 @@ export default {
         title: '我的服务',
         is_show: '1',
         content: [
+          {
+            is_show: '1',
+            icon_name: 'refund',
+            icon: '/image/admin/uc_config/icon_after.png',
+            link: '',
+            link_name: ''
+          },
           {
             is_show: '1',
             icon_name: 'distribution',
@@ -1546,6 +1620,13 @@ export default {
         title: '我的服务',
         is_show: '1',
         content: [
+          {
+            is_show: '1',
+            icon_name: 'refund',
+            icon: '/image/admin/uc_config/icon_after.png',
+            link: '',
+            link_name: ''
+          },
           {
             is_show: '1',
             icon_name: 'distribution',
@@ -2154,6 +2235,7 @@ export default {
 }
 
 .each_serve {
+  height: 60px;
   width: 105px;
   margin-bottom: 20px;
   float: left;
