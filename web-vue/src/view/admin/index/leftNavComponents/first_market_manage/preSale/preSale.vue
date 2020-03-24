@@ -124,7 +124,9 @@
           width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            <div v-if="scope.row.presaleType === 0">
+              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
