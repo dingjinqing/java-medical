@@ -170,7 +170,7 @@
                 <span
                   style="font-size: 22px;"
                   class="el-icon-s-data"
-                  @click="reduceEffectHandler(scope.row.id)"
+                  @click="reduceEffectHandler(scope.row.id, scope.row.startTime, scope.row.endTime)"
                 ></span>
               </el-tooltip>
             </div>
@@ -363,8 +363,8 @@ export default {
     },
 
     // 活动效果数据
-    reduceEffectHandler (id) {
-      this.$router.push({ name: 'reduce_effect_view', query: { id: id } })
+    reduceEffectHandler (id, startTime, endTime) {
+      this.$router.push({ name: 'reduce_effect_view', query: { id: id, startTime: startTime, endTime: endTime } })
     }
   }
 }
