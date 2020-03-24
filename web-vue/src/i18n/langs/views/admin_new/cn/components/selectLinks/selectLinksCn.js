@@ -122,7 +122,7 @@ export const cn = {
     },
     {
       title: '商家分类',
-      path: 'pages/sort/sort',
+      path: 'pages1/search/search',
       spanId: ''
     },
     {

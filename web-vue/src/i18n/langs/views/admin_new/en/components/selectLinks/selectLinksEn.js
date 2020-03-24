@@ -117,7 +117,7 @@ export const en = {
     },
     {
       title: 'All merchandise',
-      path: 'pages/searchs/search',
+      path: 'pages1/search/search',
       spanId: ''
     },
     {
