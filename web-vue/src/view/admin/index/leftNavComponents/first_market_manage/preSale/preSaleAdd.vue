@@ -200,7 +200,8 @@
               :label="2"
               style="line-height:40px"
             >
-              <span>&nbsp;尾款支付完成</span>
+              <span v-if="this.param.presaleType === 0">&nbsp;尾款支付完成</span>
+              <span v-if="this.param.presaleType === 1">&nbsp;支付完成后</span>
             </el-radio>
             <!-- <el-form-item
               prop="deliverDays"
@@ -420,7 +421,7 @@
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
                   :rules="[
                     { required: true, message: '1阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateFirstStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -452,7 +453,7 @@
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney2'"
                   :rules="[
                     { required: true, message: '2阶段定金不能为空'},
-                    { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateSecondStage(rule, value, callback, scope.row.presalePrice, scope.row.presaleMoney)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -822,22 +823,26 @@ export default {
         callback()
       }
     },
-    validateFirstStage (rule, value, callback, presalePrice) {
+    validateFirstStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
         callback(new Error('1阶段定金不能大于活动价格'))
+      } else if (value < Number(presaleMoney)) {
+        callback(new Error('1阶段定金不能小于定金'))
       } else {
         callback()
       }
     },
-    validateSecondStage (rule, value, callback, presalePrice) {
+    validateSecondStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
         callback(new Error('2阶段定金不能大于活动价格'))
+      } else if (value < Number(presaleMoney)) {
+        callback(new Error('2阶段定金不能小于定金'))
       } else {
         callback()
       }

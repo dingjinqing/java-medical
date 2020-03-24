@@ -24,6 +24,7 @@ public class FormSuccessVo {
     private String nickName;
     private String sendScore;
     private String sendCoupons;
+    private String formCfg;
     private Timestamp createTime;
     private Timestamp updateTime;
 
