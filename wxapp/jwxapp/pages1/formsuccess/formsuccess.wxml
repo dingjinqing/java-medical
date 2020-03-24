@@ -46,10 +46,10 @@
       </view>
     </view>
   </view>
-  <form report-submit='true' bindsubmit='to_anylink' wx:if='{{successInfo.form_data.form_cfg.set_own_link == 1}}'>
-    <button class='btn_to_index' formType='submit' style='background:#ffbd4b;margin-bottom:20rpx'>{{successInfo.form_data.form_cfg.custom_btn_name}}</button>
+  <form bindsubmit='to_anylink' wx:if='{{successInfo.formInfo.set_own_link == 1}}'>
+    <button class='btn_to_index' formType='submit' style='background:#ffbd4b;margin-bottom:20rpx'>{{successInfo.formInfo.custom_btn_name}}</button>
   </form>
-  <form report-submit='true' bindsubmit='to_index'>
+  <form bindsubmit='to_index'>
       <button class='btn_to_index' formType='submit' style='background:{{comColor}}'>返回首页</button>
   </form>
 </view>

@@ -31,6 +31,7 @@ global.wxPage({
             successInfo.couponList[i].endTime = successInfo.couponList[i].endTime.substring(0, 10);
           }
         }
+        successInfo.formInfo = JSON.parse(successInfo.formCfg)
         that.setData({
           successInfo: successInfo
         })
@@ -42,9 +43,9 @@ global.wxPage({
   },
 
   to_index:function(e){
-    var form_id = e.detail.formId;
-    var open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id});
+    // var form_id = e.detail.formId;
+    // var open_id = util.getCache("openid");
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id});
     util.reLaunch({
       url: '/pages/index/index',
     })
@@ -59,11 +60,11 @@ global.wxPage({
       url: '/pages/coupon/coupon',
     })
   },
-  to_anylink:function(e){
-    let form_id = e.detail.formId;
-    let open_id = util.getCache("openid");
-    util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id });
-    util.jumpLink(successInfo.form_data.form_cfg.custom_link_path);
+  to_anylink: function(e){
+    // let form_id = e.detail.formId;
+    // let open_id = util.getCache("openid");
+    // util.api("/api/wxapp/common/saveformid", function (res) { }, { form_id: form_id, open_id: open_id });
+    util.jumpLink(successInfo.formInfo.custom_link_path);
   },
 
   /**
