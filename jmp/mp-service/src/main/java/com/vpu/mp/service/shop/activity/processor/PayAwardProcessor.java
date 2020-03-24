@@ -314,8 +314,9 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
                     () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-            int circleTimes = (joinAwardCount) / payAwardSize+1;
-            int currentAward = joinAwardCount % payAwardSize;
+
+            int circleTimes = (joinAwardCount - 1) / payAwardSize + 1;
+            int currentAward = (joinAwardCount - 1) % payAwardSize + 1;
             logger().info("当前第:{}轮,第:{}次", circleTimes,currentAward);
             if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*payAwardSize < joinAwardCount) {
                 jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
@@ -323,7 +324,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 return;
             }
             logger().info("当前的奖励层级:{}", currentAward);
-            PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward);
+            PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward-1);
             logger().info("当前奖励:" + payAwardContentBo.toString());
             if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
                 logger().info("当前奖励无奖品");
