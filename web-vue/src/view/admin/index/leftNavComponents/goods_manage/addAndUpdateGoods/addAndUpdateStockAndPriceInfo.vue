@@ -1319,13 +1319,16 @@ export default {
       }
 
       // 验证限购数量
-      if (!isNumberBlank(this.goodsProductInfo.limitBuyNum) && !isNumberBlank(this.goodsProductInfo.limitMaxNum)) {
-        if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-          this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
-          this.$refs.limitBuyNumInput.focus()
-          return false
+      if (this.goodsProductInfo.limitBuyNum !== 0 && this.goodsProductInfo.limitMaxNum !== 0) {
+        if (!isNumberBlank(this.goodsProductInfo.limitBuyNum) && !isNumberBlank(this.goodsProductInfo.limitMaxNum)) {
+          if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
+            this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
+            this.$refs.limitBuyNumInput.focus()
+            return false
+          }
         }
       }
+
       return true
     },
     /* 获取传给后台的表单数据 */
