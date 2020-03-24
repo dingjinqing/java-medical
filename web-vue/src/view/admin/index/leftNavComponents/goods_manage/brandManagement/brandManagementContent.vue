@@ -331,7 +331,11 @@
             prop="classifyFirst"
             :label="$t('brandManagement.classificationPriority')"
             align="center"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              {{activeName==='first'?scope.row.classifyFirst:scope.row.first}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="isRecommend"
             :label="$t('brandManagement.recommendBrand')"
