@@ -51,12 +51,12 @@ global.wxPage({
   },
   to_integral:function(){
     util.navigateTo({
-      url: '/pages/integral/integral',
+      url: '/pages1/integral/integral',
     })
   },
   to_coupon:function(){
     util.navigateTo({
-      url: '/pages/couponlist/couponlist',
+      url: '/pages/coupon/coupon',
     })
   },
   to_anylink:function(e){
