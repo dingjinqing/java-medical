@@ -254,7 +254,7 @@ public final  class  BaseConstant {
     /** 8参与活动的某规格无可使用活动数量 */
     public final static Byte ACTIVITY_STATUS_PRD_NOT_HAS_NUM = 8;
     /** 9有待支付对应订单 */
-    public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 8;
+    public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 9;
 
     public static boolean needToConsiderNotHasNum(Byte actState){
         if (ACTIVITY_STATUS_CAN_USE.equals(actState) || ACTIVITY_STATUS_NOT_START.equals(actState)) {
