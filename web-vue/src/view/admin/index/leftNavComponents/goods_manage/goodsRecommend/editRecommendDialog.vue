@@ -64,8 +64,10 @@ export default {
   },
   methods: {
     submit () {
+      let editData = this.editData
+      if (editData.recommendGoods.length > 0) editData.recommendGoods = editData.recommendGoods.map(item => { return item.goodsId })
       let obj = {
-        ...this.editData,
+        ...editData,
         recommendUsePage: this.recommendUsePage
       }
       updateRecommend(obj).then(res => {

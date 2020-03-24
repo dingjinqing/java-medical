@@ -554,7 +554,7 @@ public class GoodsSpecProductService extends ShopBaseService {
      */
     public boolean isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
         //在选择默认规格的情况下该字段可以是空
-        if (specs == null) {
+        if (specs == null||specs.size()==0) {
             return true;
         }
 
@@ -565,7 +565,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             specNameRepeatMap.put(goodsSpec.getSpecName(), null);
             //检查同一规格下规格值是否重复
             List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
-            if (goodsSpecVals == null) {
+            if (goodsSpecVals == null ||goodsSpecVals.size()==0) {
                 continue;
             }
             Map<String, Object> specValRepeatMap = new HashMap<>(goodsSpecVals.size());

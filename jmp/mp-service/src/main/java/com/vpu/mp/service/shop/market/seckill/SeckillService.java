@@ -646,14 +646,14 @@ public class SeckillService extends ShopBaseService{
 
     /**
      * 更新秒杀库存和销量，减少number个库存，number可以是负数
-     * 暂时不处理销量
+     *
      * @param skId
      * @param productId
      * @param number
      */
     public void updateSeckillStock(int skId,int productId,int number){
-        db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK.sub(number)).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))).execute();
-        db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.STOCK.sub(number)).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).execute();
+        db().update(SEC_KILL_PRODUCT_DEFINE).set(SEC_KILL_PRODUCT_DEFINE.STOCK,SEC_KILL_PRODUCT_DEFINE.STOCK.sub(number)).set(SEC_KILL_PRODUCT_DEFINE.SALE_NUM,SEC_KILL_PRODUCT_DEFINE.SALE_NUM.add(number)).where(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(skId).and(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(productId))).execute();
+        db().update(SEC_KILL_DEFINE).set(SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.STOCK.sub(number)).set(SEC_KILL_DEFINE.SALE_NUM,SEC_KILL_DEFINE.SALE_NUM.add(number)).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).execute();
     }
 
     public Workbook exportSeckillOrderList(MarketOrderListParam param, String lang){
