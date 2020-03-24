@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,8 @@ public class GoodsImportService extends ShopBaseService {
     GoodsImportRecordService importRecordService;
     @Autowired
     GoodsService goodsService;
+    @Autowired
+    GoodsSortService goodsSortService;
     /**
      * 最大导入数量
      */
@@ -70,11 +73,11 @@ public class GoodsImportService extends ShopBaseService {
      */
     public JsonResultCode goodsVpuExcelImport(GoodsVpuExcelImportParam param) {
         Workbook workbook = null;
-        String filePath = "";
-        try (InputStream in = param.getFile().getInputStream()) {
-            workbook = ExcelFactory.createWorkbook(in, param.getExcelTypeEnum());
-//            filePath = createFilePath(getShopId(), param.getFile().getName());
-//            imageService.getUpYunClient().writeFile(filePath, in, true, null);
+        String filePath;
+        try (InputStream in1 = param.getFile().getInputStream(); InputStream in2 = param.getFile().getInputStream()) {
+            workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
+            filePath = createFilePath(getShopId(), param.getFile().getName());
+            imageService.getUpYunClient().writeFile(filePath, in2, true, null);
         } catch (IOException e) {
             log.debug("微铺宝excel商品导入创建workbook失败：" + e.getMessage());
             return JsonResultCode.GOODS_EXCEL_IMPORT_WORKBOOK_CREATE_FAIL;
@@ -111,7 +114,7 @@ public class GoodsImportService extends ShopBaseService {
             Integer batchId = importRecordService.insertGoodsImportInfo(goodsVpuExcelImportModels.size(), filePath, param.getIsUpdate());
             /**excel model 对象转换为对应的业务对象*/
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
-            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(),batchId, getShopId(), null);
+            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
 //            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
 //                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
@@ -304,7 +307,10 @@ public class GoodsImportService extends ShopBaseService {
             return GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG;
         }
         ResultWrap wrap = new ResultWrap();
+        GoodsVpuExcelImportBo bo = importBos.get(0);
         transaction(() -> {
+            int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
+            goods.setSortId(sortId);
             // 这个地方是为了避免报异常
             goods.setCatId(0);
             // 处理商家分类
@@ -348,6 +354,9 @@ public class GoodsImportService extends ShopBaseService {
             product.setPrdMarketPrice(importBo.getMarketPrice());
             product.setPrdNumber(importBo.getStock());
             product.setPrdSn(importBo.getPrdSn());
+            if (importBo.getPrdDesc() != null) {
+                importBo.setPrdDesc(importBo.getPrdDesc().replaceAll("：",GoodsSpecProductService.PRD_VAL_DELIMITER).replaceAll("；",GoodsSpecProductService.PRD_DESC_DELIMITER));
+            }
             product.setPrdDesc(importBo.getPrdDesc());
             skuList.add(product);
         }
@@ -367,7 +376,7 @@ public class GoodsImportService extends ShopBaseService {
             return null;
         }
         // 解析对应的规格组K
-        String[] specKVs = base.getGoodsDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
+        String[] specKVs = base.getPrdDesc().split(GoodsSpecProductService.PRD_DESC_DELIMITER);
         List<GoodsSpec> goodsSpecs = new ArrayList<>(6);
         for (String specKV : specKVs) {
             String[] kvs = specKV.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
@@ -377,7 +386,7 @@ public class GoodsImportService extends ShopBaseService {
         Map<String, GoodsSpec> goodsSpecsMap = goodsSpecs.stream().collect(Collectors.toMap(GoodsSpec::getSpecName, Function.identity()));
         // 解析规格组V
         for (GoodsVpuExcelImportBo importBo : importBos) {
-            String desc = importBo.getGoodsDesc();
+            String desc = importBo.getPrdDesc();
             String[] kvStrs = desc.split(GoodsSpecProductService.PRD_DESC_DELIMITER);
             for (String kvStr : kvStrs) {
                 String[] kv = kvStr.split(GoodsSpecProductService.PRD_VAL_DELIMITER);
@@ -385,7 +394,10 @@ public class GoodsImportService extends ShopBaseService {
                 if (goodsSpec == null) {
                     continue;
                 }
-                goodsSpec.getGoodsSpecVals().add(new GoodsSpecVal(kv[1]));
+                boolean b = goodsSpec.getGoodsSpecVals().stream().anyMatch(specVal -> StringUtils.equals(specVal.getSpecValName(), kv[1]));
+                if (!b) {
+                    goodsSpec.getGoodsSpecVals().add(new GoodsSpecVal(kv[1]));
+                }
             }
         }
         return goodsSpecs;
