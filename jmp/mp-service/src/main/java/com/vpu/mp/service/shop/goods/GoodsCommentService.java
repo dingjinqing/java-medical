@@ -81,6 +81,7 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS.ANONYMOUSFLAG,
                     COMMENT_GOODS.BOGUS_USERNAME,
                     COMMENT_GOODS.COMMENT_AWARD_ID,
+                    COMMENT_GOODS.IS_TOP,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_IMG,
                     USER.USER_ID,
@@ -165,6 +166,10 @@ public class GoodsCommentService extends ShopBaseService {
           select.and(COMMENT_GOODS.FLAG.eq(BYTE_ZERO))
               .and(COMMENT_GOODS.CREATE_TIME.add(param.getNDays()).lessThan(Timestamp.valueOf(LocalDateTime.now())));
       }
+    //根据是否置顶查询
+    if (GoodsCommentPageListParam.TOP.equals(param.getIsTop())){
+        select.and(COMMENT_GOODS.IS_TOP.eq(GoodsCommentPageListParam.TOP));
+    }
   }
 
     /**
@@ -1023,7 +1028,7 @@ public class GoodsCommentService extends ShopBaseService {
      */
     public void setTop(GoodsCommentIdParam param){
         db().update(COMMENT_GOODS)
-            .set(COMMENT_GOODS.IS_TOP,(byte)1)
+            .set(COMMENT_GOODS.IS_TOP,GoodsCommentPageListParam.TOP)
             .set(COMMENT_GOODS.TOP_TIME, DateUtil.getSqlTimestamp())
             .where(COMMENT_GOODS.ID.eq(param.getId()))
             .execute();
@@ -1036,7 +1041,7 @@ public class GoodsCommentService extends ShopBaseService {
     public void cancelTop(GoodsCommentIdParam param){
         Timestamp topTime = null;
         db().update(COMMENT_GOODS)
-            .set(COMMENT_GOODS.IS_TOP,(byte)0)
+            .set(COMMENT_GOODS.IS_TOP,GoodsCommentPageListParam.NOT_TOP)
             .set(COMMENT_GOODS.TOP_TIME, topTime)
             .where(COMMENT_GOODS.ID.eq(param.getId()))
             .execute();
