@@ -235,6 +235,9 @@ public class Calculate extends ShopBaseService {
                             logger().info("优惠券折扣金额不大于0删除");
                             i.remove();
                         }
+                    }else {
+                        logger().info("优惠券折扣金额不大于0删除(getTolalNumberAndPriceByType校验)");
+                        i.remove();
                     }
                 } else {
                     logger().info("优惠券无匹配商品删除");
