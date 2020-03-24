@@ -1,6 +1,12 @@
 <template>
   <div class="membershipCard">
     <div class="membershipCardMain">
+      <el-button
+        class="changePage"
+        size="small"
+        type="primary"
+        @click="handleToChangePage()"
+      >切换为{{changePageFlag?'卡片':'表格'}}</el-button>
       <el-tabs
         v-model="activeName"
         @tab-click="handleClick"
@@ -9,7 +15,10 @@
           :label="$t('memberCard.normalCard')"
           name="first"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="false"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(0)"
@@ -93,7 +102,10 @@
                       </el-tooltip>
                     </div>
 
-                    <div v-if="item.flag !== 3"   @click="handleToTips(2,item,index,0)">
+                    <div
+                      v-if="item.flag !== 3"
+                      @click="handleToTips(2,item,index,0)"
+                    >
                       <el-tooltip
                         class="item"
                         effect="dark"
@@ -127,10 +139,13 @@
           </div>
         </el-tab-pane>
         <el-tab-pane
-           :label="$t('memberCard.limitCard')"
+          :label="$t('memberCard.limitCard')"
           name="second"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="false"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(1)"
@@ -245,7 +260,10 @@
           :label="$t('memberCard.gradeCard')"
           name="third"
         >
-          <div class="firstDiv">
+          <div
+            class="firstDiv"
+            v-if="false"
+          >
             <div
               class="new_card"
               @click="handleToCardDetail(2)"
@@ -303,14 +321,14 @@
                         {{$t('memberCard.ForeverEffective')}}
                       </span>
                     </div>
-                  <div class="grade_condition">
-                    <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
-                    <div class="grade_detail">
-                      <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
-                      <p>{{$t('memberCard.or')}}</p>
-                      <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
+                    <div class="grade_condition">
+                      <p class="grade_tip">{{$t('memberCard.gradeCondition')}}</p>
+                      <div class="grade_detail">
+                        <p> {{$t('memberCard.gradeScore')}} {{item.gradeConditionJson.gradeScore}}{{$t('memberCard.unitM')}}</p>
+                        <p>{{$t('memberCard.or')}}</p>
+                        <p>{{$t('memberCard.gradeAmountCon')}}{{item.gradeConditionJson.gradeMoney}}{{$t('memberCard.yuan')}}</p>
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <div class="card_edit">
                     <div @click="handleToTips(0,item,index,2)">
@@ -378,6 +396,7 @@ export default {
   },
   data () {
     return {
+      changePageFlag: false, // 切换按钮文案
       currentCardType: 0, // 默认的会员卡为普通会员卡
       activeName: 'first',
       cardData: [], // 普通会员卡容器
@@ -613,9 +632,11 @@ export default {
       deleteCardRequest({ id }).then(res => {
         if (res.error === 0) {
           console.log('删除成功')
-          this.getBackEndData({ 'currentPage': 0,
+          this.getBackEndData({
+            'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType })
+            'cardType': this.currentCardType
+          })
         }
       })
     },
@@ -629,9 +650,11 @@ export default {
         if (res.error === 0) {
           console.log('停止成功')
           this.loadAllPageData()
-          this.getBackEndData({ 'currentPage': 0,
+          this.getBackEndData({
+            'currentPage': 0,
             'pageRows': 100,
-            'cardType': this.currentCardType })
+            'cardType': this.currentCardType
+          })
         }
       })
     },
@@ -902,6 +925,10 @@ export default {
       }
 
       console.log(item, flag)
+    },
+    // 点击切换按钮
+    handleToChangePage () {
+      this.changePageFlag = !this.changePageFlag
     }
   }
 }
@@ -921,6 +948,12 @@ export default {
     overflow: hidden;
     overflow-y: auto;
     padding: 15px 25px;
+    .changePage {
+      position: absolute;
+      top: 13px;
+      right: 27px;
+      z-index: 10;
+    }
     .firstDiv {
       background: #fff;
       padding: 0 1%;
@@ -981,15 +1014,15 @@ export default {
                 }
               }
             }
-            .grade_condition{
+            .grade_condition {
               margin-top: 5px;
               color: #fff;
               line-height: normal;
               font-size: 12px;
-              .grade_tip{
+              .grade_tip {
                 color: #fff;
               }
-              .grade_detail{
+              .grade_detail {
                 padding-left: 20px;
               }
             }
