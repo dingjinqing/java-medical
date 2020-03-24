@@ -35,7 +35,8 @@
     "pages/cardrecord/cardrecord",
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
-    "pages/usercardup/usercardup"
+    "pages/usercardup/usercardup",
+    "pages/aftersaleorder/aftersaleorder"
   ],
   "window": {
     "backgroundTextStyle": "dark",
