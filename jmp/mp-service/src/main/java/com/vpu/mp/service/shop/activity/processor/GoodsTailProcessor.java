@@ -181,6 +181,17 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     public void doCartOperation(WxAppCartBo cartBo) {
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
+        //首单特惠
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            //首单特惠
+            CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
+            if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
+                if (cartGoods.getPrdPrice().compareTo(actInfo.getFirstSpecialPrice())>0){
+                    cartGoods.setPrdPrice(actInfo.getFirstSpecialPrice());
+                }
+            }
+        });
+        //总价 全部选中
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getPrdPrice()==null){
                 goods.setPrdPrice(goods.getGoodsPrice());
@@ -191,15 +202,6 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            //首单特惠
-            CartActivityInfo actInfo = cartGoods.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
-            if (actInfo != null && Objects.equals(actInfo.getStatus(), CartConstant.ACTIVITY_STATUS_VALID)) {
-                if (cartGoods.getPrdPrice().compareTo(actInfo.getFirstSpecialPrice())>0){
-                    cartGoods.setPrdPrice(actInfo.getFirstSpecialPrice());
-                }
-            }
-        });
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 
