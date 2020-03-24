@@ -797,6 +797,12 @@ public class FormStatisticsService extends ShopBaseService {
         FormSubmitListRecord formSubmit = db().selectFrom(fsl).where(fsl.SUBMIT_ID.eq(param.getId())).fetchAny();
         if (formSubmit==null){
             log.error("我查询到数据");
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
+        }
+        FormPageRecord formRecord = getFormRecord(formSubmit.getPageId());
+        if (formRecord==null){
+            log.error("表单提交错误");
+            throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
         FormSuccessVo formSuccessVo = formSubmit.into(FormSuccessVo.class);
         String sendCoupons = formSubmit.getSendCoupons();
@@ -805,6 +811,7 @@ public class FormStatisticsService extends ShopBaseService {
             List<CouponAndVoucherDetailVo> couponDetailByCouponSnList = couponService.getCouponDetailByCouponSnList(couponSns);
             formSuccessVo.setCouponList(couponDetailByCouponSnList);
         }
+        formSuccessVo.setFormCfg(formRecord.getFormCfg());
         return formSuccessVo;
     }
 }
