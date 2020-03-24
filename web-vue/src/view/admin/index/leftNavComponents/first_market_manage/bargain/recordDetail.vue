@@ -5,7 +5,7 @@
 -->
 <template>
   <div>
-    <wrapper>
+    <div class="warpper_content">
       <section class="newuserDetailContent">
         <div class="username">
           <span>{{$t('marketCommon.username')+'：'}}</span>
@@ -40,9 +40,9 @@
           size="small"
         >{{$t('marketCommon.export')}}</el-button>
       </section>
-    </wrapper>
+    </div>
 
-    <wrapper>
+    <div class="warpper_content">
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -91,18 +91,17 @@
           @pagination="initDataList"
         />
       </div>
-    </wrapper>
+    </div>
   </div>
 </template>
 
 <script>
 import { download } from '@/util/excelUtil.js'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
 import { getBargainUserPageList, exportBargainUserList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
-  components: { wrapper, pagination },
+  components: { pagination },
   mounted () {
     if (this.$route.query.recordId > 0) {
       this.recordId = this.$route.query.recordId
@@ -158,6 +157,11 @@ export default {
 <style lang="scss" scoped>
 * {
   font-size: 14px;
+}
+.warpper_content {
+  margin: 10px;
+  padding: 15px;
+  background: #fff;
 }
 .newuserDetailContent {
   display: flex;

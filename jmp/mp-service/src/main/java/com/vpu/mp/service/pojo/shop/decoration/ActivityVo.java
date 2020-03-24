@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class ActivityVo {
 	public Integer id;
-	public String actName;
+	public String cardName;
 	public String type;
 	public String actCode;
     /**
