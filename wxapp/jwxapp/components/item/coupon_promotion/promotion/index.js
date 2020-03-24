@@ -25,7 +25,7 @@ global.wxComponent({
       const linkData = {
         7:{},
         15:{url:'pages1/fullship/fullship',params:{ruleId:id}},
-        21:{}
+        21:{url:'/pages/fullprice/fullprice',params:{strategy_id:id}}
       }
       util.jumpLink(`${linkData[type].url}${this.getUrlParams(linkData[type].params)}`,'navigateTo')
     },
