@@ -93,7 +93,7 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 	 */
 	public void sendMpTemplateMessage(String appId, String toUser, List<WxMpTemplateData> keywordValues,
 			MpTemplateConfig templateConfig, String maAppId,
-			String page, String url,Integer shopId,Integer type,List<Integer> userIdList) throws WxErrorException {
+			String page, String url,Integer shopId,Integer type,List<Integer> userIdList,Integer messageTemplateId) throws WxErrorException {
 		logger().info("发送模板消息");
         WxMpTemplateMessage.WxMpTemplateMessageBuilder messageBuilder = null;
 		WxMpTemplateMsgService service = accountService.getOfficialAccountClient(appId).getTemplateMsgService();
@@ -123,12 +123,12 @@ public class MpOfficialAccountMessageService extends MainBaseService {
 			// template_id不正确，移除缓存，重新发送模板消息
 			if (e.getError().getErrorCode() == _40037) {
 				jedis.delete(key);
-				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url,shopId,type,userIdList);
+				sendMpTemplateMessage(appId, toUser, keywordValues, templateConfig, maAppId, page, url,shopId,type,userIdList,messageTemplateId);
 			}else {
 				throw new WxErrorException(e.getError(), e);
 			}
 		}
-		recordMsg(userIdList.get(0), messageBuilder.build().toJson(), page, type, templateId, sendTemplateMsg, shopId, templateConfig.getTemplateNo());
+		recordMsg(userIdList.get(0), messageBuilder.build().toJson(), page, type, messageTemplateId.toString(), sendTemplateMsg, shopId, templateConfig.getTemplateNo());
 	}
 
 	/**
