@@ -49,7 +49,7 @@ public class MessageTemplateListener implements BaseRabbitHandler {
         if( allSize  != param.getUserIdList().size() ){
             log.info("推送消息接收人数不对");
             log.info("UserIdSize-->{},UserId--->{}",param.getUserIdList().size(),param.getUserIdList().get(0));
-            log.info("WxUserSize-->{},WxUser--->{}",userInfoList.size(),userInfoList.get(0));
+            log.info("WxUserSize-->{}",allSize);
         }
         userInfoList.stream().forEach(info->{
             if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
