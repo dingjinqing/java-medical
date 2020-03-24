@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.service.pojo.wxapp.cart.CartConstant.ACTIVITY_STATUS_INVALID;
+import static com.vpu.mp.service.pojo.wxapp.cart.CartConstant.GOODS_STATUS_EXCLUSIVE;
 
 /**
  *  会员专享
@@ -212,16 +214,23 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
     public void doCartOperation(WxAppCartBo cartBo) {
         //会员卡绑定商品
         Set<Integer> userCardExclusive = userCardService.getUserCardExclusiveGoodsIds(cartBo.getUserId(), cartBo.getCartGoodsList());
-        log.debug("会员绑定的商品[userCardExclusive:{"+Util.toJson(userCardExclusive)+"}]");
+        log.info("会员绑定的商品[userCardExclusive:{"+Util.toJson(userCardExclusive)+"}]");
         cartBo.getCartGoodsList().stream().filter(goods -> GoodsConstant.CARD_EXCLUSIVE.equals(goods.getGoodsRecord().getIsCardExclusive())).forEach(goods -> {
             // 会员专享商品
             if (!userCardExclusive.contains(goods.getGoodsId())) {
                 //没有资格0
-                log.debug("会员没有资格的商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
-                goods.setGoodsStatus(CartConstant.GOODS_STATUS_EXCLUSIVE);
+                log.info("会员没有资格的商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
+                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                CartActivityInfo exclusiveGrade = new CartActivityInfo();
+                exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
+                exclusiveGrade.setStatus(ACTIVITY_STATUS_INVALID);
+                goods.getCartActivityInfos().add(exclusiveGrade);
+                cartService.switchCheckedByProductId(cartBo.getUserId(), goods.getProductId(), CartConstant.CART_NO_CHECKED);
             } else {
-                log.debug("会员专享商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
+                log.info("会员专享商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
+                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
+                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 CartActivityInfo exclusiveGrade = new CartActivityInfo();
                 exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 goods.getCartActivityInfos().add(exclusiveGrade);
