@@ -21,6 +21,8 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
@@ -63,7 +65,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.tables.Code.CODE;
+import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_FORM_STATISTICS;
+import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
@@ -690,8 +695,6 @@ public class FormStatisticsService extends ShopBaseService {
         if (formSubmitListRecord!=null&&formSubmitListRecord.getCreateTime().before(DateUtil.getTimeStampPlus(60,ChronoUnit.SECONDS))){
             log.error("每个表单每分钟只能提交一次");
         }
-        //保存提交表单
-        Integer submitFormId = saveSubmitForm(param);
         //送积分
         String formCfg = formRecord.getFormCfg();
         int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE));
@@ -706,19 +709,37 @@ public class FormStatisticsService extends ShopBaseService {
             scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_FORM_DECORATION_GIFT.val(), TRADE_FLOW_IN.val());
 
         }
+        CouponGiveQueueBo sendData =null;
         try {
             int sendCoupon = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_COUPON));
             JsonNode cfg = MAPPER.readTree(formCfg);
             Iterator<JsonNode> iterator = cfg.get(SEND_COUPON_LIST).elements();
             if (sendCoupon==1&&iterator.hasNext()){
                 log.info("送优惠券");
-                //todo 送优惠券
-
+                List<String> couponIds =new ArrayList<>();
+                while (iterator.hasNext()) {
+                    JsonNode node = iterator.next();
+                    couponIds.add(node.get(COUPON_ID).asText());
+                }
+                CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
+                couponGive.setUserIds(Collections.singletonList(param.getUser().getUserId()));
+                couponGive.setCouponArray(couponIds.toArray(new String[]{}));
+                couponGive.setActId(formRecord.getPageId());
+                couponGive.setAccessMode((byte) 0);
+                couponGive.setGetSource(COUPON_GIVE_SOURCE_FORM_STATISTICS);
+                /**
+                 * 发送优惠卷
+                 */
+                 sendData = couponGiveService.handlerCouponGive(couponGive);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //TODO 更新库存
+        //保存提交表单
+        Integer submitFormId = saveSubmitForm(param,formRecord,sendData);
+        //TODO 更新库存 $shop->formDecoration->db($shop_id)->table('form_submit_list')
+        //                ->where('submit_id', $submit_id)->update($send);
+
         FormSubmitDataVo formSubmitDataVo =new FormSubmitDataVo();
         formSubmitDataVo.setSubmitId(submitFormId);
         return formSubmitDataVo;
@@ -727,9 +748,11 @@ public class FormStatisticsService extends ShopBaseService {
     /**
      *  保存
      * @param param param
+     * @param formRecord
+     * @param sendData
      * @return 保存记录
      */
-    private Integer saveSubmitForm(FormSubmitDataParam param) {
+    private Integer saveSubmitForm(FormSubmitDataParam param, FormPageRecord formRecord, CouponGiveQueueBo sendData) {
         final Integer[] submitId = {new Integer(0)};
         db().transaction(configuration -> {
             FormSubmitListRecord listRecord =db().newRecord(  fsl);
@@ -737,8 +760,12 @@ public class FormStatisticsService extends ShopBaseService {
             listRecord.setUserId(param.getUser().getUserId());
             listRecord.setNickName(param.getUser().getUsername());
             listRecord.setOpenId(param.getUser().getWxUser().getOpenId());
-            String formCfg = db().select(fp.FORM_CFG).from(fp).where(fp.PAGE_ID.eq(param.getPageId())).fetchAny().component1();
-            getCouponList(formCfg, listRecord);
+            int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formRecord.getFormCfg(), SEND_SCORE));
+            int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formRecord.getFormCfg(), SEND_SCORE_NUMBER));
+            if (sendScore==1&&sendScoreNumber>0){
+                listRecord.setSendScore(sendScoreNumber);
+            }
+            listRecord.setSendCoupons(Util.listToString(sendData.getCouponSn()));
             listRecord.insert();
             submitId[0]=listRecord.getSubmitId();
             log.info("表单记录保存");

@@ -23,7 +23,11 @@ public class CouponConstant {
     public static final byte ACCESS_MODE_RECEIVE = 1;
     public static final byte ACCESS_MODE_COUPON_PACK = 2;
 
-    //*********发卷来源   1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券
+    //*********发卷来源   1表单送券2支付送券3活动送券4积分兑换5直接领取6分裂优惠券7crm领券8幸运大抽奖9定向发券10表单统计
+    /**
+     * 表单统计
+     */
+    public static final byte COUPON_GIVE_SOURCE_FORM_STATISTICS=1;
     /**
      * 支付送券
      */

@@ -636,6 +636,7 @@ public class CouponGiveService extends ShopBaseService {
                         }
                         //发券操作
                         customerAvailCouponsRecord.insert();
+                        couponGiveBo.getCouponSn().add(customerAvailCouponsRecord.getCouponSn());
                     });
                     }catch (BusinessException e){
                         break;
