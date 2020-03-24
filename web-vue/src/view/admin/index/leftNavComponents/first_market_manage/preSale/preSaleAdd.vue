@@ -172,6 +172,7 @@
         >
           <div style="display: flex">
             <el-radio
+              :disabled="isEditeFlag"
               v-model="param.deliverType"
               :label="1"
               style="line-height: 40px"
@@ -185,6 +186,7 @@
               :inline-message="true"
             > -->
             <el-date-picker
+              :disabled="param.deliverType==2 || isEditeFlag"
               v-model="param.deliverTime"
               type="datetime"
               size="small"
@@ -196,6 +198,7 @@
           </div>
           <div style="display:flex">
             <el-radio
+              :disabled="isEditeFlag"
               v-model="param.deliverType"
               :label="2"
               style="line-height:40px"
@@ -212,6 +215,7 @@
               :inline-message="true"
             > -->
             <el-input
+              :disabled="param.deliverType==1 || isEditeFlag"
               v-model="param.deliverDays"
               size="small"
               style="width:180px"
@@ -694,7 +698,7 @@ export default {
     // 发货时间校验
     var checkDeliverType = (rule, value, callback) => {
       console.log(value)
-      if (value === 1 && !this.param.deliverTime) {
+      if (value === 1 && this.param.deliverTime === null) {
         callback(new Error('请选择发货开始时间'))
       } else if (value === 2 && (!this.param.deliverDays || this.param.deliverDays === null)) {
         callback(new Error('请填写尾款发货时间'))
@@ -980,10 +984,12 @@ export default {
               return false
             }
           } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
-            if (this.param.startTime < this.param.preEndTime) {
-              this.$message.warning('尾款支付的开始时间要大于定金支付的开始时间')
+            if (this.param.startTime < this.param.prrStartTime) {
+              this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
               return false
             }
+          } else {
+            return false
           }
           if (this.param.deliverTime < this.param.endTime) {
             this.$message.warning('指定发货时间应大于尾款支付时间')
