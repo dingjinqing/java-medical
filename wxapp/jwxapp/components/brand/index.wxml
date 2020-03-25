@@ -1,18 +1,5 @@
 <!--components/brand/index.wxml-->
 <!-- 图文 -->
-<!-- <view class="brand_box" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden" wx:if="{{brand_info && is_brand == 1 && all_brand == 0 && show_rcommend_brand == 2}}">
-  <view class='right_item'>
-    <view class='main-category clearfix'>
-        <view class='sor_item clearfix'>
-          <view class='each_sort' bindtap="{{is_search == '1' ? '' : 'to_search'}}"  wx:for="{{brand_info}}" data-brand_id="{{item.id}}"  wx:key="key">
-              <image src='{{item.logo}}' class='sort_img'></image>
-              <view class='sort_name two_row'>{{item.brand_name}}</view>
-          </view>
-        </view>
-    </view>
-  </view>
-</view> -->
-
 <view class="brand_box" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden" wx:if="{{brand_info && is_brand == 1 && all_brand == 0 && show_rcommend_brand == 2}}">
   <view class='right_item'>
     <view class='main-category clearfix'>
@@ -25,34 +12,13 @@
     </view>
   </view>
 </view>
-
-
-
-<!-- <view class="brand_box" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden" wx:if="{{(brand_info && is_brand == 1 && show_rcommend_brand == 3) || all_brand == 1}}">
-  <scroll-view class="no_width" scroll-y scroll-with-animation scroll-into-view="{{item_id}}" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden">
-    <view class="brand_list" wx:for="{{brand_info}}" wx:key="index" id="{{index == '#' ? 'order' : index }}">
-      <view class="brand_title">{{index}}</view>
-      <view class="brand_info clearfix" bindtap="{{is_search == '1' ? 'search_brand' : 'to_search'}}" wx:for="{{item}}" data-brand_id="{{item2.id}}" wx:key="index" wx:for-item="item2" wx:if="{{index != 'goods_sale_num'}}">
-        <image src='{{item2.logo}}' class="brand_img">
-        </image>
-        <view class="brand_name" style="color:{{item2.isCheck == 1 ? comColor : ''}};">{{item2.brand_name}}</view>
-      </view>
-    </view>
-  </scroll-view>
-  <view class="zimu" wx:if="{{is_search == 1 || all_brand == 1}}">
-    <block wx:for="{{brand_keys}}" wx:key="index">
-      <text bindtap='scrollToView' data-id="{{item}}">{{item}}</text>
-    </block>
-  </view>
-</view> -->
-
-
 <!-- 列表 -->
 <view class="brand_box" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden" wx:if="{{(brand_info && is_brand == 1 && show_rcommend_brand == 3) || all_brand == 1}}">
   <scroll-view class="no_width" scroll-y scroll-with-animation scroll-into-view="{{item_id}}" style="height:{{right_height}}px;overflow-y:auto;overflow-x:hidden">
     <view class="brand_list" wx:for="{{brand_info}}" wx:key="index" id="{{item.character}}">
-      <view class="brand_title">{{item.character}}</view>
-      <view class="brand_info clearfix" bindtap="{{is_search == '1' ? 'search_brand' : 'to_search'}}" wx:for="{{item.goodsBrands}}" data-brand_id="{{item2.id}}" wx:key="index" wx:for-item="item2" wx:if="{{index != 'goods_sale_num'}}">
+      <view class="brand_title" wx:if="item.character && (!item.classifyName || item.classifyName != null)">{{item.character}}</view>
+      <view class="brand_title" wx:if="{{!item.character && (item.classifyName || item.classifyName == null)}}">{{item.classifyName == null ? '无分类' : item.classifyName}}</view>
+      <view class="brand_info clearfix" wx:for="{{item.goodsBrands}}" wx:key="index" wx:for-item="item2" wx:if="{{index != 'goods_sale_num'}}" bindtap="{{is_search == '1' ? 'search_brand' : 'to_search'}}" data-brand_id="{{item2.id}}">
         <image src='{{item2.logo}}' class="brand_img">
         </image>
         <view class="brand_name" style="color:{{item2.isCheck == 1 ? comColor : ''}};">{{item2.brandName}}</view>
