@@ -99,7 +99,8 @@
         "appointcomment/appointcomment",
         "form/form",
         "formsuccess/formsuccess",
-        "maingiftlist/maingiftlist"
+        "maingiftlist/maingiftlist",
+        "goodscomment/goodscomment"
       ]
     }
   ],
