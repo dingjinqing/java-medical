@@ -219,15 +219,12 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
 //                                    cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
 //                                    cartService.switchCheckedByProductId(cartBo.getUserId(), cartGoods.getProductId(), CartConstant.CART_NO_CHECKED);
                                 }
-                            } else {
-                                actInfo.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);
                             }
                         }
                     });
                 }
 
             }
-
         }
     }
 
