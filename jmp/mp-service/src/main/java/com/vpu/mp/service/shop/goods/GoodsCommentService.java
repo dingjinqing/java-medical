@@ -737,7 +737,9 @@ public class GoodsCommentService extends ShopBaseService {
           .and(COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
           .fetchOneInto(CommentGoodsRecord.class);
     if (record==null) {
-
+        if (StringUtils.isBlank(param.getCommNote())){
+            param.setCommNote(null);
+        }
         // 为指定商品添加评论
         db().insertInto(
             COMMENT_GOODS,
