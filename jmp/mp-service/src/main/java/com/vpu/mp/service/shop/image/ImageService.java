@@ -267,6 +267,34 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     }
 
     /**
+     * 批量添加下载的外链图片信息
+     * @param downloadImageBos
+     * @return
+     */
+    public List<String> addImageToDbBatch(List<DownloadImageBo> downloadImageBos) {
+        List<String> imgRelativePath = new ArrayList<>(downloadImageBos.size());
+
+        List<UploadedImageRecord> records = new ArrayList<>();
+        for (DownloadImageBo bo : downloadImageBos) {
+            UploadedImageRecord record = new UploadedImageRecord();
+            record.setImgType(bo.getImageType());
+            record.setImgSize(bo.getSize());
+            record.setImgOrigFname(bo.getImageName());
+            // 去掉.jpg
+            record.setImgName(bo.getImageName().substring(0,bo.getImageName().lastIndexOf(".")));
+            record.setImgPath(bo.getRelativeFilePath());
+            record.setImgUrl(bo.getImgUrl());
+            record.setImgCatId(0);
+            record.setImgWidth(bo.getWidth());
+            record.setImgHeight(bo.getHeight());
+            records.add(record);
+            imgRelativePath.add(bo.getRelativeFilePath());
+        }
+
+        db().batchInsert(records).execute();
+        return imgRelativePath;
+    }
+    /**
      * 得到图片信息
      *
      * @param imageId
@@ -458,7 +486,7 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         bo.setSize(size);
         bo.setRelativeFilePath(uploadPath.getRelativeFilePath());
         bo.setImgUrl(uploadPath.getImageUrl());
-
+        bo.setImageType(imgType);
         return bo;
     }
 

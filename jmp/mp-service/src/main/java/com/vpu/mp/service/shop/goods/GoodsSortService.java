@@ -511,7 +511,7 @@ public class GoodsSortService extends ShopBaseService {
      */
     private List<SortRecord> getChildrenByParentIdsDao(Collection<Integer> parentIds) {
         return db().select().from(SORT).where(SORT.PARENT_ID.in(parentIds)).orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc(),SORT.SORT_ID.asc())
-               .fetchInto(SortRecord.class);
+            .fetchInto(SortRecord.class);
     }
     /**
      * 根据传入的父id集合迭代查询所有子孙分类id集合（包含传入的id集合）
@@ -621,7 +621,7 @@ public class GoodsSortService extends ShopBaseService {
                 returnId = secondSortRecord.getSortId();
             } else {
                 GoodsNormalSortParam param = new GoodsNormalSortParam();
-                param.setSortName(firstSortName);
+                param.setSortName(secondSortName);
                 param.setParentId(returnId);
                 returnId = insertNormal(param);
             }
