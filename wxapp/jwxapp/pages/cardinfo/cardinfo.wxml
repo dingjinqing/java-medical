@@ -11,7 +11,7 @@
 							<text class="get_status">{{carStatus}}</text>
 						</view>
 						<view class="card_exp">
-              <text wx:if="{{cardInfo.expireType == 0}}">
+							<text wx:if="{{cardInfo.expireType == 0}}">
                 有效期：{{cardInfo.cardExpireTime}}
               </text>
 							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
@@ -32,7 +32,7 @@
 					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
 						<!-- ￥10000 -->
 						<image
-             wx:if="{{cardInfo.cardNo !== null}}"
+						 wx:if="{{cardInfo.cardNo !== null}}"
 						 mode="widthFix"
 						 class="qrcode"
 						 bindtap="showQrCode"
@@ -174,7 +174,7 @@
 		 wx:for-index="indexC"
 		 wx:for-item="itemC"
 		>
-			<view class="card_item_title"  data-index="{{indexC}}">
+			<view class="card_item_title" data-index="{{indexC}}">
 				<view class="item_title_left">
 					<image src="{{itemC.crightImage}}" mode='widthFix' />
 				</view>
@@ -204,28 +204,29 @@
 				<image mode="widthFix" src="{{imageUrl}}image/wxapp/goods_icon.png" />
 			</view>
 			<view class="item_title_content">
-				适用商品
-			</view>
-			<view class="item_title_right">
-				<view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
-        <view wx:else>查看 ></view>
+				兑换商品
 			</view>
 		</view>
-		<view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-		<view
-		 class="content_item goods_item"
-		 wx:for="{{cardInfo.goodsList}}"
-		 wx:for-item="goodsListItem"
-		 wx:for-index="goodsListIndex"
-		 wx:key="goodsListIndex"
-		>
-			<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
-			<view class="goods_right">
-				<view class="goods_name">{{goodsListItem.goodsName}}</view>
-				<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
+		<view class="card_item_content exchang_goods" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
+			<view class='pro_tips' wx:if='{{card_info.periodLimit > 0}}'>
+				<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
+				<text class="text">提示：{{card_info.period_msg1}}</text>
+				<text  class="text" style="float:right">{{card_info.period_msg2}}</text>
+			</view>
+			<view
+			 class="content_item goods_item"
+			 wx:for="{{cardInfo.goodsList}}"
+			 wx:for-item="goodsListItem"
+			 wx:for-index="goodsListIndex"
+			 wx:key="goodsListIndex"
+			>
+				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
+				<view class="goods_right">
+					<view class="goods_name">{{goodsListItem.goodsName}}</view>
+					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
+				</view>
 			</view>
 		</view>
-	</view>
 		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
@@ -321,11 +322,8 @@
 		</view>
 	</view>
 	<include src="../common/footer.wxml" />
-	
-	
+
 </view>
-
-
 
 <v-poster image="{{qrCode}}" show="{{showQrcode}}" />
 <!-- 绑定手机号弹窗 -->

@@ -258,3 +258,30 @@
   color: #f66;
   border-left: 1px solid #eee;
 }
+.pro_tips {
+  font-size: 24rpx;
+  color: #f60;
+  background: #fcf9dd;
+  font-family: "Microsoft YaHei", 微软雅黑, "Microsoft JhengHei";
+  overflow: hidden;
+  height: 70rpx;
+  line-height: 70rpx;
+  padding: 0 20rpx;
+  margin-bottom: 20rpx;
+
+}
+.pro_tips .text {
+  font-size: 24rpx;
+}
+
+.pro_tips .image {
+  width: 28rpx;
+  height: 28rpx;
+  position: relative;
+  top: 6rpx;
+  margin-right: 10rpx;
+
+}
+.exchang_goods{
+  padding-top: 20rpx;
+}
