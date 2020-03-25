@@ -131,7 +131,10 @@
                     >添加为模板</el-button>
                   </div>
                 </el-form-item>
-                <el-form-item :label="labels.label5">
+                <el-form-item
+                  :rules="[{required: true }]"
+                  :label="labels.label5"
+                >
                   <div>
                     <el-button
                       size="small"
@@ -490,7 +493,7 @@ export default {
       userIdList: [],
       onClickCustomRule: false,
       disabledOnClickCustomRule: false,
-      pageLink: ``,
+      pageLink: '',
       time: {},
       /**
        * 表单检验
@@ -671,13 +674,20 @@ export default {
     },
     // 保存并发送
     handleSaveAndSend () {
+      let link = ''
+      if (!this.pageLink) {
+        link = 'pages/index/index'
+      } else {
+        link = this.pageLink
+      }
+
       const params = {
         name: this.formData.name,
         title: this.formData.title,
         action: 7,
         templateId: this.templateId,
         content: this.formData.content,
-        pageLink: this.pageLink,
+        pageLink: link,
         userInfo: this.params,
         sendAction: this.senAction,
         userKey: this.userKey,
