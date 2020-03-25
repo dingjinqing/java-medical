@@ -18,9 +18,9 @@
       </div>
       <div class="filters_item">
         <sortCatTreeSelect
-          ref="catTree"
-          treeType="cat"
-          :selectedId.sync="searchParams.sortName"
+          ref="sortTree"
+          treeType="sort"
+          :selectedId.sync="searchParams.sortId"
         />
       </div>
       <div style="margin-left: 37px;">
@@ -157,7 +157,7 @@ export default {
     return {
       searchParams: {
         goodsName: null,
-        sortName: null
+        sortId: null
       },
       loading: false,
       pageParams: {

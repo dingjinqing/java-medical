@@ -486,7 +486,10 @@ export default {
         { value: '0', label: '全部' },
         { value: '1', label: '置顶评论' }
       ],
-      pageParams: {},
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       dataList: [],
       loading: false,
       showReply: false,
@@ -539,7 +542,7 @@ export default {
       this.loading = true
       let obj = {
         ...this.searchParams,
-        page: { ...this.pageParams },
+        ...this.pageParams,
         awardActivityId:
           this.searchParams.awardActivityId === -1
             ? null
@@ -549,6 +552,7 @@ export default {
       if (this.target !== 'Record') {
         delete obj.flag
       }
+      console.log(obj)
       getCommentList(obj).then(res => {
         console.log(res)
         if (res.error === 0) {
