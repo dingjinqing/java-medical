@@ -146,10 +146,6 @@ public class RegexUtil {
 
     private static ThreadLocal<Pattern> imgPatternThreadLocal = new ThreadLocal<>();
 
-    /**
-     *
-     * @return
-     */
     public static Pattern getImgTagPattern(){
         Pattern pattern = imgPatternThreadLocal.get();
         if (pattern == null) {
@@ -157,7 +153,17 @@ public class RegexUtil {
              pattern = Pattern.compile(imgReg);
             imgPatternThreadLocal.set(pattern);
         }
+        return pattern;
+    }
 
+    private static ThreadLocal<Pattern> backgroundPatternThreadLocal = new ThreadLocal<>();
+    public static Pattern getBgUrlPattern(){
+        Pattern pattern = backgroundPatternThreadLocal.get();
+        if (pattern == null) {
+            String bgUrlReg = "(?:background-image:[\\s\\S]*?url\\(([\\s\\S]*?)\\);)|(?:background:[\\s\\S]*?url\\(([\\s\\S]*?)\\))";
+            pattern = Pattern.compile(bgUrlReg);
+            backgroundPatternThreadLocal.set(pattern);
+        }
         return pattern;
     }
 
