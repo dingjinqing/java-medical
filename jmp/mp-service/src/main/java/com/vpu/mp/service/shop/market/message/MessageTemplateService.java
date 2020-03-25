@@ -242,7 +242,7 @@ public class MessageTemplateService extends ShopBaseService {
             .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"))
             .from(SERVICE_MESSAGE_RECORD)
             .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
-            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY)
             .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
             .fetch()
             .stream()
@@ -439,10 +439,5 @@ public class MessageTemplateService extends ShopBaseService {
             .executionType(TaskJobsConstant.TaskJobEnum.GIVE_COUPON)
             .builder();
         taskJobMainService.dispatch(info);
-    }
-
-    public static void main(String[] args) {
-        Integer a = 0;
-        System.out.println(a.byteValue());
     }
 }
