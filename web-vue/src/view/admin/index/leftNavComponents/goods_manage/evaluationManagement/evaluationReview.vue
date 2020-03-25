@@ -15,8 +15,15 @@ export default {
     }
   },
   mounted () {
+    this.reload()
   },
   methods: {
+    reload () {
+      this.viewReload = false
+      this.$nextTick(function () {
+        this.viewReload = true
+      })
+    }
   }
 }
 </script>
