@@ -106,22 +106,6 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      // 订单状态
-      orderStatusArr: {
-        null: '全部订单',
-        1: '待付款',
-        2: '订单取消',
-        3: '订单关闭',
-        4: '代发货/待核销',
-        5: '已发货',
-        6: '已收货/已自提',
-        7: '订单完成',
-        8: '退货中',
-        9: '退货完成',
-        10: '退款中',
-        11: '退款完成',
-        12: '送礼完成'
-      },
       orderStatusMap: {},
       createTime: '', // 创建时间
       showExportConfirm: false // 是否展示导出数据弹窗
@@ -145,10 +129,14 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       // 订单状态
-      if (this.requestParams.selectedOrderStatus) {
-        this.requestParams.orderStatus = []
-        this.requestParams.orderStatus.push(this.requestParams.selectedOrderStatus)
+      var arr = []
+      if (this.requestParams.selectedOrderStatus || this.requestParams.selectedOrderStatus === 0) {
+        arr[0] = this.requestParams.selectedOrderStatus
       }
+      if (arr !== []) {
+        this.requestParams.orderStatus = arr
+      }
+      console.log(this.requestParams)
       orderSeckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -160,8 +148,6 @@ export default {
 
     // 表格数据处理
     handleData (data) {
-      console.log('订单状态', this.orderStatusArr)
-
       data.forEach(item => {
         item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
         item.name = this.$route.query.name
