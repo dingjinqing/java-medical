@@ -142,6 +142,8 @@
   justify-content: space-between;
   min-width: 0;
   flex: 1;
+  position: relative;
+  height: 120rpx;
 }
 .goods_right > .goods_name{
   overflow:hidden;
@@ -288,4 +290,29 @@
 .dh_limit,
 .dh_right {
   position: absolute;
+}
+.dh_limit {
+  left: 22rpx;
+  bottom: 52rpx;
+  font-size: 22rpx;
+}
+
+.dh_right {
+  right: 10rpx;
+  bottom: 0rpx;
+  width: 140rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  border-radius: 25rpx;
+  color: #fff;
+  text-align: center;
+  font-size: 22rpx;
+}
+.dh_more {
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  background: #fff;
+  border-top: 1px solid #eee;
+  margin-bottom: 20rpx;
 }

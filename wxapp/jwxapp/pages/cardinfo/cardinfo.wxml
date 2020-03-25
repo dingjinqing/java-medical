@@ -229,6 +229,14 @@
 				</view>
 			</view>
 		</view>
+		<view
+				 class="dh_more"
+				 wx:if="{{cardInfo.goodsList.length >1}}"
+				 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "checkMore"}}'
+				 data-card_id='{{cardInfo.cardId}}'
+				 style="color:{{comColor}}"
+				>兑换更多商品
+				</view>
 		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
