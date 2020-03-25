@@ -77,7 +77,8 @@ public class EsBaseSearchService extends ShopBaseService {
         CAN_REBATE,
         LIMIT_BUY_NUM,
         LIMIT_MAX_NUM,
-        MARKET_PRICE
+        MARKET_PRICE,
+        GOODS_PAGE_ID
     };
 
 
