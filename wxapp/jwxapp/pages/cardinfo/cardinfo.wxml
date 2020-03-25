@@ -208,10 +208,10 @@
 			</view>
 		</view>
 		<view class="card_item_content exchang_goods" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-			<view class='pro_tips' wx:if='{{card_info.periodLimit > 0}}'>
+			<view class='pro_tips' wx:if='{{cardInfo.periodLimit > 0}}'>
 				<image class="image" src="{{imageUrl}}image/wxapp/icon_warning.png" />
-				<text class="text">提示：{{card_info.period_msg1}}</text>
-				<text  class="text" style="float:right">{{card_info.period_msg2}}</text>
+				<text class="text">提示：{{cardInfo.period_msg1}}</text>
+				<text  class="text" style="float:right">{{cardInfo.period_msg2}}</text>
 			</view>
 			<view
 			 class="content_item goods_item"
@@ -224,6 +224,8 @@
 				<view class="goods_right">
 					<view class="goods_name">{{goodsListItem.goodsName}}</view>
 					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
+					<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum != 0}}'>限制兑换{{item.limitNum}}次</text>
+					<text style="background:{{comColor}}" class="dh_right" wx:if="{{cardInfo.goodsList.length < 2}}">去兑换</text>
 				</view>
 			</view>
 		</view>

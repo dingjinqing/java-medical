@@ -285,3 +285,7 @@
 .exchang_goods{
   padding-top: 20rpx;
 }
+.dh_limit,
+.dh_right {
+  position: absolute;
+}
