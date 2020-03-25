@@ -7,7 +7,6 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.comment.*;
 import com.vpu.mp.service.pojo.shop.member.account.AccountParam;
@@ -20,6 +19,7 @@ import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.comment.CommentSwitch;
 import com.vpu.mp.service.shop.config.CommentConfigService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
+import com.vpu.mp.service.shop.goods.mp.MPGoodsRecommendService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -49,12 +49,12 @@ import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
  */
 @Service
 public class GoodsCommentService extends ShopBaseService {
-    @Autowired private SysCateService sysCateService;
     @Autowired private CommentConfigService commentConfigService;
     @Autowired private CommentSwitch commentSwitch;
   @Autowired private CouponGiveService couponGiveService;
   @Autowired private ScoreService scoreService;
   @Autowired private AccountService accountService;
+  @Autowired private MPGoodsRecommendService mpGoodsRecommendService;
   private static final int THREE = 3;
   private static final int FOUR = 4;
   private static final int FIVE = 5;
@@ -268,7 +268,7 @@ public class GoodsCommentService extends ShopBaseService {
                     GOODS.GOODS_IMG,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_SN,
-                    GOODS.CAT_ID,
+                    GOODS.SORT_ID,
                     GOODS.SHOP_PRICE,
                     GOODS.GOODS_NUMBER)
                 .from(GOODS_SPEC_PRODUCT)
@@ -283,9 +283,12 @@ public class GoodsCommentService extends ShopBaseService {
         this.getPageResult(
             selectFrom, param.getCurrentPage(), param.getPageRows(), GoodsCommentAddListVo.class);
     for ( GoodsCommentAddListVo vo: pageResult.dataList) {
-        //平台分类名称
-        SysCatevo sysCatevo = sysCateService.getOneCateInfo(vo.getCatId());
-        vo.setCatName(sysCatevo.getCatName());
+        //商家分类名称
+        String sortName = db().select(SORT.SORT_NAME)
+            .from(SORT)
+            .where(SORT.SORT_ID.eq(vo.getSortId()))
+            .fetchOneInto(String.class);
+        vo.setSortName(sortName);
         //真实评论数
         Integer realCommNum = db().select(DSL.count(COMMENT_GOODS.ID).as("real_comm_num"))
             .from(COMMENT_GOODS)
@@ -332,9 +335,11 @@ public class GoodsCommentService extends ShopBaseService {
     if (!StringUtils.isBlank(param.getGoodsName())) {
        selectFrom.and(GOODS.GOODS_NAME.like(this.likeValue(param.getGoodsName())));
     }
-    //根据平台分类搜索
-    if (!GoodsCommentPageListParam.CAT_DEFAULT_VALUE.equals(param.getCatId())) {
-      selectFrom.and(GOODS.CAT_ID.eq(param.getCatId()));
+    //根据商家分类搜索
+    if (!GoodsCommentPageListParam.SORT_DEFAULT_VALUE.equals(param.getSortId())) {
+        List<Integer> sortIds = new ArrayList<>();
+        sortIds.add(param.getSortId());
+      selectFrom.and(GOODS.SORT_ID.in(mpGoodsRecommendService.getAllChild(sortIds)));
     }
   }
 
