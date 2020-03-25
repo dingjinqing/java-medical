@@ -1,0 +1,60 @@
+<!--pages/aftersaleorder/aftersaleorder.wxml-->
+<include src="/pages/common/header.wxml" />
+<view class="main-container">
+  <!-- 搜索 -->
+  <view class='pixed' style='top:{{margin_top_nav + 8}}px;'>
+    <view class='top_search clearfix'>
+      <view class="search">
+        <icon class='search-img' size='13' type='search' role='img'></icon>
+        <input type="text" placeholder="输入售后编号/订单号/商品名称" bindconfirm="bindSearch" value='{{input_value}}' bindinput="save" />
+        <image src='{{imageUrl}}/image/wxapp/search_clear.png' mode='widthFix' bindtap='clear_value'></image>
+      </view>
+      <view class='btn_search' bindtap='bindSearch' data-value='{{input_value}}'>搜索</view>
+    </view>
+  </view>
+  <!-- 列表数据 -->
+  <view class="order_content" wx:if='{{order_info != ""}}'>
+    <view class="each_order" wx:for='{{order_info}}' wx:key='key'>
+      <view class="eo_top">
+          <view class="order_sn">售后编号：{{item.return_order_sn}}</view>
+          <view class="order_status" style="color:{{comColor}}">
+            <block wx:if='{{item.return_type == 0}}'>
+              <text class="iconfont icontuikuan" style="color:{{comColor}}" wx:if='{{item.return_type == 0}}'></text>退款
+            </block>
+            <block wx:if='{{item.return_type == 1}}'>
+              <text class="iconfont icontuikuantuihuo" style="color:{{comColor}}" wx:if='{{item.return_type == 1}}'></text>退货退款
+            </block>
+            <block wx:if='{{item.return_type == 4}}'>
+              <text class="iconfont iconhuanhuo" style="color:{{comColor}}" wx:if='{{item.return_type == 4}}'></text>换货
+            </block>
+          </view>
+      </view>
+      <view class="order_goods clearfix" bindtap="to_item" wx:for='{{item.return_order_goods}}' wx:key='key' wx:for-item='item1'
+            wx:for-index='index1' data-goods_id='{{item1.goods_id}}'>
+          <view class="goods_img"><image src="{{item1.goods_img}}"></image></view>
+          <view class="goods_info">
+              <view class="goods_desc">
+                  <view class="goods_name">{{item1.goods_name}}</view>
+                  <view class="goods_attr" wx:if='{{item1.goods_attr != "" && item1.goods_attr != null}}'>{{item1.goods_attr}}</view>
+              </view>
+              <view class="goods_price">
+                  <view class="goods_money" style="color:{{comColor}}">￥{{item1.goods_price}}</view>
+                  <view class="goods_num">X{{item1.goods_number}}</view>
+              </view>
+          </view>
+      </view>
+      <view class="return_info" bindtap="to_detail" data-order_sn='{{item.order_sn}}' data-ret_id='{{item.ret_id}}'>
+        <view class="return_desc">{{item.refund_status_name}}</view>
+        <view class="btn_look_detail">查看详情</view>
+      </view>
+    </view>
+  </view>
+  <!-- 列表无数据 -->
+  <view class="no_status" wx:if='{{order_info == ""}}'>
+    <view class="order-no">
+      <image class="order-no-img" src="{{imageUrl}}image/wxapp/order-no.png" />
+    </view>
+    <view class="no-zi" style="margin: 0;margin-bottom: 13px;margin-top:20rpx;">您还没有相关订单哦</view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

@@ -240,7 +240,7 @@ public class MrkingStrategyService extends ShopBaseService {
         if (MrkingStrategyAct.getActType().equals(ACT_TYPE_SECTION)) {
             List<Integer> inGoodsIds = getMrkingStrategyGoodsIds(MrkingStrategyAct);
             List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
-            inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+            inGoodsIds.removeAll(userExclusiveGoodsIds);
             goodsPageResult = getGoods(inGoodsIds,Collections.emptyList(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
         }else {
             List<Integer> notInGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);

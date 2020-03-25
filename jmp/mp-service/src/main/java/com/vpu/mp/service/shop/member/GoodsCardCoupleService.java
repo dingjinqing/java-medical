@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.dao.GoodsCardCoupleDao;
@@ -175,6 +174,8 @@ public class GoodsCardCoupleService extends ShopBaseService {
             return allExclusiveGoodsIds;
         }
 
-        return Util.diffList(allExclusiveGoodsIds,userExclusiveGoodsIds);
+        allExclusiveGoodsIds.removeAll(userExclusiveGoodsIds);
+
+        return allExclusiveGoodsIds;
     }
 }

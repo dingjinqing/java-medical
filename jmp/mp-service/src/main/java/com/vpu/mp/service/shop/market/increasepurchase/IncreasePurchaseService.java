@@ -553,7 +553,7 @@ public class IncreasePurchaseService extends ShopBaseService {
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
         List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
-        inGoodsIds = Util.diffList(inGoodsIds,userExclusiveGoodsIds);
+        inGoodsIds.removeAll(userExclusiveGoodsIds);
 
         //商品列表
         PageResult<PurchaseGoodsListVo.Goods> goodsPageResult = getGoods(inGoodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());

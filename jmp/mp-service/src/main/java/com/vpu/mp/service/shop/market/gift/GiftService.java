@@ -9,27 +9,27 @@ import com.vpu.mp.db.shop.tables.records.GiftRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListParam;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListVo;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftListVo;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
-import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
-import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
-import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
-import com.vpu.mp.service.pojo.shop.market.gift.RuleJson;
-import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
-import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
-import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
+import com.vpu.mp.service.pojo.shop.market.gift.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.user.cart.CartService;
+import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +43,13 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GIFT;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Tag.TAG;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.util.Util.listToString;
-import static com.vpu.mp.service.foundation.util.Util.numberToString;
-import static com.vpu.mp.service.foundation.util.Util.stringToList;
-import static com.vpu.mp.service.foundation.util.Util.underLineStyleGson;
+import static com.vpu.mp.service.foundation.util.Util.*;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.jooq.impl.DSL.countDistinct;
@@ -72,6 +68,12 @@ public class GiftService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     protected ImageService imageService;
+    @Autowired
+    private GoodsCardCoupleService goodsCardCoupleService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private CartService cartService;
 
     public static final Gift TABLE = Gift.GIFT;
     public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
@@ -214,16 +216,26 @@ public class GiftService extends ShopBaseService {
     /**
      * 获取活动赠品
      */
-    protected List<ProductVo> getGiftProduct(Integer... giftId) {
-        return db().select(SUB_TABLE.ID,SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
+    private List<ProductVo> getGiftProduct(Boolean isEffective,Integer... giftId) {
+        SelectWhereStep<? extends Record> select = (SelectWhereStep<? extends Record>) db().select(SUB_TABLE.ID,SUB_TABLE.GIFT_ID,SUB_TABLE.PRODUCT_ID,SUB_TABLE.PRODUCT_NUMBER,
                 PRODUCT.PRD_IMG,PRODUCT.PRD_PRICE,PRODUCT.PRD_DESC,GOODS.GOODS_NAME,GOODS.GOODS_IMG)
             .select(PRODUCT.PRD_PRICE, PRODUCT.PRD_IMG, PRODUCT.PRD_NUMBER, PRODUCT.PRD_DESC)
             .select(GOODS.GOODS_NAME, GOODS.GOODS_IMG)
             .from(SUB_TABLE)
             .leftJoin(PRODUCT).on(PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(PRODUCT.GOODS_ID))
-            .where(SUB_TABLE.GIFT_ID.in(giftId))
-            .fetchInto(ProductVo.class);
+            .where(SUB_TABLE.GIFT_ID.in(giftId));
+        if(isEffective){
+            select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(PRODUCT.PRD_NUMBER.gt(0));
+        }
+        return select.fetchInto(ProductVo.class);
+    }
+
+    /**
+     * 获取活动赠品
+     */
+    protected List<ProductVo> getGiftProduct(Integer... giftId) {
+        return getGiftProduct(false,giftId);
     }
 
     /**
@@ -283,7 +295,7 @@ public class GiftService extends ShopBaseService {
         ruleVo.setCardId(stringToListNullable(ruleJson.getCardId()));
         ruleVo.setTagId(stringToListNullable(ruleJson.getTagId()));
         ruleVo.setFullNumber(stringToInt(ruleJson.getFullNumber()));
-        ruleVo.setFullPrice(stringToDouble(ruleJson.getFullPrice()));
+        ruleVo.setFullPrice(new BigDecimal(ruleJson.getFullPrice()));
         ruleVo.setMaxPayNum(stringToInt(ruleJson.getMaxPayNum()));
         ruleVo.setMinPayNum(stringToInt(ruleJson.getMinPayNum()));
         ruleVo.setPayStartTime(ruleJson.getPayStartTime());
@@ -570,4 +582,113 @@ public class GiftService extends ShopBaseService {
             return imageService.imageUrl(relativePath);
         }
     }
+
+    /**
+     * 小程序端活动页数据
+     * @param param
+     * @param userId
+     * @return
+     */
+    public GiftGoodsListVo getWxAppGoodsList(GiftGoodsListParam param, Integer userId){
+        GiftGoodsListVo vo = new GiftGoodsListVo();
+        GiftRecord giftRecord = db().fetchAny(TABLE,TABLE.ID.eq(param.getGiftId()));
+        if(giftRecord == null || giftRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)1);
+            return vo;
+        }else if(giftRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            vo.setState((byte)2);
+            return vo;
+        }else if(giftRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            vo.setState((byte)3);
+            return vo;
+        }
+
+        List<Integer> goodsIds = Util.splitValueToList(giftRecord.getGoodsId());
+        List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+        goodsIds.removeAll(userExclusiveGoodsIds);
+
+        //主商品
+        PageResult<GiftGoodsListVo.Goods> goodsPageResult = getGoods(goodsIds,param.getSearch(),param.getCurrentPage(),param.getPageRows());
+        goodsPageResult.getDataList().forEach(goods -> {
+            if(StringUtil.isNotEmpty(goods.getGoodsImg())){
+                goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+            }
+            if(goods.getIsDefaultProduct() == 1){
+                goods.setPrdId(saas.getShopApp(getShopId()).goods.goodsSpecProductService.getDefaultPrdId(goods.getGoodsId()));
+            }
+
+            //处理限时降价、首单特惠、会员等级价对商品价格的覆盖
+            GoodsPriceBo goodsPriceBo = saas.getShopApp(getShopId()).reducePrice.parseGoodsPrice(goods.getGoodsId(),userId);
+            goods.setGoodsPriceAction(goodsPriceBo.getGoodsPriceAction());
+            goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
+            goods.setMaxPrice(goodsPriceBo.getMaxPrice());
+            goods.setMarketPrice(goodsPriceBo.getGoodsPriceAction().equals(Byte.valueOf((byte)0)) ? goodsPriceBo.getMarketPrice()  : goodsPriceBo.getMaxPrice());
+        });
+        vo.setGoods(goodsPageResult);
+
+        //赠品
+        List<ProductVo> giftProductList = getGiftProduct(true,param.getGiftId());
+        giftProductList.forEach(p->{
+            if(StringUtil.isNotEmpty(p.getGoodsImg())){
+                p.setGoodsImg(domainConfig.imageUrl(p.getGoodsImg()));
+            }
+            if(StringUtil.isNotEmpty(p.getPrdImg())){
+                p.setPrdImg(domainConfig.imageUrl(p.getPrdImg()));
+            }
+        });
+        vo.setGiftProductList(giftProductList);
+
+        RuleJson ruleJson = underLineStyleGson().fromJson(giftRecord.getRule(), RuleJson.class);
+        RuleVo rule = getRuleVo(ruleJson);
+        vo.setRule(rule);
+
+        WxAppCartBo cartBo = cartService.getCartList(userId,goodsIds,null,null);
+        vo.setCheckedGoodsPrice(cartBo.getTotalPrice());
+
+        //检查满金额和满件数条件
+        if(rule.getFullPrice() != null && rule.getFullPrice().compareTo(BigDecimal.ZERO) > 0){
+            if(cartBo.getTotalPrice().compareTo(rule.getFullPrice()) < 0){
+                vo.setState((byte)4);
+            }else{
+                vo.setState((byte)0);
+            }
+        }else if(rule.getFullNumber() != null && rule.getFullNumber() > 0){
+            if(cartBo.getTotalGoodsNum() < rule.getFullNumber()){
+                vo.setState((byte)5);
+            }else {
+                vo.setState((byte)0);
+            }
+        }
+
+
+
+        return vo;
+    }
+
+    /**
+     * 查出goods列表
+     * @param inGoodsIds
+     * @param search
+     * @param currentPage
+     * @param pageRows
+     * @return
+     */
+    private PageResult<GiftGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
+        Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
+        select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
+        if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
+            select.where(GOODS.GOODS_NUMBER.gt(0));
+        }
+        if(StringUtil.isNotEmpty(search)){
+            select.where(GOODS.GOODS_NAME.contains(search));
+        }
+        if(CollectionUtils.isNotEmpty(inGoodsIds)){
+            select.where(GOODS.GOODS_ID.in(inGoodsIds));
+        }
+        return getPageResult(select,currentPage,pageRows,GiftGoodsListVo.Goods.class);
+    }
+
+
 }

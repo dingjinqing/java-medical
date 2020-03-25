@@ -1,23 +1,5 @@
 package com.vpu.mp.service.shop.user.cart;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
-import static com.vpu.mp.db.shop.tables.Cart.CART;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -31,11 +13,28 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
-import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.Cart.CART;
 
 
 
@@ -98,7 +97,7 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> appCartGoods = cartRecords.into(WxAppCartGoods.class);
         //商品
         goodsIdList =cartRecords.getValues(CART.GOODS_ID).stream().distinct().collect(Collectors.toList());
-        if (goodsIds!=null){
+        if (CollectionUtils.isNotEmpty(goodsIds)){
             goodsIdList.retainAll(goodsIds);
             productIdList =new ArrayList<>(goodsIdList.size());
             cartRecords.forEach(cartRecord -> {

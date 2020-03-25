@@ -124,6 +124,46 @@ public class HttpsUtils {
         return http(POST, url, params, null, isHttps);
     }
 
+    /**
+     * 下载外链图片内容使用
+     * @param url 外链地址
+     * @param headers 可能需要的参数
+     * @return 图片字节码
+     */
+    public static byte[] getByteArray(String url, Map<String, String> headers) throws IOException {
+        HttpClient httpClient;
+        log.info("下载图片：请求地址 = {},请求参数 = {},请求协议是否是https = {}",url,JSONObject.toJSONString(headers),url.contains("https"));
+        if (url.contains("https")) {
+            httpClient = createSSLClientDefault();
+        } else {
+            httpClient =  HttpClients.createDefault();
+        }
+        HttpGet get = new HttpGet(url);
+        if (headers != null && headers.size() > 0) {
+            headers.forEach(get::setHeader);
+        }
+
+        InputStream inputStream = null;
+        try {
+            HttpResponse response = httpClient.execute(get);
+            byte[] bytes = EntityUtils.toByteArray(response.getEntity());
+            inputStream = response.getEntity().getContent();
+            return bytes;
+        } catch (IOException e) {
+            log.debug("下载文件：请求{}异常 msg:",url,e.getMessage());
+            throw e;
+        }finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     private static String http(String method, String url, Map<String, Object> params,
                                Map<String, String> headers, boolean isHttps) {
         long start = System.currentTimeMillis();
