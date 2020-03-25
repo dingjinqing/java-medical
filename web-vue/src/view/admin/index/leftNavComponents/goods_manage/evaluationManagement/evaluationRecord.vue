@@ -409,8 +409,12 @@ export default {
         this.$route.query.award_activity_id
       )
     }
+    console.log(this.$route.query)
     if (this.$route.query.orderSn) {
       this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
+    }
+    if (this.$route.query.goodsName) {
+      this.$set(this.searchParams, 'goodsName', this.$route.query.goodsName)
     }
     if (this.$route.params.flag) {
       this.$set(this.shopHelperParams, 'shopAssistantFlag', this.$route.params.flag)
