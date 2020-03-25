@@ -32,11 +32,7 @@ import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.sum;
-import static org.jooq.impl.DSL.when;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author: 王兵兵
@@ -293,7 +289,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
 
         buildOptions(select, orderParam,true);
         select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
-        select.groupBy(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile"));
+        select.groupBy(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE);
     }
 
     /**
@@ -340,9 +336,9 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @return
      */
     public int getMarketOrderListSize(MarketOrderListParam param, byte goodsType){
-        SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectJoinStep<? extends Record> select = selectOne().from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param,goodsType);
-        return select.fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(select).fetchOptionalInto(Integer.class).orElse(0);
     }
 
 

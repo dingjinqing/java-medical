@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author 李晓冰
@@ -16,7 +15,6 @@ import java.util.List;
 public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private String firstSortName;
     private String secondSortName;
-    private Integer sortId;
     /**sku对应的规格组合id编号*/
     private String prdSpecs;
     private String goodsAd;
@@ -29,8 +27,6 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private String unit;
     /**商品图片使用;分隔*/
     private String goodsImgsStr;
-    /**处理后的商品图片，默认第一个是主图，如果是远程图片则需要将其下载到又拍云上*/
-    private List<String> goodsImgs;
     private String goodsDesc;
     private String deliverPlace;
 

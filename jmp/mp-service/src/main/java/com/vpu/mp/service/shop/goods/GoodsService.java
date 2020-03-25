@@ -766,7 +766,8 @@ public class GoodsService extends ShopBaseService {
      * @return
      */
     public GoodsDataIIllegalEnum insertWithLock(Integer shopId, Goods goods) {
-        return insert(goods);
+        GoodsDataIllegalEnumWrap codeWrap = insert(goods);
+        return codeWrap.getIllegalEnum();
     }
 
     /**
@@ -776,14 +777,16 @@ public class GoodsService extends ShopBaseService {
      *
      * @param goods 商品信息
      */
-    public GoodsDataIIllegalEnum insert(Goods goods) {
-        ResultWrap codeWrap = new ResultWrap();
+    public GoodsDataIllegalEnumWrap insert(Goods goods) {
+        GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
+        codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
 
         transaction(() -> {
             try {
                 //存在重复值则直接返回
-                codeWrap.code = columnValueExistCheckForInsert(goods);
-                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForInsert(goods);
+                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
                     return;
                 }
 
@@ -809,15 +812,17 @@ public class GoodsService extends ShopBaseService {
 
                 //插入商品分销改价信息
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
+                codeWrap.setGoodsId(goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
-                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
                 return;
             }
         });
 
-        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
-            return codeWrap.code;
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return  codeWrap;
         }
 
         //更新es
@@ -828,9 +833,10 @@ public class GoodsService extends ShopBaseService {
             }
         } catch (Exception e) {
             logger().debug("商品新增-同步es数据异常：" + e.getMessage());
-            return GoodsDataIIllegalEnum.GOODS_FAIL;
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return  codeWrap;
         }
-        return GoodsDataIIllegalEnum.GOODS_OK;
+        return  codeWrap;
     }
 
     /**

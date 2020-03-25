@@ -7,8 +7,10 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
+import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.*;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
@@ -80,7 +82,8 @@ public class PackSaleService extends ShopBaseService {
 		for (PackageSaleRecord record : dataList) {
 			PackSalePageVo packSalePageVo = PackSalePageVo.from(record);
 			Integer activityId = packSalePageVo.getId();
-			packSalePageVo.setPurchasedNum(orderInfo.getPackageSaleGoodsNum(activityId));
+			Integer saleGoodsNum = orderInfo.getPackageSaleGoodsNum(activityId);
+			packSalePageVo.setPurchasedNum(saleGoodsNum==null?0:saleGoodsNum);
 			packSalePageVo.setOrderNum(orderInfo.getPackageSaleOrderNum(activityId));
 			packSalePageVo.setUserNum(orderInfo.getPackageSaleUserNum(activityId));
 			list.add(packSalePageVo);
@@ -275,10 +278,12 @@ public class PackSaleService extends ShopBaseService {
 		
 		List<Integer> catIdList = transformIdList(catIds);
 		groupVo.setCatIdList(catIdList);
-		
+		List<SysCatevo> cartList = saas.sysCate.getList(catIdList);
+		groupVo.setCateVoList(cartList);
 		List<Integer> sortIdList = transformIdList(sortIds);
 		groupVo.setSortIdList(sortIdList);
-		
+		List<GoodsSortSelectListVo> sortList = saas.getShopApp(getShopId()).goods.goodsSort.getListByIds(sortIdList);
+		groupVo.setSortVoList(sortList);
 		return groupVo;
 	}
 	private List<Integer> transformIdList(String ids){

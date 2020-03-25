@@ -154,11 +154,12 @@ public class SendUserService extends ShopBaseService {
                     info.setIsVisitMp(Boolean.TRUE);
                     info.setCanSend(Boolean.TRUE);
                 }
-                if(maMap.containsKey(id)  ){
-                    info.setIsChecked(Boolean.TRUE);
-                    info.setNumbers(maMap.get(id));
-                    info.setCanSend(Boolean.TRUE);
-                }
+                //先注释小程序的判断
+//                if(maMap.containsKey(id)  ){
+//                    info.setIsChecked(Boolean.TRUE);
+//                    info.setNumbers(maMap.get(id));
+//                    info.setCanSend(Boolean.TRUE);
+//                }
                 if( info.getCanSend() ){
                     result += 1;
                 }

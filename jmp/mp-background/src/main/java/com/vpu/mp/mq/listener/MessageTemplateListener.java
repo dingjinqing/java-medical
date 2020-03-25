@@ -51,19 +51,21 @@ public class MessageTemplateListener implements BaseRabbitHandler {
             log.info("UserIdSize-->{},UserId--->{}",param.getUserIdList().size(),param.getUserIdList().get(0));
             log.info("WxUserSize-->{}",allSize);
         }
-        userInfoList.stream().forEach(info->{
-            if( saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param,info)){
+        for (WxUserInfo info : userInfoList) {
+            if (saas.getShopApp(param.getShopId()).wechatMessageTemplateService.sendMessage(param, info)) {
                 //自定义模版消息更新发送记录状态
-                if( param.getType().equals(RabbitParamConstant.Type.GENERAL_TYPE) ){
-                    saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateStatus(info.getUserId(),param.getMessageTemplateId());
+                if (param.getType().equals(RabbitParamConstant.Type.GENERAL_TYPE)) {
+                    saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateSendStatus(info.getUserId(), param.getMessageTemplateId());
                 }
 
-            }else{
+            } else {
                 failList.add(info.getUserId());
             }
 
-        });
-
+        }
+        if( RabbitParamConstant.Type.GENERAL_TYPE.equals(param.getType()) ){
+            saas.getShopApp(param.getShopId()).messageTemplateService.updateTemplateStatus(param.getMessageTemplateId());
+        }
         param.setUserIdList(failList);
 
         //更新taskJob进度和状态

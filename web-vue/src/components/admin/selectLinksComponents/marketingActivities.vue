@@ -20,9 +20,16 @@
             :class="clickIindex===index?'clickClass':''"
             @click="handleClick(index)"
           >
-            <td>{{item.actName}}</td>
+            <td>{{nowIndex===8?item.cardName:item.actName}}</td>
             <td v-if="couponFlag">{{item.type==='0'?'普通':item.type==='1'?'分裂':''}}</td>
-            <td class="link">{{item.validityType===1?'自领取开始':''}}{{item.validityType===1&&item.validity?`${item.validity}天`:''}}{{item.validityType===1&&item.validityHour?`${item.validityHour}小时`:''}}{{item.validityType===1&&item.validityMinute?`${item.validityMinute}分钟`:''}}{{item.validityType===1?'内有效':(item.startTime+$t('selectLinks.to')+item.endTime)}}</td>
+            <td
+              v-if="nowIndex!==8"
+              class="link"
+            >{{item.validityType===1?'自领取开始':''}}{{item.validityType===1&&item.validity?`${item.validity}天`:''}}{{item.validityType===1&&item.validityHour?`${item.validityHour}小时`:''}}{{item.validityType===1&&item.validityMinute?`${item.validityMinute}分钟`:''}}{{item.validityType===1?'内有效':(item.startTime+$t('selectLinks.to')+item.endTime)}}</td>
+            <td
+              v-if="nowIndex===8"
+              class="link"
+            >{{item.expire_type===1?'自领取开始':''}}{{item.expire_type===1&&item.dateType===2?`${item.receiveDay}月`:''}}{{item.expire_type===1&&item.dateType===1?`${item.receiveDay}周`:''}}{{item.expire_type===1&&item.dateType===0?`${item.receiveDay}日`:''}}{{item.expire_type===1?'内有效':item.expire_type===0?(item.startTime+$t('selectLinks.to')+item.endTime):'永久有效'}}</td>
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
@@ -46,6 +53,7 @@ import { packListRequest, assessListRequest, cardListRequest, voucherListRequest
 export default {
   data () {
     return {
+      nowIndex: null,
       trList: [],
       clickIindex: null,
       tbodyFlag: true,
@@ -85,6 +93,7 @@ export default {
     ...mapActions(['choisePagePath']),
     defaultData (newData) {
       console.log(newData)
+      this.nowIndex = newData.index
       this.clickIindex = null
       if (newData.levelIndex === 1) {
         this.navText = newData.navText
