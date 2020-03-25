@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -311,29 +314,40 @@ public class GoodsImportService extends ShopBaseService {
             return resultCode;
         }
         // 处理图片
-        List<DownloadImageBo> downloadImageBos = uploadGoodsImage(importBos);
+        List<DownloadImageBo> downloadImageBos = filterGoodsImages(importBos);
         if (downloadImageBos.size() == 0) {
             resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_IMG_IS_NULL);
             return resultCode;
         }
-
         GoodsVpuExcelImportBo bo = importBos.get(0);
+        List<DownloadImageBo> descDownloadImageBos = new ArrayList<>(6);
+        if (StringUtils.isNotBlank(bo.getGoodsDesc())) {
+            String desc = filterGoodsDesc(bo.getGoodsDesc(), descDownloadImageBos);
+            goods.setGoodsDesc(desc);
+        }
+
         transaction(() -> {
-            // 处理商家分类
-            int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
-            goods.setSortId(sortId);
+            try {
+                // 处理商家分类
+                int sortId = goodsSortService.fixGoodsImportGoodsSort(bo.getFirstSortName(), bo.getSecondSortName());
+                goods.setSortId(sortId);
 
-            // 这个地方是为了避免报异常
-            goods.setCatId(0);
+                // 这个地方是为了避免报异常
+                goods.setCatId(0);
 
-            // 处理用户图片
-            List<String> imgs = imageService.addImageToDbBatch(downloadImageBos);
-            goods.setGoodsImg(imgs.remove(0));
-            goods.setGoodsImgs(imgs);
+                // 处理用户指定的商品图片
+                List<String> imgs = imageService.addImageToDbBatch(downloadImageBos);
+                goods.setGoodsImg(imgs.remove(0));
+                goods.setGoodsImgs(imgs);
+                // 处理商品描述中包含的图片
+                imageService.addImageToDbBatch(descDownloadImageBos);
 
-            GoodsDataIllegalEnumWrap insertResult = goodsService.insert(goods);
-            resultCode.setIllegalEnum(insertResult.getIllegalEnum());
-            resultCode.setGoodsId(insertResult.getGoodsId());
+                GoodsDataIllegalEnumWrap insertResult = goodsService.insert(goods);
+                resultCode.setIllegalEnum(insertResult.getIllegalEnum());
+                resultCode.setGoodsId(insertResult.getGoodsId());
+            } catch (Exception e) {
+                resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            }
         });
 
         return resultCode;
@@ -448,11 +462,11 @@ public class GoodsImportService extends ShopBaseService {
     }
 
     /**
-     * 上传外链图片
+     * 处理外链图片集
      * @param importBos 待处理导入对象
      * @return 待入库
      */
-    private List<DownloadImageBo> uploadGoodsImage(List<GoodsVpuExcelImportBo> importBos) {
+    private List<DownloadImageBo> filterGoodsImages(List<GoodsVpuExcelImportBo> importBos) {
         List<DownloadImageBo> downloadImageBos = new ArrayList<>(5);
 
         for (GoodsVpuExcelImportBo importBo : importBos) {
@@ -462,17 +476,9 @@ public class GoodsImportService extends ShopBaseService {
             }
             String[] imgUrls = goodsImgsStr.replaceAll("；", ";").split(";");
             for (String imgUrl : imgUrls) {
-                imgUrl = imgUrl.replaceAll("\\n", "").trim();
-                if (0 != imgUrl.indexOf("http")) {
-                    imgUrl = "http://" + imgUrl;
-                }
-                try {
-                    DownloadImageBo downloadImageBo = imageService.downloadImgAndUpload(imgUrl);
-                    if (downloadImageBo != null) {
-                        downloadImageBos.add(downloadImageBo);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                DownloadImageBo bo = downLoadImg(imgUrl);
+                if (bo != null) {
+                    downloadImageBos.add(bo);
                 }
             }
             if (downloadImageBos.size() > 5) {
@@ -482,6 +488,115 @@ public class GoodsImportService extends ShopBaseService {
         return downloadImageBos;
     }
 
+    /**
+     * 过滤商品描述信息
+     * @param goodsDesc 商品描述信息
+     * @return
+     */
+    private String filterGoodsDesc(String goodsDesc,List<DownloadImageBo> downloadImageBos) {
+        String retStr = RegexUtil.cleanBodyContent(goodsDesc);
+        if (retStr == null) {
+            return retStr;
+        }
+        retStr = filterImgTag(goodsDesc, downloadImageBos);
+        retStr = filterBgUrlImg(retStr, downloadImageBos);
+        return retStr;
+    }
+
+    /**
+     * 过滤img标签
+     * @param goodsDesc
+     * @param downloadImageBos
+     * @return
+     */
+    private String filterImgTag(String goodsDesc,List<DownloadImageBo> downloadImageBos){
+        Pattern imgTagPattern = RegexUtil.getImgTagPattern();
+        Matcher matcher = imgTagPattern.matcher(goodsDesc);
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        while (matcher.find()) {
+            int groupStart = matcher.start();
+            int groupEnd = matcher.end();
+            String outerImgLink = matcher.group(1);
+            String imgTagStr = matcher.group();
+
+            if (outerImgLink != null) {
+                DownloadImageBo bo = downLoadImg(outerImgLink);
+                if (bo != null) {
+                    downloadImageBos.add(bo);
+                    imgTagStr = imgTagStr.replace(outerImgLink,bo.getImgUrl());
+                } else {
+                    imgTagStr = "";
+                }
+            } else {
+                imgTagStr = "";
+            }
+            sb.append(goodsDesc,index,groupStart);
+            sb.append(imgTagStr);
+            index = groupEnd;
+        }
+        sb.append(goodsDesc,index,goodsDesc.length());
+        return sb.toString();
+    }
+
+    /**
+     * 过滤background-image 和background 的 url(xxxx)
+     * @param goodsDesc
+     * @param downloadImageBos
+     * @return
+     */
+    private String filterBgUrlImg(String goodsDesc, List<DownloadImageBo> downloadImageBos) {
+        Pattern bgUrlPattern = RegexUtil.getBgUrlPattern();
+        Matcher matcher = bgUrlPattern.matcher(goodsDesc);
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        while (matcher.find()) {
+            int groupStart = matcher.start();
+            int groupEnd = matcher.end();
+            String bgUrlStr = matcher.group();
+            String outerImgLink = matcher.group(1);
+            if (outerImgLink == null) {
+                outerImgLink = matcher.group(2);
+            }
+            if (outerImgLink != null) {
+                DownloadImageBo bo = downLoadImg(outerImgLink);
+                if (bo != null) {
+                    downloadImageBos.add(bo);
+                    bgUrlStr = bgUrlStr.replace(outerImgLink,bo.getImgUrl());
+                } else {
+                    bgUrlStr = "";
+                }
+            } else {
+                bgUrlStr = "";
+            }
+            sb.append(goodsDesc,index,groupStart);
+            sb.append(bgUrlStr);
+            index = groupEnd;
+        }
+        sb.append(goodsDesc,index,goodsDesc.length());
+        return sb.toString();
+    }
+    /**
+     * 下载并上传外链图片
+     * @param imgUrl 外链地址
+     * @return null 无法处理
+     */
+    private DownloadImageBo downLoadImg(String imgUrl){
+        if (StringUtils.isBlank(imgUrl)) {
+            return null;
+        }
+        imgUrl = imgUrl.replaceAll("\\n", "").trim();
+        if (0 != imgUrl.indexOf("http")) {
+            imgUrl = "http://" + imgUrl;
+        }
+        try {
+            DownloadImageBo downloadImageBo = imageService.downloadImgAndUpload(imgUrl);
+            return downloadImageBo;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /**
      * 生成文件存储在yupYun上的文件位置
      *

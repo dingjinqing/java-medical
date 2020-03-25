@@ -23,8 +23,8 @@ public class GoodsCommentPageListParam {
     public static final Byte COMMSTAR_DEFAULT_VALUE = 0;
     /** 是否删除默认值0 未删除，1已删除 */
     public static final Byte IS_DELETE_DEFAULT_VALUE = 0;
-    /** 种类名称默认搜索条为空 */
-    public static final Integer CAT_DEFAULT_VALUE=-1;
+    /** 商家分类默认搜索条为空 */
+    public static final Integer SORT_DEFAULT_VALUE=-1;
     /** 不是从店铺助手跳转来 */
     public static final Byte NOT_FROM_SHOP_ASSISTANT=0;
     /** 从店铺助手跳转来 */
@@ -39,7 +39,7 @@ public class GoodsCommentPageListParam {
     private String orderSn;
     private String goodsName;
     private String mobile;
-    private Integer catId = CAT_DEFAULT_VALUE;
+    private Integer sortId = SORT_DEFAULT_VALUE;
     private Byte flag = FLAG_DEFAULT_VALUE;
     private Byte commstar = COMMSTAR_DEFAULT_VALUE;
     private Integer awardActivityId;
