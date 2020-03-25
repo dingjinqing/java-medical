@@ -69,6 +69,7 @@
       ><span>{{$t('marketCommon.shippingAddress')}}</span>
         <areaLinkage
           @areaData="handleAreaData"
+          :areaCode="areaLinkage"
           style="width:365px;"
         />
       </div>
@@ -98,6 +99,11 @@ export default {
   props: { requestParams: Object },
   data () {
     return {
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   methods: {
