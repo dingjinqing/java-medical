@@ -812,7 +812,7 @@ public class GoodsService extends ShopBaseService {
 
                 //插入商品分销改价信息
                 insertGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
-                codeWrap.setGoodsIds(goods.getGoodsId());
+                codeWrap.setGoodsId(goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
                 codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);

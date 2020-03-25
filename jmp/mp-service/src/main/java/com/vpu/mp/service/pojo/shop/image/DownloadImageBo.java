@@ -15,4 +15,5 @@ public class DownloadImageBo {
     private int size;
     private String relativeFilePath;
     private String imgUrl;
+    private String imageType;
 }

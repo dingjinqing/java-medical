@@ -621,7 +621,7 @@ public class GoodsSortService extends ShopBaseService {
                 returnId = secondSortRecord.getSortId();
             } else {
                 GoodsNormalSortParam param = new GoodsNormalSortParam();
-                param.setSortName(firstSortName);
+                param.setSortName(secondSortName);
                 param.setParentId(returnId);
                 returnId = insertNormal(param);
             }

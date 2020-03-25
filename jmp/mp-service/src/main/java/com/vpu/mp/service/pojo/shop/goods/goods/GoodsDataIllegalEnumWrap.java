@@ -13,7 +13,7 @@ public class GoodsDataIllegalEnumWrap {
     /**
      * 被操作的商品id
      */
-    private Integer goodsIds;
+    private Integer goodsId;
     /**
      * 操作结果状态
      */
