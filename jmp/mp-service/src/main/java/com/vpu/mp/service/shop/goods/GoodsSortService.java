@@ -52,7 +52,7 @@ public class GoodsSortService extends ShopBaseService {
             disposeRecommendSortList(sortRecords);
         }
 
-        sortRecords.forEach(record->{
+        sortRecords.forEach(record -> {
             GoodsSortListVo vo = record.into(GoodsSortListVo.class);
             vo.setSortImg(getImgFullUrlUtil(vo.getSortImg()));
             retList.add(vo);
@@ -65,12 +65,12 @@ public class GoodsSortService extends ShopBaseService {
      * 处理推荐父分类的图片和图片链接为其第一个子推荐分类
      * @param sortRecords 待处理推荐父分类
      */
-    private void disposeRecommendSortList(@NotNull List<SortRecord> sortRecords){
+    private void disposeRecommendSortList(@NotNull List<SortRecord> sortRecords) {
         Map<Integer, SortRecord> sortMap = sortRecords.stream().collect(Collectors.toMap(SortRecord::getSortId, Function.identity()));
         List<SortRecord> children = getChildrenByParentIdsDao(sortMap.keySet());
         Map<Integer, List<SortRecord>> childrenParentIdMap = children.stream().collect(Collectors.groupingBy(SortRecord::getParentId));
 
-        childrenParentIdMap.forEach((k,v)->{
+        childrenParentIdMap.forEach((k, v) -> {
             SortRecord sortRecord = sortMap.get(k);
             SortRecord child = v.get(0);
             sortRecord.setSortImg(child.getSortImg());
@@ -93,7 +93,7 @@ public class GoodsSortService extends ShopBaseService {
      * @param sortNumMap key: sortId value: 对应的商品数量
      * @return {@link com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectTreeVo} 集合
      */
-    public List<GoodsSortSelectTreeVo> getSortSelectTree(Map<Integer,Long> sortNumMap) {
+    public List<GoodsSortSelectTreeVo> getSortSelectTree(Map<Integer, Long> sortNumMap) {
         Set<Integer> sortIds = sortNumMap.keySet();
         List<SortRecord> sortRecords = getSortListDao(sortIds);
 
@@ -151,16 +151,16 @@ public class GoodsSortService extends ShopBaseService {
      * @return
      */
     public List<GoodsSortSelectListVo> getListByIds(List<Integer> sortIds) {
-        return db().select(SORT.SORT_ID,SORT.SORT_NAME).from(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(GoodsSortSelectListVo.class);
+        return db().select(SORT.SORT_ID, SORT.SORT_NAME).from(SORT).where(SORT.SORT_ID.in(sortIds)).fetchInto(GoodsSortSelectListVo.class);
     }
 
     /**
      * 普通商家分类新增
      * @param param 普通商家分类
      */
-    public void insertNormal(GoodsNormalSortParam param) {
+    public Integer insertNormal(GoodsNormalSortParam param) {
         transaction(() -> {
-            DSLContext db= db();
+            DSLContext db = db();
             //是二级分类
             if (param.getParentId() != null && param.getParentId() != 0) {
                 db.update(SORT).set(SORT.HAS_CHILD, GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId()))
@@ -172,8 +172,9 @@ public class GoodsSortService extends ShopBaseService {
 
             SortRecord sortRecord = db.newRecord(SORT, param);
             sortRecord.insert();
+            param.setSortId(sortRecord.getSortId());
         });
-
+        return param.getSortId();
     }
 
     /**
@@ -181,17 +182,17 @@ public class GoodsSortService extends ShopBaseService {
      * @param param 普通商家分类
      */
     public void updateNormal(GoodsNormalSortParam param) {
-        transaction(()->{
+        transaction(() -> {
             SortRecord sortRecord = param.convertToSortRecord();
             db().executeUpdate(sortRecord);
             // 二级节点修改了父节点，判断原父节点是否还有孩子，同时修改新的父节点为有孩子
-            if (!Objects.equals(param.getParentId(),GoodsConstant.ROOT_PARENT_ID)&&!Objects.equals(param.getParentId(), param.getOldParentId())) {
+            if (!Objects.equals(param.getParentId(), GoodsConstant.ROOT_PARENT_ID) && !Objects.equals(param.getParentId(), param.getOldParentId())) {
                 int i = db().fetchCount(SORT, SORT.PARENT_ID.eq(param.getOldParentId()));
                 // 更新原父亲
                 if (i == 0) {
-                    db().update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_NO_CHILD).where(SORT.SORT_ID.eq(param.getOldParentId())).execute();
+                    db().update(SORT).set(SORT.HAS_CHILD, GoodsConstant.HAS_NO_CHILD).where(SORT.SORT_ID.eq(param.getOldParentId())).execute();
                 }
-                db().update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId())).execute();
+                db().update(SORT).set(SORT.HAS_CHILD, GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId())).execute();
             }
         });
         try {
@@ -213,7 +214,7 @@ public class GoodsSortService extends ShopBaseService {
             DSLContext db = db();
             SortRecord executeRecord = db.newRecord(SORT, parentRecord);
             executeRecord.insert();
-            childrenRecords.forEach(record-> record.setParentId(executeRecord.getSortId()));
+            childrenRecords.forEach(record -> record.setParentId(executeRecord.getSortId()));
             db.batchInsert(childrenRecords).execute();
         });
     }
@@ -229,9 +230,9 @@ public class GoodsSortService extends ShopBaseService {
         SortRecord parentRecord = param.convertParentToRecord();
         List<SortRecord> childrenRecords = param.convertChildrenToRecord();
         Map<String, List<SortRecord>> collect = childrenRecords.stream().collect(Collectors.groupingBy(x -> x.getSortId() == null ? toInsert : toUpdate));
-        List<Integer> childrenIds= childrenRecords.stream().map(SortRecord::getSortId).filter(Objects::nonNull).collect(Collectors.toList());
+        List<Integer> childrenIds = childrenRecords.stream().map(SortRecord::getSortId).filter(Objects::nonNull).collect(Collectors.toList());
 
-        transaction(()->{
+        transaction(() -> {
             DSLContext db = db();
             SortRecord executeRecord = db.newRecord(SORT, parentRecord);
             executeRecord.update();
@@ -510,7 +511,7 @@ public class GoodsSortService extends ShopBaseService {
      */
     private List<SortRecord> getChildrenByParentIdsDao(Collection<Integer> parentIds) {
         return db().select().from(SORT).where(SORT.PARENT_ID.in(parentIds)).orderBy(SORT.FIRST.desc(),SORT.CREATE_TIME.desc(),SORT.SORT_ID.asc())
-               .fetchInto(SortRecord.class);
+            .fetchInto(SortRecord.class);
     }
     /**
      * 根据传入的父id集合迭代查询所有子孙分类id集合（包含传入的id集合）
@@ -589,5 +590,42 @@ public class GoodsSortService extends ShopBaseService {
 
     public boolean exist(Integer id) {
         return db().fetchExists(SORT, SORT.SORT_ID.eq(id));
+    }
+
+    /**
+     * 商品导入修复其不存在的分类信息
+     *
+     * @param firstSortName  一级分类名称
+     * @param secondSortName 二级分类名称
+     * @return 应该绑定的商家分类id
+     */
+    @SuppressWarnings("all")
+    public int fixGoodsImportGoodsSort(String firstSortName, String secondSortName) {
+        // 有一级，查看数据是否也存在，有则用没有则加
+        int returnId = GoodsConstant.ROOT_PARENT_ID;
+        if (!StringUtils.isBlank(firstSortName)) {
+            SortRecord firstSortRecord = db().selectFrom(SORT).where(SORT.SORT_NAME.eq(firstSortName).and(SORT.PARENT_ID.eq(GoodsConstant.ROOT_PARENT_ID))).fetchAny();
+            if (firstSortRecord != null) {
+                returnId = firstSortRecord.getSortId();
+            } else {
+                GoodsNormalSortParam param = new GoodsNormalSortParam();
+                param.setSortName(firstSortName);
+                param.setParentId(GoodsConstant.ROOT_PARENT_ID);
+                returnId = insertNormal(param);
+            }
+        }
+        // 有二级
+        if (!StringUtils.isBlank(secondSortName)) {
+            SortRecord secondSortRecord = db().selectFrom(SORT).where(SORT.SORT_NAME.eq(secondSortName).and(SORT.PARENT_ID.eq(returnId))).fetchAny();
+            if (secondSortRecord != null) {
+                returnId = secondSortRecord.getSortId();
+            } else {
+                GoodsNormalSortParam param = new GoodsNormalSortParam();
+                param.setSortName(secondSortName);
+                param.setParentId(returnId);
+                returnId = insertNormal(param);
+            }
+        }
+        return returnId;
     }
 }

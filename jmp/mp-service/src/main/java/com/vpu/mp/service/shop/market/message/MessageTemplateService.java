@@ -214,12 +214,13 @@ public class MessageTemplateService extends ShopBaseService {
         List<MessageTemplateVo> resultVoList = new ArrayList<>();
         for(TemplateConfigRecord record : templateList  ){
             MessageTemplateVo vo = new MessageTemplateVo();
-            int sentNumber = sendMap.getOrDefault(record.getId(), 0);
-            int visitNumber = visitMap.getOrDefault(record.getId(), 0);
+            String idStr = record.getId().toString();
+            int sentNumber = sendMap.getOrDefault(idStr, 0);
+            int visitNumber = visitMap.getOrDefault(idStr, 0);
             BeanUtils.copyProperties(record,vo);
             vo.setSentNumber(sentNumber);
             vo.setClickedNumber(visitNumber);
-            if( sendMap.containsKey(record.getId()) ){
+            if( sendMap.containsKey(idStr) ){
                 vo.setPercentage(MathUtil.deciMal(visitNumber,sentNumber)*100);
             }else{
                 vo.setPercentage(0D);
@@ -238,7 +239,7 @@ public class MessageTemplateService extends ShopBaseService {
      */
     private Map<String,Integer> getSentPersonByTemplateId(List<Integer> templateIdList){
         return db()
-            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"),SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"))
             .from(SERVICE_MESSAGE_RECORD)
             .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
             .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
@@ -312,7 +313,13 @@ public class MessageTemplateService extends ShopBaseService {
             .fetchAny();
     }
     public PageResult<MessageOutputVo> getSendRecord(MessageTemplateQuery query){
-        SelectConditionStep<Record> select  = db().select(SERVICE_MESSAGE_RECORD.fields()).from(SERVICE_MESSAGE_RECORD)
+        SelectConditionStep<Record6<String, Byte, Byte, Byte, Timestamp, Timestamp>> select  = db().select(
+            USER.USERNAME,
+            SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM,
+            SERVICE_MESSAGE_RECORD.IS_VISIT,
+            SERVICE_MESSAGE_RECORD.SEND_STATUS,
+            SERVICE_MESSAGE_RECORD.VISIT_TIME,
+            SERVICE_MESSAGE_RECORD.CREATE_TIME).from(SERVICE_MESSAGE_RECORD)
             .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
             .where(buildParams(query));
         return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
@@ -403,7 +410,7 @@ public class MessageTemplateService extends ShopBaseService {
     }
 
 
-    public void updateTemplateStatus(Integer userId,Integer templateId){
+    public void updateTemplateSendStatus(Integer userId,Integer templateId){
         db().update(SERVICE_MESSAGE_RECORD).
             set(SERVICE_MESSAGE_RECORD.SEND_STATUS,(byte)1).
             where(SERVICE_MESSAGE_RECORD.USER_ID.eq(userId)).
@@ -411,6 +418,10 @@ public class MessageTemplateService extends ShopBaseService {
 
     }
 
+    public void updateTemplateStatus(Integer templateId){
+        db().update(TEMPLATE_CONFIG).set(TEMPLATE_CONFIG.SEND_STATUS,(byte)1).
+            where(TEMPLATE_CONFIG.ID.eq(templateId)).execute();
+    }
 
     public void addContentTemplate(ContentMessageParam param) {
         db().newRecord(MESSAGE_TEMPLATE,param).insert();

@@ -226,6 +226,7 @@ export default {
         type: 'warning',
         center: true
       }).then(() => {
+        if (rowData.recommendGoods.length > 0) rowData.recommendGoods = rowData.recommendGoods.map(item => { return item.goodsId })
         let obj = {
           ...rowData,
           status: rowData.status === 1 ? 0 : 1
