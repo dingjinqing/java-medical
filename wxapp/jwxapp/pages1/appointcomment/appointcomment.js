@@ -14,7 +14,7 @@ global.wxPage({
     comment: [],
     numbers: [0,0,0,0],
     ratio: [0,0,0],
-    nick_avatar: imageUrl + ''
+    nickAvatar: imageUrl + 'image/wxapp/icon_no_4.png'
   },
 
   /**
