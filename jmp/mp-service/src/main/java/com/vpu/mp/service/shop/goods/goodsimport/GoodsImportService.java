@@ -499,7 +499,7 @@ public class GoodsImportService extends ShopBaseService {
             return retStr;
         }
         retStr = filterImgTag(goodsDesc, downloadImageBos);
-
+        retStr = filterBgUrlImg(retStr, downloadImageBos);
         return retStr;
     }
 
@@ -539,6 +539,43 @@ public class GoodsImportService extends ShopBaseService {
         return sb.toString();
     }
 
+    /**
+     * 过滤background-image 和background 的 url(xxxx)
+     * @param goodsDesc
+     * @param downloadImageBos
+     * @return
+     */
+    private String filterBgUrlImg(String goodsDesc, List<DownloadImageBo> downloadImageBos) {
+        Pattern bgUrlPattern = RegexUtil.getBgUrlPattern();
+        Matcher matcher = bgUrlPattern.matcher(goodsDesc);
+        StringBuilder sb = new StringBuilder();
+        int index = 0;
+        while (matcher.find()) {
+            int groupStart = matcher.start();
+            int groupEnd = matcher.end();
+            String bgUrlStr = matcher.group();
+            String outerImgLink = matcher.group(1);
+            if (outerImgLink == null) {
+                outerImgLink = matcher.group(2);
+            }
+            if (outerImgLink != null) {
+                DownloadImageBo bo = downLoadImg(outerImgLink);
+                if (bo != null) {
+                    downloadImageBos.add(bo);
+                    bgUrlStr = bgUrlStr.replace(outerImgLink,bo.getImgUrl());
+                } else {
+                    bgUrlStr = "";
+                }
+            } else {
+                bgUrlStr = "";
+            }
+            sb.append(goodsDesc,index,groupStart);
+            sb.append(bgUrlStr);
+            index = groupEnd;
+        }
+        sb.append(goodsDesc,index,goodsDesc.length());
+        return sb.toString();
+    }
     /**
      * 下载并上传外链图片
      * @param imgUrl 外链地址
