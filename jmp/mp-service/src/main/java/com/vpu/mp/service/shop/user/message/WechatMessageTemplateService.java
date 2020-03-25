@@ -158,7 +158,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
         try{
             accountMessageService.sendMpTemplateMessage(info.getMpAppId(),info.getMpOpenId(),
                 wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),
-                param.getUserIdList(),param.getMessageTemplateId());
+                info.getUserId(),param.getMessageTemplateId());
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;
