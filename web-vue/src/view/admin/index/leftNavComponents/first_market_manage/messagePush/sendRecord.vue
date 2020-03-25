@@ -18,27 +18,6 @@
               v-model="queryParams.userName"
             ></el-input>
           </el-form-item>
-          <el-form-item :label="labels.templatePlatfrom">
-            <el-select
-              style="width:120px"
-              placeholder="请选择"
-              @change="sendTypeValueChange"
-              v-model="queryParams.sendType"
-            >
-              <el-option
-                label="全部"
-                :value="0"
-              >
-              </el-option>
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item :label="labels.isVisit">
             <el-select
               style="width:120px"
@@ -76,36 +55,52 @@
           :data="tableData"
           style="width: 100%"
           center
+          border
           header-row-class-name="tableClass"
         >
           <el-table-column
-            prop="name"
+            prop="username"
             :label="tableLabels.name"
+            align="center"
           >
           </el-table-column>
           <el-table-column
             prop="templatePlatfrom"
             :label="tableLabels.templatePlatfrom"
+            align="center"
           >
+            <template>
+              公众号
+            </template>
           </el-table-column>
           <el-table-column
             prop="sendStatus"
             :label="tableLabels.sendStatus"
+            align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.sendStatus === 1?'是':'否'}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="isVisit"
             :label="tableLabels.isVisit"
+            align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.isVisit === 1?'是':'否'}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="visitTime"
             :label="tableLabels.visitTime"
+            align="center"
           >
           </el-table-column>
           <el-table-column
             prop="createTime"
             :label="tableLabels.createTime"
+            align="center"
           >
           </el-table-column>
         </el-table>
