@@ -254,15 +254,16 @@ public final class RedisLockAspect extends ShopBaseService {
                 }
                 //获取批量锁失败
                 logger().error("批量锁获取失败,当前获取到:{}", fail.toString());
-                releaseLocks(fail, lockEntity.getValue());
+                failReleaseLocks(fail, lockEntity.getValue());
             } else {
                 logger().info("批量锁获取成功，执行后续方法");
-                break;
+                return;
             }
         } while (System.nanoTime() - nano < redisLockAnnotation.maxWait() * 1000000);
         if (fail.size() != keys.size()) {
             //释放
             releaseLocks(fail, lockEntity.getValue());
+            logger().info("批量锁获取获取失败（超时），fail-fast");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_GET_LOCK_FAIL);
         }
         logger().info("AddRedisLocks,加redis锁end");
@@ -281,6 +282,17 @@ public final class RedisLockAspect extends ShopBaseService {
      * @param value value
      */
     private void releaseLocks(List<String> keys, String value) {
+        failReleaseLocks(keys, value);
+        //释放锁后清除key
+        lockEntities.get().pop();
+    }
+
+    /**
+     * 获取锁失败时释放已获取的锁
+     * @param keys  锁list
+     * @param value value
+     */
+    private void failReleaseLocks(List<String> keys, String value) {
         if(CollectionUtils.isEmpty(keys)) {
             return;
         }
@@ -292,7 +304,5 @@ public final class RedisLockAspect extends ShopBaseService {
             }
             pipeline.sync();
         }
-        //释放锁后清除key
-        lockEntities.get().pop();
     }
 }
