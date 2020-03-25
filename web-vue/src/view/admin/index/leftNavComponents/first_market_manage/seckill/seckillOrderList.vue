@@ -136,6 +136,12 @@ export default {
       if (arr !== []) {
         this.requestParams.orderStatus = arr
       }
+      // 下单时间
+      if (this.requestParams.createTimeStart) {
+        this.requestParams.createTimeEnd = this.requestParams.createTimeStart.replace('00:00:00', '23:59:59')
+      } else {
+        this.requestParams.createTimeEnd = null
+      }
       console.log(this.requestParams)
       orderSeckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
