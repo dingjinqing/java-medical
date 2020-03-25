@@ -283,7 +283,7 @@ public class Util {
 	}
 
     /**
-     * 求差集，list1-list2，只在list1中而不在list2中的元素
+     * 返回差集，同时不改变list1和list2的内容
      * @param list1
      * @param list2
      * @param <T>

@@ -215,7 +215,7 @@ public class GiftProcessorDao extends GiftService {
      */
     public List<OrderGoodsBo> packageAndCheckGift(Integer userId, GiftVo giftVo, BigDecimal price, int number, Map<Integer, Integer> goodsMapCount, List<Byte> orderType, Set<Integer> noJoinRecord) {
         RuleVo rules = giftVo.getRules();
-        if(rules.getFullPrice() != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && rules.getFullPrice() <= price.doubleValue()){
+        if(rules.getFullPrice() != null && !orderType.contains(BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER) && rules.getFullPrice().compareTo(price) <= 0){
             logger().info("赠品：满金额满足,活动id:{}", giftVo.getId());
             return packageGift(giftVo.getId(), noJoinRecord, goodsMapCount);
         }

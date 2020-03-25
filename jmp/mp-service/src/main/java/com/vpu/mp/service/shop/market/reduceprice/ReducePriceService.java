@@ -498,6 +498,8 @@ public class ReducePriceService extends ShopBaseService {
         }
 
         GoodsRecord goodsInfo = goodsService.getGoodsRecordById(goodsId);
+        res.setMarketPrice(goodsInfo.getMarketPrice());
+        res.setIsCardExclusive(goodsInfo.getIsCardExclusive());
 
         //处理限时降价
         if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsInfo.getGoodsType())){
