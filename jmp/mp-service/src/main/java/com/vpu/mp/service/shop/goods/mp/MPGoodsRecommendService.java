@@ -342,7 +342,10 @@ public class MPGoodsRecommendService extends ShopBaseService {
             //id去重
             childIds = childIds.stream().distinct().collect(Collectors.toList());
         }
-        return childIds;
+        logger().info("传入id集合："+ids);
+        ids.addAll(childIds);
+        logger().info("返回id集合："+ids);
+        return ids;
     }
 
     /**
