@@ -259,7 +259,7 @@ public final class RedisLockAspect extends ShopBaseService {
                 logger().info("批量锁获取成功，执行后续方法");
                 break;
             }
-        } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
+        } while (System.nanoTime() - nano < redisLockAnnotation.maxWait() * 1000000);
         if (fail.size() != keys.size()) {
             //释放
             releaseLocks(fail, lockEntity.getValue());
