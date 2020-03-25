@@ -62,11 +62,11 @@
               type="primary"
               size="small"
               class="btn"
-              @click="initDataList"
+              @click="filter()"
             >筛选</el-button>
             <el-button
               size="small"
-              @click="reset"
+              @click="reset()"
             >重置</el-button>
           </div>
           <el-button
@@ -207,7 +207,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-tickets"
+                  class="el-icon-s-unfold"
                   @click="gotoOrder(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
@@ -219,7 +219,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-s-unfold"
+                  class="el-icon-tickets"
                   @click="gotoDetail(scope.row.id, scope.row)"
                 ></span>
               </el-tooltip>
@@ -325,6 +325,11 @@ export default {
     onSubmit () {
       this.pageInfo.currentPage = 1
     },
+    // 筛选
+    filter () {
+      this.initDataList()
+    },
+    // 重置
     reset () {
       this.param.name = ''
       this.dateRange = ''
@@ -332,6 +337,7 @@ export default {
       this.param.endTime = ''
     },
     initDataList () {
+      this.closeTabAddGroup()
       packagePriceList(Object.assign(this.param, this.pageParams)).then(res => {
         console.log(res, 'res-list')
         if (res.error === 0) {
@@ -469,7 +475,6 @@ export default {
           title: '编辑打包一口价活动',
           name: '6'
         })
-        console.log('closeTabAddGroup', this.tabInfo)
       }
       return this.tabInfo
     },

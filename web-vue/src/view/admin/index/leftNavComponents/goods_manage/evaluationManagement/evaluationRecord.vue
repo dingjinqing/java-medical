@@ -1,109 +1,140 @@
 <template>
   <!-- class="evaluationRecordContent" -->
   <div>
-    <div class="table_box" style="background: #fff;margin-bottom: 10px;">
-      <el-row>
-        <el-col :span="6">
-          <div class="filters_item">
-            <span>{{ $t("evaluation.orderSn") + "：" }}</span>
-            <el-input
-              v-model="searchParams.orderSn"
-              :placeholder="$t('evaluation.input', [$t('evaluation.orderSn')])"
-              size="small"
-              style="width: 170px;"
-            ></el-input>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="filters_item">
-            <span>{{ $t("evaluation.goodsName") + "：" }}</span>
-            <el-input
-              v-model="searchParams.goodsName"
-              :placeholder="
-                $t('evaluation.input', [$t('evaluation.goodsName')])
-              "
-              size="small"
-              style="width: 170px;"
-            ></el-input>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="filters_item">
-            <span>{{ $t("evaluation.mobile") + "：" }}</span>
-            <el-input
-              v-model="searchParams.mobile"
-              :placeholder="$t('evaluation.input', [$t('evaluation.mobile')])"
-              size="small"
-              style="width: 170px;"
-            ></el-input>
-          </div>
-        </el-col>
-        <el-col :span="6" v-if="target === 'Record'">
-          <div class="filters_item">
-            <span>{{ $t("evaluation.auditState") + "：" }}</span>
-            <el-select
-              v-model="searchParams.flag"
-              size="small"
-              class="mini_select"
-              style="width: 170px;"
+    <el-row class="filter-status" style="background-color:#fff">
+      <el-col :span="22" >
+        <el-tabs
+          v-model="tabDefaultStatus"
+          @tab-click="handleClick"
+        >
+          <template v-for="item in tabsStatus">
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+              v-if="item.value === '0'"
             >
-              <el-option
-                v-for="item in auditFlag"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="filters_item">
-            <span>{{ $t("evaluation.evaluationGrade") + "：" }}</span>
-            <el-select
-              v-model="searchParams.commstar"
-              size="small"
-              class="mini_select"
-              style="width: 170px;"
+              <span slot="label">
+                <span>全部</span>
+              </span>
+            </el-tab-pane>
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+              v-else
             >
-              <el-option
-                v-for="item in starLevel"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
-            </el-select>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="filters_item">
-            <span>{{
-              $t("evaluation.evaluationTable.evaluationAct") + "："
-            }}</span>
-            <el-select
-              v-model="searchParams.awardActivityId"
-              size="small"
-              class="mini_select"
-              style="width: 170px;"
-            >
-              <el-option
-                v-for="item in evaluationRewardList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="filters_item">
-            <el-button @click="initDataList" type="primary" size="small">{{
-              $t("marketCommon.filter")
-            }}</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <div style="width: 100%; padding:10px;background: #fff;">
+            </el-tab-pane>
+          </template>
+        </el-tabs>
+      </el-col>
+      <el-col :span="2" class="audit-button" v-if="target === 'Record'">
+        <el-button type="primary" size="small" @click="handleShowReviewDialog">审核设置</el-button>
+      </el-col>
+    </el-row>
+    <div style="width: 100%; padding:10px;background: #fff;margin-top:10px">
+      <div class="table_box" style="background: #fff;">
+        <el-row>
+          <el-col :span="6">
+            <div class="filters_item">
+              <span>{{ $t("evaluation.orderSn") + "：" }}</span>
+              <el-input
+                v-model="searchParams.orderSn"
+                :placeholder="$t('evaluation.input', [$t('evaluation.orderSn')])"
+                size="small"
+                style="width: 170px;"
+              ></el-input>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="filters_item">
+              <span>{{ $t("evaluation.goodsName") + "：" }}</span>
+              <el-input
+                v-model="searchParams.goodsName"
+                :placeholder="
+                  $t('evaluation.input', [$t('evaluation.goodsName')])
+                "
+                size="small"
+                style="width: 170px;"
+              ></el-input>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="filters_item">
+              <span>{{ $t("evaluation.mobile") + "：" }}</span>
+              <el-input
+                v-model="searchParams.mobile"
+                :placeholder="$t('evaluation.input', [$t('evaluation.mobile')])"
+                size="small"
+                style="width: 170px;"
+              ></el-input>
+            </div>
+          </el-col>
+          <el-col :span="6" v-if="target === 'Record'">
+            <div class="filters_item">
+              <span>{{ $t("evaluation.auditState") + "：" }}</span>
+              <el-select
+                v-model="searchParams.flag"
+                size="small"
+                class="mini_select"
+                style="width: 170px;"
+              >
+                <el-option
+                  v-for="item in auditFlag"
+                  :key="item.key"
+                  :label="item.value"
+                  :value="item.key"
+                ></el-option>
+              </el-select>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="filters_item">
+              <span>{{ $t("evaluation.evaluationGrade") + "：" }}</span>
+              <el-select
+                v-model="searchParams.commstar"
+                size="small"
+                class="mini_select"
+                style="width: 170px;"
+              >
+                <el-option
+                  v-for="item in starLevel"
+                  :key="item.key"
+                  :label="item.value"
+                  :value="item.key"
+                ></el-option>
+              </el-select>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="filters_item">
+              <span>{{
+                $t("evaluation.evaluationTable.evaluationAct") + "："
+              }}</span>
+              <el-select
+                v-model="searchParams.awardActivityId"
+                size="small"
+                class="mini_select"
+                style="width: 170px;"
+              >
+                <el-option
+                  v-for="item in evaluationRewardList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="filters_item">
+              <el-button @click="initDataList" type="primary" size="small">{{
+                $t("marketCommon.filter")
+              }}</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
       <el-table
         v-loading="loading"
         class="version-manage-table"
@@ -309,6 +340,26 @@
                 @click="evaluationRefuse(scope.row.id)"
               ></span>
             </el-tooltip>
+            <el-tooltip
+              :content="置顶"
+              placement="top"
+              v-if="scope.row.isTop === 0"
+            >
+              <span
+                class="el-icon-top operateSpan"
+                @click="evaluationTop(scope.row.id)"
+              ></span>
+            </el-tooltip>
+            <el-tooltip
+              :content="取消"
+              placement="top"
+              v-if="scope.row.isTop === 1"
+            >
+              <span
+                class="el-icon-bottom operateSpan"
+                @click="evaluationCancelTop(scope.row.id)"
+              ></span>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -335,6 +386,40 @@
         }}</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="审核设置"
+      :visible.sync="showReviewSet"
+      custom-class="custom"
+      width="30%"
+    >
+      <div class="reviewSetInfo">
+        <div>
+          <el-radio-group
+            v-model="dialogReviewStatus"
+          >
+            <el-radio :label="0">不用审核</el-radio>
+            <el-radio :label="1">先发后审</el-radio>
+            <el-radio :label="2">先审后发</el-radio>
+          </el-radio-group>
+        </div>
+        <div>
+          <el-switch
+          v-model="dialogHideEvaluation"
+          active-color="#f7931e"
+          ></el-switch>
+          <span>{{dialogHideEvaluation ? '已开启':'已关闭'}}</span>
+          <span class="tips">设置前端是否隐藏未填写心得的评价</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showReviewSet = false">{{
+          $t("evaluation.cancel")
+        }}</el-button>
+        <el-button type="primary" @click="confirmReviewSet">{{
+          $t("evaluation.confirm")
+        }}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -345,7 +430,13 @@ import {
   CommentPass,
   CommentRefuse,
   CommentAnswer,
-  delAnswer
+  delAnswer,
+  getCommentConfig,
+  getCommentSwitch,
+  CommentCheckConfig,
+  CommentSwitchConfig,
+  setTop,
+  cancelTop
 } from '@/api/admin/goodsManage/evaluationManagement/evaluationManagement'
 import { getEvaluationGiftList } from '@/api/admin/marketManage/evaluationGift.js'
 export default {
@@ -365,7 +456,8 @@ export default {
         orderSn: null,
         goodsName: null,
         mobile: null,
-        flag: -1
+        flag: -1,
+        isTop: 0
       },
       starLevel: [
         { key: 0, value: '全部' },
@@ -389,13 +481,26 @@ export default {
         { key: 1, value: '已通过' },
         { key: 2, value: '未通过' }
       ],
-      pageParams: {},
+      tabDefaultStatus: '0',
+      tabsStatus: [
+        { value: '0', label: '全部' },
+        { value: '1', label: '置顶评论' }
+      ],
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       dataList: [],
       loading: false,
       showReply: false,
+      showReviewSet: false,
       replyContent: null,
       replyId: null,
-      shopHelperParams: {}
+      shopHelperParams: {},
+      reviewStatus: null,
+      hideEvaluation: null,
+      dialogReviewStatus: 0,
+      dialogHideEvaluation: false
     }
   },
   mounted () {
@@ -406,14 +511,31 @@ export default {
         this.$route.query.award_activity_id
       )
     }
+    console.log(this.$route.query)
     if (this.$route.query.orderSn) {
       this.$set(this.searchParams, 'orderSn', this.$route.query.orderSn)
+    }
+    if (this.$route.query.goodsName) {
+      this.$set(this.searchParams, 'goodsName', this.$route.query.goodsName)
     }
     if (this.$route.params.flag) {
       this.$set(this.shopHelperParams, 'shopAssistantFlag', this.$route.params.flag)
     }
     if (this.$route.params.IntegerDays) {
       this.$set(this.shopHelperParams, 'nDays', this.$route.params.IntegerDays)
+    }
+    if (this.target === 'Record') {
+      getCommentConfig().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.reviewStatus = res.content
+        }
+      })
+      getCommentSwitch().then(res => {
+        if (res.error === 0) {
+          this.hideEvaluation = !!res.content
+        }
+      })
     }
     this.initDataList()
     this.langDefault()
@@ -424,7 +546,7 @@ export default {
       this.loading = true
       let obj = {
         ...this.searchParams,
-        page: { ...this.pageParams },
+        ...this.pageParams,
         awardActivityId:
           this.searchParams.awardActivityId === -1
             ? null
@@ -434,6 +556,7 @@ export default {
       if (this.target !== 'Record') {
         delete obj.flag
       }
+      console.log(obj)
       getCommentList(obj).then(res => {
         console.log(res)
         if (res.error === 0) {
@@ -500,6 +623,13 @@ export default {
         }
       })
     },
+    handleClick (data) {
+      console.log(data)
+      this.tabDefaultStatus = String(data.name)
+      this.searchParams.isTop = data.name === '1' ? 1 : 0
+      this.pageParams.currentPage = 1
+      this.initDataList()
+    },
     // 调起添加回复弹框
     writeReply (id) {
       this.showReply = true
@@ -524,6 +654,23 @@ export default {
         }
       })
     },
+    confirmReviewSet () {
+      CommentCheckConfig({ v: this.dialogReviewStatus }).then(res => {
+        if (res.error === 0) {
+          this.reviewStatus = this.dialogReviewStatus
+          this.$message.success('修改成功')
+        }
+      })
+      CommentSwitchConfig({ v: this.dialogHideEvaluation ? 1 : 0 }).then(res => {
+        this.hideEvaluation = this.dialogHideEvaluation
+        if (res.error === 0) {
+          this.$message.success('修改成功')
+        }
+      })
+      this.pageParams.currentPage = 1
+      this.initDataList()
+      this.showReviewSet = false
+    },
     // 删除回复
     deleteReply (id) {
       delAnswer({ id: id }).then(res => {
@@ -537,6 +684,32 @@ export default {
         }
       })
     },
+    evaluationTop (id) {
+      setTop({id}).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '置顶成功',
+            duration: '2000'
+          })
+          let targetData = this.dataList.find(item => item.id === id)
+          targetData.isTop = 1
+        }
+      })
+    },
+    evaluationCancelTop (id) {
+      cancelTop({id}).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '已取消',
+            duration: '2000'
+          })
+          let targetData = this.dataList.find(item => item.id === id)
+          targetData.isTop = 0
+        }
+      })
+    },
     // 去用户中心
     goUserCenter (id) {
       this.$router.push({
@@ -545,6 +718,11 @@ export default {
           userId: id
         }
       })
+    },
+    handleShowReviewDialog () {
+      this.showReviewSet = true
+      this.dialogReviewStatus = this.reviewStatus
+      this.dialogHideEvaluation = this.hideEvaluation
     }
   },
   filters: {
@@ -630,6 +808,21 @@ export default {
     }
   }
 }
+.filter-status{
+  /deep/ .el-tabs__nav-wrap::after{
+    content:none;
+  }
+  /deep/ .el-col{
+    margin-bottom: 0;
+  }
+  /deep/ .audit-button{
+    padding-right: 10px;
+    .el-button--small{
+      float: right;
+      margin-top: 5px;
+    }
+  }
+}
 .user_info {
   display: flex;
   flex-direction: column;
@@ -703,5 +896,14 @@ export default {
       margin-left: 0;
     }
   }
+}
+.reviewSetInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.reviewSetInfo > div+div{
+  margin-top: 20px;
 }
 </style>

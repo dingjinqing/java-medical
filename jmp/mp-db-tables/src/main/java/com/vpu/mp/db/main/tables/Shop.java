@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = -1558066116;
+    private static final long serialVersionUID = 1574778684;
 
     /**
      * The reference instance of <code>mini_main.b2c_shop</code>
@@ -277,6 +277,11 @@ public class Shop extends TableImpl<ShopRecord> {
      * The column <code>mini_main.b2c_shop.expire_time</code>. 到期时间
      */
     public final TableField<ShopRecord, Timestamp> EXPIRE_TIME = createField("expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "到期时间");
+
+    /**
+     * The column <code>mini_main.b2c_shop.store_clerk_privilege_list</code>. 门店店员权限列表
+     */
+    public final TableField<ShopRecord, String> STORE_CLERK_PRIVILEGE_LIST = createField("store_clerk_privilege_list", org.jooq.impl.SQLDataType.CLOB, this, "门店店员权限列表");
 
     /**
      * Create a <code>mini_main.b2c_shop</code> table reference

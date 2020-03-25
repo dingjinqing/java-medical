@@ -215,6 +215,7 @@ export default {
         mobile: '',
         orderSn: '',
         selectedOrderStatus: null,
+        orderStatus: [],
         consignee: '',
         provinceCode: '',
         cityCode: '',
@@ -247,9 +248,11 @@ export default {
   },
   methods: {
     initDataList () {
-      if (this.params.selectedOrderStatus) {
+      if (this.params.selectedOrderStatus !== null) {
         this.params.orderStatus = []
         this.params.orderStatus.push(this.params.selectedOrderStatus)
+      } else if (this.params.selectedOrderStatus === null) {
+        this.params.orderStatus = []
       }
       getOrderList(this.params).then(res => {
         if (res.error === 0) {

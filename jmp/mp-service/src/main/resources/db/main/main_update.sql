@@ -8,3 +8,26 @@
 /***********************2.10********************BEGIN*/
 ALTER TABLE `b2c_shop` ADD COLUMN `expire_time` timestamp NULL COMMENT '到期时间';
 /***********************2.10*********************END*/
+
+/***********************2.11********************BEGIN*/
+ALTER TABLE `b2c_shop` ADD COLUMN `store_clerk_privilege_list` TEXT NULL DEFAULT NULL COMMENT '门店店员权限列表';
+
+
+CREATE TABLE `b2c_store_account` (
+  `account_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '门店账号ID',
+  `shop_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属店铺id',
+  `sys_id` int(10) NOT NULL DEFAULT '0' COMMENT '所属账户id',
+  `mobile` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `account_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '账户名称',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `account_type` tinyint(1) DEFAULT '1' COMMENT '账户类型1:店员，2：店长',
+  `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:启用，1：禁用',
+  `del_flag` tinyint(1) DEFAULT '0' COMMENT '是否已删除0:否，1：是',
+  `account_passwd` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '账号密码',
+  `store_list` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '可用门店id,逗号隔开',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`account_id`),
+  KEY `mobile` (`mobile`),
+  KEY `account_name` (`account_name`)
+);
+/***********************2.11*********************END*/

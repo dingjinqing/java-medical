@@ -36,9 +36,14 @@
       >
       </el-table-column>
       <el-table-column
-        :label="$t('allGoods.allGoodsHeaderData.category')"
-        prop="catName"
+        :label="$t('allGoods.allGoodsHeaderData.sort')"
+        prop="sortName"
       >
+      <template slot-scope="scope">
+        <div>
+            {{scope.row.sortName || '无'}}
+        </div>
+      </template>
       </el-table-column>
       <el-table-column
         :label="$t('allGoods.allGoodsData.shopPrice')"
@@ -59,6 +64,11 @@
         :label="$t('evaluation.pv')"
         prop="pv"
       >
+        <template slot-scope="scope">
+          <div>
+              {{scope.row.pv || '0'}}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         :label="$t('evaluation.actualEvaluationNum')"
