@@ -212,11 +212,11 @@ export default {
       options1: [
         {
           label: `是`,
-          value: true
+          value: 1
         },
         {
           label: `否`,
-          value: false
+          value: 2
         }
       ]
     }
