@@ -80,7 +80,8 @@ public class PackSaleService extends ShopBaseService {
 		for (PackageSaleRecord record : dataList) {
 			PackSalePageVo packSalePageVo = PackSalePageVo.from(record);
 			Integer activityId = packSalePageVo.getId();
-			packSalePageVo.setPurchasedNum(orderInfo.getPackageSaleGoodsNum(activityId));
+			Integer saleGoodsNum = orderInfo.getPackageSaleGoodsNum(activityId);
+			packSalePageVo.setPurchasedNum(saleGoodsNum==null?0:saleGoodsNum);
 			packSalePageVo.setOrderNum(orderInfo.getPackageSaleOrderNum(activityId));
 			packSalePageVo.setUserNum(orderInfo.getPackageSaleUserNum(activityId));
 			list.add(packSalePageVo);
