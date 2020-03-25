@@ -1,5 +1,6 @@
 <!--
 * 打包一口价-新增打包一口价活动
+* @author:赵鑫
 -->
 <template>
   <div class="content">
@@ -7,17 +8,19 @@
       <el-form
         ref="form"
         :model="param"
+        :rules="formRules"
         label-width="130px"
         labelPosition="right"
       >
-        <el-form-item label="活动类型：">
+        <el-form-item
+          label="活动类型："
+          required
+        >
           <div>
             <el-radio
               :label=0
               v-model="param.packageType"
-            >
-              一口价结算
-            </el-radio>
+            >一口价结算</el-radio>
             <span class="font-color">用户选择多件商品，以商家设置的结算价格进行打包购买</span>
           </div>
           <div>
@@ -29,7 +32,10 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="活动名称：">
+        <el-form-item
+          label="活动名称："
+          prop="packageName"
+        >
           <el-input
             size="small"
             style="width: 150px"
@@ -38,7 +44,10 @@
           <span class="font-color">&nbsp;&nbsp;&nbsp;只作为商家记录使用，用户不会看到这个名称</span>
         </el-form-item>
 
-        <el-form-item label="活动时间：">
+        <el-form-item
+          label="活动时间："
+          prop="validity"
+        >
           <el-date-picker
             v-model="param.validity"
             type="datetimerange"
@@ -81,6 +90,7 @@
 
         <el-form-item
           label="结算总价格："
+          prop="totalMoney"
           v-if="param.packageType === 0"
         >
           <el-input
@@ -92,6 +102,7 @@
 
         <el-form-item
           label="指定折扣："
+          prop="totalRatio"
           v-if="param.packageType === 1"
         >
           <el-input
@@ -112,7 +123,7 @@
               style="margin-left:20px"
               v-if="param.group1 === true"
             >
-              <div>
+              <div style="margin-left:14px">
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
@@ -136,7 +147,7 @@
           <section style="display: flex">
             <el-checkbox v-model="param.group2">商品组2</el-checkbox>
             <div style="margin-left:20px">
-              <div>
+              <div style="margin-left:14px">
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
@@ -160,7 +171,7 @@
           <section style="display: flex">
             <el-checkbox v-model="param.group3">商品组3</el-checkbox>
             <div style="margin-left:20px">
-              <div>
+              <div style="margin-left:14px">
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
@@ -804,8 +815,34 @@ export default {
 
       checkout: true,
       disabled: true,
-      activeName: 'second'
+      activeName: 'second',
+      formRules: {
+        packageName: { required: true, message: '请输入活动名称', trigger: 'blur' },
+        validity: { required: true, message: '请选择活动时间', trigger: 'blur' },
+        totalMoney: { required: true, message: '请输入结算总价格', trigger: 'blur' },
+        totalRatio: { required: true, message: '请输入折扣', trigger: 'blur' }
+      }
     }
+  },
+  watch: {
+    'param.packageType': function (value) {
+      console.log(value, 'value----')
+      if (value) {
+        this.$refs.form.validateField('packageType')
+      }
+    }
+    // 'param.totalMoney': function (value) {
+    //   console.log(value)
+    //   if (this.param.packageType === 0) {
+    //     this.$refs.form.validateField('totalMoney')
+    //   }
+    // },
+    // 'param.totalRatio': function (value) {
+    //   console.log(value)
+    //   if (this.param.packageType === 1) {
+    //     this.$refs.form.validateField('totalRatio')
+    //   }
+    // }
   },
   methods: {
     // 添加商品-弹窗唤起
