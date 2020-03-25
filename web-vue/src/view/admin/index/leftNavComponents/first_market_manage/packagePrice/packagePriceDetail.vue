@@ -39,7 +39,7 @@
     </div>
     <div class="table_list">
       <el-table
-        :data="dataTable"
+        :data="tableData"
         header-row-class-name="tableClss"
         style="100%"
         border
@@ -97,12 +97,13 @@ export default {
       mobile: '',
       orderSn: '',
       pageInfo: {},
-      dataTable: []
+      tableData: []
     }
   },
   methods: {
     onSubmit () {
       this.pageInfo.currentPage = 1
+      this.pageInfo.pageRows = 20
       this.loadTable()
     },
     loadTable () {
@@ -113,7 +114,7 @@ export default {
       activityDetail(this.pageInfo).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.dataTable = res.content.dataList
+          this.tableData = res.content.dataList
           this.pageInfo = res.content.page
         }
       })

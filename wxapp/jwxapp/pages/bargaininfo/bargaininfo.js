@@ -133,7 +133,7 @@ global.wxPage({
     } else {
       let goodsList = [{
         goodsId: bargain_info.recordInfo.goodsId,
-        prdRealPrice: bargain_info.recordInfo.prdPrice,
+        prdRealPrice: bargain_info.bargainPrice,
         goodsPrice: bargain_info.recordInfo.goodsPrice,
         goodsNum: 1,
         prdId: bargain_info.recordInfo.prdId,
@@ -304,7 +304,7 @@ global.wxPage({
       }
     }, {
         activityId: bargain_info.recordInfo.bargainId,
-        realPrice: bargain_info.recordInfo.expectationPrice,
+        realPrice: bargain_info.bargainPrice,
         linePrice: bargain_info.recordInfo.prdPrice,
         pageType: 2
       })
@@ -468,7 +468,7 @@ function request_kanjia(that) {
         }
       }, {
           activityId: bargain_info.recordInfo.bargainId,
-          realPrice: bargain_info.recordInfo.expectationPrice,
+          realPrice: bargain_info.bargainPrice,
           linePrice: bargain_info.recordInfo.prdPrice
         })
 
