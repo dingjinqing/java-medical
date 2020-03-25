@@ -109,8 +109,8 @@
             <view class="comment_list_top clearfix">
               <view class="clearfix">
                 <view class="fl">
-                  <block wx:if="commentInfo.anonymousflag == 1">
-                    <image class="user_avatar" src='{{ commentInfo.userAvatar }}' mode="widthFix" />
+                  <block wx:if="{{commentInfo.anonymousflag == 1}}">
+                    <image class="user_avatar" src='{{ nickAvatar }}' mode="widthFix" />
                     <text>匿名用户</text>
                   </block>
                   <block wx:else>

@@ -23,6 +23,7 @@ global.wxPage({
     img_iconsel: imageUrl + '/image/wxapp/selected.png',
     img_service: imageUrl + 'image/wxapp/icon_service.png',
     square_no: imageUrl + 'image/wxapp/icon_rectangle.png',
+    nickAvatar: imageUrl + 'image/wxapp/icon_no_4.png',
 
     storeInfo: {}, // 门店信息
     serviceInfo: {}, // 门店服务信息
