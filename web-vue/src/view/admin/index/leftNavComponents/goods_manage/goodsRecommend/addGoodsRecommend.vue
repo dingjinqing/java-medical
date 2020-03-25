@@ -92,7 +92,7 @@
                     paramsData.recommendSortIds.length
                   }}个</span>
               </div>
-              <div class="choose_item">
+              <!-- <div class="choose_item">
                 <span
                   class="item_button"
                   @click="showSort(2)"
@@ -105,7 +105,7 @@
                 >
                   已选择平台分类{{ paramsData.recommendCatIds.length }}个
                 </span>
-              </div>
+              </div> -->
             </div>
           </div>
         </el-form-item>

@@ -9,7 +9,10 @@
           <view class="card_name_box">
             <view class="card_name">{{cardInfo.cardName}} <text class="get_status">{{carStatus}}</text></view>
             <view class="card_exp" >
-            <text wx:if="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
+            <text wx:if="{{cardInfo.expireType == 0}}">
+              有效期：{{cardInfo.cardExpireTime}}
+            </text>
+            <text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
             <text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
             </view>
           </view>
@@ -26,7 +29,7 @@
           </view>
           <view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
             <!-- ￥10000 -->
-            <image mode="widthFix" class="qrcode" bindtap="showQrCode" src="{{imageUrl}}image/wxapp/erweima1.png"></image>
+            <image mode="widthFix" wx:if="{{cardInfo.cardNo !== null}}" class="qrcode" bindtap="showQrCode" src="{{imageUrl}}image/wxapp/erweima1.png"></image>
           </view> 
         </view>
         <view class="card_status" wx:if="{{cardInfo.cardStopImg}}">
@@ -149,16 +152,20 @@
         适用商品
       </view>
       <view class="item_title_right">
-        查看 >
+      <view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
+      <view wx:else>查看 ></view>
       </view>
     </view>
     <view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
+      
+
       <view class="content_item goods_item" wx:for="{{cardInfo.goodsList}}" wx:for-item="goodsListItem" wx:for-index="goodsListIndex" wx:key="goodsListIndex">
-        <image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}"></image>
-        <view class="goods_right">
-          <view class="goods_name">{{goodsListItem.goodsName}}</view>
-          <view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
-        </view>
+      <image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}"></image>
+      <view class="goods_right">
+        <view class="goods_name">{{goodsListItem.goodsName}}</view>
+        <view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}         </view>
+      </view>
+
       </view>
     </view>
     <view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">

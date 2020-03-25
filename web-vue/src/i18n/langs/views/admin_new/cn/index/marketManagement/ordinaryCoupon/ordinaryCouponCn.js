@@ -85,12 +85,12 @@ export const cn = {
       name: '添加商品分类',
       value: '2',
       num: ''
-    },
-    {
-      name: '添加平台分类',
-      value: '3',
-      num: ''
     }
+    // {
+    //   name: '添加平台分类',
+    //   value: '3',
+    //   num: ''
+    // }
   ],
 
   save: '保存',

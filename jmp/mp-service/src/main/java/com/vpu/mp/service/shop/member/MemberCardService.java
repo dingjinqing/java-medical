@@ -1975,7 +1975,7 @@ public class MemberCardService extends ShopBaseService {
      */
 	public MemberCardPageDecorationVo getPageIndexMemberCard(ModuleCard moduleCard, int userId){
         MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(moduleCard.getCardId())).fetchSingle().into(MemberCardPageDecorationVo.class);
-
+        vo.setCardId(vo.getId());
         if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
             //已停用
             vo.setStatus((byte)3);

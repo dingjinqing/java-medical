@@ -63,6 +63,7 @@ global.wxPage({
       }
     })
 
+    this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
   },
   save_zhi: function (e) {
     search_word = e.detail.value;
@@ -166,7 +167,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    // this.selectComponent('#recommend').requestData()
+    this.selectComponent('#recommend').requestData()
   },
 
   /**

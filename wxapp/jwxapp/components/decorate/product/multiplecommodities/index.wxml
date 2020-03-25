@@ -23,8 +23,7 @@
           </view>
         <view class='product-price'>
             <block wx:if="{{m.hide_price == 1}}">
-              <view class='sale_price' wx:if="{{item.activityType != '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
-              <view class='sale_price' wx:if="{{item.activityType == '10'}}" style='color:{{main_setting.comColor}};'>￥{{item.shopPrice}}</view>
+              <view class='sale_price'  style='color:{{main_setting.comColor}};'>￥{{item.realPrice===null?"0.00":item.realPrice}}</view>
             </block>
             <view wx:if="{{m.hide_price != 1}}"></view>
             <block wx:if="{{ m.other_message===1}}">

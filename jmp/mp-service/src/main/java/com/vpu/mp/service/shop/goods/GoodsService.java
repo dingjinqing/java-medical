@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
-import com.vpu.mp.service.saas.categroy.SysCatServiceHelper;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -267,7 +266,7 @@ public class GoodsService extends ShopBaseService {
         SelectConditionStep<?> selectFrom = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition);
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(condition);
 
         // 拼接排序
         selectFrom = this.buildOrderFields(selectFrom, goodsPageListParam);
@@ -303,7 +302,7 @@ public class GoodsService extends ShopBaseService {
 
         List<Integer> goodsIds = db().select(GOODS.GOODS_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(condition).fetch(GOODS.GOODS_ID);
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(condition).fetch(GOODS.GOODS_ID);
 
         return goodsIds;
     }
@@ -317,7 +316,7 @@ public class GoodsService extends ShopBaseService {
         List<GoodsPageListVo> goodsPageListVos = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG, GOODS.GOODS_SN, GOODS.SHOP_PRICE,
             GOODS.SOURCE, GOODS.GOODS_TYPE, GOODS.CAT_ID, SORT.SORT_NAME, GOODS.SORT_ID, GOODS_BRAND.BRAND_NAME, GOODS.GOODS_NUMBER, GOODS.GOODS_SALE_NUM)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GOODS.GOODS_ID.in(goodsIds))
             .fetchInto(GoodsPageListVo.class);
 
         GoodsPageListParam pageListParam = new GoodsPageListParam();
@@ -343,7 +342,7 @@ public class GoodsService extends ShopBaseService {
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
             GOODS_SPEC_PRODUCT.PRD_IMG)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition);
 
         // 拼接排序
@@ -379,7 +378,7 @@ public class GoodsService extends ShopBaseService {
 
         List<Integer> prdIds = db().select(GOODS_SPEC_PRODUCT.PRD_ID)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
-            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+            .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID).and(GOODS_BRAND.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition).fetch(GOODS_SPEC_PRODUCT.PRD_ID);
 
         return prdIds;
@@ -478,12 +477,12 @@ public class GoodsService extends ShopBaseService {
      */
     private Condition buildSortCatOpitons(Condition condition, GoodsPageListParam goodsPageListParam) {
         // 平台分类，首先需要根据当前平台分类id查询出所有的子孙节点
-        if (goodsPageListParam.getCatId() != null) {
-            List<Integer> catIds = new ArrayList<>();
-            catIds.add(goodsPageListParam.getCatId());
-            List<Integer> childrenId = saas.sysCate.findChildrenByParentId(catIds);
-            condition = condition.and(GOODS.CAT_ID.in(childrenId));
-        }
+//        if (goodsPageListParam.getCatId() != null) {
+//            List<Integer> catIds = new ArrayList<>();
+//            catIds.add(goodsPageListParam.getCatId());
+//            List<Integer> childrenId = saas.sysCate.findChildrenByParentId(catIds);
+//            condition = condition.and(GOODS.CAT_ID.in(childrenId));
+//        }
         // 商家分类
         if (goodsPageListParam.getSortId() != null) {
             List<Integer> childrenId = goodsSort.getChildrenIdByParentIdsDao(Collections.singletonList(goodsPageListParam.getSortId()));
@@ -515,11 +514,11 @@ public class GoodsService extends ShopBaseService {
                 labelCondition = labelCondition.or(GOODS.SORT_ID.in(sortChildrenId));
             }
             // 处理标签打在平台分类上
-            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
-            if (integers != null && integers.size() > 0) {
-                List<Integer> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
-                labelCondition = labelCondition.or(GOODS.CAT_ID.in(catChildrenId));
-            }
+//            integers = byteListMap.get(GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
+//            if (integers != null && integers.size() > 0) {
+//                List<Integer> catChildrenId = saas.sysCate.findChildrenByParentId(integers);
+//                labelCondition = labelCondition.or(GOODS.CAT_ID.in(catChildrenId));
+//            }
             condition = condition.and(labelCondition);
         }
         return condition;
@@ -803,7 +802,7 @@ public class GoodsService extends ShopBaseService {
         calculateGoodsPriceAndNumber(goods);
 
         if (StringUtils.isBlank(goods.getGoodsSn())) {
-            int count = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)) + 1;
+            int count = db().fetchCount(GOODS) + 1;
             goods.setGoodsSn(String.format("G10%08d", count));
         }
 
@@ -1404,6 +1403,24 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 清除指定的sortId
+     * @param sortIds
+     */
+    public void clearSortId(List<Integer> sortIds) {
+        db().update(GOODS).set(GOODS.SORT_ID,0)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.SORT_ID.in(sortIds))).execute();
+    }
+
+    /**
+     * 清除指定的brandId
+     * @param brandIds
+     */
+    public void clearBrandId(List<Integer> brandIds) {
+        db().update(GOODS).set(GOODS.BRAND_ID,0)
+            .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
+    }
+
+    /**
      * 查询商品详情
      *
      * @param goodsId 商品id
@@ -1686,7 +1703,7 @@ public class GoodsService extends ShopBaseService {
 
         //循环处理需要处理的列
         for (GoodsExportVo goods : list) {
-            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
+//            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
 
             SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
             if (sort != null) {

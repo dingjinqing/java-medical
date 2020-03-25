@@ -463,7 +463,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
                   prop="availableGoods"
-                  :style="{height:param.availableGoods === 1 ? '240px':''}"
+                  :style="{height:param.availableGoods === 1 ? '200px':''}"
                 >
                   <div>
                     <p>
@@ -503,7 +503,7 @@
                           @click="onlyHanldeToAddGoodS(index)"
                         >{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
                         <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
-                        <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div>
+                        <!-- <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div> -->
                       </div>
                     </div>
                   </div>
@@ -891,14 +891,14 @@ export default {
           if (data.recommendGoodsId !== '' || data.recommendCatId !== '' || data.recommendSortId !== '') {
             // 指定商品
             this.param.availableGoods = 1
-            this.goodsInfo = data.recommendGoodsId.split(',')
+            this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
             this.goodsInfo = this.goodsInfo.map(Number)
 
-            this.busClass = data.recommendCatId.split(',')
+            this.busClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
             this.busClass = this.busClass.map(Number)
 
-            this.platClass = data.recommendSortId.split(',')
-            this.platClass = this.platClass.map(Number)
+            // this.platClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
+            // this.platClass = this.platClass.map(Number)
           } else {
             // 全部商品
             this.param.availableGoods = 0

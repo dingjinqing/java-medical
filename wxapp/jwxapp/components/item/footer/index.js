@@ -1,5 +1,5 @@
 const util = require("../../../utils/util.js");
-let actType = {
+const actType = {
   1:{
     footerButtonName:{
       left:{name:'单独购买',event:'checkBuy'},
@@ -294,20 +294,25 @@ global.wxComponent({
         }
         if(this.data.activity && this.data.activity.activityType === 10){
           console.log(this.data.productInfo)
-            buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
+            buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
           if(!this.data.activity.originalBuy){
             delete buttonData['buttonInfo']['left']
           }
         }
       } else if (this.data.position === 'spec'){
         let position = this.data.activity && [1,3,5,10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['dialogButtonName'] : actType['default']['dialogButtonName']
+        console.log(actType['default'])
+        console.log(actType['default']['dialogButtonName'])
+        console.log(this.data.activity && [1,3,5,10].includes(this.data.activity.activityType))
+        console.log(position)
         buttonData['buttonInfo'] = this.data.triggerButton ? position[this.data.triggerButton] : position['default']
         if(this.data.activity && this.data.activity.activityType === 3 && this.data.triggerButton === 'right'){
           buttonData['buttonInfo']['right'].left = `￥${this.data.activity.bargainPrice}`
         }
-        if(this.data.activity && this.data.activity.activityType === 10 && this.data.triggerButton === 'right'){
-          buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : `￥${this.data.productInfo.actProduct.preSalePrice}`
+        if(this.data.activity && this.data.activity.activityType === 10 && (!this.data.triggerButton || this.data.triggerButton === 'right')){
+          buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
         }
+        console.log(buttonData)
       }
       buttonData.activityType = this.data.activity ? this.data.activity.activityType : null
       console.log(buttonData)
@@ -460,9 +465,11 @@ global.wxComponent({
           })
         }
       } else {
-        this.setData({
-          'buttonData.buttonInfo.right.style':''
-        })
+        if(this.data.buttonData && this.data.buttonData.buttonInfo.right && this.data.buttonData.buttonInfo.right.style){
+          this.setData({
+            'buttonData.buttonInfo.right.style':''
+          })
+        }
       }
     },
     checkActStatus(){

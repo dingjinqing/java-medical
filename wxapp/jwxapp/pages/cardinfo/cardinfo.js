@@ -165,6 +165,13 @@ global.wxPage({
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
+    if (cardItem.expireType === 0){
+      // 从领取之日起
+      let reDateType = ['日','周','月']
+      let i = cardItem.dateType === null ? 0 : Number(cardItem.dateType)
+      return `自领取之日起${cardItem.receiveDay}${reDateType[i]}内有效`
+
+    }
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`

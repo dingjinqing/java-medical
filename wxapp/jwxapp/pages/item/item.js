@@ -646,9 +646,10 @@ global.wxPage({
         return data
       case '18':
         if (info.isLimit) {
-          data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+         if(info.limitFlag) data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+         if(!info.limitFlag) data.desc = `购买不超过${info.limitAmount}个时享受单价￥${this.data.goodsInfo.singleRealPrice}，超出则该商品全部恢复非活动价`
         } else {
-          data.desc = `新人首单，购买时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+          data.desc = `首单享低价`
         }
         return data
       case '19':

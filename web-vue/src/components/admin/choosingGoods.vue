@@ -20,14 +20,14 @@
             style="padding-left:30px;display: flex;"
             class="chooseCondiction"
           >
-            <sortCatTreeSelect
-              ref="catTree"
-              :filterGoodsInfo="initSortCatParams"
-              treeType="cat"
-              :treeStyle="initPlateformWidth"
-              :selectedId.sync="requestParam.catId"
-            />
-            <div style="margin: 0 30px;">
+            <!--<sortCatTreeSelect-->
+              <!--ref="catTree"-->
+              <!--:filterGoodsInfo="initSortCatParams"-->
+              <!--treeType="cat"-->
+              <!--:treeStyle="initPlateformWidth"-->
+              <!--:selectedId.sync="requestParam.catId"-->
+            <!--/>-->
+            <div style="margin-right: 30px;">
               <sortCatTreeSelect
                 ref="sortTree"
                 :filterGoodsInfo="initSortCatParams"
@@ -88,6 +88,7 @@
             <li>商品品牌：
               <el-select
                 v-model="requestParam.brandId"
+                value-key="id"
                 placeholder="请选择商品品牌"
                 size="small"
                 style="width:140px"
@@ -139,7 +140,7 @@
                 <td>商品货号</td>
                 <td>售价</td>
                 <td>库存</td>
-                <td>平台分类</td>
+                <!--<td>平台分类</td>-->
                 <td>商家分类</td>
                 <td>商品标签</td>
                 <td>品牌</td>
@@ -178,9 +179,9 @@
                   <span v-if="!loadProduct">{{item.goodsNumber}}</span>
                   <span v-if="loadProduct">{{item.prdNumber}}</span>
                 </td>
-                <td class="tb_decorate_a">
-                  {{item.catName}}
-                </td>
+                <!--<td class="tb_decorate_a">-->
+                  <!--{{item.catName}}-->
+                <!--</td>-->
                 <td class="tb_decorate_a">
                   {{item.sortName}}
                 </td>
@@ -394,15 +395,15 @@ export default {
         }
         switch (this.initialConditionRender[0]) {
           case 0:
-            this.requestParam.sortId = this.initialConditionRender[1]
+            this.requestParam.sortId = { id: this.initialConditionRender[1] }
             this.showItem.sortId = false
             break
           case 1:
-            this.requestParam.labelId = this.initialConditionRender[1]
+            this.requestParam.labelId = { id: this.initialConditionRender[1] }
             this.showItem.labelId = false
             break
           case 2:
-            this.requestParam.brandId = this.initialConditionRender[1]
+            this.requestParam.brandId = { id: this.initialConditionRender[1] }
             this.showItem.brandId = false
             break
         }
@@ -504,7 +505,7 @@ export default {
         isOnSale: 1,
         isSaleOut: false
       }
-      this.$refs['catTree'].clearData()
+      // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
       this.selectGoodsData()
     },

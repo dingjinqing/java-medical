@@ -9,6 +9,7 @@ public class ActivityVo {
 	public Integer id;
 	public String actName;
 	public String type;
+	public String actCode;
     /**
      * 优惠券有效期类型
      */

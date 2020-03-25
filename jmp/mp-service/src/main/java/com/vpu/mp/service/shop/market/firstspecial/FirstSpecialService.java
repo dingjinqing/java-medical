@@ -120,8 +120,7 @@ public class FirstSpecialService extends ShopBaseService {
                 default:
             }
         }
-        select.where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(FIRST_SPECIAL.CREATE_TIME.desc());
-        PageResult<FirstSpecialPageListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),FirstSpecialPageListQueryVo.class);
+        select.where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.CREATE_TIME.desc());        PageResult<FirstSpecialPageListQueryVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),FirstSpecialPageListQueryVo.class);
 
         /**查询活动商品数量、订单付款数、付款用户数、付款总金额 */
         for(FirstSpecialPageListQueryVo vo : res.dataList){
@@ -163,6 +162,9 @@ public class FirstSpecialService extends ShopBaseService {
             FirstSpecialRecord record = db().newRecord(FIRST_SPECIAL);
             assign(param,record);
             if(param.getShareConfig() != null) {
+                if(param.getShareConfig().getShareAction().equals(PictorialShareConfig.CUSTOMER_IMG) && StringUtil.isNotEmpty(param.getShareConfig().getShareImg())){
+                    param.getShareConfig().setShareImg(new URL(param.getShareConfig().getShareImg()).getPath());
+                }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
             db().executeUpdate(record);

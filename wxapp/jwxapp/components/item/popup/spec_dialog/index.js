@@ -107,7 +107,11 @@ global.wxComponent({
           limitBuyNum = 1
         }
         if(activity && [6,18,22,98].includes(activity.activityType) && activity.isLimit){
-          limitMaxNum = activity.limitAmount
+          if(activity.limitFlag){
+            limitMaxNum = activity.limitAmount
+          } else {
+            limitMaxNum = 0
+          }
         }
         this.triggerEvent('productData', {
           goodsId: this.data.productsInfo.goodsId,
@@ -242,9 +246,14 @@ global.wxComponent({
         }
         if([5,10].includes(activity.activityType)){
           limitBuyNum = 1
-        }
-        if([5,10].includes(activity.activityType) || ([6,18,22,98].includes(activity.activityType) && activity.isLimit)){
           limitMaxNum = activity.limitAmount
+        }
+        if([6,18,22,98].includes(activity.activityType) && activity.isLimit){
+          if(activity.limitFlag){
+            limitMaxNum = activity.limitAmount
+          } else {
+            limitMaxNum = 0
+          }
         }
       } else if(activity && (!this.data.triggerButton || this.data.triggerButton === 'right') && activity.activityType === 3){
         select_prd.prdRealPrice = activity.bargainPrice
@@ -257,6 +266,7 @@ global.wxComponent({
       } else {
         select_prd.prdNumber = select_prd['prdNumber']
       }
+      console.log(limitMaxNum)
       this.setData({
         checkedProduct: select_prd
       })

@@ -156,6 +156,9 @@ global.wxComponent({
         },
       }
       let textContent = cartType[`${data.showCart.show_cart}-${data.showCart.show_cart ? data.showCart.cart_type : data.delMarket}`] || ''
+        if(data.showCart.show_cart === 1 && [1,3,4,5,8,10].includes(this.data.goodsData.activityType)){
+          textContent = ''
+        }
         this.setData({
           textContent
         })

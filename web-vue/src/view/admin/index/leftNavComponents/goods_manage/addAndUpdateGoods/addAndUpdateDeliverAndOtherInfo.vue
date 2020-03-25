@@ -87,6 +87,7 @@
         prop="goodsWeight"
       >
         <el-input-number
+          ref="goodsWeight"
           v-model="goodsProductInfo.goodsWeight"
           size="small"
           controls-position="right"
@@ -213,6 +214,7 @@ export default {
       labelWidth: 120,
       goodsProductInfo: {
         deliverTemplateId: 0,
+        deliverTemplateType: null,
         goodsWeight: null,
         deliverPlace: null,
         isCardExclusive: false,
@@ -363,6 +365,7 @@ export default {
         // 查找默认配置
         getDeliverTemplateConfigApi().then(res => {
           this.deliverTemplateCurrentData = this.parseDeliverTemplateDefaultData(res)
+          this.goodsProductInfo.deliverTemplateType = null
           this.closeLoading()
         })
       } else {
@@ -376,6 +379,7 @@ export default {
             this.deliverTemplateChange(0)
           } else {
             this.deliverTemplateCurrentData = this.parseDeliverTemplateData(content)
+            this.goodsProductInfo.deliverTemplateType = content.flag
           }
         })
       }
@@ -521,6 +525,13 @@ export default {
         if (this.goodsProductInfo.saleTime.getTime() <= new Date().getTime()) {
           this.$message.warning({ message: this.$t('goodsAddEditInfo.deliverAndOtherInfo.saleTimeCanNotBeBefore'), type: 'warning' })
           this.$refs.saleTimeInput.focus()
+          return false
+        }
+      }
+      if (this.goodsProductInfo.deliverTemplateType === 1) {
+        if (isNumberBlank(this.goodsProductInfo.goodsWeight) || this.goodsProductInfo.goodsWeight === 0) {
+          this.$message.warning({ message: '请填写商品重量信息', type: 'warning' })
+          this.$refs.goodsWeight.focus()
           return false
         }
       }

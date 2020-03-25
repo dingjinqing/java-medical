@@ -1,6 +1,6 @@
 /* pages/sort/sort.wxss */
-/* @import "../goodscommon/goodslabel.wxss"; */
-/* @import "/css/iconfont.wxss"; */
+@import "../../components/decorate/product/goodscommon/goodslabel.wxss";
+@import "/css/iconfont.wxss";
 
 page {
   overflow: hidden;

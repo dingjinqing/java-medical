@@ -44,3 +44,12 @@ export function scorePageIdUpdate (data) {
     data
   })
 }
+
+// 积分签到会员列表
+export function userScoreSign (data) {
+  return service({
+    url: '/api/admin/user/manage/score/sign',
+    method: 'post',
+    data
+  })
+}

@@ -149,7 +149,7 @@ public class ChooseLinkService extends ShopBaseService {
         Result<? extends Record> record = db().select().from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or((MRKING_VOUCHER.VALIDITY_TYPE.eq((byte)1))))
             .and(MRKING_VOUCHER.DEL_FLAG.eq((byte) 0))
-            .and(MRKING_VOUCHER.SURPLUS.gt(0))
+            .and(MRKING_VOUCHER.SURPLUS.gt(0).and(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)0)).or(MRKING_VOUCHER.LIMIT_SURPLUS_FLAG.eq((byte)1)))
             .and(MRKING_VOUCHER.ENABLED.eq((byte)1))
             .fetch();
         if(record != null){
@@ -163,12 +163,13 @@ public class ChooseLinkService extends ShopBaseService {
 	 * 会员卡链接
 	 * @return
 	 */
-	public List<ActivityVo> getCardList() {
-		 List<ActivityVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.START_TIME,MEMBER_CARD.END_TIME)
+	public List<CardLinkVo> getCardList() {
+		 List<CardLinkVo> list = db().select(MEMBER_CARD.ID,MEMBER_CARD.CARD_NAME,MEMBER_CARD.EXPIRE_TYPE,MEMBER_CARD.START_TIME,
+             MEMBER_CARD.END_TIME,MEMBER_CARD.RECEIVE_DAY,MEMBER_CARD.DATE_TYPE)
 				.from(MEMBER_CARD)
-				.where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
+                .where(MEMBER_CARD.END_TIME.ge(new Timestamp(System.currentTimeMillis())).or(MEMBER_CARD.EXPIRE_TYPE.in((byte)1,(byte)2)))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
+				.fetch().into(CardLinkVo.class);
 		return list;
 	}
 	

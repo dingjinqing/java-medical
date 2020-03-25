@@ -193,12 +193,12 @@ public class GoodsSortService extends ShopBaseService {
                 }
                 db().update(SORT).set(SORT.HAS_CHILD,GoodsConstant.HAS_CHILD).where(SORT.SORT_ID.eq(param.getParentId())).execute();
             }
-            try {
-                esDataUpdateMqService.updateEsGoodsIndexBySortId(sortRecord.getSortId(),getShopId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
+        try {
+            esDataUpdateMqService.updateEsGoodsIndexBySortId(param.getSortId(),getShopId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -255,16 +255,19 @@ public class GoodsSortService extends ShopBaseService {
      */
     public void delete(Integer sortId) {
         transaction(() -> {
+            List<Integer> sortIds = new ArrayList<>(6);
             DSLContext db = db();
             SortRecord sortRecord = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
             if (sortRecord == null) {
                 return;
             }
-
+            sortIds.add(sortId);
             db.delete(SORT).where(SORT.SORT_ID.eq(sortId)).execute();
             //是一级节点，有子分类
             if (GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())
                 &&GoodsConstant.HAS_CHILD.equals(sortRecord.getHasChild())){
+                List<Integer> childIds = db.select(SORT.SORT_ID).where(SORT.PARENT_ID.eq(sortId)).fetch(SORT.SORT_ID);
+                sortIds.addAll(childIds);
                 db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
             }
             //是子分类，查看是否需要修改父分类hasChild属性
@@ -275,12 +278,14 @@ public class GoodsSortService extends ShopBaseService {
                         .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
                 }
             }
-            try {
-                esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // 通知商品清楚这些绑定
+            saas().getShopApp(getShopId()).goods.clearSortId(sortIds);
         });
+        try {
+            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public GoodsNormalSortDetailVo getNormalSort(Integer sortId){

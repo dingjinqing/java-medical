@@ -77,7 +77,8 @@ global.wxComponent({
               } else if (data.resultCode == 4) {
                 util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.activityEnded"));
               } else if (data.resultCode == 5) {
-                util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.insufficientInventory"));
+                // util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.insufficientInventory"));
+                util.jumpLink(d.link);
               } else if (data.resultCode == -1) {
                 util.showModal(_this.$t("components.decorate.tips"), _this.$t("components.decorate.operationFailed"));
               }

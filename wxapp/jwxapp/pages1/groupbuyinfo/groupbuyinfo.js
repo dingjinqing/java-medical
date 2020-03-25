@@ -14,6 +14,7 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     click_more: imageUrl + 'image/wxapp/backward_right.png',
     img_noperson: imageUrl + 'image/wxapp/icon_group2.png',
+    img_otherperson: imageUrl + 'image/wxapp/icon_group1.png',
     showPoster: false, // 下载海报弹窗
     posterImg: '', // 海报图片 base64字符串
     clock: '', // 活动倒计时

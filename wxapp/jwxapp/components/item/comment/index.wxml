@@ -13,7 +13,7 @@
   </view>
   <view class="item_line"></view>
   <view class="flex_box">
-    <view class="item_left">{{comment.commentInfo.userName}}</view>
+    <view class="item_left">{{comment.commentInfo.anonymousFlag === 0 ? comment.commentInfo.userName : '匿名评价'}}</view>
     <view class="item_right">
       <text wx:for="{{starArr}}" wx:key="*this" class="iconfont iconshoucang" style="color:{{main_setting.comColor}}"></text>
     </view>

@@ -127,7 +127,7 @@ public class ReducePriceService extends ShopBaseService {
                 default:
             }
         }
-        select.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(REDUCE_PRICE.CREATE_TIME.desc());
+        select.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc());
         PageResult<ReducePricePageListQueryVo> res = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ReducePricePageListQueryVo.class);
 
         /**查询活动商品数量、订单付款数、付款用户数、付款总金额 */

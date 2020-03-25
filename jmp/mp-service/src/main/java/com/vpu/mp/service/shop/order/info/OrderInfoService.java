@@ -211,17 +211,31 @@ public class OrderInfoService extends ShopBaseService {
 		}
 	}
 
+    /**
+     * 构造综合查询条件
+     *
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+        return buildOptions(select,param,false);
+    }
+
 	/**
 	 * 构造综合查询条件
 	 * 
 	 * @param select
 	 * @param param
+     * @param joined select 已经连接过order_goods和user
 	 * @return
 	 */
-	public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
+	public SelectWhereStep<?> buildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param,boolean joined) {
 		// 输入商品名称需要join order_goods表
 		if (!StringUtils.isBlank(param.goodsName) || !StringUtils.isBlank(param.productSn)) {
-			select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
+		    if(!joined){
+                select.innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
+            }
 			if (!StringUtils.isBlank(param.goodsName)) {
 				select.where(ORDER_GOODS.GOODS_NAME.like(likeValue(param.goodsName)));
 			}
@@ -259,7 +273,9 @@ public class OrderInfoService extends ShopBaseService {
 		}
 		// 昵称、会员标签tag需要连表查询
 		if (!StringUtils.isBlank(param.userName) || (param.tagIds != null && param.tagIds.length != 0)) {
-			select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+            if(!joined){
+                select.innerJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+            }
 			if (!StringUtils.isBlank(param.userName)) {
 				select.where(USER.USERNAME.like(likeValue(param.userName)));
 			}
@@ -441,7 +457,12 @@ public class OrderInfoService extends ShopBaseService {
 	 */
 	public SelectWhereStep<?> activeBuildOptions(SelectJoinStep<?> select, OrderPageListQueryParam param) {
 		if (param.activityId != null) {
-			select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
+		    if(param.goodsType != null && param.goodsType.length != 0 && Arrays.asList(param.getGoodsType()).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)){
+		        //首单特惠的活动ID记录在订单商品行内
+		        select.where(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL)).and(ORDER_GOODS.ACTIVITY_ID.eq(param.getActivityId()));
+            }else{
+                select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
+            }
 		}
 		return select;
 	}
@@ -1274,7 +1295,7 @@ public class OrderInfoService extends ShopBaseService {
 				.on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER)
 				.on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
 		select.where(ORDER_INFO.ORDER_SN.notEqual(ORDER_INFO.MAIN_ORDER_SN));
-		buildOptions(select, param);
+		buildOptions(select, param,true);
 		return select.fetchOne().into(Integer.class);
 	}
 
@@ -1296,7 +1317,7 @@ public class OrderInfoService extends ShopBaseService {
 				.from(ORDER_INFO).innerJoin(ORDER_GOODS).on(ORDER_INFO.ORDER_ID.eq(ORDER_GOODS.ORDER_ID)).leftJoin(USER)
 				.on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
 		select.where(ORDER_INFO.ORDER_SN.notEqual(ORDER_INFO.MAIN_ORDER_SN));
-		buildOptions(select, param);
+		buildOptions(select, param,true);
 		select.orderBy(ORDER_INFO.ORDER_ID.desc());
 
 		List<OrderExportVo> list = select

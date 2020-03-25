@@ -461,10 +461,6 @@ public class BargainRecordService extends ShopBaseService {
                 }
             }
         }
-        if(recordInfo.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) && recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0 && userId != recordInfo.getUserId()){
-            //如果是成功状态，库存肯定已经锁定了，还有剩余金额，允许再砍一次
-            return 0;
-        }
         if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
             return 6;
         }
@@ -491,6 +487,11 @@ public class BargainRecordService extends ShopBaseService {
                                 return 9;
                             }
                         }
+                    }else{
+                        if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0){
+                            //如果是成功状态，库存肯定已经锁定了，还有剩余金额，允许再砍一次
+                            return 0;
+                        }
                     }
                 }else {
                     if(recordInfo.getIsOrdered().equals(IS_ORDERED_Y) || recordInfo.getStatus().equals(STATUS_SUCCESS)){
@@ -510,17 +511,20 @@ public class BargainRecordService extends ShopBaseService {
      */
     public BargainCutVo getBargainCut(int userId,int recordId){
         BargainCutVo vo = new BargainCutVo();
+        BargainRecordInfo recordInfo = getRecordInfo(recordId);
 
-        //判断今天砍价次数
-        int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
-        int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
-        if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
-            vo.setState((byte)12);
-            return vo;
+        if(recordInfo.getUserId() != userId){
+            //判断今天砍价次数
+            int daileCutTimes = saas.getShopApp(getShopId()).config.bargainCfg.getDailyCutTimes();
+            int userTodayCutTimes = bargainUser.getUserTodayCutTimes(userId);
+            if(daileCutTimes > 0 && userTodayCutTimes >= daileCutTimes){
+                vo.setState((byte)12);
+                return vo;
+            }
         }
 
         //可用状态过滤
-        byte canCutStatus = userBargainRecordStatus(userId,getRecordInfo(recordId));
+        byte canCutStatus = userBargainRecordStatus(userId,recordInfo);
         if(canCutStatus != 0 && canCutStatus != 8){
             vo.setState(canCutStatus);
             return vo;

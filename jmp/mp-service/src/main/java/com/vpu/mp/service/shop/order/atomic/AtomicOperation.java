@@ -183,12 +183,12 @@ public class AtomicOperation extends ShopBaseService {
      * @param limit 是否允许超买 允许true 不允许false
      */
     @RedisLock(prefix = JedisKeyConstant.GOODS_LOCK)
-    public void updataStockAndSalesByLock(@RedisLockKeys  Integer goodsId,Integer productId,Integer number,boolean limit) throws MpException {
+    public void updateStockAndSalesByLock(@RedisLockKeys  Integer goodsId,Integer productId,Integer number,boolean limit) throws MpException {
         List<BatchUpdateGoodsNumAndSaleNumForOrderParam> updateGoods = new ArrayList<>();
         log.info("修改商品库存--开始");
         GoodsSpecProductRecord productRecord = goodsSpecProduct.selectSpecByProId(productId);
         Optional<GoodsRecord> goodsRecord = goodsService.getGoodsById(goodsId);
-        if (productRecord==null||goodsRecord.isPresent()){
+        if (productRecord==null||!goodsRecord.isPresent()){
             log.error("商品或规格不存在goodsId:{},produco:{}",goodsId,productId);
             //商品或规格row为null
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_EXIST , null, null);

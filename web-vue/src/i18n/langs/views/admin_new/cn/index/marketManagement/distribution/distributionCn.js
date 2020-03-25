@@ -242,18 +242,20 @@ export const cn = {
   goodsTip3: '个商家',
   goodsTip4: '个平台',
 
-  storeArr: [{
-    name: '添加商品',
-    value: '1'
-  },
-  {
-    name: '添加商品分类',
-    value: '2'
-  },
-  {
-    name: '添加平台分类',
-    value: '3'
-  }],
+  storeArr: [
+    {
+      name: '添加商品',
+      value: '1'
+    },
+    {
+      name: '添加商品分类',
+      value: '2'
+    }
+    // {
+    //   name: '添加平台分类',
+    //   value: '3'
+    // }
+  ],
 
   addSuccess: '添加成功!',
   addFail: '添加失败!',

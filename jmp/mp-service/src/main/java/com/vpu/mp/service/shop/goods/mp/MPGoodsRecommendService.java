@@ -17,6 +17,8 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.overview.HotWordsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.aspectj.weaver.ast.And;
+import org.jooq.Condition;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -178,6 +180,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
         if (record == null) {
             return null;
         }
+        logger().info("商品推荐活动id："+record.getId()+",商品推荐活动name："+record.getRecommendName());
         List<Integer> recommendGoodsIds;
         //智能推荐
         if (record.getChooseType().equals(SMART_RECOMMEND)) {
@@ -195,6 +198,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
                 return recommendGoodsIds.subList(0, recommendNumber);
             }
         }
+        logger().info("最终商品推荐活动id："+recommendGoodsIds);
         return recommendGoodsIds;
     }
 
@@ -255,8 +259,10 @@ public class MPGoodsRecommendService extends ShopBaseService {
                 }
             }
         }
+        logger().info("补充数量后商品id集合："+goodsIds);
         //推荐商品id去重
         goodsIds = goodsIds.stream().distinct().collect(Collectors.toList());
+        logger().info("去重后商品id集合："+goodsIds);
         return goodsIds;
     }
 
@@ -270,37 +276,48 @@ public class MPGoodsRecommendService extends ShopBaseService {
      */
     public List<Integer> getOnShelfGoods(String goodsIds, String catIds, String sortIds) {
         List<Integer> result = new ArrayList<>();
+        List<Integer> goodsResult = new ArrayList<>();
+        List<Integer> catResult = new ArrayList<>();
+        List<Integer> sortResult = new ArrayList<>();
         SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
             .from(GOODS)
             .where(GOODS.DEL_FLAG.eq(NOT_DELETE))
             .and(GOODS.IS_ON_SALE.eq(IS_ON_SALE));
-        //指定商品
-        if (goodsIds != null) {
-            List<Integer> goodsIdsList = Util.json2Object(goodsIds, new TypeReference<List<Integer>>() {
-            }, false);
-            selectConditionStep.or(GOODS.GOODS_ID.in(goodsIdsList));
-        }
-        //指定平台分类
-        if (catIds != null) {
-            List<Integer> catIdsList = Util.json2Object(catIds, new TypeReference<List<Integer>>() {
-            }, false);
-            selectConditionStep.or(GOODS.CAT_ID.in(sysCateService.getAllChild(catIdsList)));
-        }
-        //指定商家分类
-        if (sortIds != null) {
-            List<Integer> sortIdsList = Util.json2Object(sortIds, new TypeReference<List<Integer>>() {
-            }, false);
-            //在所有父子节点中查找
-            selectConditionStep.or(GOODS.SORT_ID.in(getAllChild(sortIdsList)));
-        }
         // 是否展示售罄
         Byte soldOutGoods = configService.shopCommonConfigService.getSoldOutGoods();
         if (soldOutGoods == null || soldOutGoods.equals(NumberUtils.BYTE_ZERO)) {
             selectConditionStep.and(GOODS.GOODS_NUMBER.greaterThan(NumberUtils.INTEGER_ZERO));
-
         }
-        result = selectConditionStep.orderBy(GOODS.CREATE_TIME.desc())
+        //指定商品
+        if (goodsIds != null) {
+            String goodsIdsJson = "["+goodsIds+"]";
+            List<Integer> goodsIdsList = Util.json2Object(goodsIdsJson, new TypeReference<List<Integer>>() {
+            }, false);
+            goodsResult = selectConditionStep.and(GOODS.GOODS_ID.in(goodsIdsList)).orderBy(GOODS.CREATE_TIME.desc())
                 .fetchInto(Integer.class);
+        }
+        //指定平台分类
+        if (catIds != null) {
+            String catIdsJson = "["+catIds+"]";
+            List<Integer> catIdsList = Util.json2Object(catIdsJson, new TypeReference<List<Integer>>() {
+            }, false);
+            catResult = selectConditionStep.and(GOODS.CAT_ID.in(sysCateService.getAllChild(catIdsList))).orderBy(GOODS.CREATE_TIME.desc())
+                .fetchInto(Integer.class);
+        }
+        //指定商家分类
+        if (sortIds != null) {
+            String sortIdsJson = "["+sortIds+"]";
+            List<Integer> sortIdsList = Util.json2Object(sortIdsJson, new TypeReference<List<Integer>>() {
+            }, false);
+            //在所有父子节点中查找
+            sortResult = selectConditionStep.and(GOODS.SORT_ID.in(getAllChild(sortIdsList))).orderBy(GOODS.CREATE_TIME.desc())
+                .fetchInto(Integer.class);
+        }
+
+        result.addAll(goodsResult);
+        result.addAll(catResult);
+        result.addAll(sortResult);
+        logger().info("推荐商品id集合："+result);
         return result;
     }
 
@@ -325,7 +342,10 @@ public class MPGoodsRecommendService extends ShopBaseService {
             //id去重
             childIds = childIds.stream().distinct().collect(Collectors.toList());
         }
-        return childIds;
+        logger().info("传入id集合："+ids);
+        ids.addAll(childIds);
+        logger().info("返回id集合："+ids);
+        return ids;
     }
 
     /**

@@ -820,7 +820,7 @@ export default {
         let scoreProportion = Number(this.form.scoreProportion)
         let scorePayNum = Number(this.form.scorePayNum)
         if (scorePayNum < scoreProportion || scorePayNum % scoreProportion !== 0) {
-          this.$message.error('积分支付限制应大于等于' + scoreProportion + ',且为' + scorePayNum + '的整数倍')
+          this.$message.error('积分支付限制应大于等于' + scoreProportion + ',且为' + scoreProportion + '的整数倍')
           return false
         } else {
           return true
@@ -1049,10 +1049,13 @@ export default {
 }
 // 结束
 .footer {
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
   background: #fff;
   border-top: 1px solid #e4e7ed;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
 }
 </style>

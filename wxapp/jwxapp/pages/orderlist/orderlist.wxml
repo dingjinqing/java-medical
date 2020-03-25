@@ -1,3 +1,11 @@
+<wxs module="filter">
+  substring = function (str,start,end) {
+    return str.substring(start,end)
+  }
+  module.exports = {
+    substring:substring
+  }
+</wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="../common/header.wxml" />
@@ -82,10 +90,10 @@
               <view class="presale_info" wx:if="{{item.bkOrderPaid === 1}}">
                 <view class="money">
                   {{i18n.$t(localePack,"pages.order.presaleInfo")}}：
-                  <text>￥100.00</text>
+                  <text>￥{{item.bkOrderPaid}}</text>
                 </view>
                 <view class="time">
-                  {{i18n.$t(localePack,"pages.order.presaleTime")}}：2019-04-03 10:23 - 2019-04-04 10:23
+                  {{i18n.$t(localePack,"pages.order.presaleTime")}}：{{filter.substring(item.preSaleTimeInterval[0],0,16)}} - {{filter.substring(item.preSaleTimeInterval[1],0,16)}}
                 </view>
               </view>
             </view>
@@ -112,7 +120,12 @@
         </block>
       </block>
     </view>
-    <v-recommend id="recommend" pageName="orderlist" />
+    <view class="is-null" wx:if="{{dataList[0].length <= 0}}">
+      <image src="{{imageUrl}}image/wxapp/order-no.png"></image>
+      <text>您还没有相关订单哦</text>
+    </view>
+    
   </view>
+  <v-recommend id="recommend" pageName="orderlist" />
   <include src="../common/footer.wxml" />
 </view>

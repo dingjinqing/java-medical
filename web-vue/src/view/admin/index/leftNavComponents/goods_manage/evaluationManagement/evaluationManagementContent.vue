@@ -55,6 +55,7 @@
     <evaluationGoodsList
       v-if="activeName === 'third'"
       @handleAddEvaluation="addGoodsEvaluation"
+      @handleViewGoodsEvaluation="viewGoodsEvaluation"
     />
   </div>
 </template>
@@ -69,7 +70,8 @@ export default {
   data () {
     return {
       activeName: 'first',
-      goodsInfo: null
+      goodsInfo: null,
+      goodsName: null
     }
   },
   // watch: {
@@ -86,11 +88,16 @@ export default {
   methods: {
     // tap切换
     handleClick (tab, event) {
-      console.log(tab, event)
+      this.$router.replace({
+        query: {}
+      })
     },
     addGoodsEvaluation (goodsInfo) {
       this.goodsInfo = goodsInfo
       this.activeName = 'fourth'
+    },
+    viewGoodsEvaluation () {
+      this.activeName = 'first'
     }
   }
 }

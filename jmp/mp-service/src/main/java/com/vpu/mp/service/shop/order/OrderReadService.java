@@ -1002,8 +1002,11 @@ public class OrderReadService extends ShopBaseService {
             }
             if(columns.contains(OrderExportVo.USER_SOURCE)){
                 //下单用户来源
-                MemberInfoVo memberInfo = user.getUserByUserId(order.getUserId()).into(MemberInfoVo.class);
-                order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+                UserRecord userRecord = user.getUserByUserId(order.getUserId());
+                if(userRecord != null){
+                    MemberInfoVo memberInfo = userRecord.into(MemberInfoVo.class);
+                    order.setUserSourceString(saas.getShopApp(getShopId()).member.getSourceName(lang,memberInfo));
+                }
             }
             if(columns.contains(OrderExportVo.DELIVER_TYPE_NAME)){
                 //配送类型
@@ -1028,8 +1031,19 @@ public class OrderReadService extends ShopBaseService {
                 }
                 order.setUserTag(tags.toString());
             }
+            if(columns.contains(OrderExportVo.RETURN_TIME)){
+                ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
+                if(returnOrderGoodsRecord != null){
+                    order.setReturnTime(returnOrderGoodsRecord.getCreateTime());
+                    order.setReturnOrderMoney(returnOrderGoodsRecord.getReturnMoney());
+                }
+            }
+            if(columns.contains(OrderExportVo.SHIPPING_NAME)){
+                if(order.getShippingId() != null && order.getShippingId() > 0){
+                    order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+                }
+            }
 
-            //TODO
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
