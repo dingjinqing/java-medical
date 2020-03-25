@@ -12,7 +12,8 @@ import java.sql.Timestamp;
 @Data
 public class MessageOutputVo {
 
-    private String userName;
+
+    private String username;
 
     private Byte templatePlatfrom;
 

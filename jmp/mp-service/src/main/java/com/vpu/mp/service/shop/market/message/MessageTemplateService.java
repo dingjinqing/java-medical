@@ -313,7 +313,13 @@ public class MessageTemplateService extends ShopBaseService {
             .fetchAny();
     }
     public PageResult<MessageOutputVo> getSendRecord(MessageTemplateQuery query){
-        SelectConditionStep<Record> select  = db().select(SERVICE_MESSAGE_RECORD.fields()).from(SERVICE_MESSAGE_RECORD)
+        SelectConditionStep<Record6<String, Byte, Byte, Byte, Timestamp, Timestamp>> select  = db().select(
+            USER.USERNAME,
+            SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM,
+            SERVICE_MESSAGE_RECORD.IS_VISIT,
+            SERVICE_MESSAGE_RECORD.SEND_STATUS,
+            SERVICE_MESSAGE_RECORD.VISIT_TIME,
+            SERVICE_MESSAGE_RECORD.CREATE_TIME).from(SERVICE_MESSAGE_RECORD)
             .leftJoin(USER).on(USER.USER_ID.eq(SERVICE_MESSAGE_RECORD.USER_ID))
             .where(buildParams(query));
         return getPageResult(select,query.getCurrentPage(),MessageOutputVo.class);
