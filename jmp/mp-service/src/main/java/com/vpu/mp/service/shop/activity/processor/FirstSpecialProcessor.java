@@ -186,9 +186,9 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                             log.info("首单特惠商品[getPrdId:" + firstSpecial.getPrdId() + "]");
                             CartActivityInfo firstActivityInfo = new CartActivityInfo();
                             firstActivityInfo.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-                            firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
+                            firstActivityInfo.setActPrice(firstSpecial.getPrdPrice());
                             firstActivityInfo.setActivityId(firstSpecial.getId());
-                            firstActivityInfo.setFirstSpecialNumber(firstSpecial.getLimitAmount());
+                            firstActivityInfo.setLimitAmount(firstSpecial.getLimitAmount());
                             if (firstSpecial.getLimitAmount() > 0 && cartGoods.getCartNumber() > firstSpecial.getLimitAmount()) {
                                 //超出限购数量后，买家可继续添加购买该商品
                                 if (firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)) {
@@ -196,7 +196,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 } else {
                                     //不可继续添加
                                     log.info("商品数量超过活动数量限制,修改数量并提出警告[getCartNumber:" + cartGoods.getCartNumber() + ",getLimitAmount:" + firstSpecial.getLimitAmount() + "]");
-                                    cartGoods.setCartNumber(firstActivityInfo.getFirstSpecialNumber());
+                                    cartGoods.setCartNumber(firstActivityInfo.getLimitAmount());
                                     //修改购物车商品数量
                                     cartService.changeGoodsNumber(cartBo.getUserId(),0,cartGoods.getCartId(),cartGoods.getProductId(),firstSpecial.getLimitAmount());
                                     //提示前端

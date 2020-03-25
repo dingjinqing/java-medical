@@ -17,4 +17,9 @@ public class WxAppGiftController extends WxAppBaseController {
     public JsonResult giftGoodsList(@RequestBody @Validated GiftGoodsListParam param) {
         return success(shop().gift.getWxAppGoodsList(param,wxAppAuth.user().getUserId()));
     }
+
+    @PostMapping("/api/wxapp/gift/checkedlist")
+    public JsonResult giftCheckedGoodsList(@RequestBody @Validated GiftGoodsListParam param) {
+        return success(shop().gift.giftCheckedGoodsList(param,wxAppAuth.user().getUserId()));
+    }
 }

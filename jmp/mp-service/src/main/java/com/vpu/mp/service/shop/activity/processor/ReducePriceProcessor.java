@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpV
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -108,18 +109,21 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         List<Integer> productList = cartBo.getCartGoodsList().stream()
                 .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType()))
                 .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
-        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
+        Map<Integer, List<Record5<Integer,Integer,Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
 
         if (goodsReduceListInfo!=null&&goodsReduceListInfo.size()>0){
             cartBo.getCartGoodsList().stream().filter(goods -> goodsReduceListInfo.get(goods.getProductId()) != null).forEach(goods -> {
-                Record3<Integer, Integer, BigDecimal> record3 = goodsReduceListInfo.get(goods.getProductId()).get(0);
+                Record5<Integer,Integer,Byte, Integer, BigDecimal> record5 = goodsReduceListInfo.get(goods.getProductId()).get(0);
                 CartActivityInfo activityInfo = new CartActivityInfo();
                 activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-                activityInfo.setActivityId(record3.get(REDUCE_PRICE.ID));
-                activityInfo.setSecKillPrice(record3.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
+                activityInfo.setActivityId(record5.get(REDUCE_PRICE.ID));
+                activityInfo.setActPrice(record5.get(REDUCE_PRICE_PRODUCT.PRD_PRICE));
                 goods.getCartActivityInfos().add(activityInfo);
                 goods.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-                goods.setActivityId(record3.get(REDUCE_PRICE.ID));
+                goods.setActivityId(record5.get(REDUCE_PRICE.ID));
+                goods.setLimitAmount(record5.get(REDUCE_PRICE.LIMIT_AMOUNT));
+                goods.setLimitFlag(record5.get(REDUCE_PRICE.LIMIT_FLAG));
+                goods.setPriceAction(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
             });
         }
     }
