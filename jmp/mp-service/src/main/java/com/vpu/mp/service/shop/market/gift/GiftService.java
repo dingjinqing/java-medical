@@ -645,6 +645,7 @@ public class GiftService extends ShopBaseService {
 
         WxAppCartBo cartBo = cartService.getCartList(userId,goodsIds,null,null);
         vo.setCheckedGoodsPrice(cartBo.getTotalPrice());
+        vo.setCartGoodsNumber(cartBo.getTotalGoodsNum());
 
         //检查满金额和满件数条件
         if(rule.getFullPrice() != null && rule.getFullPrice().compareTo(BigDecimal.ZERO) > 0){

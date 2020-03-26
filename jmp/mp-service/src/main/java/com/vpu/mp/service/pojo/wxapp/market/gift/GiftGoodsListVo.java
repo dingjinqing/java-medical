@@ -38,6 +38,7 @@ public class GiftGoodsListVo {
      * 购物车已选商品总价
      */
     private BigDecimal checkedGoodsPrice;
+    private Integer cartGoodsNumber;
 
     /**
      * 基础配置
