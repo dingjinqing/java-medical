@@ -549,8 +549,7 @@ global.wxPage({
     })
   },
   checkMore: function (e) {
-    let card_id = e.currentTarget.dataset.card_id;
-    console.log(card_id)
-    // util.jumpLink('/pages1/usercardgoods/usercardgoods?card_no=' + card_no + '&card_id=' + card_id);
+    let d = e.currentTarget.dataset;
+    util.jumpLink('/pages1/usercardgoods/usercardgoods?cardNo=' + d.card_no + '&cardId=' + d.card_id);
   }
 })
