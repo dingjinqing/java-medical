@@ -20,6 +20,8 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam.ReturnGoods;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
+import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -97,6 +99,24 @@ public class ReturnOrderService extends ShopBaseService{
 		return result;
 	}
 
+    public PageResult<ReturnOrderListMp> getPageList(OrderListParam param) {
+        SelectJoinStep<Record> select = db().select().from(TABLE);
+        buildOptionsReturn(select, param.getWxUserInfo().getUserId(), param.getSearch());
+        return getPageResult(select,param.getCurrentPage(),param.getPageRows(), ReturnOrderListMp.class);
+    }
+
+    public SelectJoinStep<?> buildOptionsReturn(SelectJoinStep<?> select, Integer userId, String search) {
+        if(userId != null) {
+            select.where(TABLE.USER_ID.eq(userId));
+        }
+        if(!StringUtils.isBlank(search)) {
+            select.innerJoin(SUB_TABLE).on(TABLE.RET_ID.eq(SUB_TABLE.RET_ID)).
+                where(TABLE.RETURN_ORDER_SN.like(search).
+                    or(TABLE.ORDER_SN.like(search)).
+                    or(SUB_TABLE.GOODS_NAME.like(search)));
+        }
+        return select;
+    }
 	/**
 	 * 构造退货、款查询条件
      *
@@ -595,7 +615,6 @@ public class ReturnOrderService extends ShopBaseService{
         }
         return select.fetchOne(0, int.class);
     }
-    
 }
 
 
