@@ -107,6 +107,7 @@
         <el-table-column
           label="活动时间"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             {{scope.row.startTime}}

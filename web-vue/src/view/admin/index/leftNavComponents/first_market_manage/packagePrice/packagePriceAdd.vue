@@ -112,106 +112,126 @@
           ></el-input>&nbsp;&nbsp;折
         </el-form-item>
 
-        <el-form-item label="商品组：">
+        <el-form-item
+          label="商品组："
+          required
+        >
           <section style="display: flex">
             <el-checkbox
-              v-model="param.group1"
+              v-model="group1Flag"
               :checked="checkout"
               :disabled="disabled"
             >商品组1</el-checkbox>
+            <div style="margin-left:20px">
+              <div style="margin-left:14px">
+                <span>名称</span>&nbsp;&nbsp;
+                <el-input
+                  size="small"
+                  v-model="param.groupName"
+                  maxlength="4"
+                  show-word-limit
+                  class="default_width"
+                ></el-input>&nbsp;&nbsp;
+                <span class="font-color">商品组名称，最多可填4个字</span>
+              </div>
+              <el-form-item
+                prop="goodsNumber"
+                :inline-message="true"
+              >
+                <span>需选择</span>&nbsp;&nbsp;
+                <el-input
+                  size="small"
+                  v-model="param.goodsNumber"
+                  class="default_width"
+                ></el-input>&nbsp;&nbsp;件
+                <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
+              </el-form-item>
+            </div>
+          </section>
+
+          <section style="display: flex">
+            <el-checkbox v-model="group2Flag">商品组2</el-checkbox>
             <div
               style="margin-left:20px"
-              v-if="param.group1 === true"
+              v-if="group2Flag === true"
             >
               <div style="margin-left:14px">
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
-                  style="width: 80px"
-                  v-model="param.groupName"
-                ></el-input>&nbsp;&nbsp;
-                <span class="font-color">商品组名称，最多可填4个字</span>
-              </div>
-              <div>
-                <span>需选择</span>&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  style="width: 80px"
-                  v-model="param.goodsNumber"
-                ></el-input>&nbsp;&nbsp;件
-                <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
-              </div>
-            </div>
-          </section>
-
-          <section style="display: flex">
-            <el-checkbox v-model="param.group2">商品组2</el-checkbox>
-            <div style="margin-left:20px">
-              <div style="margin-left:14px">
-                <span>名称</span>&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  style="width: 80px"
                   v-model="param.groupName2"
+                  maxlength="4"
+                  show-word-limit
+                  class="default_width"
                 ></el-input>&nbsp;&nbsp;
                 <span class="font-color">商品组名称，最多可填4个字</span>
               </div>
-              <div>
+              <el-form-item
+                prop="goodsNumber2"
+                :inline-message="true"
+              >
                 <span>需选择</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
-                  style="width: 80px"
                   v-model="param.goodsNumber2"
+                  class="default_width"
                 ></el-input>&nbsp;&nbsp;件
                 <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
-              </div>
+              </el-form-item>
             </div>
           </section>
 
           <section style="display: flex">
-            <el-checkbox v-model="param.group3">商品组3</el-checkbox>
-            <div style="margin-left:20px">
+            <el-checkbox v-model="group3Flag">商品组3</el-checkbox>
+            <div
+              style="margin-left:20px"
+              v-if="group3Flag === true"
+            >
               <div style="margin-left:14px">
                 <span>名称</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
-                  style="width: 80px"
                   v-model="param.groupName3"
+                  maxlength="4"
+                  show-word-limit
+                  class="default_width"
                 ></el-input>&nbsp;&nbsp;
                 <span class="font-color">商品组名称，最多可填4个字</span>
               </div>
-              <div>
+              <el-form-item
+                prop="goodsNumber3"
+                :inline-message="true"
+              >
                 <span>需选择</span>&nbsp;&nbsp;
                 <el-input
                   size="small"
-                  style="width: 80px"
+                  class="default_width"
                   v-model="param.goodsNumber3"
                 ></el-input>&nbsp;&nbsp;件
                 <span class="font-color">该商品组需要选购的商品数量，请填写正整数</span>
-              </div>
+              </el-form-item>
             </div>
           </section>
         </el-form-item>
 
-        <el-form-item label="添加商品：">
+        <el-form-item
+          label="添加商品："
+          required
+        >
           <div>
             <span class="font-color">请给每个商品组分别添加商品</span>
             <div class="goods-area">
-              <!-- <div
-                style="display: flex"
-                class="goods-num"
-              >
-                <div>商品组1</div>
-                <div v-if="param.group2 === true">商品组2</div>
-                <div v-if="param.group3 === true">商品组3</div>
-              </div> -->
+              <!-- hello -->
 
-              <el-tabs v-model="activeName">
+              <el-tabs
+                v-model="activeName"
+                type="card"
+              >
                 <el-tab-pane
                   label="第一组"
                   name="first"
                 >
-                  <section>
+                  <el-form-item>
                     <div
                       class="add-btn"
                       @click="addGoods"
@@ -302,7 +322,6 @@
                     <div
                       class="add-btn"
                       @click="selectBussiness"
-                      v-if="!param.id"
                     >+ 添加商家分类</div>
                     <table
                       class="brand_table"
@@ -346,12 +365,13 @@
                         </tr>
                       </tbody>
                     </table>
-                  </section>
+                  </el-form-item>
                 </el-tab-pane>
 
                 <el-tab-pane
                   label="第二组"
                   name="second"
+                  v-if="group2Flag === true"
                 >
                   <section>
                     <div
@@ -444,7 +464,6 @@
                     <div
                       class="add-btn"
                       @click="selectBussiness2"
-                      v-if="!param.id"
                     >+ 添加商家分类</div>
                     <table
                       class="brand_table"
@@ -494,6 +513,7 @@
                 <el-tab-pane
                   label="第三组"
                   name="third"
+                  v-if="group3Flag === true"
                 >
                   <section>
                     <div
@@ -586,7 +606,6 @@
                     <div
                       class="add-btn"
                       @click="selectBussiness3"
-                      v-if="!param.id"
                     >+ 添加商家分类</div>
                     <table
                       class="brand_table"
@@ -720,17 +739,76 @@ export default {
   props: ['isEdite', 'editId'],
   mounted () {
     // 编辑初始化
-    console.log(this.isEdite, 'get isEdit-----------------------------')
     if (this.isEdite === true) {
       this.editPackagePriceInit()
-      console.log('success-------------------------------------------')
-    } else {
-      console.log('fail-----------------------------------------------')
     }
-    console.log('12345--------------')
   },
   data () {
+    var checkPrice = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入结算总价格'))
+      } else {
+        if (value < 0) {
+          callback(new Error('结算总价格应该大于0'))
+        }
+        let flag = new RegExp('^[0-9]([0-9])*$').test(value)
+        if (!flag) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkDiscount = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入折扣数字'))
+      } else {
+        if (value <= 0 || value >= 10) {
+          callback(new Error('折扣结算请填写大于0小于10的数字'))
+        }
+        var re = /^\d+(\.\d{1,2})?$/
+        if (!re.test(value)) {
+          callback(new Error('折扣数值请保留两位小数'))
+        }
+        callback()
+      }
+    }
+    var checkoutNumber = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入数字'))
+      } else {
+        var re = /^[1-9]\d*$/
+        if (!re.test(value)) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkoutNumber2 = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入数字'))
+      } else {
+        var re = /^[1-9]\d*$/
+        if (!re.test(value)) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
+    var checkoutNumber3 = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入数字'))
+      } else {
+        var re = /^[1-9]\d*$/
+        if (!re.test(value)) {
+          callback(new Error('请输入正整数'))
+        }
+        callback()
+      }
+    }
     return {
+      group1Flag: true,
+      group2Flag: false,
+      group3Flag: false,
       param: {
         id: '',
         packageType: 0, // 活动类型
@@ -740,32 +818,11 @@ export default {
         endTime: '',
         totalRatio: '', // 指定折扣
         totalMoney: '', // 总结算价格
-        group1: {
-          // groupName: '', // 商品组名称
-          // goodsNumber: '', // 至少需要选择件数
-          // goodsIdList: [], // 商品ID列表
-          // catIdList: [], // 平台分类列表
-          // sortIdList: [] // 商家分类列表
-        },
-        group2: {
-          // groupName: '', // 商品组名称
-          // goodsNumber: '', // 至少需要选择件数
-          // goodsIdList: [], // 商品ID列表
-          // catIdList: [], // 平台分类列表
-          // sortIdList: [] // 商家分类列表
-        },
-        group3: {
-          // groupName: '', // 商品组名称
-          // goodsNumber: '', // 至少需要选择件数
-          // goodsIdList: [], // 商品ID列表
-          // catIdList: [], // 平台分类列表
-          // sortIdList: [] // 商家分类列表
-        },
+        group1: {},
+        group2: {},
+        group3: {},
         groupName: '', // 商品组名称
         goodsNumber: '', // 至少需要选择件数
-        goodsIdList: [], // 商品ID列表
-        catIdList: [], // 平台分类列表
-        sortIdList: [], // 商家分类列表
         groupName2: '',
         goodsNumber2: '',
         groupName3: '',
@@ -815,12 +872,15 @@ export default {
 
       checkout: true,
       disabled: true,
-      activeName: 'second',
+      activeName: 'first',
       formRules: {
         packageName: { required: true, message: '请输入活动名称', trigger: 'blur' },
         validity: { required: true, message: '请选择活动时间', trigger: 'blur' },
-        totalMoney: { required: true, message: '请输入结算总价格', trigger: 'blur' },
-        totalRatio: { required: true, message: '请输入折扣', trigger: 'blur' }
+        totalMoney: { required: true, validator: checkPrice, trigger: ['blur', 'change'] },
+        totalRatio: { required: true, validator: checkDiscount, trigger: ['blur', 'change'] },
+        goodsNumber: { validator: checkoutNumber, trigger: 'blur' },
+        goodsNumber2: { validator: checkoutNumber2, trigger: 'blur' },
+        goodsNumber3: { validator: checkoutNumber3, trigger: 'blur' }
       }
     }
   },
@@ -831,18 +891,6 @@ export default {
         this.$refs.form.validateField('packageType')
       }
     }
-    // 'param.totalMoney': function (value) {
-    //   console.log(value)
-    //   if (this.param.packageType === 0) {
-    //     this.$refs.form.validateField('totalMoney')
-    //   }
-    // },
-    // 'param.totalRatio': function (value) {
-    //   console.log(value)
-    //   if (this.param.packageType === 1) {
-    //     this.$refs.form.validateField('totalRatio')
-    //   }
-    // }
   },
   methods: {
     // 添加商品-弹窗唤起
@@ -997,45 +1045,85 @@ export default {
       this.bussinessList3 = []
       this.bussinessIdList3 = []
     },
-    submitData () {
-      let obj = {
-        'packageType': this.param.packageType,
-        'packageName': this.param.packageName,
-        'startTime': this.param.validity[0],
-        'endTime': this.param.validity[1],
-        'totalMoney': this.param.totalMoney,
-        'totalRatio': this.param.totalRatio,
-        'group1': {
-          'groupName': this.param.groupName,
-          'goodsNumber': this.param.goodsNumber,
-          'goodsIdList': this.selectedGoodsIdList,
-          'catIdList': this.platformIdList,
-          'sortIdList': this.bussinessIdList
-        },
-        'group2': {
-          'groupName': this.param.groupName2,
-          'goodsNumber': this.param.goodsNumber3,
-          'goodsIdList': this.selectedGoodsIdList2,
-          'catIdList': this.platformIdList2,
-          'sortIdList': this.bussinessIdList2
-        },
-        'group3': {
-          'groupName': this.param.groupName3,
-          'goodsNumber': this.param.goodsNumber3,
-          'goodsIdList': this.selectedGoodsIdList3,
-          'catIdList': this.platformIdList3,
-          'sortIdList': this.bussinessIdList3
-        }
+
+    isEmpty (obj) {
+      if (typeof obj === 'undefined' || obj == null || obj === '') {
+        return true
+      } else {
+        return false
       }
-      addActivity(obj).then(res => {
-        if (res.error === 0) {
-          console.log(res, 'add res')
-          this.$message.success('添加成功')
-          this.$emit('packagePriceAddSubmit')
-        } else {
-          this.$message.error(res.message)
+    },
+    // 提交前校验
+    validParam () {
+      // let validateGroup1 = this.goodsList.lenght > 0 || this.platformList.lenght > 0 || this.bussinessList.length > 0
+      if (this.goodsList.lenght === 0 || this.platformList.lenght === 0 || this.bussinessList.length === 0) {
+        this.$message.warning('请选择第一组的商品')
+        return false
+      }
+      return true
+    },
+    submitData () {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          let obj = {
+            'packageType': this.param.packageType,
+            'packageName': this.param.packageName,
+            'startTime': this.param.validity[0],
+            'endTime': this.param.validity[1],
+            'totalMoney': this.param.totalMoney,
+            'totalRatio': this.param.totalRatio,
+            'group1': {
+              'groupName': this.param.groupName,
+              'goodsNumber': this.param.goodsNumber,
+              'goodsIdList': this.selectedGoodsIdList,
+              'catIdList': this.platformIdList,
+              'sortIdList': this.bussinessIdList
+            },
+            'group2': {
+              'groupName': this.param.groupName2,
+              'goodsNumber': this.param.goodsNumber2,
+              'goodsIdList': this.selectedGoodsIdList2,
+              'catIdList': this.platformIdList2,
+              'sortIdList': this.bussinessIdList2
+            },
+            'group3': {
+              'groupName': this.param.groupName3,
+              'goodsNumber': this.param.goodsNumber3,
+              'goodsIdList': this.selectedGoodsIdList3,
+              'catIdList': this.platformIdList3,
+              'sortIdList': this.bussinessIdList3
+            }
+          }
+          if (this.isEdite === false) {
+            // if (this.validParam()) {
+            addActivity(obj).then(res => {
+              if (res.error === 0) {
+                console.log(res, 'add res')
+                this.$message.success('添加成功')
+                this.$emit('packagePriceAddSubmit')
+              } else {
+                this.$message.error(res.message)
+              }
+            }).catch(err => console.log(err))
+            // }
+          } else {
+            let obj1 = {
+              id: this.editId
+            }
+            let requestParam = Object.assign(obj, obj1)
+            console.log(requestParam)
+            // 更新活动
+            updateActivity(requestParam).then((res) => {
+              if (res.error === 0) {
+                this.$message.success('更新成功')
+                this.$emit('packagePriceAddSubmit')
+              } else {
+                this.$message.error(res.error)
+              }
+            }).catch(err => console.log(err))
+          }
         }
-      }).catch(err => console.log(err))
+      })
     },
 
     // 编辑初始化
@@ -1045,23 +1133,52 @@ export default {
         if (res.error === 0) {
           var data = res.content
           this.param = data
+          if (data.group2.groupName || data.group2.goodsNumber) {
+            this.group2Flag = true
+          }
+          if (data.group3.groupName || data.group3.goodsNumber) {
+            this.group3Flag = true
+          }
+
           this.param.validity = [data.startTime, data.endTime]
-          this.checkout = true
-          this.disabled = true
           this.param.groupName = data.group1.groupName
           this.param.goodsNumber = data.group1.goodsNumber
-          console.log(this.param.groupName)
+          this.goodsList = data.group1.goodsList
+          data.group1.goodsList.map(item => {
+            this.selectedGoodsIdList.push(item.goodsId)
+          })
+          this.platformList = data.group1.cateVoList
+          this.platformIdList = data.group1.catIdList
+          this.bussinessList = data.group1.sortVoList
+          this.bussinessIdList = data.group1.sortIdList
+
+          // 第二组
+          this.param.groupName2 = data.group2.groupName
+          this.param.goodsNumber2 = data.group2.goodsNumber
+          this.goodsList2 = data.group2.goodsList
+          data.group2.goodsList.map(item => {
+            this.selectedGoodsIdList2.push(item.goodsId)
+          })
+          this.platformList2 = data.group2.cateVoList
+          this.platformIdList2 = data.group2.catIdList
+          this.bussinessList2 = data.group2.sortVoList
+          this.bussinessIdList2 = data.group2.sortIdList
+
+          // 第三组
+          this.param.groupName3 = data.group3.groupName
+          this.param.goodsNumber3 = data.group3.goodsNumber
+          this.goodsList3 = data.group3.goodsList
+          data.group3.goodsList.map(item => {
+            this.selectedGoodsIdList3.push(item.goodsId)
+          })
+          this.platformList3 = data.group3.cateVoList
+          this.platformIdList3 = data.group3.catIdList
+          this.bussinessList3 = data.group3.sortVoList
+          this.bussinessIdList3 = data.group3.sortIdList
           console.log(this.param, 'get-return-data')
         } else {
           this.$message.error(res.message)
         }
-      })
-    },
-
-    // 更新活动
-    updateActivity () {
-      updateActivity().then((res) => {
-
       })
     }
   }
@@ -1213,6 +1330,9 @@ export default {
     padding: 10px 0;
     background-color: #fff;
     text-align: center;
+  }
+  .default_width {
+    width: 105px;
   }
 }
 </style>

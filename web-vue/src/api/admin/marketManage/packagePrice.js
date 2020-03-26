@@ -67,9 +67,10 @@ export function getActivityInfo (id) {
   })
 }
 // 打包一口价 - 更新活动
-export function updateActivity (id) {
+export function updateActivity (data) {
   return service({
-    url: `/api/admin/market/packsale/update/${id}`,
-    method: 'post'
+    url: `/api/admin/market/packsale/update`,
+    method: 'post',
+    data: data
   })
 }
