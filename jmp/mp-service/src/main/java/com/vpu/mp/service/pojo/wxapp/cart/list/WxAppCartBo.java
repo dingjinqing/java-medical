@@ -47,6 +47,7 @@ public class WxAppCartBo {
     /**
      * 消息状态 0正常 1有提示信息
      */
+    @Builder.Default
     private Byte noticeStatus = CartConstant.CART_NOTICE_STATUS_COMMON;
     /**
      * 提示信息

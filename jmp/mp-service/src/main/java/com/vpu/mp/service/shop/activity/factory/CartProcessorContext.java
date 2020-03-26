@@ -60,6 +60,8 @@ public class CartProcessorContext {
             executeStrategy(goodsTail,cartBo);
             return;
         }
+        //首单特惠
+        executeStrategy(firstSpecial,cartBo);
         //秒杀
         executeStrategy(seckill,cartBo);
         //预售
@@ -72,8 +74,6 @@ public class CartProcessorContext {
         executeStrategy(purchasePrice,cartBo);
         //会员专享
         executeStrategy(exclusive,cartBo);
-        //首单特惠
-        executeStrategy(firstSpecial,cartBo);
         //等级价格
         executeStrategy(gradeCard,cartBo);
         //活动冲突处理
