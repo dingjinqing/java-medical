@@ -81,7 +81,7 @@ public class GoodsImportService extends ShopBaseService {
         String filePath;
         try (InputStream in1 = param.getFile().getInputStream(); InputStream in2 = param.getFile().getInputStream()) {
             workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
-            filePath = createFilePath(getShopId(), param.getFile().getName());
+            filePath = createFilePath(getShopId(), param.getFile().getOriginalFilename());
             imageService.getUpYunClient().writeFile(filePath, in2, true, null);
         } catch (IOException e) {
             log.debug("微铺宝excel商品导入创建workbook失败：" + e.getMessage());

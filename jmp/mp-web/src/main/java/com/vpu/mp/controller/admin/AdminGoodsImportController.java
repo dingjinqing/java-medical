@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
+import java.util.Collections;
 
 /**
  * @author 李晓冰
@@ -64,7 +65,8 @@ public class AdminGoodsImportController extends AdminBaseController{
     public void downloadExcelModule(HttpServletResponse response){
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
-        excelWriter.createExcelTemplate(GoodsVpuExcelImportModel.class);
+        GoodsVpuExcelImportModel modelExample = GoodsVpuExcelImportModel.createModelExample();
+        excelWriter.writeModelList(Collections.singletonList(modelExample),GoodsVpuExcelImportModel.class);
         export2Excel(workbook, "goods.xlsx", response);
     }
 

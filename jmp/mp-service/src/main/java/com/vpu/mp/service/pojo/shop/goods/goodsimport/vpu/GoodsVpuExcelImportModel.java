@@ -72,4 +72,30 @@ public class GoodsVpuExcelImportModel {
     /**默认发货地*/
     @ExcelColumn(columnIndex = 16, columnName = "vpu.import.goods.deliver.place")
     private String deliverPlace;
+
+    /**
+     * 创建示例数据
+     * @return
+     */
+    public static GoodsVpuExcelImportModel createModelExample(){
+        GoodsVpuExcelImportModel model = new GoodsVpuExcelImportModel();
+        model.setFirstSortName("sort1");
+        model.setSecondSortName("sort2");
+        model.setGoodsSn("goodsSn01");
+        model.setGoodsName("XXXX");
+        model.setPrdDesc("color:red;size:xl");
+        model.setGoodsAd("XXXXX");
+        model.setPrdSn("XXXX");
+        model.setStock(1);
+        model.setMarketPrice(BigDecimal.valueOf(12));
+        model.setShopPrice(BigDecimal.valueOf(10));
+        model.setIsOnSale((byte) 1);
+        model.setLimitBuyNum(10);
+        model.setGoodsWeight(BigDecimal.valueOf(1.1));
+        model.setUnit("X");
+        model.setGoodsImgsStr("https://ss1.bdstatic.com/a.jpg;https://ss1.bdstatic.com/b.jpg");
+        model.setGoodsDesc("<p style='background-color:red;'>不许脚本文件，使用行内样式，不许媒体标签，只用body内部标签</p><img url='https://ss1.bdstatic.com/a.jpg'/>");
+        model.setDeliverPlace("Vpu");
+        return model;
+    }
 }
