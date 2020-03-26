@@ -89,6 +89,9 @@ public class GiftGoodsListVo {
          */
         private Integer prdId;
 
+        private Integer goodsSaleNum;
+        private Integer commentNum;
+
 
         //活动数据
         /**

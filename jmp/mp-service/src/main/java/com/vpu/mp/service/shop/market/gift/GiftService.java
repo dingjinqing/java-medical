@@ -690,7 +690,7 @@ public class GiftService extends ShopBaseService {
      */
     private PageResult<GiftGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT,GOODS.GOODS_SALE_NUM,GOODS.COMMENT_NUM).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
