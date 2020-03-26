@@ -659,10 +659,22 @@ public class GiftService extends ShopBaseService {
                 vo.setState((byte)0);
             }
         }
-
-
-
         return vo;
+    }
+
+    /**
+     * 小程序端活动页 已加入购物车的主商品
+     * @param param
+     * @param userId
+     * @return
+     */
+    public List<WxAppCartGoods> giftCheckedGoodsList(GiftGoodsListParam param, Integer userId){
+        GiftRecord giftRecord = db().fetchAny(TABLE,TABLE.ID.eq(param.getGiftId()));
+        List<Integer> goodsIds = Util.splitValueToList(giftRecord.getGoodsId());
+        List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
+        goodsIds.removeAll(userExclusiveGoodsIds);
+        WxAppCartBo cartBo = cartService.getCartList(userId,goodsIds,null,null);
+        return cartBo.getCartGoodsList();
     }
 
     /**

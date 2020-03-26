@@ -33,6 +33,7 @@ import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.wxapp.WxUserCardService;
+import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.MpOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -90,7 +91,7 @@ public class UserService extends ShopBaseService {
 	public QrCodeService qrCode;
 
 	@Autowired
-	public MpOrderInfoService mpOrderInfoService;
+	public OrderReadService orderReadService;
 
 	@Autowired
 	public WxUserCardService wxUserCardService;
@@ -552,7 +553,7 @@ public class UserService extends ShopBaseService {
      * @return
 	 */
 	public List<Map<String, Object>> parseMyOrder(Integer userId, List<Map<String, Object>> data) {
-		Map<Byte, Integer> orderStatusNum = mpOrderInfoService.getOrderStatusNum(userId, null, false);
+		Map<Byte, Integer> orderStatusNum = orderReadService.statistic(userId);
 		for (Map<String, Object> iconItem : data) {
 			iconItem.put("icon", image.imageUrl(String.valueOf(iconItem.get("icon"))));
 			if (iconItem.get("icon_name").equals("wait_pay")) {

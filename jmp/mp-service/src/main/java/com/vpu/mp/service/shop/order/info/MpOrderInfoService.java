@@ -32,30 +32,27 @@ public class MpOrderInfoService extends OrderInfoService{
 
 
     /**
-     * 个人中心订单状态数量展示
+     * 订单状态数量展示（迭代列表用）
      * @param userId
-     * @param param
+     * @param search
      * @param isContainSubOrder
+     * @param returnCount
      * @return
      */
-    public Map<Byte,Integer> getOrderStatusNum(Integer userId, OrderListParam param, boolean isContainSubOrder) {
+    public Map<Byte,Integer> getOrderStatusNum(Integer userId, String search, boolean isContainSubOrder, int returnCount) {
         //搜索条件
         Condition condition = DSL.noCondition();
-        if(param != null && !StringUtils.isBlank(param.getSearch())) {
-            condition = condition.and(TABLE.ORDER_SN.contains(param.getSearch()).or(ORDER_GOODS.GOODS_NAME.contains(param.getSearch())));
+        if(!StringUtils.isBlank(search)) {
+            condition = condition.and(TABLE.ORDER_SN.contains(search).or(ORDER_GOODS.GOODS_NAME.contains(search)));
         }
         //基础状态数量
-        Map<Byte, Integer> countMap = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID), TABLE.ORDER_STATUS).from(TABLE), param).
+        Map<Byte, Integer> countMap = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID), TABLE.ORDER_STATUS).from(TABLE), search).
             where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(TABLE.USER_ID.eq(userId)), isContainSubOrder).and(condition)).
             groupBy(TABLE.ORDER_STATUS).
             fetch().
             intoMap(TABLE.ORDER_STATUS , DSL.count());
-        //退款退货
-        Integer refund = setIsContainSearch(db().select(DSL.countDistinct(TABLE.ORDER_ID)).from(TABLE), param).
-            where(setIsContainSubOrder(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(TABLE.REFUND_STATUS.gt(OrderConstant.REFUND_DEFAULT_STATUS)).and(TABLE.USER_ID.eq(userId)),isContainSubOrder).and(condition)).
-            fetchOneInto(Integer.class);
         //初始化不可变map
-        Map<Byte,Integer> result = ImmutableMap.<Byte,Integer>builder()
+        return ImmutableMap.<Byte,Integer>builder()
             .put(OrderConstant.ALL,
                 countMap.values().stream().reduce(0, Integer::sum))
             .put(OrderConstant.WAIT_PAY,
@@ -66,14 +63,12 @@ public class MpOrderInfoService extends OrderInfoService{
                 mapDefaultValue(countMap , OrderConstant.ORDER_SHIPPED))
             .put(OrderConstant.FINISHED,
                 (mapDefaultValue(countMap , OrderConstant.ORDER_FINISHED)) + mapDefaultValue(countMap , OrderConstant.ORDER_RECEIVED))
-            .put(OrderConstant.REFUND,
-                refund == null ? Integer.valueOf(0) : refund)
+            .put(OrderConstant.REFUND, returnCount)
             .build();
-        return result;
     }
 
-    private SelectWhereStep<?> setIsContainSearch(SelectJoinStep<?> from, OrderListParam param) {
-        if(param != null && !StringUtils.isBlank(param.getSearch())) {
+    private SelectWhereStep<?> setIsContainSearch(SelectJoinStep<?> from, String search) {
+        if(!StringUtils.isBlank(search)) {
             from.leftJoin(ORDER_GOODS).on(TABLE.ORDER_ID.eq(ORDER_GOODS.ORDER_ID));
         }
         return from;

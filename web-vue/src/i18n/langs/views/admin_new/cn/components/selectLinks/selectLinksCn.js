@@ -117,12 +117,12 @@ export const cn = {
     },
     {
       title: '全部商品',
-      path: 'pages/searchs/search',
+      path: 'pages1/search/search',
       spanId: ''
     },
     {
       title: '商家分类',
-      path: 'pages1/search/search',
+      path: 'pages/sort/sort',
       spanId: ''
     },
     {

@@ -234,6 +234,7 @@
 				 wx:if="{{cardInfo.goodsList.length >1}}"
 				 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "checkMore"}}'
 				 data-card_id='{{cardInfo.cardId}}'
+				 data-card_no='{{cardInfo.cardNo}}'
 				 style="color:{{comColor}}"
 				>兑换更多商品
 				</view>

@@ -482,6 +482,8 @@ public class ReducePriceService extends ShopBaseService {
     public GoodsPriceBo parseGoodsPrice(Integer goodsId,Integer userId){
         GoodsPriceBo res = new GoodsPriceBo();
 
+        //TODO 分销改价
+
         //处理首单特惠
         if(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId)){
             FirstSpecialRecord firstSpecialRecord = saas.getShopApp(getShopId()).firstSpecial.getActInfoByGoodsId(goodsId);
