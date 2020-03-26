@@ -163,7 +163,7 @@
           >
             <span>{{$t('order.paymentType')}}：</span>
             <el-select
-              v-model="searchParams.paymentType"
+              v-model="searchParams.payWay"
               :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
@@ -832,7 +832,7 @@ export default {
         createTimeStart: null,
         createTimeEnd: null,
         deliverType: null,
-        paymentType: null,
+        payWay: null,
         userName: '',
         source: null,
         tagIds: [],
@@ -952,7 +952,7 @@ export default {
         ...this.searchParams,
         orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
-        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : [],
+        payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {
