@@ -67,6 +67,8 @@ global.wxComponent({
       this.setData({
         cartData: typeClass[this.data.showCart.cart_type]
       })
+      console.log(this.data.showCart)
+      console.log(this.data.cartData)
     },
     setDelMarket() {
       if (!this.data.delMarket) return

@@ -1,0 +1,16 @@
+.not-involved{
+  display: flex;
+  padding: 0 30rpx;
+  height: 100rpx;
+  align-items: center;
+  background-color: #fff;
+  margin-top: 20rpx;
+}
+.not-involved > view:first-child{
+  border: 2rpx solid;
+  margin-right:20rpx;
+  padding: 4rpx 6rpx;
+}
+.not-involved > view:last-child{
+
+}
