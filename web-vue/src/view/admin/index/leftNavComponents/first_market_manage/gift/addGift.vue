@@ -190,7 +190,7 @@
                     <el-option
                       v-for="item in cardList"
                       :key="item.id"
-                      :label="item.name"
+                      :label="item.cardName"
                       :value="item.id"
                     >
                     </el-option>
@@ -764,6 +764,19 @@ export default {
           this.param.rules = data.rules
           this.param.explain = data.explain
           this.param.goodsIds = data.goodsIds
+          // 过滤失效会员卡
+          var arr = []
+          if (this.param.rules.cardId) {
+            this.cardList.forEach(item => {
+              this.param.rules.cardId.forEach(val => {
+                if (item.id === val) {
+                  arr.push(val)
+                }
+              })
+            })
+            this.param.rules.cardId = arr
+          }
+
           this.loadRules(res.content)
           this.loadGoods(res.content)
           this.loadGifts(res.content.gifts)
@@ -867,6 +880,11 @@ export default {
         item.initNumber = Number(item.prdNumber)
       })
       this.tableData = data
+      // 重新加载子组件
+      this.refreshFlag = false
+      this.$nextTick(() => {
+        this.refreshFlag = true
+      })
     },
 
     // 修改赠品库存回调
