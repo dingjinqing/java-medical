@@ -36,9 +36,6 @@ public class GoodsVpuExcelImportModel {
     /**对应sku，null表示默认sku*/
     @ExcelColumn(columnIndex = 4, columnName = "vpu.import.goods.prd.desc")
     private String prdDesc;
-    /**sku对应的规格组合id编号*/
-    @ExcelIgnore
-    private String prdSpecs;
     /**商品广告词*/
     @ExcelColumn(columnIndex = 5, columnName = "vpu.import.goods.ad")
     private String goodsAd;

@@ -2,18 +2,21 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelUtil;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportModel;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
-import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
+import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuImportListParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 
 /**
  * @author 李晓冰
@@ -23,7 +26,7 @@ import java.io.IOException;
 @Slf4j
 public class AdminGoodsImportController extends AdminBaseController{
 
-    @RequestMapping("/api/admin/goods/vpu/excel/import")
+    @PostMapping("/api/admin/goods/vpu/excel/import")
     public JsonResult goodsVpuExcelImport(GoodsVpuExcelImportParam param){
         MultipartFile file = param.getFile();
 
@@ -48,10 +51,29 @@ public class AdminGoodsImportController extends AdminBaseController{
         }
     }
 
-    @RequestMapping("/api/admin/goods/vpu/excel/text")
-    public JsonResult test(@RequestBody GoodsVpuExcelImportParam param) throws IOException {
-        DownloadImageBo downloadImageBo = shop().image.downloadImgAndUpload(param.getUrl());
-        System.out.println(Util.toJson(downloadImageBo));
-        return success(downloadImageBo);
+    @PostMapping("/api/admin/goods/vpu/excel/operate/list")
+    public JsonResult getOperateList(@RequestBody GoodsVpuImportListParam param){
+        return success(shop().goodsImportRecordService.getGoodsVpuImportList(param));
+    }
+
+    /**
+     * 模板下载
+     * @return
+     */
+    @GetMapping("/api/admin/goods/vpu/excel/download/module")
+    public void downloadExcelModule(HttpServletResponse response){
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
+        excelWriter.createExcelTemplate(GoodsVpuExcelImportModel.class);
+        export2Excel(workbook, "goods.xlsx", response);
+    }
+
+    @GetMapping("/api/admin/goods/vpu/excel/download/fail/data/{batchId}")
+    public void downloadExcelImportFailData(@PathVariable Integer batchId, HttpServletResponse response){
+        Workbook workbook = shop().goodsImportRecordService.downloadFailData(batchId, getLang());
+        Timestamp operateTime = shop().goodsImportRecordService.getOperateTime(batchId);
+        String time = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, operateTime);
+        String fileName = time + "_" + batchId + "_goods.xlsx";
+        export2Excel(workbook, fileName, response);
     }
 }

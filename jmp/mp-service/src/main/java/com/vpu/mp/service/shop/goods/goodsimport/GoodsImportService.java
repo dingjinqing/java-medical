@@ -60,7 +60,7 @@ public class GoodsImportService extends ShopBaseService {
     @Autowired
     ImageService imageService;
     @Autowired
-    GoodsImportRecordService importRecordService;
+    private GoodsImportRecordService importRecordService;
     @Autowired
     GoodsService goodsService;
     @Autowired
@@ -199,6 +199,7 @@ public class GoodsImportService extends ShopBaseService {
         importRecordService.updateGoodsImportSuccessNum(successNum, batchId);
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
+        goodsService.updateEs(goodsIds);
     }
 
     /**
