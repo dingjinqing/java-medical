@@ -5,10 +5,14 @@ import lombok.Data;
 /**
  * 
  * @author zhaojianqiang
- * @time   下午3:22:19
+ * @time 下午3:22:19
  */
 @Data
 public class StoreAuthListPage {
 	private Integer currentPage;
 	private Integer pageRows;
+	private String accountName;
+	private String mobile;
+	private Byte accountType = 0;
+	private Byte status = -1;
 }

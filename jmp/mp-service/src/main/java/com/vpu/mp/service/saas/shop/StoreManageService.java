@@ -145,7 +145,7 @@ public class StoreManageService extends MainBaseService {
 		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 		Integer currentPage = param.getCurrentPage();
 		Integer pageRows = param.getPageRows();
-		PageResult<StoreAccountVo> accountList = storeAccountService.accountList(currentPage, pageRows, shop.getSysId(),
+		PageResult<StoreAccountVo> accountList = storeAccountService.accountList(param, shop.getSysId(),
 				shopId);
 		List<StoreAccountVo> dataList = accountList.getDataList();
 		for (StoreAccountVo item : dataList) {
