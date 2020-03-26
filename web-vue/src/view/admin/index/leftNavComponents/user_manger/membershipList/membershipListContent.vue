@@ -1030,7 +1030,9 @@ export default {
       scoreArrow: false,
       registArrow: false,
       registTimeDesc: false,
-      membershipExportVisible: false
+      membershipExportVisible: false,
+      batchLoginOpt: false,
+      batchLoginOptAll: false
     }
   },
   watch: {
@@ -1148,18 +1150,9 @@ export default {
   },
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
-    // 初始化会员列表数据
-    defaultTabelListData () {
-      if (this.labelText) {
-        this.labelVal = this.labelText
-      }
-      this.options_one = this.$t('membershipIntroduction.options_one')
-      this.options_two = this.$t('membershipIntroduction.options_two')
-      this.options_three = this.$t('membershipIntroduction.options_three')
-      this.options_four = this.$t('membershipIntroduction.options_four')
-      this.options_five = this.$t('membershipIntroduction.options_five')
 
-      let obj = {
+    getSearchParam () {
+      return {
         'mobile': String(this.phoneNum).trim(),
         'username': this.vxName,
         'source': this.sourceValue,
@@ -1189,6 +1182,19 @@ export default {
         'hasDelete': this.noLanding,
         'hasImport': this.importMembership
       }
+    },
+    // 初始化会员列表数据
+    defaultTabelListData () {
+      if (this.labelText) {
+        this.labelVal = this.labelText
+      }
+      this.options_one = this.$t('membershipIntroduction.options_one')
+      this.options_two = this.$t('membershipIntroduction.options_two')
+      this.options_three = this.$t('membershipIntroduction.options_three')
+      this.options_four = this.$t('membershipIntroduction.options_four')
+      this.options_five = this.$t('membershipIntroduction.options_five')
+
+      let obj = this.getSearchParam()
       console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
         console.log(res)
@@ -1323,12 +1329,18 @@ export default {
     },
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
+      console.log(this.value_one)
+
       if (index === 0) {
+        console.log(this.batchLoginOpt)
+
         switch (this.value_one) {
           case '1':
+            this.batchLoginOpt = true
             this.handlePdIsChecked('0')
             break
           case '2':
+            this.batchLoginOptAll = true
             this.noLandingDialogVisible = true
         }
       } else if (index === 1) {
@@ -1648,18 +1660,35 @@ export default {
 
     // 改变用户登录状态
     changeLoginStatus () {
-      var isDelete
+      console.log(this.userId)
+      let userIdList
+      let searchCnt = null
+      if (this.batchLoginOpt) {
+        userIdList = this.trList.filter(r => r.ischecked).map(({userId}) => userId)
+        this.batchLoginOpt = false
+      } else if (this.batchLoginOptAll) {
+        userIdList = [-1]
+        searchCnt = this.getSearchParam()
+        searchCnt.pageRows = this.totalNum
+        this.batchLoginOptAll = false
+      } else {
+        userIdList = [this.userId]
+      }
+      let permission
       if (this.noLandingDialogVisible) {
-        isDelete = 1
+        permission = 'off'
         this.noLandingDialogVisible = false
       } else if (this.resumeLoginVisible) {
-        isDelete = 0
+        permission = 'on'
         this.resumeLoginVisible = false
       }
       let obj = {
-        'userIdList': [this.userId],
-        'isDelete': isDelete
+        searchCnt,
+        userIdList,
+        permission
       }
+      console.log(obj)
+
       // 请求api
       loginStatusRequest(obj).then(res => {
         if (res.error === 0) {
