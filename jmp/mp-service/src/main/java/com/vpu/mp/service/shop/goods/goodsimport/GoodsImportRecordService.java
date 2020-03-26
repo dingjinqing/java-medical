@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportBo;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportFailModel;
@@ -79,6 +80,12 @@ public class GoodsImportRecordService extends ShopBaseService {
         List<GoodsVpuExcelImportFailModel> failList = db().selectFrom(GOODS_IMPORT_DETAIL)
             .where(GOODS_IMPORT_DETAIL.IS_SUCCESS.eq((byte) 0).and(GOODS_IMPORT_DETAIL.BATCH_ID.eq(batchId)))
             .orderBy(GOODS_IMPORT_DETAIL.ID).fetchInto(GoodsVpuExcelImportFailModel.class);
+
+        for (GoodsVpuExcelImportFailModel failModel : failList) {
+            GoodsDataIIllegalEnum illegalEnum = GoodsDataIIllegalEnum.getIllegalEnum(failModel.getErrorCode());
+            String messages = Util.translateMessage(lang, illegalEnum.getErrorMsg(), null, "messages");
+            failModel.setErrorMsg(messages);
+        }
 
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
