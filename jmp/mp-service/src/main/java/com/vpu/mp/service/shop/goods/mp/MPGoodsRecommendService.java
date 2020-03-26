@@ -246,19 +246,19 @@ public class MPGoodsRecommendService extends ShopBaseService {
             }
         }
         //若数量不满足推荐数量 补充数量
-        int remainderNumber = record.getRecommendNumber() - goodsIds.size();
-        if (remainderNumber > 0) {
-            List<Integer> goodsList = getPageList(record.getRecommendNumber());
-            for (Integer item : goodsList) {
-                if (!goodsIds.contains(item)) {
-                    goodsIds.add(item);
-                    remainderNumber -= 1;
-                    if (remainderNumber <= 0) {
-                        break;
-                    }
-                }
-            }
-        }
+//        int remainderNumber = record.getRecommendNumber() - goodsIds.size();
+//        if (remainderNumber > 0) {
+//            List<Integer> goodsList = getPageList(record.getRecommendNumber());
+//            for (Integer item : goodsList) {
+//                if (!goodsIds.contains(item)) {
+//                    goodsIds.add(item);
+//                    remainderNumber -= 1;
+//                    if (remainderNumber <= 0) {
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         logger().info("补充数量后商品id集合："+goodsIds);
         //推荐商品id去重
         goodsIds = goodsIds.stream().distinct().collect(Collectors.toList());
