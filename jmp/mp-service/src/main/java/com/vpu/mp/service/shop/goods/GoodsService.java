@@ -2135,6 +2135,18 @@ public class GoodsService extends ShopBaseService {
             fetch(GOODS.GOODS_ID);
     }
     /**
+     * 根据品牌id获取商品ids
+     * @param brandIds 品牌ids
+     * @return goodsId list
+     */
+    public List<Integer> getGoodsIdByBrandId(List<Integer> brandIds) {
+        return db().select(GOODS.GOODS_ID).
+            from(GOODS).
+            where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).
+            and(GOODS.BRAND_ID.in(brandIds)).
+            fetch(GOODS.GOODS_ID);
+    }
+    /**
      * 根据sortId list获取商品id
      * @param sortIds 品牌id
      * @return goodsId list
