@@ -793,6 +793,7 @@ export default {
           this.param.endTime = data.endTime
           this.param.rules = data.rules
           this.param.explain = data.explain
+          this.param.goodsIds = data.goodsIds
           this.loadRules(res.content)
           this.loadGoods(res.content)
           this.loadGifts(res.content.gifts)
