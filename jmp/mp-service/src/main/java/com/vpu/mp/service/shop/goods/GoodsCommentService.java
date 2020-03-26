@@ -1165,11 +1165,11 @@ public class GoodsCommentService extends ShopBaseService {
         goodsType.add((byte)5);
         goodsType.add((byte)4);
         List<Byte> midType = new ArrayList<>();
-        goodsType.add((byte)3);
-        goodsType.add((byte)2);
+        midType.add((byte)3);
+        midType.add((byte)2);
         List<Byte> badType = new ArrayList<>();
-        goodsType.add((byte)1);
-        goodsType.add((byte)0);
+        badType.add((byte)1);
+        badType.add((byte)0);
         if (GOOD_TYPE.equals(type)){
             sql.and(COMMENT_GOODS.COMMSTAR.in(goodsType));
         }else if (MID_TYPE.equals(type)){
