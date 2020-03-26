@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.gift.ShowCartConfigVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -659,6 +660,8 @@ public class GiftService extends ShopBaseService {
                 vo.setState((byte)0);
             }
         }
+        vo.setDelMarket(shopCommonConfigService.getDelMarket());
+        vo.setShowCart(new ShowCartConfigVo(shopCommonConfigService.getShowCart()));
         return vo;
     }
 

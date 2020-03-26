@@ -39,6 +39,12 @@ public class GiftGoodsListVo {
      */
     private BigDecimal checkedGoodsPrice;
 
+    /**
+     * 基础配置
+     */
+    private Byte delMarket;
+    private ShowCartConfigVo showCart;
+
     @Setter
     @Getter
     public static class Goods{
