@@ -32,7 +32,6 @@ import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -247,14 +246,16 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             cartBo.getCartGoodsList().forEach(goods->{
                 if (goodsPreSaleList.get(goods.getProductId())!=null){
                     Record5<Integer, Integer,Integer, Integer, BigDecimal> record5s = goodsPreSaleList.get(goods.getProductId()).get(0);
-                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
-                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-                    seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
-                    seckillProductInfo.setSecKillPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
-                    goods.getCartActivityInfos().add(seckillProductInfo);
+                    CartActivityInfo preSaleProductInfo =new CartActivityInfo();
+                    preSaleProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+                    preSaleProductInfo.setActivityId(record5s.get(PRESALE.ID));
+                    preSaleProductInfo.setActPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
+                    goods.getCartActivityInfos().add(preSaleProductInfo);
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
                     goods.setActivityId(record5s.get(PRESALE.ID));
                     goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                    goods.setPrdPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
+                    goods.setPriceAction(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
                 }
             });
         }

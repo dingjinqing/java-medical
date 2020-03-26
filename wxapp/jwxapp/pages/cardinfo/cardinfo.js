@@ -151,11 +151,11 @@ global.wxPage({
         let cardInfo = res.content.cardInfo
         that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
-        if(!cardInfo.cardNo){
+        if (!cardInfo.cardNo) {
           that.setData({
             carStatus: "未领取"
           })
-        }else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        } else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
           that.setData({
             carStatus: "已领取"
           })
@@ -187,9 +187,9 @@ global.wxPage({
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
-    if (cardItem.expireType === 0){
+    if (cardItem.expireType === 0) {
       // 从领取之日起
-      let reDateType = ['日','周','月']
+      let reDateType = ['日', '周', '月']
       let i = cardItem.dateType === null ? 0 : Number(cardItem.dateType)
       return `自领取之日起${cardItem.receiveDay}${reDateType[i]}内有效`
 
@@ -235,11 +235,11 @@ global.wxPage({
   },
   // 展示二维码
   showQrCode () {
-    let qrCode = [this.data.cardInfo.qrCode]
-    this.setData({
-      qrCode,
-      showQrcode: true
-    })
+    // let qrCode = [this.data.cardInfo.qrCode]
+    // this.setData({
+    //   qrCode,
+    //   showQrcode: true
+    // })
   },
   // 等级卡  等级详情
   getUpgradeCondition (cardInfo) {
@@ -537,5 +537,28 @@ global.wxPage({
     util.navigateTo({
       url: '/pages/usercardup/usercardup',
     })
-  }
+  },
+  checkMore: function (e) {
+    let d = e.currentTarget.dataset;
+    util.jumpLink('/pages1/usercardgoods/usercardgoods?cardNo=' + d.card_no + '&cardId=' + d.card_id);
+  },
+  to_goods: function (e) {
+    let goods_id = e.currentTarget.dataset.goods_id;
+    let is_list = e.currentTarget.dataset.is_list;
+    // util.api('/api/card/exchange/judge', function (res) {
+    //   if (res.error == 0) {
+    //     util.navigateTo({
+    //       url: '/pages/item/item?good_id=' + goods_id + '&from_count_card=1&card_no=' + card_no,
+    //     })
+    //   } else {
+    //     util.showModal('提示', res.message, function () {
+    //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
+    //     }, true, '取消', '原价购买')
+    //   }
+    // }, {
+    //   card_no: card_no,
+    //   goods_id: goods_id,
+    //   is_list: is_list
+    // })
+  },
 })

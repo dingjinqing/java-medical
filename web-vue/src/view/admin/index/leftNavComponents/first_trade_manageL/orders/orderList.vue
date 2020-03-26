@@ -163,7 +163,7 @@
           >
             <span>{{$t('order.paymentType')}}：</span>
             <el-select
-              v-model="searchParams.paymentType"
+              v-model="searchParams.payWay"
               :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
@@ -502,6 +502,15 @@
                         </template>
                         <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 3 && searchParams.pinStatus.length == 0">
                           {{$t('order.waitShip')}}
+                          <template v-if="orderItem.orderRemindTime">
+                            <el-tooltip
+                              class="item"
+                              effect="dark"
+                              :content="$t('order.remindTime') + orderItem.orderRemindTime"
+                              placement="top"
+                            >
+                              <i class="el-icon-question"></i> </el-tooltip>
+                          </template>
                         </template>
                         <template v-else-if="orderItem.deliverType == 1 && orderItem.orderStatus == 5">
                           {{$t('order.takeByself')}}
@@ -826,7 +835,7 @@ export default {
         createTimeStart: null,
         createTimeEnd: null,
         deliverType: null,
-        paymentType: null,
+        payWay: null,
         userName: '',
         source: null,
         tagIds: [],
@@ -946,7 +955,7 @@ export default {
         ...this.searchParams,
         orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
-        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : [],
+        payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {

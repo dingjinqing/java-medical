@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -24,19 +25,19 @@ public class WxAppCartGoods {
      */
     private Integer cartId;
     /**
-     * 商品现在价格80
+     * 商品现在价格
      */
     private BigDecimal goodsPrice;
     /**
-     * 最终价格 参加活动后的价格80
+     * 最终价格
      */
     private BigDecimal prdPrice;
     /**
-     * 添加购物车时价格100
+     * 添加购物车时价格
      */
     private BigDecimal originalPrice;
     /**
-     * 添加购物车时原价格
+     * 数量
      */
     private Integer cartNumber;
     /**
@@ -44,13 +45,27 @@ public class WxAppCartGoods {
      */
     private Byte isChecked;
     /**
-     *  活动类型
+     *  指定的活动类型，21满折满减
      */
     private Byte type;
     /**
      * 扩展字段: 如：换购挡位ID
      */
     private Integer extendId;
+
+    /**
+     * 最终价格的取价来源活动，0普通商品，2分销改价，6限时降价，18首单特惠，23会员专享
+     */
+    private Byte priceAction = BaseConstant.ACTIVITY_TYPE_GENERAL;
+    /**
+     * 活动限购数量，例如最终价格是限时降价活动价时，该活动的限购数量
+     */
+    private Integer limitAmount;
+    /**
+     * 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
+     * 部分活动会设置
+     */
+    private Byte limitFlag =1;
 
     private Integer storeId;
     private Integer userId;
@@ -68,11 +83,21 @@ public class WxAppCartGoods {
      */
     private String goodsImg;
     /**
-     * 商品规格名
+     * 商品规格数据
      */
+    private String prdImg;
     private String prdDesc;
     private Integer productId;
     private String prdSn;
+    /**
+     * 商品最少限购数量
+     */
+    private Integer limitBuyNum;
+    /**
+     * 商品最大限购数量
+     */
+    private Integer limitMaxNum;
+
     /**
      * 商品状态 1 在售 2 下架 3 删除 4 售罄 5
      */

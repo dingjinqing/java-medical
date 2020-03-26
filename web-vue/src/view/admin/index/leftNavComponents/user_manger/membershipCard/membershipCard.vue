@@ -17,7 +17,7 @@
         >
           <div
             class="firstDiv"
-            v-if="false"
+            v-if="!changePageFlag"
           >
             <div
               class="new_card"
@@ -144,7 +144,7 @@
         >
           <div
             class="firstDiv"
-            v-if="false"
+            v-if="!changePageFlag"
           >
             <div
               class="new_card"
@@ -262,7 +262,7 @@
         >
           <div
             class="firstDiv"
-            v-if="false"
+            v-if="!changePageFlag"
           >
             <div
               class="new_card"
@@ -383,6 +383,11 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+      <!--表格页面-->
+      <CardFormPage
+        v-if="changePageFlag"
+        :cardType="currentCardType"
+      />
     </div>
     <!--二维码弹窗-->
     <ShareCodeDialog />
@@ -392,7 +397,8 @@
 import { deleteCardRequest, getAllMemberCardRequest, changeCardStatueRequest } from '@/api/admin/memberManage/memberCard.js'
 export default {
   components: {
-    ShareCodeDialog: () => import('@/components/admin/shareCodeDialog')
+    ShareCodeDialog: () => import('@/components/admin/shareCodeDialog'),
+    CardFormPage: () => import('./cardFormPage') // 切换表格页面组件
   },
   data () {
     return {
@@ -445,6 +451,7 @@ export default {
         default:
           break
       }
+      this.changePageFlag = false
     }
   },
   mounted () {

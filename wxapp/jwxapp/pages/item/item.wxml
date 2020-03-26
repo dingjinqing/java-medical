@@ -140,6 +140,8 @@
     <view class="scoreRedeem" wx:if="{{goodsInfo.activity.activityType === 4}}">
       您当前拥有的积分总数为：{{goodsInfo.activity.userScore}}积分
     </view>
+    <!-- 分销信息 -->
+    <v-diatribution activity="{{specParams.activity}}" />
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{deliverPlace}}">
       <view class="flex_box">
@@ -226,7 +228,7 @@
       </view>
     </block>
     <!-- 用户评价 -->
-    <v-comment comment="{{comment}}" />
+    <v-comment comment="{{comment}}" goods-id="{{goodsInfo.goodsId}}"/>
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}" />
     <!-- 推荐商品 -->

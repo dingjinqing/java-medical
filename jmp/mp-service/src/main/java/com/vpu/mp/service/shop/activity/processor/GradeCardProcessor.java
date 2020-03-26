@@ -223,8 +223,10 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                 if (goods.getProductId().equals(gradePrice.getPrdId())) {
                     CartActivityInfo gradePriceInfo = new CartActivityInfo();
                     gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
-                    gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
+                    gradePriceInfo.setActPrice(gradePrice.getGradePrice());
                     goods.getCartActivityInfos().add(gradePriceInfo);
+                    goods.setPrdPrice(gradePrice.getGradePrice());
+                    goods.setPriceAction(ACTIVITY_TYPE_MEMBER_GRADE);
                 }
             });
         });

@@ -1,0 +1,171 @@
+[
+	{
+		"name": "门店概况",
+		"enName": "store_overview",
+		"check": 1,
+		"isOnly": 0,
+		"sub": []
+	},
+	{
+		"name": "全部门店",
+		"enName": "store_all",
+		"check": 1,
+		"isOnly": 0,
+		"sub": [
+			{
+				"enName": "store_list",
+				"name": "门店列表",
+				"check": 1,
+				"isOnly": 2
+			},
+			{
+				"enName": "store_info",
+				"name": "门店信息",
+				"check": 1,
+				"isOnly": 1
+			},
+			{
+				"enName": "group_list",
+				"name": "分组管理",
+				"check": 1,
+				"isOnly": 2
+			}
+		]
+	},
+	{
+		"name": "门店商品",
+		"enName": "store_goods",
+		"check": 1,
+		"isOnly": 0,
+		"sub": [
+			{
+				"enName": "all_goods",
+				"name": "全部商品",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "sel_out_goods",
+				"name": "售罄商品",
+				"check": 1,
+				"isOnly": 0
+			}
+		]
+	},
+	{
+		"name": "门店订单",
+		"enName": "store_order",
+		"check": 1,
+		"isOnly": 0,
+		"sub": [
+			{
+				"enName": "all_order",
+				"name": "全部订单",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "picked_up_order",
+				"name": "自提订单",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "city_service",
+				"name": "同城配送",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "booking_order",
+				"name": "预约订单",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "paying_order",
+				"name": "买单订单",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "picked_up_order",
+				"name": "自提订单",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "after_sale_center",
+				"name": "售后中心",
+				"check": 1,
+				"isOnly": 0
+			}
+		]
+	},
+	{
+		"name": "门店服务",
+		"enName": "store_service",
+		"check": 1,
+		"isOnly": 0,
+		"sub": [
+			{
+				"enName": "store_service_manage",
+				"name": "服务管理",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "technician_manage",
+				"name": "技师管理",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "store_service_comment",
+				"name": "评价管理",
+				"check": 1,
+				"isOnly": 0
+			}
+		]
+	},
+	{
+		"name": "门店配置",
+		"enName": "store_config",
+		"check": 1,
+		"isOnly": 0,
+		"sub": [
+			{
+				"enName": "base_config",
+				"name": "基础配置",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "deliver_config",
+				"name": "配送运费模板",
+				"check": 1,
+				"isOnly": 0
+			}
+		]
+	},
+	{
+		"name": "店员管理",
+		"enName": "store_auth",
+		"check": 1,
+		"isOnly": 2,
+		"sub": [
+			{
+				"enName": "staff_list",
+				"name": "全部店员",
+				"check": 1,
+				"isOnly": 0
+			},
+			{
+				"enName": "salesman_auth",
+				"name": "店员权限",
+				"check": 1,
+				"isOnly": 0
+			}
+		]
+	}
+]

@@ -119,14 +119,14 @@
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitReceive")}}</view>
           </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="FINISHED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_comment" && item2.is_show == 1 && item.module_style == 1 }}'>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="FINISHED" data-disabled_l="none" data-disabled_r="block" data-transform="0" wx:if='{{item2.icon_name == "wait_comment" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
               <!-- <view class='order_num'  wx:if='{{item2.num != ""}}'  style='color:{{comColor}};border-color:{{comColor}}'>{{item2.num}}</view> -->
             </view>
             <view class='account_word'>{{i18n.$t(localePack,"page1.usercenter.waitComment")}}</view>
           </view>
-          <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "refund" && item2.is_show == 1}}'>
+          <view class='ac_item' bindtap="bindOrderNav" data-type="RETURNING" data-disabled_r="none" data-disabled_l="block" data-transform="-30" wx:if='{{item2.icon_name == "refund" && (item.module_style == 1 || (item.module_style == 2 && item2.is_show == 1))}}'>
             <view class='order_img'>
               <image src="{{item2.icon}}"></image>
               <view class='order_num' wx:if='{{item2.num != ""}}' style='color:{{comColor}};border-color:{{comColor}}'>
@@ -193,6 +193,12 @@
       </view>
       <view class='ma_service clearfix'>
         <block wx:for='{{item.content}}' wx:key='key' wx:for-item='item3' wx:if='{{item3.icon_name != "custom_icon"}}'>
+          <view class='each_service' wx:if='{{item3.icon_name== "afterSale" && item3.is_show == 1}}' bindtap="bindJumpLink" data-url="/pages/aftersaleorder/aftersaleorder">
+            <view class='es_img'>
+              <image src='{{item3.icon}}'></image>
+            </view>
+            <view class='es_word'>{{i18n.$t(localePack,"page1.usercenter.refund")}}</view>
+          </view>
           <view class='each_service' wx:if='{{item3.icon_name== "distribution" && item3.is_show == 1}}' data-judge_status='{{item3.judge_status}}' data-names='{{item3.rebate_center_name}}' data-is_distributor="{{item3.is_distributor}}" bindtap='to_where'>
             <view class='es_img'>
               <image src='{{item3.icon}}'></image>

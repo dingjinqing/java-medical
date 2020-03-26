@@ -22,10 +22,10 @@ public class GoodsCommentAddListVo {
     private String prdDesc;
     /** 商品货号 */
 	private String goodsSn;
-    /** 平台分类id */
-    private Integer catId;
-    /** 平台分类名称 */
-	private String catName;
+    /** 商家分类id */
+    private Integer sortId;
+    /** 商家分类名称 */
+    private String sortName;
     /** 商品价格 */
 	private BigDecimal shopPrice;
 	/** 库存 */

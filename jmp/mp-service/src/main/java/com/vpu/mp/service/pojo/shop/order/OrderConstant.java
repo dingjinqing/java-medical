@@ -385,6 +385,7 @@ public class OrderConstant {
 	public static final byte WAIT_DELIVERY = 2;
 	public static final byte SHIPPED = 3;
 	public static final byte FINISHED = 4;
+	@Deprecated
 	public static final byte REFUND = 5;
 
 	/**

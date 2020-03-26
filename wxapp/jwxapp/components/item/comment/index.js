@@ -1,3 +1,4 @@
+const util = require('../../../utils/util.js');
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -9,6 +10,9 @@ global.wxComponent({
       observer(val){
         if (val) this.init()
       }
+    },
+    goodsId:{
+      type:Number
     }
   },
 
@@ -36,6 +40,10 @@ global.wxComponent({
         hasPic: this.data.comment.commentLevelsInfo.find(item => item.type === 4).num,
         all: this.data.comment.commentLevelsInfo.filter(item=> item.type !== 4 ).reduce((total,nextVal)=>{return total += nextVal.num},0)
       })
+    },
+    viewComment(e){
+      let {type} = e.currentTarget.dataset
+      util.jumpLink(`/pages1/goodscomment/goodscomment${util.getUrlParams({type,goodsId:this.data.goodsId})}`,'navigateTo')
     }
   }
 });

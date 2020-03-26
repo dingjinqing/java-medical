@@ -20,6 +20,7 @@ import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,9 @@ public class WechatMessageTemplateService extends ShopBaseService {
         }
 
         if( param.getMpTemplateData() != null && type < 2000 ){
+            if(StringUtils.isBlank(info.getMpOpenId()) ){
+                return false;
+            }
 			logger().info("发公众号");
             success = sendMpMessage(param,info);
             logger().info("发公众号结果："+success);
@@ -120,7 +124,6 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * 发送小程序模版消息
      * @param param MQ传参
      * @param info  所需信息（openID，appID）
-     * @param formId 发消息必须
      * @return 是否发送成功
      */
     public Boolean sendMaMessage(RabbitMessageParam param,WxUserInfo info) {
@@ -157,7 +160,8 @@ public class WechatMessageTemplateService extends ShopBaseService {
         }
         try{
             accountMessageService.sendMpTemplateMessage(info.getMpAppId(),info.getMpOpenId(),
-                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),param.getUserIdList());
+                wxDatalist,config,info.getMaAppId(),param.getPage(),param.getPage(),param.getShopId(),param.getType(),
+                info.getUserId(),param.getMessageTemplateId());
         } catch (WxErrorException e) {
             e.printStackTrace();
             return Boolean.FALSE;

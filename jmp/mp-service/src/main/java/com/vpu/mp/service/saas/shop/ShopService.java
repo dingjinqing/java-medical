@@ -102,6 +102,9 @@ public class ShopService extends MainBaseService {
     
     @Autowired
     public ShopAppService shopApp;
+    
+    @Autowired
+    public StoreManageService storeManageService;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()

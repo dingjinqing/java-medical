@@ -1,0 +1,49 @@
+<include src="/pages/common/header.wxml" />
+<view class="main-container">
+  <view class="comment-top">
+    <view class="comment-top-left">
+      <text style="color:{{comColor}}">100%</text>
+      <text>好评度</text>
+    </view>
+    <view class="comment-top-right">
+      <view><text>好评(100%)</text><progress color="{{comColor}}" percent="100"></progress></view>
+      <view><text>中评(100%)</text><progress color="{{comColor}}" percent="30"></progress></view>
+      <view><text>差评(100%)</text><progress color="{{comColor}}" percent="10"></progress></view>
+    </view>
+  </view>
+  <view class="tabs">
+    <block wx:for="{{commentNum}}" wx:key="type">
+      <view style="{{chooseTarget == item.type ? 'color:'+comColor+';border-color:'+comColor+';' : ''}}" data-type="{{item.type}}" bindtap="toggleType">{{commentTypeList[item.type]}}({{item.num}})</view>
+    </block>
+  </view>
+  <view class="tabs-content">
+    <block wx:for="{{dataList}}" wx:key="id">
+      <view class="single-comment-content">
+        <view class="comment-user-star-info">
+          <image src="{{imageUrl+item.userAvatar}}"></image>
+          <text class="user-name">{{item.anonymousflag ? '匿名用户' : item.username}}</text>
+          <view class="star-num">
+            <block wx:for="{{item.commentStarNum}}" wx:key="*this">
+              <text class="iconfont iconshoucang" style="color:{{comColor}}"></text>
+            </block>
+          </view>
+        </view>
+        <view class="comment-text">
+          {{item.commNote	|| '此用户没有填写用户心得'}}
+        </view>
+        <view class="image-content" wx:if="{{item.commentImageList && item.commentImageList.length > 0}}">
+          <block wx:for="{{item.commentImageList}}" wx:key="*this" wx:for-item="imageItem">
+            <image src="{{imageUrl+imageItem}}"></image>
+          </block>
+        </view>
+        <text class="goods-spec" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</text>
+        <text class="comment-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
+        <view class="reply-text" wx:if="{{item.answer}}">
+          <text>回复：</text>
+          <text>{{item.answer}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml" />

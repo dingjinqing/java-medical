@@ -1,0 +1,100 @@
+<!--pages/splitinfo/splitinfo.wxml-->
+<include src="../common/header.wxml" />
+<view class='all'>
+  <view class='sc_content' style='background:url("{{imageUrl}}image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
+
+    <block wx:if='{{split_info.is_oneself == 1}}'>
+      <!--领取详情  -->
+      <view class='top_tips'>
+        <view class='tt_top'>已有
+          <text>{{split_info.count}}</text>人领取</view>
+      </view>
+    </block>
+    <block wx:else>
+      <!-- 已领取   -->
+      <view class='top_tips' wx:if="{{split_info.error=='-4'}}">
+        <view class='tt_top'>您已经领取过该优惠券</view>
+        <view class='tt_bottom'>只能领一次哦</view>
+      </view>
+      <!--已过期  -->
+      <view class='top_tips' wx:if="{{split_info.error=='-3'}}">
+        <view class='tt_top'>该优惠券已过期</view>
+        <view class='tt_bottom'>下次早点来哦</view>
+      </view>
+      <!-- 已抢光 -->
+      <view class='top_tips' wx:if="{{split_info.error=='-2' || split_info.error=='-1'}}">
+        <view class='tt_top'>抢光啦！</view>
+        <view class='tt_bottom'>祝您下次好运哦</view>
+      </view>
+      <!--立即领取  -->
+      <view class='top_tips' wx:if="{{split_info.error=='0'}}">
+        <view class='tt_top'>送您1张优惠券</view>
+        <view class='tt_bottom use_expire' wx:if="{{!(split_info.coupon.validity > 0 || split_info.coupon.validity_hour > 0 || split_info.coupon.validity_minute > 0)}}">有效期：{{split_info.coupon.start_time}}-{{split_info.coupon.end_time}}</view>
+        <view class='tt_bottom use_expire' wx:if="{{split_info.coupon.validity > 0 || split_info.coupon.validity_hour > 0 || split_info.coupon.validity_minute > 0}}">
+          有效期：领取后
+          <block wx:if='{{split_info.coupon.validity > 0}}'>{{split_info.coupon.validity}}天</block>
+          <block wx:if='{{split_info.coupon.validity_hour > 0}}'>{{split_info.coupon.validity_hour}}小时</block>
+          <block wx:if='{{split_info.coupon.validity_minute > 0}}'>{{split_info.coupon.validity_minute}}分钟</block>内有效
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class='btn_content'>
+    <block wx:if='{{split_info.is_oneself == 0}}'>
+      <!--已过期和已抢光  -->
+      <view class='btn_to_index' wx:if="{{split_info.error=='-3' || split_info.error == '-2'|| split_info.error=='-1'}}" bindtap='goIndex'>进店逛逛</view>
+      <!--已领取  -->
+      <view wx:if="{{split_info.error=='-4'}}" style='display:flex;width:590rpx;margin:0 auto;'>
+        <view class='btn_to_get' wx:if="{{split_info.error=='-4'}}" bindtap='goIndex'>进店逛逛</view>
+      </view>
+      <!--立即领取  -->
+      <view class='get_notice' wx:if="{{split_info.error=='0'}}">您的好友送您1张优惠券，赶快来领取吧~</view>
+      <form class='btn_to_get' report-submit='true' bindsubmit='get_this_coupon' wx:if="{{split_info.error=='0'}}">
+        <button form-type='submit'>立即领取</button>
+      </form>
+    </block>
+
+    <block wx:else>
+      <view class='get_notice'>快去分享给您的朋友吧~</view>
+      <view class='detail_btn_group'>
+        <view class='share_now'>
+          <button open-type="share">立即分享</button>
+        </view>
+        <view class='btn_to_store' bindtap="to_store">进店逛逛</view>
+      </view>
+    </block>
+    <!--领取详情  -->
+    <view class='get_detail'>
+      <view class="gd_bg1">
+        <view class='gd_bg2'></view>
+      </view>
+      <view class='gd_content'>
+        <view class='gc_top'>
+          <view class='hr'></view>
+          <view class='gc_top_title'>看朋友们手气如何</view>
+          <view class='hr'></view>
+        </view>
+        <view class='other_get'>
+          <block wx:for='{{split_info.user_list}}' wx:key="index">
+            <view class='each_other'>
+              <view class='eo_left'> 
+                <image src='{{item.user_avatar}}' />
+              </view>
+              <view class='eo_right'>
+                <view class='eo_name'>{{item.username}}</view>
+                <view class='eo_money'>{{item.amount}}{{split_info.unit}}</view>
+                <view class='eo_time'>
+                  <text wx:if="{{item.time.day != '0'}}">{{item.time.day}}天</text>
+                  <text wx:if="{{item.time.hour != '0'}}">{{item.time.hour}}小时</text>
+                  <text wx:if="{{item.time.min != '0'}}">{{item.time.min}}分钟</text>
+                  <text wx:if="{{item.time.min== 0&&item.time.day==0&&item.time.hour==0}}">1分钟</text>前
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+  </view>
+  <include src="../common/footer.wxml" />
+</view>

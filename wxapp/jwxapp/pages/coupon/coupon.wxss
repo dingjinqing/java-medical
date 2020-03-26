@@ -133,6 +133,15 @@ page{
   margin-top: 30rpx;
   color: #888;
 }
+.share_tag {
+  position: absolute;
+  right: 0;
+  border-radius: 0rpx 10rpx 0rpx 10rpx;
+  width: 120rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+  text-align: center;
+}
 /* 样式优化 */
 .go_use{
   width: 100%;
@@ -145,6 +154,19 @@ page{
   font-size: 13px;
   border-radius:0 0 10rpx 10rpx;
   border-top: 1px dashed #ccc;
+}
+.split_btn_get {
+  background: #fff;
+  color: #fb645e;
+  font-size: 26rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70rpx;
+  line-height: 70rpx;
+}
+.split_btn_get::after {
+  border: none;
 }
 .permissions{
   position: absolute;

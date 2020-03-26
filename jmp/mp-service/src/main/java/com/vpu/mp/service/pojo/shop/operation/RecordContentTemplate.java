@@ -33,7 +33,15 @@ public enum   RecordContentTemplate {
 	MEMBER_ACCOUNT(4002,RecordContentMessage.MSG_MEMBER_ACCOUNT),
 	/** 会员-积分*/
 	MEMBER_INTEGRALT(4003,RecordContentMessage.MSG_MEMBER_INTEGRALT),
-
+	/**	批量禁止{num}名用户登录 */
+	MEMBER_BATCH_LOGIN_OFF(4004,RecordContentMessage.MSG_MEMBER_BATCH_LOGIN_OFF),
+    /**	批量允许{num}名用户登录 */
+	MEMBER_BATCH_LOGIN_ON(4005,RecordContentMessage.MSG_MEMBER_BATCH_LOGIN_ON),
+    /**	禁止 ID: {userId};昵称：{username}登录 */
+	MEMBER_LOGIN_OFF(4006,RecordContentMessage.MSG_MEMBER_LOGIN_OFF),
+    /**	允许 ID: {userId};昵称：{username}登录 */
+	MEMBER_LOGIN_ON(4007,RecordContentMessage.MSG_MEMBER_LOGIN_ON),
+	
 
     /** 营销-秒杀 */
     MARKET_SECKILL_ADD(5001,RecordContentMessage.MARKET_SECKILL_ADD),

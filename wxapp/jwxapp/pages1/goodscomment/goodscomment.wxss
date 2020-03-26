@@ -1,0 +1,115 @@
+@import "/css/iconfont.wxss";
+.comment-top{
+  display: flex;
+  align-items: center;
+  padding: 50rpx 30rpx;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+}
+
+.comment-top-left{
+  display: flex;
+  flex-direction: column;
+  width: 240rpx;
+  align-items: center;
+}
+.comment-top-left > text:first-child{
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 25rpx;
+}
+.comment-top-right{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-left: 30rpx;
+}
+.comment-top-right > view{
+  display: flex;
+  align-items: center;
+}
+.comment-top-right > view > progress{
+  flex: 1;
+  margin-left: 16rpx;
+}
+.comment-top-right > view+view{
+  margin-top: 20rpx;
+}
+.tabs{
+  display: flex;
+  background-color: #fff;
+}
+.tabs > view{
+  flex: 1;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  border-bottom: 2rpx solid #eee;
+}
+.tabs-content{
+  background-color: #fff;
+}
+.single-comment-content{
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+  border-bottom: 2rpx solid #eee;
+}
+.comment-user-star-info{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.comment-user-star-info > image{
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+  vertical-align: middle;
+}
+.comment-user-star-info > .user-name{
+  flex: 1;
+}
+.star-num > text{
+  font-size: 30rpx;
+}
+.star-num > text+text{
+  margin-left: 10rpx;
+}
+.image-content{
+  font-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100rpx;
+  width: 392rpx;
+}
+.image-content > image{
+  width: 120rpx;
+  height: 120rpx;
+  border: 2rpx solid #eee;
+  margin-left: 10rpx;
+  margin-top: 10rpx;
+}
+.image-content > image:nth-child(3n+1){
+  margin-left: 0;
+}
+.goods-spec,.comment-time{
+  color: #888;
+  margin-top: 10rpx;
+}
+.reply-text{
+  color: #666;
+  background-color: #f8f8f8;
+  margin-top: 10rpx;
+  padding: 30rpx 20rpx;
+  display: flex;
+}
+.reply-text > text:last-child{
+  flex: 1;
+  display:-webkit-box;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}

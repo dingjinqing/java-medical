@@ -312,7 +312,6 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.receivePerPerson') + '：'"
                   prop="receivePerPerson"
-                  v-if="param.type===0"
                 >
                   <div class="ft">
                     <el-select
@@ -508,6 +507,37 @@
                     </div>
                   </div>
                 </el-form-item>
+
+                <el-form-item label="优惠叠加：">
+                  <el-checkbox>不与限时降价、首单特惠、会员价活动共用</el-checkbox>
+                </el-form-item>
+                <el-form-item
+                  label="同步打标签："
+                  v-if="param.type===0"
+                >
+                  <el-checkbox>给领券用户打标签</el-checkbox>
+                  <span
+                    class="labelStyle"
+                    @click="selectLabel"
+                  >选择标签</span>
+                  <div v-if="pickLabel.length > 0">
+                    <p style="color: #999;">最多可设置3个标签</p>
+                    <span
+                      v-for="(item, index) in pickLabel"
+                      :key="index"
+                      class="labelContent"
+                    >
+                      {{item.value}}
+                      <i
+                        class="el-icon-close"
+                        @click="deleteLabel(index)"
+                        style="color: #999; margin-left: 3px;cursorL pointer;"
+                      ></i>
+                    </span>
+                  </div>
+
+                </el-form-item>
+
                 <el-form-item :label="$t('ordinaryCoupon.useExplain') + '：'">
                   <el-input
                     type="textarea"
@@ -545,11 +575,69 @@
       @BusClassTrueDetailData="busClassDialogResult"
       @backDataArr="commInfo"
     />
+
+    <!-- 标签弹窗 -->
+    <el-dialog
+      title="标签"
+      :visible.sync="labelDialogVisible"
+      :close-on-click-modal="false"
+      width="300px"
+      center
+    >
+      <div>
+        <div style="overflow: hidden;">
+          <span style="color: #a3a3a3;float:left;">请选择标签</span>
+          <span style="float: right;">
+            <span
+              class="labelStyle"
+              @click="refreshLabel"
+            >刷新</span>
+            <span class="labelStyle">/</span>
+            <span
+              class="labelStyle"
+              @click="addLabel"
+            >新建</span>
+          </span>
+        </div>
+
+        <el-select
+          v-model="labelValue"
+          filterable
+          multiple
+          size="small"
+          style="margin-top: 10px;width: 100%;"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in labelList"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          @click="closeLabelDialog"
+          size="small"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="sureLabelDialog"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
 import { saveCoupon, updateCoupon, updateSaveCoupon } from '@/api/admin/marketManage/couponList.js'
-import { allCardApi } from '@/api/admin/marketManage/messagePush'
+import { allCardApi, allTagApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -770,7 +858,12 @@ export default {
       platClass: [],
       platClassRow: [],
       // 平台分类/商家分类共享变量
-      commInfo: []
+      commInfo: [],
+
+      labelDialogVisible: false, // 标签弹窗
+      labelValue: [], // 标签值
+      labelList: [], // 标签列表
+      pickLabel: [] // 选中标签
     }
   },
   mounted () {
@@ -778,6 +871,7 @@ export default {
 
     this.dataDefalut()
     this.getCardList()
+    this.getTagList()
     if (this.couponId) {
       this.editType = true
       this.getOneInfo()
@@ -801,11 +895,20 @@ export default {
       })
     },
 
+    // 获取会员卡数据
     getCardList () {
-      // 会员卡数据
       allCardApi().then((res) => {
         if (res.error === 0) {
           this.cardList = res.content
+        }
+      })
+    },
+
+    // 获取标签列表
+    getTagList () {
+      allTagApi().then(res => {
+        if (res.error === 0) {
+          this.labelList = res.content
         }
       })
     },
@@ -1117,6 +1220,61 @@ export default {
         this.platClass = []
       }
       this.$refs['param'].validateField('availableGoods')
+    },
+
+    // 选择标签
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+      // 已选回显
+      this.labelValue = []
+      this.labelList.forEach(item => {
+        this.pickLabel.forEach(val => {
+          if (item.id === val.id) {
+            this.labelValue.push(item.id)
+          }
+        })
+      })
+    },
+
+    // 刷新标签
+    refreshLabel () {
+      this.getTagList()
+      this.$nextTick(() => {
+        this.$message.success('刷新成功')
+      })
+    },
+
+    // 新建标签
+    addLabel () {
+      this.$router.push('/admin/home/main/labelManagement')
+    },
+
+    // 确定标签
+    sureLabelDialog () {
+      this.labelDialogVisible = false
+      console.log(this.labelValue)
+      this.pickLabel = []
+      this.labelList.forEach(item => {
+        this.labelValue.forEach(val => {
+          if (item.id === val) {
+            this.pickLabel.push(item)
+          }
+        })
+      })
+      // 清空选择框
+      this.labelValue = []
+    },
+
+    // 取消标签
+    closeLabelDialog () {
+      this.labelDialogVisible = false
+      // 清空选择框
+      this.labelValue = []
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      this.pickLabel.splice(index, 1)
     }
   },
   computed: {
@@ -1174,6 +1332,21 @@ export default {
     text-align: center;
     z-index: 99;
   }
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 3px 10px;
+  margin-right: 10px;
+  color: #666;
 }
 .el-form-item {
   margin: 15px 0 !important;

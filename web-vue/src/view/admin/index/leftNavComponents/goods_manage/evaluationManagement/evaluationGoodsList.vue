@@ -18,9 +18,9 @@
       </div>
       <div class="filters_item">
         <sortCatTreeSelect
-          ref="catTree"
-          treeType="cat"
-          :selectedId.sync="searchParams.sortName"
+          ref="sortTree"
+          treeType="sort"
+          :selectedId.sync="searchParams.sortId"
         />
       </div>
       <div style="margin-left: 37px;">
@@ -68,10 +68,15 @@
         >
         </el-table-column>
         <el-table-column
-          :label="$t('allGoods.allGoodsHeaderData.category')"
-          prop="catName"
+          :label="$t('allGoods.allGoodsHeaderData.sort')"
+          prop="sortName"
           align="center"
         >
+          <template slot-scope="scope">
+            <div>
+              {{scope.row.sortName || '无'}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           :label="$t('allGoods.allGoodsData.shopPrice')"
@@ -96,6 +101,11 @@
           prop="pv"
           align="center"
         >
+          <template slot-scope="scope">
+            <div>
+              {{scope.row.pv || '0'}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           :label="$t('evaluation.actualEvaluationNum')"
@@ -121,7 +131,7 @@
             >
               <span
                 class="el-icon-tickets operateSpan"
-                @click="viewEvaluation(scope.row.goodsId)"
+                @click="viewEvaluation(scope.row.goodsName)"
               ></span>
             </el-tooltip>
             <el-tooltip
@@ -157,10 +167,12 @@ export default {
     return {
       searchParams: {
         goodsName: null,
-        sortName: null
+        sortId: null
       },
       loading: false,
       pageParams: {
+        currentPage: 1,
+        pageRows: 20
       },
       dataList: null
     }
@@ -174,7 +186,8 @@ export default {
     initDataList () {
       let obj = {
         ...this.searchParams,
-        page: { ...this.pageParams }
+        ...this.pageParams,
+        sortId: this.searchParams.sortId ? this.searchParams.sortId : -1
       }
       CommentGoodsList(obj).then(res => {
         if (res.error === 0) {
@@ -184,7 +197,14 @@ export default {
       })
     },
 
-    viewEvaluation (goodsId) { console.log(goodsId) },
+    viewEvaluation (goodsName) {
+      this.$router.push({
+        query: {
+          goodsName: goodsName
+        }
+      })
+      this.$emit('handleViewGoodsEvaluation', goodsName)
+    },
     addEvaluation (goodsInfo) {
       this.$emit('handleAddEvaluation', goodsInfo)
     }

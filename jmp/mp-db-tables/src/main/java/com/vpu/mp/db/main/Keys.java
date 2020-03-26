@@ -97,6 +97,7 @@ public class Keys {
     public static final Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Identities0.IDENTITY_USER_LOGIN_RECORD;
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
     public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
+    public static final Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Identities0.IDENTITY_STORE_ACCOUNT;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -201,6 +202,7 @@ public class Keys {
     public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = UniqueKeys0.KEY_B2C_USER_SUMMARY_TREND_PRIMARY;
     public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_USER_NAME;
+    public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ACCOUNT_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -278,6 +280,7 @@ public class Keys {
         public static Identity<UserDetailRecord, Integer> IDENTITY_USER_DETAIL = Internal.createIdentity(UserDetail.USER_DETAIL, UserDetail.USER_DETAIL.ID);
         public static Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Internal.createIdentity(UserLoginRecord.USER_LOGIN_RECORD, UserLoginRecord.USER_LOGIN_RECORD.ID);
         public static Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Internal.createIdentity(UserSummaryTrend.USER_SUMMARY_TREND, UserSummaryTrend.USER_SUMMARY_TREND.ID);
+        public static Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Internal.createIdentity(StoreAccount.STORE_ACCOUNT, StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
     }
 
     private static class UniqueKeys0 {
@@ -381,5 +384,6 @@ public class Keys {
         public static final UniqueKey<UserSummaryTrendRecord> KEY_B2C_USER_SUMMARY_TREND_PRIMARY = Internal.createUniqueKey(UserSummaryTrend.USER_SUMMARY_TREND, "KEY_b2c_user_summary_trend_PRIMARY", UserSummaryTrend.USER_SUMMARY_TREND.ID);
         public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_user_name", ShopAccount.SHOP_ACCOUNT.USER_NAME);
         public static final UniqueKey<TaskJobContentRecord> KEY_B2C_TASK_JOB_CONTENT_PRIMARY = Internal.createUniqueKey(TaskJobContent.TASK_JOB_CONTENT, "KEY_b2c_task_job_content_PRIMARY", TaskJobContent.TASK_JOB_CONTENT.ID);
+        public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = Internal.createUniqueKey(StoreAccount.STORE_ACCOUNT, "KEY_b2c_store_account_PRIMARY", StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
     }
 }

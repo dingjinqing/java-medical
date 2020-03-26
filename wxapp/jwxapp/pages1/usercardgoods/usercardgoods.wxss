@@ -1,0 +1,82 @@
+page{
+    background-color: #fff;
+  }
+  .goods-content{
+    padding-bottom: 100rpx;
+  }
+  .footer{
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    
+  }
+  .footer .left{
+    display: flex;
+    flex-direction: column;
+    width: 300rpx;
+    padding-left: 30rpx;
+    border-top: 2rpx solid #eee;
+    justify-content: center;
+
+  }
+  .footer > .selected-price{
+    flex: 1.5;
+    text-align: left;
+    padding-left: 20rpx;
+    color: #666;
+  }
+  .footer  .text{
+    font-weight: 600;
+    font-size: 30rpx;
+  }
+  .footer .selected{
+    line-height: 100rpx;
+    text-align: center;
+    flex: 1;
+    font-size: 30rpx;
+    color: #fff;
+  }
+  .footer .cart{
+    flex: 1;
+    line-height: 100rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #fff;
+  }
+  .spec-footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    background: #fff;
+    z-index: 2;
+    overflow-y: hidden;
+    height: 100rpx;
+    display: flex;
+  }
+  .spec-footer .footer_flex_view {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rule{
+    padding: 20rpx;
+    font-size: 24rpx;
+    color: #f60;
+    background: #fcf9dd;
+    display: flex;
+  }
+  .rule .content{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .rule .image{
+    width: 28rpx;
+    height: 28rpx;
+    position: relative;
+    top: 4rpx;
+    margin-right: 10rpx;
+  }
+  

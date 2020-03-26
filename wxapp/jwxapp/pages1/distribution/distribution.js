@@ -1,16 +1,10 @@
-// pages1/distribution/distribution.js
 // pages/distribution/distribution.js
 var util = require('../../utils/util.js')
 var app = getApp()
-var imageUrl = app.globalData.imageUrl;
-var mobile = util.getCache('mobile');
 var dis_info = [];
-var img_save_url;
-var is_second = 0;
 var is_distributor, judge_status;
-var page_id;
-var decorate = require("../../pages/common/decorate.js")
-// var spec_mixin = require("../../pages/goodscommon/spec.js")
+// var decorate = require("../../pages/common/decorate.js")
+// var spec_mixin = require("../../pages/goodscommon/spec.js");
 global.wxPage({
   // mixins: [decorate, spec_mixin],
   /**
@@ -18,8 +12,19 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    img_save_url: '',
+    is_block: 0,
+    this_dis_name: '',
+    is_bind_mobile: 0, // 绑定手机号
+    posterBase64: '', // 分享图片
+
     is_second: 0,
-    page_id: 0
+    page_id: 0,
+    if_show_pic: 0,
+    if_show_pic_modal: 0,
+    have_account: 0,
+    // 邀请码
+    copy_content: ''
   },
 
   /**
@@ -28,49 +33,121 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    util.api('/api/wxapp/rebate/center', function (res) {
-      if (res.error == 0) {
-        dis_info = res.content;
-        page_id = dis_info.fanli_cfg.rebate_page_id;
-        that.page_id = page_id;
-        if (page_id > 0) {
-          that.requestDecoratePageData(page_id, 0, that.processWindowData.bind(that));
+    that.setData({
+      this_dis_name: options.names,
+    })
+    dis_request(that);
+  },
+  close_modal: function () {
+    this.setData({ if_show_pic: 0 })
+  },
+  show_image: function () {
+    var that = this;
+    that.data.if_show_pic = 1;
+    that.setData({ if_show_pic: that.data.if_show_pic })
+  },
+  to_pro_center: function () {
+    util.jumpLink('/pages1/promotioncenter/promotioncenter')
+  },
+  show_haibao: function (e) {
+    var that = this;
+    wx.showLoading({
+      title: '生成中',
+    })
+    var pictorial = dis_info.invite_image;
+    if (pictorial) {
+      util.api('/api/wxapp/upayyun/image', function (res) {
+        if (res.error == 0) {
+          pictorial = that.data.imageUrl + pictorial + "!big";
+          that.setData({
+            posterBase64: res.content,
+            // pictorial: posterBase64,
+            pictorial: res.content,
+          })
+          wx.hideLoading();
+          that.setData({
+            if_show_pic: 0,
+            if_show_pic_modal: 1
+          })
         }
-        that.setData({
-          page_id: page_id,
-          rebate_center: 1,
-          page_name: options.names
-        })
-        var marqueen_tex = [];
-        img_save_url = imageUrl + dis_info.invite_image;
-        for (var i = 0; i < dis_info.resent_rebate_list.length; i++) {
-          if (dis_info.resent_rebate_list[i].finished_time != null) {
-            dis_info.resent_rebate_list[i].finished_time = dis_info.resent_rebate_list[i].finished_time.substring(0, 10);
-          }
-          if (dis_info.resent_rebate_list[i].username.length > 4) {
-            dis_info.resent_rebate_list[i].username = dis_info.resent_rebate_list[i].username.substring(0, 4) + "...";
-          }
-          dis_info.resent_rebate_list[i].fanli_money = parseFloat(dis_info.resent_rebate_list[i].fanli_money).toFixed(2);
+      }, { image_path: pictorial });
+    }
+  },
+  go_no_share: function () {
+    var that = this;
+    that.setData({
+      if_show_pic_modal: 0
+    })
+  },
+  save_photo_tips: function (that) {
+    //复制
+    var promotion_language = that.data.copy_content;
+    if (promotion_language != '') {
+      wx.setClipboardData({
+        data: promotion_language,
+        success: function (res) {
+          wx.hideToast();
+          that.setData({
+            toastInfo: {
+              icon: 'success',
+              duration: 4000,
+              title: '图片已保存到相册',
+              content: promotion_language + '　以上邀请码已复制'
+            },
+            copyComplete: true
+          })
         }
-        dis_info.rebate_info.total_money = parseFloat(dis_info.rebate_info.total_money).toFixed(2);
-        dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
-        for (var i in dis_info.rebate_top_three) {
-          dis_info.rebate_top_three[i].total_money = parseFloat(dis_info.rebate_top_three[i].total_money).toFixed(2);
-        }
+      });
+    } else {
+      that.setData({
+        toastInfo: {
+          icon: 'success',
+          duration: 2000,
+          title: '图片已保存到相册'
+        },
+        copyComplete: true,
+      })
+    }
+    // util.showToast({ title: '图片已保存到相册', icon: 'success' })
+    that.setData({
+      if_show_pic_modal: 0
+    })
+  },
+  saveImgToPhotosAlbumTap: function (e) {
+    var that = this;
+    if (that.data.posterBase64) {
+      util.base64ImageHandle(that.data.posterBase64, function (res) {
+        that.save_photo_tips(that);
+      });
+    } else {
+      util.toast_fail('正在生成中...')
+    }
+  },
+
+  withdraw_record: function () {
+    util.jumpLink('/pages/widthdrawrecord/widthdrawrecord');
+  },
+  to_money: function () {
+    var that = this;
+    if (dis_info.fanli_cfg.withdraw_status == 0 || dis_info.fanli_cfg.withdraw_status == null) {
+      util.showModal("提示", "系统暂时不支持提现");
+      return false
+    }
+    if (dis_info.withdraw_money == 0) {
+      util.showModal("提示", "暂无可提现余额");
+      return false
+    }
+    if (that.data.is_bind_mobile == 1 && util.getCache('mobile') == '') {
+      util.checkSession(function () {
         that.setData({
-          dis_info: dis_info
+          is_block: 1
         })
-      } else {
-        that.setData({
-          rebate_center: 2,
-          none_message: res.message,
-          none_jump_page: res.content
-        })
-        // util.showModal('提示', res.message, function(){
-        //   util.redirectTo({ url: res.content })
-        // },false);
-      }
-    });
+      })
+      return false;
+    }
+    util.navigateTo({
+      url: '/pages/widthdraw/widthdraw',
+    })
   },
   toRule: function () {
     util.api('/api/wxapp/rebate/config', function (res) {
@@ -89,12 +166,12 @@ global.wxPage({
   },
   toRank: function () {
     util.navigateTo({
-      url: '/pages/brokeragerank/brokeragerank',
+      url: '/pages2/brokeragerank/brokeragerank',
     })
   },
   toUser: function () {
     util.navigateTo({
-      url: '/pages/inviteduser/inviteduser?user_id=' + util.getCache('user_id'),
+      url: '/pages2/inviteduser/inviteduser?user_id=' + util.getCache('user_id'),
     })
   },
   toOrder: function () {
@@ -105,13 +182,13 @@ global.wxPage({
   to_item: function (e) {
     let good_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: "/pages/item/item?gid=" + good_id
+      url: "/pages/item/item?good_id=" + good_id
     })
   },
   to_search: function () {
-    // util.navigateTo({
-    //   url: "/pages/searchs/search?is_rebate=1"
-    // })
+    util.navigateTo({
+      url: "/pages/searchs/search?is_rebate=1"
+    })
   },
   toPromotion: function () {
     util.navigateTo({
@@ -124,7 +201,7 @@ global.wxPage({
     })
   },
   preview: function (e) {
-    var nowImgUrl = e.target.dataset.src;
+    var nowImgUrl = e.currentTarget.dataset.src;
     var arr = [];
     arr[0] = nowImgUrl;
     wx.previewImage({
@@ -132,24 +209,31 @@ global.wxPage({
       urls: arr // 需要预览的图片http链接列表
     })
   },
+  // 申请成为分销员
+  apply_get: function (e) {
+    util.navigateTo({
+      url: "/pages/distributionspread/distributionspread",
+    })
+  },
+  // 复制
+  toCopy: function (e) {
+    var content = e.currentTarget.dataset.content;
+    wx.setClipboardData({
+      data: content,
+      success: function (res) {
+        util.toast_success('复制成功');
+      }
+    });
+  },
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    if (res.from == "button" && res.target.id == '2') {
-      return {
-        path: 'pages/distributionspread/distributionspread?invite_id=' + util.getCache('user_id'),
-        title: dis_info.user_rebate.username + '邀请你免费赚钱啦，快来申请吧!',
-        imageUrl: imageUrl + '/image/wxapp/share_dis.jpg',
-      }
-    } else {
-      return {
-        path: 'pages/index/index?invite_id=' + util.getCache('user_id'),
-        title: dis_info.user_rebate.username + '分享给你一个好物店铺，快来查看吧!',
-        imageUrl: imageUrl + dis_info.invite_image,
-      }
+    return {
+      path: 'pages/distributionspread/distributionspread?invite_id=' + util.getCache('user_id'),
+      title: dis_info.user_rebate.username + '邀请你免费赚钱啦，快来申请吧!',
+      imageUrl: this.data.imageUrl + '/image/wxapp/share_dis.jpg',
     }
-
   },
 
 
@@ -159,8 +243,8 @@ global.wxPage({
    */
   onPullDownRefresh: function () {
     var that = this;
-    if (page_id > 0) {
-      this.requestDecoratePageData(page_id, 0, this.processWindowData.bind(this));
+    if (that.data.page_id > 0) {
+      this.requestDecoratePageData(that.data.page_id, 0, this.processWindowData.bind(this));
     }
     wx.stopPullDownRefresh();
   },
@@ -171,3 +255,73 @@ global.wxPage({
     })
   },
 })
+function dis_request(that) {
+  // util.api('/api/wxapp/rebate/center', function (res) {
+  //   if (res.error == 0) {
+  //     dis_info = res.content;
+  //     var page_id = dis_info.fanli_cfg.rebate_page_id;
+  //     // that.page_id = page_id;
+  //     if (page_id > 0) {
+  //       that.requestDecoratePageData(page_id, 0, that.processWindowData.bind(that));
+  //     }
+  //     that.setData({
+  //       page_id: page_id,
+  //       rebate_center: 1,
+  //       page_name: that.data.this_dis_name,
+  //       is_block: that.data.is_block,
+  //       distributor_name: dis_info.fanli_cfg.distributor_name
+  //     })
+  //     var marqueen_tex = [];
+  //     // img_save_url = that.data.imageUrl + dis_info.invite_image;
+  //     that.setData({
+  //       img_save_url: that.data.imageUrl + dis_info.invite_image
+  //     })
+  //     for (var i = 0; i < dis_info.resent_rebate_list.length; i++) {
+  //       if (dis_info.resent_rebate_list[i].finished_time != null) {
+  //         dis_info.resent_rebate_list[i].finished_time = dis_info.resent_rebate_list[i].finished_time.substring(0, 10);
+  //       }
+  //       if (dis_info.resent_rebate_list[i].username.length > 4) {
+  //         dis_info.resent_rebate_list[i].username = dis_info.resent_rebate_list[i].username.substring(0, 4) + "...";
+  //       }
+  //       dis_info.resent_rebate_list[i].fanli_money = parseFloat(dis_info.resent_rebate_list[i].fanli_money).toFixed(2);
+  //     }
+  //     dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
+  //     dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
+  //     for (var i in dis_info.rebate_top_three) {
+  //       dis_info.rebate_top_three[i].final_money = parseFloat(dis_info.rebate_top_three[i].final_money).toFixed(2);
+  //     }
+  //     that.setData({
+  //       is_bind_mobile: dis_info.is_bind_mobile
+  //     })
+  //     if (dis_info.invitation_code && dis_info.invitation_code != "" && dis_info.invitation_code != 0) {
+  //       that.data.copy_content = dis_info.invitation_code
+  //     } else {
+  //       that.data.copy_content = ''
+  //     }
+
+  //     that.setData({
+  //       dis_info: dis_info
+  //     })
+  //   } else if (res.message == "您还不是分销员" && res.content.withdraw_money > 0) {
+  //     dis_info = res.content;
+  //     dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
+  //     dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
+  //     that.setData({
+  //       dis_info: dis_info,
+  //       rebate_center: 2,
+  //       have_account: 1,
+  //       distributor_name: dis_info.fanli_cfg.distributor_name
+  //     })
+  //   } else {
+  //     dis_info = res.content;
+  //     that.setData({
+  //       rebate_center: 2,
+  //       have_account: 0,
+  //       none_message: res.message,
+  //       none_jump_page: res.content.page,
+  //       distributor_name: dis_info.fanli_cfg.distributor_name
+  //     })
+  //   }
+  // });
+}
+

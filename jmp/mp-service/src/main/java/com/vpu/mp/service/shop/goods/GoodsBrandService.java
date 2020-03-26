@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.goods;
 import com.vpu.mp.db.shop.tables.records.BrandClassifyRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.jedis.data.GoodsBrandDataHelper;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ChineseToPinYinUtil;
@@ -145,7 +146,9 @@ public class GoodsBrandService extends ShopBaseService {
                 db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
+                esDataUpdateMqService.addEsGoodsIndex(goodsBrand.getGoodsIds(),getShopId(),DBOperating.UPDATE);
             }
+
             //cache update
             goodsBrandDataHelper.update(Collections.singletonList(goodsBrand.getId()));
         });
@@ -160,7 +163,7 @@ public class GoodsBrandService extends ShopBaseService {
             () ->
         {
             deleteGoodsBrand(Collections.singletonList(brandId));
-            esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandId,getShopId());
+
         });
     }
 
@@ -174,6 +177,7 @@ public class GoodsBrandService extends ShopBaseService {
             .where(GOODS_BRAND.ID.in(brandIds))
             .execute();
 
+        esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandIds,getShopId());
         saas().getShopApp(getShopId()).goods.clearBrandId(brandIds);
         //cache update
         goodsBrandDataHelper.delete(brandIds);
