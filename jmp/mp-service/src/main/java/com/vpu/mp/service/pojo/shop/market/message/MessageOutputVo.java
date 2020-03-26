@@ -15,7 +15,7 @@ public class MessageOutputVo {
 
     private String username;
 
-    private Byte templatePlatfrom;
+    private Byte templatePlatform;
 
     private Byte sendStatus;
 

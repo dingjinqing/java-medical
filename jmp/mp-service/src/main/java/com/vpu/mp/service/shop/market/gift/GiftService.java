@@ -24,7 +24,6 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GIFT;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
@@ -398,14 +396,19 @@ public class GiftService extends ShopBaseService {
      * 列表查询
      */
     private SelectConditionStep<?> getPageListQuery() {
-        Table<Record2<Integer, Integer>> giftTimes = db().select(ORDER_GOODS.GIFT_ID, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes")).from(ORDER_GOODS)
-                .where(ORDER_GOODS.IS_GIFT.eq(BaseConstant.YES.intValue())).groupBy(ORDER_GOODS.GIFT_ID).asTable("t");
-        SelectConditionStep<? extends Record7<Integer, String, Timestamp, Timestamp, Short, Byte, ?>> query = db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, giftTimes.field("giftTimes"))
+        Table<Record2<Integer, String>> giftTimes = db()
+                .select(ORDER_GOODS.GIFT_ID, ORDER_GOODS.ORDER_SN)
+                .from(ORDER_GOODS)
+                .where(ORDER_GOODS.IS_GIFT.eq(BaseConstant.YES.intValue()))
+                .groupBy(ORDER_GOODS.GIFT_ID, ORDER_GOODS.ORDER_SN).asTable("t");
+        Table<Record2<Integer, Integer>> giftTimes2 = db().select(giftTimes.field(ORDER_GOODS.GIFT_ID), DSL.count().as("giftTimes")).from(giftTimes).groupBy(giftTimes.field(ORDER_GOODS.GIFT_ID)).asTable("t2");
+        SelectConditionStep<? extends Record7<Integer, String, Timestamp, Timestamp, Short, Byte, ?>> query = db()
+                .select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, giftTimes2.field("giftTimes"))
                 .from(TABLE)
-                .leftJoin(giftTimes).on(giftTimes.field(ORDER_GOODS.GIFT_ID).eq(TABLE.ID))
+                .leftJoin(giftTimes2).on(giftTimes2.field(ORDER_GOODS.GIFT_ID).eq(TABLE.ID))
                 .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
         query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-                TABLE.LEVEL, TABLE.STATUS,giftTimes.field("giftTimes"));
+                TABLE.LEVEL, TABLE.STATUS,giftTimes2.field("giftTimes"));
         return query;
     }
 
@@ -415,11 +418,11 @@ public class GiftService extends ShopBaseService {
     private void buildOptions(SelectConditionStep<?> query, GiftListParam param) {
         Byte status = param.getStatus();
         String name = param.getName();
-        if (null != status && !status.equals(0)) {
+        if (null != status && !status.equals((byte)0)) {
             addStatusCondition(query, status);
         }
         if (isNotEmpty(name)) {
-            query.and(TABLE.NAME.like(format("%s%%", name)));
+            query.and(TABLE.NAME.like(likeValue(name)));
         }
 
     }
@@ -517,16 +520,17 @@ public class GiftService extends ShopBaseService {
     private Integer getGiftOrderedNumber(Integer productId, Integer giftId) {
         return db().select(countDistinct(ORDER_INFO.ORDER_SN))
             .from(ORDER_INFO)
-            .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY)
+            .where(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)
+            .or(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+                    .and(ORDER_INFO.IS_LOCK.ge(OrderConstant.ORDER_WAIT_DELIVERY))))
                 .and(ORDER_INFO.ORDER_SN
                     .in(select(ORDER_GOODS.ORDER_SN).from(ORDER_GOODS)
                         .where(ORDER_GOODS.IS_GIFT.eq(1)
                             .and(ORDER_GOODS.PRODUCT_ID.eq(productId)
-                                .and(ORDER_INFO.ACTIVITY_ID.eq(giftId))
+                                .and(ORDER_GOODS.GIFT_ID.eq(giftId))
                             )
                         )
                     )
-                )
             ).fetchOneInto(Integer.class);
     }
 

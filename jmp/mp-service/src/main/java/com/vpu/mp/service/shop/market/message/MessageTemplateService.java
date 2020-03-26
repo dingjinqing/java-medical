@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -242,7 +243,7 @@ public class MessageTemplateService extends ShopBaseService {
             .select(SERVICE_MESSAGE_RECORD.LINK_IDENTITY, DSL.count(SERVICE_MESSAGE_RECORD.LINK_IDENTITY).as("number"))
             .from(SERVICE_MESSAGE_RECORD)
             .where(SERVICE_MESSAGE_RECORD.LINK_IDENTITY.in(templateIdList))
-            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY,SERVICE_MESSAGE_RECORD.CREATE_TIME)
+            .groupBy(SERVICE_MESSAGE_RECORD.LINK_IDENTITY)
             .orderBy(SERVICE_MESSAGE_RECORD.CREATE_TIME.desc())
             .fetch()
             .stream()
@@ -285,8 +286,16 @@ public class MessageTemplateService extends ShopBaseService {
         if( StringUtils.isNotBlank(param.getUserName()) ){
             result.add(USER.USERNAME.contains(param.getUserName()));
         }
-        if(  null != param.getSendType()&& param.getSendType() != 0 ){
+        if(  null != param.getSendType() && param.getSendType() != 0 ){
             result.add(SERVICE_MESSAGE_RECORD.TEMPLATE_PLATFORM.eq(param.getSendType().byteValue()));
+        }
+        if(  null != param.getIsOnClick() && param.getIsOnClick() != 0 ){
+            if(param.getIsOnClick() == 1){
+                result.add(SERVICE_MESSAGE_RECORD.IS_VISIT.eq(param.getIsOnClick() .byteValue()));
+            }else{
+                result.add(SERVICE_MESSAGE_RECORD.IS_VISIT.eq((byte)0));
+            }
+
         }
         return result;
     }
@@ -349,18 +358,22 @@ public class MessageTemplateService extends ShopBaseService {
             .where(SERVICE_MESSAGE_RECORD.CREATE_TIME.lessThan(query.getEndTime()))
             .and(SERVICE_MESSAGE_RECORD.CREATE_TIME.greaterThan(query.getStartTime()))
             .fetch();
-        Map<String,Integer> sentMap = serviceMessageResult.stream()
-            .filter(x->x.get(SERVICE_MESSAGE_RECORD.SEND_STATUS).equals((byte)1))
-            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
-                int i = 0;
-                return i++;
-            }));
-        Map<String,Integer> visitMap = serviceMessageResult.stream()
-            .filter(x->x.get(SERVICE_MESSAGE_RECORD.IS_VISIT).equals((byte)1))
-            .collect(Collectors.toMap(x->x.get("everyDate").toString(),x->{
-                int i = 0;
-                return i++;
-            }));
+
+
+        Map<String,Integer> sentMap = Maps.newHashMap();
+        for( Record3<String,Byte,Byte> record3:  serviceMessageResult){
+            if( record3.get(SERVICE_MESSAGE_RECORD.SEND_STATUS).equals((byte)1) ){
+                int i = sentMap.getOrDefault(record3.get("everyDate").toString(),0);
+                sentMap.put(record3.get("everyDate").toString(),i+1);
+            }
+        }
+        Map<String,Integer> visitMap = Maps.newHashMap();
+        for( Record3<String,Byte,Byte> record3:  serviceMessageResult){
+            if( record3.get(SERVICE_MESSAGE_RECORD.IS_VISIT).equals((byte)1) ){
+                int i = visitMap.getOrDefault(record3.get("everyDate").toString(),0);
+                visitMap.put(record3.get("everyDate").toString(),i+1);
+            }
+        }
 
         for(LocalDate date: allDate  ){
             String localDate = date.toString();
@@ -439,10 +452,5 @@ public class MessageTemplateService extends ShopBaseService {
             .executionType(TaskJobsConstant.TaskJobEnum.GIVE_COUPON)
             .builder();
         taskJobMainService.dispatch(info);
-    }
-
-    public static void main(String[] args) {
-        Integer a = 0;
-        System.out.println(a.byteValue());
     }
 }

@@ -66,6 +66,18 @@ public class EsDataUpdateMqService extends ShopBaseService {
         addEsGoodsIndex(goodsIds,shopId,DBOperating.UPDATE);
     }
     /**
+     *  update EsGoods data by brand id
+     * @param brandIds goods brand ids
+     * @param shopId shop id
+     */
+    public void updateEsGoodsIndexByBrandId(List<Integer> brandIds,Integer shopId){
+        List<Integer> goodsIds = goodsService.getGoodsIdByBrandId(brandIds);
+        if( goodsIds.isEmpty() ){
+            return ;
+        }
+        addEsGoodsIndex(goodsIds,shopId,DBOperating.UPDATE);
+    }
+    /**
      *  update EsGoods data by sortId id
      * @param sortId goods sortId id
      * @param shopId shop id

@@ -461,10 +461,6 @@ public class BargainRecordService extends ShopBaseService {
                 }
             }
         }
-        if(recordInfo.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) && recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0 && userId != recordInfo.getUserId()){
-            //如果是成功状态，库存肯定已经锁定了，还有剩余金额，允许再砍一次
-            return 0;
-        }
         if(recordInfo.getStock() <= 0 || recordInfo.getPrdNumber() <= 0){
             return 6;
         }
@@ -490,6 +486,11 @@ public class BargainRecordService extends ShopBaseService {
                             if(remainMoney.compareTo(BigDecimal.ZERO) > 0){
                                 return 9;
                             }
+                        }
+                    }else{
+                        if(recordInfo.getStatus().equals(STATUS_SUCCESS) && remainMoney.compareTo(BigDecimal.ZERO) > 0){
+                            //如果是成功状态，库存肯定已经锁定了，还有剩余金额，允许再砍一次
+                            return 0;
                         }
                     }
                 }else {
