@@ -310,5 +310,7 @@ export const en = {
   invoiceTypeObj: {
     0: 'Enterprise invoice',
     1: 'personal invoice'
-  }
+  },
+  remindTime: 'User reminded to ship：'
+
 }

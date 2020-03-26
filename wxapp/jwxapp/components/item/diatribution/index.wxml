@@ -11,3 +11,27 @@
   <view style="color:{{main_setting.comColor}}">分销</view>
   <view>活动商品不参与分销</view>
 </view>
+
+<view class="flex_outside_box">
+  <view class="flex_box diatribution-top">
+    <view class="item_left">分销</view>
+    <view class="item_middle">
+      以下为最高返利金额，仅做参考使用
+    </view>
+    <view class="item_right">
+     <text class="iconfont iconfenxiang" style="color:{{main_setting.comColor}};font-size: 36rpx;"></text>
+    </view>
+    <button open-type="share" class="diatribution-share"></button>
+  </view>
+  <view class="item_line"></view>
+  <view class="diatribution-info">
+    <view class="diatribution-info-content">
+      <view><text>预估直接返利</text><image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
+      <view style="color:{{main_setting.comColor}};">￥4.42</view>
+    </view>
+    <view class="diatribution-info-content">
+      <view><text>预估间接返利</text><image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image></view>
+      <view style="color:{{main_setting.comColor}};">￥6.63</view>
+    </view>
+  </view>
+</view>

@@ -502,6 +502,15 @@
                         </template>
                         <template v-else-if="orderItem.deliverType == 0 && orderItem.orderStatus == 3 && searchParams.pinStatus.length == 0">
                           {{$t('order.waitShip')}}
+                          <template v-if="orderItem.orderRemindTime">
+                            <el-tooltip
+                              class="item"
+                              effect="dark"
+                              :content="$t('order.remindTime') + orderItem.orderRemindTime"
+                              placement="top"
+                            >
+                              <i class="el-icon-question"></i> </el-tooltip>
+                          </template>
                         </template>
                         <template v-else-if="orderItem.deliverType == 1 && orderItem.orderStatus == 5">
                           {{$t('order.takeByself')}}

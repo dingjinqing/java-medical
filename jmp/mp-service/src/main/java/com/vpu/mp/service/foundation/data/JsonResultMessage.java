@@ -45,7 +45,9 @@ public class JsonResultMessage {
     public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
     public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
     public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
-
+    public static final String MSG_ACCOUNT_MOBILE_LENGTH_LIMIT = "account.mobile.length.limit";
+    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.mobile.same";
+    
     // 图片
 
     public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
@@ -426,6 +428,7 @@ public class JsonResultMessage {
     public static final String CODE_WX_LOGISTICS_API_CALL_FAILED = "wx.logistics.api.call.failed";
     public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
+    public static final String MSF_STORE_NEED_HAVE = "store.need.have";
 
     /**
      * 门店技师管理
@@ -1096,4 +1099,6 @@ public class JsonResultMessage {
     /**以下未国际化*/
     public static final String GOODS_EXCEL_UPLOAD_UPYUN_WRONG = "goods.excel.upload.upyun.wrong";
     public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
+	
+	
 }

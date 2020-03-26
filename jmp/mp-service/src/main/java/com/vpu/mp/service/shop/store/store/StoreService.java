@@ -449,4 +449,22 @@ public class StoreService extends ShopBaseService {
             .and(COMMENT_SERVICE.FLAG.eq(BYTE_ZERO))
             .fetchMap(COMMENT_SERVICE.STORE_ID, STORE.STORE_NAME);
     }
+    
+    /**
+     * 获得门店数量
+     * @param storeIds
+     * @return
+     */
+    public Integer getStoreNum(List<Integer> storeIds) {
+    	return db().select(DSL.sum(STORE.STORE_ID)).from(STORE).where(STORE.STORE_ID.in(storeIds)).fetchAnyInto(Integer.class);
+    }
+    
+    /**
+     * 根据id列表获取店铺
+     * @param storeIds
+     * @return
+     */
+    public List<StoreBasicVo> getStoreByIds(List<Integer> storeIds) {
+    	return  db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreBasicVo.class);
+    }
 }
