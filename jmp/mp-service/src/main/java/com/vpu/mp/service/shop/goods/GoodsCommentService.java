@@ -1138,7 +1138,7 @@ public class GoodsCommentService extends ShopBaseService {
      * @param type 筛选条件
      * @return 评价详情
      */
-    public List<MPGoodsCommentVo> getGoodsComment(Integer goodsId,Byte commentFlag,Byte commentSee,Byte type){
+    public List<MPGoodsCommentVo> getGoodsComment(Integer goodsId,Byte type,Byte commentFlag,Byte commentSee){
         SelectConditionStep<? extends Record> sql = db().select(COMMENT_GOODS.ID,COMMENT_GOODS.COMMSTAR,
             COMMENT_GOODS.ANONYMOUSFLAG,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.COMM_IMG,
             ORDER_GOODS.GOODS_ATTR,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,
