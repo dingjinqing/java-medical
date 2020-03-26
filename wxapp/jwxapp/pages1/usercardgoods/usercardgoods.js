@@ -22,8 +22,8 @@ global.wxPage({
     this.setData({
       ruleId
     })
-    this.requestGoodsList()
-    // this.requestCartGoodsList()
+    this.requestGoodsList() // 请求兑换商品列表的数据
+    // this.requestCartGoodsList() // 请求已选择的兑换商品数据
   },
 
 
@@ -63,7 +63,7 @@ global.wxPage({
       ruleId: this.data.ruleId,
     })
   },
-  getSearchText (data) {
+  getSearchText (data) { // 点击搜索
     this.setData({
       searchText: data.detail,
       'pageParams.currentPage': 1,
@@ -71,12 +71,12 @@ global.wxPage({
     })
     this.requestGoodsList()
   },
-  showSelected () {
+  showSelected () { // 点击已选商品
     this.setData({
       showSelectedDialog: true
     })
   },
-  showSpecDialog (e) {
+  showSpecDialog (e) { // 调起规格弹窗
     console.log(e)
     util.api("/api/wxapp/goods/detail", res => {
       if (res.error === 0) {
@@ -104,12 +104,13 @@ global.wxPage({
       lat: null
     })
   },
-  bindCloseSpec () {
+  bindCloseSpec () { // 关闭规格弹窗
     this.setData({
       showSpec: false
     })
   },
-  getProductData (e) {
+  getProductData (e) { // 获取规格弹窗操作回传数据
+    console.log(e)
     this.setData({
       product: e.detail,
       limitInfo: {
@@ -120,7 +121,7 @@ global.wxPage({
       }
     })
   },
-  getGoodsNum (e) {
+  getGoodsNum (e) { // 获取选中的规格弹窗里商品数量
     this.setData({
       productInfo: { ...this.data.product, goodsNum: e.detail.goodsNum }
     });
@@ -128,68 +129,34 @@ global.wxPage({
   },
   addCart () {
     let { goodsNum: goodsNumber, prdId } = this.data.productInfo
-    util.api(
-      "/api/wxapp/cart/add",
-      res => {
-        if (res.error == 0) {
-          util.toast_success('添加成功')
-          this.requestCartGoodsList()
-        } else {
-          util.toast_fail('添加失败')
-        }
-        this.bindCloseSpec()
-      },
-      {
-        goodsNumber: goodsNumber,
-        prdId: prdId
-      }
-    );
+    console.log('已选择')
+    // util.api(
+    //   "/api/wxapp/cart/add",
+    //   res => {
+    //     if (res.error == 0) {
+    //       util.toast_success('添加成功')
+    //       this.requestCartGoodsList()
+    //     } else {
+    //       util.toast_fail('添加失败')
+    //     }
+    //     this.bindCloseSpec()
+    //   },
+    //   {
+    //     goodsNumber: goodsNumber,
+    //     prdId: prdId
+    //   }
+    // );
+    util.toast_success('添加成功')
+    this.bindCloseSpec()
   },
   cartChange () {
     console.log(123)
     this.requestCartGoodsList()
   },
-  goCart () {
-    util.jumpLink('pages/cart/cart', 'navigateTo')
+  goCheckOut () {
+    console.log('点击立即兑换跳转结算页面')
+    util.jumpLink('pages/checkout/checkout', 'navigateTo')
   },
-  goRuleInfo () {
-    util.jumpLink(`pages1/fullshiprule/fullshiprule?ruleId=${this.data.ruleId}`, 'navigateTo')
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
   /**
    * 页面上拉触底事件的处理函数
    */
@@ -203,12 +170,5 @@ global.wxPage({
       'pageParams.currentPage': this.data.pageParams.currentPage + 1
     });
     this.requestGoodsList();
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
   }
 })

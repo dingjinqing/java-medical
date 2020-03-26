@@ -9,17 +9,16 @@ page{
     position: fixed;
     bottom: 0;
     display: flex;
+    
   }
   .footer .left{
     display: flex;
     flex-direction: column;
-  }
-  .footer > view{
-    flex: 1;
-    line-height: 100rpx;
-    text-align: center;
-    color: #fff;
-    background-color:#fff;
+    width: 300rpx;
+    padding-left: 30rpx;
+    border-top: 2rpx solid #eee;
+    justify-content: center;
+
   }
   .footer > .selected-price{
     flex: 1.5;
@@ -27,8 +26,23 @@ page{
     padding-left: 20rpx;
     color: #666;
   }
-  .footer > .selected-price > text{
+  .footer  .text{
     font-weight: 600;
+    font-size: 30rpx;
+  }
+  .footer .selected{
+    line-height: 100rpx;
+    text-align: center;
+    flex: 1;
+    font-size: 30rpx;
+    color: #fff;
+  }
+  .footer .cart{
+    flex: 1;
+    line-height: 100rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #fff;
   }
   .spec-footer {
     position: fixed;
