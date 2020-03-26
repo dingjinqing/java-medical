@@ -506,7 +506,7 @@ public class ReducePriceService extends ShopBaseService {
         //处理限时降价
         if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsInfo.getGoodsType())){
             //当前生效的活动
-            ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId,DateUtil.getLocalTimeDate());
+            ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId,DateUtil.getLocalDateTime());
             if(reducePriceRecord != null){
                 List<ReducePriceProductRecord> reducePriceProductRecords = getReducePriceProductRecordByGoodsId(reducePriceRecord.getId(),goodsId);
                 if(CollectionUtils.isNotEmpty(reducePriceProductRecords)){
