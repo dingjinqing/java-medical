@@ -126,7 +126,7 @@ var order = {
         if (res.error == 0) {
           util.toast_success("提醒成功");
         } else {
-          util.toast_fail(res.message);
+          util.showModal('提示',res.message);
         }
       }, {
         orderId: orderId,
