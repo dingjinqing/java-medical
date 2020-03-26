@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreAccount extends TableImpl<StoreAccountRecord> {
 
-    private static final long serialVersionUID = 168872613;
+    private static final long serialVersionUID = -356080821;
 
     /**
      * The reference instance of <code>mini_main.b2c_store_account</code>
@@ -73,9 +73,9 @@ public class StoreAccount extends TableImpl<StoreAccountRecord> {
     public final TableField<StoreAccountRecord, Integer> SYS_ID = createField("sys_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "所属账户id");
 
     /**
-     * The column <code>mini_main.b2c_store_account.mobile</code>.
+     * The column <code>mini_main.b2c_store_account.mobile</code>. 手机号
      */
-    public final TableField<StoreAccountRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<StoreAccountRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "手机号");
 
     /**
      * The column <code>mini_main.b2c_store_account.account_name</code>. 账户名称
@@ -93,9 +93,9 @@ public class StoreAccount extends TableImpl<StoreAccountRecord> {
     public final TableField<StoreAccountRecord, Byte> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "账户类型1:店员，2：店长");
 
     /**
-     * The column <code>mini_main.b2c_store_account.status</code>. 账户状态0:启用，1：禁用
+     * The column <code>mini_main.b2c_store_account.status</code>. 账户状态0:禁用，1：启用
      */
-    public final TableField<StoreAccountRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "账户状态0:启用，1：禁用");
+    public final TableField<StoreAccountRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "账户状态0:禁用，1：启用");
 
     /**
      * The column <code>mini_main.b2c_store_account.del_flag</code>. 是否已删除0:否，1：是

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `b2c_store_account` (
   `account_name` varchar(50) DEFAULT '' COMMENT '账户名称',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `account_type` tinyint(1) DEFAULT '1' COMMENT '账户类型1:店员，2：店长',
-  `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:启用，1：禁用',
+  `status` tinyint(1) DEFAULT '0' COMMENT '账户状态0:禁用，1：启用',
   `del_flag` tinyint(1) DEFAULT '0' COMMENT '是否已删除0:否，1：是',
   `account_passwd` varchar(64)  DEFAULT NULL COMMENT '账号密码',
   `store_list` varchar(191)  DEFAULT NULL COMMENT '可用门店id,逗号隔开',
