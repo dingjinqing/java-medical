@@ -238,6 +238,7 @@ export const cn = {
   Balanceyuan: '余额(元)',
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
+  freeshiptimes: '剩余包邮次数',
   noData: '暂无相关数据',
   userFromSource: [{
     value: '0',
