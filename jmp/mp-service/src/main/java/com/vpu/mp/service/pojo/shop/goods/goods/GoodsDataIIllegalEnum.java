@@ -54,7 +54,7 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 商品主图不存在
      */
-    GOODS_IMG_IS_NULL((byte) 10, "goods.img.is.null"),
+    GOODS_IMG_IS_WRONG((byte) 10, "goods.img.is.wrong"),
     /**
      * 商品零售价格不存在
      */
@@ -114,7 +114,7 @@ public enum GoodsDataIIllegalEnum {
                 retEnum = GoodsDataIIllegalEnum.GOODS_PRD_DESC_WRONG;
                 break;
             case 10:
-                retEnum = GoodsDataIIllegalEnum.GOODS_IMG_IS_NULL;
+                retEnum = GoodsDataIIllegalEnum.GOODS_IMG_IS_WRONG;
                 break;
             case 11:
                 retEnum = GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL;

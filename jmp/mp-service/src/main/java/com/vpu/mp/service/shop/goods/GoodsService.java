@@ -821,7 +821,6 @@ public class GoodsService extends ShopBaseService {
         });
 
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
             return  codeWrap;
         }
 

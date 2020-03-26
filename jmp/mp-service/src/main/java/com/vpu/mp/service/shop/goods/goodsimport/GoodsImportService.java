@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.goodsimport;
 
+import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -82,13 +83,15 @@ public class GoodsImportService extends ShopBaseService {
         try (InputStream in1 = param.getFile().getInputStream(); InputStream in2 = param.getFile().getInputStream()) {
             workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
             filePath = createFilePath(getShopId(), param.getFile().getOriginalFilename());
-            imageService.getUpYunClient().writeFile(filePath, in2, true, null);
+            try {
+                imageService.getUpYunClient().writeFile(filePath, in2, true, null);
+            } catch (IOException |UpException e) {
+                log.debug("微铺宝excel商品导入excel上传upYun失败：" + e.getMessage());
+                return JsonResultCode.GOODS_EXCEL_UPLOAD_UPYUN_WRONG;
+            }
         } catch (IOException e) {
             log.debug("微铺宝excel商品导入创建workbook失败：" + e.getMessage());
             return JsonResultCode.GOODS_EXCEL_IMPORT_WORKBOOK_CREATE_FAIL;
-        } catch (Exception e) {
-            log.debug("微铺宝excel商品导入excel上传upYun失败：" + e.getMessage());
-            return JsonResultCode.GOODS_EXCEL_UPLOAD_UPYUN_WRONG;
         }
 
         // 创建handler读取对应的excel数据
@@ -163,7 +166,7 @@ public class GoodsImportService extends ShopBaseService {
                 return true;
             }
             if (StringUtils.isBlank(goodsBo.getGoodsImgsStr())) {
-                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_IMG_IS_NULL, batchId));
+                illegalGoods.add(importRecordService.convertVpuExcelImportBoToImportDetail(goodsBo, GoodsDataIIllegalEnum.GOODS_IMG_IS_WRONG, batchId));
                 return true;
             }
             if (goodsBo.getShopPrice() == null) {
@@ -317,7 +320,7 @@ public class GoodsImportService extends ShopBaseService {
         // 处理图片
         List<DownloadImageBo> downloadImageBos = filterGoodsImages(importBos);
         if (downloadImageBos.size() == 0) {
-            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_IMG_IS_NULL);
+            resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_IMG_IS_WRONG);
             return resultCode;
         }
         GoodsVpuExcelImportBo bo = importBos.get(0);
@@ -347,6 +350,7 @@ public class GoodsImportService extends ShopBaseService {
                 resultCode.setIllegalEnum(insertResult.getIllegalEnum());
                 resultCode.setGoodsId(insertResult.getGoodsId());
             } catch (Exception e) {
+                log.debug("商品excel导入："+e.getMessage());
                 resultCode.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
             }
         });

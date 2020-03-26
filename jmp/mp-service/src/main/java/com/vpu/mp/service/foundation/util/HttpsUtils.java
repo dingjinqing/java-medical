@@ -39,7 +39,8 @@ public class HttpsUtils {
     private static final String POST = "POST";
     private static PoolingHttpClientConnectionManager connMgr;
     private static RequestConfig requestConfig;
-    private static final int MAX_TIMEOUT = 7000;
+    private static final int MAX_TIMEOUT = 2000;
+    private static final int MAX_CONNECTION_TIME_OUT = 7000;
 
     static {
         // 设置连接池
@@ -51,7 +52,7 @@ public class HttpsUtils {
         connMgr.setValidateAfterInactivity(1000);
         RequestConfig.Builder configBuilder = RequestConfig.custom();
         // 设置连接超时
-        configBuilder.setConnectTimeout(MAX_TIMEOUT);
+        configBuilder.setConnectTimeout(MAX_CONNECTION_TIME_OUT);
         // 设置读取超时
         configBuilder.setSocketTimeout(MAX_TIMEOUT);
         // 设置从连接池获取连接实例的超时
