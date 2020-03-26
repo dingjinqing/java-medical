@@ -37,7 +37,7 @@ global.wxPage({
           checkedGoodsPrice:res.content.checkedGoodsPrice,
           pageParams: res.content.goods.page,
           ruleStr:this.data.isFirstLoad ? this.getActRule(res.content.rule,res.content.giftProductList) : this.data.ruleStr,
-          changeDoc: this.getGiftDoc(res.content.rule,res.content.checkedGoodsPrice),
+          changeDoc: this.getGiftDoc(res.content.rule,res.content.checkedGoodsPrice,res.content.cartGoodsNumber),
           delMarket: res.content.delMarket,
           showCart: this.data.isFirstLoad ? {
             cart_type:res.content.showCart.cartType,
