@@ -19,6 +19,7 @@ import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
+import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportRecordService;
 import com.vpu.mp.service.shop.goods.goodsimport.GoodsImportService;
 import com.vpu.mp.service.shop.goods.mp.GoodsActivityShareRecordService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
@@ -103,6 +104,8 @@ public class ShopApplication {
 	public GoodsMpService goodsMp;
     @Autowired
     public GoodsImportService goodsImportService;
+    @Autowired
+    public GoodsImportRecordService goodsImportRecordService;
 	@Autowired
 	public GoodsActivityShareRecordService goodsActivityShareRecord;
 	@Autowired

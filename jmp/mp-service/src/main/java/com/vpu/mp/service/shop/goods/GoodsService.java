@@ -1182,6 +1182,22 @@ public class GoodsService extends ShopBaseService {
             .filter(goodsSpecProduct -> goodsSpecProduct.getPrdId() == null).collect(Collectors.toList());
         return newPrds;
     }
+
+    /**
+     * 更新商品Es
+     * @param goodsIds
+     */
+    public void updateEs(List<Integer> goodsIds){
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
+            }
+        } catch (Exception e) {
+            logger().debug("批量更新商品数据-同步es数据异常:" + e.getMessage());
+        }
+    }
+
     /**
      * 清除指定的sortId
      * @param sortIds
