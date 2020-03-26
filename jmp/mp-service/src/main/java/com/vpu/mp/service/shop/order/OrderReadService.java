@@ -834,7 +834,20 @@ public class OrderReadService extends ShopBaseService {
      * @return
      */
     public PageResult<ReturnOrderListMp> mpReturnList(OrderListParam param) {
-        return returnOrder.getPageList(param);
+        PageResult<ReturnOrderListMp> result = returnOrder.getPageList(param);
+        List<Integer> collect;
+        List<ReturnOrderListMp> dataList = result.dataList;
+        if(dataList != null && dataList.size() > 0 ) {
+            collect = dataList.stream().map(ReturnOrderListMp::getRetId).collect(Collectors.toList());
+        }else {
+            return result;
+        }
+        //获取订单再分组
+            Map<Integer, List<OrderReturnGoodsVo>> goods = returnOrderGoods.getByRetIds(collect.toArray(new Integer[]{})).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);
+        for (ReturnOrderListMp order : dataList) {
+            order.setGoods(goods.get(order.getRetId()));
+        }
+        return result;
     }
 
     /**
