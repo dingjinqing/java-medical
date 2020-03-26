@@ -160,7 +160,7 @@ public class GoodsBrandService extends ShopBaseService {
             () ->
         {
             deleteGoodsBrand(Collections.singletonList(brandId));
-            esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandId,getShopId());
+
         });
     }
 
@@ -174,6 +174,7 @@ public class GoodsBrandService extends ShopBaseService {
             .where(GOODS_BRAND.ID.in(brandIds))
             .execute();
 
+        esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandIds,getShopId());
         saas().getShopApp(getShopId()).goods.clearBrandId(brandIds);
         //cache update
         goodsBrandDataHelper.delete(brandIds);
