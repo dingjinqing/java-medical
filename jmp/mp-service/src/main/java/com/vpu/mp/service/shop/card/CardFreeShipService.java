@@ -58,6 +58,7 @@ public class CardFreeShipService extends ShopBaseService{
 	 */
 	public CardFreeship getFreeshipData(UserCardParam card,String lang) {
 		logger().info("获取用户卡的包邮信息");
+
 		if(card.getFreeLimit()==null) {
 			return new CardFreeship();
 		}
@@ -96,4 +97,6 @@ public class CardFreeShipService extends ShopBaseService{
 		UserCardParam card = uCardSvc.getCard(cardNo);
 		return getFreeshipData(card,lang);
 	}
+
+
 }
