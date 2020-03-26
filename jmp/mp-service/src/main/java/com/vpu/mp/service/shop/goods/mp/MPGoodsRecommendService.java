@@ -2,14 +2,14 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.shop.ShopAppService;
 import com.vpu.mp.service.shop.config.ConfigService;
@@ -17,8 +17,6 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.overview.HotWordsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.aspectj.weaver.ast.And;
-import org.jooq.Condition;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
@@ -126,8 +124,15 @@ public class MPGoodsRecommendService extends ShopBaseService {
             newGoodsIds.retainAll(storeGoodsIds);
             param.setRecommendGoodsIds(newGoodsIds);
         }
+
+        SortItemEnum sortItemEnum = null;
+        //开启了店铺默认排序规则
+        if(shopCommonConfigService.getRecommendSort().equals(Byte.valueOf((byte)1))){
+            sortItemEnum = goodsMpService.getShopGoodsSortEnum();
+        }
+
         //商品详情展示
-        List<?> goodsListNormal = goodsMpService.getGoodsListNormal(param.getRecommendGoodsIds(), param.getUserId());
+        List<?> goodsListNormal = goodsMpService.getGoodsListNormal(param.getRecommendGoodsIds(), param.getUserId(), sortItemEnum, SortDirectionEnum.DESC);
         logger().info(goodsListNormal.toString());
         //pageNum:当前页码
         int pageNum = param.getPageNum();

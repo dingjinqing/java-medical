@@ -19,10 +19,13 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.shop.activity.factory.GoodsDetailMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
@@ -82,6 +85,8 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsSearchMpService goodsSearchMpService;
     @Autowired
     public GoodsGroupMpService goodsGroupMpService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -221,13 +226,19 @@ public class GoodsMpService extends ShopBaseService {
      * 通过商品id集合回去对应的数据信息
      * @param goodsIds 商品id集合
      * @param userId   用户id集合
+     * @param shopSortItem 商家配置的排序字段
+     * @param shopSortDirection 商家配置的排序顺序
      * @return {@link GoodsListMpParam}集
      */
-    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId) {
+    public List<? extends GoodsListMpVo> getGoodsListNormal(List<Integer> goodsIds, Integer userId, SortItemEnum shopSortItem, SortDirectionEnum shopSortDirection) {
         List<GoodsListMpBo> goodsListCapsules;
         GoodsListMpParam param = new GoodsListMpParam();
         param.setRecommendType(GoodsConstant.POINT_RECOMMEND);
         param.setGoodsItems(goodsIds);
+        if(shopSortItem != null && shopSortDirection != null){
+            param.setShopSortItem(shopSortItem);
+            param.setShopSortDirection(shopSortDirection);
+        }
         if (esUtilSearchService.esState()) {
             try {
                 // 从es获取
@@ -236,12 +247,12 @@ public class GoodsMpService extends ShopBaseService {
                 log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品列表错误-转换db获取数据:" + e.getMessage());
-                goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+                goodsListCapsules = getGoodsListNormalFromDb(goodsIds,shopSortItem,shopSortDirection);
                 log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
             }
         } else {
             log.debug("小程序-db-搜索商品列表");
-            goodsListCapsules = getGoodsListNormalFromDb(goodsIds);
+            goodsListCapsules = getGoodsListNormalFromDb(goodsIds,shopSortItem,shopSortDirection);
             log.debug("小程序-db-搜索商品列表结果:{}", goodsListCapsules);
         }
 
@@ -255,11 +266,36 @@ public class GoodsMpService extends ShopBaseService {
      * @param goodsIds 商品id集合
      * @return {@link GoodsListMpParam}集
      */
-    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds) {
+    private List<GoodsListMpBo> getGoodsListNormalFromDb(List<Integer> goodsIds,SortItemEnum shopSortItem, SortDirectionEnum shopSortDirection) {
         if (goodsIds == null) {
             return new ArrayList<>();
         }
-        PageResult<GoodsListMpBo> pageResult = findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), null, null, null, goodsIds);
+        List<SortField<?>> list = new ArrayList<>();
+        if(shopSortItem != null && shopSortDirection != null){
+            //目前都只能倒序
+            switch (shopSortItem){
+                case ADD_TIME:
+                    list.add(GOODS.CREATE_TIME.desc());
+                    break;
+                case SALE_TIME:
+                    list.add(GOODS.SALE_TIME.desc());
+                    break;
+                case SALE_NUM:
+                    list.add(GOODS.GOODS_SALE_NUM.desc());
+                    break;
+                case COMMENT_NUM:
+                    list.add(GOODS.COMMENT_NUM.desc());
+                    break;
+                case PV:
+                    list.add(GOODS.PV.desc());
+                    break;
+                case PRICE:
+                    list.add(GOODS.SHOP_PRICE.desc());
+                    break;
+                default:
+            }
+        }
+        PageResult<GoodsListMpBo> pageResult = findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), list, null, null, goodsIds);
         return pageResult.getDataList();
     }
 
@@ -621,6 +657,52 @@ public class GoodsMpService extends ShopBaseService {
             giftPrds.add(prd);
         }
         return giftPrds;
+    }
+
+    /**
+     * 店铺配置的 商品默认排序规则
+     * @return
+     */
+    public SortField<?> getShopGoodsSort(){
+        //由商家指定的默认排序规则
+        String sort = shopCommonConfigService.getGoodsSort();
+        switch (sort){
+            case "add_time":
+                return GOODS.CREATE_TIME.desc();
+            case "on_sale_time":
+                return GOODS.SALE_TIME.desc();
+            case "goods_sale_num":
+                return GOODS.GOODS_SALE_NUM.desc();
+            case "comment_num":
+                return GOODS.COMMENT_NUM.desc();
+            case "pv":
+                return GOODS.PV.desc();
+            default:
+                return GOODS.CREATE_TIME.desc();
+        }
+    }
+
+    /**
+     * 店铺配置的 商品默认排序规则
+     * @return
+     */
+    public SortItemEnum getShopGoodsSortEnum(){
+        //由商家指定的默认排序规则
+        String sort = shopCommonConfigService.getGoodsSort();
+        switch (sort){
+            case "add_time":
+                return SortItemEnum.ADD_TIME;
+            case "on_sale_time":
+                return SortItemEnum.SALE_TIME;
+            case "goods_sale_num":
+                return SortItemEnum.SALE_NUM;
+            case "comment_num":
+                return SortItemEnum.COMMENT_NUM;
+            case "pv":
+                return SortItemEnum.PV;
+            default:
+                return SortItemEnum.ADD_TIME;
+        }
     }
 
 }

@@ -1116,7 +1116,7 @@ public class OrderReadService extends ShopBaseService {
 		List<FootprintDayVo> orderGoodsHistoryVos =records.into(FootprintDayVo.class);
 		Page page = Page.getPage(totalRows, currentPages, pageRows);
 		footprintListVo.setPage(page);
-		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId);
+		List<? extends GoodsListMpVo> goodsListMpVos = goodsMpService.getGoodsListNormal(goodsIdList, userId,null,null);
 		Map<Integer, GoodsListMpVo> goodsListMpVoMap = goodsListMpVos.stream().collect(Collectors.toMap(GoodsListMpVo::getGoodsId, goods->goods));
 		orderGoodsHistoryVos.forEach(orderGoods->{
 			GoodsListMpVo goodsListMpVo = goodsListMpVoMap.get(orderGoods.getGoodsId());
