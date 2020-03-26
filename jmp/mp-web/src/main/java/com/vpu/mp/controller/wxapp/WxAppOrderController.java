@@ -150,7 +150,7 @@ public class WxAppOrderController extends WxAppBaseController{
 	/**
 	 * 订单详情
 	 */
-	@PostMapping("/refund/list")
+	@PostMapping("/get")
 	public JsonResult get(@RequestBody @Valid OrderParam param) {
 		try {
 			return success(shop().readOrder.mpGet(param));
