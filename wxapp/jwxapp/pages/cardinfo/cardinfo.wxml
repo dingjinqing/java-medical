@@ -219,12 +219,13 @@
 			 wx:for-item="goodsListItem"
 			 wx:for-index="goodsListIndex"
 			 wx:key="goodsListIndex"
+			 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "to_goods"}}'
 			>
 				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
 				<view class="goods_right">
 					<view class="goods_name">{{goodsListItem.goodsName}}</view>
 					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
-					<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum != 0}}'>限制兑换{{item.limitNum}}次</text>
+					<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum}}'>限制兑换{{item.limitNum}}次</text>
 					<text style="background:{{comColor}}" class="dh_right" wx:if="{{cardInfo.goodsList.length < 2}}">去兑换</text>
 				</view>
 			</view>

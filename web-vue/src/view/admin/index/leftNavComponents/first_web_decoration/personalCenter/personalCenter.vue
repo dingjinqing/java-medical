@@ -184,7 +184,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='wait_comment' && (isShowOrder=='1' || (isShowOrder=='2' && orderRadio=='1'))"
+                  v-if="val.icon_name=='wait_comment' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -198,7 +198,7 @@
                   class="each_item"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="val.icon_name=='refund' && (isShowOrder=='1' || (isShowOrder=='2' && orderRadio=='2'))"
+                  v-if="val.icon_name=='refund' && (isShowOrder=='1' || (isShowOrder=='2' && val.is_show=='1'))"
                 >
                   <div class="item_img">
                     <img
@@ -353,7 +353,7 @@
                   style="display: flex;"
                   v-for="(val, key) in item.content"
                   :key="key"
-                  v-if="key==0 && val.is_show=='1'"
+                  v-if="val.icon_name==='afterSale' && val.is_show=='1'"
                 >
                   <div class="serve_img">
                     <img
@@ -777,6 +777,7 @@
                       <el-radio
                         v-model="orderRadio"
                         label="1"
+                        @change="orderHabdler(orderRadio)"
                       >{{$t('personalCenter.waitComment')}}</el-radio>
                     </label>
                     <div
@@ -812,6 +813,7 @@
                       <el-radio
                         v-model="orderRadio"
                         label="2"
+                        @change="orderHabdler(orderRadio)"
                       >{{$t('personalCenter.refund')}}</el-radio>
                     </label>
                     <div
@@ -973,7 +975,7 @@
                     :label="$t('personalCenter.wait5') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==0"
+                    v-if="val.icon_name==='afterSale'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1449,7 +1451,7 @@ export default {
           {
             icon_name: 'refund',
             icon: '/image/admin/uc_config/uc_order_icon5.png',
-            is_show: '1'
+            is_show: '0'
           }
         ]
       }, {
@@ -1470,7 +1472,7 @@ export default {
         content: [
           {
             is_show: '1',
-            icon_name: 'refund',
+            icon_name: 'afterSale',
             icon: '/image/admin/uc_config/icon_after.png',
             link: '',
             link_name: ''
@@ -1601,7 +1603,7 @@ export default {
           {
             icon_name: 'refund',
             icon: '/image/admin/uc_config/uc_order_icon5.png',
-            is_show: '1'
+            is_show: '0'
           }
         ]
       }, {
@@ -1622,7 +1624,7 @@ export default {
         content: [
           {
             is_show: '1',
-            icon_name: 'refund',
+            icon_name: 'afterSale',
             icon: '/image/admin/uc_config/icon_after.png',
             link: '',
             link_name: ''
@@ -1716,11 +1718,22 @@ export default {
           this.bgImg = this.rightData[1].bg_img
           this.bgImage = this.imgHost + this.bgImg
 
-          for (var i = 0; i < this.leftData.length; i++) {
-            if (this.leftData[i].module_name === 'order') {
-              this.isShowOrder = this.leftData[i].module_style
+          this.leftData.forEach(item => {
+            if (item.module_name === 'order') {
+              // 模块样式
+              this.isShowOrder = item.module_style
+              item.content.forEach(val => {
+                // 选择显示模块
+                if (val.is_show === '0') {
+                  if (val.icon_name === 'wait_comment') {
+                    this.orderRadio = '2'
+                  } else {
+                    this.orderRadio = '1'
+                  }
+                }
+              })
             }
-          }
+          })
         }
       })
     },
@@ -1976,6 +1989,29 @@ export default {
       //   }
       // }
       // this.customValue++
+    },
+
+    // 订单配置项切换
+    orderHabdler (value) {
+      this.rightData.forEach(item => {
+        if (item.module_name === 'order') {
+          item.content.forEach(val => {
+            if (value === '1') {
+              if (val.icon_name === 'wait_comment') {
+                val.is_show = '1'
+              } else if (val.icon_name === 'refund') {
+                val.is_show = '0'
+              }
+            } else {
+              if (val.icon_name === 'refund') {
+                val.is_show = '1'
+              } else if (val.icon_name === 'wait_comment') {
+                val.is_show = '0'
+              }
+            }
+          })
+        }
+      })
     }
   }
 }

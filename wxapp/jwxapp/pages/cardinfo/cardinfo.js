@@ -538,18 +538,27 @@ global.wxPage({
       url: '/pages/usercardup/usercardup',
     })
   },
-  // 兑换商品更多点击
-  show_rebate: function () {
-    wx.showModal({
-      title: '会员卡已转赠',
-      content: card_info.give_away_time + '转赠\r\n给好友' + card_info.give_username,
-      showCancel: false,
-      confirmText: '关闭',
-      confirmColor: '#000'
-    })
-  },
   checkMore: function (e) {
     let d = e.currentTarget.dataset;
     util.jumpLink('/pages1/usercardgoods/usercardgoods?cardNo=' + d.card_no + '&cardId=' + d.card_id);
-  }
+  },
+  to_goods: function (e) {
+    let goods_id = e.currentTarget.dataset.goods_id;
+    let is_list = e.currentTarget.dataset.is_list;
+    // util.api('/api/card/exchange/judge', function (res) {
+    //   if (res.error == 0) {
+    //     util.navigateTo({
+    //       url: '/pages/item/item?good_id=' + goods_id + '&from_count_card=1&card_no=' + card_no,
+    //     })
+    //   } else {
+    //     util.showModal('提示', res.message, function () {
+    //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
+    //     }, true, '取消', '原价购买')
+    //   }
+    // }, {
+    //   card_no: card_no,
+    //   goods_id: goods_id,
+    //   is_list: is_list
+    // })
+  },
 })

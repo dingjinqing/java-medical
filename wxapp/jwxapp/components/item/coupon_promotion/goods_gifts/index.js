@@ -1,4 +1,5 @@
 const base = require("../../../popup/base/base.js");
+const util = require('../../../../utils/util.js');
 global.wxComponent({
   mixins: [base],
   /**
@@ -34,5 +35,8 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
+    viewMainGoodsGift(){
+      util.jumpLink(`/pages1/maingiftlist/maingiftlist?actId=${this.data.giftsInfo.id}`,'navigateTo')
+    }
   }
 });

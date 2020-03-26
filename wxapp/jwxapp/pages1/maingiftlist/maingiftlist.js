@@ -7,16 +7,18 @@ global.wxPage({
    */
   data: {
     pageParams: null,
-    searchText: null
+    searchText: null,
+    isGiftViewMore:false,
+    isFirstLoad:true
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {ruleId} = options
+    let {actId:giftId} = options
     this.setData({
-      ruleId
+      giftId
     })
     this.requestGoodsList()
     this.requestCartGoodsList()
@@ -27,36 +29,41 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
-    util.api('/api/wxapp/freeship/goods/list',res=>{
+    util.api('/api/wxapp/gift/goodslist',res=>{
       if(res.error === 0 && res.content !== null){
         this.setData({
-          pageParams: res.content.pageResult.page,
-          ['dataList[' + (parseInt(currentPage) - 1) + ']']: res.content.pageResult.dataList,
-          delMarket:res.content.delMarket,
-          showCart:{
-            ...res.content.showCart,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: this.resetGoodsList(res.content.goods.dataList),
+          giftList:this.data.isFirstLoad ? res.content.giftProductList : this.data.giftList,
+          checkedGoodsPrice:res.content.checkedGoodsPrice,
+          pageParams: res.content.goods.page,
+          ruleStr:this.data.isFirstLoad ? this.getActRule(res.content.rule,res.content.giftProductList) : this.data.ruleStr,
+          changeDoc: this.getGiftDoc(res.content.rule,res.content.checkedGoodsPrice,res.content.cartGoodsNumber),
+          delMarket: res.content.delMarket,
+          showCart: this.data.isFirstLoad ? {
+            cart_type:res.content.showCart.cartType,
             show_cart:1
-          },
-          ruleInfo:res.content.freeShippingRule
+          } : this.data.showCart,
+          isFirstLoad:false
         });
       }
     },{
-      searchText:this.data.searchText,
-      ruleId:this.data.ruleId,
+      search:this.data.searchText,
+      giftId:this.data.giftId,
       currentPage: currentPage,
       pageRows: 20,
-      scene: scene
     })
   },
   requestCartGoodsList(){
-    util.api('/api/wxapp/freeship/cart/goods/list',res=>{
+    util.api('/api/wxapp/gift/checkedlist',res=>{
       if(res.error === 0){
         this.setData({
-          cartData:res.content
+          cartData:{
+            cartGoodsList:res.content
+          }
         })
       }
     },{
-      ruleId:this.data.ruleId,
+      giftId:this.data.giftId
     })
   },
   getSearchText(data){
@@ -121,6 +128,11 @@ global.wxPage({
       productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
     });
   },
+  setGiftViewMore(){
+    this.setData({
+      isGiftViewMore:!this.data.isGiftViewMore
+    })
+  },
   addCart(){
     let { goodsNum: goodsNumber, prdId } = this.data.productInfo
       util.api(
@@ -129,6 +141,7 @@ global.wxPage({
           if (res.error == 0) {
             util.toast_success('添加成功')
             this.requestCartGoodsList()
+            this.requestGoodsList()
           } else {
             util.toast_fail('添加失败')
           }
@@ -140,8 +153,45 @@ global.wxPage({
         }
       );
   },
+  getActRule(rule,giftList){
+    if (!rule) return false;
+    let ruleStr = ''
+    if (rule.fullPrice) {
+      ruleStr = `以下商品：满${rule.fullPrice}元，赠`
+    } else if (rule.fullNumber) {
+      ruleStr = `以下商品：满${rule.fullNumber}件，赠`
+    }
+    return ruleStr += `${giftList.length}件商品`;
+  },
+  getGiftDoc(rule,mainPrice,mainNum){
+    if (!rule) return "快来选择商品获得赠品吧";
+    if (rule.fullPrice) {
+        if (rule.fullPrice > mainPrice){
+          return `购买满${rule.fullPrice}元立赠`
+        } else {
+          return "下单立赠"
+        }
+    }else if (rule.fullNumber) {
+        if (rule.fullNumber > mainNum) {
+          return `购买满${rule.fullNumber}件立赠`
+        } else {
+          return "下单立赠"
+        } 
+    }
+    return "快来选择商品获得赠品吧"
+  },
+  resetGoodsList(goodsList){
+    return goodsList.map(item=>{
+      return {
+        ...item,
+        realPrice:item.goodsPrice,
+        linePrice:item.marketPrice
+      }
+    })
+  },
   cartChange(){
     this.requestCartGoodsList()
+    this.requestGoodsList()
   },
   goCart(){	
     util.jumpLink('pages/cart/cart','navigateTo')	

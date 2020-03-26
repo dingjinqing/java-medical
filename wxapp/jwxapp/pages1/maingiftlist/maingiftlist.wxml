@@ -1,53 +1,21 @@
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
-  <view slot="rule" class="rule">
-    <text>以下商品：{{ruleInfo.ruleCondition}}</text>
+  <view slot="rule" class="rule" wx:if="{{ruleStr}}">
+    <text>{{ruleStr}}</text>
   </view>
   <view slot="rule" class="gift-list">
     <text>赠品：</text>
     <view class="gift-list-info">
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
+     <block wx:for="{{giftList}}" wx:key="id">
+      <view class="list-item image-item" wx:if="{{giftList.length <= 6}}">
+        <image src="{{item.goodsImg}}"></image>
       </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
+      <view class="list-item image-item" wx:if="{{(isGiftViewMore || index < 5) && giftList.length > 6}}">
+        <image src="{{item.goodsImg}}"></image>
       </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-      <view class="list-item image-item">
-        <image src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191202/10977510725_72779389.64x64.jpg"></image>
-      </view>
-
-      <view class="list-item">
-        <text class="gift-num">共6件</text>
+     </block>
+      <view class="list-item" bindtap="setGiftViewMore" wx:if="{{giftList.length > 6}}">
+        <text class="gift-num">共{{giftList.length}}件</text>
         <text class="view-more">查看更多</text>
       </view>
     </view>
@@ -62,10 +30,10 @@
   <view class="footer" slot="footer">
     <view class="selected-price">
       <view>
-        已选<text style="color:{{comColor}};">￥{{cartData.totalPrice || 0.00}}</text>
+        已选<text style="color:{{comColor}};">￥{{checkedGoodsPrice || 0.00}}</text>
       </view>
-      <view>
-        购买1元立赠
+      <view wx:if="{{changeDoc}}">
+        {{changeDoc}}
       </view>
     </view>
     <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">查看已选商品</view>
