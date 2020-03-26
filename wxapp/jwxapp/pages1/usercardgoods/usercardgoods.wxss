@@ -10,6 +10,10 @@ page{
     bottom: 0;
     display: flex;
   }
+  .footer .left{
+    display: flex;
+    flex-direction: column;
+  }
   .footer > view{
     flex: 1;
     line-height: 100rpx;
@@ -49,6 +53,16 @@ page{
     background: #fcf9dd;
     display: flex;
   }
-  .rule > text:first-of-type{
-    flex: 1;
+  .rule .content{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
+  .rule .image{
+    width: 28rpx;
+    height: 28rpx;
+    position: relative;
+    top: 4rpx;
+    margin-right: 10rpx;
+  }
+  

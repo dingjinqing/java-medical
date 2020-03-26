@@ -1993,33 +1993,25 @@ export default {
 
     // 订单配置项切换
     orderHabdler (value) {
-      if (value === '1') {
-        this.rightData.forEach(item => {
-          if (item.module_name === 'order') {
-            item.content.forEach(val => {
+      this.rightData.forEach(item => {
+        if (item.module_name === 'order') {
+          item.content.forEach(val => {
+            if (value === '1') {
               if (val.icon_name === 'wait_comment') {
                 val.is_show = '1'
-              }
-              if (val.icon_name === 'refund') {
+              } else if (val.icon_name === 'refund') {
                 val.is_show = '0'
               }
-            })
-          }
-        })
-      } else if (value === '2') {
-        this.rightData.forEach(item => {
-          if (item.module_name === 'order') {
-            item.content.forEach(val => {
-              if (val.icon_name === 'wait_comment') {
-                val.is_show = '0'
-              }
+            } else {
               if (val.icon_name === 'refund') {
                 val.is_show = '1'
+              } else if (val.icon_name === 'wait_comment') {
+                val.is_show = '0'
               }
-            })
-          }
-        })
-      }
+            }
+          })
+        }
+      })
     }
   }
 }
