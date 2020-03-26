@@ -187,7 +187,7 @@ public class MemberDaoService extends ShopBaseService {
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
 		Field<?>  inviteMobile = db().select(b.MOBILE).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_MOBILE);
-		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
+		return db().select(a.USER_ID,a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
 				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName,inviteMobile, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,

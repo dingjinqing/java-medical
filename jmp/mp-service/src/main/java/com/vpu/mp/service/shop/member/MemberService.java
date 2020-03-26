@@ -1,39 +1,22 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.records.*;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.excel.ExcelFactory;
-import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
-import com.vpu.mp.service.foundation.excel.ExcelWriter;
-import com.vpu.mp.service.foundation.exception.MpException;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
-import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
-import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
-import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
-import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.member.*;
-import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
-import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
-import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
-import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
-import com.vpu.mp.service.saas.area.AreaSelectService;
-import com.vpu.mp.service.shop.distribution.DistributorListService;
-import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
-import com.vpu.mp.service.shop.member.dao.MemberDaoService;
-import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.store.store.StoreService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -41,13 +24,76 @@ import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.*;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
+import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
+import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
+import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
+import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
+import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
+import com.vpu.mp.service.saas.area.AreaSelectService;
+import com.vpu.mp.service.shop.distribution.DistributorListService;
+import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
+import com.vpu.mp.service.shop.member.dao.MemberDaoService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 
 
 /**
@@ -102,6 +148,8 @@ public class MemberService extends ShopBaseService {
 	public UserImportService userImportService;
 	@Autowired
 	public UserExportService userExpSvc;
+	@Autowired
+	public RecordAdminActionService recordAdminActionSvc;
 	/**
 	 * 导出会员
 	 */
@@ -321,14 +369,91 @@ public class MemberService extends ShopBaseService {
 	}
 
 	/**
-	 * 批量设置用户的登录状态 ： 禁止登录-恢复登录
+	 * 	批量设置用户的登录状态 ： 禁止登录-恢复登录
 	 */
 	public void changeLoginStatus(MememberLoginStatusParam param) {
+		logger().info("设置用户登录权限");
+		final List<Integer> ids;
+		if(param.getUserIdList() == null || param.getUserIdList().size()==0) {
+			return;
+		}
+		boolean allUserFlag = MememberLoginStatusParam.ALL_USER_ID.equals(param.getUserIdList().get(0));
+		if(allUserFlag && param.getSearchCnt() != null) {
+			ids = getAllUserIdBySeachCond(param.getSearchCnt());
+		}else {
+			ids = param.getUserIdList();
+		}
+		
+		transaction(()->{
+			int num = updateUserLoginPermission(param, ids);
+			if(num > 0) {
+				addLoginOptAdminRec(param, ids, num);
+			}
+		});
+	}
 
-		int result = db().update(USER).set(USER.DEL_FLAG, param.getIsDelete())
-				.where(USER.USER_ID.in(param.getUserIdList())).execute();
 
-		logger().info("更新  " + result + " 条数据");
+	/**
+	 * 	更新用户登录权限
+	 * @return num 更新权限的用户数
+	 */
+	private int updateUserLoginPermission(MememberLoginStatusParam param, final List<Integer> ids) {
+		logger().info("更新用户登录权限");
+		UpdateSetMoreStep<UserRecord> setSql = db().update(USER).set(USER.DEL_FLAG,(byte)param.getPermission().ordinal());
+		int num = 0;
+		if(MememberLoginStatusParam.ALL_USER_ID.equals(ids.get(0))) {
+			logger().info("更新系统中筛选出来的用户的状态");
+			num = setSql.where(USER.USER_ID.in(ids))
+						.and(USER.DEL_FLAG.notEqual((byte)param.getPermission().ordinal()))
+						.execute();
+		}else {
+			logger().info("更新指定用户登录状态");
+			num = setSql.where(USER.USER_ID.in(ids)).execute();
+		}
+		return num;
+	}
+
+
+	/**
+	 * 	记录admin管理员操作用户登录权限的记录
+	 */
+	private void addLoginOptAdminRec(MememberLoginStatusParam param, final List<Integer> ids, int num) {
+		logger().info("记录admin的改变用户登录权限的日志");
+		boolean flag = MememberLoginStatusParam.LoginPermission.on.equals(param.getPermission());
+		if(num == 1) {
+			MemberBasicInfoVo user = getMemberInfo(ids.get(0));
+			if(flag) {
+				logger().info("允许用户"+user.getUsername()+"登录");
+				recordAdminActionSvc.insertRecord(Collections.singletonList(RecordContentTemplate.MEMBER_LOGIN_ON.code),
+							String.valueOf(user.getUserId()),user.getUsername());
+			}else {
+				logger().info("禁止用户"+user.getUsername()+"登录");
+				recordAdminActionSvc.insertRecord(Collections.singletonList(RecordContentTemplate.MEMBER_LOGIN_OFF.code),
+						String.valueOf(user.getUserId()),user.getUsername());
+			}
+		}else {
+			Integer code;
+			if(flag) {
+				logger().info("批量允许"+num+"名用户登录");
+				code = RecordContentTemplate.MEMBER_BATCH_LOGIN_ON.code;
+			}else {
+				logger().info("批量禁止"+num+"名用户登录");
+				code = RecordContentTemplate.MEMBER_BATCH_LOGIN_OFF.code;
+			}
+			recordAdminActionSvc.insertRecord(Collections.singletonList(code), String.valueOf(num));
+		}
+	}
+
+
+	/**
+	 * 	通过筛选条件获得用户Id列表
+	 * @param param
+	 * @return List<Integer>用户ID列表
+	 */
+	private List<Integer> getAllUserIdBySeachCond(MemberPageListParam searchParam) {
+		logger().info("处理筛选出全部用户IDs");
+		PageResult<MemberInfoVo> memberList = this.memberDao.getMemberList(searchParam);
+		return memberList.dataList.stream().map(r->r.getUserId()).collect(Collectors.toList());
 	}
 
 	/**
