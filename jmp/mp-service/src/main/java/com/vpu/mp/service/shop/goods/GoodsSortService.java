@@ -278,14 +278,12 @@ public class GoodsSortService extends ShopBaseService {
                         .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
                 }
             }
+            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
             // 通知商品清楚这些绑定
             saas().getShopApp(getShopId()).goods.clearSortId(sortIds);
         });
-        try {
-            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+
     }
 
     public GoodsNormalSortDetailVo getNormalSort(Integer sortId){
