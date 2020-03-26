@@ -29,7 +29,7 @@
             <td
               v-if="nowIndex===8"
               class="link"
-            >{{item.expire_type===1?'自领取开始':''}}{{item.expire_type===1&&item.dateType===2?`${item.receiveDay}月`:''}}{{item.expire_type===1&&item.dateType===1?`${item.receiveDay}周`:''}}{{item.expire_type===1&&item.dateType===0?`${item.receiveDay}日`:''}}{{item.expire_type===1?'内有效':item.expire_type===0?(item.startTime+$t('selectLinks.to')+item.endTime):'永久有效'}}</td>
+            >{{item.expireType===1?'自领取开始':''}}{{item.expireType===1&&item.dateType===2?`${item.receiveDay}月`:''}}{{item.expireType===1&&item.dateType===1?`${item.receiveDay}周`:''}}{{item.expireType===1&&item.dateType===0?`${item.receiveDay}日`:''}}{{item.expireType===1?'内有效':item.expireType===0?(item.startTime+$t('selectLinks.to')+item.endTime):'永久有效'}}</td>
             <td class="tb_decorate_a">
               {{path}}{{item.id}}
             </td>
