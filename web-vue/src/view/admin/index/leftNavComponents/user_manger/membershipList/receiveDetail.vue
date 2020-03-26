@@ -87,15 +87,16 @@
         <table width='100%'>
           <thead>
             <tr>
-              <td>{{$t('membershipIntroduction.Collectiontime')}}</td>
-              <td>{{$t('membershipIntroduction.CardNumber')}}</td>
-              <td>{{$t('membershipIntroduction.Member')}}</td>
-              <td>{{$t('membershipIntroduction.membershipCard')}}|{{$t('membershipIntroduction.type')}}</td>
-              <td>{{$t('membershipIntroduction.state')}}</td>
-              <td>{{$t('membershipIntroduction.Balanceyuan')}}</td>
-              <td>{{$t('membershipIntroduction.servicestimes')}}</td>
-              <td>{{$t('membershipIntroduction.ExchangeFrequency')}}</td>
-              <td>{{$t('membershipIntroduction.operation')}}</td>
+              <td >{{$t('membershipIntroduction.Collectiontime')}}</td>
+              <td >{{$t('membershipIntroduction.CardNumber')}}</td>
+              <td >{{$t('membershipIntroduction.Member')}}</td>
+              <td >{{$t('membershipIntroduction.membershipCard')}}|{{$t('membershipIntroduction.type')}}</td>
+              <td >{{$t('membershipIntroduction.state')}}</td>
+              <td >{{$t('membershipIntroduction.Balanceyuan')}}</td>
+              <td >{{$t('membershipIntroduction.servicestimes')}}</td>
+              <td >{{$t('membershipIntroduction.ExchangeFrequency')}}</td>
+              <td >{{$t('membershipIntroduction.freeshiptimes')}}</td>
+              <td >{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
           <tbody v-if="tbodyFlag">
@@ -159,6 +160,9 @@
                   <img v-else style="width: 10px;">
                 </div>
 
+              </td>
+              <td>
+                {{item.freeShip.desc}}
               </td>
               <td class="link">
                 <div class="operateDiv">
@@ -338,6 +342,8 @@ export default {
               if (item.expireTime && Date.now() > Date.parse(item.expireTime)) {
                 item.expired = true
               }
+
+              this.showFreeship(item)
             })
             console.log(this.trList)
             // 显示数据
@@ -440,6 +446,16 @@ export default {
           activeName: flag
         }
       })
+    },
+    showFreeship (item) {
+      if (Number(item.cardType) === 1 || item.freeShip.type === -1) {
+        item.freeShip.desc = '-'
+      } else if (item.freeShip.type === 0) {
+        item.freeShip.desc = '不限制'
+      } else {
+        item.freeShip.desc = `${item.freeShip.num}/${item.freeShip.remainNum}`
+      }
+      console.log(item.freeShip.desc)
     }
   }
 }

@@ -781,7 +781,7 @@ public class OrderReadService extends ShopBaseService {
 	}
 
     /**
-     * 小程序端点击售后中心展示数据(曾经退过)
+     * 小程序端订单列表/详情点击售后中心展示数据(曾经退过)
      * @param param
      */
     public AfterSaleServiceVo mpOrderReturnList(OrderParam param) throws MpException {
@@ -826,6 +826,28 @@ public class OrderReadService extends ShopBaseService {
                 vo.getReturnOrderlist().add(returnOrderListMp);
         });
         return vo;
+    }
+
+    /**
+     * 小程序售后中心
+     * @param param
+     * @return
+     */
+    public PageResult<ReturnOrderListMp> mpReturnList(OrderListParam param) {
+        PageResult<ReturnOrderListMp> result = returnOrder.getPageList(param);
+        List<Integer> collect;
+        List<ReturnOrderListMp> dataList = result.dataList;
+        if(dataList != null && dataList.size() > 0 ) {
+            collect = dataList.stream().map(ReturnOrderListMp::getRetId).collect(Collectors.toList());
+        }else {
+            return result;
+        }
+        //获取订单再分组
+            Map<Integer, List<OrderReturnGoodsVo>> goods = returnOrderGoods.getByRetIds(collect.toArray(new Integer[]{})).intoGroups(returnOrderGoods.TABLE.RET_ID,OrderReturnGoodsVo.class);
+        for (ReturnOrderListMp order : dataList) {
+            order.setGoods(goods.get(order.getRetId()));
+        }
+        return result;
     }
 
     /**

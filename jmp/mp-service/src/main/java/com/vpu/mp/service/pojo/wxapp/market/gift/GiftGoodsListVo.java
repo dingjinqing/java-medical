@@ -38,6 +38,7 @@ public class GiftGoodsListVo {
      * 购物车已选商品总价
      */
     private BigDecimal checkedGoodsPrice;
+    private Integer cartGoodsNumber;
 
     /**
      * 基础配置
@@ -88,6 +89,9 @@ public class GiftGoodsListVo {
          * 单规格商品的规格ID
          */
         private Integer prdId;
+
+        private Integer goodsSaleNum;
+        private Integer commentNum;
 
 
         //活动数据

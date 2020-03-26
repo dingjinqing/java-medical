@@ -1138,7 +1138,7 @@ public class GoodsCommentService extends ShopBaseService {
      * @param type 筛选条件
      * @return 评价详情
      */
-    public List<MPGoodsCommentVo> getGoodsComment(Integer goodsId,Byte commentFlag,Byte commentSee,Byte type){
+    public List<MPGoodsCommentVo> getGoodsComment(Integer goodsId,Byte type,Byte commentFlag,Byte commentSee){
         SelectConditionStep<? extends Record> sql = db().select(COMMENT_GOODS.ID,COMMENT_GOODS.COMMSTAR,
             COMMENT_GOODS.ANONYMOUSFLAG,COMMENT_GOODS.COMM_NOTE,COMMENT_GOODS.COMM_IMG,
             ORDER_GOODS.GOODS_ATTR,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,
@@ -1165,11 +1165,11 @@ public class GoodsCommentService extends ShopBaseService {
         goodsType.add((byte)5);
         goodsType.add((byte)4);
         List<Byte> midType = new ArrayList<>();
-        goodsType.add((byte)3);
-        goodsType.add((byte)2);
+        midType.add((byte)3);
+        midType.add((byte)2);
         List<Byte> badType = new ArrayList<>();
-        goodsType.add((byte)1);
-        goodsType.add((byte)0);
+        badType.add((byte)1);
+        badType.add((byte)0);
         if (GOOD_TYPE.equals(type)){
             sql.and(COMMENT_GOODS.COMMSTAR.in(goodsType));
         }else if (MID_TYPE.equals(type)){

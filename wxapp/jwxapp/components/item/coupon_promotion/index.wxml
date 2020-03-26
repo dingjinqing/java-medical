@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
-<view class="flex_outside_box">
+<view class="flex_outside_box" wx:if="{{goodsGifts.length > 0 || couponList.length>0}}">
   <view class="flex_box" wx:if="{{goodsGifts.length > 0}}">
     <view class="item_left align-top">赠品</view>
     <view class="item_middle" wx:if="{{goodsGifts.length === 1}}">

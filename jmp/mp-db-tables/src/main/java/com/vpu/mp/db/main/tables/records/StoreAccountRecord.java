@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreAccountRecord extends UpdatableRecordImpl<StoreAccountRecord> implements Record12<Integer, Integer, Integer, String, String, Timestamp, Byte, Byte, Byte, String, String, Timestamp> {
 
-    private static final long serialVersionUID = -1860292010;
+    private static final long serialVersionUID = -131591850;
 
     /**
      * Setter for <code>mini_main.b2c_store_account.account_id</code>. 门店账号ID
@@ -75,14 +75,14 @@ public class StoreAccountRecord extends UpdatableRecordImpl<StoreAccountRecord> 
     }
 
     /**
-     * Setter for <code>mini_main.b2c_store_account.mobile</code>.
+     * Setter for <code>mini_main.b2c_store_account.mobile</code>. 手机号
      */
     public void setMobile(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_store_account.mobile</code>.
+     * Getter for <code>mini_main.b2c_store_account.mobile</code>. 手机号
      */
     public String getMobile() {
         return (String) get(3);
@@ -131,14 +131,14 @@ public class StoreAccountRecord extends UpdatableRecordImpl<StoreAccountRecord> 
     }
 
     /**
-     * Setter for <code>mini_main.b2c_store_account.status</code>. 账户状态0:启用，1：禁用
+     * Setter for <code>mini_main.b2c_store_account.status</code>. 账户状态0:禁用，1：启用
      */
     public void setStatus(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_main.b2c_store_account.status</code>. 账户状态0:启用，1：禁用
+     * Getter for <code>mini_main.b2c_store_account.status</code>. 账户状态0:禁用，1：启用
      */
     public Byte getStatus() {
         return (Byte) get(7);
