@@ -50,27 +50,20 @@ public final class RedisLockAspect extends ShopBaseService {
     private ThreadLocal<List<String>> currentKeys = new ThreadLocal<>();
 
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
-    public void around(ProceedingJoinPoint joinPoint) throws MpException {
+    public Object around(ProceedingJoinPoint joinPoint) throws MpException {
         logger().info("redis环绕批量锁start");
-        //keys
-        List<String> keys = null;
-        //开始时间
-        long nano = System.nanoTime();
-        //获取签名
-        Signature signature = joinPoint.getSignature();
-        Object[] args = joinPoint.getArgs();
-        //获取方法签名
-        MethodSignature methodSignature = (MethodSignature) signature;
         addLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法start");
+        Object proceed;
         try {
-            joinPoint.proceed();
+            proceed = joinPoint.proceed();
         } catch (Throwable throwable) {
             logger().error("批量锁执行joinPoint.proceed()异常", throwable);
             throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
         }
+        releaseLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法end");
-
+        return proceed;
     }
 
     /**
@@ -247,7 +240,7 @@ public final class RedisLockAspect extends ShopBaseService {
                 logger().info("批量锁获取成功，执行后续方法");
                 break;
             }
-        } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
+        } while (System.nanoTime() - nano < redisLockAnnotation.maxWait() * 1000000);
         if (fail.size() != keys.size()) {
             //释放
             releaseLocks(fail, currentValue.get());

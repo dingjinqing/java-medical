@@ -1145,6 +1145,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 logger().info("更新成功{}",order.getOrderSn());
             }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
                 logger().info("下单时待付款且配置为下单减库存调用更新库存方法");
+                flag = true;
                 //加锁
                 atomicOperation.addLock(orderBo.getOrderGoodsBo());
                 //下单减库存
@@ -1154,9 +1155,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 logger().info("更新成功{}",order.getOrderSn());
             }
         } finally {
-            //释放锁
-            logger().info("释放锁{}",order.getOrderSn());
-            atomicOperation.releaseLocks();
+            if(flag) {
+                //释放锁
+                logger().info("释放锁{}",order.getOrderSn());
+                atomicOperation.releaseLocks();
+            }
         }
     }
 }
