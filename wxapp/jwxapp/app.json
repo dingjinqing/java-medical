@@ -100,7 +100,8 @@
         "form/form",
         "formsuccess/formsuccess",
         "maingiftlist/maingiftlist",
-        "goodscomment/goodscomment"
+        "goodscomment/goodscomment",
+        "usercardgoods/usercardgoods"
       ]
     }
   ],

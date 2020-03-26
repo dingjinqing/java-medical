@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.refund;
 
 import com.vpu.mp.db.shop.tables.ReturnOrder;
+import com.vpu.mp.db.shop.tables.ReturnOrderGoods;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -40,6 +41,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
+import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
 
 /**
  * Table:return_order
@@ -50,6 +52,7 @@ import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
 public class ReturnOrderService extends ShopBaseService{
 
 	public final ReturnOrder TABLE = RETURN_ORDER;
+    public final ReturnOrderGoods SUB_TABLE = RETURN_ORDER_GOODS;
 
 	/**
 	 * 	通过订单[]查询其下退货订单信息
@@ -571,6 +574,26 @@ public class ReturnOrderService extends ShopBaseService{
 						OrderConstant.REFUND_STATUS_FINISH)))
 				.fetchOne();
     	return fetchOne.value1() == null ? BigDecimal.ZERO : fetchOne.value1();
+    }
+
+    /**
+     * 条件查询退款订单数量
+     * @param userId
+     * @param search
+     * @return
+     */
+    public int getReturnOrderCount(Integer userId, String search) {
+        SelectJoinStep<Record1<Integer>> select = db().select(DSL.countDistinct(TABLE.RETURN_ORDER_SN)).from(TABLE);
+        if(userId != null) {
+            select.where(TABLE.USER_ID.eq(userId));
+        }
+        if(!StringUtils.isBlank(search)) {
+            select.innerJoin(SUB_TABLE).on(TABLE.RET_ID.eq(SUB_TABLE.RET_ID)).
+                where(TABLE.RETURN_ORDER_SN.like(search).
+                    or(TABLE.ORDER_SN.like(search)).
+                    or(SUB_TABLE.GOODS_NAME.like(search)));
+        }
+        return select.fetchOne(0, int.class);
     }
     
 }

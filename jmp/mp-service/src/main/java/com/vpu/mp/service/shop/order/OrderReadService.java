@@ -514,7 +514,7 @@ public class OrderReadService extends ShopBaseService {
         OrderCenter result = new OrderCenter();
         PageResult<OrderListMpVo> orders = mpOrderInfo.getPageList(param);
         result.setOrders(orders);
-        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+        Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param.getSearch(), false, 0);
         result.setOrderStatuCount(orderStatusNum);
         if(CollectionUtils.isEmpty(orders.dataList)) {
 
@@ -728,7 +728,7 @@ public class OrderReadService extends ShopBaseService {
 			return 0;
 		}
 		Integer days = trade.getExtendReceiveDays();
-		return days.intValue();
+		return days;
 	}
 
 	/**
@@ -771,19 +771,20 @@ public class OrderReadService extends ShopBaseService {
 	}
 
 	/**
-	 * 统计订单各个状态的数量
-	 * @param param
+	 * 统计订单各个状态的数量(个人中心用)
+	 * @param userId
 	 * @return
 	 */
-	public Map<Byte, Integer> statistic(OrderListParam param) {
-		return mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param, false);
+	public Map<Byte, Integer> statistic(Integer userId) {
+        int returnCount = returnOrder.getReturnOrderCount(userId, null);
+        return mpOrderInfo.getOrderStatusNum(userId, null, false, returnCount);
 	}
 
     /**
      * 小程序端点击售后中心展示数据(曾经退过)
      * @param param
      */
-    public AfterSaleServiceVo mpReturnList(OrderParam param) throws MpException {
+    public AfterSaleServiceVo mpOrderReturnList(OrderParam param) throws MpException {
         AfterSaleServiceVo vo = new AfterSaleServiceVo();
         OrderInfoRecord order = orderInfo.getOrderByOrderSn(param.getOrderSn());
         vo.setOrderSn(order.getOrderSn());

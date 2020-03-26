@@ -151,12 +151,13 @@ public class WxAppOrderController extends WxAppBaseController{
 	}
 
 	/**
-	 * 统计数量
+	 * 统计数量（废弃）
 	 */
+	@Deprecated
 	@PostMapping("/statistic")
 	public JsonResult statistic(@RequestBody @Valid OrderListParam param) {
 		param.setWxUserInfo(wxAppAuth.user());
-		return success(shop().readOrder.statistic(param));
+		return success(shop().readOrder.statistic(wxAppAuth.user().getUserId()));
 	}
 
     /**
@@ -166,7 +167,7 @@ public class WxAppOrderController extends WxAppBaseController{
     @PostMapping("/refund/list")
 	public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
         try {
-            return success(shop().readOrder.mpReturnList(param));
+            return success(shop().readOrder.mpOrderReturnList(param));
         } catch (MpException e) {
             return fail(e.getErrorCode(), e.getCodeParam());
         }
