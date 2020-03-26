@@ -49,10 +49,15 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**商品优惠券码*/
     private String couponSn;
 
-    /**排序字段*/
+    /**用户指定的排序字段*/
     private SortItemEnum sortItem;
-    /**排序方向*/
+    /**用户指定的排序方向*/
     private SortDirectionEnum sortDirection;
+
+    /**店铺默认的排序字段*/
+    private SortItemEnum shopSortItem;
+    /**店铺默认的排序方向*/
+    private SortDirectionEnum shopSortDirection;
 
     /**当页面从商品分组跳转至搜索页面时此字段可能会被赋予指定值*/
     private List<Integer> goodsIds;
