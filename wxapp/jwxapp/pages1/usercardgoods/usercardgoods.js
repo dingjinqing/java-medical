@@ -19,12 +19,11 @@ global.wxPage({
       page_name: '兑换商品'
     })
     let { ruleId } = options
-    scene = options.scene
     this.setData({
       ruleId
     })
     this.requestGoodsList()
-    this.requestCartGoodsList()
+    // this.requestCartGoodsList()
   },
 
 
