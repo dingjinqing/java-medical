@@ -1999,16 +1999,14 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             db().batchUpdate(goodsRecords.values()).execute();
             db().batchUpdate(prdRecordsMap.values()).execute();
-
-            try {
-                if (esUtilSearchService.esState()) {
-                    esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
-
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
