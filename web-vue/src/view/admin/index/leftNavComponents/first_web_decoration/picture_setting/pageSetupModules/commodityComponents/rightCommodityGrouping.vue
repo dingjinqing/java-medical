@@ -611,6 +611,7 @@ export default {
     // 调起弹窗
     handleToCallDialog (flag) {
       console.log(flag)
+      if (flag === '') flag = 0
       switch (flag) {
         case 0:
           this.classificationDialogVisible = true
@@ -709,6 +710,8 @@ export default {
       this.clickEditBtn = true
       this.editIndex = index
       let flag = this.linkageData.sort_group_arr[index].sort_type
+      console.log(this.linkageData.sort_group_arr[index])
+      this.backDataArr.push(this.linkageData.sort_group_arr[index].sort_id)
       this.handleToCallDialog(flag, true)
     },
     handleToClickTopIcon (flag, index) { // 顶部icon点击统一处理
