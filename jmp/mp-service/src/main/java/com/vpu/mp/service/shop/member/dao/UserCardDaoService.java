@@ -249,10 +249,10 @@ public class UserCardDaoService extends ShopBaseService{
 	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
 		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
 							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+							.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
 									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
-									.or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
 								)
 							.and(
 									(MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -277,6 +277,7 @@ public class UserCardDaoService extends ShopBaseService{
         return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -521,9 +522,9 @@ public class UserCardDaoService extends ShopBaseService{
 	public OrderMemberVo getValidByCardNo(String cardNo){
         ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime())).or(USER_CARD.EXPIRE_TIME.isNull())
             )
             .and(
                 (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -562,10 +563,11 @@ public class UserCardDaoService extends ShopBaseService{
     public OrderMemberVo getOrderGradeCard(Integer userId){
         OrderMemberVo card = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+                    .or(USER_CARD.EXPIRE_TIME.isNull())
             )
             .and(
                 (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
