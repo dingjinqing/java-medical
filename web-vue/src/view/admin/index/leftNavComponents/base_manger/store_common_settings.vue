@@ -301,6 +301,42 @@
             </el-select>
           </div>
         </li>
+        <!-- 商品重量配置项设置 -->
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>商品重量配置项设置</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.goods_weight_cfg"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <span>{{info.goods_weight_cfg === 1?'已开启':'已关闭'}}</span>
+            <span class="tips">开启后，在后台新建/编辑商品信息时需要填写商品重量</span>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>商品条码配置项设置</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.need_prd_codes"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            ></el-switch>
+            <span>{{info.need_prd_codes === 1? '已开启': '已关闭'}}</span>
+            <span class="tips">开启后，在后台新建/编辑商品信息时可以填写商品条码</span>
+          </div>
+        </li>
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
@@ -491,6 +527,8 @@ export default {
         custom_service: 0, // 客服入口开关-商品详情页是否展示
         return_service: 1, // 客服入口开关-退/换货中心是否展示
         default_sort: 0, // 商品默认平台分类id
+        goods_weight_cfg: 1, // 商品重量配置项
+        need_prd_codes: 1, // 商品条码配置项
         share_config: {
           share_action: 0,
           share_doc: '',
