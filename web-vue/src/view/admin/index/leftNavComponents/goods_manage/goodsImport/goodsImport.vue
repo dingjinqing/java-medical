@@ -2,32 +2,32 @@
   <div class="container goods-import-page">
     <div class="top">
       <div class="desc-wrap clearfix">
-        <p class="desc">说明：商品导入一般需要几到十几分钟，完成时会提示和自动刷新页面，并新增导入操作记录，导入完成之前请勿关闭页面或在此页面进行其他操作，以免造成数据错误</p>
+        <p class="desc">{{$t('goodsImport.importExplanation')}}</p>
         <el-button
           type="primary"
           size="small"
           @click="importGoodsDialogVisible = !importGoodsDialogVisible"
-        >商品导入</el-button>
+        >{{$t('goodsImport.productImport')}}</el-button>
       </div>
       <ul class="filter-ul">
         <li>
-          <label for="">批次号：</label>
+          <label for="">{{$t('goodsImport.batchNum')}}：</label>
           <el-input
             size="small"
             style="width:150px;"
-            placeholder="请输入批次号"
+            :placeholder="$t('goodsImport.operationTime')"
             v-model="queryParams.batchId"
           ></el-input>
         </li>
         <li>
-          <label for="">操作时间：</label>
+          <label for="">{{$t('goodsImport.operationTime')}}：</label>
           <el-date-picker
             v-model="datepicker"
             type="daterange"
             size="small"
-            range-separator="至"
-            start-placeholder="请选择时间"
-            end-placeholder="请选择时间"
+            :range-separator="$t('goodsImport.to')"
+            :start-placeholder="$t('goodsImport.psTime')"
+            :end-placeholder="$t('goodsImport.psTime')"
           ></el-date-picker>
         </li>
         <li>
@@ -35,7 +35,7 @@
             size="small"
             type="primary"
             @click="initDataList"
-          >筛选</el-button>
+          >{{$t('goodsImport.filter')}}</el-button>
         </li>
       </ul>
     </div>
@@ -47,30 +47,30 @@
           border
         >
           <el-table-column
-            label="批次号"
+            :label="$t('goodsImport.batchNum')"
             align="center"
             prop="id"
             width="150px"
           ></el-table-column>
           <el-table-column
-            label="操作时间"
+            :label="$t('goodsImport.operationTime')"
             align="center"
             prop="createTime"
           ></el-table-column>
           <el-table-column
-            label="导入类型"
+            :label="$t('goodsImport.importType')"
             align="center"
             prop="isUpdate"
             :formatter="formatType"
             width="150px"
           ></el-table-column>
           <el-table-column
-            label="成功数量(sku)"
+            :label="$t('goodsImport.numOfSuccess')+'(sku)'"
             align="center"
             prop="successNum"
           ></el-table-column>
           <el-table-column
-            label="失败数量(sku)"
+            :label="$t('goodsImport.numOfFail')+'(sku)'"
             align="center"
           >
             <template slot-scope="{row}">
@@ -78,7 +78,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('goodsImport.operating')"
             align="center"
           >
             <template slot-scope="{row}">
@@ -87,12 +87,12 @@
                   <el-button
                     type="text"
                     @click="downFailData(row)"
-                  >下载失败数据</el-button>
+                  >{{$t('goodsImport.downloadFail')}}</el-button>
                 </div>
                 <div><a
                     :href="row.importFilePath"
                     download
-                  >下载源文件</a></div>
+                  >{{$t('goodsImport.downloadSource')}}</a></div>
               </div>
             </template>
           </el-table-column>
@@ -109,27 +109,27 @@
       :visible.sync="importGoodsDialogVisible"
     >
       <div class="dialog-content">
-        <p class="import-popup-title">第一步：模板下载</p>
+        <p class="import-popup-title">{{$t('goodsImport.setp1')}}</p>
         <div class="card-box">
           <div>
-            <span>下载模板：</span>
+            <span>{{$t('goodsImport.downloadTemp')}}：</span>
             <el-button
               type="text"
               @click="downloadExportModule"
-            >商品导入文件模板</el-button>
+            >{{$t('goodsImport.fileTemp')}}</el-button>
           </div>
         </div>
-        <p class="import-popup-title">第二部：选择类型</p>
+        <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
         <div class="card-box">
           <el-radio-group v-model="uploadParams.isUpdate">
-            <el-radio :label="false">新增</el-radio>
-            <el-radio :label="true">更新</el-radio>
+            <el-radio :label="false">{{$t('goodsImport.new')}}</el-radio>
+            <el-radio :label="true">{{$t('goodsImport.update')}}</el-radio>
           </el-radio-group>
-          <p>说明：默认为新增，若选择新增对商家编码重复的商品不做更新操作；若选择更新即可更新商品也可新增商品</p>
+          <p>{{$t('goodsImport.updateDesc')}}</p>
         </div>
-        <p class="import-popup-title">第三部：数据导入</p>
+        <p class="import-popup-title">{{$t('goodsImport.setp3')}}</p>
         <div class="card-box">
-          <span>上传文件：</span>
+          <span>{{$t('goodsImport.uploadFile')}}：</span>
           <div style="display:inline-block;">
             <el-input
               size="small"
@@ -153,10 +153,10 @@
               <el-button
                 slot="trigger"
                 size="small"
-              >浏览...</el-button>
+              >{{$t('goodsImport.browse')}}...</el-button>
             </el-upload>
           </div>
-          <p>导入规则：文件当前仅支持excel格式；每次导入商品条数请不要超过<span class="red">2000</span>条</p>
+          <p>{{$t('goodsImport.importRules')}}<span class="red">2000</span>条</p>
         </div>
       </div>
       <div
@@ -167,7 +167,7 @@
           type="primary"
           size="small"
           @click="uploadRequest"
-        >导入</el-button>
+        >{{$t('goodsImport.import')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -235,9 +235,9 @@ export default {
     },
     formatType (row, column, cellValue, index) {
       if (cellValue === 0) {
-        return '新增'
+        return this.$t('goodsImport.new')
       } else if (cellValue === 1) {
-        return '更新'
+        return this.$t('goodsImport.update')
       }
     },
     // 下载失败数据
@@ -263,7 +263,7 @@ export default {
     },
     uploadRequest () {
       if (this.fileList.length <= 0) {
-        this.$message.warning('请选择要上传的文件')
+        this.$message.warning(this.$t('goodsImport.psFile'))
         return false
       }
       this.$refs.upload.submit()
@@ -272,7 +272,7 @@ export default {
       console.log('beforeUpload...')
       let isXls = /\.(xls|xlsx|csv)$/.test(file.name)
       if (!isXls) {
-        this.$message.warning('上传文件只支持xls、xlsx格式！')
+        this.$message.warning(this.$t('goodsImport.support'))
         this.uploadFile = {}
         this.fileList = []
         return false
@@ -293,7 +293,7 @@ export default {
       uploadGoodsApi(formdata).then(res => {
         console.log('res:', res)
         if (res.error === 0) {
-          that.$message.success('上传成功')
+          that.$message.success(that.$t('goodsImport.uploadSuccess'))
           that.importGoodsDialogVisible = false
         } else {
           that.$message.error(res.message)
