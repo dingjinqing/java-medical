@@ -166,6 +166,7 @@
                     v-model="param.rules.tagId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeTag"
                   >
                     <el-option
                       v-for="item in tagsList"
@@ -186,6 +187,7 @@
                     v-model="param.rules.cardId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeCard"
                   >
                     <el-option
                       v-for="item in cardList"
@@ -496,7 +498,7 @@ export default {
     }
     // 会员标签
     var validattagId = (rule, value, callback) => {
-      if (!value && this.contains(2)) {
+      if ((!value || value.length === 0) && this.contains(2)) {
         callback(new Error('请选择会员标签'))
       } else {
         callback()
@@ -504,7 +506,7 @@ export default {
     }
     // 会员卡
     var validatcardId = (rule, value, callback) => {
-      if (!value && this.contains(3)) {
+      if ((!value || value.length === 0) && this.contains(3)) {
         callback(new Error('请选择会员卡'))
       } else {
         callback()
@@ -764,17 +766,29 @@ export default {
           this.param.rules = data.rules
           this.param.explain = data.explain
           this.param.goodsIds = data.goodsIds
-          // 过滤失效会员卡
-          var arr = []
-          if (this.param.rules.cardId) {
-            this.cardList.forEach(item => {
-              this.param.rules.cardId.forEach(val => {
+          // 过滤失效会员标签
+          var arrTag = []
+          if (this.tagsList.length > 0 && this.param.rules.tagId) {
+            this.tagsList.forEach(item => {
+              this.param.rules.tagId.forEach(val => {
                 if (item.id === val) {
-                  arr.push(val)
+                  arrTag.push(val)
                 }
               })
             })
-            this.param.rules.cardId = arr
+            this.param.rules.tagId = arrTag
+          }
+          // 过滤失效会员卡
+          var arrCard = []
+          if (this.cardList.length > 0 && this.param.rules.cardId) {
+            this.cardList.forEach(item => {
+              this.param.rules.cardId.forEach(val => {
+                if (item.id === val) {
+                  arrCard.push(val)
+                }
+              })
+            })
+            this.param.rules.cardId = arrCard
           }
 
           this.loadRules(res.content)
@@ -958,6 +972,15 @@ export default {
             break
         }
       })
+    },
+
+    // 会员卡移除校验
+    removeCard () {
+      this.$refs['param'].validateField('rules.cardId')
+    },
+    // 会员标签移除校验
+    removeTag () {
+      this.$refs['param'].validateField('rules.tagId')
     }
   },
   watch: {
