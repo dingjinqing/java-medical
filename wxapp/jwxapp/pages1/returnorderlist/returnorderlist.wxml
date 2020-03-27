@@ -13,7 +13,7 @@
     </view>
   </view>
   <view class="content">
-    <block wx:for="{{returnOrderList}}" :key="index">
+    <block wx:for="{{returnOrderList}}" wx:key="index">
       <view class="order-no">
         {{i18n.$t(localePack,"page1.afterSale.afterSaleNum")}}：{{item.returnOrderSn}}
       </view>
@@ -110,10 +110,10 @@
               <text>{{i18n.$t(localePack,"page1.afterSale.applyRejectTime")}}：</text>
               {{item.finishTime}}
             </view>
-            <block wx:if="{{item.refundRefuseReason != null}}">
+            <block wx:if="{{item.applyNotPassReason != null}}">
               <view class='order-item-title'>
                 <text>{{i18n.$t(localePack,"page1.afterSale.reasonOfRefusal")}}：</text>
-                {{item.refundRefuseReason}}
+                {{item.applyNotPassReason}}
               </view>
             </block>
             <block wx:else>
