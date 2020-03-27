@@ -10,10 +10,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.HttpsUtils;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.RegexUtil;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.image.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +28,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.Part;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -439,12 +433,15 @@ public class ImageService extends ShopBaseService implements ImageDefault {
     }
 
 
+    public DownloadImageBo downloadImgAndUpload(String url) throws IOException {
+        return downloadImgAndUpload(url,null,null);
+    }
     /**
      * 下载外链图片并上传至upYun
      * @param url
      * @throws IOException
      */
-    public DownloadImageBo downloadImgAndUpload(String url) throws IOException {
+    public DownloadImageBo downloadImgAndUpload(String url,Integer targetWidth,Integer targetHeight) throws IOException {
         Integer maxSize = 5 * 1024 * 1024;
 
         byte[] byteArray = HttpsUtils.getByteArray(url, null);
@@ -467,7 +464,18 @@ public class ImageService extends ShopBaseService implements ImageDefault {
             log.debug("下载图片，无法获取图片类型");
             return null;
         }
+
+        if (targetHeight != null && targetWidth != null) {
+            width = targetWidth;
+            height = targetHeight;
+            bufferedImage = ImageUtil.resizeImage(targetWidth,targetHeight,bufferedImage);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage,imgType.split("/")[1],bos);
+            byteArray = bos.toByteArray();
+            inputStream = new ByteArrayInputStream(byteArray);
+        }
         inputStream.reset();
+
         UploadPath uploadPath = getImageWritableUploadPath(imgType);
 
         // 上传又拍云

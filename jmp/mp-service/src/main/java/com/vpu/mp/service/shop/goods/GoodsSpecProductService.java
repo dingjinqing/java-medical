@@ -180,7 +180,9 @@ public class GoodsSpecProductService extends ShopBaseService {
      * @return
      */
     public List<GoodsSpecProduct> selectByGoodsSn(String goodsSn) {
-        return db().select(GOODS_SPEC_PRODUCT.asterisk()).from(GOODS_SPEC_PRODUCT.innerJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID)))
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_SPECS,GOODS_SPEC_PRODUCT.PRD_DESC)
+            .from(GOODS_SPEC_PRODUCT.innerJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID)))
             .where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(GoodsSpecProduct.class);
     }
