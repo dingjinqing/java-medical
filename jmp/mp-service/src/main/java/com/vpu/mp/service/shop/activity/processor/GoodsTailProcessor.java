@@ -21,6 +21,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     private UpYunConfig upYunConfig;
     @Autowired
     private Calculate calculate;
+    @Autowired
+    private CartService cartService;
     @Autowired
     MpDistributionGoodsService distributionGoods;
     @Autowired
@@ -207,6 +210,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
+        //图片链接
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
+        });
+        cartBo.getInvalidCartList().forEach(cartGoods->{
+            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
+        });
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 

@@ -102,11 +102,12 @@ public class CartService extends ShopBaseService {
             goodsIdList.retainAll(goodsIds);
             productIdList =new ArrayList<>(goodsIdList.size());
             cartRecords.forEach(cartRecord -> {
-                if (goodsIdList.contains(cartRecord.getGoodsId())){
+                if (goodsIdList.contains(cartRecord.getGoodsId())&&cartRecord.getType()!=BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS){
                     productIdList.add(cartRecord.getProductId());
                 }
             });
-            appCartGoods = appCartGoods.stream().filter(cartGoods -> goodsIdList.contains(cartGoods.getGoodsId())).collect(Collectors.toList());
+            //排除加加购在购物车里的商品
+            appCartGoods = appCartGoods.stream().filter(cartGoods -> cartGoods.getType()!=BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS&&goodsIdList.contains(cartGoods.getGoodsId())).collect(Collectors.toList());
         }else {
             productIdList =cartRecords.getValues(CART.PRODUCT_ID);
         }
@@ -127,10 +128,7 @@ public class CartService extends ShopBaseService {
                 .productIdList(productIdList).goodsIdList(goodsIdList)
                 .cartGoodsList(appCartGoods).invalidCartList(new ArrayList<>()).build();
         cartProcessor.executeCart(cartBo);
-        //图片链接
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
+
         return cartBo;
     }
     /**
@@ -139,7 +137,7 @@ public class CartService extends ShopBaseService {
      * @param relativePath 相对路径
      * @return null或全路径
      */
-    private String getImgFullUrlUtil(String relativePath) {
+    public String getImgFullUrlUtil(String relativePath) {
         if (StringUtils.isBlank(relativePath)) {
             return null;
         } else {
