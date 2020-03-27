@@ -73,7 +73,9 @@ public class StoreAccountService extends MainBaseService {
 		 StoreAccountVo fetchAnyInto = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
 				.fetchAnyInto(StoreAccountVo.class);
 		 if(fetchAnyInto!=null) {
-			 fetchAnyInto.setStoreLists(changeToArray(fetchAnyInto.getStoreList()));
+			 List<Integer> list = changeToArray(fetchAnyInto.getStoreList());
+			 fetchAnyInto.setStoreLists(list);
+			 fetchAnyInto.setStoreNum(list.size());
 		 }
 		 return fetchAnyInto;
 
