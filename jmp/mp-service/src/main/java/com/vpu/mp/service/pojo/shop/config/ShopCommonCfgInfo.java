@@ -131,4 +131,11 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "need_prd_codes")
     public Byte needPrdCodes;
+
+    /**
+     *商品分享配置
+     */
+    @NotNull
+    @JsonProperty(value = "goods_share_cfg")
+    public GoodsShareConfig goodsShareCfg;
 }
