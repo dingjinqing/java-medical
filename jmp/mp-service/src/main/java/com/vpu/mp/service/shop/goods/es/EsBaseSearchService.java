@@ -16,6 +16,7 @@ import com.vpu.mp.service.shop.goods.es.convert.param.EsParamConvertInterface;
 import com.vpu.mp.service.shop.goods.es.convert.param.GoodsPageConvertEsParam;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
+import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.core.CountRequest;
@@ -234,8 +235,12 @@ public class EsBaseSearchService extends ShopBaseService {
             }
             sourceBuilder.from( from ).size( size );
         }
-        if( null != param.getSort() ){
-            sourceBuilder.sort(param.getSort().getSortName(),param.getSort().getSortOrder());
+        if( CollectionUtils.isEmpty(param.getSorts()) ){
+            for (int i = 0; i < param.getSorts().size(); i++) {
+                Sort sort = param.getSorts().get(i);
+
+                sourceBuilder.sort(sort.getSortName(),sort.getSortOrder());
+            }
         }
         if( param.getFactList() != null ){
             assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);
