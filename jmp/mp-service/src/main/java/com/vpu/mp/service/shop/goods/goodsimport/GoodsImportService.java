@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
+import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -124,9 +126,9 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-//            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
-//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-            goodsVpuExcelImportMqCallback(mqParam);
+            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
+                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+//            goodsVpuExcelImportMqCallback(mqParam);
         }
         return code;
     }
@@ -725,6 +727,8 @@ public class GoodsImportService extends ShopBaseService {
         return sb.toString();
     }
 
+    private final Integer IMAGE_WIDTH = 800;
+    private final Integer IMAGE_HEIGHT = 800;
     /**
      * 下载并上传外链图片
      *
@@ -740,8 +744,7 @@ public class GoodsImportService extends ShopBaseService {
             imgUrl = "http://" + imgUrl;
         }
         try {
-            DownloadImageBo downloadImageBo = imageService.downloadImgAndUpload(imgUrl);
-            return downloadImageBo;
+            return imageService.downloadImgAndUpload(imgUrl,IMAGE_WIDTH,IMAGE_HEIGHT);
         } catch (IOException e) {
             e.printStackTrace();
         }
