@@ -31,10 +31,9 @@ global.wxPage({
       if(res.error === 0){
         this.setData({
           dataList:this.resetCommentList(res.content.comment),
-          commentNum:this.getCommentNum(res.content.number)
+          commentNum:this.getCommentNum(res.content.number),
         })
-        console.log(this.data.dataList)
-        console.log(this.data.commentNum)
+        this.getRating(this.data.commentNum)
       }
     },{
       type:this.data.type,
@@ -52,8 +51,16 @@ global.wxPage({
   },
   setCommentImage(commentImage){
     if(!commentImage) return false
-    if(Array.isArray(commentImage)) return commentImage
-    return JSON.parse(commentImage)
+    let imageArray = null
+    try {
+      imageArray = JSON.parse(commentImage)
+    } catch (error) {
+      imageArray = commentImage
+    }
+    imageArray = imageArray.map(item=>{
+      return this.data.imageUrl + item
+    })
+    return imageArray
   },
   getStarList(commstar){
     let starList = []
@@ -79,6 +86,30 @@ global.wxPage({
       chooseTarget:type
     })
     this.requestCommentList()
+  },
+  getRating(allNum){
+    let all = allNum.find(item=>item.type === 0).num
+    let positive = allNum.find(item=>item.type === 1).num
+    let moderate = allNum.find(item=>item.type === 2).num
+    let negative = allNum.find(item=>item.type === 3).num
+    this.setData({
+      rating:{
+        positive:this.getPercent(positive,all),
+        moderate:this.getPercent(moderate,all),
+        negative:this.getPercent(negative,all),
+      }
+    })
+  },
+  getPercent(curNum,totalNum){
+    return (Math.round(curNum / totalNum * 10000) / 100.00)
+  },
+  previewImage(e){
+    let {id,index} = e.currentTarget.dataset
+    let target = this.data.dataList.find(item=>item.id === id)
+    wx.previewImage({
+      urls:target.commentImageList,
+      current:target.commentImageList[index]
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
