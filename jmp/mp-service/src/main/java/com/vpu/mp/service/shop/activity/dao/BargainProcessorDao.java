@@ -1,6 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
-import com.google.common.base.Functions;
+import com.vpu.mp.db.shop.tables.records.BargainGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.market.bargain.BargainRecordService;
@@ -26,12 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.BARGAIN_RECORD;
-import static com.vpu.mp.db.shop.Tables.BARGAIN_USER_LIST;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 
 /**
@@ -53,12 +53,20 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param date     日期
      * @return List<BargainRecord>
      */
-    public Map<Integer, BargainRecord> getGoodsBargainListInfo(List<Integer> goodsIds, Timestamp date) {
-        return db().select(BARGAIN.ID, BARGAIN.GOODS_ID, BARGAIN.BARGAIN_TYPE, BARGAIN.FLOOR_PRICE, BARGAIN.EXPECTATION_PRICE)
-            .from(BARGAIN)
+    public Map<Integer, BargainGoodsPriceBo> getGoodsBargainListInfo(List<Integer> goodsIds, Timestamp date) {
+        List<BargainGoodsPriceBo> bargainListMap= db().select(BARGAIN_GOODS.GOODS_ID,BARGAIN_GOODS.EXPECTATION_PRICE,BARGAIN_GOODS.FLOOR_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.ID)
+            .from(BARGAIN_GOODS).leftJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(BARGAIN.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date))
-            .fetchInto(BargainRecord.class).stream().collect(Collectors.toMap(BargainRecord::getGoodsId, Functions.identity(),(x1,x2)->x1));
+            .and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date)).fetchInto(BargainGoodsPriceBo.class);
+        Map<Integer, BargainGoodsPriceBo> res = new HashMap<>();
+        bargainListMap.forEach((bargain)->{
+            BargainGoodsPriceBo b = res.get(bargain.getGoodsId());
+            if(b == null || bargain.getFirst() > b.getFirst() || (bargain.getFirst() == b.getFirst() && bargain.getCreateTime().after(b.getCreateTime()))){
+                res.put(bargain.getGoodsId(),bargain);
+            }
+        });
+
+        return res;
     }
 
     /**
@@ -66,15 +74,15 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param activityId
      * @return
      */
-    public BargainMpVo getBargainInfo(Integer userId,Integer activityId) {
+    public BargainMpVo getBargainInfo(Integer userId,Integer activityId,Integer goodsId) {
         BargainMpVo vo = new BargainMpVo();
         vo.setActivityId(activityId);
         vo.setActivityType(BaseConstant.ACTIVITY_TYPE_BARGAIN);
 
         Timestamp now = DateUtil.getLocalDateTime();
 
-        BargainRecord bargainRecord = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(activityId).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
-            .fetchAny();
+        BargainRecord bargainRecord = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(activityId).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
+        BargainGoodsRecord bargainGoods = db().fetchAny(BARGAIN_GOODS,BARGAIN_GOODS.BARGAIN_ID.eq(activityId).and(BARGAIN_GOODS.GOODS_ID.eq(goodsId)));
 
         Byte aByte = canApplyBargain(userId, now, bargainRecord);
         if(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT.equals(aByte)){
@@ -95,10 +103,10 @@ public class BargainProcessorDao extends ShopBaseService {
         vo.setEndTime((bargainRecord.getEndTime().getTime() - now.getTime())/1000);
 
         // 设置砍价展示价格
-        vo.setBargainPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
+        vo.setBargainPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainGoods.getExpectationPrice():bargainGoods.getFloorPrice());
         vo.setBargainType(bargainRecord.getBargainType());
         // 砍价库存，处理器里面还需要判断商品数量是否足够
-        vo.setStock(bargainRecord.getStock());
+        vo.setStock(bargainGoods.getStock());
         // 砍价活动表 免运费为1 不免运费为0,正好和前端相反
         vo.setFreeShip((byte) (bargainRecord.getFreeFreight()==1?0:1));
         int bargainJoinNum = getBargainJoinNum(activityId);
@@ -221,6 +229,11 @@ public class BargainProcessorDao extends ShopBaseService {
     }
 
     public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-        bargainService.updateBargainStock(activityId,- 1);
+        returnGoods.forEach(g->{
+            if(g.getIsGift().equals(OrderConstant.IS_GIFT_N)){
+                bargainService.updateBargainStock(activityId,g.getGoodsId(),- 1);
+            }
+        });
     }
+
 }

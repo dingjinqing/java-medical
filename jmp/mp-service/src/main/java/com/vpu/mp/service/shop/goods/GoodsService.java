@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.video.GoodsVideoBo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.GroupBuyProcessorDao;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -2207,7 +2208,7 @@ public class GoodsService extends ShopBaseService {
      * @return
      */
     public GoodsRecord getGoodsRecordById(int goodsId) {
-        return db().selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(GoodsRecord.class).orElse(null);
+        return db().fetchAny(GOODS,GOODS.GOODS_ID.eq(goodsId));
     }
     /**
      * 取多个完整Goods
@@ -2347,10 +2348,10 @@ public class GoodsService extends ShopBaseService {
         }
 
         // 砍价
-        Map<Integer, BargainRecord> goodsBargainListInfo = bargainProcessorDao.getGoodsBargainListInfo(Collections.singletonList(goodsId), now);
+        Map<Integer, BargainGoodsPriceBo> goodsBargainListInfo = bargainProcessorDao.getGoodsBargainListInfo(Collections.singletonList(goodsId), now);
         if (goodsBargainListInfo.containsKey(goodsId)) {
-            BargainRecord bargainRecord = goodsBargainListInfo.get(goodsId);
-            type.setActivityId(bargainRecord.getId());
+            BargainGoodsPriceBo bargain = goodsBargainListInfo.get(goodsId);
+            type.setActivityId(bargain.getId());
             type.setActivityType(BaseConstant.ACTIVITY_TYPE_BARGAIN);
             return type;
         }

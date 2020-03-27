@@ -1,10 +1,10 @@
 package com.vpu.mp.service.shop.goods;
 
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
+import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import com.vpu.mp.service.shop.goods.es.goods.EsGoods;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -42,6 +42,8 @@ public class GoodsPriceService extends ShopBaseService {
     private GroupBuyService groupBuyService;
     @Autowired
     private BargainService bargainService;
+    @Autowired
+    private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private SeckillService seckillService;
     @Autowired
@@ -104,13 +106,13 @@ public class GoodsPriceService extends ShopBaseService {
                 }
             }
             if ( goodsType.equals(BaseConstant.ACTIVITY_TYPE_BARGAIN) ){
-                Map<Integer,List<BargainRecord>> resultMap = bargainService.getBargainRecordByGoodsIds(goodsIds,now);
-                for( Map.Entry<Integer,List<BargainRecord>> recordEntry:resultMap.entrySet() ) {
-                    List<BargainRecord> resultList = recordEntry.getValue();
+                Map<Integer,BargainGoodsPriceBo> resultMap = bargainProcessorDao.getGoodsBargainListInfo(goodsIds,now);
+                for( Map.Entry<Integer, BargainGoodsPriceBo> recordEntry:resultMap.entrySet() ) {
+                    BargainGoodsPriceBo result = recordEntry.getValue();
                     Integer goodsId = recordEntry.getKey();
-                    if ( !resultList.isEmpty() ) {
-                        price.put(goodsId,resultList.get(0).getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ?
-                            resultList.get(0).getFloorPrice() : resultList.get(0).getExpectationPrice());
+                    if ( result != null ) {
+                        price.put(goodsId,result.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ?
+                            result.getFloorPrice() : result.getExpectationPrice());
                     } else {
                         outPutLog(now, goodsId, goodsType);
                     }

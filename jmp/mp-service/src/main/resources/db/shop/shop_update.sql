@@ -172,6 +172,22 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 
 /***********************2.10*********************END*/
 
+/***********************2.11*********************BEGIN*/
+-- 2020-03-26 砍价支持选择多商品
+ALTER TABLE `b2c_bargain` MODIFY COLUMN `goods_id` varchar(9999)  COMMENT '商品ID';
+ALTER TABLE `b2c_bargain` ADD COLUMN `first` int(9) NOT NULL DEFAULT 0 COMMENT '优先级';
+CREATE TABLE `b2c_bargain_goods` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `bargain_id` int(9) DEFAULT '0',
+  `goods_id` int(9) DEFAULT '0',
+  `expectation_price` decimal(10,2) DEFAULT '0.00',
+  `floor_price` decimal(10,2) DEFAULT '0.00',
+  `stock` int(9) DEFAULT '0',
+  `sale_num` int(9) DEFAULT '0',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+/***********************2.11*********************END*/
 
 
 
