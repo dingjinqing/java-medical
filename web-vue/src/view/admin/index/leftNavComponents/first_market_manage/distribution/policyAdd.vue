@@ -222,7 +222,11 @@
                   v-if="index === 0"
                   @click="onlyHanldeToAddGoodS(index)"
                 >{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-                <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+                <span
+                  style="cursor: pointer;"
+                  v-if="index === 1"
+                  @click="hanldeToAddGoodS(index)"
+                >{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
                 <!-- <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span> -->
               </div>
             </div>
@@ -255,7 +259,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      @backDataArr="commInfo"
+      :backDataArr="commInfo"
     />
 
   </div>
