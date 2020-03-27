@@ -122,8 +122,8 @@
           <template slot-scope="scope">
             {{scope.row.activityInfo}}<br />
             {{scope.row.activityGroup1}}
-            <span v-show="scope.row.goodsGroup2 === 1"><br />{{scope.row.activityGroup2}}</span>
-            <span v-show="scope.row.goodsGroup3 === 1"><br />{{scope.row.activityGroup3}}</span>
+            <span v-if="scope.row.activityGroup2"><br />{{scope.row.activityGroup2}}</span>
+            <span v-if="scope.row.activityGroup3"><br />{{scope.row.activityGroup3}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -352,11 +352,11 @@ export default {
       data.map((item, index) => {
         item.num = item.goodsNumber1
         item.activityGroup1 = `${item.groupName1}:${item.goodsNumber1}件`
-        if (item.goodsGroup2 === 1) {
+        if (item.goodsGroup2 === 1 && item.groupName2 !== '') {
           item.activityGroup2 = `${item.groupName2}:${item.goodsNumber2}件`
           item.num += item.goodsNumber2
         }
-        if (item.goodsGroup3 === 1) {
+        if (item.goodsGroup3 === 1 && item.groupName3 !== '') {
           item.activityGroup3 = `${item.groupName3}:${item.goodsNumber3}件`
           item.num += item.goodsNumber3
         }
