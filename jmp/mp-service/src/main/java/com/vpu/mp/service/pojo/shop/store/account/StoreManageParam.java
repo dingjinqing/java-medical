@@ -6,16 +6,17 @@ import lombok.Data;
 
 /**
  * 管理和创建的入参
+ * 
  * @author zhaojianqiang
- * @time   下午2:27:58
+ * @time 下午2:27:58
  */
 @Data
 public class StoreManageParam {
-	/** StoreConstant*/
+	/** StoreConstant */
 	@NotNull
 	private String act;
 	@NotNull
 	private Integer accountId;
-	private String storeList;
+	private Integer[] storeList;
 
 }

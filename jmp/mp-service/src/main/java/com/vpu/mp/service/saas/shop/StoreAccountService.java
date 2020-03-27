@@ -1,17 +1,21 @@
 package com.vpu.mp.service.saas.shop;
 
+import static com.vpu.mp.db.main.Tables.SHOP;
 import static com.vpu.mp.db.main.tables.StoreAccount.STORE_ACCOUNT;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.collections.map.HashedMap;
 import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.main.tables.records.StoreAccountRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -30,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
 public class StoreAccountService extends MainBaseService {
 	private static final Byte ISDEL = 1;
 	private static final Byte NODEL = 0;
+	private static final String dot = ",";
 
 	/**
 	 * 获取用户列表
@@ -65,12 +70,23 @@ public class StoreAccountService extends MainBaseService {
 	 * @return
 	 */
 	public StoreAccountVo getStoreInfoById(Integer accountId) {
-		return db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
+		 StoreAccountVo fetchAnyInto = db().selectFrom(STORE_ACCOUNT).where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId))
 				.fetchAnyInto(StoreAccountVo.class);
+		 if(fetchAnyInto!=null) {
+			 fetchAnyInto.setStoreLists(changeToArray(fetchAnyInto.getStoreList()));
+		 }
+		 return fetchAnyInto;
+
 	}
 
 	public int updateStoreList(Integer accountId, String storeList) {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, storeList)
+				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
+	}
+	
+	public int updateStoreList(Integer accountId, Integer[] storeLists) {
+		String string = changeToString(storeLists);
+		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STORE_LIST, string)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
 
@@ -96,6 +112,37 @@ public class StoreAccountService extends MainBaseService {
 		return db().update(STORE_ACCOUNT).set(STORE_ACCOUNT.STATUS, status)
 				.where(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId)).execute();
 	}
+	
+	protected List<Integer> changeToArray(String stores) {
+		List<Integer> list = new ArrayList<Integer>();
+		if (stores != null) {
+			if (stores.contains(dot)) {
+				String[] split = stores.split(dot);
+				for (String string : split) {
+					list.add(Integer.valueOf(string));						
+				}
+			} else {
+				list.add(Integer.valueOf(stores));
+			}
+		}
+		return list;
+	}
+	
+	protected String changeToString(Integer[] storeList) {
+		Set<Integer> set = new LinkedHashSet<Integer>();
+		for (Integer integer : storeList) {
+			set.add(integer);
+		}
+		StringBuilder builder=new StringBuilder();
+		for (Object object : set) {
+			builder.append(object);
+			builder.append(",");
+		}
+		if(builder.length()>0) {
+			return builder.deleteCharAt(builder.length()-1).toString();
+		}
+		return null;
+	}
 
 	/**
 	 * 新建
@@ -103,9 +150,13 @@ public class StoreAccountService extends MainBaseService {
 	 * @param param
 	 * @return
 	 */
-	public int create(StoreAccountParam param) {
+	public int create(StoreAccountParam param,Integer shopId) {
+		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 		StoreAccountRecord record = db().newRecord(STORE_ACCOUNT, param);
+		record.setStoreList(changeToString(param.getStoreList()));
 		record.setAccountPasswd(Util.md5(param.getAccountPasswd()));
+		record.setSysId(shop.getSysId());
+		record.setShopId(shopId);
 		int insert = record.insert();
 		return insert;
 	}
@@ -121,7 +172,7 @@ public class StoreAccountService extends MainBaseService {
 		map.put(STORE_ACCOUNT.MOBILE, param.getMobile());
 		map.put(STORE_ACCOUNT.ACCOUNT_NAME, param.getAccountName());
 		map.put(STORE_ACCOUNT.ACCOUNT_TYPE, param.getAccountType());
-		map.put(STORE_ACCOUNT.STORE_LIST, param.getStoreList());
+		map.put(STORE_ACCOUNT.STORE_LIST, changeToString(param.getStoreList()));
 		if (!StringUtils.isEmpty(param.getAccountPasswd())) {
 			map.put(STORE_ACCOUNT.ACCOUNT_PASSWD, Util.md5(param.getAccountPasswd()));
 		}
@@ -132,9 +183,9 @@ public class StoreAccountService extends MainBaseService {
 
 	public StoreAccountRecord findInfo(String accountName, String mobile, Integer accountId) {
 		SelectConditionStep<StoreAccountRecord> where = db().selectFrom(STORE_ACCOUNT)
-				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).and(STORE_ACCOUNT.MOBILE.eq(mobile)));
+				.where(STORE_ACCOUNT.ACCOUNT_NAME.eq(accountName).or(STORE_ACCOUNT.MOBILE.eq(mobile)));
 		if (accountId != null) {
-			where.and(STORE_ACCOUNT.ACCOUNT_ID.eq(accountId));
+			where.and(STORE_ACCOUNT.ACCOUNT_ID.ne(accountId));
 		}
 		StoreAccountRecord any = where.fetchAny();
 		return any;

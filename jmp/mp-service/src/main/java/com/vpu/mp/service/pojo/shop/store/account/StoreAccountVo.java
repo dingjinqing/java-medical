@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.store.account;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import lombok.Data;
 @Data
@@ -19,4 +20,5 @@ public class StoreAccountVo {
 	private Timestamp updateTime;
 
 	private Integer storeNum;
+	private List<Integer> storeLists;
 }
