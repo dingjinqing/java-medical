@@ -357,11 +357,20 @@
               >
                 <template slot-scope="scope">
                   <div style="display:flex;justify-content: center">
-                    <span style="display: flex;line-height: 45px;vertical-align: middle;">{{scope.row.prdNumber}} /&nbsp;</span>
+                    <!-- <span style="display: flex;line-height: 45px;vertical-align: middle;">{{scope.row.prdNumber}} /&nbsp;</span> -->
+                    <span
+                      class="numberStyle"
+                      v-if="!scope.row.offerNumber"
+                    >{{scope.row.initNumber}} /&nbsp;</span>
+                    <span
+                      class="numberStyle"
+                      v-if="scope.row.offerNumber"
+                    >{{scope.row.initNumber - scope.row.offerNumber}} /&nbsp;</span>
                     <giftEdit
                       v-model="scope.row.initNumber"
                       v-if="refreshFlag"
                       :prdNumber="scope.row.prdNumber"
+                      :offerNumber="scope.row.offerNumber"
                       @update="checkNumber"
                     />
                   </div>
@@ -912,6 +921,11 @@ export default {
     // 规格表格删除
     deleteHandler (index) {
       this.tableData.splice(index, 1)
+      // 重新加载子组件
+      this.refreshFlag = false
+      this.$nextTick(() => {
+        this.refreshFlag = true
+      })
       this.specsIds = []
       this.tableData.forEach(row => {
         this.specsIds.push(row.prdId)
@@ -1012,6 +1026,11 @@ export default {
 .input {
   margin-right: 10px;
   width: 70px;
+}
+.numberStyle {
+  display: flex;
+  line-height: 45px;
+  vertical-align: middle;
 }
 .footer {
   position: absolute;

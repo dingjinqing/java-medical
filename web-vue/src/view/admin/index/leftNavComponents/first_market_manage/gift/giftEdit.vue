@@ -33,7 +33,8 @@
 export default {
   props: {
     input: String | Number,
-    prdNumber: String | Number
+    prdNumber: String | Number,
+    offerNumber: String | Number
   },
   model: {
     prop: 'input',
@@ -61,6 +62,10 @@ export default {
           this.$message.warning('赠品库存不能大于商品当前库存')
           return false
         }
+        if (value < Number(this.offerNumber)) {
+          this.$message.warning('赠品库存不能小于已赠送库存')
+          return false
+        }
 
         this.showInput = !this.showInput
         if (!this.showInput) {
@@ -82,6 +87,10 @@ export default {
       }
       if (value > Number(this.prdNumber)) {
         this.$message.warning('赠品库存不能大于商品当前库存')
+        return false
+      }
+      if (value < Number(this.offerNumber)) {
+        this.$message.warning('赠品库存不能小于已赠送库存')
         return false
       }
 
