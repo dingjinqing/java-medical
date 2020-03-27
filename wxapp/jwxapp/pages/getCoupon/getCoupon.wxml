@@ -8,12 +8,18 @@
       <!--优惠券名称  -->
       <view class="coupon-name" style="background:{{ act_info.is_expire == 1 ? '#fff' : comColor }}">
         <view class="vip_exclusive" wx:if="{{act_info.cardId != ''}}">{{i18n.$t(localePack,"pages.coupon.card")}}</view>
+        <!-- <view class="record" bindtap="to_getRecord">领取记录</view> -->
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>{{i18n.$t(localePack,"pages.coupon.couponName")}}</text>
+        <!-- 列表 -->
         <text class="name-bottom" wx:if="{{act_info.type === 0 && act_info.linkSource === 0}}">￥{{act_info.amount}}</text>
         <text class="name-bottom" wx:if="{{act_info.type === 1 && act_info.linkSource === 0}}">{{act_info.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text> 
+        <!-- 链接样式 -->
         <text class="name-bottom" wx:if="{{act_info.actCode === 'voucher' && act_info.linkSource === 1}}">￥{{act_info.denomination}}</text>
         <text class="name-bottom" wx:if="{{act_info.actCode === 'discount' && act_info.linkSource === 1}}">{{act_info.denomination}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text> 
+        <!-- 分裂样式 -->
+        <!-- <text class="name-bottom">￥{{act_info.amount}} <text style="font-size:8px;">最高</text></text> 
+        <text class="name-bottom-tip">随机金额</text>  -->
         <!-- 图标 -->
         <!--未使用  -->
         <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}"> 
@@ -157,6 +163,14 @@
               <button class="coupon-shop" bindtap="visitshop" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.visitshop")}}</button>
             </view> 
           </block>
+
+          <!-- 分裂样式 -->
+          <!-- <block>
+            <view class="coupon-vw-btn">
+              <view style="color:#999;font-size:10px;text-align:center;margin-top:4px;">把券分享给好友，好友领取后本券即可使用</view>
+              <button class="coupon-button" open-type="share" style='color:{{comColor}};border-color:{{comColor}};margin-top:5px;'>分享好友</button>       
+            </view> 
+          </block> -->
 
         </form>    
       </view> <!--领取明细END  -->

@@ -62,13 +62,17 @@ export default {
     switchEditState (value) {
       if (value) {
         var re = /^(0|\+?[1-9][0-9]*)$/
+        if (!value) {
+          this.$message.warning({ message: '请填写优先级' })
+          return false
+        }
         if (!re.test(value)) {
           this.$message.warning({ message: '请填写0或者正整数' })
-        } else {
-          this.showInput = !this.showInput
-          if (!this.showInput) {
-            this.$emit('update', this.value)
-          }
+          return false
+        }
+        this.showInput = !this.showInput
+        if (!this.showInput) {
+          this.$emit('update', this.value)
         }
       } else {
         this.showInput = !this.showInput
@@ -76,23 +80,19 @@ export default {
     },
     closeBlur (value) {
       var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        this.$message.warning({ message: '请填写优先级' })
+        return false
+      }
       if (!re.test(value)) {
         this.$message.warning({ message: '请填写0或者正整数' })
-      } else {
-        this.showInput = false
-        if (!this.showInput) {
-          this.$emit('update', this.value)
-        }
+        return false
+      }
+      this.showInput = !this.showInput
+      if (!this.showInput) {
+        this.$emit('update', this.value)
       }
     }
-  },
-  computed: {
-    // btnContent () {
-    //   if (this.showInput) {
-    //     return '确定'
-    //   }
-    //   return '编辑'
-    // }
   },
   watch: {
     showInput (v) {
@@ -108,7 +108,6 @@ export default {
   display: flex;
   line-height: 45px;
   vertical-align: middle;
-  // text-align: center;
   .input {
     width: 45%;
     text-align: right;

@@ -794,8 +794,8 @@ export default {
       paramRules: {
         type: { required: true, message: this.$t('ordinaryCoupon.validateType'), trigger: 'change' },
         actName: [
-          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'blur' },
-          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
+          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'change' },
+          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'change' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
         validityType1: { validator: validateTime1, trigger: 'change' },
@@ -864,6 +864,13 @@ export default {
       labelValue: [], // 标签值
       labelList: [], // 标签列表
       pickLabel: [] // 选中标签
+    }
+  },
+  watch: {
+    'param.couponDate': function (newVal) {
+      if (newVal === null) {
+        this.param.couponDate = ''
+      }
     }
   },
   mounted () {

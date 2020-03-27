@@ -222,6 +222,32 @@ global.wxPage({
     util.navigateTo({
       url: '/pages/index/index',
     })
-  }
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (res) {
+    var that = this;
+    // util.api('/api/wxapp/divsionCoupon/share', function (res) {
+    //   that.setData({
+    //     'act_info.is_share': 1,
+    //   })
+    // }, { couponSn: that.data.coupon_sn });
+    if (res.from === 'button') { }
+    return {
+      title: '分享优惠券',
+      path: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id + "&invite_id=" + util.getCache('user_id'),
+      imageUrl: imageUrl + 'image/wxapp/share_icon.jpg',
+    }
+  },
+
+  // 领取记录
+  to_getRecord: function () {
+    util.navigateTo({
+      // url: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id,
+      url: '/pages/splitinfo/splitinfo',
+    })
+  },
 
 })

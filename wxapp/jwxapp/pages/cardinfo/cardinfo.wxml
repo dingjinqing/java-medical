@@ -12,8 +12,8 @@
 						</view>
 						<view class="card_exp">
 							<text wx:if="{{cardInfo.expireType == 0}}">
-                有效期：{{cardInfo.cardExpireTime}}
-              </text>
+                				有效期：{{cardInfo.cardExpireTime}}
+              				</text>
 							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
 							<text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
 						</view>
@@ -219,25 +219,26 @@
 			 wx:for-item="goodsListItem"
 			 wx:for-index="goodsListIndex"
 			 wx:key="goodsListIndex"
+			 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "to_goods"}}'
 			>
 				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
 				<view class="goods_right">
 					<view class="goods_name">{{goodsListItem.goodsName}}</view>
 					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
-					<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum != 0}}'>限制兑换{{item.limitNum}}次</text>
+					<text style="color:{{comColor}}" class="dh_limit" wx:if='{{item.limitNum}}'>限制兑换{{item.limitNum}}次</text>
 					<text style="background:{{comColor}}" class="dh_right" wx:if="{{cardInfo.goodsList.length < 2}}">去兑换</text>
 				</view>
 			</view>
 		</view>
 		<view
-				 class="dh_more"
-				 wx:if="{{cardInfo.goodsList.length >1}}"
-				 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "checkMore"}}'
-				 data-card_id='{{cardInfo.cardId}}'
-				 data-card_no='{{cardInfo.cardNo}}'
-				 style="color:{{comColor}}"
-				>兑换更多商品
-				</view>
+		 class="dh_more"
+		 wx:if="{{cardInfo.goodsList.length >1}}"
+		 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "checkMore"}}'
+		 data-card_id='{{cardInfo.cardId}}'
+		 data-card_no='{{cardInfo.cardNo}}'
+		 style="color:{{comColor}}"
+		>兑换更多商品
+		</view>
 		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />

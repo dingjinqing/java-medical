@@ -36,7 +36,9 @@
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
-    "pages/aftersaleorder/aftersaleorder"
+    "pages/aftersaleorder/aftersaleorder",
+    "pages/splitinfo/splitinfo",
+    "pages/usercardrenew/usercardrenew"
   ],
   "window": {
     "backgroundTextStyle": "dark",

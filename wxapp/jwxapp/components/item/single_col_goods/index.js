@@ -74,15 +74,15 @@ global.wxComponent({
       let delMarketType = {
         1: {
           className: 'gray-text line-through',
-          text: `市场价: ${data.goodsData.linePrice}`
+          text: `${data.goodsData.linePrice ? '市场价: ' + data.goodsData.linePrice : ''}`
         }, //关闭购物车按钮-划线价类别
         2: {
           className: 'gray-text',
-          text: `销量: ${data.goodsData.goodsSaleNum}`
+          text: `${data.goodsData.goodsSaleNum ? '销量: ' + data.goodsData.goodsSaleNum : ''}`
         },
         3: {
           className: 'gray-text',
-          text: `评价数: ${data.goodsData.commentNum}`
+          text: `${data.goodsData.commentNum ? '评价数: ' + data.goodsData.commentNum : ''}`
         }
       }
       this.setData({

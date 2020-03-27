@@ -4,6 +4,7 @@ package com.vpu.mp.service.shop.market.goupbuy;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
 import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -49,10 +50,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -464,26 +462,25 @@ public class GroupBuyService extends ShopBaseService {
             logger().info("修改订单状态");
             orderInfoService.batchChangeToWaitDeliver(orderSnList);
             List<Integer> userIds = groupUserList.stream().map(GroupBuyUserInfo::getUserId).collect(Collectors.toList());
-            groupBuySuccessMessage(userIds, groupBuyId, first.getUsername(), goodsName);
+            groupBuySuccessMessage(userIds,groupId, groupBuyId, first.getUsername(), goodsName);
         }
     }
 
     /**
      * 拼团成功 发送消息
      */
-    private void groupBuySuccessMessage(List<Integer> userIds, Integer groupBuyId, String grouperName, String goodsName) {
+    private void groupBuySuccessMessage(List<Integer> userIds, Integer groupId, Integer groupBuyId, String grouperName, String goodsName) {
         logger().info("拼团成功 发送消息");
         String officeAppId = saas.shop.mp.findOffcialByShopId(getShopId());
         if (officeAppId == null) {
             logger().info("店铺" + getShopId() + "没有关注公众号");
         }
+        String page= "pages1/groupbuyinfo/groupbuyinfo?group_id="+groupId;
         String[][] data = new String[][]{{"您的拼团订单已经拼团成功", "#173177"},
             {goodsName, "#173177"},
             {grouperName, "#173177"},
             {userIds.size() + "", "#173177"},
             {"感觉您的惠顾，更多拼团请点击详情！", "#173177"}};
-        // TODO 跳转链接
-        String page = "";
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
             .page(page).shopId(getShopId()).userIdList(userIds).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
@@ -506,6 +503,24 @@ public class GroupBuyService extends ShopBaseService {
             .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
         saas.taskJobMainService.dispatchImmediately(param1, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+    }
+    /**
+     * 组团失败发公众号
+     */
+    public void groupBuyFailedMessage(List<Integer> userIds, Integer groupId,  Integer groupBuyId, String grouperName, String goodsName) {
+        logger().info("拼团失败 发送消息");
+        String page = "pages1/pinintegration/pinintegration?groupId="+groupId;
+        List<Integer> userIdList = new ArrayList<Integer>(userIds);
+        String first="您好，您参加的拼团由于团已过期，拼团失败";
+        String remake="您的退款会在1~3个工作日按原账户返还";
+        String[][] data = new String[][] { { first, "#173177" }, { goodsName, "#173177" }, { "", "#173177" }, {remake, "#173177" } };
+        RabbitMessageParam param = RabbitMessageParam.builder()
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
+                .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+                .build();
+        logger().info("准备发组团瓜分积失败");
+        saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
+                TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
     /**

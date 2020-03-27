@@ -166,6 +166,7 @@
                     v-model="param.rules.tagId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeTag"
                   >
                     <el-option
                       v-for="item in tagsList"
@@ -186,11 +187,12 @@
                     v-model="param.rules.cardId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeCard"
                   >
                     <el-option
                       v-for="item in cardList"
                       :key="item.id"
-                      :label="item.name"
+                      :label="item.cardName"
                       :value="item.id"
                     >
                     </el-option>
@@ -349,26 +351,19 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop="productNumber"
+                prop="initNumber"
                 :label="$t('gift.productNumber')"
                 align="center"
               >
                 <template slot-scope="scope">
                   <div style="display:flex;justify-content: center">
-                    <span
-                      slot="before"
-                      style="margin-top:11px"
-                    >
-                      {{scope.row.prdNumber}} /&nbsp;
-                    </span>
-                    <inputEdit
-                      v-model="scope.row.productNumber"
-                      :disabled="ongoing"
-                      :init="Number(scope.row.offerNumber || 0) + Number(scope.row.productNumber)"
-                      @update="checkProductNumber(scope.row.prdNumber, scope.row.productNumber, scope.row.offerNumber)"
-                    >
-
-                    </inputEdit>
+                    <span style="display: flex;line-height: 45px;vertical-align: middle;">{{scope.row.prdNumber}} /&nbsp;</span>
+                    <giftEdit
+                      v-model="scope.row.initNumber"
+                      v-if="refreshFlag"
+                      :prdNumber="scope.row.prdNumber"
+                      @update="checkNumber"
+                    />
                   </div>
                 </template>
 
@@ -442,7 +437,8 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
-import inputEdit from '@/components/admin/inputEdit'
+// import inputEdit from '@/components/admin/inputEdit'
+import giftEdit from './giftEdit'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
@@ -453,7 +449,8 @@ import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getP
 export default {
   components: {
     wrapper,
-    inputEdit,
+    giftEdit,
+    // inputEdit,
     choosingGoods
   },
   data () {
@@ -501,7 +498,7 @@ export default {
     }
     // 会员标签
     var validattagId = (rule, value, callback) => {
-      if (!value && this.contains(2)) {
+      if ((!value || value.length === 0) && this.contains(2)) {
         callback(new Error('请选择会员标签'))
       } else {
         callback()
@@ -509,7 +506,7 @@ export default {
     }
     // 会员卡
     var validatcardId = (rule, value, callback) => {
-      if (!value && this.contains(3)) {
+      if ((!value || value.length === 0) && this.contains(3)) {
         callback(new Error('请选择会员卡'))
       } else {
         callback()
@@ -593,20 +590,20 @@ export default {
       },
       // 校验
       paramRules: {
-        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
-        level: [{ required: true, validator: validatelevel, trigger: 'blur' }],
+        name: [{ required: true, message: '请填写活动名称', trigger: 'change' }],
+        level: [{ required: true, validator: validatelevel, trigger: 'change' }],
         dateRange: [{ required: true, message: '请填写活动时间', trigger: 'change' }],
         goodsRange: [{ required: true, validator: validategoodsRange, trigger: 'change' }],
         selectedRules: [{ required: true, validator: validateselectedRules, trigger: 'change', type: 'array' }],
-        'rules.fullPrice': [{ validator: validatMoney, trigger: 'blur' }],
-        'rules.fullNumber': [{ validator: validatNum, trigger: 'blur' }],
+        'rules.fullPrice': [{ validator: validatMoney, trigger: 'change' }],
+        'rules.fullNumber': [{ validator: validatNum, trigger: 'change' }],
         'rules.tagId': [{ validator: validattagId, trigger: 'change' }],
         'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
-        'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
-        'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
+        'rules.payTop': [{ validator: validatInt, trigger: 'change' }],
+        'rules.minPayNum': [{ validator: validatMin, trigger: 'change' }],
         payDateRange: [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
         'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
-        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
+        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'change' }]
       },
       userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
@@ -628,7 +625,9 @@ export default {
       // 商品弹窗回调数据
       goodslength: 0, // 商品个数
       specsIds: [], // 规格id
-      specsList: [] // 规格数据
+      specsList: [], // 规格数据
+
+      refreshFlag: true
     }
   },
   computed: {
@@ -689,14 +688,19 @@ export default {
     },
     // 保存
     addGift () {
-      this.param.gifts = this.tableData
-      if (!this.validateGiftParam()) {
-        return
+      if (this.tableData.length < 1) {
+        this.$message.warning('请选择赠品')
+        return false
       }
-      if (this.update) {
-        this.param.gifts.map((item, index) => {
-          item.productId = item.prdId || item.productId
+      // 赠品数据
+      this.param.gifts = []
+      this.tableData.forEach(item => {
+        this.param.gifts.push({
+          productId: item.prdId || item.productId,
+          productNumber: item.initNumber
         })
+      })
+      if (this.update) {
         var obj = this.param
         obj.id = this.id
         // 编辑保存
@@ -705,21 +709,17 @@ export default {
             this.$message.success({ message: this.$t('gift.editSuccess') })
             this.$router.replace('/admin/home/main/gift')
           } else {
-            this.$message.success({ message: this.$t('gift.editDefault') })
+            this.$message.warning({ message: this.$t('gift.editDefault') })
           }
         })
       } else {
         // 添加保存
-        this.param.gifts.map((item, index) => {
-          item.productId = item.prdId
-          item.productNumber = Number(item.productNumber)
-        })
         addGift(this.param).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.saveSuccess') })
             this.$router.replace('/admin/home/main/gift')
           } else {
-            this.$message.success({ message: this.$t('gift.saveDefault') })
+            this.$message.warning({ message: this.$t('gift.saveDefault') })
           }
         })
       }
@@ -727,8 +727,6 @@ export default {
     formatParam () {
       this.formatTime()
       this.formatRules()
-
-      // this.formatGoods()
     },
     // 格式化入参时间
     formatTime () {
@@ -753,38 +751,12 @@ export default {
           this.param.rules[key] = null
         }
       })
-
-      // const { selectedRules } = this
-      // // 将 param.rules 中，不在已选规则序号中的属性赋值 null
-      // Object.keys(this.param.rules).forEach(key => {
-      //   const index = this.rules.findIndex(rule => undefined !== rule.keys.find(k => k === key))
-      //   if (undefined === selectedRules.find(rule => rule === index)) {
-      //     this.param.rules[key] = null
-      //   }
-      // })
-    },
-    // 处理活动商品和赠品
-    formatGoods () {
-      // 活动商品
-      // this.param.goodsIds = this.tmpGoodsIds
-      // 赠品
-      const gifts = this.tableData
-        .map(({ productId, productNumber }) => ({ productId, productNumber }))
-      this.param.gifts = gifts
-      console.log(this.param.gifts)
     },
     // 回显数据加载
     loadData () {
       var id = this.$route.params.id
       getGiftDetail(id).then((res) => {
         if (res.error === 0) {
-          // this.param = res.content
-          // this.loadTime(res.content)
-          // this.loadRules(res.content)
-          // this.loadGoods(res.content)
-          // this.loadGifts(res.content.gifts)
-          // this.loadStatus(res.content)
-
           var data = res.content
           this.param.name = data.name
           this.param.level = data.level
@@ -793,6 +765,32 @@ export default {
           this.param.endTime = data.endTime
           this.param.rules = data.rules
           this.param.explain = data.explain
+          this.param.goodsIds = data.goodsIds
+          // 过滤失效会员标签
+          var arrTag = []
+          if (this.tagsList.length > 0 && this.param.rules.tagId) {
+            this.tagsList.forEach(item => {
+              this.param.rules.tagId.forEach(val => {
+                if (item.id === val) {
+                  arrTag.push(val)
+                }
+              })
+            })
+            this.param.rules.tagId = arrTag
+          }
+          // 过滤失效会员卡
+          var arrCard = []
+          if (this.cardList.length > 0 && this.param.rules.cardId) {
+            this.cardList.forEach(item => {
+              this.param.rules.cardId.forEach(val => {
+                if (item.id === val) {
+                  arrCard.push(val)
+                }
+              })
+            })
+            this.param.rules.cardId = arrCard
+          }
+
           this.loadRules(res.content)
           this.loadGoods(res.content)
           this.loadGifts(res.content.gifts)
@@ -833,25 +831,13 @@ export default {
         // this.transmitEditGoodsId(goodsIds)
       }
     },
-    loadTime (content) {
-      const { startTime, endTime } = content
-      this.param.dateRange.push(startTime)
-      this.param.dateRange.push(endTime)
-    },
+    // 加载赠品信息
     loadGifts (gifts) {
-      gifts.forEach(row => {
-        // const { productId, productNumber } = row
-        const { giftId, productId, productNumber } = row
-        getProductDetail(giftId, productId).then(({ content }) => {
-          row.goodsImg = content.prdImg || content.goodsImg
-          row.productId = productId
-          this.tableData.push({
-            ...row,
-            productNumber
-          })
-          this.specsIds.push(productId)
-          console.log(this.tableData)
-        })
+      this.tableData = gifts
+      this.tableData.forEach(item => {
+        item.initNumber = item.productNumber
+        item.goodsImg = this.$imageHost + '/' + item.goodsImg
+        this.specsIds.push(item.productId)
       })
     },
     loadStatus ({ status }) {
@@ -866,7 +852,7 @@ export default {
       return this.rules.find(rule => rule.keys.findIndex(k => k === key) !== -1)
     },
 
-    // 选择商品弹窗
+    // 选择商品/规格弹窗
     showChoosingGoods () {
       if (this.step === 1) {
         this.isOnlyShowChooseGoods = false
@@ -904,7 +890,23 @@ export default {
     getSpecsData (data) {
       console.log('getSpecsData', data)
       // this.specsData = data
+      data.forEach(item => {
+        item.initNumber = Number(item.prdNumber)
+      })
       this.tableData = data
+      // 重新加载子组件
+      this.refreshFlag = false
+      this.$nextTick(() => {
+        this.refreshFlag = true
+      })
+    },
+
+    // 修改赠品库存回调
+    checkNumber (data) {
+      this.refreshFlag = false
+      this.$nextTick(() => {
+        this.refreshFlag = true
+      })
     },
 
     // 规格表格删除
@@ -942,34 +944,12 @@ export default {
         keys.forEach(key => {
           const value = this.param.rules[key]
           if (!value || (typeof value === 'object' && value.length < 1)) {
-            this.fail(`请输入${label}`)
+            this.$message.warning(`请输入${label}`)
             result = false
           }
         })
       })
       return result
-    },
-    // 校验赠品参数
-    validateGiftParam () {
-      let result = true
-      const { tableData } = this
-      if (tableData.length < 1) {
-        this.fail('请选择赠品')
-        return false
-      }
-      this.tableData.forEach(row => {
-        const { prdNumber, productNumber, offerNumber } = row
-        if (!this.checkProductNumber(prdNumber, productNumber, offerNumber)) {
-          result = false
-        }
-      })
-      return result
-    },
-    fail (message) {
-      this.$message.warning({
-        showClose: true,
-        message
-      })
     },
     handleChoosingGoods (ids) {
       if (this.ongoing) {
@@ -980,36 +960,6 @@ export default {
     handleChoosingProduct (ids) {
       this.tmpGiftGoodsIds = ids
       ids.forEach(prdId => this.addProductRow(prdId))
-    },
-    /**
-     * 校验库存输入
-     *
-     * @param prdNumber 原有库存
-     * @param productNumber 输入库存
-     * @param offerNumber 已赠送商品数
-     */
-    checkProductNumber (prdNumber, productNumber, offerNumber) {
-      console.log(productNumber)
-      productNumber = Number(productNumber)
-      console.log(productNumber)
-      var re = /^(0|\+?[1-9][0-9]*)$/
-      if (productNumber === null) {
-        this.fail('请填写赠品库存')
-        return false
-      }
-      if (!re.test(productNumber)) {
-        this.fail('赠品库存只能是0或者正整数')
-        return false
-      }
-      if (prdNumber < productNumber) {
-        this.fail('赠品库存不能大于商品当前库存')
-        return false
-      }
-      if (offerNumber > productNumber) {
-        this.fail('初始库存不能小于已送赠品数')
-        return false
-      }
-      return true
     },
     listenGoodsResult () {
       this.$http.$on('result', ids => {
@@ -1022,10 +972,18 @@ export default {
             break
         }
       })
+    },
+
+    // 会员卡移除校验
+    removeCard () {
+      this.$refs['param'].validateField('rules.cardId')
+    },
+    // 会员标签移除校验
+    removeTag () {
+      this.$refs['param'].validateField('rules.tagId')
     }
   },
   watch: {
-
     goodsRange (v) {
       if (v === 0) {
         // 选择了”全部商品“

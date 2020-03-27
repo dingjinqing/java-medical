@@ -149,6 +149,19 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     final public static String K_GOODS_SORT = "goods_sort";
 
     /**
+     * 是否在小程序商品搜索页应用 K_GOODS_SORT
+     */
+    final public static String K_SEARCH_SORT = "search_sort";
+    /**
+     * 是否在小程序手动商品推荐页应用 K_GOODS_SORT
+     */
+    final public static String K_RECOMMEND_SORT = "recommend_sort";
+    /**
+     * 是否在小程序商品分类页应用 K_GOODS_SORT
+     */
+    final public static String K_ORDER_SORT = "order_sort";
+
+    /**
      * 开关开启，会在商品详情页滚动展示最近的5条购买记录
      */
     final public static String K_GOODS_RECORD = "goods_record";
@@ -157,6 +170,15 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * 商品默认平台分类id
      */
     final public static String K_DEFAULT_SORT = "default_sort";
+
+    /**
+     * 商品重量配置项设置
+     */
+    final public static String GOODS_WEIGHT_CFG = "goods_weight_cfg";
+    /**
+     * 商品条码配置项设置
+     */
+    final public static String NEED_PRD_CODES = "need_prd_codes";
 
 
     /**
@@ -590,6 +612,60 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 开关开启，会在商品搜索页应用K_GOODS_SORT排序设置
+     * @return
+     */
+    public Byte getSearchSort() {
+        return this.get(K_SEARCH_SORT, Byte.class, (byte)1);
+    }
+
+    /**
+     * 开关开启，会在商品搜索页应用K_GOODS_SORT排序设置
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setSearchSort(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setSearchSort need value equal zero or one");
+        return this.set(K_SEARCH_SORT, value,Byte.class);
+    }
+
+    /**
+     * 开关开启，会在商品推荐页应用K_GOODS_SORT排序设置
+     * @return
+     */
+    public Byte getRecommendSort() {
+        return this.get(K_RECOMMEND_SORT, Byte.class, (byte)1);
+    }
+
+    /**
+     * 开关开启，会在商品推荐页应用K_GOODS_SORT排序设置
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setRecommendSort(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setRecommendSort need value equal zero or one");
+        return this.set(K_RECOMMEND_SORT, value,Byte.class);
+    }
+
+    /**
+     * 开关开启，会在商品分类页应用K_GOODS_SORT排序设置
+     * @return
+     */
+    public Byte getOrderSort() {
+        return this.get(K_ORDER_SORT, Byte.class, (byte)1);
+    }
+
+    /**
+     * 开关开启，会在商品分类页应用K_GOODS_SORT排序设置
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setOrderSort(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setOrderSort need value equal zero or one");
+        return this.set(K_ORDER_SORT, value,Byte.class);
+    }
+
+    /**
      * 开关开启，会在商品详情页滚动展示最近的5条购买记录
      * @return
      */
@@ -624,6 +700,42 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         return this.set(K_DEFAULT_SORT, value,Integer.class);
     }
 
+    /**
+     * 获取商品重量配置项设置
+     * @return
+     */
+    public Byte getGoodsWeightCfg() {
+        return this.get(GOODS_WEIGHT_CFG, Byte.class, (byte)0);
+    }
+
+    /**
+     * 设置商品重量配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsWeightCfg(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGoodsWeightCfg need value equal zero or one");
+        return this.set(GOODS_WEIGHT_CFG, value,Byte.class);
+    }
+
+    /**
+     * 获取商品条码配置项设置
+     * @return
+     */
+    public Byte getNeedPrdCodes() {
+        return this.get(NEED_PRD_CODES, Byte.class, (byte)0);
+    }
+
+    /**
+     * 设置商品条码配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setNeedPrdCodes(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setNeedPrdCodes need value equal zero or one");
+        return this.set(NEED_PRD_CODES, value,Byte.class);
+    }
+
 
     /**
 	 * 取通用配置
@@ -636,6 +748,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setDelMarket(this.getDelMarket());
             commonCfg.setSoldOutGoods(this.getSoldOutGoods());
             commonCfg.setGoodsSort(this.getGoodsSort());
+            commonCfg.setSearchSort(this.getSearchSort());
+            commonCfg.setRecommendSort(this.getRecommendSort());
+            commonCfg.setOrderSort(this.getOrderSort());
             commonCfg.setGoodsRecord(this.getGoodsRecord());
             commonCfg.setCustomService(this.getCustomService());
             commonCfg.setReturnService(this.getReturnService());
@@ -643,6 +758,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setShareConfig(this.getShareConfig());
             commonCfg.setBindMobile(this.getBindMobile());
             commonCfg.setGeographicLocation(this.getGeoLocation());
+            commonCfg.setGoodsWeightCfg(this.getGoodsWeightCfg());
+            commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
 		});
 
         return commonCfg;
@@ -659,6 +776,9 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setDelMarket(commonCfg.getDelMarket());
 			this.setSoldOutGoods(commonCfg.getSoldOutGoods());
 			this.setGoodsSort(commonCfg.getGoodsSort());
+            this.setSearchSort(commonCfg.getSearchSort());
+            this.setRecommendSort(commonCfg.getRecommendSort());
+            this.setOrderSort(commonCfg.getOrderSort());
 			this.setGoodsRecord(commonCfg.getGoodsRecord());
 			this.setCustomService(commonCfg.getCustomService());
 			this.setReturnService(commonCfg.getReturnService());
@@ -668,6 +788,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setShareConfig(commonCfg.getShareConfig());
 			this.setBindMobile(commonCfg.getBindMobile());
 			this.setGeoLocation(commonCfg.getGeographicLocation());
+            this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
+            this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
 		});
 		return true;
 	}

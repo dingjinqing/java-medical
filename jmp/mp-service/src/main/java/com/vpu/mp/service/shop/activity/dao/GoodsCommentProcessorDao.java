@@ -158,7 +158,7 @@ public class GoodsCommentProcessorDao extends BaseShopConfigService {
      * @param commentConfig      用户评价配置
      * @param commentStateConfig 是否显示未留言评价
      */
-    private List<CommentDetailVo.CommentLevelInfo> calculateGoodsCommentNumInfo(Integer goodsId, Byte commentConfig, Byte commentStateConfig) {
+    public List<CommentDetailVo.CommentLevelInfo> calculateGoodsCommentNumInfo(Integer goodsId, Byte commentConfig, Byte commentStateConfig) {
         Condition condition = COMMENT_GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode());
         if (SHOW_STATE.equals(commentStateConfig)) {
             condition = condition.and(COMMENT_GOODS.COMM_NOTE.isNotNull());

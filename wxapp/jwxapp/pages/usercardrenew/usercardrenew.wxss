@@ -1,0 +1,39 @@
+@import "/pages/cardinfo/cardinfo.wxss";
+@import "/css/iconfont.wxss";
+
+.card_info{
+    margin-top: 30rpx;
+}
+.card_surface_top{
+    padding-left: 10rpx;
+}
+.card_item_title{
+    height: 90rpx;
+    padding: 0 14rpx;
+}
+.card_pay{
+    margin-top: 20rpx;
+    background-color: #fff;
+}
+.choose_coupon,.yue_pay{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+.choose_coupon .image{
+    width: 15rpx;
+    height: 25rpx;
+    position: relative;
+    top: 2rpx;
+}
+.yue_pay_bottom{
+    display: flex;
+    align-items: center;
+}
+.pay_check{
+    position: relative;
+    top: 3rpx;
+    margin-left: 5rpx;
+}
+

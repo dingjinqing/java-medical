@@ -420,5 +420,6 @@ export const cn = {
   invoiceTypeObj: {
     0: '企业发票',
     1: '个人发票'
-  }
+  },
+  remindTime: '用户提醒发货：'
 }

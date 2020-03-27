@@ -108,7 +108,7 @@ global.wxPage({
             isSingleGoods: 0
           })
         } else if (sort_content.menuContentType == 6) {
-          sort_content.menuImg = that.data.imageUrl + '/' + sort_content.menuImg
+          sort_content.menuImg = imageUrl + '/' + sort_content.menuImg
           // 其他分类
           that.setData({
             is_reco: 0,
@@ -175,7 +175,7 @@ global.wxPage({
             isSingleGoods: 0
           })
         } else if (sort_content.menuContentType == 6) {
-          sort_content.menuImg = that.data.imageUrl + '/' + sort_content.menuImg
+          sort_content.menuImg = imageUrl + '/' + sort_content.menuImg
           // 其他分类
           that.setData({
             is_reco: 0,

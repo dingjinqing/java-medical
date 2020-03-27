@@ -20,5 +20,4 @@ public class GoodsVpuExcelImportParam {
     private ExcelTypeEnum excelTypeEnum;
     /**语言类型，controller层设置*/
     private String lang;
-    private String url;
 }
