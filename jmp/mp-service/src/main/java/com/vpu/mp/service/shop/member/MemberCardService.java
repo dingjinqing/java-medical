@@ -1292,8 +1292,7 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
-        logger().error(data.toString());
-        logger().error(tradeOpt.toString());
+
 		/** 1.-获取数据库中的存储的信息 */
 		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
 
@@ -1443,7 +1442,6 @@ public class MemberCardService extends ShopBaseService {
 	private void updateUserCard(CardConsumpData data, UserCardRecord userCard, Integer code) {
 		/** 更新用户卡余额 */
 		if (RemarkTemplate.ADMIN_CARD_ACCOUNT.code.equals(code)) {
-            logger().error(userCard.toString());
 			BigDecimal money = userCard.getMoney().add(data.getMoney());
 			db().update(USER_CARD).set(USER_CARD.MONEY, money).where(USER_CARD.CARD_NO.eq(userCard.getCardNo()))
 					.execute();
