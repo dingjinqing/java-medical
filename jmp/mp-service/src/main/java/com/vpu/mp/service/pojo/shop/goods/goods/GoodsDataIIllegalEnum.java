@@ -58,9 +58,11 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 商品零售价格不存在
      */
-    GOODS_SHOP_PRICE_IS_NULL((byte) 11, "goods.shop.price.is.null");
-
-
+    GOODS_SHOP_PRICE_IS_NULL((byte) 11, "goods.shop.price.is.null"),
+    /**
+     * 对于更新操作，货品编号存在但是对应的规格编码不存
+     */
+    GOODS_PRD_SN_NOT_EXIT_WITH_GOODS_SN((byte)12,"goods.prd.sn.not.exit.with.goods.sn");
     private byte errorCode;
     private String errorMsg;
 
@@ -119,6 +121,8 @@ public enum GoodsDataIIllegalEnum {
             case 11:
                 retEnum = GoodsDataIIllegalEnum.GOODS_SHOP_PRICE_IS_NULL;
                 break;
+            case 12:
+                retEnum = GoodsDataIIllegalEnum.GOODS_PRD_SN_NOT_EXIT_WITH_GOODS_SN;
             default:
                 retEnum = null;
         }

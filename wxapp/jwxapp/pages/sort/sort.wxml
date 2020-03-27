@@ -20,7 +20,7 @@
     <scroll-view class='right_item' wx:if="{{is_reco == 0 && is_brand == 0}}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden' scroll-y>
       <view class='main-category'>
         <block wx:if="{{isSingleGoods == 0}}">
-          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link="{{sort_content.menuImgLink}}" class='sort_tit_img' wx:if='{{sort_content.menuImg!="" && sort_content.menuImg!=null && sort_content.menuImg!="0"}}'></image>
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link="{{sort_content.menuImgLink}}" class='sort_tit_img' wx:if='{{sort_content.menuImg}}'></image>
           <view class='sor_item clearfix'>
             <view class='each_sort' bindtap='go_search' data-sort_names="{{item.sortName}}" data-sord_ids="{{item.sortId}}" wx:for="{{sort_content.contentList}}" wx:key="key">
               <image src='{{item.sortImg}}' class='sort_img'></image>
@@ -38,7 +38,7 @@
     <view class='right_item right_itme_area' wx:if="{{is_reco == 1 && is_brand == 0 }}" style='height:{{right_height}}px;overflow-y:auto;overflow-x:hidden'>
       <view class='main-category'>
         <view>
-          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link='{{sort_content.menuImgLink}}' class='sort_tit_img' wx:if="{{sort_content.menuImg!='' && sort_content.menuImg!=null&&sort_content.menuImg!='0'}}"></image>
+          <image src='{{sort_content.menuImg}}' bindtap='go_tiaozhuan' data-link='{{sort_content.menuImgLink}}' class='sort_tit_img' wx:if="{{sort_content.menuImg}}"></image>
           <view class='sor_item clearfix' wx:for="{{sort_content.contentList}}" wx:key="key">
             <view class='each_title'>{{item.sortName}}</view>
             <view class='each_sort' bindtap='go_where' data-link="{{iem.imgLink}}" wx:for="{{item.goodsSorts}}" wx:key='key' wx:for-item="iem">
@@ -66,5 +66,5 @@
 <include src="../common/footer.wxml" />
 
 <!--  选择规格（包含无规格情况）  -->
-<v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell="true" has_buy_btn="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
-</v-sel-spec>
+<!-- <v-sel-spec gd="{{goodsData}}" show="{{show_spec}}" hide_cell="true" has_buy_btn="true" bind:click_cell="bindClickSpecCell" bind:close="bindCloseSpec" bind:change="bindSpecChange">
+</v-sel-spec> -->

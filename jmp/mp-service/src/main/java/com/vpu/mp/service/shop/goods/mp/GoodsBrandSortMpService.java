@@ -11,10 +11,13 @@ import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goodssort.*;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.GoodsSortParentMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.sort.SortGroupByParentParam;
 import com.vpu.mp.service.shop.config.ConfigService;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsBrandService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class GoodsBrandSortMpService extends ShopBaseService{
     GoodsSortService goodsSortService;
     @Autowired
     GoodsBrandService goodsBrandService;
+    @Autowired
+    ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 商品分类页面初始接口
@@ -228,7 +233,14 @@ public class GoodsBrandSortMpService extends ShopBaseService{
         } else {
             GoodsMenuContentVo content = new GoodsMenuContentVo();
             List<Integer> goodsIds = goodsMpService.getGoodsIdsBySortIdDao(sort.getSortId());
-            List<? extends GoodsListMpVo> goodsListNormal = goodsMpService.getGoodsListNormal(goodsIds, userId);
+
+            SortItemEnum sortItemEnum = null;
+            //开启了店铺默认排序规则
+            if(shopCommonConfigService.getOrderSort().equals(Byte.valueOf((byte)1))){
+                sortItemEnum = goodsMpService.getShopGoodsSortEnum();
+            }
+
+            List<? extends GoodsListMpVo> goodsListNormal = goodsMpService.getGoodsListNormal(goodsIds, userId, sortItemEnum, SortDirectionEnum.DESC);
             //是否显示划线价开关
             Byte delMarket = configService.shopCommonConfigService.getDelMarket();
             //是否显示购买按钮

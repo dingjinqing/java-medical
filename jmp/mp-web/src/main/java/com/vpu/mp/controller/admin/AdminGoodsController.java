@@ -181,7 +181,7 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_NAME_IS_NULL);
         }
 
-        GoodsDataIIllegalEnum code = shop().goods.insertWithLock(shopId(),goods);
+        GoodsDataIIllegalEnum code = shop().goodsWrap.insertWithLock(shopId(),goods);
         if (GoodsDataIIllegalEnum.GOODS_NAME_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_NAME_EXIST);
         }
@@ -274,7 +274,7 @@ public class AdminGoodsController extends AdminBaseController {
             return fail(JsonResultCode.GOODS_SORT_NAME_IS_NULL);
         }
         //ps:此处省略规格组，规格名值,因为加上后出现过操作超时的现象
-        GoodsDataIIllegalEnum code = shop().goods.update(goods);
+        GoodsDataIIllegalEnum code = shop().goodsWrap.updateWithLock(shopId(),goods);
         if (GoodsDataIIllegalEnum.GOODS_NAME_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_NAME_EXIST);
         }

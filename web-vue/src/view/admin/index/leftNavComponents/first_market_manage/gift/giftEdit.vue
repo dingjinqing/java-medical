@@ -1,14 +1,3 @@
-<!--
-* 带有编辑按钮的输入框，默认不显示输入框，点击编辑按钮即显示输入框
-* 用于表格中可编辑的单元格
-* 事件：
-*     update：点击确定后传递输入内容
-* 用法 <input-edit v-model="x" :init="y" @update="z"/>
-* props：
-*     init：初始值
-* model 输入内容
-* @author 郑保乐
--->
 <template>
   <div class="inputEditContainer">
     <div
@@ -33,7 +22,6 @@
     >
       <i
         @click="switchEditState(value)"
-        v-show="!disabled"
         class="el-icon-edit-outline"
         style="color:#409EFF;fontSize:20px;height:45px;line-height:45px;"
       ></i>
@@ -45,8 +33,7 @@
 export default {
   props: {
     input: String | Number,
-    init: Number,
-    disabled: Boolean
+    prdNumber: String | Number
   },
   model: {
     prop: 'input',
@@ -54,43 +41,53 @@ export default {
   },
   data () {
     return {
-      showInput: false,
-      value: this.init || this.input
+      showInput: false, // input框
+      value: this.input
     }
   },
   methods: {
     switchEditState (value) {
       if (value) {
-        var re = /^(0|\+?[1-9][0-9]*)$/
+        var re = /^[1-9]\d*$/
         if (!value) {
-          this.$message.warning({ message: '请填写优先级' })
+          this.$message.warning({ message: '请填写赠品库存' })
           return false
         }
         if (!re.test(value)) {
-          this.$message.warning({ message: '请填写0或者正整数' })
+          this.$message.warning({ message: '赠品库存只能是正整数' })
           return false
         }
+        if (value > Number(this.prdNumber)) {
+          this.$message.warning('赠品库存不能大于商品当前库存')
+          return false
+        }
+
         this.showInput = !this.showInput
         if (!this.showInput) {
-          this.$emit('update', this.value)
+          this.$emit('update', Number(this.value))
         }
       } else {
         this.showInput = !this.showInput
       }
     },
     closeBlur (value) {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+      var re = /^[1-9]\d*$/
       if (!value) {
-        this.$message.warning({ message: '请填写优先级' })
+        this.$message.warning({ message: '请填写赠品库存' })
         return false
       }
       if (!re.test(value)) {
-        this.$message.warning({ message: '请填写0或者正整数' })
+        this.$message.warning({ message: '赠品库存只能是正整数' })
         return false
       }
+      if (value > Number(this.prdNumber)) {
+        this.$message.warning('赠品库存不能大于商品当前库存')
+        return false
+      }
+
       this.showInput = !this.showInput
       if (!this.showInput) {
-        this.$emit('update', this.value)
+        this.$emit('update', Number(this.value))
       }
     }
   },
@@ -109,7 +106,7 @@ export default {
   line-height: 45px;
   vertical-align: middle;
   .input {
-    width: 45%;
+    // width: 45%;
     text-align: right;
     margin-right: 10px;
   }

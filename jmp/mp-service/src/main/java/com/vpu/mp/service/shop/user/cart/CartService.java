@@ -86,9 +86,9 @@ public class CartService extends ShopBaseService {
         Result<CartRecord> cartRecords = null;
         if (activityType!=null&&activityId!=null){
             if (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(activityType)){
-                cartRecords = getCartRecords(userId,activityId, (byte) 1);
+                cartRecords = getCartRecords(userId,activityId, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
             }else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)){
-                cartRecords = getCartRecords(userId,activityId, (byte) 2);
+                cartRecords = getCartRecords(userId,activityId, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
             }else {
                 cartRecords = getCartRecordsByUserId(userId);
             }

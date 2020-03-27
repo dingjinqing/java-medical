@@ -45,8 +45,9 @@ public class ShopCommonCfgInfo {
     public Byte soldOutGoods;
 
     /**
-     *小程序端"店铺商品页"默认排序规则，四选一
+     *小程序端"店铺商品页"默认排序规则，五选一
      * add_time 按照商品上新时间倒序排列
+     * on_sale_time 按照商品上架时间倒序排列
      * goods_sale_num 按照商品销量倒序排列
      * comment_num 按照商品评价数量倒序排列
      * pv 按照商品访问次数倒序排列，7天内访问次数最多的商品将排在商品列表最上方
@@ -54,6 +55,18 @@ public class ShopCommonCfgInfo {
     @NotNull
     @JsonProperty(value = "goods_sort")
     public String goodsSort;
+
+    @NotNull
+    @JsonProperty(value = "search_sort")
+    public Byte searchSort;
+
+    @NotNull
+    @JsonProperty(value = "recommend_sort")
+    public Byte recommendSort;
+
+    @NotNull
+    @JsonProperty(value = "order_sort")
+    public Byte orderSort;
 
     /**
      *是否显示购买记录
