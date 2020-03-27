@@ -79,7 +79,6 @@
           <el-table-column
             align="center"
             label="会员昵称"
-            width="200px"
           >
           <template slot-scope="scope">
               <span
@@ -94,15 +93,12 @@
             prop="mobile"
             label="手机号"
             align="center"
-            width="200px"
           >
-
           </el-table-column>
           <el-table-column
             prop="userShowTag"
             align="center"
             label="会员标签"
-            width="300"
           >
           </el-table-column>
           <el-table-column
@@ -116,15 +112,17 @@
             prop="usableScore"
             label="获得积分数"
             align="center"
+            width="130"
           >
           </el-table-column>
           <el-table-column
             prop="continueDays"
             align="center"
+            width="200"
           >
           <template slot="header">
             连续签到天数
-             <el-tooltip effect="light" content="本此签到时间点连续签到的天数" placement="top">
+             <el-tooltip effect="light" content="本次签到时间点连续签到的天数" placement="top">
                 <i class="el-icon-question icon-style"></i>
             </el-tooltip>
           </template>
@@ -132,6 +130,7 @@
           <el-table-column
             prop="totalScore"
             align="center"
+            width="220"
           >
              <template slot="header">
               本次签到累计获得积分数

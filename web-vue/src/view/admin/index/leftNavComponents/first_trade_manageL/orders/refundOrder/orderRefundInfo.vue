@@ -750,7 +750,7 @@ export default {
       })
       getDefaultAddress().then(res => {
         if (res.error === 0) {
-          let {consignee, merchant_telephone: merchantTelephone, zip_code: zipCode, return_address: returnAddress} = res.content
+          let { consignee, merchant_telephone: merchantTelephone, zip_code: zipCode, return_address: returnAddress } = res.content
           this.$set(this.returnAddressInfo, 'consignee', consignee)
           this.$set(this.returnAddressInfo, 'merchantTelephone', merchantTelephone)
           this.$set(this.returnAddressInfo, 'zipCode', zipCode)
@@ -867,10 +867,10 @@ export default {
       return this.currencyPool[this.returnInfo.currency][this.lang][1]
     },
     getReturnImageArray () {
-      return JSON.parse(this.returnInfo.goodsImages)
+      return JSON.parse(this.returnInfo.goodsImages || '[]')
     },
     getVoucherImages () {
-      return JSON.parse(this.returnInfo.voucherImages)
+      return JSON.parse(this.returnInfo.voucherImages || '[]')
     },
     toShippingView () {
       return 'https://www.kuaidi100.com/chaxun?com=' + this.returnInfo.shippingCode + '&nu=' + this.returnInfo.shippingNo
