@@ -92,7 +92,11 @@
                 style="cursor: pointer;"
                 v-if="index === 1"
                 @click="hanldeToAddGoodS(index)"
-              >{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
+              >
+                <span v-if="busClass.length > 0">{{ $t('distribution.goodsTip1')}}{{ $t('distribution.goodsTip5') }}</span>
+                <span v-else>{{ $t('distribution.goodsTip6') }}{{ $t('distribution.goodsTip5') }}</span>
+              </span>
+              <!-- {{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }} -->
               <!-- <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span> -->
             </div>
           </div>
