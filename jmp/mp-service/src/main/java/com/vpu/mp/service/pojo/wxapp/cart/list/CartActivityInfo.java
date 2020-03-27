@@ -39,6 +39,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     private Integer firstSpecialNumber;
     /**
+     * 首单特惠限制类型
+     */
+    private Byte firstSpecialNumberType;
+    /**
      * 会员价格
      */
     private BigDecimal memberPriceType;

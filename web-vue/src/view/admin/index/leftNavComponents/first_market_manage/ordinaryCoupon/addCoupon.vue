@@ -502,7 +502,15 @@
                           v-if="index === 0"
                           @click="onlyHanldeToAddGoodS(index)"
                         >{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
-                        <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
+                        <div
+                          style="cursor: pointer;"
+                          v-if="index === 1"
+                          @click="hanldeToAddGoodS(index)"
+                        >
+                          <span v-if="busClass.length > 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                          <span v-else>{{ $t('ordinaryCoupon.suitGoodsTip6') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                        </div>
+                        <!-- {{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }} -->
                         <!-- <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div> -->
                       </div>
                     </div>
@@ -543,7 +551,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      @backDataArr="commInfo"
+      :backDataArr="commInfo"
     />
   </div>
 </template>
@@ -1026,6 +1034,7 @@ export default {
           this.commInfo = this.platClass
           break
       }
+      console.log(this.commInfo)
     },
     // 点击指定商品出现的添加类弹窗汇总--部分
     onlyHanldeToAddGoodS (index) {
