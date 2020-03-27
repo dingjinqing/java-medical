@@ -106,7 +106,7 @@ export default {
   line-height: 45px;
   vertical-align: middle;
   .input {
-    width: 45%;
+    // width: 45%;
     text-align: right;
     margin-right: 10px;
   }
