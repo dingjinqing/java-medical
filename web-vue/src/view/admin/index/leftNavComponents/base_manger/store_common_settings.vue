@@ -150,6 +150,25 @@
           </div>
           <div class="text-set clearfix">
             <p>{{$t('storeCommonSettings.defaultSortTip')}}：</p>
+            <div style="line-height:1;">
+              生效页面：
+              <el-checkbox
+                v-model="info.search_sort"
+                :true-label="1"
+                :false-label="0"
+              >店铺商品页(商品搜索页)</el-checkbox>
+              <el-checkbox
+                v-model="info.recommend_sort"
+                :true-label="1"
+                :false-label="0"
+              >手动推荐商品列表</el-checkbox>
+              <el-checkbox
+                v-model="info.order_sort"
+                :true-label="1"
+                :false-label="0"
+              >商家分类页(商品归属于一级商家分类下的，直接展示商品列表)</el-checkbox>
+            </div>
+            <p>排序规则：</p>
             <el-radio-group
               v-model="info.goods_sort"
               text-color="#333333"
@@ -160,6 +179,13 @@
               >
                 {{$t('storeCommonSettings.newTimeSort')}}
                 <span class="tips">{{$t('storeCommonSettings.newTimeSortTip')}}</span>
+              </el-radio>
+              <el-radio
+                class="goods_sort_radio"
+                label="on_sale_time"
+              >
+                按照商品上架时间倒序排列
+                <span class="tips">最新上架的商品将排在最上方</span>
               </el-radio>
               <el-radio
                 class="goods_sort_radio"
@@ -457,6 +483,9 @@ export default {
         },
         del_market: 0,
         sold_out_goods: 0, // 是否显示售罄商品
+        search_sort: 1, // 是否在小程序商品搜索页应用goods_sort
+        recommend_sort: 1, // 是否在小程序手动商品推荐页应用goods_sort
+        order_sort: 0, // 是否在小程序商品分类页应用goods_sort
         goods_sort: 'add_time', // 小程序商品默认排序规则 add_time; goods_sale_num; comment_num; pv;
         goods_record: 0, // 是否显示购买记录
         custom_service: 0, // 客服入口开关-商品详情页是否展示
