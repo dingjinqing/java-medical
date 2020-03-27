@@ -151,24 +151,24 @@
           <div class="text-set clearfix">
             <p>{{$t('storeCommonSettings.defaultSortTip')}}：</p>
             <div style="line-height:1;">
-              生效页面：
+              {{$t('storeCommonSettings.effectivePage')}}：
               <el-checkbox
                 v-model="info.search_sort"
                 :true-label="1"
                 :false-label="0"
-              >店铺商品页(商品搜索页)</el-checkbox>
+              >{{$t('storeCommonSettings.shopProductPage')}}</el-checkbox>
               <el-checkbox
                 v-model="info.recommend_sort"
                 :true-label="1"
                 :false-label="0"
-              >手动推荐商品列表</el-checkbox>
+              >{{$t('storeCommonSettings.manually')}}</el-checkbox>
               <el-checkbox
                 v-model="info.order_sort"
                 :true-label="1"
                 :false-label="0"
-              >商家分类页(商品归属于一级商家分类下的，直接展示商品列表)</el-checkbox>
+              >{{$t('storeCommonSettings.businessCategoryPage')}}</el-checkbox>
             </div>
-            <p>排序规则：</p>
+            <p>{{$t('storeCommonSettings.collation')}}：</p>
             <el-radio-group
               v-model="info.goods_sort"
               text-color="#333333"
@@ -184,8 +184,8 @@
                 class="goods_sort_radio"
                 label="on_sale_time"
               >
-                按照商品上架时间倒序排列
-                <span class="tips">最新上架的商品将排在最上方</span>
+                {{$t('storeCommonSettings.arranged')}}
+                <span class="tips">{{$t('storeCommonSettings.latestProducts')}}</span>
               </el-radio>
               <el-radio
                 class="goods_sort_radio"
