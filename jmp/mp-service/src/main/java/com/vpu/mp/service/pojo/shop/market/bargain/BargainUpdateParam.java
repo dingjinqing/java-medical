@@ -63,6 +63,10 @@ public class BargainUpdateParam {
     private BigDecimal bargainMaxMoney;
     private Byte       freeFreight;
     private Byte needBindMobile;
+    /**
+     * 初始销量(初始砍价人次)
+     */
+    private Integer initialSales;
 
 	
 	private PictorialShareConfig shareConfig;

@@ -196,6 +196,7 @@ public class BargainService extends ShopBaseService  {
 			record.setShareConfig(Util.toJson(param.getShareConfig()));
 		}
 		record.setGoodsId(Util.listToString(param.getBargainGoods().stream().map(BargainGoods::getGoodsId).collect(Collectors.toList())));
+        record.setStock(param.getBargainGoods().stream().mapToInt((x)->x.getStock()).sum());
 
 		this.transaction(()->{
             record.insert();

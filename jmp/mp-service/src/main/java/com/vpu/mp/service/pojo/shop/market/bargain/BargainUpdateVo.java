@@ -19,13 +19,10 @@ public class BargainUpdateVo {
     private Timestamp startTime;
     private Timestamp  endTime;
     private Integer    expectationNumber;
-    private BigDecimal expectationPrice;
     private Double     bargainMin;
     private Double     bargainMax;
-    private Integer    stock;
 
     private Byte       bargainType;
-    private BigDecimal floorPrice;
     private Byte       bargainMoneyType;
     private BigDecimal bargainFixedMoney;
     private BigDecimal bargainMinMoney;
