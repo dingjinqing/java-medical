@@ -39,14 +39,20 @@ public class RecordContentMessage {
     /**
      * 	会员
      */
-    /** 会员发放会员卡 */
+    /**	会员发放会员卡 */
     public static final String MSG_MEMBER_CARD_SEND = "member.content.card.send";
-    /** 会员余额更新变动 */
-
+    /**	会员余额更新变动 */
     public static final String MSG_MEMBER_ACCOUNT = "member.content.account";
-    /** 会员积分更新变动*/
+    /**	会员积分更新变动*/
     public static final String MSG_MEMBER_INTEGRALT = "member.content.integral";
-
+    /**	批量禁止{num}名用户登录 */
+    public static final String MSG_MEMBER_BATCH_LOGIN_OFF = "member.batch.login.off";
+    /**	批量允许{num}名用户登录 */
+    public static final String MSG_MEMBER_BATCH_LOGIN_ON = "member.batch.login.on";
+    /**	禁止 ID: {userId};昵称：{username}登录 */
+    public static final String MSG_MEMBER_LOGIN_OFF = "member.login.off";
+    /**	允许 ID: {userId};昵称：{username}登录 */
+    public static final String MSG_MEMBER_LOGIN_ON = "member.login.on";
 
     /**
      * 	营销

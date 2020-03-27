@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -161,6 +162,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 if (goods.getPrdPrice().compareTo(actInfo.getFirstSpecialPrice())>0){
                     goods.setPrdPrice(actInfo.getFirstSpecialPrice());
                 }
+            }else {
+                //会员价 限时减价 原价
+                CartActivityInfo memberGrade = goods.getActivity(ACTIVITY_TYPE_MEMBER_GRADE);
+                if(memberGrade!=null){
+
+                }
+
             }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
