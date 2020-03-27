@@ -175,6 +175,19 @@ public class GoodsSpecProductService extends ShopBaseService {
     }
 
     /**
+     * 根据商品GoodsSn查询对应的sku
+     * @param goodsSn
+     * @return
+     */
+    public List<GoodsSpecProduct> selectByGoodsSn(String goodsSn) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_SPECS,GOODS_SPEC_PRODUCT.PRD_DESC)
+            .from(GOODS_SPEC_PRODUCT.innerJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID)))
+            .where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+            .fetchInto(GoodsSpecProduct.class);
+    }
+
+    /**
      * 根据商品id查找对应sku
      *
      * @param goodsIds
@@ -320,6 +333,21 @@ public class GoodsSpecProductService extends ShopBaseService {
         }
     }
 
+    /**
+     * 商品excel导入-更新-更新对应规格信息
+     * @param goodsSpecProducts
+     */
+    public void updateSpecPrdForGoodsImport(List<GoodsSpecProduct> goodsSpecProducts) {
+        List<GoodsSpecProductRecord> records = new ArrayList<>();
+        for (GoodsSpecProduct goodsSpecProduct : goodsSpecProducts) {
+            GoodsSpecProductRecord record = new GoodsSpecProductRecord();
+            record.setPrdId(goodsSpecProduct.getPrdId());
+            record.setPrdPrice(goodsSpecProduct.getPrdPrice());
+            record.setPrdMarketPrice(goodsSpecProduct.getPrdMarketPrice());
+            records.add(record);
+        }
+        db().batchUpdate(records).execute();
+    }
     /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
      *
@@ -536,8 +564,10 @@ public class GoodsSpecProductService extends ShopBaseService {
         return db().select(GOODS_SPEC_PRODUCT.PRD_ID).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).fetchOptionalInto(Integer.class).orElse(0);
     }
 
+
     /**
      * 查询传入的prdSn集合中哪些是数据库中已经存在的
+     *
      * @param prdSn
      * @return
      */
@@ -549,12 +579,13 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 判断商品规格名和规格值是否内部自重复
+     *
      * @param specs 商品规格
      * @return {@link JsonResult#getError()}!=0表示存在重复
      */
     public boolean isSpecNameOrValueRepeat(List<GoodsSpec> specs) {
         //在选择默认规格的情况下该字段可以是空
-        if (specs == null||specs.size()==0) {
+        if (specs == null || specs.size() == 0) {
             return true;
         }
 
@@ -565,7 +596,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             specNameRepeatMap.put(goodsSpec.getSpecName(), null);
             //检查同一规格下规格值是否重复
             List<GoodsSpecVal> goodsSpecVals = goodsSpec.getGoodsSpecVals();
-            if (goodsSpecVals == null ||goodsSpecVals.size()==0) {
+            if (goodsSpecVals == null || goodsSpecVals.size() == 0) {
                 continue;
             }
             Map<String, Object> specValRepeatMap = new HashMap<>(goodsSpecVals.size());
@@ -587,6 +618,7 @@ public class GoodsSpecProductService extends ShopBaseService {
     /**
      * 验证输入的商品规格属性和商品规格键值的正确性，
      * 验证方式是动态计算{@link GoodsSpecProduct#}的值是否和{@link GoodsSpec}计算出来的值一致
+     *
      * @param goodsSpecProducts 商品规格属性
      * @param goodsSpecs        商品规格键值
      * @return JsonResultCode

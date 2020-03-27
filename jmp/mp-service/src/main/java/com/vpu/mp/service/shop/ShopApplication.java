@@ -14,6 +14,7 @@ import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsRecommendService;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.GoodsWrapService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsCreateService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchService;
@@ -100,6 +101,8 @@ public class ShopApplication {
 
 	@Autowired
 	public GoodsService goods;
+	@Autowired
+    public GoodsWrapService goodsWrap;
 	@Autowired
 	public GoodsMpService goodsMp;
     @Autowired

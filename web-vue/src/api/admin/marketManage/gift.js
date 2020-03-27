@@ -57,9 +57,9 @@ export const getGiftDetail = id => service({
   method: 'post'
 })
 
-// 查询会员卡列表
+// 查询有效会员卡列表
 export const getMemberCardList = () => service({
-  url: `/api/admin/market/gift/member_card/list`,
+  url: `/api/admin/member/card/all/get`,
   method: 'post'
 })
 
