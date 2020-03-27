@@ -16,6 +16,16 @@
   <view class="main-container" wx:if="{{goodsInfo}}">
     <!-- 商品图片 -->
     <view class="goods-image">
+      <view class="live-tips">
+       <view class="live-avatar-content">
+        <image class="live-avatar" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200327/T4N240u3jDGM06osjNAj.jpeg"></image>
+       </view>
+       <!-- <text class="live-desc">商品正在参与直播，立即查看 ></text> -->
+       <text class="live-desc">直播将在20:00开始</text>
+       <!-- <view class="subscribe-button" style="color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;">立即订阅</view> -->
+        <view class="subscribe-button" style="color:rgba(247,145,61,1);">已订阅</view>
+        <image class="live-close" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
+      </view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
     <!-- actBar 活动倒计时价格等 -->
