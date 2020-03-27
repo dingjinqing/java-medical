@@ -124,15 +124,20 @@
             >商品组1</el-checkbox>
             <div style="margin-left:20px">
               <div style="margin-left:14px">
-                <span>名称</span>&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="param.groupName"
-                  maxlength="4"
-                  show-word-limit
-                  class="default_width"
-                ></el-input>&nbsp;&nbsp;
-                <span class="font-color">商品组名称，最多可填4个字</span>
+                <el-form-item
+                  prop="groupName"
+                  :inline-message="true"
+                >
+                  <span>名称</span>&nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model="param.groupName"
+                    maxlength="4"
+                    show-word-limit
+                    class="default_width"
+                  ></el-input>&nbsp;&nbsp;
+                  <span class="font-color">商品组名称，最多可填4个字</span>
+                </el-form-item>
               </div>
               <el-form-item
                 prop="goodsNumber"
@@ -156,15 +161,20 @@
               v-if="group2Flag === true"
             >
               <div style="margin-left:14px">
-                <span>名称</span>&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="param.groupName2"
-                  maxlength="4"
-                  show-word-limit
-                  class="default_width"
-                ></el-input>&nbsp;&nbsp;
-                <span class="font-color">商品组名称，最多可填4个字</span>
+                <el-form-item
+                  prop="groupName2"
+                  :inline-message="true"
+                >
+                  <span>名称</span>&nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model="param.groupName2"
+                    maxlength="4"
+                    show-word-limit
+                    class="default_width"
+                  ></el-input>&nbsp;&nbsp;
+                  <span class="font-color">商品组名称，最多可填4个字</span>
+                </el-form-item>
               </div>
               <el-form-item
                 prop="goodsNumber2"
@@ -188,15 +198,20 @@
               v-if="group3Flag === true"
             >
               <div style="margin-left:14px">
-                <span>名称</span>&nbsp;&nbsp;
-                <el-input
-                  size="small"
-                  v-model="param.groupName3"
-                  maxlength="4"
-                  show-word-limit
-                  class="default_width"
-                ></el-input>&nbsp;&nbsp;
-                <span class="font-color">商品组名称，最多可填4个字</span>
+                <el-form-item
+                  prop="groupName3"
+                  :inline-message="true"
+                >
+                  <span>名称</span>&nbsp;&nbsp;
+                  <el-input
+                    size="small"
+                    v-model="param.groupName3"
+                    maxlength="4"
+                    show-word-limit
+                    class="default_width"
+                  ></el-input>&nbsp;&nbsp;
+                  <span class="font-color">商品组名称，最多可填4个字</span>
+                </el-form-item>
               </div>
               <el-form-item
                 prop="goodsNumber3"
@@ -275,6 +290,7 @@
                     <div
                       class="add-btn"
                       @click="addPlateForm"
+                      v-if="false"
                     >+ 添加平台分类</div>
                     <table
                       class="brand_table"
@@ -417,6 +433,7 @@
                     <div
                       class="add-btn"
                       @click="addPlateForm2"
+                      v-if="false"
                     >+ 添加平台分类</div>
                     <table
                       class="brand_table"
@@ -559,6 +576,7 @@
                     <div
                       class="add-btn"
                       @click="addPlateForm3"
+                      v-if="false"
                     >+ 添加平台分类</div>
                     <table
                       class="brand_table"
@@ -805,6 +823,27 @@ export default {
         callback()
       }
     }
+    var checkoutGroupName = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入商品组一名称'))
+      } else {
+        callback()
+      }
+    }
+    var checkoutGroupName2 = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入商品组二名称'))
+      } else {
+        callback()
+      }
+    }
+    var checkoutGroupName3 = (rule, value, callback) => {
+      if (this.isEmpty(value)) {
+        callback(new Error('请输入商品组三名称'))
+      } else {
+        callback()
+      }
+    }
     return {
       group1Flag: true,
       group2Flag: false,
@@ -880,7 +919,10 @@ export default {
         totalRatio: { required: true, validator: checkDiscount, trigger: ['blur', 'change'] },
         goodsNumber: { validator: checkoutNumber, trigger: 'blur' },
         goodsNumber2: { validator: checkoutNumber2, trigger: 'blur' },
-        goodsNumber3: { validator: checkoutNumber3, trigger: 'blur' }
+        goodsNumber3: { validator: checkoutNumber3, trigger: 'blur' },
+        groupName: { validator: checkoutGroupName, trigger: 'blur' },
+        groupName2: { validator: checkoutGroupName2, trigger: 'blur' },
+        groupName3: { validator: checkoutGroupName3, trigger: 'blur' }
       }
     }
   },
@@ -1055,9 +1097,10 @@ export default {
     },
     // 提交前校验
     validParam () {
+      var that = this
       // let validateGroup1 = this.goodsList.lenght > 0 || this.platformList.lenght > 0 || this.bussinessList.length > 0
-      if (this.goodsList.lenght === 0 || this.platformList.lenght === 0 || this.bussinessList.length === 0) {
-        this.$message.warning('请选择第一组的商品')
+      if (that.goodsList.length === 0 || that.platformList.length === 0 || that.bussinessList.length === 0) {
+        that.$message.warning('请选择第一组的商品')
         return false
       }
       return true
@@ -1122,6 +1165,8 @@ export default {
               }
             }).catch(err => console.log(err))
           }
+        } else {
+          this.$message.error('保存失败')
         }
       })
     },
@@ -1141,8 +1186,9 @@ export default {
           }
 
           this.param.validity = [data.startTime, data.endTime]
-          this.param.groupName = data.group1.groupName
-          this.param.goodsNumber = data.group1.goodsNumber
+          // 商品组1
+          this.$set(this.param, 'groupName', data.group1.groupName)
+          this.$set(this.param, 'goodsNumber', data.group1.goodsNumber)
           this.goodsList = data.group1.goodsList
           data.group1.goodsList.map(item => {
             this.selectedGoodsIdList.push(item.goodsId)
@@ -1152,9 +1198,9 @@ export default {
           this.bussinessList = data.group1.sortVoList
           this.bussinessIdList = data.group1.sortIdList
 
-          // 第二组
-          this.param.groupName2 = data.group2.groupName
-          this.param.goodsNumber2 = data.group2.goodsNumber
+          // 商品组2
+          this.$set(this.param, 'groupName2', data.group2.groupName)
+          this.$set(this.param, 'goodsNumber2', data.group2.goodsNumber)
           this.goodsList2 = data.group2.goodsList
           data.group2.goodsList.map(item => {
             this.selectedGoodsIdList2.push(item.goodsId)
@@ -1164,9 +1210,9 @@ export default {
           this.bussinessList2 = data.group2.sortVoList
           this.bussinessIdList2 = data.group2.sortIdList
 
-          // 第三组
-          this.param.groupName3 = data.group3.groupName
-          this.param.goodsNumber3 = data.group3.goodsNumber
+          // 商品组3
+          this.$set(this.param, 'groupName3', data.group3.groupName)
+          this.$set(this.param, 'goodsNumber3', data.group3.goodsNumber)
           this.goodsList3 = data.group3.goodsList
           data.group3.goodsList.map(item => {
             this.selectedGoodsIdList3.push(item.goodsId)
