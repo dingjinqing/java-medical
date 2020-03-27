@@ -196,9 +196,9 @@ export default {
         needSysCategory: true
       }
       if (flag === 2) {
-        this.dialogTitle = '添加平台分类'
+        this.dialogTitle = '选择平台分类'
       } else {
-        this.dialogTitle = '添加商家分类'
+        this.dialogTitle = '选择商家分类'
       }
       // 弹窗数据获取
       cateListApi(params).then((res) => {
