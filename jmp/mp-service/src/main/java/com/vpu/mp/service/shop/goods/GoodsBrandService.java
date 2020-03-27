@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpPinYinVo;
 import com.vpu.mp.service.pojo.wxapp.goods.brand.GoodsBrandMpVo;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.ImageService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record8;
@@ -141,17 +142,17 @@ public class GoodsBrandService extends ShopBaseService {
             GoodsBrandRecord goodsBrandRecord = db().newRecord(GOODS_BRAND);
             assign(goodsBrand, goodsBrandRecord);
             goodsBrandRecord.insert();
-
             if (goodsBrand.getGoodsIds() != null && goodsBrand.getGoodsIds().size() > 0) {
                 db().update(GOODS).set(GOODS.BRAND_ID, goodsBrandRecord.getId())
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
-                esDataUpdateMqService.addEsGoodsIndex(goodsBrand.getGoodsIds(),getShopId(),DBOperating.UPDATE);
             }
-
             //cache update
-            goodsBrandDataHelper.update(Collections.singletonList(goodsBrand.getId()));
         });
+        if( !CollectionUtils.isEmpty(goodsBrand.getGoodsIds()) ){
+            esDataUpdateMqService.addEsGoodsIndex(goodsBrand.getGoodsIds(),getShopId(),DBOperating.UPDATE);
+        }
+        goodsBrandDataHelper.update(Collections.singletonList(goodsBrand.getId()));
     }
 
     /**
@@ -165,6 +166,7 @@ public class GoodsBrandService extends ShopBaseService {
             deleteGoodsBrand(Collections.singletonList(brandId));
 
         });
+        esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandId,getShopId());
     }
 
     private void deleteGoodsBrand(List<Integer> brandIds) {
@@ -176,8 +178,6 @@ public class GoodsBrandService extends ShopBaseService {
                 .concat(GOODS_BRAND.BRAND_NAME))
             .where(GOODS_BRAND.ID.in(brandIds))
             .execute();
-
-        esDataUpdateMqService.updateEsGoodsIndexByBrandId(brandIds,getShopId());
         saas().getShopApp(getShopId()).goods.clearBrandId(brandIds);
         //cache update
         goodsBrandDataHelper.delete(brandIds);
@@ -204,8 +204,8 @@ public class GoodsBrandService extends ShopBaseService {
                     .where(GOODS.GOODS_ID.in(goodsBrand.getGoodsIds()))
                     .execute();
             }
-            esDataUpdateMqService.updateEsGoodsIndexByBrandId(goodsBrand.getId(),getShopId());
         });
+        esDataUpdateMqService.updateEsGoodsIndexByBrandId(goodsBrand.getId(),getShopId());
     }
 
     /**
