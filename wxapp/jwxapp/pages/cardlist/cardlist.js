@@ -169,8 +169,8 @@ global.wxPage({
   },
   // 点击立即续费
   to_renew (e) {
-    var card_no = e.currentTarget.dataset.card_no;
-    // util.jumpLink("/pages1/virtualCheckout/virtualCheckout?cardNo=" + card_no)
+    var cardNo = e.currentTarget.dataset.card_no;
+    util.jumpLink("/pages/usercardrenew/usercardrenew?cardNo=" + cardNo)
   },
   /**
    * 页面上拉触底事件的处理函数

@@ -274,7 +274,7 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
             .orderBy(REDUCE_PRICE.FIRST.desc())
-            .fetchOne(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID);
+            .fetchAny(REDUCE_PRICE.ID);
         if (reducePriceId == null) {
             return null;
         }

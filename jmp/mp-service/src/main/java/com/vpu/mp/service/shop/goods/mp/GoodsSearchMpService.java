@@ -155,6 +155,11 @@ public class GoodsSearchMpService extends ShopBaseService {
     private PageResult<GoodsListMpBo> searchGoods(GoodsSearchMpParam param) {
         PageResult<GoodsListMpBo> pageResult = null;
         if (esUtilSearchService.esState()) {
+            //店铺的默认商品排序规则
+            if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
+                param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
+                param.setShopSortDirection(SortDirectionEnum.DESC);
+            }
             try {
                 log.debug("小程序-es-搜索商品");
                 pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
@@ -250,28 +255,13 @@ public class GoodsSearchMpService extends ShopBaseService {
                     list.add(GOODS.SHOP_PRICE.asc());
                 }
             }
-            list.add(GOODS.CREATE_TIME.desc());
-        }else{
-            //由商家指定的默认排序规则
-            String sort = shopCommonConfigService.getGoodsSort();
-            switch (sort){
-                case "add_time":
-                    list.add(GOODS.CREATE_TIME.desc());
-                    break;
-                case "goods_sale_num":
-                    list.add(GOODS.GOODS_SALE_NUM.desc());
-                    break;
-                case "comment_num":
-                    list.add(GOODS.COMMENT_NUM.desc());
-                    break;
-                case "pv":
-                    list.add(GOODS.PV.desc());
-                    break;
-                default:
-                    list.add(GOODS.CREATE_TIME.desc());
-            }
+        }
+
+        if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
+            list.add(goodsMpService.getShopGoodsSort());
         }
 
         return list;
     }
+
 }

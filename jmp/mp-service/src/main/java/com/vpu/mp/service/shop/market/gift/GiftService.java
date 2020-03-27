@@ -14,12 +14,24 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
-import com.vpu.mp.service.pojo.shop.market.gift.*;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftDetailListVo;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftListVo;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftParam;
+import com.vpu.mp.service.pojo.shop.market.gift.GiftVo;
+import com.vpu.mp.service.pojo.shop.market.gift.LevelParam;
+import com.vpu.mp.service.pojo.shop.market.gift.ProductVo;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleJson;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
+import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
+import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListParam;
 import com.vpu.mp.service.pojo.wxapp.market.gift.GiftGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.gift.ShowCartConfigVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -644,6 +656,7 @@ public class GiftService extends ShopBaseService {
 
         WxAppCartBo cartBo = cartService.getCartList(userId,goodsIds,null,null);
         vo.setCheckedGoodsPrice(cartBo.getTotalPrice());
+        vo.setCartGoodsNumber(cartBo.getTotalGoodsNum());
 
         //检查满金额和满件数条件
         if(rule.getFullPrice() != null && rule.getFullPrice().compareTo(BigDecimal.ZERO) > 0){
@@ -659,6 +672,8 @@ public class GiftService extends ShopBaseService {
                 vo.setState((byte)0);
             }
         }
+        vo.setDelMarket(shopCommonConfigService.getDelMarket());
+        vo.setShowCart(new ShowCartConfigVo(shopCommonConfigService.getShowCart()));
         return vo;
     }
 
@@ -687,7 +702,7 @@ public class GiftService extends ShopBaseService {
      */
     private PageResult<GiftGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT,GOODS.GOODS_SALE_NUM,GOODS.COMMENT_NUM).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){

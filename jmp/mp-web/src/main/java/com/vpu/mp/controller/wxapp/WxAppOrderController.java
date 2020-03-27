@@ -138,6 +138,15 @@ public class WxAppOrderController extends WxAppBaseController{
 		return success(shop().readOrder.getPageList(param));
 	}
 
+    /**
+     * 订单列表
+     */
+    @PostMapping("/refund/list/search")
+    public JsonResult mpReturnList(@RequestBody @Valid OrderListParam param) {
+        param.setWxUserInfo(wxAppAuth.user());
+        return success(shop().readOrder.mpReturnList(param));
+    }
+
 	/**
 	 * 订单详情
 	 */
@@ -165,7 +174,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * @param param
      */
     @PostMapping("/refund/list")
-	public JsonResult mpReturnList(@RequestBody @Valid OrderParam param){
+	public JsonResult mpOrderReturnList(@RequestBody @Valid OrderParam param){
         try {
             return success(shop().readOrder.mpOrderReturnList(param));
         } catch (MpException e) {

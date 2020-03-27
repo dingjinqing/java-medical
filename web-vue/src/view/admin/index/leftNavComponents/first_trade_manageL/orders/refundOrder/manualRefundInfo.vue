@@ -423,6 +423,10 @@ export default {
       return returnMostAmount
     },
     selectable (row, index) {
+      if (row.returnable === 0) {
+        console.log(111)
+        return false
+      }
       if (this.params.returnType !== 3) {
         return true
       }

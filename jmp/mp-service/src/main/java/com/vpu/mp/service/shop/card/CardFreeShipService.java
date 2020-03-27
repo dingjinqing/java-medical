@@ -96,4 +96,6 @@ public class CardFreeShipService extends ShopBaseService{
 		UserCardParam card = uCardSvc.getCard(cardNo);
 		return getFreeshipData(card,lang);
 	}
+
+
 }
