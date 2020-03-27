@@ -706,8 +706,8 @@ export default {
       paramRules: {
         type: { required: true, message: this.$t('ordinaryCoupon.validateType'), trigger: 'change' },
         actName: [
-          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'blur' },
-          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
+          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'change' },
+          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'change' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
         validityType1: { validator: validateTime1, trigger: 'change' },
@@ -771,6 +771,13 @@ export default {
       platClassRow: [],
       // 平台分类/商家分类共享变量
       commInfo: []
+    }
+  },
+  watch: {
+    'param.couponDate': function (newVal) {
+      if (newVal === null) {
+        this.param.couponDate = ''
+      }
     }
   },
   mounted () {
