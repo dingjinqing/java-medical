@@ -40,7 +40,7 @@
     </view>
     <!-- 已经成团人数 -->
     <view class='grouped_info'>
-      <view class='trace_person trace' wx:if="{{groupbuyInfo.statusInfo.status != 143010}}">
+      <view class='trace_person trace' wx:if="{{groupbuyInfo.statusInfo.status != 143010 && groupbuyInfo.groupBuyDefineInfo.show_noperson > 0}}">
         {{i18n.$t(localePack,"page1.fight.Poor")}}
         <text>{{groupbuyInfo.groupBuyDefineInfo.show_noperson}}{{i18n.$t(localePack,"page1.fight.people")}}</text>
         {{i18n.$t(localePack,"page1.fight.fightSuccessfully")}}
