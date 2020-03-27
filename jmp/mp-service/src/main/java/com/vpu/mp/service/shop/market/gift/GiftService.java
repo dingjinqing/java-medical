@@ -307,7 +307,7 @@ public class GiftService extends ShopBaseService {
         ruleVo.setCardId(stringToListNullable(ruleJson.getCardId()));
         ruleVo.setTagId(stringToListNullable(ruleJson.getTagId()));
         ruleVo.setFullNumber(stringToInt(ruleJson.getFullNumber()));
-        ruleVo.setFullPrice(new BigDecimal(ruleJson.getFullPrice()));
+        ruleVo.setFullPrice(ruleJson.getFullPrice() == null ? null : new BigDecimal(ruleJson.getFullPrice()));
         ruleVo.setMaxPayNum(stringToInt(ruleJson.getMaxPayNum()));
         ruleVo.setMinPayNum(stringToInt(ruleJson.getMinPayNum()));
         ruleVo.setPayStartTime(ruleJson.getPayStartTime());

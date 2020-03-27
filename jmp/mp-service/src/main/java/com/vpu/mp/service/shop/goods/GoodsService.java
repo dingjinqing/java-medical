@@ -751,24 +751,6 @@ public class GoodsService extends ShopBaseService {
         return db().select(GOODS.BRAND_ID).from(GOODS).where(condition).fetch(GOODS.BRAND_ID);
     }
 
-    /**
-     * 新增和修改时存储JsonResultCode使用
-     */
-    private class ResultWrap {
-        GoodsDataIIllegalEnum code = GoodsDataIIllegalEnum.GOODS_OK;
-    }
-
-    /**
-     * 添加商品加锁函数
-     *
-     * @param shopId，加锁使用
-     * @param goods       商品信息
-     * @return
-     */
-    public GoodsDataIIllegalEnum insertWithLock(Integer shopId, Goods goods) {
-        GoodsDataIllegalEnumWrap codeWrap = insert(goods);
-        return codeWrap.getIllegalEnum();
-    }
 
     /**
      * 添加商品无锁函数
@@ -821,18 +803,6 @@ public class GoodsService extends ShopBaseService {
         });
 
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
-            return  codeWrap;
-        }
-
-        //更新es
-        try {
-            if (esUtilSearchService.esState()) {
-                esGoodsCreateService.updateEsGoodsIndex(goods.getGoodsId(), getShopId());
-                esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
-            }
-        } catch (Exception e) {
-            logger().debug("商品新增-同步es数据异常：" + e.getMessage());
             codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
             return  codeWrap;
         }
@@ -1009,14 +979,15 @@ public class GoodsService extends ShopBaseService {
      *
      * @param goods
      */
-    public GoodsDataIIllegalEnum update(Goods goods) {
-        ResultWrap codeWrap = new ResultWrap();
+    public GoodsDataIllegalEnumWrap update(Goods goods) {
+        GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
 
         transaction(() -> {
             try {
                 //存在重复值则直接返回
-                codeWrap.code = columnValueExistCheckForUpdate(goods);
-                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
+                GoodsDataIIllegalEnum goodsDataIIllegalEnum = columnValueExistCheckForUpdate(goods);
+                codeWrap.setIllegalEnum(goodsDataIIllegalEnum);
+                if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
                     return;
                 }
 
@@ -1035,11 +1006,12 @@ public class GoodsService extends ShopBaseService {
                 updateGoodsRebatePrices(goods.getGoodsRebatePrices(), goods.getGoodsSpecProducts(), goods.getGoodsId());
             } catch (Exception e) {
                 e.printStackTrace();
-                codeWrap.code = GoodsDataIIllegalEnum.GOODS_FAIL;
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+                return;
             }
         });
-        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.code)) {
-            return codeWrap.code;
+        if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
+            return  codeWrap;
         }
         //es更新
         try {
@@ -1048,10 +1020,11 @@ public class GoodsService extends ShopBaseService {
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goods.getGoodsId());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return GoodsDataIIllegalEnum.GOODS_FAIL;
+            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+            codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+            return  codeWrap;
         }
-        return GoodsDataIIllegalEnum.GOODS_OK;
+        return codeWrap;
     }
 
     /**
@@ -1187,7 +1160,7 @@ public class GoodsService extends ShopBaseService {
      * 更新商品Es
      * @param goodsIds
      */
-    public void updateEs(List<Integer> goodsIds){
+    public void updateEs(List<Integer> goodsIds) {
         try {
             if (esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
@@ -1216,6 +1189,20 @@ public class GoodsService extends ShopBaseService {
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
     }
 
+
+    public void updateGoodsForImport(GoodsRecord goodsRecord) {
+        db().executeUpdate(goodsRecord);
+    }
+
+    public void updateGoodsChildImgsForImport(Integer goodsId, List<String> imgs) {
+        List<Integer> goodsIds = Arrays.asList(goodsId);
+
+        deleteImg(goodsIds);
+
+        if (imgs!= null && imgs.size() != 0) {
+            insertGoodsImgs(imgs,goodsId);
+        }
+    }
     /*************商品相关信息验证代码*************/
     /**
      * 判断商品会员卡价格是否正确
@@ -1356,6 +1343,23 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
+    public boolean isGoodsNameExist(Integer goodsId,String goodsName){
+        GoodsColumnCheckExistParam param = new GoodsColumnCheckExistParam();
+        param.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+        param.setGoodsId(goodsId);
+        param.setGoodsName(goodsName);
+        return isColumnValueExist(param);
+    }
+
+    /**
+     * 根据货品编号获取商品
+     * @param goodsSn
+     * @return
+     */
+    public GoodsRecord getGoodsRecordByGoodsSn(String goodsSn) {
+         return db().selectFrom(GOODS).where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+                .fetchAny();
+    }
     /**
      * 商品名和商品码查重
      *
@@ -1995,16 +1999,14 @@ public class GoodsService extends ShopBaseService {
         transaction(() -> {
             db().batchUpdate(goodsRecords.values()).execute();
             db().batchUpdate(prdRecordsMap.values()).execute();
-
-            try {
-                if (esUtilSearchService.esState()) {
-                    esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
-
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
