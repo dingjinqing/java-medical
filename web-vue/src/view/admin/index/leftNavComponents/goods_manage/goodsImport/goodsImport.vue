@@ -289,7 +289,7 @@ export default {
       that.loading = true
       let formdata = new FormData()
       formdata.append('file', this.fileList[0].raw)
-      formdata.append('isUpload', this.uploadParams.isUpdate)
+      formdata.append('isUpdate', this.uploadParams.isUpdate)
       uploadGoodsApi(formdata).then(res => {
         console.log('res:', res)
         if (res.error === 0) {
