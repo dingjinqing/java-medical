@@ -118,4 +118,17 @@ public class ShopCommonCfgInfo {
     @JsonProperty(value = "geographic_location")
     public Byte geographicLocation;
 
+    /**
+     *商品重量配置项开关
+     */
+    @NotNull
+    @JsonProperty(value = "goods_weight_cfg")
+    public Byte goodsWeightCfg;
+
+    /**
+     *商品条码配置项开关
+     */
+    @NotNull
+    @JsonProperty(value = "need_prd_codes")
+    public Byte needPrdCodes;
 }

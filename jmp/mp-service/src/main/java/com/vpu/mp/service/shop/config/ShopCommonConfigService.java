@@ -171,6 +171,15 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     final public static String K_DEFAULT_SORT = "default_sort";
 
+    /**
+     * 商品重量配置项设置
+     */
+    final public static String GOODS_WEIGHT_CFG = "goods_weight_cfg";
+    /**
+     * 商品条码配置项设置
+     */
+    final public static String NEED_PRD_CODES = "need_prd_codes";
+
 
     /**
 	 * 是否显示Logo配置
@@ -691,6 +700,42 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         return this.set(K_DEFAULT_SORT, value,Integer.class);
     }
 
+    /**
+     * 获取商品重量配置项设置
+     * @return
+     */
+    public Byte getGoodsWeightCfg() {
+        return this.get(GOODS_WEIGHT_CFG, Byte.class, (byte)0);
+    }
+
+    /**
+     * 设置商品重量配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsWeightCfg(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setGoodsWeightCfg need value equal zero or one");
+        return this.set(GOODS_WEIGHT_CFG, value,Byte.class);
+    }
+
+    /**
+     * 获取商品条码配置项设置
+     * @return
+     */
+    public Byte getNeedPrdCodes() {
+        return this.get(NEED_PRD_CODES, Byte.class, (byte)0);
+    }
+
+    /**
+     * 设置商品条码配置项
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setNeedPrdCodes(Byte value) {
+        Assert.isTrue(value ==(byte)0 || value == (byte)1,"setNeedPrdCodes need value equal zero or one");
+        return this.set(NEED_PRD_CODES, value,Byte.class);
+    }
+
 
     /**
 	 * 取通用配置
@@ -713,6 +758,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setShareConfig(this.getShareConfig());
             commonCfg.setBindMobile(this.getBindMobile());
             commonCfg.setGeographicLocation(this.getGeoLocation());
+            commonCfg.setGoodsWeightCfg(this.getGoodsWeightCfg());
+            commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
 		});
 
         return commonCfg;
@@ -741,6 +788,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setShareConfig(commonCfg.getShareConfig());
 			this.setBindMobile(commonCfg.getBindMobile());
 			this.setGeoLocation(commonCfg.getGeographicLocation());
+            this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
+            this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
 		});
 		return true;
 	}
