@@ -1216,6 +1216,20 @@ public class GoodsService extends ShopBaseService {
             .where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.BRAND_ID.in(brandIds))).execute();
     }
 
+
+    public void updateGoodsForImport(GoodsRecord goodsRecord) {
+        db().executeUpdate(goodsRecord);
+    }
+
+    public void updateGoodsChildImgsForImport(Integer goodsId, List<String> imgs) {
+        List<Integer> goodsIds = Arrays.asList(goodsId);
+
+        deleteImg(goodsIds);
+
+        if (imgs!= null && imgs.size() != 0) {
+            insertGoodsImgs(imgs,goodsId);
+        }
+    }
     /*************商品相关信息验证代码*************/
     /**
      * 判断商品会员卡价格是否正确
@@ -1356,6 +1370,23 @@ public class GoodsService extends ShopBaseService {
         }
     }
 
+    public boolean isGoodsNameExist(Integer goodsId,String goodsName){
+        GoodsColumnCheckExistParam param = new GoodsColumnCheckExistParam();
+        param.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS);
+        param.setGoodsId(goodsId);
+        param.setGoodsName(goodsName);
+        return isColumnValueExist(param);
+    }
+
+    /**
+     * 根据货品编号获取商品
+     * @param goodsSn
+     * @return
+     */
+    public GoodsRecord getGoodsRecordByGoodsSn(String goodsSn) {
+         return db().selectFrom(GOODS).where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
+                .fetchAny();
+    }
     /**
      * 商品名和商品码查重
      *
