@@ -546,7 +546,7 @@ public class GiftService extends ShopBaseService {
                     .in(select(ORDER_GOODS.ORDER_SN).from(ORDER_GOODS)
                         .where(ORDER_GOODS.IS_GIFT.eq(1)
                             .and(ORDER_GOODS.PRODUCT_ID.eq(productId)
-                                .and(ORDER_INFO.ACTIVITY_ID.eq(giftId))
+                                .and(ORDER_GOODS.GIFT_ID.eq(giftId))
                             )
                         )
                     )
