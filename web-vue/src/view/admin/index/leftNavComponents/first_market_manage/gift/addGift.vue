@@ -590,20 +590,20 @@ export default {
       },
       // 校验
       paramRules: {
-        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
-        level: [{ required: true, validator: validatelevel, trigger: 'blur' }],
+        name: [{ required: true, message: '请填写活动名称', trigger: 'change' }],
+        level: [{ required: true, validator: validatelevel, trigger: 'change' }],
         dateRange: [{ required: true, message: '请填写活动时间', trigger: 'change' }],
         goodsRange: [{ required: true, validator: validategoodsRange, trigger: 'change' }],
         selectedRules: [{ required: true, validator: validateselectedRules, trigger: 'change', type: 'array' }],
-        'rules.fullPrice': [{ validator: validatMoney, trigger: 'blur' }],
-        'rules.fullNumber': [{ validator: validatNum, trigger: 'blur' }],
+        'rules.fullPrice': [{ validator: validatMoney, trigger: 'change' }],
+        'rules.fullNumber': [{ validator: validatNum, trigger: 'change' }],
         'rules.tagId': [{ validator: validattagId, trigger: 'change' }],
         'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
-        'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
-        'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
+        'rules.payTop': [{ validator: validatInt, trigger: 'change' }],
+        'rules.minPayNum': [{ validator: validatMin, trigger: 'change' }],
         payDateRange: [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
         'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
-        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
+        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'change' }]
       },
       userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
