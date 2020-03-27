@@ -174,7 +174,7 @@ public class ShopReturnConfigService extends BaseShopConfigService {
     }
 
     public int setReturnChangeGoodsStatus(Byte returnChangeGoodsStatus) {
-    	Assert.isTrue(returnChangeGoodsStatus ==(byte)0 || returnChangeGoodsStatus == (byte)1,"setReturnChangeGoodsStatus need value equal one or zero");
+    	Assert.isTrue(returnChangeGoodsStatus ==(byte)0 || returnChangeGoodsStatus == (byte)1 || returnChangeGoodsStatus == (byte)2,"setReturnChangeGoodsStatus need value equal one or zero or two");
         return this.set(K_RETURN_CHANGE_GOODS_STATUS, returnChangeGoodsStatus,Byte.class);
     }
 
