@@ -850,6 +850,9 @@ export default {
         this.specsIds.push(item.productId)
         // 编辑回显
         item.initNumber = Number(item.productNumber)
+        if ((item.productNumber - item.offerNumber) > item.prdNumber) {
+          item.offerNumber = item.offerNumber + (item.productNumber - item.offerNumber - item.prdNumber)
+        }
       })
     },
     loadStatus ({ status }) {
