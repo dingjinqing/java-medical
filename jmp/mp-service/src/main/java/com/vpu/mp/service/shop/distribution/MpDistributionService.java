@@ -256,7 +256,7 @@ public class MpDistributionService extends ShopBaseService{
         BigDecimal account = db().select(USER.ACCOUNT).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(BigDecimal.class);
         //返利信息
         UserTotalFanliVo userRebate = this.userTotalFanli.getUserRebate(userId);
-        if(userRebate.getTotalMoney().compareTo(account)<0){
+        if(userRebate.getTotalMoney() != null && userRebate.getTotalMoney().compareTo(account)<0){
             rebateCenterVo.setCanWithdraw(userRebate.getTotalMoney());
         }else{
             rebateCenterVo.setCanWithdraw(account);
@@ -278,7 +278,7 @@ public class MpDistributionService extends ShopBaseService{
         DistributorLevelParam distributorLevelInfo = this.distributorLevel(userId);
         rebateCenterVo.setDistributorLevel(distributorLevelInfo.getLevelName());
         //我的分组
-        DistributorGroupListVo groupInfo = distributorGroup.getOneInfo(userId);
+        DistributorGroupListVo groupInfo = distributorGroup.getGroupByUserId(userId);
         rebateCenterVo.setDistributorGroup(groupInfo.getGroupName());
         return rebateCenterVo;
 
