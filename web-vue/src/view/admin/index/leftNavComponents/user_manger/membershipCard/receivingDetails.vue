@@ -18,6 +18,14 @@
             size="small"
           ></el-input>
         </div>
+        <div style="margin-left: 20px;">
+          <span>领取码/卡号：</span>
+          <el-input
+            v-model="cardCodeOrNo"
+            placeholder="领取码/卡号"
+            size="small"
+          ></el-input>
+        </div>
         <div>
           <span>批次名称</span>
           <el-select
@@ -86,7 +94,6 @@
           <el-table-column
             prop="receiveTime"
             label="领取时间"
-            width="120"
             align="center"
           >
           </el-table-column>
@@ -112,6 +119,7 @@
           <el-table-column
             label="操作"
             align="center"
+            width="120"
           >
 
             <template slot-scope="scope">
@@ -166,6 +174,7 @@ export default {
       },
       cardId: null, // 会员卡id
       dialogVisible: false,
+      cardCodeOrNo: null,
       phoneNumInput: '',
       carNameInput: '',
       sortNameInput: '',
@@ -204,7 +213,8 @@ export default {
         'cardId': this.cardId,
         'mobile': this.phoneNumInput,
         'username': this.carNameInput,
-        'batchId': this.selectSortvalue
+        'batchId': this.selectSortvalue,
+        'search': this.cardCodeOrNo
       }
       console.log(obj)
       // 会卡领取详情-查询
@@ -304,6 +314,34 @@ export default {
         /deep/ .el-button {
           width: 85px;
         }
+      }
+    }
+  }
+
+    .tableMain {
+    position: relative;
+    background-color: #fff;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 15px 25px;
+    margin-top: 10px;
+    /deep/ .tableClss th {
+      background-color: #f5f5f5;
+      border: none;
+      height: 36px;
+      font-weight: bold;
+      color: #000;
+      padding: 8px 10px;
+      .el-checkbox {
+        margin-left: -4px;
+      }
+    }
+    .operation {
+      display: flex;
+      justify-content: space-around;
+      span {
+        cursor: pointer;
+        color: #5a8bff;
       }
     }
   }
