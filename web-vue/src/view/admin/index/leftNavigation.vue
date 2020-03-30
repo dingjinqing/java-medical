@@ -30,6 +30,74 @@
 
         </li>
       </ul>
+      <!--导航栏底部模块-->
+      <div class="left_suspension">
+        <div
+          class="suspension"
+          @mouseenter="handleToMouseenter(1)"
+          @mouseleave="handleToMouseleave(1)"
+        >
+          <div
+            class="inner"
+            style="width: 100%;border-right: 1px solid #8c929e"
+          >
+            <img :src="`${$imageHost}/image/admin/left_menu_phone.png`">
+          </div>
+          <div
+            class="suspension_message sm1"
+            :style="bottomFlag===1?'display:block':''"
+          >
+            <img :src="`${$imageHost}/image/admin/left_menu_jt.png`">
+            <span style="width: 100%;text-align: left;height: 30px;word-break: break-all;">客服电话：400-010-1039</span>
+          </div>
+        </div>
+        <div
+          @mouseenter="handleToMouseenter(2)"
+          @mouseleave="handleToMouseleave(2)"
+          class="suspension suspension_click1"
+        >
+          <div
+            class="inner"
+            style="width: 100%;border-right: 1px solid #8c929e"
+          >
+            <img :src="`${$imageHost}/image/admin/left_menu_zx.png`">
+          </div>
+          <div
+            class="hover_show"
+            :style="bottomFlag===2?'display:block':''"
+          >
+            <el-image
+              style="width: 200px; height: 200px"
+              :src="$imageHost+'/image/admin/img_home/online_ask_3.jpg'"
+              :preview-src-list="srcList"
+            >
+            </el-image>
+          </div>
+        </div>
+        <div
+          @mouseenter="handleToMouseenter(3)"
+          @mouseleave="handleToMouseleave(3)"
+          class="suspension suspension_click2"
+        >
+          <div class="inner">
+            <img :src="`${$imageHost}/image/admin/left_menu_question.png`">
+          </div>
+          <div
+            class="toPosition"
+            style="padding-bottom:30px"
+          >
+            <div
+              class="suspension_message"
+              :style="bottomFlag===3?'display:block':''"
+              @mouseenter="specMouseenter()"
+              @mouseleave="specMouseleave()"
+            >
+              <img :src="`${$imageHost}/image/admin/left_menu_jt.png`">
+              <span><a @click="handleToClick()">问题反馈</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!--模块无权限弹窗-->
     <div class="permissionDialog">
@@ -518,7 +586,9 @@ export default {
       nav_s_class_index: false,
       saveIndex: null,
       leftMenuEn: '',
-      specialFlag: false
+      specialFlag: false,
+      bottomFlag: -1,
+      srcList: [`${this.$imageHost}/image/admin/img_home/online_ask_3.jpg`]
     }
   },
   watch: {
@@ -729,6 +799,29 @@ export default {
     // 左侧菜单栏划出事件
     left_nav_leave (index) {
       this.click_nav_index = null
+    },
+    // 底部移入
+    handleToMouseenter (flag) {
+      this.bottomFlag = flag
+    },
+    // 底部移出
+    handleToMouseleave (flag) {
+      this.bottomFlag = -1
+    },
+    specMouseenter () {
+      this.bottomFlag = 3
+    },
+    specMouseleave () {
+      this.bottomFlag = -1
+    },
+    // 点击问题反馈
+    handleToClick () {
+      this.$router.push({
+        path: '/admin/home/shopMain',
+        query: {
+          change_components: '9'
+        }
+      })
     }
   }
 }
@@ -745,6 +838,7 @@ export default {
   width: 150px;
   z-index: 1000;
   height: 100%;
+  position: relative;
 }
 .leftMenuEn {
   width: 190px !important;
@@ -786,5 +880,91 @@ export default {
   position: relative;
   /* left: -11px;
   bottom: -9px; */
+}
+.left_suspension {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  z-index: 9999;
+}
+.suspension {
+  flex: 1;
+  background-color: #515768;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.suspension:hover {
+  background-color: #7c818d;
+}
+.inner {
+  display: flex;
+  justify-content: center;
+}
+.sm1 {
+  display: none;
+  width: 143px;
+  position: absolute;
+  height: 30px;
+  background-color: white;
+  left: 4px;
+  top: -38px;
+  color: #5a8bff;
+  line-height: 26px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 2px;
+  border: 1px solid #eee;
+}
+.sm1 img {
+  transform: rotate(-90deg);
+  position: absolute;
+  left: 18px;
+  top: 27px;
+}
+.hover_show {
+  display: none;
+  position: absolute;
+  left: -60px;
+  top: -201px;
+  padding: 0px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  z-index: 9999;
+  box-shadow: none;
+}
+.toPosition {
+  position: absolute;
+  left: 4px;
+  top: -38px;
+  cursor: pointer;
+}
+.toPosition .suspension_message {
+  display: none;
+  width: 60px;
+  height: 30px;
+  background-color: white;
+  color: #5a8bff;
+  line-height: 26px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 2px;
+  border: 1px solid #eee;
+}
+.suspension_message img {
+  transform: rotate(-90deg);
+  position: absolute;
+  left: 18px;
+  top: 27px;
+}
+.toPosition .suspension_message a:hover {
+  text-decoration: underline;
 }
 </style>

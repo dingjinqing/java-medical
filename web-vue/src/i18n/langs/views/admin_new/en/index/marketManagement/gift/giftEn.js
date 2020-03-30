@@ -133,7 +133,7 @@ export const en = {
   catName: 'Specifications',
   goodsPrice: 'Goods Price',
   goodsNumber: 'Goods Number',
-  productNumber: 'Product Number',
+  productNumber: 'Giveaway Inventory (initial / current)',
   // 底部
   lastStep: 'Last Step',
   nextStep: 'Next Step',
