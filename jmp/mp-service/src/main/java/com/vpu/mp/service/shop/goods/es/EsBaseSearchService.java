@@ -235,7 +235,7 @@ public class EsBaseSearchService extends ShopBaseService {
             }
             sourceBuilder.from( from ).size( size );
         }
-        if( CollectionUtils.isEmpty(param.getSorts()) ){
+        if( !CollectionUtils.isEmpty(param.getSorts()) ){
             for (int i = 0; i < param.getSorts().size(); i++) {
                 Sort sort = param.getSorts().get(i);
 
