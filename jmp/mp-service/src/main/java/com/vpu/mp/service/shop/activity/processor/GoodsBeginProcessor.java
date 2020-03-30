@@ -73,31 +73,31 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         }).collect(Collectors.toList());
         cartBo.getCartGoodsList().removeAll(invalidGoodsList);
         cartBo.getInvalidCartList().addAll(invalidGoodsList);
-        cartBo.getCartGoodsList().forEach(goods->{
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             GoodsSpecProductRecord productRecord = goods.getProductRecord();
             GoodsRecord goodsRecord = goods.getGoodsRecord();
             //售罄-- 取消选中
             if (goods.getProductRecord().getPrdNumber() < goods.getGoodsRecord().getLimitBuyNum() || goods.getProductRecord().getPrdNumber() <= 0) {
-                log.debug("商品售罄"+"[getGoodsName:"+goods.getGoodsName()+".getPrdNumber: "+goods.getProductRecord().getPrdNumber()+",getLimitBuyNum:"+goods.getGoodsRecord().getLimitBuyNum()+"]");
+                log.debug("商品售罄" + "[getGoodsName:" + goods.getGoodsName() + ".getPrdNumber: " + goods.getProductRecord().getPrdNumber() + ",getLimitBuyNum:" + goods.getGoodsRecord().getLimitBuyNum() + "]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_SOLD_OUT);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                cartService.switchCheckedProduct(cartBo.getUserId(), goods.getCartId(), CartConstant.CART_NO_CHECKED);
             }
             //购物车数量不能大于商品库存
-            if (goods.getCartNumber()>productRecord.getPrdNumber()&&goods.getGoodsStatus().equals(CartConstant.GOODS_STATUS_ON_SALE)){
+            if (goods.getCartNumber() > productRecord.getPrdNumber() && goods.getGoodsStatus().equals(CartConstant.GOODS_STATUS_ON_SALE)) {
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_STOCK_SHORTAGE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                cartService.switchCheckedProduct(cartBo.getUserId(), goods.getCartId(), CartConstant.CART_NO_CHECKED);
                 //修改商品数量
             }
             //初始化商品的限制数量
-            goods.setLimitMaxNum(goods.getLimitMaxNum());
-            goods.setLimitBuyNum(goods.getLimitBuyNum());
+            goods.setLimitMaxNum(goodsRecord.getLimitMaxNum());
+            goods.setLimitBuyNum(goodsRecord.getLimitBuyNum());
             goods.setPrdNumber(productRecord.getPrdNumber());
             //初始化价格
-            goods.setPrdPrice(goods.getPrdPrice());
-            goods.setGoodsPrice(goods.getGoodsPrice());
-        });
+            goods.setPrdPrice(productRecord.getPrdPrice());
+            goods.setGoodsPrice(productRecord.getPrdPrice());
+        }
 
     }
 }

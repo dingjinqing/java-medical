@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.activity;
 
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class OrderCartProductBo {
      * 店铺id
      */
     private Integer storeId;
-    private List<OrderCartProduct> info =new ArrayList<>();
+    public List<OrderCartProduct> productList =new ArrayList<>();
 
     private Map<Integer, OrderCartProduct> map;
 
@@ -44,11 +45,11 @@ public class OrderCartProductBo {
     public OrderCartProductBo() {
     }
     public OrderCartProductBo(List<OrderCartProduct> info) {
-        this.info = info;
+        this.productList = info;
     }
 
     public List<OrderCartProduct> getAll(){
-        return info;
+        return productList;
     }
 
     public List<Integer> getProductIds(){
@@ -61,7 +62,7 @@ public class OrderCartProductBo {
     }
 
     private void initMap(){
-        map = info.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
+        map = productList.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
     }
 
     private void initProductIds(){
@@ -73,6 +74,7 @@ public class OrderCartProductBo {
     public static class OrderCartProduct{
 
         private Integer productId;
+        private GoodsSpecProductRecord productRecord;
         private Integer goodsNumber;
         private Byte isChecked;
         /**
@@ -81,13 +83,14 @@ public class OrderCartProductBo {
          */
         private Map<Byte ,GoodsActivityInfo> activityInfo =new HashMap<>();
 
-        public OrderCartProduct(Integer productId, Integer goodsNumber) {
+        public OrderCartProduct(Integer productId, Integer goodsNumber,GoodsSpecProductRecord productRecord) {
             //商品结算默认选中
-            this(productId,goodsNumber, CartConstant.CART_IS_CHECKED);
+            this(productId,goodsNumber,productRecord, CartConstant.CART_IS_CHECKED);
         }
-        public OrderCartProduct(Integer productId, Integer goodsNumber,byte isChecked) {
+        public OrderCartProduct(Integer productId, Integer goodsNumber,GoodsSpecProductRecord productRecord,byte isChecked) {
             this.productId = productId;
             this.goodsNumber = goodsNumber;
+            this.productRecord =productRecord;
             this.isChecked =isChecked;
         }
 
