@@ -152,7 +152,6 @@ export default {
       })
     },
     submitCardChargeConsume (type) {
-      debugger
       let commonAttr = {
         reduce: this.inputValue,
         userId: this.model.userId,

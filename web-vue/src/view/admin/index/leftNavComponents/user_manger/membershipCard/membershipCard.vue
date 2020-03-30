@@ -906,7 +906,8 @@ export default {
           this.$router.push({
             name: 'refillDetails',
             query: {
-              cardId: item.id
+              cardId: item.id,
+              activeName: 1
             }
           })
       }
