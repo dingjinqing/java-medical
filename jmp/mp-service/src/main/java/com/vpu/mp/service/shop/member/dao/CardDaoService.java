@@ -166,7 +166,7 @@ public class CardDaoService extends ShopBaseService {
 	private void buildOptionForReceiveCode(CodeReceiveParam param, SelectConditionStep<?> select) {
 		/** -手机号 */
 		if (!StringUtils.isBlank(param.getMobile())) {
-			select.and(USER.MOBILE.eq(param.getMobile()));
+			select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
 		}
 		/** -用户名 */
 		if (!StringUtils.isBlank(param.getUsername())) {
@@ -176,6 +176,15 @@ public class CardDaoService extends ShopBaseService {
 		/** -批次号 */
 		if (param.getBatchId() != null && !param.getBatchId().equals(ALL_BATCH)) {
 			select.and(CARD_RECEIVE_CODE.BATCH_ID.eq(param.getBatchId()));
+		}
+		/**
+		 * 领取码或卡号
+		 */
+		if(!StringUtils.isBlank(param.getSearch())) {
+			select.and(
+					CARD_RECEIVE_CODE.CODE.eq(param.getSearch())
+					.or(CARD_RECEIVE_CODE.CARD_NO.eq(param.getSearch()))
+					);
 		}
 	}
 
