@@ -417,6 +417,126 @@
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
+            <span>商品分享</span>
+          </div>
+          <div class="share-settings text-set clearfix">
+            <el-alert
+              title="注：若需在分享文案中显示商品名称/商品价格/分享人昵称，请在下方输入【商品名称】/【商品价格】/【分享人昵称】，我们将在用户分享时将内容自动替换成对应内容"
+              type="warning"
+              show-icon
+              style="line-height:1.4;margin:10px 0;"
+              :closable="false"
+            >
+            </el-alert>
+            <ol style="font-size:14px;line-height:1;margin-bottom:15px;">
+              <li>
+                <div>1. 直接分享
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>文案：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_common">
+                    <el-radio :label="0">默认方案</el-radio>
+                    <el-radio :label="1">自定义方案</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>设置的分享文案：</div>
+                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
+                      <div>则用户分享时显示的内容可能为：</div>
+                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                  <span class="example-tips">注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_common === 1">
+                  <el-input
+                    size="small"
+                    style="width: 500px;"
+                    v-model="info.goods_share_cfg.common_doc"
+                    placeholder="请输入分享文案"
+                  ></el-input>
+                </div>
+              </li>
+              <li>
+                <div>2. 下载海报
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>文案：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_pictorial">
+                    <el-radio :label="0">默认方案</el-radio>
+                    <el-radio :label="1">自定义方案</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>设置的分享文案：</div>
+                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
+                      <div>则用户分享时显示的内容可能为：</div>
+                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                  <span class="example-tips">注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_pictorial === 1">
+                  <el-input
+                    size="small"
+                    style="width:500px;"
+                    v-model="info.goods_share_cfg.pictorial_doc"
+                    placeholder="请输入分享文案"
+                  ></el-input>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
             <span>{{$t('storeCommonSettings.phoneAuthConf')}}</span>
           </div>
           <div class="text-set clearfix">
@@ -536,7 +656,8 @@ export default {
           share_img: 'image/admin/btn_add.png'
         },
         bind_mobile: 0, // 是否强制用户在购买、预约以及申请成为分销员时绑定手机号
-        geographic_location: 0 // 地理位置授权申请
+        geographic_location: 0, // 地理位置授权申请
+        goods_share_cfg: {} // 店铺商品分享配置
       },
       catIds: [],
       tuneUp: false
@@ -707,5 +828,17 @@ export default {
     //   margin: 0 10px;
     // }
   }
+  .share-settings {
+    .el-button--text {
+      margin-left: 15px;
+    }
+  }
+}
+.example-area {
+  line-height: 30px;
+}
+.example-tips {
+  margin-left: 15px;
+  color: #999;
 }
 </style>
