@@ -351,17 +351,28 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop="initNumber"
+                prop="productNumber"
                 :label="$t('gift.productNumber')"
                 align="center"
               >
                 <template slot-scope="scope">
                   <div style="display:flex;justify-content: center">
-                    <span style="display: flex;line-height: 45px;vertical-align: middle;">{{scope.row.prdNumber}} /&nbsp;</span>
+                    <!-- 添加显示 -->
+                    <span
+                      class="numberStyle"
+                      v-if="update === false"
+                    >{{scope.row.initNumber}} /&nbsp;</span>
+                    <!-- 编辑显示 -->
+                    <span
+                      class="numberStyle"
+                      v-if="update === true"
+                    >{{scope.row.initNumber - scope.row.offerNumber}} /&nbsp;</span>
                     <giftEdit
-                      v-model="scope.row.initNumber"
                       v-if="refreshFlag"
+                      v-model="scope.row.initNumber"
+                      :flag="update"
                       :prdNumber="scope.row.prdNumber"
+                      :offerNumber="scope.row.offerNumber"
                       @update="checkNumber"
                     />
                   </div>
@@ -527,7 +538,7 @@ export default {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if ((!re.test(value) || !re.test(maxPayNum)) && this.contains(5)) {
         callback(new Error('请填写0或者正整数'))
-      } else if (value > maxPayNum) {
+      } else if (Number(value) > Number(maxPayNum)) {
         callback(new Error('最小购买次数不能大于最大购买次数'))
       } else {
         callback()
@@ -701,9 +712,9 @@ export default {
         })
       })
       if (this.update) {
+        // 编辑保存
         var obj = this.param
         obj.id = this.id
-        // 编辑保存
         updateGift(obj).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.editSuccess') })
@@ -835,9 +846,13 @@ export default {
     loadGifts (gifts) {
       this.tableData = gifts
       this.tableData.forEach(item => {
-        item.initNumber = item.productNumber
         item.goodsImg = this.$imageHost + '/' + item.goodsImg
         this.specsIds.push(item.productId)
+        // 编辑回显
+        item.initNumber = Number(item.productNumber)
+        if ((item.productNumber - item.offerNumber) > item.prdNumber) {
+          item.offerNumber = item.offerNumber + (item.productNumber - item.offerNumber - item.prdNumber)
+        }
       })
     },
     loadStatus ({ status }) {
@@ -891,7 +906,15 @@ export default {
       console.log('getSpecsData', data)
       // this.specsData = data
       data.forEach(item => {
-        item.initNumber = Number(item.prdNumber)
+        item.productNumber = Number(item.prdNumber)
+        // 初始状态
+        if (this.update === false) {
+          // 添加状态
+          item.initNumber = Number(item.productNumber)
+        } else {
+          // 编辑状态
+          item.initNumber = Number(item.productNumber) + Number(item.offerNumber)
+        }
       })
       this.tableData = data
       // 重新加载子组件
@@ -912,6 +935,11 @@ export default {
     // 规格表格删除
     deleteHandler (index) {
       this.tableData.splice(index, 1)
+      // 重新加载子组件
+      this.refreshFlag = false
+      this.$nextTick(() => {
+        this.refreshFlag = true
+      })
       this.specsIds = []
       this.tableData.forEach(row => {
         this.specsIds.push(row.prdId)
@@ -1012,6 +1040,11 @@ export default {
 .input {
   margin-right: 10px;
   width: 70px;
+}
+.numberStyle {
+  display: flex;
+  line-height: 45px;
+  vertical-align: middle;
 }
 .footer {
   position: absolute;

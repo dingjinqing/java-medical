@@ -150,6 +150,25 @@
           </div>
           <div class="text-set clearfix">
             <p>{{$t('storeCommonSettings.defaultSortTip')}}：</p>
+            <div style="line-height:1;">
+              {{$t('storeCommonSettings.effectivePage')}}：
+              <el-checkbox
+                v-model="info.search_sort"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('storeCommonSettings.shopProductPage')}}</el-checkbox>
+              <el-checkbox
+                v-model="info.recommend_sort"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('storeCommonSettings.manually')}}</el-checkbox>
+              <el-checkbox
+                v-model="info.order_sort"
+                :true-label="1"
+                :false-label="0"
+              >{{$t('storeCommonSettings.businessCategoryPage')}}</el-checkbox>
+            </div>
+            <p>{{$t('storeCommonSettings.collation')}}：</p>
             <el-radio-group
               v-model="info.goods_sort"
               text-color="#333333"
@@ -160,6 +179,13 @@
               >
                 {{$t('storeCommonSettings.newTimeSort')}}
                 <span class="tips">{{$t('storeCommonSettings.newTimeSortTip')}}</span>
+              </el-radio>
+              <el-radio
+                class="goods_sort_radio"
+                label="on_sale_time"
+              >
+                {{$t('storeCommonSettings.arranged')}}
+                <span class="tips">{{$t('storeCommonSettings.latestProducts')}}</span>
               </el-radio>
               <el-radio
                 class="goods_sort_radio"
@@ -275,6 +301,42 @@
             </el-select>
           </div>
         </li>
+        <!-- 商品重量配置项设置 -->
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>商品重量配置项设置</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.goods_weight_cfg"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <span>{{info.goods_weight_cfg === 1?'已开启':'已关闭'}}</span>
+            <span class="tips">开启后，在后台新建/编辑商品信息时需要填写商品重量</span>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>商品条码配置项设置</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.need_prd_codes"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            ></el-switch>
+            <span>{{info.need_prd_codes === 1? '已开启': '已关闭'}}</span>
+            <span class="tips">开启后，在后台新建/编辑商品信息时可以填写商品条码</span>
+          </div>
+        </li>
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
@@ -350,6 +412,126 @@
                 </div>
               </div>
             </div>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>商品分享</span>
+          </div>
+          <div class="share-settings text-set clearfix">
+            <el-alert
+              title="注：若需在分享文案中显示商品名称/商品价格/分享人昵称，请在下方输入【商品名称】/【商品价格】/【分享人昵称】，我们将在用户分享时将内容自动替换成对应内容"
+              type="warning"
+              show-icon
+              style="line-height:1.4;margin:10px 0;"
+              :closable="false"
+            >
+            </el-alert>
+            <ol style="font-size:14px;line-height:1;margin-bottom:15px;">
+              <li>
+                <div>1. 直接分享
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>文案：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_common">
+                    <el-radio :label="0">默认方案</el-radio>
+                    <el-radio :label="1">自定义方案</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>设置的分享文案：</div>
+                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
+                      <div>则用户分享时显示的内容可能为：</div>
+                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                  <span class="example-tips">注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_common === 1">
+                  <el-input
+                    size="small"
+                    style="width: 500px;"
+                    v-model="info.goods_share_cfg.common_doc"
+                    placeholder="请输入分享文案"
+                  ></el-input>
+                </div>
+              </li>
+              <li>
+                <div>2. 下载海报
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>文案：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_pictorial">
+                    <el-radio :label="0">默认方案</el-radio>
+                    <el-radio :label="1">自定义方案</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>设置的分享文案：</div>
+                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
+                      <div>则用户分享时显示的内容可能为：</div>
+                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >查看示例</el-button>
+                  </el-popover>
+                  <span class="example-tips">注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_pictorial === 1">
+                  <el-input
+                    size="small"
+                    style="width:500px;"
+                    v-model="info.goods_share_cfg.pictorial_doc"
+                    placeholder="请输入分享文案"
+                  ></el-input>
+                </div>
+              </li>
+            </ol>
           </div>
         </li>
         <li>
@@ -457,11 +639,16 @@ export default {
         },
         del_market: 0,
         sold_out_goods: 0, // 是否显示售罄商品
+        search_sort: 1, // 是否在小程序商品搜索页应用goods_sort
+        recommend_sort: 1, // 是否在小程序手动商品推荐页应用goods_sort
+        order_sort: 0, // 是否在小程序商品分类页应用goods_sort
         goods_sort: 'add_time', // 小程序商品默认排序规则 add_time; goods_sale_num; comment_num; pv;
         goods_record: 0, // 是否显示购买记录
         custom_service: 0, // 客服入口开关-商品详情页是否展示
         return_service: 1, // 客服入口开关-退/换货中心是否展示
         default_sort: 0, // 商品默认平台分类id
+        goods_weight_cfg: 1, // 商品重量配置项
+        need_prd_codes: 1, // 商品条码配置项
         share_config: {
           share_action: 0,
           share_doc: '',
@@ -469,7 +656,8 @@ export default {
           share_img: 'image/admin/btn_add.png'
         },
         bind_mobile: 0, // 是否强制用户在购买、预约以及申请成为分销员时绑定手机号
-        geographic_location: 0 // 地理位置授权申请
+        geographic_location: 0, // 地理位置授权申请
+        goods_share_cfg: {} // 店铺商品分享配置
       },
       catIds: [],
       tuneUp: false
@@ -640,5 +828,17 @@ export default {
     //   margin: 0 10px;
     // }
   }
+  .share-settings {
+    .el-button--text {
+      margin-left: 15px;
+    }
+  }
+}
+.example-area {
+  line-height: 30px;
+}
+.example-tips {
+  margin-left: 15px;
+  color: #999;
 }
 </style>

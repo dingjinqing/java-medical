@@ -237,6 +237,8 @@ export const en = {
   goodsTip2: 'Several items',
   goodsTip3: 'Several businesses',
   goodsTip4: 'Several platforms',
+  goodsTip5: 'Merchant classification',
+  goodsTip6: 'Unselected',
 
   storeArr: [
     {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.store.account.StoreAccountVo;
+import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfoVo;
 import com.vpu.mp.service.pojo.shop.store.account.StoreManageParam;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthListPage;
@@ -27,7 +29,6 @@ import com.vpu.mp.service.pojo.shop.store.authority.StoreAuthVo;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreCfgParam;
 import com.vpu.mp.service.pojo.shop.store.authority.StoreConstant;
 import com.vpu.mp.service.pojo.shop.store.authority.Sub;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
 /**
@@ -106,7 +107,10 @@ public class StoreManageService extends MainBaseService {
 			if (stores.contains(dot)) {
 				String[] split = stores.split(dot);
 				for (String string : split) {
-					list.add(Integer.valueOf(string));
+					Integer valueOf = Integer.valueOf(string);
+					if(!list.contains(valueOf)) {
+						list.add(valueOf);						
+					}
 				}
 			} else {
 				list.add(Integer.valueOf(stores));
@@ -142,13 +146,10 @@ public class StoreManageService extends MainBaseService {
 	 * @return
 	 */
 	public PageResult<StoreAccountVo> getAccountList(Integer shopId, StoreAuthListPage param) {
-		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
-		Integer currentPage = param.getCurrentPage();
-		Integer pageRows = param.getPageRows();
-		PageResult<StoreAccountVo> accountList = storeAccountService.accountList(param, shop.getSysId(),
-				shopId);
+		PageResult<StoreAccountVo> accountList = storeAccountService.accountList(param, getSysId(shopId), shopId);
 		List<StoreAccountVo> dataList = accountList.getDataList();
 		for (StoreAccountVo item : dataList) {
+			item.setStoreLists(storeAccountService.changeToArray(item.getStoreList()));
 			String storeList = item.getStoreList();
 			if (!StringUtils.isEmpty(storeList)) {
 				Integer storeNum = saas.getShopApp(shopId).store.getStoreNum(splitString(storeList));
@@ -175,43 +176,37 @@ public class StoreManageService extends MainBaseService {
 		StoreService storeService = saas.getShopApp(shopId).store;
 		String storeList = storeAccount.getStoreList();
 		List<Integer> storeIds = splitString(storeList);
-		List<StoreBasicVo> haveStore = storeService.getStoreByIds(storeIds);
-		List<StoreBasicVo> allStore = storeService.getAllStore();
-		return new StoreInfoVo(haveStore, allStore);
+		List<StoreInfo> haveStore = storeService.getStoreByIds(storeIds);
+		List<StoreInfo> allStore = storeService.getAllStores();
+		List<StoreInfo> lastStore = allStore.stream().filter(item -> !haveStore.contains(item)).collect(Collectors.toList());
+		return new StoreInfoVo(haveStore, lastStore, allStore);
 	}
-
-
 
 	public boolean config(StoreManageParam param) {
 		logger().info("进入更新门店数量");
 		boolean flag;
-		String storeList = param.getStoreList();
-		if (StringUtils.isEmpty(storeList) || Objects.equals("null", storeList)) {
-			storeList = null;
-		}
-		int exect = storeAccountService.updateStoreList(param.getAccountId(), storeList);
+		int exect = storeAccountService.updateStoreList(param.getAccountId(), param.getStoreList());
+		logger().info("结果：{}",exect);
 		flag = exect > 0 ? true : false;
 		return flag;
 	}
-	
-	
+
 	public int stop(Integer accountId) {
-		//账户状态1:启用，0：禁用
-		return  storeAccountService.updateStatus(accountId, StoreConstant.STOP);
+		// 账户状态1:启用，0：禁用
+		return storeAccountService.updateStatus(accountId, StoreConstant.STOP);
 	}
 
-	
 	public JsonResultCode start(Integer accountId) {
 		StoreAccountVo storeAccountVo = storeAccountService.getStoreInfoById(accountId);
-		if(StringUtils.isEmpty(storeAccountVo.getStoreList())) {
-			//请设置有权限门店
-			return JsonResultCode.CODE_STORE_NEED_HAVE; 
+		if (StringUtils.isEmpty(storeAccountVo.getStoreList())) {
+			// 请设置有权限门店
+			return JsonResultCode.CODE_STORE_NEED_HAVE;
 		}
-		//账户状态1:启用，0：禁用
+		// 账户状态1:启用，0：禁用
 		int updateStatus = storeAccountService.updateStatus(accountId, StoreConstant.STATRT);
-		return  updateStatus>0?JsonResultCode.CODE_SUCCESS:JsonResultCode.CODE_FAIL;
+		return updateStatus > 0 ? JsonResultCode.CODE_SUCCESS : JsonResultCode.CODE_FAIL;
 	}
-	
+
 	public Boolean check(String passwd) {
 		if (StringUtils.isEmpty(passwd)) {
 			return true;
@@ -220,5 +215,10 @@ public class StoreManageService extends MainBaseService {
 		boolean isMatch = Pattern.matches(pattern, passwd);
 		return isMatch;
 	}
-	
+
+	private Integer getSysId(Integer shopId) {
+		ShopRecord shop = db().selectFrom(SHOP).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
+		return shop.getSysId();
+	}
+
 }

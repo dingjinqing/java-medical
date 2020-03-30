@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 王兵兵
@@ -32,23 +33,41 @@ public class BargainUpdateParam {
 	private Byte status;
 	
 	private String bargainName;
-    private Byte       bargainType;
 
-    private Timestamp startTime;
     private Timestamp  endTime;
+    /**
+     * 优先级
+     */
+    private Integer first;
+
+    /**
+     *  活动商品
+     */
+    private List<BargainGoodsUpdateParam> bargainGoods;
+
+    /**
+     * 商品首次砍价可砍价比例区间 百分比
+     */
     private Double     bargainMin;
     private Double     bargainMax;
-    private Integer    stock;
+
     private String     mrkingVoucherId;
     private String     rewardCouponId;
+
+    /**
+     *  任意金额结算模式的单次帮砍金额模式：0固定金额，1区间随机金额
+     */
     private Byte       bargainMoneyType;
     private BigDecimal bargainFixedMoney;
     private BigDecimal bargainMinMoney;
     private BigDecimal bargainMaxMoney;
     private Byte       freeFreight;
     private Byte needBindMobile;
+    /**
+     * 初始销量(初始砍价人次)
+     */
+    private Integer initialSales;
 
-    private BigDecimal expectationPrice;
 	
 	private PictorialShareConfig shareConfig;
 }

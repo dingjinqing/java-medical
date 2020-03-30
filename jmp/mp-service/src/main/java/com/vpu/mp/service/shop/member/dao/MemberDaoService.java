@@ -446,7 +446,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getMobileCondition(String mobile) {
 		Condition condition = DSL.noCondition();
-		return isNotBlank(mobile)?condition.and(USER.MOBILE.eq(mobile)):condition;
+		if(isNotBlank(mobile)) {
+			condition = condition.and(USER.MOBILE.like(likeValue(mobile)));
+		}
+		return condition;
 	}
 	
 	/**

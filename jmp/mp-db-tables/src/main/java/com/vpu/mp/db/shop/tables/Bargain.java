@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain extends TableImpl<BargainRecord> {
 
-    private static final long serialVersionUID = -1646185312;
+    private static final long serialVersionUID = -632077610;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain</code>
@@ -58,9 +58,9 @@ public class Bargain extends TableImpl<BargainRecord> {
     public final TableField<BargainRecord, String> BARGAIN_NAME = createField("bargain_name", org.jooq.impl.SQLDataType.VARCHAR(120).nullable(false), this, "活动名称");
 
     /**
-     * The column <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品id
+     * The column <code>mini_shop_471752.b2c_bargain.goods_id</code>. 商品ID
      */
-    public final TableField<BargainRecord, Integer> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "商品id");
+    public final TableField<BargainRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.VARCHAR(9999), this, "商品ID");
 
     /**
      * The column <code>mini_shop_471752.b2c_bargain.start_time</code>. 开始时间
@@ -186,6 +186,11 @@ public class Bargain extends TableImpl<BargainRecord> {
      * The column <code>mini_shop_471752.b2c_bargain.initial_sales</code>. 初始销量
      */
     public final TableField<BargainRecord, Integer> INITIAL_SALES = createField("initial_sales", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "初始销量");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.first</code>. 优先级
+     */
+    public final TableField<BargainRecord, Integer> FIRST = createField("first", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
      * Create a <code>mini_shop_471752.b2c_bargain</code> table reference

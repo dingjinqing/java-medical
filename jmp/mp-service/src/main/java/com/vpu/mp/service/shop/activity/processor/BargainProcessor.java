@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -14,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.bargain.BargainMpVo;
+import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainGoodsPriceBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.BargainProcessorDao;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
             return;
         }
 
-        BargainMpVo bargainInfo = bargainProcessorDao.getBargainInfo(param.getUserId(), param.getActivityId());
+        BargainMpVo bargainInfo = bargainProcessorDao.getBargainInfo(param.getUserId(), param.getActivityId(),param.getGoodsId());
 
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(bargainInfo.getActState())) {
             capsule.setActivity(bargainInfo);
@@ -75,17 +75,17 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
     public void processForList(List<GoodsListMpBo> capsules, Integer userId) {
         List<GoodsListMpBo> availableCapsules = capsules.stream().filter(x -> BaseConstant.ACTIVITY_TYPE_BARGAIN.equals(x.getActivityType())).collect(Collectors.toList());
         List<Integer> goodsIds = availableCapsules.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, BargainRecord> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtil.getLocalDateTime());
+        Map<Integer, BargainGoodsPriceBo> goodsBargainInfo = bargainProcessorDao.getGoodsBargainListInfo(goodsIds, DateUtil.getLocalDateTime());
 
         availableCapsules.forEach(capsule->{
             if (goodsBargainInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
-            BargainRecord bargainRecord = goodsBargainInfo.get(capsule.getGoodsId());
-            capsule.setRealPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargainRecord.getBargainType())?bargainRecord.getExpectationPrice():bargainRecord.getFloorPrice());
+            BargainGoodsPriceBo bargain = goodsBargainInfo.get(capsule.getGoodsId());
+            capsule.setRealPrice(GoodsConstant.BARGAIN_TYPE_FIXED.equals(bargain.getBargainType())?bargain.getExpectationPrice():bargain.getFloorPrice());
             GoodsActivityBaseMp activity = new GoodsActivityBaseMp();
 
-            activity.setActivityId(bargainRecord.getId());
+            activity.setActivityId(bargain.getId());
             activity.setActivityType(BaseConstant.ACTIVITY_TYPE_BARGAIN);
             capsule.getGoodsActivities().add(activity);
             capsule.getProcessedTypes().add(BaseConstant.ACTIVITY_TYPE_BARGAIN);

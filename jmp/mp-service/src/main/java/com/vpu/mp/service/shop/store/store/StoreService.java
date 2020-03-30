@@ -1,5 +1,29 @@
 package com.vpu.mp.service.shop.store.store;
 
+import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
+import static com.vpu.mp.db.shop.tables.Store.STORE;
+import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.StoreGroupRecord;
 import com.vpu.mp.db.shop.tables.records.StoreRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -9,6 +33,7 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
@@ -22,24 +47,8 @@ import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.service.StoreServiceService;
 import com.vpu.mp.service.shop.store.verify.StoreVerifierService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
-import static com.vpu.mp.db.shop.tables.Store.STORE;
-import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
-import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
-import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
 /**
@@ -464,7 +473,17 @@ public class StoreService extends ShopBaseService {
      * @param storeIds
      * @return
      */
-    public List<StoreBasicVo> getStoreByIds(List<Integer> storeIds) {
-    	return  db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreBasicVo.class);
+    public List<StoreInfo> getStoreByIds(List<Integer> storeIds) {
+    	return  db().selectFrom(STORE).where(STORE.STORE_ID.in(storeIds)).fetchInto(StoreInfo.class);
     }
+    
+    /**
+     * 获取所有门店id和名称
+     */
+    public List<StoreInfo> getAllStores() {
+        logger().info("获取所有门店id和名称");
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE).fetchInto(StoreInfo.class);
+    }
+
 }

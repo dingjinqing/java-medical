@@ -56,7 +56,7 @@ public class UserAccountDao extends ShopBaseService {
 
 		/** 订单号 */
 		if (isNotBlank(param.getOrderSn())) {
-			select.where(USER_ACCOUNT.ORDER_SN.eq(param.getOrderSn()));
+			select.where(USER_ACCOUNT.ORDER_SN.like(likeValue(param.getOrderSn())));
 		}
 
 		/** 开始时间 */

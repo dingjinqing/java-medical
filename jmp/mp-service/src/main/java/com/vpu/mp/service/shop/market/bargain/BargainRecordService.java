@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.market.bargain;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -46,6 +43,7 @@ import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
+import static com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
@@ -122,8 +120,8 @@ public class BargainRecordService extends ShopBaseService {
 	 */
 	public PageResult<BargainRecordPageListQueryVo> getRecordPageList(BargainRecordPageListQueryParam param){
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
+				BARGAIN_RECORD.ID,BARGAIN_RECORD.BARGAIN_ID,BARGAIN_RECORD.GOODS_ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
+				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN.BARGAIN_TYPE
 				).
 				from(BARGAIN_RECORD).
 				leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -161,18 +159,19 @@ public class BargainRecordService extends ShopBaseService {
 	 *
 	 */
 	public BigDecimal getBargainRecordSurplusMoney(BargainRecordPageListQueryVo record) {
+	    BargainGoodsRecord bargainGoodsRecord = saas.getShopApp(getShopId()).bargain.getBargainGoods(record.getBargainId(),record.getGoodsId());
 		if(record.getBargainType() == BargainService.BARGAIN_TYPE_FIXED) {
-			return record.getGoodsPrice().subtract(record.getExpectationPrice()).subtract(record.getBargainMoney());
+			return record.getGoodsPrice().subtract(bargainGoodsRecord.getExpectationPrice()).subtract(record.getBargainMoney());
 		}else if(record.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM) {
-			return record.getGoodsPrice().subtract(record.getFloorPrice()).subtract(record.getBargainMoney());
+			return record.getGoodsPrice().subtract(bargainGoodsRecord.getFloorPrice()).subtract(record.getBargainMoney());
 		}
 		return BigDecimal.ZERO;
 	}
 	
 	public Workbook exportBargainRecordList(BargainRecordPageListQueryParam param, String lang) {
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN_RECORD.ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE			
+				BARGAIN_RECORD.ID,BARGAIN_RECORD.GOODS_ID,GOODS.GOODS_NAME,BARGAIN_RECORD.GOODS_PRICE,USER.USERNAME,USER.MOBILE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
+				BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS,BARGAIN.BARGAIN_TYPE
 				).
 				from(BARGAIN_RECORD).
 				leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
@@ -196,10 +195,12 @@ public class BargainRecordService extends ShopBaseService {
 					break;
 				default:
 			}
+
+            BargainGoodsRecord bargainGoods = saas.getShopApp(getShopId()).bargain.getBargainGoods(param.getBargainId(),vo.getGoodsId());
 			if(vo.getBargainType() == BargainService.BARGAIN_TYPE_FIXED) {
-				vo.setSurplusMoney(vo.getGoodsPrice().subtract(vo.getExpectationPrice()).subtract(vo.getBargainMoney()));
+				vo.setSurplusMoney(vo.getGoodsPrice().subtract(bargainGoods.getExpectationPrice()).subtract(vo.getBargainMoney()));
 			}else if(vo.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM) {
-				vo.setSurplusMoney(vo.getGoodsPrice().subtract(vo.getFloorPrice()).subtract(vo.getBargainMoney()));
+				vo.setSurplusMoney(vo.getGoodsPrice().subtract(bargainGoods.getFloorPrice()).subtract(vo.getBargainMoney()));
 			}
 		}
 		
@@ -242,11 +243,12 @@ public class BargainRecordService extends ShopBaseService {
     public PageResult<BargainRecordListQueryVo> getRecordPageList(Integer userId,BargainRecordListQueryParam param){
         SelectWhereStep<? extends Record> select = db().select(
             BARGAIN_RECORD.ID,BARGAIN_RECORD.GOODS_PRICE,BARGAIN_RECORD.CREATE_TIME,BARGAIN_RECORD.BARGAIN_MONEY,
-            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN_RECORD.PRD_ID,BARGAIN_RECORD.BARGAIN_ID,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.FLOOR_PRICE,BARGAIN.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS,ORDER_INFO.ORDER_SN
+            BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.STATUS ,BARGAIN_RECORD.PRD_ID,BARGAIN_RECORD.BARGAIN_ID,GOODS.GOODS_NAME,GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NUMBER,BARGAIN_GOODS.EXPECTATION_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN_GOODS.FLOOR_PRICE,BARGAIN_GOODS.STOCK,BARGAIN.END_TIME,ORDER_INFO.ORDER_STATUS,ORDER_INFO.ORDER_SN
         ).
             from(BARGAIN_RECORD).
-            leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
-            leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID)).
+            innerJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID)).
+            innerJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID)).
+            innerJoin(BARGAIN_GOODS).on(BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID)).
             leftJoin(ORDER_INFO).on(BARGAIN_RECORD.ORDER_SN.eq(ORDER_INFO.ORDER_SN));
 
         select.where(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.STATUS.eq(param.getStatus())).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
@@ -307,8 +309,8 @@ public class BargainRecordService extends ShopBaseService {
      * @return
      */
     public Byte canApplyBargain(Integer userId, BargainApplyParam param) {
-        BargainRecord bargain = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(param.getBargainId()).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
-        GoodsSpecProductRecord goodsPrd = db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(param.getPrdId())).fetchAny();
+        BargainRecord bargain = saas.getShopApp(getShopId()).bargain.getBargainActById(param.getBargainId());
+        BargainGoodsRecord bargainGoods = saas.getShopApp(getShopId()).bargain.getBargainGoods(param.getBargainId(),param.getGoodsId());
 
         //校验活动信息
         Byte res = bargainProcessorDao.canApplyBargain(userId,DateUtil.getLocalDateTime(),bargain);
@@ -317,14 +319,17 @@ public class BargainRecordService extends ShopBaseService {
             return res;
         }else{
             //校验库存
-            if(bargain.getStock() <= 0){
+            if(bargain.getStock() <= 0 || bargainGoods.getStock() <= 0){
                 return BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM;
             }
+
+            GoodsSpecProductRecord goodsPrd = saas.getShopApp(getShopId()).goods.goodsSpecProductService.selectSpecByProId(param.getPrdId());
             if(goodsPrd.getPrdNumber() <= 0){
                 return BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM;
             }
-            int goodsNumber = db().select(GOODS.GOODS_NUMBER).from(GOODS).where(GOODS.GOODS_ID.eq(bargain.getGoodsId())).fetchOptionalInto(Integer.class).orElse(0);
-            if(goodsNumber <= 0){
+
+            GoodsRecord goods = saas.getShopApp(getShopId()).goods.getGoodsRecordById(param.getGoodsId());
+            if(goods.getGoodsNumber() <= 0){
                 return BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM;
             }
         }
@@ -387,18 +392,20 @@ public class BargainRecordService extends ShopBaseService {
     }
 
     public BargainRecordInfo getRecordInfo(int recordId){
-        return db().select(BARGAIN_RECORD.asterisk(),
+        return db().select(BARGAIN_RECORD.fields())
+            .select(
             GOODS.GOODS_ID,GOODS.GOODS_IMG,GOODS.GOODS_NAME,GOODS.IS_DEFAULT_PRODUCT,
             USER_DETAIL.USER_AVATAR,
             GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.EXPECTATION_PRICE,BARGAIN.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN.STOCK,BARGAIN.NEED_BIND_MOBILE,BARGAIN.INITIAL_SALES,BARGAIN.FREE_FREIGHT,
+            BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN_GOODS.EXPECTATION_PRICE,BARGAIN_GOODS.FLOOR_PRICE,BARGAIN.UPDATE_TIME,BARGAIN.SHARE_CONFIG,BARGAIN_GOODS.STOCK,BARGAIN.NEED_BIND_MOBILE,BARGAIN.INITIAL_SALES,BARGAIN.FREE_FREIGHT,
             USER.WX_OPENID,USER.USERNAME).from(
             BARGAIN_RECORD
-            .leftJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))
-            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID))
-            .leftJoin(GOODS_SPEC_PRODUCT).on(BARGAIN_RECORD.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
-            .leftJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_RECORD.BARGAIN_ID))
-            .leftJoin(USER).on(USER.USER_ID.eq(BARGAIN_RECORD.USER_ID))
+            .innerJoin(USER_DETAIL).on(BARGAIN_RECORD.USER_ID.eq(USER_DETAIL.USER_ID))
+            .innerJoin(GOODS).on(GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID))
+            .innerJoin(GOODS_SPEC_PRODUCT).on(BARGAIN_RECORD.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+            .innerJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_RECORD.BARGAIN_ID))
+            .innerJoin(USER).on(USER.USER_ID.eq(BARGAIN_RECORD.USER_ID))
+            .innerJoin(BARGAIN_GOODS).on(BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID))
         )
             .where(BARGAIN_RECORD.ID.eq(recordId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchOptionalInto(BargainRecordInfo.class).orElse(null);

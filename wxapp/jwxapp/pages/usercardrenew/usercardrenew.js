@@ -1,12 +1,24 @@
 var util = require('../../utils/util.js');
+var qrcode = require('../../utils/qrcode.js');
+var barcode = require('../../utils/barcode.js');
 global.wxPage({
   /**
    * 页面的初始数据
    */
   data: {
+    cardMode: true,// 会员卡样式弹窗flag
+    cardArray: [], // 会员卡样式弹窗渲染数据
+    payMode: true, // 会员卡支付弹窗
+    pay_card: 0, // 会员卡支付flag
+    pay_click_type: 2,
+    user_money: {
+      account: 100
+    },
     cardChooseName: '修改样式',
+    choose_card: {},
     cardInfo: {
       cardType: 0,
+      discount: 6, // 二维码弹窗折数
       shopAvatar: util.getCache('avatarUrl'),
       cardName: '自动审核',
       expireType: 0,
@@ -17,7 +29,8 @@ global.wxPage({
       renewNum: 100,
       shouldRenewDate: 100,
       renew_type: 0,
-
+      renew_num: 100,
+      renew_type: 0
     } // 续费卡详细信息
   },
   /**
@@ -29,7 +42,7 @@ global.wxPage({
     this.setData({
       page_name: '会员卡续费'
     })
-    console.log(this.data, options)
+    console.log(this.data.imageUrl, options)
     if (this.data.linColor) {
       let linColor = this.data.linColor.slice(0, this.data.linColor.lastIndexOf(',')) + ',0.3)';
       console.log(linColor)
@@ -42,7 +55,49 @@ global.wxPage({
     this.setData({
       viewHeight: viewHeight,
     })
-    // var that = this;
+    // 模拟修改会员卡弹窗样式
+    let cardArr = [
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0000AC',
+        card_name: '腾飞测试1',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      },
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0081FF',
+        card_name: '腾飞测试2',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      },
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0081FF',
+        card_name: '腾飞测试3',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      }
+    ]
+    this.setData({
+      card_array: cardArr
+    })
+    var that = this;
     // util.api('/api/card/renew/info', function(res) {
     //   card_info = res.content;
     //   opt.card_id = card_info.card_id;
@@ -53,8 +108,19 @@ global.wxPage({
     // }, {
     //   card_no: card_no
     // })
+
+    that.loadData({}, 0, that)
   },
   loadData: function (card_info, sgan, that) {
+    let card_no = '2455472209066004'
+    var data = qrcode.createQrCodeImg(card_no, {
+      'size': 300
+    });
+    console.log(data)
+    that.setData({
+      img_code: data,
+    })
+
     // var bg;
     // var data_type_name;
     // if (card_info.date_type == 0) {
@@ -166,17 +232,18 @@ global.wxPage({
     // wx.stopPullDownRefresh();
   },
 
-  modalinput: function () {
-    // barcode.barcode('barcode', card_no, 580, 150);
-    // this.setData({
-    //   showModal: true
-    // })
+  modalinput () {
+    console.log(this.data.cardInfo)
+    let qrCode = []
+    this.setData({
+      qrCode,
+      showQrcode: true
+    })
   },
-
   cardConfirm: function (e) {
-    // this.setData({
-    //   cardMode: true,
-    // });
+    this.setData({
+      cardMode: true
+    });
     // var member_card_arr = Object.keys(this.data.card_array);
     // if (member_card_arr.length == 1 && this.data.card_array[member_card_arr[0]].card_type == 1) {
     //   card_info.member_card_no = this.data.card_array[member_card_arr[0]].card_no;
@@ -188,51 +255,53 @@ global.wxPage({
     // this.loadData(card_info, 0, this);
   },
   chooseCard: function (e) { //选择会员卡
-    // var card_choose_name = e.currentTarget.dataset.name;
-    // var renew_card_no = e.currentTarget.dataset.card_no;
-    // var id = e.currentTarget.dataset.id;
-    // var card_arr = this.data.card_array;
-    // for (var i in card_arr) {
-    //   if (i == id) {
-    //     card_arr[i].card_src = 1;
-    //   } else {
-    //     card_arr[i].card_src = card_arr[i].src_no;
-    //   }
-    // }
-    // this.data.choose_card.card_choose_name = card_choose_name;
-    // this.data.choose_card.card_no = renew_card_no;
-    // this.setData({
-    //   card_array: card_arr
-    // })
+    console.log(e)
+    let card_choose_name = e.currentTarget.dataset.name;
+    let renew_card_no = e.currentTarget.dataset.card_no;
+    let id = e.currentTarget.dataset.id;  // 当前选中的卡下标
+    let card_arr = this.data.card_array;
+    card_arr.forEach((item, index) => {
+      if (index == id) {
+        card_arr[index].card_src = 1;
+      } else {
+        card_arr[index].card_src = card_arr[index].src_no;
+      }
+    })
+    this.data.choose_card.card_choose_name = card_choose_name;
+    this.data.choose_card.card_no = renew_card_no;
+    console.log(card_arr)
+    this.setData({
+      card_array: card_arr
+    })
   },
-  // 支付弹窗
+  // 点击会员卡余额支付调起支付弹窗
   payClick: function (e) {
-    // var that = this;
-    // var type = e.currentTarget.dataset.type;
-    // if (type == 'score') {
-    //   that.setData({
-    //     pay_click_type: 1,
-    //   })
-    // } else if (type == 'yue') {
-    //   that.setData({
-    //     pay_click_type: 2,
-    //   })
-    // } else {
-    //   that.setData({
-    //     pay_click_type: 3,
-    //   })
-    // }
-    // that.setData({
-    //   payMode: false,
-    //   canClick: true,
-    //   prompt_message: '',
-    // })
+    var that = this;
+    var type = e.currentTarget.dataset.type;
+    if (type == 'score') {
+      that.setData({
+        pay_click_type: 1,
+      })
+    } else if (type == 'yue') {
+      that.setData({
+        pay_click_type: 2,
+      })
+    } else {
+      that.setData({
+        pay_click_type: 3,
+      })
+    }
+    that.setData({
+      payMode: false,
+      canClick: true,
+      prompt_message: '',
+    })
   },
   payCancel: function (e) {
-    // var that = this;
-    // that.setData({
-    //   payMode: true
-    // })
+    var that = this;
+    that.setData({
+      payMode: true
+    })
   },
 
   checkCancelYue: function (e) {
@@ -258,7 +327,7 @@ global.wxPage({
     // })
   },
   payConfirm: function (e) {
-    // var that = this;
+    var that = this;
     // var type = that.data.pay_click_type;
     // var input;
     // var prompt_message;
@@ -290,34 +359,34 @@ global.wxPage({
     //     pay_card: 1,
     //   })
     // }
-    // that.setData({
-    //   payMode: true,
-    // })
+    that.setData({
+      payMode: true,
+    })
   },
   yue_fo: function (e) {
-    // this.setData({
-    //   account_pay_control: 1,
-    //   prompt_message: '',
-    //   canClick: true,
-    // })
+    this.setData({
+      account_pay_control: 1,
+      prompt_message: '',
+      canClick: true,
+    })
   },
   mem_fo: function (e) {
-    // this.setData({
-    //   card_account_pay_control: 1,
-    //   prompt_message: '',
-    //   canClick: true,
-    // })
+    this.setData({
+      card_account_pay_control: 1,
+      prompt_message: '',
+      canClick: true,
+    })
   },
   // 会员卡
   cardClick: function (e) { //会员卡弹框显示
-    // this.setData({
-    //   cardMode: false
-    // })
+    this.setData({
+      cardMode: false
+    })
   },
   cardCancel: function (e) { //关闭会员卡弹框
-    // this.setData({
-    //   cardMode: true
-    // })
+    this.setData({
+      cardMode: true
+    })
   },
   member_card: function (e) {
     // if (e.detail.value) {
@@ -438,9 +507,9 @@ global.wxPage({
    * 隐藏模态对话框
    */
   hideModal: function () {
-    // this.setData({
-    //   showModal: false
-    // });
+    this.setData({
+      showModal: false
+    });
   },
   // 展示二维码
   showQrCode () {

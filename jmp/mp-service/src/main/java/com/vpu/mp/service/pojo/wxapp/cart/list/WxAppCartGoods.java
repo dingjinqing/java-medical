@@ -90,6 +90,10 @@ public class WxAppCartGoods {
     private Integer productId;
     private String prdSn;
     /**
+     * 商品库存
+     */
+    private Integer prdNumber;
+    /**
      * 商品最少限购数量
      */
     private Integer limitBuyNum;

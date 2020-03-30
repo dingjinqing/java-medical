@@ -65,6 +65,9 @@ public class BargainRecordExportVo {
 	 */
 	@ExcelIgnore
 	private Byte bargainType;
+
+    @ExcelIgnore
+    private Integer goodsId;
 	
 	/**
 	 *  任意低价
