@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.goods.search;
 
+import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
+
 /**
  *
  * @author 李晓冰
@@ -8,20 +10,30 @@ package com.vpu.mp.service.pojo.wxapp.goods.search;
  */
 public enum SortItemEnum {
     /** 商品销量0*/
-    SALE_NUM,
+    SALE_NUM(EsSearchName.GOODS_SALE_NUM),
 
     /** 商品价格1*/
-    PRICE,
+    PRICE(EsSearchName.SHOW_PRICE),
 
     /** 上新时间2*/
-    ADD_TIME,
+    ADD_TIME(EsSearchName.UPDATE_TIME),
 
     /** 评论数量3*/
-    COMMENT_NUM,
+    COMMENT_NUM(EsSearchName.COMMENT_NUM),
 
     /** 7天内访问数量4*/
-    PV,
+    PV(EsSearchName.PV),
 
     /** 上架时间5*/
-    SALE_TIME
+    SALE_TIME(EsSearchName.ADD_ES_TIME);
+
+    private String esName;
+
+    SortItemEnum(String esName){
+        this.esName = esName;
+    }
+
+    public String getEsName(){
+        return this.esName;
+    }
 }

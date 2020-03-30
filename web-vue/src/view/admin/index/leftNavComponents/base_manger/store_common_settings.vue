@@ -301,6 +301,42 @@
             </el-select>
           </div>
         </li>
+        <!-- 商品重量配置项设置 -->
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>{{$t('storeCommonSettings.weightSetting')}}</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.goods_weight_cfg"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <span>{{info.goods_weight_cfg === 1?$t('storeCommonSettings.turnedOn'):$t('storeCommonSettings.closed')}}</span>
+            <span class="tips">{{$t('storeCommonSettings.afterOpen')}}</span>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>{{$t('storeCommonSettings.barcodeSetting')}}</span>
+          </div>
+          <div class="text-set clearfix">
+            <el-switch
+              v-model="info.need_prd_codes"
+              active-color="#F7931E"
+              inactive-color="#ccc"
+              :active-value="1"
+              :inactive-value="0"
+            ></el-switch>
+            <span>{{info.need_prd_codes === 1? $t('storeCommonSettings.turnedOn'):$t('storeCommonSettings.closed')}}</span>
+            <span class="tips">{{$t('storeCommonSettings.fillBarcode')}}</span>
+          </div>
+        </li>
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
@@ -376,6 +412,126 @@
                 </div>
               </div>
             </div>
+          </div>
+        </li>
+        <li>
+          <div class="text-prompt">
+            <span class="blue_border"></span>
+            <span>{{$t('storeCommonSettings.productShare')}}</span>
+          </div>
+          <div class="share-settings text-set clearfix">
+            <el-alert
+              :title="$t('storeCommonSettings.productNote')"
+              type="warning"
+              show-icon
+              style="line-height:1.4;margin:10px 0;"
+              :closable="false"
+            >
+            </el-alert>
+            <ol style="font-size:14px;line-height:1;margin-bottom:15px;">
+              <li>
+                <div>1. {{$t('storeCommonSettings.shareDirectly')}}
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>{{$t('storeCommonSettings.copyWriting')}}：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_common">
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultScheme')}}</el-radio>
+                    <el-radio :label="1">{{$t('storeCommonSettings.customScheme')}}</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>{{$t('storeCommonSettings.sharedCopy')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareTemp')}}</div>
+                      <div>{{$t('storeCommonSettings.mayBe')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareExample')}}</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
+                  </el-popover>
+                  <span class="example-tips">{{$t('storeCommonSettings.shareNote')}}</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_common === 1">
+                  <el-input
+                    size="small"
+                    style="width: 500px;"
+                    v-model="info.goods_share_cfg.common_doc"
+                    :placeholder="$t('storeCommonSettings.peShareCopy')"
+                  ></el-input>
+                </div>
+              </li>
+              <li>
+                <div>2. {{$t('storeCommonSettings.downloadPoster')}}
+                  <el-popover
+                    placement="right"
+                    trigger="hover"
+                  >
+                    <div>
+                      <el-image
+                        style="width:200px;"
+                        :src="$imageHost + '/image/admin/gd_share_ex1.jpg'"
+                      ></el-image>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
+                  </el-popover>
+                </div>
+                <div>
+                  <span>{{$t('storeCommonSettings.copyWriting')}}：</span>
+                  <el-radio-group v-model="info.goods_share_cfg.goods_share_pictorial">
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultScheme')}}</el-radio>
+                    <el-radio :label="1">{{$t('storeCommonSettings.customScheme')}}</el-radio>
+                  </el-radio-group>
+                  <el-popover
+                    placement="top"
+                    trigger="hover"
+                  >
+                    <div class="example-area">
+                      <div class="triangle"></div>
+                      <div>{{$t('storeCommonSettings.sharedCopy')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareTemp')}}</div>
+                      <div>{{$t('storeCommonSettings.mayBe')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareExample')}}</div>
+                    </div>
+                    <el-button
+                      slot="reference"
+                      type="text"
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
+                  </el-popover>
+                  <span class="example-tips">{{$t('storeCommonSettings.downNote')}}</span>
+                </div>
+                <div v-if="info.goods_share_cfg.goods_share_pictorial === 1">
+                  <el-input
+                    size="small"
+                    style="width:500px;"
+                    v-model="info.goods_share_cfg.pictorial_doc"
+                    :placeholder="$t('storeCommonSettings.peShareCopy')"
+                  ></el-input>
+                </div>
+              </li>
+            </ol>
           </div>
         </li>
         <li>
@@ -491,6 +647,8 @@ export default {
         custom_service: 0, // 客服入口开关-商品详情页是否展示
         return_service: 1, // 客服入口开关-退/换货中心是否展示
         default_sort: 0, // 商品默认平台分类id
+        goods_weight_cfg: 1, // 商品重量配置项
+        need_prd_codes: 1, // 商品条码配置项
         share_config: {
           share_action: 0,
           share_doc: '',
@@ -498,7 +656,8 @@ export default {
           share_img: 'image/admin/btn_add.png'
         },
         bind_mobile: 0, // 是否强制用户在购买、预约以及申请成为分销员时绑定手机号
-        geographic_location: 0 // 地理位置授权申请
+        geographic_location: 0, // 地理位置授权申请
+        goods_share_cfg: {} // 店铺商品分享配置
       },
       catIds: [],
       tuneUp: false
@@ -669,5 +828,17 @@ export default {
     //   margin: 0 10px;
     // }
   }
+  .share-settings {
+    .el-button--text {
+      margin-left: 15px;
+    }
+  }
+}
+.example-area {
+  line-height: 30px;
+}
+.example-tips {
+  margin-left: 15px;
+  color: #999;
 }
 </style>

@@ -6,7 +6,17 @@ package com.vpu.mp.service.pojo.wxapp.goods.search;
  */
 public enum SortDirectionEnum {
     /**从大到小排序0*/
-    DESC,
+    DESC{
+        @Override
+        public String toString(){
+            return "desc";
+        }
+    },
     /**从小到大排序1*/
-    ASC
+    ASC{
+        @Override
+        public String toString(){
+            return "asc";
+        }
+    }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
 
-    private static final long serialVersionUID = -24484175;
+    private static final long serialVersionUID = -1104858909;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_store.store_id</code>.
@@ -351,6 +351,20 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
         return (Byte) get(22);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_store.city_service</code>. 支持同城配送 1:支持
+     */
+    public void setCityService(Byte value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_store.city_service</code>. 支持同城配送 1:支持
+     */
+    public Byte getCityService() {
+        return (Byte) get(23);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -377,7 +391,7 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
     /**
      * Create a detached, initialised StoreRecord
      */
-    public StoreRecord(Integer storeId, String storeName, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp createTime, Timestamp updateTime, Short autoPick, Byte delFlag) {
+    public StoreRecord(Integer storeId, String storeName, String manager, String mobile, String storeImgs, Byte businessState, Byte businessType, String openingTime, String closeTime, String provinceCode, String cityCode, String districtCode, String latitude, String longitude, String address, Integer group, String service, String content, Integer posShopId, Timestamp createTime, Timestamp updateTime, Short autoPick, Byte delFlag, Byte cityService) {
         super(Store.STORE);
 
         set(0, storeId);
@@ -403,5 +417,6 @@ public class StoreRecord extends UpdatableRecordImpl<StoreRecord> {
         set(20, updateTime);
         set(21, autoPick);
         set(22, delFlag);
+        set(23, cityService);
     }
 }

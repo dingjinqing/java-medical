@@ -60,5 +60,26 @@ export const cn = {
   numMessages: '剩余短信条数',
   gotoRecharge: '前往充值',
   save: '保存',
-  updated: '更新成功'
+  updated: '更新成功',
+
+  weightSetting: '商品重量配置项设置',
+  turnedOn: '已开启',
+  afterOpen: '开启后，在后台新建/编辑商品信息时需要填写商品重量',
+  barcodeSetting: '商品条码配置项设置',
+  fillBarcode: '开启后，在后台新建/编辑商品信息时可以填写商品条码',
+  productShare: '商品分享',
+  productNote: '注：若需在分享文案中显示商品名称/商品价格/分享人昵称，请在下方输入【商品名称】/【商品价格】/【分享人昵称】，我们将在用户分享时将内容自动替换成对应内容',
+  shareDirectly: '直接分享',
+  viewEx: '查看示例',
+  copyWriting: '文案',
+  defaultScheme: '默认方案',
+  customScheme: '自定义方案',
+  sharedCopy: '设置的分享文案',
+  shareTemp: '【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】',
+  mayBe: '则用户分享时显示的内容可能为：',
+  shareExample: '奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...',
+  shareNote: '注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略',
+  peShareCopy: '请输入分享文案',
+  downloadPoster: '下载海报',
+  downNote: '注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略'
 }
