@@ -166,7 +166,7 @@ public class CardDaoService extends ShopBaseService {
 	private void buildOptionForReceiveCode(CodeReceiveParam param, SelectConditionStep<?> select) {
 		/** -手机号 */
 		if (!StringUtils.isBlank(param.getMobile())) {
-			select.and(USER.MOBILE.eq(param.getMobile()));
+			select.and(USER.MOBILE.like(this.likeValue(param.getMobile())));
 		}
 		/** -用户名 */
 		if (!StringUtils.isBlank(param.getUsername())) {
