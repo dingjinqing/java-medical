@@ -406,10 +406,7 @@ public class OrderReadService extends ShopBaseService {
 	 * @param rOrder
 	 */
 	public void setReturnCfg(ReturnOrderInfoVo vo , ReturnOrderRecord rOrder) {
-		if(shopReturnConfig.getAutoReturn() == 0) {
-			return;
-		}
-		if (shopReturnConfig.getAutoReturn() == 1 && shopReturnConfig.getAutoReturnTime().after(rOrder.getCreateTime())) {
+		if(rOrder.getIsAutoReturn() == NO) {
 			return;
 		}
         long currentTimeMillis = System.currentTimeMillis();
