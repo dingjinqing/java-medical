@@ -78,6 +78,7 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINI
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
@@ -1489,7 +1490,10 @@ public class OrderInfoService extends ShopBaseService {
 	 * 获取大于等于该购买次数的用户Id列表
 	 */
 	public List<Integer> getUserIdGreateThanBuyCountLow(Integer cnt) {
-		return db().select(TABLE.USER_ID).from(TABLE).groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).ge(cnt))
+		return db().select(TABLE.USER_ID)
+				.from(TABLE)
+				.where(TABLE.ORDER_STATUS.greaterThan(ORDER_CLOSED))
+				.groupBy(TABLE.USER_ID).having(DSL.count(TABLE.USER_ID).ge(cnt))
 				.fetchInto(Integer.class);
 
 	}
@@ -1498,7 +1502,9 @@ public class OrderInfoService extends ShopBaseService {
 	 * 获取小于等于该购买次数的用户Id列表
 	 */
 	public List<Integer> getUserIdLessThanBuyCountHight(Integer cnt) {
-		return db().selectFrom(TABLE).groupBy(TABLE.USER_ID)
+		return db().selectFrom(TABLE)
+				.where(TABLE.ORDER_STATUS.greaterThan(ORDER_CLOSED))
+				.groupBy(TABLE.USER_ID)
 				.having(DSL.count(TABLE.USER_ID).le(cnt)).fetchInto(Integer.class);
 		
 	}
