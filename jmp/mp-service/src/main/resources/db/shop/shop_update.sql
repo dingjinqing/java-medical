@@ -218,12 +218,7 @@ CREATE TABLE IF NOT EXISTS `b2c_article` (
   KEY `is_recommend` (`is_recommend`),
   KEY `is_top` (`is_top`)
 );
-/***********************2.11*********************END*/
 
-
-
-
-/*********************2.11*************************BEGIN*/
 -- 2020年3月30日 kdc 预售改为多商品 增加优先级 和预告时间
 ALTER TABLE `b2c_presale` MODIFY COLUMN `goods_id` varchar(1000) NOT NULL DEFAULT 0 COMMENT '商品id 1,2,4' ;
 ALTER TABLE `b2c_presale` ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
