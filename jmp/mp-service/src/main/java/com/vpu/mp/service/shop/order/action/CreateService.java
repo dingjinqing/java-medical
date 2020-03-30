@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
@@ -801,7 +802,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //当前微信支付金额
         BigDecimal currentMoneyPaid = goodsPricsAndShipping;
         //预售处理
-        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PresaleConstant.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
             vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
             if(BigDecimalUtil.compareTo(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()) > 0) {
                 vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));

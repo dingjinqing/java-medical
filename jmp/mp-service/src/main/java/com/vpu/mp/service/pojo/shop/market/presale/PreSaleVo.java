@@ -12,7 +12,7 @@ import java.util.List;
  * @author 郑保乐
  */
 @Data
-public class PreSaleVo implements StatusContainer {
+public class PreSaleVo  {
 
     /** 活动id **/
     private Integer id;
@@ -35,7 +35,7 @@ public class PreSaleVo implements StatusContainer {
     /** 尾款支付结束时间 **/
     private Timestamp endTime;
     /** 商品id **/
-    private Integer goodsId;
+    private String  goodsId;
     /** 商品名称 **/
     private String goodsName;
     /** 发货时间模式 **/

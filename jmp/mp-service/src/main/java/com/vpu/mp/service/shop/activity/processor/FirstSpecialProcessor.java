@@ -325,7 +325,6 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                         }
                     });
                 }
-
             }
         }
     }

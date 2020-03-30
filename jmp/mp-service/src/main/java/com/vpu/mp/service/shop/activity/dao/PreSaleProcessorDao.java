@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
@@ -55,15 +56,15 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
         Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
-
-        return db().select(PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
-            .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
-            .where(PRESALE.GOODS_ID.in(goodsIds))
+        return db().select(PRESALE.ID, PRESALE_PRODUCT.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+            .from(PRESALE_PRODUCT)
+                .innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .where(PRESALE_PRODUCT.GOODS_ID.in(goodsIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(condition)
             .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
-            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE.GOODS_ID)));
+            .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.GOODS_ID)));
     }
 
     /**
@@ -78,8 +79,9 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
         Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
 
-        return db().select(PRESALE.ID,PRESALE_PRODUCT.PRODUCT_ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
-            .from(PRESALE).innerJoin(PRESALE_PRODUCT).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+        return db().select(PRESALE.ID,PRESALE_PRODUCT.PRODUCT_ID, PRESALE_PRODUCT.PRESALE_ID, PRESALE_PRODUCT.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
+            .from(PRESALE_PRODUCT)
+            .innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE_PRODUCT.PRODUCT_ID.in(productIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
@@ -125,10 +127,10 @@ public class PreSaleProcessorDao extends PreSaleService {
         vo.setDeliverType(presaleRecord.getDeliverType());
         vo.setDeliverTime(presaleRecord.getDeliverTime());
         vo.setDeliverDays(presaleRecord.getDeliverDays());
-        vo.setUseCoupon(PreSaleService.PRE_SALE_USE_COUPON.equals(presaleRecord.getDiscountType()));
-        vo.setReturnDeposit(PreSaleService.PRE_SALE_RETURN_DEPOSIT.equals(presaleRecord.getReturnType()));
-        vo.setShowPreSaleNumber(PreSaleService.PRE_SALE_SHOW_SALE_NUM.equals(presaleRecord.getShowSaleNumber()));
-        vo.setOriginalBuy(PreSaleService.PRE_SALE_ORIGINAL_BUY.equals(presaleRecord.getBuyType()));
+        vo.setUseCoupon(PresaleConstant.PRE_SALE_USE_COUPON.equals(presaleRecord.getDiscountType()));
+        vo.setReturnDeposit(PresaleConstant.PRE_SALE_RETURN_DEPOSIT.equals(presaleRecord.getReturnType()));
+        vo.setShowPreSaleNumber(PresaleConstant.PRE_SALE_SHOW_SALE_NUM.equals(presaleRecord.getShowSaleNumber()));
+        vo.setOriginalBuy(PresaleConstant.PRE_SALE_ORIGINAL_BUY.equals(presaleRecord.getBuyType()));
         vo.setLimitAmount(presaleRecord.getBuyNumber());
         vo.setFinalPaymentStart(presaleRecord.getStartTime());
         vo.setFinalPaymentEnd(presaleRecord.getEndTime());
@@ -144,10 +146,10 @@ public class PreSaleProcessorDao extends PreSaleService {
             v.setSaleNumber(record.getSaleNumber());
             v.setPreSalePrice(record.getPresalePrice());
             // 阶段付款
-            if (PreSaleService.PRE_SALE_TYPE_SPLIT.equals(vo.getPreSaleType())) {
+            if (PresaleConstant.PRE_SALE_TYPE_SPLIT.equals(vo.getPreSaleType())) {
                 v.setDepositPrice(record.getPresaleMoney());
                 // 两个阶段且超过第一阶段的时候
-                if (PreSaleService.PRE_SALE_TWO_PHASE.equals(presaleRecord.getPrePayStep()) && presaleRecord.getPreEndTime().compareTo(now) < 0) {
+                if (PresaleConstant.PRE_SALE_TWO_PHASE.equals(presaleRecord.getPrePayStep()) && presaleRecord.getPreEndTime().compareTo(now) < 0) {
                     v.setDiscountPrice(record.getPreDiscountMoney_2());
                 } else {
                     v.setDiscountPrice(record.getPreDiscountMoney_1());
@@ -178,7 +180,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             vo.setEndTime((presaleRecord.getPreEndTime().getTime() - now.getTime()) / 1000);
         } else {
             // 全款付活动结束
-            if (PreSaleService.PRE_SALE_TYPE_ALL_MONEY.equals(presaleRecord.getPresaleType())) {
+            if (PresaleConstant.PRE_SALE_TYPE_ALL_MONEY.equals(presaleRecord.getPresaleType())) {
                 if (presaleRecord.getPreEndTime().compareTo(now) < 0) {
                     vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
                     logger().debug("小程序-商品详情-预售活动-activityId:{}-{}", activityId, "活动已结束");
@@ -189,7 +191,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             } else {
                 // 阶段付款
                 // 只有一个阶段
-                if (PreSaleService.PRE_SALE_ONE_PHASE.equals(presaleRecord.getPrePayStep())) {
+                if (PresaleConstant.PRE_SALE_ONE_PHASE.equals(presaleRecord.getPrePayStep())) {
                     // 活动已结束
                     if (presaleRecord.getPreEndTime().compareTo(now) < 0) {
                         vo.setActState(BaseConstant.ACTIVITY_STATUS_STOP);
@@ -245,7 +247,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             log.error("活动未开始");
             throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NO_START);
         }
-        if (PreSaleService.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
+        if (PresaleConstant.PRESALE_MONEY_INTERVAL.equals(activityInfo.getPrePayStep())) {
             //定金期数2
             if ((param.getDate().after(activityInfo.getPreEndTime()) && param.getDate().before(activityInfo.getPreStartTime2()))
                 || param.getDate().after(activityInfo.getPreEndTime2())) {
@@ -294,7 +296,7 @@ public class PreSaleProcessorDao extends PreSaleService {
     public void orderInit(OrderBeforeParam param, PreSaleVo activityInfo) {
         log.info("下单：预售初始化start");
         //优惠是否叠加
-        if (!PreSaleService.PRE_SALE_USE_COUPON.equals(activityInfo.getDiscountType())) {
+        if (!PresaleConstant.PRE_SALE_USE_COUPON.equals(activityInfo.getDiscountType())) {
             param.setMemberCardNo(StringUtils.EMPTY);
             param.setCouponSn(StringUtils.EMPTY);
         }

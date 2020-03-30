@@ -4,13 +4,13 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.GroupBuyDefine;
+import com.vpu.mp.db.shop.tables.Presale;
 
 import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in mini_shop_4748160
+ * Convenience access to all tables in mini_shop_471752
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>mini_shop_4748160.b2c_group_buy_define</code>.
+     * The table <code>mini_shop_471752.b2c_presale</code>.
      */
-    public static final GroupBuyDefine GROUP_BUY_DEFINE = com.vpu.mp.db.shop.tables.GroupBuyDefine.GROUP_BUY_DEFINE;
+    public static final Presale PRESALE = com.vpu.mp.db.shop.tables.Presale.PRESALE;
 }
