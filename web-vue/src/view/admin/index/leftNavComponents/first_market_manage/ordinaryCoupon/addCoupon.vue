@@ -83,11 +83,13 @@
                       v-model="param.type"
                       :label=0
                       :disabled="editType"
+                      @change="typeChange"
                     >{{ $t('ordinaryCoupon.generalCoupons') }}</el-radio>
                     <el-radio
                       v-model="param.type"
                       :label=1
                       :disabled="editType"
+                      @change="typeChange"
                     >{{ $t('ordinaryCoupon.splitCoupon') }} <el-tooltip
                         effect="dark"
                         :content="$t('ordinaryCoupon.splitTip')"
@@ -242,7 +244,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label=0
+                        :label="0"
                         :disabled="editType"
                         @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio2') }}</el-radio>
@@ -260,7 +262,7 @@
                     <p>
                       <el-radio
                         v-model="param.preferentialType"
-                        :label=1
+                        :label="1"
                         :disabled="editType"
                         @change="preferentialTypeChange"
                       >{{ $t('ordinaryCoupon.typeRadio3') }}</el-radio>
@@ -887,6 +889,7 @@ export default {
     this.dataDefalut()
     this.getCardList()
     this.getTagList()
+    // 编辑初始化
     if (this.couponId) {
       this.editType = true
       this.getOneInfo()
@@ -1213,6 +1216,17 @@ export default {
     },
 
     // 切换触发校验
+    typeChange () {
+      // debugger
+      if (this.param.type === 0) {
+        // 普通
+        this.param.preferentialType = 0
+      } else {
+        // 分裂
+        this.param.preferentialType = 2
+      }
+      this.$refs['param'].validateField('preferentialType')
+    },
     validityTypeChange (value) {
       this.$refs['param'].validateField('validityType')
       this.$refs['param'].validateField('validityType1')
