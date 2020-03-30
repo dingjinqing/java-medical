@@ -96,9 +96,15 @@
           >
             <template slot-scope="scope">
               <span style="cursor:pointer;color:#5a8bff">
-                {{scope.row.code}}/
-                {{scope.row.cardNo}}+
-                {{scope.row.cardPwd}}
+                <ul class="code-list">
+                  <span v-if="scope.row.code">
+                      <li>{{scope.row.code}}</li>
+                  </span>
+                  <span v-else>
+                    <li>{{scope.row.cardNo}}</li>
+                    <li>{{scope.row.cardPwd}}</li>
+                  </span>
+                </ul>
               </span>
             </template>
 
