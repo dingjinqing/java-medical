@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.wxapp.order.term.OrderTerm;
 import lombok.Builder;
 import lombok.Data;
 
@@ -60,12 +61,8 @@ public class OrderBeforeVo {
     private Map<String, PaymentVo> paymentList;
     /**必填信息*/
     private OrderMustVo must;
-    /**服务条款_展示*/
-    private Byte isShowserviceTerms;
-    /**服务条款_首次是否默认勾选*/
-    private Byte serviceChoose;
-    /**服务条款_服务条款名称*/
-    private String serviceName;
+    /**服务条款*/
+    private OrderTerm term;
     /**积分支付规则_是否限制*/
     private Byte scorePayLimit;
     /**积分支付规则_每单支付的积分数量少于 score_pay_num 积分，不可使用积分支付*/

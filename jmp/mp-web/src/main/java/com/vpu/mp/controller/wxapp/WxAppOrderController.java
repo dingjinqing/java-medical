@@ -21,12 +21,14 @@ import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,6 +277,21 @@ public class WxAppOrderController extends WxAppBaseController{
         return success();
     }
     /**************好友代付end*********************/
+
+    /**
+     * 查询服务条款配置
+     *
+     * @return 服务条款配置内容
+     */
+    @GetMapping("/termsofservice")
+    public JsonResult getTermsOfService() {
+        try {
+            return success(shop().trade.getTermsOfService());
+        } catch (IOException e) {
+            logger().error(e.getMessage());
+            return fail();
+        }
+    }
 
 	@PostMapping("/addtest")
 	public JsonResult test(){

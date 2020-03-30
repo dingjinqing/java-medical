@@ -24,6 +24,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.wxapp.order.term.OrderTerm;
 import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
 import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -523,6 +524,12 @@ public class Calculate extends ShopBaseService {
             }
         }
         return must.hide();
+    }
+
+    public OrderTerm getTermsofservice() {
+        OrderTerm orderTerm = new OrderTerm();
+        orderTerm.init(trade);
+        return orderTerm;
     }
 
     /**

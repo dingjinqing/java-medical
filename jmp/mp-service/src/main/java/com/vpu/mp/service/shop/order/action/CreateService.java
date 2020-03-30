@@ -571,8 +571,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
         }
-        //服务条款
-        setServiceTerms(vo);
         // 积分使用规则
         setScorePayRule(vo);
         //支付方式
@@ -583,6 +581,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //订单必填信息处理
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
+        //服务条款
+        vo.setTerm(calculate.getTermsofservice());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -1079,21 +1079,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //判断是否可以发货
             beforeVo.setCanShipping(NO);
         }
-    }
-
-    /**
-     * 设置服务条款
-     * @param vo vo
-     */
-    public void setServiceTerms(OrderBeforeVo vo){
-        Byte serviceTerms = tradeCfg.getServiceTerms();
-        vo.setIsShowserviceTerms(serviceTerms);
-        if(serviceTerms.intValue() == YES){
-            vo.setServiceName(tradeCfg.getServiceName());
-            vo.setServiceChoose(tradeCfg.getServiceChoose());
-        }
-
-
     }
 
     /**
