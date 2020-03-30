@@ -311,7 +311,7 @@ global.wxPage({
    */
   couponDetail:function(opt){
     var couponSn = opt.currentTarget.dataset.couponsn;
-    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn);
+    util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type);
   },
 
   /**

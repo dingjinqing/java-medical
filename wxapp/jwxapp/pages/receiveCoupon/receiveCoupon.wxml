@@ -64,7 +64,7 @@
         <form>
 
           <block wx:if="{{detailType == 1}}">
-            <view class="coupon-vw-int" wx:if="{{act_info.validationCode != '' && act_info.cardStatus == 1}}">
+            <view class="coupon-vw-int" wx:if="{{act_info.validationCode != ''}}">
               <input class="coupon-input" placeholder="请输入领取码" bindinput='bindBlur'></input>
             </view> 
             <view class="coupon-vw-btn">
