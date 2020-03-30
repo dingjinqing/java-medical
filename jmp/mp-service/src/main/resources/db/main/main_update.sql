@@ -33,4 +33,6 @@ CREATE TABLE IF NOT EXISTS `b2c_store_account` (
 
 ALTER TABLE `b2c_store_account` CHANGE COLUMN `update_time` `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间' ;
 
+ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `live_pack_status` TINYINT(1) NULL DEFAULT 0 COMMENT '直播包状态 1：通过 2：打包审核中' ;
+
 /***********************2.11*********************END*/

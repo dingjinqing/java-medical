@@ -226,6 +226,43 @@ ALTER TABLE `b2c_presale` MODIFY COLUMN `goods_id` varchar(1000) NOT NULL DEFAUL
 ALTER TABLE `b2c_presale` ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
 ALTER TABLE `b2c_presale` ADD COLUMN `first` int(8) NULL DEFAULT 1 COMMENT '优先级' ;
 
+CREATE TABLE IF NOT EXISTS `b2c_live_goods` (
+  `id`  int NOT NULL AUTO_INCREMENT,
+  `live_id`  int NOT NULL COMMENT '直播表关联ID',
+  `room_id`  int NOT NULL COMMENT '直播间ID',
+  `goods_id`  int NULL DEFAULT 0,
+  `cover_img`  varchar(255) NULL COMMENT '商品图',
+  `url`  varchar(255) NULL COMMENT '小程序路径',
+  `price`  decimal(10,2) NULL,
+  `name`  varchar(255) NULL COMMENT '商品名称',
+  `add_cart_num`  int NULL DEFAULT 0 COMMENT '加购数',
+  `price_end`  decimal(10,2) NULL DEFAULT 0 COMMENT '另一个价格',
+  `price_type`  tinyint(1) NULL DEFAULT 1 COMMENT '价格形式：1一口价 2价格区间 3显示折扣价',
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  INDEX `live_id` (`live_id`),
+  INDEX `room_id` (`room_id`),
+  INDEX `goods_id` (`goods_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `b2c_live_broadcast` (
+  `id`  int NOT NULL AUTO_INCREMENT ,
+  `room_id`  int NOT NULL COMMENT '直播间ID' ,
+  `name`  varchar(255) NOT NULL COMMENT '直播间名称' ,
+  `live_status`  smallint NULL DEFAULT 0 COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期' ,
+  `start_time`  datetime NULL COMMENT '计划开始时间' ,
+  `end_time`  datetime NULL COMMENT '计划结束时间' ,
+  `anchor_name`  varchar(100) NULL DEFAULT NULL COMMENT '主播名' ,
+  `cover_img`  varchar(255) NULL DEFAULT NULL COMMENT '封面图片 url' ,
+  `anchor_img`  varchar(255) NULL DEFAULT NULL COMMENT '直播间图片url' ,
+  `add_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+  `update_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `room_id` (`room_id`)
+);
 
 /*********************2.11*************************END*/
 
