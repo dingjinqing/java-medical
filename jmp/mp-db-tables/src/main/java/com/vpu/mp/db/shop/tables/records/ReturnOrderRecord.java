@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = 2025320934;
+    private static final long serialVersionUID = 1810590402;
 
     /**
      * Setter for <code>mini_shop_6797286.b2c_return_order.ret_id</code>.
@@ -506,6 +506,20 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         return (Timestamp) get(33);
     }
 
+    /**
+     * Setter for <code>mini_shop_6797286.b2c_return_order.is_auto_return</code>. 0否；1是
+     */
+    public void setIsAutoReturn(Byte value) {
+        set(34, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_6797286.b2c_return_order.is_auto_return</code>. 0否；1是
+     */
+    public Byte getIsAutoReturn() {
+        return (Byte) get(34);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -532,7 +546,7 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
     /**
      * Create a detached, initialised ReturnOrderRecord
      */
-    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, String currency, Timestamp createTime, Timestamp updateTime) {
+    public ReturnOrderRecord(Integer retId, Integer orderId, String orderSn, String returnOrderSn, Integer shopId, Integer userId, Integer goodsId, Byte refundStatus, BigDecimal money, BigDecimal shippingFee, Byte returnType, Byte reasonType, String reasonDesc, String shippingType, String shippingNo, String goodsImages, String voucherImages, String phone, Timestamp applyTime, Timestamp applyPassTime, Timestamp applyNotPassTime, Timestamp shippingOrRefundTime, Timestamp refundSuccessTime, Timestamp refundRefuseTime, Timestamp refundCancelTime, String applyNotPassReason, String refundRefuseReason, String returnAddress, String merchantTelephone, String consignee, String zipCode, String currency, Timestamp createTime, Timestamp updateTime, Byte isAutoReturn) {
         super(ReturnOrder.RETURN_ORDER);
 
         set(0, retId);
@@ -569,5 +583,6 @@ public class ReturnOrderRecord extends UpdatableRecordImpl<ReturnOrderRecord> {
         set(31, currency);
         set(32, createTime);
         set(33, updateTime);
+        set(34, isAutoReturn);
     }
 }
