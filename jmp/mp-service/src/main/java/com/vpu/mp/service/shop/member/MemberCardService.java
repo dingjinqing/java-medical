@@ -1615,27 +1615,27 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 分页查询会员卡领取详情
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public PageResult<CodeReceiveVo> getReceiveList(CodeReceiveParam param) {
+		logger().info("处理遮掩码");
 		PageResult<CodeReceiveVo> result = cardDao.getReceiveListSql(param);
 		/** 处理code 和 card_pwd */
 		for (CodeReceiveVo vo : result.dataList) {
 			String code = vo.getCode();
-			int lengthOfCode = code.length() - 4;
-
-			if (lengthOfCode > 0) {
-				String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+			if(!StringUtils.isBlank(code)) {
+				int lengthOfCode = code.length() - 4;
+				if (lengthOfCode > 0) {
+					String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+				}
 			}
-
 			String cardPwd = vo.getCardPwd();
-			int lengthOfCardPwd = cardPwd.length() - 4;
-			if (lengthOfCardPwd > 0) {
-				String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+			if(!StringUtils.isBlank(cardPwd)) {
+				int lengthOfCardPwd = cardPwd.length() - 4;
+				if (lengthOfCardPwd > 0) {
+					String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+				}
 			}
 		}
 		return result;
