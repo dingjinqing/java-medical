@@ -55,6 +55,8 @@ public class StorePojo implements Comparable<StorePojo> {
     private Timestamp updateTime;
     private Short     autoPick;
     private Byte      delFlag;
+    /** 是否支持同城配送 0否 1支持 */
+    private Byte cityService;
     /**
      * The Scan buy.是否支持扫码购.1是,0否
      */

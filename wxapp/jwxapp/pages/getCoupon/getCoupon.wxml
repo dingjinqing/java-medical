@@ -31,29 +31,6 @@
         <!-- <text class="name-bottom">￥{{act_info.amount}} <text style="font-size:8px;">最高</text></text> 
         <text class="name-bottom-tip">随机金额</text> -->
         <!-- 图标 -->
-        <!-- 未使用 -->
-        <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}">
-          <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>
-        </block>
-        <block wx:if="{{act_info.from == 1 && act_info.have_expired == 0}}">
-          <!-- 已领完 -->
-          <block wx:if="{{act_info.can_fetch_num <= 0}}">
-            <!-- 未领取过优惠券 -->
-            <!-- <block wx:if="{{act_info.fetch_limit == 0}}">
-              <image src="{{imageUrl}}image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
-              <image src="{{imageUrl}}image/wxapp/no_coupon.png" class="coupon-top-rt-img" mode="widthFix"></image>
-            </block> -->
-            <!-- 领取过优惠券 -->
-            <!-- <block wx:else>
-              <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>     
-              <image src="{{imageUrl}}image/wxapp/have_coupon.png" class="coupon-top-rt-img" mode="widthFix"></image>
-            </block> -->
-          </block>
-          <!-- 可领取 -->
-          <block wx:else>
-            <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>
-          </block>
-        </block>
         <!-- 已使用 -->
         <block wx:if="{{act_info.isUsed == 1}}">
           <image src="{{imageUrl}}image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
@@ -72,7 +49,7 @@
           {{i18n.$t(localePack,"pages.coupon.couponTime")}}：
         </view>
         <!-- 未使用 -->
-        <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}">
+        <block wx:if="{{type === '0'}}">
           <!-- 固定日期 -->
           <view class="coupon-time-btm" style="font-size:24rpx;" wx:if="{{act_info.remainDays != 0 &&  !(act_info.validity > 0 || act_info.validityHour > 0 || act_info.validityMinute > 0)}}">
             {{act_info.startTime}} - {{act_info.endTime}}
@@ -88,13 +65,11 @@
           </view>
         </block>
         <!-- 已使用 / 已过期 -->
-        <block wx:if="{{act_info.isUsed == 1 || act_info.is_expire == 1 || (act_info.from == 1 && act_info.can_fetch_num <= 0) || act_info.have_expired == 1}}">
+        <block wx:if="{{type === '1' || type === '2'}}">
           <view class="coupon-time-btm" style="font-size:24rpx;">
             {{act_info.startTime}} - {{act_info.endTime}}
             <!-- 已过期 -->
-            <view wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 1 || act_info.have_expired == 1}}">
-              {{i18n.$t(localePack,"pages.coupon.overdue")}}
-            </view>
+            <view wx:if="{{type === '2'}}">{{i18n.$t(localePack,"pages.coupon.overdue")}}</view>
           </view>
         </block>
       </view>
