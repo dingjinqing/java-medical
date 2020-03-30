@@ -162,6 +162,7 @@ public class GoodsSearchMpService extends ShopBaseService {
             }
             try {
                 log.debug("小程序-es-搜索商品");
+                log.info("es搜索排序-" + param.getShopSortItem());
                 pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品-转换db获取数据:" + e.getMessage());
@@ -260,6 +261,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
             list.add(goodsMpService.getShopGoodsSort());
         }
+        log.info("db搜索排序-" + list);
 
         return list;
     }
