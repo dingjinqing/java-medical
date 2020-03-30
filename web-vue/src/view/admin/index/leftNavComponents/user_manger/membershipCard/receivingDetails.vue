@@ -3,34 +3,34 @@
     <div class="receivingDetailsMain">
       <div class="topDiv">
         <div>
-          <span>手机号</span>
+          <span>{{$t('memberCard.mobile')}}</span>
           <el-input
             v-model="phoneNumInput"
-            placeholder="请输入手机号码"
+            :placeholder="$t('memberCard.pleaseInputMobile')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>用户昵称</span>
+          <span>{{$t('memberCard.usernameDetail')}}</span>
           <el-input
             v-model="carNameInput"
-            placeholder="请输入用户昵称"
+            :placeholder="$t('memberCard.pleaseInputUsername')"
             size="small"
           ></el-input>
         </div>
         <div style="margin-left: 20px;">
-          <span>领取码/卡号：</span>
+          <span>{{$t('memberCard.cardCodeAndNo')}}：</span>
           <el-input
             v-model="cardCodeOrNo"
-            placeholder="领取码/卡号"
+            :placeholder="$t('memberCard.cardCodeAndNo')"
             size="small"
           ></el-input>
         </div>
         <div>
-          <span>批次名称</span>
+          <span>{{$t('memberCard.batchName')}}</span>
           <el-select
             v-model="selectSortvalue"
-            placeholder="请选择"
+            :placeholder="$t('memberCard.pleaseChoose')"
             size="small"
           >
             <el-option
@@ -47,7 +47,7 @@
             type="primary"
             size="small"
             @click="filterData"
-          >筛选</el-button>
+          >{{$t('memberCard.filter')}}</el-button>
         </div>
       </div>
       <div class="tableMain">
@@ -61,7 +61,7 @@
           <el-table-column
             prop="name"
             align="center"
-            label="批次名称"
+            :label="$t('memberCard.batchName')"
             width="120"
           >
           </el-table-column>
@@ -73,7 +73,7 @@
           >
           </el-table-column>
           <el-table-column
-            label="用户昵称"
+            :label="$t('memberCard.usernameDetail')"
             align="center"
           >
             <template slot-scope="scope">
@@ -87,18 +87,18 @@
           </el-table-column>
           <el-table-column
             prop="mobile"
-            label="手机号"
+            :label="$t('memberCard.mobile')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="receiveTime"
-            label="领取时间"
+            :label="$t('memberCard.receiveTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="领取码 / 卡号+密码"
+            :label="$t('memberCard.codeAndNoTip')"
             align="center"
           >
             <template slot-scope="scope">
@@ -117,20 +117,20 @@
 
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="$t('memberCard.options')"
             align="center"
             width="120"
           >
 
             <template slot-scope="scope">
               <span v-if="scope.row.delFlag===1">
-                已废除
+                {{$t('memberCard.alreadyDelete')}}
               </span>
               <span
                 v-else
                 style="cursor:pointer;color:#5a8bff"
                 @click="handleToOperation(scope.row.id)"
-              >废除</span>
+              >{{$t('memberCard.toDelete')}}</span>
             </template>
           </el-table-column>
 
@@ -143,20 +143,20 @@
     </div>
     <!--废除提示框-->
     <el-dialog
-      title='提醒'
+      :title="$t('memberCard.tipInfo')"
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <div>确认要废除?</div>
+      <div>{{$t('memberCard.tipAgain')}}?</div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">{{$t('memberCard.cancel')}}</el-button>
         <el-button
           type="primary"
           @click="handleToSuer()"
-        >确 定</el-button>
+        >{{$t('memberCard.sure')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -182,7 +182,7 @@ export default {
       selectSortOptions: [
         {
           batchId: 0,
-          name: '全部'
+          name: ''
         }
       ],
       tableData: [],
@@ -191,19 +191,22 @@ export default {
   },
   created () {
     this.cardId = this.$route.query.cardId
+  },
+  mounted () {
+    this.langDefault()
     this.loadAllDefaultData()
   },
   watch: {
     lang () {
-      alert('语言切换')
+      this.selectSortOptions = []
+      this.selectSortOptions.push(...this.$t('memberCard.selectSortOptions'))
+      this.getgetCardBatchList()
     }
   },
   methods: {
     // 1- 加载数据
     loadAllDefaultData () {
       this.loadAllTableData()
-      // 批次数据
-      this.getgetCardBatchList()
     },
     // 2- 加载列表数据
     loadAllTableData () {

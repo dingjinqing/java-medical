@@ -294,5 +294,19 @@ export const en = {
   timesFreeship: 'Times',
   noLimitCoupon: 'No limit',
   couponErrorTip: 'Must choose.',
-  scoreCouponCfg: 'Not coupon together'
+  scoreCouponCfg: 'Not coupon together',
+  usernameDetail: 'Name',
+  cardCodeAndNo: 'Code/No',
+  codeAndNoTip: 'Code / Pwd+No',
+  receiveTime: 'ReceiveTime',
+  alreadyDelete: 'deleted',
+  toDelete: 'To del',
+  tipInfo: 'Tips',
+  tipAgain: 'Are you sure',
+  selectSortOptions: [
+    {
+      batchId: 0,
+      name: 'All'
+    }
+  ]
 }
