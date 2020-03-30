@@ -284,5 +284,19 @@ export const en = {
   downQrcode: 'download qrcode',
   scanCode: 'Scan and share~',
   noLimitCoupon: 'No limit',
-  couponErrorTip: 'Must choose.'
+  couponErrorTip: 'Must choose.',
+  usernameDetail: 'Name',
+  cardCodeAndNo: 'Code/No',
+  codeAndNoTip: 'Code / Pwd+No',
+  receiveTime: 'ReceiveTime',
+  alreadyDelete: 'deleted',
+  toDelete: 'To del',
+  tipInfo: 'Tips',
+  tipAgain: 'Are you sure',
+  selectSortOptions: [
+    {
+      batchId: 0,
+      name: 'All'
+    }
+  ]
 }

@@ -35,7 +35,7 @@ public class CardReceiveCodeDao extends ShopBaseService {
 	public List<CardBatchRecord> getCardBatchByCardId(Integer cardId) {
 		 return db().selectFrom(CARD_BATCH)
 				 	.where(CARD_BATCH.CARD_ID.eq(cardId))
-				 	.and(CARD_BATCH.DEL_FLAG.eq(CBATCH_DF_NO))
+//				 	.and(CARD_BATCH.DEL_FLAG.eq(CBATCH_DF_NO))
 				 	.fetchInto(CardBatchRecord.class);
 	}
 	
