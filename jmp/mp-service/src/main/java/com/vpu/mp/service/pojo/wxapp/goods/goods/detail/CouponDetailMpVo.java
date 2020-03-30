@@ -46,6 +46,8 @@ public class CouponDetailMpVo {
     private Byte useConsumeRestrict;
     /** 满多少可用*/
     private BigDecimal leastConsume;
+    /** 领取码*/
+    private String validationCode;
 
     public CouponDetailMpVo() {
     }
@@ -67,5 +69,6 @@ public class CouponDetailMpVo {
         this.setDenomination(record.getDenomination());
         this.setUseConsumeRestrict(record.getUseConsumeRestrict());
         this.setLeastConsume(record.getLeastConsume());
+        this.setValidationCode(record.getValidationCode());
     }
 }
