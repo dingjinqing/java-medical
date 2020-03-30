@@ -132,7 +132,7 @@ public class StoreService extends ShopBaseService {
     public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID, STORE.STORE_NAME, STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
-            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE
+            STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE,STORE.CITY_SERVICE
         ).from(STORE)
             .leftJoin(STORE_GROUP).on(STORE.GROUP.eq(STORE_GROUP.GROUP_ID));
 
@@ -160,6 +160,18 @@ public class StoreService extends ShopBaseService {
         }
         if (!StringUtils.isEmpty(param.getKeywords())) {
             select.where(STORE.STORE_NAME.contains(param.getKeywords()).or(STORE.MANAGER.contains(param.getKeywords())).or(STORE.POS_SHOP_ID.like(param.getKeywords())));
+        }
+        //查询条件-营业状态
+        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getBusinessState())){
+            select.where(STORE.BUSINESS_STATE.eq(param.getBusinessState()));
+        }
+        //查询条件-门店自提
+        if (!StoreListQueryParam.CONDITION_ALL_SHORT.equals(param.getAutoPick())){
+            select.where(STORE.AUTO_PICK.eq(param.getAutoPick()));
+        }
+        //查询条件-同城配送
+        if (!StoreListQueryParam.CONDITION_ALL.equals(param.getCityService())){
+            select.where(STORE.CITY_SERVICE.eq(param.getCityService()));
         }
         return select;
     }

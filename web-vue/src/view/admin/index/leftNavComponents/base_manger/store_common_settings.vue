@@ -305,7 +305,7 @@
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
-            <span>商品重量配置项设置</span>
+            <span>{{$t('storeCommonSettings.weightSetting')}}</span>
           </div>
           <div class="text-set clearfix">
             <el-switch
@@ -316,14 +316,14 @@
               :inactive-value="0"
             >
             </el-switch>
-            <span>{{info.goods_weight_cfg === 1?'已开启':'已关闭'}}</span>
-            <span class="tips">开启后，在后台新建/编辑商品信息时需要填写商品重量</span>
+            <span>{{info.goods_weight_cfg === 1?$t('storeCommonSettings.turnedOn'):$t('storeCommonSettings.closed')}}</span>
+            <span class="tips">{{$t('storeCommonSettings.afterOpen')}}</span>
           </div>
         </li>
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
-            <span>商品条码配置项设置</span>
+            <span>{{$t('storeCommonSettings.barcodeSetting')}}</span>
           </div>
           <div class="text-set clearfix">
             <el-switch
@@ -333,8 +333,8 @@
               :active-value="1"
               :inactive-value="0"
             ></el-switch>
-            <span>{{info.need_prd_codes === 1? '已开启': '已关闭'}}</span>
-            <span class="tips">开启后，在后台新建/编辑商品信息时可以填写商品条码</span>
+            <span>{{info.need_prd_codes === 1? $t('storeCommonSettings.turnedOn'):$t('storeCommonSettings.closed')}}</span>
+            <span class="tips">{{$t('storeCommonSettings.fillBarcode')}}</span>
           </div>
         </li>
         <li>
@@ -417,11 +417,11 @@
         <li>
           <div class="text-prompt">
             <span class="blue_border"></span>
-            <span>商品分享</span>
+            <span>{{$t('storeCommonSettings.productShare')}}</span>
           </div>
           <div class="share-settings text-set clearfix">
             <el-alert
-              title="注：若需在分享文案中显示商品名称/商品价格/分享人昵称，请在下方输入【商品名称】/【商品价格】/【分享人昵称】，我们将在用户分享时将内容自动替换成对应内容"
+              :title="$t('storeCommonSettings.productNote')"
               type="warning"
               show-icon
               style="line-height:1.4;margin:10px 0;"
@@ -430,7 +430,7 @@
             </el-alert>
             <ol style="font-size:14px;line-height:1;margin-bottom:15px;">
               <li>
-                <div>1. 直接分享
+                <div>1. {{$t('storeCommonSettings.shareDirectly')}}
                   <el-popover
                     placement="right"
                     trigger="hover"
@@ -444,14 +444,14 @@
                     <el-button
                       slot="reference"
                       type="text"
-                    >查看示例</el-button>
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
                   </el-popover>
                 </div>
                 <div>
-                  <span>文案：</span>
+                  <span>{{$t('storeCommonSettings.copyWriting')}}：</span>
                   <el-radio-group v-model="info.goods_share_cfg.goods_share_common">
-                    <el-radio :label="0">默认方案</el-radio>
-                    <el-radio :label="1">自定义方案</el-radio>
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultScheme')}}</el-radio>
+                    <el-radio :label="1">{{$t('storeCommonSettings.customScheme')}}</el-radio>
                   </el-radio-group>
                   <el-popover
                     placement="top"
@@ -459,29 +459,29 @@
                   >
                     <div class="example-area">
                       <div class="triangle"></div>
-                      <div>设置的分享文案：</div>
-                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
-                      <div>则用户分享时显示的内容可能为：</div>
-                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                      <div>{{$t('storeCommonSettings.sharedCopy')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareTemp')}}</div>
+                      <div>{{$t('storeCommonSettings.mayBe')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareExample')}}</div>
                     </div>
                     <el-button
                       slot="reference"
                       type="text"
-                    >查看示例</el-button>
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
                   </el-popover>
-                  <span class="example-tips">注：直接向好友分享商品时，可展示不超过23个汉字，超出部分将省略</span>
+                  <span class="example-tips">{{$t('storeCommonSettings.shareNote')}}</span>
                 </div>
                 <div v-if="info.goods_share_cfg.goods_share_common === 1">
                   <el-input
                     size="small"
                     style="width: 500px;"
                     v-model="info.goods_share_cfg.common_doc"
-                    placeholder="请输入分享文案"
+                    :placeholder="$t('storeCommonSettings.peShareCopy')"
                   ></el-input>
                 </div>
               </li>
               <li>
-                <div>2. 下载海报
+                <div>2. {{$t('storeCommonSettings.downloadPoster')}}
                   <el-popover
                     placement="right"
                     trigger="hover"
@@ -495,14 +495,14 @@
                     <el-button
                       slot="reference"
                       type="text"
-                    >查看示例</el-button>
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
                   </el-popover>
                 </div>
                 <div>
-                  <span>文案：</span>
+                  <span>{{$t('storeCommonSettings.copyWriting')}}：</span>
                   <el-radio-group v-model="info.goods_share_cfg.goods_share_pictorial">
-                    <el-radio :label="0">默认方案</el-radio>
-                    <el-radio :label="1">自定义方案</el-radio>
+                    <el-radio :label="0">{{$t('storeCommonSettings.defaultScheme')}}</el-radio>
+                    <el-radio :label="1">{{$t('storeCommonSettings.customScheme')}}</el-radio>
                   </el-radio-group>
                   <el-popover
                     placement="top"
@@ -510,24 +510,24 @@
                   >
                     <div class="example-area">
                       <div class="triangle"></div>
-                      <div>设置的分享文案：</div>
-                      <div class="have_mar">【分享人昵称】为您独家推荐价值【商品价格】的【商品名称】</div>
-                      <div>则用户分享时显示的内容可能为：</div>
-                      <div class="have_mar">奔跑的小猪为您独家推荐价值200元的联想（thinkplus），随身充...</div>
+                      <div>{{$t('storeCommonSettings.sharedCopy')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareTemp')}}</div>
+                      <div>{{$t('storeCommonSettings.mayBe')}}：</div>
+                      <div class="have_mar">{{$t('storeCommonSettings.shareExample')}}</div>
                     </div>
                     <el-button
                       slot="reference"
                       type="text"
-                    >查看示例</el-button>
+                    >{{$t('storeCommonSettings.viewEx')}}</el-button>
                   </el-popover>
-                  <span class="example-tips">注：通过海报向商品分享好友时，可展示不超过20个汉字，超出部分将省略</span>
+                  <span class="example-tips">{{$t('storeCommonSettings.downNote')}}</span>
                 </div>
                 <div v-if="info.goods_share_cfg.goods_share_pictorial === 1">
                   <el-input
                     size="small"
                     style="width:500px;"
                     v-model="info.goods_share_cfg.pictorial_doc"
-                    placeholder="请输入分享文案"
+                    :placeholder="$t('storeCommonSettings.peShareCopy')"
                   ></el-input>
                 </div>
               </li>
