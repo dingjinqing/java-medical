@@ -816,9 +816,10 @@ export default {
               }
             }
           }
-          // 存储余额 可用积分
+          // 存储余额 可用积分 优惠券
           this.assetsData[3].num = this.memberBasicInfo.account || 0
           this.assetsData[4].num = this.memberBasicInfo.score || 0
+          this.assetsData[5].num = this.memberBasicInfo.canUseCouponNum || 0
           this.provinceCode = this.memberBasicInfo.provinceCode
           this.cityCode = this.memberBasicInfo.cityCode
           this.districtCode = this.memberBasicInfo.districtCode
