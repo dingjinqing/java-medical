@@ -14,7 +14,6 @@ global.wxPage({
     user_money: {
       account: 100
     },
-    showModal: false, // 二维码弹窗flag
     cardChooseName: '修改样式',
     choose_card: {},
     cardInfo: {
@@ -233,14 +232,14 @@ global.wxPage({
     // wx.stopPullDownRefresh();
   },
 
-  modalinput: function () {
-    let carNo = 2455472209066004
-    barcode.barcode('barcode', carNo, 580, 150);
+  modalinput () {
+    console.log(this.data.cardInfo)
+    let qrCode = []
     this.setData({
-      showModal: true
+      qrCode,
+      showQrcode: true
     })
   },
-
   cardConfirm: function (e) {
     this.setData({
       cardMode: true

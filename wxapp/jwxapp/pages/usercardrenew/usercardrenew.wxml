@@ -20,20 +20,20 @@
 				</view>
 			</view>
 			<view class="card_bottom_left">
-				<view class='card_amount' wx:if="{{card_info.send_money || card_info.charge_money}}">
-					<text wx:if="{{card_info.money>=0}}">余额 ￥{{card_info.money}}</text>
+				<view class='card_amount' wx:if="{{cardInfo.send_money || cardInfo.charge_money}}">
+					<text wx:if="{{cardInfo.money>=0}}">余额 ￥{{cardInfo.money}}</text>
 				</view>
 			</view>
-			<block wx:if="{{card_info.status == -1}}">
+			<block wx:if="{{cardInfo.status == -1}}">
 				<image src="{{imageUrl}}/image/wxapp/card_expired.png?v=1" mode='widthFix' style="width:130rpx;position:absolute;right:0;bottom:0" />
 			</block>
 			<block wx:else>
 				<image src="{{ imageUrl }}image/wxapp/erweima1.png" class="card-rt-top-img" bindtap='modalinput' />
 			</block>
 
-			<block wx:if="{{ sgan == 1 && card_info.is_pay == 1}}">
-				<text wx:if="{{card_info.pay_type == 0}}" class="buy_card_price">￥{{card_info.pay_fee}}</text>
-				<text wx:elif="{{card_info.pay_type == 1}}" class="buy_card_price">{{card_info.pay_fee}}积分</text>
+			<block wx:if="{{ sgan == 1 && cardInfo.is_pay == 1}}">
+				<text wx:if="{{cardInfo.pay_type == 0}}" class="buy_card_price">￥{{cardInfo.pay_fee}}</text>
+				<text wx:elif="{{cardInfo.pay_type == 1}}" class="buy_card_price">{{cardInfo.pay_fee}}积分</text>
 			</block>
 		</view>
 	</view>
@@ -252,29 +252,6 @@
 						<view class='card_sure ' bindtap='payConfirm' style='background:{{ canClick == true ? comColor : "#999"}};bottom:{{isIpx==1 ? "80rpx": "0"}} '>确定</view>
 					</view>
 	</action-sheet>
-	<!--弹出层二维码  -->
-	<view class="modal-box" bindtap="hideModal" wx:if="{{showModal}}" />
-	<view class="modal-container" wx:if="{{showModal}}">
-		<view class="modal-top" style="background:{{ bg }};background-size:cover;">
-			<view class="card-left card-tanchu">
-				<image src="{{ cardInfo.shopAvatar }}" class="card-image" />
-				<view class="card-name">{{ cardChooseName }}</view>
-				<view class="modal-btm">
-					<!-- <text class="modal-btm-text1">{{ card_info.card_name }}</text> -->
-					<text class="modal-btm-text2" wx:if="{{cardInfo.discount}}">{{ cardInfo.discount }}折</text>
-				</view>
-			</view>
-		</view>
-		<view class="left-circle" />
-		<view class="right-circle" />
-		<view class="modal-bottom">
-			<image src="{{ img_code }}" class="two-bar-codes" />
-			<view class="barcode">
-				<canvas canvas-id="barcode" />
-			</view>
-			<text>47481609803525610</text>
-		</view>
-	</view>
-	<!--弹出层二维码END  -->
+	<v-poster image="{{qrCode}}" show="{{showQrcode}}" />
 </view>
 
