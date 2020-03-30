@@ -86,7 +86,6 @@ public class WxAppCardReceiveSerive extends ShopBaseService {
 					.id(record.getId())
 					.userId(param.getUserId())
 					.receiveTime(DateUtil.getLocalDateTime())
-					.cardNo(cardNo)
 					.build()
 				);
 		
