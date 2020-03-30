@@ -522,7 +522,6 @@ public class UserCardDaoService extends ShopBaseService{
 	public OrderMemberVo getValidByCardNo(String cardNo){
         ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
-            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime())).or(USER_CARD.EXPIRE_TIME.isNull())
             )
@@ -621,13 +620,18 @@ public class UserCardDaoService extends ShopBaseService{
         	CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
         	BeanUtils.copyProperties(bg, card);
         }
-        
-        
         if(CollectionUtils.isEmpty(validCardList)){
             return Lists.newArrayList();
         }
         List<OrderMemberVo> result = new ArrayList<>(validCardList.size());
         for (ValidUserCardBean card : validCardList) {
+        	if(CardUtil.isGradeCard(card.getCardType())) {
+        		MemberCardRecord tmpCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(card.getCardId())).fetchOne();
+        		if(CardConstant.MCARD_FLAG_STOP.equals(card.getFlag())) {
+        			// 等级卡已经停止使用
+        			continue;
+        		}
+        	}
             result.add(new OrderMemberVo().init(card));
         }
         return result;
