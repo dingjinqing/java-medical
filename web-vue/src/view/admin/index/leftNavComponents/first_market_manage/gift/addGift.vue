@@ -351,33 +351,37 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop="productNumber"
-                :label="$t('gift.productNumber')"
+                label="赠品库存"
                 align="center"
+                v-if="update === false"
               >
                 <template slot-scope="scope">
-                  <div style="display:flex;justify-content: center">
-                    <!-- 添加显示 -->
-                    <span
-                      class="numberStyle"
-                      v-if="update === false"
-                    >{{scope.row.initNumber}} /&nbsp;</span>
-                    <!-- 编辑显示 -->
-                    <span
-                      class="numberStyle"
-                      v-if="update === true"
-                    >{{scope.row.initNumber - scope.row.offerNumber}} /&nbsp;</span>
-                    <giftEdit
-                      v-if="refreshFlag"
-                      v-model="scope.row.initNumber"
-                      :flag="update"
-                      :prdNumber="scope.row.prdNumber"
-                      :offerNumber="scope.row.offerNumber"
-                      @update="checkNumber"
-                    />
-                  </div>
+                  <el-input
+                    size="small"
+                    v-model="scope.row.productNumber"
+                    @blue="productNumberCheck(scope.row.prdNumber, scope.row.productNumber)"
+                  ></el-input>
                 </template>
-
+              </el-table-column>
+              <el-table-column
+                prop="offerNumber"
+                label="已赠库存"
+                align="center"
+                v-if="update === true"
+              ></el-table-column>
+              <el-table-column
+                prop="productNumber"
+                label="剩余赠品库存"
+                align="center"
+                v-if="update === true"
+              >
+                <template slot-scope="scope">
+                  <el-input
+                    size="small"
+                    v-model="scope.row.productNumber"
+                    @blue="productNumberCheck(scope.row.prdNumber, scope.row.productNumber)"
+                  ></el-input>
+                </template>
               </el-table-column>
               <el-table-column
                 :label="$t('gift.option')"
@@ -449,7 +453,7 @@
 <script>
 import { mapActions } from 'vuex'
 // import inputEdit from '@/components/admin/inputEdit'
-import giftEdit from './giftEdit'
+// import giftEdit from './giftEdit'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
@@ -460,7 +464,7 @@ import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getP
 export default {
   components: {
     wrapper,
-    giftEdit,
+    // giftEdit,
     // inputEdit,
     choosingGoods
   },
@@ -638,7 +642,7 @@ export default {
       specsIds: [], // 规格id
       specsList: [], // 规格数据
 
-      refreshFlag: true
+      giftsList: [] // 编辑初始化赠品信息
     }
   },
   computed: {
@@ -699,18 +703,39 @@ export default {
     },
     // 保存
     addGift () {
+      // 校验
       if (this.tableData.length < 1) {
         this.$message.warning('请选择赠品')
         return false
       }
+      var result = this.tableData.map(item => {
+        var re = /^(0|\+?[1-9][0-9]*)$/
+        if (!item.productNumber) {
+          this.$message.warning({ message: '请填写赠品库存' })
+          return false
+        } else if (!re.test(item.productNumber)) {
+          this.$message.warning({ message: '赠品库存只能是0或者正整数' })
+          return false
+        } else if (item.productNumber > Number(item.prdNumber)) {
+          this.$message.warning('赠品当前库存不能大于商品库存')
+          return false
+        } else {
+          return true
+        }
+      })
+      if (result.indexOf(false) !== -1) {
+        return false
+      }
+
       // 赠品数据
       this.param.gifts = []
       this.tableData.forEach(item => {
         this.param.gifts.push({
           productId: item.prdId || item.productId,
-          productNumber: item.initNumber
+          productNumber: item.productNumber
         })
       })
+      console.log(this.param)
       if (this.update) {
         // 编辑保存
         var obj = this.param
@@ -802,6 +827,9 @@ export default {
             this.param.rules.cardId = arrCard
           }
 
+          // 保存赠品信息
+          this.giftsList = res.content.gifts
+
           this.loadRules(res.content)
           this.loadGoods(res.content)
           this.loadGifts(res.content.gifts)
@@ -848,11 +876,6 @@ export default {
       this.tableData.forEach(item => {
         item.goodsImg = this.$imageHost + '/' + item.goodsImg
         this.specsIds.push(item.productId)
-        // 编辑回显
-        item.initNumber = Number(item.productNumber)
-        if ((item.productNumber - item.offerNumber) > item.prdNumber) {
-          item.offerNumber = item.offerNumber + (item.productNumber - item.offerNumber - item.prdNumber)
-        }
       })
     },
     loadStatus ({ status }) {
@@ -895,51 +918,42 @@ export default {
       this.param.goodsIds = data
     },
 
-    // 选择规格弹窗回调显示
+    // 选择规格弹窗id回调显示
     getSpecsIds (ids) {
       console.log('getSpecsIds', ids)
       this.specsIds = ids
     },
 
-    // 规格弹窗数据
+    // 规格弹窗数据回调
     getSpecsData (data) {
       console.log('getSpecsData', data)
       // this.specsData = data
-      data.forEach(item => {
-        item.productNumber = Number(item.prdNumber)
-        // 初始状态
-        if (this.update === false) {
-          // 添加状态
-          item.initNumber = Number(item.productNumber)
-        } else {
-          // 编辑状态
-          item.initNumber = Number(item.productNumber) + Number(item.offerNumber)
-        }
-      })
-      this.tableData = data
-      // 重新加载子组件
-      this.refreshFlag = false
-      this.$nextTick(() => {
-        this.refreshFlag = true
-      })
-    },
 
-    // 修改赠品库存回调
-    checkNumber (data) {
-      this.refreshFlag = false
-      this.$nextTick(() => {
-        this.refreshFlag = true
-      })
+      if (this.update === false) {
+        // 添加状态
+        data.forEach(item => {
+          this.$set(item, 'productNumber', item.prdNumber)
+        })
+      } else {
+        // 编辑状态
+        data.forEach(item => {
+          this.$set(item, 'productNumber', item.prdNumber)
+          this.$set(item, 'offerNumber', 0)
+          this.giftsList.forEach(val => {
+            if (item.prdId === val.productId) {
+              this.$set(item, 'productNumber', val.productNumber)
+              this.$set(item, 'offerNumber', val.offerNumber)
+            }
+          })
+        })
+      }
+      this.tableData = data
+      console.log(this.tableData)
     },
 
     // 规格表格删除
     deleteHandler (index) {
       this.tableData.splice(index, 1)
-      // 重新加载子组件
-      this.refreshFlag = false
-      this.$nextTick(() => {
-        this.refreshFlag = true
-      })
       this.specsIds = []
       this.tableData.forEach(row => {
         this.specsIds.push(row.prdId)
@@ -949,7 +963,7 @@ export default {
     // 添加一行赠品商品
     addProductRow (productId) {
       getProductDetail(this.id, productId).then(({ content }) => {
-        const { goodsImg, prdImg, offerNumber } = content
+        const { goodsImg, prdImg } = content
         const row = {
           ...content,
           goodsImg: prdImg || goodsImg
@@ -959,8 +973,8 @@ export default {
           this.tableData.splice(index, 1)
         }
         this.tableData.push({
-          ...row,
-          productNumber: row.prdNumber + offerNumber
+          ...row
+          // productNumber: row.prdNumber + offerNumber
         })
       })
     },
@@ -1009,6 +1023,23 @@ export default {
     // 会员标签移除校验
     removeTag () {
       this.$refs['param'].validateField('rules.tagId')
+    },
+
+    // 校验输入库存
+    productNumberCheck (value1, value2) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value2) {
+        this.$message.warning({ message: '请填写赠品库存' })
+        return false
+      }
+      if (!re.test(value2)) {
+        this.$message.warning({ message: '赠品库存只能是0或者正整数' })
+        return false
+      }
+      if (value2 > Number(value1)) {
+        this.$message.warning('赠品当前库存不能大于商品库存')
+        return false
+      }
     }
   },
   watch: {
