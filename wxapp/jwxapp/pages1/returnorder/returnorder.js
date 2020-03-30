@@ -71,7 +71,7 @@ global.wxPage({
                   id: 1,
                   name: that.$t("page1.afterSale.return[1]")
                 })
-              } else if(index == 2) {
+              } else if (index == 2) {
                 // 退运费
                 isRefund = true
               } else if (index === 4) {
@@ -173,13 +173,13 @@ global.wxPage({
   // 计算退款金额
   computedRetureMoney () {
     let goodsInfo = this.data.goodsInfo
-    let selectGoodIds = this.data.selectGoodIds||[]
+    let selectGoodIds = this.data.selectGoodIds || []
     let returnMoney = 0
     goodsInfo.forEach((item, index) => {
       let selectIndex = selectGoodIds.indexOf(item.productId)
       if (item.checked) {
         returnMoney += item.discountedGoodsPrice * item.returnable
-        if(selectIndex === -1) {
+        if (selectIndex === -1) {
           selectGoodIds.push(item.productId)
         }
       } else {
@@ -246,7 +246,7 @@ global.wxPage({
     // 校验商品是否可退
     let cannotRefundGoods = checkedGoods.find(item => item.isCanReturn == 0)
     if (typeof cannotRefundGoods === 'object' && Object.keys(cannotRefundGoods).length > 0) {
-      util.showModal(that.$t("page1.afterSale.prompt"), '商品' +cannotRefundGoods.goodsName+'不支持退款')
+      util.showModal(that.$t("page1.afterSale.prompt"), '商品' + cannotRefundGoods.goodsName + '不支持退款')
       return false
     }
     let selectGoods = checkedGoods.map(item => {
@@ -288,6 +288,8 @@ global.wxPage({
           util.redirectTo({
             url: '/pages1/returndetail/returndetail?return_sn=' + content
           })
+        } else {
+          util.showModal(that.$t("page1.afterSale.prompt"), res.message)
         }
       }, params)
     })
