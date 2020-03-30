@@ -258,11 +258,29 @@
   justify-content: center;
   margin-right: 16rpx;
 }
+@keyframes scaleDraw {  
+  0%{
+      transform: scale(1); 
+  }
+  25%{
+      transform: scale(1.1); 
+  }
+  50%{
+      transform: scale(1);
+  }
+  75%{
+      transform: scale(1.1);
+  }
+}
 .live-avatar-content > .live-avatar{
   width: 56rpx;
   height: 56rpx;
   border-radius: 50%;
   border:2px solid rgba(255,126,0,1);
+  -webkit-animation-name: scaleDraw; 
+  -webkit-animation-timing-function: ease-in-out; 
+  -webkit-animation-iteration-count: infinite;  
+  -webkit-animation-duration: 5s; 
 }
 .live-desc{
   color:rgba(255,126,0,1);
