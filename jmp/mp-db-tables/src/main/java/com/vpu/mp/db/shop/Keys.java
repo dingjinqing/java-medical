@@ -264,6 +264,7 @@ public class Keys {
     public static final Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Identities0.IDENTITY_PAY_AWARD_PRIZE;
     public static final Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Identities0.IDENTITY_USER_REMARK;
     public static final Identity<BargainGoodsRecord, Integer> IDENTITY_BARGAIN_GOODS = Identities0.IDENTITY_BARGAIN_GOODS;
+    public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
 
 
 
@@ -517,6 +518,7 @@ public class Keys {
     public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY;
     public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = UniqueKeys0.KEY_B2C_USER_REMARK_PRIMARY;
     public static final UniqueKey<BargainGoodsRecord> KEY_B2C_BARGAIN_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_BARGAIN_GOODS_PRIMARY;
+    public static final UniqueKey<ArticleRecord> KEY_B2C_ARTICLE_PRIMARY = UniqueKeys0.KEY_B2C_ARTICLE_PRIMARY;
 
 
 
@@ -750,6 +752,7 @@ public class Keys {
         public static Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Internal.createIdentity(PayAwardPrize.PAY_AWARD_PRIZE, PayAwardPrize.PAY_AWARD_PRIZE.ID);
         public static Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Internal.createIdentity(UserRemark.USER_REMARK, UserRemark.USER_REMARK.ID);
         public static Identity<BargainGoodsRecord, Integer> IDENTITY_BARGAIN_GOODS = Internal.createIdentity(BargainGoods.BARGAIN_GOODS, BargainGoods.BARGAIN_GOODS.ID);
+        public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
     }
 
     private static class UniqueKeys0 {
@@ -1006,5 +1009,6 @@ public class Keys {
         public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = Internal.createUniqueKey(SubscribeMessage.SUBSCRIBE_MESSAGE, "KEY_b2c_subscribe_message_PRIMARY", SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = Internal.createUniqueKey(UserRemark.USER_REMARK, "KEY_b2c_user_remark_PRIMARY", UserRemark.USER_REMARK.ID);
         public static final UniqueKey<BargainGoodsRecord> KEY_B2C_BARGAIN_GOODS_PRIMARY = Internal.createUniqueKey(BargainGoods.BARGAIN_GOODS, "KEY_b2c_bargain_goods_PRIMARY", BargainGoods.BARGAIN_GOODS.ID);
+        public static final UniqueKey<ArticleRecord> KEY_B2C_ARTICLE_PRIMARY = Internal.createUniqueKey(Article.ARTICLE, "KEY_b2c_article_PRIMARY", Article.ARTICLE.ARTICLE_ID);
     }
 }
