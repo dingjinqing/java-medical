@@ -35,7 +35,7 @@ public final class DateUtil {
 	
 	public static final String DATE_FORMAT_FULL_BEGIN="yyyy-MM-dd 00:00:00";
 	public static final String DATE_FORMAT_FULL_END="yyyy-MM-dd 23:59:59";
-    public static final String TIMESTAMP_DEFAULT_VALUE = "0000-00-00 00:00:00";
+
     //时分秒最小
     public static final LocalTime minTime = LocalTime.of(0, 0, 0);
     //时分秒最大

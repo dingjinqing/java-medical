@@ -775,7 +775,7 @@ public class CouponService extends ShopBaseService {
         couponInfoCfg.update();
         //恢复未使用
         couponInfo.setIsUsed(OrderConstant.NO);
-        couponInfo.setUsedTime(DateUtil.dateFormatToTimeStamp(DateUtil.DATE_FORMAT_FULL, DateUtil.TIMESTAMP_DEFAULT_VALUE));
+        couponInfo.setUsedTime(null);
         couponInfo.setOrderSn(org.apache.commons.lang3.StringUtils.EMPTY);
         couponInfo.update();
     }
