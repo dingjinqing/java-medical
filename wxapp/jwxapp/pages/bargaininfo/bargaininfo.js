@@ -178,7 +178,8 @@ global.wxPage({
           }
         }, {
             bargainId: bargain_info.recordInfo.bargainId,
-            prdId: bargain_info.recordInfo.prdId
+            prdId: bargain_info.recordInfo.prdId,
+            goodsId: bargain_info.recordInfo.goodsId
           })
       }
     })

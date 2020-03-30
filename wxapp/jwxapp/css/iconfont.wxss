@@ -283,3 +283,7 @@
   content: "\e642";
 }
 
+.icontuiguangzhongxin:before {
+  content: "\e6be";
+}
+

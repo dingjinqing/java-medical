@@ -265,72 +265,73 @@ global.wxPage({
   },
 })
 function dis_request(that) {
-  // util.api('/api/wxapp/rebate/center', function (res) {
-  //   if (res.error == 0) {
-  //     dis_info = res.content;
-  //     var page_id = dis_info.fanli_cfg.rebate_page_id;
-  //     // that.page_id = page_id;
-  //     if (page_id > 0) {
-  //       that.requestDecoratePageData(page_id, 0, that.processWindowData.bind(that));
-  //     }
-  //     that.setData({
-  //       page_id: page_id,
-  //       rebate_center: 1,
-  //       page_name: that.data.this_dis_name,
-  //       is_block: that.data.is_block,
-  //       distributor_name: dis_info.fanli_cfg.distributor_name
-  //     })
-  //     var marqueen_tex = [];
-  //     // img_save_url = that.data.imageUrl + dis_info.invite_image;
-  //     that.setData({
-  //       img_save_url: that.data.imageUrl + dis_info.invite_image
-  //     })
-  //     for (var i = 0; i < dis_info.resent_rebate_list.length; i++) {
-  //       if (dis_info.resent_rebate_list[i].finished_time != null) {
-  //         dis_info.resent_rebate_list[i].finished_time = dis_info.resent_rebate_list[i].finished_time.substring(0, 10);
-  //       }
-  //       if (dis_info.resent_rebate_list[i].username.length > 4) {
-  //         dis_info.resent_rebate_list[i].username = dis_info.resent_rebate_list[i].username.substring(0, 4) + "...";
-  //       }
-  //       dis_info.resent_rebate_list[i].fanli_money = parseFloat(dis_info.resent_rebate_list[i].fanli_money).toFixed(2);
-  //     }
-  //     dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
-  //     dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
-  //     for (var i in dis_info.rebate_top_three) {
-  //       dis_info.rebate_top_three[i].final_money = parseFloat(dis_info.rebate_top_three[i].final_money).toFixed(2);
-  //     }
-  //     that.setData({
-  //       is_bind_mobile: dis_info.is_bind_mobile
-  //     })
-  //     if (dis_info.invitation_code && dis_info.invitation_code != "" && dis_info.invitation_code != 0) {
-  //       that.data.copy_content = dis_info.invitation_code
-  //     } else {
-  //       that.data.copy_content = ''
-  //     }
+  util.api('/api/wxapp/distribution/rebateCenter', function (res) {
+    if (res.error == 0) {
+      dis_info = res.content;
+      // var page_id = dis_info.fanli_cfg.rebate_page_id;
+      // // that.page_id = page_id;
+      // if (page_id > 0) {
+      //   that.requestDecoratePageData(page_id, 0, that.processWindowData.bind(that));
+      // }
+      that.setData({
+        // page_id: page_id,
+        rebate_center: 1,
+        // page_name: that.data.this_dis_name,
+        // is_block: that.data.is_block,
+        // distributor_name: dis_info.fanli_cfg.distributor_name
+      })
+      // var marqueen_tex = [];
+      // // img_save_url = that.data.imageUrl + dis_info.invite_image;
+      // that.setData({
+      //   img_save_url: that.data.imageUrl + dis_info.invite_image
+      // })
+      // for (var i = 0; i < dis_info.resent_rebate_list.length; i++) {
+      //   if (dis_info.resent_rebate_list[i].finished_time != null) {
+      //     dis_info.resent_rebate_list[i].finished_time = dis_info.resent_rebate_list[i].finished_time.substring(0, 10);
+      //   }
+      //   if (dis_info.resent_rebate_list[i].username.length > 4) {
+      //     dis_info.resent_rebate_list[i].username = dis_info.resent_rebate_list[i].username.substring(0, 4) + "...";
+      //   }
+      //   dis_info.resent_rebate_list[i].fanli_money = parseFloat(dis_info.resent_rebate_list[i].fanli_money).toFixed(2);
+      // }
+      // dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
+      // dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
+      // for (var i in dis_info.rebate_top_three) {
+      //   dis_info.rebate_top_three[i].final_money = parseFloat(dis_info.rebate_top_three[i].final_money).toFixed(2);
+      // }
+      // that.setData({
+      //   is_bind_mobile: dis_info.is_bind_mobile
+      // })
+      // if (dis_info.invitation_code && dis_info.invitation_code != "" && dis_info.invitation_code != 0) {
+      //   that.data.copy_content = dis_info.invitation_code
+      // } else {
+      //   that.data.copy_content = ''
+      // }
 
-  //     that.setData({
-  //       dis_info: dis_info
-  //     })
-  //   } else if (res.message == "您还不是分销员" && res.content.withdraw_money > 0) {
-  //     dis_info = res.content;
-  //     dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
-  //     dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
-  //     that.setData({
-  //       dis_info: dis_info,
-  //       rebate_center: 2,
-  //       have_account: 1,
-  //       distributor_name: dis_info.fanli_cfg.distributor_name
-  //     })
-  //   } else {
-  //     dis_info = res.content;
-  //     that.setData({
-  //       rebate_center: 2,
-  //       have_account: 0,
-  //       none_message: res.message,
-  //       none_jump_page: res.content.page,
-  //       distributor_name: dis_info.fanli_cfg.distributor_name
-  //     })
-  //   }
-  // });
+      // that.setData({
+      //   dis_info: dis_info
+      // })
+    } 
+    // else if (res.message == "您还不是分销员" && res.content.withdraw_money > 0) {
+    //   dis_info = res.content;
+    //   dis_info.rebate_info.final_money = parseFloat(dis_info.rebate_info.final_money).toFixed(2);
+    //   dis_info.rebate_info.wait_fanli_money = parseFloat(dis_info.rebate_info.wait_fanli_money).toFixed(2);
+    //   that.setData({
+    //     dis_info: dis_info,
+    //     rebate_center: 2,
+    //     have_account: 1,
+    //     distributor_name: dis_info.fanli_cfg.distributor_name
+    //   })
+    // } else {
+    //   dis_info = res.content;
+    //   that.setData({
+    //     rebate_center: 2,
+    //     have_account: 0,
+    //     none_message: res.message,
+    //     none_jump_page: res.content.page,
+    //     distributor_name: dis_info.fanli_cfg.distributor_name
+    //   })
+    // }
+  });
 }
 

@@ -5,7 +5,7 @@
   <view class='dis_container'>
     <!-- 获得返利的轮播,去分享（是分销员） -->
     <block wx:if='{{rebate_center == 1}}'>
-      <view class="act_notice" wx:if="{{!(dis_info.rebate_info.final_money > 0)}}">
+      <view class="act_notice">
         <view class="act_zhezhao" style='background:{{linColor}}'>
           <view class="act_img" style="background:url({{imageUrl}}image/wxapp/invite_yuan.png) no-repeat;background-size:75%;"></view>
           <view class='share_note'>您还没有佣金收入哦，</view>
@@ -13,7 +13,7 @@
         </view>
         <button class='share_intive' open-type='share' id='1' style='color:{{comColor}}'>立即分享</button>
       </view>
-      <view class="swiper-top" wx:if='{{dis_info.resent_rebate_list.length >= 5}}'>
+      <!-- <view class="swiper-top" wx:if='{{dis_info.resent_rebate_list.length >= 5}}'>
         <swiper autoplay="true" circular="true" interval="2500" duration="500" class='swiper'>
           <block wx:for="{{dis_info.resent_rebate_list}}" wx:key="key" wx:for-index="index">
             <swiper-item>
@@ -26,7 +26,7 @@
             </swiper-item>
           </block>
         </swiper>
-      </view>
+      </view> -->
     </block>
     <!-- 提现的部分(是分销员或者非分销员但是有余额) -->
     <block wx:if='{{rebate_center == 1 || (rebate_center == 2 && have_account == 1)}}'>
@@ -34,17 +34,17 @@
         <view class='dis_info'>
           <view class="can_tixian">
               <view class="ct_tit">可提现佣金</view>
-              <view class="ct_money">{{dis_info.withdraw_money > 0 ? dis_info.withdraw_money:"0.00"}}</view>
+              <view class="ct_money">{{dis_info.canWithdraw > 0 ? dis_info.canWithdraw:"0.00"}}</view>
               <view class="btn_record" bindtap='withdraw_record'>提现记录</view>
           </view>
           <view class="two_money">
             <view class="leiji_money">
               <view class="lm_top">累积获得佣金(元)</view>
-              <view class="lm_bottom">{{dis_info.rebate_info.final_money > 0 ? dis_info.rebate_info.final_money : "0.00"}}</view>
+              <view class="lm_bottom">{{dis_info.totalWithdraw > 0 ? dis_info.totalWithdraw : "0.00"}}</view>
             </view>
             <view class="leiji_money">
               <view class="lm_top">待返利佣金 <image src='{{imageUrl}}/image/wxapp/dis_notice.png' mode='widthFix' bindtap='a_tips'></image></view>
-              <view class="lm_bottom">{{dis_info.rebate_info.wait_fanli_money > 0 ? dis_info.rebate_info.wait_fanli_money : "0.00"}}</view>
+              <view class="lm_bottom">{{dis_info.waitWithdraw > 0 ? dis_info.waitWithdraw : "0.00"}}</view>
             </view>
           </view>
           <view class="btn_tixian" style="color:{{comColor}};" bindtap='to_money'>提现</view>
@@ -57,35 +57,35 @@
     </block>
     <!-- 推广中心、分销商品、自定义页面之类的内容（是分销员显示） -->
     <block wx:if='{{rebate_center == 1}}'>
-      <!-- 分销员等级 -->
-      <view class="dis_group_line" wx:if='{{dis_info.distributor_level.level_name.level_name != null || (dis_info.distributor_group !="" && dis_info.distributor_group && dis_info.group_show_config != 1)}}'>
-        <view class="distor_grade" bindtap='to_grade' wx:if='{{dis_info.distributor_level.level_name.level_name != null}}'>
-          {{dis_info.distributor_level.level_name.level_name}}
-          <image src='{{imageUrl}}image/wxapp/right_into.png' wx:if='{{dis_info.distributor_level.show_arrow == true}}' mode="widthFix"></image>
+      <!-- 分销员等级 / 分组 -->
+      <view class="dis_group_line" wx:if='{{dis_info.distributorLevel || (dis_info.distributorGroup !="" && dis_info.distributorGroup)}}'>
+        <view class="distor_grade" bindtap='to_grade' wx:if='{{dis_info.distributorLevel}}'>
+          {{dis_info.distributorLevel}}
+          <image src='{{imageUrl}}image/wxapp/right_into.png' wx:if='{{dis_info.distributorLevel.show_arrow == true}}' mode="widthFix"></image>
         </view>
-        <view class="distor_which_group" wx:if="{{dis_info.distributor_group !='' && dis_info.distributor_group && dis_info.group_show_config != 1}}">
-          {{dis_info.distributor_group.group_name}}
+        <view class="distor_which_group" wx:if="{{dis_info.distributorGroup !='' && dis_info.distributorGroup}}">
+          {{dis_info.distributorGroup}}
         </view>
       </view>
       <!-- 我的邀请码 -->
-      <view class="distor_num" wx:if='{{dis_info.invitation_code && dis_info.invitation_code != "" && dis_info.invitation_code != 0}}'>
+      <view class="distor_num" wx:if='{{dis_info.invitationCode && dis_info.invitationCode != "" && dis_info.invitationCode != 0}}'>
         <view>我的邀请码</view>
         <view class="copy_content">
-          {{dis_info.invitation_code}} <image bindtap="toCopy" data-content='{{dis_info.invitation_code}}' src="{{imageUrl}}image/wxapp/icon_dis_copy.png"></image>
+          {{dis_info.invitationCode}} <image bindtap="toCopy" data-content='{{dis_info.invitationCode}}' src="{{imageUrl}}image/wxapp/icon_dis_copy.png"></image>
         </view>
       </view>
       <!-- 邀请和返利信息 -->
       <view class='dis_amount'>
           <view class='amount_user' bindtap='toUser'>
-            <view>{{dis_info.rebate_info.sublayer_number}}</view>
+            <view>{{dis_info.inviteUserNum}}</view>
             <view>邀请用户</view>
           </view>
           <view class='amount_user' bindtap='toOrder'>
-            <view>{{dis_info.rebate_info.order_number}}</view>
+            <view>{{dis_info.rebateOrderNum}}</view>
             <view>返利订单</view>
           </view>
           <view class='amount_order'>
-            <view>{{dis_info.rebate_info.total_calculate_money}}</view>
+            <view>{{dis_info.totalCanFanliMoney}}</view>
             <view>返利商品总额</view>
           </view>
       </view>
