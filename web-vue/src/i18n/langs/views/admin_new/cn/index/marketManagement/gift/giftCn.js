@@ -131,7 +131,7 @@ export const cn = {
   catName: '规格',
   goodsPrice: '商品原价',
   goodsNumber: '商品库存',
-  productNumber: '赠品库存 (当前库存/初始库存)',
+  productNumber: '赠品库存 (初始库存/当前库存)',
   // 底部
   lastStep: '上一步',
   nextStep: '下一步',
