@@ -60,5 +60,26 @@ export const en = {
   numMessages: 'Number of remaining messages',
   gotoRecharge: 'Go to recharge',
   save: 'save',
-  updated: 'update completed'
+  updated: 'update completed',
+
+  weightSetting: 'Product weight configuration item settings',
+  turnedOn: 'Turned on',
+  afterOpen: 'After opening, you need to fill in the product weight when creating / editing product information in the background',
+  barcodeSetting: 'Product barcode configuration item settings',
+  fillBarcode: 'After opening, you can fill in the product barcode when creating / editing product information in the background',
+  productShare: 'Product Sharing',
+  productNote: 'Note: To display the product name / price / sharer nickname in the share copy, please enter [commodity name] / [commodity price] / [sharer nickname] below, we will automatically replace the content when users share Into corresponding content ',
+  shareDirectly: 'Share directly',
+  viewEx: 'View example',
+  copyWriting: 'Copywriting',
+  defaultScheme: 'Default scheme',
+  customScheme: 'Custom scheme',
+  sharedCopy: 'Shared copywriting set',
+  shareTemp: "[Shared person's nickname] is an exclusive recommendation for you [Product price] [Product name]",
+  mayBe: 'The content displayed when users share it may be:',
+  shareExample: 'The running piglet recommends Lenovo (thinkplus) worth 200 yuan for you.',
+  shareNote: 'Note: When sharing the product directly with friends, you can display no more than 23 Chinese characters, and the excess will be omitted',
+  peShareCopy: 'Please enter a shared copy',
+  downloadPoster: 'Download poster',
+  downNote: 'Note: When sharing friends with merchandise through a poster, no more than 20 Chinese characters can be displayed, and the excess will be omitted'
 }
