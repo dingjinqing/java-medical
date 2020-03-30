@@ -4,7 +4,10 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    cardMode: true,// 会员卡样式弹窗flag
+    cardArray: [], // 会员卡样式弹窗渲染数据
     cardChooseName: '修改样式',
+    choose_card: {},
     cardInfo: {
       cardType: 0,
       shopAvatar: util.getCache('avatarUrl'),
@@ -17,7 +20,8 @@ global.wxPage({
       renewNum: 100,
       shouldRenewDate: 100,
       renew_type: 0,
-
+      renew_num: 100,
+      renew_type: 0
     } // 续费卡详细信息
   },
   /**
@@ -41,6 +45,48 @@ global.wxPage({
     let viewHeight = winWidth * 0.94 / 1.8;
     this.setData({
       viewHeight: viewHeight,
+    })
+    // 模拟修改会员卡弹窗样式
+    let cardArr = [
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0000AC',
+        card_name: '腾飞测试1',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      },
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0081FF',
+        card_name: '腾飞测试2',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      },
+      {
+        src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
+        src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
+        // card_src: 1,
+        shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
+        bg: '#0081FF',
+        card_name: '腾飞测试3',
+        card_type: 0,
+        expire_time: null,
+        card_no: 1
+      }
+    ]
+    this.setData({
+      card_array: cardArr
     })
     // var that = this;
     // util.api('/api/card/renew/info', function(res) {
@@ -174,9 +220,9 @@ global.wxPage({
   },
 
   cardConfirm: function (e) {
-    // this.setData({
-    //   cardMode: true,
-    // });
+    this.setData({
+      cardMode: true
+    });
     // var member_card_arr = Object.keys(this.data.card_array);
     // if (member_card_arr.length == 1 && this.data.card_array[member_card_arr[0]].card_type == 1) {
     //   card_info.member_card_no = this.data.card_array[member_card_arr[0]].card_no;
@@ -188,22 +234,24 @@ global.wxPage({
     // this.loadData(card_info, 0, this);
   },
   chooseCard: function (e) { //选择会员卡
-    // var card_choose_name = e.currentTarget.dataset.name;
-    // var renew_card_no = e.currentTarget.dataset.card_no;
-    // var id = e.currentTarget.dataset.id;
-    // var card_arr = this.data.card_array;
-    // for (var i in card_arr) {
-    //   if (i == id) {
-    //     card_arr[i].card_src = 1;
-    //   } else {
-    //     card_arr[i].card_src = card_arr[i].src_no;
-    //   }
-    // }
-    // this.data.choose_card.card_choose_name = card_choose_name;
-    // this.data.choose_card.card_no = renew_card_no;
-    // this.setData({
-    //   card_array: card_arr
-    // })
+    console.log(e)
+    let card_choose_name = e.currentTarget.dataset.name;
+    let renew_card_no = e.currentTarget.dataset.card_no;
+    let id = e.currentTarget.dataset.id;  // 当前选中的卡下标
+    let card_arr = this.data.card_array;
+    card_arr.forEach((item, index) => {
+      if (index == id) {
+        card_arr[index].card_src = 1;
+      } else {
+        card_arr[index].card_src = card_arr[index].src_no;
+      }
+    })
+    this.data.choose_card.card_choose_name = card_choose_name;
+    this.data.choose_card.card_no = renew_card_no;
+    console.log(card_arr)
+    this.setData({
+      card_array: card_arr
+    })
   },
   // 支付弹窗
   payClick: function (e) {
@@ -310,14 +358,14 @@ global.wxPage({
   },
   // 会员卡
   cardClick: function (e) { //会员卡弹框显示
-    // this.setData({
-    //   cardMode: false
-    // })
+    this.setData({
+      cardMode: false
+    })
   },
   cardCancel: function (e) { //关闭会员卡弹框
-    // this.setData({
-    //   cardMode: true
-    // })
+    this.setData({
+      cardMode: true
+    })
   },
   member_card: function (e) {
     // if (e.detail.value) {

@@ -225,6 +225,9 @@ import {
   cn as allGoodsLabel
 } from './views/admin_new/cn/index/goodsManagement/allGoodsLabelCn'
 import {
+  cn as goodsImport
+} from './views/admin_new/cn/index/goodsManagement/goodsImportCn'
+import {
   cn as addAndUpdateGoodsLabel
 } from './views/admin_new/cn/index/goodsManagement/addAndUpdateGoodsLabelCn'
 import {
@@ -1008,6 +1011,7 @@ const cn = {
   allGoods, // 商品管理/全部商品
   goodsAddEditInfo,
   allGoodsLabel, // 全部标签
+  goodsImport, // 商品导入
   addAndUpdateGoodsLabel, // 标签添加和修改
   goodsSorts, // 商家分类全部，修改，新增
   goodsRecommendSorts, // 商家推荐分类全部，修改，新增

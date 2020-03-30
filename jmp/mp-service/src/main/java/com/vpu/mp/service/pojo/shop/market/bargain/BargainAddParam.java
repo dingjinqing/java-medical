@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author 王兵兵
@@ -30,10 +31,16 @@ public class BargainAddParam {
 	private Timestamp endTime;
 	
 	/**
-	 *  活动商品的ID
+	 *  活动商品
 	 */
 	@NotNull
-	private Integer goodsId;
+	private List<BargainGoods> bargainGoods;
+
+    /**
+     * 优先级
+     */
+	@NotNull
+	private Integer first;
 	
 	/**
 	 *  运费设置：1免运费，0使用原商品运费模板
@@ -46,10 +53,10 @@ public class BargainAddParam {
 	 */
 	private Integer expectationNumber;
 
-	/**
-	 *  指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
-	 */
-	private BigDecimal expectationPrice;
+//	/**
+//	 *  指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
+//	 */
+//	private BigDecimal expectationPrice;
 
 	/**
 	 * 商品首次砍价可砍价比例区间 百分比
@@ -72,10 +79,10 @@ public class BargainAddParam {
 	 */
 	private PictorialShareConfig shareConfig;
 	
-	/**
-	 * 任意金额结算模式的结算金额底价 
-	 */
-	private BigDecimal floorPrice;
+//	/**
+//	 * 任意金额结算模式的结算金额底价
+//	 */
+//	private BigDecimal floorPrice;
 	
 	/**
 	 * 活动商品库存 

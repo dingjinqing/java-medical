@@ -241,6 +241,8 @@ export const cn = {
   goodsTip2: '件商品',
   goodsTip3: '个商家',
   goodsTip4: '个平台',
+  goodsTip5: '商家分类',
+  goodsTip6: '未选',
 
   storeArr: [
     {
@@ -248,7 +250,7 @@ export const cn = {
       value: '1'
     },
     {
-      name: '添加商品分类',
+      name: '添加商家分类',
       value: '2'
     }
     // {

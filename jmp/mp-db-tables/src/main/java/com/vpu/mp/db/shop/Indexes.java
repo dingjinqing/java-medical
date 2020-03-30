@@ -488,6 +488,7 @@ public class Indexes {
     public static final Index USER_CARD_PRIMARY = Indexes0.USER_CARD_PRIMARY;
     public static final Index USER_REMARK_PRIMARY = Indexes0.USER_REMARK_PRIMARY;
     public static final Index USER_REMARK_USER_ID = Indexes0.USER_REMARK_USER_ID;
+    public static final Index BARGAIN_GOODS_PRIMARY = Indexes0.BARGAIN_GOODS_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -953,5 +954,6 @@ public class Indexes {
         public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
         public static Index USER_REMARK_PRIMARY = Internal.createIndex("PRIMARY", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.ID }, true);
         public static Index USER_REMARK_USER_ID = Internal.createIndex("user_id", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.USER_ID }, false);
+        public static Index BARGAIN_GOODS_PRIMARY = Internal.createIndex("PRIMARY", BargainGoods.BARGAIN_GOODS, new OrderField[] { BargainGoods.BARGAIN_GOODS.ID }, true);
     }
 }

@@ -73,7 +73,7 @@ public class BargainPictorialService extends ShopBaseService {
             return shareInfoVo;
         }
 
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         // 砍价商品信息不可用
         if (goodsRecord == null) {
             bargainLog("分享", "砍价商品信息不可用");
@@ -177,7 +177,7 @@ public class BargainPictorialService extends ShopBaseService {
             goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
             return goodsPictorialInfo;
         }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         if (goodsRecord == null) {
             bargainLog("pictorial", "商品信息已删除或失效");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);

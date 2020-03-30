@@ -172,6 +172,22 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 
 /***********************2.10*********************END*/
 
+/***********************2.11*********************BEGIN*/
+-- 2020-03-26 砍价支持选择多商品
+ALTER TABLE `b2c_bargain` MODIFY COLUMN `goods_id` varchar(9999)  COMMENT '商品ID';
+ALTER TABLE `b2c_bargain` ADD COLUMN `first` int(9) NOT NULL DEFAULT 0 COMMENT '优先级';
+CREATE TABLE IF NOT EXISTS `b2c_bargain_goods` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `bargain_id` int(9) DEFAULT '0' COMMENT '砍价活动主键',
+  `goods_id` int(9) DEFAULT '0',
+  `expectation_price` decimal(10,2) DEFAULT '0.00' COMMENT '指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限',
+  `floor_price` decimal(10,2) DEFAULT '0.00' COMMENT '任意金额结算模式的结算金额底价',
+  `stock` int(9) DEFAULT '0' COMMENT '活动库存',
+  `sale_num` int(9) DEFAULT '0' COMMENT '销量',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)COMMENT='砍价活动商品表';
+/***********************2.11*********************END*/
 
 
 

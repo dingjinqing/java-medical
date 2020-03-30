@@ -57,6 +57,7 @@
     </block>
     <!-- 推广中心、分销商品、自定义页面之类的内容（是分销员显示） -->
     <block wx:if='{{rebate_center == 1}}'>
+      <!-- 分销员等级 -->
       <view class="dis_group_line" wx:if='{{dis_info.distributor_level.level_name.level_name != null || (dis_info.distributor_group !="" && dis_info.distributor_group && dis_info.group_show_config != 1)}}'>
         <view class="distor_grade" bindtap='to_grade' wx:if='{{dis_info.distributor_level.level_name.level_name != null}}'>
           {{dis_info.distributor_level.level_name.level_name}}
@@ -66,12 +67,14 @@
           {{dis_info.distributor_group.group_name}}
         </view>
       </view>
+      <!-- 我的邀请码 -->
       <view class="distor_num" wx:if='{{dis_info.invitation_code && dis_info.invitation_code != "" && dis_info.invitation_code != 0}}'>
         <view>我的邀请码</view>
         <view class="copy_content">
           {{dis_info.invitation_code}} <image bindtap="toCopy" data-content='{{dis_info.invitation_code}}' src="{{imageUrl}}image/wxapp/icon_dis_copy.png"></image>
         </view>
       </view>
+      <!-- 邀请和返利信息 -->
       <view class='dis_amount'>
           <view class='amount_user' bindtap='toUser'>
             <view>{{dis_info.rebate_info.sublayer_number}}</view>
@@ -86,6 +89,7 @@
             <view>返利商品总额</view>
           </view>
       </view>
+      <!-- 推广中心 -->
       <view class="tuiguang_center clearfix">
         <view class="tc_left">
             <text class='iconfont icontuiguangzhongxin' style="color:{{comColor}}"></text>
@@ -97,6 +101,7 @@
             </view>
         </view>
       </view>
+      <!-- 推荐商品 -->
       <view class="dis_recommend" wx:if='{{dis_info.rebate_goods!=""}}'>
         <view class="dis_recommend_title clearfix">
           <text>推荐商品</text>
@@ -122,6 +127,7 @@
           </scroll-view>
         </view>
       </view>
+      <!-- 返利排名 -->
       <view class='all_rank' wx:if="{{dis_info.fanli_cfg.rank_status == 1 && dis_info.rebate_top_three.length >= 3 }}">
         <view class='rank_title clearfix' bindtap='toRank'>
           <view>全网返利佣金排名</view>
@@ -156,6 +162,7 @@
           </view>
         </view>
       </view>
+      <!-- 推广语 -->
       <view class='my_invite'>
         <!-- <view class="rank_title clearfix" >
           <view class="rt_left">我的等级</view>

@@ -2,7 +2,6 @@ package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -48,7 +47,7 @@ public class AdminBargainController extends AdminBaseController {
      */
     @PostMapping(value = "/api/admin/decorate/bargain/list")
     public JsonResult getBargainPageListDialog(@RequestBody @Valid BargainPageListQueryParam param) {
-        return success(shop().bargain.getPageList(param));
+        return success(shop().bargain.getDecoratePageList(param));
     }
 	
 	/**
@@ -57,9 +56,6 @@ public class AdminBargainController extends AdminBaseController {
 	 */
 	@PostMapping(value = "/api/admin/market/bargain/add")
 	public JsonResult addBargain(@RequestBody @Valid BargainAddParam param){
-        if(shop().bargain.isOnGoingBargain(param.getGoodsId(),param.getStartTime(),param.getEndTime())){
-            return fail(JsonResultCode.BARGAIN_CONFLICTING_ACT_TIME);
-        }
 		shop().bargain.addBargain(param);
         return success();
 	}
@@ -79,7 +75,7 @@ public class AdminBargainController extends AdminBaseController {
      *
      */
     @PostMapping(value = "/api/admin/market/bargain/del")
-    public JsonResult delBargain(@RequestBody @Valid BargainUpdateParam param) {
+    public JsonResult delBargain(@RequestBody @Valid SimpleBargainParam param) {
         shop().bargain.delBargain(param.getId());
         return success();
     }

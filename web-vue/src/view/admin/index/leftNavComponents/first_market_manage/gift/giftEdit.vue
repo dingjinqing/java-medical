@@ -33,7 +33,9 @@
 export default {
   props: {
     input: String | Number,
-    prdNumber: String | Number
+    prdNumber: String | Number,
+    offerNumber: String | Number,
+    flag: Boolean
   },
   model: {
     prop: 'input',
@@ -57,9 +59,22 @@ export default {
           this.$message.warning({ message: '赠品库存只能是正整数' })
           return false
         }
-        if (value > Number(this.prdNumber)) {
-          this.$message.warning('赠品库存不能大于商品当前库存')
-          return false
+        if (this.flag === true) {
+          // 编辑
+          if ((value - Number(this.offerNumber)) > Number(this.prdNumber)) {
+            this.$message.warning('赠品可用库存不能大于商品当前库存')
+            return false
+          }
+          if (value < Number(this.offerNumber)) {
+            this.$message.warning('赠品库存不能小于已赠送库存')
+            return false
+          }
+        } else {
+          // 添加
+          if (value > Number(this.prdNumber)) {
+            this.$message.warning('赠品可用库存不能大于商品当前库存')
+            return false
+          }
         }
 
         this.showInput = !this.showInput
@@ -80,9 +95,22 @@ export default {
         this.$message.warning({ message: '赠品库存只能是正整数' })
         return false
       }
-      if (value > Number(this.prdNumber)) {
-        this.$message.warning('赠品库存不能大于商品当前库存')
-        return false
+      if (this.flag === true) {
+        // 编辑
+        if ((value - Number(this.offerNumber)) > Number(this.prdNumber)) {
+          this.$message.warning('赠品可用库存不能大于商品当前库存')
+          return false
+        }
+        if (value < Number(this.offerNumber)) {
+          this.$message.warning('赠品库存不能小于已赠送库存')
+          return false
+        }
+      } else {
+        // 添加
+        if (value > Number(this.prdNumber)) {
+          this.$message.warning('赠品可用库存不能大于商品当前库存')
+          return false
+        }
       }
 
       this.showInput = !this.showInput

@@ -32,6 +32,19 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
 
     /**
      * 指定了本对象activityType和activityId后的唯一活动价（该商品满足的排他性活动的活动价，如预售、秒杀、等级会员价、首单特惠价）
+     * 首单特惠价格
+     */
+    private BigDecimal firstSpecialPrice;
+    /**
+     * 首单特惠限购数量
+     */
+    private Integer firstSpecialNumber;
+    /**
+     * 首单特惠限制类型
+     */
+    private Byte firstSpecialNumberType;
+    /**
+     * 会员价格
      */
     private BigDecimal actPrice;
     /**

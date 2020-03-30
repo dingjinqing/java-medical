@@ -129,7 +129,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
             .and(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_YES)
                 .or(FIRST_SPECIAL.IS_FOREVER.eq(FOREVER_NO).and(FIRST_SPECIAL.START_TIME.lt(date)
                     .and(FIRST_SPECIAL.END_TIME.gt(date)))))
-            .orderBy(FIRST_SPECIAL.FIRST.desc())
+            .orderBy(FIRST_SPECIAL.FIRST.desc(),FIRST_SPECIAL.ID)
             .fetch();
     }
 
