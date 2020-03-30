@@ -245,3 +245,11 @@
 .must{
   color: #f66;
 }
+.pay_content.term  .iconfont{
+  font-size: 40rpx;
+  margin-right: 12rpx;
+}
+.pay_content.term  .pay_list_right > text{
+  margin-right: 25rpx;
+  color: #888;
+}
