@@ -216,6 +216,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setUserId(order.getUserId());
 		returnOrder.setShopId(getShopId());
 		returnOrder.setCurrency(order.getCurrency());
+        returnOrder.setIsAutoReturn(param.getIsAutoReturn());
 		//除退货外,refund_status为4
         returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
@@ -542,14 +543,13 @@ public class ReturnOrderService extends ShopBaseService{
 
     /**
      * 获取自动退款的退款订单
-     * @param autoReturnTime
      * @param returnMoneyDays
      * @param returnAddressDays
      * @param returnShoppingDays
      * @param returnPassDays
      * @return Result<ReturnOrderRecord>
      */
-    public Result<ReturnOrderRecord> getAutoReturnOrder(Timestamp autoReturnTime, Byte returnMoneyDays, Byte returnAddressDays, Byte returnShoppingDays, Byte returnPassDays){
+    public Result<ReturnOrderRecord> getAutoReturnOrder(Byte returnMoneyDays, Byte returnAddressDays, Byte returnShoppingDays, Byte returnPassDays){
         Instant now = Instant.now();
         Timestamp returnMoneTime = Timestamp.from(now.plusSeconds(-returnMoneyDays * 24 * 60 * 60));
         Timestamp returnAddressTime = Timestamp.from(now.plusSeconds(-returnAddressDays * 24 * 60 * 60));
@@ -559,25 +559,25 @@ public class ReturnOrderService extends ShopBaseService{
             //买家发起退款申请后，商家在 returnMoneyDays 日内未处理，系统将自动退款
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY))
-                .and(TABLE.SHIPPING_OR_REFUND_TIME.ge(autoReturnTime)
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES)
                 .and(TABLE.SHIPPING_OR_REFUND_TIME.le(returnMoneTime)))
         ).or(
             //商家已发货，买家发起退款退货申请，商家在 ? 日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING)
                 .and(TABLE.RETURN_TYPE.in(OrderConstant.RT_GOODS, OrderConstant.RT_CHANGE))
-                .and(TABLE.APPLY_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.APPLY_TIME.le(returnAddressTime))
         ).or(
             //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS))
-                .and(TABLE.SHIPPING_OR_REFUND_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.SHIPPING_OR_REFUND_TIME.le(returnShoppingTime))
         ).or(
             //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动撤销。
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_PASS)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS))
-                .and(TABLE.APPLY_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.APPLY_PASS_TIME.le(returnPassTime))
         ).fetch();
     }
