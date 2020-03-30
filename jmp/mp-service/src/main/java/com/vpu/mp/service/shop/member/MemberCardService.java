@@ -794,14 +794,32 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
 
-		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				NormalCardVo.class);
+		PageResult<MemberCardRecord> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MemberCardRecord.class);
+		PageResult<NormalCardVo> res = new PageResult<NormalCardVo>();
+		res.setPage(pageResult.getPage());
+		List<NormalCardVo> tmp = new ArrayList<>();
 		/** 将json配置文件转化成合适的数据给前端 */
-		for (NormalCardVo vo : pageResult.dataList) {
+		for (MemberCardRecord rec : pageResult.dataList) {
+			NormalCardVo vo = rec.into(NormalCardVo.class);
 			vo.changeJsonCfg();
+			
+			if(rec.getSendMoney()!= null && !StringUtils.isBlank(rec.getChargeMoney())) {
+				// 是否展示充值明细
+				Integer count = db().selectCount().from(CHARGE_MONEY).fetchOne(0, int.class);
+				if(count != 0) {
+					vo.setShowCharge(NumberUtils.BYTE_ONE);
+				}
+			}
+			
+			// TODO 退款记录
+			
+			// TODO 续费记录
+			
+			tmp.add(vo);	
 		}
-
-		return pageResult;
+		res.setDataList(tmp);
+		return res;
 	}
 
 	/**
