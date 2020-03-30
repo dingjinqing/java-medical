@@ -122,10 +122,13 @@ export default {
       }
     },
     singleElection (newData) {
+      console.log(newData)
       this.singleEle = newData
     }
   },
   mounted () {
+    console.log(this.singleElection)
+    this.singleEle = this.singleElection
     // this.$http.$on('addingBusClassDialog', (res, flag) => {
     //   console.log(flag)
     //   this.dialogVisible = true
@@ -162,9 +165,9 @@ export default {
   methods: {
     // 节点点击
     handleClick (data, checked, node) {
-      console.log(data, checked, node)
+      console.log(this.singleEle, data, this.flag, checked, node)
       if (checked && this.singleEle) {
-        this.$refs.cardTree.setCheckedNodes([data])
+        this.$refs.sortTree.setCheckedNodes([data])
       }
     },
     // 弹窗确认

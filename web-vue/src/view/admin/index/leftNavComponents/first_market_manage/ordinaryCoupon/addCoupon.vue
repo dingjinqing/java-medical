@@ -506,7 +506,11 @@
                           style="cursor: pointer;"
                           v-if="index === 1"
                           @click="hanldeToAddGoodS(index)"
-                        >{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
+                        >
+                          <span v-if="busClass.length > 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                          <span v-else>{{ $t('ordinaryCoupon.suitGoodsTip6') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                        </div>
+                        <!-- {{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }} -->
                         <!-- <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div> -->
                       </div>
                     </div>

@@ -609,7 +609,12 @@ export default {
       this.linkageData.goods_bg_color = this.defaultBgColor
     },
     // 调起弹窗
-    handleToCallDialog (flag) {
+    handleToCallDialog (flag, isEdit) {
+      if (isEdit) {
+        this.clickEditBtn = true
+      } else {
+        this.clickEditBtn = false
+      }
       console.log(flag)
       if (flag === '') flag = 0
       switch (flag) {
