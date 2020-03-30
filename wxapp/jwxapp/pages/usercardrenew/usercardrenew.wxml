@@ -19,30 +19,22 @@
 					</view>
 				</view>
 			</view>
-			<view class="card_surface_bottom">
-				<view class="surface_bottom_left">
-					<view class="surface_bottom_item">
-						<view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0}}">余额：￥{{cardInfo.money}}</view>
-						<block wx:if="{{cardInfo.cardType === 1}}">
-							<view wx:if="{{cardInfo.exchangSurplus}}">剩余可兑换商品数量：{{cardInfo.exchangSurplus}} (运费以实际结算价为准)</view>
-							<view wx:if="{{cardInfo.surplus}}">剩余可使用服务次数：{{cardInfo.surplus}}</view>
-						</block>
-					</view>
-				</view>
-				<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
-					<!-- ￥10000 -->
-					<image
-					 wx:if="{{cardInfo.cardNo !== null}}"
-					 mode="widthFix"
-					 class="qrcode"
-					 bindtap="showQrCode"
-					 src="{{imageUrl}}image/wxapp/erweima1.png"
-					/>
+			<view class="card_bottom_left">
+				<view class='card_amount' wx:if="{{card_info.send_money || card_info.charge_money}}">
+					<text wx:if="{{card_info.money>=0}}">余额 ￥{{card_info.money}}</text>
 				</view>
 			</view>
-			<view class="card_status" wx:if="{{cardInfo.cardStopImg}}">
-				<image mode="widthFix" src="{{cardInfo.cardStopImg}}" />
-			</view>
+			<block wx:if="{{card_info.status == -1}}">
+				<image src="{{imageUrl}}/image/wxapp/card_expired.png?v=1" mode='widthFix' style="width:130rpx;position:absolute;right:0;bottom:0" />
+			</block>
+			<block wx:else>
+				<image src="{{ imageUrl }}image/wxapp/erweima1.png" class="card-rt-top-img" bindtap='modalinput' />
+			</block>
+
+			<block wx:if="{{ sgan == 1 && card_info.is_pay == 1}}">
+				<text wx:if="{{card_info.pay_type == 0}}" class="buy_card_price">￥{{card_info.pay_fee}}</text>
+				<text wx:elif="{{card_info.pay_type == 1}}" class="buy_card_price">{{card_info.pay_fee}}积分</text>
+			</block>
 		</view>
 	</view>
 	<!--续费-->
@@ -97,10 +89,16 @@
 				<view>会员卡余额支付:</view>
 				<view class="yue_pay_bottom">
 					<view class='pay_focus'>
-						<text style='color:{{comColor}}'>减10元</text>
+						<text wx:if='{{pay_card == 1}}' style='color:{{comColor}}'>减10元</text>
 					</view>
 					<view class='pay_check' bindtap='{{pay_card == 1 ? "" : "payClick"}}' data-type='card'>
-						<image src="{{ imageUrl }}image/admin/select.png" mode='widthFix' wx:if='{{pay_card == 0}}' />
+						<image
+						 class="image"
+						 src="{{imageUrl}}image/admin/select.png"
+						 mode='widthFix'
+						 wx:if='{{pay_card == 0}}'
+						/>
+
 						<text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelCard' wx:else></text>
 					</view>
 				</view>
@@ -116,7 +114,7 @@
 					<text style='color:{{comColor}}' >减10元</text>
 				</view>
 				<view class='pay_check' bindtap='{{payClick}}' data-type='yue'>
-					<image src="{{ imageUrl }}image/admin/select.png" mode='widthFix' wx:if='{{pay_yue == 0}}' />
+					<image src='{{ imageUrl }}image/admin/select.png' mode='widthFix' wx:if='{{pay_yue == 0}}' />
 					<text class='iconfont iconduoxuan' style='font-size:42rpx;color:{{comColor}}' bindtap='checkCancelYue' wx:else></text>
 				</view>
 			</view>
@@ -175,8 +173,15 @@
 				 data-card_no="{{ item.card_no }}"
 				>
 					<view class="card_choose">
-						<image class="image" src="{{ item.card_src }}" wx:if='{{item.card_src != 1}}' mode="widthFix" />
+						<image
+						 class="image"
+						 src="{{ item.card_src }}"
+						 wx:if='{{item.card_src != 1}}'
+						 mode="widthFix"
+						/>
 						<text class='iconfont icondanxuan' style='font-size:40rpx;color:{{comColor}}' wx:if='{{item.card_src == 1}}'/>
+
+
         			</view>
 					<view class='card_info'>
 						<view style='background:{{ item.bg }};background-size:cover;' class='card_new_de'>
@@ -192,5 +197,84 @@
 		</view>
 		<view class='card_sure' bindtap='cardConfirm' style='background:{{comColor}};bottom:{{isIpx == 1?"80rpx":"0"}}'>确定</view>
 	</action-sheet>
+	<!--  支付弹框  -->
+	<action-sheet hidden="{{ payMode}}">
+  	<view class='promotion' style='margin-bottom:0rpx;'>
+    	<text wx:if='{{pay_click_type == 2}}'> 余额支付
+
+</text>
+						<text wx:else> 会员卡余额支付</text>
+						<image
+						 src='{{ imageUrl }}/image/wxapp/close_icon.png'
+						 mode="widthFix"
+						 bindtap="payCancel"
+						 class='pro_close'
+						/>
+					</view>
+					<view class='pay_content'>
+						<view class='pro_tips'>
+							<image class="img" src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix' />
+							<view wx:if='{{pay_click_type == 2}}'>本单可支付￥{{ create_order.money_paid - user_money.account > 0 ? user_money.account : create_order.money_paid }}，可编辑支付余额数量。</view>
+							<view wx:else='{{pay_click_type == 2}}'>本单可支付￥{{ create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid }}，可编辑支付余额数量。</view>
+						</view>
+						<view class=' action_pay '>
+							<view>
+								<view class='pay_title '>支付余额</view>
+								<view class='pay_prompt '> {{prompt_message}}</view>
+							</view>
+
+							<view class='contain_input '>
+								<input
+								 class='input_num '
+								 bindblur="user_account"
+								 bindfocus='yue_fo'
+								 blur='true '
+								 value="{{user_money.account}}"
+								 wx:if='{{pay_click_type == 2}}'
+								 type='digit'
+								/>
+								<input
+								 class='input_num '
+								 bindblur="member_card"
+								 bindfocus='mem_fo'
+								 blur='true '
+								 value="{{card_account_pay_control == 0 ? (create_order.money_paid - user_money.member_card_money > 0 ? user_money.member_card_money : create_order.money_paid) : member_card_input}}"
+								 wx:else
+								 type='digit'
+								/>
+							</view>
+						</view>
+						<view class='price_show '>
+							<view class="view" wx:if='{{pay_click_type == 2}}'>我的余额：￥{{user_money.account}}</view>
+							<view class="view" wx:if='{{pay_click_type == 3}}'>{{cardChooseName}}</view>
+							<view class="view" wx:if='{{pay_click_type == 3}}'>会员卡余额：￥{{user_money.member_card_money}}</view>
+						</view>
+						<view class='card_sure ' bindtap='payConfirm' style='background:{{ canClick == true ? comColor : "#999"}};bottom:{{isIpx==1 ? "80rpx": "0"}} '>确定</view>
+					</view>
+	</action-sheet>
+	<!--弹出层二维码  -->
+	<view class="modal-box" bindtap="hideModal" wx:if="{{showModal}}" />
+	<view class="modal-container" wx:if="{{showModal}}">
+		<view class="modal-top" style="background:{{ bg }};background-size:cover;">
+			<view class="card-left card-tanchu">
+				<image src="{{ cardInfo.shopAvatar }}" class="card-image" />
+				<view class="card-name">{{ cardChooseName }}</view>
+				<view class="modal-btm">
+					<!-- <text class="modal-btm-text1">{{ card_info.card_name }}</text> -->
+					<text class="modal-btm-text2" wx:if="{{cardInfo.discount}}">{{ cardInfo.discount }}折</text>
+				</view>
+			</view>
+		</view>
+		<view class="left-circle" />
+		<view class="right-circle" />
+		<view class="modal-bottom">
+			<image src="{{ img_code }}" class="two-bar-codes" />
+			<view class="barcode">
+				<canvas canvas-id="barcode" />
+			</view>
+			<text>47481609803525610</text>
+		</view>
+	</view>
+	<!--弹出层二维码END  -->
 </view>
 
