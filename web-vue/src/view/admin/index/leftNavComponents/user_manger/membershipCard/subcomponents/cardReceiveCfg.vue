@@ -262,11 +262,9 @@ export default {
   mounted () {
     this.langDefault()
     this.$on('checkRule', () => {
-      debugger
       let flag = false
       if (this.ruleForm.cardType === 1) {
         this.$refs['ruleForm'].validate((valid) => {
-          debugger
           console.log(valid)
 
           if (!valid) {

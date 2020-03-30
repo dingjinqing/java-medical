@@ -242,6 +242,7 @@ export const en = {
   placeWXNameNum: 'Please enter your Weixin nickname',
   placeChoise: 'Please choose',
   placeinpuLabel: 'Please enter the label',
+  cardOptions: [{id: 0, cardName: 'ALL'}],
   userFromSource: [{
     value: '0',
     label: 'ALL'

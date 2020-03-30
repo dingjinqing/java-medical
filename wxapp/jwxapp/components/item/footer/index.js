@@ -339,7 +339,8 @@ global.wxComponent({
         }
       },{
         bargainId:this.data.activity.activityId,
-        prdId:this.data.productInfo.prdId
+        prdId:this.data.productInfo.prdId,
+        goodsId:this.data.productInfo.goodsId
       })
     },
     getButtonData(){

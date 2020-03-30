@@ -793,6 +793,7 @@ swiper-item {
   font-size: 24rpx;
   margin-top: 5rpx;
 }
+
 .common-footer .footer-text{
   margin: 0;
   padding: 0;
