@@ -9,22 +9,25 @@ import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
  * 可选排序项
  */
 public enum SortItemEnum {
-    /** 商品销量0*/
+    /** 不指定排序0*/
+    NULL(EsSearchName.NULL),
+
+    /** 商品销量1*/
     SALE_NUM(EsSearchName.GOODS_SALE_NUM),
 
-    /** 商品价格1*/
+    /** 商品价格2*/
     PRICE(EsSearchName.SHOW_PRICE),
 
-    /** 上新时间2*/
+    /** 上新时间3*/
     ADD_TIME(EsSearchName.UPDATE_TIME),
 
-    /** 评论数量3*/
+    /** 评论数量4*/
     COMMENT_NUM(EsSearchName.COMMENT_NUM),
 
-    /** 7天内访问数量4*/
+    /** 七天内访问数量5*/
     PV(EsSearchName.PV),
 
-    /** 上架时间5*/
+    /** 上架时间6*/
     SALE_TIME(EsSearchName.ADD_ES_TIME);
 
     private String esName;
