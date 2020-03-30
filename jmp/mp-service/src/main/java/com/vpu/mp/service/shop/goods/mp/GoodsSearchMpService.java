@@ -240,7 +240,7 @@ public class GoodsSearchMpService extends ShopBaseService {
     protected List<SortField<?>> buildSearchOrderFields(GoodsSearchMpParam param) {
         List<SortField<?>> list = new ArrayList<>(2);
 
-        if(param.getSortItem() != null){
+        if(param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL){
             //目前用户可以指定销量和价格两种排序方式
             if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
                 if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
