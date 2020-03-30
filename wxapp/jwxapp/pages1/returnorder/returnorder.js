@@ -287,6 +287,8 @@ global.wxPage({
         util.redirectTo({
           url: '/pages1/returndetail/returndetail?return_sn=' + content
         })
+      } else {
+        util.showModal(that.$t("page1.afterSale.prompt"), res.message)
       }
     }, params)
   },
