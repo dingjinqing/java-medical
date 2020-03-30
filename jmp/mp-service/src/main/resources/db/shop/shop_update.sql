@@ -197,11 +197,11 @@ ALTER TABLE `b2c_store` ADD COLUMN `city_service` tinyint(1) DEFAULT '0' COMMENT
 CREATE TABLE IF NOT EXISTS `b2c_article` (
   `article_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '文章分类',
-  `title` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `author` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `keyword` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '标签',
-  `desc` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '文章描述',
-  `content` text COLLATE utf8mb4_unicode_ci,
+  `title` varchar(256) DEFAULT NULL,
+  `author` varchar(50)  DEFAULT NULL,
+  `keyword` varchar(256) DEFAULT NULL COMMENT '标签',
+  `desc` varchar(1024)  DEFAULT NULL COMMENT '文章描述',
+  `content` text ,
   `is_recommend` tinyint(1) DEFAULT '0' COMMENT '1:推荐',
   `is_top` tinyint(1) DEFAULT '0' COMMENT '1:置顶',
   `status` tinyint(1) DEFAULT '0' COMMENT '0未发布,1已发布',
@@ -212,12 +212,12 @@ CREATE TABLE IF NOT EXISTS `b2c_article` (
   `pv` int(11) DEFAULT NULL,
   `show_footer` tinyint(1) DEFAULT '0' COMMENT '0:不在footer显示，1：显示',
   `part_type` tinyint(1) DEFAULT '0' COMMENT '文章所属类型：0普通，1门店公告类文章',
-  `cover_img` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '封面图片路径',
+  `cover_img` varchar(50) DEFAULT NULL COMMENT '封面图片路径',
   `is_del` tinyint(1) DEFAULT '0' COMMENT '0未删除,1已删除',
   PRIMARY KEY (`article_id`),
   KEY `is_recommend` (`is_recommend`),
   KEY `is_top` (`is_top`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 /***********************2.11*********************END*/
 
 
