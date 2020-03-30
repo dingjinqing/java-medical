@@ -538,7 +538,7 @@ export default {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if ((!re.test(value) || !re.test(maxPayNum)) && this.contains(5)) {
         callback(new Error('请填写0或者正整数'))
-      } else if (value > maxPayNum) {
+      } else if (Number(value) > Number(maxPayNum)) {
         callback(new Error('最小购买次数不能大于最大购买次数'))
       } else {
         callback()
