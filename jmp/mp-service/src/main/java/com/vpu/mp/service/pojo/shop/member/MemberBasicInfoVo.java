@@ -108,7 +108,6 @@ public class MemberBasicInfoVo {
 	//private char sex; 经过国际化时报错
 	private String sex;
 	
-	
 	/** 婚姻状况：1未婚，2已婚，3保密  */
 	private Integer maritalStatus;
 	/** 月收入 1：2000元以下 2：2000-3999元  3： 4000-5999元  4：6000-7999元  5： 8000元以上*/
@@ -117,6 +116,9 @@ public class MemberBasicInfoVo {
 	private String cid;
 	/** 客单价 */
 	private BigDecimal unitPrice;
+	
+	/** 可用优惠券数量 */
+	private Integer canUseCouponNum;
 	
 	/** 行业  {@link com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum}*/
 	@I18N(propertiesFileName = "member")

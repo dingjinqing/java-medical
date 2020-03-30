@@ -90,6 +90,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.saas.area.AreaSelectService;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
@@ -155,6 +156,9 @@ public class MemberService extends ShopBaseService {
 	public RecordAdminActionService recordAdminActionSvc;
 	@Autowired 
 	public CardFreeShipService freeShipSvc;
+	@Autowired
+	public CouponService couponSvc;
+	
 	/**
 	 * 导出会员
 	 */
@@ -565,6 +569,9 @@ public class MemberService extends ShopBaseService {
 		/** 订单相关信息 */
 		getOrderInfo(userId, transStatistic, memberBasicInfoVo);
 
+		/** 优惠券 */
+		memberBasicInfoVo.setCanUseCouponNum(couponSvc.getCanUseCouponNum(userId));
+		
 		/** 详细地址 */
 		List<String> addressList = address.getUserAddressById(userId);
 		memberBasicInfoVo.setAddressList(addressList);
