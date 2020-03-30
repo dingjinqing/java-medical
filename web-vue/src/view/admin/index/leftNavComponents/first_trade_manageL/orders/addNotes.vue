@@ -59,6 +59,8 @@ export default {
             this.showNodes = false
             this.$emit('handlerResetData', this.orderSn)
           }
+        } else {
+          this.$message.error(res.message)
         }
       }).catch(() => {
       })

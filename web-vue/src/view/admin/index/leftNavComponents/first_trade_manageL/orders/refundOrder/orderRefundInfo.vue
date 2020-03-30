@@ -731,10 +731,14 @@ export default {
         ...this.returnAddressInfo
       }
       handleReturnInfo(obj).then(res => {
-        console.log(res)
-        this.search(this.$route.query.returnOrderSn)
-        this.refundDialog = false
-        this.refusal = false
+        if (res.error === 0) {
+          console.log(res)
+          this.search(this.$route.query.returnOrderSn)
+          this.refundDialog = false
+          this.refusal = false
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     search (returnOrderSn) {
@@ -755,6 +759,8 @@ export default {
           this.$set(this.returnAddressInfo, 'merchantTelephone', merchantTelephone)
           this.$set(this.returnAddressInfo, 'zipCode', zipCode)
           this.$set(this.returnAddressInfo, 'returnAddress', returnAddress)
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
