@@ -53,7 +53,7 @@ export const cn = {
       value: '1'
     },
     {
-      name: '添加商品分类',
+      name: '添加商家分类',
       value: '2'
     }
     // {

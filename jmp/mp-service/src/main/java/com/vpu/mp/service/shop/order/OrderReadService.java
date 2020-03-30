@@ -182,7 +182,6 @@ public class OrderReadService extends ShopBaseService {
 		}
 		//查询出全部订单按照主订单分组，正常订单的key为orderSn
 		Map<String, List<OrderListInfoVo>> allOrder = orderInfo.getOrders(orderSn.getDataList());
-		logger.error(allOrder.toString());
 		//构造展示商品的订单:MainOrderCount.count=1的可能为正常订单或处于未子订单未被拆分,>1的为已经拆分
 		Map<Integer,OrderListInfoVo> goodsList = new HashMap<Integer,OrderListInfoVo>();
 		//主订单或正常订单

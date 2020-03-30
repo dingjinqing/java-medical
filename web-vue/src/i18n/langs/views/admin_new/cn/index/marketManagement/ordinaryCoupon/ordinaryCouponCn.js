@@ -72,6 +72,8 @@ export const cn = {
   suitGoodsTip2: '件商品',
   suitGoodsTip3: '个商家',
   suitGoodsTip4: '个平台',
+  suitGoodsTip5: '商家分类',
+  suitGoodsTip6: '未选',
   useExplain: '使用说明',
   useExplainTip: '请输入使用说明',
   useExplainTip2: '暂无使用说明',
@@ -82,7 +84,7 @@ export const cn = {
       num: ''
     },
     {
-      name: '添加商品分类',
+      name: '添加商家分类',
       value: '2',
       num: ''
     }
