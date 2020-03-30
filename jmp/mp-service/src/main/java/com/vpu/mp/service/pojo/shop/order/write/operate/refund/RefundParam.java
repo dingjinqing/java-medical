@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.refund;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import lombok.Getter;
@@ -71,4 +72,7 @@ public final class RefundParam extends OrderOperateQueryParam {
 	 * 拒绝退货申请原因
 	 */
 	private String applyNotPassReason;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Byte isAutoReturn;
 }

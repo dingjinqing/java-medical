@@ -95,4 +95,6 @@ ALTER TABLE `b2c_order_info` ADD  COLUMN `score_proportion` int(9) DEFAULT '100'
 --2020-03-30 用户优惠券使用时间允许为null
 ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `used_time` timestamp NULL DEFAULT '0000-00-00 00:00:00';
 
+--2020-03-30 退款订单生成时保存是否自动退款的快照
+ALTER TABLE `b2c_return_order` ADD COLUMN `is_auto_return` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0否；1是';
 /***********************2.9*********************END*/
