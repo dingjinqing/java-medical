@@ -24,6 +24,7 @@ global.wxPage({
     imageUrl: "http://miniimg.cn/",
     act_info: {},
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
+    type: '0', // 优惠券状态(未使用, 已使用,已过期)
   },
 
   /**
@@ -35,6 +36,11 @@ global.wxPage({
     goods_ids = options.goods_id;
     scene = options.scene;
 
+    if (options.type) {
+      _this.setData({
+        type: options.type 
+      })
+    }
     if (options.couponSn || options.id) {
       couponSn = options.couponSn
       couponId = Number(options.id)
