@@ -189,6 +189,9 @@ CREATE TABLE IF NOT EXISTS `b2c_bargain_goods` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 )COMMENT='砍价活动商品表';
+
+-- 2020-03-30 门店表添加支持同城配送字段
+ALTER TABLE `b2c_store` ADD COLUMN `city_service` tinyint(1) DEFAULT '0' COMMENT '支持同城配送 1:支持';
 /***********************2.11*********************END*/
 
 

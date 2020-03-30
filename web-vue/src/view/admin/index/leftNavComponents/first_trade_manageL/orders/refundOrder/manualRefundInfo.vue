@@ -360,6 +360,8 @@ export default {
           this.returnAmountMap = res.content.returnAmountMap
           this.returnShippingFee = res.content.returnShippingFee
           this.loading = false
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -404,7 +406,7 @@ export default {
               })
             } })
         } else {
-          this.$message.warning({ message: '退款失败' })
+          this.$message.error(res.message)
         }
       })
     },
