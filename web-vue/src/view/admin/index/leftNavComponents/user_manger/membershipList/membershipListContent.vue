@@ -1877,6 +1877,14 @@ export default {
   margin-top: 10px;
   display: flex;
 }
+
+.uls /deep/ .el-tag:first-child .el-select__tags-text{
+  display: inline-block;
+  width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ulsThree {
   margin-top: 15px;
   display: flex;
