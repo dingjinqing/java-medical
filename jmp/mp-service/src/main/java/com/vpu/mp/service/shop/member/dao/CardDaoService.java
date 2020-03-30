@@ -177,6 +177,15 @@ public class CardDaoService extends ShopBaseService {
 		if (param.getBatchId() != null && !param.getBatchId().equals(ALL_BATCH)) {
 			select.and(CARD_RECEIVE_CODE.BATCH_ID.eq(param.getBatchId()));
 		}
+		/**
+		 * 领取码或卡号
+		 */
+		if(!StringUtils.isBlank(param.getSearch())) {
+			select.and(
+					CARD_RECEIVE_CODE.CODE.eq(param.getSearch())
+					.or(CARD_RECEIVE_CODE.CARD_NO.eq(param.getSearch()))
+					);
+		}
 	}
 
 	/**

@@ -21,4 +21,8 @@ public class CodeReceiveParam {
 	private String username;
 	/** -批次名称id  */
 	private Integer batchId;
+	/**
+	 * 领取码/卡号
+	 */
+	private String search;
 }
