@@ -239,6 +239,7 @@ export const cn = {
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
   noData: '暂无相关数据',
+  cardOptions: [{id: 0, cardName: '全部'}],
   userFromSource: [{
     value: '0',
     label: '全部'
