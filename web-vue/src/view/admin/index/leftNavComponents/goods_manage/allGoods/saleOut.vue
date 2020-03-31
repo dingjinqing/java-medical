@@ -73,12 +73,12 @@
           :label="$t('allGoods.allGoodsData.prdSn')"
           width="100"
         />
-        <el-table-column
-          align="center"
-          prop="catName"
-          :label="$t('allGoods.allGoodsData.cat')"
-          width="100"
-        />
+        <!--<el-table-column-->
+          <!--align="center"-->
+          <!--prop="catName"-->
+          <!--:label="$t('allGoods.allGoodsData.cat')"-->
+          <!--width="100"-->
+        <!--/>-->
         <el-table-column
           align="center"
           prop="sortName"
