@@ -248,7 +248,7 @@ const myMixin = {
       return retArr
     },
     // 校验权限
-    handleToJudgeTwoDiction (name) {
+    handleToJudgeTwoDiction (name, second) {
       return new Promise((resolve, reject) => {
         // 请求功能或者菜单对应的版本名字池
         let vsNameArr = ['basic_yesterday', 'portrait_user', 'second_view', 'visit_source', 'analysis_visit_source', 'sort', 'tag', 'pin_group', 'distribution', 'pay_reward', 'activity_reward', 'lottery', 'group_draw', 'pin_integration', 'promote', 'full_cut', 'bargain', 'seckill_goods', 'coupon_grant', 'gift', 'first_special', 'message_template', 'market_act_give']
@@ -258,9 +258,10 @@ const myMixin = {
         let index = enNameArr.indexOf(name)
         if (enNameArr.indexOf(name) !== -1) {
           console.log('触发', vsNameArr[index])
+          let vsName = second || vsNameArr[index]
           judgeJurisdictionRequest({
             'V-EnName': name,
-            'V-VsName': vsNameArr[index]
+            'V-VsName': vsName
           }).then(res => {
             console.log(res)
             if (res.error === 0) {
