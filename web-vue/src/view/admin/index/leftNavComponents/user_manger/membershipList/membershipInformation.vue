@@ -178,7 +178,13 @@
           :key="index"
           :class="index!==0?'borderLeft':''"
         >
-          <p>{{item.title}}</p>
+          <p>
+            {{item.title}}
+            <el-tooltip effect="light" placement="top">
+               <div slot="content">{{item.tip}}</div>
+               <i class="el-icon-question icon-style"></i>
+            </el-tooltip>
+          </p>
           <div class="transactionBottom">{{item.content}}</div>
         </div>
       </div>
@@ -1785,5 +1791,10 @@ td {
 }
 .specialAddMoney .el-input {
   width: 100px !important;
+}
+.icon-style{
+  font-size: 15px;
+  color: #b8bbbb;
+  cursor: pointer;
 }
 </style>
