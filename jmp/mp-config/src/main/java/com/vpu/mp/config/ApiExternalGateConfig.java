@@ -1,7 +1,6 @@
 package com.vpu.mp.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
@@ -17,10 +16,10 @@ import java.util.Set;
 @Data
 public class ApiExternalGateConfig {
 
-    @Value(value = "${api.external.service.sign.key}")
-    private String signKey;
-    @Value(value = "${api.external.service.sms.platform.key}")
-    private String smsPlatformKey;
+//    @Value(value = "${api.external.service.sign.key}")
+//    private String signKey;
+//    @Value(value = "${api.external.service.sms.platform.key}")
+//    private String smsPlatformKey;
 
     /**
      * 服务名称定义
