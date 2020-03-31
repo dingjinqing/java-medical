@@ -439,16 +439,24 @@
                       <span class="number">{{item.denomination}}</span>
                     </div>
                     <div
-                      class="coupon_list_top"
+                      class="coupon_list_tops"
                       v-if="item.actCode==='discount'"
                     >
-                      <span>{{item.denomination}}</span>
+                      <span class="discount_number">{{item.denomination}}</span>
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
                     </div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{item.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus !==0"
+                    >剩余{{item.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
@@ -1157,8 +1165,8 @@ export default {
   position: relative;
   width: 17px;
   height: 17px;
-  top: -118px;
-  left: 45px;
+  top: -114px;
+  left: 47px;
   cursor: pointer;
   opacity: 0.8;
   color: #fff;
@@ -1203,20 +1211,24 @@ export default {
   color: #f60;
 }
 
-.coupon_list_top:nth-of-type(2) {
-  font-size: 20px;
+.coupon_list_tops {
   font-weight: bold;
+  margin-top: 10px;
+  color: #f60;
+}
+.discount_number {
+  font-size: 20px;
 }
 
 .coupon_center_limit {
-  height: 20px;
   color: #f60;
   font-size: 12px !important;
 }
 
 .coupon_center_number {
-  height: 20px;
+  height: 18px;
   color: #fbb;
+  font-size: 12px;
 }
 
 .coupon_list_bottom {
@@ -1302,5 +1314,9 @@ export default {
   text-align: center;
   color: red;
   line-height: 1;
+}
+.number {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>
