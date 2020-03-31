@@ -8,6 +8,7 @@ import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
@@ -97,6 +98,9 @@ public class SaasApplication {
 
     @Autowired
     public ShopViewService shopViewService;
+
+    @Autowired
+    public ShopViewOrderService shopViewOrderService;
 
 
     @Autowired
