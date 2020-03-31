@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class QuestionService extends BaseShopConfigService {
+public class FeedbackService extends BaseShopConfigService {
 
     public void insert(FeedbackParam param){
         saas().questionService.insert(getShopId(),param);

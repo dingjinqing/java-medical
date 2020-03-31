@@ -6,6 +6,8 @@ import com.vpu.mp.db.main.tables.records.ShopQuestionFeedbackRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.pojo.shop.question.FeedbackParam;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +22,10 @@ public class QuestionService extends MainBaseService {
     public void insert(Integer shopId,FeedbackParam param){
         ShopQuestionFeedbackRecord record = buildRecord(param,shopId);
         Integer id = insertFeedback(record);
-        batchInsertImg(buildImgRecord(param.getImgs(),id));
+        if(CollectionUtils.isEmpty(param.getImgs()) ){
+            batchInsertImg(buildImgRecord(param.getImgs(),id));
+        }
+
     }
 
     private void batchInsertImg(List<QfImgRecord> records){
@@ -28,9 +33,8 @@ public class QuestionService extends MainBaseService {
     }
 
     private Integer insertFeedback(ShopQuestionFeedbackRecord record){
-        return  db().insertInto(SHOP_QUESTION_FEEDBACK).
-            values(record).
-            returning(SHOP_QUESTION_FEEDBACK.QUESTION_FEEDBACK_ID).
+        return  db().insertInto(SHOP_QUESTION_FEEDBACK).set(record).
+            returning().
             fetchOne().
             getQuestionFeedbackId();
     }
@@ -40,7 +44,9 @@ public class QuestionService extends MainBaseService {
         record.setCategoryId(param.getType().intValue());
         record.setContent(param.getContent());
         record.setShopId(shopId);
-        record.setMobile(param.getMobile());
+        if(StringUtils.isNotBlank(param.getMobile())){
+            record.setMobile(param.getMobile());
+        }
         return record;
     }
 
@@ -48,7 +54,7 @@ public class QuestionService extends MainBaseService {
         List<QfImgRecord> result = Lists.newArrayList();
         for (int i = 0; i < imgs.size(); i++) {
             QfImgRecord record = new QfImgRecord();
-            record.setImgUrl(imgs.get(i));
+            record.setImgUrl(imgs.get(i+1));
             record.setQuestionFeedbackId(id);
             record.setImgDesc(String.valueOf(i));
             result.add(record);
