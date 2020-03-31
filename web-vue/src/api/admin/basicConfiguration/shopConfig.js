@@ -82,3 +82,12 @@ export function publishSetRequest (data) {
     data: data
   })
 }
+
+// 获取小程序服务条款
+export function getMiniProgramServices (data) {
+  return service({
+    url: '/api/wxapp/order/termsofservice',
+    method: 'post',
+    data: data
+  })
+}

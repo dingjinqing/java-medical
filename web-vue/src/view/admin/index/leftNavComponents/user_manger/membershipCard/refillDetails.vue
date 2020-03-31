@@ -258,7 +258,7 @@ export default {
         }
         span {
           display: inline-block;
-          width: 100px;
+          width: 85px;
           white-space: nowrap;
           text-align: right;
           margin-right: 10px;
@@ -268,7 +268,7 @@ export default {
         }
       }
       & div:nth-of-type(2) {
-        margin: 0 100px;
+        margin: 0 20px;
       }
       & div:nth-of-type(3) {
         margin-right: 20px;

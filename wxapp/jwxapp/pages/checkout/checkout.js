@@ -774,6 +774,9 @@ global.wxPage({
       'orderInfo.term.serviceChoose' : this.data.orderInfo.term.serviceChoose ? 0 : 1
     })
   },
+  goService(){
+    util.jumpToWeb('/wxapp/checkout/services')
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

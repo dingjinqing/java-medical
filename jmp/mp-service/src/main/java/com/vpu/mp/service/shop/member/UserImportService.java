@@ -1012,7 +1012,7 @@ public class UserImportService extends ShopBaseService {
 
 		Integer groupId = importUser.getGroupId();
 		logger().info("判断groupId");
-		if (groupId == null) {
+		if (groupId != null) {
 			logger().info("更新groupId");
 			userRecord.setIsDistributor(BYTE_ONE);
 			userRecord.setInviteGroup(groupId);
