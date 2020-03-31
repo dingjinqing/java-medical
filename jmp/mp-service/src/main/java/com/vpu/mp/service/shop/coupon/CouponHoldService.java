@@ -81,7 +81,7 @@ public class CouponHoldService extends ShopBaseService {
                 select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
                         .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime));
             }else if (param.getStatus()==4){
-                select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 3));
+                select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
             }
         }
         if (param.getAccessId()!=null && param.getGetSource()!=null){
