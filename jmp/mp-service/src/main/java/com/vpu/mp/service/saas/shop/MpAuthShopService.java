@@ -68,6 +68,7 @@ import com.vpu.mp.service.pojo.saas.shop.mp.MpVersionVo;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MaMpBindParam;
 import com.vpu.mp.service.pojo.saas.shop.officeAccount.MpOfficeAccountListVo;
 import com.vpu.mp.service.pojo.shop.config.trade.WxpayConfigParam;
+import com.vpu.mp.service.pojo.shop.market.live.LiveCheckVo;
 import com.vpu.mp.service.pojo.shop.market.message.BatchUploadCodeParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -1718,5 +1719,51 @@ public class MpAuthShopService extends MainBaseService {
 		if(allTester!=null) {
 			record.setTester(Util.toJson(allTester));
 		}
+	}
+	
+	/**
+	 * 检查是否有直播权限集
+	 * @param record
+	 * @return
+	 */
+	public boolean checkHasLive(MpAuthShopRecord record) {
+		String funcInfo = record.getFuncInfo();
+		funcInfo = funcInfo.replace("[", "");
+		funcInfo = funcInfo.replace("]", "");
+		logger().info("权限集为：{}" + funcInfo);
+		String[] split = funcInfo.split(",");
+		for (String string : split) {
+			if(string.equals("52")) {
+				return true;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 直播的校验
+	 * @param shopId
+	 * @return
+	 */
+	public LiveCheckVo checkLive(Integer shopId) {
+		MpAuthShopRecord authShop = getAuthShopByShopId(shopId);
+		boolean isAuthLive=true;
+		if(authShop==null) {
+			return new LiveCheckVo(isAuthLive,null,false);
+		}
+		boolean hasLiveFunc = checkHasLive(authShop);
+		if(hasLiveFunc) {
+			isAuthLive=false;
+		}
+		Byte packageVersion = saas.shop.mpOperateLog.getLastAuditSuccessPackage(authShop.getAppId());
+		Byte three=3;
+		Byte four=4;
+		List<Byte> list=new ArrayList<Byte>();
+		list.add(three);
+		list.add(four);
+		if(!list.contains(packageVersion)) {
+			isAuthLive=true;
+		}
+		return new LiveCheckVo(isAuthLive,authShop.getAuditState(),hasLiveFunc);
 	}
 }
