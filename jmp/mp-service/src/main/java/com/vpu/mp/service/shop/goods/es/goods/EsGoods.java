@@ -340,4 +340,14 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.CAN_REBATE,type = EsFiledTypeConstant.BYTE,doc_values = false)
     private Byte canRebate;
+    /**
+     * 商品创建的时间
+     */
+    @EsFiled(name=EsSearchName.CREATE_TIME,type = EsFiledTypeConstant.DATE)
+    private String createTime;
+    /**
+     * 商品上架的时间
+     */
+    @EsFiled(name=EsSearchName.SALE_TIME,type = EsFiledTypeConstant.DATE)
+    private String saleTime;
 }
