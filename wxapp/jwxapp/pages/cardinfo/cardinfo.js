@@ -278,8 +278,7 @@ global.wxPage({
     if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
       text = '立即开通'
       type = 1
-    }
-    if (carInfo.status) {
+    } else if (carInfo.status) {
       if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
         text = '领取会员卡'
         type = 2
@@ -340,11 +339,11 @@ global.wxPage({
         } else {
           if (is_fullprice == 0 && code == 0 && seckillId == 0 && goods_id == 0) {
             util.redirectTo({
-              url: '/pages/cardCheckout/cardCheckout?cardId=' + cardId
+              url: '/pages1/virtualCheckout/virtualCheckout?cardId=' + cardId
             })
           } else {
             util.redirectTo({
-              url: '/pages/cardCheckout/cardCheckout?cardId=' + cardId + "&isFullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goodsId=' + goods_id,
+              url: '/pages1/virtualCheckout/virtualCheckout?cardId=' + cardId + "&isFullprice=" + is_fullprice + "&code=" + code + "&seckillId=" + seckillId + '&goodsId=' + goods_id,
             })
           }
         }
