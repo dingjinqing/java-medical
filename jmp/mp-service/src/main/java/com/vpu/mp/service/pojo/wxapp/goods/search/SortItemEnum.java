@@ -19,7 +19,7 @@ public enum SortItemEnum {
     PRICE(EsSearchName.SHOW_PRICE),
 
     /** 上新时间3*/
-    ADD_TIME(EsSearchName.UPDATE_TIME),
+    ADD_TIME(EsSearchName.CREATE_TIME),
 
     /** 评论数量4*/
     COMMENT_NUM(EsSearchName.COMMENT_NUM),
@@ -28,7 +28,7 @@ public enum SortItemEnum {
     PV(EsSearchName.PV),
 
     /** 上架时间6*/
-    SALE_TIME(EsSearchName.ADD_ES_TIME);
+    SALE_TIME(EsSearchName.SALE_TIME);
 
     private String esName;
 

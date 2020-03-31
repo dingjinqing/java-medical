@@ -46,4 +46,10 @@ public interface EsParamConvertInterface {
         sort.setSortName(sortItemEnum.getEsName());
         return sort;
     }
+    default Sort getSort(String sortName, SortOrder sortOrder ){
+        Sort sort = new Sort();
+        sort.setSortOrder(sortOrder);
+        sort.setSortName(sortName);
+        return sort;
+    }
 }
