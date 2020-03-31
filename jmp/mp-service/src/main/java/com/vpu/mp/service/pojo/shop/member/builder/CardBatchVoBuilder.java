@@ -38,9 +38,15 @@ public class CardBatchVoBuilder {
 		cardBatchVo.setName(name);
 		return this;
 	}
+	
+	public CardBatchVoBuilder pwdBatch (boolean flag) {
+		cardBatchVo.setPwdBatch(flag);
+		return this;
+	}
 
 	public CardBatchVo build() {
 		return cardBatchVo;
 	}
+	
 }
 
