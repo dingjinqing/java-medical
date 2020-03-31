@@ -122,7 +122,9 @@
 		"name": "砍价模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/decorate/bargain/list"
+    ]
 	},
 	{
 		"vsName": "m_video",
@@ -143,7 +145,9 @@
 		"name": "秒杀模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/decorate/seckill/list"
+    ]
 	},
 	{
 		"vsName": "authorization",
@@ -225,7 +229,9 @@
 		"name": "满折满减",
 		"topIndex": 4,
 		"enName": "full_cut",
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/fullcut/*"
+    ]
 	},
 	{
 		"vsName": "pin_group",
@@ -239,14 +245,18 @@
 		"name": "砍价",
 		"enName": "kanjia",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/bargain/*"
+    ]
 	},
 	{
 		"vsName": "form_decoration",
 		"name": "表单统计",
 		"enName": "form_decoration",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/formstatistics/*"
+    ]
 	},
 	{
 		"vsName": "distribution",
@@ -295,14 +305,18 @@
 		"name": "限时降价",
 		"enName": "reduce_price",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/reduceprice/*"
+    ]
 	},
 	{
 		"vsName": "seckill_goods",
 		"name": "秒杀",
 		"enName": "sec_kill",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/seckill/*"
+    ]
 	},
 	{
 		"vsName": "lottery",
@@ -316,14 +330,18 @@
 		"name": "加价购",
 		"enName": "purchase_price",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/increasepurchase/*"
+    ]
 	},
 	{
 		"vsName": "group_draw",
 		"name": "拼团抽奖",
 		"enName": "group_draw",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/group_draw/*"
+    ]
 	},
 	{
 		"vsName": "pin_integration",
@@ -337,14 +355,18 @@
 		"name": "打包一口价",
 		"enName": "package",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/packsale/*"
+    ]
 	},
 	{
 		"vsName": "pre_sale",
 		"name": "定金膨胀",
 		"enName": "presale",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/pre_sale/*"
+    ]
 	},
 	{
 		"vsName": "insteadpay",
@@ -358,7 +380,9 @@
 		"name": "赠品策略",
 		"enName": "gift",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/gift/*"
+    ]
 	},
 	{
 		"vsName": "promote",
@@ -386,7 +410,9 @@
 		"name": "优惠券包",
 		"enName": "coupon_package",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/couponpack/*"
+    ]
 	},
 	{
 		"vsName": "comment_gift",
@@ -400,7 +426,9 @@
 		"name": "首单特惠",
 		"enName": "first_special",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/firstspecial/*"
+    ]
 	},
 	{
 		"vsName": "give_gift",
