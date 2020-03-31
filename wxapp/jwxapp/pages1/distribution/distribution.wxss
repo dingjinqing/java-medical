@@ -870,7 +870,7 @@ swiper-item {
 }
 .dis_group_line>view{
   flex: 1;
-  height: 30rpx;
+  /* height: 30rpx; */
 }
 .distor_grade{
   display: flex;
