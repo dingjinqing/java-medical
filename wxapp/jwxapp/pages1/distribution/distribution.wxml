@@ -61,7 +61,7 @@
       <view class="dis_group_line" wx:if='{{dis_info.distributorLevel || (dis_info.distributorGroup !="" && dis_info.distributorGroup)}}'>
         <view class="distor_grade" bindtap='to_grade' wx:if='{{dis_info.distributorLevel}}'>
           {{dis_info.distributorLevel}}
-          <image src='{{imageUrl}}image/wxapp/right_into.png' wx:if='{{dis_info.distributorLevel.show_arrow == true}}' mode="widthFix"></image>
+          <image src='{{imageUrl}}image/wxapp/right_into.png' mode="widthFix"></image>
         </view>
         <view class="distor_which_group" wx:if="{{dis_info.distributorGroup !='' && dis_info.distributorGroup}}">
           {{dis_info.distributorGroup}}
@@ -85,7 +85,7 @@
             <view>返利订单</view>
           </view>
           <view class='amount_order'>
-            <view>{{dis_info.totalCanFanliMoney}}</view>
+            <view>{{dis_info.totalCanFanliMoney == null ? '0.00' : dis_info.totalCanFanliMoney}}</view>
             <view>返利商品总额</view>
           </view>
       </view>
@@ -164,16 +164,6 @@
       </view>
       <!-- 推广语 -->
       <view class='my_invite'>
-        <!-- <view class="rank_title clearfix" >
-          <view class="rt_left">我的等级</view>
-          <view class="rt_right" bindtap='to_grade'>
-            {{dis_info.distributor_level.level_name.level_name}} <image src='{{imageUrl}}image/wxapp/right_into.png' wx:if='{{dis_info.distributor_level.show_arrow == true}}'></image>
-          </view>
-        </view> -->
-        <!-- <view class="rank_title clearfix" wx:if="{{dis_info.distributor_group && dis_info.group_show_config != 1}}">
-          <view class="rt_left">我的分组</view>
-          <view class="rt_right">{{dis_info.distributor_group.group_name}}</view>
-        </view> -->
         <view class='rank_title clearfix' wx:if="{{dis_info.has_promotion}}" bindtap='toPromotion'>
           <view class="rt_left">推广语</view>
           <view class="rt_right">

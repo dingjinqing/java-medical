@@ -1,2 +1,114 @@
 <!--pages1/distributionorder/distributionorder.wxml-->
-<text>pages1/distributionorder/distributionorder.wxml</text>
+<include src="/pages/common/header.wxml"/>
+<view class='main-container'>
+  <view class='disorder_container'>
+      <view class='dis_top'>
+          <view class='dis_amount'>
+              <view class='amount_user'>
+                  <view wx:if='{{disorder_info.rebate_info.total_money != 0}}'>{{disorder_info.rebate_info.total_money}}</view>
+                  <view wx:if='{{disorder_info.rebate_info.total_money == 0}}'>0.00</view>
+                  <view>累积返利总额(元)</view>
+              </view>
+              <view class='amount_order'>
+                  <view wx:if='{{disorder_info.wait_fanli_money != 0}}'>{{disorder_info.wait_fanli_money}}</view>
+                  <view wx:if='{{disorder_info.wait_fanli_money == 0}}'>0.00</view>
+                  <view>待返利佣金(元)</view>
+              </view>
+          </view>
+          <view class="top_bg" style='background:{{comColor}}'></view>
+      </view>
+      <!-- 筛选条件 -->
+      <view class='search_list'>
+          <view class='order_nav clearfix'>
+            <view class='mav_item {{ is_pink == 0? "actives" : ""}}' style='color:{{is_pink == 0?comColor:""}};background:{{is_pink == 0?somColor:""}};border-color:{{is_pink == 0?comColor:""}}' data-ftype='all' bindtap='change_order'>全部订单</view>
+            <view class='mav_item {{ is_pink == 1? "actives" : ""}}' style='color:{{is_pink == 1?comColor:""}};background:{{is_pink == 1?somColor:""}};border-color:{{is_pink == 1?comColor:""}}' data-ftype='notF' bindtap='change_order'>待返利</view>
+            <view class='mav_item {{ is_pink == 2? "actives" : ""}}' style='color:{{is_pink == 2?comColor:""}};background:{{is_pink == 2?somColor:""}};border-color:{{is_pink == 2?comColor:""}}' data-ftype='yiF' bindtap='change_order'>已返利</view>
+          </view>
+          <view class='time_chooses start_date clearfix' style='background:url("{{imageUrl}}image/wxapp/right_into.png") no-repeat;background-position: 680rpx center;background-size:20rpx;'>
+              <view>开始时间</view>
+              <picker class='picker' bindchange="bindDateChange" mode='date' start="{{disorder_info.rebate_info.limit_start1}}" end="{{disorder_info.rebate_info.limit_end1}}" data-cur_idx='1'>
+                  <view style='float:none'>
+                      {{show_start_time}}
+                  </view>
+              </picker>
+          </view>
+          <view class='time_chooses end_date clearfix' style='background:url("{{imageUrl}}image/wxapp/right_into.png") no-repeat;background-position: 680rpx center;background-size:20rpx;'>
+              <view>结束时间</view>
+              <picker class='picker' bindchange="bindDateChange" mode='date' start="{{disorder_info.rebate_info.limit_start2}}" end="{{disorder_info.rebate_info.limit_end2}}"  data-cur_idx='0'>
+                  <view style='float:none'>
+                      {{show_end_time}}
+                  </view>
+              </picker>
+          </view>
+      </view>
+      <!-- 订单明细 -->
+      <view class='change_info' style='margin-top:{{is_zero == 1?"20rpx":"0"}}'>
+          <view class="amount_money_time">
+            <view class='' style='display:{{is_zero == 1?"none":"block"}}'>该时段累积返利总额：<text style='color:{{comColor}}'>{{disorder_info.sum_fanli_money}}</text></view>
+            <view class='' style='display:{{is_zero == 1?"none":"block"}};padding-top:10rpx'>该时段累积返利商品总额：<text style='color:{{comColor}}'>{{total_calculate_money}}</text></view>
+          </view>
+          <view class='all_order_info' wx:if='{{info_list.length>0}}'>
+            <view class='each_order_info' wx:for='{{info_list}}' wx:key="key">
+              <view class='warning_mes' wx:if='{{(item.order_status == 2 || item.order_status ==8 || item.order_status ==1 ||  item.order_status == 10) && item.settlement_flag != 1}}'>
+                  <image src='{{imageUrl}}image/wxapp/icon_warning.png' mode='widthFix'></image>
+                  未返利原因：<text wx:if='{{item.order_status == 8}}'>订单已退款</text>
+                  <text wx:if='{{item.order_status == 10}}'>订单已退款</text>
+                  <text wx:if='{{item.order_status == 2}}'>订单已关闭</text>
+                  <text wx:if='{{item.order_status == 1}}'>订单已取消</text>
+              </view>
+              <view class='warning_mes' wx:if='{{item.fanli_money == 0 && item.is_cost_protect == 1 && !(item.order_status == 1 || item.order_status == 2 || item.order_status == 8 || item.order_status == 10)}}'>
+                  <image src='{{imageUrl}}image/wxapp/icon_warning.png' mode='widthFix'></image>
+                  成本价保护：利润过低，不足以返利
+              </view>
+              <view class='three_info'>
+                  <view class='sentence_1 sentence clearfix'>
+                    <image src='{{imageUrl}}image/wxapp/dis_order.png'></image>
+                    <view>订单编号：{{item.order_sn}}</view>
+                  </view>
+                  <view class='sentence_2 sentence clearfix'>
+                      <image src='{{imageUrl}}image/wxapp/dis_time.png'></image>
+                      <view>下单时间：{{item.add_time}}</view>
+                  </view>
+                  <view class='sentence_3 sentence clearfix'>
+                      <image src='{{imageUrl}}image/wxapp/dis_user.png'></image>
+                      <view>下单用户：{{item.username}}</view>
+                  </view>
+                  <view class='sentence_5 sentence clearfix' wx:if="{{bottom.tk_shop_style == 0}}">
+                      <image src='{{imageUrl}}image/wxapp/dis_relation.png'></image>
+                      <view wx:if='{{item.rebate_level == 0}}'>返利关系：自购</view>
+                      <view wx:if='{{item.rebate_level == 1}}'>返利关系：直接邀请</view>
+                      <view wx:if='{{item.rebate_level == 2}}'>返利关系：间接邀请</view>
+                  </view>
+                  <view class='sentence_4 sentence clearfix' wx:if="{{item.finished_time != null}}">
+                      <image src='{{imageUrl}}image/wxapp/fanli_time1.png'></image>
+                      <view>返利时间：{{item.finished_time}}</view>
+                  </view>
+              </view>
+              <view class='fanli_state clearfix'>
+                  <view class='fanli_goods'>
+                      <view>返利商品总额</view>
+                      <view>{{item.can_fanli_money}}</view>
+                  </view>
+                  <view class='fanli_money'>
+                      <view>返利佣金</view>
+                      <view>{{item.fanli_money}}</view>
+                  </view>
+                  <view class='fanli_status'>
+                      <view>返利状态</view>
+                      <view wx:if='{{item.settlement_flag == 0}}'>待返利</view>
+                      <view wx:if='{{item.settlement_flag == 1}}'>已返利</view>
+                      <view wx:if='{{item.settlement_flag == 2}}'>不返利</view>
+                  </view>
+              </view>
+            </view>
+          </view>
+
+          <view wx:if='{{info_list.length == 0}}' class='no_state'>
+              <image src='{{imageUrl}}/image/wxapp/no_orders.png' mode='widthFix'></image>
+              <view>暂无返利订单明细</view>
+          </view>
+          <view class='load_style' wx:if="{{is_load == 1}}">加载中...</view>
+      </view>
+  </view>
+</view>
+<include src="/pages/common/footer.wxml"/>

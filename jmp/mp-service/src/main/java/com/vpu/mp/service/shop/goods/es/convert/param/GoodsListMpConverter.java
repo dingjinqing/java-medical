@@ -5,12 +5,15 @@ import com.vpu.mp.service.foundation.es.annotation.EsSearch;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
+import static com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam.*;
 
 /**
  * GoodsListMpConverter
@@ -79,22 +82,37 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
             if( StringUtils.isNotBlank(param.getGoodsArea()) ){
                 String goodsArea = param.getGoodsArea();
                 if( !CollectionUtils.isEmpty(param.getGoodsAreaData()) ){
-                    if ( (GoodsListMpParam.BRAND_AREA).equals(goodsArea) ){
+                    if ( (BRAND_AREA).equals(goodsArea) ){
                         propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getGoodsAreaData()));
-                    }else if( (GoodsListMpParam.CAT_AREA).equals(goodsArea) ){
+                    }else if( (CAT_AREA).equals(goodsArea) ){
                         propertyList.add(new FieldProperty(EsSearchName.FULL_CAT_ID,param.getGoodsAreaData()));
-                    }else if( (GoodsListMpParam.LABEL_AREA).equals(goodsArea) ){
+                    }else if( (LABEL_AREA).equals(goodsArea) ){
                         /*商品标签查goodsId*/
                         propertyList.add(new FieldProperty(EsSearchName.GOODS_ID,param.getGoodsItems()));
-                    }else if( (GoodsListMpParam.SORT_AREA).equals(goodsArea) ){
+                    }else if( (SORT_AREA).equals(goodsArea) ){
                         propertyList.add(new FieldProperty(EsSearchName.FULL_SORT_ID,param.getGoodsAreaData()));
                     }
                 }
             }
         }
         List<Sort> sorts = Lists.newArrayList();
-        if( param.getShopSortItem() != null && param.getShopSortDirection() != null){
 
+        if( param.getSortType() != null ){
+            switch (param.getSortType()){
+                case 1:
+                    sorts.add(getSort(EsSearchName.CREATE_TIME, SortOrder.DESC));
+                    break;
+                case 2:
+                    sorts.add(getSort(EsSearchName.GOODS_SALE_NUM,SortOrder.DESC));
+                    break;
+                case 3:
+                    sorts.add(getSort(EsSearchName.SHOW_PRICE,SortOrder.ASC));
+                default:
+                    break;
+            }
+        }
+
+        if( sorts.size() == 0 && param.getShopSortItem() != null && param.getShopSortDirection() != null){
             sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
         }
         if( !CollectionUtils.isEmpty(sorts) ){

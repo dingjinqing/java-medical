@@ -25,7 +25,28 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    order_request(that);
+    this.order_request(that);
+  },
+  // 列表数据请求
+  order_request (that) {
+    console.log(that)
+    util.api('/api/wxapp/order/refund/list/search', function (res) {
+      //   if (res.error == 0) {
+      //     var order_info = [];
+      //     that.data.last_page = res.content.list.last_page;
+      //     if (res.content.list.data != "") {
+      //       order_info = res.content.list.data;
+      //     } else {
+      //       order_info = ""
+      //     }
+      //     that.setData({
+      //       order_info: order_info
+      //     })
+      //   } else {
+      //     util.showModal("提示", res.message, function () { });
+      //     return false;
+      //   }
+    }, { search: that.data.search, page: that.data.page })
   },
   // 商品详情
   to_item: function (e) {
@@ -39,7 +60,7 @@ global.wxPage({
   bindSearch: function (e) {
     var that = this;
     that.data.page = 1;
-    order_request(that);
+    this.order_request(that);
   },
   // 重置搜索
   clear_value: function () {
@@ -129,22 +150,3 @@ global.wxPage({
     }
   },
 })
-function order_request(that) {
-  // util.api('/api/wxapp/return/aftersalelist', function (res) {
-  //   if (res.error == 0) {
-  //     var order_info = [];
-  //     that.data.last_page = res.content.list.last_page;
-  //     if (res.content.list.data != "") {
-  //       order_info = res.content.list.data;
-  //     } else {
-  //       order_info = ""
-  //     }
-  //     that.setData({
-  //       order_info: order_info
-  //     })
-  //   } else {
-  //     util.showModal("提示", res.message, function () { });
-  //     return false;
-  //   }
-  // }, { search: that.data.search, page: that.data.page })
-}

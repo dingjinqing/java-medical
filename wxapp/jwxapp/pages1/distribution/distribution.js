@@ -11,6 +11,7 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
+    dis_info: [],
     img_save_url: '',
     is_block: 0, // 绑定手机号弹窗
     this_dis_name: '',
@@ -43,10 +44,10 @@ global.wxPage({
   },
   // 去规则说明
   toRule: function () {
-    util.api('/api/wxapp/rebate/config', function (res) {
-      var rule_info = res.content;
-      util.jumpToWeb('/wxapp/distribution/help', rule_info);
-    }, {});
+    // util.api('/api/wxapp/rebate/config', function (res) {
+    //   var rule_info = res.content;
+    //   util.jumpToWeb('/wxapp/distribution/help', rule_info);
+    // }, {});
   },
   // 待返利佣金说明
   a_tips: function () {
@@ -60,7 +61,7 @@ global.wxPage({
       util.showModal("提示", "系统暂时不支持提现");
       return false
     }
-    if (dis_info.withdraw_money == 0) {
+    if (dis_info.canWithdraw == 0) {
       util.showModal("提示", "暂无可提现余额");
       return false
     }
@@ -95,7 +96,7 @@ global.wxPage({
   // 分销-邀请用户
   toUser: function () {
     util.navigateTo({
-      url: '/pages2/inviteduser/inviteduser?user_id=' + util.getCache('user_id'),
+      url: '/pages1/inviteduser/inviteduser?user_id=' + util.getCache('user_id'),
     })
   },
   // 分销-返利订单
@@ -267,13 +268,14 @@ global.wxPage({
 function dis_request(that) {
   util.api('/api/wxapp/distribution/rebateCenter', function (res) {
     if (res.error == 0) {
-      dis_info = res.content;
+      var dis_info = res.content;
       // var page_id = dis_info.fanli_cfg.rebate_page_id;
       // // that.page_id = page_id;
       // if (page_id > 0) {
       //   that.requestDecoratePageData(page_id, 0, that.processWindowData.bind(that));
       // }
       that.setData({
+        dis_info: dis_info,
         // page_id: page_id,
         rebate_center: 1,
         // page_name: that.data.this_dis_name,

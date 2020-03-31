@@ -317,6 +317,9 @@ export default {
                   color: #5a8bff;
                   font-size: 14px;
                   cursor: pointer;
+                  @media (max-width: 1366px) {
+                    font-size: 12px;
+                  }
                 }
               }
             }

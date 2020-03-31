@@ -19,6 +19,8 @@ public class PreSaleListVo implements StatusContainer {
      * 类型，1全款
      */
     private Byte presaleType;
+    /**排序*/
+    private Integer first;
     /** 定金支付开始时间 **/
     private Timestamp preStartTime;
     /** 定金支付结束时间 **/
