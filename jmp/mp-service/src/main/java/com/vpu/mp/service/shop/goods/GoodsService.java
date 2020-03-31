@@ -345,7 +345,7 @@ public class GoodsService extends ShopBaseService {
             GOODS_BRAND.BRAND_NAME,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
-            GOODS_SPEC_PRODUCT.PRD_IMG)
+            GOODS_SPEC_PRODUCT.PRD_IMG,GOODS_SPEC_PRODUCT.PRD_CODES)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition);
@@ -1862,7 +1862,8 @@ public class GoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public int getExportGoodsListSize(GoodsExportParam param) {
+    public GoodsExportColumnVo getExportGoodsListSize(GoodsExportParam param) {
+        GoodsExportColumnVo vo = new GoodsExportColumnVo();
         // 拼接过滤条件
         Condition condition = this.buildOptions(param);
 
@@ -1871,7 +1872,9 @@ public class GoodsService extends ShopBaseService {
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition);
 
-        return selectFrom.fetchOne().into(Integer.class);
+        vo.setRows(selectFrom.fetchOne().into(Integer.class));
+        vo.setColumns(saas.getShopApp(getShopId()).config.goodsCfg.getGoodsExportList());
+        return vo;
     }
 
     public List<Integer> getAllGoodsId() {
@@ -1897,25 +1900,40 @@ public class GoodsService extends ShopBaseService {
         for (GoodsExportVo goods : list) {
 //            goods.setCatName(SysCatServiceHelper.getSysCateVoByCatId(goods.getCatId()).getCatName());
 
-            SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
-            if (sort != null) {
-                if (Sort.NO_PARENT_CODE.equals(sort.getParentId())) {
-                    //parent_id 是0，表示该分类是一级节点
-                    goods.setSortNameParent(sort.getSortName());
-                } else {
-                    goods.setSortNameChild(sort.getSortName());
+            if(param.getColumns().contains(GoodsExportVo.SORT_NAME_PARENT) || param.getColumns().contains(GoodsExportVo.SORT_NAME_CHILD)){
+                SortRecord sort = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(goods.getSortId());
+                if (sort != null) {
+                    if (Sort.NO_PARENT_CODE.equals(sort.getParentId())) {
+                        //parent_id 是0，表示该分类是一级节点
+                        goods.setSortNameParent(sort.getSortName());
+                    } else {
+                        goods.setSortNameChild(sort.getSortName());
 
-                    SortRecord parent = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(sort.getParentId());
-                    if (parent != null) {
-                        goods.setSortNameParent(parent.getSortName());
+                        SortRecord parent = saas.getShopApp(getShopId()).goods.goodsSort.getSortDao(sort.getParentId());
+                        if (parent != null) {
+                            goods.setSortNameParent(parent.getSortName());
+                        }
                     }
                 }
             }
+
+            if(param.getColumns().contains(GoodsExportVo.GOODS_IMG)){
+                goods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
+            }
+
+            if(param.getColumns().contains(GoodsExportVo.IMG_URL)){
+                goods.setImgUrl(getGoodsImageList(goods.getGoodsId()).stream().map(String::valueOf).collect(Collectors.joining(";")));
+            }
+
+            if(param.getColumns().contains(GoodsExportVo.MARKET_PRICE)){
+                goods.setMarketPrice(goods.getPrdMarketPrice());
+            }
+
         }
 
         Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
         ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
-        excelWriter.writeModelList(list, GoodsExportVo.class);
+        excelWriter.writeModelList(list, GoodsExportVo.class,param.getColumns());
         return workbook;
     }
 
