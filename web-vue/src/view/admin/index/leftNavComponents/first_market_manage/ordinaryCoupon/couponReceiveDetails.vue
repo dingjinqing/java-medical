@@ -162,7 +162,7 @@
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.isUsed === '否' && scope.row.endFlag === 0"
+                v-if="scope.row.isUsed === '否' && scope.row.endFlag === 0 && scope.row.delFlag === 0"
               ></span>
             </template>
           </el-table-column>
@@ -274,9 +274,9 @@ export default {
             this.$message.success({ message: '删除成功!' })
             this.initDataList()
           }
-        }).catch(() => {
-          this.$message.info({ message: '已取消删除' })
         })
+      }).catch(() => {
+        this.$message.info({ message: '已取消删除' })
       })
     },
 
@@ -299,7 +299,7 @@ export default {
         }
       })
     },
-
+    // 是否使用
     foramtUseStatus (data) {
       switch (data) {
         case 2:
@@ -312,6 +312,7 @@ export default {
           return '否'
       }
     },
+    // 领取方式
     foramtGetType (data) {
       switch (data) {
         case 2:
