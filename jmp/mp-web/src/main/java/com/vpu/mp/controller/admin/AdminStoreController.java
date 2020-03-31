@@ -12,6 +12,8 @@ import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
+import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsListQueryParam;
 import com.vpu.mp.service.pojo.shop.store.goods.StoreGoodsUpdateParam;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
@@ -665,5 +667,68 @@ public class AdminStoreController extends AdminBaseController{
     @GetMapping(value = "/api/admin/store/servicecharge/list")
     public JsonResult getChargeStoreList() {
         return success(shop().store.getChargeStoreList());
+    }
+
+    /**
+     * 门店公告-新增
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/add")
+    public JsonResult addArticle(@RequestBody ArticlePojo articlePojo) {
+        if(shop().store.addArticle(articlePojo)) {
+            return success();
+        }else {
+            return fail();
+        }
+    }
+
+    /**
+     * 门店公告-更新
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/update")
+    public JsonResult updateArticle(@RequestBody ArticlePojo articlePojo) {
+        if(shop().store.updateArticle(articlePojo)) {
+            return success();
+        }else {
+            return fail();
+        }
+    }
+
+    /**
+     * 门店公告-删除
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/del")
+    public JsonResult delArticle(@RequestBody ArticlePojo articlePojo) {
+        if(shop().store.delArticle(articlePojo.getArticleId())) {
+            return success();
+        }else {
+            return fail();
+        }
+    }
+
+    /**
+     * 门店公告-取单个公告信息
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/get")
+    public JsonResult getArticle(@RequestBody ArticlePojo articlePojo) {
+        ArticlePojo article = shop().store.getArticle(articlePojo.getArticleId());
+        if(null != article) {
+            return success(article);
+        }else {
+            return fail();
+        }
+    }
+
+    /**
+     * 门店公告-列表
+     * @return
+     */
+    @PostMapping(value = "/api/admin/store/article/list")
+    public JsonResult getArticleList(@RequestBody ArticleParam param) {
+        PageResult<ArticlePojo> result = shop().store.articleList(param);
+        return success(result);
     }
 }
