@@ -65,11 +65,13 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
             searchParam.setSearchList(propertyList);
         }
         List<Sort> sorts = Lists.newArrayList();
-        if( param.getSortItem() != null && param.getSortDirection() != null){
+        boolean useUserSort = param.getSortItem() != null
+            && param.getSortItem() != SortItemEnum.NULL
+            && param.getSortDirection() != null ;
+        if( useUserSort ){
             sorts.add(getSort(param.getSortItem(),param.getSortDirection()));
         }
-        if( param.getShopSortItem() != null && param.getShopSortDirection() != null){
-
+        if( !useUserSort && param.getShopSortItem() != null && param.getShopSortDirection() != null){
             sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
         }
         if( !CollectionUtils.isEmpty(sorts) ){

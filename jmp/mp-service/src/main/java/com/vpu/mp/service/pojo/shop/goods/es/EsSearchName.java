@@ -83,6 +83,8 @@ public interface EsSearchName {
     String DEFAULT_PRD = "default_prd";
     String SECONDARY_GOODS_IMAGES = "secondary_goods_images";
     String CAN_REBATE = "can_rebate";
+    String CREATE_TIME = "create_time";
+    String SALE_TIME = "sale_time";
 
 
     /**单纯搜索使用，es中无此字段*/
