@@ -117,21 +117,25 @@
           >
             <el-table-column
               align="center"
-              prop="prdDesc"
-              :label="$t('groupBuy.goodsNmaeProduct')"
+              prop="goodsName"
+              label="商品名称"
             >
             </el-table-column>
+
+            <!-- 原价 -->
             <el-table-column
               align="center"
-              prop="prdPrice"
+              prop="shopPrice"
               :label="$t('groupBuy.originalPrice')"
             >
             </el-table-column>
+
+            <!-- 拼团价 -->
             <el-table-column
               align="center"
               :label="$t('groupBuy.groupBuyPrice')"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyPrice')}}</span>
                 <el-button
                   @click="setCurrent(1)"
@@ -139,30 +143,43 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.groupPrice'"
                   :rules="[
                     { required: true, message: '拼团价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.priceErrorMsg"
+                  >{{scope.row.priceErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.groupPrice"
                     size="small"
+                    :disabled="isEdite || disabledFlag"
+                    @input="changePriceInput(scope.row)"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格</div>
               </template>
             </el-table-column>
+
+            <!-- 团长价 -->
             <el-table-column
               align="center"
               prop="grouperPrice"
               :label="$t('groupBuy.commanderPrice')"
               v-if="form.isGrouperCheap === 1"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.commanderPrice')}}</span>
                 <el-button
                   @click="setCurrent(2)"
@@ -170,13 +187,13 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.grouperPrice'"
                   :rules="[
                     { required: true, message: '团长价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.prdPrice)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
@@ -187,18 +204,22 @@
                 </el-form-item>
               </template>
             </el-table-column>
+
+            <!-- 原库存 -->
             <el-table-column
               align="center"
-              prop="prdNumber"
+              prop="goodsNumber"
               :label="$t('groupBuy.originalStock')"
             >
             </el-table-column>
+
+            <!-- 剩余库存 -->
             <el-table-column
               align="center"
               prop="stock"
               :label="$t('groupBuy.groupBuyStock')"
             >
-              <template slot="append">
+              <!-- <template slot="append">
                 <span>{{$t('groupBuy.groupBuyStock')}}</span>
                 <el-button
                   @click="setCurrent(3)"
@@ -206,23 +227,40 @@
                   icon="el-icon-edit"
                 >{{$t('groupBuy.batchOption')}}
                 </el-button>
-              </template>
+              </template> -->
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'product.' +  scope.$index+ '.stock'"
                   :rules="[
                     { required: true, message: '拼团库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
+                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
                   ]"
                   style="height: 56px;line-height: 56px;"
                 >
+                  <div
+                    class="input-error"
+                    v-if="scope.row.stockErrorMsg"
+                  >{{scope.row.stockErrorMsg}}</div>
                   <el-input
                     v-model="scope.row.stock"
                     size="small"
+                    :disabled="isEdite || disabledFlag"
+                    @input="changeStockInput(scope.row)"
                   />
                 </el-form-item>
+                <div
+                  class="spec-tips"
+                  @click="showSpec(scope.row)"
+                  v-if="scope.row.goodsSpecProducts && scope.row.goodsSpecProducts.length > 0"
+                >包含{{scope.row.goodsSpecProducts.length}}个规格；库存合计：{{scope.row.totalStock ? scope.row.totalStock : 0}}</div>
               </template>
             </el-table-column>
+
+            <!-- 操作 -->
+            <el-table-column
+              label="操作"
+              align="center"
+            >删除</el-table-column>
             <template
               slot="empty"
               style="height：0"
@@ -549,11 +587,13 @@
       </el-form>
 
       <!--添加商品弹窗-->
+      <!-- :chooseGoodsBack="[form.goodsId]" -->
+      <!-- goodsIdList -->
       <choosingGoods
-        @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[form.goodsId]"
+        @resultGoodsDatas="choosingGoodsResult"
+        :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
-        :singleElection="true"
+        :singleElection="false"
         :showTips="true"
       />
 
@@ -583,6 +623,14 @@
       </div>
     </div>
 
+    <!-- 规格信息弹框 -->
+    <spellGroupDialog
+      :productDialog.sync="showSpecDialog"
+      :product-info="productInfo"
+      :isEdit="isEdite"
+      @confrim="getProductdata"
+    />
+
   </div>
 </template>
 <script>
@@ -592,7 +640,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
-import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
+// import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
@@ -602,7 +651,8 @@ export default {
     choosingGoods,
     addCouponDialog,
     actShare,
-    ImageDalog
+    ImageDalog,
+    spellGroupDialog: () => import('./spellGroupDialog')
   },
   props: ['isEdite', 'editData'],
   filters: {
@@ -678,7 +728,8 @@ export default {
           shareImg: ''
         },
         product: [],
-        shareInfo: ''
+        shareInfo: '',
+        stock: 0 // 活动总库存
       },
       // 校验表单
       fromRules: {
@@ -741,7 +792,11 @@ export default {
         src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
         src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
-      showImageDialog: false
+      showImageDialog: false,
+      goodsIdList: [],
+      showSpecDialog: false,
+      productInfo: {},
+      disabledFlag: true // 是否可编辑
     }
   },
   mounted () {
@@ -765,17 +820,18 @@ export default {
   methods: {
     ...mapActions(['transmitEditGoodsId']),
     // 校验表格
-    validateMoney (rule, value, callback, prdPrice) {
+    validateMoney (rule, value, callback, shopPrice) {
       var re = /^\d+(\.\d{1,2})?$/
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
-      } else if (value > prdPrice) {
+      } else if (value > shopPrice) {
         callback(new Error('拼团价或团长价不能大于商品原价'))
       } else {
         callback()
       }
     },
     validateNum (rule, value, callback, prdNumber) {
+      console.log(prdNumber)
       // var re = /(^0|\+?[1-9][0-9]\d*)$/
       var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
@@ -785,6 +841,16 @@ export default {
       } else {
         callback()
       }
+    },
+    validatePrdPrice (item) {
+      console.log(item)
+      if (item.shopPrice < item.groupPrice) return true
+      return false
+    },
+    validatePrdStock (item) {
+      console.log(item)
+      if (item.prdNumber < item.stock) return true
+      return false
     },
 
     // 编辑活动初始化
@@ -798,9 +864,10 @@ export default {
         this.form.name = data.name
         this.form.goodsId = data.goodsId
         this.form.level = data.level
-        this.getGoodsInfo(data.goodsId)
+        // this.getGoodsInfo(data.goodsId)
+        this.form.product = this.initEditProduct(data.productList)
         this.form.isGrouperCheap = data.isGrouperCheap
-        this.form.product = data.productList
+        // this.form.product = data.productList
         this.form.startTime = data.startTime
         this.form.endTime = data.endTime
         this.form.validityDate = [data.startTime, data.endTime]
@@ -847,7 +914,7 @@ export default {
       })
     },
 
-    // 提交表单
+    // 提交表单 保存
     submitForm (formName) {
       this.submitStatus = true
       if (this.rewardCouponIds) {
@@ -857,7 +924,32 @@ export default {
         console.log('提交表单', formName)
         console.log('this.form', this.form)
         if (valid) {
+          // let goodsId = this.form.goodsId.join(',')
+          this.form.product.forEach((item, index) => {
+            item.productId = item.prdId
+            item.groupPrice = Number(item.groupPrice)
+          })
+
+          let product = []
+          this.form.stock = 0
+          this.form.product.forEach(item => {
+            if (item.goodsSpecProducts) {
+              item.goodsSpecProducts.forEach(specItem => {
+                let { prdId, groupPrice, stock } = specItem
+                let goodsId = item.goodsId
+                product.push({ goodsId, prdId, groupPrice: Number(groupPrice), stock: Number(stock) })
+                this.form.stock += Number(stock)
+              })
+            } else {
+              let { goodsId, prdId, groupPrice, stock } = item
+              product.push({ goodsId, prdId, groupPrice, stock: Number(stock) })
+              this.form.stock += Number(stock)
+            }
+          })
+          console.log(product)
+
           if (this.isEdite) {
+            console.log(this.form, 'form--')
             updateGroupBuy(this.form).then(res => {
               console.log('updateGroupBuy', res)
               if (res.error === 0) {
@@ -871,7 +963,9 @@ export default {
               this.$message.warning(e.message)
             })
           } else {
-            addGroupBuyActivity(this.form).then(res => {
+            // this.form.product = groupProduct
+            console.log({ ...this.form, product })
+            addGroupBuyActivity({ ...this.form, product }).then(res => {
               console.log('addGroupBuyActivity', res)
               if (res.error === 0) {
                 this.$message.success(res.message)
@@ -889,36 +983,69 @@ export default {
     },
     // 选择商品弹窗
     showChoosingGoods () {
-      console.log('初始化商品弹窗', this.form.goodsId)
       this.isShowChoosingGoodsDialog = !this.isShowChoosingGoodsDialog
     },
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'get row')
-      this.goodsRow = row
-      this.form.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
-        return
-      }
-      // 初始化规格表格
-      getAllGoodsProductList(this.form.goodsId).then(res => {
-        console.log('product', res.content)
-        res.content.forEach((item, index) => {
-          item.index = index
-        })
-        // this.form.product = res.content
-        // this.param.product((item, index) =>{
-        // })
-        let list = res.content
-        list.map((item, index) => {
-          this.form.product.push(
-            Object.assign({}, item, { goodsId: row.goodsId })
-          )
-          console.log(this.form.product, '123--')
-        })
 
-        console.log(' this.form.product ', this.form.product)
+      this.goodsIdList = row.map(item => { return item.goodsId })
+
+      this.goodsRow = row
+      this.form.goodsId = this.goodsIdList.join(',')
+      console.log(this.form.goodsId, 'goodsId--')
+
+      this.form.product = row
+      // 可编辑状态
+      this.disabledFlag = false
+    },
+    getProductdata ({ goodsId, prdInfo }) {
+      console.log(goodsId, prdInfo)
+      let target = this.form.product.find(item => { return item.goodsId === goodsId })
+      let index = this.form.product.findIndex(item => { return item.goodsId === goodsId })
+      this.$set(this.form.product[index], 'groupBuyPrice', prdInfo[0].secKillPrice)
+      this.$set(this.form.product[index], 'stock', prdInfo[0].stock)
+      target.goodsSpecProducts = prdInfo
+      this.changePriceInput(target, true)
+      this.changeStockInput(target, true)
+    },
+    initEditProduct (goods) {
+      let newdata = []
+      goods.forEach(item => {
+        console.log(item)
+        // let expand = item.product.length < 2 ? { ...item.product[0] } : { ...item.product[0], goodsSpecProducts: item.product }
+        newdata.push({ ...item })
       })
+      return newdata
+    },
+    showSpec (goodsInfo) {
+      this.productInfo = goodsInfo
+      this.showSpecDialog = true
+      console.log(this.showSpecDialog)
+    },
+    changePriceInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.priceErrorMsg = null
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.groupPrice = goodsInfo.groupPrice
+          if (this.validatePrdPrice(item) && !goodsInfo.priceErrorMsg) {
+            goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
+          }
+        })
+      }
+    },
+    changeStockInput (goodsInfo, isDialog = null) {
+      if (goodsInfo.goodsSpecProducts && goodsInfo.goodsSpecProducts.length > 0) {
+        goodsInfo.stockErrorMsg = null
+        goodsInfo.totalStock = 0
+        goodsInfo.goodsSpecProducts.forEach((item, index) => {
+          if (!isDialog) item.stock = goodsInfo.stock
+          goodsInfo.totalStock += parseInt(item.stock)
+          if (this.validatePrdStock(item) && !goodsInfo.stockErrorMsg) {
+            goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
+          }
+        })
+      }
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
@@ -959,6 +1086,8 @@ export default {
         case 1:
           price.forEach(row => {
             row.groupPrice = price[0].groupPrice
+            console.log(row)
+            this.changePriceInput(row)
           })
           this.activeIndex = 1
           break
@@ -971,6 +1100,7 @@ export default {
         case 3:
           price.forEach(row => {
             row.stock = price[0].stock
+            this.changeStockInput(row)
           })
           this.activeIndex = 3
           break
@@ -1097,7 +1227,6 @@ export default {
   color: #fff;
   background: #f66;
   font-size: 12px;
-  /* background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png"); */
   background-repeat: repeat-x;
 }
 
@@ -1163,5 +1292,15 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.spec-tips {
+  text-align: center;
+  color: #409eff;
+  cursor: pointer;
+}
+.input-error {
+  text-align: center;
+  color: red;
+  line-height: 1;
 }
 </style>
