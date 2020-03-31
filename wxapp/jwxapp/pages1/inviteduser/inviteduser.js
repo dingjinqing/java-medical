@@ -12,7 +12,7 @@ global.wxPage({
     last_page: 1,
     server_list: [], //列表数据
     is_load: 0,
-    if_fliter: 0,
+    if_fliter: 0, // 筛选条件
     search: {
       tab_type: 0, //0有效1将过期2已失效
       user_name: '',
@@ -75,6 +75,8 @@ global.wxPage({
     }
 
   },
+
+  // 查看返利订单
   toOrder: function (e) {
     var usernames = e.currentTarget.dataset.username;
     var userdd = e.currentTarget.dataset.userid
@@ -128,15 +130,17 @@ global.wxPage({
     invite_request(this);
   },
 
+  // 筛选条件展示
   showSearch() {
     this.setData({ if_fliter: this.data.if_fliter == 1 ? 0 : 1 })
   },
 
+  // 确定筛选条件搜索
   bindSearch() {
     invite_request(this);
   },
 
-  // 重置
+  // 重置筛选条件
   bindReset: function () {
     this.data.search.invite_type = 0;
     this.data.search.indirect_type = 0;
@@ -179,30 +183,41 @@ global.wxPage({
       return;
     }
     that.data.page = that.data.page + 1;
-    // util.api('/api/wxapp/rebate/invite_new', function (rest) {
-    //   var servL = rest.content;
-    //   var server_list_r = rest.content.data;
-    //   var server_list = [];
-    //   if (server_list_r.length > 0) {
-    //     server_list = server_list_r;
-    //   }
-    //   for (var i in server_list) {
-    //     if (server_list[i].username.length > 8) {
-    //       server_list[i].username = server_list[i].username.substr(0, 7) + "...";
-    //     }
-    //     if (server_list[i].total_fanli_money != null) {
-    //       server_list[i].total_fanli_money = parseFloat(server_list[i].total_fanli_money).toFixed(2);
-    //     }
-    //     if (server_list[i].order_number == null) { server_list[i].order_number == 0 };
-    //     if (server_list[i].total_fanli_money == null) { server_list[i].total_fanli_money == 0.00 };
-    //     server_list[i].invite_time = server_list[i].invite_time.substr(0, 10);
-    //   }
-    //   that.setData({
-    //     server_list: that.data.server_list.concat(server_list),
-    //     is_load: 0,
-    //     if_fliter: 0
-    //   });
-    // }, { pageNo: that.data.page, searchData: JSON.stringify(that.data.search) });
+    util.api('api/wxapp/distribution/myInvite', function (rest) {
+      if (res.error == 0) {
+        var server_list = [];
+        if (res.content.dataList.length > 0) {
+          server_list = res.content.dataList
+        }
+        server_list.forEach(item => {
+          if (item.username.length > 8) {
+            item.username = item.username.substr(0, 7) + "..."
+          }
+          if (item.total_fanli_money) {
+            item.total_fanli_money = parseFloat(item.total_fanli_money).toFixed(2);
+          } else {
+            item.total_fanli_money = 0.00
+          }
+          if (!item.order_number) {
+            item.order_number = 0
+          }
+          item.invite_time = item.invite_time.substr(0, 10)
+        })
+        that.setData({
+          server_list: that.data.server_list.concat(server_list),
+          page: res.content.page.currentPage,
+          last_page: res.content.page.lastPage,
+          is_load: 0,
+          if_fliter: 0
+        });
+      }
+      
+    }, { 
+      userId: util.getCache('user_id'),
+      username: util.getCache('nickName'),
+      pageNo: that.data.page, 
+      searchData: JSON.stringify(that.data.search) 
+    });
   },
 
   getSeachData() {
@@ -220,29 +235,37 @@ global.wxPage({
   }
 })
 function invite_request(that) {
-  // util.api('/api/wxapp/rebate/invite_new', function (res) {
-  //   var servL = res.content;
-  //   var server_list_r = res.content.data;
-  //   var server_list = [];
-  //   if (server_list_r.length > 0) {
-  //     server_list = server_list_r;
-  //   }
-  //   for (var i in server_list) {
-  //     if (server_list[i].username.length > 8) {
-  //       server_list[i].username = server_list[i].username.substr(0, 7) + "...";
-  //     }
-  //     if (server_list[i].total_fanli_money != null) {
-  //       server_list[i].total_fanli_money = parseFloat(server_list[i].total_fanli_money).toFixed(2);
-  //     }
-  //     if (server_list[i].order_number == null) { server_list[i].order_number == 0 };
-  //     if (server_list[i].total_fanli_money == null) { server_list[i].total_fanli_money == 0.00 };
-  //     server_list[i].invite_time = server_list[i].invite_time.substr(0, 10);
-  //   }
-  //   that.setData({
-  //     server_list: server_list,
-  //     last_page: servL.last_page,
-  //     page: servL.current_page,
-  //     if_fliter: 0
-  //   });
-  // }, { searchData: JSON.stringify(that.data.search) }, '', true);
+  util.api('api/wxapp/distribution/myInvite', function (res) {
+    if (res.error == 0) {
+      var server_list = [];
+      if (res.content.dataList.length > 0) {
+        server_list = res.content.dataList
+      }
+      server_list.forEach(item => {
+        if (item.username.length > 8) {
+          item.username = item.username.substr(0, 7) + "..."
+        }
+        if (item.total_fanli_money) {
+          item.total_fanli_money = parseFloat(item.total_fanli_money).toFixed(2);
+        } else {
+          item.total_fanli_money = 0.00
+        }
+        if (!item.order_number) {
+          item.order_number = 0
+        }
+        item.invite_time = item.invite_time.substr(0, 10)
+      })
+      that.setData({
+        server_list: server_list,
+        page: res.content.page.currentPage,
+        last_page: res.content.page.lastPage,
+        if_fliter: 0
+      });
+    }
+  }, { 
+      userId: util.getCache('user_id'),
+      username: util.getCache('nickName'),
+      pageNo: that.data.page,
+      searchData: JSON.stringify(that.data.search) 
+  });
 }
