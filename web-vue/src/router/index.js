@@ -57,6 +57,11 @@ const baseRoutes = [{
   path: '/wxapp/promote/help', // 小程序内跳转好友助力规则
   name: 'promoteRules',
   component: () => import('@/view/admin/layout/promoteRules')
+},
+{
+  path: '/wxapp/checkout/services', // 小程序内跳转服务承诺
+  name: 'checkoutServices',
+  component: () => import('@/view/admin/layout/services')
 }
 ]
 const routes = baseRoutes.concat(
