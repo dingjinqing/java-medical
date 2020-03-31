@@ -396,7 +396,7 @@ export default {
         'hsva(120, 40, 94, 0.5)',
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
-        '#c7158577'
+        '#FF0000'
       ],
       callAddBrand: false, // 调起商品品牌弹窗flag
       callAddProductLabel: false, // 调起商品标签弹窗flag

@@ -288,7 +288,7 @@ export default {
         'hsva(120, 40, 94, 0.5)',
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
-        '#c7158577'
+        '#FF0000'
       ],
       pageClassification: 'pageClassification', // 页面分类英文适配
       navigation: 'navigation', // 底部导航英文适配
