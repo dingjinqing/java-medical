@@ -95,12 +95,12 @@
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
         <!--平台分类-->
-        <el-table-column
-          align="center"
-          prop="catName"
-          :label="$t('allGoods.allGoodsData.cat')"
-          width="100"
-        />
+        <!--<el-table-column-->
+          <!--align="center"-->
+          <!--prop="catName"-->
+          <!--:label="$t('allGoods.allGoodsData.cat')"-->
+          <!--width="100"-->
+        <!--/>-->
         <!--商家分类-->
         <el-table-column
           align="center"

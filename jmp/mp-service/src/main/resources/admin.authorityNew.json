@@ -264,7 +264,9 @@
 		"name": "商家分类管理",
 		"linkUrl": "/admin/goods/sort",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/goods/sort/*"
+    ]
 
 	},
 	{
