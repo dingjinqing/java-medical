@@ -551,7 +551,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[form.goodsId]"
+        :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -680,6 +680,7 @@ export default {
         product: [],
         shareInfo: ''
       },
+      goodsIdList: [],
       // 校验表单
       fromRules: {
         name: [
@@ -895,30 +896,34 @@ export default {
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'get row')
-      this.goodsRow = row
-      this.form.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
-        return
+      if (row.goodsId) {
+        this.goodsRow = []
+        this.goodsRow = row
+        this.form.goodsId = row.goodsId
+        this.goodsIdList = []
+        this.goodsIdList.push(row.goodsId)
+        if (Object.keys(row).length === 0) {
+          return
+        }
+        // 初始化规格表格
+        getAllGoodsProductList(this.form.goodsId).then(res => {
+          console.log('product', res.content)
+          this.form.product = []
+          res.content.forEach((item, index) => {
+            item.index = index
+            item.productId = item.prdId
+          })
+          let list = res.content
+          list.map((item, index) => {
+            this.form.product.push(
+              Object.assign({}, item, { goodsId: row.goodsId })
+            )
+          })
+        })
+      } else {
+        this.form.product = []
+        this.goodsRow.ischecked = false
       }
-      // 初始化规格表格
-      getAllGoodsProductList(this.form.goodsId).then(res => {
-        console.log('product', res.content)
-        res.content.forEach((item, index) => {
-          item.index = index
-        })
-        // this.form.product = res.content
-        // this.param.product((item, index) =>{
-        // })
-        let list = res.content
-        list.map((item, index) => {
-          this.form.product.push(
-            Object.assign({}, item, { goodsId: row.goodsId })
-          )
-          console.log(this.form.product, '123--')
-        })
-
-        console.log(' this.form.product ', this.form.product)
-      })
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
