@@ -267,6 +267,7 @@ const myMixin = {
             if (res.error === 0) {
               resolve(true)
             } else if (res.error === 10031) {
+              this.$http.$emit('jurisdictionDialog')
               resolve(false)
             }
           })
