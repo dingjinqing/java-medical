@@ -20,7 +20,7 @@
   height:110rpx;
   top:110rpx;
   left:25rpx;
-  z-index: 999;
+  z-index: 2;
   background: #fff;
   border-radius: 10rpx;
 }
