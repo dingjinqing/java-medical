@@ -52,6 +52,8 @@ public class CartConstant {
      * 商品没有规格
      */
     public final static byte GOODS_STATUS_PRODUCT_CHANGE = 8;
+    /**商品库存不足*/
+    public final static byte GOODS_STATUS_STOCK_SHORTAGE = 9;
 
 
     //******************************************活动状态 0 失效 1 生效

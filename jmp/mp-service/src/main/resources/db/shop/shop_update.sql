@@ -92,7 +92,11 @@ ALTER TABLE `b2c_package_sale` ADD  COLUMN `total_ratio` decimal(4,2) DEFAULT '0
 ALTER TABLE `b2c_order_info` ADD  COLUMN `is_lock` tinyint(1) DEFAULT '0' COMMENT '是否锁库存，0否，1是';
 ALTER TABLE `b2c_order_info` ADD  COLUMN `score_proportion` int(9) DEFAULT '100' COMMENT '积分比例';
 
+--2020-03-30 用户优惠券使用时间允许为null
+ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `used_time` timestamp NULL DEFAULT '0000-00-00 00:00:00';
 
+--2020-03-30 退款订单生成时保存是否自动退款的快照
+ALTER TABLE `b2c_return_order` ADD COLUMN `is_auto_return` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0否；1是';
 /***********************2.9*********************END*/
 
 /***********************2.10*********************BEGIN*/

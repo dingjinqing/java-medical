@@ -11,8 +11,8 @@
       </view>
     </view>
     <view class="condition">
-      <view class="condition-item"><text>{{i18n.$t(localePack,"page1.search.condition.salesVolume")}}</text></view>
-      <view class="condition-item"><text>{{i18n.$t(localePack,"page1.search.condition.price")}}</text></view>
+      <view class="condition-item" bindtap="salesVolumeFilter"><text style="{{sortItem === 1 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.salesVolume")}}{{sortItem === 1 ? sortDirection === 0 ? '⬆' : '⬇' : ''}}</text></view>
+      <view class="condition-item" bindtap="priceFilter"><text style="{{sortItem === 2 ? 'color:' + comColor + ';' : ''}}">{{i18n.$t(localePack,"page1.search.condition.price")}}{{sortItem === 2 ? sortDirection === 0 ? '⬆' : '⬇' : ''}}</text></view>
       <view class="condition-item" bindtap="showFilter"><text>{{i18n.$t(localePack,"page1.search.condition.filter")}}</text><image src="{{imageUrl}}image/wxapp/filter.png" class="filterImage"></image></view>
     </view>
     <view class="content">

@@ -25,7 +25,7 @@ public class MemberTransactionStatisticsVo {
 	
 	/** 累计退款金额 */
 	private BigDecimal returnOrderMoney;
-	
+
 	/** 累计退款订单数 */
 	private Integer returnOrderNum;
 	

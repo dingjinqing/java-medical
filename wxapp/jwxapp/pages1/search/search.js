@@ -9,9 +9,9 @@ global.wxPage({
     pageParams: null,
     showFilterDialog: false,
     keyWords: null,
-    sortItem: 0,
-    sortDirection: 1,
     couponSn: null,
+    sortItem:0,
+    sortDirection:0,
     filterData: {
       minPrice: null,
       maxPrice: null,
@@ -137,7 +137,26 @@ global.wxPage({
       resolve()
     })
   },
-  
+  salesVolumeFilter(){
+    let sortDirection = this.data.sortDirection,sortItem = this.data.sortItem
+    this.setData({
+      sortItem:1,
+      sortDirection : sortItem === 2 || sortItem === 0 ? 0 : !sortDirection ? 1 : 0,
+      'pageParams.currentPage': 1,
+      dataList: []
+    })
+    this.requestList()
+  },
+  priceFilter(){
+    let sortDirection = this.data.sortDirection,sortItem = this.data.sortItem
+    this.setData({
+      sortItem:2,
+      sortDirection : sortItem === 1 || sortItem === 0 ? 1 : !sortDirection ? 1 : 0,
+      'pageParams.currentPage': 1,
+      dataList: []
+    })
+    this.requestList()
+  },
   showSpecDialog(e){
     console.log(e)
     util.api("/api/wxapp/goods/detail",res=>{

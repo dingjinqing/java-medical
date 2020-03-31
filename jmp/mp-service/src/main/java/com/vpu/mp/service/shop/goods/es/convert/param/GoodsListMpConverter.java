@@ -1,10 +1,8 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.foundation.es.annotation.EsSearch;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
-import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -94,8 +92,14 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
                 }
             }
         }
+        List<Sort> sorts = Lists.newArrayList();
+        if( param.getShopSortItem() != null && param.getShopSortDirection() != null){
 
-
+            sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
+        }
+        if( !CollectionUtils.isEmpty(sorts) ){
+            searchParam.setSorts(sorts);
+        }
 
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);

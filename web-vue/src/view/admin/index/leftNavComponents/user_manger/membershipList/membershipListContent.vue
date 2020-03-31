@@ -933,10 +933,10 @@ export default {
       vxName: '',
       inviteUserName: '',
       sourceOptions: [],
-      sourceValue: '',
+      sourceValue: '0',
       membershipCardOptions: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      membershipCardVal: '',
+      membershipCardVal: 0,
       labelVal: [],
       datePickerVal: '',
       checkPhone: false,
@@ -1039,7 +1039,8 @@ export default {
     lang () {
       this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
       this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
-      this.sourceOptions = this.$t('membershipIntroduction.userFromSource')
+      this.sourceOptions = []
+      this.sourceOptions.push(...this.$t('membershipIntroduction.userFromSource'))
       // 初始化会员列表数据
       this.defaultTabelListData()
       // 初始化会员卡下拉框列表
@@ -1222,7 +1223,9 @@ export default {
     // 获取会员卡
     getAllUserCard () {
       allUserCardRequest().then(res => {
-        this.membershipCardOptions = res.content
+        this.membershipCardOptions = []
+        this.membershipCardOptions.push(...this.$t('membershipIntroduction.cardOptions'))
+        this.membershipCardOptions.push(...res.content)
       })
     },
     // 获取来源
@@ -1877,6 +1880,14 @@ export default {
   margin-top: 10px;
   display: flex;
 }
+
+.uls /deep/ .el-tag:first-child .el-select__tags-text{
+  display: inline-block;
+  width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ulsThree {
   margin-top: 15px;
   display: flex;

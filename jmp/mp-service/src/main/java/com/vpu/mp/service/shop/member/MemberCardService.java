@@ -895,14 +895,32 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
 
-		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				NormalCardVo.class);
+		PageResult<MemberCardRecord> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MemberCardRecord.class);
+		PageResult<NormalCardVo> res = new PageResult<NormalCardVo>();
+		res.setPage(pageResult.getPage());
+		List<NormalCardVo> tmp = new ArrayList<>();
 		/** 将json配置文件转化成合适的数据给前端 */
-		for (NormalCardVo vo : pageResult.dataList) {
+		for (MemberCardRecord rec : pageResult.dataList) {
+			NormalCardVo vo = rec.into(NormalCardVo.class);
 			vo.changeJsonCfg();
+			
+			if(rec.getSendMoney()!= null && !StringUtils.isBlank(rec.getChargeMoney())) {
+				// 是否展示充值明细
+				Integer count = db().selectCount().from(CHARGE_MONEY).fetchOne(0, int.class);
+				if(count != 0) {
+					vo.setShowCharge(NumberUtils.BYTE_ONE);
+				}
+			}
+			
+			// TODO 退款记录
+			
+			// TODO 续费记录
+			
+			tmp.add(vo);	
 		}
-
-		return pageResult;
+		res.setDataList(tmp);
+		return res;
 	}
 
 	/**
@@ -1769,27 +1787,27 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 分页查询会员卡领取详情
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public PageResult<CodeReceiveVo> getReceiveList(CodeReceiveParam param) {
+		logger().info("处理遮掩码");
 		PageResult<CodeReceiveVo> result = cardDao.getReceiveListSql(param);
 		/** 处理code 和 card_pwd */
 		for (CodeReceiveVo vo : result.dataList) {
 			String code = vo.getCode();
-			int lengthOfCode = code.length() - 4;
-
-			if (lengthOfCode > 0) {
-				String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+			if(!StringUtils.isBlank(code)) {
+				int lengthOfCode = code.length() - 4;
+				if (lengthOfCode > 0) {
+					String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+				}
 			}
-
 			String cardPwd = vo.getCardPwd();
-			int lengthOfCardPwd = cardPwd.length() - 4;
-			if (lengthOfCardPwd > 0) {
-				String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+			if(!StringUtils.isBlank(cardPwd)) {
+				int lengthOfCardPwd = cardPwd.length() - 4;
+				if (lengthOfCardPwd > 0) {
+					String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+				}
 			}
 		}
 		return result;

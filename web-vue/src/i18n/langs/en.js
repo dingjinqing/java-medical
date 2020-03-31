@@ -69,6 +69,9 @@ import {
   en as allGoodsLabel
 } from './views/admin_new/en/index/goodsManagement/allGoodsLabelEn'
 import {
+  en as goodsImport
+} from './views/admin_new/en/index/goodsManagement/goodsImportEn'
+import {
   en as addAndUpdateGoodsLabel
 } from './views/admin_new/en/index/goodsManagement/addAndUpdateGoodsLabelEn'
 import {
@@ -1001,6 +1004,7 @@ const en = {
   allGoods, // 商品管理/全部商品
   goodsAddEditInfo,
   allGoodsLabel, // 全部标签
+  goodsImport, // 商品导入
   addAndUpdateGoodsLabel, // 修改标签
   goodsSorts, // 商家分类全部，修改，新增
   goodsRecommendSorts, // 商家推荐分类全部，修改，新增,

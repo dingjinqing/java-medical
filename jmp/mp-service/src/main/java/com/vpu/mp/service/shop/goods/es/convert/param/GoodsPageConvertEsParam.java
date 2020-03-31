@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
@@ -97,6 +98,7 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             searchParam.setCurrentPage(param.getCurrentPage());
         }
         if( StringUtils.isNotBlank(param.getOrderDirection()) && StringUtils.isNotBlank(param.getOrderField()) ){
+            List<Sort> sorts = Lists.newArrayList();
             Sort sort = new Sort();
             if( GoodsPageListParam.GOODS_NUMBER.equals(param.getOrderField()) ){
                 sort.setSortName(EsSearchName.GOODS_NUMBER);
@@ -110,7 +112,8 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
             }else{
                 sort.setSortOrder(SortOrder.DESC);
             }
-            searchParam.setSort(sort);
+            sorts.add(sort);
+            searchParam.setSorts(sorts);
         }
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);

@@ -240,6 +240,7 @@ export const cn = {
   ExchangeFrequency: '兑换商品次数(次)',
   freeshiptimes: '剩余包邮次数',
   noData: '暂无相关数据',
+  cardOptions: [{id: 0, cardName: '全部'}],
   userFromSource: [{
     value: '0',
     label: '全部'
