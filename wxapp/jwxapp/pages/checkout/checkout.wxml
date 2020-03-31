@@ -246,7 +246,7 @@
         <view class="pay_list_item">
           <text class="iconfont {{orderInfo.term.serviceChoose === 1 ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};" bindtap="changeTerm"></text>
           <text class="pay_list_content" style="text-align: left;">同意{{orderInfo.term.serviceName}}</text>
-          <view class="pay_list_right" style="width:auto">
+          <view class="pay_list_right" bindtap="goService" style="width:auto">
             <text>查看详情</text>
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>     
