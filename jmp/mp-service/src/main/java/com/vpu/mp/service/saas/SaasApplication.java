@@ -15,6 +15,7 @@ import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
 import com.vpu.mp.service.saas.privilege.RoleService;
 import com.vpu.mp.service.saas.privilege.SystemUserService;
+import com.vpu.mp.service.saas.question.QuestionService;
 import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
@@ -96,6 +97,10 @@ public class SaasApplication {
 
     @Autowired
     public ShopViewService shopViewService;
+
+
+    @Autowired
+    public QuestionService questionService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

@@ -71,6 +71,7 @@ import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.MemberCardOrderService;
 import com.vpu.mp.service.shop.overview.*;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.question.QuestionService;
 import com.vpu.mp.service.shop.recommend.RecommendService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.summary.portrait.PortraitService;
@@ -517,4 +518,8 @@ public class ShopApplication {
      */
     @Autowired
     public MessageRecordService msgRecordService;
+
+    @Autowired
+    public QuestionService questionService;
+
 }
