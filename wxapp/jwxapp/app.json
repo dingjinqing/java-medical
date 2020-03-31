@@ -71,6 +71,8 @@
         "distrirecord/distrirecord",
         "inviteduser/inviteduser",
         "promotioncenter/promotioncenter",
+        "brokeragerank/brokeragerank",
+        "distripromotion/distripromotion",
         "distributionorder/distributionorder",
         "shopcheckout/shopcheckout",
         "appointment/appointment",

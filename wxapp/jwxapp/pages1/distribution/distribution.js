@@ -282,8 +282,6 @@ function dis_request(that) {
         // is_block: that.data.is_block,
         // distributor_name: dis_info.fanli_cfg.distributor_name
       })
-      console.log(dis_info.distributorLevel)
-      console.log(dis_info.distributorGroup)
       // var marqueen_tex = [];
       // // img_save_url = that.data.imageUrl + dis_info.invite_image;
       // that.setData({
