@@ -903,7 +903,7 @@ public class MemberService extends ShopBaseService {
 		
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile)
-						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))))
+						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))).and(USER_IMPORT_DETAIL.USER_ACTION.eq(YES_DISTRIBUTOR)))
 				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
 	
