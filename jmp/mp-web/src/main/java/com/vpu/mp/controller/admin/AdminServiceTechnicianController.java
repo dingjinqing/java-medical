@@ -4,6 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.store.technician.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,12 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/list")
 	public JsonResult getList(@RequestBody @Valid ServiceTechnicianPageListParam param) {
-		PageResult<ServiceTechnicianPojo> list = shop().store.serviceTechnician.getPageList(param);
-		return success(list);
+        if(checkPurview()){
+            PageResult<ServiceTechnicianPojo> list = shop().store.serviceTechnician.getPageList(param);
+            return success(list);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 	/**
 	 * 根据ID查一条售后信息
@@ -36,12 +41,16 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@GetMapping("/services/technician/select/{id}")
 	public JsonResult select(@PathVariable Integer id) {
-		ServiceTechnicianPojo pojo = shop().store.serviceTechnician.select(id);
-		if(pojo == null) {
-			return fail(JsonResultCode.CODE_FAIL);
-		}else {
-			return success(pojo);
-		}
+        if(checkPurview()){
+            ServiceTechnicianPojo pojo = shop().store.serviceTechnician.select(id);
+            if(pojo == null) {
+                return fail(JsonResultCode.CODE_FAIL);
+            }else {
+                return success(pojo);
+            }
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 	/**
 	 * 添加售后
@@ -50,11 +59,15 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/add")
 	public JsonResult insert(@RequestBody @Valid ServiceTechnicianParam param) {
-		int result = shop().store.serviceTechnician.insert(param);
-		if(result == 0) {
-			return fail(JsonResultCode.CODE_FAIL);
-		}
-		return success(JsonResultCode.CODE_SUCCESS);
+        if(checkPurview()){
+            int result = shop().store.serviceTechnician.insert(param);
+            if(result == 0) {
+                return fail(JsonResultCode.CODE_FAIL);
+            }
+            return success(JsonResultCode.CODE_SUCCESS);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
 	/**
@@ -64,14 +77,18 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/update")
 	public JsonResult update(@RequestBody @Valid ServiceTechnicianParam param) {
-		if(param.getId()== null) {
-			return fail(JsonResultCode.STORE_STORE_ID_NULL,JsonResultMessage.STORE_STORE_ID_NULL);
-		}
-		int result = shop().store.serviceTechnician.update(param);
-		if(result == 0) {
-			return fail(JsonResultCode.CODE_FAIL);
-		}
-		return success(JsonResultCode.CODE_SUCCESS);
+        if(checkPurview()){
+            if(param.getId()== null) {
+                return fail(JsonResultCode.STORE_STORE_ID_NULL,JsonResultMessage.STORE_STORE_ID_NULL);
+            }
+            int result = shop().store.serviceTechnician.update(param);
+            if(result == 0) {
+                return fail(JsonResultCode.CODE_FAIL);
+            }
+            return success(JsonResultCode.CODE_SUCCESS);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
 	/**
@@ -81,11 +98,15 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/delete/{id}")
 	public JsonResult delete(@PathVariable @NotNull Integer id) {
-		int result = shop().store.serviceTechnician.delete(id);
-		if(result>0) {
-			return success(JsonResultCode.CODE_SUCCESS);
-		}
-		return fail(JsonResultCode.CODE_FAIL);
+        if(checkPurview()){
+            int result = shop().store.serviceTechnician.delete(id);
+            if(result>0) {
+                return success(JsonResultCode.CODE_SUCCESS);
+            }
+            return fail(JsonResultCode.CODE_FAIL);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
     /*
@@ -102,8 +123,12 @@ public class AdminServiceTechnicianController extends AdminBaseController {
 	 */
 	@PostMapping("/services/technician/group/list")
 	public JsonResult getTechnicianGroupList(@RequestBody @Valid TechnicianGroupPageListParam param) {
-		PageResult<ServiceTechnicianGroup> result = shop().store.serviceTechnician.groupService.getPageList(param);
-		return success(result);
+        if(checkPurview()){
+            PageResult<ServiceTechnicianGroup> result = shop().store.serviceTechnician.groupService.getPageList(param);
+            return success(result);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
     /**
@@ -111,34 +136,51 @@ public class AdminServiceTechnicianController extends AdminBaseController {
      */
     @GetMapping("/services/technician/group/all/{storeId}")
     public JsonResult getTechnicianGroupAllList(@PathVariable Integer storeId) {
-        return success(shop().store.serviceTechnician.groupService.getGroupAllList(storeId));
+        if(checkPurview()){
+            return success(shop().store.serviceTechnician.groupService.getGroupAllList(storeId));
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
     }
 
     @PostMapping("/services/technician/group/add")
 	public JsonResult addTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
-		int result = shop().store.serviceTechnician.groupService.insert(param);
-		if(result>0) {
-			return success(JsonResultCode.CODE_SUCCESS);
-		}
-		return fail(JsonResultCode.CODE_FAIL);
+        if(checkPurview()){
+            int result = shop().store.serviceTechnician.groupService.insert(param);
+            if(result>0) {
+                return success(JsonResultCode.CODE_SUCCESS);
+            }
+            return fail(JsonResultCode.CODE_FAIL);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
     @PostMapping("/services/technician/group/delete/{groupId}")
 	public JsonResult deleteTechnicianGroup(@PathVariable Integer  groupId) {
-        shop().store.serviceTechnician.groupService.delete(groupId);
-        return success();
+        if(checkPurview()){
+            shop().store.serviceTechnician.groupService.delete(groupId);
+            return success();
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
 	}
 
     @PostMapping("/services/technician/group/update")
 	public JsonResult updateTechnicianGroup(@RequestBody @Valid ServiceTechnicianGroupParam param) {
-		if(param.getGroupId() == null) {
-			return fail(JsonResultCode.CODE_FAIL);
-		}
-		int result = shop().store.serviceTechnician.groupService.update(param);
-		if(result>0) {
-			return success(JsonResultCode.CODE_SUCCESS);
-		}
-		return fail(JsonResultCode.CODE_FAIL);
+        if(checkPurview()){
+            if(param.getGroupId() == null) {
+                return fail(JsonResultCode.CODE_FAIL);
+            }
+            int result = shop().store.serviceTechnician.groupService.update(param);
+            if(result>0) {
+                return success(JsonResultCode.CODE_SUCCESS);
+            }
+            return fail(JsonResultCode.CODE_FAIL);
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
+
 	}
 
     /**
@@ -149,6 +191,22 @@ public class AdminServiceTechnicianController extends AdminBaseController {
      */
     @PostMapping("/services/technician/getTechByStoreService")
     public JsonResult getTechByStoreService(@RequestBody @Validated TechnicianParam param) {
-        return success(shop().store.serviceTechnician.getTechByStoreService(param));
+        if(checkPurview()){
+            return success(shop().store.serviceTechnician.getTechByStoreService(param));
+        }else{
+            return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+        }
+    }
+
+    /**
+     * 校验权限
+     * @return
+     */
+    private boolean checkPurview(){
+        String[] verifys = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_TECHNICIAN);
+        if(verifys[0].equals("true")){
+            return true;
+        }
+        return false;
     }
 }
