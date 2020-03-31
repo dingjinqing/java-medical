@@ -156,7 +156,8 @@ global.wxPage({
             is_brand: 1,
             all_brand: 1,
             is_reco: 0,
-            isSingleGoods: 0
+            isSingleGoods: 0,
+            show_rcommend_brand: 3
           })
         } else if (sort_content.menuContentType == 3) {
           // 推荐品牌
@@ -164,7 +165,8 @@ global.wxPage({
             is_brand: 1,
             all_brand: 0,
             is_reco: 0,
-            isSingleGoods: 0
+            isSingleGoods: 0,
+            show_rcommend_brand: 2
           })
         } else if (sort_content.menuContentType == 5) {
           // 推荐分类
