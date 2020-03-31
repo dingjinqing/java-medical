@@ -646,6 +646,17 @@ export default {
               flag = false
             }
             break
+          case 'm_hot_area':
+            console.log(item)
+            if (!item.data.bg_img_url) {
+              this.$message.error({
+                message: '请设置图片热区',
+                showClose: true
+              })
+              flag = false
+            }
+
+            break
         }
       })
       console.log(flag)
