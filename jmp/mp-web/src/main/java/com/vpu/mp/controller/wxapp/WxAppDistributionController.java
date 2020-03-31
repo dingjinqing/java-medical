@@ -1,10 +1,9 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
-import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
-import com.vpu.mp.service.pojo.shop.distribution.RebateCenterVo;
+import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,5 +90,18 @@ public class WxAppDistributionController extends WxAppBaseController{
         Integer userId = wxAppAuth.user().getUserId();
         RebateCenterVo rebateCenter = shop().mpDistribution.rebateCenter(userId);
         return this.success(rebateCenter);
+    }
+
+    /**
+     * 分销员邀请的下级用户列表
+     * @param param
+     * @return
+     */
+    @PostMapping("myInvite")
+    public JsonResult myInviteUser(DistributorInvitedListParam param){
+        Integer userId = wxAppAuth.user().getUserId();
+        param.setUserId(userId);
+        PageResult<DistributorInvitedListVo> inviteList = shop().mpDistribution.myInviteUser(param);
+        return this.success(inviteList);
     }
 }

@@ -186,7 +186,7 @@ public class DistributorListService extends ShopBaseService{
 	 * @return
 	 */
 	public SelectConditionStep<? extends Record> getInvitedListOptions(SelectJoinStep<? extends Record> select,DistributorInvitedListParam param) {
-		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
+		SelectConditionStep<? extends Record> sql = select.where(USER.INVITE_ID.eq(param.getUserId()).and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte)1)));
 		
 		if(param.getMobile() != null) {
 			sql = sql.and(USER.MOBILE.eq(param.getMobile()));
