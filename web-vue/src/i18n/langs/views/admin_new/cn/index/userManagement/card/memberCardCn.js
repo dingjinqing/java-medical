@@ -164,6 +164,7 @@ export const cn = {
   memberAd: '会员权益(折扣)',
   detailSend: '购物满100送100积分',
   codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
+  codeArrTwo: ['卡号+密码', '增加批次', '废除批次', '生成/导入记录'],
   scoreSaveSuccess: '积分配置成功',
   saveSuccess: '保存成功',
   noneBlockDiscArr: [

@@ -17,4 +17,8 @@ public class CardBatchVo {
 	private Integer id;
 	/** 批次名称 */
 	private String name;
+	/**
+	 * 是否是卡号+密码批次
+	 */
+	private Boolean pwdBatch;
 }
