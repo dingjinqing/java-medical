@@ -92,7 +92,11 @@ ALTER TABLE `b2c_package_sale` ADD  COLUMN `total_ratio` decimal(4,2) DEFAULT '0
 ALTER TABLE `b2c_order_info` ADD  COLUMN `is_lock` tinyint(1) DEFAULT '0' COMMENT '是否锁库存，0否，1是';
 ALTER TABLE `b2c_order_info` ADD  COLUMN `score_proportion` int(9) DEFAULT '100' COMMENT '积分比例';
 
+--2020-03-30 用户优惠券使用时间允许为null
+ALTER TABLE `b2c_customer_avail_coupons` MODIFY COLUMN `used_time` timestamp NULL DEFAULT '0000-00-00 00:00:00';
 
+--2020-03-30 退款订单生成时保存是否自动退款的快照
+ALTER TABLE `b2c_return_order` ADD COLUMN `is_auto_return` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0否；1是';
 /***********************2.9*********************END*/
 
 /***********************2.10*********************BEGIN*/
@@ -172,10 +176,95 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 
 /***********************2.10*********************END*/
 
+/***********************2.11*********************BEGIN*/
+-- 2020-03-26 砍价支持选择多商品
+ALTER TABLE `b2c_bargain` MODIFY COLUMN `goods_id` varchar(9999)  COMMENT '商品ID';
+ALTER TABLE `b2c_bargain` ADD COLUMN `first` int(9) NOT NULL DEFAULT 0 COMMENT '优先级';
+CREATE TABLE IF NOT EXISTS `b2c_bargain_goods` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `bargain_id` int(9) DEFAULT '0' COMMENT '砍价活动主键',
+  `goods_id` int(9) DEFAULT '0',
+  `expectation_price` decimal(10,2) DEFAULT '0.00' COMMENT '指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限',
+  `floor_price` decimal(10,2) DEFAULT '0.00' COMMENT '任意金额结算模式的结算金额底价',
+  `stock` int(9) DEFAULT '0' COMMENT '活动库存',
+  `sale_num` int(9) DEFAULT '0' COMMENT '销量',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+)COMMENT='砍价活动商品表';
 
+-- 2020-03-30 门店表添加支持同城配送字段
+ALTER TABLE `b2c_store` ADD COLUMN `city_service` tinyint(1) DEFAULT '0' COMMENT '支持同城配送 1:支持';
 
+-- 2020-03-30 新增b2c_article表
+CREATE TABLE IF NOT EXISTS `b2c_article` (
+  `article_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_id` int(11) NOT NULL DEFAULT '1' COMMENT '文章分类',
+  `title` varchar(256) DEFAULT NULL,
+  `author` varchar(50)  DEFAULT NULL,
+  `keyword` varchar(256) DEFAULT NULL COMMENT '标签',
+  `desc` varchar(1024)  DEFAULT NULL COMMENT '文章描述',
+  `content` text ,
+  `is_recommend` tinyint(1) DEFAULT '0' COMMENT '1:推荐',
+  `is_top` tinyint(1) DEFAULT '0' COMMENT '1:置顶',
+  `status` tinyint(1) DEFAULT '0' COMMENT '0未发布,1已发布',
+  `pub_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `last_visit_time` datetime DEFAULT NULL,
+  `pv` int(11) DEFAULT NULL,
+  `show_footer` tinyint(1) DEFAULT '0' COMMENT '0:不在footer显示，1：显示',
+  `part_type` tinyint(1) DEFAULT '0' COMMENT '文章所属类型：0普通，1门店公告类文章',
+  `cover_img` varchar(50) DEFAULT NULL COMMENT '封面图片路径',
+  `is_del` tinyint(1) DEFAULT '0' COMMENT '0未删除,1已删除',
+  PRIMARY KEY (`article_id`),
+  KEY `is_recommend` (`is_recommend`),
+  KEY `is_top` (`is_top`)
+);
 
+-- 2020年3月30日 kdc 预售改为多商品 增加优先级 和预告时间
+ALTER TABLE `b2c_presale` MODIFY COLUMN `goods_id` varchar(1000) NOT NULL DEFAULT 0 COMMENT '商品id 1,2,4' ;
+ALTER TABLE `b2c_presale` ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
+ALTER TABLE `b2c_presale` ADD COLUMN `first` int(8) NULL DEFAULT 1 COMMENT '优先级' ;
 
+CREATE TABLE IF NOT EXISTS `b2c_live_goods` (
+  `id`  int NOT NULL AUTO_INCREMENT,
+  `live_id`  int NOT NULL COMMENT '直播表关联ID',
+  `room_id`  int NOT NULL COMMENT '直播间ID',
+  `goods_id`  int NULL DEFAULT 0,
+  `cover_img`  varchar(255) NULL COMMENT '商品图',
+  `url`  varchar(255) NULL COMMENT '小程序路径',
+  `price`  decimal(10,2) NULL,
+  `name`  varchar(255) NULL COMMENT '商品名称',
+  `add_cart_num`  int NULL DEFAULT 0 COMMENT '加购数',
+  `price_end`  decimal(10,2) NULL DEFAULT 0 COMMENT '另一个价格',
+  `price_type`  tinyint(1) NULL DEFAULT 1 COMMENT '价格形式：1一口价 2价格区间 3显示折扣价',
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  INDEX `live_id` (`live_id`),
+  INDEX `room_id` (`room_id`),
+  INDEX `goods_id` (`goods_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `b2c_live_broadcast` (
+  `id`  int NOT NULL AUTO_INCREMENT ,
+  `room_id`  int NOT NULL COMMENT '直播间ID' ,
+  `name`  varchar(255) NOT NULL COMMENT '直播间名称' ,
+  `live_status`  smallint NULL DEFAULT 0 COMMENT '直播状态 101: 直播中, 102: 未开始, 103: 已结束, 104: 禁播, 105: 暂停中, 106: 异常, 107: 已过期' ,
+  `start_time`  datetime NULL COMMENT '计划开始时间' ,
+  `end_time`  datetime NULL COMMENT '计划结束时间' ,
+  `anchor_name`  varchar(100) NULL DEFAULT NULL COMMENT '主播名' ,
+  `cover_img`  varchar(255) NULL DEFAULT NULL COMMENT '封面图片 url' ,
+  `anchor_img`  varchar(255) NULL DEFAULT NULL COMMENT '直播间图片url' ,
+  `add_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP ,
+  `update_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+  `del_flag`  tinyint(1) NULL DEFAULT 0,
+  `del_time`  datetime NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `room_id` (`room_id`)
+);
+
+/*********************2.11*************************END*/
 
 
 

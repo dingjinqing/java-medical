@@ -103,8 +103,16 @@
         "formsuccess/formsuccess",
         "maingiftlist/maingiftlist",
         "goodscomment/goodscomment",
-        "usercardgoods/usercardgoods"
-      ]
+        "usercardgoods/usercardgoods",
+        "sharerebate/sharerebate",
+        "livetransition/livetransition"
+      ],
+      "plugins": {
+        "live-player-plugin": {
+            "version": "1.0.3",
+            "provider": "wx2b03c6e691cd7370"
+        }
+    }
     }
   ],
   "sitemapLocation": "sitemap.json"

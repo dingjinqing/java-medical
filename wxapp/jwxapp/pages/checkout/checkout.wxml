@@ -241,6 +241,18 @@
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
         </view>
       </view>
+
+      <view class="pay_content term" wx:if="{{orderInfo.term.serviceTerms === 1}}">
+        <view class="pay_list_item">
+          <text class="iconfont {{orderInfo.term.serviceChoose === 1 ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};" bindtap="changeTerm"></text>
+          <text class="pay_list_content" style="text-align: left;">同意{{orderInfo.term.serviceName}}</text>
+          <view class="pay_list_right" style="width:auto">
+            <text>查看详情</text>
+            <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
+          </view>     
+        </view>
+      </view>
+
       <view class='presale_tips' wx:if="{{preSaleInfo && preSaleInfo.preSaleType == 0}}">
         定金：￥{{preSaleInfo.preSalePrdInfo.depositPrice}}(可抵￥{{preSaleInfo.preSalePrdInfo.discountPrice}})；尾款：￥{{orderInfo.bkOrderMoney}}
       </view>

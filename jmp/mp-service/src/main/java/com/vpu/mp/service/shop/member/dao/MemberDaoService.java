@@ -446,7 +446,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getMobileCondition(String mobile) {
 		Condition condition = DSL.noCondition();
-		return isNotBlank(mobile)?condition.and(USER.MOBILE.eq(mobile)):condition;
+		if(isNotBlank(mobile)) {
+			condition = condition.and(USER.MOBILE.like(likeValue(mobile)));
+		}
+		return condition;
 	}
 	
 	/**
@@ -470,7 +473,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getSourceCondition(Integer source,Integer type,Integer channelId) {
 		Condition condition = DSL.noCondition();
 		
-		if(isNotNull(source)) {
+		if(isNotNull(source) && source != 0) {
 			if(source<0) {
 				// 微信来源
 				condition = condition.and(USER.SCENE.eq(source));
@@ -514,7 +517,7 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getUserCardCondition(Integer cardId) {
 		Condition condition = DSL.noCondition();
-		if(isNotNull(cardId)) {
+		if(isNotNull(cardId) && cardId != 0) {
 			condition = condition
 			.and(USER_CARD.CARD_ID.eq(cardId))
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));

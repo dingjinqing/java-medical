@@ -1,13 +1,14 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.google.common.collect.Lists;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchName;
-import com.vpu.mp.service.pojo.shop.goods.es.EsSearchParam;
-import com.vpu.mp.service.pojo.shop.goods.es.FieldProperty;
-import com.vpu.mp.service.pojo.shop.goods.es.Operator;
+import com.vpu.mp.service.pojo.shop.goods.es.*;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortDirectionEnum;
+import com.vpu.mp.service.pojo.wxapp.goods.search.SortItemEnum;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,19 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         if( !propertyList.isEmpty() ){
             searchParam.setSearchList(propertyList);
         }
+        List<Sort> sorts = Lists.newArrayList();
+        if( param.getSortItem() != null && param.getSortDirection() != null){
+            sorts.add(getSort(param.getSortItem(),param.getSortDirection()));
+        }
+        if( param.getShopSortItem() != null && param.getShopSortDirection() != null){
+
+            sorts.add(getSort(param.getShopSortItem(),param.getShopSortDirection()));
+        }
+        if( !CollectionUtils.isEmpty(sorts) ){
+            searchParam.setSorts(sorts);
+        }
         return searchParam;
     }
+
 
 }

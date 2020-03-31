@@ -18,6 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoreInfoVo {
-	List<StoreBasicVo> haveStore;
-	List<StoreBasicVo> allStore;
+	/** 自己有的*/
+	List<StoreInfo> haveStore;
+	/** 自己没有的*/
+	List<StoreInfo> lastStore;
+	/** 总的*/
+	List<StoreInfo> allStore;
 }

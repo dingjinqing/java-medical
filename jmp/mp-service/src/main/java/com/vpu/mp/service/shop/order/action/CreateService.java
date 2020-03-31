@@ -16,6 +16,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
@@ -571,8 +572,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             vo.getOrderGoods().forEach(x-> x.setDiscountedGoodsPrice(x.getGoodsScore() != null && x.getGoodsScore() > 0 ? BigDecimalUtil.subtrac(x.getDiscountedGoodsPrice(), BigDecimalUtil.divide(new BigDecimal(x.getGoodsScore()), new BigDecimal(vo.getScoreProportion()))) : x.getDiscountedGoodsPrice()));
         }
-        //服务条款
-        setServiceTerms(vo);
         // 积分使用规则
         setScorePayRule(vo);
         //支付方式
@@ -583,6 +582,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //订单必填信息处理
         vo.setMust(calculate.getOrderMust(vo.getOrderGoods()));
+        //服务条款
+        vo.setTerm(calculate.getTermsofservice());
     }
 
     private void processBeforeUniteActivity(OrderBeforeParam param, OrderBeforeVo vo) {
@@ -801,7 +802,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //当前微信支付金额
         BigDecimal currentMoneyPaid = goodsPricsAndShipping;
         //预售处理
-        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PresaleConstant.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
             vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
             if(BigDecimalUtil.compareTo(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()) > 0) {
                 vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));
@@ -1079,21 +1080,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //判断是否可以发货
             beforeVo.setCanShipping(NO);
         }
-    }
-
-    /**
-     * 设置服务条款
-     * @param vo vo
-     */
-    public void setServiceTerms(OrderBeforeVo vo){
-        Byte serviceTerms = tradeCfg.getServiceTerms();
-        vo.setIsShowserviceTerms(serviceTerms);
-        if(serviceTerms.intValue() == YES){
-            vo.setServiceName(tradeCfg.getServiceName());
-            vo.setServiceChoose(tradeCfg.getServiceChoose());
-        }
-
-
     }
 
     /**

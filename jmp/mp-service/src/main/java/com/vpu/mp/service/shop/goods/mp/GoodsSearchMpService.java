@@ -162,6 +162,7 @@ public class GoodsSearchMpService extends ShopBaseService {
             }
             try {
                 log.debug("小程序-es-搜索商品");
+                log.info("es搜索排序-" + param.getShopSortItem());
                 pageResult = esGoodsSearchMpService.queryGoodsByParam(param);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品-转换db获取数据:" + e.getMessage());
@@ -239,7 +240,7 @@ public class GoodsSearchMpService extends ShopBaseService {
     protected List<SortField<?>> buildSearchOrderFields(GoodsSearchMpParam param) {
         List<SortField<?>> list = new ArrayList<>(2);
 
-        if(param.getSortItem() != null){
+        if(param.getSortItem() != null && param.getSortItem() != SortItemEnum.NULL){
             //目前用户可以指定销量和价格两种排序方式
             if (SortItemEnum.SALE_NUM.equals(param.getSortItem())) {
                 if (SortDirectionEnum.DESC.equals(param.getSortDirection())) {
@@ -260,6 +261,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
             list.add(goodsMpService.getShopGoodsSort());
         }
+        log.info("db搜索排序-" + list);
 
         return list;
     }

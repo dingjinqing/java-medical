@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
 
-    private static final long serialVersionUID = -1134435482;
+    private static final long serialVersionUID = -1734129219;
 
     /**
      * The reference instance of <code>mini_main.b2c_mp_auth_shop</code>
@@ -280,6 +280,11 @@ public class MpAuthShop extends TableImpl<MpAuthShopRecord> {
      * The column <code>mini_main.b2c_mp_auth_shop.merchant_category_code</code>. MCC码，国际支付字段
      */
     public final TableField<MpAuthShopRecord, String> MERCHANT_CATEGORY_CODE = createField("merchant_category_code", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "MCC码，国际支付字段");
+
+    /**
+     * The column <code>mini_main.b2c_mp_auth_shop.live_pack_status</code>. 直播包状态 1：通过 2：打包审核中
+     */
+    public final TableField<MpAuthShopRecord, Byte> LIVE_PACK_STATUS = createField("live_pack_status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "直播包状态 1：通过 2：打包审核中");
 
     /**
      * Create a <code>mini_main.b2c_mp_auth_shop</code> table reference

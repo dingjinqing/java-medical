@@ -1,30 +1,7 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
-import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
-import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.Tables;
-import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
-import com.vpu.mp.db.shop.tables.records.BargainUserListRecord;
-import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -49,8 +26,25 @@ import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-
 import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 /**
  * 帮砍价用户
@@ -120,52 +114,6 @@ public class BargainUserService extends ShopBaseService{
     }
 
     /**
-     * userId是否能给recordId砍一刀
-     * @param userId
-     * @param bargainRecord
-     * @return 0正常 1该砍价已结束 2该用户已砍过 3已经砍到了底价
-     */
-	public byte canBargainCut(int userId,BargainRecordRecord bargainRecord,BargainRecord bargain){
-	    if(!bargainRecord.getStatus().equals(BargainRecordService.STATUS_IN_PROCESS)){
-	        return 1;
-        }
-
-        int userBargainNumber = getUserBargainNumber(userId,bargainRecord.getId());
-        if(userId == bargainRecord.getUserId()){
-            //给自己砍价，可以砍2次
-            if(userBargainNumber > 1){
-                return 2;
-            }
-        }else{
-            //别人帮忙砍价，只能砍一次
-            if(userBargainNumber > 0){
-                return 2;
-            }
-        }
-
-        if(bargain.getBargainType() == BargainService.BARGAIN_TYPE_RANDOM){
-            //砍到区间可以结算类型
-            BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getFloorPrice() : BigDecimal.ZERO);
-            if(remainMoney.compareTo(BigDecimal.ZERO) < 1){
-                //已经砍到了底价
-                return 3;
-            }
-        }else{
-            //固定砍价人数和底价类型
-            if(bargainRecord.getUserNumber() >= bargain.getExpectationNumber()){
-                return 1;
-            }
-            BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getExpectationPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getExpectationPrice() : BigDecimal.ZERO);
-            if(remainMoney.compareTo(BigDecimal.ZERO) < 1){
-                //已经砍到了底价
-                return 3;
-            }
-        }
-
-        return 0;
-    }
-
-    /**
      * userId给recordId砍一刀
      * @param userId
      * @param recordId
@@ -173,15 +121,16 @@ public class BargainUserService extends ShopBaseService{
      */
     public BigDecimal addUserBargain(int userId,int recordId){
         BargainRecordRecord bargainRecord = db().selectFrom(BARGAIN_RECORD).where(BARGAIN_RECORD.ID.eq(recordId)).fetchAny();
-        BargainRecord bargain = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(bargainRecord.getBargainId())).fetchAny();
+        BargainRecord bargain = saas.getShopApp(getShopId()).bargain.getBargainActById(bargainRecord.getBargainId());
+        BargainGoodsRecord bargainGoods = saas.getShopApp(getShopId()).bargain.getBargainGoods(bargainRecord.getBargainId(),bargainRecord.getGoodsId());
 
         BigDecimal bargainMoney;
         if(bargain.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM)){
             //区间内结算类型
-            bargainMoney = getAbnormalBargainMoney(bargain,bargainRecord,userId);
+            bargainMoney = getAbnormalBargainMoney(bargain,bargainGoods,bargainRecord,userId);
         }else{
             //固定人数类型
-            bargainMoney = getNormalBargainMoney(bargain,bargainRecord,userId);
+            bargainMoney = getNormalBargainMoney(bargain,bargainGoods,bargainRecord,userId);
         }
 
         //插入帮砍价记录
@@ -193,12 +142,12 @@ public class BargainUserService extends ShopBaseService{
         transaction(()->{
             insertRecord.insert();
 
-            boolean isSuccess = bargain.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ? (bargainRecord.getStatus().equals(BargainRecordService.STATUS_IN_PROCESS) && (bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney().add(bargainMoney)).compareTo(bargain.getExpectationPrice()) <= 0)) : (bargain.getExpectationNumber() == (bargainRecord.getUserNumber() + 1));
+            boolean isSuccess = bargain.getBargainType().equals(BargainService.BARGAIN_TYPE_RANDOM) ? (bargainRecord.getStatus().equals(BargainRecordService.STATUS_IN_PROCESS) && (bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney().add(bargainMoney)).compareTo(bargainGoods.getExpectationPrice()) <= 0)) : (bargain.getExpectationNumber() == (bargainRecord.getUserNumber() + 1));
 
             if(isSuccess){
                 //砍价成功了
                 //库存更新
-                saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),1);
+                saas.getShopApp(getShopId()).bargain.updateBargainStock(bargain.getId(),bargainRecord.getGoodsId(),1);
                 atomicOperation.updateStockAndSalesByLock(bargainRecord.getGoodsId(),bargainRecord.getPrdId(),1,false);
 
                 //砍价record的状态更新
@@ -207,7 +156,7 @@ public class BargainUserService extends ShopBaseService{
                 //推送砍价成功消息
                 String goodsName = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargainRecord.getGoodsId()).getGoodsName();
                 bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName);
-                bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargain.getExpectationPrice(),goodsName,bargainRecord.getId());
+                bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargainGoods.getExpectationPrice(),goodsName,bargainRecord.getId());
             }else {
                 //砍价record的状态更新
                 db().update(BARGAIN_RECORD).set(BARGAIN_RECORD.BARGAIN_MONEY,BARGAIN_RECORD.BARGAIN_MONEY.add(bargainMoney)).set(BARGAIN_RECORD.USER_NUMBER,BARGAIN_RECORD.USER_NUMBER.add(1)).where(BARGAIN_RECORD.ID.eq(recordId)).execute();
@@ -243,10 +192,10 @@ public class BargainUserService extends ShopBaseService{
 //     * @param userBargainNumber
      * @return
      */
-    private BigDecimal getAbnormalBargainMoney(BargainRecord bargain,BargainRecordRecord bargainRecord,int userId){
+    private BigDecimal getAbnormalBargainMoney(BargainRecord bargain,BargainGoodsRecord bargainGoods,BargainRecordRecord bargainRecord,int userId){
         BigDecimal bargainMoney;
         BargainUserListRecord firstBargain;
-        BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getFloorPrice() : BigDecimal.ZERO);
+        BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargainGoods.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? bargainGoods.getFloorPrice() : BigDecimal.ZERO);
         if(bargainRecord.getUserId() == userId && (firstBargain = getFirstUserBargain(userId,bargainRecord.getId())) != null){
             //给自己砍的第二次，与第一次相同金额(翻倍)，或者剩下的全砍掉
             bargainMoney = firstBargain.getBargainMoney();
@@ -279,7 +228,7 @@ public class BargainUserService extends ShopBaseService{
      * @param bargain
      * @return
      */
-    private BigDecimal getRandomBargainMoney(BargainRecord bargain,BargainRecordRecord bargainRecord){
+    private BigDecimal getRandomBargainMoney(BargainRecord bargain,BargainGoodsRecord bargainGoods,BargainRecordRecord bargainRecord){
         BigDecimal randomBargainMoney;
         double randomMultiple;
         if(bargainRecord.getUserNumber() == 0){
@@ -299,7 +248,7 @@ public class BargainUserService extends ShopBaseService{
         randomMultiple /= 100;
 
         int currentUserNumber = bargainRecord.getUserNumber() + 1;
-        BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getExpectationPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getExpectationPrice() : BigDecimal.ZERO);
+        BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargainGoods.getExpectationPrice().compareTo(BigDecimal.ZERO) > 0 ? bargainGoods.getExpectationPrice() : BigDecimal.ZERO);
         if(currentUserNumber < bargain.getExpectationNumber()){
             //不是最后一个
             double userRatio = ((bargain.getExpectationNumber() - currentUserNumber)/(bargain.getExpectationNumber()/2.0) + 2)/4.0;
@@ -329,12 +278,12 @@ public class BargainUserService extends ShopBaseService{
      * @param userId
      * @return
      */
-    private BigDecimal getNormalBargainMoney(BargainRecord bargain,BargainRecordRecord bargainRecord,int userId){
+    private BigDecimal getNormalBargainMoney(BargainRecord bargain,BargainGoodsRecord bargainGoods,BargainRecordRecord bargainRecord,int userId){
         BigDecimal bargainMoney;
         BargainUserListRecord firstBargain;
         if(bargainRecord.getUserId() == userId && (firstBargain = getFirstUserBargain(userId,bargainRecord.getId())) != null){
             //给自己砍的第二次，与第一次相同金额(翻倍)，或者剩下的全砍掉
-            BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getExpectationPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getExpectationPrice() : BigDecimal.ZERO);
+            BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargainGoods.getExpectationPrice().compareTo(BigDecimal.ZERO) > 0 ? bargainGoods.getExpectationPrice() : BigDecimal.ZERO);
             if(remainMoney.compareTo(firstBargain.getBargainMoney()) > 0){
                 if(bargainRecord.getUserNumber() + 1 == bargain.getExpectationNumber()){
                     //最后一刀
@@ -343,10 +292,10 @@ public class BargainUserService extends ShopBaseService{
                     bargainMoney = firstBargain.getBargainMoney();
                 }
             }else{
-                bargainMoney = getRandomBargainMoney(bargain,bargainRecord);
+                bargainMoney = getRandomBargainMoney(bargain,bargainGoods,bargainRecord);
             }
         }else{
-            bargainMoney = getRandomBargainMoney(bargain,bargainRecord);
+            bargainMoney = getRandomBargainMoney(bargain,bargainGoods,bargainRecord);
         }
         return bargainMoney;
     }

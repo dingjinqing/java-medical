@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -205,7 +206,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             for (ProductVo productVo : activityInfo.getProducts()) {
                 if(productVo.getProductId().equals(orderGoodsBo.getProductId())) {
                     totalPreSaleMoney = BigDecimalUtil.add(totalPreSaleMoney , BigDecimalUtil.multiply( new BigDecimal(productVo.getPresaleMoney().toString()), new BigDecimal(orderGoodsBo.getGoodsNumber())));
-                    if (PreSaleService.PRE_SALE_ONE_PHASE.equals(activityInfo.getPrePayStep()) || param.getDate().before(activityInfo.getPreEndTime())) {
+                    if (PresaleConstant.PRE_SALE_ONE_PHASE.equals(activityInfo.getPrePayStep()) || param.getDate().before(activityInfo.getPreEndTime())) {
                         //定金一期 || 定金二期第一期
                         discount = BigDecimalUtil.subtrac(
                             new BigDecimal(productVo.getPreDiscountMoney1().toString()), new BigDecimal(productVo.getPresaleMoney().toString()))
@@ -228,7 +229,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         result.setIdentity(activityInfo.getId().toString());
         result.setBos(bos);
         result.initRatio();
-        vo.setBkShippingTime(PreSaleService.DELIVER_TYPE_TIME.equals(activityInfo.getDeliverType()) ? activityInfo.getDeliverTime() : Timestamp.from(Instant.now().plusSeconds(Duration.ofDays(activityInfo.getDeliverDays()).getSeconds())));
+        vo.setBkShippingTime(PresaleConstant.DELIVER_TYPE_TIME.equals(activityInfo.getDeliverType()) ? activityInfo.getDeliverTime() : Timestamp.from(Instant.now().plusSeconds(Duration.ofDays(activityInfo.getDeliverDays()).getSeconds())));
         vo.setBkReturnType(activityInfo.getReturnType());
         log.info("预售处理金额end");
         return result;

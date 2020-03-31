@@ -166,6 +166,7 @@
                     v-model="param.rules.tagId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeTag"
                   >
                     <el-option
                       v-for="item in tagsList"
@@ -186,6 +187,7 @@
                     v-model="param.rules.cardId"
                     multiple
                     :disabled="ongoing"
+                    @remove-tag="removeCard"
                   >
                     <el-option
                       v-for="item in cardList"
@@ -349,22 +351,37 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop="initNumber"
-                :label="$t('gift.productNumber')"
+                label="赠品库存"
                 align="center"
+                v-if="update === false"
               >
                 <template slot-scope="scope">
-                  <div style="display:flex;justify-content: center">
-                    <span style="display: flex;line-height: 45px;vertical-align: middle;">{{scope.row.prdNumber}} /&nbsp;</span>
-                    <giftEdit
-                      v-model="scope.row.initNumber"
-                      v-if="refreshFlag"
-                      :prdNumber="scope.row.prdNumber"
-                      @update="checkNumber"
-                    />
-                  </div>
+                  <el-input
+                    size="small"
+                    v-model="scope.row.productNumber"
+                    @blue="productNumberCheck(scope.row.prdNumber, scope.row.productNumber)"
+                  ></el-input>
                 </template>
-
+              </el-table-column>
+              <el-table-column
+                prop="offerNumber"
+                label="已赠库存"
+                align="center"
+                v-if="update === true"
+              ></el-table-column>
+              <el-table-column
+                prop="productNumber"
+                label="剩余赠品库存"
+                align="center"
+                v-if="update === true"
+              >
+                <template slot-scope="scope">
+                  <el-input
+                    size="small"
+                    v-model="scope.row.productNumber"
+                    @blue="productNumberCheck(scope.row.prdNumber, scope.row.productNumber)"
+                  ></el-input>
+                </template>
               </el-table-column>
               <el-table-column
                 :label="$t('gift.option')"
@@ -436,7 +453,7 @@
 <script>
 import { mapActions } from 'vuex'
 // import inputEdit from '@/components/admin/inputEdit'
-import giftEdit from './giftEdit'
+// import giftEdit from './giftEdit'
 import wrapper from '@/components/admin/wrapper/wrapper'
 import choosingGoods from '@/components/admin/choosingGoods'
 import status from '@/components/admin/marketManage/status/status'
@@ -447,7 +464,7 @@ import { addGift, getGiftDetail, updateGift, getMemberCardList, getTagList, getP
 export default {
   components: {
     wrapper,
-    giftEdit,
+    // giftEdit,
     // inputEdit,
     choosingGoods
   },
@@ -496,7 +513,7 @@ export default {
     }
     // 会员标签
     var validattagId = (rule, value, callback) => {
-      if (!value && this.contains(2)) {
+      if ((!value || value.length === 0) && this.contains(2)) {
         callback(new Error('请选择会员标签'))
       } else {
         callback()
@@ -504,7 +521,7 @@ export default {
     }
     // 会员卡
     var validatcardId = (rule, value, callback) => {
-      if (!value && this.contains(3)) {
+      if ((!value || value.length === 0) && this.contains(3)) {
         callback(new Error('请选择会员卡'))
       } else {
         callback()
@@ -525,7 +542,7 @@ export default {
       var re = /^(0|\+?[1-9][0-9]*)$/
       if ((!re.test(value) || !re.test(maxPayNum)) && this.contains(5)) {
         callback(new Error('请填写0或者正整数'))
-      } else if (value > maxPayNum) {
+      } else if (Number(value) > Number(maxPayNum)) {
         callback(new Error('最小购买次数不能大于最大购买次数'))
       } else {
         callback()
@@ -588,20 +605,20 @@ export default {
       },
       // 校验
       paramRules: {
-        name: [{ required: true, message: '请填写活动名称', trigger: 'blur' }],
-        level: [{ required: true, validator: validatelevel, trigger: 'blur' }],
+        name: [{ required: true, message: '请填写活动名称', trigger: 'change' }],
+        level: [{ required: true, validator: validatelevel, trigger: 'change' }],
         dateRange: [{ required: true, message: '请填写活动时间', trigger: 'change' }],
         goodsRange: [{ required: true, validator: validategoodsRange, trigger: 'change' }],
         selectedRules: [{ required: true, validator: validateselectedRules, trigger: 'change', type: 'array' }],
-        'rules.fullPrice': [{ validator: validatMoney, trigger: 'blur' }],
-        'rules.fullNumber': [{ validator: validatNum, trigger: 'blur' }],
+        'rules.fullPrice': [{ validator: validatMoney, trigger: 'change' }],
+        'rules.fullNumber': [{ validator: validatNum, trigger: 'change' }],
         'rules.tagId': [{ validator: validattagId, trigger: 'change' }],
         'rules.cardId': [{ validator: validatcardId, trigger: 'change' }],
-        'rules.payTop': [{ validator: validatInt, trigger: 'blur' }],
-        'rules.minPayNum': [{ validator: validatMin, trigger: 'blur' }],
+        'rules.payTop': [{ validator: validatInt, trigger: 'change' }],
+        'rules.minPayNum': [{ validator: validatMin, trigger: 'change' }],
         payDateRange: [{ validator: validatPayDateRange, trigger: 'blur' }], // 付款时间
         'rules.userAction': [{ validator: validatUserAction, trigger: 'change' }],
-        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'blur' }]
+        explain: [{ required: true, message: '请填写赠品规则说明', trigger: 'change' }]
       },
       userAction: this.$t('gift.userAction'),
       // 系统中的全部赠品规则
@@ -625,7 +642,7 @@ export default {
       specsIds: [], // 规格id
       specsList: [], // 规格数据
 
-      refreshFlag: true
+      giftsList: [] // 编辑初始化赠品信息
     }
   },
   computed: {
@@ -686,22 +703,43 @@ export default {
     },
     // 保存
     addGift () {
+      // 校验
       if (this.tableData.length < 1) {
         this.$message.warning('请选择赠品')
         return false
       }
+      var result = this.tableData.map(item => {
+        var re = /^(0|\+?[1-9][0-9]*)$/
+        if (!item.productNumber) {
+          this.$message.warning({ message: '请填写赠品库存' })
+          return false
+        } else if (!re.test(item.productNumber)) {
+          this.$message.warning({ message: '赠品库存只能是0或者正整数' })
+          return false
+        } else if (item.productNumber > Number(item.prdNumber)) {
+          this.$message.warning('赠品当前库存不能大于商品库存')
+          return false
+        } else {
+          return true
+        }
+      })
+      if (result.indexOf(false) !== -1) {
+        return false
+      }
+
       // 赠品数据
       this.param.gifts = []
       this.tableData.forEach(item => {
         this.param.gifts.push({
           productId: item.prdId || item.productId,
-          productNumber: item.initNumber
+          productNumber: item.productNumber
         })
       })
+      console.log(this.param)
       if (this.update) {
+        // 编辑保存
         var obj = this.param
         obj.id = this.id
-        // 编辑保存
         updateGift(obj).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('gift.editSuccess') })
@@ -764,18 +802,33 @@ export default {
           this.param.rules = data.rules
           this.param.explain = data.explain
           this.param.goodsIds = data.goodsIds
-          // 过滤失效会员卡
-          var arr = []
-          if (this.param.rules.cardId) {
-            this.cardList.forEach(item => {
-              this.param.rules.cardId.forEach(val => {
+          // 过滤失效会员标签
+          var arrTag = []
+          if (this.tagsList.length > 0 && this.param.rules.tagId) {
+            this.tagsList.forEach(item => {
+              this.param.rules.tagId.forEach(val => {
                 if (item.id === val) {
-                  arr.push(val)
+                  arrTag.push(val)
                 }
               })
             })
-            this.param.rules.cardId = arr
+            this.param.rules.tagId = arrTag
           }
+          // 过滤失效会员卡
+          var arrCard = []
+          if (this.cardList.length > 0 && this.param.rules.cardId) {
+            this.cardList.forEach(item => {
+              this.param.rules.cardId.forEach(val => {
+                if (item.id === val) {
+                  arrCard.push(val)
+                }
+              })
+            })
+            this.param.rules.cardId = arrCard
+          }
+
+          // 保存赠品信息
+          this.giftsList = res.content.gifts
 
           this.loadRules(res.content)
           this.loadGoods(res.content)
@@ -821,7 +874,6 @@ export default {
     loadGifts (gifts) {
       this.tableData = gifts
       this.tableData.forEach(item => {
-        item.initNumber = item.productNumber
         item.goodsImg = this.$imageHost + '/' + item.goodsImg
         this.specsIds.push(item.productId)
       })
@@ -866,33 +918,37 @@ export default {
       this.param.goodsIds = data
     },
 
-    // 选择规格弹窗回调显示
+    // 选择规格弹窗id回调显示
     getSpecsIds (ids) {
       console.log('getSpecsIds', ids)
       this.specsIds = ids
     },
 
-    // 规格弹窗数据
+    // 规格弹窗数据回调
     getSpecsData (data) {
       console.log('getSpecsData', data)
       // this.specsData = data
-      data.forEach(item => {
-        item.initNumber = Number(item.prdNumber)
-      })
-      this.tableData = data
-      // 重新加载子组件
-      this.refreshFlag = false
-      this.$nextTick(() => {
-        this.refreshFlag = true
-      })
-    },
 
-    // 修改赠品库存回调
-    checkNumber (data) {
-      this.refreshFlag = false
-      this.$nextTick(() => {
-        this.refreshFlag = true
-      })
+      if (this.update === false) {
+        // 添加状态
+        data.forEach(item => {
+          this.$set(item, 'productNumber', item.prdNumber)
+        })
+      } else {
+        // 编辑状态
+        data.forEach(item => {
+          this.$set(item, 'productNumber', item.prdNumber)
+          this.$set(item, 'offerNumber', 0)
+          this.giftsList.forEach(val => {
+            if (item.prdId === val.productId) {
+              this.$set(item, 'productNumber', val.productNumber)
+              this.$set(item, 'offerNumber', val.offerNumber)
+            }
+          })
+        })
+      }
+      this.tableData = data
+      console.log(this.tableData)
     },
 
     // 规格表格删除
@@ -907,7 +963,7 @@ export default {
     // 添加一行赠品商品
     addProductRow (productId) {
       getProductDetail(this.id, productId).then(({ content }) => {
-        const { goodsImg, prdImg, offerNumber } = content
+        const { goodsImg, prdImg } = content
         const row = {
           ...content,
           goodsImg: prdImg || goodsImg
@@ -917,8 +973,8 @@ export default {
           this.tableData.splice(index, 1)
         }
         this.tableData.push({
-          ...row,
-          productNumber: row.prdNumber + offerNumber
+          ...row
+          // productNumber: row.prdNumber + offerNumber
         })
       })
     },
@@ -958,6 +1014,32 @@ export default {
             break
         }
       })
+    },
+
+    // 会员卡移除校验
+    removeCard () {
+      this.$refs['param'].validateField('rules.cardId')
+    },
+    // 会员标签移除校验
+    removeTag () {
+      this.$refs['param'].validateField('rules.tagId')
+    },
+
+    // 校验输入库存
+    productNumberCheck (value1, value2) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value2) {
+        this.$message.warning({ message: '请填写赠品库存' })
+        return false
+      }
+      if (!re.test(value2)) {
+        this.$message.warning({ message: '赠品库存只能是0或者正整数' })
+        return false
+      }
+      if (value2 > Number(value1)) {
+        this.$message.warning('赠品当前库存不能大于商品库存')
+        return false
+      }
     }
   },
   watch: {
@@ -989,6 +1071,11 @@ export default {
 .input {
   margin-right: 10px;
   width: 70px;
+}
+.numberStyle {
+  display: flex;
+  line-height: 45px;
+  vertical-align: middle;
 }
 .footer {
   position: absolute;

@@ -291,7 +291,7 @@
               <el-table-column :label="$t('firstSpecialAdd.priceReduction')">
                 <template slot-scope="{row}">
                   <el-input
-                    style="width:60px;"
+                    style="width:80px;"
                     size="small"
                     v-model="row.batchReduce"
                     @change="tableBatchReduceChange(row)"
@@ -738,10 +738,10 @@ export default {
         } else if (this.discountType === '1') {
           item.batchReduce = this.form.batchReduce
           item.batchFinalPrice = Number(price - item.batchReduce).toFixed(2)
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
         } else if (this.discountType === '2') {
           item.batchFinalPrice = this.form.batchFinalPrice
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
           item.batchReduce = price - item.batchFinalPrice
         }
         // 验证计算值安全性

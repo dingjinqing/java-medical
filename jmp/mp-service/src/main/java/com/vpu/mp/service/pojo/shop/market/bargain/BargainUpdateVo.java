@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.shop.market.bargain;
 
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -20,13 +19,10 @@ public class BargainUpdateVo {
     private Timestamp startTime;
     private Timestamp  endTime;
     private Integer    expectationNumber;
-    private BigDecimal expectationPrice;
     private Double     bargainMin;
     private Double     bargainMax;
-    private Integer    stock;
 
     private Byte       bargainType;
-    private BigDecimal floorPrice;
     private Byte       bargainMoneyType;
     private BigDecimal bargainFixedMoney;
     private BigDecimal bargainMinMoney;
@@ -35,8 +31,10 @@ public class BargainUpdateVo {
     private Byte needBindMobile;
     private Integer initialSales;
 
-    private Integer    goodsId;
-    private GoodsView goods;
+    /**
+     * 砍价商品
+     */
+    private List<BargainGoodsUpdateVo> bargainGoods;
 
     private String     mrkingVoucherId;
     private List<CouponView> mrkingVoucherList;

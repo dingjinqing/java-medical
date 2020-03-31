@@ -1063,4 +1063,12 @@ public class Tables {
      */
     public static final UserRemark USER_REMARK = com.vpu.mp.db.shop.tables.UserRemark.USER_REMARK;
 
+    /**
+     * The table <code>mini_shop_471752.b2c_bargain_goods</code>.
+     */
+    public static final BargainGoods BARGAIN_GOODS = com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
+    /**
+     * The table <code>mini_shop_471752.b2c_article</code>.
+     */
+    public static final Article ARTICLE = com.vpu.mp.db.shop.tables.Article.ARTICLE;
 }

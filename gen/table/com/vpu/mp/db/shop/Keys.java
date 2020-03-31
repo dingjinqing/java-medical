@@ -4,8 +4,8 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.GroupBuyDefine;
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
+import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 
 import javax.annotation.Generated;
 
@@ -16,7 +16,7 @@ import org.jooq.impl.Internal;
 
 /**
  * A class modelling foreign key relationships and constraints of tables of 
- * the <code>mini_shop_4748160</code> schema.
+ * the <code>mini_shop_471752</code> schema.
  */
 @Generated(
     value = {
@@ -32,13 +32,13 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Identities0.IDENTITY_GROUP_BUY_DEFINE;
+    public static final Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Identities0.IDENTITY_PRESALE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = UniqueKeys0.KEY_B2C_GROUP_BUY_DEFINE_PRIMARY;
+    public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = UniqueKeys0.KEY_B2C_PRESALE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -50,10 +50,10 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
-        public static Identity<GroupBuyDefineRecord, Integer> IDENTITY_GROUP_BUY_DEFINE = Internal.createIdentity(GroupBuyDefine.GROUP_BUY_DEFINE, GroupBuyDefine.GROUP_BUY_DEFINE.ID);
+        public static Identity<PresaleRecord, Integer> IDENTITY_PRESALE = Internal.createIdentity(Presale.PRESALE, Presale.PRESALE.ID);
     }
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<GroupBuyDefineRecord> KEY_B2C_GROUP_BUY_DEFINE_PRIMARY = Internal.createUniqueKey(GroupBuyDefine.GROUP_BUY_DEFINE, "KEY_b2c_group_buy_define_PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE.ID);
+        public static final UniqueKey<PresaleRecord> KEY_B2C_PRESALE_PRIMARY = Internal.createUniqueKey(Presale.PRESALE, "KEY_b2c_presale_PRIMARY", Presale.PRESALE.ID);
     }
 }

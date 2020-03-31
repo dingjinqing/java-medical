@@ -4,7 +4,7 @@
 package com.vpu.mp.db.shop;
 
 
-import com.vpu.mp.db.shop.tables.GroupBuyDefine;
+import com.vpu.mp.db.shop.tables.Presale;
 
 import javax.annotation.Generated;
 
@@ -14,7 +14,7 @@ import org.jooq.impl.Internal;
 
 
 /**
- * A class modelling indexes of tables of the <code>mini_shop_4748160</code> 
+ * A class modelling indexes of tables of the <code>mini_shop_471752</code> 
  * schema.
  */
 @Generated(
@@ -31,13 +31,13 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index GROUP_BUY_DEFINE_PRIMARY = Indexes0.GROUP_BUY_DEFINE_PRIMARY;
+    public static final Index PRESALE_PRIMARY = Indexes0.PRESALE_PRIMARY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index GROUP_BUY_DEFINE_PRIMARY = Internal.createIndex("PRIMARY", GroupBuyDefine.GROUP_BUY_DEFINE, new OrderField[] { GroupBuyDefine.GROUP_BUY_DEFINE.ID }, true);
+        public static Index PRESALE_PRIMARY = Internal.createIndex("PRIMARY", Presale.PRESALE, new OrderField[] { Presale.PRESALE.ID }, true);
     }
 }

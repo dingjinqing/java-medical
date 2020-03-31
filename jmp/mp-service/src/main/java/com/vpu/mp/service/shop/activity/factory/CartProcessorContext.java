@@ -97,14 +97,14 @@ public class CartProcessorContext {
         executeStrategy(preSale,cartBo);
         //限时降价
         executeStrategy(reducePrice,cartBo);
-        //满折满减
-        executeStrategy(fullReduction,cartBo);
-        //加价购
-        executeStrategy(purchasePrice,cartBo);
         //会员专享
         executeStrategy(exclusive,cartBo);
         //等级价格
         executeStrategy(gradeCard,cartBo);
+        //满折满减
+        executeStrategy(fullReduction,cartBo);
+        //加价购
+        executeStrategy(purchasePrice,cartBo);
         //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }

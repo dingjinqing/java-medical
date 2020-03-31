@@ -488,6 +488,16 @@ public class Indexes {
     public static final Index USER_CARD_PRIMARY = Indexes0.USER_CARD_PRIMARY;
     public static final Index USER_REMARK_PRIMARY = Indexes0.USER_REMARK_PRIMARY;
     public static final Index USER_REMARK_USER_ID = Indexes0.USER_REMARK_USER_ID;
+    public static final Index BARGAIN_GOODS_PRIMARY = Indexes0.BARGAIN_GOODS_PRIMARY;
+    public static final Index ARTICLE_IS_RECOMMEND = Indexes0.ARTICLE_IS_RECOMMEND;
+    public static final Index ARTICLE_IS_TOP = Indexes0.ARTICLE_IS_TOP;
+    public static final Index ARTICLE_PRIMARY = Indexes0.ARTICLE_PRIMARY;
+    public static final Index LIVE_GOODS_GOODS_ID = Indexes0.LIVE_GOODS_GOODS_ID;
+    public static final Index LIVE_GOODS_LIVE_ID = Indexes0.LIVE_GOODS_LIVE_ID;
+    public static final Index LIVE_GOODS_PRIMARY = Indexes0.LIVE_GOODS_PRIMARY;
+    public static final Index LIVE_GOODS_ROOM_ID = Indexes0.LIVE_GOODS_ROOM_ID;
+    public static final Index LIVE_BROADCAST_PRIMARY = Indexes0.LIVE_BROADCAST_PRIMARY;
+    public static final Index LIVE_BROADCAST_ROOM_ID = Indexes0.LIVE_BROADCAST_ROOM_ID;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -953,5 +963,15 @@ public class Indexes {
         public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
         public static Index USER_REMARK_PRIMARY = Internal.createIndex("PRIMARY", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.ID }, true);
         public static Index USER_REMARK_USER_ID = Internal.createIndex("user_id", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.USER_ID }, false);
+        public static Index BARGAIN_GOODS_PRIMARY = Internal.createIndex("PRIMARY", BargainGoods.BARGAIN_GOODS, new OrderField[] { BargainGoods.BARGAIN_GOODS.ID }, true);
+        public static Index ARTICLE_IS_RECOMMEND = Internal.createIndex("is_recommend", Article.ARTICLE, new OrderField[] { Article.ARTICLE.IS_RECOMMEND }, false);
+        public static Index ARTICLE_IS_TOP = Internal.createIndex("is_top", Article.ARTICLE, new OrderField[] { Article.ARTICLE.IS_TOP }, false);
+        public static Index ARTICLE_PRIMARY = Internal.createIndex("PRIMARY", Article.ARTICLE, new OrderField[] { Article.ARTICLE.ARTICLE_ID }, true);
+        public static Index LIVE_GOODS_GOODS_ID = Internal.createIndex("goods_id", LiveGoods.LIVE_GOODS, new OrderField[] { LiveGoods.LIVE_GOODS.GOODS_ID }, false);
+        public static Index LIVE_GOODS_LIVE_ID = Internal.createIndex("live_id", LiveGoods.LIVE_GOODS, new OrderField[] { LiveGoods.LIVE_GOODS.LIVE_ID }, false);
+        public static Index LIVE_GOODS_PRIMARY = Internal.createIndex("PRIMARY", LiveGoods.LIVE_GOODS, new OrderField[] { LiveGoods.LIVE_GOODS.ID }, true);
+        public static Index LIVE_GOODS_ROOM_ID = Internal.createIndex("room_id", LiveGoods.LIVE_GOODS, new OrderField[] { LiveGoods.LIVE_GOODS.ROOM_ID }, false);
+        public static Index LIVE_BROADCAST_PRIMARY = Internal.createIndex("PRIMARY", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ID }, true);
+        public static Index LIVE_BROADCAST_ROOM_ID = Internal.createIndex("room_id", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ROOM_ID }, true);
     }
 }

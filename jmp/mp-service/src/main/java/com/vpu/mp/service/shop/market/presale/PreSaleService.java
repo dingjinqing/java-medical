@@ -1,10 +1,7 @@
 package com.vpu.mp.service.shop.market.presale;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.Presale;
-import com.vpu.mp.db.shop.tables.PresaleProduct;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -42,8 +39,8 @@ import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
-import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_POSTPONE;
-import static com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam.DELIVER_SPECIFIC;
+import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
+import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
 import static java.lang.String.format;
 import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -62,29 +59,7 @@ public class PreSaleService extends ShopBaseService {
     @Autowired
     private QrCodeService qrCode;
 
-    /**全款付*/
-    public static final Byte PRE_SALE_TYPE_ALL_MONEY = 1;
-    /**定金付*/
-    public static final Byte PRE_SALE_TYPE_SPLIT = 0;
-    /**只有一个阶段*/
-    public static final Byte PRE_SALE_ONE_PHASE = 1;
-    /**有两个阶段*/
-    public static final Byte PRE_SALE_TWO_PHASE = 2;
-    /**使用优惠券、会员卡折扣叠加*/
-    public static final Byte PRE_SALE_USE_COUPON = 1;
-    /**自定退订金*/
-    public static final Byte PRE_SALE_RETURN_DEPOSIT= 1;
-    /**展示预售数量*/
-    public static final Integer PRE_SALE_SHOW_SALE_NUM= 1;
-    /**可以原价购买*/
-    public static final Byte PRE_SALE_ORIGINAL_BUY= 1;
 
-    /**发货时间类型：0 指定日期*/
-    public static final Byte DELIVER_TYPE_TIME = 0;
-    /**发货时间类型：1 指定下单后的天数*/
-    public static final Byte DELIVER_TYPE_DAYS = 1;
-    /**定金期数2*/
-    public static final Byte PRESALE_MONEY_INTERVAL = 2;
 
 
 
@@ -93,7 +68,7 @@ public class PreSaleService extends ShopBaseService {
     private static final OrderInfo ORDER = ORDER_INFO;
     private static final OrderGoods ORDER_GOODS = OrderGoods.ORDER_GOODS;
 
-    private static final byte NOT_DELETED = 0;
+
 
     /** 已购商品数量 **/
     private static final String BOUGHT_QUANTITY = "boughtGoodsQuantity";
@@ -115,69 +90,25 @@ public class PreSaleService extends ShopBaseService {
         SelectConditionStep<? extends Record> query =
             db().select(TABLE.ID,TABLE.PRESALE_TYPE, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,TABLE.PRE_PAY_STEP,
                 TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2"),
+                //订单数
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),
-                DSL.count(ORDER.ORDER_ID)
-                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)).as(BARGAIN_PAID_QUANTITY),
-                DSL.count(ORDER.ORDER_ID)
-                    .filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)
-                        .and(ORDER.BK_ORDER_PAID.gt((byte) 0))).as(TAIL_PAID_QUANTITY),
+                //已付定金订单数
+                DSL.count(ORDER.ORDER_ID).filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT)).as(BARGAIN_PAID_QUANTITY),
+                //已付尾款订单数
+                DSL.count(ORDER.ORDER_ID).filterWhere(ORDER.ORDER_PAY_WAY.eq(OrderConstant.PAY_WAY_DEPOSIT).and(ORDER.BK_ORDER_PAID.gt((byte) 0))).as(TAIL_PAID_QUANTITY),
+                //下单用户数
                 DSL.countDistinct(ORDER.USER_ID).as(ORDER_USER_QUANTITY),
-                DSL.coalesce(DSL.sum(ORDER_GOODS.GOODS_NUMBER), 0).as(BOUGHT_QUANTITY)
-            )
+                //已购商品数量
+                DSL.coalesce(DSL.sum(ORDER_GOODS.GOODS_NUMBER), 0).as(BOUGHT_QUANTITY))
                 .from(TABLE)
-                .leftJoin(ORDER)
-                .on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE}))
-                .and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
+                .leftJoin(ORDER).on(ORDER.GOODS_TYPE.likeRegex(OrderInfoService.getGoodsTypeToSearch(new Byte[] {BaseConstant.ACTIVITY_TYPE_PRE_SALE})).and(ORDER.ACTIVITY_ID.eq(TABLE.ID)))
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
-                .where(TABLE.DEL_FLAG.eq(NOT_DELETED));
+                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(query, param);
         query.groupBy(TABLE.ID, TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
             TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2);
-        query.orderBy(TABLE.CREATE_TIME.desc());
-        PageResult<PreSaleListVo> page = getPageResult(query, param, PreSaleListVo.class);
-        transform(page);
-        return page;
-    }
-
-    /**
-     * 状态转换
-     */
-    private void transform(PageResult<PreSaleListVo> page) {
-        page.getDataList().forEach(this::transform);
-    }
-
-    /**
-     * 状态转换
-     */
-    private void transform(PreSaleListVo vo) {
-        vo.setStatus(getStatusOf(vo));
-    }
-
-    /**
-     * 获取活动状态
-     */
-    private Byte getStatusOf(StatusContainer vo) {
-        Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime());
-        Byte originalStatus = vo.getStatus();
-        if (originalStatus == 0) {
-            return NAVBAR_TYPE_DISABLED;
-        } else {
-            Timestamp preStartTime = vo.getPreStartTime();
-            Timestamp preEndTime = vo.getPreEndTime();
-            Timestamp preStartTime2 = vo.getPreStartTime2();
-            Timestamp preEndTime2 = vo.getPreEndTime2();
-            Timestamp startTime = vo.getStartTime();
-            Timestamp endTime = vo.getEndTime();
-            Timestamp now = Util.currentTimeStamp();
-            if (now.before(preStartTime)) {
-                return NAVBAR_TYPE_NOT_STARTED;
-            } else if (vo.getPrePayStep().equals(PRE_SALE_ONE_PHASE) && (now.after(preStartTime) && now.before(preEndTime))) {
-                return NAVBAR_TYPE_ONGOING;
-            } else if (vo.getPrePayStep().equals(PRE_SALE_TWO_PHASE) && (now.after(preStartTime) && now.before(preEndTime2))) {
-                return NAVBAR_TYPE_ONGOING;
-            }
-            return NAVBAR_TYPE_FINISHED;
-        }
+        query.orderBy(TABLE.FIRST.desc(),TABLE.CREATE_TIME.desc());
+        return getPageResult(query, param, PreSaleListVo.class);
     }
 
     /**
@@ -248,17 +179,16 @@ public class PreSaleService extends ShopBaseService {
      */
     public void addPreSale(PreSaleParam param) {
         validateParam(param);
-        db().transaction(config -> {
-            DSLContext db = DSL.using(config);
-            this.insertPresale(db, param);
+        transaction(()->{
+            this.insertPresale(param);
         });
     }
 
     /**
      * 保存活动
      */
-    private void insertPresale(DSLContext db, PreSaleParam param) {
-        PresaleRecord presale = db.newRecord(TABLE, param);
+    private void insertPresale(PreSaleParam param) {
+        PresaleRecord presale = db().newRecord(TABLE, param);
         String config = shareConfigJson(param);
         presale.setShareConfig(config);
         if(param.getPreStartTime2() != null && param.getPreEndTime2() != null){
@@ -267,18 +197,18 @@ public class PreSaleService extends ShopBaseService {
         }
         presale.insert();
         Integer id = presale.getId();
-        this.insertPresaleProduct(db, param, id);
+        this.insertPresaleProduct(param, id);
     }
 
     /**
      * 保存活动产品
      */
-    private void insertPresaleProduct(DSLContext db, PreSaleParam param, Integer presaleId) {
+    private void insertPresaleProduct(PreSaleParam param, Integer presaleId) {
         List<ProductParam> products = param.getProducts();
         List<PresaleProductRecord> productRecords =
             products.stream().map(product -> {
                 product.setPresaleId(presaleId);
-                PresaleProductRecord r = db.newRecord(PRESALE_PRODUCT);
+                PresaleProductRecord r = db().newRecord(PRESALE_PRODUCT);
                 assign(product,r);
                 r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
                 if(product.getPreDiscountMoney2() != null){
@@ -286,7 +216,7 @@ public class PreSaleService extends ShopBaseService {
                 }
                 return r;
             }).collect(Collectors.toList());
-        db.batchInsert(productRecords).execute();
+        db().batchInsert(productRecords).execute();
     }
 
     /**
@@ -314,7 +244,6 @@ public class PreSaleService extends ShopBaseService {
      */
     private void validateParam(PreSaleParam param) {
         validateTime(param);
-        assertTimeNoConflict(param);
         validateDeliverTime(param);
         param.getProducts().forEach(product -> this.validateProduct(product, param));
     }
@@ -345,37 +274,6 @@ public class PreSaleService extends ShopBaseService {
         }
     }
 
-    /**
-     * 判断活动时间是否冲突
-     */
-    private void assertTimeNoConflict(PreSaleParam param) {
-        Tuple2<Timestamp, Timestamp> timePair = new Tuple2<>(param.getPreStartTime(), param.getPreEndTime());
-        Tuple2<Timestamp, Timestamp> timePair2 = new Tuple2<>(param.getPreStartTime2(), param.getPreEndTime2());
-        List<Tuple2<Timestamp, Timestamp>> timePairs = Arrays.asList(timePair, timePair2);
-        assertTimeNoConflict(timePairs, param.getId(),param.getGoodsId());
-    }
-
-    /**
-     * 判断活动时间段是否冲突
-     */
-    private void assertTimeNoConflict(List<Tuple2<Timestamp, Timestamp>> timePairs, Integer id,Integer goodsId) {
-        Condition statusCondition = TABLE.DEL_FLAG.eq((byte) 0).and(TABLE.STATUS.eq((byte) 1));
-        Condition timeCondition = DSL.or();
-        for (Tuple2<Timestamp, Timestamp> timePair : timePairs) {
-            timeCondition =
-                timeCondition.or(TABLE.PRE_START_TIME.ge(timePair.v1()).and(TABLE.PRE_END_TIME.le(timePair.v2())))
-                    .or(TABLE.PRE_START_TIME_2.ge(timePair.v1()).and(TABLE.PRE_END_TIME_2.le(timePair.v2())));
-        }
-        SelectConditionStep<Record1<Integer>> query =
-            select(TABLE.ID).from(TABLE).where(statusCondition.and(timeCondition));
-        if (null != id) {
-            query.and(TABLE.ID.ne(id));
-        }
-        query.and(TABLE.GOODS_ID.eq(goodsId));
-        if (db().fetchExists(query)) {
-            throw new IllegalArgumentException(ACTIVITY_TIME_RANGE_CONFLICT);
-        }
-    }
 
     /**
      * 校验发货时间
@@ -383,13 +281,13 @@ public class PreSaleService extends ShopBaseService {
     private void validateDeliverTime(PreSaleParam param) {
         byte deliverType = param.getDeliverType();
         switch (deliverType) {
-            case DELIVER_SPECIFIC:
+            case PresaleConstant.DELIVER_SPECIFIC:
                 Assert.notNull(param.getDeliverTime(), "Missing parameter deliverTime");
-                if (param.getPresaleType() == PreSaleParam.PRESALE && param.getDeliverTime().before(param.getEndTime())) {
+                if (param.getPresaleType() == PresaleConstant.PRESALE && param.getDeliverTime().before(param.getEndTime())) {
                     throw new IllegalArgumentException("DeliverTime earlier than endTime");
                 }
                 break;
-            case DELIVER_POSTPONE:
+            case PresaleConstant.DELIVER_POSTPONE:
                 Assert.notNull(param.getDeliverDays(), "Missing parameter deliverDays");
                 break;
             default:
@@ -402,8 +300,7 @@ public class PreSaleService extends ShopBaseService {
      */
     private void validateProduct(ProductParam product, PreSaleParam param) {
         Byte prePayStep = param.getPrePayStep();
-        int twoSteps = 2;
-        if (twoSteps == prePayStep) {
+        if (2 == prePayStep) {
             Assert.notNull(product.getPreDiscountMoney2(), "Missing parameter preDiscountMoney2");
         }
         BigDecimal presalePrice = product.getPresalePrice();
@@ -411,42 +308,34 @@ public class PreSaleService extends ShopBaseService {
         BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
         BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
         if (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
-            throwMoneyException();
+            logger().error("预售--抵扣金额异常");
+            throw new IllegalArgumentException("Discount money error");
         }
-        if (null != preDiscountMoney2) {
-            boolean illegalPresaleMoney = preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0;
-            if (illegalPresaleMoney) {
-                throwMoneyException();
-            }
+        if (null != preDiscountMoney2&&(preDiscountMoney2.compareTo(presaleMoney) < 0 || preDiscountMoney2.compareTo(presalePrice) > 0)) {
+            logger().error("预售--抵扣金额异常");
+            throw new IllegalArgumentException("Discount money error");
         }
-    }
-
-    /**
-     * 抵扣金额异常
-     */
-    private void throwMoneyException() {
-        throw new IllegalArgumentException("Discount money error");
     }
 
     /**
      * 删除活动
      */
     public void deletePreSale(Integer id) {
-        db().update(TABLE).set(TABLE.DEL_FLAG, (byte) 1).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.DEL_FLAG, DelFlag.DISABLE_VALUE).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 停用活动
      */
     public void disablePreSale(Integer id) {
-        db().update(TABLE).set(TABLE.STATUS, (byte) 0).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.STATUS, ACTIVITY_STATUS_DISABLE).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
      * 启用活动
      */
     public void enablePreSale(Integer id) {
-        db().update(TABLE).set(TABLE.STATUS, (byte) 1).where(TABLE.ID.eq(id)).execute();
+        db().update(TABLE).set(TABLE.STATUS, ACTIVITY_STATUS_NORMAL).where(TABLE.ID.eq(id)).execute();
     }
 
     /**
@@ -458,22 +347,21 @@ public class PreSaleService extends ShopBaseService {
                 TABLE.PRE_END_TIME, TABLE.START_TIME, TABLE.END_TIME, TABLE.PRESALE_NAME, TABLE.BUY_NUMBER,
                 TABLE.BUY_TYPE, TABLE.DELIVER_DAYS, TABLE.DELIVER_TIME, TABLE.DELIVER_TYPE, TABLE.GOODS_ID,
                 TABLE.DISCOUNT_TYPE, TABLE.PRE_PAY_STEP, TABLE.PRESALE_TYPE, TABLE.RETURN_TYPE, TABLE.SHARE_CONFIG,
-                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, TABLE.DEL_FLAG, GOODS.GOODS_NAME)
+                TABLE.SHOW_SALE_NUMBER, TABLE.STATUS, TABLE.DEL_FLAG)
                 .select(TABLE.PRE_START_TIME_2.as("preStartTime2"))
                 .select(TABLE.PRE_END_TIME_2.as("preEndTime2"))
                 .from(TABLE)
-                .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
                 .where(TABLE.ID.eq(preSaleId))
                 .fetchOneInto(PreSaleVo.class);
         List<ProductVo> productVos = db().select(SUB_TABLE.ID, SUB_TABLE.PRESALE_ID, SUB_TABLE.PRODUCT_ID,
             SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_PRICE, SUB_TABLE.GOODS_ID,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            GOODS_SPEC_PRODUCT.PRD_PRICE)
+            GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS.GOODS_NAME)
             .select(SUB_TABLE.PRE_DISCOUNT_MONEY_1.as("preDiscountMoney1"))
             .select(SUB_TABLE.PRE_DISCOUNT_MONEY_2.as("preDiscountMoney2"))
             .from(SUB_TABLE)
-            .leftJoin(GOODS_SPEC_PRODUCT)
-            .on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
+            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
+            .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(SUB_TABLE.GOODS_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
         preSaleVo.setProducts(productVos);
         ShareConfig shareConfig = shareConfig(preSaleVo);
@@ -500,57 +388,38 @@ public class PreSaleService extends ShopBaseService {
      * 更新活动
      */
     public void updatePreSale(PreSaleParam param) {
+        logger().info("预售活动-更新ID:{}",param.getId());
         Integer presaleId = param.getId();
         Assert.notNull(presaleId, "Missing parameter id");
-        PreSaleListVo presale = db().select(TABLE.fields()).select(TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2")).from(TABLE).where(TABLE.ID.eq(presaleId)).fetchOneInto(PreSaleListVo.class);
-        Byte status = getStatusOf(presale);
-        String shareConfiguration = shareConfigJson(param);
-        if (NAVBAR_TYPE_ONGOING == status) {
-            db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName())
-                .set(TABLE.SHARE_CONFIG, shareConfiguration).where(TABLE.ID.eq(presaleId)).execute();
-        } else if (NAVBAR_TYPE_NOT_STARTED == status) {
-            validateParam(param);
-            db().update(TABLE).set(TABLE.PRESALE_NAME, param.getPresaleName()).set(TABLE.PRE_START_TIME,
-                param.getPreStartTime()).set(TABLE.PRE_END_TIME, param.getPreEndTime()).set(TABLE.PRE_START_TIME_2,
-                param.getPreStartTime2()).set(TABLE.PRE_END_TIME_2, param.getPreEndTime2()).set(TABLE.PRESALE_TYPE,
-                param.getPresaleType()).set(TABLE.PRE_PAY_STEP, param.getPrePayStep()).set(TABLE.START_TIME,
-                param.getStartTime()).set(TABLE.END_TIME, param.getEndTime()).set(TABLE.GOODS_ID,
-                param.getGoodsId()).set(TABLE.DELIVER_TYPE, param.getDeliverType()).set(TABLE.DELIVER_TIME,
-                param.getDeliverTime()).set(TABLE.DELIVER_DAYS, param.getDeliverDays()).set(TABLE.DISCOUNT_TYPE,
-                param.getDiscountType()).set(TABLE.RETURN_TYPE, param.getReturnType()).set(TABLE.SHOW_SALE_NUMBER,
-                param.getShowSaleNumber()).set(TABLE.BUY_TYPE, param.getBuyType()).set(TABLE.BUY_NUMBER, param.getBuyNumber())
-                .where(TABLE.ID.eq(presaleId))
-                .execute();
-            db().transaction(configuration -> {
-                DSLContext db = DSL.using(configuration);
-                db.delete(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(presaleId)).execute();
-                param.getProducts().forEach(product -> {
-                    product.setPresaleId(presaleId);
-                    db.insertInto(SUB_TABLE)
-                        .columns(SUB_TABLE.PRESALE_ID, SUB_TABLE.GOODS_ID, SUB_TABLE.PRODUCT_ID,
-                            SUB_TABLE.PRESALE_PRICE,
-                            SUB_TABLE.PRESALE_NUMBER, SUB_TABLE.PRESALE_MONEY, SUB_TABLE.PRE_DISCOUNT_MONEY_1,
-                            SUB_TABLE.PRE_DISCOUNT_MONEY_2)
-                        .values(presaleId, product.getGoodsId(), product.getProductId(),
-                            product.getPresalePrice(),
-                            product.getPresaleNumber(), product.getPresaleMoney(),
-                            product.getPreDiscountMoney1(),
-                            product.getPreDiscountMoney2())
-                        .execute();
-                });
-            });
-        } else {
-            throw new IllegalStateException("Error status");
+        PresaleRecord presale = db().newRecord(TABLE, param);
+        String config = shareConfigJson(param);
+        presale.setShareConfig(config);
+        validateParam(param);
+        if(param.getPreStartTime2() != null && param.getPreEndTime2() != null){
+            presale.setPreStartTime_2(param.getPreStartTime2());
+            presale.setPreEndTime_2(param.getPreEndTime2());
         }
+        presale.update();
+        transaction(()->{
+            List<Integer> preProductIdRecordIds = new ArrayList<>(param.getProducts().size());
+            param.getProducts().forEach(product -> {
+                product.setPresaleId(presaleId);
+                PresaleProductRecord presaleProductRecord = db().newRecord(SUB_TABLE, product);
+                presaleProductRecord.setPreDiscountMoney_1(product.getPreDiscountMoney1());
+                if(product.getPreDiscountMoney2() != null){
+                    presaleProductRecord.setPreDiscountMoney_2(product.getPreDiscountMoney2());
+                }
+                if (presaleProductRecord.getId()==null){
+                    presaleProductRecord.insert();
+                }else {
+                    presaleProductRecord.update();
+                }
+                preProductIdRecordIds.add(presaleProductRecord.getId());
+            });
+            db().delete(SUB_TABLE).where(SUB_TABLE.PRESALE_ID.eq(presaleId).and(SUB_TABLE.ID.notIn(preProductIdRecordIds))).execute();
+        });
     }
 
-    /**
-     * 活动分享
-     */
-    public String sharePreSale(Integer presaleId) {
-        Integer goodsId = db().selectFrom(TABLE).where(TABLE.ID.eq(presaleId)).fetchOne(TABLE.GOODS_ID);
-        return format(SHARE_PAGE_PATH, goodsId, presaleId);
-    }
 
     /**
      * 查询活动有效时间区间
@@ -559,23 +428,6 @@ public class PreSaleService extends ShopBaseService {
      */
     public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
     	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
-    }
-
-    /**
-     * 判断是否支持原价
-     * @param goodsId 商品ID
-     */
-    public Boolean getPreGoodsBuyType(Integer goodsId) {
-        Timestamp nowDate =new Timestamp(System.currentTimeMillis());
-        Record1<Byte> buyType = db().select(TABLE.BUY_TYPE).from(TABLE)
-                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(TABLE.STATUS.eq(NAVBAR_TYPE_NOT_STARTED)).and(TABLE.GOODS_ID.eq(goodsId))
-                .and((
-                        (TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME.lt(nowDate)).and(TABLE.PRE_END_TIME.gt(nowDate)))
-                                .or(TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME_2.lt(nowDate)).and(TABLE.PRE_END_TIME_2.gt(nowDate)))
-                ).or(
-                        TABLE.PRE_PAY_STEP.eq((byte) 1).and(TABLE.PRE_START_TIME.lt(nowDate).and(TABLE.PRE_END_TIME.gt(nowDate)))
-                )).fetchOne();
-        return buyType!=null&&buyType.component1().equals((byte)1);
     }
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
@@ -596,10 +448,10 @@ public class PreSaleService extends ShopBaseService {
             .and(TABLE.STATUS.eq((byte)1))
             .fetchMap(SUB_TABLE.GOODS_ID,SUB_TABLE.PRESALE_PRICE);
     }
-    
+
 	/**
 	 * N小时前后的要结束的定金膨胀列表
-	 * 
+	 *
 	 * @param hours
 	 * @param type 0:还没开始；1：开始
 	 * @return
@@ -608,7 +460,7 @@ public class PreSaleService extends ShopBaseService {
 		Timestamp timeStampPlus = DateUtil.getTimeStampPlus(hours, ChronoUnit.HOURS);
 		String date = DateUtil.dateFormat("yyyy-MM-dd HH:mm", timeStampPlus);
 		SelectConditionStep<PresaleRecord> fetch = db().selectFrom(PRESALE)
-				.where(PRESALE.DEL_FLAG.eq(NOT_DELETED));
+				.where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
 		//还没开始
 		if(type.equals((byte) 0)) {
 			fetch.and(dateFormat(PRESALE.END_TIME, DateUtil.DATE_MYSQL_DAY).eq(date));
@@ -640,7 +492,6 @@ public class PreSaleService extends ShopBaseService {
      * 获取小程序码
      */
     public ShareQrCodeVo getMpQrCode(Integer id) {
-
         int goodsId = db().select(PRESALE.GOODS_ID).from(PRESALE).where(PRESALE.ID.eq(id)).fetchAny().into(Integer.class);
         String pathParam=String.format("gid=%d&aid=%d&atp=%d", goodsId, id, BaseConstant.ACTIVITY_TYPE_PRE_SALE);
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, pathParam);
@@ -650,5 +501,5 @@ public class PreSaleService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
-	
+
 }

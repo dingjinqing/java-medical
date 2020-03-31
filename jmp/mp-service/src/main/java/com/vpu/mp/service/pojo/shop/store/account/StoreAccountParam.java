@@ -27,5 +27,5 @@ public class StoreAccountParam {
 	@Pattern(regexp = "^[^\\u4e00-\\u9fa5]{6,16}$",message = JsonResultMessage.MSG_ACCOUNT_PASSWD_LENGTH_LIMIT)
 	private String accountPasswd;
 	@NotNull
-	private String storeList;
+	private Integer[] storeList;
 }

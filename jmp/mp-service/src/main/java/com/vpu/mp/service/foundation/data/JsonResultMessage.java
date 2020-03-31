@@ -48,6 +48,7 @@ public class JsonResultMessage {
     public static final String MSG_ACCOUNT_MOBILE_LENGTH_LIMIT = "account.mobile.length.limit";
     public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.mobile.same";
     public static final String MSG_ACCOUNT_USERNAME_LENGTH_LIMIT = "account.username.length.limit";
+    public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
     
     // 图片
 
@@ -304,6 +305,11 @@ public class JsonResultMessage {
     public static final String LOTTERY_SCORE_LESS="lottery.score.less";
     public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
     public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
+	/**
+	 * 首单特惠
+	 */
+	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.sprecial.number.limit";
+	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.sprecial.kind.limit";
 
 
     /**

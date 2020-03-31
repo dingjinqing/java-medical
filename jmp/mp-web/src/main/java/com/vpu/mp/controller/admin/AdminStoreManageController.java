@@ -76,12 +76,12 @@ public class AdminStoreManageController extends AdminBaseController {
 	@GetMapping("/api/admin/store/account/storeInfo/{accountId}")
 	public JsonResult getStoreInfo(@PathVariable Integer accountId) {
 		StoreInfoVo storeInfo = saas.shop.storeManageService.getStoreInfo(accountId, shopId());
-		// TODO 返回id不存在
-		return storeInfo == null ? fail() : success(storeInfo);
+		return storeInfo == null ? fail(JsonResultCode.CODE_ACCOUNT_ID_NOT) : success(storeInfo);
 	}
 
 	/**
 	 * 一些处理
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -110,21 +110,21 @@ public class AdminStoreManageController extends AdminBaseController {
 		case StoreConstant.ACT_STATRT:
 			logger().info("启用");
 			code = storeManageService.start(accountId);
-			flag = true;
+			flag = code.equals(JsonResultCode.CODE_SUCCESS) ? true : false;
 			break;
 		default:
 			break;
 		}
 		if (!flag) {
-			return fail();
+			return fail(code);
 		} else {
-			return code.equals(JsonResultCode.CODE_SUCCESS) ? success() : fail(code);
+			return success();
 		}
 	}
 
-	
 	/**
 	 * 新增
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -136,13 +136,14 @@ public class AdminStoreManageController extends AdminBaseController {
 			// 账户名或手机号重复了
 			return fail(JsonResultCode.CODE_ACCOUNT_MOBILE_SAME);
 		}
-		int create = saas.shop.storeManageService.storeAccountService.create(param);
+		int create = saas.shop.storeManageService.storeAccountService.create(param, shopId());
 		return create > 0 ? success() : fail();
 
 	}
 
 	/**
 	 * 编辑
+	 * 
 	 * @param param
 	 * @return
 	 */
@@ -155,12 +156,24 @@ public class AdminStoreManageController extends AdminBaseController {
 			return fail(JsonResultCode.CODE_ACCOUNT_MOBILE_SAME);
 		}
 		Boolean check = saas.shop.storeManageService.check(param.getAccountPasswd());
-		if(!check) {
-			//密码格式不正确
+		if (!check) {
+			// 密码格式不正确
 			return fail(JsonResultCode.CODE_ACCOUNT_PASSWD_LENGTH_LIMIT);
 		}
 		int edit = saas.shop.storeManageService.storeAccountService.edit(param);
 		return edit > 0 ? success() : fail();
 
+	}
+
+	/**
+	 * 根据id查询单一的信息
+	 * 
+	 * @param accountId
+	 * @return
+	 */
+	@GetMapping("/api/admin/store/account/getOne/{accountId}")
+	public JsonResult getOneAccount(@PathVariable Integer accountId) {
+		StoreAccountVo storeInfoById = saas.shop.storeManageService.storeAccountService.getStoreInfoById(accountId);
+		return success(storeInfoById);
 	}
 }

@@ -231,3 +231,75 @@
   background: #fff6e6;
   color: #ffb93c;
 }
+.goods-image{
+  position: relative;
+}
+.live-tips{
+  display: flex;
+  height: 90rpx;
+  width: 750rpx;
+  background-color: rgb(255,247,210);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  justify-content: center;
+  align-items: center;
+}
+.live-avatar-content{
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(255,126,0,0.4);
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+}
+@keyframes scaleDraw {  
+  0%{
+      transform: scale(1); 
+  }
+  25%{
+      transform: scale(1.1); 
+  }
+  50%{
+      transform: scale(1);
+  }
+  75%{
+      transform: scale(1.1);
+  }
+}
+.live-avatar-content > .live-avatar{
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border:2px solid rgba(255,126,0,1);
+  -webkit-animation-name: scaleDraw; 
+  -webkit-animation-timing-function: ease-in-out; 
+  -webkit-animation-iteration-count: infinite;  
+  -webkit-animation-duration: 5s; 
+}
+.live-desc{
+  color:rgba(255,126,0,1);
+}
+.live-close{
+  width: 36rpx;
+  height: 36rpx;
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  margin-top: -18rpx;
+}
+.subscribe-button{
+  height: 50rpx;
+  width: 140rpx;
+  border: 2rpx solid;
+  text-align: center;
+  margin-left: 18rpx;
+  line-height: 46rpx;
+  border-radius: 25rpx;
+  box-sizing: border-box;
+}

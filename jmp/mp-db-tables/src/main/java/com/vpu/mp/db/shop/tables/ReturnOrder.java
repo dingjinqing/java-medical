@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
 
-    private static final long serialVersionUID = -480463410;
+    private static final long serialVersionUID = 280405188;
 
     /**
      * The reference instance of <code>mini_shop_6797286.b2c_return_order</code>
@@ -227,6 +227,11 @@ public class ReturnOrder extends TableImpl<ReturnOrderRecord> {
      * The column <code>mini_shop_6797286.b2c_return_order.update_time</code>. 最后修改时间
      */
     public final TableField<ReturnOrderRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+
+    /**
+     * The column <code>mini_shop_6797286.b2c_return_order.is_auto_return</code>. 0否；1是
+     */
+    public final TableField<ReturnOrderRecord, Byte> IS_AUTO_RETURN = createField("is_auto_return", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0否；1是");
 
     /**
      * Create a <code>mini_shop_6797286.b2c_return_order</code> table reference

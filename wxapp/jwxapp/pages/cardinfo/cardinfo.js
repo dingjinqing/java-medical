@@ -235,11 +235,12 @@ global.wxPage({
   },
   // 展示二维码
   showQrCode () {
-    // let qrCode = [this.data.cardInfo.qrCode]
-    // this.setData({
-    //   qrCode,
-    //   showQrcode: true
-    // })
+    let qrCode = [this.data.cardInfo.qrCode]
+    console.log(qrCode)
+    this.setData({
+      qrCode,
+      showQrcode: true
+    })
   },
   // 等级卡  等级详情
   getUpgradeCondition (cardInfo) {

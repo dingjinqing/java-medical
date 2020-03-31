@@ -1,9 +1,6 @@
 package com.vpu.mp.service.shop.config;
 
-import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
-import com.vpu.mp.service.pojo.shop.config.ShopStyleConfig;
-import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.config.*;
 import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +19,8 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     ShopShareConfig defaultShopShareConfig;
     @Autowired
     ShowCartConfig defaultShowCartConfig;
+    @Autowired
+    GoodsShareConfig defaultGoodsShareConfig;
 
 	/**
 	 * 是否显示前端店铺logo
@@ -179,7 +178,10 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      * 商品条码配置项设置
      */
     final public static String NEED_PRD_CODES = "need_prd_codes";
-
+    /**
+     * 商品分享配置
+     */
+    final public static String GOODS_SHARE_CFG = "goods_share_cfg";
 
     /**
 	 * 是否显示Logo配置
@@ -735,7 +737,23 @@ public class ShopCommonConfigService extends BaseShopConfigService{
         Assert.isTrue(value ==(byte)0 || value == (byte)1,"setNeedPrdCodes need value equal zero or one");
         return this.set(NEED_PRD_CODES, value,Byte.class);
     }
+    /**
+     * 商品分享配置
+     * @return
+     */
+    public GoodsShareConfig getGoodsShareConfig() {
+        return this.getJsonObject(GOODS_SHARE_CFG, GoodsShareConfig.class, defaultGoodsShareConfig);
+    }
 
+    /**
+     * 设置店铺分享配置
+     * @param value 0 或者 1
+     * @return
+     */
+    public int setGoodsShareConfig(GoodsShareConfig value) {
+        Assert.isTrue(value != null,"setGoodsShareConfig need value not null");
+        return this.setJsonObject(GOODS_SHARE_CFG, value);
+    }
 
     /**
 	 * 取通用配置
@@ -760,6 +778,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setGeographicLocation(this.getGeoLocation());
             commonCfg.setGoodsWeightCfg(this.getGoodsWeightCfg());
             commonCfg.setNeedPrdCodes(this.getNeedPrdCodes());
+            commonCfg.setGoodsShareCfg(this.getGoodsShareConfig());
 		});
 
         return commonCfg;
@@ -790,6 +809,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setGeoLocation(commonCfg.getGeographicLocation());
             this.setGoodsWeightCfg(commonCfg.getGoodsWeightCfg());
             this.setNeedPrdCodes(commonCfg.getNeedPrdCodes());
+            this.setGoodsShareConfig(commonCfg.getGoodsShareCfg());
 		});
 		return true;
 	}

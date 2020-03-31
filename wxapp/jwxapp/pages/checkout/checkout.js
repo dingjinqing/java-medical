@@ -554,8 +554,6 @@ global.wxPage({
       })
       return false
     }
-    console.log(this.data.orderInfo.must)
-    console.log(this.data.must)
     let mustTips = ''
     if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
     if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
@@ -566,6 +564,11 @@ global.wxPage({
       util.showModal('提示',mustTips)
       return false
     }
+    if(this.data.orderInfo.term && this.data.orderInfo.term.serviceTerms === 1 && this.data.orderInfo.term.serviceChoose === 0){
+      util.showModal('提示',`请同意${this.data.orderInfo.term.serviceName}后再试`)
+      return false
+    }
+
     return true
   },
   // 关闭弹窗
@@ -765,6 +768,11 @@ global.wxPage({
     },{score:0,money:0})
     this.setData({scoreRedeemData})
     console.log(this.data.scoreRedeemData)
+  },
+  changeTerm(){
+    this.setData({
+      'orderInfo.term.serviceChoose' : this.data.orderInfo.term.serviceChoose ? 0 : 1
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

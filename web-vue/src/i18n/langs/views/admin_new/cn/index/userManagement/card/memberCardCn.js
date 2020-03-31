@@ -266,7 +266,7 @@ export const cn = {
   second: '第二步',
   uploadFiles: '上传文件',
   sure: '确 定',
-  cancel: '取消',
+  cancel: '取 消',
   cardNumPwd: '卡号+密码',
   autoCardNumPwd: '自动生成卡号+密码',
   autoCardNumPwdMsg: '将随机生成xxx组不重复卡号+密码，均由数字+字母组成',
@@ -332,5 +332,19 @@ export const cn = {
   timesFreeship: '次包邮',
   noLimitCoupon: '无库存限制',
   couponErrorTip: '请选择开卡送优惠券',
-  scoreCouponCfg: '不可与优惠券共用'
+  scoreCouponCfg: '不可与优惠券共用',
+  usernameDetail: '用户昵称',
+  cardCodeAndNo: '领取码/卡号',
+  codeAndNoTip: '领取码 / 卡号+密码',
+  receiveTime: '领取时间',
+  alreadyDelete: '已废除',
+  toDelete: '废除',
+  tipInfo: '提醒',
+  tipAgain: '确认要废除',
+  selectSortOptions: [
+    {
+      batchId: 0,
+      name: '全部'
+    }
+  ]
 }
