@@ -242,7 +242,8 @@ global.wxPage({
               goodsId,
               goodsGifts,
               showSalesNumber,
-              customService
+              customService,
+              goodsDistribution
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -283,7 +284,8 @@ global.wxPage({
               goodsMediaInfo,
               couponList: coupons, //优惠券
               goodsDescInfo,
-              goodsGifts // 赠品
+              goodsGifts, // 赠品,
+              goodsDistribution //分销信息
             })
             this.setData({
               specParams

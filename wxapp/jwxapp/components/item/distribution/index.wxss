@@ -13,15 +13,15 @@
   margin-right:20rpx;
   padding: 4rpx 6rpx;
 }
-.diatribution-top{
+.distribution-top{
   position: relative;
 }
-.diatribution-top > .item_middle{
+.distribution-top > .item_middle{
   text-align: right;
   color: #999;
   padding-right: 20rpx;
 }
-.diatribution-share{
+.distribution-share{
   position: absolute;
   left: 0;
   right: 0;
@@ -29,29 +29,29 @@
   bottom: 0;
   opacity: 0;
 }
-.diatribution-info{
+.distribution-info{
   padding: 30rpx;
   display: flex;
   align-items: center;
   overflow: hidden;
 }
-.diatribution-info > .diatribution-info-content{
+.distribution-info > .distribution-info-content{
   display: flex;
   flex: 1;
   flex-direction: column;
   align-items: center;
 }
-.diatribution-info > .diatribution-info-content+.diatribution-info-content{
+.distribution-info > .distribution-info-content+.distribution-info-content{
   border-left: 2rpx solid #eee;
 }
-.diatribution-info-content > view:first-child{
+.distribution-info-content > view:first-child{
   color: #888;
   margin-bottom: 16rpx;
 }
-.diatribution-info-content > view:first-child > text{
+.distribution-info-content > view:first-child > text{
   vertical-align: middle;
 }
-.diatribution-info-content > view:first-child > image{
+.distribution-info-content > view:first-child > image{
   width: 30rpx;
   height: 30rpx;
   margin-left: 10rpx;
