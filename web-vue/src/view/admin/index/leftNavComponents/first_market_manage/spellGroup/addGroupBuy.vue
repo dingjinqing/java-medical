@@ -731,6 +731,7 @@ export default {
         shareInfo: '',
         stock: 0 // 活动总库存
       },
+      goodsIdList: [],
       // 校验表单
       fromRules: {
         name: [
@@ -793,7 +794,6 @@ export default {
         src3: `${this.$imageHost}/image/admin/shop_beautify/add_decorete.png`
       },
       showImageDialog: false,
-      goodsIdList: [],
       showSpecDialog: false,
       productInfo: {},
       disabledFlag: true // 是否可编辑
