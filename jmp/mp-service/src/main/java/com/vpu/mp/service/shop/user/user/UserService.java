@@ -699,19 +699,23 @@ public class UserService extends ShopBaseService {
 	public Boolean isNoticeUserActivation(Integer userId) {
 		logger().info("是否展示激活公告");
 		Boolean isEnable = checkModuleIsShow("service", "user_activate");
+		logger().info("开关状态：{}",isEnable);
 		if(!isEnable) {
 			return false;
 		}
 		UserRecord user = getUserByUserId(userId);
 		if(StringUtils.isEmpty(user.getMobile())) {
+			logger().info("用户手机号为空");
 			return true;
 		}
 
 		UserImportDetailRecord importUser = userCard.scoreService.member.getUserByMobile(user.getMobile());
 		if(importUser==null) {
-			return true;
+			logger().info("该手机号：{}，导入表没数据",user.getMobile());
+			return false;
 		}
-		if(importUser.getIsActivate()==1) {
+		if(importUser.getIsActivate().equals((byte)1)) {
+			logger().info("已激活");
 			return false;
 		}
 		return true;
