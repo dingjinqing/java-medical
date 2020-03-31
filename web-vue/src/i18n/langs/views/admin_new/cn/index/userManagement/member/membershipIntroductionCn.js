@@ -176,27 +176,34 @@ export const cn = {
   transactionData: [
     {
       title: '最近下单时间',
-      content: '暂未下单'
+      content: '暂未下单',
+      tip: '用户最近一次下单的时间(包括已退款订单)'
+
     },
     {
       title: '客单价',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: '用户平均每笔订单消费金额（包括已退款订单）'
     },
     {
       title: '累计下单金额',
-      content: '暂未下单'
+      content: '暂未下单',
+      tip: '用户在商城累计消费金额（已支付部分，包括已退款订单金额）'
     },
     {
       title: '累计消费订单数',
-      content: '0'
+      content: '0',
+      tip: '用户在商城累计消费订单数（已支付部分，包括已退款订单）'
     },
     {
       title: '累计退款',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: '用户在商城累计退款金额'
     },
     {
       title: '累计退款订单数',
-      content: '暂未退单'
+      content: '暂未退单',
+      tip: '用户在商城累计退款订单数（发生退款行为的订单）'
     }
   ],
   distributionData: [
