@@ -443,13 +443,15 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArr.push(
-              {
-                batchName: item.name,
-                batchId: item.batchId,
-                disabled: true
-              }
-            )
+            if (!item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArr.push(
+                {
+                  batchName: item.name,
+                  batchId: item.batchId,
+                  disabled: true
+                }
+              )
+            }
           })
         }
       } else {
@@ -460,12 +462,14 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArrBottom.push(
-              {
-                pwdName: item.name,
-                pwdId: item.batchId,
-                disabled: true }
-            )
+            if (item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArrBottom.push(
+                {
+                  pwdName: item.name,
+                  pwdId: item.batchId,
+                  disabled: true }
+              )
+            }
           })
         }
       } else {
