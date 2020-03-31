@@ -139,7 +139,7 @@
             <p
               slot="reference"
               style="line-height: 30px; color: #999;padding: 0 12px; margin-bottom: 10px; font-size:12px;"
-            >当前版本为旗舰版，还可创建 194个门店 <i class="el-icon-question"></i></p>
+            >当前版本为旗舰版，还可创建 {{canCreateNum}} 个门店 <i class="el-icon-question"></i></p>
           </el-popover>
           <div>
             <el-button
@@ -369,7 +369,8 @@ export default {
 
       shareImg: '',
       sharePath: '',
-      shareDialog: false // 分享弹窗
+      shareDialog: false, // 分享弹窗
+      canCreateNum: 0 // 可以创建门店数
     }
   },
   methods: {
@@ -378,10 +379,11 @@ export default {
 
       storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         if (res.error === 0) {
-          this.originalData = res.content.dataList
+          this.originalData = res.content.storePageListVo.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
           this.handleData(originalData)
-          this.pageParams = res.content.page
+          this.pageParams = res.content.storePageListVo.page
+          this.canCreateNum = res.content.canCreateNum
           this.loading = false
         }
       })
