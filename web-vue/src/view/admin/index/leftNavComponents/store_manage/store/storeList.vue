@@ -68,11 +68,17 @@
             <el-input
               v-model="queryParams.keywords"
               size="small"
-              style="width:180px;"
+              style="width:190px;"
               :placeholder="$t('storeList.storeInfoPlaceholder')"
-              suffix-icon="el-icon-search"
               @change="initDataList"
-            ></el-input>
+            >
+              <i
+                slot="suffix"
+                class="el-input__icon el-icon-search"
+                style="cursor: pointer;"
+                @click="initDataList"
+              ></i>
+            </el-input>
           </div>
           <div class="filters_item">
             <span>门店自提：</span>
@@ -350,7 +356,10 @@ export default {
       pageParams: {},
       queryParams: {
         groupId: null,
-        isAuthPos: null
+        isAuthPos: null,
+        businessState: -1,
+        autoPick: -1,
+        cityService: -1
       },
       tableData: [],
       storeGroup: [],
