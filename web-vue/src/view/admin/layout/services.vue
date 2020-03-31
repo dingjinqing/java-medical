@@ -12,8 +12,8 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.query.shopId)
-    this.shopId = this.$route.query.shopId ? this.$route.query.shopId : null
+    console.log(this.$route.query.shop_id)
+    this.shopId = this.$route.query.shop_id ? this.$route.query.shop_id : null
     if (this.shopId) this.requestServices()
   },
   methods: {
