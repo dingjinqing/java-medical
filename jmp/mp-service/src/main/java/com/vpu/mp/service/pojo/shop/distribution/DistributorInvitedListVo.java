@@ -35,4 +35,8 @@ public class DistributorInvitedListVo {
 	 * 邀请保护日期
 	 */
 	private Timestamp inviteProtectDate;
+    /**
+     * 邀请时间
+     */
+	private Timestamp inviteTime;
 }

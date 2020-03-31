@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
@@ -21,6 +22,7 @@ import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.jooq.Record4;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +55,9 @@ public class MpDistributionService extends ShopBaseService{
 
     @Autowired
     public DistributorGroupService distributorGroup;
+
+    @Autowired
+    public DistributorListService disList;
 
     /**
      * 申请分销员页面信息
@@ -332,5 +337,15 @@ public class MpDistributionService extends ShopBaseService{
         DistributorLevelParam distributorLevelInfo = db().select(DISTRIBUTOR_LEVEL.LEVEL_NAME).from(USER.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
             .where(USER.USER_ID.eq(userId)).fetchOne().into(DistributorLevelParam.class);
         return distributorLevelInfo;
+    }
+
+    /**
+     * 分销员邀请下级用户（我邀请的用户）
+     * @param param
+     * @return
+     */
+    public PageResult<DistributorInvitedListVo> myInviteUser(DistributorInvitedListParam param){
+        PageResult<DistributorInvitedListVo> invitedList = disList.getInvitedList(param);
+        return invitedList;
     }
 }

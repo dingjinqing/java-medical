@@ -1,0 +1,72 @@
+/* pages1/distripromotion/distripromotion.wxss */
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.main-container{
+  padding-top: 20rpx;
+}
+
+.dis_content{
+  border-radius: 8rpx;
+  background-color: #fff;
+  width: 710rpx;
+  margin: auto;
+}
+.dis_content+.dis_content{
+  margin-top: 20rpx;
+}
+.promotion_title{
+  line-height: 90rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 0 20rpx;
+  position: relative;
+  border-bottom: 1rpx solid #eee;
+}
+.promotion_title_tips{
+  border: 1rpx solid #fead2d;
+  color: #fead2d;
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 16rpx 20rpx;
+  line-height: 1;
+}
+
+.copy{
+  position: absolute;
+  right: 200rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+}
+
+.promotion_content{
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  height:auto;
+}
+.promotion_bottom{
+  line-height: 90rpx;
+}
+.promotion_bottom_button{
+  width: 50%;
+  text-align: center;
+  color: #ff6666;
+  box-sizing: border-box;
+  float: left;
+}
+.promotion_bottom_button+.promotion_bottom_button{
+  border-left: 1rpx solid #eee;
+}
+.open{
+  text-align: rigth;
+  color: #fead2d;
+  border-bottom: 1rpx solid #eee;
+  padding-bottom: 20rpx;
+}

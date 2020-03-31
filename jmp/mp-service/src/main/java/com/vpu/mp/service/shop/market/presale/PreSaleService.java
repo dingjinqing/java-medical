@@ -88,7 +88,7 @@ public class PreSaleService extends ShopBaseService {
      */
     public PageResult<PreSaleListVo> getPageList(PreSaleListParam param) {
         SelectConditionStep<? extends Record> query =
-            db().select(TABLE.ID,TABLE.PRESALE_TYPE, TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,TABLE.PRE_PAY_STEP,
+            db().select(TABLE.ID,TABLE.PRESALE_TYPE, TABLE.PRESALE_NAME, TABLE.FIRST, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME,TABLE.PRE_PAY_STEP,
                 TABLE.START_TIME, TABLE.END_TIME, TABLE.STATUS,TABLE.PRE_START_TIME_2.as("preStartTime2"),TABLE.PRE_END_TIME_2.as("preEndTime2"),
                 //订单数
                 DSL.count(ORDER.ORDER_ID).as(ORDER_QUANTITY),

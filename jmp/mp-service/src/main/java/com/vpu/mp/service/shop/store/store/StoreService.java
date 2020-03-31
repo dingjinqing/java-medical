@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static com.vpu.mp.db.shop.tables.Article.ARTICLE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 import java.sql.Timestamp;
@@ -11,14 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.db.shop.tables.Article;
+import com.vpu.mp.db.shop.tables.records.ArticleRecord;
+import com.vpu.mp.service.pojo.saas.shop.ShopConst;
+import com.vpu.mp.service.pojo.shop.store.article.ArticleParam;
+import com.vpu.mp.service.pojo.shop.store.article.ArticlePojo;
+import com.vpu.mp.service.pojo.shop.store.store.*;
+import com.vpu.mp.service.saas.overview.ShopOverviewService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +38,6 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.account.StoreInfo;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroup;
 import com.vpu.mp.service.pojo.shop.store.group.StoreGroupQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
-import com.vpu.mp.service.pojo.shop.store.store.StoreListQueryParam;
-import com.vpu.mp.service.pojo.shop.store.store.StorePageListVo;
-import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.store.comment.ServiceCommentService;
 import com.vpu.mp.service.shop.store.group.StoreGroupService;
@@ -122,14 +120,18 @@ public class StoreService extends ShopBaseService {
      */
     @Autowired
     public StoreReservation reservation;
-
+    /**
+     * 店铺等级
+     */
+    @Autowired
+    public ShopOverviewService shopOverviewService;
     /**
      * 门店列表分页查询
      *
      * @param param
      * @return StorePageListVo
      */
-    public PageResult<StorePageListVo> getPageList(StoreListQueryParam param) {
+    public StoreVo getPageList(StoreListQueryParam param) {
         SelectWhereStep<? extends Record> select = db().select(
             STORE.STORE_ID, STORE.STORE_NAME, STORE.POS_SHOP_ID, STORE_GROUP.GROUP_NAME, STORE.PROVINCE_CODE, STORE.CITY_CODE, STORE.DISTRICT_CODE, STORE.ADDRESS, STORE.MANAGER,
             STORE.MOBILE, STORE.OPENING_TIME, STORE.CLOSE_TIME, STORE.BUSINESS_STATE, STORE.AUTO_PICK, STORE.BUSINESS_TYPE,STORE.CITY_SERVICE
@@ -138,7 +140,24 @@ public class StoreService extends ShopBaseService {
 
         select = this.buildOptions(select, param);
         select.where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(STORE.CREATE_TIME.desc());
-        return getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
+        PageResult<StorePageListVo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), StorePageListVo.class);
+        Integer totalNum = 0;
+        String shopVersion = shopOverviewService.getShopVersion(getShopId());
+        if (ShopConst.shopType.V_1.equals(shopVersion)){
+            totalNum = 1;
+        }else if(ShopConst.shopType.V_2.equals(shopVersion)){
+            totalNum = 5;
+        }else if(ShopConst.shopType.V_3.equals(shopVersion)){
+            totalNum = 10;
+        }else if(ShopConst.shopType.V_4.equals(shopVersion)){
+            totalNum = 200;
+        }
+        Integer nowNum = pageResult.getDataList().size();
+        Integer canCreateNum = totalNum-nowNum;
+        StoreVo storeVo = new StoreVo();
+        storeVo.setCanCreateNum(canCreateNum);
+        storeVo.setStorePageListVo(pageResult);
+        return storeVo;
     }
 
     public SelectWhereStep<? extends Record> buildOptions(SelectWhereStep<? extends Record> select, StoreListQueryParam param) {
@@ -497,5 +516,71 @@ public class StoreService extends ShopBaseService {
         return db().select(STORE.STORE_ID, STORE.STORE_NAME)
             .from(STORE).fetchInto(StoreInfo.class);
     }
+    /**
+     * 新增公告
+     *
+     * @param articlePojo
+     * @return
+     */
+    public Boolean addArticle(ArticlePojo articlePojo) {
+        ArticleRecord record = new ArticleRecord();
+        this.assign(articlePojo, record);
+        return db().executeInsert(record) > 0 ? true : false;
+    }
 
+    /**
+     * 更新公告
+     *
+     * @param articlePojo
+     * @return
+     */
+    public Boolean updateArticle(ArticlePojo articlePojo) {
+        ArticleRecord record = new ArticleRecord();
+        this.assign(articlePojo, record);
+        return db().executeUpdate(record) > 0 ? true : false;
+    }
+
+    /**
+     * 删除公告
+     *
+     * @param articleId
+     * @return
+     */
+    public Boolean delArticle(Integer articleId) {
+        return db().update(ARTICLE).set(ARTICLE.IS_DEL, DelFlag.DISABLE.getCode()).where(ARTICLE.ARTICLE_ID.eq(articleId)).execute() > 0 ? true : false;
+    }
+
+    /**
+     * 取单个公告信息
+     *
+     * @param articleId
+     * @return ArticlePojo
+     */
+    public ArticlePojo getArticle(Integer articleId) {
+        ArticleRecord r = db().fetchOne(ARTICLE, ARTICLE.ARTICLE_ID.eq(articleId));
+        if(r == null){
+            return null;
+        }
+        return r.into(ArticlePojo.class);
+    }
+
+    /**
+     * 门店公告分页查询
+     * @param param 标题 发布状态
+     * @return 分页信息
+     */
+    public PageResult<ArticlePojo> articleList(ArticleParam param){
+        SelectWhereStep<? extends Record> sql = db().select()
+            .from(ARTICLE);
+        //查询条件-标题
+        if (param.getTitle() != null && !"".equals(param.getTitle())) {
+            sql.where(ARTICLE.TITLE.like(this.likeValue(param.getTitle())));
+        }
+        //查询条件-发布状态
+        if (!ArticleParam.ALL_STATUS.equals(param.getStatus())){
+            sql.where(ARTICLE.STATUS.eq(param.getStatus()));
+        }
+        PageResult<ArticlePojo> result = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),ArticlePojo.class);
+        return result;
+    }
 }

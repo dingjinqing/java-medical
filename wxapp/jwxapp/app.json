@@ -36,7 +36,6 @@
     "pages/fullprice/fullprice",
     "pages/maingoodslist/maingoodslist",
     "pages/usercardup/usercardup",
-    "pages/aftersaleorder/aftersaleorder",
     "pages/splitinfo/splitinfo",
     "pages/usercardrenew/usercardrenew"
   ],
@@ -71,6 +70,8 @@
         "distrirecord/distrirecord",
         "inviteduser/inviteduser",
         "promotioncenter/promotioncenter",
+        "brokeragerank/brokeragerank",
+        "distripromotion/distripromotion",
         "distributionorder/distributionorder",
         "shopcheckout/shopcheckout",
         "appointment/appointment",
@@ -109,14 +110,15 @@
         "goodscomment/goodscomment",
         "usercardgoods/usercardgoods",
         "sharerebate/sharerebate",
-        "livetransition/livetransition"
+        "livetransition/livetransition",
+        "aftersaleorder/aftersaleorder"
       ],
       "plugins": {
         "live-player-plugin": {
-            "version": "1.0.3",
-            "provider": "wx2b03c6e691cd7370"
+          "version": "1.0.3",
+          "provider": "wx2b03c6e691cd7370"
         }
-    }
+      }
     }
   ],
   "sitemapLocation": "sitemap.json"
