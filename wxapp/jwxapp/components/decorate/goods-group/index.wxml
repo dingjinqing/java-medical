@@ -87,7 +87,7 @@
 										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==5 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!=1&&item.activityType!=5&&item.activityType!=3 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 
 
@@ -229,7 +229,7 @@
 									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10}}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5}}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 								</block>
@@ -323,7 +323,7 @@
 										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3&&item.activityType !=5 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 
@@ -391,7 +391,7 @@
 										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
