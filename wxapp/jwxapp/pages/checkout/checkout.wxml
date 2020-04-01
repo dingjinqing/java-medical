@@ -236,8 +236,8 @@
           <text class="detail_title">尾款（待付款）</text>
           <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.bkOrderMoney}}</text>
         </view>
-        <view class="detail_item rule">
-          <text class="detail_title" bindtap="viewPreSaleRule">{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
+        <view class="detail_item rule" bindtap="viewPreSaleRule">
+          <text class="detail_title" >{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
         </view>
       </view>
@@ -262,6 +262,6 @@
   <v-select-store show="{{showStoreDialog}}" store-data="{{storeDialogData}}" bindsubmit="getSelectStore"/>
   <!-- 好友代付弹窗 -->
   <v-friend-pay show="{{showFriendPayDialog}}" friend-config="{{orderInfo.insteadPayCfg}}" bindpayEvent="getFriendPayData"/>
-
+  <v-pre-sale-rule show="{{preSaleRuleShow}}" />
   <include src="../common/footer.wxml"/>
 </view>

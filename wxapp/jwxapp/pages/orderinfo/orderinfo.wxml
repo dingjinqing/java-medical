@@ -133,7 +133,9 @@
           <text style="{{orderInfo.orderStatusName === '订单完成' ? 'color:'+comColor+';' : ''}}">交易完成</text>
         </view>
       </view>
-      <view class="info-bottom"></view>
+      <view class="info-bottom" wx:if="{{orderInfo.bkReturnType === 0}}">
+        注：未在指定时间内支付尾款，则定金不予退还!
+      </view>
     </view>
     <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{i18n.$t(localePack,"pages.checkout.deliverType["+orderInfo.deliverType+"]")}}</text>
@@ -250,10 +252,10 @@
           <text class="detail_title">尾款（{{orderInfo.bkOrderPaid === 2 ? '已付' : '待付款'}}）</text>
           <text class="detail_content" style="color:{{comColor}};">￥{{orderInfo.bkOrderMoney}}</text>
         </view>
-        <!-- <view class="detail_item rule">
-          <text class="detail_title" bindtap="viewPreSaleRule">{{preSaleInfo.deliverType === 0 ? '发货时间：' + filter.substring(preSaleInfo.deliverTime,0,10)  : '发货时间：尾款支付完成'+preSaleInfo.deliverDays+'天后发货'}} </text>
+        <view class="detail_item rule" wx:if="{{orderInfo.bkShippingTime}}" bindtap="viewPreSaleRule">
+          <text class="detail_title">发货时间：{{orderInfo.bkShippingTime}}</text>
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: bottom;margin-left: 15rpx;"></image>
-        </view> -->
+        </view>
       </view>
 
 
@@ -281,3 +283,5 @@
   </view>
   <include src="../common/footer.wxml" />
 </view>
+
+<v-pre-sale-rule show="{{preSaleRuleShow}}" />
