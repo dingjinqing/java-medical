@@ -256,7 +256,7 @@ const myMixin = {
         let enNameArr = ['analysis_basic', 'analysis_portrait', 'analysis_visit', 'analysis_visit_source', 'trades_summary', 'sort', 'user_tag', 'pin_group', 'distribution_info', 'payreward', 'market_gifted', 'lottery_activity', 'group_draw', 'pin_integration', 'promote', 'full_cut', 'kanjia', 'sec_kill', 'market_act_give', 'gift', 'first_special', 'business_template_message', 'market_act_give']
         console.log(enNameArr.indexOf(name), name)
         let index = enNameArr.indexOf(name)
-        if (enNameArr.indexOf(name) !== -1) {
+        if (enNameArr.indexOf(name) !== -1 || second) {
           console.log('触发', vsNameArr[index])
           let vsName = second || vsNameArr[index]
           judgeJurisdictionRequest({
