@@ -755,6 +755,10 @@ swiper-item {
   justify-content: center;
   align-items: center;
 }
+.tc_left .fontStyle {
+  font-size: 30rpx;
+  font-weight: bold;
+}
 .tc_right{
   float: right;
   width: 510rpx;
