@@ -117,11 +117,12 @@ global.wxPage({
           that.setData({
             to_activation: 0
           })
-        } if (res.error == 15231) {
-          console.log('15231')
-          util.removeCache("mobile")
-          is_block = 1
         } else {
+          if (res.error == 15231) {
+            console.log('15231')
+            util.removeCache("mobile")
+            is_block = 1
+          }
           // util.showModal("提示", res.content);
           // return false;
           is_fail = 1;
