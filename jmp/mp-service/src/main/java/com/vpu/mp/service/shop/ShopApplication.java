@@ -50,6 +50,7 @@ import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.market.integralconvert.IntegralConvertService;
 import com.vpu.mp.service.shop.market.integration.GroupIntegrationService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.message.MessageTemplateService;
 import com.vpu.mp.service.shop.market.packagesale.PackSaleService;
@@ -521,5 +522,11 @@ public class ShopApplication {
 
     @Autowired
     public FeedbackService feedbackService;
+    
+    /**
+     * 小程序直播
+     */
+    @Autowired
+    public LiveService liveService;
 
 }
