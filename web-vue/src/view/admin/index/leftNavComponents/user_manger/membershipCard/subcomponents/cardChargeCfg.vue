@@ -1,5 +1,5 @@
 <template>
-  <div class="card-charge">
+  <div class="card-charge" @click="clickCheckRights">
     <el-form
       :model="ruleForm"
       status-icon
@@ -10,7 +10,7 @@
       <div class="card-charge-top">
         <el-form-item prop="sendMoney">
           <div class="charge-item">
-            <el-checkbox v-model="ruleForm.powerCard" @change="checkForPowerCard">
+            <el-checkbox v-model="ruleForm.powerCard" @change="checkForPowerCard" :disabled="rightDisable.powerCard">
               {{$t('memberCard.powerCard')}}
             </el-checkbox>
             <span class="send-info">
@@ -20,6 +20,7 @@
               v-model="ruleForm.sendMoney"
               size="small"
               :precision="2"
+              :disabled="rightDisable.sendMoney"
               :controls="false"
               :min="0"
               :max="999999999"
@@ -38,6 +39,7 @@
               <el-radio
                 v-model="ruleForm.offset"
                 label="2"
+
               >
                 {{ $t('memberCard.justCharge') }}
               </el-radio>
@@ -49,6 +51,7 @@
               <el-radio
                 v-model="ruleForm.offset"
                 label="0"
+                :disabled="rightDisable.offset"
               >
                 {{ $t('memberCard.chargeFull') }}
               </el-radio>
@@ -57,6 +60,7 @@
                 size="small"
                 :precision="2"
                 :controls="false"
+                :disabled="rightDisable.chargeInputLeft"
                 :min="0"
                 :max="999999999"
               >
@@ -67,6 +71,7 @@
                 size="small"
                 :precision="2"
                 :controls="false"
+                :disabled="rightDisable.chargeInputRight"
                 :min="0"
                 :max="999999999"
               >
@@ -121,6 +126,7 @@
               <el-radio
                 v-model="ruleForm.offset"
                 label="1"
+                :disabled="rightDisable.offset"
               >
                 {{ $t('memberCard.chargeEachFull') }}
               </el-radio>
@@ -129,6 +135,7 @@
                 size="small"
                 :precision="2"
                 :controls="false"
+                :disabled="rightDisable.chargeInputLeftM"
                 :min="0"
                 :max="999999999"
               >
@@ -139,6 +146,7 @@
                 size="small"
                 :precision="2"
                 :controls="false"
+                :disabled="rightDisable.chargeInputRightM"
                 :min="0"
                 :max="999999999"
               >
@@ -152,6 +160,9 @@
   </div>
 </template>
 <script>
+import {
+  judgeJurisdictionRequest
+} from '@/api/admin/util.js'
 export default {
   props: {
     val: {
@@ -229,6 +240,8 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.checkRights()
+
     this.$on('checkRule', () => {
       if (this.ruleForm.powerCard) {
         this.$refs.ruleForm.validate((valid) => {
@@ -300,6 +313,15 @@ export default {
       }
     }
     return {
+      rightDisable: {
+        sendMoney: true,
+        chargeInputLeft: true,
+        chargeInputRight: true,
+        chargeInputLeftM: true,
+        chargeInputRightM: true,
+        powerCard: true,
+        offset: true
+      },
       rules: {
         sendMoney: [
           { validator: validateSendMoney, trigger: 'blur' }
@@ -338,6 +360,28 @@ export default {
     },
     handleToDelChargeArr (index) {
       this.ruleForm.addChargeArr.splice(index, 1)
+    },
+    // 检查权限
+    checkRights () {
+      judgeJurisdictionRequest({
+        'V-EnName': 'user_card',
+        'V-VsName': 'charge_card'
+      }).then(res => {
+        this.switchDisableButton(!(res.error === 0))
+      })
+    },
+    clickCheckRights () {
+      this.handleToJudgeTwoDiction('user_card', 'charge_card').then(res => {
+        this.switchDisableButton(!res)
+      })
+    },
+    switchDisableButton (flag) {
+      let tmp = {}
+      Object.keys(this.rightDisable).forEach(k => { tmp[k] = flag })
+      console.log(this.rightDisable)
+      this.rightDisable = tmp
+      console.log(this.rightDisable)
+      console.log(tmp)
     }
   }
 }

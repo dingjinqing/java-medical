@@ -585,13 +585,25 @@ export default {
           })
           break
         case '1':
-          this.$router.push({
-            name: 'limitTimes'
+          this.handleToJudgeTwoDiction('user_card', 'count_card').then(res => {
+            if (res) {
+              this.$router.push({
+                name: 'limitTimes'
+              })
+            } else {
+              this.activeName = 'first'
+            }
           })
           break
         case '2':
-          this.$router.push({
-            name: 'GradeCard'
+          this.handleToJudgeTwoDiction('user_card', 'grade_card').then(res => {
+            if (res) {
+              this.$router.push({
+                name: 'GradeCard'
+              })
+            } else {
+              this.activeName = 'first'
+            }
           })
       }
 
