@@ -580,14 +580,9 @@ export default {
       this.currentCardType = tab.index
       switch (tab.index) {
         case '0':
-          this.handleToJudgeTwoDiction('user_card', 'charge_card').then(res => {
-            if (res) {
-              this.$router.push({
-                name: 'user_card'
-              })
-            }
+          this.$router.push({
+            name: 'user_card'
           })
-
           break
         case '1':
           this.handleToJudgeTwoDiction('user_card', 'count_card').then(res => {
