@@ -86,7 +86,10 @@
                 v-for="(item, index) in row.cardList"
                 :key="index"
               >
-                <router-link :to="{name: '/admin/home/main/normalCardDetail', query: {cardId: row.cardId}}">{{row.cardName}}</router-link>
+                <router-link
+                  class="to-card"
+                  :to="{path: '/admin/home/main/normalCardDetail', query: {cardId: item.cardId}}"
+                >{{item.cardName}}</router-link>
               </div>
             </template>
           </el-table-column>
@@ -350,6 +353,9 @@ export default {
     padding: 15px;
     background: #fff;
     margin-top: 10px;
+  }
+  .to-card {
+    text-decoration: none;
   }
 }
 </style>

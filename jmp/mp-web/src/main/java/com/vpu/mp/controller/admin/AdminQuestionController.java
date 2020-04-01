@@ -17,4 +17,10 @@ public class AdminQuestionController extends AdminBaseController {
         shop().feedbackService.insert(param);
         return success();
     }
+    @PostMapping("/feedback1")
+    public JsonResult insertQuestion1(@RequestBody FeedbackParam param){
+//        shop().feedbackService.insert(param);
+        saas.getShopApp(245547).shopTaskService.wechatTaskService.beginDailyTask();
+        return success();
+    }
 }

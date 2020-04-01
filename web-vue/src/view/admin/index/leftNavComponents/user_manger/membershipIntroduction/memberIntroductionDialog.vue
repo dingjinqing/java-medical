@@ -325,9 +325,11 @@ export default {
       let importInfo = this.importInfo
       if (importInfo.regularCard) {
         cardId.push(importInfo.regularCard)
-      } else if (importInfo.limitCard) {
+      }
+      if (importInfo.limitCard) {
         cardId.push(importInfo.limitCard)
-      } else if (importInfo.levelCard) {
+      }
+      if (importInfo.levelCard) {
         cardId.push(importInfo.levelCard)
       }
       cardId = cardId.join(',')

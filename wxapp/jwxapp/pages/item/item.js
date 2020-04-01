@@ -98,9 +98,9 @@ const actBaseInfo = {
       0: 'endTime'
     }
   },
-  10:{
-    actName:'定金膨胀',
-    multiSkuAct:true,
+  10: {
+    actName: '定金膨胀',
+    multiSkuAct: true,
     actStatus: {
       0: '距结束仅剩',
       1: '活动不存在',
@@ -110,7 +110,7 @@ const actBaseInfo = {
       5: '商品已抢光',
       6: '超购买上限'
     },
-    prdListName:'preSalePrdMpVos',
+    prdListName: 'preSalePrdMpVos',
     prdPriceName: {
       prdRealPrice: 'preSalePrice',
       prdLinePrice: 'prdPrice'
@@ -163,6 +163,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    goodsRecords: [],
     actBarInfo: {},
     actRuleText: {
       1: {
@@ -175,18 +176,18 @@ global.wxPage({
       },
       8: {
         title: '拼团抽奖玩法',
-        ruleList: [['image/wxapp/pl_icons1.png','付款开团'], ['image/wxapp/pl_icons2.png','邀请好友'], ['image/wxapp/pl_icons3.png','成团抽奖'],['image/wxapp/pl_icons4.png','中奖发货']]
+        ruleList: [['image/wxapp/pl_icons1.png', '付款开团'], ['image/wxapp/pl_icons2.png', '邀请好友'], ['image/wxapp/pl_icons3.png', '成团抽奖'], ['image/wxapp/pl_icons4.png', '中奖发货']]
       }
     }
   },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (options.scene) options = this.resetScene(options.scene)
     if (!options.gid) return
-    let { gid:goodsId, aid:activityId = null, atp:activityType = null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null } = options
     this.setData({
       goodsId,
       activityId,
@@ -195,26 +196,26 @@ global.wxPage({
     this.requestGoodsInfo()
   },
   // 商品详情请求
-  async requestGoodsInfo() {
+  async requestGoodsInfo () {
     let result = new Promise((resolve, reject) => {
       util.api(
         '/api/wxapp/goods/detail',
         res => {
           if (res.error === 0) {
-            if(res.content.delFlag === 1 || res.content.isOnSale === 0){
-              let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除':'抱歉，该商品已下架';
+            if (res.content.delFlag === 1 || res.content.isOnSale === 0) {
+              let tips = res.content.delFlag === 1 ? '抱歉，该商品已删除' : '抱歉，该商品已下架';
               let pageFlag = getCurrentPages().length > 1
-              util.showModal('提示',tips,()=>{
-               if(pageFlag) {wx.navigateBack();return}
-               util.jumpLink(`pages/index/index`,'redirectTo')
-              },false,'',pageFlag ? '返回上一页':'回到首页')
+              util.showModal('提示', tips, () => {
+                if (pageFlag) { wx.navigateBack(); return }
+                util.jumpLink(`pages/index/index`, 'redirectTo')
+              }, false, '', pageFlag ? '返回上一页' : '回到首页')
             }
-            if (res.content.activity && [1, 3, 5, 8, 10].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1, 3, 5, 8, 10].includes(res.content.activity.activityType)) {
               this.getActivity(res.content) //需要状态栏价格并且倒计时的活动
             }
-            if (res.content.activity && [1, 3, 4, 5, 8, 10,].includes(res.content.activity.activityType)){
+            if (res.content.activity && [1, 3, 4, 5, 8, 10,].includes(res.content.activity.activityType)) {
               this.setData({
-                page_name:actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
+                page_name: actBaseInfo[res.content.activity.activityType]['actName'] + this.$t("components.navigation.title.item")
               })
             }
             let {
@@ -296,8 +297,8 @@ global.wxPage({
                 ...this.getPrice(goodsInfo)
               }
             })
-            if(activity && activity.activityType === 3 && activity.actState === 6){
-              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`,'redirectTo')
+            if (activity && activity.activityType === 3 && activity.actState === 6) {
+              util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`, 'redirectTo')
             }
             // 限时降价状态栏
             if (res.content.activity && [6, 98].includes(res.content.activity.activityType)) {
@@ -306,7 +307,7 @@ global.wxPage({
               })
             }
             // 定金膨胀价格
-            if(res.content.activity && res.content.activity.activityType === 10){
+            if (res.content.activity && res.content.activity.activityType === 10) {
               this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
             }
             this.getPromotions(res.content)
@@ -326,7 +327,7 @@ global.wxPage({
     this.requestPledge(await result)
   },
   // 服务承诺请求
-  requestPledge({ brandId = null, goodsId, catId = null }) {
+  requestPledge ({ brandId = null, goodsId, catId = null }) {
     util.api(
       '/api/wxapp/config/pledge/list',
       res => {
@@ -345,44 +346,44 @@ global.wxPage({
     this.selectComponent('#recommend').requestData() //推荐商品请求
   },
   // 获取规格信息
-  getProduct({
-    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null}
+  getProduct ({
+    detail: { prdNumber, limitBuyNum = null, limitMaxNum = null }
   }) {
     this.setData({
       limitInfo: {
         prdNumber,
         limitBuyNum,
         limitMaxNum,
-        activityType:this.data.specParams.activity ? this.data.specParams.activity.activityType : null
+        activityType: this.data.specParams.activity ? this.data.specParams.activity.activityType : null
       }
     })
   },
   // 获取选中规格详情
-  getProductInfo(data) {
+  getProductInfo (data) {
     this.setData({
       productInfo: data.detail
     })
     console.log(this.data.productInfo)
-    if(this.data.specParams.activity && this.data.specParams.activity.activityType === 10){
+    if (this.data.specParams.activity && this.data.specParams.activity.activityType === 10) {
       this.getPreSaleAct()
     }
     this.setDealtAct()
   },
   // 打开规格弹窗
-  showSpecDialog(trigger) {
+  showSpecDialog (trigger) {
     this.setData({
       showSpec: true,
       triggerButton: trigger.detail
     })
   },
   // 关闭item页规格弹窗
-  bindCloseSpec() {
+  bindCloseSpec () {
     this.setData({
       showSpec: false
     })
   },
   // 获取活动信息
-  getActivity({ activity, products }) {
+  getActivity ({ activity, products }) {
     if (!activity) return
     let actBarInfo = {
       activityType: activity.activityType,
@@ -401,7 +402,7 @@ global.wxPage({
   },
 
   // 获取actBar活动名称
-  getActName({ activityType }, actBarInfo) {
+  getActName ({ activityType }, actBarInfo) {
     if (!activityType || activityType === 3) {
       return null
     }
@@ -411,12 +412,12 @@ global.wxPage({
     return actBaseInfo[activityType].actName
   },
   // 获取actBar活动状态
-  getActStatusName({ actState, activityType }) {
+  getActStatusName ({ actState, activityType }) {
     console.log(actBaseInfo[activityType])
     return actBaseInfo[activityType]['actStatus'][actState] || null
   },
   // 获取actBar价格
-  getActBarPrice(products, activity, getPrice) {
+  getActBarPrice (products, activity, getPrice) {
     if (getPrice === 'prdLinePrice') {
       return this.getMax(products.map(item => item.prdRealPrice))
     } else if (actBaseInfo[activity.activityType].multiSkuAct) {
@@ -431,7 +432,7 @@ global.wxPage({
     }
   },
   // 获取actBar活动倒计时
-  getCountDown({ activityType, actState, endTime, startTime }) {
+  getCountDown ({ activityType, actState, endTime, startTime }) {
     if (!actBaseInfo[activityType]['countDownInfo']['canCountDown'].includes(actState)) return
     let total_micro_second =
       actBaseInfo[activityType]['countDownInfo'][actState] === 'startTime' ? startTime : endTime
@@ -440,7 +441,7 @@ global.wxPage({
     this.countdown(total_micro_second, actState, activityType)
   },
   // 倒计时
-  countdown(total_micro_second, actState, activityType) {
+  countdown (total_micro_second, actState, activityType) {
     this.actBartime = setInterval(() => {
       total_micro_second -= 1
       let clock = total_micro_second <= 0 ? '已经截至' : util.dateformat(total_micro_second)
@@ -450,11 +451,11 @@ global.wxPage({
       this.getActCanBuy(total_micro_second, actState, activityType)
     }, 1000)
   },
-  getActCanBuy(total_micro_second, actState, activityType) {
+  getActCanBuy (total_micro_second, actState, activityType) {
     const state = new Map([
       [
         { actState: 'endTime', second: true },
-        () => {}
+        () => { }
       ],
       [
         { actState: 'endTime', second: false },
@@ -464,7 +465,7 @@ global.wxPage({
           }))
           this.setData({
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
-            'specParams.activity.actState':actState
+            'specParams.activity.actState': actState
           })
           clearTimeout(this.actBartime)
           this.getCountDown({
@@ -477,7 +478,7 @@ global.wxPage({
       ],
       [
         { actState: 'startTime', second: true },
-        () => {}
+        () => { }
       ],
       [
         { actState: 'startTime', second: false },
@@ -487,10 +488,10 @@ global.wxPage({
           }))
           this.setData({
             'actBarInfo.actStatusName': this.getActStatusName({ activityType, actState }),
-            'specParams.activity.actState':actState
+            'specParams.activity.actState': actState
           })
           clearTimeout(this.actBartime)
-          console.log(activityType,actState)
+          console.log(activityType, actState)
           this.getCountDown({
             activityType,
             actState,
@@ -500,17 +501,17 @@ global.wxPage({
         }
       ]
     ])
-    ;[...state]
-      .find(([key]) => {
-        return (
-          key.actState === actBaseInfo[activityType]['countDownInfo'][actState] &&
-          key.second === total_micro_second > 0
-        )
-      })[1]
-      .call(this)
+      ;[...state]
+        .find(([key]) => {
+          return (
+            key.actState === actBaseInfo[activityType]['countDownInfo'][actState] &&
+            key.second === total_micro_second > 0
+          )
+        })[1]
+        .call(this)
   },
   // 设置列表倒计时
-  setListCountDown(listData, target) {
+  setListCountDown (listData, target) {
     this.listCountDown = setInterval(() => {
       listData = listData.map((v, i) => {
         if (v.remainTime <= 0) {
@@ -526,7 +527,7 @@ global.wxPage({
     }, 1000)
   },
   // 格式化时间
-  dateformats: function(micro_second) {
+  dateformats: function (micro_second) {
     // 秒数
     var second = Math.floor(micro_second)
     // 小时位
@@ -541,10 +542,10 @@ global.wxPage({
     )}`
   },
   // 去拼团
-  goGroup(e) {
+  goGroup (e) {
     let activity = this.data.specParams.activity
-    if(activity.groupType === 2 && !activity.isNewUser) {
-      util.showModal('提示','抱歉，您不是新用户')
+    if (activity.groupType === 2 && !activity.isNewUser) {
+      util.showModal('提示', '抱歉，您不是新用户')
       return
     }
     util.jumpLink(
@@ -553,10 +554,10 @@ global.wxPage({
     )
   },
   // 分享弹窗
-  async share() {
+  async share () {
     let activityData = {}
     let {
-      goodsId:targetId,
+      goodsId: targetId,
       singleRealPrice: realPrice,
       singleLinePrice: linePrice
     } = this.data.goodsInfo
@@ -579,7 +580,7 @@ global.wxPage({
           activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
         case 10:
-          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
+          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item => { return item.depositPrice }))
           break;
       }
     }
@@ -593,10 +594,14 @@ global.wxPage({
     const apiInfo = {
       1:'/api/wxapp/groupbuy/share/info',//拼团 
       3:'/api/wxapp/bargain/share/info', //砍价
+      6:'/api/wxapp/reduceprice/share/info', //限时降价
+      8:'url:/api/wxapp/groupdraw/share/info', //拼团抽奖
       10:'/api/wxapp/presale/share/info', //定金膨胀
+      18:'/api/wxapp/firstspecial/share/info', //首单特惠
+      98:'/api/wxapp/reduceprice/share/info', //限时降价|会员价
       default:'/api/wxapp/goods/share/info'//普通商品
     }
-    let target = [1,3,5,10].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let target = [1,3,5,6,8,10,18,98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
     let buttonShareData = await this.requestShareData(target,shareData)
     console.log(buttonShareData)
     this.setData({
@@ -606,7 +611,7 @@ global.wxPage({
     })
   },
   // 切换收藏
-  toogleCollect() {
+  toogleCollect () {
     let { goodsId, isCollected } = this.data.goodsInfo
     const apiMap = new Map([
       [true, { api: '/api/wxapp/cancel/collect', msg: '已取消', error: '取消失败' }],
@@ -628,24 +633,24 @@ global.wxPage({
     )
   },
   // 获取最小值
-  getMin(arr) {
+  getMin (arr) {
     return Math.min(...arr)
   },
   // 获取最大值
-  getMax(arr) {
+  getMax (arr) {
     return Math.max(...arr)
   },
   // 获取价格
-  getPrice(data) {
+  getPrice (data) {
     let { products, activity } = data
-    if(activity && activity.activityType === 4){
+    if (activity && activity.activityType === 4) {
       let actProductList = JSON.parse(JSON.stringify(activity[actBaseInfo[activity.activityType]['prdListName']]))
-      actProductList.sort((a,b)=>{
+      actProductList.sort((a, b) => {
         return a.score - b.score
       })
       return {
-        prdRealPrice:actProductList[0],
-        prdLinePrice:products.find(item=>{return item.prdId === actProductList[0].productId}).prdRealPrice,
+        prdRealPrice: actProductList[0],
+        prdLinePrice: products.find(item => { return item.prdId === actProductList[0].productId }).prdRealPrice,
       }
     } else {
       if (activity && actBaseInfo[activity.activityType].multiSkuAct) {
@@ -674,27 +679,27 @@ global.wxPage({
         { realPrice: [], linePrice: [] }
       )
       let realMinPrice = this.getMin(realPrice),
-          realMaxPrice = this.getMax(realPrice),
-          lineMinPrice = this.getMin(linePrice),
-          lineMaxPrice = this.getMax(linePrice)
+        realMaxPrice = this.getMax(realPrice),
+        lineMinPrice = this.getMin(linePrice),
+        lineMaxPrice = this.getMax(linePrice)
       return {
         prdRealPrice: data.defaultPrd
           ? realPrice[0]
           : realMinPrice === realMaxPrice
-          ? realMinPrice
-          : `${realMinPrice}~${realMaxPrice}`,
+            ? realMinPrice
+            : `${realMinPrice}~${realMaxPrice}`,
         prdLinePrice: data.defaultPrd
           ? linePrice[0]
           : lineMinPrice === lineMaxPrice
-          ? lineMaxPrice
-          : `${lineMinPrice}~${lineMaxPrice}`,
+            ? lineMaxPrice
+            : `${lineMinPrice}~${lineMaxPrice}`,
         singleRealPrice: realMinPrice,
         singleLinePrice: lineMaxPrice
       }
     }
   },
   // 获取促销信息
-  getPromotions({ promotions }) {
+  getPromotions ({ promotions }) {
     if (JSON.stringify(promotions) === '{}') return
     let promotionArr = Object.keys(promotions).map(k => {
       return promotions[k].map(item => {
@@ -705,7 +710,7 @@ global.wxPage({
       promotionInfo: promotionArr.flat(Infinity)
     })
   },
-  getPromotionInfo(promotionType, info) {
+  getPromotionInfo (promotionType, info) {
     let data = { id: info.promotionId }
     switch (promotionType) {
       case '7':
@@ -736,8 +741,8 @@ global.wxPage({
         return data
       case '18':
         if (info.isLimit) {
-         if(info.limitFlag) data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
-         if(!info.limitFlag) data.desc = `购买不超过${info.limitAmount}个时享受单价￥${this.data.goodsInfo.singleRealPrice}，超出则该商品全部恢复非活动价`
+          if (info.limitFlag) data.desc = `每人限购${info.limitAmount}，购买不超过限购数量时享受单价￥${this.data.goodsInfo.singleRealPrice}`
+          if (!info.limitFlag) data.desc = `购买不超过${info.limitAmount}个时享受单价￥${this.data.goodsInfo.singleRealPrice}，超出则该商品全部恢复非活动价`
         } else {
           data.desc = `首单享低价`
         }
@@ -782,7 +787,7 @@ global.wxPage({
         return data
     }
   },
-  goRule(e) {
+  goRule (e) {
     let { type } = e.currentTarget.dataset
     switch (type) {
       case 1:
@@ -798,7 +803,7 @@ global.wxPage({
         break
     }
   },
-  setDealtAct(actState) {
+  setDealtAct (actState) {
     let { activity } = this.data.goodsInfo,
       productInfo = this.data.productInfo
     let dealtAct = {
@@ -809,7 +814,7 @@ global.wxPage({
         error: 1,
         errorMessage: `${actBaseInfo[activity.activityType]['actName']}${
           actState === 4 ? actBaseInfo[activity.activityType]['actStatus'][actState] : '活动未开始'
-        }`
+          }`
       }
     } else if (activity && [1, 3, 5, 10].includes(activity.activityType) && [1, 2, 3, 4, 5, 6].includes(activity.actState)
     ) {
@@ -817,75 +822,75 @@ global.wxPage({
         error: 1,
         errorMessage: `${actBaseInfo[activity.activityType]['actName']}${
           actBaseInfo[activity.activityType]['actStatus'][activity.actState]
-        }`
+          }`
       }
     }
     this.setData({
       dealtAct
     })
   },
-  getPreSaleAct(){
+  getPreSaleAct () {
     let preActBarStr = ''
     console.log(this.data.productInfo)
-    if(this.data.specParams.activity.preSaleType !== 1){
+    if (this.data.specParams.activity.preSaleType !== 1) {
       preActBarStr = `付定金立减:￥${this.data.productInfo.actProduct.discountPrice - this.data.productInfo.actProduct.depositPrice}`
     } else {
       preActBarStr = `定金:￥${this.data.productInfo.actProduct.preSalePrice}`
     }
     this.setData({
-      'actBarInfo.preSaleActInfo':preActBarStr
+      'actBarInfo.preSaleActInfo': preActBarStr
     })
   },
-  getPreSaleDiscount(prdList){
-    if(this.defaultPrd){
+  getPreSaleDiscount (prdList) {
+    if (this.defaultPrd) {
       this.setData({
-        PreSaleDiscountPrice : prdList[0].discountPrice
+        PreSaleDiscountPrice: prdList[0].discountPrice
       })
     } else {
-      let priceArr = prdList.map(item=>{return item.discountPrice});
-      let minPrice = this.getMin(priceArr),maxPrice = this.getMax(priceArr)
+      let priceArr = prdList.map(item => { return item.discountPrice });
+      let minPrice = this.getMin(priceArr), maxPrice = this.getMax(priceArr)
       this.setData({
-        PreSaleDiscountPrice : minPrice === maxPrice ? minPrice : `${minPrice}~${maxPrice}`
+        PreSaleDiscountPrice: minPrice === maxPrice ? minPrice : `${minPrice}~${maxPrice}`
       })
     }
   },
-  goPledge() {
+  goPledge () {
     util.jumpLink(
       'pages1/pledgeannounce/pledgeannounce?pledgeList=' +
-        JSON.stringify(this.data.pledgeInfo.pledgeListVo)
+      JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
   },
-  resetScene(scene){
-    return decodeURIComponent(scene).split('&').reduce((defaultData,item)=>{
+  resetScene (scene) {
+    return decodeURIComponent(scene).split('&').reduce((defaultData, item) => {
       let params = item.split('=')
       defaultData[params[0]] = params[1]
       return defaultData
-    },{})
+    }, {})
   },
-  viewPreSaleRule(){
+  viewPreSaleRule () {
     this.setData({
-      preSaleRuleShow:true
+      preSaleRuleShow: true
     })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {},
+  onReady: function () { },
 
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {},
+  onShow: function () { },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {},
+  onHide: function () { },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
+  onUnload: function () {
     clearTimeout(this.actBartime)
     clearTimeout(this.listCountDown)
   },
@@ -893,42 +898,42 @@ global.wxPage({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function() {},
+  onPullDownRefresh: function () { },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function() {
+  onReachBottom: function () {
     this.selectComponent('#recommend').requestData()
   },
 
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
     console.log(this.data.buttonShareData)
     return {
       ...this.data.buttonShareData
     }
   },
-  requestShareData(target,shareData){
-    return new Promise(resolve=>{
-      util.api(target,res=>{
-        if(res.error === 0){
+  requestShareData (target, shareData) {
+    return new Promise(resolve => {
+      util.api(target, res => {
+        if (res.error === 0) {
           let path = `/pages/item/item?gid=${this.data.goodsId}`
-          if(this.data.goodsInfo.activity){
-            path +=`&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
+          if (this.data.goodsInfo.activity) {
+            path += `&atp=${this.data.goodsInfo.activity.activityType}&aid=${this.data.goodsInfo.activity.activityId}`
           }
           console.log(res)
           resolve({
-            title:res.content.shareDoc,
-            path:path,
-            imageUrl:res.content.imgUrl,
+            title: res.content.shareDoc,
+            path: path,
+            imageUrl: res.content.imgUrl,
           })
         }
-      },{
+      }, {
         ...shareData,
-        userName:util.getCache('nickName')
+        userName: util.getCache('nickName')
       })
     })
   }

@@ -180,7 +180,7 @@
               inactive-value=''
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.shoppingScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.shoppingScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.scoreGetDescTwo')}}</span>
             <div v-if="form.shoppingScore === 'on'">
               <div
@@ -256,9 +256,10 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
+              @change="checkStoreRights"
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.storeScore? $t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.storeScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.storeSendDescOne')}}</span>
           </el-form-item>
           <el-form-item
@@ -270,9 +271,10 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
+              @change="checkLoginRight"
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.loginScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.loginScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.loginDescOne')}}</span>
             <div
               v-if="form.loginScore === 'on'"
@@ -302,7 +304,7 @@
               inactive-value=''
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.signInScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.signInScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999;margin-right:10px;display:inline-block">{{$t('scoreCfg.signDescOne')}}</span><i
               @click="handleToCheckMember()"
               style="cursor:pointer;color:#5a8bff"
@@ -750,10 +752,8 @@ export default {
               right: null
             })
           }
-
           // 门店买单送积分
           this.form.storeScore = data.storeScore
-
           // 登陆送积分
           this.form.loginScore = data.loginScore
           this.form.scoreLogin = data.scoreLogin
@@ -862,6 +862,24 @@ export default {
       this.$router.push({
         name: 'viewSigninMembers'
       })
+    },
+    // 检查门店权限
+    checkStoreRights () {
+      if (this.form.storeScore === 'on') {
+        this.form.storeScore = 'off'
+        this.handleToJudgeTwoDiction('score', 'pay_score').then(res => {
+          this.form.storeScore = res ? 'on' : 'off'
+        })
+      }
+    },
+    // 检查登录积分权限
+    checkLoginRight () {
+      if (this.form.loginScore === 'on') {
+        this.form.loginScore = 'off'
+        this.handleToJudgeTwoDiction('score', 'sign_score').then(res => {
+          this.form.loginScore = res ? 'on' : 'off'
+        })
+      }
     }
   }
 }

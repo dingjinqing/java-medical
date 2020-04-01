@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class GoodsShareConfig {
-	
+	public static final Byte DEFAULT_VALUE = 0;
 	/**
 	 * 直接分享
 	 * 0默认文案    1自定义文案

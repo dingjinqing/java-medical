@@ -173,7 +173,7 @@
                       <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">失效</view>
                       <view class="goods_item">
                           <view class="goods_img">
-                              <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                              <image src="{{item.goodsImg}}"/>
                               <view class="invalid">
                                 失效商品
                               </view>

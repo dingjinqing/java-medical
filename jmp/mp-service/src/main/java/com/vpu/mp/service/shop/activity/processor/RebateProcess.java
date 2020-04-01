@@ -6,8 +6,10 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
@@ -15,7 +17,10 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,13 +28,14 @@ import java.util.List;
  * @author 王帅
  */
 @Slf4j
+@Service
 public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
     @Autowired
     MpDistributionGoodsService distributionGoods;
 
     @Override
     public Byte getPriority() {
-        return 0;
+        return GoodsConstant.ACTIVITY_INTEGER_MALL_PRIORITY;
     }
 
     @Override
@@ -73,14 +79,23 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         //商品分销
         if(goodsDetailMpBo.getCanRebate() == 1){
-            GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
-            //获取用户分销等级
-            UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
-            RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
-            goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
-            goodsDistributionVo.setCanRebate((byte)1);
-            goodsDistributionVo.setRebateRatio(rebateRatioVo);
-            goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+            //判断商品是否存在营销活动
+            GoodsActivityBaseMp activity = goodsDetailMpBo.getActivity();
+            Byte[] intArray = new Byte[]{BaseConstant.ACTIVITY_STATUS_NORMAL,BaseConstant.ACTIVITY_TYPE_BARGAIN,BaseConstant.NAVBAR_TYPE_DISABLED,BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+                BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,BaseConstant.ACTIVITY_TYPE_PRE_SALE,BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER,
+                BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,BaseConstant.ACTIVITY_TYPE_PAY_AWARD,BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER};
+            ArrayList<Byte> goodsTypes = new ArrayList<>(Arrays.asList(intArray));
+            if(activity == null || !(goodsTypes.contains(activity.getActivityType()))){
+                GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
+                //获取用户分销等级
+                UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
+                RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
+                goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
+                goodsDistributionVo.setCanRebate((byte)1);
+                goodsDistributionVo.setRebateRatio(rebateRatioVo);
+                goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+            }
+
         }
     }
 }

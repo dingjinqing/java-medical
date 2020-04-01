@@ -21,6 +21,18 @@ export const en = {
   verifierManage: 'verifier manage',
   storeManage: 'store manage',
   delStoreTip: 'Are you sure you want to delete this store?',
+  storePickup: 'Store Pickup:',
+  turnedOn: 'Turned on',
+  unopened: 'Unopened',
+  sameCityDelivery: 'Same city delivery',
+  understandMore: 'understand more',
+  currentVersion: 'Current version is',
+  canAlsoCreate: 'Can also create',
+  aStore: 'A store',
+  ultimate: 'Ultimate',
+  trialVersion: 'Trial Version',
+  basicEdition: 'Basic Edition',
+  preminumEdition: 'Premium Edition',
 
   // 分组列表
   addGroup: 'create a group',
