@@ -66,35 +66,45 @@
 		"name": "概况统计",
 		"enName": "analysis_basic",
 		"topIndex": 0,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/overview/analysis/*"
+    ]
 	},
 	{
 		"vsName": "portrait_user",
 		"name": "用户画像",
 		"enName": "analysis_portrait",
 		"topIndex": 0,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/summary/portrait/*"
+    ]
 	},
 	{
 		"vsName": "second_view",
 		"name": "访问分析",
 		"enName": "analysis_visit",
 		"topIndex": 0,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/summary/visit/*"
+    ]
 	},
 	{
 		"vsName": "visit_source",
 		"name": "来源分析",
 		"enName": "analysis_visit_source",
 		"topIndex": 0,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/summary/source/*"
+    ]
 	},
 	{
 		"vsName": "analysis_visit_source",
 		"name": "交易统计",
 		"enName": "trades_summary",
 		"topIndex": 0,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/transactionstatistics/*"
+    ]
 	},
 	{
 		"vsName": "sort",
@@ -286,7 +296,9 @@
 		"name": "定向发券",
 		"enName": "market_act_give",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/coupon/give/*"
+    ]
 	},
 	{
 		"vsName": "activity_reward",
@@ -300,7 +312,9 @@
 		"name": "积分商品",
 		"enName": "integral_convert",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/integral/convert/*"
+    ]
 	},
 	{
 		"vsName": "reduce_price",
@@ -391,7 +405,9 @@
 		"name": "好友助力",
 		"enName": "promote",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/promote/*"
+    ]
 	},
 	{
 		"vsName": "assess",
