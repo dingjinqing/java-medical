@@ -143,26 +143,31 @@ public class MpDistributionGoodsService extends ShopBaseService {
         if(levels.contains(distributionLevel.getDistributorLevel())){
             Byte level = distributionLevel.getDistributorLevel();
             if(level == 1){
+                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
                 rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio());
                 rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio());
                 rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio());
             }
             if(level == 2){
+                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
                 rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_2());
                 rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_2());
                 rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_2());
             }
             if(level == 3){
+                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
                 rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_3());
                 rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_3());
                 rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_3());
             }
             if(level == 4){
+                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
                 rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_4());
                 rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_4());
                 rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_4());
             }
             if(level == 5){
+                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
                 rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_5());
                 rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_5());
                 rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_5());
