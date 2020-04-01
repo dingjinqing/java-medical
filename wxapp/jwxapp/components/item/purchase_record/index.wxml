@@ -1,0 +1,13 @@
+<view class="purchase_container" style="top:{{top_nav + 28}}px;" wx:if="{{gd.goods_records != ''}}">
+	<view
+	 class="purchase_record"
+	 animation="{{animation}}"
+	 bindtransitionend="backStart"
+	 wx:if='{{show_purchase}}'
+	>
+		<image class="purchase_image" src="{{purchase_img}}" />
+		<view class="purchase_name van-ellipsis ">{{purchase_name}}</view>
+		<view class="purchase_text">刚刚购买了此商品</view>
+	</view>
+</view>
+
