@@ -4,10 +4,7 @@ var app = getApp()
 var imageUrl = app.globalData.imageUrl;
 var baseUrl = app.globalData.baseUrl;
 var mobile = util.getCache('mobile');
-var order_info = [];
-
 global.wxPage({
-
   /**
    * 页面的初始数据
    */
@@ -16,7 +13,8 @@ global.wxPage({
     baseUrl: app.globalData.baseUrl,
     page: 1,
     last_page: 1,
-    order_info: []
+    order_info: [],
+    search: ''
   },
 
   /**
@@ -31,30 +29,27 @@ global.wxPage({
   order_request (that) {
     console.log(that)
     util.api('/api/wxapp/order/refund/list/search', function (res) {
-      //   if (res.error == 0) {
-      //     var order_info = [];
-      //     that.data.last_page = res.content.list.last_page;
-      //     if (res.content.list.data != "") {
-      //       order_info = res.content.list.data;
-      //     } else {
-      //       order_info = ""
-      //     }
-      //     that.setData({
-      //       order_info: order_info
-      //     })
-      //   } else {
-      //     util.showModal("提示", res.message, function () { });
-      //     return false;
-      //   }
-    }, { search: that.data.search, page: that.data.page })
+      if (res.error == 0) {
+        console.log(res)
+        that.data.last_page = res.content.page.lastPage;
+        that.setData({
+          order_info: res.content.dataList
+        })
+      } else {
+        util.showModal("提示", res.message, function () { });
+        return false;
+      }
+    }, { search: that.data.search, currentPage: that.data.page })
   },
   // 商品详情
   to_item: function (e) {
-    util.jumpLink('/pages/item/item?goods_id=' + e.currentTarget.dataset.goods_id);
+    console.log(e)
+    util.jumpLink('/pages/item/item?gid=' + e.currentTarget.dataset.goods_id);
   },
   // 售后详情
   to_detail: function (e) {
-    util.jumpLink("/pages3/returnorder/returnorder?order_sn=" + e.currentTarget.dataset.order_sn + "&ret_id=" + e.currentTarget.dataset.ret_id + "&submit_shipping=0");
+    console.log(e)
+    util.jumpLink("/pages1/returndetail/returndetail?return_sn=" + e.currentTarget.dataset.order_sn);
   },
   // 搜索
   bindSearch: function (e) {
@@ -115,30 +110,25 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
+    console.log('触底')
     var that = this;
     if (that.data.page == that.data.last_page) { return false };
     that.data.page = that.data.page + 1;
     wx.showLoading({
       title: '加载中···',
     })
-    // util.api('/api/wxapp/return/aftersalelist', function (res) {
-    //   if (res.error == 0) {
-    //     var order_info = [];
-    //     that.data.last_page = res.content.list.last_page;
-    //     if (res.content.list.data != "") {
-    //       order_info = res.content.list.data;
-    //     } else {
-    //       order_info = ""
-    //     }
-    //     wx.hideLoading();
-    //     that.setData({
-    //       order_info: that.data.order_info.concat(order_info)
-    //     })
-    //   } else {
-    //     util.showModal("提示", res.message, function () { });
-    //     return false;
-    //   }
-    // }, { search: that.data.search, page: that.data.page })
+    util.api('/api/wxapp/order/refund/list/search', function (res) {
+      if (res.error == 0) {
+        that.data.last_page = res.content.page.last_page;
+        wx.hideLoading();
+        that.setData({
+          order_info: that.data.order_info.concat(res.content.dataList)
+        })
+      } else {
+        util.showModal("提示", res.message, function () { });
+        return false;
+      }
+    }, { search: that.data.search, page: that.data.page })
   },
 
   /**

@@ -58,13 +58,12 @@ public class PreSaleProcessorDao extends PreSaleService {
         // 付定金：时间限制在第一阶段或第二阶段内 ，全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
         Condition condition = (PRESALE.PRE_START_TIME.lt(date).and(PRESALE.PRE_END_TIME.gt(date))).or(PRESALE.PRE_START_TIME_2.lt(date).and(PRESALE.PRE_END_TIME_2.gt(date)));
         return db().select(PRESALE.ID, PRESALE_PRODUCT.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE)
-            .from(PRESALE_PRODUCT)
-                .innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .from(PRESALE_PRODUCT).innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
             .where(PRESALE_PRODUCT.GOODS_ID.in(goodsIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(condition)
-            .orderBy(PRESALE_PRODUCT.PRESALE_PRICE.asc())
+            .orderBy(PRESALE.FIRST.desc(),PRESALE_PRODUCT.PRESALE_PRICE.asc(),PRESALE.CREATE_TIME.desc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.GOODS_ID)));
     }
 
@@ -97,7 +96,7 @@ public class PreSaleProcessorDao extends PreSaleService {
      * @param now        限制时间
      * @return 预售信息
      */
-    public PreSaleMpVo getGoodsPreSaleInfo(Integer activityId, Timestamp now) {
+    public PreSaleMpVo getGoodsPreSaleInfo(Integer activityId,Integer goodsId, Timestamp now) {
         // 一阶段或二阶段付定金时间限制
         // 付定金：时间限制在第一阶段或第二阶段内
         //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
@@ -137,7 +136,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         vo.setFinalPaymentEnd(presaleRecord.getEndTime());
 
         // 处理对应的规格信息
-        List<PresaleProductRecord> presaleProductRecords = db().selectFrom(PRESALE_PRODUCT).where(PRESALE_PRODUCT.PRESALE_ID.eq(presaleRecord.getId()))
+        List<PresaleProductRecord> presaleProductRecords = db().selectFrom(PRESALE_PRODUCT).where(PRESALE_PRODUCT.PRESALE_ID.eq(presaleRecord.getId()).and(PRESALE_PRODUCT.GOODS_ID.eq(goodsId)))
             .fetchInto(PresaleProductRecord.class);
         List<PreSalePrdMpVo> prdMpVos = new ArrayList<>(presaleProductRecords.size());
         presaleProductRecords.forEach(record -> {

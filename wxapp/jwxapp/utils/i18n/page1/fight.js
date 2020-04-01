@@ -40,5 +40,6 @@ module.exports = {
   "sceneValue": "场景值：",
   "enterFromSharing": "从分享进入",
   "personToBuy": "人拼购仅需",
-  "yuan": "元，"
+  "yuan": "元，",
+  "reachedLimit":"抱歉，该活动参团个数已经达到上限！"
 }

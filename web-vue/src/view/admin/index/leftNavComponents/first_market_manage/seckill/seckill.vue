@@ -404,22 +404,22 @@ export default {
 
     // 查看秒杀订单
     seckillOrderHanlder (id, name) {
-      this.$router.push({ name: 'seckill_order_view', query: { id: id, name: name } })
+      this.$router.push({ name: 'sec_kill_order', query: { id: id, name: name } })
     },
 
     // 查看用户明细
     seckillDetailHanlder (id, name) {
-      this.$router.push({ name: 'seckill_detail_view', query: { id: id, name: name } })
+      this.$router.push({ name: 'sec_kill_detail', query: { id: id, name: name } })
     },
 
     // 查看秒杀用户
     seckillUserHanlder (id, name) {
-      this.$router.push({ name: 'seckill_user_view', query: { id: id, name: name } })
+      this.$router.push({ name: 'sec_kill_user', query: { id: id, name: name } })
     },
 
     // 查看活动数据效果
     seckillEffectHandler (id, startTime, endTime) {
-      this.$router.push({ name: 'seckill_effect_view', query: { id: id, startTime: startTime, endTime: endTime } })
+      this.$router.push({ name: 'sec_kill_effect', query: { id: id, startTime: startTime, endTime: endTime } })
     }
 
   }

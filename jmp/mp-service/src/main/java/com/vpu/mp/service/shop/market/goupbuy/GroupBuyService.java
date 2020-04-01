@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
@@ -255,27 +256,44 @@ public class GroupBuyService extends ShopBaseService {
         GroupBuyDetailVo groupBuy = record.into(GroupBuyDetailVo.class);
         //产品规格信息
         List<GroupBuyProductVo> buyProductVos = db()
-            .select(GROUP_BUY_PRODUCT_DEFINE.ID,
-                GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,
-                GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,
-                GROUP_BUY_PRODUCT_DEFINE.GOODS_ID,
-                GOODS.GOODS_NAME,
-                GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,
-                GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE,
-                GROUP_BUY_PRODUCT_DEFINE.SALE_NUM,
-                GROUP_BUY_PRODUCT_DEFINE.STOCK,
-                GOODS_SPEC_PRODUCT.PRD_DESC,
-                GOODS_SPEC_PRODUCT.PRD_PRICE,
-                GOODS_SPEC_PRODUCT.PRD_NUMBER
-            )
-            .from(GROUP_BUY_PRODUCT_DEFINE)
-            .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
-            .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
-            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
+                .select(GROUP_BUY_PRODUCT_DEFINE.ID,
+                        GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID,
+                        GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID,
+                        GROUP_BUY_PRODUCT_DEFINE.GOODS_ID,
+                        GOODS.GOODS_NAME,
+                        GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE,
+                        GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE,
+                        GROUP_BUY_PRODUCT_DEFINE.SALE_NUM,
+                        GROUP_BUY_PRODUCT_DEFINE.STOCK,
+                        GOODS_SPEC_PRODUCT.PRD_DESC,
+                        GOODS_SPEC_PRODUCT.PRD_PRICE,
+                        GOODS_SPEC_PRODUCT.PRD_NUMBER
+                )
+                .from(GROUP_BUY_PRODUCT_DEFINE)
+                .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID))
+                .leftJoin(GOODS).on(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
+                .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(id)).fetch().into(GroupBuyProductVo.class);
+        Map<Integer, List<GroupBuyProductVo>> goodsProductMap = buyProductVos.stream().collect(Collectors.groupingBy(GroupBuyProductVo::getGoodsId));
+        List<GoodsView> goodsViews = goodsService.selectGoodsViewList(Util.splitValueToList(groupBuy.getGoodsId()));
+        Map<Integer, GoodsView> goodsMap = goodsViews.stream().collect(Collectors.toMap(GoodsView::getGoodsId, (a) -> a));
+        List<GroupBuyDetailVo.GroupBuyGoods> goodsList =new ArrayList<>();
+        goodsProductMap.forEach((k,v)->{
+            GoodsView goodsView = goodsMap.get(k);
+            GroupBuyDetailVo.GroupBuyGoods groupBuyGoods =new GroupBuyDetailVo.GroupBuyGoods();
+            groupBuyGoods.setGoodsId(k);
+            groupBuyGoods.setGoodsImg(goodsView.getGoodsImg());
+            groupBuyGoods.setGoodsName(goodsView.getGoodsName());
+            groupBuyGoods.setGoodsNumber(goodsView.getGoodsNumber());
+            groupBuyGoods.setShopPrice(goodsView.getShopPrice());
+            groupBuyGoods.setUnit(goodsView.getUnit());
+            groupBuyGoods.setProductList(v);
+            goodsList.add(groupBuyGoods);
+        });
         //优惠卷信息
         List<Integer> ids = Util.splitValueToList(groupBuy.getRewardCouponId());
         List<CouponView> couponViews = couponService.getCouponViewByIds(ids);
         groupBuy.setCouponViews(couponViews);
+        groupBuy.setGoodsList(goodsList);
         groupBuy.setProductList(buyProductVos);
         groupBuy.setShare(Util.parseJson(groupBuy.getShareConfig(), GroupBuyShareConfigVo.class));
         groupBuy.setShareConfig(null);
@@ -449,6 +467,7 @@ public class GroupBuyService extends ShopBaseService {
      * @param groupId
      */
     public void groupBuySuccess(Integer groupBuyId, Integer groupId, String goodsName) {
+        logger().info("拼团成功检查-开始");
         List<GroupBuyUserInfo> pinUserList = groupBuyListService.getGroupUserList(groupId);
         List<GroupBuyUserInfo> groupUserList = pinUserList.stream().filter(p -> p.getStatus().equals(STATUS_ONGOING)).collect(Collectors.toList());
         GroupBuyUserInfo first = pinUserList.stream().findFirst().get();
@@ -464,6 +483,7 @@ public class GroupBuyService extends ShopBaseService {
             List<Integer> userIds = groupUserList.stream().map(GroupBuyUserInfo::getUserId).collect(Collectors.toList());
             groupBuySuccessMessage(userIds,groupId, groupBuyId, first.getUsername(), goodsName);
         }
+        logger().info("拼团成功检查-结束");
     }
 
     /**
@@ -533,6 +553,16 @@ public class GroupBuyService extends ShopBaseService {
     private void updateGroupSuccess(Integer groupId, Timestamp date, List<String> orderSnList) {
         db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_SUCCESS).set(GROUP_BUY_LIST.END_TIME, date)
             .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.in(orderSnList)).execute();
+    }
+    /**
+     * 拼团中
+     * @param groupId     团id
+     * @param date        时间
+     * @param orderSn 订单号
+     */
+    public void updateGroupSuccess(Integer groupId, Timestamp date, String orderSn) {
+        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_ONGOING).set(GROUP_BUY_LIST.END_TIME, date)
+                .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**

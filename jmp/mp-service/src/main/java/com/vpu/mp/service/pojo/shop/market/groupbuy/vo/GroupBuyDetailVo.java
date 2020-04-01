@@ -2,9 +2,13 @@ package com.vpu.mp.service.pojo.shop.market.groupbuy.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -101,13 +105,39 @@ public class GroupBuyDetailVo {
 
     @JsonIgnore
     private String shareConfig;
+
     /**
      * 产品规格配置
      */
     private List<GroupBuyProductVo> productList;
+    /**
+     * 商品规格
+     */
+    private List<GroupBuyGoods> goodsList;
 
     /**
      * 优惠卷信息
      */
     private List<CouponView> couponViews;
+
+
+    @Setter
+    @Getter
+    public static class GroupBuyGoods{
+        private Integer goodsId;
+        private String goodsName;
+        /** 商品主图 */
+        private String goodsImg;
+        /** 商品库存 */
+        private Integer goodsNumber;
+
+        /** 商品价格 */
+        private BigDecimal shopPrice;
+        /** 单位 */
+        private String unit;
+        /**
+         * 产品规格配置
+         */
+        private List<GroupBuyProductVo> productList;
+    }
 }

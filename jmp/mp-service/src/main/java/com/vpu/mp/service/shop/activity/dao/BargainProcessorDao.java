@@ -54,19 +54,18 @@ public class BargainProcessorDao extends ShopBaseService {
      * @return List<BargainRecord>
      */
     public Map<Integer, BargainGoodsPriceBo> getGoodsBargainListInfo(List<Integer> goodsIds, Timestamp date) {
-        List<BargainGoodsPriceBo> bargainListMap= db().select(BARGAIN_GOODS.GOODS_ID,BARGAIN_GOODS.EXPECTATION_PRICE,BARGAIN_GOODS.FLOOR_PRICE,BARGAIN.BARGAIN_TYPE,BARGAIN.ID)
+        Map<Integer, List<BargainGoodsPriceBo>> integerListMap = db().select(BARGAIN_GOODS.GOODS_ID, BARGAIN_GOODS.EXPECTATION_PRICE, BARGAIN_GOODS.FLOOR_PRICE, BARGAIN.BARGAIN_TYPE, BARGAIN.ID)
             .from(BARGAIN_GOODS).leftJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date)).fetchInto(BargainGoodsPriceBo.class);
-        Map<Integer, BargainGoodsPriceBo> res = new HashMap<>();
-        bargainListMap.forEach((bargain)->{
-            BargainGoodsPriceBo b = res.get(bargain.getGoodsId());
-            if(b == null || bargain.getFirst() > b.getFirst() || (bargain.getFirst() == b.getFirst() && bargain.getCreateTime().after(b.getCreateTime()))){
-                res.put(bargain.getGoodsId(),bargain);
-            }
-        });
+            .and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date))
+            .orderBy(BARGAIN.FIRST.desc(), BARGAIN.CREATE_TIME.desc())
+            .fetchGroups(BARGAIN_GOODS.GOODS_ID, BargainGoodsPriceBo.class);
+        Map<Integer,BargainGoodsPriceBo> retMap = new HashMap<>(integerListMap.size());
 
-        return res;
+        for (Map.Entry<Integer, List<BargainGoodsPriceBo>> entry : integerListMap.entrySet()) {
+            retMap.put(entry.getKey(),entry.getValue().get(0));
+        }
+        return retMap;
     }
 
     /**
@@ -84,7 +83,7 @@ public class BargainProcessorDao extends ShopBaseService {
         BargainRecord bargainRecord = db().selectFrom(BARGAIN).where(BARGAIN.ID.eq(activityId).and(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchAny();
         BargainGoodsRecord bargainGoods = db().fetchAny(BARGAIN_GOODS,BARGAIN_GOODS.BARGAIN_ID.eq(activityId).and(BARGAIN_GOODS.GOODS_ID.eq(goodsId)));
 
-        Byte aByte = canApplyBargain(userId, now, bargainRecord);
+        Byte aByte = canApplyBargain(userId, now, bargainRecord,goodsId);
         if(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT.equals(aByte)){
             //该用户已经发起过对这个活动的砍价
             int recordId = db().select(BARGAIN_RECORD.ID).from(BARGAIN_RECORD).where(BARGAIN_RECORD.BARGAIN_ID.eq(activityId)).and(BARGAIN_RECORD.USER_ID.eq(userId).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))).fetchOptionalInto(Integer.class).orElse(0);
@@ -133,7 +132,7 @@ public class BargainProcessorDao extends ShopBaseService {
      * @param bargainRecord 砍价详情
      * @return
      */
-    public Byte canApplyBargain(Integer userId, Timestamp date, BargainRecord bargainRecord) {
+    public Byte canApplyBargain(Integer userId, Timestamp date, BargainRecord bargainRecord,Integer goodsId) {
         logger().debug("小程序-商品详情-砍价信息-是否可以发起砍价判断");
         if (date == null) {
             date = DateUtil.getLocalDateTime();
@@ -159,8 +158,9 @@ public class BargainProcessorDao extends ShopBaseService {
             return BaseConstant.ACTIVITY_STATUS_END;
         }
 
+        // 一个用户同活动下同一个商品处于正在砍价中 只能有一个
         int bargainCount = db().fetchCount(BARGAIN_RECORD,BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(BARGAIN_RECORD.BARGAIN_ID.eq(bargainRecord.getId()))
-            .and(BARGAIN_RECORD.USER_ID.eq(userId)));
+            .and(BARGAIN_RECORD.USER_ID.eq(userId)).and(BARGAIN_RECORD.GOODS_ID.eq(goodsId)).and(BARGAIN_RECORD.STATUS.eq(BargainRecordService.STATUS_IN_PROCESS)));
         if (bargainCount > 0) {
             logger().debug("用户存在正在砍价[activityId:{}]", bargainRecord.getId());
             return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;

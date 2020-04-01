@@ -144,6 +144,8 @@ public class JsonResultMessage {
     public static final String GOODS_EXPORT_COLUMN_GOODS_WEIGHT = "goods.export.column.goods_weight";
     public static final String GOODS_EXPORT_COLUMN_UNIT = "goods.export.column.unit";
     public static final String GOODS_EXPORT_COLUMN_GOODS_IMG = "goods.export.column.goods_img";
+    public static final String GOODS_EXPORT_COLUMN_PRD_CODES= "goods.export.column.prd_codes";
+    public static final String GOODS_EXPORT_COLUMN_IMG_URL= "goods.export.column.img_url";
 
     /**
      * 商品评价

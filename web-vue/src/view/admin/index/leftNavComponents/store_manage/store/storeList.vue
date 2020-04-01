@@ -2,19 +2,12 @@
   <div class="content">
     <div class="main">
       <div class="navBox">
-        <el-button
-          type="primary"
-          size="small"
-          @click="addStoreHandle"
-        >{{$t('storeList.addStore')}}</el-button>
-      </div>
-      <div class="table_box">
         <div class="filters">
           <div class="filters_item"><span>{{$t('storeList.storeGroup')}}：</span>
             <el-select
               v-model="queryParams.groupId"
               size="small"
-              style="width:170px;"
+              @change="initDataList"
             >
               <el-option
                 :label="$t('storeCommon.all')"
@@ -32,7 +25,7 @@
             <el-select
               v-model="queryParams.isAuthPos"
               size="small"
-              style="width:170px;"
+              @change="initDataList"
             >
               <el-option
                 :label="$t('storeCommon.all')"
@@ -49,21 +42,115 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="filters_item"><span>{{$t('storeList.storeInfo')}}：</span>
+          <div class="filters_item">
+            <span>营业状态：</span>
+            <el-select
+              v-model="queryParams.businessState"
+              size="small"
+              @change="initDataList"
+            >
+              <el-option
+                selected
+                :label="$t('storeCommon.all')"
+                :value="-1"
+              ></el-option>
+              <el-option
+                label="营业"
+                :value="1"
+              ></el-option>
+              <el-option
+                label="未营业"
+                :value="0"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
             <el-input
               v-model="queryParams.keywords"
               size="small"
-              style="width:170px;"
+              style="width:190px;"
               :placeholder="$t('storeList.storeInfoPlaceholder')"
-            ></el-input>
+              @change="initDataList"
+            >
+              <i
+                slot="suffix"
+                class="el-input__icon el-icon-search"
+                style="cursor: pointer;"
+                @click="initDataList"
+              ></i>
+            </el-input>
           </div>
-          <el-button
-            @click="initDataList"
-            class="btn"
-            type="primary"
-            size="small"
-          >{{$t('storeCommon.filter')}}</el-button>
+          <div class="filters_item">
+            <span>门店自提：</span>
+            <el-select
+              v-model="queryParams.autoPick"
+              size="small"
+              @change="initDataList"
+            >
+              <el-option
+                :label="$t('storeCommon.all')"
+                :value="-1"
+              ></el-option>
+              <el-option
+                label="已开启"
+                :value="1"
+              ></el-option>
+              <el-option
+                label="未开启"
+                :value="0"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filters_item">
+            <span>同城配送：</span>
+            <el-select
+              v-model="queryParams.cityService"
+              size="small"
+              @change="initDataList"
+            >
+              <el-option
+                :label="$t('storeCommon.all')"
+                :value="-1"
+              ></el-option>
+              <el-option
+                label="已开启"
+                :value="1"
+              ></el-option>
+              <el-option
+                label="未开启"
+                :value="0"
+              ></el-option>
+            </el-select>
+          </div>
         </div>
+        <div class="navBox-right">
+          <el-popover
+            width="300"
+            trigger="hover"
+          >
+            <p style="line-height:20px; font-size:12px; padding-bottom:10px; border-bottom:1px solid #eee;">体验版最多创建1个门店 ，基础版最多创建5个门店 ，高级版最多创建10个门店 ，旗舰版最多创建200个门店</p>
+            <div style="text-align:center; padding-top:10px;">
+              <el-button
+                type="primary"
+                size="small"
+                @click="goMore"
+              >了解更多</el-button>
+            </div>
+            <p
+              slot="reference"
+              style="line-height: 30px; color: #999;padding: 0 12px; margin-bottom: 10px; font-size:12px;"
+            >当前版本为旗舰版，还可创建 {{canCreateNum}} 个门店 <i class="el-icon-question"></i></p>
+          </el-popover>
+          <div>
+            <el-button
+              type="primary"
+              size="small"
+              @click="addStoreHandle"
+            >{{$t('storeList.addStore')}}</el-button>
+          </div>
+        </div>
+      </div>
+      <div class="table_box">
         <el-table
           v-loading="loading"
           :data="tableData"
@@ -107,7 +194,8 @@
             prop="businessHours"
             :label="$t('storeList.businessHours')"
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
+            v-show="false"
             prop="businessStateName"
             :label="$t('storeList.businessState')"
           >
@@ -123,6 +211,51 @@
                 class="businessStateOperate"
                 v-else
               >{{$t('storeList.opening')}}</a>
+            </template>
+          </el-table-column> -->
+          <el-table-column
+            label="门店自提"
+            prop="autoPick"
+          >
+            <template slot-scope="{row}">
+              <div>
+                <el-checkbox
+                  v-model="row.autoPick"
+                  @change="changeState(row)"
+                  :true-label="1"
+                  :false-label="0"
+                ></el-checkbox>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="同城配送"
+            prop="cityService"
+          >
+            <template slot-scope="{row}">
+              <div>
+                <el-checkbox
+                  v-model="row.cityService"
+                  @change="changeState(row)"
+                  :true-label="1"
+                  :false-label="0"
+                ></el-checkbox>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="营业状态"
+            prop="businessState"
+          >
+            <template slot-scope="{row}">
+              <div>
+                <el-checkbox
+                  v-model="row.businessState"
+                  @change="changeState(row)"
+                  :true-label="1"
+                  :false-label="0"
+                ></el-checkbox>
+              </div>
             </template>
           </el-table-column>
           <el-table-column
@@ -223,7 +356,10 @@ export default {
       pageParams: {},
       queryParams: {
         groupId: null,
-        isAuthPos: null
+        isAuthPos: null,
+        businessState: -1,
+        autoPick: -1,
+        cityService: -1
       },
       tableData: [],
       storeGroup: [],
@@ -233,7 +369,8 @@ export default {
 
       shareImg: '',
       sharePath: '',
-      shareDialog: false // 分享弹窗
+      shareDialog: false, // 分享弹窗
+      canCreateNum: 0 // 可以创建门店数
     }
   },
   methods: {
@@ -242,10 +379,11 @@ export default {
 
       storeList(Object.assign(this.queryParams, this.pageParams)).then((res) => {
         if (res.error === 0) {
-          this.originalData = res.content.dataList
+          this.originalData = res.content.storePageListVo.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
           this.handleData(originalData)
-          this.pageParams = res.content.page
+          this.pageParams = res.content.storePageListVo.page
+          this.canCreateNum = res.content.canCreateNum
           this.loading = false
         }
       })
@@ -289,25 +427,41 @@ export default {
       return address
     },
     // 歇业
-    closeDown (id) {
-      var param = {}
-      param.storeId = id
-      param.businessState = 0
-      updateStore(param).then((res) => {
-        if (res.error === 0) {
-          this.$message.success({
-            message: this.$t('marketCommon.successfulOperation')
-          })
-          this.initDataList()
-        }
-      })
-    },
+    // closeDown (id) {
+    //   var param = {}
+    //   param.storeId = id
+    //   param.businessState = 0
+    //   updateStore(param).then((res) => {
+    //     if (res.error === 0) {
+    //       this.$message.success({
+    //         message: this.$t('marketCommon.successfulOperation')
+    //       })
+    //       this.initDataList()
+    //     }
+    //   })
+    // },
     // 开业
-    opening (id) {
-      var param = {}
-      param.storeId = id
-      param.businessState = 1
-      updateStore(param).then((res) => {
+    // opening (id) {
+    //   var param = {}
+    //   param.storeId = id
+    //   param.businessState = 1
+    //   updateStore(param).then((res) => {
+    //     if (res.error === 0) {
+    //       this.$message.success({
+    //         message: this.$t('marketCommon.successfulOperation')
+    //       })
+    //       this.initDataList()
+    //     }
+    //   })
+    // },
+    changeState (row) {
+      let params = {
+        storeId: row.storeId,
+        businessState: row.businessState,
+        autoPick: row.autoPick,
+        cityService: row.cityService
+      }
+      updateStore(params).then((res) => {
         if (res.error === 0) {
           this.$message.success({
             message: this.$t('marketCommon.successfulOperation')
@@ -392,6 +546,9 @@ export default {
           })
           break
       }
+    },
+    goMore () {
+      window.open('https://mpdev.weipubao.cn/admin/version/notice?mod_name=%E5%BA%97%E9%93%BA%E6%95%B0%E9%87%8F')
     }
   },
   watch: {
@@ -420,31 +577,47 @@ export default {
 .main {
   padding: 10px;
   .navBox {
-    background-color: #fff;
-    padding: 15px;
-  }
-  .btn {
-    margin-left: 5px;
-  }
-  .table_box {
-    margin-top: 10px;
+    display: flex;
+    width: 100%;
     background-color: #fff;
     padding: 15px;
     .filters {
+      flex: 2;
       display: flex;
+      flex-wrap: wrap;
       line-height: 32px;
       margin-left: -15px;
       margin-bottom: 10px;
       .filters_item {
-        max-width: 350px;
+        width: 250px;
         display: flex;
+        justify-content: flex-end;
         margin-left: 15px;
+        margin-bottom: 10px;
         > span {
-          min-width: 80px;
+          width: 120px;
           font-size: 14px;
+          text-align: right;
+        }
+        .el-select {
+          width: 120px;
         }
       }
     }
+    .navBox-right {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  .btn {
+    margin-left: 5px;
+  }
+
+  .table_box {
+    margin-top: 10px;
+    background-color: #fff;
+    padding: 15px;
     .operation {
       display: flex;
       flex-wrap: wrap;

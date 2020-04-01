@@ -420,6 +420,7 @@ public class AdminGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/goods/export")
     public void export(@RequestBody @Valid GoodsExportParam param, HttpServletResponse response) {
+        shop().config.goodsCfg.setGoodsExportList(param.getColumns());
         Workbook workbook = shop().goods.exportGoodsList(param, getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EXPORT_FILE_NAME, "excel", "excel") + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook, fileName, response);

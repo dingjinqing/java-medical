@@ -115,7 +115,13 @@
 		"name": "优惠券模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/coupon/*",
+      "/api/admin/avail/coupon/del",
+      "/api/admin/coupon/get/detail",
+      "/api/admin/coupon/update/save",
+      "/api/admin/coupon/update/info"
+    ]
 	},
 	{
 		"vsName": "m_bargain",
@@ -182,21 +188,27 @@
 		"name": "充值会员卡",
 		"enName": "user_card",
 		"topIndex": 3,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/member/card/list"
+		]
 	},
 	{
 		"vsName": "count_card",
 		"name": "限次会员卡",
 		"enName": "user_card",
 		"topIndex": 3,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/member/card/list"
+		]
 	},
 	{
 		"vsName": "grade_card",
 		"name": "等级会员卡",
 		"enName": "user_card",
 		"topIndex": 3,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/member/card/list"
+		]
 	},
 	{
 		"vsName": "tag",

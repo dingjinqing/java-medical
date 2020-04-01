@@ -6,4 +6,7 @@ import java.time.LocalDate;
 public class ThreadLocalCache {
 
     public static ThreadLocal<LocalDate> timestampThreadLocal = new ThreadLocal<>();
+
+
+    public static ThreadLocal<Timestamp> sevenDayTimestamp = new ThreadLocal<>();
 }
