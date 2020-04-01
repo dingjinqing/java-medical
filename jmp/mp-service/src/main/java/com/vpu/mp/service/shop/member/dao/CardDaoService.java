@@ -528,7 +528,8 @@ public class CardDaoService extends ShopBaseService {
 				}if(code.length()>15) {
 					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code=code.substring(0,15);
-				}else if(batchIdStr!=null&&batchIdStr.length>0) {
+				}else if(true) {
+					//batchIdStr!=null&&batchIdStr.length>0
 					if(getReceiveCode(code, batchIdStr)) {
 						msg=CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
@@ -607,7 +608,8 @@ public class CardDaoService extends ShopBaseService {
 				if (code.length() > 15) {
 					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code = code.substring(0, 15);
-				} else if (batchIdStr != null && batchIdStr.length > 0) {
+				} else if (true) {
+					//batchIdStr != null && batchIdStr.length > 0 如果只对当前卡的校验，把true替换，更改sql
 					if (getReceiveCardNo(code, batchIdStr)) {
 						msg = CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
