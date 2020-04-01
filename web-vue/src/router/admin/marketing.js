@@ -885,9 +885,9 @@ const routes = [
   // 评价有礼
   {
     path: '/admin/home/main/evaluationGift/list',
-    name: 'evaluation_gifted',
+    name: 'comment_gift',
     meta: {
-      crumbTitle: 'router.evaluation_gifted',
+      crumbTitle: 'router.comment_gift',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
