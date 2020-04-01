@@ -95,7 +95,11 @@ public class GroupBuyPictorialService extends ShopBaseService {
             }
             shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, "", "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            }
             shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
@@ -214,9 +218,12 @@ public class GroupBuyPictorialService extends ShopBaseService {
         }
 
         groupBuyLog("pictorial", "获取商品分享语");
-        String shareDoc;
+        String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            }
         } else {
             shareDoc = shareConfig.getShareDoc();
         }

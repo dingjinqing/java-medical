@@ -11,9 +11,11 @@ import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.config.GoodsShareConfig;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.share.*;
+import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +52,8 @@ public class PictorialService extends ShopBaseService {
     private UserService user;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ShopCommonConfigService shopCommonConfigService;
 
     /**
      * 分享海报时使用的默认头像
@@ -413,6 +417,44 @@ public class PictorialService extends ShopBaseService {
         db().executeUpdate(record);
     }
 
+    /**
+     * 根据店铺通用配置，获取用户配置的分享和海报下载时宣语
+     * @param userName 用户名
+     * @param goodsName 商品名
+     * @param goodsPrice 商品价格
+     * @param isPictorial true下载海报，false商品分享
+     * @return null 表示使用的是默认宣传语，否则用户定义的宣传语，已进行长度截断
+     */
+    public String getCommonConfigDoc(String userName,String goodsName,BigDecimal goodsPrice,String lang,Boolean isPictorial){
+        final String userNameTag = "【分享人昵称】",goodsNameTag = "【商品名称】",goodsPriceTag = "【商品价格】";
+
+        GoodsShareConfig goodsShareConfig = shopCommonConfigService.getGoodsShareConfig();
+        String shareDoc = null;
+        // 分享
+        if (!isPictorial) {
+            // 自定义文案
+            if (!GoodsShareConfig.DEFAULT_VALUE.equals(goodsShareConfig.getGoodsShareCommon())){
+                shareDoc = goodsShareConfig.getCommonDoc();
+            }
+        } else {
+            // 自定义文案
+            if (!GoodsShareConfig.DEFAULT_VALUE.equals(goodsShareConfig.getGoodsSharePictorial())){
+                shareDoc = goodsShareConfig.getPictorialDoc();
+            }
+        }
+        if (shareDoc != null) {
+            String moneyFlag = Util.translateMessage(lang, JsonResultMessage.WX_MA_PICTORIAL_MONEY, "messages");
+            shareDoc = shareDoc.replace(userNameTag,userName);
+            shareDoc = shareDoc.replace(goodsNameTag,goodsName);
+            shareDoc = shareDoc.replace(goodsPriceTag,goodsPrice.setScale(2,BigDecimal.ROUND_HALF_UP).toString()+moneyFlag);
+            if (!isPictorial) {
+                shareDoc = shareDoc.length() > 23 ? shareDoc.substring(0, 23) + "..." : shareDoc;
+            } else {
+                shareDoc = shareDoc.length() > 20 ? shareDoc.substring(0, 20) + "..." : shareDoc;
+            }
+        }
+        return shareDoc;
+    }
     /**
      * 生成表单海报背景图
      *

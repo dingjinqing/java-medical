@@ -89,8 +89,12 @@ public class ReducePricePictorialService extends ShopBaseService {
             }
             shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", param.getUserName(), goodsRecord.getGoodsName());
-            shareInfoVo.setShareDoc(doc);
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", param.getUserName(), goodsRecord.getGoodsName());
+            }
+            shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
@@ -151,6 +155,7 @@ public class ReducePricePictorialService extends ShopBaseService {
      * @param param 限时降价售参数
      * @return base64海报信息
      */
+    @SuppressWarnings("all")
     public GoodsPictorialInfo getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
@@ -184,6 +189,7 @@ public class ReducePricePictorialService extends ShopBaseService {
 
     private static final String REDUCE_PRICE_BG_IMG = "image/wxapp/reduce_price.png";
 
+    @SuppressWarnings("all")
     private void getReducePricePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ShopRecord shop, ReducePriceShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
@@ -196,9 +202,12 @@ public class ReducePricePictorialService extends ShopBaseService {
         }
         pictorialLog("pictorial", "获取商品分享语");
 
-        String shareDoc;
+        String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, null, "messages");
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, "", "messages");
+            }
         } else {
             shareDoc = shareConfig.getShareDoc();
         }
@@ -227,7 +236,7 @@ public class ReducePricePictorialService extends ShopBaseService {
             ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
             Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
             int linePriceStartX = realPriceStartX + textWidth + imgPx.getBgPadding() + 10;
-            ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY()- 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
+            ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY() - 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
 
         } catch (IOException e) {
             pictorialLog("pictorial", "装载限时降价图标失败");

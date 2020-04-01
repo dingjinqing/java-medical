@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * 拼团抽将分享图片生成器
+ *
  * @author 李晓冰
  * @date 2020年02月03日
  */
@@ -52,6 +53,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
     /**
      * 拼团抽奖活动获取分享图片
+     *
      * @param param 分享参数
      * @return 分享信息
      */
@@ -96,8 +98,12 @@ public class GroupDrawPictorialService extends ShopBaseService {
             }
             goodsShareInfo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "messages",param.getRealPrice());
-            goodsShareInfo.setShareDoc(doc);
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "","messages", param.getRealPrice());
+            }
+            goodsShareInfo.setShareDoc(shareDoc);
         }
         goodsShareInfo.setImgUrl(imageService.getImgFullUrl(goodsShareInfo.getImgUrl()));
 
@@ -111,20 +117,21 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
     /**
      * 生成商拼团抽奖分享图
+     *
      * @param groupDrawRecord 活动信息
-     * @param goodsRecord 商品信息
-     * @param param 图片参数
+     * @param goodsRecord     商品信息
+     * @param param           图片参数
      * @return
      */
-    private String createGroupDrawShareImg(GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, GroupDrawShareInfoParam param){
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE,null);
+    private String createGroupDrawShareImg(GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, GroupDrawShareInfoParam param) {
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE, null);
 
         // 已存在生成的图片
-        if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),groupDrawRecord.getUpdateTime())) {
+        if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
         }
 
-        try (InputStream bgInputStream = Util.loadFile(GROUP_DRAW_BG_IMG)){
+        try (InputStream bgInputStream = Util.loadFile(GROUP_DRAW_BG_IMG)) {
 
             BufferedImage bgBufferImg = ImageIO.read(bgInputStream);
             BufferedImage goodsBufferImg = ImageIO.read(new URL(imageService.getImgFullUrl(goodsRecord.getGoodsImg())));
@@ -138,24 +145,24 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
             ShopRecord shop = saas.shop.getShopById(getShopId());
 
-            int textStartX = toLeft+goodsWidth+20;
+            int textStartX = toLeft + goodsWidth + 20;
             Color lineColor = new Color(255, 102, 102);
             //添加拼团抽奖文字
             String msg = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
-            ImageUtil.addFontWithRect(bgBufferImg,textStartX,toTop+20,msg,ImageUtil.SourceHanSansCN(Font.PLAIN, 16),lineColor,new Color(255, 238, 238),lineColor);
+            ImageUtil.addFontWithRect(bgBufferImg, textStartX, toTop + 20, msg, ImageUtil.SourceHanSansCN(Font.PLAIN, 16), lineColor, new Color(255, 238, 238), lineColor);
 
             //添加真实价格
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPrice = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferImg,moneyFlag+realPrice,ImageUtil.SourceHanSansCN(Font.PLAIN, 20),textStartX,toTop+80,lineColor);
+            ImageUtil.addFont(bgBufferImg, moneyFlag + realPrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 20), textStartX, toTop + 80, lineColor);
             //添加划线价格
             String linePrice = param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFontWithLine(bgBufferImg,textStartX,toTop+100,linePrice,ImageUtil.SourceHanSansCN(Font.PLAIN, 18),new Color(153,153,153));
+            ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18), new Color(153, 153, 153));
 
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupDrawRecord.getId(), "share");
-            PictorialRule pictorialRule =new PictorialRule(goodsRecord.getUpdateTime(),groupDrawRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(bgBufferImg, relativePath,pictorialRule, goodsRecord.getGoodsId(),pictorialRecord, param.getUserId());
+            PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime());
+            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
 
             return relativePath;
 
@@ -169,10 +176,11 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
     /**
      * 拼团抽奖-海报生成
+     *
      * @param param 拼团抽奖海报参数
      * @return 拼团抽奖海报图片base64
      */
-    public GoodsPictorialInfo getGroupDrawPictorialInfo(GroupDrawShareInfoParam param){
+    public GoodsPictorialInfo getGroupDrawPictorialInfo(GroupDrawShareInfoParam param) {
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
         GroupDrawRecord groupDrawRecord = groupDrawService.getById(param.getActivityId());
@@ -191,7 +199,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
 
         GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
-        PictorialShareConfig shareConfig =new PictorialShareConfig();
+        PictorialShareConfig shareConfig = new PictorialShareConfig();
 
         shareConfig.setShareImgAction(goodsShareConfig.getShareImgAction());
         shareConfig.setShareImg(goodsShareConfig.getShareImgUrl());
@@ -201,17 +209,17 @@ public class GroupDrawPictorialService extends ShopBaseService {
         PictorialUserInfo pictorialUserInfo;
         try {
             groupDrawLog("pictorial", "获取用户信息");
-            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
+            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
             groupDrawLog("pictorial", "获取用户信息失败：" + e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
             return goodsPictorialInfo;
         }
-        getGroupDrawPictorialImg(pictorialUserInfo,shareConfig,groupDrawRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        getGroupDrawPictorialImg(pictorialUserInfo, shareConfig, groupDrawRecord, goodsRecord, shop, param, goodsPictorialInfo);
         return goodsPictorialInfo;
     }
 
-    private void getGroupDrawPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupDrawShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo){
+    private void getGroupDrawPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupDrawShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
             groupDrawLog("pictorial", "获取商品图片信息");
@@ -223,9 +231,12 @@ public class GroupDrawPictorialService extends ShopBaseService {
         }
 
         groupDrawLog("pictorial", "获取商品分享语");
-        String shareDoc;
+        String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_PICTORIAL_DOC, "messages",param.getRealPrice());
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_PICTORIAL_DOC, "","messages", param.getRealPrice());
+            }
         } else {
             shareDoc = shareConfig.getShareDoc();
         }
@@ -246,16 +257,16 @@ public class GroupDrawPictorialService extends ShopBaseService {
         }
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
 
         // 拼团抽奖文字
         String groupDrawText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_INFO, "messages");
         // 活动价格
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         // 划线价格
-        String linePriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2,BigDecimal.ROUND_HALF_UP);
+        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,groupDrawText,realPriceText,linePriceText,true,imgPx);
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, groupDrawText, realPriceText, linePriceText, true, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
@@ -263,6 +274,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
 
     /**
      * 创建云盘上的相对路径
+     *
      * @param activityId       活动Id
      * @param shareOrPictorial "share" 或 "pictorial"
      * @return 相对路径
@@ -271,7 +283,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
         return String.format("/upload/%s/%s/groupdraw/%s.jpg", getShopId(), shareOrPictorial, activityId + "_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
     }
 
-    private void groupDrawLog(String share,String msg){
+    private void groupDrawLog(String share, String msg) {
         logger().debug("小程序-拼团抽奖{}-{}", share, msg);
     }
 }
