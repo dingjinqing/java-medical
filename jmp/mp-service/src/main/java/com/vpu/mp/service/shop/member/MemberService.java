@@ -9,20 +9,13 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -613,7 +606,12 @@ public class MemberService extends ShopBaseService {
 		
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
-		setRecentOrderInfo(userId, transStatistic);
+		LocalDateTime lastOrderTime = order.lastOrderTime(userId);
+		if(lastOrderTime != null) {
+			transStatistic.setLastAddOrder(lastOrderTime.toString());
+		}else {
+			transStatistic.setLastAddOrder("0");
+		}
 		return memberBasicInfoVo;
 	}
 
@@ -669,36 +667,6 @@ public class MemberService extends ShopBaseService {
 			}
 		}
 		
-	}
-
-
-
-	/**
-	 * 最近下单的订单信息
-	 * @param userId
-	 * @param transStatistic
-	 */
-	public  void setRecentOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
-		Timestamp createTime = order.getRecentOrderInfoByUserId(userId);
-		if (createTime != null) {
-			LocalDate now = LocalDate.now();
-			LocalDate tmp = createTime.toLocalDateTime().toLocalDate();
-			long days = Duration.between(tmp.atStartOfDay(), now.atStartOfDay()).toDays();
-			StringBuilder lastAddOrder = new StringBuilder();
-			if (days < WEEK) {
-				lastAddOrder.append(days + DAY_FLAG );
-			} else if (days < MONTH) {
-				lastAddOrder.append(ONE_MONTH_FLAG);
-			} else if (days < YEAR) {
-				lastAddOrder.append((days / MONTH_DAYS) + MONTH_FLAG);
-			} else {
-				lastAddOrder.append((days / YEAR_DAYS) + YEAR_FLAG);
-			}
-			logger().info("最近下单距离现在 " + lastAddOrder.toString());
-			transStatistic.setLastAddOrder(lastAddOrder.toString());
-		} else {
-			transStatistic.setLastAddOrder("0");
-		}
 	}
 
 	/**

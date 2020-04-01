@@ -946,11 +946,7 @@ export default {
       // 最近下单时间
       console.log(this.transStatistic.lastAddOrder)
       if (this.transStatistic.lastAddOrder !== '0') {
-        let lastAddOrderArr = this.transStatistic.lastAddOrder.split('-')
-        let num = lastAddOrderArr[0]
-        let unit = this.changeUnit(lastAddOrderArr[1])
-        this.changeUnit(unit)
-        this.transactionData[0].content = `${num}${unit}`
+        this.transactionData[0].content = this.transStatistic.lastAddOrder
         console.log(this.transactionData[0].content)
       }
 
@@ -961,9 +957,9 @@ export default {
         this.transactionData[1].content = `${flag} ${this.memberBasicInfo.unitPrice}`
       }
 
-      // 累计下单金额
-      if (this.transStatistic.orderMoney) {
-        this.transactionData[2].content = `￥ ${this.transStatistic.orderMoney}`
+      // 累计消费金额
+      if (this.memberBasicInfo.totalConsumpAmount) {
+        this.transactionData[2].content = `￥ ${this.memberBasicInfo.totalConsumpAmount}`
       }
 
       // 累计消费订单数

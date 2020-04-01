@@ -1200,31 +1200,48 @@ public class OrderInfoService extends ShopBaseService {
 	}
 
 	/**
-	 * 获取最近用户下单的订单时间
-	 * 
-	 * @param userId
-	 * @return
-	 * @return
-	 * @return
+	 * 最近下单时间
 	 */
-	public Timestamp getRecentOrderInfoByUserId(Integer userId) {
-		Record1<Timestamp> record = getRecentOrderInfoByUserIdSQL(userId);
-		if (record != null) {
-			return record.into(Timestamp.class);
-		}
-		return null;
+	public LocalDateTime lastOrderTime(Integer userId) {
+		logger().info("获取用户最近下单时间");
+		// 普通订单
+		Timestamp orderTime = lastNormalOrderTime(userId);
+		// 虚拟订单
+		 Timestamp cardOrderTime = saas().getShopApp(getShopId()).memberCardOrder.lastOrderTime(userId);
+		// 门店订单
+		 Timestamp storeStoreTime = saas().getShopApp(getShopId()).store.reservation.storeOrderService.lastOrderTime(userId);
+		// 服务订单
+		 Timestamp serviceTime = saas().getShopApp(getShopId()).store.serviceOrder.lastOrderTime(userId);
+		 
+		 List<Timestamp> times = Arrays.<Timestamp>asList(orderTime,cardOrderTime,storeStoreTime,serviceTime);
+		 LocalDateTime res = null;
+		 for(Timestamp t: times) {
+			 if(t != null) {
+				 LocalDateTime cur = t.toLocalDateTime();
+				 if(res == null) {
+					 res = cur;
+				 }else {
+					 if(cur.isAfter(res)) {
+						 res = cur;
+					 }
+				 }
+			 }
+		 }
+		 logger().info("最近下单时间： "+res);
+		 return res;
 	}
-
-	public Record1<Timestamp> getRecentOrderInfoByUserIdSQL(Integer userId) {
-
-		return db().select(ORDER_INFO.CREATE_TIME).from(ORDER_INFO).where(ORDER_INFO.USER_ID.eq(userId))
-				.and(ORDER_INFO.ORDER_STATUS.in(ORDER_FINISHED, ORDER_RETURN_FINISHED, ORDER_REFUND_FINISHED))
-				.and(ORDER_INFO.REFUND_STATUS.eq(REFUND_DEFAULT_STATUS)).and(ORDER_INFO.DEL_FLAG.eq(DELETE_NO))
-				.orderBy(ORDER_INFO.CREATE_TIME.desc()).fetchAny();
-	}
-
 	
-
+	/**
+	 * 普通订单最近下单时间
+	 */
+	public Timestamp lastNormalOrderTime(Integer userId) {
+		logger().info("普通订单最近下单时间");
+		return db().select(TABLE.CREATE_TIME)
+			.from(TABLE)
+			.where(TABLE.USER_ID.eq(userId))
+			.orderBy(TABLE.CREATE_TIME.desc())
+			.fetchAnyInto(Timestamp.class);
+	}
 	
 
 	/**
