@@ -4,6 +4,7 @@ import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
 import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.exception.DataAccessException;
@@ -230,4 +231,16 @@ public class VirtualOrderService extends ShopBaseService {
     		.and(LOCAL_TABLE.USER_ID.eq(userId))
     		.fetchAnyInto(UserOrderBean.class);
     }
+    
+    /**
+     * 获取虚拟订单最近下单时间
+     */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取虚拟订单最近下单时间");
+		return db().select(VIRTUAL_ORDER.CREATE_TIME)
+					.from(VIRTUAL_ORDER)
+					.where(VIRTUAL_ORDER.USER_ID.eq(userId))
+					.orderBy(VIRTUAL_ORDER.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+	}
 }

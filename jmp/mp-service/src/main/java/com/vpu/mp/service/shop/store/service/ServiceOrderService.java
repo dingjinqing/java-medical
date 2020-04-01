@@ -949,4 +949,17 @@ public class ServiceOrderService extends ShopBaseService {
 		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
 	}
 
+	/**
+	 * 获取门店服务订单最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店服务订单最近下单时间");
+		return db().select(SERVICE_ORDER.CREATE_TIME)
+					.from(SERVICE_ORDER)
+					.where(SERVICE_ORDER.USER_ID.eq(userId))
+					.orderBy(SERVICE_ORDER.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+		
+	}
+
 }
