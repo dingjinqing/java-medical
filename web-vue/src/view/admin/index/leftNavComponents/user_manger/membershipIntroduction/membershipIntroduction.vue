@@ -86,7 +86,10 @@
                 v-for="(item, index) in row.cardList"
                 :key="index"
               >
-                <router-link :to="{name: '/admin/home/main/normalCardDetail', query: {cardId: row.cardId}}">{{row.cardName}}</router-link>
+                <router-link
+                  class="to-card"
+                  :to="{path: '/admin/home/main/normalCardDetail', query: {cardId: item.cardId}}"
+                >{{item.cardName}}</router-link>
               </div>
             </template>
           </el-table-column>
@@ -178,6 +181,9 @@ export default {
       if (newVal) {
         this.$set(this.queryParams, 'startTime', newVal[0])
         this.$set(this.queryParams, 'endTime', newVal[1])
+      } else {
+        this.$set(this.queryParams, 'startTime', '')
+        this.$set(this.queryParams, 'endTime', '')
       }
     }
   },
@@ -347,6 +353,9 @@ export default {
     padding: 15px;
     background: #fff;
     margin-top: 10px;
+  }
+  .to-card {
+    text-decoration: none;
   }
 }
 </style>

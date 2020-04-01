@@ -399,12 +399,14 @@ export default {
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
       let storeListTmp = []
-      data.storeList.forEach(item => {
-        storeListTmp.push({
-          storeId: item.value,
-          storeName: item.label
+      if (data.storeList && data.storeList.length > 0) {
+        data.storeList.forEach(item => {
+          storeListTmp.push({
+            storeId: item.value,
+            storeName: item.label
+          })
         })
-      })
+      }
       this.cardStoreCfgData.choosedStore = storeListTmp
 
       // 日期
@@ -443,13 +445,15 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArr.push(
-              {
-                batchName: item.name,
-                batchId: item.batchId,
-                disabled: true
-              }
-            )
+            if (!item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArr.push(
+                {
+                  batchName: item.name,
+                  batchId: item.batchId,
+                  disabled: true
+                }
+              )
+            }
           })
         }
       } else {
@@ -460,12 +464,14 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArrBottom.push(
-              {
-                pwdName: item.name,
-                pwdId: item.batchId,
-                disabled: true }
-            )
+            if (item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArrBottom.push(
+                {
+                  pwdName: item.name,
+                  pwdId: item.batchId,
+                  disabled: true }
+              )
+            }
           })
         }
       } else {
