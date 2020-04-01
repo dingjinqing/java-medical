@@ -1,17 +1,16 @@
 package com.vpu.mp.controller.admin;
 
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateParam;
 import com.vpu.mp.service.pojo.shop.market.message.MessageTemplateQuery;
 import com.vpu.mp.service.pojo.shop.market.message.MessageUserQuery;
 import com.vpu.mp.service.pojo.shop.market.message.UserInfoQuery;
 import com.vpu.mp.service.pojo.shop.market.message.content.ContentMessageParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 营销管理-消息推送
@@ -27,6 +26,7 @@ public class AdminTemplateMessageController extends AdminBaseController {
 
     @PostMapping("/getUserNumbers")
     public JsonResult getSendUsers(@RequestBody UserInfoQuery query){
+
         return success(shop().messageTemplateService.getSendUsersSize(query));
     }
     @PostMapping("/getUserArray")
@@ -60,6 +60,7 @@ public class AdminTemplateMessageController extends AdminBaseController {
     }
     @PostMapping("/getDetail")
     public JsonResult getTemplateMessageDetail(@RequestBody Integer id ){
+        saas.getShopApp(245547).shopTaskService.wechatTaskService.beginDailyTask();
         return success(shop().messageTemplateService.getMessageDetail(id));
     }
     @PostMapping("/record/list")
