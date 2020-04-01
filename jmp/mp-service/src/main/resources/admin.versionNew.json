@@ -115,22 +115,14 @@
 		"name": "优惠券模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": [
-      "/api/admin/coupon/*",
-      "/api/admin/avail/coupon/del",
-      "/api/admin/coupon/get/detail",
-      "/api/admin/coupon/update/save",
-      "/api/admin/coupon/update/info"
-    ]
+		"includeApi": []
 	},
 	{
 		"vsName": "m_bargain",
 		"name": "砍价模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": [
-      "/api/admin/decorate/bargain/list"
-    ]
+		"includeApi": []
 	},
 	{
 		"vsName": "m_video",
@@ -151,9 +143,7 @@
 		"name": "秒杀模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": [
-      "/api/admin/decorate/seckill/list"
-    ]
+		"includeApi": []
 	},
 	{
 		"vsName": "authorization",
