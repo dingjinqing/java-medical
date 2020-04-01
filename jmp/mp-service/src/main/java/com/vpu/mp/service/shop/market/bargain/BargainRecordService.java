@@ -313,7 +313,7 @@ public class BargainRecordService extends ShopBaseService {
         BargainGoodsRecord bargainGoods = saas.getShopApp(getShopId()).bargain.getBargainGoods(param.getBargainId(),param.getGoodsId());
 
         //校验活动信息
-        Byte res = bargainProcessorDao.canApplyBargain(userId,DateUtil.getLocalDateTime(),bargain);
+        Byte res = bargainProcessorDao.canApplyBargain(userId,DateUtil.getLocalDateTime(),bargain,param.getGoodsId());
 
         if(!res.equals(BaseConstant.ACTIVITY_STATUS_CAN_USE)){
             return res;
