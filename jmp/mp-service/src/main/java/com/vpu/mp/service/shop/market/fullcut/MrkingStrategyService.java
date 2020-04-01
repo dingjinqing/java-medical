@@ -285,15 +285,18 @@ public class MrkingStrategyService extends ShopBaseService {
     private List<Integer> getMrkingStrategyGoodsIds(MrkingStrategyRecord record){
         List<Integer> res = new ArrayList<>();
 
-        if(StringUtil.isNotEmpty(record.getRecommendGoodsId())){
+        if(StringUtil.isNotBlank(record.getRecommendGoodsId())){
             List<Integer> goodsIds = Util.splitValueToList(record.getRecommendGoodsId());
             res.removeAll(goodsIds);
             res.addAll(goodsIds);
         }
 
-        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(record.getRecommendCatId()),Util.splitValueToList(record.getRecommendSortId()),Util.splitValueToList(record.getRecommendBrandId()));
-        res.removeAll(goodsIds);
-        res.addAll(goodsIds);
+        if(StringUtil.isNotBlank(record.getRecommendCatId()) || StringUtil.isNotBlank(record.getRecommendSortId()) || StringUtil.isNotBlank(record.getRecommendBrandId())){
+            List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(Util.splitValueToList(record.getRecommendCatId()),Util.splitValueToList(record.getRecommendSortId()),Util.splitValueToList(record.getRecommendBrandId()));
+            res.removeAll(goodsIds);
+            res.addAll(goodsIds);
+        }
+
 
         return res;
     }
