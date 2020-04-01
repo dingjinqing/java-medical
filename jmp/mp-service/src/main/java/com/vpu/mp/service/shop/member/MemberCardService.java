@@ -1027,7 +1027,11 @@ public class MemberCardService extends ShopBaseService {
 			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
 			List<CardBatchVo> res = new ArrayList<>();
 			for (CardBatchRecord b : batchList) {
-				res.add(CardBatchVoBuilder.create().id(b.getId()).name(b.getName()).build());
+				boolean pwdBatch = false;
+				if(b.getCardPwdSize()!=null && b.getCardPwdSize()>0) {
+					pwdBatch = true;
+				}
+				res.add(CardBatchVoBuilder.create().id(b.getId()).name(b.getName()).pwdBatch(pwdBatch).build());
 			}
 			card.setBatchList(res);
 		}

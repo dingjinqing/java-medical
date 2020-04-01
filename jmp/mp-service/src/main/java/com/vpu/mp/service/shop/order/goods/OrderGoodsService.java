@@ -20,16 +20,13 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
+import com.vpu.mp.service.shop.config.ConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record3;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -46,8 +43,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -456,4 +452,41 @@ public class OrderGoodsService extends ShopBaseService{
     public int isGift(int recId){
 	    return db().select(TABLE.IS_GIFT).from(TABLE).where(TABLE.REC_ID.eq(recId)).fetchOptionalInto(Integer.class).orElse(0);
     }
+
+	/**
+	 * 商品购买记录
+	 *
+	 * @param goodsId 商品id
+	 * @return 最进的五条数据
+	 */
+	public List<GoodsOrderRecordSmallVo> getGoodsRecord(Integer goodsId) {
+		SelectHavingStep<Record2<String, BigDecimal>> subQuery1 = db()
+				.select(ORDER_INFO.MAIN_ORDER_SN, DSL.sum(TABLE.GOODS_NUMBER).sub(DSL.sum(TABLE.RETURN_NUMBER)).as("remain_num"))
+				.from(TABLE)
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(ORDER_INFO.MAIN_ORDER_SN.notEqual(ORDER_INFO.ORDER_SN))
+				.and(DSL.length(ORDER_INFO.ORDER_SN).gt(10))
+				.and(TABLE.GOODS_ID.eq(goodsId))
+				.groupBy(ORDER_INFO.MAIN_ORDER_SN);
+		SelectHavingStep<Record2<String, BigDecimal>> subQuery2 = db()
+				.select(ORDER_INFO.ORDER_SN, DSL.sum(TABLE.GOODS_NUMBER).sub(DSL.sum(TABLE.RETURN_NUMBER)).as("remain_num"))
+				.from(TABLE)
+				.leftJoin(ORDER_INFO).on(ORDER_INFO.ORDER_SN.eq(TABLE.ORDER_SN))
+				.where(TABLE.GOODS_ID.eq(goodsId))
+				.and(DSL.length(ORDER_INFO.MAIN_ORDER_SN).lt(10))
+				.groupBy(ORDER_INFO.ORDER_SN);
+		List<GoodsOrderRecordSmallVo> goodsOrderRecordSmallVos = db().select(USER_DETAIL.USERNAME, USER_DETAIL.USER_AVATAR, ORDER_INFO.CREATE_TIME)
+				.from(ORDER_INFO)
+				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(ORDER_INFO.USER_ID))
+				.leftJoin(subQuery1).on(subQuery1.field(ORDER_INFO.MAIN_ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+				.leftJoin(subQuery2).on(subQuery2.field(ORDER_INFO.ORDER_SN).eq(ORDER_INFO.ORDER_SN))
+				.where(ORDER_INFO.ORDER_STATUS.notIn(OrderConstant.ORDER_WAIT_PAY, OrderConstant.ORDER_CANCELLED, OrderConstant.ORDER_CLOSED, OrderConstant.ORDER_REFUND_FINISHED))
+				.and(USER_DETAIL.USERNAME.notEqual(""))
+				.and(USER_DETAIL.USERNAME.isNotNull())
+				.and(subQuery1.field("remain_num", Integer.class).gt(0)
+						.or(subQuery2.field("remain_num", Integer.class).gt(0)))
+				.orderBy(ORDER_INFO.CREATE_TIME.desc())
+				.limit(5).fetchInto(GoodsOrderRecordSmallVo.class);
+		return goodsOrderRecordSmallVos;
+	}
 }

@@ -545,4 +545,8 @@ public class GoodsBrandService extends ShopBaseService {
     public boolean exist(Integer id) {
         return db().fetchExists(GOODS_BRAND, GOODS_BRAND.ID.eq(id).and(GOODS_BRAND.DEL_FLAG.eq(BYTE_ZERO)));
     }
+    
+    public GoodsBrandRecord getBrandById(Integer id) {
+    	return db().selectFrom(GOODS_BRAND).where(GOODS_BRAND.ID.eq(id)).fetchAny();
+    }
 }

@@ -8,6 +8,7 @@ import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
 import com.vpu.mp.service.saas.official.OfficialService;
 import com.vpu.mp.service.saas.overview.ShopOverviewService;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.saas.privilege.ChildAccountService;
 import com.vpu.mp.service.saas.privilege.MenuService;
 import com.vpu.mp.service.saas.privilege.RoleService;
 import com.vpu.mp.service.saas.privilege.SystemUserService;
+import com.vpu.mp.service.saas.question.QuestionService;
 import com.vpu.mp.service.saas.region.CityService;
 import com.vpu.mp.service.saas.region.RegionService;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
@@ -96,6 +98,13 @@ public class SaasApplication {
 
     @Autowired
     public ShopViewService shopViewService;
+
+    @Autowired
+    public ShopViewOrderService shopViewOrderService;
+
+
+    @Autowired
+    public QuestionService questionService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);

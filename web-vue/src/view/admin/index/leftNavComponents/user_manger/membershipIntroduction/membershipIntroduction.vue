@@ -178,6 +178,9 @@ export default {
       if (newVal) {
         this.$set(this.queryParams, 'startTime', newVal[0])
         this.$set(this.queryParams, 'endTime', newVal[1])
+      } else {
+        this.$set(this.queryParams, 'startTime', '')
+        this.$set(this.queryParams, 'endTime', '')
       }
     }
   },

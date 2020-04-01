@@ -11,6 +11,6 @@
     "v-share":"/components/item/popup/share/index",
     "v-recommend":"/components/item/recommend/index",
     "v-pre-sale-rule":"/components/item/popup/pre_sale_rule/index",
-    "v-diatribution":"/components/item/diatribution/index"
+    "v-distribution":"/components/item/distribution/index"
   }
 }

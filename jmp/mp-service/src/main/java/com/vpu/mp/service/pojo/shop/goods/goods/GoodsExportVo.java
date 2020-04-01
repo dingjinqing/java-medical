@@ -108,6 +108,18 @@ public class GoodsExportVo {
     @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_GOODS_IMG,columnIndex = 17)
     private String goodsImg;
 
+    /**
+     * 规格条码
+     */
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_PRD_CODES,columnIndex = 18)
+    private String prdCodes;
+
+    /**
+     * 商品详情图
+     */
+    @ExcelColumn(columnName = JsonResultMessage.GOODS_EXPORT_COLUMN_IMG_URL,columnIndex = 19)
+    private String imgUrl;
+
     @ExcelIgnore
     private Integer goodsId;
     @ExcelIgnore
@@ -116,4 +128,28 @@ public class GoodsExportVo {
     private Integer catId;
     @ExcelIgnore
     private Integer sortId;
+    @ExcelIgnore
+    private BigDecimal prdMarketPrice;
+
+    //列名常量
+    public static final String CREATE_TIME = "createTime";
+    public static final String SORT_NAME_PARENT = "sortNameParent";
+    public static final String SORT_NAME_CHILD = "sortNameChild";
+    public static final String BRAND_NAME = "brandName";
+    public static final String GOODS_SN = "goodsSn";
+    public static final String GOODS_NAME = "goodsName";
+    public static final String PRD_DESC = "prdDesc";
+    public static final String PRD_SN = "prdSn";
+    public static final String GOODS_AD = "goodsAd";
+    public static final String PRD_NUMBER = "prdNumber";
+    public static final String PRD_COST_PRICE = "prdCostPrice";
+    public static final String MARKET_PRICE = "marketPrice";
+    public static final String SHOP_PRICE = "shopPrice";
+    public static final String IS_ON_SALE = "isOnSale";
+    public static final String LIMIT_BUY_NUM = "limitBuyNum";
+    public static final String GOODS_WEIGHT = "goodsWeight";
+    public static final String UNIT = "unit";
+    public static final String GOODS_IMG = "goodsImg";
+    public static final String IMG_URL = "imgUrl";
+    public static final String PRD_CODES = "prdCodes";
 }

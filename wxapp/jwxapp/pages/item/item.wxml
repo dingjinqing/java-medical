@@ -151,7 +151,7 @@
       您当前拥有的积分总数为：{{goodsInfo.activity.userScore}}积分
     </view>
     <!-- 分销信息 -->
-    <v-diatribution activity="{{specParams.activity}}" />
+    <v-distribution activity="{{specParams.activity}}" distribution="{{goodsDistribution}}"/>
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{deliverPlace}}">
       <view class="flex_box">

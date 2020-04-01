@@ -28,7 +28,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +104,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             return;
         }
 
-        PreSaleMpVo goodsPreSaleInfo = preSaleProcessorDao.getGoodsPreSaleInfo(param.getActivityId(), DateUtil.getLocalDateTime());
+        PreSaleMpVo goodsPreSaleInfo = preSaleProcessorDao.getGoodsPreSaleInfo(param.getActivityId(),param.getGoodsId(), DateUtil.getLocalDateTime());
 
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(goodsPreSaleInfo.getActState())) {
             capsule.setActivity(goodsPreSaleInfo);
