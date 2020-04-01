@@ -33,6 +33,7 @@
   .mul_column .every_module .product-name {
     width: 280rpx;
     height: 80rpx;
+    position: relative;
   }
   .mul_column .product-price{
     display: flex;
