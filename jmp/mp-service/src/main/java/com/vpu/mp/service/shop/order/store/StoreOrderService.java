@@ -644,4 +644,16 @@ public class StoreOrderService extends ShopBaseService {
 			.and(TABLE.USER_ID.eq(userId))
 			.fetchAnyInto(UserOrderBean.class);
 	}
+	
+	/**
+	 * 获取门店最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店最近下单时间");
+		return db().select(TABLE.CREATE_TIME)
+					.from(TABLE)
+					.where(TABLE.USER_ID.eq(userId))
+					.orderBy(TABLE.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+	}
 }
