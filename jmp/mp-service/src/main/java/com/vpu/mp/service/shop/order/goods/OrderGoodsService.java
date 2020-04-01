@@ -21,12 +21,18 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
-import com.vpu.mp.service.shop.config.ConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,7 +49,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -368,6 +376,9 @@ public class OrderGoodsService extends ShopBaseService{
             if(bo.getFreeShip() != null && bo.getFreeShip() > 0){
                 //满包邮
                 type.add(BaseConstant.ACTIVITY_TYPE_FREESHIP_ORDER);
+            }
+            if(bo.getGoodsPriceAction() != null && bo.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REBATE)) {
+                type.add(BaseConstant.ACTIVITY_TYPE_REBATE);
             }
         }
         if(BigDecimalUtil.compareTo(insteadPayMoney, null) == 1) {

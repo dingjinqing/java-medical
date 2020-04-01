@@ -1,9 +1,17 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
+import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -13,8 +21,11 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
+import static com.vpu.mp.db.shop.Tables.USER;
 
 /**
  * @Author 常乐
@@ -25,6 +36,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     DistributionConfigService distributionConf;
+
+    @Autowired
+    UserRebatePriceService userRebatePrice;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -174,5 +188,25 @@ public class MpDistributionGoodsService extends ShopBaseService {
             }
         }
         return rebateRatio;
+    }
+
+    public void calculatePrice(OrderBeforeParam param) {
+        DistributionParam cfg = distributionConf.getDistributionCfg();
+        //开关
+        if(cfg.getStatus() == OrderConstant.NO){
+            logger().info("开关关闭，结束");
+            return;
+        }
+        Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = this.userRebatePrice.getUserRebatePrice(param.getWxUserInfo().getUserId(), (Integer[]) param.getProductIds().toArray()).intoMap(UserRebatePriceRecord::getProductId);
+        param.createOrderCartProductBo().getAll().forEach(goods -> {
+            UserRebatePriceRecord rebatePriceRecord = rebatePriceRecordMap.get(goods.getProductId());
+            if (rebatePriceRecord != null) {
+                logger().info("规格：{},分销价 ：{}", rebatePriceRecord.getProductId(), rebatePriceRecord.getAdvicePrice());
+                GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
+                goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REBATE);
+                goodsActivityInfo.setDistributionPrice(rebatePriceRecord.getAdvicePrice());
+                goods.getActivityInfo().put(BaseConstant.ACTIVITY_TYPE_REBATE, goodsActivityInfo);
+            }
+        });
     }
 }

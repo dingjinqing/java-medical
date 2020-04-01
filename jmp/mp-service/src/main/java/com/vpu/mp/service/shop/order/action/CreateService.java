@@ -46,7 +46,6 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
@@ -614,16 +613,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             logger().info("calculateResult:{}", calculateResult);
-            //TODO 分销改价（return）
-
-            //TODO 首单特惠（return）
-
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
 
             //会员专享校验
-
-            //预售商品，不支持现购买
 
             //非加价购 && 非限次卡
             if(Boolean.TRUE) {

@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
  * 分销
  * @author 王帅
  */
+@Slf4j
 public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
     @Autowired
     MpDistributionGoodsService distributionGoods;
@@ -42,7 +44,9 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
 
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
-
+        log.info("下单分销计算start");
+        distributionGoods.calculatePrice(param);
+        log.info("下单分销计算end");
     }
 
     @Override
