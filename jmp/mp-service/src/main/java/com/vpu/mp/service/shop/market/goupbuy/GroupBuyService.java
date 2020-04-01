@@ -508,6 +508,7 @@ public class GroupBuyService extends ShopBaseService {
      * @param groupId
      */
     public void groupBuySuccess(Integer groupBuyId, Integer groupId, String goodsName) {
+        logger().info("拼团成功检查-开始");
         List<GroupBuyUserInfo> pinUserList = groupBuyListService.getGroupUserList(groupId);
         List<GroupBuyUserInfo> groupUserList = pinUserList.stream().filter(p -> p.getStatus().equals(STATUS_ONGOING)).collect(Collectors.toList());
         GroupBuyUserInfo first = pinUserList.stream().findFirst().get();
@@ -523,6 +524,7 @@ public class GroupBuyService extends ShopBaseService {
             List<Integer> userIds = groupUserList.stream().map(GroupBuyUserInfo::getUserId).collect(Collectors.toList());
             groupBuySuccessMessage(userIds, groupBuyId,first.getUsername(), goodsName);
         }
+        logger().info("拼团成功检查-结束");
     }
 
     /**
@@ -574,6 +576,16 @@ public class GroupBuyService extends ShopBaseService {
     private void updateGroupSuccess(Integer groupId, Timestamp date, List<String> orderSnList) {
         db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_SUCCESS).set(GROUP_BUY_LIST.END_TIME, date)
                 .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.in(orderSnList)).execute();
+    }
+    /**
+     * 拼团中
+     * @param groupId     团id
+     * @param date        时间
+     * @param orderSn 订单号
+     */
+    public void updateGroupSuccess(Integer groupId, Timestamp date, String orderSn) {
+        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_ONGOING).set(GROUP_BUY_LIST.END_TIME, date)
+                .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**

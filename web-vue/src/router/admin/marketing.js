@@ -395,7 +395,7 @@ const routes = [
   // 限时降价
   {
     path: '/admin/home/main/reduce',
-    name: 'reduce',
+    name: 'reduce_price',
     meta: {
       crumbTitle: 'router.reduce',
       meta: 'first_market_manage',
@@ -1092,7 +1092,7 @@ const routes = [
   // 满包邮
   {
     path: '/admin/home/main/shipping',
-    name: 'shipping_view',
+    name: 'free_ship',
     meta: {
       crumbTitle: 'router.shipping',
       meta: 'first_market_manage',

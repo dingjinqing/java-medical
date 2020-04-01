@@ -192,7 +192,7 @@
         <!-- 限时降价 -->
         <div
           class="voucher box_style"
-          @click="to('reduce')"
+          @click="to('reduce_price')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/xsjj.png'"
@@ -343,7 +343,7 @@
         <!-- 满包邮 -->
         <div
           class="voucher box_style"
-          @click="to('shipping_view')"
+          @click="to('free_ship')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/mby.png'"
