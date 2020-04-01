@@ -1,6 +1,9 @@
 <template>
   <div class="problemFeedback">
-    <div class="problemFeedbackMain">
+    <div
+      v-if="!isSuccess"
+      class="problemFeedbackMain"
+    >
       <div class="main">
         <div class="question_header">
           <span>问题反馈</span>
@@ -95,6 +98,9 @@
         </div>
       </div>
     </div>
+    <div v-else>
+      <successProblemFeedback />
+    </div>
     <!--选择图片弹窗-->
     <ImageDalog
       pageIndex="pictureSpace"
@@ -105,9 +111,11 @@
   </div>
 </template>
 <script>
+import { feedbackRequest } from '@/api/admin/util'
 export default {
   components: {
-    ImageDalog: () => import('@/components/admin/imageDalog') // 选择图片弹窗
+    ImageDalog: () => import('@/components/admin/imageDalog'), // 选择图片弹窗
+    successProblemFeedback: () => import('./successProblemFeedback') // 提交成功后页面
   },
   data () {
     var validatePass = (rule, value, callback) => {
@@ -122,6 +130,7 @@ export default {
       imgTuneUp: false, // 选择图片弹窗调起
       imgSlectArr: [], // 已选择图片数据
       phoneNum: '', // 手机号
+      isSuccess: false, //  是否提交成功
       feedBackTyptArr: ['产品建议', '网页异常', '功能使用咨询', '其他'],
       ruleForm: {
         feedBackTypt: '',
@@ -155,7 +164,27 @@ export default {
     handleToSubmit () {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          let imgsArr = []
+          this.imgSlectArr.forEach((item, index) => {
+            imgsArr.push(item.imgUrl)
+          })
+          let params = {
+            type: this.ruleForm.feedBackTypt + 1,
+            content: this.ruleForm.questions,
+            imgs: imgsArr,
+            mobile: this.phoneNum
+          }
+          feedbackRequest(params).then(res => {
+            console.log(res)
+            if (res.error === 0) {
+              this.isSuccess = true
+            } else {
+              this.$message.error({
+                message: '提交失败',
+                showClose: true
+              })
+            }
+          })
         } else {
           console.log('error submit!!')
           return false
