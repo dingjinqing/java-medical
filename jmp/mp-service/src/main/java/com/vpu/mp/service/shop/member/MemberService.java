@@ -493,6 +493,11 @@ public class MemberService extends ShopBaseService {
 			logger().info("userId："+userId+"添加tag"+tagId+"不存在");
 			return false;
 		}
+		UserTagRecord record2 = db().selectFrom(USER_TAG).where(USER_TAG.TAG_ID.eq(tagId).and(USER_TAG.USER_ID.eq(userId))).fetchAny();
+		if(record2!=null) {
+			logger().info("userId："+userId+"添加tag"+tagId+"已经存在，不用重复添加");
+			return true;
+		}
 		UserTagRecord record = db().newRecord(USER_TAG);
 		record.setTagId(tagId);
 		record.setUserId(userId);
