@@ -819,7 +819,7 @@ public class UserImportService extends ShopBaseService {
 			}
 		}
 		String[] array = list.toArray(new String[0]);
-		CouponGiveQueueParam newParam = new CouponGiveQueueParam(userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE,
+		CouponGiveQueueParam newParam = new CouponGiveQueueParam(getShopId(),userIds, 0, array, BaseConstant.ACCESS_MODE_ISSUE,
 				BaseConstant.GET_SOURCE_ACT);
 		saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(),
 				TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
