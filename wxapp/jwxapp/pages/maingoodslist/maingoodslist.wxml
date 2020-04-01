@@ -112,6 +112,14 @@
       </view>
     </view>
   </action-sheet>
-  <!-- 选择规格（包含无规格情况 -->
-  <v-sel-spec show="{{showSpec}}" trigger-button="{{triggerButton}}" bind:close="bindCloseSpec" products-info="{{specParams}}" bindproduct="getProduct" limit-info="{{limitInfo}}"></v-sel-spec>
+
+  <!-- 选择规格（包含无规格情况) -->
+  <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{specParams}}" bindproductData="getProductData">
+    <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
+    <view class="spec-footer" slot="footer">
+      <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
+        <text>加入购物车</text>
+      </view>
+    </view>
+  </v-spec-dialog>
 </view>
