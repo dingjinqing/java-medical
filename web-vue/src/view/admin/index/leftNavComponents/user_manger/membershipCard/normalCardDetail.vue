@@ -399,12 +399,14 @@ export default {
       // 门店
       this.cardStoreCfgData.storeListType = String(data.storeListType)
       let storeListTmp = []
-      data.storeList.forEach(item => {
-        storeListTmp.push({
-          storeId: item.value,
-          storeName: item.label
+      if (data.storeList && data.storeList.length > 0) {
+        data.storeList.forEach(item => {
+          storeListTmp.push({
+            storeId: item.value,
+            storeName: item.label
+          })
         })
-      })
+      }
       this.cardStoreCfgData.choosedStore = storeListTmp
 
       // 日期
