@@ -946,7 +946,7 @@ export default {
       // 最近下单时间
       console.log(this.transStatistic.lastAddOrder)
       if (this.transStatistic.lastAddOrder !== '0') {
-        this.transactionData[0].content = this.transStatistic.lastAddOrder
+        this.transactionData[0].content = this.transStatistic.lastAddOrder.replace('T', ' ')
         console.log(this.transactionData[0].content)
       }
 
