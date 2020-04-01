@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -33,6 +35,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -558,6 +561,54 @@ public class ReturnOrderService extends ShopBaseService{
                 .and(TABLE.APPLY_PASS_TIME.le(returnPassTime))
         ).fetch();
     }
+    
+    
+    /**
+	 * 获取用户所有的退款订单信息
+	 */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户所有的退款订单信息");
+		// 普通订单
+		UserOrderBean order = getReturnNormalOrder(userId);
+		// 虚拟订单
+		UserOrderBean cardOrder = saas().getShopApp(getShopId()).memberCardOrder.getReturnOrder(userId);
+		
+		// 门店买单订单
+		UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getReturnOrder(userId);
+		
+		// 服务订单
+		UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getReturnOrder(userId);
+		
+		Integer count = order.getOrderNum()+cardOrder.getOrderNum()+storeOrder.getOrderNum()+serviceOrder.getOrderNum();
+		BigDecimal orderAmount = BigDecimal.ZERO;
+		List<BigDecimal> tmp = Arrays.<BigDecimal>asList(order.getTotalMoneyPaid(),cardOrder.getTotalMoneyPaid(),storeOrder.getTotalMoneyPaid(),serviceOrder.getTotalMoneyPaid());
+		for(BigDecimal val: tmp) {
+			orderAmount = BigDecimalUtil.add(orderAmount, val);
+		}
+		return UserOrderBean.builder().orderNum(count).totalMoneyPaid(orderAmount).build();
+	}
+	
+	/**
+	 * 获取用户退款普通订单
+	 */
+	public UserOrderBean getReturnNormalOrder(Integer userId) {
+		logger().info("获取用户退款普通订单");
+		Record2<BigDecimal, BigDecimal> resOne = db().select(DSL.sum(TABLE.MONEY),DSL.sum(TABLE.SHIPPING_FEE))
+				.from(TABLE)
+				.where(TABLE.USER_ID.eq(userId))
+				.and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
+				.fetchAny();
+		BigDecimal orderAmount = BigDecimalUtil.add((BigDecimal)resOne.get(0), (BigDecimal)resOne.get(1));
+		//TODO 校验这条语句是不是select count(distinct order_sn)
+		int count = db().select(DSL.countDistinct(TABLE.ORDER_SN))
+			.from(TABLE)
+			.where(TABLE.USER_ID.eq(userId))
+			.and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
+			.fetchOne(0,int.class);
+		
+		return UserOrderBean.builder().orderNum(count).totalMoneyPaid(orderAmount).build();
+	}
+	
 }
 
 
