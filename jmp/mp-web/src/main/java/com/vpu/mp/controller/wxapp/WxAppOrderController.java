@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -284,9 +285,9 @@ public class WxAppOrderController extends WxAppBaseController{
      * @return 服务条款配置内容
      */
     @GetMapping("/termsofservice")
-    public JsonResult getTermsOfService() {
+    public JsonResult getTermsOfService(@RequestParam Integer shopId) {
         try {
-            return success(shop().trade.getTermsOfService());
+            return success(saas.getShopApp(shopId).trade.getTermsOfService());
         } catch (IOException e) {
             logger().error(e.getMessage());
             return fail();
