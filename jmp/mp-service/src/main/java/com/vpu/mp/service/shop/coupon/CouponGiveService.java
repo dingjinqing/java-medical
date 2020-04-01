@@ -566,6 +566,7 @@ public class CouponGiveService extends ShopBaseService {
         Integer successNum = 0;
         // 插入user-coupon关联表
         for (String couponId : param.getCouponArray()) {
+            logger().info("当前优惠券ID："+couponId+",准备发放");
             // 得到当前优惠券信息
             CouponDetailsVo couponDetails =
                 db().select(
@@ -587,7 +588,7 @@ public class CouponGiveService extends ShopBaseService {
                     .fetchOneInto(CouponDetailsVo.class);
             // 查询结果为空直接返回
             if (couponDetails == null) {
-                log.error("优惠券 [id：{}] 不存在", couponId);
+                log.error("当前优惠券发放失败，优惠券 [id：{}] 不存在", couponId);
                 continue;
             }
             // 判断优惠券类型 减价or打折
@@ -600,7 +601,7 @@ public class CouponGiveService extends ShopBaseService {
             // 判断当前券的库存
             if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
                 && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
-                logger().info("所选优惠券库存不足");
+                logger().info("当前优惠券ID："+couponId+",发放失败，所选优惠券库存不足");
                 continue;
             }
             // 发券入库
@@ -644,11 +645,13 @@ public class CouponGiveService extends ShopBaseService {
                 // 得到成功条数
                 successNum++;
                 couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
+                logger().info("当前优惠券ID："+couponId+",发放成功");
             }
         }
         //更新优惠券表发放/领取数量
         couponService.updateCouponGiveOrReceiveNum(param.getAccessMode(), param.getCouponArray());
         couponGiveBo.setSuccessSize(successNum);
+        logger().info("发券方法完成");
         return couponGiveBo;
     }
 
