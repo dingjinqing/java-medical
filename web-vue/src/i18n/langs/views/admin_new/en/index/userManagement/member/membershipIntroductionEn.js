@@ -44,27 +44,33 @@ export const en = {
   transactionData: [
     {
       title: 'Latest order time',
-      content: 'No order yet'
+      content: 'No order yet',
+      tip: 'Last time the user placed an order (including refunded orders)'
     },
     {
       title: 'Passenger Unit Price',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Average consumption amount per order (including refunded orders)'
     },
     {
       title: 'Cumulative order amount',
-      content: 'No order yet'
+      content: 'No order yet',
+      tip: 'Accumulated consumption amount of users in the mall (paid part, including refunded order amount)'
     },
     {
       title: 'Cumulative consumption orders',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Cumulative consumption orders of users in the mall (paid part, including refunded orders)'
     },
     {
       title: 'Accumulated refund',
-      content: '0'
+      content: '0',
+      tip: 'Accumulated refund'
     },
     {
       title: 'Cumulative refund orders',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Cumulative number of refund orders of users in the mall (orders with refund behavior)'
     }
   ],
   OrderList: 'Order List',
