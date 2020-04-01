@@ -613,7 +613,6 @@ public class ReturnOrderService extends ShopBaseService{
 				.and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
 				.fetchAny();
 		BigDecimal orderAmount = BigDecimalUtil.add((BigDecimal)resOne.get(0), (BigDecimal)resOne.get(1));
-		//TODO 校验这条语句是不是select count(distinct order_sn)
 		int count = db().select(DSL.countDistinct(TABLE.ORDER_SN))
 			.from(TABLE)
 			.where(TABLE.USER_ID.eq(userId))
