@@ -191,7 +191,7 @@ export default {
     },
     addReduce () {
       this.$router.push({
-        name: 'reduce_add_view'
+        name: 'reduce_price_add'
       })
     },
     edit (id) {
