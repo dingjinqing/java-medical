@@ -110,6 +110,7 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
+    console.log('触底')
     var that = this;
     if (that.data.page == that.data.last_page) { return false };
     that.data.page = that.data.page + 1;

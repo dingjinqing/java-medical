@@ -41,3 +41,12 @@ export function integrationRules (data) {
     method: 'get'
   })
 }
+
+// 问题反馈
+export function feedbackRequest (data) {
+  return service({
+    url: '/api/admin/question/feedback',
+    method: 'post',
+    data: data
+  })
+}
