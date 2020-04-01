@@ -6,6 +6,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PromotionBase;
+import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -85,6 +86,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     List<MemberCardDetailMpVo> memberCards;
     /** 详情页所指定的营销活动 */
     private GoodsActivityBaseMp activity;
+    /**商品最近的五条购买记录 */
+    private List<GoodsOrderRecordSmallVo> goodsRecord;
 
     /**商品促销活动列表*/
     Map<Byte,List<? extends PromotionBase>> promotions = new HashMap<>();
