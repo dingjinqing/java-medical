@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class StoreVo {
+    private String shopVersion;
     private Integer canCreateNum;
     private PageResult<StorePageListVo> storePageListVo;
 }

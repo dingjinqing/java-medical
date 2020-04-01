@@ -155,6 +155,7 @@ public class StoreService extends ShopBaseService {
         Integer nowNum = pageResult.getDataList().size();
         Integer canCreateNum = totalNum-nowNum;
         StoreVo storeVo = new StoreVo();
+        storeVo.setShopVersion(shopVersion);
         storeVo.setCanCreateNum(canCreateNum);
         storeVo.setStorePageListVo(pageResult);
         return storeVo;
