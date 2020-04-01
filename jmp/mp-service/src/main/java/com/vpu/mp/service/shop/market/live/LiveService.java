@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.LiveBroadcast.LIVE_BROADCAST;
 import java.util.List;
 
 import org.jooq.SelectConditionStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -13,6 +14,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
+import com.vpu.mp.service.pojo.shop.market.live.LiveRomeGoodListVo;
 
 /**
  * 直播
@@ -23,6 +25,15 @@ import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
 @Service
 public class LiveService extends ShopBaseService {
 
+	
+	@Autowired
+	public LiveGoodsService liveGoods;
+	
+	/**
+	 * 直播列表页
+	 * @param param
+	 * @return
+	 */
 	public PageResult<LiveListVo> getPageList(LiveListParam param) {
 		SelectConditionStep<LiveBroadcastRecord> selectFrom = db().selectFrom(LIVE_BROADCAST)
 				.where(LIVE_BROADCAST.ID.gt(0));
@@ -61,7 +72,7 @@ public class LiveService extends ShopBaseService {
 		PageResult<LiveListVo> pageList = getPageList(param);
 		List<LiveListVo> dataList = pageList.getDataList();
 		for (LiveListVo liveListVo : dataList) {
-			
+			List<LiveRomeGoodListVo> roomGoodsList = liveGoods.getRoomGoodsList(liveListVo.getId());
 		}
 	}
 

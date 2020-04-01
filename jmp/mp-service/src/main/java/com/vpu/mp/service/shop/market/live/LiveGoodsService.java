@@ -57,6 +57,7 @@ public class LiveGoodsService extends ShopBaseService {
 				GoodsBrandRecord brand = goodsBrandService.getBrandById(goods.getBrandId());
 				goods.setBrandName(brand.getBrandName());
 			}
+			
 
 		}
 	}
