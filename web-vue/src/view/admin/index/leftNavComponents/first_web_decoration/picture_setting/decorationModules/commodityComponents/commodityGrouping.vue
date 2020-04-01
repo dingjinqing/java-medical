@@ -136,24 +136,24 @@
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     ></i>
                     <i
                       class="iconfont icongouwuche1 icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     ></i>
                     <i
                       class="right_buy new_back"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     >
                       {{$t('commodity.grabAtOnce')}}
                     </i>
                     <i
                       class="cart_buy"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     >{{$t('commodity.purchase')}}</i>
                   </div>
                 </div>
@@ -293,24 +293,24 @@
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       ></i>
                       <i
                         class="right_buy new_back"
                         :style="`backgroundColor:${bgColor};right:0;line-height:27px;height:27px;top:0;width:55px`"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         :style="`color:${bgColor};border-color:${bgColor};right:0;line-height:27px;height:27px;top:0`"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>

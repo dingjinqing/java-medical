@@ -208,24 +208,24 @@
                         <i
                           class="iconfont icontianjia icon_font_size new_class"
                           :style="`color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         ></i>
                         <i
                           class="iconfont icongouwuche1 icon_font_size new_class"
                           :style="`color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         ></i>
                         <i
                           class="right_buy new_back"
                           :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         >
                           {{$t('commodity.grabAtOnce')}}
                         </i>
                         <i
                           class="cart_buy"
                           :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         >{{$t('commodity.purchase')}}</i>
                       </div>
                     </div>
