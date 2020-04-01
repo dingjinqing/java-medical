@@ -826,7 +826,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //最大积分抵扣
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivideByMode(
             RoundingMode.HALF_DOWN,
-            BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
+            BigDecimalUtil.BigDecimalPlus.create(scoreCfg.getDiscount().equals(String.valueOf(YES)) ? moneyAfterDiscount : tolalDiscountAfterPrice, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(100)));
         //会员信息
@@ -860,6 +860,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setPreSaleDiscount(preSaleDiscount);
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
+        // 积分使用规则
+        setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
@@ -936,6 +938,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //积分抵扣金额不能超过
         if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1 && !BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())){
+            throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
+        }
+        //积分支付最小限制
+        if(vo.getScorePayLimit().equals(YES) && param.getScoreDiscount() > vo.getScorePayNum()){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
         //TODO 限次卡校验
