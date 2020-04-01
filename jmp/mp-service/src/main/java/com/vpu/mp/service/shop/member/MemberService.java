@@ -835,7 +835,7 @@ public class MemberService extends ShopBaseService {
 			MemberBasicInfoVo memberBasicInfoVo) {
 		
 		/** 累计消费金额 */
-		UserOrderBean userOrder = order.getConsumeOrder(userId);
+		UserOrderBean userOrder = order.getAllConsumeOrder(userId);
 		memberBasicInfoVo.setTotalConsumpAmount(userOrder.getTotalMoneyPaid());
 		
 		/** 客单价 */
