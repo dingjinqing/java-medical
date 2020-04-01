@@ -625,8 +625,9 @@ public class StoreOrderService extends ShopBaseService {
     public UserOrderBean getConsumerOrder(Integer userId) {
     	logger().info("获取用户门店买单信息");
     	return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
-				DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
-					.where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
+						   DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+					.from(TABLE)
+    			    .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
 					.and(TABLE.USER_ID.eq(userId))
 					.fetchAnyInto(UserOrderBean.class);
     }
