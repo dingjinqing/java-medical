@@ -55,8 +55,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     private Calculate calculate;
     @Autowired
     private CartService cartService;
-    @Autowired
-    MpDistributionGoodsService distributionGoods;
+
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
 
@@ -150,17 +149,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             goodsDetailMpBo.setDeliverPrice(deliverPrice);
         }
 
-        //商品分销
-        if(goodsDetailMpBo.getCanRebate() == 1){
-            GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
-            //获取用户分销等级
-            UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
-            RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
-            goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
-            goodsDistributionVo.setCanRebate((byte)1);
-            goodsDistributionVo.setRebateRatio(rebateRatioVo);
-            goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
-        }
+
     }
 
     /**

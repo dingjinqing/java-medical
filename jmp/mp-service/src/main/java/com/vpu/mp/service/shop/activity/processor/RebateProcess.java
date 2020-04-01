@@ -4,11 +4,16 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
+import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -17,6 +22,8 @@ import java.util.List;
  * @author 王帅
  */
 public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
+    @Autowired
+    MpDistributionGoodsService distributionGoods;
 
     @Override
     public Byte getPriority() {
@@ -59,7 +66,17 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
     }
 
     @Override
-    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
-
+    public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
+        //商品分销
+        if(goodsDetailMpBo.getCanRebate() == 1){
+            GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
+            //获取用户分销等级
+            UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
+            RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
+            goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
+            goodsDistributionVo.setCanRebate((byte)1);
+            goodsDistributionVo.setRebateRatio(rebateRatioVo);
+            goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+        }
     }
 }
