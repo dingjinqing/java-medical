@@ -43,12 +43,13 @@ global.wxPage({
   },
   // 商品详情
   to_item: function (e) {
-    util.jumpLink('/pages/item/item?goods_id=' + e.currentTarget.dataset.goods_id);
+    console.log(e)
+    util.jumpLink('/pages/item/item?gid=' + e.currentTarget.dataset.goods_id);
   },
   // 售后详情
   to_detail: function (e) {
     console.log(e)
-    util.jumpLink("/pages1/returndetail/returndetail?order_sn=" + e.currentTarget.dataset.order_sn + "&return_sn=" + e.currentTarget.dataset.ret_id);
+    util.jumpLink("/pages1/returndetail/returndetail?return_sn=" + e.currentTarget.dataset.order_sn);
   },
   // 搜索
   bindSearch: function (e) {
