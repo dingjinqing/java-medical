@@ -75,7 +75,7 @@
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='close_change' />
       </view>
       <view class='pro_content clearfix' wx:if='{{change_goods_info.list != ""}}'>
-        <view class='each_change clearfix' wx:for='{{change_goods_info.list}}' wx:key='key' data-is_check="{{item.isChecked}}" data-keys='{{index}}' bindtap='{{item.tip != ""?"":"choose_chenage"}}'>
+        <view class='each_change clearfix' wx:for='{{change_goods_info.list}}' wx:key='key' data-is_check="{{item.isChecked}}" data-keys='{{index}}' bindtap='{{item.tip ?"":"choose_chenage"}}'>
           <view class='radio_button'>
             <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.isChecked == 1}}'></text>
             <image src='{{imageUrl}}/image/wxapp/icon_rectangle.png' wx:if='{{item.isChecked == 0}}'></image>
@@ -83,7 +83,7 @@
           <view class='every_goods clearfix'>
             <view class='eg_lefts'>
               <image src='{{item.goodsImg}}'></image>
-              <view class='no_click_tips' wx:if='{{item.tip!=""}}'>{{item.tip}}</view>
+              <view class='no_click_tips' wx:if='{{item.tip == 0}}'>满{{item.tipMoney}}可换购</view>
             </view>
             <view class='eg_right'>
               <view class='goods_name'>{{item.goodsName}}</view>
