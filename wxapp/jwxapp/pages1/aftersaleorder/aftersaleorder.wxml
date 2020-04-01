@@ -44,7 +44,7 @@
           </view>
       </view>
       <view class="return_info" bindtap="to_detail"  data-order_sn='{{item.returnOrderSn}}' data-ret_id='{{item.retId}}'>
-        <view class="return_desc">{{item.refundRefuseReason}}</view>
+        <view class="return_desc">{{item.refundRefuseReason?item.refundRefuseReason:''}}</view>
         <!--{{item.refund_status_name}}-->
         <view class="btn_look_detail">查看详情</view>
       </view>
