@@ -18,14 +18,14 @@
       <view class="eo_top">
           <view class="order_sn">售后编号：{{item.returnOrderSn}}</view>
           <view class="order_status" style="color:{{comColor}}">
-            <block wx:if='{{item.refundStatus == 0}}'>
-              <text class="iconfont icontuikuan" style="color:{{comColor}}" wx:if='{{item.refundStatus == 0}}'></text>退款
+            <block wx:if='{{item.reasonType == 0}}'>
+              <text class="iconfont icontuikuan" style="color:{{comColor}}" wx:if='{{item.reasonType == 0}}'></text>退款
             </block>
-            <block wx:if='{{item.refundStatus == 1}}'>
-              <text class="iconfont icontuikuantuihuo" style="color:{{comColor}}" wx:if='{{item.refundStatus == 1}}'></text>退货退款
+            <block wx:if='{{item.reasonType == 1}}'>
+              <text class="iconfont icontuikuantuihuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 1}}'></text>退货退款
             </block>
-            <block wx:if='{{item.refundStatus == 4}}'>
-              <text class="iconfont iconhuanhuo" style="color:{{comColor}}" wx:if='{{item.refundStatus == 4}}'></text>换货
+            <block wx:if='{{item.reasonType == 4}}'>
+              <text class="iconfont iconhuanhuo" style="color:{{comColor}}" wx:if='{{item.reasonType == 4}}'></text>换货
             </block>
           </view>
       </view>
@@ -44,7 +44,7 @@
           </view>
       </view>
       <view class="return_info" bindtap="to_detail"  data-order_sn='{{item.returnOrderSn}}' data-ret_id='{{item.retId}}'>
-        <view class="return_desc">退款原因111</view>
+        <view class="return_desc">{{item.refundRefuseReason}}</view>
         <!--{{item.refund_status_name}}-->
         <view class="btn_look_detail">查看详情</view>
       </view>
