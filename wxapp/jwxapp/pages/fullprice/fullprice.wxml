@@ -1,5 +1,6 @@
 <!--pages/fullprice/fullprice.wxml-->
 <include src="../common/header.wxml" />
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class='main-container' style='padding-bottom:{{isIpx ? "60rpx;":""}}'>
   <!-- 搜索 -->
   <view class='search_input'>
