@@ -115,7 +115,13 @@
 		"name": "优惠券模块",
 		"enName": "picture_setting",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/coupon/*",
+      "/api/admin/avail/coupon/del",
+      "/api/admin/coupon/get/detail",
+      "/api/admin/coupon/update/save",
+      "/api/admin/coupon/update/info"
+    ]
 	},
 	{
 		"vsName": "m_bargain",
