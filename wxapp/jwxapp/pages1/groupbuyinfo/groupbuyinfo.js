@@ -197,10 +197,19 @@ global.wxPage({
               limitMaxNum:res.content.limitMaxNum,
               products:res.content.products
             }
-            this.setData({
-              productsInfo,
-              showSpec:true
+            // 活动库存
+            let activityProductsNum = 0
+            productsInfo.activity.groupBuyPrdMpVos.forEach(item => {
+              activityProductsNum += item.stock
             })
+            if (activityProductsNum <= 0) {
+              util.showModal(that.$t('page1.fight.prompt'), that.$t('page1.fight.reachedLimit'))
+            } else {
+              this.setData({
+                productsInfo,
+                showSpec:true
+              })
+            }
           }
         },{
           goodsId: this.data.groupbuyInfo.goodsInfo.goodsId,
