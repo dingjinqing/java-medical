@@ -1,5 +1,17 @@
 package com.vpu.mp.service.shop.order.virtual;
 
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
+
+import java.math.BigDecimal;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord;
 import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -9,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.member.data.UserCardData;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -17,16 +30,6 @@ import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderRefundParam;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.exception.DataAccessException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static com.vpu.mp.db.shop.tables.VirtualOrderRefundRecord.VIRTUAL_ORDER_REFUND_RECORD;
 
 /**
  * @author: 王兵兵
@@ -173,7 +176,6 @@ public class VirtualOrderService extends ShopBaseService {
             db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.RETURN_FLAG, REFUND_STATUS_SUCCESS).set(VIRTUAL_ORDER.RETURN_MONEY,
                 finalReturnMoney).set(VIRTUAL_ORDER.RETURN_ACCOUNT, finalReturnAccount).set(VIRTUAL_ORDER.RETURN_CARD_BALANCE, finalReturnMemberCardBalance).set(VIRTUAL_ORDER.RETURN_SCORE, finalReturnScore).where(VIRTUAL_ORDER.ORDER_SN.eq(param.getOrderSn())).execute();
         }
-        
     }
 
     private VirtualOrderPayInfo getOrderPayInfo(Integer orderId){
@@ -198,8 +200,34 @@ public class VirtualOrderService extends ShopBaseService {
     	return  db().selectFrom(VIRTUAL_ORDER).where(VIRTUAL_ORDER.CARD_NO.eq(cardNo)).fetchAny();
     }
     
+    /**
+     * 获取用户的虚拟订单
+     */
+    public UserOrderBean getConsumeOrder(Integer userId) {
+    	logger().info("获取用户的虚拟订单信息");
+    	return db().select(DSL.count(VIRTUAL_ORDER.ORDER_ID).as("orderNum"),
+				DSL.sum(VIRTUAL_ORDER.MONEY_PAID.add(VIRTUAL_ORDER.USE_ACCOUNT).add(VIRTUAL_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+    		.from(VIRTUAL_ORDER)
+    		.where(VIRTUAL_ORDER.ORDER_STATUS.eq(ORDER_STATUS_FINISHED))
+    		.and(VIRTUAL_ORDER.USER_ID.eq(userId))
+    		.fetchAnyInto(UserOrderBean.class);
+    }
     
-    
-    
-    
+    /**
+     * 获取用户退款的虚拟订单
+     */
+    public UserOrderBean getReturnOrder(Integer userId) {
+    	logger().info("获取用户退款的虚拟订单信息");
+    	VirtualOrderRefundRecord LOCAL_TABLE = VIRTUAL_ORDER_REFUND_RECORD;
+    	return db().select(DSL.countDistinct(LOCAL_TABLE.ORDER_SN).as("orderNum"),
+    				DSL.sum(LOCAL_TABLE.MONEY_PAID
+    						.add(LOCAL_TABLE.USE_ACCOUNT)
+    						.add(LOCAL_TABLE.MEMBER_CARD_BALANCE)
+    					).as("totalMoneyPaid")
+    			)
+    		.from(LOCAL_TABLE)
+    		.where(LOCAL_TABLE.IS_SUCCESS.eq(REFUND_STATUS_SUCCESS))
+    		.and(LOCAL_TABLE.USER_ID.eq(userId))
+    		.fetchAnyInto(UserOrderBean.class);
+    }
 }

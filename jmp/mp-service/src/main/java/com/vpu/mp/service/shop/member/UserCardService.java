@@ -55,6 +55,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
 import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
 import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
@@ -1920,6 +1921,17 @@ public class UserCardService extends ShopBaseService {
         });
         return list;
     }
+	
+	/**
+	 * 获取用户的会员卡续费信息
+	 */
+	public UserOrderBean getConsumerOrder(Integer userId) {
+		logger().info("获取用户的会员卡续费信息");
+		//TODO card_renew table
+		
+		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
+	}
+	
 	
 }
 
