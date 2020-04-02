@@ -30,6 +30,7 @@ public class BargainUpdateVo {
     private Byte       freeFreight;
     private Byte needBindMobile;
     private Integer initialSales;
+    private Integer first;
 
     /**
      * 砍价商品
