@@ -183,6 +183,7 @@
                     ></i></el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="2"
                   >
                     <i
@@ -194,6 +195,7 @@
                   </el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="3"
                   >
                     <i
@@ -1220,6 +1222,10 @@ export default {
         this.data.col_type = '0'
       } else {
         this.data.col_type = index.toString()
+      }
+      // 如果是三列或者横向滑动则重置为第一个按钮
+      if (index === 2 || index === 3) {
+        this.data.cart_btn_choose = '0'
       }
     },
     // 模块标题图标点击
