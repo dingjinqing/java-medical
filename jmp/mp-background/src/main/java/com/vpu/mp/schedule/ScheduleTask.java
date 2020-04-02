@@ -46,8 +46,7 @@ public class ScheduleTask {
 	/**
 	 * 每天获取微信数据（每天6-12点每半个小时执行一次）
 	 */
-//    @Scheduled(cron = "0 0/30 6-12 * * ?")
-    @Scheduled(cron = "50 * * * * ?")
+    @Scheduled(cron = "0 0/30 6-12 * * ?")
 	public void taskDailyWechat(){
         log.info("开始微信数据定时任务");
 		Result<ShopRecord> result = saas.shop.getAll();
@@ -67,8 +66,15 @@ public class ScheduleTask {
 	@Scheduled(cron = "0 0,30 6-12 * * ?")
 	public void taskWeeklyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
-		result.forEach((r)->{saas.getShopApp(r.getShopId()).
-				shopTaskService.wechatTaskService.beginWeeklyTask();});
+        for (ShopRecord record : result) {
+            log.info("微信数据定时任务-店铺{}",record.getShopId());
+            try {
+                saas.getShopApp(record.getShopId()).
+                    shopTaskService.wechatTaskService.beginWeeklyTask();
+            }catch (Exception e){
+                log.info("微信数据定时任务失败-店铺{}",record.getShopId());
+            }
+        }
 	}
 	/**
 	 * 每月获取微信数据（每月1号6-12点每半个小时执行一次）
@@ -76,8 +82,15 @@ public class ScheduleTask {
 	@Scheduled(cron = "0 0/30 6-12 1 * ?")
 	public void taskMonthklyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
-		result.forEach((r)->{saas.getShopApp(r.getShopId()).
-				shopTaskService.wechatTaskService.beginMonthlyTask();});
+        for (ShopRecord record : result) {
+            log.info("微信数据定时任务-店铺{}",record.getShopId());
+            try {
+                saas.getShopApp(record.getShopId()).
+                    shopTaskService.wechatTaskService.beginMonthlyTask();
+            }catch (Exception e){
+                log.info("微信数据定时任务失败-店铺{}",record.getShopId());
+            }
+        }
 	}
 
 
