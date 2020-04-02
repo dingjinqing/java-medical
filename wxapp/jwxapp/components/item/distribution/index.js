@@ -31,16 +31,16 @@ global.wxComponent({
   methods: {
     initDistribution(data){
       let distributionShowData = []
-      if(data.fanliRatio || data.rebateRatio){
-        if(data.fanliRatio){
-          if(data.selfPurchase === 1){
+      if(data.rebateRatio.fanliRatio || data.rebateRatio.rebateRatio){
+        if(data.rebateRatio.fanliRatio){
+          if(data.rebateRatio.selfPurchase === 1){
             distributionShowData = [{name:'预估自购及直接返利',type:1,price:this.getDistributionPrice(1)}]
           } else {
             distributionShowData = [{name:'预估直接返利',type:3,price:this.getDistributionPrice(3)}]
           }
         }
-        if(data.rebateRatio){
-          distributionShowData = [...distributionShowData,{name:'预估间接返利',type:data.selfFlag === 1 ? 2 : 4,price:this.getDistributionPrice(data.selfFlag === 1 ? 2 : 4)}]
+        if(data.rebateRatio.rebateRatio){
+          distributionShowData = [...distributionShowData,{name:'预估间接返利',type:data.rebateRatio.selfPurchase === 1 ? 2 : 4,price:this.getDistributionPrice(data.rebateRatio.selfPurchase === 1 ? 2 : 4)}]
         }
       }
       this.setData({
@@ -48,7 +48,7 @@ global.wxComponent({
       })
     },
     getDistributionPrice(type){
-      let {fanliRatio,rebateRatio} = this.data.distribution
+      let {fanliRatio,rebateRatio} = this.data.distribution.rebateRatio
       if(type === 1 || type === 3){
         let fanliPrice =  parseFloat(fanliRatio) / 100 * this.data.price;
         return parseFloat(fanliPrice).toFixed(2);
@@ -66,8 +66,8 @@ global.wxComponent({
       switch (type) {
         case 1:
           distributionTips.title = '自购及直接返利说明'
-          if(this.data.distribution.firstRatio){
-            let firstMoney = parseFloat(this.data.distribution.firstRatio) / 100 * this.data.price
+          if(this.data.distribution.rebateRatio.firstRatio){
+            let firstMoney = parseFloat(this.data.distribution.rebateRatio.firstRatio) / 100 * this.data.price
             firstMoney = parseFloat(firstMoney).toFixed(2);
             distributionTips.content = `A自己购买分销商品，或者分享给好友B，好友B购买后，分销员A即可获得直接返利。（注：好友B如果是未在店铺内下单的新用户则按首单返利比例返佣，预估返利金额￥${firstMoney}）`
           } else {
