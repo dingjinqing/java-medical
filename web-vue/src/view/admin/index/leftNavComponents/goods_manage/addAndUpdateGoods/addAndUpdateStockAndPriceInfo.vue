@@ -1369,7 +1369,7 @@ export default {
             return
           }
           retData.goodsGradePrds.push({
-            prdDesc: null,
+            prdDesc: '',
             gradePrice: card.cardPrice,
             grade: card.grade
           })

@@ -29,11 +29,13 @@ import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -63,6 +65,8 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Autowired
     OrderInfoService order;
+    @Autowired
+    private CartService cartService;
 
     /*****处理器优先级*****/
     @Override
@@ -229,6 +233,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     //*******************购物车***************/
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车-预售-开始");
         //预购商品
         List<Integer> productList = cartBo.getCartGoodsList().stream()
                 .filter(goods -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goods.getGoodsRecord().getGoodsType()))
@@ -237,17 +242,23 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         if (goodsPreSaleList!=null&&goodsPreSaleList.size()>0){
             cartBo.getCartGoodsList().forEach(goods->{
                 if (goodsPreSaleList.get(goods.getProductId())!=null){
+                    log.info("购物车-预售商品-不可选中,不可购买");
                     Record5<Integer, Integer,Integer, Integer, BigDecimal> record5s = goodsPreSaleList.get(goods.getProductId()).get(0);
                     CartActivityInfo seckillProductInfo =new CartActivityInfo();
                     seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
                     seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
-                    seckillProductInfo.setSecKillPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
+                    seckillProductInfo.setProductPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
                     goods.getCartActivityInfos().add(seckillProductInfo);
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
                     goods.setActivityId(record5s.get(PRESALE.ID));
                     goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                    goods.setBuyStatus(BaseConstant.NO);
+                    if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                        cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                    }
                 }
             });
         }
+        log.info("购物车-预售-结束");
     }
 }

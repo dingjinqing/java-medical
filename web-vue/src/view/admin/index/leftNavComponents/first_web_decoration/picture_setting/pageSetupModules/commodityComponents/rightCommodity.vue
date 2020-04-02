@@ -31,6 +31,7 @@
               <el-input
                 v-model="data.title"
                 size="small"
+                :maxlength="10"
               ></el-input>
               <span>{{$t('commodity.upToWords')}}</span>
             </div>
@@ -183,6 +184,7 @@
                     ></i></el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="2"
                   >
                     <i
@@ -194,6 +196,7 @@
                   </el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="3"
                   >
                     <i
@@ -736,7 +739,7 @@ export default {
       ],
       rangeList: [null, '+添加商家分类', '+添加平台分类', '+添加商品品牌', '+添加商品标签'], // 商品范围选中后按钮文本列表
       rangeData: [null, [], [], [], []], // 商品范围四类弹框选中数据池
-      needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message'], // 需要转换的checkbox数据
+      needToSwitchData: ['hide_name', 'hide_price', 'hide_label', 'cart_btn', 'other_message', 'tit_center'], // 需要转换的checkbox数据
       goodsListData: [],
       isClickGoodsUpOrDownIcon: false, // 是否点击了模块推荐里商品列表的上下icon按钮
       // 模块保存数据
@@ -807,7 +810,9 @@ export default {
             // 需要转换的checkbox字段数组集合
             let getModulesData = JSON.parse(JSON.stringify(turnToString))
             this.needToSwitchData.forEach(itemC => {
+              console.log(turnToString, itemC)
               let m = this.handleToTurnModulesData(turnToString[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
+              console.log(m)
               getModulesData[itemC] = m
             })
             console.log(getModulesData)
@@ -892,7 +897,7 @@ export default {
     // 监控该模块右边数据操作
     copyData: {
       handler (newData, oldData) {
-        console.log(newData, oldData)
+        console.log(newData)
         console.log('触发')
         // 判断是否是模块推荐中的数据改变
         let judgeChangeFlag = this.handleToJudgeDataChange(newData, oldData)
@@ -907,6 +912,7 @@ export default {
           let m = this.handleToTurnModulesData(callBackData[itemC])
           callBackData[itemC] = m
         })
+        console.log(callBackData)
         // 转换样式列表字段
         let styleParams = this.handleToChangeStyle(1)
         callBackData.col_type = styleParams
@@ -1219,6 +1225,10 @@ export default {
         this.data.col_type = '0'
       } else {
         this.data.col_type = index.toString()
+      }
+      // 如果是三列或者横向滑动则重置为第一个按钮
+      if (index === 2 || index === 3) {
+        this.data.cart_btn_choose = '0'
       }
     },
     // 模块标题图标点击
