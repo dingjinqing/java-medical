@@ -1,4 +1,10 @@
 // components/item/purchase_record/index.js
+var purchase;
+var p_count = 0;
+var p_total = 0;
+var pl;
+var purchase_name;
+var purchase_img;
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -20,7 +26,9 @@ global.wxComponent({
     purchase_name: '',
     purchase_img: '',
     pl: '',
-    show_purchase: false
+    show_purchase: false,
+    p_count: 0,
+    p_total: 0
   },
   /**
    * 组件的方法列表
@@ -38,22 +46,21 @@ global.wxComponent({
           }
         })
       }
-      let purchase = val;
-      let purchase_name = purchase[0].username;
-      let purchase_img = purchase[0].user_avatar
+      purchase = val;
+      purchase_name = purchase[0].username;
+      purchase_img = purchase[0].user_avatar
       that.setData({
-        top_nav: top_nav,
-        purchase: purchase,
         purchase_name: purchase_name,
         purchase_img: purchase_img,
-        pl: purchase.length
+        top_nav: top_nav
       })
-      if (this.data.pl > 0) {
+      pl = purchase.length;
+      if (pl > 0) {
         console.log('begin');
         that.slideupshow(that, 1, 0, 0)
       }
     },
-    slideupshow (that, opacity, delay, p_total) {
+    slideupshow: function (that, opacity, delay, p_total) {
       console.log('kaishi');
       let parms = '';
       let animation = wx.createAnimation({
@@ -65,15 +72,43 @@ global.wxComponent({
       animation.translateY(-120).step();
       parms = animation.export();
       that.setData({
-        animation: parms,
-
+        animation: parms
       })
     },
-    powerDrawer: function (e) {
+    backStart () {
+      p_count++;
+      if (p_count < 2) return false;
+      p_total++;
+      console.log('第一次动画结束！');
+      p_count = 0;
+      if (p_total >= pl) {
+        this.setData({
+          show_purchase: false,
+        })
+      } else {
+        let parms1 = '';
+        let animation1 = wx.createAnimation({
+          duration: 0,
+        });
+        animation1.translateY(30).step();
+        parms1 = animation1.export();
+        purchase_name = purchase[p_total].username;
+        purchase_img = purchase[p_total].user_avatar
+        this.setData({
+          animation: parms1,
+          purchase_name: purchase_name,
+          purchase_img: purchase_img
+        })
+        setTimeout(function () {
+          this.slideupshow(this, 1, 0, p_total)
+        }.bind(this), 100)
+      }
+    },
+    powerDrawer (e) {
       var currentStatu = e.currentTarget.dataset.statu;
       this.utilSpec(currentStatu)
     },
-    utilSpec: function (currentStatu) {
+    utilSpec (currentStatu) {
       /* 动画部分 */
       // 第1步：创建动画实例
       var animation = wx.createAnimation({
