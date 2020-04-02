@@ -31,6 +31,7 @@
               <el-input
                 v-model="data.title"
                 size="small"
+                :maxlength="10"
               ></el-input>
               <span>{{$t('commodity.upToWords')}}</span>
             </div>
