@@ -727,6 +727,7 @@ public class UserImportService extends ShopBaseService {
 		for (UIGetNoActListVo vo : detailList.dataList) {
 			DistributorGroupListVo oneInfo = saas.getShopApp(getShopId()).distributorGroup.getOneInfo(vo.getGroupId());
 			if (oneInfo == null) {
+				//TODO 国际化
 				vo.setGroupName("分组已删除");
 			} else {
 				vo.setGroupName(oneInfo.getGroupName());
