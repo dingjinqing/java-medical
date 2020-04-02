@@ -96,10 +96,12 @@
           >
           </el-table-column>
           <el-table-column
-            prop="userShowTag"
             align="center"
             label="会员标签"
           >
+           <template slot-scope="scope">
+             <span :title="scope.row.userTag" class="user-tag">{{scope.row.userShowTag}}</span>
+           </template>
           </el-table-column>
           <el-table-column
             prop="createTime"
@@ -293,6 +295,10 @@ export default {
           cursor: pointer;
           color: #5a8bff;
         }
+      }
+
+      .user-tag{
+        white-space: nowrap;
       }
     }
   }
