@@ -33,6 +33,7 @@ public class GoodsSearchMpConverter implements EsParamConvertInterface  {
         searchParam.setQueryByPage(true);
         searchParam.setCurrentPage(param.getCurrentPage());
         searchParam.setPageRows(param.getPageRows());
+        propertyList.add(new FieldProperty(EsSearchName.IS_ON_SALE,1));
         if( null != shopId ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
         }
