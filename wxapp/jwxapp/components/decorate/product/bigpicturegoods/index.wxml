@@ -5,8 +5,8 @@
       <view class='product-image' style='overflow-y:hidden;text-align:center;position:relative;height:{{m.goods_display == 2 ? "auto ":"300rpx"}}'>
         <include src="../goodscommon/labelcommon.wxml" />
       </view>
-      <view class='product-name' wx:if="{{m.hide_name != '0'}}">
-            <view class='top_title'>
+      <view class='product-name'>
+            <view class='top_title'  wx:if="{{m.hide_name != '0'}}">
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
             <view class='title_label_container' style="bottom:70rpx">

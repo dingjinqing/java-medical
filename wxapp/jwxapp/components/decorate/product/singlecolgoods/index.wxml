@@ -7,8 +7,8 @@
           <include src="../goodscommon/labelcommon.wxml" />
         </view>
         <view class='module_text'>
-          <view class='product-name' wx:if="{{m.hide_name != '0'}}">
-            <view class='top_title'>
+          <view class='product-name'>
+            <view class='top_title' wx:if="{{m.hide_name != '0'}}">
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
             <view class='title_label_container'>
