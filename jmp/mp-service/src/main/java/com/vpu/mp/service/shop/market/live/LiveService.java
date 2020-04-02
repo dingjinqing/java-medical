@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.market.live;
 
 import static com.vpu.mp.db.shop.tables.LiveBroadcast.LIVE_BROADCAST;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 import java.util.List;
 
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,7 +16,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
-import com.vpu.mp.service.pojo.shop.market.live.LiveRomeGoodListVo;
+import com.vpu.mp.service.wechat.api.WxMaLiveService;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveInfoResult;
+
+import me.chanjar.weixin.common.error.WxErrorException;
+
 
 /**
  * 直播
@@ -68,12 +74,51 @@ public class LiveService extends ShopBaseService {
 	}
 	
 	
-	public void getList(LiveListParam param) {
+	/**
+	 * 授权后的列表
+	 * @param param
+	 * @return
+	 */
+	public PageResult<LiveListVo> getList(LiveListParam param) {
 		PageResult<LiveListVo> pageList = getPageList(param);
 		List<LiveListVo> dataList = pageList.getDataList();
 		for (LiveListVo liveListVo : dataList) {
-			List<LiveRomeGoodListVo> roomGoodsList = liveGoods.getRoomGoodsList(liveListVo.getId());
+			liveListVo.setGoodsListNum(liveGoods.getPackageGoodsListNum(liveListVo.getId()));
+			liveListVo.getLiveStatus();
+			liveListVo.setAddCartNum(liveGoods.getAddCartNum(liveListVo.getRoomId(), null));
+			liveListVo.setOrderNum(getOrderNum(liveListVo.getRoomId()));
 		}
+		return pageList;
+	}
+	
+	/**
+	 * 获得订单数
+	 * @param roomId
+	 * @return
+	 */
+	public Integer getOrderNum(Integer roomId) {
+		return db().select(DSL.count()).from(ORDER_INFO).where(ORDER_INFO.ACTIVITY_ID.eq(roomId))
+				.fetchAnyInto(Integer.class);
+	}
+	
+	
+	/**
+	 * 【获取直播房间列表】接口，仅供后台调用
+	 * @param appId
+	 * @param start
+	 * @param limit
+	 * @return
+	 */
+	public WxMaLiveInfoResult getliveinfo(String appId,Integer start,Integer limit) {
+		WxMaLiveService service = open.getMaExtService();
+		WxMaLiveInfoResult liveInfo=null;
+		try {
+			 liveInfo = service.getLiveInfo(appId, start, limit);
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+		}
+		logger().info("小程序：{}，直播列表为：{}",appId,liveInfo.toString());
+		return liveInfo;
 	}
 
 }

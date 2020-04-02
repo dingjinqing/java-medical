@@ -1,6 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.live;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsLabelsVo;
 
 import lombok.Data;
 
@@ -20,4 +23,5 @@ public class LiveRomeGoodListVo extends LiveGoodVo {
 	private String goodsImg;
 	private String sortName;
 	private String brandName;
+	private List<GoodsLabelsVo> goodsTag;
 }
