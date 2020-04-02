@@ -51,10 +51,15 @@ public class ScheduleTask {
 	public void taskDailyWechat(){
         log.info("开始微信数据定时任务");
 		Result<ShopRecord> result = saas.shop.getAll();
-		result.forEach((r)->{
-		    log.info("微信数据定时任务-店铺{}",r.getShopId());
-		    saas.getShopApp(r.getShopId()).
-				shopTaskService.wechatTaskService.beginDailyTask();});
+        for (ShopRecord record : result) {
+            log.info("微信数据定时任务-店铺{}",record.getShopId());
+            try {
+                saas.getShopApp(record.getShopId()).
+                    shopTaskService.wechatTaskService.beginDailyTask();
+            }catch (Exception e){
+                log.info("微信数据定时任务失败-店铺{}",record.getShopId());
+            }
+        }
 	}
 	/**
 	 * 每周获取微信数据（每周一6-12点每半个小时执行一次）
