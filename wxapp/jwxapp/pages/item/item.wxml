@@ -99,9 +99,9 @@
         </view>
       </view>
       <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
+        <view class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
           {{item}}
-        </text>
+        </view>
       </view>
       <view wx:if="{{goodsInfo.activity.activityType === 10}}" class="flex-wrap pre-sale-content" style="background-color:{{speColor}};">
         <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{PreSaleDiscountPrice}}</view>
@@ -243,7 +243,8 @@
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}" />
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
-    <!-- 购买记录 <v-purchase_record goodsRecords="goodsRecords"  /> -->
+    <!-- 购买记录  -->
+    <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
   <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />

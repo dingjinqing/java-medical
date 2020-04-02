@@ -43,7 +43,7 @@
             </el-select>
           </div>
           <div class="filters_item">
-            <span>营业状态：</span>
+            <span>{{$t('storeList.businessState')}}：</span>
             <el-select
               v-model="queryParams.businessState"
               size="small"
@@ -55,11 +55,11 @@
                 :value="-1"
               ></el-option>
               <el-option
-                label="营业"
+                :label="$t('storeList.open')"
                 :value="1"
               ></el-option>
               <el-option
-                label="未营业"
+                :label="$t('storeList.notOpen')"
                 :value="0"
               ></el-option>
             </el-select>
@@ -81,7 +81,7 @@
             </el-input>
           </div>
           <div class="filters_item">
-            <span>门店自提：</span>
+            <span>{{$t('storeList.storePickup')}}：</span>
             <el-select
               v-model="queryParams.autoPick"
               size="small"
@@ -92,17 +92,17 @@
                 :value="-1"
               ></el-option>
               <el-option
-                label="已开启"
+                :label="$t('storeList.turnedOn')"
                 :value="1"
               ></el-option>
               <el-option
-                label="未开启"
+                :label="$t('storeList.unopened')"
                 :value="0"
               ></el-option>
             </el-select>
           </div>
           <div class="filters_item">
-            <span>同城配送：</span>
+            <span>{{$t('storeList.sameCityDelivery')}}：</span>
             <el-select
               v-model="queryParams.cityService"
               size="small"
@@ -113,11 +113,11 @@
                 :value="-1"
               ></el-option>
               <el-option
-                label="已开启"
+                :label="$t('storeList.turnedOn')"
                 :value="1"
               ></el-option>
               <el-option
-                label="未开启"
+                :label="$t('storeList.unopened')"
                 :value="0"
               ></el-option>
             </el-select>
@@ -134,12 +134,12 @@
                 type="primary"
                 size="small"
                 @click="goMore"
-              >了解更多</el-button>
+              >{{$t('storeList.understandMore')}}</el-button>
             </div>
             <p
               slot="reference"
               style="line-height: 30px; color: #999;padding: 0 12px; margin-bottom: 10px; font-size:12px;"
-            >当前版本为旗舰版，还可创建 {{canCreateNum}} 个门店 <i class="el-icon-question"></i></p>
+            >{{$t('storeList.currentVersion')}}{{shopVersionText}}，{{$t('storeList.canAlsoCreate')}} {{canCreateNum}} {{$t('storeList.aStore')}} <i class="el-icon-question"></i></p>
           </el-popover>
           <div>
             <el-button
@@ -214,7 +214,7 @@
             </template>
           </el-table-column> -->
           <el-table-column
-            label="门店自提"
+            :label="$t('storeList.storePickup')"
             prop="autoPick"
           >
             <template slot-scope="{row}">
@@ -229,7 +229,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="同城配送"
+            :label="$t('storeList.sameCityDelivery')"
             prop="cityService"
           >
             <template slot-scope="{row}">
@@ -244,7 +244,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="营业状态"
+            :label="$t('storeList.businessState')"
             prop="businessState"
           >
             <template slot-scope="{row}">
@@ -349,6 +349,7 @@ import shareDialog from '@/components/admin/shareDialog'
 export default {
   components: { pagination, shareDialog },
   data () {
+    let that = this
     return {
       loading: false,
       langDefaultFlag: false,
@@ -370,7 +371,8 @@ export default {
       shareImg: '',
       sharePath: '',
       shareDialog: false, // 分享弹窗
-      canCreateNum: 0 // 可以创建门店数
+      canCreateNum: 0, // 可以创建门店数
+      shopVersionText: that.$t('storeList.ultimate') // 店铺版本
     }
   },
   methods: {
@@ -384,6 +386,19 @@ export default {
           this.handleData(originalData)
           this.pageParams = res.content.storePageListVo.page
           this.canCreateNum = res.content.canCreateNum
+          switch (res.content.shopVersion) {
+            case 'v1':
+              this.shopVersionText = this.$t('storeList.trialVersion')
+              break
+            case 'v2':
+              this.shopVersionText = this.$t('storeList.basicEdition')
+              break
+            case 'v3':
+              this.shopVersionText = this.$t('storeList.preminumEdition')
+              break
+            default:
+              this.shopVersionText = this.$t('storeList.ultimate')
+          }
           this.loading = false
         }
       })

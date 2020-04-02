@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.vpu.mp.service.saas.shop.MpAuthShopService;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MpDailyRetainRecord;
@@ -63,6 +65,9 @@ import me.chanjar.weixin.common.error.WxErrorException;
 @Service
 public class WechatTaskService extends ShopBaseService {
 
+    @Autowired
+    private MpAuthShopService mpAuthShopService;
+
     Logger logger= LoggerFactory.getLogger(WechatTaskService.class);
 	private static final byte ZERO = 0;
 	private static final byte ONE = 1;
@@ -84,7 +89,7 @@ public class WechatTaskService extends ShopBaseService {
 
     public void beginDailyTask(){
         Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
-        WxMaAnalysisService service = getServiceByShopId(getShopId());
+        WxMaAnalysisService service = mpAuthShopService.getMaServiceByShopId(getShopId()).getAnalysisService();
         WxGetWeAnalysService maService=open().getMaExtService();
 
         this.getDailyRetainInfo(service,date);
@@ -178,7 +183,6 @@ public class WechatTaskService extends ShopBaseService {
     /**
      * 查取用户画像
      * @param service
-     * @param date
      */
     private void getUserPortrait(WxGetWeAnalysService service){
     	//昨天日期

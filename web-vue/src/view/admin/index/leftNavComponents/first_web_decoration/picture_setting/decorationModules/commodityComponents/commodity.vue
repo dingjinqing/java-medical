@@ -15,7 +15,7 @@
           <div>
             <div
               class="hiddenTitle"
-              :style="data.tit_center?'justify-content:center':''"
+              :style="data.tit_center==='1'?'justify-content:center':''"
               v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)"
             >
               <img
@@ -208,24 +208,24 @@
                         <i
                           class="iconfont icontianjia icon_font_size new_class"
                           :style="`color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         ></i>
                         <i
                           class="iconfont icongouwuche1 icon_font_size new_class"
                           :style="`color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         ></i>
                         <i
                           class="right_buy new_back"
                           :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         >
                           {{$t('commodity.grabAtOnce')}}
                         </i>
                         <i
                           class="cart_buy"
                           :style="data.col_type==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor}`"
-                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'"
+                          v-if="data.cart_btn === '1'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                         >{{$t('commodity.purchase')}}</i>
                       </div>
                     </div>
@@ -380,7 +380,7 @@ export default {
     // 数据请求
     handleToQuery (newData) {
       let turnToString = this.handleToTurnNumToStr(newData)
-      console.log(turnToString)
+      console.log(turnToString, newData)
       this.data = turnToString
       // this.$nextTick(() => {
       let arr = JSON.parse(JSON.stringify(turnToString.goodsListData))
@@ -390,15 +390,15 @@ export default {
         this.goodsFlag = false
       }
       // })
-      // if (!this.initLoad) return
+
       let obj = {}
       let goodsId = []
       if (this.data.goodsListData) {
-        this.data.goodsListData.forEach(item => {
+        newData.goods_items.forEach(item => {
           goodsId.push(item.goodsId)
         })
       }
-
+      console.log(newData, goodsId)
       if (this.data.recommend_type === '1') {
         obj['goods_num'] = this.data.goods_num
         obj['recommend_type'] = '1'
@@ -435,6 +435,14 @@ export default {
           'goods_items': goodsId // 商品列表数据
         }
       }
+      console.log(this.data.goods_items)
+      // 解决手动推荐排序问题
+      if (!this.initLoad && this.data.recommend_type === '1') {
+        this.data.goodsListData = this.data.goods_items
+        this.handleToActivity(newData.goods_items)
+        return
+      }
+
       queryDataList(obj).then((res) => {
         console.log(res)
         if (res.error === 0) {
@@ -455,6 +463,7 @@ export default {
           // this.initLoad = false
         }
       })
+      this.initLoad = false
     },
     defaultData () {
       this.bgColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'

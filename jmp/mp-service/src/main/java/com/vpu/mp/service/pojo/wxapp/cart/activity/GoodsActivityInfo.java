@@ -48,4 +48,8 @@ public class GoodsActivityInfo extends GoodsActivityBaseMp {
      */
     private BigDecimal secKillPrice;
 
+    /**
+     * 分销价格
+     */
+    private BigDecimal distributionPrice;
 }

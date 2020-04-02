@@ -340,6 +340,7 @@
       :backDataArr='backDataArr'
       @BusClassTrueDetailData='busClassTrueDetailData'
       :singleElection="true"
+      :showFatherNode="true"
     />
     <!--商品标签弹窗-->
     <AddProductLabel

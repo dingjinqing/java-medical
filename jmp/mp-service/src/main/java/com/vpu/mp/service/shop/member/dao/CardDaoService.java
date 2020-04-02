@@ -528,7 +528,8 @@ public class CardDaoService extends ShopBaseService {
 				}if(code.length()>15) {
 					msg=CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code=code.substring(0,15);
-				}else if(batchIdStr!=null&&batchIdStr.length>0) {
+				}else if(true) {
+					//batchIdStr!=null&&batchIdStr.length>0
 					if(getReceiveCode(code, batchIdStr)) {
 						msg=CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
@@ -607,7 +608,8 @@ public class CardDaoService extends ShopBaseService {
 				if (code.length() > 15) {
 					msg = CardNoImportTemplate.CARDNO_LIMIT.getCode();
 					code = code.substring(0, 15);
-				} else if (batchIdStr != null && batchIdStr.length > 0) {
+				} else if (true) {
+					//batchIdStr != null && batchIdStr.length > 0 如果只对当前卡的校验，把true替换，更改sql
 					if (getReceiveCardNo(code, batchIdStr)) {
 						msg = CardNoImportTemplate.CARDNO_EXIST.getCode();
 					}
@@ -743,12 +745,11 @@ public class CardDaoService extends ShopBaseService {
 	 * @return
 	 */
 	public boolean getReceiveCode(String code, Integer[] batchIds) {
-		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
+		CardReceiveCodeRecord fetch = db().selectFrom(CARD_RECEIVE_CODE)
 				.where(CARD_RECEIVE_CODE.CODE.eq(code)
-						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
-								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
-				.fetch();
-		if (fetch != null && fetch.isNotEmpty()) {
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull()))
+				.fetchAny();
+		if (fetch != null) {
 			return true;
 		}
 		return false;
@@ -761,12 +762,11 @@ public class CardDaoService extends ShopBaseService {
 	 * @return
 	 */
 	public boolean getReceiveCardNo(String code, Integer[] batchIds) {
-		Result<CardReceiveCodeRecord> fetch = db().selectFrom(CARD_RECEIVE_CODE)
+		 CardReceiveCodeRecord fetch = db().selectFrom(CARD_RECEIVE_CODE)
 				.where(CARD_RECEIVE_CODE.CARD_NO.eq(code)
-						.and(CARD_RECEIVE_CODE.BATCH_ID.in(batchIds)
-								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull())))
-				.fetch();
-		if (fetch != null && fetch.isNotEmpty()) {
+								.and(CARD_RECEIVE_CODE.ERROR_MSG.isNull()))
+				.fetchAny();
+		if (fetch != null) {
 			return true;
 		}
 		return false;

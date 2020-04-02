@@ -905,6 +905,7 @@ export default {
       moduleSaveData: { // 模块保存数据
 
       },
+      fisrstEnter: true,
       zcCumData: [] // 暂存自定义图片数据
 
     }
@@ -969,6 +970,18 @@ export default {
       } else {
         this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
       }
+    },
+    // 切换密度
+    density (newData) {
+      if (this.fisrstEnter) {
+        this.fisrstEnter = false
+        return
+      } else {
+        this.customModulesBackData = this.layoutData[Number(newData)]
+        this.moduleSaveData.data = this.layoutData[Number(newData)]
+        this.zcCumData = this.layoutData[Number(newData)]
+      }
+      console.log(this.moduleSaveData, this.zcCumData, this.customModulesBackData)
     }
   },
   mounted () {

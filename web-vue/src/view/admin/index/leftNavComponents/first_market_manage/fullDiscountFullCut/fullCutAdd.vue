@@ -250,7 +250,7 @@
                 :disabled="!!params.id"
               >满金额</el-radio>
               <div class="flex-block">
-                <span>满</span>
+                <span>每满</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small"
@@ -279,7 +279,7 @@
                 :disabled="!!params.id"
               >满件数</el-radio>
               <div class="flex-block">
-                <span>满</span>
+                <span>每满</span>
                 &nbsp;<el-input
                   class="form_input"
                   size="small"

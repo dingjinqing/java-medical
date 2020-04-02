@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.DeleteGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.store.StoreServiceConfig;
@@ -229,6 +230,16 @@ public class AdminStoreController extends AdminBaseController{
      */
     @PostMapping(value = "/api/admin/store/config/update")
     public JsonResult updateStoreServiceConfig(@RequestBody StoreServiceConfig storeServiceConfig) {
+        //权限校验
+        if(!shop().config.storeConfigService.getStoreBuy().equals(storeServiceConfig.getStoreBuy()) || !shop().config.storeConfigService.getTechnicianTitle().equals(storeServiceConfig.getTechnicianTitle())){
+            String[] verifys = saas.shop.version.verifyVerPurview(shopId(), VersionName.SUB_5_STORE_PAY,VersionName.SUB_5_TECHNICIAN);
+            for(String v: verifys){
+                if(!v.equals("true")){
+                    return fail(JsonResultCode.CODE_ACCOUNT_VERSIN_NO_POWER);
+                }
+            }
+        }
+
     	if(shop().config.storeConfigService.setStoreServiceConfig(storeServiceConfig)) {
     		return success();
     	}else {

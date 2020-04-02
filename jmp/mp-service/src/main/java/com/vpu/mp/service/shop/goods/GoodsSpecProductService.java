@@ -229,22 +229,19 @@ public class GoodsSpecProductService extends ShopBaseService {
         goodsSpecService.updateForGoodsUpdate(goodsSpecs);
     }
 
-
     private void batchUpdateGoodsSku(List<GoodsSpecProduct> goodsSpecProducts) {
         if (goodsSpecProducts.size() == 0) {
             return;
         }
         GoodsSpecProduct item = goodsSpecProducts.get(0);
         DSLContext db = db();
-        System.out.println(GOODS_SPEC_PRODUCT.getName());
-        System.out.println(GOODS_SPEC_PRODUCT.getQualifiedName());
-        System.out.println(GOODS_SPEC_PRODUCT.getUnqualifiedName());
         String sql = db.update(GOODS_SPEC_PRODUCT)
             .set(GOODS_SPEC_PRODUCT.PRD_PRICE, item.getPrdPrice())
             .set(GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, item.getPrdMarketPrice())
             .set(GOODS_SPEC_PRODUCT.PRD_COST_PRICE, item.getPrdCostPrice())
             .set(GOODS_SPEC_PRODUCT.PRD_NUMBER, item.getPrdNumber())
             .set(GOODS_SPEC_PRODUCT.PRD_SN, item.getPrdSn())
+            .set(GOODS_SPEC_PRODUCT.PRD_CODES,item.getPrdCodes())
             .set(GOODS_SPEC_PRODUCT.PRD_SPECS, item.getPrdSpecs())
             .set(GOODS_SPEC_PRODUCT.PRD_DESC, item.getPrdDesc())
             .set(GOODS_SPEC_PRODUCT.PRD_IMG, item.getPrdImg())
@@ -259,7 +256,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             item = goodsSpecProducts.get(i);
             addedCount++;
             batchStep = batchStep.bind(item.getPrdPrice(), item.getPrdMarketPrice(), item.getPrdCostPrice(), item.getPrdNumber(), item.getPrdSn(),
-                item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(), item.getPrdId());
+                item.getPrdCodes(),item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(), item.getPrdId());
 
             if (addedCount == batchCount) {
                 batchStep.execute();
@@ -566,15 +563,26 @@ public class GoodsSpecProductService extends ShopBaseService {
 
 
     /**
-     * 查询传入的prdSn集合中哪些是数据库中已经存在的
+     * 查询传入的prdSns集合中哪些是数据库中已经存在的
      *
-     * @param prdSn
+     * @param prdSns
      * @return
      */
-    public List<String> findSkuPrdSnExist(List<String> prdSn) {
+    public List<String> findSkuPrdSnExist(List<String> prdSns) {
         return db().select(GOODS_SPEC_PRODUCT.PRD_SN).from(GOODS_SPEC_PRODUCT)
-            .where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn))
+            .where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSns))
             .fetch(GOODS_SPEC_PRODUCT.PRD_SN);
+    }
+    /**
+     * 查询传入的prdCodes集合中哪些是数据库中已经存在的
+     *
+     * @param prdCodes
+     * @return
+     */
+    public List<String> findSkuPrdCodesExist(List<String> prdCodes) {
+        return db().select(GOODS_SPEC_PRODUCT.PRD_CODES).from(GOODS_SPEC_PRODUCT)
+            .where(GOODS_SPEC_PRODUCT.PRD_CODES.in(prdCodes))
+            .fetch(GOODS_SPEC_PRODUCT.PRD_CODES);
     }
 
     /**

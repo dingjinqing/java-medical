@@ -1,4 +1,4 @@
-<view class="purchase_container" style="top:{{top_nav + 28}}px;" wx:if="{{gd.goods_records != ''}}">
+<view class="purchase_container" style="top:{{top_nav + 28}}px;" wx:if="{{goodsRecords.length}}">
 	<view
 	 class="purchase_record"
 	 animation="{{animation}}"

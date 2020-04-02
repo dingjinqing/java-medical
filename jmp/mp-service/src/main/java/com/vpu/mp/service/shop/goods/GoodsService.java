@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
@@ -764,6 +765,15 @@ public class GoodsService extends ShopBaseService {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
         codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
 
+        Integer limitNum = saas.getShopApp(getShopId()).version.getLimitNum(VersionNumConfig.GOODSNUM);
+        if (limitNum != -1) {
+            Integer count = selectGoodsCount();
+            if (count >= limitNum) {
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+                return codeWrap;
+            }
+        }
+
         transaction(() -> {
             try {
                 //存在重复值则直接返回
@@ -1259,10 +1269,22 @@ public class GoodsService extends ShopBaseService {
             }
             gcep.setGoodsSn(null);
         }
-
-        List<String> prdSns = goods.getGoodsSpecProducts().stream().filter(x -> !StringUtils.isBlank(x.getPrdSn())).map(GoodsSpecProduct::getPrdSn).collect(Collectors.toList());
+        List<String> prdSns = new ArrayList<>(goods.getGoodsSpecProducts().size());
+        List<String> prdCodes = new ArrayList<>(goods.getGoodsSpecProducts().size());
+        for (GoodsSpecProduct prd : goods.getGoodsSpecProducts()) {
+            if (StringUtils.isNotBlank(prd.getPrdSn())) {
+                prdSns.add(prd.getPrdSn());
+            }
+            if (StringUtils.isNotBlank(prd.getPrdCodes())) {
+                prdSns.add(prd.getPrdCodes());
+            }
+        }
         List<String> skuPrdSnExist = goodsSpecProductService.findSkuPrdSnExist(prdSns);
         if (skuPrdSnExist.size() > 0) {
+            return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+        }
+        List<String> skuPrdCodesExist = goodsSpecProductService.findSkuPrdCodesExist(prdCodes);
+        if (skuPrdCodesExist.size() > 0) {
             return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
         }
 
@@ -1302,11 +1324,18 @@ public class GoodsService extends ShopBaseService {
         gcep.setColumnCheckFor(GoodsColumnCheckExistParam.ColumnCheckForEnum.E_GOODS_SPEC_PRODUCTION);
         //检查sku sn是否重复
         for (GoodsSpecProduct goodsSpecProduct : goods.getGoodsSpecProducts()) {
-            if (!StringUtils.isBlank(goodsSpecProduct.getPrdSn())) {
+            if (StringUtils.isNotBlank(goodsSpecProduct.getPrdSn())) {
                 gcep.setPrdSn(goodsSpecProduct.getPrdSn());
                 gcep.setPrdId(goodsSpecProduct.getPrdId());
                 if (isColumnValueExist(gcep)) {
                     return GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST;
+                }
+            }
+            if (StringUtils.isNotBlank(goodsSpecProduct.getPrdCodes())) {
+                gcep.setPrdSn(null);
+                gcep.setPrdCodes(goodsSpecProduct.getPrdCodes());
+                if (isColumnValueExist(gcep)) {
+                    return GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST;
                 }
             }
         }
@@ -1372,11 +1401,11 @@ public class GoodsService extends ShopBaseService {
                                                                GoodsColumnCheckExistParam goodsColumnExistParam) {
         SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
-        if (goodsColumnExistParam.getGoodsName() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getGoodsName())) {
             scs = scs.and(GOODS.GOODS_NAME.eq(goodsColumnExistParam.getGoodsName()));
         }
 
-        if (goodsColumnExistParam.getGoodsSn() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getGoodsSn())) {
             scs = scs.and(GOODS.GOODS_SN.eq(goodsColumnExistParam.getGoodsSn()));
         }
 
@@ -1399,8 +1428,11 @@ public class GoodsService extends ShopBaseService {
         //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
         SelectConditionStep<?> scs = select.where(DSL.noCondition());
 
-        if (goodsColumnExistParam.getPrdSn() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getPrdSn())) {
             scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));
+        }
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getPrdCodes())) {
+            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_CODES.eq(goodsColumnExistParam.getPrdCodes()));
         }
         // 修改去重
         if (goodsColumnExistParam.getPrdId() != null) {
@@ -1612,6 +1644,14 @@ public class GoodsService extends ShopBaseService {
             .where(GOODS_REBATE_PRICE.GOODS_ID.in(goodsIds)).execute();
     }
 
+    /**
+     * 统计未删除商品总数量
+     * @return 商品数量
+     */
+    public Integer selectGoodsCount(){
+        int i = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        return i;
+    }
     /**
      * 查询商品详情
      *
@@ -1862,7 +1902,7 @@ public class GoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public GoodsExportColumnVo getExportGoodsListSize(GoodsExportParam param) {
+    public GoodsExportColumnVo getExportGoodsListSize(GoodsPageListParam param) {
         GoodsExportColumnVo vo = new GoodsExportColumnVo();
         // 拼接过滤条件
         Condition condition = this.buildOptions(param);

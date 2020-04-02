@@ -140,6 +140,9 @@ global.wxPage({
   },
   // 删除会员卡
   delCard (e) {
+    console.log(this.data.dataList)
+    let dataList = this.data.dataList
+    let that = this
     let card_no = e.currentTarget.dataset.card_no;
     util.showModal(
       '',
@@ -149,11 +152,22 @@ global.wxPage({
         util.api(
           '/api/wxapp/card/del',
           function (res) {
+            console.log(res)
             if (res.error === 0) {
-              this.requestList();
+              that.data.dataList.forEach((item, index) => {
+                item.forEach((itemC, indexC) => {
+                  if (itemC.cardNo === card_no) {
+                    dataList[index].splice(indexC, 1)
+                  }
+                })
+              })
+              console.log(dataList)
+              that.setData({
+                dataList: dataList
+              })
             }
           },
-          { card_no: card_no }
+          { cardNo: card_no }
         );
       },
       true,

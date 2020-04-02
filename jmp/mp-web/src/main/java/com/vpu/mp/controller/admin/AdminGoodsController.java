@@ -146,6 +146,14 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 查询店铺商品新增时相关的通用配置
+     * @return
+     */
+    @GetMapping("/api/admin/goods/common/cfg")
+    public JsonResult selectGoodsCommonCfg(){
+        return success(shop().config.shopCommonConfigService.getGoodsCommonConfig());
+    }
+    /**
      * 商品新增
      *
      * @param goods 商品参数
@@ -153,7 +161,6 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/add")
     public JsonResult insert(@RequestBody Goods goods) {
-
         //如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsSpecProducts参数
         if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
@@ -190,6 +197,12 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM.equals(code)) {
+            return fail(JsonResultCode.GOODS_NUM_FETCH_LIMIT_NUM);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
@@ -283,6 +296,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
@@ -414,7 +430,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 取将要导出的列数
      */
     @PostMapping("/api/admin/goods/export/rows")
-    public JsonResult getExportTotalRows(@RequestBody @Valid GoodsExportParam param) {
+    public JsonResult getExportTotalRows(@RequestBody @Valid GoodsPageListParam param) {
         return success(shop().goods.getExportGoodsListSize(param));
     }
 

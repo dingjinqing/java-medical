@@ -11,7 +11,9 @@ global.wxPage({
       2:"中评",
       3:"差评",
       4:"有图"
-    }
+    },
+    dataList: null,
+    pageParams: null,
   },
 
   /**
@@ -27,15 +29,21 @@ global.wxPage({
     this.requestCommentList()
   },
   requestCommentList(){
+    let currentPage = this.data.pageParams
+      ? this.data.pageParams.currentPage
+      : 1;
     util.api('/api/wxapp/comment/goods',res=>{
       if(res.error === 0){
         this.setData({
-          dataList:this.resetCommentList(res.content.comment),
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']:this.resetCommentList(res.content.comment.dataList),
           commentNum:this.getCommentNum(res.content.number),
+          pageParams: res.content.comment.page,
         })
         this.getRating(this.data.commentNum)
       }
     },{
+      currentPage,
+      pageRows: 20,
       type:this.data.type,
       goodsId:this.data.goodsId
     })
@@ -83,7 +91,9 @@ global.wxPage({
     let {type} = e.currentTarget.dataset
     this.setData({
       type,
-      chooseTarget:type
+      chooseTarget:type,
+      dataList:null,
+      'pageParams.currentPage':1
     })
     this.requestCommentList()
   },
@@ -105,7 +115,7 @@ global.wxPage({
   },
   previewImage(e){
     let {id,index} = e.currentTarget.dataset
-    let target = this.data.dataList.find(item=>item.id === id)
+    let target = this.data.dataList.flat().find(item=>item.id === id)
     wx.previewImage({
       urls:target.commentImageList,
       current:target.commentImageList[index]
@@ -149,7 +159,15 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    if (
+      this.data.pageParams &&
+      this.data.pageParams.currentPage === this.data.pageParams.lastPage
+    )
+      return;
+    this.setData({
+      'pageParams.currentPage': this.data.pageParams.currentPage + 1
+    });
+    this.requestList();
   },
 
   /**

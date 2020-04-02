@@ -16,34 +16,36 @@
       <view style="{{chooseTarget == item.type ? 'color:'+comColor+';border-color:'+comColor+';' : ''}}" data-type="{{item.type}}" bindtap="toggleType">{{commentTypeList[item.type]}}({{item.num}})</view>
     </block>
   </view>
-  <view class="tabs-content" wx:if="{{dataList.length > 0}}">
-    <block wx:for="{{dataList}}" wx:key="id">
-      <view class="single-comment-content">
-        <view class="comment-user-star-info">
-          <image src="{{imageUrl+item.userAvatar}}"></image>
-          <text class="user-name">{{item.anonymousflag ? '匿名用户' : item.username}}</text>
-          <view class="star-num">
-            <block wx:for="{{item.commentStarNum}}" wx:key="*this">
-              <text class="iconfont iconshoucang" style="color:{{comColor}}"></text>
+  <view class="tabs-content" wx:if="{{dataList[0].length > 0}}">
+   <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+      <block wx:for="{{pageItem}}" wx:key="id" wx:for-index="itemIndex">
+        <view class="single-comment-content">
+          <view class="comment-user-star-info">
+            <image src="{{imageUrl+item.userAvatar}}"></image>
+            <text class="user-name">{{item.anonymousflag ? '匿名用户' : item.username}}</text>
+            <view class="star-num">
+              <block wx:for="{{item.commentStarNum}}" wx:key="*this">
+                <text class="iconfont iconshoucang" style="color:{{comColor}}"></text>
+              </block>
+            </view>
+          </view>
+          <view class="comment-text">
+            {{item.commNote	|| '此用户没有填写用户心得'}}
+          </view>
+          <view class="image-content" wx:if="{{item.commentImageList && item.commentImageList.length > 0}}">
+            <block wx:for="{{item.commentImageList}}" wx:key="*this" wx:for-item="imageItem" wx:for-index="imageIndex">
+              <image src="{{imageItem}}" data-index="{{imageIndex}}" data-id="{{item.id}}" bindtap="previewImage"></image>
             </block>
           </view>
+          <text class="goods-spec" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</text>
+          <text class="comment-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
+          <view class="reply-text" wx:if="{{item.answer}}">
+            <text>回复：</text>
+            <text>{{item.answer}}</text>
+          </view>
         </view>
-        <view class="comment-text">
-          {{item.commNote	|| '此用户没有填写用户心得'}}
-        </view>
-        <view class="image-content" wx:if="{{item.commentImageList && item.commentImageList.length > 0}}">
-          <block wx:for="{{item.commentImageList}}" wx:key="*this" wx:for-item="imageItem" wx:for-index="imageIndex">
-            <image src="{{imageItem}}" data-index="{{imageIndex}}" data-id="{{item.id}}" bindtap="previewImage"></image>
-          </block>
-        </view>
-        <text class="goods-spec" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</text>
-        <text class="comment-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
-        <view class="reply-text" wx:if="{{item.answer}}">
-          <text>回复：</text>
-          <text>{{item.answer}}</text>
-        </view>
-      </view>
-    </block>
+      </block>
+   </block>
   </view>
   <view class="tabs-content" wx:else>
     <view class="no-comment">暂无评价</view>

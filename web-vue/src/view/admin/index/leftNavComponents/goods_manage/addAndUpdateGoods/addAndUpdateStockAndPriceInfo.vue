@@ -97,6 +97,7 @@
               <th>市场价</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
+              <th v-if="goodsCommonConfig.needPrdCodes === 1">商品条码</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
@@ -129,6 +130,11 @@
                   v-model="item.prdSn"
                   @change="specPrdSnChange(item,index,$event.target.value,$event)"
                 /></td>
+              <td v-if="goodsCommonConfig.needPrdCodes === 1"><input
+                :id="'prdCodes_'+item.prdDesc"
+                v-model="item.prdCodes"
+                @change="specPrdCodesChange(item,index,$event.target.value,$event)"
+              /></td>
               <td>
                 <div
                   style="margin: 0 auto;width: 30px;height: 30px;border: 1px solid #ccc;cursor: pointer;"
@@ -404,6 +410,18 @@
         />
       </el-form-item>
 
+      <el-form-item
+        label="商品条码："
+        v-if="!specInfoSwitch && goodsCommonConfig.needPrdCodes === 1"
+      >
+        <el-input
+          v-model="goodsProductInfo.prdCodes"
+          size="small"
+          style="width:170px;"
+          @change="defaultSpecCodesChangeRepeatCheck"
+        />
+      </el-form-item>
+
     </el-form>
     <!--图片dialog-->
     <ImageDalog
@@ -420,7 +438,7 @@
 // TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
-import {getLevelCardList, isGoodsColumnValueExist} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {getLevelCardList, isGoodsColumnValueExist, selectGoodsCommonConfig} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
 import {isNumberBlank, isStrBlank} from '@/util/typeUtil'
 import ImageDalog from '@/components/admin/imageDalog'
@@ -433,6 +451,10 @@ export default {
   data () {
     return {
       lang: '',
+      goodsCommonConfig: {
+        'needPrdCodes': 0,
+        'goodsWeightCfg': 0
+      },
       imgDialogShow: false,
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
@@ -453,7 +475,9 @@ export default {
         prdPrice: 0,
         prdCost: 0,
         prdSn: null,
-        prdSnBak: null
+        prdSnBak: null,
+        prdCodes: null,
+        prdCodesBak: null
       },
       stockAndPriceRules: {
         prdNumber: [
@@ -595,6 +619,36 @@ export default {
           event.target.focus()
         } else {
           item.prdSnBak = item.prdSn
+        }
+      })
+    },
+    /* 商品条码改变 */
+    specPrdCodesChange (item, index, newVal, event) {
+      if (isStrBlank(newVal)) {
+        item.prdCodes = null
+        item.prdCodesBak = null
+        return
+      }
+
+      if (this._isSpecPrdCodesRepeated(index, newVal)) {
+        this.$message.warning({ message: '商品条码内部重复', type: 'warning' })
+        item.prdCodes = item.prdCodesBak
+        event.target.focus()
+        return
+      }
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: item.prdId,
+        prdCodes: newVal
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message.warning({ message: '商品条码内部重复', type: 'warning' })
+          item.prdCodes = item.prdCodesBak
+          event.target.focus()
+        } else {
+          item.prdCodesBak = item.prdCodes
         }
       })
     },
@@ -768,6 +822,26 @@ export default {
           continue
         }
         if (this.goodsProductInfo.goodsSpecProducts[i].prdSn === newVal) {
+          return true
+        }
+      }
+      return false
+    },
+    /*
+     * 商家条码是否重复
+     * index: newVal在goodsSpecProducts数组的索引
+     * newVal: 待比较的规格编码值
+     * */
+    _isSpecPrdCodesRepeated (index, newVal) {
+      if (isStrBlank(newVal)) {
+        return false
+      }
+      for (let i = 0; i < this.goodsProductInfo.goodsSpecProducts.length; i++) {
+        // 自己不和自己比较
+        if (i === index) {
+          continue
+        }
+        if (this.goodsProductInfo.goodsSpecProducts[i].prdCodes === newVal) {
           return true
         }
       }
@@ -957,6 +1031,8 @@ export default {
         prdNumber: 0, // sku数量 接口需要数据
         prdSn: null, // sku sn码 用户输入项
         prdSnBak: null, // sku sn码 接口需要数据
+        prdCodes: null, // sku 商品条码 用户输入项
+        prdCodesBak: null, // sku 商品条码 接口需要数据
         prdImg: {
           imgUrl: null, // 图片全路径 接口需要数据
           imgPath: null // 图片相对路径 接口需要数据
@@ -1066,9 +1142,9 @@ export default {
       }
 
       let data = {
-        columnCheckFor: 0,
-        goodsId: this.goodsProductInfo.goodsId,
-        goodsSn: this.goodsProductInfo.prdSn
+        columnCheckFor: 1,
+        prdId: this.goodsProductInfo.prdId,
+        prdSn: this.goodsProductInfo.prdSn
       }
       isGoodsColumnValueExist(data).then(res => {
         if (res.error === 0) {
@@ -1076,6 +1152,26 @@ export default {
           this.goodsProductInfo.prdSn = this.goodsProductInfo.prdSnBak
         } else {
           this.goodsProductInfo.prdSnBak = this.goodsProductInfo.prdSn
+        }
+      })
+    },
+    defaultSpecCodesChangeRepeatCheck () {
+      if (isStrBlank(this.goodsProductInfo.prdCodes)) {
+        this.goodsProductInfo.prdCodesBak = this.goodsProductInfo.prdCodes
+        return
+      }
+
+      let data = {
+        columnCheckFor: 1,
+        prdId: this.goodsProductInfo.prdId,
+        prdCodes: this.goodsProductInfo.prdCodes
+      }
+      isGoodsColumnValueExist(data).then(res => {
+        if (res.error === 0) {
+          this.$message.warning({ message: '商品条码重复', type: 'warning' })
+          this.goodsProductInfo.prdCodes = this.goodsProductInfo.prdCodesBak
+        } else {
+          this.goodsProductInfo.prdCodesBak = this.goodsProductInfo.prdCodes
         }
       })
     },
@@ -1119,6 +1215,8 @@ export default {
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
+          prdCodes: specPrd.prdCodes,
+          prdCodesBak: specPrd.prdCodesBak,
           prdImg: {
             imgUrl: specPrd.prdImg,
             imgPath: specPrd.prdImgPath
@@ -1140,6 +1238,8 @@ export default {
           prdNumber: specPrd.prdNumber,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
+          prdCodes: specPrd.prdCodes,
+          prdCodesBak: specPrd.prdCodes,
           prdImg: {
             imgUrl: specPrd.prdImgUrl,
             imgPath: specPrd.prdImg
@@ -1186,6 +1286,12 @@ export default {
         return null
       }
     },
+    /* 初始化商品编辑时需要的店铺配置新 */
+    _initGoodsCommonConfigData () {
+      selectGoodsCommonConfig().then(res => {
+        this.goodsCommonConfig = res.content
+      })
+    },
     /* 初始化商品库存，价格，成本等数据 */
     _initOtherData (goodsData, isUseDefaultPrd) {
       this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
@@ -1197,7 +1303,11 @@ export default {
         // 如果使用null的话vue那个组件认为你想要的是默认值 0，其实我是想显示空白
         this.goodsProductInfo.marketPrice = goodsData.marketPrice === null ? undefined : goodsData.marketPrice
         this.goodsProductInfo.prdCost = goodsData.costPrice
+        this.goodsProductInfo.prdId = goodsData.goodsSpecProducts[0].prdId
         this.goodsProductInfo.prdSn = goodsData.goodsSpecProducts[0].prdSn
+        this.goodsProductInfo.prdSnBak = goodsData.goodsSpecProducts[0].prdSn
+        this.goodsProductInfo.prdCodes = goodsData.goodsSpecProducts[0].prdCodes
+        this.goodsProductInfo.prdCodesBak = goodsData.goodsSpecProducts[0].prdCodes
       }
     },
     /* 页面数据初始化链，避免页面数据未加载完成的时候就初始化待修改商品数据，返回一个Promise */
@@ -1210,7 +1320,8 @@ export default {
       this.arrorFlag = false
       return this.initPageDataLink().then(() => {
         let isUseDefaultPrd = false
-
+        // 初始化店铺配置的商品编辑相关信息
+        this._initGoodsCommonConfigData()
         // 判断是否使用默认的规格项
         let prdDesc = goodsData.goodsSpecProducts[0].prdDesc
         if (goodsData.goodsSpecProducts.length === 1 && isStrBlank(prdDesc)) {
@@ -1221,7 +1332,6 @@ export default {
         this._initGoodsSpecs(goodsData, isUseDefaultPrd)
         // 初始化商品规格项（sku）
         this._initGoodsSpecProducts(goodsData, isUseDefaultPrd)
-
         // 初始化会员卡信息
         this._initMemberCards(goodsData)
         // 会员价设置是否显示设置
@@ -1251,6 +1361,7 @@ export default {
     },
     /* 新增商品数据初始化 */
     initDataForInsert () {
+      this._initGoodsCommonConfigData()
       this._memberCardsInit()
       // 开启监听
       this._watch()
@@ -1386,7 +1497,7 @@ export default {
             return
           }
           retData.goodsGradePrds.push({
-            prdDesc: null,
+            prdDesc: '',
             gradePrice: card.cardPrice,
             grade: card.grade
           })
@@ -1399,6 +1510,7 @@ export default {
           prdDesc: '',
           prdSpecs: '',
           prdSn: this.goodsProductInfo.prdSn,
+          prdCodes: this.goodsProductInfo.prdCodes,
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
           prdCostPrice: this.goodsProductInfo.prdCost,
@@ -1423,6 +1535,7 @@ export default {
             prdNumber: specProduct.prdNumber,
             prdMarketPrice: specProduct.prdMarketPrice,
             prdSn: specProduct.prdSn,
+            prdCodes: specProduct.prdCodes,
             prdImg: specProduct.prdImg.imgPath
           })
 

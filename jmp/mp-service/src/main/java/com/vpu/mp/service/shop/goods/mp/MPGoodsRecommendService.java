@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.RecommendGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsLabelsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecSource;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.goods.recommend.RecommendGoodsVo;
@@ -726,6 +727,42 @@ public class MPGoodsRecommendService extends ShopBaseService {
         return labelId;
     }
 
+    /**
+     * 获取与该商品关系最紧密的前n个标签信息
+     * @param goodsId
+     * @param catId
+     * @param sortId
+     * @param limitNum
+     * @return
+     */
+    public List<GoodsLabelsVo> getGoodsLabelsByGoods(Integer goodsId,Integer limitNum,Byte type) {
+    	List<GoodsLabelsVo> list=new ArrayList<GoodsLabelsVo>();
+    	if(type.equals(IS_ON_SALE)) {
+    		list = db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
+    				.from(GOODS_LABEL_COUPLE)
+    				.leftJoin(GOODS_LABEL).on(GOODS_LABEL_COUPLE.LABEL_ID.eq(GOODS_LABEL.ID)).leftJoin(GOODS).on(GOODS.GOODS_ID.eq(goodsId))
+    				.where(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_ONE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.CAT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.SORT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
+    				.limit(limitNum).fetchInto(GoodsLabelsVo.class);
+    		
+    	}
+    	else {
+    		list = db().select(GOODS_LABEL.ID,GOODS_LABEL.NAME)
+    				.from(GOODS_LABEL_COUPLE)
+    				.leftJoin(GOODS_LABEL).on(GOODS_LABEL_COUPLE.LABEL_ID.eq(GOODS_LABEL.ID)).leftJoin(GOODS).on(GOODS.GOODS_ID.eq(goodsId))
+    				.where(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_ONE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(goodsId)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.CAT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.SORT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
+    				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)).and(GOODS_LABEL.GOODS_DETAIL.eq(IS_ON_SALE)))
+    				.orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
+    				.limit(limitNum).fetchInto(GoodsLabelsVo.class);
+    	}
+    	return list;
+    }
+    
     /**
      * 根据标签id获取商品信息
      *
