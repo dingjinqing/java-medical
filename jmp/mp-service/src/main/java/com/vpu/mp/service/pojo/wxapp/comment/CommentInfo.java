@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.comment;
 
+import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.CommentDetailVo;
 import lombok.Data;
 
@@ -12,6 +13,6 @@ import java.util.List;
  */
 @Data
 public class CommentInfo {
-    private List<MPGoodsCommentVo> comment;
+    private PageResult<MPGoodsCommentVo> comment;
     private List<CommentDetailVo.CommentLevelInfo> number;
 }

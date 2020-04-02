@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.comment;
 
+import com.vpu.mp.service.foundation.util.Page;
 import lombok.Data;
 
 /**
@@ -13,4 +14,6 @@ public class MPGoodsCommentParam {
     private Integer goodsId;
     /** 筛选条件 */
     private Byte type;
+    private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
+    private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }
