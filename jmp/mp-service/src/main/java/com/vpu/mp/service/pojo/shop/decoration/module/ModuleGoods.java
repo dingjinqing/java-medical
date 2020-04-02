@@ -136,5 +136,8 @@ public class ModuleGoods extends ModuleBase {
     @JsonProperty("title_link")
     private String titleLink="";
 
+    @JsonProperty("tit_center")
+    private Byte titCenter=0;
+
     private List<?> goodsListData;
 }
