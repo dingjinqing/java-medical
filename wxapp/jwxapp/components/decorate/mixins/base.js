@@ -143,7 +143,7 @@ var base = {
     // 触发规格窗
     bindAddCart (e) {
       console.log('触发规格弹窗', e)
-      let { goodsId, activityType, activityId } = this.data.m.goodsListData.find(item => { return item.goodsId = e.currentTarget.dataset.goods_id })
+      let { goodsId, activityType, activityId } = this.data.m.goodsListData.find(item => { return item.goodsId === e.currentTarget.dataset.goods_id })
       this.triggerEvent('addCart', { goodsId, activityType, activityId })
     }
   }

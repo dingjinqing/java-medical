@@ -38,8 +38,11 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column label="团长优惠价">
-        <template>
+      <el-table-column
+        label="团长优惠价"
+        v-if="isShowGrouperPrice"
+      >
+        <template slot-scope="scope">
           <el-input
             v-model="scope.row.grouperPrice"
             :disabled="isEdit"
@@ -47,7 +50,7 @@
             class="small_input"
           ></el-input>
         </template>
-      </el-table-column> -->
+      </el-table-column>
 
       <el-table-column
         prop="prdNumber"
@@ -68,7 +71,7 @@
 
       <el-table-column
         v-if="isEdit"
-        label="剩余秒杀库存"
+        label="剩余拼团库存"
       >
         <template slot-scope="scope">
           <el-input
@@ -117,6 +120,10 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
+    },
+    isShowGrouperPrice: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -158,6 +165,18 @@ export default {
           })
           return false
         }
+        if (!this.secKillProduct[i].grouperPrice) {
+          this.$message.error({
+            message: '请输入团长价格'
+          })
+          return false
+        }
+        if (this.secKillProduct[i].prdPrice < this.secKillProduct[i].grouperPrice) {
+          this.$message.error({
+            message: '团长价格大于原价，请修改'
+          })
+          return false
+        }
         if (!this.secKillProduct[i].stock) {
           this.$message.error({
             message: '请输入拼团库存'
@@ -165,7 +184,6 @@ export default {
           return false
         }
         if (this.secKillProduct[i].prdNumber < this.secKillProduct[i].stock) {
-          console.log(11111)
           this.$message.error({
             message: '有规格拼团库存大于原库存，请修改'
           })

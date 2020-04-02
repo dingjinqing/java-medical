@@ -220,6 +220,7 @@ global.wxPage({
     }
   },
 
+  // 商品详情
   requestGoodsInfo(goodsId) {
     util.api('/api/wxapp/goods/detail', res => {
       if (res.error == 0) {
@@ -271,12 +272,53 @@ global.wxPage({
     })
   },
 
+  // 规格回调
+  getProductData(e) {
+    this.setData({
+      product: e.detail,
+      limitInfo: {
+        prdNumber: e.detail.prdNumber,
+        limitBuyNum: e.detail.limitBuyNum,
+        limitMaxNum: e.detail.limitMaxNum,
+        activityType: 7
+      }
+    })
+  },
+
+  // 数量回调
+  getGoodsNum(e) {
+    this.setData({
+      productInfo: { ...this.data.product, goodsNum: e.detail.goodsNum }
+    });
+    console.log(this.data.productInfo)
+  },
+
   // 关闭规格弹窗
   bindCloseSpec() {
     this.setData({
       showSpec: false,
       triggerButton: ''
     })
+  },
+
+  // 添加购物车
+  addCart() {
+    let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+    util.api("/api/wxapp/cart/add", res => {
+      if (res.error == 0) {
+        util.toast_success('已加入购物车');
+        main_request(this)
+      } else {
+        util.showModal("提示", res.message);
+        return false;
+      }
+      this.bindCloseSpec()
+    }, {
+      goodsNumber: goodsNumber,
+      prdId: prdId,
+      activityType: 7,
+      activityId: this.data.identity_id
+    });
   },
 
   // 去购物车

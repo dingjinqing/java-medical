@@ -100,9 +100,11 @@
                                       <!-- <view wx:if="{{ item.cartActivityInfos.length == 0 }}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view> -->
                                     </view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{(item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum)) ? 'not_tap' : ''}}"  bindtap="{{item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
+                                      <!-- <view class="num_minus {{(item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum)) ? 'not_tap' : ''}}"  bindtap="{{item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view> -->
+                                      <view class="num_minus {{(item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum)) || item.cartNumber == 1 ? 'not_tap' : ''}}"  bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                                      <view class="num_plus {{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? 'not_tap' : ''}}" bindtap="{{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
+                                      <view class="num_plus {{(item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum)) ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
+                                      <!-- <view class="num_plus {{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? 'not_tap' : ''}}" bindtap="{{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view> -->
                                     </view>
                                 </view>
                             </view>
@@ -171,7 +173,7 @@
                       <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">失效</view>
                       <view class="goods_item">
                           <view class="goods_img">
-                              <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                              <image src="{{item.goodsImg}}"/>
                               <view class="invalid">
                                 失效商品
                               </view>

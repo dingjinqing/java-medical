@@ -359,12 +359,12 @@ export default {
 
     // 订单明细
     seckillOrderHanlder (id) {
-      this.$router.push({ name: 'reduce_order_list', query: { id: id } })
+      this.$router.push({ name: 'reduce_price_order', query: { id: id } })
     },
 
     // 活动效果数据
     reduceEffectHandler (id, startTime, endTime) {
-      this.$router.push({ name: 'reduce_effect_view', query: { id: id, startTime: startTime, endTime: endTime } })
+      this.$router.push({ name: 'reduce_price_effect', query: { id: id, startTime: startTime, endTime: endTime } })
     }
   }
 }

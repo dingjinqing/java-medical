@@ -923,7 +923,7 @@ export default {
 
     // 跳转推广文案配置
     copyWritingHandler () {
-      this.$router.push({ name: 'distribution_copyWriting' })
+      this.$router.push({ name: 'distribution_info_copyWriting' })
     },
 
     // 跳转分销员列表

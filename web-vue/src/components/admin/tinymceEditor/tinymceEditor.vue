@@ -48,7 +48,7 @@ export default {
     toolbar: {
       type: [String, Array],
       // eslint-disable-next-line no-useless-escape
-      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | lists image media table | removeformat'
+      default: ' forecolor | fontsizeselect |　undo redo　| bold italic | alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | lists image  | removeformat'
     },
     height: {
       type: Number,

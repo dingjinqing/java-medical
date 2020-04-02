@@ -131,7 +131,7 @@
         <el-dialog
           :title="$t('memberCard.cardNumPwd')"
           :visible.sync="dialogVisible2"
-          width="30%"
+          width="530px"
           v-if="receiveAction===2"
         >
 
