@@ -47,6 +47,15 @@ public class EsBaseSearchService extends ShopBaseService {
     private static final String[] DEFAULT_STR = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
 
     private static final String[] GOODS_SEARCH_STR = {
+        V1,
+        V2,
+        V3,
+        V4,
+        V5,
+        V6,
+        V7,
+        V8,
+        V9,
         GOODS_ID,
         SHOP_ID,
         IS_ON_SALE,
