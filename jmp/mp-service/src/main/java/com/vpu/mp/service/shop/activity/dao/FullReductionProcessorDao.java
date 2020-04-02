@@ -303,7 +303,6 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
         Condition idCondition = MRKING_STRATEGY.ACT_TYPE.eq((byte) 0).or(DslPlus.findInSet(goodsId, MRKING_STRATEGY.RECOMMEND_GOODS_ID)
                 .or(DslPlus.findInSet(catId, MRKING_STRATEGY.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(brandId, MRKING_STRATEGY.RECOMMEND_BRAND_ID))
                 .or(DslPlus.findInSet(sortId, MRKING_STRATEGY.RECOMMEND_SORT_ID)));
-        logger().debug("小程序-商品详情-获取满折满减促销");
         Map<Integer, List<Record7<Integer, String, Byte, BigDecimal, BigDecimal, Integer, BigDecimal>>> fullReductionMap =
                 db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.CARD_ID, MRKING_STRATEGY.TYPE,
                         MRKING_STRATEGY_CONDITION.FULL_MONEY, MRKING_STRATEGY_CONDITION.REDUCE_MONEY,

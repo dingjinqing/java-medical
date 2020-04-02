@@ -211,23 +211,33 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
-        log.info("会员价计算start");
+        log.info("购物车-会员价计算-开始");
         String grade = userCardService.getUserGrade(cartBo.getUserId());
         if (grade.equals(CardConstant.LOWEST_GRADE)) {
             return;
         }
         List<UserCardGradePriceBo> userCartGradePrice = userCardService.getUserCartGradePrice(grade, cartBo.getProductIdList());
-        cartBo.getCartGoodsList().forEach(goods -> {
-            // 会员等级
-            userCartGradePrice.forEach(gradePrice -> {
-                if (goods.getProductId().equals(gradePrice.getPrdId())) {
-                    CartActivityInfo gradePriceInfo = new CartActivityInfo();
-                    gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
-                    gradePriceInfo.setMemberPriceType(gradePrice.getGradePrice());
-                    goods.getCartActivityInfos().add(gradePriceInfo);
+        if (userCartGradePrice!=null&&userCartGradePrice.size()>0){
+            Map<Integer, List<UserCardGradePriceBo>> gradePriceMap = userCartGradePrice.stream().collect(Collectors.groupingBy(UserCardGradePriceBo::getPrdId));
+            cartBo.getCartGoodsList().stream().filter(goods->goods.getBuyStatus().equals(BaseConstant.YES)&&goods.getPriceStatus().equals(BaseConstant.NO)).forEach(goods -> {
+                // 会员等级
+                if (gradePriceMap.containsKey(goods.getProductId())){
+                    UserCardGradePriceBo gradePriceBo = gradePriceMap.get(goods.getProductId()).get(0);
+                    log.info("购物车-会员价-商品{}-商品原价{},会员价价格{}",goods.getGoodsName(),goods.getPrdPrice(),gradePriceBo.getGradePrice());
+                    if (gradePriceBo.getGradePrice().compareTo(goods.getPrdPrice())<0){
+                        CartActivityInfo gradePriceInfo = new CartActivityInfo();
+                        gradePriceInfo.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
+                        gradePriceInfo.setProductPrice(gradePriceBo.getGradePrice());
+                        log.info("购物车-会员价-修改价格{}",gradePriceBo.getGradePrice());
+                        goods.getCartActivityInfos().add(gradePriceInfo);
+                        goods.setPrdPrice(gradePriceBo.getGradePrice());
+                        goods.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
+                        goods.setPriceActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
+                    }
                 }
             });
-        });
+        }
+        log.info("购物车-会员价计算-结束");
     }
 
     public void doOrderOperation(OrderCartProductBo productBo) {
