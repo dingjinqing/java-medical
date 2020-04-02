@@ -1026,12 +1026,14 @@ public class MemberCardService extends ShopBaseService {
 			logger().info("正在获取批次信息");
 			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
 			List<CardBatchVo> res = new ArrayList<>();
+			boolean pwdBatch = CardUtil.isReceiveByPwd(card.getReceiveAction());
 			for (CardBatchRecord b : batchList) {
-				boolean pwdBatch = false;
-				if(b.getCardPwdSize()!=null && b.getCardPwdSize()>0) {
-					pwdBatch = true;
-				}
-				res.add(CardBatchVoBuilder.create().id(b.getId()).name(b.getName()).pwdBatch(pwdBatch).build());
+				res.add(CardBatchVoBuilder.create()
+							.id(b.getId())
+							.name(b.getName())
+							.pwdBatch(pwdBatch)
+							.action(b.getAction())
+							.build());
 			}
 			card.setBatchList(res);
 		}
@@ -2468,7 +2470,7 @@ public class MemberCardService extends ShopBaseService {
 //			return JsonResultCode.CODE_EXCEL_HAVE_SAME;
 //		}
 		CardBatchParam param2=new CardBatchParam();
-		param2.setAction((byte)1);
+		param2.setAction((byte)2);
 		param2.setNumber(newNumber);
 		param2.setBatchName(param.getBatchName());
 		Integer batchId = cardDao.createCardBatch(param2);
