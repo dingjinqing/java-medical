@@ -704,11 +704,11 @@ public class UserImportService extends ShopBaseService {
 		}
 		String mobile = param.getMobile();
 		if (StringUtils.isNotEmpty(mobile)) {
-			selectFrom.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile));
+			selectFrom.where(USER_IMPORT_DETAIL.MOBILE.like(likeValue(mobile)));
 		}
 		String realName = param.getRealName();
 		if (StringUtils.isNotEmpty(realName)) {
-			selectFrom.where(USER_IMPORT_DETAIL.NAME.eq(realName));
+			selectFrom.where(USER_IMPORT_DETAIL.NAME.like(likeValue(realName)));
 		}
 		Byte isDistributor = param.getIsDistributor();
 		if (isDistributor != null) {
