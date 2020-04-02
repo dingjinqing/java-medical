@@ -132,7 +132,7 @@ public class ScoreDaoService extends ShopBaseService {
 		Record myRecord = db().newRecord(myFields);
 				
 		SelectSeekStep1<Record, Timestamp> select = db().select(myFields)
-			.from(USER_SCORE.leftJoin(USER).on(USER_SCORE.USER_ID.eq(USER.USER_ID)).leftJoin(USER_TAG).on(USER_SCORE.USER_ID.eq(USER_TAG.USER_ID)))
+			.from(USER_SCORE.innerJoin(USER).on(USER_SCORE.USER_ID.eq(USER.USER_ID)).leftJoin(USER_TAG).on(USER_SCORE.USER_ID.eq(USER_TAG.USER_ID)))
 			.where(USER_SCORE.DESC.eq(VersionName.SUB_3_SIGN_SCORE).and(condition))
 			.groupBy(myFields)
 			.orderBy(USER_SCORE.CREATE_TIME.desc());

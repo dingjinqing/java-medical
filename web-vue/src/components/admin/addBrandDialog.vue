@@ -208,7 +208,7 @@ export default {
       }
     },
     callAddBrand (newData) {
-      console.log(newData)
+      console.log(this.$refs)
       if (!newData) {
         this.$emit('update:callAddBrand', false)
       } else {

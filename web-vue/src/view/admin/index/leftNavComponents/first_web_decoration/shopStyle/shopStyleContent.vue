@@ -373,7 +373,8 @@ export default {
     saveShopStyle () {
       let saveLeftColor = this.btnLeft_background.split(':')[1]
       let saveRightColor = this.btnRight_background.split(':')[1]
-      if (!this.colorLeft_ || !this.colorRight) {
+      console.log(saveLeftColor, saveRightColor)
+      if (!saveLeftColor || !saveRightColor) {
         this.$message.error({
           message: '请选择自定义颜色',
           showClose: true

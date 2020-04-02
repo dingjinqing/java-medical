@@ -96,10 +96,10 @@
         />
         <!--平台分类-->
         <!--<el-table-column-->
-          <!--align="center"-->
-          <!--prop="catName"-->
-          <!--:label="$t('allGoods.allGoodsData.cat')"-->
-          <!--width="100"-->
+        <!--align="center"-->
+        <!--prop="catName"-->
+        <!--:label="$t('allGoods.allGoodsData.cat')"-->
+        <!--width="100"-->
         <!--/>-->
         <!--商家分类-->
         <el-table-column
@@ -507,12 +507,12 @@ export default {
     },
     batchExportVal (newData) { // 底部 批量导出下拉框值变化
       if (newData === '1') {
-        this.bottomDialogVisible = true
+        this.showExportConfirm = true
         this.isBottomClickIndex = 2 // 当前选中批量导出筛选的件商品
       } else if (newData === '2') {
         let flag = this.handleToJudgeIsChecked()
         if (!flag) {
-          this.$message.error({
+          this.$message.warning({
             message: this.$t('allGoods.bottomOptions.selectpProduct'),
             showClose: true
           })
@@ -523,17 +523,18 @@ export default {
         this.nowCheckAll.forEach((item, index) => {
           arr.push(item.goodsId)
         })
-        let params = {}
-        this.filterData.exportRowStart = 1
-        params = Object.assign(this.filterData, { goodsIds: arr })
-        this.filterData.exportRowEnd = 5000
-        getExportTotalRows(params).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            this.checkScreenNum = res.content
-          }
-        })
-        this.bottomDialogVisible = true
+        // let params = {}
+        // this.filterData.exportRowStart = 1
+        // params = Object.assign(this.filterData, { goodsIds: arr })
+        this.filterData.goodsIds = arr
+        // this.filterData.exportRowEnd = 5000
+        // getExportTotalRows(params).then(res => {
+        //   console.log(res)
+        //   if (res.error === 0) {
+        //     this.checkScreenNum = res.content
+        //   }
+        // })
+        this.showExportConfirm = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
       }
     },
