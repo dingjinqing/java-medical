@@ -153,7 +153,6 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/add")
     public JsonResult insert(@RequestBody Goods goods) {
-
         //如果商品使用默认的规格形式，也需要根据默认形式设置一个GoodsSpecProducts参数
         if (goods.getGoodsSpecProducts() == null || goods.getGoodsSpecProducts().size() == 0) {
             return fail(JsonResultCode.GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT);
@@ -190,6 +189,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM.equals(code)) {
+            return fail(JsonResultCode.GOODS_NUM_FETCH_LIMIT_NUM);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {

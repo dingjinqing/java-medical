@@ -119,11 +119,10 @@ function dis_request(that) {
   }, {});
   // 查看最新的审核状态
   util.api('/api/wxapp/distribution/distributor/apply/detail', function (res) {
-    if (res.error === 0 && res.content) {
-      console.log(res.content.status)
+    if (res.error === 0) {
       that.setData({
-        status: res.content.status,
+        status: res.content == null ? null : res.content.status,
       })
     }
-  }, {});
+  });
 }

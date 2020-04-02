@@ -62,7 +62,13 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 对于更新操作，货品编号存在但是对应的规格编码不存
      */
-    GOODS_PRD_SN_NOT_EXIT_WITH_GOODS_SN((byte)12,"goods.prd.sn.not.exit.with.goods.sn");
+    GOODS_PRD_SN_NOT_EXIT_WITH_GOODS_SN((byte)12,"goods.prd.sn.not.exit.with.goods.sn"),
+
+    /**
+     * 商品数量达到店铺级别可用数量最大值
+     */
+    GOODS_NUM_FETCH_LIMIT_NUM((byte)13,"goods.num.fetch.limit.num");
+
     private byte errorCode;
     private String errorMsg;
 
