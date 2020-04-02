@@ -61,6 +61,18 @@
           </el-form-item>
 
           <el-form-item
+            label="优先级："
+            prop="first"
+          >
+            <el-input
+              v-model="param.first"
+              size="small"
+              placeholder="请输入优先级"
+              style="width: 200px"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item
             :label="$t('addBargainAct.actGoods')+':'"
             prop=""
             style="padding-top:5px;"
@@ -84,6 +96,7 @@
               border
               header-row-class-name="tableClss"
             >
+              <!-- 商品名称 -->
               <el-table-column
                 prop="goodsName"
                 :label="$t('addBargainAct.goodsName')"
@@ -98,8 +111,9 @@
                   >
                   <span>{{scope.row.goodsName}}</span>
                 </template>
-
               </el-table-column>
+
+              <!-- 砍价原库存 -->
               <el-table-column
                 prop="goodsNumber"
                 :label="$t('addBargainAct.goodsOriginalStock')"
@@ -107,6 +121,8 @@
                 class="tableHeaderHeight"
                 width="90px"
               ></el-table-column>
+
+              <!-- 砍价库存 -->
               <el-table-column
                 :label="$t('addBargainAct.bargainStock')"
                 align="center"
@@ -114,16 +130,24 @@
                 width="160"
               >
                 <template slot-scope="scope">
-                  <el-input-number
-                    v-model="param.stock"
-                    size="mini"
-                    controls-position="right"
-                    :min="1"
-                    :max="scope.row.goodsNumber"
+                  <el-form-item
+                    :prop="'goodsRow.'+scope.$index+'.stock'"
+                    style="margin-bottom:0;"
                   >
-                  </el-input-number>
+                    <el-input-number
+                      v-model="scope.row.stock"
+                      size="mini"
+                      controls-position="right"
+                      :min="1"
+                      :max="scope.row.goodsNumber"
+                    ></el-input-number>
+                  </el-form-item>
                 </template>
               </el-table-column>
+
+              <el-table-column label="剩余"></el-table-column>
+
+              <!-- 商品原价 -->
               <el-table-column
                 prop="shopPrice"
                 :label="$t('addBargainAct.goodsOriginalPrice')"
@@ -131,6 +155,8 @@
                 class="tableHeaderHeight"
                 width="90"
               ></el-table-column>
+
+              <!-- 指定金额 - 砍价底价 -->
               <el-table-column
                 v-if="param.bargainType == 0"
                 prop="shopPrice"
@@ -139,17 +165,24 @@
                 class="tableHeaderHeight"
               >
                 <template slot-scope="scope">
-                  <el-input-number
-                    v-model="param.expectationPrice"
-                    size="mini"
-                    controls-position="right"
-                    :min="0"
-                    :max="scope.row.shopPrice"
+                  <el-form-item
+                    :prop="'goodsRow.'+scope.$index+'.expectationPrice'"
+                    style="margin-bottom:0;"
                   >
-                  </el-input-number>
-                  ({{$t('addBargainAct.default0')}})
+                    <el-input-number
+                      v-model="scope.row.expectationPrice"
+                      size="mini"
+                      controls-position="right"
+                      :min="0"
+                      :max="scope.row.shopPrice"
+                    >
+                    </el-input-number>
+                    ({{$t('addBargainAct.default0')}})
+                  </el-form-item>
                 </template>
               </el-table-column>
+
+              <!-- 任意金额 - 结算金额 -->
               <el-table-column
                 v-else
                 prop="shopPrice"
@@ -160,25 +193,35 @@
                 <template slot-scope="scope">
                   <div>
                     <div style="display: flex;justify-content: center;">
-                      <el-input-number
-                        :disabled="isEditFlag"
-                        v-model="param.floorPrice"
-                        size="mini"
-                        controls-position="right"
-                        :min="0"
-                        :max="scope.row.shopPrice"
+                      <el-form-item
+                        :prop="'goodsRow.'+scope.$index+'.floorPrice'"
+                        style="margin-bottom: 0"
                       >
-                      </el-input-number>
-                      <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
-                      <el-input-number
-                        :disabled="isEditFlag"
-                        v-model="param.expectationPrice"
-                        size="mini"
-                        controls-position="right"
-                        :min="0"
-                        :max="scope.row.shopPrice"
+                        <el-input-number
+                          :disabled="isEditFlag"
+                          v-model="scope.row.floorPrice"
+                          size="mini"
+                          controls-position="right"
+                          :min="0"
+                          :max="scope.row.shopPrice"
+                        >
+                        </el-input-number>
+                      </el-form-item>
+                      <span style="margin: 10px 6px;">{{$t('marketCommon.to')}}</span>
+                      <el-form-item
+                        :prop="'goodsRow.'+scope.$idnex+'.expectationPrice'"
+                        style="margin-bottom: 0"
                       >
-                      </el-input-number>
+                        <el-input-number
+                          :disabled="isEditFlag"
+                          v-model="scope.row.expectationPrice"
+                          size="mini"
+                          controls-position="right"
+                          :min="0"
+                          :max="scope.row.shopPrice"
+                        >
+                        </el-input-number>
+                      </el-form-item>
                     </div>
                     <div style="margin-top:5px;">
                       <span>({{$t('addBargainAct.default0')}})</span>
@@ -190,6 +233,41 @@
                   </div>
                 </template>
               </el-table-column>
+
+              <!-- 操作 -->
+              <el-table-column
+                label="操作"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <div
+                    v-if="scope.row.goodsId"
+                    :disabled="isEditFlag"
+                    @click="deleteGoods(scope.row, scope.row.goodsId)"
+                    style="cursor:pointer;color:#409eff"
+                  >删除</div>
+                </template>
+              </el-table-column>
+
+              <div
+                slot="append"
+                class="moreSetUp"
+              >
+                <span style="color: #5a8bff">批量设置：</span>
+                <a
+                  :class="activeIndex === 1 ? '' : 'settings'"
+                  @click="setCurrent(1)"
+                >砍价库存</a>
+                <a
+                  :class="activeIndex === 2 ? '' : 'settings'"
+                  @click="setCurrent(2)"
+                  v-if="param.bargainType===1"
+                >最小结算金额</a>
+                <a
+                  :class="activeIndex === 3 ? '' : 'settings'"
+                  @click="setCurrent(3)"
+                >结算金额</a>
+              </div>
             </el-table>
           </el-form-item>
 
@@ -549,10 +627,10 @@
     />
     <!--商品选择-->
     <choosingGoods
-      @resultGoodsRow="choosingGoodsResult"
+      @resultGoodsDatas="choosingGoodsResult"
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="goodsIdList"
-      :singleElection="true"
+      :singleElection="false"
     />
   </div>
 </template>
@@ -587,7 +665,8 @@ export default {
           this.param.effectiveDate.push(res.content.endTime)
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
-          this.goodsRow.push(res.content.goods)
+          // this.goodsRow.push(res.content.goods)
+          this.goodsRow = res.content.bargainGoods
           let resultConfig = res.content.shopShareConfig
           this.shareConfig = resultConfig
           this.shareConfig.shareImg = resultConfig.shareImgFullUrl
@@ -629,6 +708,17 @@ export default {
         }
       }
     }
+    var validLevel = (rule, value, callback) => {
+      console.log(value)
+      var reg = /^(0|[1-9][0-9]*)$/
+      if (value === '' || !value) {
+        callback(new Error('请输入优先级'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入0和正整数'))
+      } else {
+        callback()
+      }
+    }
     return {
       // 向帮忙砍价的用户赠送优惠券
       mrkingVoucherObjs: [],
@@ -653,17 +743,19 @@ export default {
         floorPrice: 0,
         effectiveDate: '',
         goodsId: 0,
-        expectationPrice: 0,
+        expectationPrice: '',
         needBindMobile: false,
         initialSales: 0,
         bargainMin: '',
         bargainMax: '',
+        first: '',
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
           shareImgAction: 1,
           shareImg: null
-        }
+        },
+        bargainGoods: []
       },
       shareConfig: {
         shareAction: 1,
@@ -680,6 +772,7 @@ export default {
       tuneUpChooseGoods: false,
       goodsIdList: [],
       arrorFlag: true,
+      activeIndex: 0,
       ArrowArr: [
         {
           img_1: this.$imageHost + '/image/admin/show_more.png'
@@ -698,7 +791,14 @@ export default {
         ],
         bargainMin: [
           { validator: validMin, trigger: ['change', 'blur'] }
+        ],
+        first: [
+          { required: true, validator: validLevel, trigger: ['blur', 'change'] }
         ]
+        //  flist: [
+        //   { required: true, validator: levelValid, trigger: ['blur', 'change'] }
+        //   // { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
+        // ],
       }
     }
   },
@@ -746,12 +846,51 @@ export default {
     },
     //  选择商品弹窗确认
     choosingGoodsResult (row) {
-      this.param.goodsId = row.goodsId
-      this.goodsRow = []
-      this.goodsRow.push(row)
+      console.log(row, 'get row')
+      this.param.goodsId = row.map(item => { return item.goodsId })
+      console.log(this.param.goodsId)
+      this.goodsRow = row
+      console.log(this.goodsRow)
       this.goodsIdList = []
-      this.goodsIdList.push(row.goodsId)
-      this.param.stock = this.goodsRow[0].goodsNumber
+      this.goodsIdList = row.map(item => { return item.goodsId })
+    },
+    deleteGoods (data, id) {
+      let index = this.goodsIdList.findIndex(item => {
+        return item === id
+      })
+      this.goodsIdList.splice(index, 1)
+      let goodsTarget = this.goodsRow.findIndex(item => {
+        return id === item.id
+      })
+      this.goodsRow.splice(goodsTarget, 1)
+    },
+    // 设置数据
+    setCurrent (index) {
+      // 拷贝一份数据
+      let price = JSON.parse(JSON.stringify(this.goodsRow))
+      console.log(price)
+      switch (index) {
+        case 1:
+          price.forEach(row => {
+            row.stock = price[0].stock
+            console.log(row)
+          })
+          this.activeIndex = 1
+          break
+        case 2:
+          price.forEach(row => {
+            row.floorPrice = price[0].floorPrice
+          })
+          this.activeIndex = 2
+          break
+        case 3:
+          price.forEach(row => {
+            row.expectationPrice = price[0].expectationPrice
+          })
+          this.activeIndex = 3
+          break
+      }
+      this.goodsRow = price
     },
     addSubmit () {
       this.$refs['form'].validate((valid) => {
@@ -762,6 +901,20 @@ export default {
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
           this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
+          console.log(this.param, 'param')
+          console.log(this.goodsRow, 'goodsRow')
+
+          this.param.first = Number(this.param.first)
+          this.param.stock = 0
+          let bargainGoods = []
+          this.goodsRow.forEach(item => {
+            let { goodsId, expectationPrice, floorPrice, stock } = item
+            bargainGoods.push({ goodsId, expectationPrice, floorPrice, stock })
+            this.param.stock += stock
+          })
+          console.log(bargainGoods)
+          this.param.bargainGoods = bargainGoods
+
           if (this.validParam()) {
             addBargain(this.param).then((res) => {
               if (res.error === 0) {
@@ -831,10 +984,10 @@ export default {
         this.$message.warning(this.$t('addBargainAct.vaildGoodsSelect'))
         return false
       }
-      if (!this.param.stock) {
-        this.$message.warning(this.$t('addBargainAct.vaildStock'))
-        return false
-      }
+      // if (!this.param.stock) {
+      //   this.$message.warning(this.$t('addBargainAct.vaildStock'))
+      //   return false
+      // }
       if (this.param.bargainType === 0) {
         // 砍到指定金额结算：期望参与砍价人次必填；商品首次砍价可砍价百分比区间必填；砍价底价必填
         if (this.param.expectationPrice === '') {
@@ -860,14 +1013,14 @@ export default {
       } else {
         // 砍到任意金额结算
         if (this.param.bargainMoneyType === 0) {
-          if (!this.param.expectationPrice || this.param.floorPrice === '') {
-            this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount1'))
-            return false
-          }
-          if (this.param.expectationPrice < this.param.floorPrice) {
-            this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount2'))
-            return false
-          }
+          // if (!this.param.expectationPrice || this.param.floorPrice === '') {
+          //   this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount1'))
+          //   return false
+          // }
+          // if (this.param.expectationPrice < this.param.floorPrice) {
+          //   this.$message.warning(this.$t('addBargainAct.vaildCalculatedAmount2'))
+          //   return false
+          // }
 
           // 固定金额模式
           if (!this.param.bargainFixedMoney) {
@@ -1044,5 +1197,8 @@ export default {
 .goodsName_img {
   width: 28px;
   height: 28px;
+}
+.settings {
+  color: #5a8bff;
 }
 </style>
