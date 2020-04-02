@@ -82,7 +82,7 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
 
 
-    //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 0可以 1不可以
+    //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 1禁止超限购买，0超限全部恢复原价
     /**
      * 继续购买
      */

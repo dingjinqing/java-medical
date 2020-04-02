@@ -201,21 +201,22 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
             // 会员专享商品
             if (!userCardExclusive.contains(goods.getGoodsId())) {
                 //没有资格0
-                log.info("会员没有资格的商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
-                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
-                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                log.info("购物车-会员没有资格的商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
+                log.info("购物车-专享商品-不可购买");
                 CartActivityInfo exclusiveGrade = new CartActivityInfo();
                 exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 exclusiveGrade.setStatus(ACTIVITY_STATUS_INVALID);
                 goods.getCartActivityInfos().add(exclusiveGrade);
+                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
+                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedByProductId(cartBo.getUserId(), goods.getProductId(), CartConstant.CART_NO_CHECKED);
             } else {
                 log.info("会员专享商品:[getGoodsName:"+goods.getGoodsName()+",getGoodsId"+goods.getGoodsId()+"]");
-                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
-                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 CartActivityInfo exclusiveGrade = new CartActivityInfo();
                 exclusiveGrade.setActivityType(BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE);
                 goods.getCartActivityInfos().add(exclusiveGrade);
+                goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
             }
         });
     }

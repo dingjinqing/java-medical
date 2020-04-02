@@ -45,33 +45,20 @@ public class CartProcessorContext {
     public void executeCart(WxAppCartBo cartBo){
         // 数据初始化
         executeStrategy(goodsBegin,cartBo);
-        if (cartBo.getActivityType()!=null){
-            switch (cartBo.getActivityType()){
-                case 21:
-                    executeStrategy(fullReduction,cartBo);
-                    break;
-                case 7:
-                    executeStrategy(purchasePrice,cartBo);
-                    break;
-                default:
+        //预售-不可购买
+        executeStrategy(preSale,cartBo);
+        //会员专享-不可购买
+        executeStrategy(exclusive,cartBo);
+        //秒杀-提示
+        executeStrategy(seckill,cartBo);
 
-            }
-            //活动冲突处理
-            executeStrategy(goodsTail,cartBo);
-            return;
-        }
         //首单特惠
         executeStrategy(firstSpecial,cartBo);
-        //秒杀
-        executeStrategy(seckill,cartBo);
-        //预售
-        executeStrategy(preSale,cartBo);
         //限时降价
         executeStrategy(reducePrice,cartBo);
-        //会员专享
-        executeStrategy(exclusive,cartBo);
         //等级价格
         executeStrategy(gradeCard,cartBo);
+
         //满折满减
         executeStrategy(fullReduction,cartBo);
         //加价购
