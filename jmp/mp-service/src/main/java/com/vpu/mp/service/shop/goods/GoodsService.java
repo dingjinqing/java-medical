@@ -1880,7 +1880,7 @@ public class GoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public GoodsExportColumnVo getExportGoodsListSize(GoodsExportParam param) {
+    public GoodsExportColumnVo getExportGoodsListSize(GoodsPageListParam param) {
         GoodsExportColumnVo vo = new GoodsExportColumnVo();
         // 拼接过滤条件
         Condition condition = this.buildOptions(param);
