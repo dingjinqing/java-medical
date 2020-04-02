@@ -455,9 +455,7 @@ export default {
       getGoodsProductList(params).then(res => {
         let { content: { page, dataList } } = res
 
-        this.pageParams.totalRows = page.totalRows
-        this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageRows = page.pageRows
+        this.pageParams = page
 
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'

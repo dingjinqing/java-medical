@@ -46,7 +46,6 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
@@ -614,16 +613,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             logger().info("calculateResult:{}", calculateResult);
-            //TODO 分销改价（return）
-
-            //TODO 首单特惠（return）
-
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
 
             //会员专享校验
-
-            //预售商品，不支持现购买
 
             //非加价购 && 非限次卡
             if(Boolean.TRUE) {
@@ -833,7 +826,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //最大积分抵扣
         BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivideByMode(
             RoundingMode.HALF_DOWN,
-            BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
+            BigDecimalUtil.BigDecimalPlus.create(scoreCfg.getDiscount().equals(String.valueOf(YES)) ? moneyAfterDiscount : tolalDiscountAfterPrice, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(100)));
         //会员信息
@@ -867,6 +860,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setPreSaleDiscount(preSaleDiscount);
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
         vo.setInsteadPayCfg(param.getInsteadPayCfg());
+        // 积分使用规则
+        setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
@@ -943,6 +938,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //积分抵扣金额不能超过
         if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1 && !BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())){
+            throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
+        }
+        //积分支付最小限制
+        if(vo.getScorePayLimit().equals(YES) && param.getScoreDiscount() > vo.getScorePayNum()){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
         //TODO 限次卡校验

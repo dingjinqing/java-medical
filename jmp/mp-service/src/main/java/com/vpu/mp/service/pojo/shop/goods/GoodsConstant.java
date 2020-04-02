@@ -59,6 +59,10 @@ public class GoodsConstant {
      * 积分兑换
      */
     public final static Byte ACTIVITY_INTEGER_MALL_PRIORITY = 50;
+    /**
+     * 分销
+     */
+    public final static Byte ACTIVITY_DISTRIBUTION_PRIORITY = Byte.MAX_VALUE - 1;
     /**************** 结束 *****************/
 
 

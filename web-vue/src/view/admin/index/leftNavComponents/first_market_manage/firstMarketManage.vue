@@ -393,7 +393,7 @@
         <!-- 评价有礼 -->
         <div
           class="voucher box_style"
-          @click="to('evaluation_gifted')"
+          @click="to('comment_gift')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/pjyl.png'"

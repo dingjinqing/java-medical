@@ -38,14 +38,15 @@ public class NormalGoodsPictorialService extends ShopBaseService {
 
     /**
      * 普通商品-分享图片生成
+     *
      * @param param 商品分享参数
      */
     public GoodsShareInfo getNormalGoodsShareInfo(GoodsShareBaseParam param) {
-        GoodsShareInfo shareInfoVo =new GoodsShareInfo();
+        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
 
         if (goodsVo == null) {
-            log("share","商品不可用");
+            log("share", "商品不可用");
             shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
@@ -63,8 +64,12 @@ public class NormalGoodsPictorialService extends ShopBaseService {
             // 使用默认分享图片样式
             shareInfoVo.setImgUrl(goodsVo.getGoodsImg());
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null,"messages",param.getUserName(),goodsVo.getGoodsName());
-            shareInfoVo.setShareDoc(doc);
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsVo.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", param.getUserName(), goodsVo.getGoodsName());
+            }
+            shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
@@ -73,15 +78,16 @@ public class NormalGoodsPictorialService extends ShopBaseService {
 
     /**
      * 普通商品海报生成接口
+     *
      * @param param 获取海报参数
      * @return GoodsPictorialInfo 海报获取信息
      */
     public GoodsPictorialInfo getNormalGoodsPictorialInfo(GoodsShareBaseParam param) {
-        GoodsPictorialInfo goodsPictorialInfo=new GoodsPictorialInfo();
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
 
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
         if (goodsVo == null) {
-            log("pictorial","商品不可用");
+            log("pictorial", "商品不可用");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
             return goodsPictorialInfo;
         }
@@ -92,18 +98,21 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         PictorialUserInfo pictorialUserInfo;
         try {
             log("pictorial", "获取用户信息");
-            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(),shop);
+            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
             log("pictorial", "获取用户信息失败：" + e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
             return goodsPictorialInfo;
         }
         BufferedImage goodsImage;
-        String shareDoc;
+        String shareDoc = null;
         String goodsImg;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(goodsSharePostConfig.getShareAction())) {
             goodsImg = goodsVo.getGoodsImg();
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, "messages");
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsVo.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, "messages");
+            }
         } else {
             shareDoc = goodsSharePostConfig.getShareDoc();
             if (!PictorialShareConfig.DEFAULT_IMG.equals(goodsSharePostConfig.getShareImgAction())) {
@@ -115,13 +124,13 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         try {
             goodsImage = ImageIO.read(new URL(imageService.getImgFullUrl(goodsImg)));
         } catch (IOException e) {
-            logger().debug("小程序-生成图片-获取商品图片错误，图片地址{}：{}",imageService.getImgFullUrl(goodsImg),e.getMessage());
+            logger().debug("小程序-生成图片-获取商品图片错误，图片地址{}：{}", imageService.getImgFullUrl(goodsImg), e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return goodsPictorialInfo;
         }
 
         // 获取分享码
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsVo.getGoodsId(),null,null));
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsVo.getGoodsId(), null, null));
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
@@ -133,7 +142,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
 
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo,shop,qrCodeImage, goodsImage, shareDoc,goodsVo.getGoodsName(),param.getRealPrice(),param.getLinePrice(),imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsVo.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);

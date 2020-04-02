@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
@@ -738,6 +739,18 @@ public class UserCardDaoService extends ShopBaseService{
                 .or(MEMBER_CARD.USE_TIME.isNull())
 				);
 		return condition;
+	}
+	
+	/**
+	 * 	更新用户卡为停止使用
+	 */
+	public int updateUserCardFlag(DefaultCardParam param) {
+		logger().info("更新用户卡为停止使用");
+		return db().update(USER_CARD)
+			.set(USER_CARD.FLAG,CardConstant.UCARD_FG_STOP)
+			.where(USER_CARD.USER_ID.eq(param.getUserId()))
+			.and(USER_CARD.CARD_NO.eq(param.getCardNo()))
+			.execute();
 	}
 	
 	

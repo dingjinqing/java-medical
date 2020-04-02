@@ -268,9 +268,7 @@ export default {
       getGoodsLabelPageList(params).then(res => {
         this.goodsLabelData = res.content.dataList
 
-        this.pageParams.totalRows = res.content.page.totalRows
-        this.pageParams.currentPage = res.content.page.currentPage
-        this.pageParams.pageRows = res.content.page.pageRows
+        this.pageParams = res.content.page
       })
     }
   },

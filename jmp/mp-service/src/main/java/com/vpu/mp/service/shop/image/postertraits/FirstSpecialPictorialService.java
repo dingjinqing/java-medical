@@ -79,7 +79,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
                 shareInfoVo.setImgUrl(shareConfig.getShareImg());
             }
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
-        } else{
+        } else {
             // 使用默认分享图片样式
             String imgPath = createFirstSpecialShareImg(firstSpecialRecord, goodsRecord, param);
             if (imgPath == null) {
@@ -88,8 +88,12 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             }
             shareInfoVo.setImgUrl(imgPath);
             ShopRecord shop = saas.shop.getShopById(getShopId());
-            String doc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", param.getUserName(), goodsRecord.getGoodsName());
-            shareInfoVo.setShareDoc(doc);
+            String shareDoc = null;
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", param.getUserName(), goodsRecord.getGoodsName());
+            }
+            shareInfoVo.setShareDoc(shareDoc);
         }
         shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
 
@@ -110,7 +114,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
      * @return
      */
     private String createFirstSpecialShareImg(FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, FirstSpecialShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, null);
         // 已存在生成的图片
         if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
@@ -145,6 +149,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
 
     /**
      * 首单特惠海报生成
+     *
      * @param param 限时降价售参数
      * @return base64海报信息
      */
@@ -176,13 +181,13 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             return goodsPictorialInfo;
         }
 
-        getFirstSpecialPictorialImg(pictorialUserInfo,shareConfig,firstSpecialRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        getFirstSpecialPictorialImg(pictorialUserInfo, shareConfig, firstSpecialRecord, goodsRecord, shop, param, goodsPictorialInfo);
         return goodsPictorialInfo;
     }
 
     private static final String FIRST_SPECIAL_BG_IMG = "image/wxapp/first_special.png";
 
-    private void getFirstSpecialPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, ShopRecord shop, FirstSpecialShareInfoParam param,GoodsPictorialInfo goodsPictorialInfo) {
+    private void getFirstSpecialPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, FirstSpecialRecord firstSpecialRecord, GoodsRecord goodsRecord, ShopRecord shop, FirstSpecialShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
         BufferedImage goodsImage;
         try {
             pictorialLog("pictorial", "获取商品图片信息");
@@ -194,9 +199,12 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         }
         pictorialLog("pictorial", "获取商品分享语");
 
-        String shareDoc;
+        String shareDoc = null;
         if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, null, "messages");
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, "", "messages");
+            }
         } else {
             shareDoc = shareConfig.getShareDoc();
         }
@@ -219,17 +227,17 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         BufferedImage iconImage;
         // 拼装价值限时降价图片和商品价格
         try (InputStream firstSpecialIconStream = Util.loadFile(FIRST_SPECIAL_BG_IMG)) {
-             iconImage = ImageIO.read(firstSpecialIconStream);
+            iconImage = ImageIO.read(firstSpecialIconStream);
         } catch (IOException e) {
             pictorialLog("pictorial", "装载首单特惠图标失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
 
-        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         // 自定义区域添加内容
-        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,iconImage,realPriceText,linePriceText,true,imgPx);
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, iconImage, realPriceText, linePriceText, true, imgPx);
 
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);

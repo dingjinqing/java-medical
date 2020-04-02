@@ -21,6 +21,18 @@ export const cn = {
   verifierManage: '核销员管理',
   storeManage: '门店管理',
   delStoreTip: '确定删除该门店？',
+  storePickup: '门店自提：',
+  turnedOn: '已开启',
+  unopened: '未开启',
+  sameCityDelivery: '同城配送',
+  understandMore: '了解更多',
+  currentVersion: '当前版本为',
+  canAlsoCreate: '还可创建',
+  aStore: '个门店',
+  ultimate: '旗舰版',
+  trialVersion: '体验版',
+  basicEdition: '基础版',
+  preminumEdition: '高级版',
 
   // 分组列表
   addGroup: '新建分组',

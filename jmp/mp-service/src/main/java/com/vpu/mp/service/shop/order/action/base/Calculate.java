@@ -657,8 +657,13 @@ public class Calculate extends ShopBaseService {
      */
     public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt){
         logger().info("uniteMarkeingtRecalculate start,参数为:{}", uniteMarkeingt);
-        //TODO 分销改价
-
+        //分销改价
+        if(uniteMarkeingt != null) {
+            GoodsActivityInfo rebate = uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REBATE);
+            if (rebate != null && rebate.getDistributionPrice() != null){
+                return UniteMarkeingtRecalculateBo.create(rebate.getDistributionPrice(), BaseConstant.ACTIVITY_TYPE_REBATE, null);
+            }
+        }
         //首单特惠
         if(uniteMarkeingt != null) {
             GoodsActivityInfo firstSpecial = uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
