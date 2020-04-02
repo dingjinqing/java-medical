@@ -383,6 +383,7 @@ export default {
                 {
                   batchName: item.name,
                   batchId: item.batchId,
+                  action: item.action,
                   disabled: true
                 }
               )
@@ -390,7 +391,7 @@ export default {
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null, disabled: false }]
+        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null, action: null, disabled: false }]
       }
 
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '2') {
@@ -402,13 +403,14 @@ export default {
                 {
                   pwdName: item.name,
                   pwdId: item.batchId,
+                  action: item.action,
                   disabled: true }
               )
             }
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null, disabled: false }]
+        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null, action: null, disabled: false }]
       }
 
       // 激活条件

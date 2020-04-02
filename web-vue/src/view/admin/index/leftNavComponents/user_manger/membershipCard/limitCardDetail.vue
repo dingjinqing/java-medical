@@ -207,8 +207,8 @@ export default {
         stock: undefined,
         limits: undefined,
         hasSend: 0,
-        codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        codeAddDivArr: [{ batchName: null, batchId: null, action: null }],
+        codeAddDivArrBottom: [{ pwdName: null, pwdId: null, action: null }],
         valid: false
       },
       cardActiveCfgData: {
@@ -304,12 +304,12 @@ export default {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
             if (!item.pwdBatch) {
-              this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+              this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId, action: item.action, disabled: true })
             }
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null }]
+        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null, action: null, disabled: false }]
       }
 
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '2') {
@@ -317,12 +317,12 @@ export default {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
             if (item.pwdBatch) {
-              this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId })
+              this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId, action: item.action, disabled: true })
             }
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null }]
+        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null, action: null, disabled: false }]
       }
       this.cardReceiveCfgData.stock = data.stock ? data.stock : 0
       this.cardReceiveCfgData.limits = data.limit ? data.limit : 0
