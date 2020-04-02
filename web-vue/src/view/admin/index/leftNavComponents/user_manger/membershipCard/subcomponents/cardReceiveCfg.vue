@@ -439,6 +439,7 @@ export default {
   },
   methods: {
     handleCallCodeDialogBottom (index, codeIndex) {
+      this.currentReceiveAction = this.pwdReceiveAction
       switch (codeIndex) {
         case 0:
           // 卡号+密码
@@ -488,6 +489,7 @@ export default {
       this.currentIndex = index
     },
     handleCallCodeDialog (index, codeIndex) {
+      this.currentReceiveAction = this.codeReceiveAction
       // 领取码
       switch (codeIndex) {
         case 0:
@@ -559,9 +561,14 @@ export default {
     showDetail (index) {
       console.log('index:' + index)
       let currentBatchId = null
+      console.log(this.currentReceiveAction)
+
       if (this.currentReceiveAction === this.pwdReceiveAction) {
+        console.log(this.currentIndex)
+        console.log(this.ruleForm.codeAddDivArrBottom)
         currentBatchId = this.ruleForm.codeAddDivArrBottom[this.currentIndex].pwdId
-      } if (this.currentReceiveAction === this.codeReceiveAction) {
+      } else if (this.currentReceiveAction === this.codeReceiveAction) {
+        console.log(this.ruleForm.codeAddDivArr)
         currentBatchId = this.ruleForm.codeAddDivArr[index].batchId
       }
       if (currentBatchId !== null) {
