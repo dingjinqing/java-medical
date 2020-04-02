@@ -30,7 +30,7 @@
   .one_column .product-name {
     /* width: 100%; */
     font-size: 26rpx;
-    margin-bottom: 10rpx;
+    margin-bottom: 33rpx;
     height: 80rpx;
     padding: 0 10rpx;
     padding-top: 10rpx;

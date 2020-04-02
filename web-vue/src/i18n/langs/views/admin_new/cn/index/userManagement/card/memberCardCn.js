@@ -164,6 +164,7 @@ export const cn = {
   memberAd: '会员权益(折扣)',
   detailSend: '购物满100送100积分',
   codeArr: ['领取码', '增加批次', '废除批次', '生成/导入记录'],
+  codeArrTwo: ['卡号+密码', '增加批次', '废除批次', '生成/导入记录'],
   scoreSaveSuccess: '积分配置成功',
   saveSuccess: '保存成功',
   noneBlockDiscArr: [
@@ -266,7 +267,7 @@ export const cn = {
   second: '第二步',
   uploadFiles: '上传文件',
   sure: '确 定',
-  cancel: '取消',
+  cancel: '取 消',
   cardNumPwd: '卡号+密码',
   autoCardNumPwd: '自动生成卡号+密码',
   autoCardNumPwdMsg: '将随机生成xxx组不重复卡号+密码，均由数字+字母组成',
@@ -322,5 +323,19 @@ export const cn = {
   downQrcode: '下载二维码',
   scanCode: '扫一扫，分享给好友吧~',
   noLimitCoupon: '无库存限制',
-  couponErrorTip: '请选择开卡送优惠券'
+  couponErrorTip: '请选择开卡送优惠券',
+  usernameDetail: '用户昵称',
+  cardCodeAndNo: '领取码/卡号',
+  codeAndNoTip: '领取码 / 卡号+密码',
+  receiveTime: '领取时间',
+  alreadyDelete: '已废除',
+  toDelete: '废除',
+  tipInfo: '提醒',
+  tipAgain: '确认要废除',
+  selectSortOptions: [
+    {
+      batchId: 0,
+      name: '全部'
+    }
+  ]
 }

@@ -98,8 +98,11 @@ global.wxPage({
 
   },
   to_search: function (e) {
-    var search_text = e.currentTarget.dataset.value;
-    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo")
+    search_word = e.currentTarget.dataset.value
+    this.setData({
+      search_word: e.currentTarget.dataset.value
+    })
+    this.bindSearch()
   },
 
   clear_value: function (e) {

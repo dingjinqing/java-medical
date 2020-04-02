@@ -268,10 +268,15 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
      */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        log.info("拼团订单--(拼团中)已付款");
         List<OrderGoodsBo> orderGoodsBos = orderGoodsService.getByOrderId(order.getOrderId()).into(OrderGoodsBo.class);
         ArrayList<String> goodsTypes = Lists.newArrayList(OrderInfoService.orderTypeToArray(order.getGoodsType()));
         if (goodsTypes.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_GROUP_BUY))) {
             GroupOrderVo byOrder = groupBuyListService.getByOrder(order.getOrderSn());
+            if (byOrder.getStatus().equals(STATUS_WAIT_PAY)){
+                log.info("修改拼团这状态");
+                groupBuyProcessorDao.updateGroupSuccess(byOrder.getGroupId(),DateUtil.getLocalDateTime(),byOrder.getOrderSn());
+            }
             groupBuyProcessorDao.groupBuySuccess(order.getActivityId(), byOrder.getGroupId(), orderGoodsBos.get(0).getGoodsName());
         }
     }

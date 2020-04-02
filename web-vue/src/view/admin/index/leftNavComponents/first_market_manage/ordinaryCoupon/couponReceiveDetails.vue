@@ -38,7 +38,7 @@
               class="inputWidth"
             >
               <el-option
-                v-for="item in get_type_option"
+                v-for="item in usedOption"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -56,48 +56,6 @@
 
       </el-form>
 
-      <!-- <div class="filters">
-        <div class="filters_item">
-          <div calss="mobile">{{$t('couponReceive.mobile')}}：</div>
-          <el-input
-            v-model="searchData.mobile"
-            :placeholder="$t('couponReceive.mobilePlaceholder')"
-            size="small"
-            class="inputWidth"
-          ></el-input>
-        </div>
-        <div class="filters_item">
-          <div class="itemWidth">{{$t('couponReceive.userNickName')}}：</div>
-          <el-input
-            v-model="searchData.userName"
-            :placeholder="$t('couponReceive.userNickNamePlaceholder')"
-            size="small"
-            class="inputWidth"
-          ></el-input>
-        </div>
-        <div class="filters_item">
-          <div>{{$t('couponReceive.useState')}}：</div>
-          <el-select
-            v-model="searchData.isUsed"
-            size="small"
-            class="inputWidth"
-          >
-            <el-option
-              v-for="item in get_type_option"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="filters_item">
-          <el-button
-            @click="initDataList"
-            type="primary"
-            size="small"
-          >{{$t('couponReceive.search')}}</el-button>
-        </div>
-      </div> -->
       <div class="table_box">
         <el-table
           v-loading="loading"
@@ -112,10 +70,10 @@
             align="center"
           >
             <template slot-scope="scope">
-              <a
-                href="javascript:void(0);"
+              <span
+                class="jumpStyle"
                 @click="infoClickHandler(scope.row.userId)"
-              >{{ scope.row.username }}</a>
+              >{{ scope.row.username }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -128,11 +86,27 @@
             :label="$t('couponReceive.couponName')"
             align="center"
           ></el-table-column>
+          <!-- <el-table-column
+            label="使用门槛"
+            align="center"
+          ></el-table-column> -->
           <el-table-column
             prop="accessMode"
             :label="$t('couponReceive.receiveMethods')"
             align="center"
           ></el-table-column>
+          <!-- <el-table-column
+            label="是否分享"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="领取用户数"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="优惠内容"
+            align="center"
+          ></el-table-column> -->
           <el-table-column
             prop="scoreNumber"
             :label="$t('couponReceive.pointExchage')"
@@ -144,13 +118,20 @@
             align="center"
           ></el-table-column>
           <el-table-column
-            prop="orderSn"
             :label="$t('couponReceive.userOrderNumber')"
             align="center"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span
+                class="jumpStyle"
+                @click="orderClickHandler(scope.row.orderSn)"
+              >{{scope.row.orderSn}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="validityTime"
             :label="$t('couponReceive.validDate')"
+            sortable
             align="center"
             width="160px"
           >
@@ -161,12 +142,16 @@
           <el-table-column
             prop="createTime"
             :label="$t('couponReceive.receiveTime')"
+            sortable
             align="center"
+            width="160px"
           ></el-table-column>
           <el-table-column
             prop="usedTime"
             :label="$t('couponReceive.useTime')"
+            sortable
             align="center"
+            width="160px"
           ></el-table-column>
           <el-table-column
             :label="$t('couponReceive.operate')"
@@ -177,7 +162,7 @@
                 style="font-size: 22px;color: #5a8bff;"
                 class="el-icon-delete"
                 @click="deleteCoupon(scope.row.id)"
-                v-if="scope.row.delFlag === 0 && scope.row.isUsed === 0 && scope.row.expireFlag === 0 "
+                v-if="scope.row.isUsed === '否' && scope.row.endFlag === 0 && scope.row.delFlag === 0"
               ></span>
             </template>
           </el-table-column>
@@ -210,26 +195,14 @@ export default {
         userName: '',
         isUsed: -1
       },
-      get_type_option: [
+      // 使用状态
+      usedOption: [
         { value: -1, label: '全部' },
         { value: 1, label: '未使用' },
         { value: 2, label: '已使用' },
         { value: 3, label: '已过期' },
         { value: 4, label: '已废除' }
       ]
-      // tableLabel: [
-      //   { index: 1, prop: 'username', label: '用户昵称' },
-      //   { index: 2, prop: 'mobile', label: '手机号码' },
-      //   { index: 3, prop: 'couponName', label: '优惠券名称' },
-      //   { index: 4, prop: 'accessMode', label: '领取方式' },
-      //   { index: 5, prop: 'scoreNumber', label: '兑换积分数' },
-      //   { index: 6, prop: 'isUsed', label: '是否使用' },
-      //   { index: 7, prop: 'orderSn', label: '使用订单号' },
-      //   { index: 8, prop: 'validityTime', label: '有效期' },
-      //   { index: 9, prop: 'createTime', label: '领取时间' },
-      //   { index: 10, prop: 'usedTime', label: '使用时间' },
-      //   { index: 11, prop: 'delflag', label: '操作' }
-      // ]
     }
   },
   mounted () {
@@ -266,19 +239,20 @@ export default {
     handleData (data) {
       var timestamp = new Date().getTime()
       data.map((item, index) => {
-        item.expireTime = new Date(item.endTime).getTime()
-        if (timestamp <= item.expireTime) {
+        if (timestamp <= new Date(item.endTime).getTime()) {
           // 未过期
-          item.expireFlag = 0
+          item.endFlag = 0
         } else {
           // 已过期
-          item.expireFlag = 1
+          item.endFlag = 1
         }
+        // 领取方式
         if (item.accessMode === 0) {
           item.accessMode = '发放'
         } else {
-          item.accessMode = '领取'
+          item.accessMode = '直接领取'
         }
+        // 是否使用
         if (item.isUsed === 0) {
           item.isUsed = '否'
         } else {
@@ -300,9 +274,9 @@ export default {
             this.$message.success({ message: '删除成功!' })
             this.initDataList()
           }
-        }).catch(() => {
-          this.$message.info({ message: '已取消删除' })
         })
+      }).catch(() => {
+        this.$message.info({ message: '已取消删除' })
       })
     },
 
@@ -316,6 +290,16 @@ export default {
       })
     },
 
+    // 订单跳转
+    orderClickHandler (orderSn) {
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
+    },
+    // 是否使用
     foramtUseStatus (data) {
       switch (data) {
         case 2:
@@ -328,6 +312,7 @@ export default {
           return '否'
       }
     },
+    // 领取方式
     foramtGetType (data) {
       switch (data) {
         case 2:
@@ -403,5 +388,9 @@ export default {
   font-weight: bold;
   color: #000;
   padding: 8px 10px;
+}
+.jumpStyle {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>

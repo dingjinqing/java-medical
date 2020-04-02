@@ -17,15 +17,12 @@ public class MemberTransactionStatisticsVo {
 	/** 最近下单时间 数字-D,数字-M,数字-Y,日，月，年 ,0表示没有下单*/
 	private String lastAddOrder;
 	
-	/** 累计下单金额 */
-	private BigDecimal orderMoney;
-	
 	/** 累计消费订单数 */
 	private Integer orderNum;
 	
 	/** 累计退款金额 */
 	private BigDecimal returnOrderMoney;
-	
+
 	/** 累计退款订单数 */
 	private Integer returnOrderNum;
 	

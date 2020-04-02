@@ -95,12 +95,12 @@
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
         <!--平台分类-->
-        <el-table-column
-          align="center"
-          prop="catName"
-          :label="$t('allGoods.allGoodsData.cat')"
-          width="100"
-        />
+        <!--<el-table-column-->
+          <!--align="center"-->
+          <!--prop="catName"-->
+          <!--:label="$t('allGoods.allGoodsData.cat')"-->
+          <!--width="100"-->
+        <!--/>-->
         <!--商家分类-->
         <el-table-column
           align="center"
@@ -752,10 +752,7 @@ export default {
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 
-        this.pageParams.totalRows = page.totalRows
-        console.log(page)
-        this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageCount = page.pageRows
+        this.pageParams = page
         this.batchExportOptions_[1].label = this.$t('allGoods.bottomOptions.batchFiltered') + this.pageParams.totalRows + this.$t('allGoods.bottomOptions.commodity')
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'

@@ -57,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -168,6 +167,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					if(rOrder == null) {
 						//订单状态记录
 						orderAction.addRecord(order, param, order.getOrderStatus() , "保存"+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"之前订单状态");
+						//设置是否自动退款
+                        param.setIsAutoReturn(shopReturncfg.getAutoReturn());
 						//if仅退运费 else非仅退运费
 						if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
 							//生成退款订单
@@ -742,8 +743,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
      */
     public void autoReturnOrder(){
         if(OrderConstant.YES == shopReturncfg.getAutoReturn()){
-            //自动退款退货设置开关开启时间
-            Timestamp autoReturnTime = shopReturncfg.getAutoReturnTime();
             //买家发起仅退款申请后，商家在returnMoneyDays日内未处理，系统将自动退款。
             Byte returnMoneyDays = shopReturncfg.getReturnMoneyDays();
             //商家已发货，买家发起退款退货申请，商家在 returnAddressDays日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
@@ -752,7 +751,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             Byte returnShoppingDays = shopReturncfg.getReturnShippingDays();
             //商家同意退款退货，买家在 returnPassDays 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
             Byte returnPassDays = shopReturncfg.getReturnPassDays();
-            Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(autoReturnTime, returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
+            Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
             autoReturnOrder.forEach(order->{
                 RefundParam param = new RefundParam();
                 param.setAction(Integer.valueOf(OrderServiceCode.RETURN.ordinal()).byteValue());

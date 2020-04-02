@@ -279,22 +279,22 @@
                 prop="goodsNumber"
               ></el-table-column>
               <el-table-column :label="$t('firstSpecialAdd.discount')">
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <el-input
                     style="width:80px;"
                     size="small"
                     v-model="row.batchDiscount"
-                    @change="tableBatchDiscountChange(row)"
+                    @input="tableBatchDiscountChange(row, $index)"
                   ></el-input>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('firstSpecialAdd.priceReduction')">
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <el-input
-                    style="width:60px;"
+                    style="width:80px;"
                     size="small"
                     v-model="row.batchReduce"
-                    @change="tableBatchReduceChange(row)"
+                    @input="tableBatchReduceChange(row, $index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -302,7 +302,7 @@
                 :label="$t('firstSpecialAdd.firstUnitPrice')"
                 width="150"
               >
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <p
                     v-if="row.tips"
                     style="color:red;font-size:12px;"
@@ -310,8 +310,8 @@
                   <el-input
                     style="width:80px;"
                     size="small"
-                    v-model="row.batchFinalPrice"
-                    @change="tableBatchFinalPriceChange(row)"
+                    v-model.lazy="row.batchFinalPrice"
+                    @input="tableBatchFinalPriceChange(row, $index)"
                   ></el-input>
                   <el-button
                     type="text"
@@ -734,15 +734,15 @@ export default {
         if (this.discountType === '0') {
           item.batchDiscount = this.form.batchDiscount
           item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(2)
-          item.batchReduce = price - item.batchFinalPrice
+          item.batchReduce = Number(price - item.batchFinalPrice).toFixed(2)
         } else if (this.discountType === '1') {
           item.batchReduce = this.form.batchReduce
           item.batchFinalPrice = Number(price - item.batchReduce).toFixed(2)
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
         } else if (this.discountType === '2') {
           item.batchFinalPrice = this.form.batchFinalPrice
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
-          item.batchReduce = price - item.batchFinalPrice
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
+          item.batchReduce = Number(price - item.batchFinalPrice).toFixed(2)
         }
         // 验证计算值安全性
         console.log(item)
@@ -776,7 +776,7 @@ export default {
       })
     },
     // 表格内输入折扣
-    tableBatchDiscountChange (row) {
+    tableBatchDiscountChange (row, index) {
       console.log('BatchDiscountChange')
       let price = Number(row.shopPrice)
       let batchDiscount = Number(row.batchDiscount)
@@ -786,37 +786,45 @@ export default {
         return false
       }
       let batchFinalPrice = (batchDiscount / 10 * price).toFixed(2)
-      let batchReduce = price - batchFinalPrice
-      this.$set(row, 'batchFinalPrice', batchFinalPrice)
-      this.$set(row, 'batchReduce', batchReduce)
+      let batchReduce = parseFloat(price - batchFinalPrice).toFixed(2)
+      // this.$set(row, 'batchFinalPrice', batchFinalPrice)
+      // this.$set(row, 'batchReduce', batchReduce)
+      row.batchFinalPrice = batchFinalPrice
+      row.batchReduce = batchReduce
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'discount')
     },
     // 表格内输入减价
-    tableBatchReduceChange (row) {
+    tableBatchReduceChange (row, index) {
       console.log('BatchReduceChange')
       let price = Number(row.shopPrice)
       let batchReduce = Number(row.batchReduce)
-      let batchFinalPrice = price - batchReduce
-      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
+      console.log(batchReduce)
+      let batchFinalPrice = parseFloat(price - batchReduce).toFixed(2)
+      let batchDiscount = (batchFinalPrice / price * 10).toFixed(2)
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
-      this.$set(row, 'batchFinalPrice', batchFinalPrice)
-      this.$set(row, 'batchDiscount', batchDiscount)
+      row.batchFinalPrice = batchFinalPrice
+      row.batchDiscount = batchDiscount
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'reduce')
     },
     // 表格内输入首单价
-    tableBatchFinalPriceChange (row) {
+    tableBatchFinalPriceChange (row, index) {
       console.log('BatchFinalPriceChange')
       let price = Number(row.shopPrice)
       let batchFinalPrice = Number(row.batchFinalPrice)
-      let batchReduce = price - batchFinalPrice
-      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
-      this.$set(row, 'batchReduce', batchReduce)
+      let batchReduce = parseFloat(price - batchFinalPrice).toFixed(2)
+      let batchDiscount = (batchFinalPrice / price * 10).toFixed(2)
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
-      this.$set(row, 'batchDiscount', batchDiscount)
+      row.batchReduce = batchReduce
+      row.batchDiscount = batchDiscount
+      // this.$set(row, 'batchReduce', batchReduce)
+      // this.$set(row, 'batchDiscount', batchDiscount)
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'final')
     },
     watchbatchFinalPrice (price, batchFinalPrice, row, operate) {

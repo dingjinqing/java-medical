@@ -2,7 +2,7 @@
 <scroll-view class='three_column mul_column' scroll-x="true" wx:if="{{m.col_type =='3' && m.goodsListData != ''}}" style="{{m.goods_module_style == 1 ? 'margin-bottom:0;height:470rpx;' : ''}}background:{{m.goods_module_bg == 0 ? '': m.goods_bg_color}}">
     <block wx:for="{{m.goodsListData}}" wx:key="index" wx:for-item="item" wx:for-index='idex'>
       <view class='every_module' style='border-radius:{{m.if_radius == 1?"12rpx":"0"}};border:{{m.goods_module_style == 2 ? "1rpx solid #ddd":"none"}};box-shadow:{{m.goods_module_style == 1 ? "0 0 15rpx 6rpx #e5e5e5" : "none"}};' catchtap="{{item.activityType == 10?'bindTopre':'bindJumpLink'}}"
-        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?gid={{item.goodsId}}&atp={{item.activityType}}&aid={{item.activityId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goodsType}}' wx:if='{{item.activityType !=3 && item.activityType !=1 && item.activityType !=5}}'>
+        data-is_first_touch="{{m.is_first_touch}}" data-idx='{{m.cur_idx}}' data-url="pages/item/item?gid={{item.goodsId}}&atp={{item.activityType}}&aid={{item.activityId}}" data-presale_id='{{item.presale_id}}' data-goods_type='{{item.goodsType}}' >
         <view class="see_more" wx:if='{{idex == 6}}' catchtap='bindMenuClick'>
           <view>{{i18n.$t(localePack,'components.decorate.viewMore')}}</view>
           <view class="see_line"></view>
@@ -15,7 +15,7 @@
             <view class='top_title'>
               <view class='van-two-ellipsis'>{{item.goodsName}}</view>
             </view>
-            <view class='title_label_container' style="bottom:100rpx">
+            <view class='title_label_container'>
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class="{{indexC==0?'title_label':''}}" wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>
             {{indexC===0?itemC.text:''}}
             </view>
@@ -35,7 +35,7 @@
 						<block wx:if="{{m.other_message == 1 }}">
 							<view style="padding-top:12rpx" wx:if="{{m.show_market == 3}}" class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}人评价</view>
 						</block>
-            <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
+            <block wx:if="{{m.cart_btn == 1 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5}}">
               <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn right_buy_btn' style='background:{{main_setting.comColor}};bottom:30rpx;' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}</text>

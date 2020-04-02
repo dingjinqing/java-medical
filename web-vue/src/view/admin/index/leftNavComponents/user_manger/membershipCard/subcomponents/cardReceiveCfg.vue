@@ -143,7 +143,7 @@
                       :disabled="item.disabled"
                     ></el-input>
                     <span
-                      v-for="(codeItem,codeIndex) in codeArr"
+                      v-for="(codeItem,codeIndex) in codeArrTwo"
                       :key="codeIndex"
                       @click="handleCallCodeDialogBottom(index,codeIndex)"
                     >{{codeItem}}</span>
@@ -262,11 +262,9 @@ export default {
   mounted () {
     this.langDefault()
     this.$on('checkRule', () => {
-      debugger
       let flag = false
       if (this.ruleForm.cardType === 1) {
         this.$refs['ruleForm'].validate((valid) => {
-          debugger
           console.log(valid)
 
           if (!valid) {
@@ -389,6 +387,7 @@ export default {
       currentBatchId: null,
       currentReceiveAction: 1,
       codeArr: null,
+      codeArrTwo: null,
       payScoreError: false,
       payMoneyError: false,
       receiveCodeError: false,
@@ -414,6 +413,7 @@ export default {
   },
   created () {
     this.codeArr = this.$t('memberCard.codeArr')
+    this.codeArrTwo = this.$t('memberCard.codeArrTwo')
   },
   watch: {
     lang () {

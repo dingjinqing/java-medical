@@ -696,10 +696,15 @@ global.wxPage({
     let { type } = e.currentTarget.dataset
     switch (type) {
       case 1:
+        util.jumpToWeb('/wxapp/group/help')
         break
 
       case 3:
         util.jumpToWeb('/wxapp/bargain/help')
+        break
+
+      case 8:
+        util.jumpToWeb('/wxapp/pinlottery/help')
         break
     }
   },

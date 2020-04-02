@@ -543,8 +543,6 @@ public class GiftService extends ShopBaseService {
     public WxAppCartGoods getOrderGoodsToCartGoods(OrderGoodsBo orderGoods, GiftVo giftVo, Integer userId) {
         WxAppCartGoods cartGoods =new WxAppCartGoods();
         cartGoods.setPrdPrice(BigDecimal.ZERO);
-        cartGoods.setGoodsPrice(orderGoods.getGoodsPrice());
-        cartGoods.setOriginalPrice(orderGoods.getGoodsPrice());
         cartGoods.setCartNumber(1);
         cartGoods.setType(cartGoods.getType());
         cartGoods.setExtendId(giftVo.getId());

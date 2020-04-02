@@ -559,10 +559,20 @@ export default {
       if (card.examine) {
         card.detailsOfRights.push(this.detailsOfRights[2])
       }
-      // 普通会员卡与限次卡
-      if ([0, 1].includes(this.currentCardType)) {
-        card.detailsOfRights.push(...this.detailsOfRights.slice(3))
+
+      // 充值明细
+      if (card.showCharge === 1) {
+        card.detailsOfRights.push(this.detailsOfRights[3])
       }
+
+      // 查看订单
+      if (this.currentCardType === 1) {
+        card.detailsOfRights.push(this.detailsOfRights[4])
+      }
+      // 普通会员卡与限次卡
+      // if ([0, 1].includes(this.currentCardType)) {
+      //   card.detailsOfRights.push(...this.detailsOfRights.slice(3))
+      // }
     },
     // 5- tap切换 会员卡类型切换
     handleClick (tab, event) {
@@ -575,13 +585,25 @@ export default {
           })
           break
         case '1':
-          this.$router.push({
-            name: 'limitTimes'
+          this.handleToJudgeTwoDiction('user_card', 'count_card').then(res => {
+            if (res) {
+              this.$router.push({
+                name: 'limitTimes'
+              })
+            } else {
+              this.activeName = 'first'
+            }
           })
           break
         case '2':
-          this.$router.push({
-            name: 'GradeCard'
+          this.handleToJudgeTwoDiction('user_card', 'grade_card').then(res => {
+            if (res) {
+              this.$router.push({
+                name: 'GradeCard'
+              })
+            } else {
+              this.activeName = 'first'
+            }
           })
       }
 
@@ -896,7 +918,8 @@ export default {
           this.$router.push({
             name: 'refillDetails',
             query: {
-              cardId: item.id
+              cardId: item.id,
+              activeName: 1
             }
           })
       }

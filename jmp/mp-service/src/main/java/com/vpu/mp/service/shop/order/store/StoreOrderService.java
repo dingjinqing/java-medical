@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreConstant;
 import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -39,6 +41,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -615,4 +618,42 @@ public class StoreOrderService extends ShopBaseService {
             setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
         }});
     }
+    
+    /**
+     * 获取用户门店买单信息
+     */
+    public UserOrderBean getConsumerOrder(Integer userId) {
+    	logger().info("获取用户门店买单信息");
+    	return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+						   DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+					.from(TABLE)
+    			    .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
+					.and(TABLE.USER_ID.eq(userId))
+					.fetchAnyInto(UserOrderBean.class);
+    }
+    
+    /**
+     * 获取用户门店买单退款订单信息
+     */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户门店买单退款订单信息");
+		return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+				DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+			.from(TABLE)
+			.where(TABLE.ORDER_STATUS.eq(StoreConstant.REFUND_SUCCESS))
+			.and(TABLE.USER_ID.eq(userId))
+			.fetchAnyInto(UserOrderBean.class);
+	}
+	
+	/**
+	 * 获取门店最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店最近下单时间");
+		return db().select(TABLE.CREATE_TIME)
+					.from(TABLE)
+					.where(TABLE.USER_ID.eq(userId))
+					.orderBy(TABLE.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+	}
 }

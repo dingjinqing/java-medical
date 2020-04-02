@@ -73,12 +73,12 @@
           :label="$t('allGoods.allGoodsData.prdSn')"
           width="100"
         />
-        <el-table-column
-          align="center"
-          prop="catName"
-          :label="$t('allGoods.allGoodsData.cat')"
-          width="100"
-        />
+        <!--<el-table-column-->
+          <!--align="center"-->
+          <!--prop="catName"-->
+          <!--:label="$t('allGoods.allGoodsData.cat')"-->
+          <!--width="100"-->
+        <!--/>-->
         <el-table-column
           align="center"
           prop="sortName"
@@ -455,9 +455,7 @@ export default {
       getGoodsProductList(params).then(res => {
         let { content: { page, dataList } } = res
 
-        this.pageParams.totalRows = page.totalRows
-        this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageRows = page.pageRows
+        this.pageParams = page
 
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'

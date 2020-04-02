@@ -97,6 +97,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardSendRepeatException;
 import com.vpu.mp.service.pojo.shop.member.exception.LimitCardAvailSendNoneException;
 import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -1373,7 +1374,6 @@ public class UserCardService extends ShopBaseService {
 			setEffectTimeForJudgeCard(userCard);
 			userCard.setUserId(param.getUserId());
 			userCard.setCardId(param.getCardId());
-			userCard.setStoreUseSwitch(CardUtil.getUseStoreType(userCard.getStoreUseSwitch(),userCard.getStoreList()));
 			userCardJudgeVo.setCardInfo(userCard);
 
 			return userCardJudgeVo;
@@ -1823,6 +1823,16 @@ public class UserCardService extends ShopBaseService {
 
 	public Integer insertRow(UserCardRecord record) {
 		return db().executeInsert(record);
+	}
+	
+	/**
+	 * 获取用户的会员卡续费信息
+	 */
+	public UserOrderBean getConsumerOrder(Integer userId) {
+		logger().info("获取用户的会员卡续费信息");
+		//TODO card_renew table
+		
+		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
 	}
 	
 	

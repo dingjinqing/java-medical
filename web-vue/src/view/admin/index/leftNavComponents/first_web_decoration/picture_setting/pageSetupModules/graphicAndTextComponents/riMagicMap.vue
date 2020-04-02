@@ -969,6 +969,13 @@ export default {
       } else {
         this.layoutData[this.nowTemplateClickIndex].styleData[this.nowLayutIndex].jump_link = newData
       }
+    },
+    // 切换密度
+    density (newData) {
+      console.log(this.moduleSaveData, this.zcCumData, this.customModulesBackData)
+      this.customModulesBackData = this.layoutData[Number(newData)]
+      this.moduleSaveData.data = this.layoutData[Number(newData)]
+      this.zcCumData = this.layoutData[Number(newData)]
     }
   },
   mounted () {

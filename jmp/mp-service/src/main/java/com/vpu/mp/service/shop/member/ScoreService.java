@@ -455,7 +455,7 @@ public class ScoreService extends ShopBaseService {
 		
 		/** 订单号 */
 		if(!StringUtils.isEmpty(param.getOrderSn())) {
-			select.where(USER_SCORE.ORDER_SN.eq(param.getOrderSn()));
+			select.where(USER_SCORE.ORDER_SN.like(likeValue(param.getOrderSn())));
 		}
 		
 		/** 时间范围 */

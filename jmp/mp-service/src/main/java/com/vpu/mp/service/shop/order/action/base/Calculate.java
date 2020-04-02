@@ -13,6 +13,8 @@ import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
@@ -652,9 +654,12 @@ public class Calculate extends ShopBaseService {
         //TODO 分销改价
 
         //首单特惠
-        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
-            goods.setFirstSpecialId(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
-            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
+        if(uniteMarkeingt != null) {
+            GoodsActivityInfo firstSpecial = uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
+            if (firstSpecial!=null&&firstSpecial.getStatus().equals(CartConstant.ACTIVITY_STATUS_VALID)&&firstSpecial.getFirstSpecialPrice()!=null){
+                goods.setFirstSpecialId(firstSpecial.getActivityId());
+                return UniteMarkeingtRecalculateBo.create(firstSpecial.getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, firstSpecial.getActivityId());
+            }
         }
 
         //限时降价

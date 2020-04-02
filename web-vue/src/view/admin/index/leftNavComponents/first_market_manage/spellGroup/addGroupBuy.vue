@@ -401,16 +401,24 @@
                       <span class="number">{{item.denomination}}</span>
                     </div>
                     <div
-                      class="coupon_list_top"
+                      class="coupon_list_tops"
                       v-if="item.actCode==='discount'"
                     >
-                      <span>{{item.denomination}}</span>
+                      <span class="discount_number">{{item.denomination}}</span>
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
                     </div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{item.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus !==0"
+                    >剩余{{item.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
@@ -551,7 +559,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[form.goodsId]"
+        :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -680,6 +688,7 @@ export default {
         product: [],
         shareInfo: ''
       },
+      goodsIdList: [],
       // 校验表单
       fromRules: {
         name: [
@@ -895,30 +904,34 @@ export default {
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'get row')
-      this.goodsRow = row
-      this.form.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
-        return
+      if (row.goodsId) {
+        this.goodsRow = []
+        this.goodsRow = row
+        this.form.goodsId = row.goodsId
+        this.goodsIdList = []
+        this.goodsIdList.push(row.goodsId)
+        if (Object.keys(row).length === 0) {
+          return
+        }
+        // 初始化规格表格
+        getAllGoodsProductList(this.form.goodsId).then(res => {
+          console.log('product', res.content)
+          this.form.product = []
+          res.content.forEach((item, index) => {
+            item.index = index
+            item.productId = item.prdId
+          })
+          let list = res.content
+          list.map((item, index) => {
+            this.form.product.push(
+              Object.assign({}, item, { goodsId: row.goodsId })
+            )
+          })
+        })
+      } else {
+        this.form.product = []
+        this.goodsRow.ischecked = false
       }
-      // 初始化规格表格
-      getAllGoodsProductList(this.form.goodsId).then(res => {
-        console.log('product', res.content)
-        res.content.forEach((item, index) => {
-          item.index = index
-        })
-        // this.form.product = res.content
-        // this.param.product((item, index) =>{
-        // })
-        let list = res.content
-        list.map((item, index) => {
-          this.form.product.push(
-            Object.assign({}, item, { goodsId: row.goodsId })
-          )
-          console.log(this.form.product, '123--')
-        })
-
-        console.log(' this.form.product ', this.form.product)
-      })
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
@@ -1027,8 +1040,8 @@ export default {
   position: relative;
   width: 17px;
   height: 17px;
-  top: -118px;
-  left: 45px;
+  top: -114px;
+  left: 47px;
   cursor: pointer;
   opacity: 0.8;
   color: #fff;
@@ -1073,20 +1086,24 @@ export default {
   color: #f60;
 }
 
-.coupon_list_top:nth-of-type(2) {
-  font-size: 20px;
+.coupon_list_tops {
   font-weight: bold;
+  margin-top: 10px;
+  color: #f60;
+}
+.discount_number {
+  font-size: 20px;
 }
 
 .coupon_center_limit {
-  height: 20px;
   color: #f60;
   font-size: 12px !important;
 }
 
 .coupon_center_number {
-  height: 20px;
+  height: 18px;
   color: #fbb;
+  font-size: 12px;
 }
 
 .coupon_list_bottom {
@@ -1163,5 +1180,9 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.number {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

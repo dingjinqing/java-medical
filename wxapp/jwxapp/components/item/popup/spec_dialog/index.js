@@ -88,9 +88,6 @@ global.wxComponent({
       if(productsInfo.defaultPrd === true){
         let actProduct = {}
         let {limitBuyNum,limitMaxNum,activity} = productsInfo
-        this.setData({
-          checkedProduct: this.data.productsInfo.products[0]
-        })
         if(activity && [1,5,10].includes(activity.activityType)){
           this.data.productsInfo.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
           if(activity.activityType === 1){
@@ -113,6 +110,9 @@ global.wxComponent({
             limitMaxNum = 0
           }
         }
+        this.setData({
+          checkedProduct: this.data.productsInfo.products[0]
+        })
         this.triggerEvent('productData', {
           goodsId: this.data.productsInfo.goodsId,
           ...this.data.productsInfo.products[0],

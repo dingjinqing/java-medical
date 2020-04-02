@@ -292,6 +292,7 @@ export default {
       this.cardUsageCfgData.mobile = data.mobile
 
       // 领取设置
+      debugger
       this.cardReceiveCfgData.isPay = String(data.isPay)
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
@@ -302,7 +303,9 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+            if (!item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+            }
           })
         }
       } else {
@@ -313,7 +316,9 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId })
+            if (item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId })
+            }
           })
         }
       } else {
@@ -401,6 +406,16 @@ export default {
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }
+      // 处理领取码
+      let batchIds = null
+      if (Number(this.cardReceiveCfgData.receiveAction) === 1) {
+        // 领取码
+        batchIds = this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId)
+      } else {
+        // 卡号+密码
+        batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
+      }
+
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -428,7 +443,7 @@ export default {
         'payMoney': this.cardReceiveCfgData.payMoney,
         'payScore': this.cardReceiveCfgData.payScore,
         'receiveAction': this.cardReceiveCfgData.receiveAction,
-        'batchIdList': this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId),
+        'batchIdList': batchIds,
         'stock': this.cardReceiveCfgData.stock,
         'limits': this.cardReceiveCfgData.limits,
         'activation': this.cardActiveCfgData.activation,

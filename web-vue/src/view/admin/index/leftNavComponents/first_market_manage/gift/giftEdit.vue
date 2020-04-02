@@ -48,17 +48,17 @@ export default {
   methods: {
     switchEditState (value) {
       if (value) {
-        var re = /^[1-9]\d*$/
+        var re = /^(0|\+?[1-9][0-9]*)$/
         if (!value) {
           this.$message.warning({ message: '请填写赠品库存' })
           return false
         }
         if (!re.test(value)) {
-          this.$message.warning({ message: '赠品库存只能是正整数' })
+          this.$message.warning({ message: '赠品库存只能是0或者正整数' })
           return false
         }
         if (value > Number(this.prdNumber)) {
-          this.$message.warning('赠品库存不能大于商品当前库存')
+          this.$message.warning('赠品当前库存不能大于商品库存')
           return false
         }
 
@@ -71,17 +71,17 @@ export default {
       }
     },
     closeBlur (value) {
-      var re = /^[1-9]\d*$/
+      var re = /^(0|\+?[1-9][0-9]*)$/
       if (!value) {
         this.$message.warning({ message: '请填写赠品库存' })
         return false
       }
       if (!re.test(value)) {
-        this.$message.warning({ message: '赠品库存只能是正整数' })
+        this.$message.warning({ message: '赠品库存只能是0或者正整数' })
         return false
       }
       if (value > Number(this.prdNumber)) {
-        this.$message.warning('赠品库存不能大于商品当前库存')
+        this.$message.warning('赠品当前库存不能大于商品库存')
         return false
       }
 
@@ -106,7 +106,7 @@ export default {
   line-height: 45px;
   vertical-align: middle;
   .input {
-    width: 45%;
+    // width: 45%;
     text-align: right;
     margin-right: 10px;
   }
