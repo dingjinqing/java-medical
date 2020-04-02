@@ -9,20 +9,13 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.DAY_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.ONE_MONTH_FLAG;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_DAYS;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.YEAR_FLAG;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.date;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +76,7 @@ import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
@@ -94,6 +88,7 @@ import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
 
@@ -131,6 +126,8 @@ public class MemberService extends ShopBaseService {
 	public MemberCardService card;
 	@Autowired
 	public OrderInfoService order;
+	@Autowired
+	public ReturnOrderService returnOrderSvc;
 	@Autowired
 	public AddressService address;
 	@Autowired
@@ -604,7 +601,12 @@ public class MemberService extends ShopBaseService {
 		
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
-		setRecentOrderInfo(userId, transStatistic);
+		LocalDateTime lastOrderTime = order.lastOrderTime(userId);
+		if(lastOrderTime != null) {
+			transStatistic.setLastAddOrder(lastOrderTime.toString());
+		}else {
+			transStatistic.setLastAddOrder("0");
+		}
 		return memberBasicInfoVo;
 	}
 
@@ -660,36 +662,6 @@ public class MemberService extends ShopBaseService {
 			}
 		}
 		
-	}
-
-
-
-	/**
-	 * 最近下单的订单信息
-	 * @param userId
-	 * @param transStatistic
-	 */
-	public  void setRecentOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
-		Timestamp createTime = order.getRecentOrderInfoByUserId(userId);
-		if (createTime != null) {
-			LocalDate now = LocalDate.now();
-			LocalDate tmp = createTime.toLocalDateTime().toLocalDate();
-			long days = Duration.between(tmp.atStartOfDay(), now.atStartOfDay()).toDays();
-			StringBuilder lastAddOrder = new StringBuilder();
-			if (days < WEEK) {
-				lastAddOrder.append(days + DAY_FLAG );
-			} else if (days < MONTH) {
-				lastAddOrder.append(ONE_MONTH_FLAG);
-			} else if (days < YEAR) {
-				lastAddOrder.append((days / MONTH_DAYS) + MONTH_FLAG);
-			} else {
-				lastAddOrder.append((days / YEAR_DAYS) + YEAR_FLAG);
-			}
-			logger().info("最近下单距离现在 " + lastAddOrder.toString());
-			transStatistic.setLastAddOrder(lastAddOrder.toString());
-		} else {
-			transStatistic.setLastAddOrder("0");
-		}
 	}
 
 	/**
@@ -826,27 +798,24 @@ public class MemberService extends ShopBaseService {
 			MemberBasicInfoVo memberBasicInfoVo) {
 		
 		/** 累计消费金额 */
-		BigDecimal totalConsumpAmount = order.getAllConsumpAmount(userId);
-		memberBasicInfoVo.setTotalConsumpAmount(totalConsumpAmount);
-
+		UserOrderBean userOrder = order.getAllConsumeOrder(userId);
+		memberBasicInfoVo.setTotalConsumpAmount(userOrder.getTotalMoneyPaid());
+		
+		/** 客单价 */
+		memberBasicInfoVo.setUnitPrice(userOrder.getUnitPrice());
+		
 		/** 累计消费订单数 */
-		Integer orderNum = order.getAllOrderNum(userId);
-		transStatistic.setOrderNum(orderNum);
-		logger().info("累计消费订单数" + orderNum);
+		transStatistic.setOrderNum(userOrder.getOrderNum());
+		logger().info("累计消费订单数" + userOrder.getOrderNum());
 
-		/** 累计下单金额 */
-		BigDecimal orderMoney = order.getAllOrderMoney(userId);
-		transStatistic.setOrderMoney(orderMoney);
-
+		UserOrderBean returnOrder = returnOrderSvc.getReturnOrder(userId);
 		/** 累计退款金额 */
-		BigDecimal returnOrderMoney = order.getAllReturnOrderMoney(userId);
-		transStatistic.setReturnOrderMoney(returnOrderMoney);
-		logger().info("累计退款金额 " + returnOrderMoney);
+		transStatistic.setReturnOrderMoney(returnOrder.getTotalMoneyPaid());
+		logger().info("累计退款金额 " + returnOrder.getTotalMoneyPaid());
 
 		/** 累计退款订单数 */
-		Integer returnOrderNum = order.getAllReturnOrderNum(userId);
-		transStatistic.setReturnOrderNum(returnOrderNum);
-		logger().info("累计退款订单数 " + returnOrderNum);
+		transStatistic.setReturnOrderNum(returnOrder.getOrderNum());
+		logger().info("累计退款订单数 " + returnOrder.getOrderNum());
 	}
 
 
