@@ -109,10 +109,8 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
                     CartActivityInfo seckillProductInfo =new CartActivityInfo();
                     seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
                     seckillProductInfo.setActivityId(seckillPrd.getSkId());
-                    seckillProductInfo.setSecKillPrice(seckillPrd.getSecKillPrice());
+                    seckillProductInfo.setProductPrice(seckillPrd.getSecKillPrice());
                     goods.getCartActivityInfos().add(seckillProductInfo);
-                    goods.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
-                    goods.setActivityId(seckillPrd.getSkId());
                 }
             });
         }

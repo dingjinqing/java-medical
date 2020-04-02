@@ -31,6 +31,7 @@
               <el-input
                 v-model="data.title"
                 size="small"
+                :maxlength="10"
               ></el-input>
               <span>{{$t('commodity.upToWords')}}</span>
             </div>
@@ -183,6 +184,7 @@
                     ></i></el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="2"
                   >
                     <i
@@ -194,6 +196,7 @@
                   </el-radio>
                   <el-radio
                     v-model="data.cart_btn_choose"
+                    :disabled="Number(data.col_type)===2 || Number(data.col_type)===3"
                     label="3"
                   >
                     <i
@@ -807,7 +810,9 @@ export default {
             // 需要转换的checkbox字段数组集合
             let getModulesData = JSON.parse(JSON.stringify(turnToString))
             this.needToSwitchData.forEach(itemC => {
+              console.log(turnToString, itemC)
               let m = this.handleToTurnModulesData(turnToString[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
+              console.log(m)
               getModulesData[itemC] = m
             })
             console.log(getModulesData)
@@ -1220,6 +1225,10 @@ export default {
         this.data.col_type = '0'
       } else {
         this.data.col_type = index.toString()
+      }
+      // 如果是三列或者横向滑动则重置为第一个按钮
+      if (index === 2 || index === 3) {
+        this.data.cart_btn_choose = '0'
       }
     },
     // 模块标题图标点击

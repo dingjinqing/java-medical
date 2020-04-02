@@ -15,7 +15,7 @@
           <div>
             <div
               class="hiddenTitle"
-              :style="data.tit_center?'justify-content:center':''"
+              :style="data.tit_center==='1'?'justify-content:center':''"
               v-if="data.goods_module_title!=='0'&&(data.title || data.img_url || data.img_title_url)"
             >
               <img
