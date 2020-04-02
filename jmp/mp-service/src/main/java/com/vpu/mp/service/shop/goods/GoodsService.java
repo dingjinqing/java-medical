@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
@@ -763,6 +764,15 @@ public class GoodsService extends ShopBaseService {
     public GoodsDataIllegalEnumWrap insert(Goods goods) {
         GoodsDataIllegalEnumWrap codeWrap = new GoodsDataIllegalEnumWrap();
         codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_OK);
+
+        Integer limitNum = saas.getShopApp(getShopId()).version.getLimitNum(VersionNumConfig.GOODSNUM);
+        if (limitNum != -1) {
+            Integer count = selectGoodsCount();
+            if (count >= limitNum) {
+                codeWrap.setIllegalEnum(GoodsDataIIllegalEnum.GOODS_FAIL);
+                return codeWrap;
+            }
+        }
 
         transaction(() -> {
             try {
@@ -1613,6 +1623,14 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 统计未删除商品总数量
+     * @return 商品数量
+     */
+    public Integer selectGoodsCount(){
+        int i = db().fetchCount(GOODS, GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
+        return i;
+    }
+    /**
      * 查询商品详情
      *
      * @param goodsId 商品id
@@ -1862,7 +1880,7 @@ public class GoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public GoodsExportColumnVo getExportGoodsListSize(GoodsExportParam param) {
+    public GoodsExportColumnVo getExportGoodsListSize(GoodsPageListParam param) {
         GoodsExportColumnVo vo = new GoodsExportColumnVo();
         // 拼接过滤条件
         Condition condition = this.buildOptions(param);

@@ -11,6 +11,7 @@ global.wxPage({
     page: 1,
     last_page: 1,
     server_list: [], //列表数据
+    distributor_name: '', // 分销员统称
     is_load: 0,
     if_fliter: 0, // 筛选条件
     search: {
@@ -32,15 +33,13 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
-    this.getSeachData();
+    that.getSeachData();
     invite_request(that);
   },
   show_nouse_message: function (e) {
-    var noue_tip;
     var in_type = e.currentTarget.dataset.invite_name;
     // 有邀请人
-    noue_tip = "该用户在店铺下单，不会返利到您的账户";
-    util.showModal('提示', noue_tip);
+    util.showModal('提示', "该用户在店铺下单，不会返利到您的账户");
   },
   show_message: function (e) {
     // 保护期剩余
@@ -165,7 +164,7 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     return {
-      path: this.route + '?invite_id=' + util.getCache('user_id')
+      // path: this.route + '?invite_id=' + util.getCache('user_id')
     }
   },
   /**
@@ -211,7 +210,6 @@ global.wxPage({
           if_fliter: 0
         });
       }
-      
     }, { 
       userId: util.getCache('user_id'),
       username: util.getCache('nickName'),
@@ -220,14 +218,15 @@ global.wxPage({
     });
   },
 
+  // 获取分销信息
   getSeachData() {
     var that = this;
     // util.api('/api/wxapp/rebate/distributor/level', function (res) {
     //   if (res.error == 0) {
-    //     if (res.content.distributor_level) {
+    //     if (res.content.distributorLevel) {
     //       that.setData({
-    //         distributor_level: res.content.distributor_level,
-    //         distributor_name: res.content.distributor_name
+    //         distributor_level: res.content.distributorLevel,
+    //         distributor_name: res.content.distributorName
     //       })
     //     }
     //   }
