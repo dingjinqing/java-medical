@@ -1,7 +1,7 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -10,18 +10,14 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
 import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
@@ -35,10 +31,13 @@ import static com.vpu.mp.db.shop.Tables.USER;
 public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
-    DistributionConfigService distributionConf;
+    public DistributionConfigService distributionConf;
 
     @Autowired
-    UserRebatePriceService userRebatePrice;
+    public UserRebatePriceService userRebatePrice;
+
+    @Autowired
+    public DistributorLevelService distributorLevel;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -70,15 +69,10 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     public List<DistributionStrategyParam> goingStrategy(){
         Timestamp nowDate = Util.currentTimeStamp();
-        Result<Record> record = db().select().from(DISTRIBUTION_STRATEGY).where(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0))
+        return db().select().from(DISTRIBUTION_STRATEGY).where(DISTRIBUTION_STRATEGY.STATUS.eq((byte) 0))
             .and(DISTRIBUTION_STRATEGY.DEL_FLAG.eq((byte) 0))
             .and(DISTRIBUTION_STRATEGY.START_TIME.le(nowDate)).and(DISTRIBUTION_STRATEGY.END_TIME.ge(nowDate))
-            .orderBy(DISTRIBUTION_STRATEGY.STRATEGY_LEVEL.desc()).fetch();
-        if(record != null){
-            return record.into(DistributionStrategyParam.class);
-        }else{
-            return null;
-        }
+            .orderBy(DISTRIBUTION_STRATEGY.STRATEGY_LEVEL.desc()).fetchInto(DistributionStrategyParam.class);
     }
 
     /**
@@ -90,6 +84,17 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     public DistributionStrategyParam getGoodsRebateStrategy(Integer goodsId,Integer catId,Integer sortId){
         List<DistributionStrategyParam> distributionStrategyVos = this.goingStrategy();
+        return getGoodsStrategy(goodsId, sortId, distributionStrategyVos);
+    }
+
+    /**
+     * 获取商品返利逻辑
+     * @param goodsId
+     * @param sortId
+     * @param distributionStrategyVos
+     * @return
+     */
+    public DistributionStrategyParam getGoodsStrategy(Integer goodsId, Integer sortId, List<DistributionStrategyParam> distributionStrategyVos) {
         for (DistributionStrategyParam rebateStrategy:distributionStrategyVos){
             //根据返利策略等级优先级排序、全部商品适用
             if(rebateStrategy.getRecommendType() ==0){
@@ -104,12 +109,6 @@ public class MpDistributionGoodsService extends ShopBaseService {
                 }
             }
 
-            if(rebateStrategy.getRecommendCatId() != null){
-                List<Integer> catIds = Util.stringToList(rebateStrategy.getRecommendCatId());
-                if(catIds.contains(catId)){
-                    return rebateStrategy;
-                }
-            }
             if(rebateStrategy.getRecommendSortId() != null){
                 List<Integer> sortIds = Util.stringToList(rebateStrategy.getRecommendSortId());
                 if(sortIds.contains(sortId)){
@@ -156,57 +155,67 @@ public class MpDistributionGoodsService extends ShopBaseService {
         RebateRatioVo rebateRatio = new RebateRatioVo();
         if(levels.contains(distributionLevel.getDistributorLevel())){
             Byte level = distributionLevel.getDistributorLevel();
-            if(level == 1){
-                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
-                rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio());
-                rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio());
-                rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio());
-            }
-            if(level == 2){
-                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
-                rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_2());
-                rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_2());
-                rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_2());
-            }
-            if(level == 3){
-                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
-                rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_3());
-                rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_3());
-                rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_3());
-            }
-            if(level == 4){
-                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
-                rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_4());
-                rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_4());
-                rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_4());
-            }
-            if(level == 5){
-                rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
-                rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_5());
-                rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_5());
-                rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_5());
-            }
+            rebateRatio.setSelfPurchase(goodsRebateStrategy.getSelfPurchase());
+            getRebateRatio(goodsRebateStrategy, rebateRatio, level);
         }
         return rebateRatio;
     }
 
-    public void calculatePrice(OrderBeforeParam param) {
-        DistributionParam cfg = distributionConf.getDistributionCfg();
-        //开关
-        if(cfg.getStatus() == OrderConstant.NO){
-            logger().info("开关关闭，结束");
-            return;
+    private void getRebateRatio(DistributionStrategyParam goodsRebateStrategy, RebateRatioVo rebateRatio, Byte level) {
+        if(level == 1){
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio());
         }
-        Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = this.userRebatePrice.getUserRebatePrice(param.getWxUserInfo().getUserId(), (Integer[]) param.getProductIds().toArray()).intoMap(UserRebatePriceRecord::getProductId);
-        param.createOrderCartProductBo().getAll().forEach(goods -> {
-            UserRebatePriceRecord rebatePriceRecord = rebatePriceRecordMap.get(goods.getProductId());
-            if (rebatePriceRecord != null) {
-                logger().info("规格：{},分销价 ：{}", rebatePriceRecord.getProductId(), rebatePriceRecord.getAdvicePrice());
-                GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
-                goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REBATE);
-                goodsActivityInfo.setDistributionPrice(rebatePriceRecord.getAdvicePrice());
-                goods.getActivityInfo().put(BaseConstant.ACTIVITY_TYPE_REBATE, goodsActivityInfo);
-            }
-        });
+        if(level == 2){
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_2());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_2());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_2());
+        }
+        if(level == 3){
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_3());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_3());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_3());
+        }
+        if(level == 4){
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_4());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_4());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_4());
+        }
+        if(level == 5){
+            rebateRatio.setFirstRatio(goodsRebateStrategy.getFirstRatio_5());
+            rebateRatio.setFanliRatio(goodsRebateStrategy.getFanliRatio_5());
+            rebateRatio.setRebateRatio(goodsRebateStrategy.getRebateRatio_5());
+        }
+    }
+
+    /**
+     *
+     * @param userInfo
+     * @param goodsStrategy 返利策略
+     * @param cfg 配置
+     * @return
+     */
+    public RebateRatioVo getUserRebateRatio(UserRecord userInfo, DistributionStrategyParam goodsStrategy, DistributionParam cfg) {
+        if(userInfo == null) {
+            logger().info("分销员不存在");
+            return null;
+        }
+        if(cfg.getJudgeStatus() == OrderConstant.YES && String.valueOf(OrderConstant.NO).equals(userInfo.getIsDistributor())) {
+            logger().info("用户非审核分销员");
+        }
+        //异常分销等级重置
+        if(userInfo.getDistributorLevel() < 1 || userInfo.getDistributorLevel() > 5) {
+            userInfo.setDistributorLevel(DistributionConstant.level_1);
+        }
+        //等级详情
+        DistributorLevelVo levelInfo = distributorLevel.getOneLevelInfo(userInfo.getDistributorLevel());
+        if(levelInfo == null || levelInfo.getLevelStatus() == OrderConstant.NO) {
+            logger().info("该分销员等级未开启");
+        }
+        //该等级返利详情
+        RebateRatioVo rebateRatio = new RebateRatioVo();
+        getRebateRatio(goodsStrategy, rebateRatio, userInfo.getDistributorLevel());
+        return rebateRatio;
     }
 }
