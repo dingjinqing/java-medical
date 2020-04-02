@@ -67,8 +67,11 @@ public enum GoodsDataIIllegalEnum {
     /**
      * 商品数量达到店铺级别可用数量最大值
      */
-    GOODS_NUM_FETCH_LIMIT_NUM((byte)13,"goods.num.fetch.limit.num");
-
+    GOODS_NUM_FETCH_LIMIT_NUM((byte)13,"goods.num.fetch.limit.num"),
+    /**
+     * 商品编号重复
+     */
+    GOODS_PRD_CODES_EXIST((byte)14,"goods.prd.codes.exist");
     private byte errorCode;
     private String errorMsg;
 

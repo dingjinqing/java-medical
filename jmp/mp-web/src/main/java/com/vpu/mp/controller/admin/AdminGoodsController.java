@@ -201,6 +201,9 @@ public class AdminGoodsController extends AdminBaseController {
         if (GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM.equals(code)) {
             return fail(JsonResultCode.GOODS_NUM_FETCH_LIMIT_NUM);
         }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
+        }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
             return success();
@@ -293,6 +296,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
