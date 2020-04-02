@@ -740,7 +740,7 @@ public class Calculate extends ShopBaseService {
             logger().info("开关关闭，结束");
             return;
         }
-        Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = distributionGoods.userRebatePrice.getUserRebatePrice(param.getWxUserInfo().getUserId(), (Integer[]) param.getProductIds().toArray()).intoMap(UserRebatePriceRecord::getProductId);
+        Map<Integer, UserRebatePriceRecord> rebatePriceRecordMap = distributionGoods.userRebatePrice.getUserRebatePrice(param.getWxUserInfo().getUserId(),  param.getProductIds().toArray(new Integer[]{})).intoMap(UserRebatePriceRecord::getProductId);
         param.createOrderCartProductBo().getAll().forEach(goods -> {
             UserRebatePriceRecord rebatePriceRecord = rebatePriceRecordMap.get(goods.getProductId());
             if (rebatePriceRecord != null) {
