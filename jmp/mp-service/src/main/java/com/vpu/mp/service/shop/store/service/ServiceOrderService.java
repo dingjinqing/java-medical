@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
@@ -924,5 +925,41 @@ public class ServiceOrderService extends ShopBaseService {
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
+    /**
+     * 获取用户的门店服务订单
+     */
+	public UserOrderBean getConsumerOrder(Integer userId) {
+		logger().info("获取用户的门店服务订单");
+		return db().select(DSL.count(SERVICE_ORDER.ORDER_ID).as("orderNum"),
+				DSL.sum(SERVICE_ORDER.MONEY_PAID.add(SERVICE_ORDER.USE_ACCOUNT)
+						.add(SERVICE_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+				.from(SERVICE_ORDER)
+				.where(SERVICE_ORDER.ORDER_STATUS.in(ORDER_STATUS_WAIT_PAY,ORDER_STATUS_CANCELED))
+				.and(SERVICE_ORDER.USER_ID.eq(userId))
+				.fetchAnyInto(UserOrderBean.class);
+	}
+	/**
+     * 获取用户的门店服务退款订单信息
+     */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户的门店服务退款订单信息");
+		// TODO等待门店服务退款业务功能添加  service_order_refund 
+		
+		
+		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
+	}
+
+	/**
+	 * 获取门店服务订单最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店服务订单最近下单时间");
+		return db().select(SERVICE_ORDER.CREATE_TIME)
+					.from(SERVICE_ORDER)
+					.where(SERVICE_ORDER.USER_ID.eq(userId))
+					.orderBy(SERVICE_ORDER.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+		
+	}
 
 }

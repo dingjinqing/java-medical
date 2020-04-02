@@ -591,10 +591,14 @@ global.wxPage({
     const apiInfo = {
       1:'/api/wxapp/groupbuy/share/info',//拼团 
       3:'/api/wxapp/bargain/share/info', //砍价
+      6:'/api/wxapp/reduceprice/share/info', //限时降价
+      8:'url:/api/wxapp/groupdraw/share/info', //拼团抽奖
       10:'/api/wxapp/presale/share/info', //定金膨胀
+      18:'/api/wxapp/firstspecial/share/info', //首单特惠
+      98:'/api/wxapp/reduceprice/share/info', //限时降价|会员价
       default:'/api/wxapp/goods/share/info'//普通商品
     }
-    let target = [1,3,5,10].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
+    let target = [1,3,5,6,8,10,18,98].includes(shareData.activityType) ? apiInfo[shareData.activityType] : apiInfo['default']
     let buttonShareData = await this.requestShareData(target,shareData)
     console.log(buttonShareData)
     this.setData({

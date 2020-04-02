@@ -7,8 +7,8 @@
           <include src="../goodscommon/labelcommon.wxml" />
         </view>
 
-        <view class='product-name' wx:if='{{m.hide_name != 0}}'>
-          <view class='top_title'>
+        <view class='product-name' >
+          <view class='top_title' wx:if='{{m.hide_name != 0}}'>
             <view class="{{(item.activityLabelData.length)?'van-ellipsis':'van-two-ellipsis'}}">{{item.goodsName}}</view>
           </view>
            <view class='title_label_container' style="bottom:54rpx">
@@ -30,7 +30,7 @@
 						<block wx:if="{{m.other_message == 1 }}">
 							<view wx:if="{{m.show_market == 3}}" class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}人评价</view>
 						</block>
-          <block wx:if="{{m.cart_btn == 1 && item.activityType != 10}}">
+          <block wx:if="{{m.cart_btn == 1 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5}}">
               <text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 0}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{main_setting.comColor}}' wx:if="{{m.cart_btn_choose == 1}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'></text>
               <text class='cart_btn right_buy_btn' style='background:{{main_setting.comColor}};bottom:30rpx' wx:if="{{m.cart_btn_choose == 2}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}</text>

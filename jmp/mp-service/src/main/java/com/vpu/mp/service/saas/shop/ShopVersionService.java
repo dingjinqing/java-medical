@@ -230,7 +230,7 @@ public class ShopVersionService extends MainBaseService {
 	 * @param modName
 	 * @return
 	 */
-	protected Integer getConfigNumber(VersionConfig config, String modName) {
+	public Integer getConfigNumber(VersionConfig config, String modName) {
 		VersionNumberConfig m = config.numConfig;
 		String[] modNames = { "picture_num", "video_num", "goods_num", "store_num", "decorate_num", "form_num",
 				"picture_num_plus", "video_num_plus", "goods_num_plus", "store_num_plus", "decorate_num_plus",

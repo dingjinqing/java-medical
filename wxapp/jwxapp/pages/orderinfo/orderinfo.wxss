@@ -345,13 +345,18 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  margin-bottom: -16rpx;
   margin-top: 16rpx;
 }
 .pre-sale-info .info-top{
   display: flex;
   padding: 20rpx 16rpx;
   justify-content: space-between;
+}
+.pre-sale-info .info-bottom{
+  padding: 20rpx 16rpx;
+  background: #fcf9dd;
+  color: #ff6660;
+  margin-bottom: -16rpx;
 }
 .pre-sale-info .info-top .status-item{
   display: flex;
