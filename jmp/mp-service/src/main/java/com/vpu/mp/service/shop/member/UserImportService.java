@@ -704,11 +704,11 @@ public class UserImportService extends ShopBaseService {
 		}
 		String mobile = param.getMobile();
 		if (StringUtils.isNotEmpty(mobile)) {
-			selectFrom.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile));
+			selectFrom.where(USER_IMPORT_DETAIL.MOBILE.like(likeValue(mobile)));
 		}
 		String realName = param.getRealName();
 		if (StringUtils.isNotEmpty(realName)) {
-			selectFrom.where(USER_IMPORT_DETAIL.NAME.eq(realName));
+			selectFrom.where(USER_IMPORT_DETAIL.NAME.like(likeValue(realName)));
 		}
 		Byte isDistributor = param.getIsDistributor();
 		if (isDistributor != null) {
@@ -727,6 +727,7 @@ public class UserImportService extends ShopBaseService {
 		for (UIGetNoActListVo vo : detailList.dataList) {
 			DistributorGroupListVo oneInfo = saas.getShopApp(getShopId()).distributorGroup.getOneInfo(vo.getGroupId());
 			if (oneInfo == null) {
+				//TODO 国际化
 				vo.setGroupName("分组已删除");
 			} else {
 				vo.setGroupName(oneInfo.getGroupName());

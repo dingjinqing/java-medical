@@ -105,8 +105,8 @@ public class LiveService extends ShopBaseService {
 	/**
 	 * 【获取直播房间列表】接口，仅供后台调用
 	 * @param appId
-	 * @param start
-	 * @param limit
+	 * @param start 起始拉取房间，start = 0 表示从第 1 个房间开始拉取
+	 * @param limit 每次拉取的个数上限，不要设置过大，建议 100 以内
 	 * @return
 	 */
 	public WxMaLiveInfoResult getliveinfo(String appId,Integer start,Integer limit) {
