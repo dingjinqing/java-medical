@@ -12,17 +12,20 @@ import lombok.Data;
 @Data
 public class LiveListVo {
 	private Integer id;
-	private Integer room_id;
+	private Integer roomId;
 	private String name;
-	private Short live_status;
-	private Timestamp start_time;
-	private Timestamp end_time;
-	private String anchor_name;
-	private String cover_img;
-	private String anchor_img;
-	private Timestamp add_time;
-	private Timestamp update_time;
-	private Byte del_flag;
-	private Timestamp del_time;
+	private Short liveStatus;
+	private Timestamp startTime;
+	private Timestamp endTime;
+	private String anchorName;
+	private String coverImg;
+	private String anchorImg;
+	private Timestamp addTime;
+	private Timestamp updateTime;
+	private Byte delFlag;
+	private Timestamp delTime;
 
+	private Integer goodsListNum;
+	private Integer addCartNum;
+	private Integer orderNum;
 }

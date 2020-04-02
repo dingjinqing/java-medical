@@ -1737,7 +1737,7 @@ public class MpAuthShopService extends MainBaseService {
 				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -1752,6 +1752,7 @@ public class MpAuthShopService extends MainBaseService {
 			return new LiveCheckVo(isAuthLive,null,false);
 		}
 		boolean hasLiveFunc = checkHasLive(authShop);
+		logger().info("店铺：{}，是否有直播权限：{}",shopId,hasLiveFunc);
 		if(hasLiveFunc) {
 			isAuthLive=false;
 		}
