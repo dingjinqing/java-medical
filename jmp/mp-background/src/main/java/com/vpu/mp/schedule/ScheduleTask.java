@@ -46,7 +46,8 @@ public class ScheduleTask {
 	/**
 	 * 每天获取微信数据（每天6-12点每半个小时执行一次）
 	 */
-    @Scheduled(cron = "0 0/30 6,7,8,9,10,11,12 * * ?")
+//    @Scheduled(cron = "0 0/30 6-12 * * ?")
+    @Scheduled(cron = "50 * * * * ?")
 	public void taskDailyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r)->{saas.getShopApp(r.getShopId()).
@@ -55,7 +56,7 @@ public class ScheduleTask {
 	/**
 	 * 每周获取微信数据（每周一6-12点每半个小时执行一次）
 	 */
-	@Scheduled(cron = "0 0,30 6,7,8,9,10,11,12 * * ?")
+	@Scheduled(cron = "0 0,30 6-12 * * ?")
 	public void taskWeeklyWechat(){
 		Result<ShopRecord> result = saas.shop.getAll();
 		result.forEach((r)->{saas.getShopApp(r.getShopId()).
@@ -70,5 +71,6 @@ public class ScheduleTask {
 		result.forEach((r)->{saas.getShopApp(r.getShopId()).
 				shopTaskService.wechatTaskService.beginMonthlyTask();});
 	}
+
 
 }
