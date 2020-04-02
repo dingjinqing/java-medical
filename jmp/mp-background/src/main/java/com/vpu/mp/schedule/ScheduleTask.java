@@ -1,6 +1,7 @@
 package com.vpu.mp.schedule;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,8 +21,7 @@ import com.vpu.mp.service.saas.SaasApplication;
  */
 @Component
 @EnableScheduling
-@EnableAsync
-
+@Slf4j
 public class ScheduleTask {
 
     @Autowired
@@ -49,8 +49,11 @@ public class ScheduleTask {
 //    @Scheduled(cron = "0 0/30 6-12 * * ?")
     @Scheduled(cron = "50 * * * * ?")
 	public void taskDailyWechat(){
+        log.info("开始微信数据定时任务");
 		Result<ShopRecord> result = saas.shop.getAll();
-		result.forEach((r)->{saas.getShopApp(r.getShopId()).
+		result.forEach((r)->{
+		    log.info("微信数据定时任务-店铺{}",r.getShopId());
+		    saas.getShopApp(r.getShopId()).
 				shopTaskService.wechatTaskService.beginDailyTask();});
 	}
 	/**
