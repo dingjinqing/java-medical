@@ -105,7 +105,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            {{scope.row.isisDefault === 1 ? '是':'否'}}
+            {{scope.row.isDefault === 1 ? '是':'否'}}
           </template>
         </el-table-column>
 
