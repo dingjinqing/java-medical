@@ -809,7 +809,9 @@ export default {
             // 需要转换的checkbox字段数组集合
             let getModulesData = JSON.parse(JSON.stringify(turnToString))
             this.needToSwitchData.forEach(itemC => {
+              console.log(turnToString, itemC)
               let m = this.handleToTurnModulesData(turnToString[itemC]) // 将数据种checkbox的值由stying数字转为Boolean
+              console.log(m)
               getModulesData[itemC] = m
             })
             console.log(getModulesData)
