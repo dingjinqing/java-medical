@@ -752,7 +752,52 @@ public class UserCardDaoService extends ShopBaseService{
 			.and(USER_CARD.CARD_NO.eq(param.getCardNo()))
 			.execute();
 	}
+	/**
+	 * 	获取已经领取该卡的用户数量
+	 * @param cardId 卡ID
+	 */
+	public int getCardNum(Integer cardId) {
+		// TODO 没有数据的情况
+		logger().info("查询领取该卡的用户数量");
+		return getSelectRecieveCardSql(cardId)
+					.groupBy(USER_CARD.USER_ID)
+					.orderBy(USER_CARD.CREATE_TIME.desc())
+					.fetchOne(0, int.class);
+	}
+
+	/**
+	 *	 查询该卡被领取的数量
+	 */
+	public int getCardUserList(Integer cardId) {
+		logger().info("查询该卡被领取的数量");
+		return getSelectRecieveCardSql(cardId).fetchOne(0, int.class);
+	}
 	
+	/**
+	 * 	查询可以该卡可以正常使用的数量
+	 */
+	public int getCanUseCardNum(Integer cardId,boolean isNeedActive) {
+		logger().info("查询可以该卡可以正常使用的数量");
+		Condition condition = DSL.noCondition().and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING));
+		if(isNeedActive) {
+			// 卡只有激活后才能正常使用
+			condition = condition.and(USER_CARD.ACTIVATION_TIME.isNotNull());
+		}
+		return getSelectRecieveCardSql(cardId)
+					.and(condition)
+					.fetchOne(0, int.class);
+	}
 	
-	
+	/**
+	 * 	查询已经发送出去的卡Sql
+	 */
+	private SelectConditionStep<Record1<Integer>> getSelectRecieveCardSql(Integer cardId) {
+		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
+		SelectConditionStep<Record1<Integer>> query = db().selectCount().from(USER_CARD)
+			.leftJoin(subQuery.asTable("a")).on(DSL.field("a.card_no").eq(USER_CARD.CARD_NO))
+			.leftJoin(CARD_EXAMINE.asTable("b")).on(DSL.field("b.id").eq(DSL.field("a.id")))
+			.leftJoin(USER).on(USER.USER_ID.eq(USER_CARD.USER_ID))
+			.where(USER_CARD.CARD_ID.eq(cardId));
+		return query;
+	}
 }
