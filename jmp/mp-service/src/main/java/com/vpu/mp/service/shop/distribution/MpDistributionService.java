@@ -85,9 +85,9 @@ public class MpDistributionService extends ShopBaseService{
             baseInfo.setEducationName(education);
         }
         //性别
-        if(baseInfo.getSex().equalsIgnoreCase("f")){
+        if(baseInfo.getSex() != null && baseInfo.getSex().equalsIgnoreCase("f")){
             baseInfo.setSex("女");
-        }else if(baseInfo.getSex().equalsIgnoreCase("m")){
+        }else if(baseInfo.getSex() != null && baseInfo.getSex().equalsIgnoreCase("m")){
             baseInfo.setSex("男");
         }
         //婚姻状况
