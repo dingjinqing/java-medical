@@ -2,7 +2,8 @@
 <include src="/pages/common/header.wxml"/>
 <view class='main-container'>
   <view class='fixed_top'  style='top:{{margin_top_nav + 8}}px;'>
-      <view class='title_bar'  wx:if="{{bottom.tk_shop_style == 0}}">
+      <!-- 类型 -->
+      <view class='title_bar'>
         <view class="tb_item" style='color:{{search.tab_type == 0 ? comColor:""}};border-color:{{search.tab_type == 0 ? comColor:""}}'
           bindtap='changeSearch' data-field='tab_type' data-value='0'>有效用户</view>
         <view class="tb_item" style='color:{{search.tab_type == 1 ? comColor:""}};border-color:{{search.tab_type == 1 ? comColor:""}}'
@@ -10,13 +11,14 @@
         <view class="tb_item" style='color:{{search.tab_type == 2 ? comColor:""}};border-color:{{search.tab_type == 2 ? comColor:""}}'
           bindtap='changeSearch' data-field='tab_type' data-value='2'>已失效用户</view>
       </view>
-      <!-- 搜索 -->
+      <!-- 搜索框 -->
       <view class="search" >
         <text class='iconfont iconsousuo search-img' style='color:#bbb'></text>
         <input type="text" placeholder="请输入用户昵称" bindblur='changeUserName' value='{{search.user_name}}'/>
       </view>
+      <!-- 筛选条件 -->
       <view class='fliter_items'>
-          <view class='fi_item' bindtap='showSearch'  wx:if="{{bottom.tk_shop_style == 0}}">筛选</view>
+          <view class='fi_item' bindtap='showSearch'>筛选</view>
           <view class='fi_item' style='color:{{search.sort_field == "invite_date" ? comColor : ""}}'   bindtap='changeSearch' data-field='invite_date'>
             邀请时间 <block wx:if="{{search.sort_field == 'invite_date'}}">{{search.sort_type == 0 ? "↓":"↑"}}</block>
           </view>
@@ -27,7 +29,7 @@
             佣金 <block wx:if="{{search.sort_field == 'rebate_money'}}">{{search.sort_type == 0 ? "↓":"↑"}}</block>
           </view>
       </view>
-      <!-- 筛选条件 -->
+      <!-- 筛选 -->
       <view class='fliter_content' wx:if='{{if_fliter == 1}}'>
           <view class='fc_title'>邀请关系</view>
           <view class='fc_option clearfix'>
@@ -53,9 +55,9 @@
           </view>
       </view>
   </view>
-  <view class='invi_conrainer' style="{{bottom.tk_shop_style == 0 ? '' : 'margin-top: 300rpx;'}}">
-    <!-- 列表 -->
-    <block wx:if='{{server_list.length>0}}'>
+  <!-- 列表 -->
+  <view class='invi_conrainer' style="margin-top: 300rpx;">
+    <block wx:if='{{server_list.length > 0}}'>
       <view class='each_user' wx:for="{{server_list}}"  wx:key="index">
           <!-- 分销员信息 -->
           <view class='user_info clearfix'>
@@ -67,22 +69,22 @@
                 <view class='uii_top'>
                     <view class='usr_name'>
                       {{item.username}}
-                      <text class='relation_level' wx:if='{{bottom.tk_shop_style == 0 && item.inviteType == 2}}' style='background:#fff2cf;color:#fdb54f'>间接邀请</text>
-                      <text class='relation_level' wx:if='{{bottom.tk_shop_style == 0 && item.inviteType == 1}}'>直接邀请</text>
+                      <text class='relation_level' wx:if='{{item.inviteType == 2}}' style='background:#fff2cf;color:#fdb54f'>间接邀请</text>
+                      <text class='relation_level' wx:if='{{item.inviteType == 1}}'>直接邀请</text>
                     </view>
                     <view class='look_detail'>查看返利订单 <image src='{{imageUrl}}image/wxapp/right_into.png' /></view>
                 </view>
                 <view class='invite_time' wx:if='{{item.inviteTime}}'>邀请时间：{{item.inviteTime}}</view>
-                <view class='invite_names' wx:if='{{bottom.tk_shop_style == 0 && item.isDistributor == 1}}'>{{distributor_name || '分销员'}}等级：{{item.levelName}}</view>
+                <view class='invite_names' wx:if='{{item.isDistributor == 1}}'>{{distributor_name || '分销员'}}等级：{{item.levelName}}</view>
               </view>
           </view>
           <!-- 佣金 -->
           <view class='rage_info clearfix'>
-              <view class='rage_order'>累积佣金订单：<text style='color:{{comColor}}'>{{item.orderNumber == null ? "0.00":item.orderNumber}}</text></view>
-              <view class='rage_money'>累积佣金：<text style='color:{{comColor}}'>{{item.totalFanliMoney == null ? "0.00":item.totalFanliMoney}}</text></view>
+              <view class='rage_order'>累积佣金订单：<text style='color:{{comColor}}'>{{item.orderNumber ? item.orderNumber : "0.00"}}</text></view>
+              <view class='rage_money'>累积佣金：<text style='color:{{comColor}}'>{{item.totalFanliMoney ? item.totalFanliMoney :"0.00"}}</text></view>
           </view>
           <!-- 返利期 -->
-          <view class='effect_info' wx:if="{{bottom.tk_shop_style == 0 && search.tab_type != 2}}">
+          <view class='effect_info' wx:if="{{search.tab_type != 2}}">
               <view class='et_left'>保护期剩余：
                 <text style='color:{{comColor}}' wx:if='{{item.protect_remainder >= 0}}'>{{item.protectRemainder > 0 ? (item.protectRemainder + '天') : '已过期'}}</text>
                 <text style='color:{{comColor}}' wx:if='{{item.protect_remainder == -1}}'>永久有效</text>
@@ -95,7 +97,7 @@
               </view>
           </view>
           <!-- 已失效 -->
-          <view class='rage_info' style='margin-top:35rpx;' wx:if='{{bottom.tk_shop_style == 0 && (item.inviteType == 2 || search.tab_type == 2)}}'>
+          <view class='rage_info' style='margin-top:35rpx;' wx:if='{{item.inviteType == 2 || search.tab_type == 2}}'>
               <view class='rage_order' wx:if='{{item.inviteType == 2}}'>邀请人：{{item.inviteName}}</view>
               <view class='rage_money' wx:if='{{search.tabType == 2}}'>失效时间：{{item.inviteExpiryDate}}
                 <image bindtap='show_nouse_message' class='range_img' data-invite_name='{{item.inviteType}}' src='{{imageUrl}}image/wxapp/scancode_tips.png'></image>
