@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Data;
@@ -25,33 +26,23 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      * 显示位置 0显示,1标签,2上方 3选择内容
      */
     private Byte type ;
-    /**
-     * 专享会员等级
-     */
-    private Integer exclusiveGrade;
 
     /**
-     * 首单特惠价格
+     * 商品价格
      */
-    private BigDecimal firstSpecialPrice;
+    private BigDecimal productPrice;
     /**
-     * 首单特惠限购数量
+     * 限购数量最新
      */
-    private Integer firstSpecialNumber;
+    private Integer limitMinNum;
     /**
-     * 首单特惠限制类型
+     * 限购数量最大
      */
-    private Byte firstSpecialNumberType;
+    private Integer limitMaxNum;
     /**
-     * 会员价格
+     * 限制类型
      */
-    private BigDecimal memberPriceType;
-
-    /**
-     * 秒杀价格
-     */
-    private BigDecimal secKillPrice;
-
+    private Byte limitNumberType;
     /**
      * 满折满减活动
      */
