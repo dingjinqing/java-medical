@@ -110,6 +110,7 @@ public class JsonResultMessage {
     public static final String GOODS_SPEC_NAME_REPETITION = "goods.spec.name.repetition";
     public static final String GOODS_SPEC_VAL_REPETITION = "goods.spec.val.repetition";
     public static final String GOODS_SPEC_ATTRIBUTE_SPEC_K_V_CONFLICT="goods.spec.attribute.spec.k.v.conflict";
+    public static final String GOODS_NUM_FETCH_LIMIT_NUM = "goods.num.fetch.limit.num";
 
     public static final String GOODS_RECOMMEND_NAME_NOT_NULL = "goods.recommend.name.notNull";
     public static final String GOODS_RECOMMEND_TYPE_NOT_NULL = "goods.recommend.type.notNull";
