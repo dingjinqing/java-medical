@@ -97,5 +97,19 @@ public class VersionService extends ShopBaseService {
 	public Map<String, Object> getFormNumConfig() {
 		return this.getVersionDetail(new VersionQueryParam(numConfig, formNum, null));
 	}
+	
+	/**
+	 * 获取模块对应权限大小
+	 * @param name  VersionNumConfig
+	 * @return
+	 */
+	public Integer getLimitNum(String name) {
+		VersionConfig config = saas().shop.version.mergeVersion(this.getShopId());
+		if (config == null) {
+			return null;
+		}
+		Integer number = saas().shop.version.getConfigNumber(config, name);
+		return number;
+	}
 
 }
