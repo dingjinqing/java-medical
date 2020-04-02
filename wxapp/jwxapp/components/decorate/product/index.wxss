@@ -5,7 +5,6 @@
   margin: 0 auto;
   overflow-x: hidden; 
 }
-
 .module_names {
   width: 715rpx;
   margin: 0 auto;
