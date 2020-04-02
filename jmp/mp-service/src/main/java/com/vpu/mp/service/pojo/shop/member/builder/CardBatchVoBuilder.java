@@ -43,6 +43,11 @@ public class CardBatchVoBuilder {
 		cardBatchVo.setPwdBatch(flag);
 		return this;
 	}
+	
+	public CardBatchVoBuilder action (Byte action) {
+		cardBatchVo.setAction(action);
+		return this;
+	}
 
 	public CardBatchVo build() {
 		return cardBatchVo;

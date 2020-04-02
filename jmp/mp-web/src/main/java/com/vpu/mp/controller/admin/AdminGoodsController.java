@@ -416,7 +416,7 @@ public class AdminGoodsController extends AdminBaseController {
      * 取将要导出的列数
      */
     @PostMapping("/api/admin/goods/export/rows")
-    public JsonResult getExportTotalRows(@RequestBody @Valid GoodsExportParam param) {
+    public JsonResult getExportTotalRows(@RequestBody @Valid GoodsPageListParam param) {
         return success(shop().goods.getExportGoodsListSize(param));
     }
 

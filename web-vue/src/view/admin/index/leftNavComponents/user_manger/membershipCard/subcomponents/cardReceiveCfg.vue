@@ -592,7 +592,7 @@ export default {
       margin: 20px 0 0 -100px;
       border-radius: 4px;
       .receive-buy {
-        padding: 5px 20px;
+        padding: 5px 0px;
         .valid-check{
           color: #F56C6C;
           font-size: 12px;
@@ -606,7 +606,7 @@ export default {
           font-size: 12px;
         }
         .receive-code-one {
-          padding: 5px 20px;
+          padding: 5px 0px;
           display: flex;
           /deep/ .el-radio__label {
             height: 41px;
@@ -629,7 +629,7 @@ export default {
           }
         }
         .receive-code-two {
-          padding: 5px 20px;
+          padding: 5px 0px;
           display: flex;
           /deep/ .el-radio__label {
             height: 41px;
