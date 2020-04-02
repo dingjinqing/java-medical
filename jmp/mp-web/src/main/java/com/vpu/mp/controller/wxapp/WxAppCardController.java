@@ -4,6 +4,7 @@ package com.vpu.mp.controller.wxapp;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -167,6 +168,17 @@ public class WxAppCardController extends WxAppBaseController {
 		PageResult<CardUpgradeVo> gradeList = shop().userCard.getGradeList(param);
 		return success(gradeList);
 	}
-	
-
+	/**
+	 * 	删除已过期的会员卡
+	 */
+	@PostMapping(value="/api/wxapp/card/del")
+	public JsonResult delUserCard(@RequestBody DefaultCardParam param) {
+		logger().info("删除会员卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		int res = shop().userCard.delUserCard(param);
+		if(res != 0) {
+			return success();
+		}
+		return fail();
+	}
 }

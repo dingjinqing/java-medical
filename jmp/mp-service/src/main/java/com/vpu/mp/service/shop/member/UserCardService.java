@@ -1931,7 +1931,10 @@ public class UserCardService extends ShopBaseService {
 		
 		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
 	}
-	
+
+	public int delUserCard(DefaultCardParam param) {
+		return userCardDao.updateUserCardFlag(param);
+	}
 	
 }
 
