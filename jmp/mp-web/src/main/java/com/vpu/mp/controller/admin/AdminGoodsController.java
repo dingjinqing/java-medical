@@ -146,6 +146,14 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 查询店铺商品新增时相关的通用配置
+     * @return
+     */
+    @GetMapping("/api/admin/goods/common/cfg")
+    public JsonResult selectGoodsCommonCfg(){
+        return success(shop().config.shopCommonConfigService.getGoodsCommonConfig());
+    }
+    /**
      * 商品新增
      *
      * @param goods 商品参数
