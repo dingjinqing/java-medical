@@ -111,7 +111,9 @@
 		"name": "商家分类",
 		"enName": "sort",
 		"topIndex": 1,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/goods/sort/*"
+    ]
 	},
 	{
 		"vsName": "m_member_card",
@@ -389,7 +391,10 @@
 		"name": "好友代付",
 		"enName": "insteadpay",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/instead/pay/set",
+      "/api/admin/market/instead/pay/get"
+    ]
 	},
 	{
 		"vsName": "gift",
