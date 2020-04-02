@@ -22,6 +22,7 @@ global.wxComponent({
    */
   methods: {
     handleToCalculationTop () {
+      let that = this
       var top_nav = 0
       if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
         top_nav = wx.getMenuButtonBoundingClientRect().bottom

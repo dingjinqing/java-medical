@@ -243,7 +243,8 @@
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}" />
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
-    <!-- 购买记录 <v-purchase_record goodsRecords="goodsRecords"  /> -->
+    <!-- 购买记录  -->
+    <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
   <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
