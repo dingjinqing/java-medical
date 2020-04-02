@@ -55,18 +55,21 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
                 log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                 return true;
             }else if (goods.getGoodsRecord().getIsOnSale().equals(GoodsConstant.OFF_SALE)){
                 log.debug("商品下架的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_OFF_SALE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                 return true;
             }else if (goods.getProductRecord()==null){
                 log.debug("商品规格修改"+"[getGoodsName:"+goods.getGoodsName()+",getLimitBuyNum:"+goods.getGoodsRecord().getLimitBuyNum()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DISABLED);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                 return true;
             }
@@ -82,15 +85,22 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
                 log.debug("商品售罄" + "[getGoodsName:" + goods.getGoodsName() + ".getPrdNumber: " + goods.getProductRecord().getPrdNumber() + ",getLimitBuyNum:" + goods.getGoodsRecord().getLimitBuyNum() + "]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_SOLD_OUT);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(), goods.getCartId(), CartConstant.CART_NO_CHECKED);
             }
             //购物车数量不能大于商品库存
             if (goods.getCartNumber() > productRecord.getPrdNumber() && goods.getGoodsStatus().equals(CartConstant.GOODS_STATUS_ON_SALE)) {
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_STOCK_SHORTAGE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(), goods.getCartId(), CartConstant.CART_NO_CHECKED);
                 //修改商品数量
             }
+            //加价购商品处理
+            if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS)){
+                goods.setBuyStatus(BaseConstant.NO);
+            }
+
             //初始化商品的限制数量
             goods.setLimitMaxNum(goodsRecord.getLimitMaxNum());
             goods.setLimitBuyNum(goodsRecord.getLimitBuyNum());
