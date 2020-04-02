@@ -1,4 +1,10 @@
 <view class="product-container person_reconmmend" style='{{m.goods_module_style == 1 ? "width:750rpx;margin-top:18rpx;" : ""}}'>
+ <block wx:if='{{m.goods_module_title == 1}}'>
+		<view class='module_names' style='{{m.tit_center == 1 ? "justify-content:center" : ""}}' data-url='{{m.title_link}}' bindtap='bindJumpLink' wx:if='{{m.img_url || m.title}}'>
+			<image class="image" src="{{m.img_url}}" wx:if="{{m.img_url}}" />
+			<text class="text">{{m.title}}</text>
+		</view>
+	</block>
   <!-- 单列商品 -->
   <v-single-colGoods wx:if="{{m.col_type =='4'}}" bindaddCart="getAddCartGoods" module="{{module}}" />
   <!-- 双列商品 -->
