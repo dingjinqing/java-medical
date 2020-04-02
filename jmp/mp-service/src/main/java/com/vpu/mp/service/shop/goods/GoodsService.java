@@ -1382,11 +1382,11 @@ public class GoodsService extends ShopBaseService {
                                                                GoodsColumnCheckExistParam goodsColumnExistParam) {
         SelectConditionStep<?> scs = select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
 
-        if (goodsColumnExistParam.getGoodsName() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getGoodsName())) {
             scs = scs.and(GOODS.GOODS_NAME.eq(goodsColumnExistParam.getGoodsName()));
         }
 
-        if (goodsColumnExistParam.getGoodsSn() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getGoodsSn())) {
             scs = scs.and(GOODS.GOODS_SN.eq(goodsColumnExistParam.getGoodsSn()));
         }
 
@@ -1409,8 +1409,11 @@ public class GoodsService extends ShopBaseService {
         //判断del_flag应该可以去掉，目前删除商品的时候会把sku备份到bak里面，prd表内是真删除
         SelectConditionStep<?> scs = select.where(DSL.noCondition());
 
-        if (goodsColumnExistParam.getPrdSn() != null) {
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getPrdSn())) {
             scs = scs.and(GOODS_SPEC_PRODUCT.PRD_SN.eq(goodsColumnExistParam.getPrdSn()));
+        }
+        if (StringUtils.isNotBlank(goodsColumnExistParam.getPrdCodes())) {
+            scs = scs.and(GOODS_SPEC_PRODUCT.PRD_CODES.eq(goodsColumnExistParam.getPrdCodes()));
         }
         // 修改去重
         if (goodsColumnExistParam.getPrdId() != null) {

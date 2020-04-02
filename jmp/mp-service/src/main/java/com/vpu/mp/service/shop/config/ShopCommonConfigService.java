@@ -756,6 +756,16 @@ public class ShopCommonConfigService extends BaseShopConfigService{
     }
 
     /**
+     * 获取商品编辑相关店铺默认配置
+     * @return {@link GoodsCommonConfig getGoodsCommonConfig}
+     */
+    public GoodsCommonConfig getGoodsCommonConfig(){
+        GoodsCommonConfig goodsCommonConfig =new GoodsCommonConfig();
+        goodsCommonConfig.setGoodsWeightCfg(this.getGoodsWeightCfg());
+        goodsCommonConfig.setNeedPrdCodes(this.getNeedPrdCodes());
+        return goodsCommonConfig;
+    }
+    /**
 	 * 取通用配置
 	 */
 	public ShopCommonCfgInfo getShopCommonCfg() {
