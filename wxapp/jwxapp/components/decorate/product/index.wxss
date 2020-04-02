@@ -6,7 +6,24 @@
   overflow-x: hidden; 
 }
 
+.module_names {
+  width: 715rpx;
+  margin: 0 auto;
+  display: flex;
+  padding-top: 20rpx;
+  margin-bottom: 20rpx;
+}
 
+.module_names .image {
+  width: 50rpx;
+  height: 50rpx;
+  margin-right: 20rpx;
+}
+
+.module_names .text {
+  font-size: 30rpx;
+  height: 36rpx;
+}
 .save_money {
   width: 230rpx;
   background: linear-gradient(left, #f66, #ff8585);
