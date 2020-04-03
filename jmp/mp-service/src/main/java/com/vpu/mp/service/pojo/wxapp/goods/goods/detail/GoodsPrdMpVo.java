@@ -23,6 +23,7 @@ public class GoodsPrdMpVo {
     private String prdSpecs;
     private String prdDesc;
     private String prdImg;
+    private String prdCodes;
     //************ElasticSearch中的数据**************start
 
 
@@ -37,5 +38,6 @@ public class GoodsPrdMpVo {
         this.prdSpecs = record.getPrdSpecs();
         this.prdDesc = record.getPrdDesc();
         this.prdImg = record.getPrdImg();
+        this.prdCodes = record.getPrdCodes();
     }
 }
