@@ -202,6 +202,10 @@ export default {
               item.versionVal = this.$t('programVersion.ordinaryVersion')
             } else if (item.packageVersion === 2) {
               item.versionVal = this.$t('programVersion.goodVersion')
+            } else if (item.packageVersion === 3) {
+              item.versionVal = this.$t('programVersion.ordinaryLiveVersion')
+            } else if (item.packageVersion === 4) {
+              item.versionVal = this.$t('programVersion.goodLiveVersion')
             }
           })
 
