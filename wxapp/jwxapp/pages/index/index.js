@@ -31,14 +31,14 @@ global.wxPage({
       true
     );
     setTimeout(() => {
-      console.log(this.data.pageContent)
+      console.log(this.data)
       var pageCfg = this.data.pageContent.page_info.page_cfg;
       var color = "#f5f5f5";
       if (pageCfg) {
         if (pageCfg.bg_types == 0) {
           color = "background:" + pageCfg.page_bg_color;
         } else if (pageCfg.bg_types == 1) {
-          color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
+          color = "background:url(" + this.data.imageUrl + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
         }
       }
       console.log(color)
