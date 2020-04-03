@@ -561,4 +561,14 @@ global.wxPage({
     //   is_list: is_list
     // })
   },
+  // 点击优惠卷
+  viewCoupon (e) {
+    let coupon_id = e.currentTarget.dataset.coupon_id;
+    util.jumpLink('/pages/getCoupon/getCoupon?code=' + coupon_id, 'navigateTo')
+
+  },
+  to_cou_package (e) {
+    let pack_id = e.currentTarget.dataset.pack_id;
+    util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
+  }
 })

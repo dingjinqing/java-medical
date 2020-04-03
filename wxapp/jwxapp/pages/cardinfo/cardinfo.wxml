@@ -239,6 +239,69 @@
 		 style="color:{{comColor}}"
 		>兑换更多商品
 		</view>
+		<!--开卡送券-->
+		<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
+			<view class="item_title_left">
+				<image mode="widthFix" src="{{ imageUrl }}/image/admin/card_send_coupon.png" />
+			</view>
+			<view class="item_title_content">
+				开卡送券
+			</view>
+
+		</view>
+		<view class="card_item_content" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
+
+			<block wx:if="{{cardInfo.sendCouponType == 0}}">
+				<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>
+				本卡后获赠以下优惠券
+				</text>
+				<view
+				 class='coupon_list'
+				 wx:for="{{cardInfo.coupons}}"
+				 wx:key="id"
+				 bindtap="viewCoupon"
+				>
+					<view class='coupon_left' style="background:{{comColor1}};">
+						<view class='coupon_left_top'>
+							<!--
+                <block wx:if="{{item.act_code == 'voucher'}}">
+										￥
+										<text>{{item.denomination}}</text>
+									</block>
+                -->
+
+							<block>
+								<text>2</text>
+								折
+							</block>
+						</view>
+						<view class='conpon_left_bottom'>use_condition</view>
+					</view>
+					<view class="coupon_right">
+						<view class='coupon_name'>腾飞</view>
+						<view class='coupon_condition'>问问</view>
+						<view class='coupon_valid_until'>2020-03-12</view>
+					</view>
+				</view>
+			</block>
+			<block wx:else>
+				<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>
+				本卡后获赠优惠券礼包
+				</text>
+				<view
+				 class='package_info'
+				 data-pack_id="{{cardInfo.couponPack.id}}"
+				 bindtap="to_cou_package"
+				 style="background-color: {{bgColor}};color: {{comColor1}};"
+				>
+					<!--
+              {{card_info.couponPack.act_name}}
+              -->
+					腾飞测试
+				</view>
+			</block>
+		</view>
+
 		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
