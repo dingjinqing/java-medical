@@ -25,33 +25,23 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      * 显示位置 0显示,1标签,2上方 3选择内容
      */
     private Byte type ;
-    /**
-     * 专享会员等级
-     */
-    private Integer exclusiveGrade;
 
     /**
-     * 指定了本对象activityType和activityId后的唯一活动价（该商品满足的排他性活动的活动价，如预售、秒杀、等级会员价、首单特惠价）
-     * 首单特惠价格
+     * 商品价格
      */
-    private BigDecimal firstSpecialPrice;
+    private BigDecimal productPrice;
     /**
-     * 首单特惠限购数量
+     * 限购数量最新
      */
-    private Integer firstSpecialNumber;
+    private Integer limitMinNum;
     /**
-     * 首单特惠限制类型
+     * 限购数量最大
      */
-    private Byte firstSpecialNumberType;
+    private Integer limitMaxNum;
     /**
-     * 会员价格
+     * 限制类型
      */
-    private BigDecimal actPrice;
-    /**
-     * 活动限购数量
-     */
-    private Integer limitAmount;
-
+    private Byte limitNumberType;
     /**
      * 满折满减活动
      */

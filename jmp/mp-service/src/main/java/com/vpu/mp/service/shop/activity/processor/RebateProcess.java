@@ -15,6 +15,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,8 @@ import java.util.List;
 public class RebateProcess implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor{
     @Autowired
     MpDistributionGoodsService distributionGoods;
-
+    @Autowired
+    Calculate calculate;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_INTEGER_MALL_PRIORITY;
@@ -51,13 +53,18 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
         log.info("下单分销计算start");
-        distributionGoods.calculatePrice(param);
+        calculate.calculatePrice(param);
         log.info("下单分销计算end");
     }
 
+    /**
+     * @param param 参数
+     * @param order 订单
+     * @throws MpException
+     */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        calculate.rebate(param,order );
     }
 
     @Override

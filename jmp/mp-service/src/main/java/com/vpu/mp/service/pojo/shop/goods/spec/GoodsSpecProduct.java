@@ -24,6 +24,10 @@ public class GoodsSpecProduct {
      * 	规格编码
      */
 	private String prdSn;
+	/**
+     * 商品条码
+     * */
+	private String prdCodes;
 	private String prdSpecs;
 	private String prdDesc;
 

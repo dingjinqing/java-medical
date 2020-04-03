@@ -99,9 +99,9 @@
         </view>
       </view>
       <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
+        <view class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
           {{item}}
-        </text>
+        </view>
       </view>
       <view wx:if="{{goodsInfo.activity.activityType === 10}}" class="flex-wrap pre-sale-content" style="background-color:{{speColor}};">
         <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{PreSaleDiscountPrice}}</view>

@@ -694,21 +694,21 @@ export default {
           value: '3',
           label: ''
         }, {
-          value: '4',
+          value: '5',
           label: ''
         }, {
-          value: '5',
+          value: '6',
           label: ''
         }],
         sortRule: '0', // 排序规则选中值
         sortRuleOptions: [{ // 排序规则下拉框数据
-          value: '0',
-          label: ''
-        }, {
           value: '1',
           label: ''
         }, {
           value: '2',
+          label: ''
+        }, {
+          value: '3',
           label: ''
         }]
       },
@@ -831,7 +831,13 @@ export default {
             if (turnToString.recommend_type === '1') {
               this.isToChangeData = true
               this.handleToGetModulesGoods(turnToString, true, true)
+              let goodsArrBack = []
+              turnToString.forEach((item, index) => {
+                goodsArrBack.push(item.goodsId)
+              })
+              this.GoodsBack = goodsArrBack
             } else {
+              console.log(this.data)
               if (turnToString.goods_area === 'brand') {
                 this.rangeData[3] = this.data.goods_area_data
                 this.brandBackData = this.data.goods_area_data
@@ -880,15 +886,16 @@ export default {
       }
     },
     'data.goods_items' (newData) {
-      if (newData.length) {
-        let arr = []
-        newData.forEach((item, index) => {
-          arr.push(item.goodsId)
-        })
-        this.GoodsBack = arr
-      } else {
-        this.GoodsBack = []
-      }
+      // if (newData.length) {
+      //   let arr = []
+      //   newData.forEach((item, index) => {
+      //     arr.push(item.goodsId)
+      //   })
+      //   this.GoodsBack = arr
+      // } else {
+      //   this.GoodsBack = []
+      // }
+      console.log(this.GoodsBack)
     },
     'data.goods_area' (newData) {
       console.log(newData)
@@ -996,7 +1003,9 @@ export default {
           this.zbGoodsBack = goodsId
           console.log(this.GoodsBack)
         } else {
+          console.log(clickFlag)
           if (clickFlag) {
+            console.log(initData)
             initData.goods_items.forEach(item => {
               goodsId.push(item.goodsId)
             })
@@ -1290,6 +1299,11 @@ export default {
           break
         case 2:
           arr.splice(index, 1)
+          let newArr = []
+          arr.forEach((item, index) => {
+            newArr.push(item.goodsId)
+          })
+          this.GoodsBack = newArr
           break
       }
       console.log(arr)
@@ -1302,8 +1316,8 @@ export default {
     //  添加商品点击
     handleToAddGoods () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      this.GoodsBack = []
-      this.GoodsBack = this.zbGoodsBack
+      // this.GoodsBack = []
+      // this.GoodsBack = this.zbGoodsBack
       console.log(this.GoodsBack)
     },
     // 选中商品信息回传
@@ -1311,14 +1325,19 @@ export default {
       console.log(res)
       let resCopy = JSON.parse(JSON.stringify(res))
       // 过滤
-      // res.forEach((item, index) => {
-      //   this.data.goods_items.forEach((itemC, indexC) => {
-      //     if (item.goodsId === itemC.goodsId) {
-      //       resCopy.splice(index, 1, -1)
-      //     }
-      //   })
-      // })
-      this.data.goods_items = res
+      res.forEach((item, index) => {
+        this.data.goods_items.forEach((itemC, indexC) => {
+          if (item.goodsId === itemC.goodsId) {
+            resCopy.splice(index, 1, -1)
+          }
+        })
+      })
+      resCopy.forEach((item, index) => {
+        if (item !== -1) {
+          this.data.goods_items.unshift(item)
+        }
+      })
+
       console.log(resCopy, this.data.goods_items)
       // resCopy.forEach((item, index) => {
       //   this.data.goods_items.push(item)

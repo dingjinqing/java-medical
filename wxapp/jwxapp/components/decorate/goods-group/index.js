@@ -8,6 +8,7 @@ global.wxComponent({
   ready () {
     var _this = this;
     this.getRect('.content_scroll_view').then(function (rect) {
+      console.log(rect)
       _this._nav_height = rect.height;
     })
   },
@@ -42,6 +43,7 @@ global.wxComponent({
       }
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
+      console.log(initData.goodsListData)
       if (initData.goodsListData.length > 5) {
         initData.more_flag = 1
       } else {
@@ -138,9 +140,12 @@ global.wxComponent({
       var _this = this;
       var m = this.data.m;
       if (m.menu_style == 1) {
-        this.getRect(`#${m.cur_idx}`).then(function (rect) {
+        console.log(m.cur_idx)
+        this.getRect(`#c_${m.cur_idx}`).then(function (rect) {
+          console.log(rect)
           _this._nav_height = _this._nav_height || 0;
           var top = _this.getFixeTop();
+          console.log(rect.top, top, rect.bottom, top, _this._nav_height)
           if (!m.fixed && (rect.top <= top && rect.bottom > top + _this._nav_height)) {
             m.fixed = true;
             m.fix_height = rect.height;
@@ -156,6 +161,7 @@ global.wxComponent({
           }
         });
       }
+      console.log(m.fixed)
     }
   }
 });

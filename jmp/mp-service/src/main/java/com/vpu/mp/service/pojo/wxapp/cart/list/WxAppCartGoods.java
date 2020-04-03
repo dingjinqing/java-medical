@@ -45,6 +45,18 @@ public class WxAppCartGoods {
      */
     private Byte isChecked;
     /**
+     * 商品状态 1 在售 2 下架 3 删除 4 售罄
+     */
+    private Byte goodsStatus =GOODS_STATUS_ON_SALE;
+    /**
+     * 购买状态 0不可以购买 1可以购买
+     */
+    private Byte buyStatus =BaseConstant.YES;
+    /**
+     * 价格状态 0 不确定 1确定
+     */
+    private Byte priceStatus =BaseConstant.NO;
+    /**
      *  指定的活动类型，21满折满减
      */
     private Byte type;
@@ -56,16 +68,24 @@ public class WxAppCartGoods {
     /**
      * 最终价格的取价来源活动，0普通商品，2分销改价，6限时降价，18首单特惠，23会员专享
      */
-    private Byte priceAction = BaseConstant.ACTIVITY_TYPE_GENERAL;
+    private Byte priceActivityType = BaseConstant.ACTIVITY_TYPE_GENERAL;
     /**
-     * 活动限购数量，例如最终价格是限时降价活动价时，该活动的限购数量
+     * 活动数量限制
      */
-    private Integer limitAmount;
+    private Integer activityLimitMinNum;
+    /**
+     * 活动数量限制
+     */
+    private Integer activityLimitMaxNum;
     /**
      * 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
      * 部分活动会设置
      */
-    private Byte limitFlag =1;
+    private Byte activityLimitType =1;
+    /**
+     * 限制活动类型
+     */
+    private Byte limitActivityType  =1;
 
     private Integer storeId;
     private Integer userId;
@@ -102,11 +122,15 @@ public class WxAppCartGoods {
      */
     private Integer limitMaxNum;
 
-    /**
-     * 商品状态 1 在售 2 下架 3 删除 4 售罄 5
-     */
-    private Byte goodsStatus =GOODS_STATUS_ON_SALE;
 
+    /**
+     * 活动id
+     */
+    private Integer activityId;
+    /**
+     * 活动类型
+     */
+    private Byte activityType;
     //***** 商品属性 *************
     /**
      * 商品
@@ -118,15 +142,6 @@ public class WxAppCartGoods {
      */
     @JsonIgnore
     GoodsSpecProductRecord productRecord;
-    //***** 活动属性 **************
-    /**
-     * 活动id
-     */
-    private Integer activityId;
-    /**
-     * 活动类型
-     */
-    private Byte activityType;
     /**
      * 活动列表
      */

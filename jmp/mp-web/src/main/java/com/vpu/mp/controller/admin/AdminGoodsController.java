@@ -146,6 +146,14 @@ public class AdminGoodsController extends AdminBaseController {
     }
 
     /**
+     * 查询店铺商品新增时相关的通用配置
+     * @return
+     */
+    @GetMapping("/api/admin/goods/common/cfg")
+    public JsonResult selectGoodsCommonCfg(){
+        return success(shop().config.shopCommonConfigService.getGoodsCommonConfig());
+    }
+    /**
      * 商品新增
      *
      * @param goods 商品参数
@@ -192,6 +200,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM.equals(code)) {
             return fail(JsonResultCode.GOODS_NUM_FETCH_LIMIT_NUM);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
@@ -285,6 +296,9 @@ public class AdminGoodsController extends AdminBaseController {
         }
         if (GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST.equals(code)) {
             return fail(JsonResultCode.GOODS_SPEC_PRD_SN_EXIST);
+        }
+        if (GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST.equals(code)) {
+            return fail(JsonResultCode.GOODS_PRD_CODES_EXIST);
         }
 
         if (GoodsDataIIllegalEnum.GOODS_OK.equals(code)) {
