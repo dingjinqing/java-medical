@@ -85,7 +85,6 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
     @Override
     public void processGoodsDetail(GoodsDetailMpBo goodsDetailMpBo, GoodsDetailCapsuleParam param) {
         //商品分销
-        if(goodsDetailMpBo.getCanRebate() == 1){
             //判断商品是否存在营销活动
             GoodsActivityBaseMp activity = goodsDetailMpBo.getActivity();
             Byte[] intArray = new Byte[]{BaseConstant.ACTIVITY_STATUS_NORMAL,BaseConstant.ACTIVITY_TYPE_BARGAIN,BaseConstant.NAVBAR_TYPE_DISABLED,BaseConstant.ACTIVITY_TYPE_SEC_KILL,
@@ -98,11 +97,9 @@ public class RebateProcess implements Processor,ActivityGoodsListProcessor,Goods
                 UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
                 RebateRatioVo rebateRatioVo = distributionGoods.goodsRebateInfo(param.getGoodsId(), param.getCatId(), param.getSortId(), param.getUserId());
                 goodsDistributionVo.setIsDistributor(distributionLevel.getIsDistributor());
-                goodsDistributionVo.setCanRebate((byte)1);
+                goodsDistributionVo.setCanRebate(goodsDetailMpBo.getCanRebate());
                 goodsDistributionVo.setRebateRatio(rebateRatioVo);
                 goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
-            }
-
         }
     }
 }
