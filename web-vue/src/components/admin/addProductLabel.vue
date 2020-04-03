@@ -141,6 +141,7 @@ export default {
       }
     },
     callAddProductLabel (newVal) {
+      console.log(newVal)
       if (newVal) {
         this.visible = true
       }
