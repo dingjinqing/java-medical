@@ -155,6 +155,11 @@ global.wxPage({
 
   // 更改全选状态
   changeAllChecked () {
+    let checkFlag = this.data.canBuyGoodsList.find(item => { return item.buyStatus == 0 })
+    if (checkFlag != undefined) {
+      util.showModal('提示', '当前购物车不可全选');
+      return false
+    }
     let cartIds = this.data.canBuyGoodsList.map(item => { return item.cartId })
     let isAllCheck = this.data.isAllCheck ? 0 : 1
     util.api('/api/wxapp/cart/switch', res => {
@@ -195,27 +200,23 @@ global.wxPage({
   checkNumber (e) {
     var that = this;
     var value = Number(e.detail.value)
-    var cartId = e.target.dataset.cart_id
-    var limit_min = e.target.dataset.limit_min
-    var limit_max = e.target.dataset.limit_max
+    var cartId = e.currentTarget.dataset.cart_id
+    var re = /^[1-9]\d*$/
+    if (!value || !re.test(value)) {
+      util.showModal('提示', '输入内容不正确');
+      this.requestCartList()
+      return false
+    }
     that.data.canBuyGoodsList.forEach((item, index) => {
-      // if (item.prdId == prdId) {
-      //   if ((value >= limit_min) && (value <= limit_max)) {
-      //     item.cartNumber = value
-      //   } else {
-      //     item.cartNumber = limit_min
-      //   }
-      // }
       if (item.cartId == cartId) {
-        item.cartNumber = value
         util.api('/api/wxapp/cart/change', res => {
           if (res.error == 0) {
             this.requestCartList()
           }
         }, {
-          cartId: cartId,
+          cartId: item.cartId,
           productId: item.productId,
-          cartNumber: item.cartNumber
+          cartNumber: value
         })
       }
     })
