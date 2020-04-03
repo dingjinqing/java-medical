@@ -27,6 +27,8 @@ public class WxMaLiveInfoResult extends WxOpenResult {
 
 	@SerializedName("room_info")
 	private List<WxMaLiveRoomInfo> roomInfo;
+	
+	private Integer total;
 
 	public static WxMaLiveInfoResult fromJson(String json) {
 		return WxGsonBuilder.create().fromJson(json, WxMaLiveInfoResult.class);
