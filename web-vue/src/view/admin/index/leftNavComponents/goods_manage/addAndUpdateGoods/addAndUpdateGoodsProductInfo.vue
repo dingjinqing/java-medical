@@ -3,19 +3,40 @@
     <!--基本信息配置模块-->
     <addAndUpdateBasicInfo ref="basicInfo" />
     <!--库存/价格信息-->
-    <addAndUpdateStockAndPriceInfo ref="stockAndPriceInfo" />
+    <addAndUpdateStockAndPriceInfo ref="stockAndPriceInfo" v-bind="transferData" v-on:default_prd_change="defaultPrdChange"/>
     <!--配送信息-->
-    <addAndUpdateDeliverAndOtherInfo ref="deliverAndOtherInfo" />
+    <addAndUpdateDeliverAndOtherInfo ref="deliverAndOtherInfo" v-bind="transferData"/>
   </div>
 </template>
 <script>
+import {selectGoodsCommonConfig} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // 组件导入
 import addAndUpdateBasicInfo from './addAndUpdateBasicInfo'
 import addAndUpdateStockAndPriceInfo from './addAndUpdateStockAndPriceInfo'
 import addAndUpdateDeliverAndOtherInfo from './addAndUpdateDeliverAndOtherInfo'
 export default {
   components: { addAndUpdateBasicInfo, addAndUpdateStockAndPriceInfo, addAndUpdateDeliverAndOtherInfo },
+  data () {
+    return {
+      transferData: {
+        isDefaultPrd: true,
+        needPrdCodes: 0,
+        goodsWeightCfg: 0
+      }
+    }
+  },
   methods: {
+    /* 是否使用默认规格监听 */
+    defaultPrdChange (newVal) {
+      this.transferData.isDefaultPrd = newVal
+    },
+    /* 初始化商品编辑时需要的店铺配置新 */
+    getGoodsCommonConfigData () {
+      selectGoodsCommonConfig().then(res => {
+        this.transferData.needPrdCodes = res.content.needPrdCodes
+        this.transferData.goodsWeightCfg = res.content.goodsWeightCfg
+      })
+    },
     /* 修改商品数据初始化 */
     initDataForUpdate (goodsData) {
       this.$refs.basicInfo.initDataForUpdate(goodsData)
@@ -44,8 +65,9 @@ export default {
       let stockAndPriceInfoData = this.$refs.stockAndPriceInfo.getFormData()
       let deliverAndOtherInfoData = this.$refs.deliverAndOtherInfo.getFormData()
       // 默认规格
-      if (!stockAndPriceInfoData.specInfoSwitch) {
+      if (this.transferData.isDefaultPrd) {
         stockAndPriceInfoData.goodsSpecProducts[0].prdImg = basicInfoData.goodsImg
+        stockAndPriceInfoData.goodsSpecProducts[0].prdWeight = deliverAndOtherInfoData.goodsWeight
       }
 
       return {
@@ -54,6 +76,9 @@ export default {
         ...deliverAndOtherInfoData
       }
     }
+  },
+  mounted () {
+    this.getGoodsCommonConfigData()
   }
 }
 </script>

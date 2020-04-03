@@ -263,7 +263,10 @@ CREATE TABLE IF NOT EXISTS `b2c_live_broadcast` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `room_id` (`room_id`)
 );
-
+-- 2020年04月03日 商品规格表添加规格重量属性
+ALTER TABLE b2c_goods MODIFY goods_weight DECIMAL(10,3) DEFAULT NULL COMMENT '商品重量，默认规格重量或自定义规格中的最小重量';
+ALTER TABLE b2c_goods_spec_product add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
+ALTER TABLE b2c_goods_spec_product_bak add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
 /*********************2.11*************************END*/
 
 

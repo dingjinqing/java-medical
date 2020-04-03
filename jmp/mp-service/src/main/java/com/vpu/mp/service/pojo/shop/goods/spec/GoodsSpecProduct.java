@@ -19,6 +19,7 @@ public class GoodsSpecProduct {
     private BigDecimal prdMarketPrice;
     private BigDecimal prdCostPrice;
     private Integer prdNumber;
+    private BigDecimal prdWeight;
 
     /**
      * 	规格编码
