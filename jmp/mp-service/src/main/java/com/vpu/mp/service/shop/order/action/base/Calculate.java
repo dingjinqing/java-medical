@@ -98,6 +98,10 @@ public class Calculate extends ShopBaseService {
     private PreSaleProcessor preSaleProcessor;
     @Autowired
     private UserService user;
+    @Autowired
+    private MpDistributionGoodsService distributionGoods;
+    @Autowired
+    private OrderGoodsRebateService orderGoodsRebate;
 
     /**
      * 计算订单商品折扣金额
@@ -155,6 +159,10 @@ public class Calculate extends ShopBaseService {
     public BigDecimal[] getTolalNumberAndPriceByType(List<OrderGoodsBo> bos, Byte discountType, DefaultMarketingProcess defaultMarketing) {
         BigDecimal[] tolalNumberAndPrice = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
         for (OrderGoodsBo bo : bos) {
+            //分销赠品过滤
+            if(OrderConstant.D_T_REBATE.equals(discountType) && bo.getIsGift() != null && OrderConstant.YES == bo.getIsGift()) {
+                continue;
+            }
             //会员卡 或 优惠卷-> one
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType) || OrderConstant.D_T_COUPON.equals(discountType)) {
                 //加价购 或 满折满减 与 one 不共存
@@ -759,15 +767,13 @@ public class Calculate extends ShopBaseService {
      * @param param
      * @param order
      */
-    @Autowired
-    MpDistributionGoodsService distributionGoods;
-    @Autowired
-    OrderGoodsRebateService orderGoodsRebate;
     public void rebate(OrderBeforeParam param, OrderInfoRecord order) {
+        //获取该订单参与分销计算商品数量（除赠品）
+        BigDecimal[] tolal = getTolalNumberAndPriceByType(param.getBos(), OrderConstant.D_T_REBATE, null);
         //配置
         DistributionParam cfg = distributionGoods.distributionConf.getDistributionCfg();
         //商品平均积分抵扣
-        BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), new BigDecimal(order.getGoodsAmount()), RoundingMode.HALF_UP);
+        BigDecimal avgScoreDiscount = BigDecimalUtil.divide(order.getScoreDiscount(), tolal[BY_TYPE_TOLAL_NUMBER], RoundingMode.HALF_UP);
         //进行中的返利策略
         List<DistributionStrategyParam> goingStrategy = distributionGoods.goingStrategy();
         //用户信息
@@ -778,6 +784,10 @@ public class Calculate extends ShopBaseService {
         //是否进行返利标识
         boolean flag = false;
         for (OrderGoodsBo bo : param.getBos()) {
+            if(bo.getIsGift() != null && OrderConstant.YES == bo.getIsGift()) {
+                //赠品不参与
+                continue;
+            }
             //折扣价-积分抵扣
             BigDecimal canRebateMoney = BigDecimalUtil.subtrac(bo.getDiscountedTotalPrice(), BigDecimalUtil.multiply(avgScoreDiscount, new BigDecimal(bo.getGoodsNumber())));
             //zero check
@@ -802,13 +812,13 @@ public class Calculate extends ShopBaseService {
                 bo.setFanliType(rebateRecords.get(rebateRecords.size()-1).getRebateLevel());
                 bo.setTotalFanliMoney(records.get(0).getTotalRebateMoney());
                 bo.setFanliStrategy(strategy.toString());
+                bo.getCanCalculateMoney();
                 flag = true;
             }
-            if(flag) {
-                order.setFanliType(DistributionConstant.REBATE_ORDER);
-                order.setFanliUserId(userInfo.getInviteId());
-            }
-
+        }
+        if(flag) {
+            order.setFanliType(DistributionConstant.REBATE_ORDER);
+            order.setFanliUserId(userInfo.getInviteId());
         }
     }
 

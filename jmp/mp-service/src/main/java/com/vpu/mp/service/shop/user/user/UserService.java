@@ -8,7 +8,14 @@ import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.UserDetail;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.ChannelRecord;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
+import com.vpu.mp.db.shop.tables.records.OrderVerifierRecord;
+import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -21,7 +28,11 @@ import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.account.*;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetParam;
+import com.vpu.mp.service.pojo.wxapp.account.UserAccountSetVo;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.account.UserSysVo;
+import com.vpu.mp.service.pojo.wxapp.account.WxAppAccountParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppLoginParam.PathQuery;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -34,7 +45,6 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.wxapp.WxUserCardService;
 import com.vpu.mp.service.shop.order.OrderReadService;
-import com.vpu.mp.service.shop.order.info.MpOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.collection.UserCollectionService;
@@ -44,12 +54,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static com.vpu.mp.db.shop.Tables.SHOP_CFG;
@@ -1045,5 +1060,13 @@ public class UserService extends ShopBaseService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取邀请数量
+     * @param userId
+     */
+    public int getInviteCount(Integer userId) {
+        return db().select(DSL.count(USER.USER_ID)).from(USER).where(USER.INVITE_ID.eq(userId)).fetchOneInto(int.class);
     }
 }
