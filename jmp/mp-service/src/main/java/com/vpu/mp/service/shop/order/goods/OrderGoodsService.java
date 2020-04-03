@@ -290,7 +290,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
-            //限时降价
+            //满折满减
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //当前非赠品（赠品后续初始化）
@@ -318,11 +318,18 @@ public class OrderGoodsService extends ShopBaseService{
             goodsPriceAction(goods.getGoodsPriceAction()).
             purchasePriceId(null).
             purchasePriceRuleId(null).
-            reducePriceId(null).
+            reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
+            reducePriceId(goods.getReducePriceId()).
             promoteInfo(null).
             build();
+
+        //限时降价的ID和TYPE存入order_goods
+        if(goods.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) && goods.getReducePriceId() != null){
+            bo.setActivityId(goods.getReducePriceId());
+            bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+        }
         logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
         return bo;
     }
@@ -500,4 +507,22 @@ public class OrderGoodsService extends ShopBaseService{
 				.limit(5).fetchInto(GoodsOrderRecordSmallVo.class);
 		return goodsOrderRecordSmallVos;
 	}
+
+    /**
+     * 用户已对某个限时降价活动下单的商品数量
+     * @param userId
+     * @param reducePriceId
+     * @param prdId
+     * @return
+     */
+	public int getBuyGoodsNumberByReducePriceId(int userId,int reducePriceId,int prdId){
+	    return db().select(DSL.sum(TABLE.GOODS_NUMBER)).from(TABLE).leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID)).
+            where(TABLE.ACTIVITY_ID.eq(reducePriceId)).
+            and(ORDER_INFO.USER_ID.eq(userId)).
+            and(TABLE.PRODUCT_ID.eq(prdId)).
+            and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
+            and(TABLE.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).
+            and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)).
+            fetchAnyInto(int.class);
+    }
 }

@@ -690,11 +690,29 @@ public class Calculate extends ShopBaseService {
             }
         }
 
+        BigDecimal memberGradePrice = null;
+        BigDecimal reducePrice = null;
+
         //限时降价
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) != null && uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getReducePricePrdPrice() != null){
+            goods.setReducePriceId(uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
+            reducePrice = uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getReducePricePrdPrice();
+        }
 
         //会员等级价
-        if (uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null) {
-            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice(), ACTIVITY_TYPE_MEMBER_GRADE, null);
+        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice() != null){
+            memberGradePrice = uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice();
+        }
+
+        //会员等级价 和 限时降价 二取一取低价
+        if(memberGradePrice != null && reducePrice != null){
+            return memberGradePrice.compareTo(reducePrice) > 0 ?
+             UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId()) :
+            UniteMarkeingtRecalculateBo.create(memberGradePrice, ACTIVITY_TYPE_MEMBER_GRADE, null);
+        }else if(memberGradePrice != null){
+            return UniteMarkeingtRecalculateBo.create(memberGradePrice, ACTIVITY_TYPE_MEMBER_GRADE, null);
+        }else if(reducePrice != null){
+            return UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
         }
 
         return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
