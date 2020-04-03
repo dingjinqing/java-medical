@@ -41,6 +41,4 @@ public class WxMaLiveRoomInfo implements Serializable {
 
 	private List<WxMaLiveRoomInfoGoods> goods;
 
-	private Integer total;
-
 }

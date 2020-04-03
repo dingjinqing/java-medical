@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.util.json.WxGsonBuilder;
 import me.chanjar.weixin.open.bean.result.WxOpenResult;
 
@@ -18,6 +19,7 @@ import me.chanjar.weixin.open.bean.result.WxOpenResult;
 @Getter
 @Setter
 @ToString
+@Slf4j
 public class WxMaLiveInfoResult extends WxOpenResult {
 
 	/**
@@ -27,8 +29,11 @@ public class WxMaLiveInfoResult extends WxOpenResult {
 
 	@SerializedName("room_info")
 	private List<WxMaLiveRoomInfo> roomInfo;
+	
+	private Integer total;
 
 	public static WxMaLiveInfoResult fromJson(String json) {
+		log.info(json);
 		return WxGsonBuilder.create().fromJson(json, WxMaLiveInfoResult.class);
 	}
 }

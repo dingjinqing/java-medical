@@ -72,7 +72,9 @@ public class GoodsVpuExcelImportModel {
     /**默认发货地*/
     @ExcelColumn(columnIndex = 16, columnName = "vpu.import.goods.deliver.place")
     private String deliverPlace;
-
+    /**商品条码*/
+    @ExcelColumn(columnIndex = 17,columnName = "vpu.import.goods.prd.codes")
+    private String prdCodes;
     /**
      * 创建示例数据
      * @return
@@ -96,6 +98,7 @@ public class GoodsVpuExcelImportModel {
         model.setGoodsImgsStr("https://ss1.bdstatic.com/a.jpg;https://ss1.bdstatic.com/b.jpg");
         model.setGoodsDesc("<p style='background-color:red;'>不许脚本文件，使用行内样式，不许媒体标签，只用body内部标签</p><img url='https://ss1.bdstatic.com/a.jpg'/>");
         model.setDeliverPlace("Vpu");
+        model.setPrdCodes("XXXX");
         return model;
     }
 }
