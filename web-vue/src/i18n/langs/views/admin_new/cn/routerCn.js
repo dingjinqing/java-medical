@@ -380,5 +380,7 @@ export const cn = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['技师管理', '排班配置'],
   // 门店管理 门店服务配置
-  store_service_config: ['门店管理', '门店服务配置']
+  store_service_config: ['门店管理', '门店服务配置'],
+  // 门店公告
+  store_announcement: ['门店管理', '门店公告']
 }

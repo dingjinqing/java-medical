@@ -166,6 +166,12 @@ export default {
       }, {
         value: '2',
         label: this.$t('programVersion.goodVersion')
+      }, {
+        value: '3',
+        label: this.$t('programVersion.ordinaryLiveVersion')
+      }, {
+        value: '4',
+        label: this.$t('programVersion.goodLiveVersion')
       }],
       operationData: this.$t('programVersion.operationData'),
       currentPage: 1,

@@ -1053,17 +1053,14 @@ public class MpAuthShopService extends MainBaseService {
     }
 
     /**
-     * 	获得小程序发版版本  1 正常版本 2 好物推荐版本
+     * 	获得小程序发版版本  1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
      * @param appId
      * @return
      */
 	public Byte getMpPackageVersion(String appId) {
-		MaWxPlusInListInner plugin = getPlugin(appId);
-		if(plugin!=null&&plugin.getStatus().equals("2")) {
-			return 2;
-		}
-		return 1;
-
+		Byte plugin = getPlugin(appId);
+		logger().info("小程序：{}的版本为：{}", appId, plugin);
+		return plugin;
 	}
 
 	/**
@@ -1071,7 +1068,7 @@ public class MpAuthShopService extends MainBaseService {
 	 * @param appId
 	 * @return
 	 */
-	public MaWxPlusInListInner getPlugin(String appId) {
+	public Byte getPlugin(String appId) {
 		WxOpenAccountService service =open.getMaExtService();
     	Map<String, String> map=new HashMap<String, String>(0);
     	map.put("action", "list");
@@ -1082,16 +1079,36 @@ public class MpAuthShopService extends MainBaseService {
 			e.printStackTrace();
 		}
     	//好物圈的appId
-    	appId="wx56c8f077de74b07c";
+		String haoWu = "wx56c8f077de74b07c";
+		//直播的appId
+		String live = "wx2b03c6e691cd7370";
+		boolean hasGoodsShipping=false;
+		boolean hasLive=false;
     	if(plugInManage.getErrcode().equals("0")&&plugInManage.getErrmsg().equals("ok")) {
     		 List<MaWxPlusInListInner> pluginList = plugInManage.getPluginList();
     		for(MaWxPlusInListInner inner:pluginList) {
-    			if(inner.getAppid().equals(appId)) {
-    				return inner;
+				if (inner.getAppid().equals(haoWu) && inner.getStatus().equals("2")) {
+					hasGoodsShipping=true;
+					logger().info("小程序：{}，有好物圈权限",appId);
+    				continue;
+    			}
+				if (inner.getAppid().equals(live) && inner.getStatus().equals("2")) {
+					boolean checkHasLive = checkHasLive(getAuthShopByAppId(appId));
+					if(checkHasLive) {
+						logger().info("小程序：{}，有直播权限",appId);
+						hasLive=true;						
+					}
     			}
     		}
     	}
-		return null;
+    	if(hasGoodsShipping&&hasLive) {
+    		return 4;
+    	}if(hasLive) {
+    		return 3;
+    	}if(hasGoodsShipping) {
+    		return 2;
+    	}
+		return 1;
 	}
 
 

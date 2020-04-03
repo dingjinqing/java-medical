@@ -114,6 +114,8 @@ router.beforeEach((to, from, next) => {
   }
   console.log(to)
   console.log(lang)
-  loadLanguageAsync(lang).then(() => next())
+  loadLanguageAsync(lang).then(() => {
+    next()
+  })
 })
 export default router
