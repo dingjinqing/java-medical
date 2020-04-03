@@ -38,6 +38,8 @@ public class MpVersionService extends MainBaseService {
 
 	public static final Byte PACK_VERSION_NORMAL = 1;
 	public static final Byte PACK_VERSION_PLUGIN = 2;
+	public static final Byte PACK_VERSION_NORMAL_LIVE = 3;
+	public static final Byte PACK_VERSION_PLUGIN_LIVE = 4;
 	public static final Byte NOT_IN_USE = 0;
 	public static final Byte IN_USE = 1;
 
@@ -85,10 +87,10 @@ public class MpVersionService extends MainBaseService {
 	}
 
 	/**
-	 * 得到最新版本信息，分为：1 正常版本 2 好物推荐版本
+	 * 得到最新版本信息，分为：1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
 	 * 
 	 * @param appId          小程序appId，不为空时，查询小程序的使用版本
-	 * @param packageVersion 插件版本标识：1 正常版本 2 好物推荐版本
+	 * @param packageVersion 插件版本标识：1 正常版本 2 好物推荐版本 3 直播普通 4 直播好物
 	 * @return
 	 */
 	public MpVersionRecord getCurrentUseVersion(String appId, Byte packageVersion) {
