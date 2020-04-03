@@ -2218,7 +2218,7 @@ public class MemberCardService extends ShopBaseService {
             //普通卡 只能拥有一张
             if(userHasGotNumber > 0){
                 vo.setStatus((byte)1);
-            }else{
+            }else if(vo.getStatus() != 3 && vo.getStatus() != 2){
                 //有效，可以领取
                 vo.setStatus((byte)-1);
             }
