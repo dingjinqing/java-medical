@@ -30,12 +30,33 @@
 
         </el-table-column>
         <el-table-column
+          prop="grade"
+          label="等级"
+          align="center"
+          v-if="cardType===2"
+        >
+
+        </el-table-column>
+        <el-table-column
           label="有效期"
           align="center"
           prop="discountInputVal"
+          v-if="cardType!==2"
         >
           <template slot-scope="scope">
             {{scope.row.expiredType === 0?`${scope.row.startTime}-${scope.row.endTime}`:scope.row.expiredType === 1?(`自领取之日起${scope.row.receiveDay}${scope.row.dateType===0?'日':scope.row.dateType===1?'周':'月'}内有效`):'永久有效'}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="升级条件"
+          align="center"
+          prop="discountInputVal"
+          v-if="cardType===2"
+        >
+          <template slot-scope="scope">
+            {{scope.row.gradeConditionJson.gradeScore?`累计${scope.row.gradeConditionJson.gradeScore}积分`:''}}
+            {{scope.row.gradeConditionJson.gradeScore&&scope.row.gradeConditionJson.gradeMoney?'或':''}}
+            {{scope.row.gradeConditionJson.gradeMoney?`消费${scope.row.gradeConditionJson.gradeMoney}元`:''}}
           </template>
         </el-table-column>
         <el-table-column
@@ -68,7 +89,17 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="goodsName"
+          prop="haveCardUser"
+          label="已领取卡用户数"
+          align="center"
+          width="200"
+          :render-header="renderHeaderMethodUser"
+          v-if="cardType===1"
+        >
+
+        </el-table-column>
+        <el-table-column
+          prop="haveReceivedNum"
           label="已领取卡数量"
           align="center"
           width="200"
@@ -77,7 +108,7 @@
 
         </el-table-column>
         <el-table-column
-          prop="goodsName"
+          prop="haveNormalNum"
           label="可正常使用卡数量"
           align="center"
           width="200"
@@ -178,6 +209,9 @@ export default {
           res.content.dataList.forEach((item, index) => {
             this.dealWithCardBehavior(item) // 处理权益
             this.dealWithReceiveConditions(item) // 处理领取条件
+            Object.keys(item.cardUseStats).forEach((itemC, indexC) => {
+              item[itemC] = item.cardUseStats[itemC]
+            })
           })
           this.tableData = res.content.dataList
         }
@@ -252,6 +286,14 @@ export default {
       return h('span', {}, [
         h('span', {}, '可正常使用卡数量'),
         h('el-popover', { props: { placement: 'top-start', width: '230', trigger: 'hover', content: '用户下单时可立即使用的会员卡数量(不包括未激活)' } }, [
+          h('span', { slot: 'reference', class: 'el-icon-question' }, '')
+        ])
+      ])
+    },
+    renderHeaderMethodUser (h, { column }) {
+      return h('span', {}, [
+        h('span', {}, '已领取卡用户数'),
+        h('el-popover', { props: { placement: 'top-start', width: '230', trigger: 'hover', content: '领取卡用户数量' } }, [
           h('span', { slot: 'reference', class: 'el-icon-question' }, '')
         ])
       ])
