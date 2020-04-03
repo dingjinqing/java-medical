@@ -578,3 +578,19 @@ page{
   text-align: center;
   padding-bottom: 100rpx;
 }
+.spec-footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background: #fff;
+  z-index: 2;
+  overflow-y: hidden;
+  height: 100rpx;
+  display: flex;
+}
+.spec-footer .footer_flex_view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

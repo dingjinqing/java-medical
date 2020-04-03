@@ -52,7 +52,7 @@
           >{{$t('pageSetUp.notAdd')}}</el-radio>
           <div
             class="marginHeight"
-            v-if="ruleForm.show_margin==='1'"
+            v-if="ruleForm.show_margin===1"
           >
             <span
               :class="moduleHeight"
