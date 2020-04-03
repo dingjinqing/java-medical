@@ -850,10 +850,20 @@ public class CouponGiveService extends ShopBaseService {
         return couponSn;
     }
 
-    public void sendVoucher(Integer userId, List<Integer> couponIds, Integer giveId, Integer source, Byte isContinue) {
-        for (Integer id : couponIds) {
-            // TODO 批量发放优惠券给会员
-        }
+    public void sendVoucher(Integer userId, List<Integer> couponIds,Byte source) {
+    	logger().info("发送优惠券");
+    	String[] couponArray = new String[couponIds.size()];
+    	for(int i = 0;i<couponIds.size();i++) {
+    		couponArray[i] = String.valueOf(couponIds.get(i));
+    	}
+    	CouponGiveQueueParam param = new CouponGiveQueueParam(
+    				Arrays.<Integer>asList(userId),
+    				NumberUtils.INTEGER_ZERO,
+    				couponArray,
+    				NumberUtils.BYTE_ONE,
+    				source
+    			);
+    	handlerCouponGive(param);
     }
 
     /**
