@@ -62,6 +62,25 @@ public final class DateUtil {
         LocalDateTime localDateTime = convertLocalDate(date);
         return  localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
+    /**
+     * 转换日期格式输出
+     * @param format
+     * @param date
+     * @return
+     */
+    public static String dateFormat(String format, LocalDate date) {
+        return  date.format(DateTimeFormatter.ofPattern(format));
+    }
+    /**
+     * 日期类型转换
+     * @param source
+     * @return localDate
+     */
+    public static LocalDate convert(Date source) {
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Instant instant = source.toInstant();
+        return  instant.atZone(defaultZoneId).toLocalDate();
+    }
 
 	/**
 	 * Date 转为 LocalDateTime

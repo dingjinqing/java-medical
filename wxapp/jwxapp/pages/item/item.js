@@ -705,6 +705,7 @@ global.wxPage({
             ? lineMaxPrice
             : `${lineMinPrice}~${lineMaxPrice}`,
         singleRealPrice: realMinPrice,
+        singleRealMaxPrice:realMaxPrice,
         singleLinePrice: lineMaxPrice
       }
     }

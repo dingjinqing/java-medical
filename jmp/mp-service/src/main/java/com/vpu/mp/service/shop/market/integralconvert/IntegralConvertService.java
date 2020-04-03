@@ -578,7 +578,7 @@ public class IntegralConvertService extends ShopBaseService {
             .from(INTEGRAL_MALL_DEFINE)
             .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))
             .fetchOneInto(Integer.class);
-        String pathParam = "integralGoodsId="+ goodsId +"&invite_id=";
+        String pathParam = "intGId="+ goodsId +"&invId=";
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INTEGRAL_ITEM_INFO, pathParam);
         ShareQrCodeVo share =new ShareQrCodeVo();
         share.setImageUrl(imageUrl);

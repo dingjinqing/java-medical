@@ -124,6 +124,8 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 基础配置  交易配置
   pay: ['Basic configuration', 'Pay Configuration'],
+  // 基础配置  交易配置 服务条款配置
+  termsService: ['Basic configuration', 'Pay Configuration', 'Terms of service configuration'],
   // 基础配置  店铺权限
   child_config: ['Basic configuration', 'Shop authority'],
   // 基础配置  模板消息
@@ -542,5 +544,7 @@ export const en = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['Technician management', 'Shift configuration'],
   // 门店管理 门店服务配置
-  store_service_config: ['Store management', 'Store Service Configuration']
+  store_service_config: ['Store management', 'Store Service Configuration'],
+  // 门店公告
+  store_announcement: ['Store Management', 'Store Announcement']
 }

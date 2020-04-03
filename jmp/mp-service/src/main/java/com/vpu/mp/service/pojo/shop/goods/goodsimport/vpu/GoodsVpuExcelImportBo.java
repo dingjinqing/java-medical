@@ -48,5 +48,6 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
         goodsImgsStr = m.getGoodsImgsStr();
         goodsDesc = m.getGoodsDesc();
         deliverPlace = m.getDeliverPlace();
+        prdCodes = m.getPrdCodes();
     }
 }

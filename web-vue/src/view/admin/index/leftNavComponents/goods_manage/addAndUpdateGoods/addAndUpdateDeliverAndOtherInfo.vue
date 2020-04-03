@@ -83,6 +83,7 @@
         </div>
       </el-form-item>
       <el-form-item
+        v-if="isDefaultPrd && goodsWeightCfg === 1"
         :label="$t('goodsAddEditInfo.deliverAndOtherInfo.goodsWeight')"
         prop="goodsWeight"
       >
@@ -92,7 +93,7 @@
           size="small"
           controls-position="right"
           :min="0"
-          :precision="1"
+          :precision="2"
           style="width:170px;"
         />
         <span>&nbsp;&nbsp;kg</span>
@@ -205,9 +206,18 @@
 import { getExclusiveCardList } from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 import { deliverTemplateNameListApi, getDeliverTemplateApi, getDeliverTemplateConfigApi } from '@/api/admin/goodsManage/deliverTemplate/deliverTemplate'
 // js工具函数导入
-import { isNumberBlank } from '@/util/typeUtil'
 import { format, parseDate } from '@/util/date'
 export default {
+  props: {
+    isDefaultPrd: {
+      type: Boolean,
+      default: false
+    },
+    goodsWeightCfg: {
+      type: Number,
+      default: 0
+    }
+  },
   data () {
     return {
       lang: '',
@@ -215,7 +225,7 @@ export default {
       goodsProductInfo: {
         deliverTemplateId: 0,
         deliverTemplateType: null,
-        goodsWeight: null,
+        goodsWeight: undefined,
         deliverPlace: null,
         isCardExclusive: false,
         saleType: 0,
@@ -495,7 +505,7 @@ export default {
         // 初始化运费模板
         this._initDeliverTemplateId(goodsData)
         // 初始化商品重量
-        this.goodsProductInfo.goodsWeight = goodsData.goodsWeight
+        this.goodsProductInfo.goodsWeight = goodsData.goodsWeight === null ? undefined : goodsData.goodsWeight
         // 初始化发货地
         this.goodsProductInfo.deliverPlace = goodsData.deliverPlace
         // 初始化专享会员卡
@@ -528,13 +538,13 @@ export default {
           return false
         }
       }
-      if (this.goodsProductInfo.deliverTemplateType === 1) {
-        if (isNumberBlank(this.goodsProductInfo.goodsWeight) || this.goodsProductInfo.goodsWeight === 0) {
-          this.$message.warning({ message: '请填写商品重量信息', type: 'warning' })
-          this.$refs.goodsWeight.focus()
-          return false
-        }
-      }
+      // if (this.goodsProductInfo.deliverTemplateType === 1) {
+      //   if (isNumberBlank(this.goodsProductInfo.goodsWeight) || this.goodsProductInfo.goodsWeight === 0) {
+      //     this.$message.warning({ message: '请填写商品重量信息', type: 'warning' })
+      //     this.$refs.goodsWeight.focus()
+      //     return false
+      //   }
+      // }
       return true
     },
     /* 获取传给后台的表单数据 */
@@ -548,7 +558,7 @@ export default {
         isOnSale: this.goodsProductInfo.saleType === 0 ? 1 : 0
       }
 
-      retData.goodsWeight = isNumberBlank(this.goodsProductInfo.goodsWeight) ? 0 : this.goodsProductInfo.goodsWeight
+      retData.goodsWeight = this.goodsProductInfo.goodsWeight
       retData.deliverPlace = this.goodsProductInfo.deliverPlace
 
       if (this.cardSelectedItems.length > 0) {

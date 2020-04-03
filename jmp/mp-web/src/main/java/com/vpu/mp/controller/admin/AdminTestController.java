@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.admin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.websocket.server.PathParam;
 
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.wechat.OpenPlatform;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfo;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGeKeywordResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetCategoryResult;
 import com.vpu.mp.service.wechat.bean.open.WxOpenMaSubScribeGetTemplateListResult;
@@ -219,6 +221,17 @@ public class AdminTestController extends AdminBaseController {
     public JsonResult testGroup() {
         saas.getShopApp(8984736).groupIntegration.updateState();
         return null;
+
+    }
+    
+    
+    @RequestMapping(value = "/api/admin/test/live")
+    public JsonResult testLive() {
+    	logger().info("直播列表导入测试");
+        //List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
+        saas.getShopApp(245547).liveService.getLiveList();
+        logger().info("直播列表导入测试结束");
+        return success();
 
     }
 }

@@ -100,12 +100,11 @@
         ></el-table-column>
 
         <el-table-column
-          prop="isDefault"
           :label="$t('groupBuy.isDefault')"
           align="center"
         >
           <template slot-scope="scope">
-            {{scope.row.isDefault === 1 ? '是':'否'}}
+            {{scope.row.status === '已成团' || scope.row.status === '拼团中' ? '是':'否'}}
           </template>
         </el-table-column>
 

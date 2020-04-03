@@ -63,7 +63,10 @@ public class NormalCardOpt extends CardOpt {
 		
 		//	设置激活
 		if(isActivate || !CardUtil.isNeedActive(card.getActivation())) {
+			
 			uCard.setActivationTime(DateUtil.getLocalDateTime());
+			//	开卡送优惠券
+			cardService.sendCoupon(userId,cardId);
 		}
 		
 		Integer result = userCardService.insertRow(uCard);
@@ -73,7 +76,7 @@ public class NormalCardOpt extends CardOpt {
 		userCardService.addUserCardScore(userId, card);
 		//	赠送卡余额记录
 		userCardService.addChargeMoney(card, uCard);
-		//	TODO 开卡送优惠券
+		
 		
 		//	发送模板消息
 		userCardService.sendScoreTemplateMsg(card);

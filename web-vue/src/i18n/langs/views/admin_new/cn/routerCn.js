@@ -106,6 +106,8 @@ export const cn = {
   base_manger: ['基础配置', '店铺基础配置'],
   // 基础配置  交易配置
   pay: ['基础配置', '交易配置'],
+  // 基础配置  交易配置 服务条款配置
+  termsService: ['基础配置', '交易配置', '服务条款配置'],
   // 基础配置  店铺权限
   child_config: ['基础配置', '店铺权限'],
   // 基础配置  模板消息
@@ -378,5 +380,7 @@ export const cn = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['技师管理', '排班配置'],
   // 门店管理 门店服务配置
-  store_service_config: ['门店管理', '门店服务配置']
+  store_service_config: ['门店管理', '门店服务配置'],
+  // 门店公告
+  store_announcement: ['门店管理', '门店公告']
 }

@@ -52,4 +52,17 @@ public class GoodsActivityInfo extends GoodsActivityBaseMp {
      * 分销价格
      */
     private BigDecimal distributionPrice;
+
+    /**
+     * 限时降价价格
+     */
+    private BigDecimal reducePricePrdPrice;
+    /**
+     * 活动限购数量
+     */
+    private Integer limitAmount;
+    /**
+     * 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
+     */
+    private Byte limitFlag;
 }

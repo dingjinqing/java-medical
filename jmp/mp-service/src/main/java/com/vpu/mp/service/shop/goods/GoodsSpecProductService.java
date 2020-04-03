@@ -176,12 +176,13 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 根据商品GoodsSn查询对应的sku
+     *
      * @param goodsSn
      * @return
      */
     public List<GoodsSpecProduct> selectByGoodsSn(String goodsSn) {
-        return db().select(GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,GOODS_SPEC_PRODUCT.PRD_COST_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,
-            GOODS_SPEC_PRODUCT.PRD_SN,GOODS_SPEC_PRODUCT.PRD_SPECS,GOODS_SPEC_PRODUCT.PRD_DESC)
+        return db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER,
+            GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC)
             .from(GOODS_SPEC_PRODUCT.innerJoin(GOODS).on(GOODS_SPEC_PRODUCT.GOODS_ID.eq(GOODS.GOODS_ID)))
             .where(GOODS.GOODS_SN.eq(goodsSn).and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchInto(GoodsSpecProduct.class);
@@ -241,10 +242,11 @@ public class GoodsSpecProductService extends ShopBaseService {
             .set(GOODS_SPEC_PRODUCT.PRD_COST_PRICE, item.getPrdCostPrice())
             .set(GOODS_SPEC_PRODUCT.PRD_NUMBER, item.getPrdNumber())
             .set(GOODS_SPEC_PRODUCT.PRD_SN, item.getPrdSn())
-            .set(GOODS_SPEC_PRODUCT.PRD_CODES,item.getPrdCodes())
+            .set(GOODS_SPEC_PRODUCT.PRD_CODES, item.getPrdCodes())
             .set(GOODS_SPEC_PRODUCT.PRD_SPECS, item.getPrdSpecs())
             .set(GOODS_SPEC_PRODUCT.PRD_DESC, item.getPrdDesc())
             .set(GOODS_SPEC_PRODUCT.PRD_IMG, item.getPrdImg())
+            .set(GOODS_SPEC_PRODUCT.PRD_WEIGHT, item.getPrdWeight())
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(item.getPrdId()))
             .getSQL();
         Query query = db.query(sql);
@@ -256,7 +258,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             item = goodsSpecProducts.get(i);
             addedCount++;
             batchStep = batchStep.bind(item.getPrdPrice(), item.getPrdMarketPrice(), item.getPrdCostPrice(), item.getPrdNumber(), item.getPrdSn(),
-                item.getPrdCodes(),item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(), item.getPrdId());
+                item.getPrdCodes(), item.getPrdSpecs(), item.getPrdDesc(), item.getPrdImg(),item.getPrdWeight(), item.getPrdId());
 
             if (addedCount == batchCount) {
                 batchStep.execute();
@@ -280,12 +282,12 @@ public class GoodsSpecProductService extends ShopBaseService {
             , GOODS_SPEC_PRODUCT_BAK.PRD_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_COST_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_NUMBER
             , GOODS_SPEC_PRODUCT_BAK.PRD_SN, GOODS_SPEC_PRODUCT_BAK.PRD_CODES, GOODS_SPEC_PRODUCT_BAK.PRD_SPECS, GOODS_SPEC_PRODUCT_BAK.PRD_DESC
             , GOODS_SPEC_PRODUCT_BAK.SELF_FLAG, GOODS_SPEC_PRODUCT_BAK.LOW_SHOP_PRICE, GOODS_SPEC_PRODUCT_BAK.PRD_IMG
-            , GOODS_SPEC_PRODUCT_BAK.PRICE_FLAG, GOODS_SPEC_PRODUCT_BAK.CREATE_TIME, GOODS_SPEC_PRODUCT_BAK.UPDATE_TIME)
+            , GOODS_SPEC_PRODUCT_BAK.PRICE_FLAG, GOODS_SPEC_PRODUCT_BAK.CREATE_TIME, GOODS_SPEC_PRODUCT_BAK.UPDATE_TIME, GOODS_SPEC_PRODUCT_BAK.PRD_WEIGHT)
             .select(db.select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.SHOP_ID, GOODS_SPEC_PRODUCT.GOODS_ID
                 , GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_NUMBER
                 , GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_CODES, GOODS_SPEC_PRODUCT.PRD_SPECS, GOODS_SPEC_PRODUCT.PRD_DESC
                 , GOODS_SPEC_PRODUCT.SELF_FLAG, GOODS_SPEC_PRODUCT.LOW_SHOP_PRICE, GOODS_SPEC_PRODUCT.PRD_IMG
-                , GOODS_SPEC_PRODUCT.PRICE_FLAG, GOODS_SPEC_PRODUCT.CREATE_TIME, GOODS_SPEC_PRODUCT.UPDATE_TIME).from(GOODS_SPEC_PRODUCT)
+                , GOODS_SPEC_PRODUCT.PRICE_FLAG, GOODS_SPEC_PRODUCT.CREATE_TIME, GOODS_SPEC_PRODUCT.UPDATE_TIME, GOODS_SPEC_PRODUCT.PRD_WEIGHT).from(GOODS_SPEC_PRODUCT)
                 .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodsId)).and(GOODS_SPEC_PRODUCT.PRD_ID.notIn(prdIds)))
             .execute();
 
@@ -332,6 +334,7 @@ public class GoodsSpecProductService extends ShopBaseService {
 
     /**
      * 商品excel导入-更新-更新对应规格信息
+     *
      * @param goodsSpecProducts
      */
     public void updateSpecPrdForGoodsImport(List<GoodsSpecProduct> goodsSpecProducts) {
@@ -341,10 +344,12 @@ public class GoodsSpecProductService extends ShopBaseService {
             record.setPrdId(goodsSpecProduct.getPrdId());
             record.setPrdPrice(goodsSpecProduct.getPrdPrice());
             record.setPrdMarketPrice(goodsSpecProduct.getPrdMarketPrice());
+            record.setPrdCodes(goodsSpecProduct.getPrdCodes());
             records.add(record);
         }
         db().batchUpdate(records).execute();
     }
+
     /**
      * 根据商品id集合查询出商品id和规格项的对应分组映射
      *
@@ -573,6 +578,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             .where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSns))
             .fetch(GOODS_SPEC_PRODUCT.PRD_SN);
     }
+
     /**
      * 查询传入的prdCodes集合中哪些是数据库中已经存在的
      *

@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class RebateRatioVo {
     /**
+     * 返利策略id
+     */
+    private Integer rebateId;
+    /**
      * 是否自购返利 0：关闭，1：开启
      */
     private Byte selfPurchase;

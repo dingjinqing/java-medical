@@ -23,6 +23,8 @@ export const cn = {
   operationData: ['批量上传并提交审核', '查看当前版本操作日志', '设置为当前使用版本'],
   ordinaryVersion: '普通版本',
   goodVersion: '好物版本',
+  ordinaryLiveVersion: '普通直播版本',
+  goodLiveVersion: '好物直播版本',
   currentPage: '每页20行记录，当前页面',
   totalPage: '总页数',
   totalRecord: '总记录数',

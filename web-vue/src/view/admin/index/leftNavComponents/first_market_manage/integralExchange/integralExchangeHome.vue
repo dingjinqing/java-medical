@@ -401,7 +401,7 @@ export default {
           this.activeName = 'sixth'
           break
         case 3: // 分享
-          integralshare({ activityId: row.id }).then(res => {
+          integralshare({ id: row.id }).then(res => {
             console.log(res)
             if (res.error === 0) {
               this.posterAddressImgUrl = res.content.imageUrl
