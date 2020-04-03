@@ -247,6 +247,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/store_manage/store/serviceConfig'
       )
+  },
+  // 门店公告
+  {
+    path: '/admin/home/main/store/storeAnnouncement',
+    name: 'store_announcement',
+    meta: {
+      crumbTitle: 'router.store_announcement',
+      meta: 'store_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/storeAnnouncement/storeAnnouncementList'
+      )
   }
 ]
 
