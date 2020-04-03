@@ -792,7 +792,7 @@ public class UserCardDaoService extends ShopBaseService{
 	 * 	查询已经发送出去的卡Sql
 	 */
 	private SelectConditionStep<Record1<Integer>> getSelectRecieveCardSql(Integer cardId) {
-		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
+		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID).as(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
 		SelectConditionStep<Record1<Integer>> query = db().selectCount().from(USER_CARD)
 			.leftJoin(subQuery.asTable("a")).on(DSL.field("a.card_no").eq(USER_CARD.CARD_NO))
 			.leftJoin(CARD_EXAMINE.asTable("b")).on(DSL.field("b.id").eq(DSL.field("a.id")))
