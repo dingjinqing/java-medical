@@ -124,6 +124,8 @@ export const en = {
   base_manger: ['Basic configuration', 'Shop Foundation Configuration'],
   // 基础配置  交易配置
   pay: ['Basic configuration', 'Pay Configuration'],
+  // 基础配置  交易配置 服务条款配置
+  termsService: ['Basic configuration', 'Pay Configuration', 'Terms of service configuration'],
   // 基础配置  店铺权限
   child_config: ['Basic configuration', 'Shop authority'],
   // 基础配置  模板消息

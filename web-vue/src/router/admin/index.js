@@ -857,6 +857,19 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/tradeConfigure'
           )
       },
+      // 基础配置 - 交易流程相关配置 - 编辑条款
+      {
+        path: '/admin/home/main/tradeConfigure/termsService',
+        name: 'termsService',
+        meta: {
+          crumbTitle: 'router.termsService',
+          meta: 'base_manger'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/tradeConfigure/termsService'
+          )
+      },
       // 基础配置/模板消息
       {
         path: '/admin/home/main/basicConfig/templateMessage',

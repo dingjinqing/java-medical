@@ -1193,8 +1193,8 @@ export default {
     },
     // 编辑条款跳转
     handleTerm () {
-      this.$route.push({
-        path: ''
+      this.$router.push({
+        path: '/admin/home/main/tradeConfigure/termsService'
       })
     },
     // 绑定物流公司
@@ -1441,6 +1441,7 @@ export default {
   .eidt-term {
     color: #409eff;
     margin: 0 10px;
+    cursor: pointer;
   }
 }
 </style>
