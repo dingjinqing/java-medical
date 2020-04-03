@@ -136,6 +136,7 @@ public class LiveGoodsService extends ShopBaseService {
 			goodsData.setGoodsId(parseGoodsId(goods.getUrl()));
 			LiveGoodsRecord roomGoodsInfo = getRoomGoodsInfo(roomId, liveId, goods.getUrl());
 			if(roomGoodsInfo!=null) {
+				goodsData.setId(roomGoodsInfo.getId());
 				int update = goodsData.update();
 				logger().info("房间：{}，更新商品id：{}，结果：{}",roomId,goodsData.getGoodsId(), update);
 				if(update>0) {
@@ -174,7 +175,7 @@ public class LiveGoodsService extends ShopBaseService {
 	public Integer parseGoodsId(String url) {
 		// pages/item/item?gid=204&aid=&atp=
 		if (StringUtils.isEmpty(url)) {
-			logger().info("没有2：{}", url);
+			logger().info("没有1：{}", url);
 			return 0;
 		}
 		boolean isHasIntegral = url.contains(QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getUrl());

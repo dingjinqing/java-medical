@@ -181,6 +181,7 @@ public class LiveService extends ShopBaseService {
 			record.setEndTime(new Timestamp(live.getEndTime()*1000));
 			LiveBroadcastRecord roomInfo = db().selectFrom(LIVE_BROADCAST).where(LIVE_BROADCAST.ROOM_ID.eq(live.getRoomid())).fetchAny();
 			if(roomInfo!=null) {
+				record.setId(roomInfo.getId());
 				int update = record.update();
 				logger().info("更新直播房间：{}，结果：{}",live.getRoomid(),update);
 				if(update>0) {
