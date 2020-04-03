@@ -116,9 +116,9 @@ var base = {
             }
           } else if (itemC.actCode === 'discount') {
             if (itemC.useConsumeRestrict === 1) {
-              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}￥${itemC.denomination}`
+              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}${itemC.denomination}${this.$t("components.decorate.fracture")}`
             } else {
-              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}￥${itemC.denomination}${this.$t("components.decorate.fracture")}`
+              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}${itemC.denomination}${this.$t("components.decorate.fracture")}`
             }
           }
           break
