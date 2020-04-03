@@ -69,9 +69,15 @@ public enum GoodsDataIIllegalEnum {
      */
     GOODS_NUM_FETCH_LIMIT_NUM((byte)13,"goods.num.fetch.limit.num"),
     /**
-     * 商品编号重复
+     * 商品条码已存在
      */
-    GOODS_PRD_CODES_EXIST((byte)14,"goods.prd.codes.exist");
+    GOODS_PRD_CODES_EXIST((byte)14,"goods.prd.codes.exist"),
+    /**
+     * 商品条码内部字重复, TODO:未国际化
+     * */
+    GOODS_PRD_CODES_INNER_REPEATED((byte)15,"goods.prd.codes.inner.repeated");
+
+
     private byte errorCode;
     private String errorMsg;
 
@@ -132,6 +138,16 @@ public enum GoodsDataIIllegalEnum {
                 break;
             case 12:
                 retEnum = GoodsDataIIllegalEnum.GOODS_PRD_SN_NOT_EXIT_WITH_GOODS_SN;
+                break;
+            case 13:
+                retEnum = GoodsDataIIllegalEnum.GOODS_NUM_FETCH_LIMIT_NUM;
+                break;
+            case 14:
+                retEnum = GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST;
+                break;
+            case 15:
+                retEnum = GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED;
+                break;
             default:
                 retEnum = null;
         }

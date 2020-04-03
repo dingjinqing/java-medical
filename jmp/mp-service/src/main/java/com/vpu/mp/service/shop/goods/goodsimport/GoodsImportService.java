@@ -14,7 +14,6 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
-import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
@@ -29,7 +28,6 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -126,9 +124,9 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
-                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-//            goodsVpuExcelImportMqCallback(mqParam);
+//            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
+//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+            goodsVpuExcelImportMqCallback(mqParam);
         }
         return code;
     }
@@ -200,8 +198,8 @@ public class GoodsImportService extends ShopBaseService {
             Integer goodsId = goodsImportOperate(getShopId(), value, successGoodsList, illegalGoodsList, isUpdate, batchId);
             goodsIds.add(goodsId);
         }
-        int successNum = readyToImportGoodsList.size() - illegalGoodsList.size();
-        importRecordService.updateGoodsImportSuccessNum(successNum, batchId);
+
+        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), batchId);
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
         goodsService.updateEs(goodsIds);
@@ -222,8 +220,16 @@ public class GoodsImportService extends ShopBaseService {
     public Integer goodsImportOperate(@RedisLockKeys Integer shopId, List<GoodsVpuExcelImportBo> goodsSkus, List<GoodsImportDetailRecord> successGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, boolean isUpdate, Integer batchId) {
         // 检查prdSn码是否会有内部自重复的
         List<? extends GoodsExcelImportBase> illegalPrdSnRepeated = getSkuPrdSnRepeated(goodsSkus);
-        List<GoodsImportDetailRecord> records = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnRepeated, GoodsDataIIllegalEnum.GOODS_PRD_SN_INNER_REPEATED, batchId);
-        illegalGoodsList.addAll(records);
+        List<GoodsImportDetailRecord> recordsPrdSn = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnRepeated, GoodsDataIIllegalEnum.GOODS_PRD_SN_INNER_REPEATED, batchId);
+        illegalGoodsList.addAll(recordsPrdSn);
+        // 无有效数据直接返回
+        if (goodsSkus.size() == 0) {
+            return null;
+        }
+        // 检查prdCodes码是否会有内部自重复的
+        List<? extends GoodsExcelImportBase> illegalPrdCodesRepeated = getSkuPrdCodesRepeated(goodsSkus);
+        List<GoodsImportDetailRecord> recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdCodesRepeated, GoodsDataIIllegalEnum.GOODS_PRD_CODES_INNER_REPEATED, batchId);
+        illegalGoodsList.addAll(recordsPrdCodes);
         // 无有效数据直接返回
         if (goodsSkus.size() == 0) {
             return null;
@@ -268,6 +274,26 @@ public class GoodsImportService extends ShopBaseService {
     }
 
     /**
+     * 剔除掉带插入的同一商品内部商品条码重复的数据，此方法会修改goodsSkus对象本身
+     *
+     * @param goodsSkus 同一个商品的sku的集合
+     * @return
+     */
+    private List<? extends GoodsExcelImportBase> getSkuPrdCodesRepeated(List<? extends GoodsExcelImportBase> goodsSkus) {
+        Map<String, List<GoodsExcelImportBase>> prdCodesMap = goodsSkus.stream().collect(Collectors.groupingBy(GoodsExcelImportBase::getPrdCodes));
+        List<GoodsExcelImportBase> returnList = new ArrayList<>(2);
+        goodsSkus.removeIf(bo -> {
+            if (prdCodesMap.get(bo.getPrdCodes()).size() > 1) {
+                returnList.addAll(prdCodesMap.get(bo.getPrdCodes()));
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return returnList;
+    }
+
+    /**
      * 判断规格编码是否在数据库中重复
      *
      * @param goodsSkus
@@ -281,6 +307,30 @@ public class GoodsImportService extends ShopBaseService {
         if (existPrdsn.size() != 0) {
             goodsSkus.removeIf(sku -> {
                 if (existPrdsn.contains(sku.getPrdSn())) {
+                    returnList.add(sku);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
+        return returnList;
+    }
+
+    /**
+     * 判断商品条码是否在数据库中重复
+     *
+     * @param goodsSkus
+     * @return
+     */
+    private List<? extends GoodsExcelImportBase> getSkuPrdCodesDbExist(List<? extends GoodsExcelImportBase> goodsSkus) {
+        List<GoodsExcelImportBase> returnList = new ArrayList<>();
+        List<String> prdCodesList = goodsSkus.stream().map(GoodsExcelImportBase::getPrdCodes).collect(Collectors.toList());
+
+        List<String> existPrdCodes = goodsService.goodsSpecProductService.findSkuPrdCodesExist(prdCodesList);
+        if (existPrdCodes.size() != 0) {
+            goodsSkus.removeIf(sku -> {
+                if (existPrdCodes.contains(sku.getPrdCodes())) {
                     returnList.add(sku);
                     return true;
                 } else {
@@ -348,6 +398,7 @@ public class GoodsImportService extends ShopBaseService {
                 prd.setPrdPrice(sku.getShopPrice());
                 prd.setPrdMarketPrice(sku.getMarketPrice());
                 prd.setPrdNumber(sku.getStock());
+                prd.setPrdCodes(sku.getPrdCodes());
                 return false;
             }
         });
@@ -410,30 +461,39 @@ public class GoodsImportService extends ShopBaseService {
     /**
      * 导入商品插入操作
      *
-     * @param goodsSkus
-     * @param successGoodsList
-     * @param illegalGoodsList
-     * @param batchId
-     * @return
+     * @param goodsSkus 待插入数据
+     * @param successGoodsList 成功数据集合
+     * @param illegalGoodsList 失败数据集合
+     * @param batchId 操作id
+     * @return 插入成功后产生的商品id
      */
     @SuppressWarnings("unchecked")
     private Integer goodsImportInsert(List<GoodsVpuExcelImportBo> goodsSkus, List<GoodsImportDetailRecord> successGoodsList, List<GoodsImportDetailRecord> illegalGoodsList, Integer batchId) {
         // 检查prdSn码数据库是否存在 只有在插入操做的时候需要这样检测，速度会稍微快一些
         List<? extends GoodsExcelImportBase> illegalPrdSnDbExist = getSkuPrdSnDbExist(goodsSkus);
-        List<GoodsImportDetailRecord> records = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnDbExist, GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST, batchId);
-        illegalGoodsList.addAll(records);
+        List<GoodsImportDetailRecord> recordsPrdSn = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdSnDbExist, GoodsDataIIllegalEnum.GOODS_PRD_SN_EXIST, batchId);
+        illegalGoodsList.addAll(recordsPrdSn);
         // 如果不存在可用sku直接退出
         if (goodsSkus.size() == 0) {
             return null;
         }
+        // 检查prdCodes码数据库是否存在 只有在插入操做的时候需要这样检测，速度会稍微快一些
+        List<? extends GoodsExcelImportBase> illegalPrdCodesDbExist = getSkuPrdCodesDbExist(goodsSkus);
+        List<GoodsImportDetailRecord> recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails((List<GoodsVpuExcelImportBo>) illegalPrdCodesDbExist, GoodsDataIIllegalEnum.GOODS_PRD_CODES_EXIST, batchId);
+        illegalGoodsList.addAll(recordsPrdCodes);
+        // 如果不存在可用sku直接退出
+        if (goodsSkus.size() == 0) {
+            return null;
+        }
+
         // 执行真正的插入操作
         GoodsDataIllegalEnumWrap codeWrap = goodsRealInsert(goodsSkus);
         if (!GoodsDataIIllegalEnum.GOODS_OK.equals(codeWrap.getIllegalEnum())) {
-            records = importRecordService.convertVpuExcelImportBosToImportDetails(goodsSkus, codeWrap.getIllegalEnum(), batchId);
-            illegalGoodsList.addAll(records);
+            recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails(goodsSkus, codeWrap.getIllegalEnum(), batchId);
+            illegalGoodsList.addAll(recordsPrdCodes);
         } else {
-            records = importRecordService.convertVpuExcelImportBosToImportDetails(goodsSkus, codeWrap.getIllegalEnum(), batchId, true);
-            successGoodsList.addAll(records);
+            recordsPrdCodes = importRecordService.convertVpuExcelImportBosToImportDetails(goodsSkus, codeWrap.getIllegalEnum(), batchId, true);
+            successGoodsList.addAll(recordsPrdCodes);
         }
         return codeWrap.getGoodsId();
     }
@@ -534,6 +594,7 @@ public class GoodsImportService extends ShopBaseService {
             product.setPrdMarketPrice(importBo.getMarketPrice());
             product.setPrdNumber(importBo.getStock());
             product.setPrdSn(importBo.getPrdSn());
+            product.setPrdCodes(importBo.getPrdCodes());
             if (importBo.getPrdDesc() != null) {
                 importBo.setPrdDesc(importBo.getPrdDesc().replaceAll("：", GoodsSpecProductService.PRD_VAL_DELIMITER).replaceAll("；", GoodsSpecProductService.PRD_DESC_DELIMITER));
             }
