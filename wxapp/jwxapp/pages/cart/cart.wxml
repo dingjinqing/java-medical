@@ -52,7 +52,7 @@
                   <movable-view damping="100" x="{{item.x}}" out-of-bounds="true" direction="horizontal" bindchange="handleTouchChange" bindtouchend="handleTouchEnd" data-index="{{index}}">
                     <view class="flex_goods">
                         <view class="checkbox_box">
-                            <text class="iconfont {{item.isChecked === 0 ? 'icondanxuanbiankuang':'icondanxuan'}}" style="color:{{comColor}}" bindtap="checkedToggle" data-cart_id="{{item.cartId}}" data-is_checked="{{item.isChecked}}"></text>
+                            <text class="iconfont {{item.isChecked === 0 ? 'icondanxuanbiankuang':'icondanxuan'}}" style="color:{{comColor}}" bindtap="checkedToggle" data-cart_id="{{item.cartId}}" data-is_checked="{{item.isChecked}}" data-buy_status="{{item.buyStatus}}"></text>
                         </view>
                         <view class="goods_item">
                             <view class="goods_img">
@@ -79,32 +79,27 @@
                                     </view>
                                 </view>
                                 <!-- 降价提示 -->
-                                <view wx:if="{{ item.cartActivityInfos.length > 0 }}">
-                                  <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
-                                    <view class="ng_goods_jiang" wx:if="{{ val.activityType == 22 }}" style="color:{{comColor}}">比加入时降了{{ parseFloat(item.originalPrice - val.memberPriceType).toFixed(2) }}元</view>
-                                    <view class="ng_goods_jiang" wx:if="{{ val.activityType == 6 || val.activityType == 18 }}" style="color:{{comColor}}">比加入时降了{{ parseFloat(item.originalPrice - val.firstSpecialPrice).toFixed(2) }}元</view>
-                                  </view>
-                                </view>
+                                <view class="ng_goods_jiang" wx:if="{{item.diffPrice}}" style="color:{{comColor}}">比加入时降了{{item.diffPrice}}元</view>
                                 <view class="goods_price">
-                                    <!-- 首单特惠 / 限时降价 / 会员价 标签 -->
                                     <view style="display: flex;">
-                                      <view wx:if="{{ item.cartActivityInfos.length > 0 }}">
+                                      <!-- 普通价格 -->
+                                      <view class="price" wx:if="{{item.priceActivityType == 0}}" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
+                                      <!-- 营销(首单特惠 / 限时降价 / 会员价)价格 -->
+                                      <view class="price" wx:if="{{item.priceActivityType != 0}}" style="color:{{comColor}}">
                                         <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
-                                          <view class='reduce_icon' wx:if="{{val.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
-                                          <view class='reduce_icon' wx:if="{{val.activityType == 6}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                                          <view style="display: flex;">
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 6}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 22}}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view>
+                                            <view wx:if="{{item.priceActivityType == val.activityType}}">￥{{val.productPrice}}</view>
+                                          </view>
                                         </view>
                                       </view>
-                                      <view class='reduce_icon' wx:if="{{item.isMemPrice == 1}}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view>
-                                      <view class="price" wx:if="{{item.isMemPrice == 1}}" style="color:{{comColor}}" wx:if="{{ val.activityType == 22 }}">￥{{val.memberPriceType}}</view>
-                                      <view wx:if="{{item.isMemPrice == 0}}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view>
-                                      <!-- <view wx:if="{{ item.cartActivityInfos.length == 0 }}" class="price" style="color:{{comColor}}">￥{{item.prdPrice}}</view> -->
                                     </view>
                                     <view class="num_cfg">
-                                      <!-- <view class="num_minus {{(item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum)) ? 'not_tap' : ''}}"  bindtap="{{item.limitBuyNum != null && (item.cartNumber <= item.limitBuyNum) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view> -->
-                                      <view class="num_minus {{(item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum)) || item.cartNumber == 1 ? 'not_tap' : ''}}"  bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="minus">-</view>
+                                      <view class="num_minus {{item.limitMinStyle == 1 ? 'not_tap' : ''}}"  bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-limit_min_style="{{item.limitMinStyle}}" data-type="minus">-</view>
                                       <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-limit_min="{{item.limitBuyNum}}" data-limit_max="{{item.limitMaxNum}}"></input>
-                                      <view class="num_plus {{(item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum)) ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view>
-                                      <!-- <view class="num_plus {{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? 'not_tap' : ''}}" bindtap="{{(item.limitMaxNum != null && (item.cartNumber >= item.limitMaxNum)) ? '' : 'goodsNumChange'}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-type="add">+</view> -->
+                                      <view class="num_plus {{item.limitMaxStyle == 1 ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-limit_max_style="{{item.limitMaxStyle}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>
@@ -173,7 +168,7 @@
                       <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">失效</view>
                       <view class="goods_item">
                           <view class="goods_img">
-                              <image src="{{imageUrl}}{{item.goodsImg}}"/>
+                              <image src="{{item.goodsImg}}"/>
                               <view class="invalid">
                                 失效商品
                               </view>
