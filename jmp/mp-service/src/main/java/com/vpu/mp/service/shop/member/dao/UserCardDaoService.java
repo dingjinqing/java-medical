@@ -757,11 +757,10 @@ public class UserCardDaoService extends ShopBaseService{
 	 * @param cardId 卡ID
 	 */
 	public int getCardNum(Integer cardId) {
-		// TODO 没有数据的情况
+	
 		logger().info("查询领取该卡的用户数量");
-		return getSelectRecieveCardSql(cardId)
-					.groupBy(USER_CARD.USER_ID)
-					.orderBy(USER_CARD.CREATE_TIME.desc())
+		return getSelectRecieveCardSql(cardId,true)
+					.orderBy(DSL.max(USER_CARD.CREATE_TIME).desc())
 					.fetchOne(0, int.class);
 	}
 
@@ -791,9 +790,17 @@ public class UserCardDaoService extends ShopBaseService{
 	/**
 	 * 	查询已经发送出去的卡Sql
 	 */
-	private SelectConditionStep<Record1<Integer>> getSelectRecieveCardSql(Integer cardId) {
+	private SelectConditionStep<Record2<Integer, Timestamp>> getSelectRecieveCardSql(Integer cardId){
+		return getSelectRecieveCardSql(cardId,false);
+	}
+	private SelectConditionStep<Record2<Integer, Timestamp>> getSelectRecieveCardSql(Integer cardId,boolean isDistinctUserId) {
 		Select<?> subQuery = db().select(DSL.max(CARD_EXAMINE.ID).as(CARD_EXAMINE.ID),CARD_EXAMINE.CARD_NO).from(CARD_EXAMINE).groupBy(CARD_EXAMINE.CARD_NO);
-		SelectConditionStep<Record1<Integer>> query = db().selectCount().from(USER_CARD)
+		
+		AggregateFunction<Integer> count = DSL.count();
+		if(isDistinctUserId) {
+			count = DSL.countDistinct(USER_CARD.USER_ID);
+		}		
+		SelectConditionStep<Record2<Integer, Timestamp>> query = db().select(count,DSL.max(USER_CARD.CREATE_TIME)).from(USER_CARD)
 			.leftJoin(subQuery.asTable("a")).on(DSL.field("a.card_no").eq(USER_CARD.CARD_NO))
 			.leftJoin(CARD_EXAMINE.asTable("b")).on(DSL.field("b.id").eq(DSL.field("a.id")))
 			.leftJoin(USER).on(USER.USER_ID.eq(USER_CARD.USER_ID))

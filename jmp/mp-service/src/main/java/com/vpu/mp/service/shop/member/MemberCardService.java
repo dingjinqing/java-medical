@@ -2704,15 +2704,10 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public CardUseStats getCardUseStatistic(MemberCardRecord card) {
 		return CardUseStats.builder()
-					.haveCardUser(0)
-					.haveReceivedNum(0)
-					.haveNormalNum(0)
+					.haveCardUser(userCardService.getCardUserNum(card.getId()))
+					.haveReceivedNum(userCardService.getReceiveCardNum(card.getId()))
+					.haveNormalNum(userCardService.getCanUseCardNum(card))
 					.build();
-//		return CardUseStats.builder()
-//					.haveCardUser(userCardService.getCardUserNum(card.getId()))
-//					.haveReceivedNum(userCardService.getReceiveCardNum(card.getId()))
-//					.haveNormalNum(userCardService.getCanUseCardNum(card))
-//					.build();
 	}
 	
 }
