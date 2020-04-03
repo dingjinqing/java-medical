@@ -173,7 +173,11 @@ public class WechatTaskService extends ShopBaseService {
                 return ;
             }
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
-            result.forEach(v->list.add(db().newRecord(MP_VISIT_PAGE,v)));
+            result.forEach(v->{
+                MpVisitPageRecord record = db().newRecord(MP_VISIT_PAGE,v);
+                record.setRefDate(date.toString());
+                list.add(record);
+            });
             db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
