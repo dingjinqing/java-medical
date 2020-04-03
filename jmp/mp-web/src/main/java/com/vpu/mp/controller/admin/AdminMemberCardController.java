@@ -82,8 +82,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/card/list")
 	public JsonResult getCardList(@RequestBody SearchCardParam param) {
-
-		logger().info(param.toString());
+		logger().info("获取会员卡列表");
 		PageResult<? extends BaseCardVo> result = shop().member.card.getCardList(param);
 		
 		return success(result);

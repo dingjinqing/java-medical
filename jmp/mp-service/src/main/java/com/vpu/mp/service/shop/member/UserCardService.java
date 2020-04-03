@@ -1931,10 +1931,41 @@ public class UserCardService extends ShopBaseService {
 		
 		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
 	}
-
+	
+	/**
+	 * 	删除用户卡
+	 */
 	public int delUserCard(DefaultCardParam param) {
 		return userCardDao.updateUserCardFlag(param);
 	}
 	
+	/**
+	 * 	获取已经领取该卡的用户数量
+	 * @param cardId
+	 */
+	public int getCardUserNum(Integer cardId) {
+		logger().info("获取已经领取该卡的用户数量");
+		int num = userCardDao.getCardNum(cardId);
+		return num;
+	}
+	
+	/**
+	 * 	获取该卡被领取的数量
+	 */
+	public int getReceiveCardNum(Integer cardId) {
+		logger().info("获取该卡被领取的数量");
+		int num = userCardDao.getCardUserList(cardId);
+		return num;
+	}
+	
+	
+	/**
+	 * 	获取可该卡可正常使用的数量
+	 */
+	public int getCanUseCardNum(MemberCardRecord card) {
+		logger().info("获取可该卡可正常使用的数量");
+		int num =userCardDao.getCanUseCardNum(card.getId(),CardUtil.isNeedActive(card.getActivation()));
+		return num;
+	}
 }
 

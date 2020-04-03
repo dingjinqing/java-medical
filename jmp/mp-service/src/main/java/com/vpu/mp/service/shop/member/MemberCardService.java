@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwi
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
+import com.vpu.mp.service.pojo.shop.member.card.show.CardUseStats;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -849,14 +850,19 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public PageResult<RankCardVo> getRankCardList(SearchCardParam param) {
 		logger().info("正在分页查询等级会员卡");
-		SelectSeekStep1<MemberCardRecord, String> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_GRADE)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
-				.orderBy(MEMBER_CARD.GRADE.desc());
-		PageResult<RankCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				RankCardVo.class);
+		PageResult<MemberCardRecord> pageResult = cardDao.selectCardList(param);
+		PageResult<RankCardVo> res = new PageResult<>();
+		List<RankCardVo> dataList = new ArrayList<>();
 		/** 执行转换 */
-		pageResult.dataList.stream().forEach(vo -> vo.changeJsonCfg());
-		return pageResult;
+		for(MemberCardRecord card: pageResult.dataList) {
+			RankCardVo vo = card.into(RankCardVo.class);
+			vo.changeJsonCfg();
+			// 会员卡使用数据
+			vo.setCardUseStats(getCardUseStatistic(card));
+			dataList.add(vo);
+		}
+		res.setDataList(dataList);
+		return res;
 	}
 
 	/**
@@ -865,23 +871,25 @@ public class MemberCardService extends ShopBaseService {
 	public PageResult<LimitNumCardVo> getLimitCardList(SearchCardParam param) {
 
 		logger().info("正在分页查询限次会员卡");
-
-		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_LIMIT)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
-				.orderBy(MEMBER_CARD.ID.desc());
-
-		PageResult<LimitNumCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				LimitNumCardVo.class);
-		/** 查询领取次数 */
+		PageResult<MemberCardRecord> pageResult = cardDao.selectCardList(param);
+		PageResult<LimitNumCardVo> res = new PageResult<LimitNumCardVo>();
+		res.setPage(pageResult.getPage());
+		List<LimitNumCardVo> dataList = new ArrayList<>();
+		// 查询领取次数
 		Map<Integer, Integer> intoMap = db().select(USER_CARD.CARD_ID, count()).from(USER_CARD)
 				.groupBy(USER_CARD.CARD_ID).fetch().intoMap(USER_CARD.CARD_ID, count());
-
-		for (LimitNumCardVo vo : pageResult.dataList) {
-			/** 设置未领取值 */
+		
+		for (MemberCardRecord card : pageResult.dataList) {
+			LimitNumCardVo vo = card.into(LimitNumCardVo.class);
+			// 设置未领取值
 			vo.setHasSend(intoMap.get(vo.getId()) == null ? 0 : intoMap.get(vo.getId()));
 			vo.changeJsonCfg();
+			// 会员卡使用数据
+			vo.setCardUseStats(getCardUseStatistic(card));
+			dataList.add(vo);
 		}
-		return pageResult;
+		res.setDataList(dataList);
+		return res;
 	}
 
 	/**
@@ -891,20 +899,14 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public PageResult<NormalCardVo> getNormalCardList(SearchCardParam param) {
 		logger().info("正在分页查询普通会员卡");
-		SelectSeekStep1<MemberCardRecord, Integer> select = db().selectFrom(MEMBER_CARD)
-				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
-				.orderBy(MEMBER_CARD.ID.desc());
-
-		PageResult<MemberCardRecord> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				MemberCardRecord.class);
+		PageResult<MemberCardRecord> pageResult = cardDao.selectCardList(param);
 		PageResult<NormalCardVo> res = new PageResult<NormalCardVo>();
 		res.setPage(pageResult.getPage());
-		List<NormalCardVo> tmp = new ArrayList<>();
+		List<NormalCardVo> dataList = new ArrayList<>();
 		/** 将json配置文件转化成合适的数据给前端 */
 		for (MemberCardRecord rec : pageResult.dataList) {
 			NormalCardVo vo = rec.into(NormalCardVo.class);
 			vo.changeJsonCfg();
-			
 			if(rec.getSendMoney()!= null && !StringUtils.isBlank(rec.getChargeMoney())) {
 				// 是否展示充值明细
 				Integer count = db().selectCount().from(CHARGE_MONEY).fetchOne(0, int.class);
@@ -917,9 +919,11 @@ public class MemberCardService extends ShopBaseService {
 			
 			// TODO 续费记录
 			
-			tmp.add(vo);	
+			// 会员卡使用统计数据
+			vo.setCardUseStats(getCardUseStatistic(rec));
+			dataList.add(vo);
 		}
-		res.setDataList(tmp);
+		res.setDataList(dataList);
 		return res;
 	}
 
@@ -933,16 +937,15 @@ public class MemberCardService extends ShopBaseService {
 
 		Byte cardType = param.getCardType();
 		PageResult<? extends BaseCardVo> result = null;
-		if (MCARD_TP_NORMAL.equals(cardType)) {
+		if (CardUtil.isNormalCard(cardType)) {
 			result = getNormalCardList(param);
-		} else if (MCARD_TP_LIMIT.equals(cardType)) {
+		} else if (CardUtil.isLimitCard(cardType)) {
 			result = getLimitCardList(param);
-		} else if (MCARD_TP_GRADE.equals(cardType)) {
+		} else if (CardUtil.isGradeCard(cardType)) {
 			result = getRankCardList(param);
 		}
 
 		if (result != null) {
-			
 			String avatar = saas().shop.getShopAvatarById(this.getShopId());
 			result.dataList.stream().forEach(item -> {
 				// 获取头像
@@ -952,7 +955,6 @@ public class MemberCardService extends ShopBaseService {
 					item.setBgImg(domainConfig.imageUrl(item.getBgImg()));
 				}
 			});
-
 		}
 		return result;
 	}
@@ -2695,6 +2697,17 @@ public class MemberCardService extends ShopBaseService {
 	public List<CardBasicVo> getCardById(List<Integer> param) {
 		return  db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.in(param))
 			.fetchInto(CardBasicVo.class);
+	}
+	
+	/**
+	 * 	获取会员卡使用统计使用数据
+	 */
+	public CardUseStats getCardUseStatistic(MemberCardRecord card) {
+		return CardUseStats.builder()
+					.haveCardUser(userCardService.getCardUserNum(card.getId()))
+					.haveReceivedNum(userCardService.getReceiveCardNum(card.getId()))
+					.haveNormalNum(userCardService.getCanUseCardNum(card))
+					.build();
 	}
 	
 }
