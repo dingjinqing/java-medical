@@ -87,7 +87,7 @@ global.wxComponent({
         case 10:
           obj.text = this.$t('components.decorate.advanceSale');
           break;
-        case 19:
+        case 20:
           if (item.actCode === 'voucher') {
             if (item.useConsumeRestrict === 1) {
               obj.text = `${this.$t('components.decorate.full')}${
@@ -102,20 +102,23 @@ global.wxComponent({
             if (item.useConsumeRestrict === 1) {
               obj.text = `${this.$t('components.decorate.full')}${
                 item.leastConsume
-              }${this.$t('components.decorate.hit')}￥${item.denomination}`;
+              }${this.$t('components.decorate.hit')}${item.denomination}${this.$t('components.decorate.fracture')}`;
             } else {
               obj.text = `${this.$t('components.decorate.coupon')}${this.$t(
                 'components.decorate.hit'
-              )}￥${item.denomination}${this.$t('components.decorate.fracture')}`;
+              )}${item.denomination}${this.$t('components.decorate.fracture')}`;
             }
           }
           break;
-        case 20:
-          obj.text = this.$t('components.decorate.fullReduction');
-          break;
         case 21:
-          obj.text = this.$t('components.decorate.fullMemberDiscount');
-          break;
+          obj.text = this.$t("components.decorate.fullReduction")
+          break
+        case 22:
+          obj.text = this.$t("components.decorate.fullMemberDiscount")
+          break
+        case 23:
+          obj.text = this.$t("components.decorate.membershipExclusive")
+          break
       }
       if (!obj.text) return;
       arr.push(obj);

@@ -44,6 +44,13 @@ global.wxPage({
     gift_id = options.gift_id ? options.gift_id : 0;
 
     console.log(cardNo, cardId)
+    console.log(this.data)
+    if (this.data.linColor) {
+      let linColor = this.data.linColor.slice(0, this.data.linColor.lastIndexOf(',')) + ',0.3)';
+      this.setData({
+        bgColor: linColor
+      })
+    }
   },
   requestCardInfo (cardNo, cardId, card_list) {
     let that = this
@@ -165,9 +172,9 @@ global.wxPage({
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
-    if (cardItem.expireType === 0){
+    if (cardItem.expireType === 0) {
       // 从领取之日起
-      let reDateType = ['日','周','月']
+      let reDateType = ['日', '周', '月']
       let i = cardItem.dateType === null ? 0 : Number(cardItem.dateType)
       return `自领取之日起${cardItem.receiveDay}${reDateType[i]}内有效`
 
@@ -495,5 +502,15 @@ global.wxPage({
     util.navigateTo({
       url: '/pages/usercardup/usercardup',
     })
+  },
+  // 点击优惠卷
+  viewCoupon (e) {
+    let coupon_id = e.currentTarget.dataset.coupon_id;
+    util.jumpLink('/pages/getCoupon/getCoupon?code=' + coupon_id, 'navigateTo')
+
+  },
+  to_cou_package (e) {
+    let pack_id = e.currentTarget.dataset.pack_id;
+    util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
   }
 })
