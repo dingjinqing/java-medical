@@ -1,6 +1,4 @@
 package com.vpu.mp.service.foundation.util;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;

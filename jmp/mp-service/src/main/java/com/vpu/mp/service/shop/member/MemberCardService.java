@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
@@ -2265,24 +2266,20 @@ public class MemberCardService extends ShopBaseService {
 			return;
 		}
 		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch())) {
-			return;
+			List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
+			if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
+				couponGiveService.sendVoucher(userId,sendCouponList,CouponSrcConstant.OPEN_CARD);
+			}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
+				// TODO  
+				logger().info("虚拟商品下单");
+				// cardOrder.createCardOrder()
+			}
 		}
-		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
-		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
-			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
-		}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
-			// TODO  
-			logger().info("虚拟商品下单");
-			// cardOrder.createCardOrder()
-		}
-		
 	}
 	
 	public List<String> getAllNoDeleteCardGrade(){
 		return gradeCardService.getAllNoDeleteCardGrade();
 	}
-	
-	
 	
 	/**
 	 * 获取处理背景色与背景图片
