@@ -17,7 +17,6 @@ public interface WxMaLiveService extends WxOpenMaMpHttpBase {
 	
 	default WxMaLiveInfoResult getLiveInfo(String appId,Integer start,Integer limit) throws WxErrorException {
 		JsonObject param = new JsonObject();
-		param.addProperty("appid", appId);
 		param.addProperty("start", start);
 		param.addProperty("limit", limit);
 		String json = post(appId,GET_LIVE_INFO, param.toString());
