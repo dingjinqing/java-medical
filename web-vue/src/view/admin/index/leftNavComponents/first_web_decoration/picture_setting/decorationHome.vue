@@ -80,7 +80,7 @@
           >
             <div
               class="decContent"
-              :style="pageSetData.bg_types===1?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:cover`:`background-color:${pageSetData.page_bg_color}`"
+              :style="pageSetData.bg_types===1?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:100% 100%`:`background-color:${pageSetData.page_bg_color}`"
             >
 
               <div
