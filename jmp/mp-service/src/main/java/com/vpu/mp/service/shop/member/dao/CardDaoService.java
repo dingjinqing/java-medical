@@ -18,6 +18,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.EXCHANG_COUNT_TYPE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectSeekStep2;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +62,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 
 import ch.qos.logback.classic.db.DBAppender;
 
@@ -784,5 +788,15 @@ public class CardDaoService extends ShopBaseService {
 			.where(MEMBER_CARD.ID.in(ids))
 			.fetchInto(CardBasicVo.class);
 	}
-	
+	/**
+	 * 	获取系统中未被删除的卡
+	 */
+	public PageResult<MemberCardRecord> selectCardList(SearchCardParam param) {
+		SelectSeekStep2<MemberCardRecord, String, Integer> select = db().selectFrom(MEMBER_CARD)
+				.where(MEMBER_CARD.CARD_TYPE.equal(param.getCardType())).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
+				.orderBy(MEMBER_CARD.GRADE.desc(),MEMBER_CARD.ID.desc());
+		return getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MemberCardRecord.class);
+	}
+
 }

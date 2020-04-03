@@ -14,12 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GoodsBrandRecord;
+import com.vpu.mp.db.shop.tables.records.LiveGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.SortRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.recommend.GoodsLabelsVo;
 import com.vpu.mp.service.pojo.shop.market.live.LiveRomeGoodListVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsBrandService;
 import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
+import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfoGoods;
 
 /**
  * 直播商品
@@ -108,5 +111,27 @@ public class LiveGoodsService extends ShopBaseService {
 			where.and(LIVE_GOODS.GOODS_ID.eq(goodsId));
 		}
 		return where.fetchAnyInto(Integer.class);
+	}
+	
+	
+	public void addRoomGoods(Integer liveId,Integer roomId,List<WxMaLiveRoomInfoGoods> goodsList ) {
+		for (WxMaLiveRoomInfoGoods goods : goodsList) {
+			LiveGoodsRecord goodsData = db().newRecord(LIVE_GOODS,goods);
+			goodsData.setLiveId(liveId);
+			goodsData.setRoomId(roomId);
+		}
+	}
+	
+	/**
+	 * 根据地址反找商品id
+	 * @param url
+	 * @return
+	 */
+	public Integer parseGoodsId(String url) {
+		String url2 = QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getUrl();
+		String url3 = QrCodeTypeEnum.DOWN_PAYMENT_INFO.getUrl();
+		
+		return null;
+		
 	}
 }

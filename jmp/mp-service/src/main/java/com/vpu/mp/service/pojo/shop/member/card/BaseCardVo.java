@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.member.card;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.show.CardUseStats;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 
 import lombok.Data;
@@ -92,6 +93,11 @@ public abstract class BaseCardVo {
 	 *	 是否展示续费记录
 	 */
 	protected Byte renewRecord = 0;
+	
+	/**
+	 * 	会员卡使用统计数据
+	 */
+	private CardUseStats cardUseStats;
 	public abstract void changeJsonCfg();
 
 }

@@ -173,7 +173,12 @@ public class WechatTaskService extends ShopBaseService {
                 return ;
             }
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
-            result.forEach(v->list.add(db().newRecord(MP_VISIT_PAGE,v)));
+            LocalDate localDate = DateUtil.convert(date);
+            result.forEach(v->{
+                MpVisitPageRecord record = db().newRecord(MP_VISIT_PAGE,v);
+                record.setRefDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT, localDate));
+                list.add(record);
+            });
             db().batchInsert(list).execute();
         } catch (WxErrorException e) {
             logger.error(CONTENT,e);
@@ -417,4 +422,5 @@ public class WechatTaskService extends ShopBaseService {
         WxGetWeAnalysService maService=open().getMaExtService();
         this.getDailyVisitTrend(service,date);
     }
+
 }

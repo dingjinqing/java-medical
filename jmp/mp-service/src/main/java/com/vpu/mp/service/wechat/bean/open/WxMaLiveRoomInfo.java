@@ -20,9 +20,8 @@ public class WxMaLiveRoomInfo implements Serializable {
 	private static final long serialVersionUID = 8430813682720980265L;
 	private String name;
 	private Integer roomid;
-	@SerializedName("coverImg")
-	private String cover_img;
-	private Integer selected;
+	@SerializedName("cover_img")
+	private String coverImg;
 
 	@SerializedName("live_status")
 	private Integer liveStatus;
@@ -40,7 +39,5 @@ public class WxMaLiveRoomInfo implements Serializable {
 	private String anchorImg;
 
 	private List<WxMaLiveRoomInfoGoods> goods;
-
-	private Integer total;
 
 }
