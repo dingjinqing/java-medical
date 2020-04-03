@@ -46,6 +46,12 @@
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
+  "plugins": {
+    "live-player-plugin": {
+      "version": "1.0.4",
+      "provider": "wx2b03c6e691cd7370"
+    }
+  },
   "permission": {
     "scope.userLocation": {
       "desc": "以便向您推荐距离您最近的门店！"
@@ -112,13 +118,7 @@
         "sharerebate/sharerebate",
         "livetransition/livetransition",
         "aftersaleorder/aftersaleorder"
-      ],
-      "plugins": {
-        "live-player-plugin": {
-          "version": "1.0.3",
-          "provider": "wx2b03c6e691cd7370"
-        }
-      }
+      ]
     }
   ],
   "sitemapLocation": "sitemap.json"

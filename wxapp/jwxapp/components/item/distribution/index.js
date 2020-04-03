@@ -18,7 +18,6 @@ global.wxComponent({
     },
     price:Number,
     goodsPrice:String
-    
   },
 
   /**
