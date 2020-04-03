@@ -68,7 +68,8 @@ global.wxPage({
     save_flag: 1,
     img_len: 0,
     image: false,
-    comm_img: []
+    comm_img: [],
+    mobile: util.getCache('mobile')
   },
 
   /**
@@ -108,8 +109,10 @@ global.wxPage({
     that.setData({
       user_block: 0,
       examine: examine,
-      distribution: distribution
+      distribution: distribution,
+      mobile: util.getCache('mobile')
     })
+    console.log(that.data.mobile)
     wx.showLoading({
       title: '加载中',
     })
@@ -622,6 +625,7 @@ global.wxPage({
       util.showModal("提示", "请填写真实姓名");
       return;
     }
+    console.log(user_info, this.data)
     if (user_info.mobile == '' && this.data.if_mobile == 1) {
       util.showModal("提示", "请授权手机号");
       return;
@@ -819,7 +823,7 @@ global.wxPage({
           that.setData({
             user_block: 1
           })
-        }, { cardNo: card_no, isSetting: 1, activateOption:user_info})
+        }, { cardNo: card_no, isSetting: 1, activateOption: user_info })
 
 
 
