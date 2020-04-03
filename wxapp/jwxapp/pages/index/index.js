@@ -19,8 +19,9 @@ global.wxPage({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
-    console.log(options);
+  onLoad (options) {
+    console.log(options, this.data);
+
     this._options = options;
     this._options.first_onload = 1;
     this.requestDecoratePageData(
@@ -29,6 +30,23 @@ global.wxPage({
       this.renderData.bind(this),
       true
     );
+    setTimeout(() => {
+      console.log(this.data.pageContent)
+      var pageCfg = this.data.pageContent.page_info.page_cfg;
+      var color = "#f5f5f5";
+      if (pageCfg) {
+        if (pageCfg.bg_types == 0) {
+          color = "background:" + pageCfg.page_bg_color;
+        } else if (pageCfg.bg_types == 1) {
+          color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
+        }
+      }
+      console.log(color)
+      this.setData({
+        color: color
+      })
+    }, 300);
+
     // 初始化收藏有礼
     this.renderCollectData()
     // 初始化开屏有礼
@@ -36,7 +54,7 @@ global.wxPage({
   },
 
   //  渲染装修模块
-  renderData(pageContent) {
+  renderData (pageContent) {
     console.log(pageContent);
 
     this.setData({
@@ -45,7 +63,7 @@ global.wxPage({
   },
 
   // 收藏有礼相关
-  renderCollectData() {
+  renderCollectData () {
     var _this = this
     util.api('/api/wxapp/collectGift/switch', function (res) {
       if (res.error == 0) {
@@ -58,7 +76,7 @@ global.wxPage({
     })
   },
 
-  collectCheck() {
+  collectCheck () {
     var _this = this;
     var now = new Date();
     var collectInfo = _this.data.collectContent;
@@ -106,21 +124,21 @@ global.wxPage({
   },
 
   // 收藏提示弹窗
-  bindShowCollectMp(e) {
+  bindShowCollectMp (e) {
     this.setData({
       show_collect_mp_tips: true
     });
   },
 
   // 奖励是否领取
-  closeCollectMp() {
+  closeCollectMp () {
     this.setData({
       collect_gift: 0
     })
   },
 
   // 开屏有礼
-  openGiftRequest() {
+  openGiftRequest () {
     util.api('/api/wxapp/enterpolitely/index', (res) => {
       if (res.error === 0 && res.content && res.content.awardType !== 0) {
         console.log(res, 'openGift')
@@ -140,7 +158,7 @@ global.wxPage({
       userId: util.getCache('user_id')
     })
   },
-  getAwardInfo(awardInfo) {
+  getAwardInfo (awardInfo) {
     const needParams = {
       0: null,
       1: ['couponView'],
@@ -210,7 +228,7 @@ global.wxPage({
   },
 
   // 过滤需要的参数
-  filterObj(obj, arr) {
+  filterObj (obj, arr) {
     console.log(obj, 'obj--arr', arr, 'arr')
 
     if (typeof obj !== "object" || !Array.isArray(arr)) {
