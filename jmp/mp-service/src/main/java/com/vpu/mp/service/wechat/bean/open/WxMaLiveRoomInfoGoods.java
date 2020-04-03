@@ -22,10 +22,17 @@ public class WxMaLiveRoomInfoGoods implements Serializable {
 	@SerializedName("cover_img")
 	private String coverImg;
 
-	@SerializedName("start_time")
 	private String url;
-
+	
+	/** price_type为2：最低价；为3：原价 */
 	private BigDecimal price;
+	
+	/** price_type为2：最高价；为3：现价 */
+	private BigDecimal price2;
+	
+	/** 1：一口价；2：价格区间 ；3：显示折扣价*/
+	@SerializedName("price_type")
+	private Byte priceType;
 
 	private String name;
 
