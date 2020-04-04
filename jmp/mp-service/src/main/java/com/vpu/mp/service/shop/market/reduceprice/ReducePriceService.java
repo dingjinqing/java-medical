@@ -594,4 +594,22 @@ public class ReducePriceService extends ShopBaseService {
         }
     }
 
+    /**
+     * 当前时间（今天）的活动时间段
+     * @param reducePriceId
+     * @return ret[0]开始时间 ret[1]结束时间
+     */
+    public Timestamp[] getCurrentPeriodTime(int reducePriceId){
+        ReducePriceRecord reducePriceRecord = getReducePriceRecord(reducePriceId);
+        Byte periodAction = reducePriceRecord.getPeriodAction();
+        if(!periodAction.equals(PERIOD_ACTION_NORMAL)){
+            Timestamp[] ret = new Timestamp[2];
+            String []periodString = reducePriceRecord.getPointTime().split("@");
+            ret[0] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
+            ret[1] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
+            return ret;
+        }
+        return null;
+    }
+
 }

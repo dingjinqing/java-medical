@@ -23,15 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectHavingStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -516,13 +508,17 @@ public class OrderGoodsService extends ShopBaseService{
      * @return
      */
 	public int getBuyGoodsNumberByReducePriceId(int userId,int reducePriceId,int prdId){
-	    return db().select(DSL.sum(TABLE.GOODS_NUMBER)).from(TABLE).leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID)).
+        Timestamp[] periodTime = saas.getShopApp(getShopId()).reducePrice.getCurrentPeriodTime(reducePriceId);
+        SelectConditionStep<? extends Record> select = db().select(DSL.sum(TABLE.GOODS_NUMBER)).from(TABLE).leftJoin(ORDER_INFO).on(TABLE.ORDER_ID.eq(ORDER_INFO.ORDER_ID)).
             where(TABLE.ACTIVITY_ID.eq(reducePriceId)).
             and(ORDER_INFO.USER_ID.eq(userId)).
             and(TABLE.PRODUCT_ID.eq(prdId)).
             and(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).
             and(TABLE.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE)).
-            and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)).
-            fetchAnyInto(int.class);
+            and(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY));
+	    if(periodTime != null){
+            select.and(ORDER_INFO.CREATE_TIME.ge(periodTime[0])).and(ORDER_INFO.CREATE_TIME.le(periodTime[1]));
+        }
+        return select.fetchAnyInto(int.class);
     }
 }
