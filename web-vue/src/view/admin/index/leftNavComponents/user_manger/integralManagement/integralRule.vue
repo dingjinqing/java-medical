@@ -271,7 +271,6 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
-              @change="checkLoginRight"
             >
             </el-switch>
             <span style="display:inline-block;margin:0 20px">{{form.loginScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
@@ -302,6 +301,7 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
+              @change="checkSignRight"
             >
             </el-switch>
             <span style="display:inline-block;margin:0 20px">{{form.signInScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
@@ -873,11 +873,11 @@ export default {
       }
     },
     // 检查登录积分权限
-    checkLoginRight () {
-      if (this.form.loginScore === 'on') {
-        this.form.loginScore = 'off'
+    checkSignRight () {
+      if (this.form.signInScore === 'on') {
+        this.form.signInScore = 'off'
         this.handleToJudgeTwoDiction('score', 'sign_score').then(res => {
-          this.form.loginScore = res ? 'on' : 'off'
+          this.form.signInScore = res ? 'on' : 'off'
         })
       }
     }
