@@ -725,7 +725,7 @@ export default {
                 console.log(JSON.parse(JSON.stringify(res)))
                 this.$message.success('添加成功！')
                 this.$router.push({
-                  name: 'share_polite'
+                  name: 'share_award'
                 })
               } else {
                 this.$message.error(res.message)
@@ -739,7 +739,7 @@ export default {
                 console.log(JSON.parse(JSON.stringify(res)))
                 this.$message.success('更新成功！')
                 this.$router.push({
-                  name: 'share_polite'
+                  name: 'share_award'
                 })
               } else {
                 this.$message.error(res.message)
