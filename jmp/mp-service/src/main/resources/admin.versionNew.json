@@ -67,8 +67,8 @@
 		"enName": "analysis_basic",
 		"topIndex": 0,
 		"includeApi": [
-      "/api/admin/overview/analysis/*"
-    ]
+			"/api/admin/overview/analysis/*"
+		]
 	},
 	{
 		"vsName": "portrait_user",
@@ -76,8 +76,8 @@
 		"enName": "analysis_portrait",
 		"topIndex": 0,
 		"includeApi": [
-      "/api/admin/summary/portrait/*"
-    ]
+			"/api/admin/summary/portrait/*"
+		]
 	},
 	{
 		"vsName": "second_view",
@@ -85,8 +85,8 @@
 		"enName": "analysis_visit",
 		"topIndex": 0,
 		"includeApi": [
-      "/api/admin/summary/visit/*"
-    ]
+			"/api/admin/summary/visit/*"
+		]
 	},
 	{
 		"vsName": "visit_source",
@@ -94,8 +94,8 @@
 		"enName": "analysis_visit_source",
 		"topIndex": 0,
 		"includeApi": [
-      "/api/admin/summary/source/*"
-    ]
+			"/api/admin/summary/source/*"
+		]
 	},
 	{
 		"vsName": "analysis_visit_source",
@@ -103,8 +103,8 @@
 		"enName": "trades_summary",
 		"topIndex": 0,
 		"includeApi": [
-      "/api/admin/transactionstatistics/*"
-    ]
+			"/api/admin/transactionstatistics/*"
+		]
 	},
 	{
 		"vsName": "sort",
@@ -112,8 +112,8 @@
 		"enName": "sort",
 		"topIndex": 1,
 		"includeApi": [
-      "/api/admin/goods/sort/*"
-    ]
+			"/api/admin/goods/sort/*"
+		]
 	},
 	{
 		"vsName": "m_member_card",
@@ -218,10 +218,8 @@
 		"enName": "user_tag",
 		"topIndex": 3,
 		"includeApi": [
-			"/api/admin/tag/list",
-			"/api/admin/tag/update",
-			"/api/admin/tag/delete",
-			"/api/admin/tag/add"
+			"/api/admin/tag/*",
+			"/api/admin/common/tag/list"
 		]
 	},
 	{
@@ -244,15 +242,17 @@
 		"topIndex": 4,
 		"enName": "full_cut",
 		"includeApi": [
-      "/api/admin/market/fullcut/*"
-    ]
+			"/api/admin/market/fullcut/*"
+		]
 	},
 	{
 		"vsName": "pin_group",
 		"name": "拼团",
 		"enName": "pin_group",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/admin/market/groupbuy/*"
+		]
 	},
 	{
 		"vsName": "bargain",
@@ -260,8 +260,8 @@
 		"enName": "kanjia",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/bargain/*"
-    ]
+			"/api/admin/market/bargain/*"
+		]
 	},
 	{
 		"vsName": "form_decoration",
@@ -269,29 +269,35 @@
 		"enName": "form_decoration",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/formstatistics/*"
-    ]
+			"/api/admin/formstatistics/*"
+		]
 	},
 	{
 		"vsName": "distribution",
 		"name": "分销",
 		"enName": "distribution_info",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/distribution/*"
+		]
 	},
 	{
 		"vsName": "message_template",
 		"name": "消息推送",
 		"enName": "business_template_message",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/message/template/*"
+		]
 	},
 	{
 		"vsName": "pay_reward",
 		"name": "支付有礼",
 		"enName": "payreward",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/payaward/*"
+		]
 	},
 	{
 		"vsName": "coupon_grant",
@@ -299,15 +305,17 @@
 		"enName": "market_act_give",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/coupon/give/*"
-    ]
+			"/api/admin/coupon/give/*"
+		]
 	},
 	{
 		"vsName": "activity_reward",
 		"name": "活动有礼",
 		"enName": "market_gifted",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/coopen/list/*"
+		]
 	},
 	{
 		"vsName": "integral_goods",
@@ -315,8 +323,8 @@
 		"enName": "integral_convert",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/integral/convert/*"
-    ]
+			"/api/admin/market/integral/convert/*"
+		]
 	},
 	{
 		"vsName": "reduce_price",
@@ -324,8 +332,8 @@
 		"enName": "reduce_price",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/reduceprice/*"
-    ]
+			"/api/admin/market/reduceprice/*"
+		]
 	},
 	{
 		"vsName": "seckill_goods",
@@ -333,15 +341,17 @@
 		"enName": "sec_kill",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/seckill/*"
-    ]
+			"/api/admin/market/seckill/*"
+		]
 	},
 	{
 		"vsName": "lottery",
 		"name": "抽奖",
 		"enName": "lottery_activity",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/lottery/*"
+		]
 	},
 	{
 		"vsName": "purchase_price",
@@ -349,8 +359,8 @@
 		"enName": "purchase_price",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/increasepurchase/*"
-    ]
+			"/api/admin/market/increasepurchase/*"
+		]
 	},
 	{
 		"vsName": "group_draw",
@@ -358,15 +368,17 @@
 		"enName": "group_draw",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/group_draw/*"
-    ]
+			"/api/admin/group_draw/*"
+		]
 	},
 	{
 		"vsName": "pin_integration",
 		"name": "组队瓜分积分",
 		"enName": "pin_integration",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/integration/*"
+		]
 	},
 	{
 		"vsName": "package_sale",
@@ -374,8 +386,8 @@
 		"enName": "package",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/packsale/*"
-    ]
+			"/api/admin/market/packsale/*"
+		]
 	},
 	{
 		"vsName": "pre_sale",
@@ -383,8 +395,8 @@
 		"enName": "presale",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/pre_sale/*"
-    ]
+			"/api/admin/market/pre_sale/*"
+		]
 	},
 	{
 		"vsName": "insteadpay",
@@ -392,9 +404,9 @@
 		"enName": "insteadpay",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/instead/pay/set",
-      "/api/admin/market/instead/pay/get"
-    ]
+			"/api/admin/market/instead/pay/set",
+			"/api/admin/market/instead/pay/get"
+		]
 	},
 	{
 		"vsName": "gift",
@@ -402,8 +414,8 @@
 		"enName": "gift",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/gift/*"
-    ]
+			"/api/admin/market/gift/*"
+		]
 	},
 	{
 		"vsName": "promote",
@@ -411,8 +423,8 @@
 		"enName": "promote",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/promote/*"
-    ]
+			"/api/admin/market/promote/*"
+		]
 	},
 	{
 		"vsName": "assess",
@@ -434,15 +446,17 @@
 		"enName": "coupon_package",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/couponpack/*"
-    ]
+			"/api/admin/market/couponpack/*"
+		]
 	},
 	{
 		"vsName": "comment_gift",
 		"name": "评价有礼",
 		"enName": "comment_gift",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/comment/award/*"
+		]
 	},
 	{
 		"vsName": "first_special",
@@ -450,22 +464,26 @@
 		"enName": "first_special",
 		"topIndex": 4,
 		"includeApi": [
-      "/api/admin/market/firstspecial/*"
-    ]
+			"/api/admin/market/firstspecial/*"
+		]
 	},
 	{
 		"vsName": "give_gift",
 		"name": "我要送礼",
 		"enName": "give_gift",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/marker/givegift/*"
+		]
 	},
 	{
 		"vsName": "share_award",
 		"name": "分享有礼",
 		"enName": "share_award",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/sharereward/*"
+		]
 	},
 	{
 		"vsName": "store_pay",
