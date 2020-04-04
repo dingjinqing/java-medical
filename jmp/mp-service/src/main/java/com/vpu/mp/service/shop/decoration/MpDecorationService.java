@@ -674,7 +674,14 @@ public class MpDecorationService extends ShopBaseService {
      * @throws IOException
      */
     private PageCfgVo convertPageCfgIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        return objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+        PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+        if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+            pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
+        }
+        if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+            pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
+        }
+        return pageCfg;
     }
 
     /**
