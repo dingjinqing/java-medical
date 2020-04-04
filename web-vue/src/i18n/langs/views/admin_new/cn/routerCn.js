@@ -132,7 +132,7 @@ export const cn = {
   // 营销管理 多人拼团 拼团退款失败订单
   pin_group_activityEffectData: ['营销管理', '多人拼团', '活动效果数据'],
   // 营销管理 砍价
-  bargain: ['营销管理', '砍价'],
+  kanjia: ['营销管理', '砍价'],
   // 营销管理 砍价
   bargain_activity: ['营销管理', '砍价', '砍价活动'],
   // 营销管理 砍价订单
@@ -161,7 +161,7 @@ export const cn = {
   // 营销管理 好友助力参与明细
   promote_participate_details: ['营销管理', '好友助力', '好友助力活动参与明细'],
   // 营销管理 分享有礼
-  share_polite: ['营销管理', '分享有礼'],
+  share_award: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: ['营销管理', '分享有礼', '领取明细'],
   // 营销管理 分享有礼 添加分享有礼活动
@@ -214,7 +214,7 @@ export const cn = {
   // 营销管理 优惠券礼包 订单明细
   coupon_Package_order_details: ['营销管理', '优惠券礼包', '订单明细'],
   // 营销管理 好友代付
-  friend_pay: ['营销管理', '好友代付'],
+  insteadpay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 幸运大抽奖 抽奖明细
@@ -228,7 +228,7 @@ export const cn = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['营销管理', '限时降价', '效果数据'],
   // 营销管理 打包一口价
-  package_price: ['营销管理', '打包一口价'],
+  package: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
   // 营销管理 开屏有礼
@@ -270,7 +270,6 @@ export const cn = {
   // 营销管理 秒杀
   shipping: ['营销管理', '满包邮'],
   // 营销管理 加价购
-  increase_purchase: ['营销管理', '加价购'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
@@ -309,7 +308,6 @@ export const cn = {
   full_cut: ['营销管理', '满折满减'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['营销管理', '满折满减活动'],
-
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情
