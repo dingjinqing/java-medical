@@ -64,7 +64,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 	/**
 	 * 一些特殊的api，不校验
 	 */
-	protected String[] specialExcept = { "/api/admin/checkMenu", "/api/admin/showMenu" };
+	protected String[] specialExcept = { "/api/admin/checkMenu/*", "/api/admin/showMenu" };
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -124,10 +124,10 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				JsonResultCode versionAccess = saas.shop.menu.versionAccess(user.loginShopId, path, enName, vsName);
 				if (!versionAccess.equals(JsonResultCode.CODE_SUCCESS)) {
 					log.info("版本权限的校验");
-					errorResponse(request, response, URL_NO_AUTH, (new JsonResult()).fail(language, versionAccess));
-					return false;
+//					errorResponse(request, response, URL_NO_AUTH, (new JsonResult()).fail(language, versionAccess));
+//					return false;
 					//等添加好之后再放开
-					//return true;
+					return true;
 				}
 
 				// 判断页面对应api权限
