@@ -799,7 +799,7 @@ export default {
     // 编辑成功后跳转到列表页
     jump2ListPage () {
       this.$router.push({
-        name: 'increase_purchase',
+        name: 'purchase_price',
         params: {
           flag: true
         }

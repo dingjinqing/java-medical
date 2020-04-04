@@ -165,7 +165,7 @@ export const en = {
     'activityEffectData'
   ],
   // 营销管理 砍价
-  bargain: ['Marketing management', 'Bargain'],
+  kanjia: ['Marketing management', 'Bargain'],
   // 营销管理 砍价
   bargain_activity: ['Marketing management', 'Bargaining activity'],
   // 营销管理 砍价订单
@@ -311,7 +311,7 @@ export const en = {
   // // 营销管理 组团瓜分积分
   // group_integration: ['Marketing management', 'Group integration'],
   // 营销管理 好友代付
-  friend_pay: ['Marketing management', 'friends paid'],
+  insteadpay: ['Marketing management', 'friends paid'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['Marketing management', 'Lucky draw'],
   // 营销管理 幸运大抽奖  抽奖明细
@@ -319,7 +319,7 @@ export const en = {
   // 营销管理 幸运大抽奖 获取新用户明细
   lottery_activity_newUserList: ['Marketing management', 'Lucky draw', 'Get new user details'],
   // 营销管理 分享有礼
-  share_polite: ['Marketing management', 'share polite'],
+  share_award: ['Marketing management', 'share polite'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: [
     'Marketing management',
@@ -343,7 +343,7 @@ export const en = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['Marketing management', 'Limited Time Price Reduction', 'Effect Data'],
   // 营销管理 打包一口价
-  package_price: ['Marketing management', 'Package Price'],
+  package: ['Marketing management', 'Package Price'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: [
     'Marketing management',
@@ -399,7 +399,7 @@ export const en = {
   // 营销管理 满包邮
   shipping: ['Marketing Management', 'Shipping'],
   // 营销管理 加价购
-  increase_purchase: ['Marketing management', 'Increase Purchase'],
+  purchase_price: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 添加加价购活动
   add_increase_purchase: ['Marketing management', 'Increase Purchase', 'Add Increase Purchase'],
   // 营销管理 加价购 编辑加价购活动
@@ -456,7 +456,7 @@ export const en = {
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
   // 营销管理 积分兑换
-  integralExchangeHome: ['Marketing management', 'Integral exchange'],
+  integral_convert: ['Marketing management', 'Integral exchange'],
   // 营销管理 积分兑换用户列表
   pointsUserList: ['Marketing management', 'Integral exchange', 'Points conversation user list'],
   // 营销管理 支付有礼
@@ -470,7 +470,7 @@ export const en = {
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
   // 营销管理 表单统计 formStatistical
-  formStatistical: ['Marketing management', 'Form statistics'],
+  form_decoration: ['Marketing management', 'Form statistics'],
   // 营销管理 表单装修主页
   formDecorationHome: ['Marketing management', 'Form statistics', 'Form decoration'],
   // 营销管理 表单统计  查看反馈页
