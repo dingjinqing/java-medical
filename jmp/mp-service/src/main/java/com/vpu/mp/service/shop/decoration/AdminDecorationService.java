@@ -373,6 +373,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         }
         if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+                pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
+            }
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
             }
