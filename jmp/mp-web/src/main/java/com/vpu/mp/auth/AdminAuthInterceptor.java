@@ -114,12 +114,16 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				if(match(specialExcept, path)) {
 					return true;
 				}
+				if (match(shopLoginExcept, path)) {
+					return true;
+				}
 				// 账号和店铺都登录，判断权限
 				Integer roleId = saas.shop.getShopAccessRoleId(user.getSysId(), user.getLoginShopId(),user.getSubAccountId());
 
 				// 版本权限的校验
 				JsonResultCode versionAccess = saas.shop.menu.versionAccess(user.loginShopId, path, enName, vsName);
 				if (!versionAccess.equals(JsonResultCode.CODE_SUCCESS)) {
+					log.info("版本权限的校验");
 					errorResponse(request, response, URL_NO_AUTH, (new JsonResult()).fail(language, versionAccess));
 					return false;
 					//等添加好之后再放开
@@ -128,6 +132,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 
 				// 判断页面对应api权限
 				if (!saas.shop.menu.apiAccess(roleId, path, enName)) {
+					log.info("子账户判断页面对应api权限");
 					errorResponse(request, response, URL_NO_AUTH,
 							(new JsonResult()).fail(language, JsonResultCode.CODE_ACCOUNT_ROLE__AUTH_INSUFFICIENT));
 					return false;
@@ -136,6 +141,7 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
 				// 判断功能权限对应（按钮可否点击可对应的密码）
 				JsonResultCode jsoCode = saas.shop.menu.passwdAccess(roleId, path, prName, passwd);
 				if (!jsoCode.equals(JsonResultCode.CODE_SUCCESS)) {
+					log.info("子账户判断功能权限对应");
 					errorResponse(request, response, URL_NO_AUTH, (new JsonResult()).fail(language, jsoCode));
 					return false;
 				}
