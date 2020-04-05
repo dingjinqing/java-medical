@@ -345,6 +345,7 @@ public class GoodsSpecProductService extends ShopBaseService {
             record.setPrdPrice(goodsSpecProduct.getPrdPrice());
             record.setPrdMarketPrice(goodsSpecProduct.getPrdMarketPrice());
             record.setPrdCodes(goodsSpecProduct.getPrdCodes());
+            record.setPrdWeight(goodsSpecProduct.getPrdWeight());
             records.add(record);
         }
         db().batchUpdate(records).execute();

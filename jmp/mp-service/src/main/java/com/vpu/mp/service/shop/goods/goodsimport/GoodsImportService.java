@@ -246,7 +246,7 @@ public class GoodsImportService extends ShopBaseService {
                 goodsIds = goodsImportInsert(goodsSkus, successGoodsList, illegalGoodsList, batchId);
             } else {
                 // 更新操作
-                goodsIds = goodsImportUpdate(goodsRecord,goodsSkus,successGoodsList,illegalGoodsList,batchId);
+                goodsIds = goodsImportUpdate(goodsRecord, goodsSkus, successGoodsList, illegalGoodsList, batchId);
             }
 
         }
@@ -280,10 +280,12 @@ public class GoodsImportService extends ShopBaseService {
      * @return
      */
     private List<? extends GoodsExcelImportBase> getSkuPrdCodesRepeated(List<? extends GoodsExcelImportBase> goodsSkus) {
-        Map<String, List<GoodsExcelImportBase>> prdCodesMap = goodsSkus.stream().collect(Collectors.groupingBy(GoodsExcelImportBase::getPrdCodes));
+        Map<String, List<GoodsExcelImportBase>> prdCodesMap = goodsSkus.stream().filter(prd -> StringUtils.isNotBlank(prd.getPrdCodes()))
+            .collect(Collectors.groupingBy(GoodsExcelImportBase::getPrdCodes));
         List<GoodsExcelImportBase> returnList = new ArrayList<>(2);
         goodsSkus.removeIf(bo -> {
-            if (prdCodesMap.get(bo.getPrdCodes()).size() > 1) {
+            List<GoodsExcelImportBase> prd = prdCodesMap.get(bo.getPrdCodes());
+            if (prd != null && prd.size() > 1) {
                 returnList.addAll(prdCodesMap.get(bo.getPrdCodes()));
                 return true;
             } else {
@@ -325,7 +327,7 @@ public class GoodsImportService extends ShopBaseService {
      */
     private List<? extends GoodsExcelImportBase> getSkuPrdCodesDbExist(List<? extends GoodsExcelImportBase> goodsSkus) {
         List<GoodsExcelImportBase> returnList = new ArrayList<>();
-        List<String> prdCodesList = goodsSkus.stream().map(GoodsExcelImportBase::getPrdCodes).collect(Collectors.toList());
+        List<String> prdCodesList = goodsSkus.stream().filter(prd -> StringUtils.isNotBlank(prd.getPrdCodes())).map(GoodsExcelImportBase::getPrdCodes).collect(Collectors.toList());
 
         List<String> existPrdCodes = goodsService.goodsSpecProductService.findSkuPrdCodesExist(prdCodesList);
         if (existPrdCodes.size() != 0) {
@@ -369,7 +371,7 @@ public class GoodsImportService extends ShopBaseService {
             illegalGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(importGoodsSkus, codeWrap.getIllegalEnum(), batchId));
             return null;
         } else {
-            successGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(importGoodsSkus,GoodsDataIIllegalEnum.GOODS_OK, batchId));
+            successGoodsList.addAll(importRecordService.convertVpuExcelImportBosToImportDetails(importGoodsSkus, GoodsDataIIllegalEnum.GOODS_OK, batchId));
             return codeWrap.getGoodsId();
         }
     }
@@ -398,7 +400,7 @@ public class GoodsImportService extends ShopBaseService {
                 prd.setPrdPrice(sku.getShopPrice());
                 prd.setPrdMarketPrice(sku.getMarketPrice());
                 prd.setPrdNumber(sku.getStock());
-                prd.setPrdCodes(sku.getPrdCodes());
+                prd.setPrdWeight(sku.getPrdWeight());
                 return false;
             }
         });
@@ -410,6 +412,7 @@ public class GoodsImportService extends ShopBaseService {
         Integer goodsNum = 0;
         BigDecimal shopPrice = BigDecimal.valueOf(Double.MAX_VALUE);
         BigDecimal marketPrice = BigDecimal.valueOf(Double.MIN_VALUE);
+        BigDecimal goodsWeight = BigDecimal.valueOf(Double.MAX_VALUE);
         for (GoodsSpecProduct prd : goodsSpecProducts) {
             goodsNum += (prd.getPrdNumber() == null ? 0 : prd.getPrdNumber());
             if (shopPrice.compareTo(prd.getPrdPrice()) > 0) {
@@ -418,12 +421,16 @@ public class GoodsImportService extends ShopBaseService {
             if (prd.getPrdMarketPrice() != null && marketPrice.compareTo(prd.getPrdMarketPrice()) < 0) {
                 marketPrice = prd.getPrdMarketPrice();
             }
+            if (goodsWeight.compareTo(prd.getPrdWeight()) > 0) {
+                goodsWeight = prd.getPrdWeight();
+            }
         }
         goodsRecord.setGoodsName(bos.get(0).getGoodsName());
         goodsRecord.setGoodsAd(bos.get(0).getGoodsAd());
         goodsRecord.setGoodsNumber(goodsNum);
         goodsRecord.setShopPrice(BigDecimal.valueOf(Double.MAX_VALUE).equals(shopPrice) ? BigDecimal.ZERO : shopPrice);
         goodsRecord.setMarketPrice(BigDecimal.valueOf(Double.MIN_VALUE).equals(marketPrice) ? null : marketPrice);
+        goodsRecord.setGoodsWeight(BigDecimal.valueOf(Double.MIN_VALUE).equals(goodsWeight) ? null : goodsWeight);
 
         GoodsDataIllegalEnumWrap resultCode = new GoodsDataIllegalEnumWrap();
         // 商品goodsImg待处理图片
@@ -446,7 +453,7 @@ public class GoodsImportService extends ShopBaseService {
                 if (imgs.size() > 0) {
                     goodsRecord.setGoodsImg(imgs.get(0));
                     imgs.remove(0);
-                    goodsService.updateGoodsChildImgsForImport(goodsRecord.getGoodsId(),imgs);
+                    goodsService.updateGoodsChildImgsForImport(goodsRecord.getGoodsId(), imgs);
                 }
                 goodsService.updateGoodsForImport(goodsRecord);
                 goodsService.goodsSpecProductService.updateSpecPrdForGoodsImport(goodsSpecProducts);
@@ -461,10 +468,10 @@ public class GoodsImportService extends ShopBaseService {
     /**
      * 导入商品插入操作
      *
-     * @param goodsSkus 待插入数据
+     * @param goodsSkus        待插入数据
      * @param successGoodsList 成功数据集合
      * @param illegalGoodsList 失败数据集合
-     * @param batchId 操作id
+     * @param batchId          操作id
      * @return 插入成功后产生的商品id
      */
     @SuppressWarnings("unchecked")
@@ -594,6 +601,7 @@ public class GoodsImportService extends ShopBaseService {
             product.setPrdMarketPrice(importBo.getMarketPrice());
             product.setPrdNumber(importBo.getStock());
             product.setPrdSn(importBo.getPrdSn());
+            product.setPrdWeight(importBo.getPrdWeight());
             product.setPrdCodes(importBo.getPrdCodes());
             if (importBo.getPrdDesc() != null) {
                 importBo.setPrdDesc(importBo.getPrdDesc().replaceAll("：", GoodsSpecProductService.PRD_VAL_DELIMITER).replaceAll("；", GoodsSpecProductService.PRD_DESC_DELIMITER));
@@ -661,7 +669,6 @@ public class GoodsImportService extends ShopBaseService {
             goods.setSaleType(GoodsConstant.IN_STOCK);
         }
         goods.setLimitBuyNum(goodsInfo.getLimitBuyNum());
-        goods.setGoodsWeight(goodsInfo.getGoodsWeight());
         goods.setUnit(goodsInfo.getUnit());
         goods.setGoodsImg(goodsInfo.getGoodsImgsStr());
         goods.setDeliverPlace(goodsInfo.getDeliverPlace());
@@ -715,6 +722,7 @@ public class GoodsImportService extends ShopBaseService {
 
     /**
      * 过滤img标签
+     *
      * @param goodsDesc
      * @param downloadImageBos
      * @return
@@ -790,6 +798,7 @@ public class GoodsImportService extends ShopBaseService {
 
     private final Integer IMAGE_WIDTH = 800;
     private final Integer IMAGE_HEIGHT = 800;
+
     /**
      * 下载并上传外链图片
      *
@@ -805,7 +814,7 @@ public class GoodsImportService extends ShopBaseService {
             imgUrl = "http://" + imgUrl;
         }
         try {
-            return imageService.downloadImgAndUpload(imgUrl,IMAGE_WIDTH,IMAGE_HEIGHT);
+            return imageService.downloadImgAndUpload(imgUrl, IMAGE_WIDTH, IMAGE_HEIGHT);
         } catch (IOException e) {
             e.printStackTrace();
         }

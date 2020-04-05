@@ -23,7 +23,7 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
     private BigDecimal shopPrice;
     private Byte isOnSale;
     private Integer limitBuyNum;
-    private BigDecimal goodsWeight;
+    private BigDecimal prdWeight;
     private String unit;
     /**商品图片使用;分隔*/
     private String goodsImgsStr;
@@ -43,7 +43,7 @@ public class GoodsVpuExcelImportBo extends GoodsExcelImportBase {
         shopPrice = m.getShopPrice();
         isOnSale = m.getIsOnSale();
         limitBuyNum = m.getLimitBuyNum();
-        goodsWeight = m.getGoodsWeight();
+        prdWeight = m.getGoodsWeight();
         unit = m.getUnit();
         goodsImgsStr = m.getGoodsImgsStr();
         goodsDesc = m.getGoodsDesc();
