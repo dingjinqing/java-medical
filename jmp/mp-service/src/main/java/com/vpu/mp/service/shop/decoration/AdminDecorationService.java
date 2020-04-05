@@ -681,19 +681,19 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     return moduleIntegral;
                 case ModuleConstant.M_COUPON:
                 	checkAuth(VersionName.SUB_2_M_VOUCHER);
-                	return objectMapper;
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 	
                 case ModuleConstant.M_BARGAIN:
                 	checkAuth(VersionName.SUB_2_M_BARGAIN);
-                	return objectMapper;
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 	
                 case ModuleConstant.M_SECKILL:
                 	checkAuth(VersionName.SUB_2_M_SECKILL_GOODS);
-                	return objectMapper;
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 	
                 case ModuleConstant.M_PIN_INTEGRATION:
                 	checkAuth(VersionName.SUB_2_M_PIN_INTEGRATION);
-                	return objectMapper;
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 //TODO 其他保存前需要处理的模块
                 default:
 
