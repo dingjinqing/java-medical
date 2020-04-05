@@ -156,7 +156,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         PageResult<GoodsListMpBo> pageResult = null;
         if (esUtilSearchService.esState()) {
             //店铺的默认商品排序规则
-            if(shopCommonConfigService.getSearchSort().equals(Byte.valueOf((byte)1))){
+            if(shopCommonConfigService.getSearchSort().equals((byte) 1)){
                 param.setShopSortItem(goodsMpService.getShopGoodsSortEnum());
                 param.setShopSortDirection(SortDirectionEnum.DESC);
             }
