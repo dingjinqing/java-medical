@@ -166,6 +166,7 @@
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">市场价</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">规格重量</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>

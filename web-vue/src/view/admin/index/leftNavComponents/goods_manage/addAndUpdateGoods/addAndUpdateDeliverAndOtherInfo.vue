@@ -393,7 +393,6 @@ export default {
           }
         })
       }
-      console.log(this.deliverTemplateCurrentData)
     },
     /* 刷新运费模板 */
     deliverTemplateSelectRefresh () {
@@ -501,6 +500,9 @@ export default {
     },
     /* 修改商品数据初始化 */
     initDataForUpdate (goodsData) {
+      // 运费特殊处理
+      this.deliverTemplateCurrentData.deliverTemplateId = goodsData.deliverTemplateId
+
       return this.initPageDataLink().then(() => {
         // 初始化运费模板
         this._initDeliverTemplateId(goodsData)
@@ -538,19 +540,13 @@ export default {
           return false
         }
       }
-      // if (this.goodsProductInfo.deliverTemplateType === 1) {
-      //   if (isNumberBlank(this.goodsProductInfo.goodsWeight) || this.goodsProductInfo.goodsWeight === 0) {
-      //     this.$message.warning({ message: '请填写商品重量信息', type: 'warning' })
-      //     this.$refs.goodsWeight.focus()
-      //     return false
-      //   }
-      // }
       return true
     },
     /* 获取传给后台的表单数据 */
     getFormData () {
       let retData = {
         deliverTemplateId: this.goodsProductInfo.deliverTemplateId,
+        deliverTemplateType: this.goodsProductInfo.deliverTemplateType,
         isCardExclusive: this.goodsProductInfo.isCardExclusive ? 1 : 0,
         memberCardIds: null,
         saleType: this.goodsProductInfo.saleType,
