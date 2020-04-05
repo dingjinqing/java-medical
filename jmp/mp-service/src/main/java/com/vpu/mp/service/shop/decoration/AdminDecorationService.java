@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -31,6 +32,7 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -628,6 +630,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     }
                     return moduleTitle;
                 case ModuleConstant.M_VIDEO:
+                    checkAuth(VersionName.SUB_2_M_VIDEO);
                     ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
@@ -652,18 +655,21 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleMap.setImgPath(imgPath);
                     return moduleMap;
                 case ModuleConstant.M_CARD:
+                	checkAuth(VersionName.SUB_2_M_MEMBER_CARD);
                     ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
                     if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
                         moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
                     }
                     return moduleCard;
                 case ModuleConstant.M_GROUP_DRAW:
+                	checkAuth(VersionName.SUB_2_M_GROUP_DRAW);
                     ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
                     if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
                         moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
                     }
                     return moduleGroupDraw;
                 case ModuleConstant.M_INTEGRAL:
+                	checkAuth(VersionName.SUB_2_M_INTEGRAL_GOODS);
                     ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
                     if(!moduleIntegral.getIntegralGoods().isEmpty()){
                         for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
@@ -673,7 +679,21 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                         }
                     }
                     return moduleIntegral;
-
+                case ModuleConstant.M_COUPON:
+                	checkAuth(VersionName.SUB_2_M_VOUCHER);
+                	return objectMapper;
+                	
+                case ModuleConstant.M_BARGAIN:
+                	checkAuth(VersionName.SUB_2_M_BARGAIN);
+                	return objectMapper;
+                	
+                case ModuleConstant.M_SECKILL:
+                	checkAuth(VersionName.SUB_2_M_SECKILL_GOODS);
+                	return objectMapper;
+                	
+                case ModuleConstant.M_PIN_INTEGRATION:
+                	checkAuth(VersionName.SUB_2_M_PIN_INTEGRATION);
+                	return objectMapper;
                 //TODO 其他保存前需要处理的模块
                 default:
 
@@ -691,6 +711,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
+
+    /**
+     * 店铺权限的一些校验
+     * @param moduName
+     */
+	private void checkAuth(String moduName) {
+		String[] auth1 = saas.shop.version.verifyVerPurview(getShopId(), moduName);
+		logger().info("{}权限：{}",moduName,auth1[0]);
+		Assert.isTrue(auth1[0].equals("true"), moduName+"have no auth");
+	}
 
     /**
      * 记录页面变化部分
