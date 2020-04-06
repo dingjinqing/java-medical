@@ -10,18 +10,21 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @Author 常乐
@@ -222,5 +225,25 @@ public class MpDistributionGoodsService extends ShopBaseService {
         RebateRatioVo rebateRatio = new RebateRatioVo();
         getRebateRatio(goodsStrategy, rebateRatio, userInfo.getDistributorLevel());
         return rebateRatio;
+    }
+
+    /**
+     * 商品分销改价页面信息
+     * @param param
+     * @return
+     */
+    public List<RebateGoodsCfgVo> rebateGoodsCfg(RebateGoodsCfgParam param){
+        Result<? extends Record> record = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,
+            GOODS_REBATE_PRICE.ADVISE_PRICE, GOODS_REBATE_PRICE.MIN_PRICE, GOODS_REBATE_PRICE.MAX_PRICE)
+            .from(GOODS_SPEC_PRODUCT)
+            .leftJoin(GOODS_REBATE_PRICE).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GOODS_REBATE_PRICE.PRODUCT_ID))
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+            .and(GOODS_REBATE_PRICE.DEL_FLAG.eq((byte) 0))
+            .fetch();
+        if(record != null){
+           return record.into(RebateGoodsCfgVo.class);
+        }else{
+            return null;
+        }
     }
 }

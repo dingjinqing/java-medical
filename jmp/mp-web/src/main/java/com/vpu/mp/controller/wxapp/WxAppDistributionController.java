@@ -6,6 +6,8 @@ import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
 import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
+import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -104,4 +106,12 @@ public class WxAppDistributionController extends WxAppBaseController{
         PageResult<DistributorInvitedListVo> inviteList = shop().mpDistribution.myInviteUser(param);
         return this.success(inviteList);
     }
+
+    //分销商品改价
+    @PostMapping("rebate/goods/config")
+    public JsonResult rebateGoodsCfg(@RequestBody RebateGoodsCfgParam param) {
+        List<RebateGoodsCfgVo> rebateGoodsCfgVo = shop().mpDisGoods.rebateGoodsCfg(param);
+        return this.success(rebateGoodsCfgVo);
+    }
+
 }
