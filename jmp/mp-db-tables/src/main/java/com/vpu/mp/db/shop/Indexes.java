@@ -498,7 +498,7 @@ public class Indexes {
     public static final Index LIVE_GOODS_ROOM_ID = Indexes0.LIVE_GOODS_ROOM_ID;
     public static final Index LIVE_BROADCAST_PRIMARY = Indexes0.LIVE_BROADCAST_PRIMARY;
     public static final Index LIVE_BROADCAST_ROOM_ID = Indexes0.LIVE_BROADCAST_ROOM_ID;
-
+    public static final Index CARD_RENEW_PRIMARY = Indexes0.CARD_RENEW_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -973,5 +973,6 @@ public class Indexes {
         public static Index LIVE_GOODS_ROOM_ID = Internal.createIndex("room_id", LiveGoods.LIVE_GOODS, new OrderField[] { LiveGoods.LIVE_GOODS.ROOM_ID }, false);
         public static Index LIVE_BROADCAST_PRIMARY = Internal.createIndex("PRIMARY", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ID }, true);
         public static Index LIVE_BROADCAST_ROOM_ID = Internal.createIndex("room_id", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ROOM_ID }, true);
+        public static Index CARD_RENEW_PRIMARY = Internal.createIndex("PRIMARY", CardRenew.CARD_RENEW, new OrderField[] { CardRenew.CARD_RENEW.ID }, true);
     }
 }

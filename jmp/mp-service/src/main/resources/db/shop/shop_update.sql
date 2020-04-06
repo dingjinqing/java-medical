@@ -267,6 +267,36 @@ CREATE TABLE IF NOT EXISTS `b2c_live_broadcast` (
 ALTER TABLE b2c_goods MODIFY goods_weight DECIMAL(10,3) DEFAULT NULL COMMENT '商品重量，默认规格重量或自定义规格中的最小重量';
 ALTER TABLE b2c_goods_spec_product add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
 ALTER TABLE b2c_goods_spec_product_bak add COLUMN prd_weight DECIMAL(10,3) DEFAULT NULL COMMENT '规格重量';
+
+-- 2020年04月06日  新增会员卡续费表
+CREATE TABLE IF NOT EXISTS `b2c_card_renew` (
+  `id` int(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(20) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `card_id` int(20) NOT NULL DEFAULT '0' COMMENT '续费会员卡id',
+  `card_no` varchar(32) NOT NULL DEFAULT '' COMMENT '会员卡号',
+  `add_time` timestamp NULL DEFAULT NULL COMMENT '续费时间',
+  `renew_money` decimal(10,2) DEFAULT '0.00' COMMENT '续费金额',
+  `renew_time` int(11) DEFAULT NULL COMMENT '续费时间',
+  `renew_date_type` tinyint(1) DEFAULT NULL COMMENT '0:日，1:周 2: 月',
+  `renew_type` tinyint(1) DEFAULT '0' COMMENT '0:现金 1：积分',
+  `payment` varchar(90) NOT NULL COMMENT '支付方式',
+  `pay_code` varchar(30) NOT NULL DEFAULT '' COMMENT '支付代号',
+  `prepay_id` varchar(191) DEFAULT NULL COMMENT '微信支付Id，用于发送模板消息',
+  `message` varchar(191) DEFAULT '' COMMENT '备注',
+  `renew_order_sn` varchar(20) NOT NULL DEFAULT '' COMMENT '续费单号',
+  `money_paid` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单应付金额',
+  `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态 0：待支付，1：已完成',
+  `member_card_no` varchar(32) DEFAULT '0' COMMENT '会员卡NO',
+  `member_card_redunce` decimal(10,2) DEFAULT '0.00' COMMENT '会员卡抵扣金额',
+  `use_score` decimal(10,2) DEFAULT '0.00' COMMENT '积分抵扣金额',
+  `use_account` decimal(10,2) DEFAULT '0.00' COMMENT '用户消费余额',
+  `pay_time` timestamp NULL DEFAULT NULL COMMENT '支付时间',
+  `ali_trade_no` varchar(60) DEFAULT '' COMMENT '支付宝交易单号',
+  `renew_expire_time` timestamp NULL DEFAULT NULL COMMENT '续费后过期时间',
+  PRIMARY KEY (`id`)
+);
+
+
 /*********************2.11*************************END*/
 
 

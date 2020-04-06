@@ -1071,4 +1071,8 @@ public class Tables {
      * The table <code>mini_shop_471752.b2c_article</code>.
      */
     public static final Article ARTICLE = com.vpu.mp.db.shop.tables.Article.ARTICLE;
+    /**
+     * The table <code>jmini_shop_489258.b2c_card_renew</code>.
+     */
+    public static final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
 }

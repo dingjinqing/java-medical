@@ -1068,7 +1068,12 @@ public class MiniShop_471752 extends SchemaImpl {
      * The table <code>mini_shop_471752.b2c_bargain_goods</code>.
      */
     public final BargainGoods BARGAIN_GOODS = com.vpu.mp.db.shop.tables.BargainGoods.BARGAIN_GOODS;
-
+    
+    /**
+     * The table <code>mini_shop_471752..b2c_card_renew</code>.
+     */
+    public final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
+    
     /**
      * No further instances allowed
      */
@@ -1295,6 +1300,7 @@ public class MiniShop_471752 extends SchemaImpl {
             ShareAwardReceive.SHARE_AWARD_RECEIVE,
             AttendShareUser.ATTEND_SHARE_USER,
             UserRfmSummary.USER_RFM_SUMMARY,
-            BargainGoods.BARGAIN_GOODS);
+            BargainGoods.BARGAIN_GOODS,
+            CardRenew.CARD_RENEW);
     }
 }
