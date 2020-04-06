@@ -33,13 +33,13 @@
         <!-- 图标 -->
         <!-- 已使用 -->
         <block wx:if="{{act_info.isUsed == 1}}">
-          <image src="{{imageUrl}}image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
-          <image src="{{imageUrl}}image/wxapp/used.png" class="coupon-top-rt-img" mode="widthFix"></image>
+          <image src="{{imageUrl}}/image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
+          <image src="{{imageUrl}}/image/wxapp/used.png" class="coupon-top-rt-img" mode="widthFix"></image>
         </block>
         <!-- 已过期 -->
         <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 1 || act_info.have_expired == 1}}">
-          <image src="{{imageUrl}}image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
-          <image src="{{imageUrl}}image/wxapp/out_time.png" class="coupon-top-rt-img" mode="widthFix"></image>
+          <image src="{{imageUrl}}/image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
+          <image src="{{imageUrl}}/image/wxapp/out_time.png" class="coupon-top-rt-img" mode="widthFix"></image>
         </block>
       </view>
       <!-- 优惠券名称END -->
@@ -49,7 +49,7 @@
           {{i18n.$t(localePack,"pages.coupon.couponTime")}}：
         </view>
         <!-- 未使用 -->
-        <block wx:if="{{type === '0'}}">
+        <block wx:if="{{couponType == '0'}}">
           <!-- 固定日期 -->
           <view class="coupon-time-btm" style="font-size:24rpx;" wx:if="{{act_info.remainDays != 0 &&  !(act_info.validity > 0 || act_info.validityHour > 0 || act_info.validityMinute > 0)}}">
             {{act_info.startTime}} - {{act_info.endTime}}
@@ -65,11 +65,11 @@
           </view>
         </block>
         <!-- 已使用 / 已过期 -->
-        <block wx:if="{{type === '1' || type === '2'}}">
+        <block wx:if="{{couponType !== '1' || couponType === '2'}}">
           <view class="coupon-time-btm" style="font-size:24rpx;">
             {{act_info.startTime}} - {{act_info.endTime}}
             <!-- 已过期 -->
-            <view wx:if="{{type === '2'}}">{{i18n.$t(localePack,"pages.coupon.overdue")}}</view>
+            <view wx:if="{{couponType === '2'}}">{{i18n.$t(localePack,"pages.coupon.overdue")}}</view>
           </view>
         </block>
       </view>
@@ -119,7 +119,7 @@
           <view class='cgt_time'>领取时间：{{ act_info.created }}</view>
           <view class='cgt_word clearfix'>
               <view class='cw_left'>领取方式：优惠券包</view>
-              <view class='cw_right'>查看 <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image></view>
+              <view class='cw_right'>查看 <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image></view>
           </view>
       </view> -->
       <!-- 领取方式end -->
