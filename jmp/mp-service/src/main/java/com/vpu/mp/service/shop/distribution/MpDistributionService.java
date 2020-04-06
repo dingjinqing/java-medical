@@ -354,4 +354,8 @@ public class MpDistributionService extends ShopBaseService{
         PageResult<DistributorInvitedListVo> invitedList = disList.getInvitedList(param);
         return invitedList;
     }
+
+    public void rebateOrder(){
+        //TODO：返利订单查询
+    }
 }

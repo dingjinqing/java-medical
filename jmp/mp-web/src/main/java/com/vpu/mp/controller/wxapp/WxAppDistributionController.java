@@ -104,6 +104,13 @@ public class WxAppDistributionController extends WxAppBaseController{
         return this.success(inviteList);
     }
 
+    @PostMapping("rebateOrder")
+    public JsonResult rebateOrderList(){
+        shop().mpDistribution.rebateOrder();
+        return this.success();
+    }
+
+    //分销改价相关
     /**
      * 商品分销改价页信息
      * @param param
