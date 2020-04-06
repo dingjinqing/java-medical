@@ -111,7 +111,10 @@ export default {
         title: '',
         status: -1
       },
-      pageParams: {}
+      pageParams: {
+        currentPage: 1
+      },
+      tableData: []
     }
   },
   mounted () {
