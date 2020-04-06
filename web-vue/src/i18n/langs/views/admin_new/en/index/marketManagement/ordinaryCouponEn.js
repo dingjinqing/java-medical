@@ -52,7 +52,7 @@ export const en = {
   memberTip4: 'New membership card',
   memberTip5: 'Manage membership cards',
   validationCode: 'Receive Code',
-  couponNum: 'Number of recipients',
+  receivePerNum: 'Number of recipients',
   numRadio1: 'No restriction',
   numRadio2: 'After sharing',
   numTip: 'Users with name (including voucher giver) can get this coupon, at least 2 people',
@@ -116,5 +116,7 @@ export const en = {
   validateactName2: 'Cannot be longer than 10 characters at',
   validatereceivePerPerson: 'Please select the limited number of tickets per person',
   validateNum: 'Please enter 0 or positive integer!',
+  validateNum1: 'Please enter a positive integer!',
+  validateNum2: 'Please enter a positive integer greater than 1!',
   validateDiscount: 'Please enter the correct number!'
 }

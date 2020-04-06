@@ -332,6 +332,7 @@
                 </el-form-item>
                 <el-form-item
                   :label="$t('ordinaryCoupon.member') + '：'"
+                  style="margin-bottom: 10px;"
                   v-if="param.type===0"
                   prop="isExclusive"
                 >
@@ -388,23 +389,25 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item
-                  :label="$t('ordinaryCoupon.couponNum') + '：'"
-                  prop="couponNum"
+                  :label="$t('ordinaryCoupon.receivePerNum') + '：'"
+                  prop="receivePerNum"
                   v-if="param.type===1"
                 >
                   <div>
                     <el-radio
-                      v-model="param.couponNum"
+                      v-model="param.receivePerNum"
                       :label="0"
                       :disabled="editType"
+                      @change="receivePerNumChange"
                     >{{ $t('ordinaryCoupon.numRadio1') }}</el-radio>
                     <el-radio
-                      v-model="param.couponNum"
+                      v-model="param.receivePerNum"
                       :label="1"
                       :disabled="editType"
+                      @change="receivePerNumChange"
                     >{{ $t('ordinaryCoupon.numRadio2') }}</el-radio>
                     <el-input
-                      :disabled="param.couponNum==1 && !editType ?false:true"
+                      :disabled="param.receivePerNum==1 && !editType ?false:true"
                       v-model="param.receiveNum"
                       size="small"
                       class="small_input"
@@ -518,7 +521,7 @@
                   </div>
                 </el-form-item>
 
-                <el-form-item label="优惠叠加：">
+                <!-- <el-form-item label="优惠叠加：">
                   <el-checkbox>不与限时降价、首单特惠、会员价活动共用</el-checkbox>
                 </el-form-item>
                 <el-form-item
@@ -546,7 +549,7 @@
                     </span>
                   </div>
 
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item :label="$t('ordinaryCoupon.useExplain') + '：'">
                   <el-input
@@ -701,7 +704,7 @@ export default {
         callback(new Error('请填写随机金额'))
       } else if (value === 2 && ((!re.test(this.param.randomMin) && !re1.test(this.param.randomMin)) || (!re.test(this.param.randomMax) && !re1.test(this.param.randomMax)))) {
         callback(new Error(this.$t('ordinaryCoupon.validateNum')))
-      } else if (this.param.randomMin > this.param.randomMax) {
+      } else if (Number(this.param.randomMin) > Number(this.param.randomMax)) {
         callback(new Error('最大金额不能比最小金额小'))
       } else {
         callback()
@@ -719,12 +722,12 @@ export default {
       }
     }
     // 自定义领券人数
-    var validateCouponNum = (rule, value, callback) => {
-      var re = /^(0|\+?[1-9][0-9]*)$/
+    var validateReceivePerNum = (rule, value, callback) => {
+      var re = /^([2-9]|([1-9]\d+))$/
       if (value === 1 && this.param.receiveNum === null) {
         callback(new Error('请填写领券人数'))
       } else if (value === 1 && !re.test(this.param.receiveNum)) {
-        callback(new Error(this.$t('ordinaryCoupon.validateNum')))
+        callback(new Error(this.$t('ordinaryCoupon.validateNum2')))
       } else {
         callback()
       }
@@ -788,7 +791,7 @@ export default {
         recommendSortId: '', // 指定商家分类
         randomMin: null, // 随机金额1
         randomMax: null, // 随机金额2
-        couponNum: 0, // 领券人数
+        receivePerNum: 0, // 领券人数
         receiveNum: null, // 人数
         // enabled: 1, // 隐藏
         suitGoods: 0, // 隐藏
@@ -813,7 +816,7 @@ export default {
         preferentialType: { required: true, validator: validatePreferentialType, trigger: 'change' },
         useScore: { required: true, validator: validateisRandom, trigger: 'change' },
         receivePerPerson: { required: true, message: this.$t('ordinaryCoupon.validatereceivePerPerson'), trigger: 'change' },
-        couponNum: { required: true, validator: validateCouponNum, trigger: 'change' },
+        receivePerNum: { required: true, validator: validateReceivePerNum, trigger: 'change' },
         isExclusive: { validator: validateIsExclusive, trigger: 'change' },
         useConsumeRestrict: { required: true, validator: validateuseConsumeRestrict, trigger: 'change' },
         availableGoods: { required: true, validator: validateAvailableGoods, trigger: 'change' }
@@ -983,9 +986,9 @@ export default {
           // 领券人数
           this.param.receiveNum = data.receiveNum
           if (this.param.receiveNum === 0) {
-            this.param.couponNum = 0
+            this.param.receivePerNum = 0
           } else {
-            this.param.couponNum = 1
+            this.param.receivePerNum = 1
           }
           // 会员专享
           this.param.cardId = data.cardId
@@ -1046,7 +1049,7 @@ export default {
             this.param.actCode = 'random'
           }
           // 领券人数
-          if (this.param.couponNum === 0) {
+          if (this.param.receivePerNum === 0) {
             this.param.receiveNum = 0
           }
           // 发放的总数量
@@ -1217,7 +1220,6 @@ export default {
 
     // 切换触发校验
     typeChange () {
-      // debugger
       if (this.param.type === 0) {
         // 普通
         this.param.preferentialType = 0
@@ -1250,6 +1252,9 @@ export default {
         this.platClass = []
       }
       this.$refs['param'].validateField('availableGoods')
+    },
+    receivePerNumChange (e) {
+      this.$refs['param'].validateField('receivePerNum')
     },
 
     // 选择标签
