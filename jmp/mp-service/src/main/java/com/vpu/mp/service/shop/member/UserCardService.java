@@ -1973,7 +1973,11 @@ public class UserCardService extends ShopBaseService {
      * @param cardNo
      */
     public void cardRenew(Integer userId,String cardNo){
+        //得到用户持有会员卡的详细信息
+        UserCardParam userCardInfo = userCardDao.getUserCardInfo(cardNo);
+        if (userCardInfo!=null){
 
+        }
     }
 
 }
