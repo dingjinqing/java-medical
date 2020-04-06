@@ -10,6 +10,8 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.distribution.BaseGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.GoodsRebateChangePriceVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
@@ -232,18 +234,22 @@ public class MpDistributionGoodsService extends ShopBaseService {
      * @param param
      * @return
      */
-    public List<RebateGoodsCfgVo> rebateGoodsCfg(RebateGoodsCfgParam param){
-        Result<? extends Record> record = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,
+    public GoodsRebateChangePriceVo rebateGoodsCfg(RebateGoodsCfgParam param){
+        //商品基本信息
+        BaseGoodsVo goods = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG).from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchOne().into(BaseGoodsVo.class);
+
+        //商品分销改价信息
+        List<RebateGoodsCfgVo> rebatePrice = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_DESC,
             GOODS_REBATE_PRICE.ADVISE_PRICE, GOODS_REBATE_PRICE.MIN_PRICE, GOODS_REBATE_PRICE.MAX_PRICE)
             .from(GOODS_SPEC_PRODUCT)
             .leftJoin(GOODS_REBATE_PRICE).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GOODS_REBATE_PRICE.PRODUCT_ID))
             .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
             .and(GOODS_REBATE_PRICE.DEL_FLAG.eq((byte) 0))
-            .fetch();
-        if(record != null){
-           return record.into(RebateGoodsCfgVo.class);
-        }else{
-            return null;
-        }
+            .fetch().into(RebateGoodsCfgVo.class);
+
+        GoodsRebateChangePriceVo goodsRebateChangePriceVo = new GoodsRebateChangePriceVo();
+        goodsRebateChangePriceVo.setGoods(goods);
+        goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
+        return goodsRebateChangePriceVo;
     }
 }

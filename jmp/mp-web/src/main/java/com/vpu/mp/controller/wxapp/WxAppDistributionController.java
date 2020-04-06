@@ -4,10 +4,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
 import com.vpu.mp.service.pojo.shop.distribution.*;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -110,8 +107,8 @@ public class WxAppDistributionController extends WxAppBaseController{
     //分销商品改价
     @PostMapping("rebate/goods/config")
     public JsonResult rebateGoodsCfg(@RequestBody RebateGoodsCfgParam param) {
-        List<RebateGoodsCfgVo> rebateGoodsCfgVo = shop().mpDisGoods.rebateGoodsCfg(param);
-        return this.success(rebateGoodsCfgVo);
+        GoodsRebateChangePriceVo goodsRebateChangePriceVo = shop().mpDisGoods.rebateGoodsCfg(param);
+        return this.success(goodsRebateChangePriceVo);
     }
 
 }
