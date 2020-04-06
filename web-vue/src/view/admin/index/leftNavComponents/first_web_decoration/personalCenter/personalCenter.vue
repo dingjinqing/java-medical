@@ -2174,6 +2174,7 @@ export default {
 }
 
 .each_serve {
+  height: 60px;
   width: 105px;
   margin-bottom: 20px;
   float: left;
@@ -2187,6 +2188,7 @@ export default {
 
 .serve_img {
   margin-bottom: 10px;
+  height: 25px;
 }
 
 .serve_img img {
@@ -2195,6 +2197,7 @@ export default {
 }
 
 .serve_word {
+  height: 24px;
   font-size: 12px;
   color: #666;
 }
