@@ -2305,6 +2305,7 @@ export default {
 
 .serve_img {
   margin-bottom: 10px;
+  height: 25px;
 }
 
 .serve_img img {
@@ -2313,6 +2314,7 @@ export default {
 }
 
 .serve_word {
+  height: 24px;
   font-size: 12px;
   color: #666;
 }
