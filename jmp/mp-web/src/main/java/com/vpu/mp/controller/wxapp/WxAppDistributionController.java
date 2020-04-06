@@ -104,11 +104,20 @@ public class WxAppDistributionController extends WxAppBaseController{
         return this.success(inviteList);
     }
 
-    //分销商品改价
+    /**
+     * 商品分销改价页信息
+     * @param param
+     * @return
+     */
     @PostMapping("rebate/goods/config")
     public JsonResult rebateGoodsCfg(@RequestBody RebateGoodsCfgParam param) {
         GoodsRebateChangePriceVo goodsRebateChangePriceVo = shop().mpDisGoods.rebateGoodsCfg(param);
         return this.success(goodsRebateChangePriceVo);
     }
 
+    @PostMapping("rebate/goods/changePrice/save")
+    public JsonResult saveRebateGoodsChangePrice(@RequestBody RebateChangeListParam param){
+        shop().mpDisGoods.saveRebateGoodsChangePrice(param);
+        return this.success();
+    }
 }

@@ -10,10 +10,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
-import com.vpu.mp.service.pojo.wxapp.distribution.BaseGoodsVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.GoodsRebateChangePriceVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.jooq.Record6;
@@ -251,5 +248,14 @@ public class MpDistributionGoodsService extends ShopBaseService {
         goodsRebateChangePriceVo.setGoods(goods);
         goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
         return goodsRebateChangePriceVo;
+    }
+
+    /**
+     * 保存分销改价信息
+     * @param param
+     */
+    public void saveRebateGoodsChangePrice(RebateChangeListParam param){
+        System.out.println(param);
+        //TODO：遍历保存各规格信息
     }
 }
