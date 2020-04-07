@@ -144,9 +144,6 @@ public class MpDistributionGoodsService extends ShopBaseService {
         List<Byte> levels = new ArrayList<Byte>(){
             {add((byte)2);add((byte)3);add((byte)4);add((byte)5);}
         };
-//        if(!levels.contains(distributionLevel)){
-//            //该用户非审核分销员
-//        }
 
         //获取等级状态
         Record record = db().select().from(DISTRIBUTOR_LEVEL).where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq(distributionLevel.getDistributorLevel())).fetchOne();
@@ -154,7 +151,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         if(record != null){
              levelInfo = record.into(DistributorLevelVo.class);
         }
-        //
+
         if(levelInfo != null && levelInfo.getLevelStatus() != 1){
             //return 该分销员等级未开启
         }
@@ -240,7 +237,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         //商品基本信息
         BaseGoodsVo goods = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG).from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchOne().into(BaseGoodsVo.class);
         goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
-        
+
         //商品分销改价信息
         List<RebateGoodsCfgVo> rebatePrice = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_DESC,
             GOODS_REBATE_PRICE.ADVISE_PRICE, GOODS_REBATE_PRICE.MIN_PRICE, GOODS_REBATE_PRICE.MAX_PRICE)
@@ -254,14 +251,5 @@ public class MpDistributionGoodsService extends ShopBaseService {
         goodsRebateChangePriceVo.setGoods(goods);
         goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
         return goodsRebateChangePriceVo;
-    }
-
-    /**
-     * 保存分销改价信息
-     * @param param
-     */
-    public void saveRebateGoodsChangePrice(RebateChangeListParam param){
-        System.out.println(param);
-        //TODO：遍历保存各规格信息
     }
 }
