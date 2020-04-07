@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.shop.store.article;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * 门店公告
  * @author liangchen
@@ -23,4 +25,6 @@ public class ArticlePojo {
     private Byte status;
     /** 文章所属类型 */
     private Byte partType = (byte)1;
+    /** 更新时间 */
+    private Timestamp updateTime;
 }
