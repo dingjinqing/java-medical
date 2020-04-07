@@ -381,7 +381,7 @@ public class ReturnMethodService extends ShopBaseService{
                 }
                 subOrderService.updateBeforeReturn(next, currMoney);
                 //消息模板
-                sendMessage.sendinsteadPayReturn(currMoney, next, mainOrder.getOrderId());
+                sendMessage.sendInsteadPayReturn(currMoney, next, mainOrder.getOrderId());
                 //当前子单退款完成需删除
                 if(next.getOrderStatus().equals(OrderConstant.SubOrderConstant.SUB_ORDER_REFUND_SUCESS)) {
                     iterator.remove();

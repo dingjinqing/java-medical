@@ -1,19 +1,43 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.db.shop.tables.records.DistributorLevelRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.distribution.*;
-import org.jooq.*;
+import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToLevelParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelUserNumVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
+import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
+import com.vpu.mp.service.pojo.shop.distribution.UserRebateLevelDetail;
+import com.vpu.mp.service.shop.user.user.UserService;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectHavingStep;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
+import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL_RECORD;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.SERVICE_ORDER;
+import static com.vpu.mp.db.shop.Tables.STORE_ORDER;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_FANLI_STATISTICS;
+import static com.vpu.mp.db.shop.Tables.USER_TOTAL_FANLI;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
 
@@ -24,6 +48,12 @@ import static org.jooq.impl.DSL.sum;
  */
 @Service
 public class DistributorLevelService extends ShopBaseService{
+
+    @Autowired
+    UserService user;
+
+    @Autowired
+    DistributorLevelRecordService distributorLevelRecord;
 
 	/**
 	 * 分销员等级配置
@@ -220,31 +250,55 @@ public class DistributorLevelService extends ShopBaseService{
 	}
 	
 	public boolean updateUserLevel(List<Integer> upUserIds) {
-		Result<Record> auto_levels = this.getAutoUpdateLevels();
+	    //auto_levels order by LEVEL(asc)
+		Result<DistributorLevelRecord> auto_levels = this.getAutoUpdateLevels();
 		if(auto_levels.size() <= 0) {
 			return true;
 		}
-		//获取分销员分销信息（分销金额）
-		Result<Record4<Integer, Integer, Byte, String>> distributorInfo = this.getUserRebateLevelDetail(upUserIds);
+		//获取分销员分销信息（分销金额）USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME
+		List<UserRebateLevelDetail> distributorInfo = this.getUserRebateLevelDetail(upUserIds);
 		//获取邀请人的推广金额
-		Result<Record2<Integer, BigDecimal>> distributorRebate = this.getDistributorRebate(upUserIds);
-		
-		//根据配置条件给分销员定等级
-		for(Record4<Integer, Integer, Byte, String> upUser : distributorInfo) {
+        Map<Integer, BigDecimal> distributorRebate = this.getDistributorRebate(upUserIds);
+        //更新用户信息
+        ArrayList<UserRecord> updateUser = new ArrayList<>();
+        //消息推送
+        Map<Integer,UpdateUserLevel> updateUserLevelMsg = new HashMap<>();
+        //根据配置条件给分销员定等级
+		for(UserRebateLevelDetail upUser : distributorInfo) {
 			//获取用户的订单和门店买单消费总额
-			DistributorSpendVo user_spend = this.getTotalSpend(upUser.get(USER.USER_ID));
-			for(Record level : auto_levels) {
+			DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
+			for(DistributorLevelRecord level : auto_levels) {
 				//不用升级
-				if(upUser.get(USER.DISTRIBUTOR_LEVEL) > level.get(DISTRIBUTOR_LEVEL.LEVEL_ID)){
+				if(upUser.getDistributorLevel() > level.getLevelId()){
 					continue;
 				}
-				
-				//todo:用户重新定级
-//				boolean compareInviteNumber = level.get(DISTRIBUTOR_LEVEL.INVITE_NUMBER) > 0 && upUser.get(USER_TOTAL_FANLI.SUBLAYER_NUMBER) > level.get(DISTRIBUTOR_LEVEL.INVITE_NUMBER);
-//				boolean compareDistributionMoney = level.get(DISTRIBUTOR_LEVEL.TOTAL_DISTRIBUTION_MONEY) > 0 && distributorRebate.get(USER_FANLI_STATISTICS)
-//				boolean compareFanliMoney = 
+				//累计邀请用户数
+				boolean compareInviteNumber = level.getInviteNumber() > 0 && upUser.getSublayerNumber() > level.getInviteNumber();
+				//累计推广金
+				boolean compareDistributionMoney = BigDecimalUtil.compareTo(level.getTotalDistributionMoney(), null) > 0 && BigDecimalUtil.compareTo(distributorRebate.get(upUser.getUserId()), level.getTotalDistributionMoney()) >= 0;
+				//累积推广金与消费金总和
+				boolean compareFanliMoney = BigDecimalUtil.compareTo(level.getTotalBuyMoney(), null) > 0 && BigDecimalUtil.compareTo(BigDecimalUtil.add(distributorRebate.get(upUser.getUserId()), userSpend.getTotal()), level.getTotalBuyMoney()) >= 0;
+				if(compareInviteNumber || compareDistributionMoney || compareFanliMoney) {
+                    UserRecord userInfo = user.getUserByUserId(upUser.getUserId());
+                    UpdateUserLevel updateUserLevel = updateUserLevelMsg.get(userInfo.getUserId());
+                    if(updateUserLevel == null) {
+                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, upUser.getDistributorLevel(), upUser.getLevelName(), level.getLevelId(), level.getLevelName(), ""));
+                    }else {
+                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, updateUserLevel.getOldLevel(), updateUserLevel.getOldLevelName(), level.getLevelId(), level.getLevelName(), ""));
+                    }
+                    userInfo.setDistributorLevel(level.getLevelId());
+                    updateUser.add(userInfo);
+                }else {
+				    break;
+                }
+
 			}
 		}
+		//更新
+		db().batchUpdate(updateUser).execute();
+		//等级变化记录
+        distributorLevelRecord.add(updateUserLevelMsg.values());
+
 		return true;
 	}
 	
@@ -252,24 +306,23 @@ public class DistributorLevelService extends ShopBaseService{
 	 * 自动升级的等级
 	 * @return
 	 */
-	public Result<Record> getAutoUpdateLevels() {
-		Result<Record> auto_levels = db().select().from(DISTRIBUTOR_LEVEL)
+	public Result<DistributorLevelRecord> getAutoUpdateLevels() {
+        return db().selectFrom(DISTRIBUTOR_LEVEL)
 				.where(DISTRIBUTOR_LEVEL.LEVEL_UP_ROUTE.eq((byte)0))
 				.orderBy(DISTRIBUTOR_LEVEL.LEVEL_ID)
 				.fetch();
-		return auto_levels;
 	}
-	
+
 	/**
 	 * 	分销员分销信息
 	 * @param upUserIds
 	 * @return
 	 */
-	public Result<Record4<Integer, Integer, Byte, String>> getUserRebateLevelDetail(List<Integer> upUserIds) {
-		Result<Record4<Integer, Integer, Byte, String>> distributorInfo = db().select(USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME)
+	public List<UserRebateLevelDetail> getUserRebateLevelDetail(List<Integer> upUserIds) {
+		List<UserRebateLevelDetail> distributorInfo = db().select(USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME)
 				.from(USER.leftJoin(USER_TOTAL_FANLI).on(USER.USER_ID.eq(USER_TOTAL_FANLI.USER_ID))
 				.leftJoin(DISTRIBUTOR_LEVEL).on(USER.DISTRIBUTOR_LEVEL.eq(DISTRIBUTOR_LEVEL.LEVEL_ID)))
-				.where(USER.USER_ID.in(upUserIds)).fetch();
+				.where(USER.USER_ID.in(upUserIds)).fetchInto(UserRebateLevelDetail.class);
 		return distributorInfo;
 	}
 	
@@ -278,39 +331,38 @@ public class DistributorLevelService extends ShopBaseService{
 	 * @param upUserIds
 	 * @return
 	 */
-	public Result<Record2<Integer, BigDecimal>> getDistributorRebate(List<Integer> upUserIds) {
-		 Result<Record2<Integer, BigDecimal>> rebeteInfo = db()
-				.select(USER_FANLI_STATISTICS.FANLI_USER_ID,sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY).as("fanli_money"))
-				.from(USER_FANLI_STATISTICS)
-				.where(USER_FANLI_STATISTICS.FANLI_USER_ID.in(upUserIds))
-				.and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte) 1))
-				.groupBy(USER_FANLI_STATISTICS.FANLI_USER_ID)
-				.fetch();
-		 return rebeteInfo;
+	public Map<Integer, BigDecimal> getDistributorRebate(List<Integer> upUserIds) {
+        return db()
+            .select(USER_FANLI_STATISTICS.FANLI_USER_ID, sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY))
+            .from(USER_FANLI_STATISTICS)
+            .where(USER_FANLI_STATISTICS.FANLI_USER_ID.in(upUserIds))
+            .and(USER_FANLI_STATISTICS.REBATE_LEVEL.eq((byte) 1))
+            .groupBy(USER_FANLI_STATISTICS.FANLI_USER_ID)
+            .fetchMap(USER_FANLI_STATISTICS.FANLI_USER_ID, sum(USER_FANLI_STATISTICS.TOTAL_CAN_FANLI_MONEY));
 	}
 	
 	/**
 	 * 获取用户的订单和门店买单消费总额
 	 */
-	public DistributorSpendVo getTotalSpend(int user_id) {
+	public DistributorSpendVo getTotalSpend(int userId) {
 		//会员卡支付
-		BigDecimal memeberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal memeberCardBalance = db().select(sum(ORDER_INFO.MEMBER_CARD_BALANCE)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
 		logger().info("会员卡支付"+memeberCardBalance);
 		//微信实际支付
-		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID)).from(ORDER_INFO).where(ORDER_INFO.PAY_CODE.in("balance","wxpay")).and(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal moneyPaid = db().select(sum(ORDER_INFO.MONEY_PAID)).from(ORDER_INFO).where(ORDER_INFO.PAY_CODE.in("balance","wxpay")).and(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
 		logger().info("微信实际支付"+moneyPaid);
 		//余额支付
-		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal useAccount = db().select(sum(ORDER_INFO.USE_ACCOUNT)).from(ORDER_INFO).where(ORDER_INFO.ORDER_STATUS.eq((byte) 6)).and(ORDER_INFO.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
 		logger().info("余额支付"+useAccount);
 		//门店消费
-		BigDecimal storeMemeberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
-		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
-		BigDecimal storeUseAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal storeMemeberCardBalance = db().select(sum(STORE_ORDER.MEMBER_CARD_BALANCE)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
+		BigDecimal storeMoneyPaid = db().select(sum(STORE_ORDER.MONEY_PAID)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
+		BigDecimal storeUseAccount = db().select(sum(STORE_ORDER.USE_ACCOUNT)).from(STORE_ORDER).where(STORE_ORDER.ORDER_STATUS.eq((byte)1)).and(STORE_ORDER.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
 		logger().info("门店消费"+storeMemeberCardBalance);
 		logger().info("门店消费"+storeMoneyPaid);
 		logger().info("门店消费"+storeUseAccount);
 		//门店预约
-		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(user_id)).fetchSingleInto(BigDecimal.class);
+		BigDecimal serviceMoneyPaid = db().select(sum(SERVICE_ORDER.MONEY_PAID)).from(SERVICE_ORDER).where(SERVICE_ORDER.ORDER_STATUS.eq((byte)2)).and(SERVICE_ORDER.PAY_CODE.in("balance","wxpay")).and(SERVICE_ORDER.USER_ID.eq(userId)).fetchSingleInto(BigDecimal.class);
 		logger().info("门店预约"+serviceMoneyPaid);
 		BigDecimal card = check(memeberCardBalance).add(check(storeMemeberCardBalance));
 		BigDecimal paid = check(moneyPaid).add(check(storeMoneyPaid));
