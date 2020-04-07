@@ -303,3 +303,21 @@
   border-radius: 25rpx;
   box-sizing: border-box;
 }
+.goods-image  .subscribe--live-player-subscribe__btn{
+  height: 50rpx;
+  width: 140rpx;
+  border: 2rpx solid;
+  text-align: center;
+  margin-left: 18rpx;
+  line-height: 46rpx;
+  border-radius: 25rpx;
+  box-sizing: border-box;
+  font-size: 26rpx;
+}
+.goods-image  .subscribe--live-player-notSubscribe{
+  color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;
+}
+.goods-image  .subscribe--live-player-hasSubscribe{
+  color:rgba(247,145,61,1);
+  background-color: transparent;
+}

@@ -571,15 +571,16 @@ public class StoreService extends ShopBaseService {
      * @return 分页信息
      */
     public PageResult<ArticlePojo> articleList(ArticleParam param){
-        SelectWhereStep<? extends Record> sql = db().select()
-            .from(ARTICLE);
+        SelectConditionStep<? extends Record> sql = db().select()
+            .from(ARTICLE)
+            .where(ARTICLE.IS_DEL.eq(DelFlag.NORMAL_VALUE));
         //查询条件-标题
         if (param.getTitle() != null && !"".equals(param.getTitle())) {
-            sql.where(ARTICLE.TITLE.like(this.likeValue(param.getTitle())));
+            sql.and(ARTICLE.TITLE.like(this.likeValue(param.getTitle())));
         }
         //查询条件-发布状态
         if (!ArticleParam.ALL_STATUS.equals(param.getStatus())){
-            sql.where(ARTICLE.STATUS.eq(param.getStatus()));
+            sql.and(ARTICLE.STATUS.eq(param.getStatus()));
         }
         PageResult<ArticlePojo> result = this.getPageResult(sql,param.getCurrentPage(),param.getPageRows(),ArticlePojo.class);
         return result;
