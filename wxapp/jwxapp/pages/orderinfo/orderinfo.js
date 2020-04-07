@@ -35,9 +35,9 @@ global.wxPage({
           //订单商品总价
           orderInfo.goodsTotalPrice = orderInfo.goods.reduce((total, item) => { 
             if(orderInfo.orderType.includes("10")){
-              return total += item.goodsPrice 
+              return total += item.goodsPrice * item.goodsNumber
             } else {
-              return total += item.discountedGoodsPrice 
+              return total += item.discountedGoodsPrice * item.goodsNumber
             }
           }, 0)
           // 订单活动类型
