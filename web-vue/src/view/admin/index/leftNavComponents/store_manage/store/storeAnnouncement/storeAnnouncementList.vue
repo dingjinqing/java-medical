@@ -98,6 +98,10 @@
           </template>
         </el-table-column>
       </el-table>
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      ></pagination>
     </div>
   </div>
 </template>
@@ -105,6 +109,9 @@
 <script>
 import { announcementListApi, announcementDeleteApi } from '@/api/admin/storeManage/storeAnnouncement.js'
 export default {
+  components: {
+    pagination: () => import('@/components/admin/pagination/pagination')
+  },
   data () {
     return {
       queryParams: {
@@ -112,7 +119,8 @@ export default {
         status: -1
       },
       pageParams: {
-        currentPage: 1
+        currentPage: 1,
+        totalRows: 0
       },
       tableData: []
     }
