@@ -110,7 +110,22 @@ public enum MpTemplateConfig {
             "OPENTM401113750",
             "拼团失败通知",
             "{{first.DATA}}拼团商品：{{keyword1.DATA}}商品金额：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}{{remark.DATA}}"
-        );
+        ),
+    SCORE_CHANGE(
+    		"OPENTM207681011",
+    		"积分消费提醒",
+    		"{{first.DATA}}服务内容：{{keyword1.DATA}}积分变化：{{keyword2.DATA}}商户名称：{{keyword3.DATA}}日期时间：{{keyword4.DATA}}{{remark.DATA}}"
+    	),
+    MONEY_CHANGE(
+    		"OPENTM402190178",
+    		"账户资金变动提醒",
+    		"{{first.DATA}}变动时间：{{keyword1.DATA}}变动金额：{{keyword2.DATA}}账户余额：{{keyword3.DATA}}{{remark.DATA}}"
+    	),
+    MEMBER_LEVEL_UP(
+    		"OPENTM401075189",
+    		"会员升级通知",
+    		"{{first.DATA}}会员等级：{{keyword1.DATA}}审核状态：{{keyword2.DATA}}{{remark.DATA}}"
+    	);
 	/**
 	 * 模板编号
 	 */
