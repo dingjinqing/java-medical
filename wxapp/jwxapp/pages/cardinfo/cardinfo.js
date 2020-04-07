@@ -55,7 +55,7 @@ global.wxPage({
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
-        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && !cardInfo.examine ) {
           that.setData({
             carStatus: "已领取"
           })
@@ -155,9 +155,18 @@ global.wxPage({
           that.setData({
             carStatus: "未领取"
           })
-        } else if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        } else if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && (!cardInfo.examine)) {
           that.setData({
             carStatus: "已领取"
+          })
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
+          that.setData({
+            carStatus: "审核中"
+          })
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
+
+          that.setData({
+            carStatus: "审核失败"
           })
         } else {
           that.setData({

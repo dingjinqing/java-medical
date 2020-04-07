@@ -145,4 +145,5 @@ public class UserCardVo {
 	 */
 	@JsonProperty("customRights")
 	protected CardCustomRights cardCustomRights;
+	private Byte cardVerifyStatus;
 }
