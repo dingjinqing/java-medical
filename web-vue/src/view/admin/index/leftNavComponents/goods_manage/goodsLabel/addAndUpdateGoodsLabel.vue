@@ -142,6 +142,10 @@
                 v-model="goodsLabelData.isAll"
                 :label="0"
               >{{$t('addAndUpdateGoodsLabel.pointGoods')}}</el-radio>
+              <el-radio
+                v-model="goodsLabelData.isAll"
+                :label="2"
+              >不添加商品</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
               <div @click="addGoodsClicked" class="pointGoodsItemBtnWrap">
@@ -152,10 +156,6 @@
                 <el-button  size="small">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
                 <span>已选{{selectedSortList.length}}件商家</span>
               </div>
-              <!--<div @click="tuneUpChooseCat=true" class="pointGoodsItemBtnWrap">-->
-                <!--<el-button size="small">+{{$t('addAndUpdateGoodsLabel.addCategory')}}</el-button>-->
-                <!--<span>已选{{selectedCatList.length}}件平台</span>-->
-              <!--</div>-->
             </div>
           </div>
         </el-form-item>
@@ -180,12 +180,18 @@
 
 <script>
 // api引入
-import { isGoodsLabelNameOk, addGoodsLabel, updateGoodsLabel, getGoodsLabel } from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
+import {
+  addGoodsLabel,
+  getGoodsLabel,
+  isGoodsLabelNameOk,
+  updateGoodsLabel
+} from '@/api/admin/goodsManage/goodsLabel/goodsLabel'
 // 组件引入
 import choosingGoods from '@/components/admin/choosingGoods'
 import catSortDialog from '@/components/admin/addingBusClassDialog'
 // 工具类引入
-import { isStrBlank } from '@/util/typeUtil'
+import {isStrBlank} from '@/util/typeUtil'
+
 export default {
   name: 'addAndUpdateGoodsLabel',
   components: {choosingGoods, catSortDialog},
@@ -307,6 +313,9 @@ export default {
           this.selectedGoodsList = labelData.goodsIds
           this.selectedSortList = labelData.sortIds
           // this.selectedCatList = labelData.catIds
+        } else {
+          this.selectedGoodsList = []
+          this.selectedSortList = []
         }
       })
     },
@@ -346,8 +355,6 @@ export default {
       if (this.goodsLabelData.isAll === 0) {
         params.goodsIds = this.selectedGoodsList
         params.sortIds = this.selectedSortList
-        // params.catIds = this.selectedCatList
-        params.catIds = []
       }
       return params
     },
@@ -356,8 +363,22 @@ export default {
       if (!this._validateGoodsLabelData()) {
         return
       }
+      if (this.isUpdate && this.goodsLabelData.isAll === 2 && (this.selectedGoodsList.length > 0 || this.selectedSortList.length > 0)) {
+        this.$confirm('是否确认清除已设置的商品标签？', '清除商品标签', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.saveAction()
+        }).catch(() => {
+          // 取消按钮回调
+        })
+      } else {
+        this.saveAction()
+      }
+    },
+    saveAction () {
       let params = this._getFormData()
-
       let execFun = this.isUpdate ? updateGoodsLabel : addGoodsLabel
       execFun(params).then(res => {
         if (res.error === 0) {

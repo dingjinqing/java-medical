@@ -13,8 +13,11 @@ import java.util.List;
 @Getter
 @Setter
 public class GoodsLabelDetail extends GoodsLabelBase{
+    public static final Byte NONE_GOODS = 1;
     protected Short listPattern;
     protected Byte isAll;
+    /**是否不指定任何商品*/
+    protected Byte isNone;
 
     protected List<Integer> goodsIds;
     protected List<Integer> sortIds;
