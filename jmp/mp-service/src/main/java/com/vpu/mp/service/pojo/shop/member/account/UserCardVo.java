@@ -112,4 +112,6 @@ public class UserCardVo {
 	private NextGradeCardVo next;
 	private Timestamp buyTime;
 	private WxAppCardExamineVo isExamine;
+	
+	private Byte cardVerifyStatus;
 }
