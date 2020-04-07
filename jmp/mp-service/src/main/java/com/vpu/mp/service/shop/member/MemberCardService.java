@@ -1884,10 +1884,10 @@ public class MemberCardService extends ShopBaseService {
 		// deal with industry and education
 		for (ActiveAuditVo activeAuditVo : results.dataList) {
 			// education
-			String educationStr = MemberEducationEnum.getNameByCode(activeAuditVo.getEducation());
+			String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
 			activeAuditVo.setEducationStr(educationStr);
 			// industry
-			String industry = MemberIndustryEnum.getNameByCode(activeAuditVo.getIndustryInfo());
+			String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
 			activeAuditVo.setIndustry(industry);
 		}
 		return results;
