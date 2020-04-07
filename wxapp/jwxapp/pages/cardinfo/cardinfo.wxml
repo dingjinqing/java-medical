@@ -239,6 +239,33 @@
 		 style="color:{{comColor}}"
 		>兑换更多商品
 		</view>
+		<!-- 限次卡转赠 -->
+		<view class='card-center' wx:if='{{cardInfo.card_give_away != 0 && give_card == 0}}'>
+			<view class="cart-info-lt">
+				<image class="arrow" src="{{imageUrl}}image/wxapp/card_icon_rebate.png" mode='widthFix' />
+				<view class="cart-info-ct">转赠给好友</view>
+			</view>
+			<view wx:if='{{cardInfo.give_away_status == 1}}'>
+				<text style="color:{{comColor}};margin-right:20rpx;" data-status='1'  catchtap="to_rebate">会员卡转赠中</text>
+				<image
+				 src="{{imageUrl}}image/wxapp/right_into.png"
+				 mode="widthFix"
+				 style="width:15rpx;margin-right:0rpx;"
+				 catchtap="cancel_rebate"
+				/>
+			</view>
+			<view wx:elif='{{cardInfo.give_away_status == 2}}' data-status='2' catchtap="to_rebate">
+				<text style="color:{{comColor}}" >{{cardInfo.give_username}} 已领取</text>
+			</view>
+			<view
+			 class="rebate_content"
+			 style="background:{{comColor}}"
+			 data-status='0'
+			 catchtap="to_rebate"
+			 wx:else
+			>转赠
+			</view>
+		</view>
 		<!--开卡送券-->
 		<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
 			<view class="item_title_left">
@@ -428,4 +455,17 @@
 		</view>
 	</view>
 </view>
-
+<view class="pop_rebate" style='position:fixed;z-index:9999;' wx:if='{{rebate_show == true}}'>
+	<view class="zhezhao_coupon">
+		<view class="rebate_p">
+			<view class="rebate_top">转赠会员卡</view>
+			<view style="color:#999;text-align:center;margin-top:15rpx;">
+				<text style="font-size:34rpx;">是否确认将本卡转赠给好友？\n转赠成功后本卡将失效</text>
+			</view>
+			<view class="rebate_bottom">
+				<view bindtap="cancel_rebtae">取消</view>
+				<button open-type="share" style='color:{{comColor}}'>确认转赠</button>
+			</view>
+		</view>
+	</view>
+</view>
