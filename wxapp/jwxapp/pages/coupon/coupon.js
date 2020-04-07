@@ -158,13 +158,12 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    debugger
     var that = this;
     var user = res.target.dataset.user;
     var couponSn = res.target.dataset.coupon_sn;
     var couponId = res.target.dataset.coupon_id;
     var idx = Number(res.target.dataset.index);
-    var cou = 'cou_list[' + idx + '].is_share';
+    // var cou = 'cou_list[' + idx + '].is_share';
     // util.api('/api/wxapp/divsionCoupon/share', function (res) {
     //   that.setData({
     //     [cou]: 1,
