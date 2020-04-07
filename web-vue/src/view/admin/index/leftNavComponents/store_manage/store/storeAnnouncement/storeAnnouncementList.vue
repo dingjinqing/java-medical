@@ -41,6 +41,7 @@
         <el-button
           type="primary"
           size="small"
+          @click="addAnnouncement"
         >添加公告</el-button>
       </div>
     </div>
@@ -65,6 +66,21 @@ export default {
   },
   methods: {
     initDataList () {
+      let params = Object.assign({}, this.queryParams, this.pageParams)
+      announcementListApi(params).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    addAnnouncement () {
+      this.$router.push({
+        path: '/admin/home/main/store/storeAnnouncementAdd'
+      })
     }
   }
 }
