@@ -250,8 +250,9 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                             log.info("首单特惠商品价格修改[goodsName:{},prize{}]",cartGoods.getGoodsName(),cartGoods.getPrdPrice());
                             cartGoods.setPrdPrice(firstSpecial.getProductPrice());
                             cartGoods.setPriceActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-                            cartGoods.setLimitMaxNum(firstSpecial.getLimitMaxNum());
+                            cartGoods.setActivityLimitMaxNum(firstSpecial.getLimitMaxNum());
                             cartGoods.setLimitActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
+                            cartGoods.setActivityLimitType(firstSpecial.getLimitNumberType());
                             //价格确定 -之后的活动不修改价格
                             cartGoods.setPriceStatus(BaseConstant.YES);
                         }

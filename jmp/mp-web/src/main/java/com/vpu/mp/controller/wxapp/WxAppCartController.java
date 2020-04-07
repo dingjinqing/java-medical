@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.wxapp.cart.*;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *  购物车
@@ -38,16 +42,12 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/add")
     public JsonResult addGoodsToCart(@RequestBody @Valid WxAppAddGoodsToCartParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        // 检查库存数量
-        Integer productNumber = shop().cart.getCartProductNumber(user.getUserId(), param.getPrdId())+param.getGoodsNumber();
-        // 检查商品合法性
-        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getPrdId(),productNumber);
-        if (!resultMessage.getFlag()){
-            return fail(resultMessage);
+        param.setUserId(user.getUserId());
+        ResultMessage s = shop().cart.addGoodsToCart(param);
+        if (s.getFlag()){
+            return success();
         }
-        //添加商品到购物车
-        shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber(),param.getActivityId(),param.getActivityType());
-        return success();
+        return fail(s);
     }
 
     /**
