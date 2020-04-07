@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 public class WxAppAddGoodsToCartParam {
 
     private Integer userId;
+    private Integer cartId;
     @NotNull
     @Min(0)
     private  Integer goodsNumber;

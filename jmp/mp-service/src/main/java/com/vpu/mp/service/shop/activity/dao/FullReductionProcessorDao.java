@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -479,5 +480,31 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
         fullGoods.add(FullReductionGoodsCartBo);
         ruleCartIdMap.put(goods.getExtendId(), fullGoods);
     }
+
+    /**
+     * 或计划
+     * @param cartBo
+     */
+    public void internationalMessage(WxAppCartBo cartBo) {
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            goods.getCartActivityInfos().forEach(cartActivityInfo -> {
+                if (cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
+                    CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
+                    if (fullReduction!=null){
+                        CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRule();
+                        //当前选中的国际化
+                        if (fullReductionRule!=null){
+                            String message = fullReductionRuleToString(fullReduction,fullReductionRule);
+                            fullReduction.setCondition(message);
+                        }
+                        fullReduction.getRules().forEach(rule->{
+                            rule.setName(fullReductionRuleToString(fullReduction,rule));
+                        });
+                    }
+                }
+            });
+        }
+    }
+
 
 }

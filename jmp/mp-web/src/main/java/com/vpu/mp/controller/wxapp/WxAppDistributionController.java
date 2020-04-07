@@ -121,10 +121,4 @@ public class WxAppDistributionController extends WxAppBaseController{
         GoodsRebateChangePriceVo goodsRebateChangePriceVo = shop().mpDisGoods.rebateGoodsCfg(param);
         return this.success(goodsRebateChangePriceVo);
     }
-
-    @PostMapping("rebate/goods/changePrice/save")
-    public JsonResult saveRebateGoodsChangePrice(@RequestBody RebateChangeListParam param){
-        shop().mpDisGoods.saveRebateGoodsChangePrice(param);
-        return this.success();
-    }
 }

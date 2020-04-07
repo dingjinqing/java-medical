@@ -88,7 +88,7 @@ public class WechatTaskService extends ShopBaseService {
     }
 
     public void beginDailyTask(){
-        Date date = java.sql.Date.valueOf(LocalDate.now().minusDays(1));
+        Date date = DateUtil.convert(LocalDate.now().minusDays(1));
         WxMaAnalysisService service = mpAuthShopService.getMaServiceByShopId(getShopId()).getAnalysisService();
         WxGetWeAnalysService maService=open().getMaExtService();
 
@@ -173,10 +173,14 @@ public class WechatTaskService extends ShopBaseService {
                 return ;
             }
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
-            LocalDate localDate = DateUtil.convert(date);
             result.forEach(v->{
                 MpVisitPageRecord record = db().newRecord(MP_VISIT_PAGE,v);
-                record.setRefDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT, localDate));
+                record.setEntrypagePv(v.getEntryPagePv().intValue());
+                record.setExitpagePv(v.getExitPagePv().intValue());
+                record.setPageSharePv(v.getPageSharePv().intValue());
+                record.setPageShareUv(v.getPageShareUv().intValue());
+                record.setPageStaytimePv(v.getPageStayTimePv().doubleValue());
+                record.setRefDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT, date));
                 list.add(record);
             });
             db().batchInsert(list).execute();

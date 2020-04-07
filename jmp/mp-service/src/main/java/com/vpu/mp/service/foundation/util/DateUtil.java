@@ -42,6 +42,9 @@ public final class DateUtil {
     //时分秒最大
     public static final LocalTime maxTime = LocalTime.of(23, 59, 59);
 
+
+    private static final  ZoneId defaultZoneId = ZoneId.systemDefault();
+
 	/**
 	 * 转换日期格式输出
 	 * @param format
@@ -77,9 +80,16 @@ public final class DateUtil {
      * @return localDate
      */
     public static LocalDate convert(Date source) {
-        ZoneId defaultZoneId = ZoneId.systemDefault();
         Instant instant = source.toInstant();
         return  instant.atZone(defaultZoneId).toLocalDate();
+    }
+    /**
+     * 日期类型转换
+     * @param source
+     * @return localDate
+     */
+    public static Date convert(LocalDate source) {
+        return  Date.from(source.atStartOfDay(defaultZoneId).toInstant());
     }
 
 	/**
@@ -89,7 +99,7 @@ public final class DateUtil {
 	 */
 	public static LocalDateTime convertLocalDate(Date date) {
 		Instant instant = date.toInstant();
-		ZoneId zone = ZoneId.systemDefault();
+        ZoneId zone = ZoneId.systemDefault();
 		return  LocalDateTime.ofInstant(instant, zone);
 	}
 
