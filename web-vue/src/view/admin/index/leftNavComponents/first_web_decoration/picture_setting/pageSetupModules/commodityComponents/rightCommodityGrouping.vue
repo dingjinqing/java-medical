@@ -340,6 +340,7 @@
       :backDataArr='backDataArr'
       @BusClassTrueDetailData='busClassTrueDetailData'
       :singleElection="true"
+      :showFatherNode="true"
     />
     <!--商品标签弹窗-->
     <AddProductLabel
@@ -615,9 +616,9 @@ export default {
       } else {
         this.clickEditBtn = false
       }
-      console.log(flag)
+      console.log(typeof flag)
       if (flag === '') flag = 0
-      switch (flag) {
+      switch (Number(flag)) {
         case 0:
           this.classificationDialogVisible = true
           break

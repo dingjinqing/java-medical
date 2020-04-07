@@ -23,7 +23,7 @@
         <!-- 砍价 -->
         <div
           class="voucher box_style"
-          @click="to('bargain')"
+          @click="to('kanjia')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/kj.png'"
@@ -99,7 +99,7 @@
         <!-- 好友代付 -->
         <div
           class="voucher box_style"
-          @click="to('friend_pay')"
+          @click="to('insteadpay')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/instead_pay.png'"
@@ -143,7 +143,7 @@
       <div class="box">
         <!-- 分享有礼 -->
         <div
-          @click="to('share_polite')"
+          @click="to('share_award')"
           class="voucher box_style"
         >
           <div class="activity_img"><img
@@ -236,7 +236,7 @@
         <!-- 定金膨胀 -->
         <div
           class="voucher box_style"
-          @click="to('presale_view')"
+          @click="to('presale')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/djpz.png'"
@@ -313,7 +313,7 @@
         <!-- 打包一口价 -->
         <div
           class="voucher box_style"
-          @click="to('package_price')"
+          @click="to('package')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/dbykj.png'"
@@ -327,7 +327,7 @@
         <!-- 加价购 -->
         <div
           class="voucher box_style"
-          @click="to('increase_purchase')"
+          @click="to('purchase_price')"
         >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/jjg.png'"
@@ -424,7 +424,7 @@
               alt=""
             ></div>
           <div class="activity_title">
-            <p>{{$t('marketManage.formStatistical')}}</p>
+            <p>{{$t('marketManage.form_decoration')}}</p>
             <span>{{$t('marketManage.formStatisticalDesc')}}</span>
           </div>
         </div>

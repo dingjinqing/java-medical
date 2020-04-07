@@ -59,7 +59,7 @@ module.exports = {
     coupon: '优惠券',
     hit: '打',
     fullReduction: '满减',
-    fullMemberDiscount: '会员满减价',
+    fullMemberDiscount: '会员价',
     membershipExclusive: '会员专享',
     goodsDeleted: '商品已删除', // 砍价模块部分
     endOfDistance: '距结束',

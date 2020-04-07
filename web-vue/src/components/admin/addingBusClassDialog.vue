@@ -69,6 +69,7 @@ export default {
     dialogVisible: Boolean, // 弹窗调起flag
     classFlag: Number,
     backDataArr: Array,
+    showFatherNode: Boolean,
     singleElection: {
       type: Boolean,
       default: false
@@ -182,15 +183,37 @@ export default {
       if (this.flag === 2) {
         detailData = this.$refs.cardTree.getCheckedNodes()
       } else {
-        detailData = this.$refs.sortTree.getCheckedNodes()
+        if (this.showFatherNode) {
+          detailData = this.getSimpleCheckedNodes(this.$refs.sortTree.store)
+        } else {
+          detailData = this.$refs.sortTree.getCheckedNodes()
+        }
       }
-      console.log(this.$refs.sortTree.getCheckedNodes())
+      console.log(this.getSimpleCheckedNodes(this.$refs.sortTree.store), this.showFatherNode, this.flag)
       console.log(arr, detailData)
       this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
       this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
       this.$emit('update:dialogVisible', false)
       this.busClassDialogVisible = false
     },
+    getSimpleCheckedNodes (store) {
+      const checkedNodes = []
+      const traverse = function (node) {
+        const childNodes = node.root ? node.root.childNodes : node.childNodes
+
+        childNodes.forEach(child => {
+          if (child.checked) {
+            checkedNodes.push(child.data)
+          }
+          if (child.indeterminate) {
+            traverse(child)
+          }
+        })
+      }
+      traverse(store)
+      return checkedNodes
+    },
+
     defaultData (backData, flag) {
       console.log(flag)
       this.flag = flag

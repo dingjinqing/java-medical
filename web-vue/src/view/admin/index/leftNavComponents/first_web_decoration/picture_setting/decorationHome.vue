@@ -80,7 +80,7 @@
           >
             <div
               class="decContent"
-              :style="pageSetData.bg_types==='1'?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:cover`:`background-color:${pageSetData.page_bg_color}`"
+              :style="pageSetData.bg_types===1?`backgroundImage:url('${pageSetData.page_bg_image}');background-repeat:no-repeat;background-size:100% 100%`:`background-color:${pageSetData.page_bg_color}`"
             >
 
               <div
@@ -124,7 +124,7 @@
                   >
                     <!--模块-->
                     <div
-                      :style="pageSetData.show_margin==='1'?`margin-bottom:${pageSetData.margin_val}px`:''"
+                      :style="pageSetData.show_margin===1?`margin-bottom:${pageSetData.margin_val}px`:''"
                       @click.prevent="handleToClickModule(index)"
                     >
                       <components

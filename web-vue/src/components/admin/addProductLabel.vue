@@ -140,13 +140,28 @@ export default {
         console.log(this.tableData)
       }
     },
-    brandBackData (arr) {
-      console.log(arr, this.$refs['labelTable'])
-      //  labelTable
+    callAddProductLabel (newVal) {
+      console.log(newVal)
+      if (newVal) {
+        this.visible = true
+      }
+
       this.$nextTick(() => {
-        if (arr.length && this.$refs['labelTable']) {
-          arr.forEach(row => {
-            this.$refs.labelTable.toggleRowSelection(row)
+        console.log(this.tableData, this.brandBackData)
+        if (this.brandBackData.length) {
+          this.checkBoxData = []
+          this.tableData.forEach((item, index) => {
+            this.brandBackData.forEach(row => {
+              if (item.id === row) {
+                this.checkBoxData.push(item)
+              }
+            })
+          })
+          console.log(this.checkBoxData)
+          this.checkBoxData.forEach(row => {
+            this.$nextTick(() => {
+              this.$refs.labelTable.toggleRowSelection(row)
+            })
           })
         } else if (this.callAddProductLabel) {
           this.$nextTick(() => {
@@ -156,11 +171,6 @@ export default {
       })
 
       this.isElection = this.singleElection
-    },
-    callAddProductLabel (newVal) {
-      if (newVal) {
-        this.visible = true
-      }
     }
   },
   mounted () {

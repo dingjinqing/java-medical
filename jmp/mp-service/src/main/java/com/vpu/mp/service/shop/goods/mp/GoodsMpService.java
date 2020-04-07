@@ -646,8 +646,7 @@ public class GoodsMpService extends ShopBaseService {
                     brandIds.add(sortGroup.getSortId());
                 } else {
                     // 商家分类
-                    List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(sortGroup.getSortId());
-                    sortIds.addAll(targetIds);
+                    sortIds.add(sortGroup.getSortId());
                 }
             }
         }
@@ -692,7 +691,8 @@ public class GoodsMpService extends ShopBaseService {
             idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
         }
         if (sortIds.size() > 0) {
-            idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+            List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(sortIds);
+            idCondition = idCondition.or(GOODS.SORT_ID.in(targetIds));
         }
         if (brandIds.size() > 0) {
             idCondition = idCondition.or(GOODS.BRAND_ID.in(brandIds));

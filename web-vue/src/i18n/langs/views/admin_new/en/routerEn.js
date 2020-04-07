@@ -165,7 +165,7 @@ export const en = {
     'activityEffectData'
   ],
   // 营销管理 砍价
-  bargain: ['Marketing management', 'Bargain'],
+  kanjia: ['Marketing management', 'Bargain'],
   // 营销管理 砍价
   bargain_activity: ['Marketing management', 'Bargaining activity'],
   // 营销管理 砍价订单
@@ -299,7 +299,7 @@ export const en = {
   // // 营销管理 组团瓜分积分
   // group_integration: ['Marketing management', 'Group integration'],
   // 营销管理 好友代付
-  friend_pay: ['Marketing management', 'friends paid'],
+  insteadpay: ['Marketing management', 'friends paid'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['Marketing management', 'Lucky draw'],
   // 营销管理 幸运大抽奖  抽奖明细
@@ -307,7 +307,7 @@ export const en = {
   // 营销管理 幸运大抽奖 获取新用户明细
   lottery_activity_newUserList: ['Marketing management', 'Lucky draw', 'Get new user details'],
   // 营销管理 分享有礼
-  share_polite: ['Marketing management', 'share polite'],
+  share_award: ['Marketing management', 'share polite'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: [
     'Marketing management',
@@ -331,7 +331,7 @@ export const en = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['Marketing management', 'Limited Time Price Reduction', 'Effect Data'],
   // 营销管理 打包一口价
-  package_price: ['Marketing management', 'Package Price'],
+  package: ['Marketing management', 'Package Price'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: [
     'Marketing management',
@@ -381,7 +381,6 @@ export const en = {
   // 营销管理 满包邮
   shipping: ['Marketing Management', 'Shipping'],
   // 营销管理 加价购
-  increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: [
     'Marketing management',
@@ -433,6 +432,7 @@ export const en = {
   collectGift: ['Marketing management', 'Collect Gift'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
+
   // 营销管理 支付有礼
   payreward: ['Marketing management', 'Pay Reward'],
   // 营销管理 添加支付有礼活动
@@ -443,7 +443,6 @@ export const en = {
   full_cut: ['Marketing management', 'Full Discount Full Cut'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
-
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情
