@@ -131,7 +131,7 @@ public enum MemberIndustryEnum {
 		this.name = name;
 	}
 	
-	public static String getNameByCode(Byte code) {
+	public static String getNameByCode(Integer code) {
 		if(code == null) {
 			return null;
 		}
