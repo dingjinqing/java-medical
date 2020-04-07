@@ -335,6 +335,8 @@ export const cn = {
   feedbackStatistics: ['营销管理', '表单统计', '反馈统计'],
   // 营销管理 表单统计  查看详情页
   feedbackDetails: ['营销管理', '表单统计', '反馈列表', '反馈详情'],
+  // 直播
+  live_broadcast: ['营销管理', '直播'],
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情

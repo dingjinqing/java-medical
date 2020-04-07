@@ -334,6 +334,8 @@ export const en = {
     'share polite',
     'add share polite activity'
   ],
+  // live
+  live_broadcast: ['Marketing management', 'live'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
