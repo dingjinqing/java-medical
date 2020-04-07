@@ -175,6 +175,9 @@ global.wxPage({
     let cartId = e.currentTarget.dataset.cart_id;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
+    let activityType = e.currentTarget.dataset.activity_type;
+    let activityId = e.currentTarget.dataset.activity_id;
+
     let limitMinStyle = e.currentTarget.dataset.limit_min_style;
     let limitMaxStyle = e.currentTarget.dataset.limit_max_style;
     if (type == 'add' && limitMaxStyle == 1) {
@@ -185,14 +188,19 @@ global.wxPage({
       util.showModal('提示', '最小限购量为' + cartNumber + '个');
       return false
     }
-    util.api('/api/wxapp/cart/change', res => {
+
+    util.api('/api/wxapp/cart/add', res => {
       if (res.error == 0) {
         this.requestCartList()
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     }, {
-      cartId: cartId,
-      productId: prdId,
-      cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
+      goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
+      prdId,
+      activityType,
+      activityId
     })
   },
 
@@ -201,6 +209,10 @@ global.wxPage({
     var that = this;
     var value = Number(e.detail.value)
     var cartId = e.currentTarget.dataset.cart_id
+    var prdId = e.currentTarget.dataset.prd_id
+    var activityType = e.currentTarget.dataset.activity_type
+    var activityId = e.currentTarget.dataset.activity_id
+
     var re = /^[1-9]\d*$/
     if (!value || !re.test(value)) {
       util.showModal('提示', '输入内容不正确');
@@ -209,14 +221,18 @@ global.wxPage({
     }
     that.data.canBuyGoodsList.forEach((item, index) => {
       if (item.cartId == cartId) {
-        util.api('/api/wxapp/cart/change', res => {
+        util.api('/api/wxapp/cart/add', res => {
           if (res.error == 0) {
             this.requestCartList()
+          } else {
+            util.showModal('提示', res.message)
+            return false
           }
         }, {
-          cartId: item.cartId,
-          productId: item.productId,
-          cartNumber: value
+          goodsNumber: value,
+          prdId,
+          activityType,
+          activityId
         })
       }
     })
