@@ -19,14 +19,14 @@
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
       >瓜分积分使用教程</el-link>
       <el-link
-        v-if="$route.name == 'friend_pay'"
+        v-if="$route.name == 'insteadpay'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"
         :underline="false"
         target="_blank"
       >好用代付使用教程</el-link>
       <el-link
-        v-if="$route.name == 'formStatistical'"
+        v-if="$route.name == 'form_decoration'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=65&extra=page=1&filter=sortid&sortid=15"
         type="primary"
         :underline="false"
@@ -45,7 +45,7 @@ export default {
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
       nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'formStatistical', 'formStatistical', 'pin_group', 'bargain', 'bargain', 'bargain', 'bargain', 'bargain', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integralExchangeHome', 'integralExchangeHome', 'integralExchangeHome', 'integralExchangeHome', 'all_message_push', 'all_message_push', 'all_message_push', 'gift']// 跳转池
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift']// 跳转池
     }
   },
   watch: {
@@ -239,14 +239,14 @@ export default {
             })
           } else if (name === '表单统计') {
             this.$router.push({
-              name: 'formStatistical'
+              name: 'form_decoration'
             })
           }
         } else {
           console.log(this.$route)
           if (name === '表单统计') {
             this.$router.push({
-              name: 'formStatistical'
+              name: 'form_decoration'
             })
           } else if (name === '砍价') {
             this.$router.push({

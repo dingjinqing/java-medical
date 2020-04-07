@@ -891,6 +891,7 @@ export default {
     }
   }
   .right {
+    overflow: hidden;
     flex: 1;
     .rightTop {
       width: 100%;

@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n" />
-<view class="goods-group-container" id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
+<view class="goods-group-container" id="c_{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
 	<!-- 顶部分组 -->
 	<block wx:if="{{m.position_style == '0' }}">
 		<view class='content_scroll_view'>
@@ -215,6 +215,7 @@
 										 wx:for="{{item.activityLabelData}}"
 										 wx:for-item="itemC"
 										 wx:for-index='indexC'
+										 wx:if="{{indexC!=(item.activityLabelData.length-1)|| indexC==0}}"
 										>
 											{{itemC.text}}
 										</view>
@@ -271,7 +272,7 @@
 						 data-click='{{1}}'
 						 data-index="{{index}}"
 						 data-idx="{{m.cur_idx}}"
-						 wx:if="{{m.more_flag == 1 && index == 6 }}"
+						 wx:if="{{m.more_flag == 1 && index == 5 }}"
 						>
 							<view>{{i18n.$t(localePack,'components.decorate.viewMore')}}</view>
 							<view class="see_line" />

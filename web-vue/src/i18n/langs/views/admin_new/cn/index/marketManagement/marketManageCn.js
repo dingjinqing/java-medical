@@ -53,7 +53,7 @@ export const cn = {
   evaluationPoliteDesc: '引导用户评价商品，参与营销活动',
   collectionPolite: '收藏有礼',
   collectionPoliteDesc: '引导用户收藏小程序，提升留存',
-  formStatistical: '表单统计',
+  form_decoration: '表单统计',
   formStatisticalDesc: '收集用户信息',
   measurement: '测评',
   measurementDesc: '兴趣测评，让你更了解用户',

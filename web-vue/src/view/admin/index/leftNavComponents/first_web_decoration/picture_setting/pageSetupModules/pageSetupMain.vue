@@ -52,7 +52,7 @@
           >{{$t('pageSetUp.notAdd')}}</el-radio>
           <div
             class="marginHeight"
-            v-if="ruleForm.show_margin==='1'"
+            v-if="ruleForm.show_margin===1"
           >
             <span
               :class="moduleHeight"
@@ -466,6 +466,7 @@ export default {
       this.tuneUp = !this.tuneUp
     },
     handleSelectImg ({ imgUrl }) {
+      console.log(imgUrl)
       if (this.picFlag) {
         this.ruleForm.pictorial.share_img_path = imgUrl
       } else {

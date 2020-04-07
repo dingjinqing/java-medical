@@ -10,8 +10,8 @@ export const cn = {
     label: '测试2'
   }],
   newMicroPage: '新建微页面',
-  titleTips: '当前版本未旗舰版，不限制微页面个',
-  hiddenTips: '体验版最多创建5页微页面，基础班最多创建5页微页面，高级版最多创建50微页面，旗舰版不限制微页面个数',
+  titleTips: '当前版本为旗舰版，不限制微页面个数',
+  hiddenTips: '体验版最多创建5页微页面，基础版最多创建5页微页面，高级版最多创建50页微页面，旗舰版不限制微页面个数',
   more: '更多',
   pageName: '页面名称',
   placeholderText: '请输入页面名称',

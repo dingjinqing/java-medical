@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -102,7 +103,7 @@ public class GoodsGroupMpService extends ShopBaseService {
                     brandIds.add(sortGroup.getSortId());
                 } else {
                     // 商家分类
-                    List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(sortGroup.getSortId());
+                    List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(Collections.singletonList(sortGroup.getSortId()));
                     sortIds.addAll(targetIds);
                 }
             }
@@ -147,7 +148,8 @@ public class GoodsGroupMpService extends ShopBaseService {
             idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
         }
         if (sortIds.size() > 0) {
-            idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+            List<Integer> targetIds = goodsBrandSortMp.getChildrenIds(sortIds);
+            idCondition = idCondition.or(GOODS.SORT_ID.in(targetIds));
         }
         if (brandIds.size() > 0) {
             idCondition = idCondition.or(GOODS.BRAND_ID.in(brandIds));

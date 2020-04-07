@@ -2248,7 +2248,8 @@ public class GoodsService extends ShopBaseService {
                     List<Integer> catIds = goodsLabelCouple.getGoodsLabelCouple(Collections.singletonList(param.getLabelId()), GoodsLabelCoupleTypeEnum.CATTYPE.getCode());
                     Condition idCondition = DSL.noCondition();
                     if (sortIds.size() > 0) {
-                        idCondition = idCondition.or(GOODS.SORT_ID.in(sortIds));
+                        List<Integer> targetIds = goodsSort.getChildrenIdByParentIdsDao(sortIds);
+                        idCondition = idCondition.or(GOODS.SORT_ID.in(targetIds));
                     }
                     if (goodsIds.size() > 0) {
                         idCondition = idCondition.or(GOODS.GOODS_ID.in(goodsIds));
@@ -2265,7 +2266,8 @@ public class GoodsService extends ShopBaseService {
             }
 
             if (param.getSortId() != null) {
-                condition = condition.and(GOODS.SORT_ID.eq(param.getSortId()));
+                List<Integer> targetIds = goodsSort.getChildrenIdByParentIdsDao(Collections.singletonList(param.getSortId()));
+                condition = condition.and(GOODS.SORT_ID.in(targetIds));
             }
 
             if (param.getBrandId() != null) {

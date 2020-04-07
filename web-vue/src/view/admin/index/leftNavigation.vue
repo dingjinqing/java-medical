@@ -333,7 +333,7 @@ export default {
             imgUrl: this.$imageHost + '/image/admin/icon_left/bargain.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/bargain_h.png',
             span: '',
-            name: 'bargain',
+            name: 'kanjia',
             flag: false
           },
           {

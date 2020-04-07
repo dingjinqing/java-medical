@@ -11,9 +11,9 @@
 							<text class="get_status">{{carStatus}}</text>
 						</view>
 						<view class="card_exp">
-              <text wx:if="{{cardInfo.expireType == 0}}">
-                有效期：{{cardInfo.cardExpireTime}}
-              </text>
+							<text wx:if="{{cardInfo.expireType == 0}}">
+              有效期：{{cardInfo.cardExpireTime}}
+            </text>
 							<text wx:elif="{{cardInfo.expireType == 1}}">有效期：{{cardInfo.startDate}} 至 {{cardInfo.endDate}}</text>
 							<text wx:elif="{{cardInfo.expireType == 2}}">永久有效</text>
 						</view>
@@ -32,8 +32,8 @@
 					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
 						<!-- ￥10000 -->
 						<image
-             wx:if="{{cardInfo.cardNo !== null}}"
 						 mode="widthFix"
+						 wx:if="{{cardInfo.cardNo !== null}}"
 						 class="qrcode"
 						 bindtap="showQrCode"
 						 src="{{imageUrl}}image/wxapp/erweima1.png"
@@ -208,24 +208,74 @@
 			</view>
 			<view class="item_title_right">
 				<view wx:if="{{cardInfo.isExchang === 2}}">全部商品 ></view>
-        <view wx:else>查看 ></view>
+				<view wx:else>查看 ></view>
 			</view>
 		</view>
 		<view class="card_item_content" wx:if="{{cardInfo.cardType === 1 && cardInfo.isExchang != 0}}">
-		<view
-		 class="content_item goods_item"
-		 wx:for="{{cardInfo.goodsList}}"
-		 wx:for-item="goodsListItem"
-		 wx:for-index="goodsListIndex"
-		 wx:key="goodsListIndex"
-		>
-			<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
-			<view class="goods_right">
-				<view class="goods_name">{{goodsListItem.goodsName}}</view>
-				<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}}</view>
+
+			<view
+			 class="content_item goods_item"
+			 wx:for="{{cardInfo.goodsList}}"
+			 wx:for-item="goodsListItem"
+			 wx:for-index="goodsListIndex"
+			 wx:key="goodsListIndex"
+			>
+				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
+				<view class="goods_right">
+					<view class="goods_name">{{goodsListItem.goodsName}}</view>
+					<view class="goods_price" style="color:{{comColor}}">￥{{goodsListItem.shopPrice}} </view>
+				</view>
+
 			</view>
 		</view>
-	</view>
+		<!--开卡送券-->
+		<view class="card_item_title" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1}}">
+			<view class="item_title_left">
+				<image mode="widthFix" src="{{ imageUrl }}/image/admin/card_send_coupon.png" />
+			</view>
+			<view class="item_title_content">
+				开卡送券
+			</view>
+	
+		</view>
+    <view class="card_item_content" wx:if="{{cardInfo.cardType === 5 && cardInfo.sendCouponSwitch == 1&&cardInfo.coupons}}">
+
+			<block wx:if="{{cardInfo.sendCouponType == 0}}">
+						<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>本卡后获赠以下优惠券</text>
+						<view class='coupon_list' wx:for="{{cardInfo.coupons}}" wx:key="id"  bindtap="viewCoupon">
+							<view class='coupon_left' style="background:{{comColor1}};">
+								<view class='coupon_left_top'>
+                <!--
+                <block wx:if="{{item.act_code == 'voucher'}}">
+										￥
+										<text>{{item.denomination}}</text>
+									</block>
+                -->
+									
+									<block>
+										<text>2</text>折
+									</block>
+								</view>
+								<view class='conpon_left_bottom'>use_condition</view>
+							</view>
+							<view class="coupon_right">
+								<view class='coupon_name'>腾飞</view>
+								<view class='coupon_condition'>问问</view>
+								<view class='coupon_valid_until'>2020-03-12</view>
+							</view>
+						</view>
+					</block>
+					<block wx:else>
+						<text class="counponTitle">领取<text wx:if="{{cardInfo.activation == 1}}">并激活</text>本卡后获赠优惠券礼包</text>
+						<view class='package_info' data-pack_id="{{cardInfo.couponPack.id}}" bindtap="to_cou_package" style="background-color: {{bgColor}};color: {{comColor1}};">
+              <!--
+              {{card_info.couponPack.act_name}}
+              -->
+              腾飞测试
+						</view>
+					</block>
+		</view>
+		<!--门店-->
 		<view class="card_item_title" bindtap='toStoreList' wx:if="{{cardInfo.storeUseSwitch >= 0}}">
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/admin/store_icon.png" />
@@ -309,6 +359,7 @@
 			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 		</view>
 	</view>
+
 	<view class="flex_footer">
 		<view
 		 class="footer_btn"
@@ -321,37 +372,33 @@
 		</view>
 	</view>
 	<include src="../common/footer.wxml" />
-	
-	
-</view>
 
-
-
-<v-poster image="{{qrCode}}" show="{{showQrcode}}" />
-<!-- 绑定手机号弹窗 -->
-<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以开通会员卡" />
-<!--领取码弹窗-->
-<view class='zhezhao_coupon' wx:if="{{is_receive == 1}}" bindtap='closeIpt' />
-<view class='coupon_code' wx:if="{{receive_action == 1}}">
-	<view>
-		<view class='code_ipt'>
-			<input placeholder="请输入领取码" bindinput='bindCode' />
-		</view>
-		<view class='code_btn'>
-			<view bindtap='closeIpt'>取消</view>
-			<view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+	<v-poster image="{{qrCode}}" show="{{showQrcode}}" />
+	<!-- 绑定手机号弹窗 -->
+	<v-popup-get-phone-number bind:get_phone_number_ok="bindGetPhoneNumberOk" show="{{is_block == 1}}" content="您需要绑定手机号才可以开通会员卡" />
+	<!--领取码弹窗-->
+	<view class='zhezhao_coupon' wx:if="{{is_receive == 1}}" bindtap='closeIpt' />
+	<view class='coupon_code' wx:if="{{receive_action == 1}}">
+		<view>
+			<view class='code_ipt'>
+				<input placeholder="请输入领取码" bindinput='bindCode' />
+			</view>
+			<view class='code_btn'>
+				<view bindtap='closeIpt'>取消</view>
+				<view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+			</view>
 		</view>
 	</view>
-</view>
-<view class="coupon_code" wx:if="{{receive_action == 2}}">
-	<view>
-		<view class="code_ipt">
-			<input placeholder="请输入卡号" bindinput='bindCardNum' />
-			<input placeholder="请输入密码" bindinput='bindCardPwd' />
-		</view>
-		<view class='code_btn'>
-			<view bindtap='closeIpt'>取消</view>
-			<view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+	<view class="coupon_code" wx:if="{{receive_action == 2}}">
+		<view>
+			<view class="code_ipt">
+				<input placeholder="请输入卡号" bindinput='bindCardNum' />
+				<input placeholder="请输入密码" bindinput='bindCardPwd' />
+			</view>
+			<view class='code_btn'>
+				<view bindtap='closeIpt'>取消</view>
+				<view bindtap='fetchCard' style='color:{{comColor}}'>确认</view>
+			</view>
 		</view>
 	</view>
 </view>
