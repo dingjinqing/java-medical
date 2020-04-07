@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { announcementAddApi, announcementDetailApi, announcementUpdateApi } from '@/api/admin/storeManage/storeAnnouncement.js'
 export default {
   components: {
     tinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
@@ -81,20 +82,65 @@ export default {
         keyword: '',
         desc: '',
         content: '',
-        status: 0
+        status: 1
       },
       formRules: {
         title: [{ required: true, message: '请填写标题', trigger: 'blur' }]
       }
     }
   },
+  mounted () {
+    if (this.$route.query.articleId) {
+      this.initData()
+    }
+  },
   methods: {
+    initData () {
+      let id = this.$route.query.articleId
+      announcementDetailApi({
+        articleId: id
+      }).then(res => {
+        if (res.error === 0) {
+          console.log(res)
+          this.form = Object.assign({}, this.form, res.content)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
     editorInputHandle (e) {
       console.log(e)
     },
     saveHandle () {
+      let that = this
       this.$refs.announcementForm.validate(valid => {
         console.log(valid)
+        let articleId = that.$route.query.articleId
+        let params = Object.assign({}, this.form)
+        if (!articleId) {
+          announcementAddApi(params).then(res => {
+            if (res.error === 0) {
+              that.$message.success('保存成功')
+              that.$router.push({
+                path: '/admin/home/main/store/storeAnnouncement'
+              })
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        } else {
+          params.articleId = articleId
+          announcementUpdateApi(params).then(res => {
+            if (res.error === 0) {
+              that.$message.success('更新成功')
+              that.$router.push({
+                path: '/admin/home/main/store/storeAnnouncement'
+              })
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
       })
     }
   }
