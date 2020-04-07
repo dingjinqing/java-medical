@@ -106,3 +106,19 @@ view,text,input{
     width: 140rpx;
     height: 140rpx;
 }
+.must_choose{
+  color: #e64340;
+}
+.customTitle{
+  padding: 20rpx 30rpx 20rpx 0rpx;
+border-bottom: 1px solid #eee;
+
+}
+.custom_area{
+  padding: 0 10rpx 20rpx;
+}
+.custom_area .textarea{
+  border: 1px solid #eee;
+  width: 640rpx;
+  padding: 10rpx;
+}
