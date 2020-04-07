@@ -1302,7 +1302,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1391,6 +1391,7 @@ export default {
       imageSize: [], // 图片大小
       isDraggable: false, // 是否支持多选
       orderRadio: '1',
+      imgIndex: 0, // 服务自定义模块图片索引
 
       leftData: [{
         module_name: 'global',
@@ -1864,9 +1865,10 @@ export default {
       }
     },
     // 切换图片
-    changeImgHandler (title, name) {
+    changeImgHandler (title, name, key) {
       this.moduleTitle = title
       this.module_name = name
+      this.imgIndex = key
       this.selfImgDialogShow = !this.selfImgDialogShow
       if (name !== '') {
         this.imageSize = [50, 50]
@@ -1906,10 +1908,19 @@ export default {
           this.bgImage = this.imgHost + this.bgImg
         } else {
           if (this.rightData[i].module_name === this.moduleTitle) {
-            for (let j = 0; j < this.rightData[i].content.length; j++) {
-              if (this.rightData[i].content[j].icon_name === this.module_name) {
-                this.rightData[i].content[j].icon = '/' + imgObj.imgPath
-                return
+            if (this.rightData[i].module_name === 'service') {
+              for (let j = 0; j < this.rightData[i].content.length; j++) {
+                if (j === this.imgIndex) {
+                  this.rightData[i].content[j].icon = '/' + imgObj.imgPath
+                  return
+                }
+              }
+            } else {
+              for (let j = 0; j < this.rightData[i].content.length; j++) {
+                if (this.rightData[i].content[j].icon_name === this.module_name) {
+                  this.rightData[i].content[j].icon = '/' + imgObj.imgPath
+                  return
+                }
               }
             }
           }
@@ -1918,10 +1929,19 @@ export default {
       // 左侧显示
       for (let i = 0; i < this.leftData.length; i++) {
         if (this.leftData[i].module_name === this.moduleTitle) {
-          for (let j = 0; j < this.leftData[i].content.length; j++) {
-            if (this.leftData[i].content[j].icon_name === this.module_name) {
-              this.leftData[i].content[j].icon = imgObj.imgPath
-              return
+          if (this.leftData[i].module_name === 'service') {
+            for (let j = 0; j < this.leftData[i].content.length; j++) {
+              if (j === this.imgIndex) {
+                this.leftData[i].content[j].icon = '/' + imgObj.imgPath
+                return
+              }
+            }
+          } else {
+            for (let j = 0; j < this.leftData[i].content.length; j++) {
+              if (this.leftData[i].content[j].icon_name === this.module_name) {
+                this.leftData[i].content[j].icon = imgObj.imgPath
+                return
+              }
             }
           }
         }
@@ -2285,6 +2305,7 @@ export default {
 
 .serve_img {
   margin-bottom: 10px;
+  height: 25px;
 }
 
 .serve_img img {
@@ -2293,6 +2314,7 @@ export default {
 }
 
 .serve_word {
+  height: 24px;
   font-size: 12px;
   color: #666;
 }

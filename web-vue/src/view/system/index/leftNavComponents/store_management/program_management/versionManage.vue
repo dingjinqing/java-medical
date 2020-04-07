@@ -166,6 +166,12 @@ export default {
       }, {
         value: '2',
         label: this.$t('programVersion.goodVersion')
+      }, {
+        value: '3',
+        label: this.$t('programVersion.ordinaryLiveVersion')
+      }, {
+        value: '4',
+        label: this.$t('programVersion.goodLiveVersion')
       }],
       operationData: this.$t('programVersion.operationData'),
       currentPage: 1,
@@ -196,6 +202,10 @@ export default {
               item.versionVal = this.$t('programVersion.ordinaryVersion')
             } else if (item.packageVersion === 2) {
               item.versionVal = this.$t('programVersion.goodVersion')
+            } else if (item.packageVersion === 3) {
+              item.versionVal = this.$t('programVersion.ordinaryLiveVersion')
+            } else if (item.packageVersion === 4) {
+              item.versionVal = this.$t('programVersion.goodLiveVersion')
             }
           })
 

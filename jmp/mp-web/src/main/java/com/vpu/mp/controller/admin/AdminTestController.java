@@ -227,10 +227,11 @@ public class AdminTestController extends AdminBaseController {
     
     @RequestMapping(value = "/api/admin/test/live")
     public JsonResult testLive() {
-    	logger().info("直播列表测试");
-        List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
-        logger().info("直播列表测试结束");
-        return success(getliveinfo);
+    	logger().info("直播列表导入测试");
+        //List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
+        saas.getShopApp(245547).liveService.getLiveList();
+        logger().info("直播列表导入测试结束");
+        return success();
 
     }
 }

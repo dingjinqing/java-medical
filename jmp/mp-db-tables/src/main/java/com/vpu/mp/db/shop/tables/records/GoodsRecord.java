@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
 
-    private static final long serialVersionUID = 106801726;
+    private static final long serialVersionUID = 928686398;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_goods.goods_id</code>.
@@ -141,28 +141,28 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> {
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
     public void setGoodsWeight(BigDecimal value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.goods_weight</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.goods_weight</code>. 商品重量，默认规格重量或自定义规格中的最小重量
      */
     public BigDecimal getGoodsWeight() {
         return (BigDecimal) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * Setter for <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
     public void setMarketPrice(BigDecimal value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_goods.market_price</code>.
+     * Getter for <code>mini_shop_471752.b2c_goods.market_price</code>. 市场价格，多规格时取最高
      */
     public BigDecimal getMarketPrice() {
         return (BigDecimal) get(9);

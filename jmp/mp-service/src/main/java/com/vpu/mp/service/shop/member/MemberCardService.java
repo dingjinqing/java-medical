@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
@@ -1885,11 +1886,17 @@ public class MemberCardService extends ShopBaseService {
 		// deal with industry and education
 		for (ActiveAuditVo activeAuditVo : results.dataList) {
 			// education
-			String educationStr = MemberEducationEnum.getNameByCode(activeAuditVo.getEducation());
-			activeAuditVo.setEducationStr(educationStr);
+			if(activeAuditVo.getEducation()!= null) {
+				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
+				activeAuditVo.setEducationStr(educationStr);
+			}
+			
 			// industry
-			String industry = MemberIndustryEnum.getNameByCode(activeAuditVo.getIndustryInfo());
-			activeAuditVo.setIndustry(industry);
+			if(activeAuditVo.getIndustryInfo() != null) {
+				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
+				activeAuditVo.setIndustry(industry);
+			}
+			
 		}
 		return results;
 
@@ -2174,14 +2181,6 @@ public class MemberCardService extends ShopBaseService {
 	public MemberCardPageDecorationVo getPageIndexMemberCard(ModuleCard moduleCard, int userId){
         MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(moduleCard.getCardId())).fetchSingle().into(MemberCardPageDecorationVo.class);
         vo.setCardId(vo.getId());
-        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
-            //已停用
-            vo.setStatus((byte)3);
-        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
-            //已过期
-            vo.setStatus((byte)2);
-        }
-
         //用户已经领取该卡的数量
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,moduleCard.getCardId());
         if(vo.getCardType().equals(MCARD_TP_LIMIT)){
@@ -2222,7 +2221,15 @@ public class MemberCardService extends ShopBaseService {
                 vo.setStatus((byte)-1);
             }
         }
+        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
+            //已停用
+            vo.setStatus((byte)3);
+        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
+            //已过期
+            vo.setStatus((byte)2);
+        }
         logger().info("卡->status: "+vo.getStatus());
+        
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){
@@ -2265,24 +2272,20 @@ public class MemberCardService extends ShopBaseService {
 			return;
 		}
 		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch())) {
-			return;
+			List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
+			if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
+				couponGiveService.sendVoucher(userId,sendCouponList,CouponSrcConstant.OPEN_CARD);
+			}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
+				// TODO  
+				logger().info("虚拟商品下单");
+				// cardOrder.createCardOrder()
+			}
 		}
-		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
-		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
-			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
-		}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
-			// TODO  
-			logger().info("虚拟商品下单");
-			// cardOrder.createCardOrder()
-		}
-		
 	}
 	
 	public List<String> getAllNoDeleteCardGrade(){
 		return gradeCardService.getAllNoDeleteCardGrade();
 	}
-	
-	
 	
 	/**
 	 * 获取处理背景色与背景图片

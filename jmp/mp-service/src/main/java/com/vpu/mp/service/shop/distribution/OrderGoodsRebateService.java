@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.rebate.RebateRecord;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ public class OrderGoodsRebateService extends ShopBaseService {
             record.setOrderSn(orderSn);
             record.setProductId(bo.getProductId());
             record.setTotalRebateMoney(BigDecimalUtil.multiply(canRebateMoney, rebateRecord.getRatio()));
-            record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_UP));
+            record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
             goodsTotalRebateMoney = goodsTotalRebateMoney.add(record.getTotalRebateMoney());
             result.add(record);
         }
@@ -40,10 +41,14 @@ public class OrderGoodsRebateService extends ShopBaseService {
             BigDecimal limitRatio = BigDecimalUtil.divide(check, goodsTotalRebateMoney, RoundingMode.HALF_DOWN);
             for (OrderGoodsRebateRecord record: result) {
                 record.setTotalRebateMoney(BigDecimalUtil.multiply(record.getTotalRebateMoney(), limitRatio));
-                record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_UP));
+                record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
             }
         }
         db().batchInsert(result).execute();
         return result;
+    }
+
+    public Result<OrderGoodsRebateRecord> get(String orderSn) {
+        return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
     }
 }

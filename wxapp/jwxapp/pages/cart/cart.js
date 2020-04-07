@@ -39,16 +39,11 @@ global.wxPage({
           totalPrice
         })
 
-
-        // 首单特惠添加商品个数限制
-        if (res.content.noticeStatus == 1) {
-          util.showModal('提示', res.content.notice);
-        }
-
         var repurchaseList = []
         this.data.canBuyGoodsList.forEach((item, index) => {
           item.isSales = 0
-          item.isMemPrice = 0
+          item.limitMinStyle = 0
+          item.limitMaxStyle = 0
           if (item.cartActivityInfos.length > 0) {
             // 添加不参与活动
             item.cartActivityInfos[item.cartActivityInfos.length] = {
@@ -61,9 +56,9 @@ global.wxPage({
               if ((val.activityType == 7 || val.activityType == 21) && item.activityType != 5 && item.activityType != 6 && item.activityType != 18 && item.activityType != 10) {
                 item.isSales = 1
               }
-              // 判断是否存在会员价
-              if (val.activityType == 22) {
-                item.isMemPrice = 1
+              // 营销活动(首单特惠 / 限时降价 / 会员价)差价
+              if (val.activityType == 6 || val.activityType == 18 || val.activityType == 22) {
+                item.diffPrice = parseFloat(item.originalPrice - val.productPrice).toFixed(2)
               }
               // 拼接促销活动
               if (item.activityId == val.activityId) {
@@ -96,6 +91,41 @@ global.wxPage({
           if (item.activityType == 97) {
             repurchaseList.push(item)
           }
+          // 限购样式
+          if (item.activityType == null) {
+            // 普通商品
+            if (item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum) || item.cartNumber == 1) {
+              item.limitMinStyle = 1
+            }
+            if (item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum) || (item.cartNumber >= item.prdNumber)) {
+              item.limitMaxStyle = 1
+            }
+          } else {
+            // 营销商品
+            if (item.activityLimitMinNum == null || item.activityLimitMinNum == 0) {
+              // 营销不限制走商品最小限制
+              if (item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum) || item.cartNumber == 1) {
+                item.limitMinStyle = 1
+              }
+            } else {
+              if (item.cartNumber <= item.activityLimitMinNum || item.activityLimitMaxNum == 1) {
+                item.limitMinStyle = 1
+              }
+            }
+
+            if (item.activityLimitMaxNum == null || item.activityLimitMaxNum == 0) {
+              // 营销不限制走商品最大限制
+              if (item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum) || (item.cartNumber >= item.prdNumber)) {
+                item.limitMaxStyle = 1
+              }
+            } else {
+              if ((item.cartNumber >= item.activityLimitMaxNum) || (item.cartNumber >= item.prdNumber)) {
+                item.limitMaxStyle = 1
+              }
+            }
+          }
+
+
         })
         this.setData({
           canBuyGoodsList: this.data.canBuyGoodsList,
@@ -111,6 +141,11 @@ global.wxPage({
   checkedToggle (e) {
     let cartId = e.currentTarget.dataset.cart_id
     let isChecked = e.currentTarget.dataset.is_checked
+    let buyStatus = e.currentTarget.dataset.buy_status
+    if (buyStatus == 0) {
+      util.showModal('提示', '当前商品不可购买');
+      return false
+    }
     util.api('/api/wxapp/cart/switch', res => {
       if (res.error === 0) {
         this.requestCartList()
@@ -120,6 +155,11 @@ global.wxPage({
 
   // 更改全选状态
   changeAllChecked () {
+    let checkFlag = this.data.canBuyGoodsList.find(item => { return item.buyStatus == 0 })
+    if (checkFlag != undefined) {
+      util.showModal('提示', '当前购物车不可全选');
+      return false
+    }
     let cartIds = this.data.canBuyGoodsList.map(item => { return item.cartId })
     let isAllCheck = this.data.isAllCheck ? 0 : 1
     util.api('/api/wxapp/cart/switch', res => {
@@ -135,14 +175,32 @@ global.wxPage({
     let cartId = e.currentTarget.dataset.cart_id;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
-    util.api('/api/wxapp/cart/change', res => {
+    let activityType = e.currentTarget.dataset.activity_type;
+    let activityId = e.currentTarget.dataset.activity_id;
+
+    let limitMinStyle = e.currentTarget.dataset.limit_min_style;
+    let limitMaxStyle = e.currentTarget.dataset.limit_max_style;
+    if (type == 'add' && limitMaxStyle == 1) {
+      util.showModal('提示', '最大限购量为' + cartNumber + '个');
+      return false
+    }
+    if (type == 'minus' && limitMinStyle == 1) {
+      util.showModal('提示', '最小限购量为' + cartNumber + '个');
+      return false
+    }
+
+    util.api('/api/wxapp/cart/add', res => {
       if (res.error == 0) {
         this.requestCartList()
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     }, {
-      cartId: cartId,
-      productId: prdId,
-      cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
+      goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
+      prdId,
+      activityType,
+      activityId
     })
   },
 
@@ -150,27 +208,31 @@ global.wxPage({
   checkNumber (e) {
     var that = this;
     var value = Number(e.detail.value)
-    var cartId = e.target.dataset.cart_id
-    var limit_min = e.target.dataset.limit_min
-    var limit_max = e.target.dataset.limit_max
+    var cartId = e.currentTarget.dataset.cart_id
+    var prdId = e.currentTarget.dataset.prd_id
+    var activityType = e.currentTarget.dataset.activity_type
+    var activityId = e.currentTarget.dataset.activity_id
+
+    var re = /^[1-9]\d*$/
+    if (!value || !re.test(value)) {
+      util.showModal('提示', '输入内容不正确');
+      this.requestCartList()
+      return false
+    }
     that.data.canBuyGoodsList.forEach((item, index) => {
-      // if (item.prdId == prdId) {
-      //   if ((value >= limit_min) && (value <= limit_max)) {
-      //     item.cartNumber = value
-      //   } else {
-      //     item.cartNumber = limit_min
-      //   }
-      // }
       if (item.cartId == cartId) {
-        item.cartNumber = value
-        util.api('/api/wxapp/cart/change', res => {
+        util.api('/api/wxapp/cart/add', res => {
           if (res.error == 0) {
             this.requestCartList()
+          } else {
+            util.showModal('提示', res.message)
+            return false
           }
         }, {
-          cartId: cartId,
-          productId: item.productId,
-          cartNumber: item.cartNumber
+          goodsNumber: value,
+          prdId,
+          activityType,
+          activityId
         })
       }
     })

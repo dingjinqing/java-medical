@@ -163,18 +163,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    goodsRecords: [
-      {
-        add_time: "2020-04-01 11:35:52",
-        user_avatar: "http://mpdevimg2.weipubao.cn/upload/4748160/avatar/thousand_2/20191218171011_2232.jpg",
-        username: "雨泽",
-      },
-      {
-        add_time: "2020-03-26 17:15:42",
-        user_avatar: "http://mpdevimg2.weipubao.cn/upload/4748160/avatar/thousand_2/20200227102204_2618.jpg",
-        username: "吴哥窟"
-      }
-    ],
+    goodsRecords: [],
     actBarInfo: {},
     actRuleText: {
       1: {
@@ -323,6 +312,10 @@ global.wxPage({
             }
             this.getPromotions(res.content)
             resolve(res.content)
+            // 购买记录
+            this.setData({
+              goodsRecords: res.content.goodsRecord
+            })
           }
         },
         {
@@ -705,6 +698,7 @@ global.wxPage({
             ? lineMaxPrice
             : `${lineMinPrice}~${lineMaxPrice}`,
         singleRealPrice: realMinPrice,
+        singleRealMaxPrice: realMaxPrice,
         singleLinePrice: lineMaxPrice
       }
     }

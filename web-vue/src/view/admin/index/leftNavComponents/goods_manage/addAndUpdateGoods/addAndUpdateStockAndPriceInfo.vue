@@ -96,8 +96,9 @@
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
               <th>市场价</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
+              <th v-if="goodsWeightCfg === 1">规格重量</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
-              <th v-if="goodsCommonConfig.needPrdCodes === 1">商品条码</th>
+              <th v-if="needPrdCodes === 1">商品条码</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
@@ -125,12 +126,17 @@
                   v-model.number="item.prdNumber"
                   @change="specPrdInputChange(item.prdNumber,'prdNumber_'+item.prdDesc,item,'prdNumber')"
                 /></td>
+              <td v-if="goodsWeightCfg === 1"><input
+                :id="'prdWeight_'+item.prdDesc"
+                v-model.number="item.prdWeight"
+                @change="specPrdInputChange(item.prdWeight,'prdWeight_'+item.prdDesc,item,'prdWeight')"
+              /></td>
               <td><input
                   :id="'prdSn_'+item.prdDesc"
                   v-model="item.prdSn"
                   @change="specPrdSnChange(item,index,$event.target.value,$event)"
                 /></td>
-              <td v-if="goodsCommonConfig.needPrdCodes === 1"><input
+              <td v-if="needPrdCodes === 1"><input
                 :id="'prdCodes_'+item.prdDesc"
                 v-model="item.prdCodes"
                 @change="specPrdCodesChange(item,index,$event.target.value,$event)"
@@ -160,6 +166,7 @@
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">市场价</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">规格重量</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>
@@ -412,7 +419,7 @@
 
       <el-form-item
         label="商品条码："
-        v-if="!specInfoSwitch && goodsCommonConfig.needPrdCodes === 1"
+        v-if="!specInfoSwitch && needPrdCodes === 1"
       >
         <el-input
           v-model="goodsProductInfo.prdCodes"
@@ -438,12 +445,22 @@
 // TODO: 3.会员价格table表格样式未实现
 
 // 接口函数引入
-import {getLevelCardList, isGoodsColumnValueExist, selectGoodsCommonConfig} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
+import {getLevelCardList, isGoodsColumnValueExist} from '@/api/admin/goodsManage/addAndUpdateGoods/addAndUpdateGoods'
 // js工具函数导入
 import {isNumberBlank, isStrBlank} from '@/util/typeUtil'
 import ImageDalog from '@/components/admin/imageDalog'
 
 export default {
+  props: {
+    needPrdCodes: {
+      type: Number,
+      default: 0
+    },
+    goodsWeightCfg: {
+      type: Number,
+      default: 0
+    }
+  },
   inject: ['isUpdateWrap'],
   components: {
     ImageDalog
@@ -451,10 +468,6 @@ export default {
   data () {
     return {
       lang: '',
-      goodsCommonConfig: {
-        'needPrdCodes': 0,
-        'goodsWeightCfg': 0
-      },
       imgDialogShow: false,
       /* 临时存放和后台交互的数据 */
       goodsProductInfo: {
@@ -514,6 +527,9 @@ export default {
       this.stockAndPriceRules.prdNumber[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsNumber')
       this.stockAndPriceRules.prdPrice[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsPrice')
       this.stockAndPriceRules.prdCost[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsCostPrice')
+    },
+    specInfoSwitch (newVal) {
+      this.$emit('default_prd_change', !newVal)
     }
   },
   methods: {
@@ -570,16 +586,9 @@ export default {
     /* 商品规格价格、成本价格、库存发生变化变化 */
     specPrdInputChange (val, inputId, item, key) {
       if (typeof val !== 'number') {
-        if (inputId.indexOf('prdMarketPrice_') > -1 && !isNumberBlank(val)) {
+        if (inputId.indexOf('prdMarketPrice_') > -1 || inputId.indexOf('prdWeight_') > -1) {
           item[key] = null
-        }
-        if (inputId.indexOf('prdPrice_') > -1) {
-          item[key] = 0
-        }
-        if (inputId.indexOf('prdCostPrice_') > -1) {
-          item[key] = 0
-        }
-        if (inputId.indexOf('prdNumber_') > -1) {
+        } else {
           item[key] = 0
         }
         document.getElementById(inputId).focus()
@@ -1029,6 +1038,7 @@ export default {
         prdCostPrice: 0, // sku成本价 接口需要数据
         prdMarketPrice: null, // sku市场价 接口需要
         prdNumber: 0, // sku数量 接口需要数据
+        prdWeight: null, // sku重量 接口需要
         prdSn: null, // sku sn码 用户输入项
         prdSnBak: null, // sku sn码 接口需要数据
         prdCodes: null, // sku 商品条码 用户输入项
@@ -1236,6 +1246,7 @@ export default {
           prdCostPrice: specPrd.prdCostPrice,
           prdMarketPrice: specPrd.prdMarketPrice,
           prdNumber: specPrd.prdNumber,
+          prdWeight: specPrd.prdWeight,
           prdSn: specPrd.prdSn,
           prdSnBak: specPrd.prdSn,
           prdCodes: specPrd.prdCodes,
@@ -1286,12 +1297,6 @@ export default {
         return null
       }
     },
-    /* 初始化商品编辑时需要的店铺配置新 */
-    _initGoodsCommonConfigData () {
-      selectGoodsCommonConfig().then(res => {
-        this.goodsCommonConfig = res.content
-      })
-    },
     /* 初始化商品库存，价格，成本等数据 */
     _initOtherData (goodsData, isUseDefaultPrd) {
       this.goodsProductInfo.limitBuyNum = goodsData.limitBuyNum
@@ -1321,7 +1326,6 @@ export default {
       return this.initPageDataLink().then(() => {
         let isUseDefaultPrd = false
         // 初始化店铺配置的商品编辑相关信息
-        this._initGoodsCommonConfigData()
         // 判断是否使用默认的规格项
         let prdDesc = goodsData.goodsSpecProducts[0].prdDesc
         if (goodsData.goodsSpecProducts.length === 1 && isStrBlank(prdDesc)) {
@@ -1361,7 +1365,6 @@ export default {
     },
     /* 新增商品数据初始化 */
     initDataForInsert () {
-      this._initGoodsCommonConfigData()
       this._memberCardsInit()
       // 开启监听
       this._watch()
@@ -1533,6 +1536,7 @@ export default {
             prdPrice: specProduct.prdPrice,
             prdCostPrice: specProduct.prdCostPrice | 0,
             prdNumber: specProduct.prdNumber,
+            prdWeight: specProduct.prdWeight,
             prdMarketPrice: specProduct.prdMarketPrice,
             prdSn: specProduct.prdSn,
             prdCodes: specProduct.prdCodes,

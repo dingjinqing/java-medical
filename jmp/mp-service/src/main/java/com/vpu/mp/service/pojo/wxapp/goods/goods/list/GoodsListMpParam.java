@@ -82,7 +82,7 @@ public class GoodsListMpParam extends BasePageParam{
     public static final Byte SALE_NUM_SORT=2;
     public static final Byte SHOP_PRICE_SORT=3;
      /**
-     * 用户排序：1 按商品上新时间倒序排列（goodsId排序），2 按商品销量倒序排列,3 按商品价格正序排列（由低到高）
+     * 排序：1 按商品上架时间倒序排列，2 按商品销量倒序排列,3 按商品价格正序排列（由低到高）
      */
     @JsonProperty("sort_type")
     private Byte sortType;

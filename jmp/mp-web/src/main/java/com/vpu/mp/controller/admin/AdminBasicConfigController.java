@@ -1,19 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopChildRoleRecord;
@@ -22,21 +8,11 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopCommonCfgInfo;
 import com.vpu.mp.service.pojo.shop.config.ShopMsgTempConfig;
 import com.vpu.mp.service.pojo.shop.config.ShopMsgTempJsonConfig;
-import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountListVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopChildAccountVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddListVo;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleAddParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleDelParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleGroupUpdateParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleUpdateParam;
-import com.vpu.mp.service.pojo.shop.config.group.ShopRoleVo;
+import com.vpu.mp.service.pojo.shop.config.group.*;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigParam;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeInfo;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeParam;
@@ -46,6 +22,14 @@ import com.vpu.mp.service.pojo.shop.config.pledge.group.PledgeStateUpdateGroup;
 import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionInfo;
 import com.vpu.mp.service.pojo.shop.operation.RecordAdminActionParam;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 商家--基础配置
@@ -320,6 +304,10 @@ public class AdminBasicConfigController extends AdminBaseController{
 			return this.fail(JsonResultCode.CODE_FAIL);
 		}
 	}
+	@GetMapping("/shop/common/open/goods/weight/cfg")
+	public JsonResult openGoodsWeightConfig(){
+	    return success(shop().config.shopCommonConfigService.setGoodsWeightCfg((byte) 1));
+    }
 	
 	/**
 	 * 店铺子账户管理-查询

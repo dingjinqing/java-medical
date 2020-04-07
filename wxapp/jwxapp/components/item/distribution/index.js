@@ -1,4 +1,5 @@
 
+const util = require('../../../utils/util.js');
 global.wxComponent({
   /**
    * 组件的属性列表
@@ -11,11 +12,13 @@ global.wxComponent({
     distribution:{
       type:Object,
       value:null,
-      
+      observer(val){
+        this.initDistribution(val)
+      }
     },
-    price:{
-      type:Number
-    }
+    price:Number,
+    goodsPrice:String,
+    goodsId:Number
   },
 
   /**
@@ -88,6 +91,14 @@ global.wxComponent({
           break;
       }
       util.showModal(distributionTips.title, distributionTips.content, function () { }, false,'知道了')
+    },
+    goShareRebate(){
+      util.jumpLink(`pages1/sharerebate/sharerebate${util.getUrlParams({
+        goodsPrice:this.data.goodsPrice,
+        rebateId:this.data.distribution.rebateRatio.rebateId,
+        rebateRatio:this.data.distribution.rebateRatio.rebateRatio,
+        goodsId:this.data.goodsId
+      })}`,'navigateTo')
     }
   }
 })

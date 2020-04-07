@@ -26,7 +26,7 @@ global.wxComponent({
     purchase_name: '',
     purchase_img: '',
     pl: '',
-    show_purchase: false,
+    show_purchase: true,
     p_count: 0,
     p_total: 0
   },
@@ -35,7 +35,9 @@ global.wxComponent({
    */
   methods: {
     handleToCalculationTop (val) {
+      console.log(val)
       let that = this
+      if (!val.length) return
       var top_nav = 0
       if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
         top_nav = wx.getMenuButtonBoundingClientRect().bottom
@@ -48,7 +50,7 @@ global.wxComponent({
       }
       purchase = val;
       purchase_name = purchase[0].username;
-      purchase_img = purchase[0].user_avatar
+      purchase_img = purchase[0].userAvatar
       that.setData({
         purchase_name: purchase_name,
         purchase_img: purchase_img,
@@ -60,9 +62,9 @@ global.wxComponent({
         that.slideupshow(that, 1, 0, 0)
       }
     },
-    slideupshow: function (that, opacity, delay, p_total) {
+    slideupshow (that, opacity, delay, p_total) {
       console.log('kaishi');
-      let parms = '';
+      let params = '';
       let animation = wx.createAnimation({
         duration: 2000,
         timingFunction: 'ease',
@@ -70,10 +72,13 @@ global.wxComponent({
       });
       animation.translateY(0).step();
       animation.translateY(-120).step();
-      parms = animation.export();
-      that.setData({
-        animation: parms
-      })
+      params = animation.export();
+      setTimeout(function () {
+        that.setData({
+          animation: params
+        })
+      }, 500)
+
     },
     backStart () {
       p_count++;
@@ -93,7 +98,7 @@ global.wxComponent({
         animation1.translateY(30).step();
         parms1 = animation1.export();
         purchase_name = purchase[p_total].username;
-        purchase_img = purchase[p_total].user_avatar
+        purchase_img = purchase[p_total].userAvatar
         this.setData({
           animation: parms1,
           purchase_name: purchase_name,
@@ -101,52 +106,8 @@ global.wxComponent({
         })
         setTimeout(function () {
           this.slideupshow(this, 1, 0, p_total)
-        }.bind(this), 100)
+        }.bind(this), 200)
       }
-    },
-    powerDrawer (e) {
-      var currentStatu = e.currentTarget.dataset.statu;
-      this.utilSpec(currentStatu)
-    },
-    utilSpec (currentStatu) {
-      /* 动画部分 */
-      // 第1步：创建动画实例
-      var animation = wx.createAnimation({
-        duration: 200, //动画时长
-        timingFunction: "linear", //线性
-        delay: 0 //0则不延迟
-      });
-      // 第2步：这个动画实例赋给当前的动画实例
-      this.animation = animation;
-
-      // 第3步：执行第一组动画
-      animation.opacity(0).rotateX(-100).step();
-
-      // 第4步：导出动画对象赋给数据对象储存
-      this.setData({
-        animationData: animation.export()
-      })
-      // 第5步：设置定时器到指定时候后，执行第二组动画
-      setTimeout(function () {
-        // 执行第二组动画
-        animation.opacity(1).rotateX(0).step();
-        // 给数据对象储存的第一组动画，更替为执行完第二组动画的动画对象
-        this.setData({
-          animationData: animation
-        })
-        //关闭
-        if (currentStatu == "close") {
-          this.setData({
-            showModalStatus: false
-          });
-        }
-      }.bind(this), 200)
-      // 显示
-      if (currentStatu == "open") {
-        this.setData({
-          showModalStatus: true
-        });
-      }
-    },
+    }
   }
 })

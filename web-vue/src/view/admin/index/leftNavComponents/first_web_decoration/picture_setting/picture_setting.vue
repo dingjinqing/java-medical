@@ -9,7 +9,7 @@
             size="small"
             @click="handleToNewPage()"
           >{{$t('pictureSetting.newMicroPage')}}</el-button>
-          <div class="tipsDiv">{{$t('pictureSetting.titleTips')}}<img :src="iconUrl">
+          <div class="tipsDiv">当前版本为{{shopType==='v1'?'体验版':shopType==='v2'?'基础版':shopType==='v3'?'高级版':shopType==='v4'?'旗舰版':''}}，不限制微页面个数<img :src="iconUrl">
             <div class="tipsHidden">
               <div class="tipsTop">
                 <p>
@@ -355,7 +355,8 @@ export default {
       setRowData: '',
       shareVisible: false, // 分享弹窗flag
       posterAddress: '', // 路径
-      shareImageUrl: '' // 分享路径
+      shareImageUrl: '', // 分享路径
+      shopType: ''
     }
   },
   watch: {
@@ -410,11 +411,16 @@ export default {
   },
   mounted () {
     console.log(this.currencyPool)
+    if (this.$route.query.cartId) {
+      this.selectValue = Number(this.$route.query.cartId)
+    }
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
     this.list()
     this.getPageCate(-1)
+    this.shopType = localStorage.getItem('V-ShopType')
+    console.log(localStorage.getItem('V-ShopType'))
   },
   methods: {
     querySearch (queryString, cb) {

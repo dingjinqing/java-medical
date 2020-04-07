@@ -584,7 +584,7 @@
 		"linkUrl": "/admin/market/message",
 		"name": "消息推送",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": ["/api/admin/market/message/template/*"]
 
 	},
 	{
@@ -592,7 +592,7 @@
 		"linkUrl": "/admin/market/channel",
 		"name": "渠道页面分析",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": ["/api/admin/market/channel/*"]
 
 	},
 	{
@@ -717,7 +717,8 @@
 		"name": "模板消息",
 		"linkUrl": "/admin/config/message",
 		"topIndex": 7,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/config/message/template/*"]
 
 	},
 	{
@@ -733,6 +734,6 @@
 		"name": "服务承诺",
 		"linkUrl": "/admin/config/pledge",
 		"topIndex": 7,
-		"includeApi": []
+		"includeApi": ["/api/admin/config/pledge/*"]
 	}
 ]

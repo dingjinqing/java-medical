@@ -68,7 +68,8 @@ global.wxPage({
     save_flag: 1,
     img_len: 0,
     image: false,
-    comm_img: []
+    comm_img: [],
+    mobile: util.getCache('mobile')
   },
 
   /**
@@ -108,8 +109,10 @@ global.wxPage({
     that.setData({
       user_block: 0,
       examine: examine,
-      distribution: distribution
+      distribution: distribution,
+      mobile: util.getCache('mobile')
     })
+    console.log(that.data.mobile)
     wx.showLoading({
       title: '加载中',
     })
@@ -125,7 +128,7 @@ global.wxPage({
         if (res.error == 0) {
           var user_info = res.content.userBaseInfo;
           // 自定义激活项
-          var custom_arr = res.content.cfg.custom_options
+          var custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
               if (custom_arr[i].custom_type == 0) {
@@ -369,6 +372,54 @@ global.wxPage({
       util.api('/api/wxapp/activation/card', function (res) {
         console.log(res)
         if (res.error === 0) {
+          // 模拟自定义激活项数据
+          // let custom_arr = [{
+          //   custom_title: "测试1",
+          //   custom_type: "0",
+          //   is_checked: 1,
+          //   option_arr: [
+          //     { option_title: "vvv", checked: true },
+          //     { option_title: "111", checked: false },
+          //     { option_title: "222", checked: false },
+          //     { option_title: "333", checked: false }
+          //   ],
+          //   option_ver: 1
+          // }]
+
+          // 自定义激活项
+          let custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
+
+          if (custom_arr.length > 0) {
+            for (var i in custom_arr) {
+              if (custom_arr[i].custom_type == 0) {
+                custom_arr[i].custom_select = 0
+                for (var j in custom_arr[i].option_arr) {
+                  if (custom_arr[i].is_checked == 1) {
+                    if (j == 0) {
+                      custom_arr[i].option_arr[j].checked = true
+                    } else {
+                      custom_arr[i].option_arr[j].checked = false
+                    }
+                  } else {
+                    custom_arr[i].option_arr[j].checked = false
+                  }
+                }
+              } else if (custom_arr[i].custom_type == 1) {
+                for (var j in custom_arr[i].option_arr) {
+                  custom_arr[i].option_arr[j].checked = false
+                }
+              } else if (custom_arr[i].custom_type == 2) {
+                custom_arr[i].text = ''
+              }
+              that.setData({
+                if_custom: 1,
+                custom_arr: custom_arr
+              })
+            }
+
+          }
+          // 模拟自定义激活项数据end
+
           that.data.template_ids = res.content.template_ids || [];
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
@@ -498,7 +549,7 @@ global.wxPage({
         that.bind_submit(e)
       }, 100);
     })
-    
+
   },
   // 提交审核申请
   bind_submit: function (e) {
@@ -622,6 +673,7 @@ global.wxPage({
       util.showModal("提示", "请填写真实姓名");
       return;
     }
+    console.log(user_info, this.data)
     if (user_info.mobile == '' && this.data.if_mobile == 1) {
       util.showModal("提示", "请授权手机号");
       return;
@@ -819,7 +871,7 @@ global.wxPage({
           that.setData({
             user_block: 1
           })
-        }, { cardNo: card_no, isSetting: 1, activateOption:user_info})
+        }, { cardNo: card_no, isSetting: 1, activateOption: user_info })
 
 
 
@@ -827,6 +879,19 @@ global.wxPage({
     } else {
       util.showModal("提示", '请勿重复提交');
     }
+  },
+  // 单选 选项
+  bindRadiosChange (e) {
+    console.log(e.detail.value)
+    // var m = this.data.m;
+    // m.module_value = e.detail.value;
+    // this.$set();
+  },
+  // 多选 选项
+  bindCheckboxChange (e) {
+    console.log(e.detail.value)
+    // var m = this.data.m;
+    // m.module_value = e.detail.value;
   },
   bindDateChange: function (e) {
     dates = e.detail.value;

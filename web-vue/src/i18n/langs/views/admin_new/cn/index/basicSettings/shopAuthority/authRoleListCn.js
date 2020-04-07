@@ -131,6 +131,7 @@ export const cn = {
   config_list: '店铺基础配置',
   pay: '交易配置',
   child_config: '店铺权限',
+  store_announcement: '店铺公告',
   message_config: '模板消息',
   third_auth: '第三方对接',
   pledge: '服务承诺',

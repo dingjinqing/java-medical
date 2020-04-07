@@ -1,40 +1,42 @@
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view class="goods-content" style="margin-top:{{margin_top_nav + 16}}px;">
-    <image class="goods-image" src="http://mpdevimg2.weipubao.cn/upload/4748160/image/20191218/JvCVw6lUfKL1qDNw.jpeg"></image>
+    <image class="goods-image" src="{{goodsInfo.goodsImg}}"></image>
     <view class="goods-info">
-      <view class="goods-name">拼团商品</view>
-      <view class="goods-price" style="color:{{comColor}}">￥100.00~150.00</view>
+      <view class="goods-name">{{goodsInfo.goodsName}}</view>
+      <view class="goods-price" style="color:{{comColor}}">￥{{goodsPrice}}</view>
     </view>
   </view>
 
   <view class="a-tips">注：此链接分享后24小时内有效，过期不可继续领券，可以原价购买商品</view>
-
-  <view class="spec-set-content">
-    <view class="spec-name">大小:小</view>
-    <view class="spec-item-info">
-      <text class="item-title" style="padding-top:8rpx;">商品价格：</text>
-      <view class="item-right price-set">
-        <view class="price-input">
-          <text>￥</text>
-          <input type="digit" value="100.00"></input>
-          <view class="reset" style="color:{{comColor}};">重置</view>
+  <block wx:for="{{productList}}" wx:key="prdId">
+    <view class="spec-set-content">
+      <view class="spec-name">{{item.spec_desc}}</view>
+      <view class="spec-item-info">
+        <text class="item-title" style="padding-top:8rpx;">商品价格：</text>
+        <view class="item-right price-set">
+          <view class="price-input">
+            <text>￥</text>
+            <input type="digit" value="{{item.prdPrice}}" data-prd-id="{{item.prdId}}" bindblur="setPrdPrice"></input>
+            <view class="reset" style="color:{{comColor}};" bindtap="resetPrdPrice" data-prd-id="{{item.prdId}}">重置</view>
+          </view>
+          <view style="color:#bbb;margin-top:20rpx">推荐售价：￥{{item.advisePrice}}</view>
         </view>
-        <view style="color:#bbb;margin-top:20rpx">推荐售价：￥300.00</view>
+      </view>
+      <view class="spec-item-info">
+        <text class="item-title">最低售价：</text>
+        <view class="item-right">￥{{item.minPrice}}</view>
+      </view>
+      <view class="spec-item-info">
+        <text class="item-title">最高售价：</text>
+        <view class="item-right">￥{{item.maxPrice}}</view>
       </view>
     </view>
-    <view class="spec-item-info">
-      <text class="item-title">最低售价：</text>
-      <view class="item-right">￥150.00</view>
-    </view>
-    <view class="spec-item-info">
-      <text class="item-title">最高售价：</text>
-      <view class="item-right">￥150.00</view>
-    </view>
-  </view>
+  </block>
+  
   <view class="footer-button">
-    <view class='a-tips'>预计最高可返利佣金：50.00元</view>
-    <button type="share" class="btn_share" style="background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})">分享给好友</button>
+    <view class='a-tips'>预计最高可返利佣金：{{rebateInfo}}元</view>
+    <button open-type="share" class="btn_share" style="background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})">分享给好友</button>
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />

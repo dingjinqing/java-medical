@@ -134,7 +134,7 @@ export const cn = {
   // 营销管理 多人拼团 拼团退款失败订单
   pin_group_activityEffectData: ['营销管理', '多人拼团', '活动效果数据'],
   // 营销管理 砍价
-  bargain: ['营销管理', '砍价'],
+  kanjia: ['营销管理', '砍价'],
   // 营销管理 砍价
   bargain_activity: ['营销管理', '砍价', '砍价活动'],
   // 营销管理 砍价订单
@@ -165,7 +165,7 @@ export const cn = {
   // 营销管理 好友助力活动效果
   promote_effect_data: ['营销管理', '好友助力', '好友助力活动效果数据'],
   // 营销管理 分享有礼
-  share_polite: ['营销管理', '分享有礼'],
+  share_award: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: ['营销管理', '分享有礼', '领取明细'],
   // 营销管理 分享有礼 添加分享有礼活动
@@ -220,7 +220,7 @@ export const cn = {
   // 营销管理 优惠券礼包 订单明细
   coupon_Package_order_details: ['营销管理', '优惠券礼包', '订单明细'],
   // 营销管理 好友代付
-  friend_pay: ['营销管理', '好友代付'],
+  insteadpay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 幸运大抽奖 抽奖明细
@@ -234,7 +234,7 @@ export const cn = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['营销管理', '限时降价', '效果数据'],
   // 营销管理 打包一口价
-  package_price: ['营销管理', '打包一口价'],
+  package: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
   // 营销管理 打包一口价 查看活动订单
@@ -278,7 +278,7 @@ export const cn = {
   // 营销管理 秒杀
   shipping: ['营销管理', '满包邮'],
   // 营销管理 加价购
-  increase_purchase: ['营销管理', '加价购'],
+  purchase_price: ['营销管理', '加价购'],
   // 营销管理 加价购 添加加价购活动
   add_increase_purchase: ['营销管理', '加价购', '添加加价购活动'],
   // 营销管理 加价购 编辑加价购活动
@@ -312,7 +312,7 @@ export const cn = {
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['营销管理', '微信好物圈'],
   // 营销管理 积分兑换
-  integralExchangeHome: ['营销管理', '积分兑换'],
+  integral_convert: ['营销管理', '积分兑换'],
   // 营销管理 积分兑换用户列表
   pointsUserList: ['营销管理', '积分兑换', '积分兑换用户列表'],
   // 营销管理 支付有礼
@@ -326,7 +326,7 @@ export const cn = {
   // 营销管理 添加满折满减活动
   fullCutActivity: ['营销管理', '满折满减活动'],
   // 营销管理 表单统计
-  formStatistical: ['营销管理', '表单统计'],
+  form_decoration: ['营销管理', '表单统计'],
   // 营销管理 表单装修主页
   formDecorationHome: ['营销管理', '表单统计', '表单装修'],
   // 营销管理 表单统计  查看反馈页
@@ -380,5 +380,7 @@ export const cn = {
   // 门店管理 技师管理 排班配置
   schedule_setting: ['技师管理', '排班配置'],
   // 门店管理 门店服务配置
-  store_service_config: ['门店管理', '门店服务配置']
+  store_service_config: ['门店管理', '门店服务配置'],
+  // 门店公告
+  store_announcement: ['门店管理', '门店公告']
 }

@@ -896,10 +896,10 @@ public class UserCardService extends ShopBaseService {
 		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
-		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 		logger().info("卡的校验状态");
 		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
 		if(cardExamine != null) {
+			card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 			WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
 			cardExamineVo.setPassTime(cardExamine.getPassTime());
 			cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
@@ -1464,6 +1464,7 @@ public class UserCardService extends ShopBaseService {
 			logger().info("卡的校验状态");
 			CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(uCard.getCardNo());
 			if(cardExamine != null) {
+				uCard.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(uCard.getCardNo()));
 				WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
 				cardExamineVo.setPassTime(cardExamine.getPassTime());
 				cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
@@ -1931,14 +1932,14 @@ public class UserCardService extends ShopBaseService {
 		
 		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
 	}
-	
+
 	/**
 	 * 	删除用户卡
 	 */
 	public int delUserCard(DefaultCardParam param) {
 		return userCardDao.updateUserCardFlag(param);
 	}
-	
+
 	/**
 	 * 	获取已经领取该卡的用户数量
 	 * @param cardId
@@ -1948,7 +1949,7 @@ public class UserCardService extends ShopBaseService {
 		int num = userCardDao.getCardNum(cardId);
 		return num;
 	}
-	
+
 	/**
 	 * 	获取该卡被领取的数量
 	 */
@@ -1957,8 +1958,8 @@ public class UserCardService extends ShopBaseService {
 		int num = userCardDao.getCardUserList(cardId);
 		return num;
 	}
-	
-	
+
+
 	/**
 	 * 	获取可该卡可正常使用的数量
 	 */
@@ -1967,5 +1968,18 @@ public class UserCardService extends ShopBaseService {
 		int num =userCardDao.getCanUseCardNum(card.getId(),CardUtil.isNeedActive(card.getActivation()));
 		return num;
 	}
+    /**
+     * 会员卡续费接口
+     * @param userId
+     * @param cardNo
+     */
+    public void cardRenew(Integer userId,String cardNo){
+        //得到用户持有会员卡的详细信息
+        UserCardParam userCardInfo = userCardDao.getUserCardInfo(cardNo);
+        if (userCardInfo!=null){
+
+        }
+    }
+
 }
 

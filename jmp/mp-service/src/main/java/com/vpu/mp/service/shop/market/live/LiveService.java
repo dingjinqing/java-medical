@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.LiveBroadcastRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
@@ -40,6 +41,7 @@ public class LiveService extends ShopBaseService {
 	@Autowired
 	public LiveGoodsService liveGoods;
 	
+	private static final Byte ONE = 1;
 	/**
 	 * 直播列表页
 	 * @param param
@@ -159,13 +161,19 @@ public class LiveService extends ShopBaseService {
 		return data;
 	}
 	
-	public void getLiveList() {
+	
+	/**
+	 * 获取所有的直播到数据库中
+	 * @return 
+	 */
+	public boolean getLiveList() {
+		logger().info("店铺获取直播：{}的开始",getShopId());
 		List<WxMaLiveRoomInfo> list = getliveinfo();
 		if(list.isEmpty()) {
 			logger().info("店铺：{}，当前无直播",getShopId());
-			//return 
+			return false;
 		}
-		
+		List<Integer> successLive=new ArrayList<Integer>();
 		for (WxMaLiveRoomInfo live : list) {
 			LiveBroadcastRecord record = db().newRecord(LIVE_BROADCAST,live);
 			record.setRoomId(live.getRoomid());
@@ -173,17 +181,33 @@ public class LiveService extends ShopBaseService {
 			record.setEndTime(new Timestamp(live.getEndTime()*1000));
 			LiveBroadcastRecord roomInfo = db().selectFrom(LIVE_BROADCAST).where(LIVE_BROADCAST.ROOM_ID.eq(live.getRoomid())).fetchAny();
 			if(roomInfo!=null) {
+				record.setId(roomInfo.getId());
 				int update = record.update();
 				logger().info("更新直播房间：{}，结果：{}",live.getRoomid(),update);
+				if(update>0) {
+					successLive.add(record.getId());
+				}
+				
 			}else {
 				int insert = record.insert();
 				logger().info("新增直播房间：{}，结果：{}",live.getRoomid(),insert);
+				if(insert>0) {
+					successLive.add(record.getId());
+				}
 			}
 			List<WxMaLiveRoomInfoGoods> goods = live.getGoods();
 			if(!goods.isEmpty()) {
-				
+				liveGoods.addRoomGoods(record.getId(), live.getRoomid(), live.getGoods());
 			}
 		}
+		if(!successLive.isEmpty()) {
+			int execute = db().update(LIVE_BROADCAST).set(LIVE_BROADCAST.DEL_FLAG, ONE)
+					.set(LIVE_BROADCAST.DEL_TIME, DateUtil.getSqlTimestamp())
+					.where(LIVE_BROADCAST.ID.notIn(successLive)).execute();
+			logger().info("更新其他直播为失效：{}",execute);
+		}
+		logger().info("店铺获取直播：{}的结束",getShopId());
+		return true;
 	}
 	
 	

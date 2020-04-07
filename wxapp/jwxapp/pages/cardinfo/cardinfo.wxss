@@ -316,3 +316,132 @@
   border-top: 1px solid #eee;
   margin-bottom: 20rpx;
 }
+
+.coupon_list {
+  margin-bottom: 20rpx;
+  display: flex;
+  overflow: hidden;
+  height: 160rpx;
+}
+
+.coupon_list>.coupon_left {
+  background: red;
+  border-width: 1px 0 1px 1px;
+  border-color: red;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  flex: 1;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left>.coupon_left_top {
+  font-size: 13px;
+  color: #fff;
+  line-height: 25px;
+}
+
+.coupon_list>.coupon_left>.coupon_left_top>text {
+  font-size: 20px;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left>.coupon_left_bottom {
+  font-size: 13px;
+  color: #fff;
+}
+
+.coupon_list>.coupon_left::before {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-sizing: border-box;
+  border-width: 0 1px 1px 0;
+  border-color: #878787;
+  z-index: 2;
+}
+
+.coupon_list>.coupon_left::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.coupon_list>.coupon_right {
+  border-width: 1px 1px 1px 0;
+  border-style: solid;
+  border-color: #878787;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  flex: 2;
+  position: relative;
+  justify-content: space-around;
+  padding-left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.coupon_right>view {
+  line-height: initial
+}
+
+/* .coupon_list > .coupon_right::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 80%;
+  border-left: 2px dashed #fff;
+  top: 50%;
+  left: -1px;
+  transform: translateY(-50%);
+} */
+
+.coupon_list>.coupon_right>.coupon_name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.coupon_list>.coupon_right>.coupon_condition {
+  font-size: 12px;
+  color: #333;
+}
+
+.coupon_list>.coupon_right>.coupon_valid_until {
+  font-size: 12px;
+  color: #999;
+}
+
+.coupon_list_box {
+  padding-right: 30rpx;
+}
+.counponTitle{
+  font-size: 26rpx;
+color: #888;
+padding: 24rpx 0;
+display: block;
+}
+
+.package_info {
+  line-height: 35px;
+  padding-left: 10px;
+  margin-bottom: 20rpx;
+  border-radius: 4px;
+}

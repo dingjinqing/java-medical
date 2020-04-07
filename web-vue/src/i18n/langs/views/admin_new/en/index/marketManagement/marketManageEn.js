@@ -53,7 +53,7 @@ export const en = {
   evaluationPoliteDesc: 'Guide users to evaluate products and participate in marketing activities',
   collectionPolite: 'collection and polite',
   collectionPoliteDesc: 'Guide users to collect small programs and enhance retention',
-  formStatistical: 'form of statistical',
+  form_decoration: 'form of statistical',
   formStatisticalDesc: 'Collect user information',
   measurement: 'measurement',
   measurementDesc: 'Interest assessment, let you know more about users',

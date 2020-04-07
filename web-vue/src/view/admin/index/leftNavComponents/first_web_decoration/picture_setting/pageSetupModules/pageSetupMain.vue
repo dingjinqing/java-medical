@@ -466,6 +466,7 @@ export default {
       this.tuneUp = !this.tuneUp
     },
     handleSelectImg ({ imgUrl }) {
+      console.log(imgUrl)
       if (this.picFlag) {
         this.ruleForm.pictorial.share_img_path = imgUrl
       } else {

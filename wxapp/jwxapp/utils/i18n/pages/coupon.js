@@ -12,6 +12,7 @@ module.exports = {
   "partGoods": "部分商品可用",
   "timeTip": "后失效",
   "goUse": "去使用",
+  "delCoupon": "删除",
   "noCoupon": "您目前还没有优惠券",
   // 优惠券详情
   "card": "会员专享",

@@ -18,6 +18,7 @@ import com.vpu.mp.db.shop.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
+import org.jooq.types.UInteger;
 
 import javax.annotation.Generated;
 
@@ -267,7 +268,7 @@ public class Keys {
     public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
     public static final Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Identities0.IDENTITY_LIVE_GOODS;
     public static final Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Identities0.IDENTITY_LIVE_BROADCAST;
-
+    public static final Identity<CardRenewRecord, UInteger> IDENTITY_CARD_RENEW = Identities0.IDENTITY_CARD_RENEW;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -523,6 +524,7 @@ public class Keys {
     public static final UniqueKey<LiveGoodsRecord> KEY_B2C_LIVE_GOODS_PRIMARY = UniqueKeys0.KEY_B2C_LIVE_GOODS_PRIMARY;
     public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_PRIMARY = UniqueKeys0.KEY_B2C_LIVE_BROADCAST_PRIMARY;
     public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = UniqueKeys0.KEY_B2C_LIVE_BROADCAST_ROOM_ID;
+    public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = UniqueKeys0.KEY_B2C_CARD_RENEW_PRIMARY;
 
 
     // -------------------------------------------------------------------------
@@ -758,6 +760,7 @@ public class Keys {
         public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
         public static Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Internal.createIdentity(LiveGoods.LIVE_GOODS, LiveGoods.LIVE_GOODS.ID);
         public static Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Internal.createIdentity(LiveBroadcast.LIVE_BROADCAST, LiveBroadcast.LIVE_BROADCAST.ID);
+        public static Identity<CardRenewRecord, UInteger> IDENTITY_CARD_RENEW = Internal.createIdentity(CardRenew.CARD_RENEW, CardRenew.CARD_RENEW.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1018,5 +1021,6 @@ public class Keys {
         public static final UniqueKey<LiveGoodsRecord> KEY_B2C_LIVE_GOODS_PRIMARY = Internal.createUniqueKey(LiveGoods.LIVE_GOODS, "KEY_b2c_live_goods_PRIMARY", LiveGoods.LIVE_GOODS.ID);
         public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_PRIMARY = Internal.createUniqueKey(LiveBroadcast.LIVE_BROADCAST, "KEY_b2c_live_broadcast_PRIMARY", LiveBroadcast.LIVE_BROADCAST.ID);
         public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = Internal.createUniqueKey(LiveBroadcast.LIVE_BROADCAST, "KEY_b2c_live_broadcast_room_id", LiveBroadcast.LIVE_BROADCAST.ROOM_ID);
+        public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = Internal.createUniqueKey(CardRenew.CARD_RENEW, "KEY_b2c_card_renew_PRIMARY", CardRenew.CARD_RENEW.ID);
     }
 }

@@ -287,6 +287,46 @@ public class ReducePriceService extends ShopBaseService {
         }
     }
 
+    /**
+     * 当前的规格的限时降价价格
+     * @param prdIds
+     * @return
+     */
+    public Map<Integer,Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> getProductReducePrice(List<Integer> prdIds){
+        Timestamp date = DateUtil.getLocalDateTime();
+         Result<Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> list =
+             db().select(REDUCE_PRICE_PRODUCT.PRD_ID,REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID,REDUCE_PRICE_PRODUCT.PRD_PRICE,
+                 REDUCE_PRICE.POINT_TIME,REDUCE_PRICE.EXTEND_TIME,REDUCE_PRICE.PERIOD_ACTION,REDUCE_PRICE.FIRST,REDUCE_PRICE.CREATE_TIME,REDUCE_PRICE.LIMIT_AMOUNT,REDUCE_PRICE.LIMIT_FLAG)
+            .from(REDUCE_PRICE_PRODUCT)
+            .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID))
+            .where(REDUCE_PRICE_PRODUCT.PRD_ID.in(prdIds))
+            .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .and(REDUCE_PRICE.START_TIME.lessThan(date))
+            .and(REDUCE_PRICE.END_TIME.greaterThan(date))
+            .fetch();
+        if (list == null) {
+            return null;
+        }
+
+        Map<Integer,Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> retMap = new HashMap<>(prdIds.size());
+        list.forEach(r->{
+            if(isActivityGoingOn(r.get(REDUCE_PRICE.POINT_TIME),r.get(REDUCE_PRICE.EXTEND_TIME),r.get(REDUCE_PRICE.PERIOD_ACTION))){
+                Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte> oldRecord = retMap.get(r.get(REDUCE_PRICE_PRODUCT.PRD_ID));
+                if(oldRecord == null){
+                    retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
+                }else{
+                    if(oldRecord.get(REDUCE_PRICE.FIRST) < r.get(REDUCE_PRICE.FIRST) || (oldRecord.get(REDUCE_PRICE.FIRST) == r.get(REDUCE_PRICE.FIRST) && r.get(REDUCE_PRICE.CREATE_TIME).after(oldRecord.get(REDUCE_PRICE.CREATE_TIME)))){
+                        retMap.put(r.get(REDUCE_PRICE_PRODUCT.PRD_ID),r);
+                    }
+                }
+            }
+
+
+        });
+        return retMap;
+    }
+
 
     /**
      * 计算当前正在进行的活动的预计结束时间
@@ -552,6 +592,24 @@ public class ReducePriceService extends ShopBaseService {
 
             return res;
         }
+    }
+
+    /**
+     * 当前时间（今天）的活动时间段
+     * @param reducePriceId
+     * @return ret[0]开始时间 ret[1]结束时间
+     */
+    public Timestamp[] getCurrentPeriodTime(int reducePriceId){
+        ReducePriceRecord reducePriceRecord = getReducePriceRecord(reducePriceId);
+        Byte periodAction = reducePriceRecord.getPeriodAction();
+        if(!periodAction.equals(PERIOD_ACTION_NORMAL)){
+            Timestamp[] ret = new Timestamp[2];
+            String []periodString = reducePriceRecord.getPointTime().split("@");
+            ret[0] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[0] + ":00");
+            ret[1] = DateUtil.convertToTimestamp(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE) + " " + periodString[1] + ":00");
+            return ret;
+        }
+        return null;
     }
 
 }

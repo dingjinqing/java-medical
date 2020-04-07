@@ -24,6 +24,10 @@ public class RebateCenterVo {
      */
     private BigDecimal waitWithdraw;
     /**
+     * 邀请码
+     */
+    private String invitationCode;
+    /**
      * 邀请用户数
      */
     private Integer inviteUserNum;

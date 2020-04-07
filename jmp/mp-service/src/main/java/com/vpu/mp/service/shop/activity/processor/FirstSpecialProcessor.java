@@ -200,7 +200,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 firstActivityInfo.setLimitNumberType(firstSpecial.getLimitFlag());
                                 if (firstSpecial.getLimitAmount() > 0 && cartGoods.getCartNumber() > firstSpecial.getLimitAmount()) {
                                     //超出限购数量后，买家可继续添加购买该商品
-                                    if (!firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)) {
+                                    if (!firstSpecial.getLimitFlag().equals(BaseConstant.LIMIT_FLAG_CONTINUE)) {
                                         log.info("商品数量超过活动数量限制,带查看商品是否符合活动其他要求");
                                         goodsNum.updateAndGet(v -> v + 1);
                                         cartGoods.getCartActivityInfos().add(firstActivityInfo);
@@ -236,7 +236,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                     if (firstSpecial!=null){
                         if (firstSpecial.getLimitMaxNum()!=null&&firstSpecial.getLimitMaxNum() > 0 && cartGoods.getCartNumber() > firstSpecial.getLimitMaxNum()) {
                             //超出限购数量后，买家可继续添加购买该商品
-                            if (firstSpecial.getLimitNumberType().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONFINE)) {
+                            if (firstSpecial.getLimitNumberType().equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
                                 //不可继续添加
                                 log.info("购物车-首单特惠商品{}-活动数量限制{}-取消选中",cartGoods.getGoodsName(),firstSpecial.getLimitMaxNum());
                                 cartService.switchCheckedProduct(cartBo.getUserId(),cartGoods.getCartId(),CartConstant.CART_NO_CHECKED);
@@ -250,8 +250,9 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                             log.info("首单特惠商品价格修改[goodsName:{},prize{}]",cartGoods.getGoodsName(),cartGoods.getPrdPrice());
                             cartGoods.setPrdPrice(firstSpecial.getProductPrice());
                             cartGoods.setPriceActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
-                            cartGoods.setLimitMaxNum(firstSpecial.getLimitMaxNum());
+                            cartGoods.setActivityLimitMaxNum(firstSpecial.getLimitMaxNum());
                             cartGoods.setLimitActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
+                            cartGoods.setActivityLimitType(firstSpecial.getLimitNumberType());
                             //价格确定 -之后的活动不修改价格
                             cartGoods.setPriceStatus(BaseConstant.YES);
                         }
@@ -292,7 +293,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 firstActivityInfo.setFirstSpecialNumberType(firstSpecial.getLimitFlag());
                                 if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {
                                     //超出限购数量后，买家可继续添加购买该商品
-                                    if (!firstSpecial.getLimitFlag().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONTINUE)) {
+                                    if (!firstSpecial.getLimitFlag().equals(BaseConstant.LIMIT_FLAG_CONTINUE)) {
                                         log.info("商品数量超过活动数量限制,带查看商品是否符合活动其他要求");
                                         goodsNum.updateAndGet(v -> v + 1);
                                         product.getActivityInfo().put(ACTIVITY_TYPE_FIRST_SPECIAL, firstActivityInfo);
@@ -331,7 +332,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                     if (firstSpecial != null && firstSpecial.getStatus().equals(CartConstant.ACTIVITY_STATUS_VALID)) {
                         if (firstSpecial.getFirstSpecialNumber() > 0 && product.getGoodsNumber() > firstSpecial.getFirstSpecialNumber()) {
                             //超出限购数量后，买家可继续添加购买该商品
-                            if (firstSpecial.getFirstSpecialNumberType().equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONFINE)) {
+                            if (firstSpecial.getFirstSpecialNumberType().equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
                                 //不可继续添加
                                 log.info("商品数量超过活动数量限制,提出警告[getCartNumber:" + product.getGoodsNumber() + ",getLimitAmount:" + firstSpecial.getFirstSpecialNumber() + "]");
                                 firstSpecial.setStatus(CartConstant.ACTIVITY_STATUS_INVALID);

@@ -52,7 +52,7 @@ export const cn = {
   memberTip4: '新建会员卡',
   memberTip5: '管理会员卡',
   validationCode: '领取码',
-  couponNum: '领券人数',
+  receivePerNum: '领券人数',
   numRadio1: '不限制',
   numRadio2: '分享后',
   numTip: '名(包括送券人)用户可以领取此优惠券，最少2人',
@@ -116,6 +116,7 @@ export const cn = {
   validateactName2: '长度在不能超过10个字符',
   validatereceivePerPerson: '请选择每人限领张数',
   validateNum: '请输入正数, 可以保留两位小数',
-  validateNum1: '请输入正整数',
+  validateNum1: '请输入正整数!',
+  validateNum2: '请输入大于1的正整数!',
   validateDiscount: '请输入正确的数字'
 }

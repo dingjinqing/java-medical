@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.distribution;
 import com.vpu.mp.db.shop.tables.DistributorLevel;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.DistributorApplyRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -272,6 +273,9 @@ public class MpDistributionService extends ShopBaseService{
         //待返利佣金
         BigDecimal waitFanliMoney = this.waitFanliMoney(userId);
         rebateCenterVo.setWaitWithdraw(waitFanliMoney);
+        //我的邀请码
+        UserRecord userInfo = db().select().from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
+        rebateCenterVo.setInvitationCode(userInfo.getInvitationCode());
         //邀请用户数
         Integer inviteUserNum = this.inviteUserNum(userId);
         rebateCenterVo.setInviteUserNum(inviteUserNum);
@@ -349,5 +353,9 @@ public class MpDistributionService extends ShopBaseService{
     public PageResult<DistributorInvitedListVo> myInviteUser(DistributorInvitedListParam param){
         PageResult<DistributorInvitedListVo> invitedList = disList.getInvitedList(param);
         return invitedList;
+    }
+
+    public void rebateOrder(){
+        //TODO：返利订单查询
     }
 }

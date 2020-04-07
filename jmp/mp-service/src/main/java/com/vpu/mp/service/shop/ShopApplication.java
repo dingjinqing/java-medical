@@ -235,6 +235,9 @@ public class ShopApplication {
      */
     @Autowired
     public MpDistributionService  mpDistribution;
+    /**分销商品service*/
+    @Autowired
+    public MpDistributionGoodsService mpDisGoods;
 	@Autowired
 	public MemberCardOrderService memberCardOrder;
 	@Autowired

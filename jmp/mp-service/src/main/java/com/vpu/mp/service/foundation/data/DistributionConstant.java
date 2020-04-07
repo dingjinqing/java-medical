@@ -15,7 +15,16 @@ public class DistributionConstant {
     public static Byte level_5 = 5;
 
     /**
-     * 返利类型
+     * 返利类型:1返利订单
      */
     public static Byte REBATE_ORDER = 1;
+
+    /**
+     * 返利等级
+     * 0自购返利自己；1返利直接上级；2返利间件上级
+     */
+    public static Byte REBATE_LEVEL_0 = 0;
+    public static Byte REBATE_LEVEL_1 = 1;
+    public static Byte REBATE_LEVEL_2 = 2;
+
 }

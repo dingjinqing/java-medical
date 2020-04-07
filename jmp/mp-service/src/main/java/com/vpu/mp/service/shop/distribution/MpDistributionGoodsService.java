@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
+import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -10,18 +12,20 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @Author 常乐
@@ -38,6 +42,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     public DistributorLevelService distributorLevel;
+
+    @Autowired
+    protected DomainConfig domainConfig;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -137,9 +144,6 @@ public class MpDistributionGoodsService extends ShopBaseService {
         List<Byte> levels = new ArrayList<Byte>(){
             {add((byte)2);add((byte)3);add((byte)4);add((byte)5);}
         };
-//        if(!levels.contains(distributionLevel)){
-//            //该用户非审核分销员
-//        }
 
         //获取等级状态
         Record record = db().select().from(DISTRIBUTOR_LEVEL).where(DISTRIBUTOR_LEVEL.LEVEL_ID.eq(distributionLevel.getDistributorLevel())).fetchOne();
@@ -148,7 +152,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
              levelInfo = record.into(DistributorLevelVo.class);
         }
 
-        if(levelInfo == null && levelInfo.getLevelStatus() != 1){
+        if(levelInfo != null && levelInfo.getLevelStatus() != 1){
             //return 该分销员等级未开启
         }
 
@@ -222,5 +226,30 @@ public class MpDistributionGoodsService extends ShopBaseService {
         RebateRatioVo rebateRatio = new RebateRatioVo();
         getRebateRatio(goodsStrategy, rebateRatio, userInfo.getDistributorLevel());
         return rebateRatio;
+    }
+
+    /**
+     * 商品分销改价页面信息
+     * @param param
+     * @return
+     */
+    public GoodsRebateChangePriceVo rebateGoodsCfg(RebateGoodsCfgParam param){
+        //商品基本信息
+        BaseGoodsVo goods = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG).from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchOne().into(BaseGoodsVo.class);
+        goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+
+        //商品分销改价信息
+        List<RebateGoodsCfgVo> rebatePrice = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_DESC,
+            GOODS_REBATE_PRICE.ADVISE_PRICE, GOODS_REBATE_PRICE.MIN_PRICE, GOODS_REBATE_PRICE.MAX_PRICE)
+            .from(GOODS_SPEC_PRODUCT)
+            .leftJoin(GOODS_REBATE_PRICE).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(GOODS_REBATE_PRICE.PRODUCT_ID))
+            .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(param.getGoodsId()))
+            .and(GOODS_REBATE_PRICE.DEL_FLAG.eq((byte) 0))
+            .fetch().into(RebateGoodsCfgVo.class);
+
+        GoodsRebateChangePriceVo goodsRebateChangePriceVo = new GoodsRebateChangePriceVo();
+        goodsRebateChangePriceVo.setGoods(goods);
+        goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
+        return goodsRebateChangePriceVo;
     }
 }

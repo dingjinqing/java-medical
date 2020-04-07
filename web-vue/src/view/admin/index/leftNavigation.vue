@@ -401,7 +401,7 @@ export default {
             imgUrl: this.$imageHost + '/image/admin/icon_left/bargain.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/bargain_h.png',
             span: '',
-            name: 'bargain',
+            name: 'kanjia',
             flag: false
           },
           {
@@ -526,6 +526,13 @@ export default {
             span: '',
             name: 'store_service_config',
             flag: false
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/store_announce.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_announce_h.png',
+            span: '',
+            name: 'store_announcement',
+            flag: true
           }
         ],
         base_manger: [
