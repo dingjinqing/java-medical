@@ -38,3 +38,10 @@
   .purchase_text {
     font-size: 22rpx;
   }
+
+  .van-ellipsis{
+    white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+
+  }
