@@ -163,14 +163,12 @@ global.wxPage({
     var couponSn = res.target.dataset.coupon_sn;
     var couponId = res.target.dataset.coupon_id;
     var idx = Number(res.target.dataset.index);
-    // var cou = 'cou_list[' + idx + '].is_share';
+    // var cou = 'allCoupon[' + idx + '].is_share';
     // util.api('/api/wxapp/divsionCoupon/share', function (res) {
     //   that.setData({
     //     [cou]: 1,
     //   })
-    //   console.log(that.data.cou_list);
     // }, { coupon_sn: coupon_sn });
-    // if (res.from === 'button') { }
     return {
       title: '分享优惠券',
       path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
