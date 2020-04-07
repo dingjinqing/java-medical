@@ -1712,11 +1712,17 @@ public class MemberCardService extends ShopBaseService {
 		// deal with industry and education
 		for (ActiveAuditVo activeAuditVo : results.dataList) {
 			// education
-			String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
-			activeAuditVo.setEducationStr(educationStr);
+			if(activeAuditVo.getEducation()!= null) {
+				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
+				activeAuditVo.setEducationStr(educationStr);
+			}
+			
 			// industry
-			String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
-			activeAuditVo.setIndustry(industry);
+			if(activeAuditVo.getIndustryInfo() != null) {
+				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
+				activeAuditVo.setIndustry(industry);
+			}
+			
 		}
 		return results;
 
