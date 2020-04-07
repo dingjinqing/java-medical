@@ -55,7 +55,7 @@ public enum MemberEducationEnum {
 	 * 根据 code id 获取相应的name
 	 * @return
 	 */
-	public static String getNameByCode(Byte code) {
+	public static String getNameByCode(Integer code) {
 		if(code == null) {
 			return null;
 		}
