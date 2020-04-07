@@ -231,6 +231,15 @@ global.wxPage({
     }
   },
 
+  // 领取已满员
+  full_people: function (e) {
+    var that = this;
+    util.showModal("提示", '领取人数已满', function () {
+      that.to_getRecord();
+    }, true, '取消', '领取记录');
+
+  },
+
   // 领取记录
   to_getRecord: function () {
     util.navigateTo({

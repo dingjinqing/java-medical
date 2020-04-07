@@ -1,7 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.distribution;
 
 import lombok.Data;
-import org.elasticsearch.search.DocValueFormat;
 
 import java.math.BigDecimal;
 

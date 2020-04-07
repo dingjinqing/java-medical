@@ -251,7 +251,7 @@
 		"enName": "pin_group",
 		"topIndex": 4,
 		"includeApi": [
-			"/admin/market/groupbuy/*"
+			"/api/admin/market/groupbuy/*"
 		]
 	},
 	{
@@ -438,7 +438,9 @@
 		"name": "满包邮",
 		"enName": "free_ship",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+			"/api/admin/market/free/shipping/*"
+		]
 	},
 	{
 		"vsName": "coupon_package",

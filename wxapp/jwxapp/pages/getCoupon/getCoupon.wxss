@@ -275,3 +275,9 @@ button::after {
   justify-content: center;
   align-items: center;
 }
+
+.vw-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
