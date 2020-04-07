@@ -175,6 +175,11 @@ public class WechatTaskService extends ShopBaseService {
             List<MpVisitPageRecord> list = new ArrayList<>(result.size());
             result.forEach(v->{
                 MpVisitPageRecord record = db().newRecord(MP_VISIT_PAGE,v);
+                record.setEntrypagePv(v.getEntryPagePv().intValue());
+                record.setExitpagePv(v.getExitPagePv().intValue());
+                record.setPageSharePv(v.getPageSharePv().intValue());
+                record.setPageShareUv(v.getPageShareUv().intValue());
+                record.setPageStaytimePv(v.getPageStayTimePv().doubleValue());
                 record.setRefDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT, date));
                 list.add(record);
             });
