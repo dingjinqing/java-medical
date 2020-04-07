@@ -12,7 +12,6 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectSeekStep2;
-import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,15 +89,19 @@ public class GoodsLabelService extends ShopBaseService {
             GoodsLabelRecord record = db().newRecord(GOODS_LABEL, param);
             record.insert();
             param.setId(record.getId());
-            insertGoodsLabelCouple(param);
-            //update elasticSearch data
-            try {
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
-                    null,Collections.singletonList(record.getId()));
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            // 不是 '不添加商品选项'
+            if (!GoodsLabelAddAndUpdateParam.NONE_GOODS.equals(param.getIsNone())) {
+                insertGoodsLabelCouple(param);
             }
         });
+        //update elasticSearch data
+        try {
+            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.INSERT,
+                null,Collections.singletonList(param.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -115,14 +118,15 @@ public class GoodsLabelService extends ShopBaseService {
                 .where(GOODS_LABEL.ID.eq(id))
                 .execute();
             goodsLabelCoupleService.deleteByGoodsLabelId(id);
-            //update elasticSearch data
-            try {
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.DELETE,
-                    null,Collections.singletonList(id));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
+
+        //update elasticSearch data
+        try {
+            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.DELETE,
+                null,Collections.singletonList(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -159,13 +163,22 @@ public class GoodsLabelService extends ShopBaseService {
      */
     public void update(GoodsLabelAddAndUpdateParam param) {
         transaction(() -> {
-            DefaultDSLContext db = db();
             GoodsLabelRecord record = db().newRecord(GOODS_LABEL,param);
             record.update();
             goodsLabelCoupleService.deleteByGoodsLabelId(param.getId());
-            insertGoodsLabelCouple(param);
-
+            // 不是 '不添加商品选项'
+            if (!GoodsLabelAddAndUpdateParam.NONE_GOODS.equals(param.getIsNone())) {
+                insertGoodsLabelCouple(param);
+            }
         });
+
+        //update elasticSearch data
+        try {
+            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
+                null,Collections.singletonList(param.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -182,13 +195,6 @@ public class GoodsLabelService extends ShopBaseService {
                 goodsLabelCoupleService.batchInsertCatTypeGoodsLabelCouple(param.getId(), param.getCatIds());
             }
         });
-        //update elasticSearch data
-        try {
-            esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(), DBOperating.UPDATE,
-                null,Collections.singletonList(param.getId()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**

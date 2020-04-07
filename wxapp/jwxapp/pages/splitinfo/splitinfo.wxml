@@ -1,8 +1,7 @@
 <!--pages/splitinfo/splitinfo.wxml-->
 <include src="../common/header.wxml" />
 <view class='all'>
-  <view class='sc_content' style='background:url("{{imageUrl}}image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
-
+  <view class='sc_content' style='background:url("{{imageUrl}}/image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
     <block wx:if='{{split_info.is_oneself == 1}}'>
       <!--领取详情  -->
       <view class='top_tips'>
@@ -39,7 +38,9 @@
       </view>
     </block>
   </view>
+  
   <view class='btn_content'>
+    <!-- 按钮 -->
     <block wx:if='{{split_info.is_oneself == 0}}'>
       <!--已过期和已抢光  -->
       <view class='btn_to_index' wx:if="{{split_info.error=='-3' || split_info.error == '-2'|| split_info.error=='-1'}}" bindtap='goIndex'>进店逛逛</view>
@@ -60,7 +61,7 @@
         <view class='share_now'>
           <button open-type="share">立即分享</button>
         </view>
-        <view class='btn_to_store' bindtap="to_store">进店逛逛</view>
+        <view class='btn_to_store' bindtap="goIndex">进店逛逛</view>
       </view>
     </block>
     <!--领取详情  -->

@@ -2,8 +2,12 @@
   substring = function (str,start,end) {
     return str.substring(start,end)
   }
+  isEmptyObj = function(obj){
+    return JSON.stringify(obj) === '{}'
+  }
   module.exports = {
-    substring:substring
+    substring:substring,
+    isEmptyObj:isEmptyObj
   }
 </wxs>
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
@@ -267,7 +271,7 @@
       </view>
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
-    <view class="fixed_footer" wx:if="{{orderInfo.operate.length > 0 || orderInfo.orderStatusName === '已发货' || orderInfo.isReturnMoney || orderInfo.isReturnGoods}}">
+    <view class="fixed_footer" wx:if="{{!filter.isEmptyObj(orderInfo.operate) || orderInfo.orderStatusName === '已发货' || orderInfo.isReturnMoney || orderInfo.isReturnGoods}}">
       <view bindtap="handleOperate" class="footer_item" wx:if="{{orderInfo.orderStatusName === '已发货'}}" data-operate_info="confirmation" data-order_sn="{{orderInfo.orderSn}}" data-order_id="{{orderInfo.orderId}}">
         确认收货
       </view>

@@ -1,7 +1,9 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
+import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
@@ -40,6 +42,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     public DistributorLevelService distributorLevel;
+
+    @Autowired
+    protected DomainConfig domainConfig;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -234,7 +239,8 @@ public class MpDistributionGoodsService extends ShopBaseService {
     public GoodsRebateChangePriceVo rebateGoodsCfg(RebateGoodsCfgParam param){
         //商品基本信息
         BaseGoodsVo goods = db().select(GOODS.GOODS_ID, GOODS.GOODS_NAME, GOODS.GOODS_IMG).from(GOODS).where(GOODS.GOODS_ID.eq(param.getGoodsId())).fetchOne().into(BaseGoodsVo.class);
-
+        goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+        
         //商品分销改价信息
         List<RebateGoodsCfgVo> rebatePrice = db().select(GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.PRD_DESC,
             GOODS_REBATE_PRICE.ADVISE_PRICE, GOODS_REBATE_PRICE.MIN_PRICE, GOODS_REBATE_PRICE.MAX_PRICE)

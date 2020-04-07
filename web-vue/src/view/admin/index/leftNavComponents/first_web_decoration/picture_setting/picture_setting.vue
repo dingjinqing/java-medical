@@ -411,6 +411,9 @@ export default {
   },
   mounted () {
     console.log(this.currencyPool)
+    if (this.$route.query.cartId) {
+      this.selectValue = Number(this.$route.query.cartId)
+    }
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()

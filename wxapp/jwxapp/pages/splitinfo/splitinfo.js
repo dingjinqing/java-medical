@@ -8,13 +8,13 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    coupon_id: '',
-    shop_id: '',
-    coupon_sn: '',
     user: '',
+    couponSn: '',
+    couponId: '',
+
     split_info: [],
     split_info1: [],
-    get_count: 0
+    get_count: 0 // 领取人数
   },
 
   /**
@@ -25,73 +25,40 @@ global.wxPage({
     var that = this;
     that.setData({
       user: options.user,
-      coupon_id: options.coupon_id,
-      shop_id: options.shop_id,
-      coupon_sn: options.coupon_sn
+      couponSn: options.couponSn,
+      couponId: options.couponId
     })
-    // user = options.user;
-    // coupon_id = options.coupon_id;
-    // shop_id = options.shop_id;
-    // coupon_sn = options.coupon_sn;
-    
     reLoad(that);
   },
-  to_store: function () {
-    util.redirectTo({
-      url: '/pages/index/index',
-    })
-  },
+
+  // 立即领取
   get_this_coupon: function (e) {
     var that = this;
     that.data.get_count++;
     if (that.data.get_count > 1) return;
     // util.api('/api/wxapp/coupon/getsplit', function (res) {
-    //   that.setData({
-    //     split_info1: res.content
-    //   })
-    //   if (that.data.split_info1.error == -4) {
-    //     util.showModal('提示', '优惠券领取成功!');
-    //     reLoad(that);
-    //     get_count = 0;
+    //   if (res.error == 0) {
+    //     that.setData({
+    //       split_info1: res.content
+    //     })
+    //     if (that.data.split_info1.error == -4) {
+    //       util.showModal('提示', '优惠券领取成功!');
+    //       reLoad(that);
+    //       get_count = 0;
+    //     }
     //   }
     // }, { 
     //   user: that.data.user, 
-    //   coupon_id: that.data.coupon_id, 
-    //   shop_id: that.data.shop_id, 
-    //   coupon_sn: that.data.coupon_sn
+    //   couponId: that.data.couponId,
+    //   couponSn: that.data.couponSn
     // })
   },
+
+  // 随便逛逛
   goIndex: function () {
     util.redirectTo({
       url: '/pages/index/index',
     })
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
   },
 
   /**
@@ -112,23 +79,27 @@ global.wxPage({
  * 用户点击右上角分享,立即分享
  */
   onShareAppMessage: function (res) {
-
-    if (res.from === 'button') {
-    }
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + this.data.user + "&coupon_sn=" + this.data.coupon_sn + "&coupon_id=" + this.data.coupon_id + "&invite_id=" + util.getCache('user_id'),
-      imageUrl: this.data.imageUrl + 'image/wxapp/share_icon.jpg',
-
+      path: '/pages/splitinfo/splitinfo?user=' + this.data.user + "&couponSn=" + this.data.couponSn + "&couponId=" + this.data.couponId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: this.data.imageUrl + 'image/wxapp/share_icon.jpg'
     }
   }
 })
+
 function reLoad(that) {
   // util.api('/api/wxapp/coupon/splitinfo', function (res) {
-  //   var split_info = res.content;
-  //   var user_list = split_info.user_list;
-  //   that.setData({
-  //     split_info: split_info
-  //   })
-  // }, { coupon_id: that.data.coupon_id, shop_id: that.data.shop_id, user: that.data.user, coupon_sn: that.data.coupon_sn })
+  //   if (res.error == 0) {
+  //     that.setData({
+  //       split_info: res.content
+  //     })
+  //   } else {
+  //     util.showModal('提示', res.message);
+  //     return false;
+  //   }
+  // }, { 
+  //   user: that.data.user, 
+  //   couponId: that.data.couponId, 
+  //   couponSn: that.data.couponSn 
+  // })
 }

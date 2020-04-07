@@ -35,7 +35,9 @@ global.wxComponent({
    */
   methods: {
     handleToCalculationTop (val) {
+      console.log(val)
       let that = this
+      if (!val.length) return
       var top_nav = 0
       if (typeof wx.getMenuButtonBoundingClientRect === 'function') {
         top_nav = wx.getMenuButtonBoundingClientRect().bottom
@@ -75,7 +77,7 @@ global.wxComponent({
         that.setData({
           animation: params
         })
-      }, 100)
+      }, 500)
 
     },
     backStart () {

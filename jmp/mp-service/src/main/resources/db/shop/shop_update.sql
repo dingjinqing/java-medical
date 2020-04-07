@@ -296,6 +296,9 @@ CREATE TABLE IF NOT EXISTS `b2c_card_renew` (
   PRIMARY KEY (`id`)
 );
 
+-- 商品标签修改del_flag字段类型，添加is_none字段
+ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '是否删除 0否 1是';
+ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
 /*********************2.11*************************END*/
 
