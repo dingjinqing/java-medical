@@ -131,7 +131,10 @@ public enum MemberIndustryEnum {
 		this.name = name;
 	}
 	
-	public static String getNameByCode(int code) {
+	public static String getNameByCode(Byte code) {
+		if(code == null) {
+			return null;
+		}
 		MemberIndustryEnum memberIndustryEnum = map.get(code);
 		return memberIndustryEnum.getName();
 	}
