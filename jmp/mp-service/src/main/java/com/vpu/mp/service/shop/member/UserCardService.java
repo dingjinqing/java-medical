@@ -896,10 +896,10 @@ public class UserCardService extends ShopBaseService {
 		
 		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
 		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
-		card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 		logger().info("卡的校验状态");
 		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
 		if(cardExamine != null) {
+			card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
 			WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
 			cardExamineVo.setPassTime(cardExamine.getPassTime());
 			cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
@@ -1464,6 +1464,7 @@ public class UserCardService extends ShopBaseService {
 			logger().info("卡的校验状态");
 			CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(uCard.getCardNo());
 			if(cardExamine != null) {
+				uCard.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(uCard.getCardNo()));
 				WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
 				cardExamineVo.setPassTime(cardExamine.getPassTime());
 				cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
