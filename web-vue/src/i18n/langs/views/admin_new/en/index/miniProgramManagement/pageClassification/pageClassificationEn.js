@@ -10,6 +10,7 @@ export const en = {
   operate: 'operate',
   edit: 'edit',
   remove: 'remove',
+  deleteConfirm: 'Are you sure you want to delete?',
   viewPage: 'viewPage',
   addCatergory: 'addCatergory'
 }
