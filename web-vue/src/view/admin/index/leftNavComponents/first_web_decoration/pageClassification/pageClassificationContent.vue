@@ -257,7 +257,7 @@ export default {
       }).catch(err => console.log(err))
     },
     removeCatergory (row) {
-      this.$confirm(this.$t('pageClassification.cancel'), {
+      this.$confirm(this.$t('pageClassification.deleteConfirm'), {
         confirmButtonText: this.$t('pageClassification.confirm'),
         cancelButtonText: this.$t('pageClassification.cancel'),
         type: 'warning'
