@@ -155,6 +155,45 @@ global.wxPage({
   },
 
   /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function (res) {
+    debugger
+    var that = this;
+    var user = res.target.dataset.user;
+    var couponSn = res.target.dataset.coupon_sn;
+    var couponId = res.target.dataset.coupon_id;
+    var idx = Number(res.target.dataset.index);
+    var cou = 'cou_list[' + idx + '].is_share';
+    // util.api('/api/wxapp/divsionCoupon/share', function (res) {
+    //   that.setData({
+    //     [cou]: 1,
+    //   })
+    //   console.log(that.data.cou_list);
+    // }, { coupon_sn: coupon_sn });
+    // if (res.from === 'button') { }
+    return {
+      title: '分享优惠券',
+      path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
+    }
+  },
+
+  /**
+   * 分享已满员
+   */
+  full_people: function (e) {
+    var user = e.target.dataset.user;
+    var couponSn = e.target.dataset.coupon_sn;
+    var couponId = e.target.dataset.coupon_id;
+    util.showModal("提示", '领取人数已满', function () {
+      util.navigateTo({
+        url: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId,
+      })
+    }, true, '取消', '领取记录');
+  },
+
+  /**
    * 优惠券删除
    */
   drawStart: function (e) {
