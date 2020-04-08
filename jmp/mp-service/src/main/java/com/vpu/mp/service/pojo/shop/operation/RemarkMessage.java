@@ -31,7 +31,7 @@ public class RemarkMessage {
 	public static final String MSG_ORDER_RETURN_CARD_ACCOUNT = "order.return.card.account";
 	public static final String MSG_ORDER_VIRTUAL_RETURN_DEFAULT = "order.virtual.return.default";
     public static final String MSG_ORDER_FINISH_SEND_SCORE = "order.finish.send.score";
-
+    public static final String MSG_ORDER_REBATE = "order.rebate";
 	/**
 	 * 会员卡
 	 */

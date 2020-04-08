@@ -1,6 +1,23 @@
 .main-container{
   overflow: hidden;
 }
+.merchant_message{
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin: 3% 3% 0;
+  padding: 3%;
+}
+.merchant_message text{
+  display: block;
+}
+.merchant_message text:nth-child(1){
+  font-size: 26rpx;
+  color: #333;
+}
+.merchant_message text:nth-child(2){
+  font-size: 24rpx;
+  color: #999;
+}
 .card_surface_details{
   width: 710rpx;
   margin: 20rpx auto;
@@ -444,4 +461,89 @@ display: block;
   padding-left: 10px;
   margin-bottom: 20rpx;
   border-radius: 4px;
+}
+
+.card-center {
+  height: 80rpx;
+  padding:14rpx;
+  background: #fff;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-center .cart-info-lt {
+  /* height: 100rpx; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow {
+  width: 40rpx;
+  margin-right: 15rpx;
+}
+.cart-info-ct {
+  font-size: 26rpx;
+  color: #353535;
+}
+.rebate_content {
+  width: 140rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  border-radius: 25rpx;
+  color: #fff;
+  text-align: center;
+  font-size: 22rpx;
+  margin-right: 20rpx;
+}
+.rebate_p {
+  width: 650rpx;
+  height: 380rpx;
+  position: absolute;
+  z-index: 8;
+  top: 520rpx;
+  left: 50%;
+  margin-left: -325rpx;
+  background: #fff;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rebate_top {
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 34rpx;
+  margin-top: 20rpx;
+  font-weight: bold;
+}
+
+.rebate_bottom {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border:1rpx solid #eee;
+  border-bottom: none;
+}
+.rebate_bottom>button,.rebate_bottom>view{
+  width: 50%;
+  background: #fff;
+  font-weight: bold;
+  font-size: 34rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  text-align: center;
+  border-radius: 0;
+  border:none;
+}
+.rebate_bottom>view{
+  border-right: 1rpx solid #eee;
+}
+.rebate_bottom button::after{
+border:none;
 }

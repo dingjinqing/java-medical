@@ -260,6 +260,20 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/store_manage/store/storeAnnouncement/storeAnnouncementList'
       )
+  },
+  // 门店公告新增
+  {
+    path: '/admin/home/main/store/storeAnnouncementAdd',
+    name: 'store_announcement_add',
+    meta: {
+      crumbTitle: 'router.store_announcement_add',
+      meta: 'store_manage',
+      category: 'store_announcement'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/store_manage/store/storeAnnouncement/storeAnnouncementAdd'
+      )
   }
 ]
 

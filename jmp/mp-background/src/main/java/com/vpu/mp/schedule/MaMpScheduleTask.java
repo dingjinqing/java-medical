@@ -77,4 +77,16 @@ public class MaMpScheduleTask {
 			saas.getShopApp(r.getShopId()).shopTaskService.maMpScheduleTaskService.friendPromoteCommand();
 		});
 	}
+	
+	/**
+	 * 获取直播列表，每半小时一次
+	 */
+	@Scheduled(cron = "0 0/30 * * * ? ")
+	public void liveBroadcast() {
+		Result<ShopRecord> result = saas.shop.getAll();
+		result.forEach((r) -> {
+			boolean liveList = saas.getShopApp(r.getShopId()).liveService.getLiveList();
+			log.info("获取店铺：{}；的直播列表结果：{}",r.getShopId(),liveList);
+		});
+	}
 }

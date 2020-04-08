@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record10;
 import org.jooq.Record3;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -131,40 +132,40 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         List<Integer> productList = cartBo.getCartGoodsList().stream()
                 .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType())&&goods.getBuyStatus().equals(BaseConstant.YES))
                 .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
-        Map<Integer, Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> prdPriceMap = reducePriceService.getProductReducePrice(productList);
-        if (prdPriceMap!=null&&prdPriceMap.size()>0){
-            cartBo.getCartGoodsList().stream().
-                filter(goods ->
-                prdPriceMap.get(goods.getProductId()) != null &&goods.getBuyStatus().equals(BaseConstant.YES)&&goods.getPriceStatus().equals(BaseConstant.NO)).
-                forEach(goods -> {
-                    Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte> reducePriceRecord = prdPriceMap.get(goods.getProductId());
-                    BigDecimal reducePrize = reducePriceRecord.get(REDUCE_PRICE_PRODUCT.PRD_PRICE);
-                    //价格小于商品价格限时降价才会生效
-                    if (reducePrize.compareTo(goods.getPrdPrice())<0){
-                        Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
-                        Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
-                        if (limitNum.equals(0)||goods.getCartNumber()<=limitNum||(goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))){
-                            log.info("购物车-限时降价-商品{}",goods.getGoodsName());
-                            CartActivityInfo activityInfo = new CartActivityInfo();
-                            activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-                            activityInfo.setActivityId(reducePriceRecord.get(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID));
-                            activityInfo.setProductPrice(reducePrize);
-                            activityInfo.setLimitMaxNum(reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT));
-                            activityInfo.setLimitNumberType(reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG));
-                            goods.getCartActivityInfos().add(activityInfo);
-                            log.info("购物车限时减价-修改价格");
-                            goods.setPriceActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
-                            goods.setPrdPrice(reducePrize);
-                            if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
-                                log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);
-                                cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
-                                goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                                goods.setLimitMaxNum(limitNum);
-                                goods.setActivityLimitType(limitFlag);
-                            }
+        Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
+        if (goodsReduceListInfo!=null&&goodsReduceListInfo.size()>0){
+            cartBo.getCartGoodsList().stream().filter(goods ->
+                    goodsReduceListInfo.get(goods.getProductId()) != null
+                    &&goods.getBuyStatus().equals(BaseConstant.YES)&&goods.getPriceStatus().equals(BaseConstant.NO)).forEach(goods -> {
+                Record5<Integer, Integer, Byte, Integer, BigDecimal> reducePriceRecord = goodsReduceListInfo.get(goods.getProductId()).get(0);
+                BigDecimal reducePrize = reducePriceRecord.get(REDUCE_PRICE_PRODUCT.PRD_PRICE);
+                //价格小于商品价格限时降价才会生效
+                if (reducePrize.compareTo(goods.getPrdPrice())<0){
+                    Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
+                    Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
+                    if (limitNum.equals(0)||goods.getCartNumber()<=limitNum||(goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))){
+                        log.info("购物车-限时降价-商品{}",goods.getGoodsName());
+                        CartActivityInfo activityInfo = new CartActivityInfo();
+                        activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                        activityInfo.setActivityId(reducePriceRecord.get(REDUCE_PRICE.ID));
+                        activityInfo.setProductPrice(reducePrize);
+                        activityInfo.setLimitMaxNum(reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT));
+                        activityInfo.setLimitNumberType(reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG));
+                        goods.getCartActivityInfos().add(activityInfo);
+                        log.info("购物车限时减价-修改价格");
+                        goods.setPriceActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                        goods.setPrdPrice(reducePrize);
+                        goods.setLimitMaxNum(limitNum);
+                        goods.setActivityLimitType(limitFlag);
+                        if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
+                            log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);
+                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                            goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                            goods.setBuyStatus(BaseConstant.NO);
                         }
                     }
-                });
+                }
+            });
         }
         log.info("购物车-限时降价-结束");
     }

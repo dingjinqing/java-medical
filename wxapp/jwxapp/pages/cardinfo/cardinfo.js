@@ -20,7 +20,10 @@ global.wxPage({
     bottomBtnText: '', // 底部按钮文字
     btnType: null, // 底部按钮类型
     get_type: 0,
-    cardId: null
+    cardId: null,
+    give_card: 0,
+    rebate_show: false, // 转赠弹窗flag
+
   },
 
   /**
@@ -28,14 +31,17 @@ global.wxPage({
    */
   onLoad: function (options) {
     console.log(options, '腾飞测试++++++++++++++++++')
+    if (!util.check_setting(options)) return;
+    wx.hideShareMenu();
     let cardNo = options.cardNo ? options.cardNo : null
     let cardId = options.cardId ? options.cardId : null
+    let giveCard = options.give_card ? options.give_card : 0;
     if (options.scene) {
       let scene = decodeURIComponent(options.scene).split('&')
       cardId = scene[0].split('=')[1]
     }
     var card_list = options.card_list;
-    this.setData({ cardId: cardId })
+    this.setData({ cardId: cardId, give_card: giveCard })
     this.requestCardInfo(cardNo, cardId, card_list)
     if (options.is_fullprice) {  // 
       is_fullprice = options.is_fullprice;
@@ -55,6 +61,11 @@ global.wxPage({
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
+        // 模拟转赠数据can_give_away
+        cardInfo.card_give_away = 0
+        cardInfo.give_away_status = 3
+        cardInfo.can_give_away = 1
+        // end
         if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
           that.setData({
             carStatus: "已领取"
@@ -66,7 +77,7 @@ global.wxPage({
         } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
 
           that.setData({
-            carStatus: "审核失败"
+            carStatus: "未通过"
           })
         } else {
           that.setData({
@@ -84,21 +95,20 @@ global.wxPage({
         }
         that.getUpgradeCondition(cardInfo)
         // 自定义测试数据
-        cardInfo.custom_options = "[{'custom_type':'2','custom_title':'fsfsdfds','option_ver':1,'is_checked':1}]"
-        cardInfo.custom_rights = [
-          {
-            cright_content: "one for test",
-            cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20190708/crop_pADgmTm2w2az2bMu.jpeg",
-            cright_name: "one"
-          },
-          {
-            cright_content: "two for test",
-            cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20200206/crop_4LfGH88XPGhulaRI.jpeg",
-            cright_name: "two"
-          }
-        ]
+        // cardInfo.custom_options = "[{'custom_type':'2','custom_title':'fsfsdfds','option_ver':1,'is_checked':1}]"
+        // cardInfo.custom_rights = [
+        //   {
+        //     cright_content: "one for test",
+        //     cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20190708/crop_pADgmTm2w2az2bMu.jpeg",
+        //     cright_name: "one"
+        //   },
+        //   {
+        //     cright_content: "two for test",
+        //     cright_image: "http://mpdevimg2.weipubao.cn/upload/0/image/20200206/crop_4LfGH88XPGhulaRI.jpeg",
+        //     cright_name: "two"
+        //   }
+        // ]
         cardInfo.custom_rights_flag = 1
-        cardInfo.give_away_status = 0
 
         that.setData({
           cardInfo: cardInfo
@@ -166,7 +176,7 @@ global.wxPage({
         } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
 
           that.setData({
-            carStatus: "审核失败"
+            carStatus: "未通过"
           })
         } else {
           that.setData({
@@ -579,5 +589,96 @@ global.wxPage({
   to_cou_package (e) {
     let pack_id = e.currentTarget.dataset.pack_id;
     util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
-  }
+  },
+  // 点击会员专享
+  to_search: function (e) {
+    var card_id = e.currentTarget.dataset.card_id;
+    util.navigateTo({
+      url: '/pages1/searchs/search'
+    })
+  },
+  // 点击转赠
+  to_rebate (e) {
+    var that = this;
+    var status = e.currentTarget.dataset.status;
+    let cardInfo = this.data.cardInfo
+    if (status == 0) {
+      if (cardInfo.can_give_away == 1) {
+        that.setData({
+          rebate_show: true,
+        })
+      } else {
+        wx.showModal({
+          title: '转赠会员卡',
+          content: '当前有未完成的兑换商品订单，\r\n 暂时不能将本卡转赠好友',
+          cancelText: '查看订单',
+          confirmText: '知道了',
+          confirmColor: '#000',
+          cancelColor: util.getCache('main_colors'),
+          success (res) {
+            if (res.cancel) {
+              var order_sn = cardInfo.card_order_sn;
+              util.jumpLink("pages/orderinfo/orderinfo?order_sn=" + order_sn)
+            }
+          }
+        })
+      }
+    } else if (status == 1) {
+      wx.showModal({
+        title: '会员卡转赠中',
+        content: '会员卡转赠中,如果' + cardInfo.give_deadline + '前好友未领取,则会员卡可以继续使用！',
+        showCancel: false,
+        confirmText: '知道了',
+        confirmColor: '#000'
+      })
+    } else {
+      wx.showModal({
+        title: '会员卡已转赠',
+        content: cardInfo.give_away_time + '转赠\r\n给好友' + cardInfo.give_username,
+        showCancel: false,
+        confirmText: '关闭',
+        confirmColor: '#000'
+      })
+    }
+
+  },
+  // 取消转赠
+  cancel_rebtae: function () {
+    var that = this;
+    that.setData({
+      rebate_show: false,
+    })
+  },
+  onShareAppMessage: function () {
+    console.log(this.data)
+    var that = this;
+    let cardInfo = that.data.cardInfo
+    // util.api("/api/card/giveAway/record", function (d) {
+    //   util.api('/api/card/detail', function (res) {
+    //     card_info = res.content;
+    //     that.loadData(card_info, 0, that);
+    //     that.setData({
+    //       card_list: card_list
+    //     })
+    //   }, {
+    //     card_no: card_no
+    //   })
+    //   that.setData({
+    //     rebate_show: false,
+    //   })
+    // }, {
+    //   card_no: card_info.card_no,
+    //   card_id: card_info.card_id,
+    //   user_id: card_info.user_id
+    // });
+    return {
+      title: util.getCache('nickName') + '赠送给您一张会员卡',
+      path: 'pages/cardinfo/cardinfo?cardNo=' + cardInfo.cardNo + "&cardId=" + cardInfo.cardId + "&give_card=1",
+      imageUrl: that.data.imageUrl + that.data.share_img,
+      complete: function () {
+
+      }
+    }
+
+  },
 })

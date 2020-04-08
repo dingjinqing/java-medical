@@ -261,6 +261,7 @@ public class PreSaleProcessorDao extends PreSaleService {
         }
         if (activityInfo.getBuyNumber() != null && activityInfo.getBuyNumber() > 0) {
             Integer hasBuyNumber = order.getPreSaletUserBuyNumber(param.getWxUserInfo().getUserId(), activityInfo.getId());
+            param.getGoods().get(0).setIsAlreadylimitNum(true);
             if (hasBuyNumber >= activityInfo.getBuyNumber()) {
                 log.error("购买数量已达活动上限");
                 throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_NUMBER_LIMIT);

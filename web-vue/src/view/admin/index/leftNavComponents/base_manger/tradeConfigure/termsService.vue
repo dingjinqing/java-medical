@@ -1,3 +1,7 @@
+<!--
+* 交易配置 - 服务条款页面
+* @author: zhaoxin
+-->
 <template>
   <div class="term_main">
     <div class="term_content">
@@ -25,17 +29,17 @@
           </el-form-item>
         </el-form>
         <div class="innerRight">
-          <editor
+          <!-- 编辑器 -->
+          <TinymceEditor
             v-model="editMsg"
             :disabled="disabled"
-            ref="editor"
           />
         </div>
       </div>
     </div>
     <div class="save">
       <el-button
-        size="samll"
+        size="small"
         type="primary"
         @click="handleSave"
       >保存</el-button>
@@ -44,26 +48,34 @@
 </template>
 
 <script>
-import editor from '@/components/admin/tinymceEditor/tinymceEditor'
-import { termUpdate } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
+import TinymceEditor from '@/components/admin/tinymceEditor/tinymceEditor'
+import { termUpdate, termSelect } from '@/api/admin/basicConfiguration/tradeConfiguration.js'
 
 export default {
   components: {
-    editor
+    TinymceEditor
+  },
+  mounted () {
+    this.initData()
   },
   data () {
     return {
-      editMsg: null,
+      editMsg: '',
       disabled: false
     }
   },
   methods: {
     handleSave () {
-      // termSelect().then(res => {
-      //   // console.log(res)
-      // })
-      termUpdate().then(res => {
-
+      termUpdate({ service_document: this.editMsg }).then(res => {
+        if (res.error === 0) {
+          this.$message.success('添加成功')
+        }
+      })
+    },
+    initData () {
+      termSelect().then(res => {
+        console.log(res)
+        this.editMsg = res.content
       })
     }
   }
@@ -85,6 +97,9 @@ export default {
       width: 330px;
       height: 600px;
       border: 1px solid #ededed;
+      .title > img {
+        width: 100%;
+      }
     }
     .right_content {
       margin-left: 20px;

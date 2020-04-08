@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.cart;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 public class WxAppAddGoodsToCartParam {
 
     private Integer userId;
+    private Integer cartId;
     @NotNull
     @Min(0)
     private  Integer goodsNumber;

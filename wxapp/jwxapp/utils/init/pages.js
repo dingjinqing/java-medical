@@ -6,7 +6,7 @@ module.exports = {
     return o.route
   },
   patchPageId(o) {
-    if (typeof o.getPageId != 'function') {
+    if (o && typeof o.getPageId != 'function') {
       o.getPageId = function () {
         return this.__wxWebviewId__;
       }
@@ -33,7 +33,7 @@ module.exports = {
         var page_list = getCurrentPages();
         for (var i in page_list) {
           this.patchPageId(page_list[i]);
-          if (page_list[i].getPageId() == pageId) {
+          if (page_list[i] && page_list[i].getPageId() == pageId) {
             _pages[pageId].page = page_list[i];
           }
         }

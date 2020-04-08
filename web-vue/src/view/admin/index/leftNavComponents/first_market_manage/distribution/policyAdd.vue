@@ -379,19 +379,27 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.getLevelList()
     if (this.isEdite === true) {
       // 编辑初始化
       this.editSeckillInit(this.editId)
-    } else {
-      this.initDataList()
     }
   },
   methods: {
     // 获取分销员等级
-    initDataList () {
+    getLevelList () {
       getDistributionLevel().then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.levelList)
+          this.tableData.forEach((item, index) => {
+            res.content.levelList.forEach((val, key) => {
+              if (index === key) {
+                item.levelId = val.levelId
+                item.levelName = val.levelName
+                item.levelStatus = val.levelStatus
+              }
+            })
+          })
+          this.handleData(this.tableData)
         }
       })
     },
@@ -425,7 +433,6 @@ export default {
             break
         }
       })
-      this.tableData = data
     },
 
     // 编辑初始化
@@ -472,8 +479,6 @@ export default {
 
           // this.platClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
           // this.platClass = this.platClass.map(Number)
-
-          this.handleData(this.tableData)
         }
       })
     },

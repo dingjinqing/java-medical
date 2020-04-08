@@ -539,7 +539,7 @@
                 style="margin-bottom: 20px;"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===1"
+                v-if="item.module_name=='center_header'"
               >
                 <el-radio-group v-model="item.bg_type">
                   <el-radio
@@ -577,7 +577,7 @@
                 name="2"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===2"
+                v-if="item.module_name=='account_money'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.assetsLabel')">
@@ -657,7 +657,7 @@
                 name="3"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===3"
+                v-if="item.module_name=='order'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.orderLabel')">
@@ -696,7 +696,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==0"
+                      v-if="val.icon_name=='wait_pay'"
                     >
                       <div
                         class="imgContainter"
@@ -722,7 +722,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==1"
+                      v-if="val.icon_name=='wait_deliver'"
                     >
                       <div
                         class="imgContainter"
@@ -748,7 +748,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==2"
+                      v-if="val.icon_name=='wait_receive'"
                     >
                       <div
                         class="imgContainter"
@@ -784,7 +784,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==3"
+                      v-if="val.icon_name=='wait_comment'"
                     >
                       <div
                         class="imgContainter"
@@ -820,7 +820,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==4"
+                      v-if="val.icon_name=='refund'"
                     >
                       <div
                         class="imgContainter"
@@ -850,7 +850,7 @@
                 name="4"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===4"
+                v-if="item.module_name=='appointment'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.appointmentLabel')">
@@ -883,7 +883,7 @@
                 name="5"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===5"
+                v-if="item.module_name=='use_record'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.shopLabel')">
@@ -946,7 +946,7 @@
                 name="6"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===6"
+                v-if="item.module_name=='service'"
               >
                 <el-form label-width="100px">
                   <el-form-item :label="$t('personalCenter.serveLabel')">
@@ -1274,7 +1274,7 @@
                     :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key>8"
+                    v-if="val.icon_name==='custom_icon'"
                   >
                     <el-radio-group
                       v-model="val.is_show"

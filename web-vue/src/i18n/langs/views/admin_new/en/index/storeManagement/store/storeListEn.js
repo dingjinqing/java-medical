@@ -21,7 +21,7 @@ export const en = {
   verifierManage: 'verifier manage',
   storeManage: 'store manage',
   delStoreTip: 'Are you sure you want to delete this store?',
-  storePickup: 'Store Pickup:',
+  storePickup: 'Store Pickup',
   turnedOn: 'Turned on',
   unopened: 'Unopened',
   sameCityDelivery: 'Same city delivery',

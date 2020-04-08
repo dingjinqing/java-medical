@@ -106,8 +106,13 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> activityGoods = new ArrayList<>();
         cartBo.getCartGoodsList().forEach(goods -> {
             if (activityType != null && activityId != null) {
-                if (goods.getActivityType().equals(activityType) && goods.getActivityId().equals(activityId)) {
-                    if (goodsIds != null && goodsIds.contains(goods.getGoodsId())) {
+                if (activityType.equals(goods.getActivityType()) && activityId.equals(goods.getActivityId())) {
+                    if (goodsIds != null) {
+                        //取交集
+                        if(goodsIds.contains(goods.getGoodsId())){
+                            activityGoods.add(goods);
+                        }
+                    }else{
                         activityGoods.add(goods);
                     }
                 } else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)) {
@@ -121,6 +126,9 @@ public class CartService extends ShopBaseService {
                 }
             }
         });
+        if(goodsIds != null || (activityId != null && activityId > 0)){
+            cartBo.setCartGoodsList(activityGoods);
+        }
         return cartBo;
     }
 
@@ -500,7 +508,7 @@ public class CartService extends ShopBaseService {
         if (!resultMessage.getFlag()&&!inCartFlag){
             logger().info("删除多余商品");
             removeCartProductById(param.getUserId(),cardId);
-        }else if (resultMessage.getFlag()){
+        }else if (resultMessage.getFlag()&&inCartFlag){
             logger().info("修改商品数量");
             changeGoodsNumber(param.getUserId(),0,cardId,param.getPrdId(),param.getGoodsNumber());
         }
@@ -515,14 +523,14 @@ public class CartService extends ShopBaseService {
             logger().info("购物车-修改商品{}数量{}", cartGoods.getGoodsName(), param.getGoodsNumber());
             if (param.getGoodsNumber() < cartGoods.getCartNumber()) {
                 logger().info("购物车-减少商品数量");
-                if (cartGoods.getActivityLimitMinNum() != null && !cartGoods.getActivityLimitMinNum().equals(0)) {
+                if (isLimitValid(cartGoods.getActivityLimitMinNum())||isLimitValid(cartGoods.getActivityLimitMaxNum())) {
                     logger().info("购物车-修改数量-活动最小限制{}", cartGoods.getActivityLimitMinNum());
-                    if (param.getGoodsNumber() < cartGoods.getActivityLimitMinNum() && cartGoods.getActivityLimitType().equals(BaseConstant.YES)) {
+                    if (isLimitValid(cartGoods.getActivityLimitMinNum())&&param.getGoodsNumber() < cartGoods.getActivityLimitMinNum() && cartGoods.getActivityLimitType().equals(BaseConstant.YES)) {
                         logger().error("购物车-商品数量不能小于活动限制数量");
                         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_MINIMUM_PURCHASE)
                                 .message(cartGoods.getActivityLimitMinNum().toString()).message(cartGoods.getGoodsRecord().getUnit()).build();
                     }
-                } else if (cartGoods.getLimitBuyNum() != null && !cartGoods.getLimitBuyNum().equals(0)) {
+                } else if (isLimitValid(cartGoods.getLimitBuyNum())) {
                     logger().info("购物车-修改数量-商品最小数量限制{}", cartGoods.getLimitBuyNum());
                     if (param.getGoodsNumber() < cartGoods.getLimitBuyNum()) {
                         logger().error("购物车-数量不能小于限制");
@@ -532,14 +540,14 @@ public class CartService extends ShopBaseService {
                 }
             } else {
                 logger().info("购物车-增加商品数量");
-                if (cartGoods.getActivityLimitMaxNum() != null && !cartGoods.getActivityLimitMaxNum().equals(0)) {
+                if (isLimitValid(cartGoods.getActivityLimitMaxNum())||isLimitValid(cartGoods.getActivityLimitMinNum())) {
                     logger().info("购物车-修改数量-活动最大限制{}", cartGoods.getActivityLimitMaxNum());
-                    if (param.getGoodsNumber() > cartGoods.getActivityLimitMaxNum() && cartGoods.getActivityLimitType().equals(BaseConstant.YES)) {
+                    if (isLimitValid(cartGoods.getActivityLimitMaxNum())&&param.getGoodsNumber() > cartGoods.getActivityLimitMaxNum() && cartGoods.getActivityLimitType().equals(BaseConstant.YES)) {
                         logger().error("购物车-商品数量不能大于活动限制数量");
                         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_MAXIMUM_PURCHASE)
                                 .message(cartGoods.getActivityLimitMaxNum()).message(cartGoods.getGoodsRecord().getUnit()).build();
                     }
-                } else if (cartGoods.getLimitMaxNum() != null && !cartGoods.getLimitMaxNum().equals(0)) {
+                } else if (isLimitValid(cartGoods.getLimitMaxNum())) {
                     logger().info("购物车-修改数量-商品最大数量限制{}", cartGoods.getLimitMaxNum());
                     if (param.getGoodsNumber() > cartGoods.getLimitMaxNum()) {
                         logger().error("购物车-数量不能大于限制");
@@ -560,5 +568,9 @@ public class CartService extends ShopBaseService {
             return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_GOODS_NO_LONGER_VALID).build();
         }
         return ResultMessage.builder().flag(true).build();
+    }
+
+    private boolean isLimitValid(Integer limitNum) {
+        return limitNum != null && !limitNum.equals(0);
     }
 }

@@ -241,9 +241,11 @@ export default {
     },
     CycleData (newVal) {
       console.log(newVal)
-      var arr = newVal.split('@')
-      this.startTime = arr[0]
-      this.endTime = arr[1]
+      if (newVal) {
+        var arr = newVal.split('@')
+        this.startTime = arr[0]
+        this.endTime = arr[1]
+      }
     }
   },
   methods: {

@@ -60,7 +60,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null,roomId=null } = options
     console.log(options)
     JSON.parse(goodsList).forEach(item => {
       let {
@@ -81,7 +81,8 @@ global.wxPage({
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
       'params.activityId': activityId,
-      'params.recordId': recordId
+      'params.recordId': recordId,
+      'params.roomId':roomId
     })
     if (options.groupid) {
       this.setData({
@@ -621,6 +622,7 @@ global.wxPage({
       } else if (addParams.insteadPayNum) {
         delete addParams.insteadPayNum
       }
+      if (this.data.params.roomId) addParams.roomId = Number(this.data.params.roomId)
       console.log(addParams)
       let params = {
         goods,

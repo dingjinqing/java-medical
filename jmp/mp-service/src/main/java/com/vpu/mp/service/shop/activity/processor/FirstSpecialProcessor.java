@@ -241,6 +241,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 log.info("购物车-首单特惠商品{}-活动数量限制{}-取消选中",cartGoods.getGoodsName(),firstSpecial.getLimitMaxNum());
                                 cartService.switchCheckedProduct(cartBo.getUserId(),cartGoods.getCartId(),CartConstant.CART_NO_CHECKED);
                                 cartGoods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                                cartGoods.setBuyStatus(BaseConstant.NO);
                                 //提示前端
                                 cartBo.setNoticeStatus(CartConstant.CART_NOTICE_STATUS_WARNINGS);
                                 cartBo.setNotice("活动限购" + firstSpecial.getLimitMaxNum() + "个");
@@ -288,7 +289,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
                                 firstActivityInfo.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
                                 firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
-                                firstActivityInfo.setActivityId(firstSpecial.getId());
+                                firstActivityInfo.setActivityId(firstSpecial.getFirstSpecialId());
                                 firstActivityInfo.setFirstSpecialNumber(firstSpecial.getLimitAmount());
                                 firstActivityInfo.setFirstSpecialNumberType(firstSpecial.getLimitFlag());
                                 if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {

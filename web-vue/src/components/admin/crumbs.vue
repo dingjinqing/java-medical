@@ -32,6 +32,13 @@
         :underline="false"
         target="_blank"
       >表单统计使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'live_broadcast'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2222&fromuid=1"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >直播使用教程</el-link>
     </span>
   </div>
 </template>
@@ -44,8 +51,8 @@ export default {
       lang: '',
       isSurvey: true, // 若是概况里的商城概览则隐藏面包屑
       isLink: false, // 瓜分积分显示的一个跳转链接
-      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view'], // name池,
-      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift']// 跳转池
+      nameArr: ['addRecommend', 'addGoodsLabel', 'updateGoodsLabel', 'store_storemanage_reservation', 'addBrand', 'ordinary_coupon_receive_details', 'feedbackList', 'formDecorationHome', ' pin_group_activityEffectData', 'bargain_effect_data', 'bargain_bargain_user', ' bargain_get_newuser_detail', 'bargain_order_list', 'bargain_activity', ' pin_group_refundFailureOrder', ' pin_group_newUserDetail', 'pin_group_orderList', 'pin_group_detailList', 'group_draw_effect', 'group_draw_group', 'group_draw_user', 'group_draw_order', 'promote_activity', 'promote_receive_details', 'promote_launch_details', 'promote_participate_details', 'promote_effect_data', 'lottery_activity_detail', 'lottery_activity_newUserList', 'open_screen_detail', 'store_storemanage_reservation_detail', 'store_storemanage_reservation_record', 'store_verification_list', 'sec_kill_order', 'sec_kill_detail', 'sec_kill_user', 'sec_kill_effect', 'group_draw_detail', 'gift_detail_view', 'gift_add_view', 'newUserDetails', 'pointsUserList', 'pointsExchangeOrder', 'template_detail', 'add_message', 'send_record', 'gift_edit_view', 'first_special_order'], // name池,
+      turnArr: ['recommend', 'label', 'label', 'store_list', 'brand', 'ordinary_coupon', 'form_decoration', 'form_decoration', 'pin_group', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'kanjia', 'pin_group', 'pin_group', 'pin_group', 'pin_group', 'group_draw', 'group_draw', 'group_draw', 'group_draw', 'promote', 'promote', 'promote', 'promote', 'lottery_activity', 'lottery_activity', 'market_gifted', 'store_list', 'store_list', 'store_list', 'sec_kill', 'sec_kill', 'sec_kill', 'sec_kill', 'group_draw', 'gift', 'gift', 'integral_convert', 'integral_convert', 'integral_convert', 'integral_convert', 'all_message_push', 'all_message_push', 'all_message_push', 'gift', 'first_special']// 跳转池
     }
   },
   watch: {
@@ -261,10 +268,6 @@ export default {
             if (name === '发起砍价用户列表') {
               this.$router.push({
                 name: 'bargain_bargain_user'
-              })
-            } else if (name === '砍价') {
-              this.$router.push({
-                name: 'bargain'
               })
             } else {
               this.$router.push({

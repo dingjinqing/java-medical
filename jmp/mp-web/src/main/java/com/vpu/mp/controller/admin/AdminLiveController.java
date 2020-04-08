@@ -3,6 +3,7 @@ package com.vpu.mp.controller.admin;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -41,9 +42,13 @@ public class AdminLiveController extends AdminBaseController {
 		return success(checkLive);
 	}
 	
-	
+	/**
+	 * 商品列表
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/api/admin/market/live/goodList/{id}")
-	public JsonResult getGoodsList(@RequestPart Integer id) {
+	public JsonResult getGoodsList(@PathVariable Integer id) {
 		List<LiveRomeGoodListVo> goodsList = shop().liveService.liveGoods.packageGoodsList(id);
 		return success(goodsList);
 

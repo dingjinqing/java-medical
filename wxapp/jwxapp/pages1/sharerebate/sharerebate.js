@@ -12,53 +12,40 @@ global.wxPage({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let {goodsPrice,rebateId} = options
+    let {goodsPrice,rebateId,rebateRatio,goodsId} = options
     console.log(goodsPrice)
     this.setData({
       goodsPrice,
-      rebateId
+      rebateId,
+      rebateRatio,
+      goodsId
     })
-    let productList = {
-        "6105": {
-        "id": 256,
-        "goods_id": 1180,
-        "product_id": 6105,
-        "advise_price": "100.00",
-        "min_price": "90.00",
-        "max_price": "200.00",
-        "add_time": "2020-03-25 14:25:46",
-        "spec_val_id": "5700",
-        "spec_desc": "大小:小"
-        },
-        "6106": {
-        "id": 257,
-        "goods_id": 1180,
-        "product_id": 6106,
-        "advise_price": "150.00",
-        "min_price": "140.00",
-        "max_price": "200.00",
-        "add_time": "2020-03-25 14:25:46",
-        "spec_val_id": "5701",
-        "spec_desc": "大小:大"
-        }
-      }
-      this.setData({
-        productList:Object.values(productList).map(item=>{
-           item.prdPrice = item.advise_price
-           return item
+    this.initShareRebateData()
+  },
+  initShareRebateData(){
+    util.api('/api/wxapp/distribution/rebate/goods/config',res=>{
+      if(res.error === 0 && res.content){
+        this.setData({
+          goodsInfo:res.content.goods,
+          productList:res.content.rebatePrice.map(item=>{
+            item.prdPrice = item.advisePrice
+            return item
+          })
         })
-      })
+        this.getRebateInfo()
+      }
+    },{
+      goodsId:this.data.goodsId
+    })
   },
   setPrdPrice(e){
     let {prdId} = e.currentTarget.dataset
     let {value:price} = e.detail 
-    let targetIndex = this.data.productList.findIndex(item=>{return item.product_id === prdId})
-    console.log(targetIndex)
+    let targetIndex = this.data.productList.findIndex(item=>{return item.prdId === prdId})
     let target = this.data.productList[targetIndex]
-    console.log(price,target.max_price)
-    if(Number(price) > Number(target.max_price)){
+    if(Number(price) > Number(target.maxPrice)){
       util.showModal('提示', '设置金额不能大于最高售价');
-    } else if (Number(price) < Number(target.min_price)){
+    } else if (Number(price) < Number(target.minPrice)){
       util.showModal('提示', '设置金额不能小于最低售价');
     } else {
       this.setData({
@@ -68,17 +55,25 @@ global.wxPage({
     this.setData({
       [`productList[${targetIndex}].prdPrice`]:Number(this.data.productList[targetIndex].prdPrice).toFixed(2)
     })
+    this.getRebateInfo()
   },
   resetPrdPrice(e){
     let {prdId} = e.currentTarget.dataset
-    let targetIndex = this.data.productList.findIndex(item=>{return item.product_id === prdId})
+    let targetIndex = this.data.productList.findIndex(item=>{return item.prdId === prdId})
     this.setData({
-      [`productList[${targetIndex}].prdPrice`]:this.data.productList[targetIndex].advise_price
+      [`productList[${targetIndex}].prdPrice`]:this.data.productList[targetIndex].advisePrice
     })
+    this.getRebateInfo()
   },
   getMax () {
-    let arr = this.data.productList.map(item=>{item.prdPrice})
+    let arr = this.data.productList.map(item=>{return item.prdPrice})
     return Math.max(...arr)
+  },
+  getRebateInfo(){
+    let rebateInfo = parseFloat(this.data.rebateRatio) / 100 * this.getMax()
+    this.setData({
+      rebateInfo:parseFloat(rebateInfo).toFixed(2)
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -126,6 +121,25 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    let rebateConfig = {}
+    let date = new Date();
+    rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
+    rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
+      defaultData[item.prdId] = item.prdPrice
+      return defaultData
+    },{})
+    console.log(`/pages/item/item${util.getUrlParams({
+      gid:this.data.goodsId,
+      inviteId:util.getCache("user_id"),
+      rebateConfig:JSON.stringify(rebateConfig)
+    })}`)
+    return {
+      title: '【特价专享】唯一渠道，专享价格，等你来抢！',
+      path: `/pages/item/item${util.getUrlParams({
+        gid:this.data.goodsId,
+        inviteId:util.getCache("user_id"),
+        rebateConfig
+      })}`
+    }
   }
 })
