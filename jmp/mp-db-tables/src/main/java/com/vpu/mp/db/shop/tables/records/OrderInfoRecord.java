@@ -5,12 +5,14 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.OrderInfo;
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
+import org.jooq.Record1;
+import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
@@ -26,1966 +28,1980 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
 
-    private static final long serialVersionUID = 1636454247;
+    private static final long serialVersionUID = -229845473;
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_id</code>. 订单id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_id</code>. 订单id
      */
     public void setOrderId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_id</code>. 订单id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_id</code>. 订单id
      */
     public Integer getOrderId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shop_id</code>. 店铺id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shop_id</code>. 店铺id
      */
     public void setShopId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shop_id</code>. 店铺id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shop_id</code>. 店铺id
      */
     public Integer getShopId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_sn</code>. 订单编号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_sn</code>. 订单编号
      */
     public void setOrderSn(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_sn</code>. 订单编号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_sn</code>. 订单编号
      */
     public String getOrderSn() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.main_order_sn</code>. 主订单编号(拆单时用)
+     * Setter for <code>mini_shop_8984736.b2c_order_info.main_order_sn</code>. 主订单编号(拆单时用)
      */
     public void setMainOrderSn(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.main_order_sn</code>. 主订单编号(拆单时用)
+     * Getter for <code>mini_shop_8984736.b2c_order_info.main_order_sn</code>. 主订单编号(拆单时用)
      */
     public String getMainOrderSn() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.user_id</code>. 用户id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.user_id</code>. 用户id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.user_openid</code>. 用户openid
+     * Setter for <code>mini_shop_8984736.b2c_order_info.user_openid</code>. 用户openid
      */
     public void setUserOpenid(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.user_openid</code>. 用户openid
+     * Getter for <code>mini_shop_8984736.b2c_order_info.user_openid</code>. 用户openid
      */
     public String getUserOpenid() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_status</code>. 订单状态
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_status</code>. 订单状态
      */
     public void setOrderStatus(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_status</code>. 订单状态
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_status</code>. 订单状态
      */
     public Byte getOrderStatus() {
         return (Byte) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_status_name</code>. 订单状态名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_status_name</code>. 订单状态名称
      */
     public void setOrderStatusName(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_status_name</code>. 订单状态名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_status_name</code>. 订单状态名称
      */
     public String getOrderStatusName() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.consignee</code>. 收件人姓名
+     * Setter for <code>mini_shop_8984736.b2c_order_info.consignee</code>. 收件人姓名
      */
     public void setConsignee(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.consignee</code>. 收件人姓名
+     * Getter for <code>mini_shop_8984736.b2c_order_info.consignee</code>. 收件人姓名
      */
     public String getConsignee() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.address_id</code>. 地址id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.address_id</code>. 地址id
      */
     public void setAddressId(Integer value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.address_id</code>. 地址id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.address_id</code>. 地址id
      */
     public Integer getAddressId() {
         return (Integer) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.country_code</code>. 国家编号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.country_code</code>. 国家编号
      */
     public void setCountryCode(Integer value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.country_code</code>. 国家编号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.country_code</code>. 国家编号
      */
     public Integer getCountryCode() {
         return (Integer) get(10);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.country_name</code>. 国家名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.country_name</code>. 国家名称
      */
     public void setCountryName(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.country_name</code>. 国家名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.country_name</code>. 国家名称
      */
     public String getCountryName() {
         return (String) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.province_code</code>. 省份编号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.province_code</code>. 省份编号
      */
     public void setProvinceCode(Integer value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.province_code</code>. 省份编号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.province_code</code>. 省份编号
      */
     public Integer getProvinceCode() {
         return (Integer) get(12);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.province_name</code>. 省份名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.province_name</code>. 省份名称
      */
     public void setProvinceName(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.province_name</code>. 省份名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.province_name</code>. 省份名称
      */
     public String getProvinceName() {
         return (String) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.city_code</code>. 城市编号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.city_code</code>. 城市编号
      */
     public void setCityCode(Integer value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.city_code</code>. 城市编号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.city_code</code>. 城市编号
      */
     public Integer getCityCode() {
         return (Integer) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.city_name</code>. 城市名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.city_name</code>. 城市名称
      */
     public void setCityName(String value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.city_name</code>. 城市名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.city_name</code>. 城市名称
      */
     public String getCityName() {
         return (String) get(15);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.district_code</code>. 区县编号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.district_code</code>. 区县编号
      */
     public void setDistrictCode(Integer value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.district_code</code>. 区县编号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.district_code</code>. 区县编号
      */
     public Integer getDistrictCode() {
         return (Integer) get(16);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.district_name</code>. 区县名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.district_name</code>. 区县名称
      */
     public void setDistrictName(String value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.district_name</code>. 区县名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.district_name</code>. 区县名称
      */
     public String getDistrictName() {
         return (String) get(17);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.address</code>. 更多详细地址
+     * Setter for <code>mini_shop_8984736.b2c_order_info.address</code>. 更多详细地址
      */
     public void setAddress(String value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.address</code>. 更多详细地址
+     * Getter for <code>mini_shop_8984736.b2c_order_info.address</code>. 更多详细地址
      */
     public String getAddress() {
         return (String) get(18);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.complete_address</code>. 完整收件地址
+     * Setter for <code>mini_shop_8984736.b2c_order_info.complete_address</code>. 完整收件地址
      */
     public void setCompleteAddress(String value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.complete_address</code>. 完整收件地址
+     * Getter for <code>mini_shop_8984736.b2c_order_info.complete_address</code>. 完整收件地址
      */
     public String getCompleteAddress() {
         return (String) get(19);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.zipcode</code>. 邮编
+     * Setter for <code>mini_shop_8984736.b2c_order_info.zipcode</code>. 邮编
      */
     public void setZipcode(String value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.zipcode</code>. 邮编
+     * Getter for <code>mini_shop_8984736.b2c_order_info.zipcode</code>. 邮编
      */
     public String getZipcode() {
         return (String) get(20);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.mobile</code>. 手机号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.mobile</code>. 手机号
      */
     public void setMobile(String value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.mobile</code>. 手机号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.mobile</code>. 手机号
      */
     public String getMobile() {
         return (String) get(21);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.add_message</code>. 客户留言
+     * Setter for <code>mini_shop_8984736.b2c_order_info.add_message</code>. 客户留言
      */
     public void setAddMessage(String value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.add_message</code>. 客户留言
+     * Getter for <code>mini_shop_8984736.b2c_order_info.add_message</code>. 客户留言
      */
     public String getAddMessage() {
         return (String) get(22);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_id</code>. 快递id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_id</code>. 快递id
      */
     public void setShippingId(Byte value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_id</code>. 快递id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_id</code>. 快递id
      */
     public Byte getShippingId() {
         return (Byte) get(23);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_name</code>. 快递名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_name</code>. 快递名称
      */
     public void setShippingName(String value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_name</code>. 快递名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_name</code>. 快递名称
      */
     public String getShippingName() {
         return (String) get(24);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_code</code>. 支付代号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_code</code>. 支付代号
      */
     public void setPayCode(String value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_code</code>. 支付代号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_code</code>. 支付代号
      */
     public String getPayCode() {
         return (String) get(25);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_name</code>. 支付名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_name</code>. 支付名称
      */
     public void setPayName(String value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_name</code>. 支付名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_name</code>. 支付名称
      */
     public String getPayName() {
         return (String) get(26);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_sn</code>. 支付流水号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_sn</code>. 支付流水号
      */
     public void setPaySn(String value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_sn</code>. 支付流水号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_sn</code>. 支付流水号
      */
     public String getPaySn() {
         return (String) get(27);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.goods_amount</code>. 订单商品数量
+     * Setter for <code>mini_shop_8984736.b2c_order_info.goods_amount</code>. 订单商品数量
      */
     public void setGoodsAmount(Short value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.goods_amount</code>. 订单商品数量
+     * Getter for <code>mini_shop_8984736.b2c_order_info.goods_amount</code>. 订单商品数量
      */
     public Short getGoodsAmount() {
         return (Short) get(28);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_fee</code>. 快递费金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_fee</code>. 快递费金额
      */
     public void setShippingFee(BigDecimal value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_fee</code>. 快递费金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_fee</code>. 快递费金额
      */
     public BigDecimal getShippingFee() {
         return (BigDecimal) get(29);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.money_paid</code>. 订单应付金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.money_paid</code>. 订单应付金额
      */
     public void setMoneyPaid(BigDecimal value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.money_paid</code>. 订单应付金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.money_paid</code>. 订单应付金额
      */
     public BigDecimal getMoneyPaid() {
         return (BigDecimal) get(30);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shoper_reduce_amount</code>. 商家减价金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shoper_reduce_amount</code>. 商家减价金额
      */
     public void setShoperReduceAmount(BigDecimal value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shoper_reduce_amount</code>. 商家减价金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shoper_reduce_amount</code>. 商家减价金额
      */
     public BigDecimal getShoperReduceAmount() {
         return (BigDecimal) get(31);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.sub_order_amount</code>. 子订单总金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.sub_order_amount</code>. 子订单总金额
      */
     public void setSubOrderAmount(BigDecimal value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.sub_order_amount</code>. 子订单总金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.sub_order_amount</code>. 子订单总金额
      */
     public BigDecimal getSubOrderAmount() {
         return (BigDecimal) get(32);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.discount</code>. 券折扣金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.discount</code>. 券折扣金额
      */
     public void setDiscount(BigDecimal value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.discount</code>. 券折扣金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.discount</code>. 券折扣金额
      */
     public BigDecimal getDiscount() {
         return (BigDecimal) get(33);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.score_discount</code>. 积分抵扣金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.score_discount</code>. 积分抵扣金额
      */
     public void setScoreDiscount(BigDecimal value) {
         set(34, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.score_discount</code>. 积分抵扣金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.score_discount</code>. 积分抵扣金额
      */
     public BigDecimal getScoreDiscount() {
         return (BigDecimal) get(34);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.use_account</code>. 用户消费余额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.use_account</code>. 用户消费余额
      */
     public void setUseAccount(BigDecimal value) {
         set(35, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.use_account</code>. 用户消费余额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.use_account</code>. 用户消费余额
      */
     public BigDecimal getUseAccount() {
         return (BigDecimal) get(35);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_amount</code>. 订单总金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_amount</code>. 订单总金额
      */
     public void setOrderAmount(BigDecimal value) {
         set(36, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_amount</code>. 订单总金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_amount</code>. 订单总金额
      */
     public BigDecimal getOrderAmount() {
         return (BigDecimal) get(36);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.grade_percent</code>. 购买会员等级的折扣%
+     * Setter for <code>mini_shop_8984736.b2c_order_info.grade_percent</code>. 购买会员等级的折扣%
      */
     public void setGradePercent(BigDecimal value) {
         set(37, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.grade_percent</code>. 购买会员等级的折扣%
+     * Getter for <code>mini_shop_8984736.b2c_order_info.grade_percent</code>. 购买会员等级的折扣%
      */
     public BigDecimal getGradePercent() {
         return (BigDecimal) get(37);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.discount_price</code>. 购买会员等级的折扣金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.discount_price</code>. 购买会员等级的折扣金额
      */
     public void setDiscountPrice(BigDecimal value) {
         set(38, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.discount_price</code>. 购买会员等级的折扣金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.discount_price</code>. 购买会员等级的折扣金额
      */
     public BigDecimal getDiscountPrice() {
         return (BigDecimal) get(38);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.dapei_reduce_amount</code>. 搭配减价
+     * Setter for <code>mini_shop_8984736.b2c_order_info.dapei_reduce_amount</code>. 搭配减价
      */
     public void setDapeiReduceAmount(BigDecimal value) {
         set(39, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.dapei_reduce_amount</code>. 搭配减价
+     * Getter for <code>mini_shop_8984736.b2c_order_info.dapei_reduce_amount</code>. 搭配减价
      */
     public BigDecimal getDapeiReduceAmount() {
         return (BigDecimal) get(39);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.package_discount</code>. 一口价抵扣金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.package_discount</code>. 一口价抵扣金额
      */
     public void setPackageDiscount(BigDecimal value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.package_discount</code>. 一口价抵扣金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.package_discount</code>. 一口价抵扣金额
      */
     public BigDecimal getPackageDiscount() {
         return (BigDecimal) get(40);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.dapei_id</code>. 搭配id来源
+     * Setter for <code>mini_shop_8984736.b2c_order_info.dapei_id</code>. 搭配id来源
      */
     public void setDapeiId(Integer value) {
         set(41, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.dapei_id</code>. 搭配id来源
+     * Getter for <code>mini_shop_8984736.b2c_order_info.dapei_id</code>. 搭配id来源
      */
     public Integer getDapeiId() {
         return (Integer) get(41);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.create_time</code>.
+     * Setter for <code>mini_shop_8984736.b2c_order_info.create_time</code>.
      */
     public void setCreateTime(Timestamp value) {
         set(42, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.create_time</code>.
+     * Getter for <code>mini_shop_8984736.b2c_order_info.create_time</code>.
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(42);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.update_time</code>. 最后修改时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.update_time</code>. 最后修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(43, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.update_time</code>. 最后修改时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.update_time</code>. 最后修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(43);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.confirm_time</code>. 订单确收收货时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.confirm_time</code>. 订单确收收货时间
      */
     public void setConfirmTime(Timestamp value) {
         set(44, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.confirm_time</code>. 订单确收收货时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.confirm_time</code>. 订单确收收货时间
      */
     public Timestamp getConfirmTime() {
         return (Timestamp) get(44);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_time</code>. 支付时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
         set(45, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_time</code>. 支付时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
         return (Timestamp) get(45);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_time</code>. 发货时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_time</code>. 发货时间
      */
     public void setShippingTime(Timestamp value) {
         set(46, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_time</code>. 发货时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_time</code>. 发货时间
      */
     public Timestamp getShippingTime() {
         return (Timestamp) get(46);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.closed_time</code>. 关闭时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.closed_time</code>. 关闭时间
      */
     public void setClosedTime(Timestamp value) {
         set(47, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.closed_time</code>. 关闭时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.closed_time</code>. 关闭时间
      */
     public Timestamp getClosedTime() {
         return (Timestamp) get(47);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.cancelled_time</code>. 取消时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.cancelled_time</code>. 取消时间
      */
     public void setCancelledTime(Timestamp value) {
         set(48, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.cancelled_time</code>. 取消时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.cancelled_time</code>. 取消时间
      */
     public Timestamp getCancelledTime() {
         return (Timestamp) get(48);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.finished_time</code>. 订单完成时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.finished_time</code>. 订单完成时间
      */
     public void setFinishedTime(Timestamp value) {
         set(49, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.finished_time</code>. 订单完成时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.finished_time</code>. 订单完成时间
      */
     public Timestamp getFinishedTime() {
         return (Timestamp) get(49);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.return_time</code>. 订单申请退货时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.return_time</code>. 订单申请退货时间
      */
     public void setReturnTime(Timestamp value) {
         set(50, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.return_time</code>. 订单申请退货时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.return_time</code>. 订单申请退货时间
      */
     public Timestamp getReturnTime() {
         return (Timestamp) get(50);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.return_finish_time</code>. 订单退货完成时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.return_finish_time</code>. 订单退货完成时间
      */
     public void setReturnFinishTime(Timestamp value) {
         set(51, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.return_finish_time</code>. 订单退货完成时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.return_finish_time</code>. 订单退货完成时间
      */
     public Timestamp getReturnFinishTime() {
         return (Timestamp) get(51);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.refund_time</code>. 订单申请退款时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.refund_time</code>. 订单申请退款时间
      */
     public void setRefundTime(Timestamp value) {
         set(52, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.refund_time</code>. 订单申请退款时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.refund_time</code>. 订单申请退款时间
      */
     public Timestamp getRefundTime() {
         return (Timestamp) get(52);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
      */
     public void setRefundFinishTime(Timestamp value) {
         set(53, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.refund_finish_time</code>. 订单退款完成时间
      */
     public Timestamp getRefundFinishTime() {
         return (Timestamp) get(53);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_no</code>. 快递单号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_no</code>. 快递单号
      */
     public void setShippingNo(String value) {
         set(54, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_no</code>. 快递单号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_no</code>. 快递单号
      */
     public String getShippingNo() {
         return (String) get(54);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.shipping_type</code>. 快递类型
+     * Setter for <code>mini_shop_8984736.b2c_order_info.shipping_type</code>. 快递类型
      */
     public void setShippingType(String value) {
         set(55, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.shipping_type</code>. 快递类型
+     * Getter for <code>mini_shop_8984736.b2c_order_info.shipping_type</code>. 快递类型
      */
     public String getShippingType() {
         return (String) get(55);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_cod</code>. 是否货到付款
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_cod</code>. 是否货到付款
      */
     public void setIsCod(Byte value) {
         set(56, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_cod</code>. 是否货到付款
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_cod</code>. 是否货到付款
      */
     public Byte getIsCod() {
         return (Byte) get(56);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.return_type_cfg</code>. 是否支持退换货：1支持 2不支持
+     * Setter for <code>mini_shop_8984736.b2c_order_info.return_type_cfg</code>. 是否支持退换货：1支持 2不支持
      */
     public void setReturnTypeCfg(Byte value) {
         set(57, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.return_type_cfg</code>. 是否支持退换货：1支持 2不支持
+     * Getter for <code>mini_shop_8984736.b2c_order_info.return_type_cfg</code>. 是否支持退换货：1支持 2不支持
      */
     public Byte getReturnTypeCfg() {
         return (Byte) get(57);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.return_days_cfg</code>. 发货后自动确认收货时间,单位天
+     * Setter for <code>mini_shop_8984736.b2c_order_info.return_days_cfg</code>. 发货后自动确认收货时间,单位天
      */
     public void setReturnDaysCfg(Byte value) {
         set(58, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.return_days_cfg</code>. 发货后自动确认收货时间,单位天
+     * Getter for <code>mini_shop_8984736.b2c_order_info.return_days_cfg</code>. 发货后自动确认收货时间,单位天
      */
     public Byte getReturnDaysCfg() {
         return (Byte) get(58);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_timeout_days</code>. 确认收货后自动订单完成时间,单位天
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_timeout_days</code>. 确认收货后自动订单完成时间,单位天
      */
     public void setOrderTimeoutDays(Short value) {
         set(59, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_timeout_days</code>. 确认收货后自动订单完成时间,单位天
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_timeout_days</code>. 确认收货后自动订单完成时间,单位天
      */
     public Short getOrderTimeoutDays() {
         return (Short) get(59);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.seller_remark</code>. 卖家备注
+     * Setter for <code>mini_shop_8984736.b2c_order_info.seller_remark</code>. 卖家备注
      */
     public void setSellerRemark(String value) {
         set(60, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.seller_remark</code>. 卖家备注
+     * Getter for <code>mini_shop_8984736.b2c_order_info.seller_remark</code>. 卖家备注
      */
     public String getSellerRemark() {
         return (String) get(60);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.erpordercode</code>. erp中订单代码
+     * Setter for <code>mini_shop_8984736.b2c_order_info.erpordercode</code>. erp中订单代码
      */
     public void setErpordercode(String value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.erpordercode</code>. erp中订单代码
+     * Getter for <code>mini_shop_8984736.b2c_order_info.erpordercode</code>. erp中订单代码
      */
     public String getErpordercode() {
         return (String) get(61);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
+     * Setter for <code>mini_shop_8984736.b2c_order_info.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
      */
     public void setCommentFlag(Byte value) {
         set(62, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
+     * Getter for <code>mini_shop_8984736.b2c_order_info.comment_flag</code>. 0:未评论，1:已评论，2：已晒单
      */
     public Byte getCommentFlag() {
         return (Byte) get(62);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.fanli_user_id</code>. 返利会员id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.fanli_user_id</code>. 返利会员id
      */
     public void setFanliUserId(Integer value) {
         set(63, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.fanli_user_id</code>. 返利会员id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.fanli_user_id</code>. 返利会员id
      */
     public Integer getFanliUserId() {
         return (Integer) get(63);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.fanli_grade</code>. 返利等级
+     * Setter for <code>mini_shop_8984736.b2c_order_info.fanli_grade</code>. 返利等级
      */
     public void setFanliGrade(String value) {
         set(64, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.fanli_grade</code>. 返利等级
+     * Getter for <code>mini_shop_8984736.b2c_order_info.fanli_grade</code>. 返利等级
      */
     public String getFanliGrade() {
         return (String) get(64);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.fanli_percent</code>. 返利百分比
+     * Setter for <code>mini_shop_8984736.b2c_order_info.fanli_percent</code>. 返利百分比
      */
     public void setFanliPercent(BigDecimal value) {
         set(65, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.fanli_percent</code>. 返利百分比
+     * Getter for <code>mini_shop_8984736.b2c_order_info.fanli_percent</code>. 返利百分比
      */
     public BigDecimal getFanliPercent() {
         return (BigDecimal) get(65);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     * Setter for <code>mini_shop_8984736.b2c_order_info.settlement_flag</code>. 结算标志：0：未结算，1：已结算
      */
     public void setSettlementFlag(Byte value) {
         set(66, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.settlement_flag</code>. 结算标志：0：未结算，1：已结算
+     * Getter for <code>mini_shop_8984736.b2c_order_info.settlement_flag</code>. 结算标志：0：未结算，1：已结算
      */
     public Byte getSettlementFlag() {
         return (Byte) get(66);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.invoice_id</code>. 发票id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.invoice_id</code>. 发票id
      */
     public void setInvoiceId(Integer value) {
         set(67, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.invoice_id</code>. 发票id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.invoice_id</code>. 发票id
      */
     public Integer getInvoiceId() {
         return (Integer) get(67);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.invoice_content</code>. 发票类型：0普通发票；1增值税专票
+     * Setter for <code>mini_shop_8984736.b2c_order_info.invoice_content</code>. 发票类型：0普通发票；1增值税专票
      */
     public void setInvoiceContent(Integer value) {
         set(68, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.invoice_content</code>. 发票类型：0普通发票；1增值税专票
+     * Getter for <code>mini_shop_8984736.b2c_order_info.invoice_content</code>. 发票类型：0普通发票；1增值税专票
      */
     public Integer getInvoiceContent() {
         return (Integer) get(68);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.invoice_title</code>. 发票内容：json存储
+     * Setter for <code>mini_shop_8984736.b2c_order_info.invoice_title</code>. 发票内容：json存储
      */
     public void setInvoiceTitle(String value) {
         set(69, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.invoice_title</code>. 发票内容：json存储
+     * Getter for <code>mini_shop_8984736.b2c_order_info.invoice_title</code>. 发票内容：json存储
      */
     public String getInvoiceTitle() {
         return (String) get(69);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
+     * Setter for <code>mini_shop_8984736.b2c_order_info.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
      */
     public void setRefundStatus(Byte value) {
         set(70, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
+     * Getter for <code>mini_shop_8984736.b2c_order_info.refund_status</code>. 1是审核中，2是通过审核，3退货没通过审核，4买家再次提交申请，5：退款退货成功，6是拒绝退款退货
      */
     public Byte getRefundStatus() {
         return (Byte) get(70);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_order_sn</code>. 对账单号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_order_sn</code>. 对账单号
      */
     public void setPayOrderSn(String value) {
         set(71, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_order_sn</code>. 对账单号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_order_sn</code>. 对账单号
      */
     public String getPayOrderSn() {
         return (String) get(71);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购
+     * Setter for <code>mini_shop_8984736.b2c_order_info.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购
      */
     public void setGoodsType(String value) {
         set(72, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购
+     * Getter for <code>mini_shop_8984736.b2c_order_info.goods_type</code>. 商品类型，0普通商品，1拼团商品，2分销，3砍价商品 4积分商品 5秒杀商品 6限时降价 7加价购
      */
     public String getGoodsType() {
         return (String) get(72);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
      */
     public void setOrderSource(Byte value) {
         set(73, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_source</code>. 订单来源，0：小程序，1wap，2app
      */
     public Byte getOrderSource() {
         return (Byte) get(73);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
+     * Setter for <code>mini_shop_8984736.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
      */
     public void setFanliType(Byte value) {
         set(74, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
+     * Getter for <code>mini_shop_8984736.b2c_order_info.fanli_type</code>. 返利类型，0：普通订单，1：分销返利订单，2：返利会员返利订单
      */
     public Byte getFanliType() {
         return (Byte) get(74);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.manual_refund</code>. 1代表手动退款，0代表非手动
+     * Setter for <code>mini_shop_8984736.b2c_order_info.manual_refund</code>. 1代表手动退款，0代表非手动
      */
     public void setManualRefund(Byte value) {
         set(75, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.manual_refund</code>. 1代表手动退款，0代表非手动
+     * Getter for <code>mini_shop_8984736.b2c_order_info.manual_refund</code>. 1代表手动退款，0代表非手动
      */
     public Byte getManualRefund() {
         return (Byte) get(75);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2好友代付
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2好友代付
      */
     public void setOrderPayWay(Byte value) {
         set(76, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2好友代付
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_pay_way</code>. 订单付款方式，0全款 1定金 2好友代付
      */
     public Byte getOrderPayWay() {
         return (Byte) get(76);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
      */
     public void setBkOrderSn(String value) {
         set(77, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_order_sn</code>. 补款订单号 order_pay_way=1时有效
      */
     public String getBkOrderSn() {
         return (String) get(77);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_order_money</code>. 补款金额 order_pay_way=1时有效
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_order_money</code>. 补款金额 order_pay_way=1时有效
      */
     public void setBkOrderMoney(BigDecimal value) {
         set(78, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_order_money</code>. 补款金额 order_pay_way=1时有效
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_order_money</code>. 补款金额 order_pay_way=1时有效
      */
     public BigDecimal getBkOrderMoney() {
         return (BigDecimal) get(78);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
      */
     public void setBkOrderPaid(Byte value) {
         set(79, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_order_paid</code>. 补款金额是否支付 order_pay_way=1时有效，0未支付，1已支付
      */
     public Byte getBkOrderPaid() {
         return (Byte) get(79);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pin_goods_money</code>. 当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pin_goods_money</code>. 当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化
      */
     public void setPinGoodsMoney(BigDecimal value) {
         set(80, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pin_goods_money</code>. 当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pin_goods_money</code>. 当前拼团商品金额，阶梯团根据人数时会变化，补款也随之变化
      */
     public BigDecimal getPinGoodsMoney() {
         return (BigDecimal) get(80);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pin_yj_money</code>. 拼团支付佣金金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pin_yj_money</code>. 拼团支付佣金金额
      */
     public void setPinYjMoney(BigDecimal value) {
         set(81, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pin_yj_money</code>. 拼团支付佣金金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pin_yj_money</code>. 拼团支付佣金金额
      */
     public BigDecimal getPinYjMoney() {
         return (BigDecimal) get(81);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.activity_id</code>. 营销活动id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.activity_id</code>. 营销活动id
      */
     public void setActivityId(Integer value) {
         set(82, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.activity_id</code>. 营销活动id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.activity_id</code>. 营销活动id
      */
     public Integer getActivityId() {
         return (Integer) get(82);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.del_flag</code>. 0:未删除，1:已删除
+     * Setter for <code>mini_shop_8984736.b2c_order_info.del_flag</code>. 0:未删除，1:已删除
      */
     public void setDelFlag(Byte value) {
         set(83, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.del_flag</code>. 0:未删除，1:已删除
+     * Getter for <code>mini_shop_8984736.b2c_order_info.del_flag</code>. 0:未删除，1:已删除
      */
     public Byte getDelFlag() {
         return (Byte) get(83);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.source</code>. 订单来源，记录app，wap，pc来源
+     * Setter for <code>mini_shop_8984736.b2c_order_info.source</code>. 订单来源，记录app，wap，pc来源
      */
     public void setSource(String value) {
         set(84, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.source</code>. 订单来源，记录app，wap，pc来源
+     * Getter for <code>mini_shop_8984736.b2c_order_info.source</code>. 订单来源，记录app，wap，pc来源
      */
     public String getSource() {
         return (String) get(84);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.part_ship_flag</code>. 0:，1:部分发货
+     * Setter for <code>mini_shop_8984736.b2c_order_info.part_ship_flag</code>. 0:，1:部分发货
      */
     public void setPartShipFlag(Byte value) {
         set(85, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.part_ship_flag</code>. 0:，1:部分发货
+     * Getter for <code>mini_shop_8984736.b2c_order_info.part_ship_flag</code>. 0:，1:部分发货
      */
     public Byte getPartShipFlag() {
         return (Byte) get(85);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.promotion_id</code>. 促销活动id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.promotion_id</code>. 促销活动id
      */
     public void setPromotionId(Integer value) {
         set(86, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.promotion_id</code>. 促销活动id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.promotion_id</code>. 促销活动id
      */
     public Integer getPromotionId() {
         return (Integer) get(86);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.promotion_reduce</code>. 促销活动折扣金额,满折满减
+     * Setter for <code>mini_shop_8984736.b2c_order_info.promotion_reduce</code>. 促销活动折扣金额,满折满减
      */
     public void setPromotionReduce(BigDecimal value) {
         set(87, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.promotion_reduce</code>. 促销活动折扣金额,满折满减
+     * Getter for <code>mini_shop_8984736.b2c_order_info.promotion_reduce</code>. 促销活动折扣金额,满折满减
      */
     public BigDecimal getPromotionReduce() {
         return (BigDecimal) get(87);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.push_type</code>. yadu推送状态：0-暂无推送，1-推送失败，2-推送成功
+     * Setter for <code>mini_shop_8984736.b2c_order_info.push_type</code>. yadu推送状态：0-暂无推送，1-推送失败，2-推送成功
      */
     public void setPushType(Byte value) {
         set(88, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.push_type</code>. yadu推送状态：0-暂无推送，1-推送失败，2-推送成功
+     * Getter for <code>mini_shop_8984736.b2c_order_info.push_type</code>. yadu推送状态：0-暂无推送，1-推送失败，2-推送成功
      */
     public Byte getPushType() {
         return (Byte) get(88);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.push_desc</code>. yadu推送失败原因
+     * Setter for <code>mini_shop_8984736.b2c_order_info.push_desc</code>. yadu推送失败原因
      */
     public void setPushDesc(String value) {
         set(89, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.push_desc</code>. yadu推送失败原因
+     * Getter for <code>mini_shop_8984736.b2c_order_info.push_desc</code>. yadu推送失败原因
      */
     public String getPushDesc() {
         return (String) get(89);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pos_flag</code>. 门店订单标志：0：商城，1：门店同步订单
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pos_flag</code>. 门店订单标志：0：商城，1：门店同步订单
      */
     public void setPosFlag(Byte value) {
         set(90, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pos_flag</code>. 门店订单标志：0：商城，1：门店同步订单
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pos_flag</code>. 门店订单标志：0：商城，1：门店同步订单
      */
     public Byte getPosFlag() {
         return (Byte) get(90);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pos_shop_name</code>. pos店铺名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pos_shop_name</code>. pos店铺名称
      */
     public void setPosShopName(String value) {
         set(91, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pos_shop_name</code>. pos店铺名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pos_shop_name</code>. pos店铺名称
      */
     public String getPosShopName() {
         return (String) get(91);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.store_id</code>. 门店id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.store_id</code>. 门店id
      */
     public void setStoreId(Integer value) {
         set(92, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.store_id</code>. 门店id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.store_id</code>. 门店id
      */
     public Integer getStoreId() {
         return (Integer) get(92);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.store_name</code>. 门店名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.store_name</code>. 门店名称
      */
     public void setStoreName(String value) {
         set(93, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.store_name</code>. 门店名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.store_name</code>. 门店名称
      */
     public String getStoreName() {
         return (String) get(93);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.member_card_id</code>. 会员卡id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.member_card_id</code>. 会员卡id
      */
     public void setMemberCardId(Integer value) {
         set(94, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.member_card_id</code>. 会员卡id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.member_card_id</code>. 会员卡id
      */
     public Integer getMemberCardId() {
         return (Integer) get(94);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.member_card_reduce</code>. 会员卡优惠金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.member_card_reduce</code>. 会员卡优惠金额
      */
     public void setMemberCardReduce(BigDecimal value) {
         set(95, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.member_card_reduce</code>. 会员卡优惠金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.member_card_reduce</code>. 会员卡优惠金额
      */
     public BigDecimal getMemberCardReduce() {
         return (BigDecimal) get(95);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.member_card_balance</code>. 会员卡消费金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.member_card_balance</code>. 会员卡消费金额
      */
     public void setMemberCardBalance(BigDecimal value) {
         set(96, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.member_card_balance</code>. 会员卡消费金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.member_card_balance</code>. 会员卡消费金额
      */
     public BigDecimal getMemberCardBalance() {
         return (BigDecimal) get(96);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.expire_time</code>. 订单支付过期时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.expire_time</code>. 订单支付过期时间
      */
     public void setExpireTime(Timestamp value) {
         set(97, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.expire_time</code>. 订单支付过期时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.expire_time</code>. 订单支付过期时间
      */
     public Timestamp getExpireTime() {
         return (Timestamp) get(97);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.del_time</code>. 删除时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.del_time</code>. 删除时间
      */
     public void setDelTime(Timestamp value) {
         set(98, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.del_time</code>. 删除时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.del_time</code>. 删除时间
      */
     public Timestamp getDelTime() {
         return (Timestamp) get(98);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
+     * Setter for <code>mini_shop_8984736.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setPrepayId(String value) {
         set(99, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
+     * Getter for <code>mini_shop_8984736.b2c_order_info.prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getPrepayId() {
         return (String) get(99);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.deliver_type</code>. 配送类型：0 快递 1 自提
+     * Setter for <code>mini_shop_8984736.b2c_order_info.deliver_type</code>. 配送类型：0 快递 1 自提
      */
     public void setDeliverType(Byte value) {
         set(100, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.deliver_type</code>. 配送类型：0 快递 1 自提
+     * Getter for <code>mini_shop_8984736.b2c_order_info.deliver_type</code>. 配送类型：0 快递 1 自提
      */
     public Byte getDeliverType() {
         return (Byte) get(100);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.deliver_type_name</code>. 配送类型名称
+     * Setter for <code>mini_shop_8984736.b2c_order_info.deliver_type_name</code>. 配送类型名称
      */
     public void setDeliverTypeName(String value) {
         set(101, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.deliver_type_name</code>. 配送类型名称
+     * Getter for <code>mini_shop_8984736.b2c_order_info.deliver_type_name</code>. 配送类型名称
      */
     public String getDeliverTypeName() {
         return (String) get(101);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pickupdate_time</code>. 自提时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pickupdate_time</code>. 自提时间
      */
     public void setPickupdateTime(String value) {
         set(102, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pickupdate_time</code>. 自提时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pickupdate_time</code>. 自提时间
      */
     public String getPickupdateTime() {
         return (String) get(102);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.star_flag</code>. 标星订单：0 未标星 1 标星
+     * Setter for <code>mini_shop_8984736.b2c_order_info.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public void setStarFlag(Byte value) {
         set(103, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.star_flag</code>. 标星订单：0 未标星 1 标星
+     * Getter for <code>mini_shop_8984736.b2c_order_info.star_flag</code>. 标星订单：0 未标星 1 标星
      */
     public Byte getStarFlag() {
         return (Byte) get(103);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.verify_code</code>. 核销自提码
+     * Setter for <code>mini_shop_8984736.b2c_order_info.verify_code</code>. 核销自提码
      */
     public void setVerifyCode(String value) {
         set(104, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.verify_code</code>. 核销自提码
+     * Getter for <code>mini_shop_8984736.b2c_order_info.verify_code</code>. 核销自提码
      */
     public String getVerifyCode() {
         return (String) get(104);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.split</code>. 分裂优惠券id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.split</code>. 分裂优惠券id
      */
     public void setSplit(Integer value) {
         set(105, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.split</code>. 分裂优惠券id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.split</code>. 分裂优惠券id
      */
     public Integer getSplit() {
         return (Integer) get(105);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.card_no</code>. 会员卡号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.card_no</code>. 会员卡号
      */
     public void setCardNo(String value) {
         set(106, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.card_no</code>. 会员卡号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.card_no</code>. 会员卡号
      */
     public String getCardNo() {
         return (String) get(106);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.fanli_money</code>. 单品返利金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.fanli_money</code>. 单品返利金额
      */
     public void setFanliMoney(BigDecimal value) {
         set(107, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.fanli_money</code>. 单品返利金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.fanli_money</code>. 单品返利金额
      */
     public BigDecimal getFanliMoney() {
         return (BigDecimal) get(107);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.true_name</code>. 真实姓名
+     * Setter for <code>mini_shop_8984736.b2c_order_info.true_name</code>. 真实姓名
      */
     public void setTrueName(String value) {
         set(108, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.true_name</code>. 真实姓名
+     * Getter for <code>mini_shop_8984736.b2c_order_info.true_name</code>. 真实姓名
      */
     public String getTrueName() {
         return (String) get(108);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.id_card</code>. 身份证号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.id_card</code>. 身份证号
      */
     public void setIdCard(String value) {
         set(109, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.id_card</code>. 身份证号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.id_card</code>. 身份证号
      */
     public String getIdCard() {
         return (String) get(109);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.ali_trade_no</code>. 支付宝交易单号
+     * Setter for <code>mini_shop_8984736.b2c_order_info.ali_trade_no</code>. 支付宝交易单号
      */
     public void setAliTradeNo(String value) {
         set(110, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.ali_trade_no</code>. 支付宝交易单号
+     * Getter for <code>mini_shop_8984736.b2c_order_info.ali_trade_no</code>. 支付宝交易单号
      */
     public String getAliTradeNo() {
         return (String) get(110);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.grouper_cheap_reduce</code>. 团长优惠金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.grouper_cheap_reduce</code>. 团长优惠金额
      */
     public void setGrouperCheapReduce(BigDecimal value) {
         set(111, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.grouper_cheap_reduce</code>. 团长优惠金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.grouper_cheap_reduce</code>. 团长优惠金额
      */
     public BigDecimal getGrouperCheapReduce() {
         return (BigDecimal) get(111);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
      */
     public void setBkShippingTime(Timestamp value) {
         set(112, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_shipping_time</code>. 定金预计发货时间
      */
     public Timestamp getBkShippingTime() {
         return (Timestamp) get(112);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_return_type</code>. 定金退款状态
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_return_type</code>. 定金退款状态
      */
     public void setBkReturnType(Byte value) {
         set(113, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_return_type</code>. 定金退款状态
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_return_type</code>. 定金退款状态
      */
     public Byte getBkReturnType() {
         return (Byte) get(113);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
+     * Setter for <code>mini_shop_8984736.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public void setBkPrepayId(String value) {
         set(114, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
+     * Getter for <code>mini_shop_8984736.b2c_order_info.bk_prepay_id</code>. 微信支付id，用于发送模板消息
      */
     public String getBkPrepayId() {
         return (String) get(114);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pre_sale_discount</code>. 定金膨胀优惠金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pre_sale_discount</code>. 定金膨胀优惠金额
      */
     public void setPreSaleDiscount(BigDecimal value) {
         set(115, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pre_sale_discount</code>. 定金膨胀优惠金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pre_sale_discount</code>. 定金膨胀优惠金额
      */
     public BigDecimal getPreSaleDiscount() {
         return (BigDecimal) get(115);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.instead_pay_money</code>. 代付金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.instead_pay_money</code>. 代付金额
      */
     public void setInsteadPayMoney(BigDecimal value) {
         set(116, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.instead_pay_money</code>. 代付金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.instead_pay_money</code>. 代付金额
      */
     public BigDecimal getInsteadPayMoney() {
         return (BigDecimal) get(116);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_user_message</code>. 发起人留言
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_user_message</code>. 发起人留言
      */
     public void setOrderUserMessage(String value) {
         set(117, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_user_message</code>. 发起人留言
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_user_message</code>. 发起人留言
      */
     public String getOrderUserMessage() {
         return (String) get(117);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.instead_pay</code>. 好友代付规则
+     * Setter for <code>mini_shop_8984736.b2c_order_info.instead_pay</code>. 好友代付规则
      */
     public void setInsteadPay(String value) {
         set(118, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.instead_pay</code>. 好友代付规则
+     * Getter for <code>mini_shop_8984736.b2c_order_info.instead_pay</code>. 好友代付规则
      */
     public String getInsteadPay() {
         return (String) get(118);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.instead_pay_num</code>. 代付人数
+     * Setter for <code>mini_shop_8984736.b2c_order_info.instead_pay_num</code>. 代付人数
      */
     public void setInsteadPayNum(Short value) {
         set(119, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.instead_pay_num</code>. 代付人数
+     * Getter for <code>mini_shop_8984736.b2c_order_info.instead_pay_num</code>. 代付人数
      */
     public Short getInsteadPayNum() {
         return (Short) get(119);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_promote</code>. 是否是推广单
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_promote</code>. 是否是推广单
      */
     public void setIsPromote(Byte value) {
         set(120, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_promote</code>. 是否是推广单
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_promote</code>. 是否是推广单
      */
     public Byte getIsPromote() {
         return (Byte) get(120);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.verifier_id</code>. 核销员id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.verifier_id</code>. 核销员id
      */
     public void setVerifierId(Integer value) {
         set(121, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.verifier_id</code>. 核销员id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.verifier_id</code>. 核销员id
      */
     public Integer getVerifierId() {
         return (Integer) get(121);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.exchang</code>. 1 兑换 0否
+     * Setter for <code>mini_shop_8984736.b2c_order_info.exchang</code>. 1 兑换 0否
      */
     public void setExchang(Byte value) {
         set(122, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.exchang</code>. 1 兑换 0否
+     * Getter for <code>mini_shop_8984736.b2c_order_info.exchang</code>. 1 兑换 0否
      */
     public Byte getExchang() {
         return (Byte) get(122);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
+     * Setter for <code>mini_shop_8984736.b2c_order_info.currency</code>. 币种
      */
     public void setCurrency(String value) {
         set(123, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.currency</code>. 币种
+     * Getter for <code>mini_shop_8984736.b2c_order_info.currency</code>. 币种
      */
     public String getCurrency() {
         return (String) get(123);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.free_ship</code>. 运费抵扣
+     * Setter for <code>mini_shop_8984736.b2c_order_info.free_ship</code>. 运费抵扣
      */
     public void setFreeShip(BigDecimal value) {
         set(124, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.free_ship</code>. 运费抵扣
+     * Getter for <code>mini_shop_8984736.b2c_order_info.free_ship</code>. 运费抵扣
      */
     public BigDecimal getFreeShip() {
         return (BigDecimal) get(124);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.free_detail</code>. 运费抵扣规则
+     * Setter for <code>mini_shop_8984736.b2c_order_info.free_detail</code>. 运费抵扣规则
      */
     public void setFreeDetail(String value) {
         set(125, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.free_detail</code>. 运费抵扣规则
+     * Getter for <code>mini_shop_8984736.b2c_order_info.free_detail</code>. 运费抵扣规则
      */
     public String getFreeDetail() {
         return (String) get(125);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.sub_goods_price</code>. 子单金额
+     * Setter for <code>mini_shop_8984736.b2c_order_info.sub_goods_price</code>. 子单金额
      */
     public void setSubGoodsPrice(BigDecimal value) {
         set(126, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.sub_goods_price</code>. 子单金额
+     * Getter for <code>mini_shop_8984736.b2c_order_info.sub_goods_price</code>. 子单金额
      */
     public BigDecimal getSubGoodsPrice() {
         return (BigDecimal) get(126);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_refund_coupon</code>. 是否退优惠券
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_refund_coupon</code>. 是否退优惠券
      */
     public void setIsRefundCoupon(Byte value) {
         set(127, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_refund_coupon</code>. 是否退优惠券
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_refund_coupon</code>. 是否退优惠券
      */
     public Byte getIsRefundCoupon() {
         return (Byte) get(127);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_finish_refund</code>. 子订单是否已处理退款
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_finish_refund</code>. 子订单是否已处理退款
      */
     public void setIsFinishRefund(Byte value) {
         set(128, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_finish_refund</code>. 子订单是否已处理退款
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_finish_refund</code>. 子订单是否已处理退款
      */
     public Byte getIsFinishRefund() {
         return (Byte) get(128);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_view_comment</code>. 是否已查看评价
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_view_comment</code>. 是否已查看评价
      */
     public void setIsViewComment(Byte value) {
         set(129, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_view_comment</code>. 是否已查看评价
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_view_comment</code>. 是否已查看评价
      */
     public Byte getIsViewComment() {
         return (Byte) get(129);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pos_order_action</code>. 1:扫码购 2：仅自提
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pos_order_action</code>. 1:扫码购 2：仅自提
      */
     public void setPosOrderAction(Byte value) {
         set(130, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pos_order_action</code>. 1:扫码购 2：仅自提
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pos_order_action</code>. 1:扫码购 2：仅自提
      */
     public Byte getPosOrderAction() {
         return (Byte) get(130);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_remind</code>. 发货提醒次数
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_remind</code>. 发货提醒次数
      */
     public void setOrderRemind(Byte value) {
         set(131, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_remind</code>. 发货提醒次数
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_remind</code>. 发货提醒次数
      */
     public Byte getOrderRemind() {
         return (Byte) get(131);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.order_remind_time</code>. 发货提醒时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.order_remind_time</code>. 发货提醒时间
      */
     public void setOrderRemindTime(Timestamp value) {
         set(132, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.order_remind_time</code>. 发货提醒时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.order_remind_time</code>. 发货提醒时间
      */
     public Timestamp getOrderRemindTime() {
         return (Timestamp) get(132);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.extend_receive_action</code>. 延长收货操作人：1:商家 2:用户
+     * Setter for <code>mini_shop_8984736.b2c_order_info.extend_receive_action</code>. 延长收货操作人：1:商家 2:用户
      */
     public void setExtendReceiveAction(Byte value) {
         set(133, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.extend_receive_action</code>. 延长收货操作人：1:商家 2:用户
+     * Getter for <code>mini_shop_8984736.b2c_order_info.extend_receive_action</code>. 延长收货操作人：1:商家 2:用户
      */
     public Byte getExtendReceiveAction() {
         return (Byte) get(133);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.extend_receive_time</code>. 收货延长时间
+     * Setter for <code>mini_shop_8984736.b2c_order_info.extend_receive_time</code>. 收货延长时间
      */
     public void setExtendReceiveTime(Timestamp value) {
         set(134, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.extend_receive_time</code>. 收货延长时间
+     * Getter for <code>mini_shop_8984736.b2c_order_info.extend_receive_time</code>. 收货延长时间
      */
     public Timestamp getExtendReceiveTime() {
         return (Timestamp) get(134);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.tk_order_type</code>. 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
+     * Setter for <code>mini_shop_8984736.b2c_order_info.tk_order_type</code>. 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
      */
     public void setTkOrderType(Byte value) {
         set(135, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.tk_order_type</code>. 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
+     * Getter for <code>mini_shop_8984736.b2c_order_info.tk_order_type</code>. 淘客订单类型：0：普通订单，1：京东订单，2：淘宝订单
      */
     public Byte getTkOrderType() {
         return (Byte) get(135);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.pay_award_id</code>. 支付有礼id
+     * Setter for <code>mini_shop_8984736.b2c_order_info.pay_award_id</code>. 支付有礼id
      */
     public void setPayAwardId(Integer value) {
         set(136, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.pay_award_id</code>. 支付有礼id
+     * Getter for <code>mini_shop_8984736.b2c_order_info.pay_award_id</code>. 支付有礼id
      */
     public Integer getPayAwardId() {
         return (Integer) get(136);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_lock</code>. 是否锁库存，0否，1是
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_lock</code>. 是否锁库存，0否，1是
      */
     public void setIsLock(Byte value) {
         set(137, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_lock</code>. 是否锁库存，0否，1是
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_lock</code>. 是否锁库存，0否，1是
      */
     public Byte getIsLock() {
         return (Byte) get(137);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.score_proportion</code>. 积分比例
+     * Setter for <code>mini_shop_8984736.b2c_order_info.score_proportion</code>. 积分比例
      */
     public void setScoreProportion(Integer value) {
         set(138, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.score_proportion</code>. 积分比例
+     * Getter for <code>mini_shop_8984736.b2c_order_info.score_proportion</code>. 积分比例
      */
     public Integer getScoreProportion() {
         return (Integer) get(138);
     }
 
     /**
-     * Setter for <code>mini_shop_6797286.b2c_order_info.is_freeship_card</code>. 0否，1是
+     * Setter for <code>mini_shop_8984736.b2c_order_info.is_freeship_card</code>. 0否，1是
      */
     public void setIsFreeshipCard(Byte value) {
         set(139, value);
     }
 
     /**
-     * Getter for <code>mini_shop_6797286.b2c_order_info.is_freeship_card</code>. 0否，1是
+     * Getter for <code>mini_shop_8984736.b2c_order_info.is_freeship_card</code>. 0否，1是
      */
     public Byte getIsFreeshipCard() {
         return (Byte) get(139);
+    }
+
+    /**
+     * Setter for <code>mini_shop_8984736.b2c_order_info.room_id</code>. 直播间ID
+     */
+    public void setRoomId(Integer value) {
+        set(140, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_8984736.b2c_order_info.room_id</code>. 直播间ID
+     */
+    public Integer getRoomId() {
+        return (Integer) get(140);
     }
 
     // -------------------------------------------------------------------------
@@ -2014,7 +2030,7 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
     /**
      * Create a detached, initialised OrderInfoRecord
      */
-    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang, String currency, BigDecimal freeShip, String freeDetail, BigDecimal subGoodsPrice, Byte isRefundCoupon, Byte isFinishRefund, Byte isViewComment, Byte posOrderAction, Byte orderRemind, Timestamp orderRemindTime, Byte extendReceiveAction, Timestamp extendReceiveTime, Byte tkOrderType, Integer payAwardId, Byte isLock, Integer scoreProportion, Byte isFreeshipCard) {
+    public OrderInfoRecord(Integer orderId, Integer shopId, String orderSn, String mainOrderSn, Integer userId, String userOpenid, Byte orderStatus, String orderStatusName, String consignee, Integer addressId, Integer countryCode, String countryName, Integer provinceCode, String provinceName, Integer cityCode, String cityName, Integer districtCode, String districtName, String address, String completeAddress, String zipcode, String mobile, String addMessage, Byte shippingId, String shippingName, String payCode, String payName, String paySn, Short goodsAmount, BigDecimal shippingFee, BigDecimal moneyPaid, BigDecimal shoperReduceAmount, BigDecimal subOrderAmount, BigDecimal discount, BigDecimal scoreDiscount, BigDecimal useAccount, BigDecimal orderAmount, BigDecimal gradePercent, BigDecimal discountPrice, BigDecimal dapeiReduceAmount, BigDecimal packageDiscount, Integer dapeiId, Timestamp createTime, Timestamp updateTime, Timestamp confirmTime, Timestamp payTime, Timestamp shippingTime, Timestamp closedTime, Timestamp cancelledTime, Timestamp finishedTime, Timestamp returnTime, Timestamp returnFinishTime, Timestamp refundTime, Timestamp refundFinishTime, String shippingNo, String shippingType, Byte isCod, Byte returnTypeCfg, Byte returnDaysCfg, Short orderTimeoutDays, String sellerRemark, String erpordercode, Byte commentFlag, Integer fanliUserId, String fanliGrade, BigDecimal fanliPercent, Byte settlementFlag, Integer invoiceId, Integer invoiceContent, String invoiceTitle, Byte refundStatus, String payOrderSn, String goodsType, Byte orderSource, Byte fanliType, Byte manualRefund, Byte orderPayWay, String bkOrderSn, BigDecimal bkOrderMoney, Byte bkOrderPaid, BigDecimal pinGoodsMoney, BigDecimal pinYjMoney, Integer activityId, Byte delFlag, String source, Byte partShipFlag, Integer promotionId, BigDecimal promotionReduce, Byte pushType, String pushDesc, Byte posFlag, String posShopName, Integer storeId, String storeName, Integer memberCardId, BigDecimal memberCardReduce, BigDecimal memberCardBalance, Timestamp expireTime, Timestamp delTime, String prepayId, Byte deliverType, String deliverTypeName, String pickupdateTime, Byte starFlag, String verifyCode, Integer split, String cardNo, BigDecimal fanliMoney, String trueName, String idCard, String aliTradeNo, BigDecimal grouperCheapReduce, Timestamp bkShippingTime, Byte bkReturnType, String bkPrepayId, BigDecimal preSaleDiscount, BigDecimal insteadPayMoney, String orderUserMessage, String insteadPay, Short insteadPayNum, Byte isPromote, Integer verifierId, Byte exchang, String currency, BigDecimal freeShip, String freeDetail, BigDecimal subGoodsPrice, Byte isRefundCoupon, Byte isFinishRefund, Byte isViewComment, Byte posOrderAction, Byte orderRemind, Timestamp orderRemindTime, Byte extendReceiveAction, Timestamp extendReceiveTime, Byte tkOrderType, Integer payAwardId, Byte isLock, Integer scoreProportion, Byte isFreeshipCard, Integer roomId) {
         super(OrderInfo.ORDER_INFO);
 
         set(0, orderId);
@@ -2157,5 +2173,6 @@ public class OrderInfoRecord extends UpdatableRecordImpl<OrderInfoRecord> {
         set(137, isLock);
         set(138, scoreProportion);
         set(139, isFreeshipCard);
+        set(140, roomId);
     }
 }

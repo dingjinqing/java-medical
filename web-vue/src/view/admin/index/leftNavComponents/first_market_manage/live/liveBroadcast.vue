@@ -113,7 +113,7 @@
             align="center"
           >
           <template slot-scope="scope">
-            <el-link :underline="false" @click="showGoods(scope.row.id)">{{scope.row.goodsListNum}}</el-link>
+            <el-link type="primary" :underline="false" @click="showGoods(scope.row.id)">{{scope.row.goodsListNum}}</el-link>
           </template>
           </el-table-column>
           <el-table-column
@@ -143,7 +143,7 @@
       </div>
     </div>
     <!--商品弹窗-->
-    <el-dialog title="收货地址" :visible.sync="dialogTableVisible" width="900px">
+    <el-dialog title="活动商品" :visible.sync="dialogTableVisible" width="900px">
       <liveGoods v-if="dialogTableVisible" :liveId="liveId"/>
     </el-dialog>
   </div>
