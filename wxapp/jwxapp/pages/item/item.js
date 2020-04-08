@@ -185,13 +185,13 @@ global.wxPage({
    */
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
-    if (options.scene) options = this.resetScene(options.scene)
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null } = options
     this.setData({
       goodsId,
       activityId,
-      activityType
+      activityType,
+      roomId:roomId
     })
     this.requestGoodsInfo()
   },
@@ -865,16 +865,15 @@ global.wxPage({
       JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
   },
-  resetScene (scene) {
-    return decodeURIComponent(scene).split('&').reduce((defaultData, item) => {
-      let params = item.split('=')
-      defaultData[params[0]] = params[1]
-      return defaultData
-    }, {})
-  },
   viewPreSaleRule () {
     this.setData({
       preSaleRuleShow: true
+    })
+  },
+  goLive(){
+    let roomId = [5]
+    wx.navigateTo({
+      url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
     })
   },
   /**
