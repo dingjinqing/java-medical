@@ -1,26 +1,26 @@
 <template>
   <div class="riName">
     <div class="riNameMain">
-      <h2>广告图片模块<span>图片建议尺寸：宽度630</span></h2>
+      <h2>{{$t('formDecorationModel.advertisingPicture')}}<span>{{$t('formDecorationModel.advertisingPictureTip')}}</span></h2>
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>预览原图：</span>
+          <span>{{$t('formDecorationModel.previewOriginal')}}</span>
           <el-radio
             v-model="modulesSaveData.is_preview"
             label="0"
-          >否</el-radio>
+          >{{$t('formDecorationModel.no')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.is_preview"
             label="1"
-          >是</el-radio>
+          >{{$t('formDecorationModel.yes')}}</el-radio>
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">选择是，则在图片没有添加链接时，前端用户点击可以预览原图。选择否，则未添加图片链接时，不可预览原图</div>
+          <div class="tips">{{$t('formDecorationModel.yesTips')}}</div>
         </div>
         <div class="list">
-          <span>图片：</span>
+          <span>{{$t('formDecorationModel.photo')}}</span>
           <div class="container">
             <div
               class="iconContainer"
@@ -42,16 +42,16 @@
 
         </div>
         <div class="list">
-          <span>文本：</span>
+          <span>{{$t('formDecorationModel.text')}}</span>
           <el-input
             v-model="modulesSaveData.title"
             size="small"
             :maxlength="19"
           ></el-input>&nbsp;&nbsp;
-          <i style="color:#9A9A9A">最多19个字</i>
+          <i style="color:#9A9A9A">{{$t('formDecorationModel.textTip')}}</i>
         </div>
         <div class="list">
-          <span>链接：</span>
+          <span>{{$t('formDecorationModel.links')}}</span>
           <el-input
             v-model="modulesSaveData.title_link"
             size="small"
@@ -59,7 +59,7 @@
           <el-button
             @click="handleToCallLinkDialog()"
             size="small"
-          >选择链接</el-button>
+          >{{$t('formDecorationModel.selectLink')}}</el-button>
         </div>
         <!--模块私有end-->
       </div>

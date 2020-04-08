@@ -4,7 +4,7 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
@@ -12,15 +12,15 @@
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <div class="videoTips">
-          <span>注：</span>
-          <div class="videoTipsContent">每个表单视频模块最多可由用户上传一个小视频，时长不可超过3min，大小不能超过10M</div>
+          <span>{{$t('formDecorationModel.note')}}</span>
+          <div class="videoTipsContent">{{$t('formDecorationModel.videoTip')}}</div>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -28,7 +28,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -102,7 +102,7 @@ export default {
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     }
