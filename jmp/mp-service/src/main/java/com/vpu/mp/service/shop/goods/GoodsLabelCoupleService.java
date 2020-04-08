@@ -169,7 +169,11 @@ public class GoodsLabelCoupleService extends ShopBaseService {
             list.add(record);
         });
         db().batchInsert(list).execute();
-        esGoodsLabelCreateService.createEsLabelIndexForGoodsId(Collections.singletonList(goodsId), DBOperating.UPDATE);
+        try {
+            esGoodsLabelCreateService.createEsLabelIndexForGoodsId(Collections.singletonList(goodsId), DBOperating.UPDATE);
+        } catch (Exception e) {
+            logger().debug(e.getMessage());
+        }
     }
 
     /**

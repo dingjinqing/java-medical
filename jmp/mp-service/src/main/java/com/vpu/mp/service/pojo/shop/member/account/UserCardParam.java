@@ -2,9 +2,10 @@ package com.vpu.mp.service.pojo.shop.member.account;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -100,6 +101,27 @@ public class UserCardParam {
 	protected Integer stock;
 	protected Integer limit;
 	protected String discountBrandId;
+	/** 0:现金 1：积分 */
+    protected Byte renewType;
+    /** 续费金额或积分 */
+    protected BigDecimal renewNum;
+    /** 续费时间 */
+    protected Integer renewTime;
+    /** 0:日，1:周 2: 月 */
+    protected Byte renewDateType;
+    /** 1:未过期 -1:已过期 */
+    protected Byte expireDateStatus;
+    /** 门店信息 */
+    protected List<StoreBasicVo> storeInfo;
+    /** 用户积分 */
+    protected Integer score;
+    /** 用户余额 */
+    protected BigDecimal account;
+
+    protected Map<String,RenewValidCardList> memberCardList;
+    protected String memberCardNo;
+    protected Byte cardFirst;
+    protected Byte balanceFirst;
 	/**
 	 * 	自定义权益
 	 */

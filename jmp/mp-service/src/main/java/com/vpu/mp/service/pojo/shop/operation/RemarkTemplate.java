@@ -51,6 +51,8 @@ public enum RemarkTemplate {
 	ORDER_VIRTUAL_RETURN_DEFAULT(2015,RemarkMessage.MSG_ORDER_VIRTUAL_RETURN_DEFAULT),
     /**	订单完成送积分	*/
     ORDER_FINISH_SEND_SCORE(2016,RemarkMessage.MSG_ORDER_FINISH_SEND_SCORE),
+    /**	订单完成返利	*/
+    ORDER_REBATE(2017,RemarkMessage.MSG_ORDER_REBATE),
 
 
     /**

@@ -32,6 +32,13 @@
         :underline="false"
         target="_blank"
       >表单统计使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'live_broadcast'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2222&fromuid=1"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >直播使用教程</el-link>
     </span>
   </div>
 </template>
@@ -261,10 +268,6 @@ export default {
             if (name === '发起砍价用户列表') {
               this.$router.push({
                 name: 'bargain_bargain_user'
-              })
-            } else if (name === '砍价') {
-              this.$router.push({
-                name: 'bargain'
               })
             } else {
               this.$router.push({

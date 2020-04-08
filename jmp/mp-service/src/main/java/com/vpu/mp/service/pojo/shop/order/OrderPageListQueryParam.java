@@ -92,4 +92,7 @@ public class OrderPageListQueryParam {
 	private Byte shopHelperAction;
 	/**店铺助手操作天数，默认3*/
 	private Integer shopHelperActionDays = 3;
+	
+	/** 营销活动中直播需要的roomId*/
+	private Integer roomId;
 }

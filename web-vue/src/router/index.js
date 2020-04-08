@@ -59,6 +59,11 @@ const baseRoutes = [{
   component: () => import('@/view/admin/layout/promoteRules')
 },
 {
+  path: '/wxapp/distribution/help', // 小程序内跳转分销中心规则
+  name: 'distributionRules',
+  component: () => import('@/view/admin/layout/distributionRules')
+},
+{
   path: '/wxapp/checkout/services', // 小程序内跳转服务承诺
   name: 'checkoutServices',
   component: () => import('@/view/admin/layout/services')
