@@ -89,29 +89,32 @@
   <!-- 换购商品的弹框 -->
   <action-sheet hidden="{{ checkMode }}" bindchange="proActionChange">
     <view class='promotion' style='padding-bottom:{{isIpx == 1 ? "60rpx":"0"}}'>
+      <!-- 头部 -->
       <view class='pro_title'>
         {{i18n.$t(localePack,"pages.cart.fullDialog1")}}
-        <text wx:if='{{can_del == 0 && full_change_info.count != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog2")}}</text>
-        <text wx:if='{{can_del == 1 && full_change_info.count != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog3")}}</text>
+        <text wx:if='{{can_del == 0 && selectCount != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog2")}}</text>
+        <text wx:if='{{can_del == 1 && selectCount != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog3")}}</text>
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='closeCheck' />
       </view>
+      <!-- 列表 -->
       <view class='pro_content clearfix' wx:if='{{full_change_info != ""}}'>
         <view class='each_change clearfix' wx:for='{{full_change_info}}' wx:key='key'>
           <view class='every_goods clearfix'>
+            <!-- 删除按钮 -->
             <view class='radio_button' wx:if='{{can_del == 1}}' bindtap='to_del_geted' data-cart_id='{{item.cartId}}'>
               <text class='iconfont iconshanchu1' style='color:{{comColor}};font-size:40rpx;'></text>
             </view>
             <view class='eg_lefts'>
               <image src='{{item.goodsImg}}' wx:if='{{item.prdImg == ""}}'></image>
               <image src='{{imageUrl}}/{{item.prdImg}}' wx:if='{{item.prdImg != ""}}'></image>
-              <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
-              <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
+              <view class='reduce_price' wx:if="{{item.priceActivityType == 6}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
+              <view class='reduce_price' wx:if="{{item.priceActivityType == 18}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
               <view></view>
             </view>
             <view class='eg_right' style='width:{{can_del == 0?"490rpx":"430rpx;"}}'>
               <view class='goods_name'>{{item.goodsName}}</view>
               <view class='goods_desc'>{{item.prdDesc}}</view>
-              <view class='goods_amount' wx:if='{{item.limitAmount > 0}}' style='color:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.fullDialog4")}}{{item.limitAmount}}{{i18n.$t(localePack,"pages.cart.fullDialog5")}}</view>
+              <!-- <view class='goods_amount' wx:if='{{item.limitAmount > 0}}' style='color:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.fullDialog4")}}{{item.limitAmount}}{{i18n.$t(localePack,"pages.cart.fullDialog5")}}</view> -->
               <view class='goods_bottom clearfix'>
                 <view class='price_info clearfix'>
                   <view class='sale_price' style='color:{{comColor}}'>￥
@@ -120,11 +123,9 @@
                   <view class='original_price' wx:if='{{item.originalPrice!=null}}'>￥{{item.originalPrice}}</view>
                 </view>
                 <view class='num_choose clearfix'>
-                  <view class='btn_jian' bindtap='btn_del_al' data-prds_id='{{item.prdId}}' data-num="{{item.goodsNumber}}" data-idnes='{{index}}' wx:if='{{item.is_zuixiao == 0}}' style='background:#fff;color:#666'>-</view>
-                  <view class='btn_jian' bindtap='btn_del_al' data-prds_id='{{item.prdId}}' data-num="{{item.goodsNumber}}" data-idnes='{{index}}' wx:if='{{item.is_zuixiao == 1}}' style='background:#f5f5f5;color:#ccc'>-</view>
-                  <input type='number' class='goods_num_input' bindblur='get_al_num' value='{{item.goodsNumber}}' data-idnes='{{index}}' />
-                  <view class='btn_add' bindtap='btn_add_al' data-prds_id='{{item.prdId}}' data-num="{{item.goodsNumber}}" data-indexs='{{index}}' style='background:#fff;color:#666' wx:if='{{item.is_zuida == 0}}'>+</view>
-                  <view class='btn_add' bindtap='btn_add_al' data-prds_id='{{item.prdId}}' data-num="{{item.goodsNumber}}" data-indexs='{{index}}' wx:if='{{item.is_zuida == 1}}' style='background:#f5f5f5;color:#ccc'>+</view>
+                  <view class="btn_jian {{item.limitMinStyle == 1 ? 'not_tap' : ''}}" bindtap='goodsNumChange' data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-item="{{item}}" data-type="minus">-</view>
+                  <input type='number' value='{{item.cartNumber}}' bindblur='checkNumber' data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-item="{{item}}"></input>
+                  <view class="btn_add {{item.limitMaxStyle == 1 ? 'not_tap' : ''}}" bindtap='goodsNumChange' data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-item="{{item}}" data-type="add">+</view>
                 </view>
               </view>
             </view>
@@ -136,8 +137,9 @@
         <image src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix'></image>
         <view class='empty_tips'>{{i18n.$t(localePack,"pages.cart.fullDialog6")}}</view>
       </view>
+      <!-- 底部 -->
       <view class='change_gooter clearfix'>
-        <view class='cf_left'>{{i18n.$t(localePack,"pages.cart.fullDialog7")}}：{{full_change_info.count}}</view>
+        <view class='cf_left'>{{i18n.$t(localePack,"pages.cart.fullDialog7")}}：{{selectCount}}</view>
         <view class='cf_right' bindtap='closeCheck' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeSure")}}</view>
       </view>
     </view>
