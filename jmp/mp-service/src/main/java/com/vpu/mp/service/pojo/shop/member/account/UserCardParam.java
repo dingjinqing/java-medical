@@ -120,6 +120,8 @@ public class UserCardParam {
 
     protected Map<String,RenewValidCardList> memberCardList;
     protected String memberCardNo;
+    protected Byte cardFirst;
+    protected Byte balanceFirst;
 	/**
 	 * 	自定义权益
 	 */
