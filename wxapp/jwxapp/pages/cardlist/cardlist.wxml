@@ -70,6 +70,9 @@
 						<view class="card_status" wx:if="{{item.cardStopImg}}">
 							<image mode="widthFix" src="{{item.cardStopImg}}" />
 						</view>
+						<view class='out_time' wx:elif="{{item.give_away_status == 2}}">
+							<image src="{{imageUrl}}/image/wxapp/card_rebate.png?v=1" mode='widthFix' />
+						</view>
 					</view>
 					<view
 					 wx:if="{{item.expire === 1 || item.cardStopImg}}"

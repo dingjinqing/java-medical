@@ -22,7 +22,8 @@ global.wxPage({
     get_type: 0,
     cardId: null,
     give_card: 0,
-    rebate_show: false // 转赠弹窗flag
+    rebate_show: false, // 转赠弹窗flag
+
   },
 
   /**
@@ -62,7 +63,7 @@ global.wxPage({
         let cardInfo = res.content
         // 模拟转赠数据can_give_away
         cardInfo.card_give_away = 0
-        cardInfo.give_away_status = 1
+        cardInfo.give_away_status = 3
         cardInfo.can_give_away = 1
         // end
         if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
@@ -108,7 +109,6 @@ global.wxPage({
         //   }
         // ]
         cardInfo.custom_rights_flag = 1
-        cardInfo.give_away_status = 0
 
         that.setData({
           cardInfo: cardInfo
@@ -590,6 +590,13 @@ global.wxPage({
     let pack_id = e.currentTarget.dataset.pack_id;
     util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
   },
+  // 点击会员专享
+  to_search: function (e) {
+    var card_id = e.currentTarget.dataset.card_id;
+    util.navigateTo({
+      url: '/pages1/searchs/search'
+    })
+  },
   // 点击转赠
   to_rebate (e) {
     var that = this;
@@ -667,7 +674,7 @@ global.wxPage({
     return {
       title: util.getCache('nickName') + '赠送给您一张会员卡',
       path: 'pages/cardinfo/cardinfo?cardNo=' + cardInfo.cardNo + "&cardId=" + cardInfo.cardId + "&give_card=1",
-      imageUrl: that.data.imageUrl,
+      imageUrl: that.data.imageUrl + that.data.share_img,
       complete: function () {
 
       }
