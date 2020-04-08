@@ -49,7 +49,7 @@ public class JsonResultMessage {
     public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.mobile.same";
     public static final String MSG_ACCOUNT_USERNAME_LENGTH_LIMIT = "account.username.length.limit";
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
-    
+
     // 图片
 
     public static final String MSG_IMGAE_UPLOAD_FAILED = "image.upload.failed";
@@ -749,6 +749,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_WAY = "order.pay.way.no.support.instead.pay.way";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO = "order.pay.way.no_support.instead.pay.money.zero";
     public static final String MSG_ORDER_PAY_WAY_INSTEAD_PAY_FINISH = "order.pay.way.instead.pay.finish";
+    public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
+    public static final String  MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -1110,6 +1112,6 @@ public class JsonResultMessage {
     /**以下未国际化*/
     public static final String GOODS_EXCEL_UPLOAD_UPYUN_WRONG = "goods.excel.upload.upyun.wrong";
     public static final String GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE = "goods.excel.import.num.out.of.size";
-	
-	
+
+
 }
