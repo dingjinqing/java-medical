@@ -41,7 +41,7 @@ global.wxPage({
         type: options.type 
       })
     }
-    if (options.couponSn || options.id) {
+    if (options.couponSn || options.id || options.scene) {
       couponSn = options.couponSn
       couponId = Number(options.id)
       // 个人中心查看详情
