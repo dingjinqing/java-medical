@@ -1911,6 +1911,8 @@ public class MemberCardService extends ShopBaseService {
 				vo.setUsername(record.get(USER.USERNAME));
 				vo.setCreateTime(record.get(CARD_EXAMINE.CREATE_TIME));
 				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
+				vo.setId(record.get(CARD_EXAMINE.ID));
+				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
 				// 激活数据项
 				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
 				for(String name: activationCfg) {
