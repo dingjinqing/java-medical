@@ -1884,11 +1884,17 @@ public class MemberCardService extends ShopBaseService {
 		// deal with industry and education
 		for (ActiveAuditVo activeAuditVo : results.dataList) {
 			// education
-			String educationStr = MemberEducationEnum.getNameByCode(activeAuditVo.getEducation());
-			activeAuditVo.setEducationStr(educationStr);
+			if(activeAuditVo.getEducation()!= null) {
+				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
+				activeAuditVo.setEducationStr(educationStr);
+			}
+			
 			// industry
-			String industry = MemberIndustryEnum.getNameByCode(activeAuditVo.getIndustryInfo());
-			activeAuditVo.setIndustry(industry);
+			if(activeAuditVo.getIndustryInfo() != null) {
+				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
+				activeAuditVo.setIndustry(industry);
+			}
+			
 		}
 		return results;
 
@@ -2173,14 +2179,6 @@ public class MemberCardService extends ShopBaseService {
 	public MemberCardPageDecorationVo getPageIndexMemberCard(ModuleCard moduleCard, int userId){
         MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(moduleCard.getCardId())).fetchSingle().into(MemberCardPageDecorationVo.class);
         vo.setCardId(vo.getId());
-        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
-            //已停用
-            vo.setStatus((byte)3);
-        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
-            //已过期
-            vo.setStatus((byte)2);
-        }
-
         //用户已经领取该卡的数量
         int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,moduleCard.getCardId());
         if(vo.getCardType().equals(MCARD_TP_LIMIT)){
@@ -2216,12 +2214,20 @@ public class MemberCardService extends ShopBaseService {
             //普通卡 只能拥有一张
             if(userHasGotNumber > 0){
                 vo.setStatus((byte)1);
-            }else if(vo.getStatus() != 3 && vo.getStatus() != 2){
+            }else{
                 //有效，可以领取
                 vo.setStatus((byte)-1);
             }
         }
+        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
+            //已停用
+            vo.setStatus((byte)3);
+        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
+            //已过期
+            vo.setStatus((byte)2);
+        }
         logger().info("卡->status: "+vo.getStatus());
+        
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){

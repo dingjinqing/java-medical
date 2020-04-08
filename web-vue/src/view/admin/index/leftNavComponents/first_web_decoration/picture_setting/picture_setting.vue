@@ -411,6 +411,9 @@ export default {
   },
   mounted () {
     console.log(this.currencyPool)
+    if (this.$route.query.cartId) {
+      this.selectValue = Number(this.$route.query.cartId)
+    }
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
@@ -533,11 +536,11 @@ export default {
         return item.ischeck === true
       })
       this.pageIds = newarr.join(',')
-
+      console.log(newarr.join(','), this.pageIds.length)
       if (this.pageIds.length === 0) {
         this.$message.error(this.pleaseSelectAPage)
       } else {
-        this.getPageCate()
+        this.getPageCate(-1)
         this.pageSetdialogVisible = true
       }
     },
