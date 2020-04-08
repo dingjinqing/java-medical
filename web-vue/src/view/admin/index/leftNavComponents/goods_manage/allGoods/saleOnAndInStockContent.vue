@@ -356,7 +356,7 @@
         v-if="goodsLabelData.labelSelectedOptions.length>0"
         style="display: flex;margin-top: 10px;"
       >
-        <div style="width:75px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
+        <div style="width:75px;flex-shrink:0;">指定标签：</div>
         <div class="labelSelectedWrapPanel">
           <div
             class="labelSelectedWrap"

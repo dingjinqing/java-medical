@@ -385,5 +385,6 @@ export const cn = {
   store_service_config: ['门店管理', '门店服务配置'],
   // 门店公告
   store_announcement: ['门店管理', '门店公告'],
+  // 门店公告 添加公告
   store_announcement_add: ['门店管理', '门店公告', '添加公告']
 }

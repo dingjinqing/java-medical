@@ -3,7 +3,7 @@
     <div class="top">
       <ul class="filters">
         <li>
-          <label>标题：</label>
+          <label>{{$t('storeAnnouncement.title')}}：</label>
           <el-input
             class="filter-input"
             size="small"
@@ -11,21 +11,21 @@
           ></el-input>
         </li>
         <li>
-          <label for="">发布状态：</label>
+          <label for="">{{$t('storeAnnouncement.postStatus')}}：</label>
           <el-select
             v-model="queryParams.status"
             size="small"
           >
             <el-option
-              label="全部"
+              :label="$t('storeAnnouncement.all')"
               :value="-1"
             ></el-option>
             <el-option
-              label="已发布"
+              :label="$t('storeAnnouncement.published')"
               :value="1"
             ></el-option>
             <el-option
-              label="未发布"
+              :label="$t('storeAnnouncement.unPublished')"
               :value="0"
             ></el-option>
           </el-select>
@@ -35,7 +35,7 @@
             size="small"
             type="primary"
             @click="initDataList"
-          >筛选</el-button>
+          >{{$t('storeAnnouncement.filter')}}</el-button>
         </li>
       </ul>
       <div style="margin-top:10px;">
@@ -43,7 +43,7 @@
           type="primary"
           size="small"
           @click="addAnnouncement"
-        >添加公告</el-button>
+        >{{$t('storeAnnouncement.addAnnouncement')}}</el-button>
       </div>
     </div>
     <div class="content">
@@ -53,29 +53,29 @@
         border
       >
         <el-table-column
-          label="标题"
+          :label="$t('storeAnnouncement.title')"
           align="center"
           prop="title"
         ></el-table-column>
         <el-table-column
-          label="更新时间"
+          :label="$t('storeAnnouncement.updateTime')"
           align="center"
           prop="updateTime"
         ></el-table-column>
         <el-table-column
-          label="发布状态"
+          :label="$t('storeAnnouncement.postStatus')"
           align="center"
           prop="status"
           :formatter="statusFmt"
         ></el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('storeAnnouncement.operate')"
           align="center"
         >
           <template slot-scope="{row}">
             <div>
               <el-tooltip
-                content="编辑"
+                :content="$t('storeAnnouncement.edit')"
                 placement="top"
                 effect="light"
               >
@@ -85,7 +85,7 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('storeAnnouncement.delete')"
                 placement="top"
                 effect="light"
               >
@@ -149,10 +149,10 @@ export default {
     statusFmt (row, column) {
       console.log(row)
       let val = row.status
-      if (val === 0) {
-        return '未发布'
+      if (Number(val) === 0) {
+        return this.$t('storeAnnouncement.unPublished')
       }
-      return '已发布'
+      return this.$t('storeAnnouncement.published')
     },
     edit (operate, row) {
       let that = this
@@ -167,16 +167,16 @@ export default {
           })
           break
         case 'delete':
-          that.$confirm('确定要删除该', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          that.$confirm(this.$t('storeAnnouncement.ayDelete'), {
+            confirmButtonText: this.$t('storeAnnouncement.yes'),
+            cancelButtonText: this.$t('storeAnnouncement.no'),
             type: 'warning'
           }).then(() => {
             announcementDeleteApi({
               articleId: id
             }).then(res => {
               if (res.error === 0) {
-                that.$message.success('删除成功')
+                that.$message.success(that.$t('storeAnnouncement.deleteSuccess'))
                 that.initDataList()
               } else {
                 that.$message.error(res.message)

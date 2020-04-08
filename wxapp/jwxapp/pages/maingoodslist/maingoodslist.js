@@ -45,12 +45,11 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     var that = this;
+    console.log(options.identity_id)
     that.setData({
       identity_id: Number(options.identity_id),
-      store_id: Number(options.store_id),
-      pIds: JSON.parse(options.pIds),
-      purchase_change_goods: {},
-      searchText: ''
+      store_id: options.store_id ? Number(options.store_id) : '',
+      pIds: options.pIds ? JSON.parse(options.pIds) : [],
     })
     if (options.is_show_change_page == 1) {
       this.showGoods();
