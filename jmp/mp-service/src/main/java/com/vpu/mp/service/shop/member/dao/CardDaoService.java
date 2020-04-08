@@ -331,10 +331,15 @@ public class CardDaoService extends ShopBaseService {
 	 * 
 	 * @param record
 	 */
-	public void updateCardExamine(CardExamineRecord record) {
-		db().executeUpdate(record, CARD_EXAMINE.ID.eq(record.getId()));
+	public int updateCardExamine(CardExamineRecord record) {
+		return db().executeUpdate(record, CARD_EXAMINE.ID.eq(record.getId()));
 	}
 
+	public CardExamineRecord getCardExamineRecordById(Integer id) {
+		return db().selectFrom(CARD_EXAMINE)
+					.where(CARD_EXAMINE.ID.eq(id))
+					.fetchAnyInto(CARD_EXAMINE);
+	}
 	/**
 	 * 更新user_card 激活时间
 	 * 
