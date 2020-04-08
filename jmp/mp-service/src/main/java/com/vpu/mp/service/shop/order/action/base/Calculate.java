@@ -657,7 +657,7 @@ public class Calculate extends ShopBaseService {
             GoodsActivityInfo firstSpecial = uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
             if (firstSpecial!=null&&firstSpecial.getStatus().equals(CartConstant.ACTIVITY_STATUS_VALID)&&firstSpecial.getFirstSpecialPrice()!=null){
                 goods.setFirstSpecialId(firstSpecial.getActivityId());
-                if (firstSpecial.getFirstSpecialNumber()!=null&&!firstSpecial.getFirstSpecialNumber().equals(0)&&firstSpecial.getFirstSpecialNumberType().equals(BaseConstant.LIMIT_FLAG_CONFINE)){
+                if (firstSpecial.getFirstSpecialNumber()!=null&&!firstSpecial.getFirstSpecialNumber().equals(0)){
                     goods.setIsAlreadylimitNum(true);
                 }
                 return UniteMarkeingtRecalculateBo.create(firstSpecial.getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, firstSpecial.getActivityId());
