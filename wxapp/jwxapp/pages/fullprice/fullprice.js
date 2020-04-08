@@ -75,9 +75,9 @@ global.wxPage({
         confirmColor: that.data.comColor,
         success(res) {
           if (res.confirm) {
-            // util.navigateTo({
-            //   url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + strategy_id,
-            // })
+            util.navigateTo({
+              url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + that.data.strategy_id,
+            })
           }
         }
       })
@@ -210,9 +210,9 @@ global.wxPage({
       util.showModal("提示", '您当前的会员等级不满足，仅拥有' + this.data.full_info.cardList[0].cardName + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
       return false
     }
-    // util.navigateTo({
-    //   url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + strategy_id,
-    // })
+    util.navigateTo({
+      url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + that.data.strategy_id,
+    })
   },
 
   // 查看已选商品列表
