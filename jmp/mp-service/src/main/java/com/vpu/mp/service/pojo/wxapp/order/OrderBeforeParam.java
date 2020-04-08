@@ -144,6 +144,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private GoodsSpecProductRecord productInfo;
         @JsonIgnore
         private GoodsRecord goodsInfo;
+        /**是否校验过限购，true校验过*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private Boolean isAlreadylimitNum;
 	}
 
     /**

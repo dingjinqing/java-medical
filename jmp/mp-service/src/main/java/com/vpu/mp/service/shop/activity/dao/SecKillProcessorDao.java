@@ -181,6 +181,11 @@ public class SecKillProcessorDao extends ShopBaseService {
 
             //秒杀价
             prd.setProductPrice(record.value1());
+
+            if(seckill.getLimitAmount() != null && seckill.getLimitAmount() > 0){
+                //跳过普通商品的限购校验
+                prd.setIsAlreadylimitNum(true);
+            }
         }
 
     }

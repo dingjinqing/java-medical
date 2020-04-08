@@ -149,12 +149,13 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                         log.info("购物车限时减价-修改价格");
                         goods.setPriceActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                         goods.setPrdPrice(reducePrize);
+                        goods.setLimitMaxNum(limitNum);
+                        goods.setActivityLimitType(limitFlag);
                         if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONFINE)) {
                             log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);
                             cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                             goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                            goods.setLimitMaxNum(limitNum);
-                            goods.setActivityLimitType(limitFlag);
+                            goods.setBuyStatus(BaseConstant.NO);
                         }
                     }
                 }
