@@ -1459,7 +1459,6 @@ public class MemberCardService extends ShopBaseService {
             }
             /** 3-更新user_card用户会员卡的余额 */
             updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
-            logger().error(data.toString());
             insertCardAccountTradesRecord(data, tradeOpt);
             // TODO模板消息
 	}
