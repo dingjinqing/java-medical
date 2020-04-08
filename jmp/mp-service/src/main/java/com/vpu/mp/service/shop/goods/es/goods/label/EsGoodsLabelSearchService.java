@@ -54,6 +54,19 @@ public class EsGoodsLabelSearchService extends EsBaseSearchService {
         SearchResponse response = search(searchRequest);
         return getGoodsLabelForGoods(response);
     }
+    /**
+     *  Search goods label by ElasticSearch
+     * @param goodsId goods id
+     * @param type  {@link EsGoodsConstant#GOODS_DETAIL_PAGE} page source
+     * @return Map K-> goods id V->List {@link EsGoodsLabel}
+     * @throws IOException connection error
+     */
+    public List<EsGoodsLabel> getGoodsLabelByGoodsId(Integer goodsId,Byte type) throws IOException {
+        Integer shopId = getShopId();
+        SearchRequest searchRequest = assemblySearchRequestByGoodsId(shopId,Lists.newArrayList(goodsId),type);
+        SearchResponse response = search(searchRequest);
+        return getGoodsLabelForGoods(response).getOrDefault(goodsId,Lists.newArrayList());
+    }
 
     /**
      * get goods number group by label id
