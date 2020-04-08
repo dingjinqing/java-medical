@@ -524,7 +524,7 @@
                 style="margin-bottom: 20px;"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===1"
+                v-if="item.module_name=='center_header'"
               >
                 <el-radio-group v-model="item.bg_type">
                   <el-radio
@@ -562,7 +562,7 @@
                 name="2"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===2"
+                v-if="item.module_name=='account_money'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.assetsLabel')">
@@ -642,7 +642,7 @@
                 name="3"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===3"
+                v-if="item.module_name=='order'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.orderLabel')">
@@ -815,7 +815,7 @@
                 name="4"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===4"
+                v-if="item.module_name=='appointment'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.appointmentLabel')">
@@ -848,7 +848,7 @@
                 name="5"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===5"
+                v-if="item.module_name=='use_record'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.shopLabel')">
@@ -911,7 +911,7 @@
                 name="6"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===6"
+                v-if="item.module_name=='service'"
               >
                 <el-form label-width="100px">
                   <el-form-item :label="$t('personalCenter.serveLabel')">
