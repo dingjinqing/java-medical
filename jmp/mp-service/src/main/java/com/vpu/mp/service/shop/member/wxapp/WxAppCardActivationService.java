@@ -182,8 +182,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 				memberService.updateUserDetail(userDetailRecord);
 				
 				// update usercard activate time
-				userCardService.updateActivationTime(param.getCardNo(), null);
-				
+				if(!CardUtil.isCardExamine(uCard.getExamine())) {
+					userCardService.updateActivationTime(param.getCardNo(), null);
+				}
 				// add data into card examine
 				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
 				cardExamineRecord.fromMap(data);
