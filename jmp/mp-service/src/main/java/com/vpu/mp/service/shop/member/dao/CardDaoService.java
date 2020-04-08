@@ -22,6 +22,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_U
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
@@ -783,6 +784,20 @@ public class CardDaoService extends ShopBaseService {
 			.from(MEMBER_CARD)
 			.where(MEMBER_CARD.ID.in(ids))
 			.fetchInto(CardBasicVo.class);
+	}
+	
+	/**
+	 * 获取卡号-会员卡详情
+	 * @param nos
+	 * @return
+	 */
+	public Map<String, MemberCardRecord> getCardByNo(String ...nos) {
+		 return db().select(USER_CARD.CARD_NO).select(MEMBER_CARD.fields())
+			.from(USER_CARD)
+			.innerJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+			.where(USER_CARD.CARD_NO.in(nos))
+			.fetchMap(USER_CARD.CARD_NO, MemberCardRecord.class);
+			
 	}
 	
 }

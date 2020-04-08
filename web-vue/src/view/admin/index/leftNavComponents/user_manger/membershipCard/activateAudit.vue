@@ -71,12 +71,14 @@
         </div>
         <div class="member_content">
           <ul>
-            <li>{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
-            <li>{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
-            <li>{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
-          </ul>
-          <ul>
-            <li>{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
+            <li v-if="item.realName">{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
+            <li v-if="item.cid">{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
+            <li v-if="item.sex !== null">{{ $t('memberCard.sex') }}: <strong>{{item.sex}}</strong></li>
+            <li v-if="item.birthDayYear !== null">{{$t('memberCard.birthday')}}: <strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
+            <li v-if="item.maritalStatus !== null">{{ $t('memberCard.maritalStatus') }}: <strong>{{item.maritalStatus}}</strong></li>
+            <li v-if="item.education">{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
+            <li v-if="item.industry">{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
+            <li v-if="item.city">{{ $t('memberCard.address') }}:{{item.province}} {{item.city}} {{item.district}}</li>
           </ul>
           <div class="operate_box">
             <div
@@ -145,11 +147,13 @@ export default {
       tabOneData: [],
       tabTwoData: [],
       tabThreeData: [],
-      ids: null
+      ids: null,
+      maritals: []
     }
   },
   watch: {
     lang () {
+      this.maritals = this.$t('membershipIntroduction.maritalStatus')
       this.defaultData()
     },
     activeName (newData) {
@@ -186,6 +190,21 @@ export default {
         if (res.error === 0) {
           // success
           this.tabData = res.content.dataList
+          this.tabData.forEach(item => {
+            // 婚姻状态
+            if (item.maritalStatus) {
+              item.maritalStatus = this.maritals[item.maritalStatus - 1]
+            }
+            if (item.sex) {
+              debugger
+              let sexTmp = this.$t('membershipIntroduction.GenderValueOptions')
+              for (let s of sexTmp) {
+                if (s.value === item.sex) {
+                  item.sex = s.label
+                }
+              }
+            }
+          })
           // pagination
           this.pageParams = res.content.page
         }
