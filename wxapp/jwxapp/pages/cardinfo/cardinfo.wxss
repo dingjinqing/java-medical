@@ -1,6 +1,23 @@
 .main-container{
   overflow: hidden;
 }
+.merchant_message{
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin: 3% 3% 0;
+  padding: 3%;
+}
+.merchant_message text{
+  display: block;
+}
+.merchant_message text:nth-child(1){
+  font-size: 26rpx;
+  color: #333;
+}
+.merchant_message text:nth-child(2){
+  font-size: 24rpx;
+  color: #999;
+}
 .card_surface_details{
   width: 710rpx;
   margin: 20rpx auto;

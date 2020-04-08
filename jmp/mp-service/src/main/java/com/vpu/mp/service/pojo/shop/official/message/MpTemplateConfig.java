@@ -125,7 +125,18 @@ public enum MpTemplateConfig {
     		"OPENTM401075189",
     		"会员升级通知",
     		"{{first.DATA}}会员等级：{{keyword1.DATA}}审核状态：{{keyword2.DATA}}{{remark.DATA}}"
-    	);
+    	),
+    AUDIT(
+    	"AT0442",
+    	"审核未通过提醒",
+    	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}未通过原因{{keyword3.DATA}}申请时间{{keyword4.DATA}}申请内容{{keyword5.DATA}}"
+    ),
+    REBATE_USER_UP_GRADE(
+        "OPENTM403179330",
+        "分销商等级变动通知",
+        "{{first.DATA}}当前等级：{{keyword1.DATA}}原始等级：{{keyword2.DATA}}升级时间：{{keyword3.DATA}}{{remark.DATA}}"
+    )
+    ;
 	/**
 	 * 模板编号
 	 */

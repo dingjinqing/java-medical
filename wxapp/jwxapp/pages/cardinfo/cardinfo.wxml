@@ -1,6 +1,11 @@
 <view class="body">
 	<include src="../common/header.wxml" />
 	<view class="main-container" wx:if="{{cardInfo}}">
+    <view class="merchant_message" wx:if="{{cardInfo.cardVerifyStatus===3 && cardInfo.activationTime===null && cardInfo.activation===1}}">
+      <text>商家未通过您的激活申请</text>
+      <text v-if="cardInfo.isExamine.refuseDesc">
+        驳回原因:{{cardInfo.isExamine.refuseDesc}}</text>
+    </view>
 		<view class="card_surface_details" style="{{cardInfo.cardBgStyle}}">
 			<view class="card_type">{{cardInfo.cardTypeName}}</view>
 			<view class="card_info">
@@ -29,7 +34,7 @@
 							</block>
 						</view>
 					</view>
-					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg}}">
+					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg&&cardInfo.give_away_status != 2}}">
 						<!-- ￥10000 -->
 						<image
 						 wx:if="{{cardInfo.cardNo !== null}}"
@@ -42,6 +47,9 @@
 				</view>
 				<view class="card_status" wx:if="{{cardInfo.cardStopImg}}">
 					<image mode="widthFix" src="{{cardInfo.cardStopImg}}" />
+				</view>
+				<view class="card_status" wx:elif="{{cardInfo.give_away_status == 2}}">
+					<image mode="widthFix" src="{{imageUrl}}/image/wxapp/card_rebate.png?v=1" />
 				</view>
 			</view>
 		</view>
@@ -174,7 +182,7 @@
 		 wx:for-index="indexC"
 		 wx:for-item="itemC"
 		>
-			<view class="card_item_title" data-index="{{indexC}}">
+			<view class="card_item_title" data-index="{{indexC}}" bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : ""}}'>
 				<view class="item_title_left">
 					<image src="{{itemC.crightImage}}" mode='widthFix' />
 				</view>
@@ -187,7 +195,7 @@
 			</view>
 		</view>
 		<!-- 会员专享商品 -->
-		<view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}">
+		<view class="card_item_title" wx:if="{{cardInfo.powerPayOwnGood === 'on'}}" bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_search"}}'>
 			<view class="item_title_left">
 				<image mode="widthFix" src="{{imageUrl}}image/wxapp/card_info_goods.png" />
 			</view>
@@ -219,7 +227,7 @@
 			 wx:for-item="goodsListItem"
 			 wx:for-index="goodsListIndex"
 			 wx:key="goodsListIndex"
-			 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "to_goods"}}'
+			 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_goods"}}'
 			>
 				<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
 				<view class="goods_right">
@@ -233,7 +241,7 @@
 		<view
 		 class="dh_more"
 		 wx:if="{{cardInfo.goodsList.length >1}}"
-		 bindtap='{{cardInfo.giveAwayStatus == 2 ? "show_rebate" : "checkMore"}}'
+		 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "checkMore"}}'
 		 data-card_id='{{cardInfo.cardId}}'
 		 data-card_no='{{cardInfo.cardNo}}'
 		 style="color:{{comColor}}"
@@ -412,7 +420,7 @@
 			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 		</view>
 	</view>
-	<view class="flex_footer">
+	<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1)}}">
 		<view
 		 class="footer_btn"
 		 data-btnType="{{btnType}}"

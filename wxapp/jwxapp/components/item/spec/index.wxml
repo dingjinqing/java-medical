@@ -12,5 +12,5 @@
 
 <v-spec-dialog show="{{showSpec}}" trigger-button="{{triggerButton}}" bind:close="bindClose" products-info="{{productsInfo}}" bindproductData="getProductData" bindunselect="setUnselectData">
   <v-goods-num-cfg slot="num-cfg" trigger-button="{{triggerButton}}" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <v-item-footer wx:if="{{showSpec}}" products="{{productsInfo.products}}" slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" bindclose="bindClose"/>
+  <v-item-footer wx:if="{{showSpec}}" products="{{productsInfo.products}}" slot="footer" activity="{{productsInfo.activity}}"  position="spec" product-info="{{productInfo}}" trigger-button="{{triggerButton}}" room-id="{{roomId}}" bindclose="bindClose"/>
 </v-spec-dialog>

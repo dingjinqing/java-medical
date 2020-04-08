@@ -44,5 +44,26 @@ public class ActiveAuditVo {
 	// 用户昵称
 	private String username;
 	// 申请时间
-	private Timestamp createTime;	
+	private Timestamp createTime;
+	// 性别
+	private String sex;
+	// 婚姻状态
+	private Byte maritalStatus;
+	// 地址
+	private String address;
+	// 生日
+	private Integer birthDayYear;
+	private Integer birthDayMonth;
+	private Integer birthDayDay;
+	
+	// 地址
+	private Integer provinceCode;
+	private String province;
+	private Integer cityCode;
+	private String city;
+	private Integer districtCode;
+	private String district;
+	
+	// 拒绝原因
+	private String refuseDesc;
 }

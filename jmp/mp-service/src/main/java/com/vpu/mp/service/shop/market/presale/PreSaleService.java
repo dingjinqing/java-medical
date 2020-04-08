@@ -1,7 +1,10 @@
 package com.vpu.mp.service.shop.market.presale;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.*;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.Presale;
+import com.vpu.mp.db.shop.tables.PresaleProduct;
 import com.vpu.mp.db.shop.tables.records.PresaleProductRecord;
 import com.vpu.mp.db.shop.tables.records.PresaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -18,9 +21,11 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
-import org.jooq.lambda.tuple.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -29,7 +34,10 @@ import org.springframework.util.Assert;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
@@ -38,11 +46,9 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.foundation.data.JsonResultMessage.ACTIVITY_TIME_RANGE_CONFLICT;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
 import static java.lang.String.format;
-import static org.jooq.impl.DSL.select;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -210,7 +216,9 @@ public class PreSaleService extends ShopBaseService {
                 product.setPresaleId(presaleId);
                 PresaleProductRecord r = db().newRecord(PRESALE_PRODUCT);
                 assign(product,r);
-                r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
+                if(product.getPreDiscountMoney1() != null){
+                    r.setPreDiscountMoney_1(product.getPreDiscountMoney1());
+                }
                 if(product.getPreDiscountMoney2() != null){
                     r.setPreDiscountMoney_2(product.getPreDiscountMoney2());
                 }
@@ -307,7 +315,7 @@ public class PreSaleService extends ShopBaseService {
         BigDecimal presaleMoney = product.getPresaleMoney();
         BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
         BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
-        if (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
+        if (param.getPresaleType() == PresaleConstant.PRESALE && (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0)) {
             logger().error("预售--抵扣金额异常");
             throw new IllegalArgumentException("Discount money error");
         }
@@ -429,6 +437,7 @@ public class PreSaleService extends ShopBaseService {
     public Record2<Timestamp, Timestamp> getTimeInterval(Integer id) {
     	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
     }
+
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
         return db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)

@@ -7,8 +7,8 @@
          <el-col :span="10">
           <div> <img class="imgs" :src="$imageHost +'/image/admin/not_authorize_live.png'" /></div>
           <div>
-           <span v-if="!hasLiveFunc" class="spcss">小程序直播暂未授权</span>
-           <span v-if="hasLiveFunc" class="spcss">请提交代码审核</span>
+           <span v-if="!hasLiveFunc" class="spcss">{{$t('live.noAuth')}}</span>
+           <span v-if="hasLiveFunc" class="spcss">{{$t('live.toAuth')}}</span>
           </div>
           </el-col>
          <el-col :span="7"></el-col>
@@ -17,16 +17,16 @@
       <el-row>
          <el-col :span="4"></el-col>
          <el-col :span="16">
-           <span v-if="!hasLiveFunc">请重新授权小程序，并勾选<span class="spcss2">“小程序直播权限”</span>，授权完成后需重新提交代码审核， 待微信审核通过后可使用小程序直播。</span>
-           <span v-if="hasLiveFunc">已授权<span class="spcss2">“小程序直播权限”</span>，请确保在<a href="https://mp.weixin.qq.com" target="_blank" style="color: #5A8BFF;">微信公众平台</a>开通直播后重新提交代码审核，待微信审核通过后可使用小程序直播。</span>
+           <span v-if="!hasLiveFunc">{{$t('live.title1')}}<span class="spcss2">“{{$t('live.title2')}}”</span>，{{$t('live.title3')}}， {{$t('live.title4')}}。</span>
+           <span v-if="hasLiveFunc">{{$t('live.title5')}}<span class="spcss2">“{{$t('live.title2')}}”</span>，{{$t('live.title6')}}<a href="https://mp.weixin.qq.com" target="_blank" style="color: #5A8BFF;">{{$t('live.title7')}}</a>{{$t('live.title8')}}。</span>
            </el-col>
          <el-col :span="4"></el-col>
       </el-row>
       <el-row>
          <el-col :span="5"></el-col>
          <el-col :span="14">
-           <el-button type="primary" v-if="!hasLiveFunc" @click="refAuthSubmit">重新授权小程序</el-button>
-           <el-button type="primary"  @click="uploadAudit" >提交代码审核</el-button>
+           <el-button type="primary" v-if="!hasLiveFunc" @click="refAuthSubmit">{{$t('live.refAuth')}}</el-button>
+           <el-button type="primary"  @click="uploadAudit" >{{$t('live.toAuth2')}}</el-button>
            </el-col>
          <el-col :span="5"></el-col>
       </el-row>
@@ -39,7 +39,7 @@
               <img class="imgs" :src="$imageHost +'/image/admin/now_authoring_icon.gif'" />
            </div>
             <div>
-              <span class="spcss">小程序审核中</span>
+              <span class="spcss">{{$t('live.authLoading')}}</span>
            </div>
            </el-col>
          <el-col :span="7"></el-col>
@@ -49,9 +49,9 @@
          <el-col :span="10">
            <div> <img class="imgs" :src="$imageHost +'/image/admin/not_authorize_live.png'" /></div>
           <div>
-           <span class="spcss">请去基础配置-店铺基础配置中申请/绑定小程序</span>
+           <span class="spcss">{{$t('live.please1')}}</span>
            </div>
-              <el-button type="primary"  @click="torouter" style="margin-top: 20px">申请/绑定小程序</el-button>
+              <el-button type="primary"  @click="torouter" style="margin-top: 20px">{{$t('live.goAuth')}}</el-button>
 
            </el-col>
          <el-col :span="7"></el-col>
@@ -160,7 +160,7 @@ export default {
     getMaApp () {
       queryAuthdritionRequest().then(res => {
         if (res.error === 170016) {
-          this.$message.error('请先授权小程序')
+          this.$message.error(this.$t('live.please2'))
           this.flag = false
         }
         if (res.error === 0) {

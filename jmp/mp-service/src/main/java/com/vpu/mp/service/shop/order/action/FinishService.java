@@ -190,7 +190,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             //该商品返利金额
             BigDecimal realRebateMoney = BIGDECIMAL_ZERO;
             //实际返利数量
-            Integer rebateNumber = one.getGoodsNumber() - one.getReturnNumber();
+            int rebateNumber = one.getGoodsNumber() - one.getReturnNumber();
             for (OrderGoodsRebateRecord record : records) {
                 if(one.getReturnNumber() > 0) {
                     record.setRealRebateMoney(BigDecimalUtil.multiply(record.getRebateMoney(), new BigDecimal(rebateNumber)));
@@ -230,12 +230,11 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         db().batchUpdate(updateRecords).execute();
         db().batchUpdate(statisticsRecords).execute();
         //更新分销员等级
-        updateUserLevel(updateLevel, isMp);
+        updateUserLevel(updateLevel);
     }
 
-    private void updateUserLevel(ArrayList<Integer> updateLevel, Byte isMp) {
-        mpDistributionGoods.updateUserLevel(updateLevel, isMp);
-        mpDistributionGoods.updateUserLevel(updateLevel, isMp);
+    private void updateUserLevel(ArrayList<Integer> updateLevel) {
+        mpDistributionGoods.distributorLevel.updateUserLevel(updateLevel, "自动升级");
     }
 
     /**

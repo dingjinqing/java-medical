@@ -24,4 +24,7 @@ public class GoodsDetailMpParam {
     private Integer activityId;
     /**指定该商品的详情页营销活动类型*/
     private Byte activityType;
+
+    private GoodsRebateConfigParam rebateConfig;
+
 }

@@ -33,7 +33,6 @@
           <TinymceEditor
             v-model="editMsg"
             :disabled="disabled"
-            ref="editor"
           />
         </div>
       </div>
@@ -67,7 +66,6 @@ export default {
   },
   methods: {
     handleSave () {
-      console.log(this.editMsg)
       termUpdate({ service_document: this.editMsg }).then(res => {
         if (res.error === 0) {
           this.$message.success('添加成功')

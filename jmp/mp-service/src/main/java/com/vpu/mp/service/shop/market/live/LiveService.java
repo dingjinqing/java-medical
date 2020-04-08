@@ -104,7 +104,7 @@ public class LiveService extends ShopBaseService {
 	 * @return
 	 */
 	public Integer getOrderNum(Integer roomId) {
-		return db().select(DSL.count()).from(ORDER_INFO).where(ORDER_INFO.ACTIVITY_ID.eq(roomId))
+		return db().select(DSL.count()).from(ORDER_INFO).where(ORDER_INFO.ROOM_ID.eq(roomId))
 				.fetchAnyInto(Integer.class);
 	}
 	

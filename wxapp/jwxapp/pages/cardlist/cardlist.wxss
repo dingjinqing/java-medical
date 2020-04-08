@@ -143,3 +143,12 @@
   color: #fff;
   border-radius: 10rpx;
 }
+.out_time {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.out_time image {
+  width: 130rpx;
+}

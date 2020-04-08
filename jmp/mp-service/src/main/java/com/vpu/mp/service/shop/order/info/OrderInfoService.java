@@ -469,6 +469,9 @@ public class OrderInfoService extends ShopBaseService {
                 select.where(ORDER_INFO.ACTIVITY_ID.eq(param.activityId));
             }
 		}
+		if(param.getRoomId()!=null) {
+			select.where(ORDER_INFO.ROOM_ID.eq(param.getRoomId()));
+		}
 		return select;
 	}
 

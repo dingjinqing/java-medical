@@ -9,36 +9,36 @@
         :rules="formRules"
       >
         <el-form-item
-          label="标题："
+          :label="$t('storeAnnouncement.title')+'：'"
           prop="title"
         >
           <el-input
             class="form-input"
-            placeholder="请填写标题"
+            :placeholder="$t('storeAnnouncement.pleaseFillTitle')"
             v-model="form.title"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="是否发布："
+          :label="$t('storeAnnouncement.isPublish')+'：'"
           prop="status"
         >
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">发布</el-radio>
-            <el-radio :label="0">未发布</el-radio>
+            <el-radio :label="1">{{$t('storeAnnouncement.published')}}</el-radio>
+            <el-radio :label="0">{{$t('storeAnnouncement.unPublished')}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          label="关键词："
+          :label="$t('storeAnnouncement.keyword')+'：'"
           prop="keyword"
         >
           <el-input
             class="form-input"
-            placeholder="请输入关键词"
+            :placeholder="$t('storeAnnouncement.peKeywords')"
             v-model="form.keyword"
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="摘要："
+          :label="$t('storeAnnouncement.summary')+'：'"
           prop="desc"
         >
           <el-input
@@ -49,7 +49,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item
-          label="内容："
+          :label="$t('storeAnnouncement.content')+'：'"
           prop="content"
         >
           <tinymceEditor
@@ -64,7 +64,7 @@
         type="primary"
         size="small"
         @click="saveHandle"
-      >保存</el-button>
+      >{{$t('storeAnnouncement.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -76,6 +76,7 @@ export default {
     tinymceEditor: () => import('@/components/admin/tinymceEditor/tinymceEditor')
   },
   data () {
+    let that = this
     return {
       form: {
         title: '',
@@ -85,7 +86,7 @@ export default {
         status: 1
       },
       formRules: {
-        title: [{ required: true, message: '请填写标题', trigger: 'blur' }]
+        title: [{ required: true, message: that.$t('storeAnnouncement.pleaseFillTitle'), trigger: 'blur' }]
       }
     }
   },
@@ -120,7 +121,7 @@ export default {
         if (!articleId) {
           announcementAddApi(params).then(res => {
             if (res.error === 0) {
-              that.$message.success('保存成功')
+              that.$message.success(that.$t('storeAnnouncement.saveSuccess'))
               that.$router.push({
                 path: '/admin/home/main/store/storeAnnouncement'
               })
@@ -132,7 +133,7 @@ export default {
           params.articleId = articleId
           announcementUpdateApi(params).then(res => {
             if (res.error === 0) {
-              that.$message.success('更新成功')
+              that.$message.success(that.$t('storeAnnouncement.updateSuccess'))
               that.$router.push({
                 path: '/admin/home/main/store/storeAnnouncement'
               })

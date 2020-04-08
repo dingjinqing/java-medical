@@ -873,7 +873,7 @@ export default {
               this.powerCardStatus(item.id)
               this.cardData[index].flag = 1
             }
-          } else if (item.flag === 1) {
+          } else if (type === 1) {
             // 限次卡
             if (item.flag === 1) {
               // 使用中转化成停用
@@ -884,7 +884,7 @@ export default {
               this.powerCardStatus(item.id)
               this.cardDataSecond[index].flag = 1
             }
-          } else if (item.flag === 2) {
+          } else if (type === 2) {
             console.log('等级卡')
             if (item.flag === 1) {
               // 使用中转化成停用

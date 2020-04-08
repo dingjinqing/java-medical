@@ -420,6 +420,10 @@ import {
 import {
   en as groupIntegration
 } from './views/admin_new/en/index/marketManagement/groupIntegration/groupIntegrationEn'
+// 直播
+import {
+  en as live
+} from './views/admin_new/en/index/marketManagement/live/liveEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -516,6 +520,10 @@ import {
 import {
   en as serviceConfig
 } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
+// 门店公告
+import {
+  en as storeAnnouncement
+} from './views/admin_new/en/index/storeManagement/storeAnnouncement/storeAnnouncementEn'
 
 // admin>公共组件
 // 选择时间
@@ -1058,6 +1066,7 @@ const en = {
   packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡
@@ -1091,6 +1100,7 @@ const en = {
   payConfiguration, // 支付配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storeAnnouncement, // 门店公告
   decorationHome, // 小程序页面装修home页
   pageSetUp, // 小程序页面设置
   pictureNavigation, // 页面装修图片导航模块

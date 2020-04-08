@@ -104,14 +104,14 @@ global.wxPage({
   to_item: function (e) {
     let good_id = e.currentTarget.dataset.goods_id;
     util.navigateTo({
-      url: "/pages/item/item?good_id=" + good_id
+      url: "/pages/item/item?gid=" + good_id
     })
   },
   // 查看更多商品
   to_search: function () {
-    util.navigateTo({
-      // url: "/pages/searchs/search?is_rebate=1"
-    })
+    // util.navigateTo({
+    //   url: "/pages/searchs/search?is_rebate=1"
+    // })
   },
   // 去返利排名列表页
   toRank: function () {
@@ -139,24 +139,22 @@ global.wxPage({
     wx.showLoading({
       title: '生成中',
     })
-    var pictorial = that.data.dis_info.invite_image;
-    if (pictorial) {
-      // util.api('/api/wxapp/upayyun/image', function (res) {
-      //   if (res.error == 0) {
-      //     pictorial = that.data.imageUrl + pictorial + "!big";
-      //     that.setData({
-      //       posterBase64: res.content,
-      //       // pictorial: posterBase64,
-      //       pictorial: res.content,
-      //     })
-      //     wx.hideLoading();
-      //     that.setData({
-      //       if_show_pic: 0,
-      //       if_show_pic_modal: 1
-      //     })
-      //   }
-      // }, { image_path: pictorial });
-    }
+    // util.api('/api/wxapp/bargain/pictorial/info', function (res) {
+    //   wx.hideLoading();
+    //   if (res.error == 0) {
+    //     that.data.posterBase64 = res.content
+    //     that.setData({
+    //       pictorial: that.data.posterBase64
+    //     })
+    //   } else {
+    //     util.toast_fail(res.message);
+    //   }
+    // }, {
+    //     activityId: bargain_info.recordInfo.bargainId,
+    //     realPrice: bargain_info.bargainPrice,
+    //     linePrice: bargain_info.recordInfo.prdPrice,
+    //     pageType: 1
+    //   })
   },
   // 关闭海报
   go_no_share: function () {
@@ -233,10 +231,11 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
+    var that = this;
     return {
       path: 'pages/distributionspread/distributionspread?invite_id=' + util.getCache('user_id'),
-      title: that.data.dis_info.userRebate.username + '邀请你免费赚钱啦，快来申请吧!',
-      imageUrl: this.data.imageUrl + '/image/wxapp/share_dis.jpg',
+      title: util.getCache('nickName') + '邀请你免费赚钱啦，快来申请吧!',
+      imageUrl: that.data.imageUrl + '/image/wxapp/share_dis.jpg',
     }
   },
   /**

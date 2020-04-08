@@ -7,6 +7,7 @@ import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -58,7 +59,7 @@ public class RequestLogAspect {
         if( point.getArgs() != null && point.getArgs().length > 0){
             Arrays.stream(point.getArgs()).
                 filter(o -> !(o instanceof BindingResult)).
-                forEach(o -> logAfterStr.append("【"+o+"】"));
+                forEach(o -> logAfterStr.append("【"+ FieldsUtil.objectToString(o)+"】"));
             logAfterStr.append("\n");
         }
         log.info(logAfterStr.toString());

@@ -300,6 +300,7 @@ CREATE TABLE IF NOT EXISTS `b2c_card_renew` (
 ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '是否删除 0否 1是';
 ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
+ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
 /*********************2.11*************************END*/
 
 

@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.LiveGoods.LIVE_GOODS;
 import static com.vpu.mp.db.shop.tables.Sort.SORT;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,8 @@ public class LiveGoodsService extends ShopBaseService {
 			LiveGoodsRecord goodsData = db().newRecord(LIVE_GOODS,goods);
 			goodsData.setLiveId(liveId);
 			goodsData.setRoomId(roomId);
-			goodsData.setPriceEnd(goods.getPrice2());
+			goodsData.setPrice(toYuan(goods.getPrice()));
+			goodsData.setPriceEnd(toYuan(goods.getPrice2()));
 			goodsData.setGoodsId(parseGoodsId(goods.getUrl()));
 			LiveGoodsRecord roomGoodsInfo = getRoomGoodsInfo(roomId, liveId, goods.getUrl());
 			if(roomGoodsInfo!=null) {
@@ -208,5 +210,14 @@ public class LiveGoodsService extends ShopBaseService {
 	    String params = url.substring(url.indexOf("?") + 1, url.length());
 	    Map<String, String> split = Splitter.on("&").withKeyValueSeparator("=").split(params);
 	    return split;
+	}
+	
+	/**
+	 * 金额：分转元
+	 * @param money
+	 * @return
+	 */
+	private BigDecimal toYuan(BigDecimal money) {
+		return money.divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
 	}
 }

@@ -404,6 +404,10 @@ import {
 import {
   cn as groupIntegration
 } from './views/admin_new/cn/index/marketManagement/groupIntegration/groupIntegrationCn'
+// 直播
+import {
+  cn as live
+} from './views/admin_new/cn/index/marketManagement/live/liveCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -529,6 +533,10 @@ import {
 import {
   cn as serviceConfig
 } from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
+// 门店公告
+import {
+  cn as storeAnnouncement
+} from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
 
 // admin>公共组件
 // 选择时间
@@ -1066,6 +1074,7 @@ const cn = {
   evaluationGiftAdd,
   packagePrice, // 打包一口价
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡
@@ -1100,6 +1109,7 @@ const cn = {
   returnconfiguration, // 退换货配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storeAnnouncement, // 门店公告
   authRoleList, // 店铺权限
   actionRecord, // 操作记录
   decorationHome, // 页面装修部分

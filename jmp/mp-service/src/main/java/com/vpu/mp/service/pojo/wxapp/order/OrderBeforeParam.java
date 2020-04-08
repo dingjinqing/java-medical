@@ -107,7 +107,8 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 
     private InsteadPay insteadPayCfg;
 
-
+    /** 直播订单里的房间号*/
+    private Integer roomId;
     /**
 	 * 商品参数
 	 * @author 王帅

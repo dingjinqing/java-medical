@@ -52,6 +52,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -171,6 +172,8 @@ public class UserCardService extends ShopBaseService {
 	private CardFreeShipService cardFreeShipSvc;
 	@Autowired
     private UserService userService;
+    @Autowired
+    private TradeService tradeService;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -1952,7 +1955,6 @@ public class UserCardService extends ShopBaseService {
             //should_renew_money
             //should_renew_date
             if (ret.getExpireTime()!=null){
-                Timestamp tempExpireTime = ret.getExpireTime();
                 ret.setStartTime(ret.getCreateTime());
                 ret.setEndTime(ret.getExpireTime());
                 //0:固定日期
@@ -1973,7 +1975,7 @@ public class UserCardService extends ShopBaseService {
             //门店信息
             if (ret.getStoreList()!=null&&ret.getStoreUseSwitch()==(byte)0){
                 List<Integer> storeList =
-                    Arrays.stream(ret.getStoreList().substring(1,ret.getStoreList().length()-1).split(",")).map(s->Integer.parseInt(s))
+                    Arrays.stream(ret.getStoreList().substring(1,ret.getStoreList().length()-1).split(",")).map(Integer::parseInt)
                     .collect(Collectors.toList());
                 List<StoreBasicVo> storeInfoList = getStoreList(storeList);
                 if (storeInfoList!=null){
@@ -1989,9 +1991,7 @@ public class UserCardService extends ShopBaseService {
             Map<String,RenewValidCardList> memberCardList = new HashMap<>();
             String memberCardNo;
             if (cardList!=null){
-                cardList.forEach(c->{
-                    memberCardList.put(c.getCardNo(),c);
-                });
+                cardList.forEach(c-> memberCardList.put(c.getCardNo(),c));
                 memberCardNo = cardList.get(0).getCardNo();
             }else {
                 memberCardNo = "1";
@@ -1999,9 +1999,9 @@ public class UserCardService extends ShopBaseService {
 
             ret.setMemberCardList(memberCardList);
             ret.setMemberCardNo(memberCardNo);
+            ret.setCardFirst(tradeService.getCardFirst());
+            ret.setBalanceFirst(tradeService.getBalanceFirst());
         }
-
-
 
     }
 
