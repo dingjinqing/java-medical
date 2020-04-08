@@ -334,6 +334,8 @@ export const en = {
     'share polite',
     'add share polite activity'
   ],
+  // live
+  live_broadcast: ['Marketing management', 'live'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
@@ -546,5 +548,7 @@ export const en = {
   // 门店管理 门店服务配置
   store_service_config: ['Store management', 'Store Service Configuration'],
   // 门店公告
-  store_announcement: ['Store Management', 'Store Announcement']
+  store_announcement: ['Store Management', 'Store Announcement'],
+  // 门店公告 添加公告
+  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement']
 }

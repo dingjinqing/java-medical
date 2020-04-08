@@ -3,38 +3,20 @@ package com.vpu.mp.service.shop.member;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
-import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
-import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-import com.vpu.mp.db.shop.tables.records.VirtualOrderRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.foundation.util.CardUtil;
-import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.*;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
-import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
-import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
-import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCoupon;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardCouponPack;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppCardExamineVo;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
@@ -70,6 +52,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorLevelService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -86,8 +69,10 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
@@ -104,20 +89,10 @@ import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
-import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
-import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
@@ -129,10 +104,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIM
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.DEFAULT_ADMIN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_DEFAULT;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_CREATE_CARD;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 
 /**
  * @author 黄壮壮
@@ -198,6 +170,10 @@ public class UserCardService extends ShopBaseService {
 	private CardUserOpt cardUserOpt;
 	@Autowired
 	private CardFreeShipService cardFreeShipSvc;
+	@Autowired
+    private UserService userService;
+    @Autowired
+    private TradeService tradeService;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -1970,16 +1946,95 @@ public class UserCardService extends ShopBaseService {
 	}
     /**
      * 会员卡续费接口
-     * @param userId
-     * @param cardNo
+     * @param param 用户id 会员卡编号
      */
-    public void cardRenew(Integer userId,String cardNo){
+    public void cardRenew(CardRenewParam param){
         //得到用户持有会员卡的详细信息
-        UserCardParam userCardInfo = userCardDao.getUserCardInfo(cardNo);
-        if (userCardInfo!=null){
+        UserCardParam ret = userCardDao.getUserCardInfo(param.getCardNo());
+        if (ret!=null){
+            //should_renew_money
+            //should_renew_date
+            if (ret.getExpireTime()!=null){
+                ret.setStartTime(ret.getCreateTime());
+                ret.setEndTime(ret.getExpireTime());
+                //0:固定日期
+                ret.setExpireType((byte)0);
+            }else {
+                //2:不过期
+                ret.setExpireType((byte)2);
+            }
+            if (ret.getExpireType()!=(byte)2){
+                if (ret.getExpireTime()!=null&&ret.getExpireTime().before(DateUtil.getLocalDateTime())){
+                    ret.setExpireDateStatus((byte)-1);
+                }else {
+                    ret.setExpireDateStatus((byte)1);
+                }
+            }else {
+                ret.setExpireDateStatus((byte)-1);
+            }
+            //门店信息
+            if (ret.getStoreList()!=null&&ret.getStoreUseSwitch()==(byte)0){
+                List<Integer> storeList =
+                    Arrays.stream(ret.getStoreList().substring(1,ret.getStoreList().length()-1).split(",")).map(Integer::parseInt)
+                    .collect(Collectors.toList());
+                List<StoreBasicVo> storeInfoList = getStoreList(storeList);
+                if (storeInfoList!=null){
+                    ret.setStoreInfo(storeInfoList);
+                }
+            }
+            //用户积分和余额
+            UserRecord userRecord = userService.getUserByUserId(param.getUserId());
+            ret.setScore(userRecord.getScore());
+            ret.setAccount(userRecord.getAccount());
 
+            List<RenewValidCardList> cardList = getRenewValidCardList(param.getUserId());
+            Map<String,RenewValidCardList> memberCardList = new HashMap<>();
+            String memberCardNo;
+            if (cardList!=null){
+                cardList.forEach(c-> memberCardList.put(c.getCardNo(),c));
+                memberCardNo = cardList.get(0).getCardNo();
+            }else {
+                memberCardNo = "1";
+            }
+
+            ret.setMemberCardList(memberCardList);
+            ret.setMemberCardNo(memberCardNo);
+            ret.setCardFirst(tradeService.getCardFirst());
+            ret.setBalanceFirst(tradeService.getBalanceFirst());
         }
+
     }
 
+    /**
+     * 获取指定门店信息
+     * @param storeList 门店id集合
+     * @return 门店id&门店name
+     */
+    private List<StoreBasicVo> getStoreList(List<Integer> storeList){
+        List<StoreBasicVo> storeInfoList = db().select(STORE.STORE_ID,STORE.STORE_NAME)
+            .from(STORE)
+            .where(STORE.STORE_ID.in(storeList))
+            .and(STORE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+            .fetchInto(StoreBasicVo.class);
+        return storeInfoList;
+    }
+
+    /**
+     * 获取会员卡续费时有效用户会员卡列表
+     * @param userId 用户id
+     * @return
+     */
+    private List<RenewValidCardList> getRenewValidCardList(Integer userId){
+        List<RenewValidCardList> cardList = db().select()
+            .from(USER_CARD)
+            .leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+            .where(USER_CARD.USER_ID.eq(userId))
+            .and(USER_CARD.FLAG.eq((byte)0))
+            .and(USER_CARD.EXPIRE_TIME.eq((Timestamp) null).or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getSqlTimestamp())))
+            .and(USER_CARD.MONEY.greaterThan(BigDecimal.ZERO))
+            .orderBy(USER_CARD.IS_DEFAULT.desc(),USER_CARD.MONEY.desc())
+            .fetchInto(RenewValidCardList.class);
+        return cardList;
+    }
 }
 

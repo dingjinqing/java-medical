@@ -94,13 +94,6 @@
           width="100"
           :label="$t('allGoods.allGoodsData.goodsSn')"
         />
-        <!--平台分类-->
-        <!--<el-table-column-->
-        <!--align="center"-->
-        <!--prop="catName"-->
-        <!--:label="$t('allGoods.allGoodsData.cat')"-->
-        <!--width="100"-->
-        <!--/>-->
         <!--商家分类-->
         <el-table-column
           align="center"
@@ -159,21 +152,21 @@
           width="130"
         >
           <template slot-scope="{row}">
-            <div style="display: flex;justify-content: flex-end;align-items: center;">
-              <div>
-                <span
-                  v-for="(item,index) in row.goodsLabels"
-                  :key="index"
-                  class="goodsLabelSpanWrap"
-                >{{item.name}}</span>
+              <div v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0" class="goodsLabelSpanWrap">
+                <div v-if="row.goodsPointLabels.length > 0">
+                  {{row.goodsPointLabels[0].name}}
+                </div>
+                <div v-if="row.goodsPointLabels.length === 0 && row.goodsNormalLabels.length > 0">
+                  {{row.goodsNormalLabels[0].name}}
+                </div>
+                <div style="text-align: center;">
+                  共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
+                </div>
               </div>
-              <div
-                style="width:40px;flex-shrink:0;cursor: pointer;"
-                @click="tdLabelSetClick(row)"
-              >
+              <div style="cursor: pointer;text-align: center;margin-top: 2px;font-size: large;color: #5a8bff;"
+                @click="tdLabelSetClick(row)">
                 {{$t('allGoods.allGoodsData.setting')}}
               </div>
-            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -345,11 +338,25 @@
           />
         </el-select>
       </div>
+      <!--通用标签-->
+      <div v-if="goodsLabelData.goodsNormalLabels.length>0" style="display: flex;margin-top: 10px;">
+        <div style="width:75px;flex-shrink:0;">通用标签：</div>
+        <div class="labelSelectedWrapPanel">
+          <div
+            class="labelSelectedWrap"
+            v-for="(item,index) in goodsLabelData.goodsNormalLabels"
+            :key="index"
+          >
+            {{item.name}}
+          </div>
+        </div>
+      </div>
+      <!--指定标签-->
       <div
         v-if="goodsLabelData.labelSelectedOptions.length>0"
         style="display: flex;margin-top: 10px;"
       >
-        <div style="width:45px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
+        <div style="width:75px;flex-shrink:0;">指定标签：</div>
         <div class="labelSelectedWrapPanel">
           <div
             class="labelSelectedWrap"
@@ -450,7 +457,8 @@ export default {
         labelSelectedTempVal: null,
         labelSelectOptions: [],
         labelSelectedOptions: [],
-        isShow: false
+        isShow: false,
+        goodsNormalLabels: []
       },
       showExportConfirm: false,
       allChecked: false, // 全选checkbox flag
@@ -612,9 +620,10 @@ export default {
       getGoodsFilterItem({ needGoodsLabel: true }).then(res => {
         const { content: { goodsLabels } } = res
         this.goodsLabelData.currentRow = row
+        this.goodsLabelData.goodsNormalLabels = row.goodsNormalLabels
         this.goodsLabelData.isShow = true
         goodsLabels.forEach(item => {
-          if (this.goodsLabelData.currentRow.goodsLabels.some(goodsLabel => goodsLabel.id === item.id)) {
+          if (this.goodsLabelData.currentRow.goodsPointLabels.some(goodsLabel => goodsLabel.id === item.id)) {
             this.goodsLabelData.labelSelectedOptions.push(item)
           } else {
             this.goodsLabelData.labelSelectOptions.push(item)
@@ -644,23 +653,26 @@ export default {
         goodsId: this.goodsLabelData.currentRow.goodsId,
         labelIds: []
       }
-      this.goodsLabelData.isShow = false
       this.goodsLabelData.labelSelectedOptions = this.goodsLabelData.labelSelectedOptions.slice(0, 5)
       this.goodsLabelData.labelSelectedOptions.forEach(item => param.labelIds.push(item.id))
       updateLabelByGoodsId(param).then((res) => {
         if (res.error !== 0) {
           return
         }
-        this.goodsLabelData.currentRow.goodsLabels = this.goodsLabelData.labelSelectedOptions
+        this.goodsLabelData.currentRow.goodsPointLabels = this.goodsLabelData.labelSelectedOptions
+        console.log(this.goodsLabelData.currentRow)
         this.goodsLabelData.labelSelectedOptions = []
         this.goodsLabelData.labelSelectOptions = []
+        this.goodsLabelData.goodsNormalLabels = []
         this.goodsLabelData.currentRow = null
         this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
+        this.goodsLabelData.isShow = false
       })
     },
     goodsLabelDialogCancel () {
       this.goodsLabelData.labelSelectedOptions = []
       this.goodsLabelData.labelSelectOptions = []
+      this.goodsLabelData.goodsNormalLabels = []
       this.goodsLabelData.currentRow = null
       this.goodsLabelData.isShow = false
     },
@@ -948,13 +960,9 @@ export default {
   border-radius: 3px;
   padding: 0px 2px;
   margin-right: 2px;
-  display: inline-block;
 }
 .labelSelectedWrapPanel {
-  background-color: #f8f8f8;
   width: 80%;
-  border: 1px solid #ccc;
-  padding: 10px;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -967,7 +975,7 @@ export default {
   position: relative;
   padding: 5px 5px;
   margin-right: 10px;
-  margin-top: 10px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 .labelSelectedWrap .deleteIcon {

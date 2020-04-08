@@ -516,6 +516,10 @@ import {
 import {
   en as serviceConfig
 } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
+// 门店公告
+import {
+  en as storeAnnouncement
+} from './views/admin_new/en/index/storeManagement/storeAnnouncement/storeAnnouncementEn'
 
 // admin>公共组件
 // 选择时间
@@ -1091,6 +1095,7 @@ const en = {
   payConfiguration, // 支付配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storeAnnouncement, // 门店公告
   decorationHome, // 小程序页面装修home页
   pageSetUp, // 小程序页面设置
   pictureNavigation, // 页面装修图片导航模块

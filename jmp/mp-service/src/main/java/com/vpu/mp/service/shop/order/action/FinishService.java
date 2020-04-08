@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
@@ -20,7 +21,9 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.shop.distribution.FanliGoodsStatisticsService;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
 import com.vpu.mp.service.shop.distribution.UserFanliStatisticsService;
 import com.vpu.mp.service.shop.distribution.UserTotalFanliService;
@@ -31,6 +34,7 @@ import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -101,10 +105,18 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private UserFanliStatisticsService userFanliStatistics;
+
     @Autowired
     private UserTotalFanliService userTotalFanli;
+
     @Autowired
     private UserService user;
+    @Autowired
+    private MpDistributionGoodsService mpDistributionGoods;
+
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
+
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.FINISH;
@@ -129,16 +141,14 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
 
         transaction(() -> {
             //分销返利
-            finishRebate(orderRecord);
+            finishRebate(orderRecord, param.getIsMp());
             //update order
             orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_FINISHED);
-
-            //TODO 更新分销员等级
-
-            //TODO 订单完成赠送积分
+            //订单完成赠送积分
             orderSendScore(order);
             //新增收支
         });
+        //分销升级
         //action操作
         orderAction.addRecord(order, param, OrderConstant.ORDER_RECEIVED, "完成订单");
         //TODO 操作记录 b2c_record_admin_action  需要测试记录
@@ -146,7 +156,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         return null;
     }
 
-    private void finishRebate(OrderInfoRecord order) {
+    private void finishRebate(OrderInfoRecord order, Byte isMp) throws MpException {
         if(!order.getFanliType().equals(DistributionConstant.REBATE_ORDER) ||
             order.getSettlementFlag().equals(OrderConstant.YES) ||
             !order.getTkOrderType().equals(OrderConstant.TK_NORMAL)) {
@@ -164,6 +174,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         Map<Integer, BigDecimal> collect = new HashMap<>();
         //该订单返利总计
         BigDecimal total = BIGDECIMAL_ZERO;
+        //
+        ArrayList<Integer> updateLevel = new ArrayList<>();
         for (OrderGoodsRecord one: goods) {
             if(OrderConstant.YES == one.getIsGift()) {
                 //赠品不参与
@@ -206,11 +218,22 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
                 userFanliStatistics.update(order.getUserId(), entry.getKey(), level, entry.getValue(), total);
                 //更新分销员统计信息表
                 userTotalFanli.updateTotalRebate(entry.getKey(), entry.getValue(), user.getInviteCount(entry.getKey()));
-                //
-                //userFanliStatistics.
-
+                //返利增加余额
+                addRebateAccount(entry.getKey(), order.getOrderSn(), entry.getValue(), order.getUserId());
+                //消息推送
+                sendMessage.rebate(entry.getKey(), order.getOrderSn(), entry.getValue(), order.getUserId());
             }
+            db().batchUpdate(updateRecords).execute();
+
         }
+        //更新
+        db().batchUpdate(updateRecords).execute();
+        db().batchUpdate(statisticsRecords).execute();
+        //更新分销员等级
+        updateUserLevel(updateLevel, isMp);
+    }
+
+    private void updateUserLevel(ArrayList<Integer> updateLevel, Byte isMp) {
     }
 
     /**
@@ -351,4 +374,38 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         recordMemberTrade.updateUserEconomicData(scoreData);
     }
 
+    /**
+     * 返利增加
+     * @param userId
+     * @param orderSn
+     * @param money
+     * @param orderUserId
+     * @throws MpException 见具体方法
+     */
+    public void addRebateAccount(Integer userId, String orderSn, BigDecimal money, Integer orderUserId) throws MpException {
+        logger().info("返利增加用户余额start:{}", money);
+        if(BigDecimalUtil.compareTo(money, null) == 0) {
+            return;
+        }
+        UserInfo userInfo = user.getUserInfo(orderUserId);
+        AccountData accountData = AccountData.newBuilder().
+            userId(userId).
+            orderSn(orderSn).
+            //下单金额
+            amount(money.negate()).
+            remarkCode(RemarkTemplate.ORDER_REBATE.code).
+            remarkData(userInfo.getUsername()).
+            payment("fanli").
+            //支付类型
+            isPaid(RecordTradeEnum.UACCOUNT_RECHARGE.val()).
+            //后台处理时为操作人id为0
+            adminUser(0).
+            //用户余额支付
+            tradeType(RecordTradeEnum.TYPE_CRASH_REBATE.val()).
+            //资金流量-支出
+            tradeFlow(RecordTradeEnum.TRADE_FLOW_OUT.val()).build();
+        //调用退余额接口
+        recordMemberTrade.updateUserEconomicData(accountData);
+        logger().info("返利增加用户余额end:{}", money);
+    }
 }

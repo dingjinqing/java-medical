@@ -21,7 +21,7 @@ export const cn = {
   verifierManage: '核销员管理',
   storeManage: '门店管理',
   delStoreTip: '确定删除该门店？',
-  storePickup: '门店自提：',
+  storePickup: '门店自提',
   turnedOn: '已开启',
   unopened: '未开启',
   sameCityDelivery: '同城配送',

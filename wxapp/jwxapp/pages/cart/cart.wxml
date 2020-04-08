@@ -97,9 +97,9 @@
                                       </view>
                                     </view>
                                     <view class="num_cfg">
-                                      <view class="num_minus {{item.limitMinStyle == 1 ? 'not_tap' : ''}}"  bindtap="goodsNumChange" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-limit_min_style="{{item.limitMinStyle}}" data-type="minus">-</view>
-                                      <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}"></input>
-                                      <view class="num_plus {{item.limitMaxStyle == 1 ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-limit_max_style="{{item.limitMaxStyle}}" data-type="add">+</view>
+                                      <view class="num_minus {{item.limitMinStyle == 1 ? 'not_tap' : ''}}"  bindtap="goodsNumChange" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-item="{{item}}" data-type="minus">-</view>
+                                      <input type="number" value="{{item.cartNumber}}" bindblur="checkNumber" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-item="{{item}}"></input>
+                                      <view class="num_plus {{item.limitMaxStyle == 1 ? 'not_tap' : ''}}" bindtap="goodsNumChange" data-activity_type="{{item.activityType}}" data-activity_id="{{item.activityId}}" data-cart_id="{{item.cartId}}" data-prd_id="{{item.productId}}" data-cart_number="{{item.cartNumber}}" data-item="{{item}}" data-type="add">+</view>
                                     </view>
                                 </view>
                             </view>

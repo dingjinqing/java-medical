@@ -73,12 +73,6 @@
           :label="$t('allGoods.allGoodsData.prdSn')"
           width="100"
         />
-        <!--<el-table-column-->
-          <!--align="center"-->
-          <!--prop="catName"-->
-          <!--:label="$t('allGoods.allGoodsData.cat')"-->
-          <!--width="100"-->
-        <!--/>-->
         <el-table-column
           align="center"
           prop="sortName"
@@ -124,13 +118,20 @@
           width="150"
         >
           <template slot-scope="{row}">
-            <div style="display: flex;justify-content: flex-end;align-items: center;">
-              <div>
-                <span v-for="(item,index) in row.goodsLabels" :key="index" class="goodsLabelSpanWrap">{{item.name}}</span>
+            <div v-if="row.goodsNormalLabels.length + row.goodsPointLabels.length > 0"  class="goodsLabelSpanWrap">
+              <div  v-if="row.goodsPointLabels.length > 0">
+                {{row.goodsPointLabels[0].name}}
               </div>
-              <div style="width:40px;flex-shrink:0;cursor: pointer;" @click="tdLabelSetClick(row)">
-                {{$t('allGoods.allGoodsData.setting')}}
+              <div v-if="row.goodsPointLabels.length === 0 && row.goodsNormalLabels.length > 0">
+                {{row.goodsNormalLabels[0].name}}
               </div>
+              <div style="text-align: center;">
+                共{{row.goodsNormalLabels.length + row.goodsPointLabels.length }}个
+              </div>
+            </div>
+            <div style="cursor: pointer;text-align: center;margin-top: 2px;font-size: large;color: #5a8bff;"
+                 @click="tdLabelSetClick(row)">
+              {{$t('allGoods.allGoodsData.setting')}}
             </div>
           </template>
         </el-table-column>
@@ -193,12 +194,13 @@
       width="30%"
       @closed="goodsLabelDialogCancel"
     >
-      <div style="background-color:#FFF7EB;border: 1px solid #FFD5A3;line-height: 30px;padding-left: 20px;margin-bottom: 10px;">{{$t('allGoods.allGoodsData.setLabelTip')}}</div>
+      <div style="background-color:#FFF7EB;border: 1px solid #FFD5A3;line-height: 30px;padding-left: 20px;margin-bottom: 10px;">
+        {{$t('allGoods.allGoodsData.setLabelTip')}}</div>
       <div>
         <span>{{$t('allGoods.allGoodsData.goodsLabel')}}：</span>
         <el-select
           v-model="goodsLabelData.labelSelectedTempVal"
-          :placeholder="$t('allGoods.allGoodsData.chooseGoodsLabel')"
+          :placeholder="$t('allGoods.allGoodsHeaderData.chooseGoodsLabel')"
           size="small"
           @change="tdLabelSelectChange"
           style="width:170px;"
@@ -211,11 +213,24 @@
           />
         </el-select>
       </div>
+      <!--通用标签-->
+      <div v-if="goodsLabelData.goodsNormalLabels.length>0" style="display: flex;margin-top: 10px;">
+        <div style="width:75px;flex-shrink:0;">通用标签：</div>
+        <div class="labelSelectedWrapPanel">
+          <div
+            class="labelSelectedWrap"
+            v-for="(item,index) in goodsLabelData.goodsNormalLabels"
+            :key="index">
+            {{item.name}}
+          </div>
+        </div>
+      </div>
+      <!--指定标签-->
       <div
         v-if="goodsLabelData.labelSelectedOptions.length>0"
         style="display: flex;margin-top: 10px;"
       >
-        <div style="width:45px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
+        <div style="width:75px;flex-shrink:0;">{{this.$t('allGoods.allGoodsData.selected')}}：</div>
         <div class="labelSelectedWrapPanel">
           <div class="labelSelectedWrap"
           v-for="(item,index) in goodsLabelData.labelSelectedOptions"
@@ -280,6 +295,7 @@ export default {
         labelSelectedTempVal: null,
         labelSelectOptions: [],
         labelSelectedOptions: [],
+        goodsNormalLabels: [],
         isShow: false
       },
       showExportConfirm: false
@@ -352,9 +368,10 @@ export default {
       getGoodsFilterItem({needGoodsLabel: true}).then(res => {
         const { content: { goodsLabels } } = res
         this.goodsLabelData.currentRow = row
+        this.goodsLabelData.goodsNormalLabels = row.goodsNormalLabels
         this.goodsLabelData.isShow = true
         goodsLabels.forEach(item => {
-          if (this.goodsLabelData.currentRow.goodsLabels.some(goodsLabel => goodsLabel.id === item.id)) {
+          if (this.goodsLabelData.currentRow.goodsPointLabels.some(goodsLabel => goodsLabel.id === item.id)) {
             this.goodsLabelData.labelSelectedOptions.push(item)
           } else {
             this.goodsLabelData.labelSelectOptions.push(item)
@@ -389,12 +406,13 @@ export default {
         if (res.error !== 0) {
           return
         }
-        this.goodsLabelData.currentRow.goodsLabels = this.goodsLabelData.labelSelectedOptions
+        this.goodsLabelData.currentRow.goodsPointLabels = this.goodsLabelData.labelSelectedOptions
         this.goodsLabelData.labelSelectedOptions = []
         this.goodsLabelData.labelSelectOptions = []
+        this.goodsLabelData.goodsNormalLabels = []
         this.goodsLabelData.currentRow = null
+        this.$message.success({ type: 'info', message: this.$t('allGoods.allGoodsData.setSuccess') })
         this.goodsLabelData.isShow = false
-        this.$message.success.success({ type: 'info', message: '设置成功' })
         // 刷新数据
         this.fetchGoodsData()
       })
@@ -402,6 +420,7 @@ export default {
     goodsLabelDialogCancel () {
       this.goodsLabelData.labelSelectedOptions = []
       this.goodsLabelData.labelSelectOptions = []
+      this.goodsLabelData.goodsNormalLabels = []
       this.goodsLabelData.currentRow = null
       this.goodsLabelData.isShow = false
     },
@@ -555,10 +574,7 @@ export default {
   display: inline-block;
 }
 .labelSelectedWrapPanel{
-  background-color: #f8f8f8;
   width: 80%;
-  border: 1px solid #ccc;
-  padding: 10px;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -571,7 +587,7 @@ export default {
   position: relative;
   padding: 5px 5px;
   margin-right: 10px;
-  margin-top: 10px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 }
 .labelSelectedWrap .deleteIcon {

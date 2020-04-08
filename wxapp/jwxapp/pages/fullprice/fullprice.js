@@ -3,8 +3,6 @@ var util = require('../../utils/util.js')
 // var spec_mixin = require("../goodscommon/spec.js")
 var app = getApp()
 var imageUrl = app.globalData.imageUrl;
-var baseUrl = app.globalData.baseUrl;
-var mobile = util.getCache('mobile');
 var full_info = [];
 var full_change_info = [];
 var choose_list = {};
@@ -31,7 +29,6 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     img_close: imageUrl + '/image/wxapp/close_icon.png',
     strategy_id: '', // 活动id
-    store_id: '',
     checkMode: true,
     searchText: "", // 搜索内容
     page: 1,
@@ -56,24 +53,24 @@ global.wxPage({
     var that = this;
     that.setData({
       strategy_id: Number(options.strategy_id),
-      store_id: Number(options.store_id),
-      searchText: ""
     })
     full_request(that);
   },
+
+  // 搜索
+  searchGoods: function (e) {
+    var that = this;
+    that.setData({
+      searchText: e.detail.value
+    })
+    full_request(that);
+  },
+
   // 跳转购物车
   go_to_cart: function () {
     util.navigateTo({ url: '/pages/cart/cart' })
-    // if (this.data.store_id > 0) {
-    //   util.navigateTo({
-    //     url: '/pages/cart/cart?store_id=' + this.data.store_id,
-    //   })
-    // } else {
-    //   util.navigateTo({
-    //     url: '/pages/cart/cart',
-    //   })
-    // }
   },
+
   // 去开通会员
   to_member: function () {
     if (full_info.is_can_buy == 0 && full_info.card_list.length == 1 && full_info.card_list[0].card_type == 2) {
@@ -84,15 +81,7 @@ global.wxPage({
     //   url: '/pages/buycardlist/buycardlist?strategy_id=' + that.data.strategy_id + "&is_fullprice=" + strategy_id,
     // })
   },
-  // 搜索
-  searchGoods: function (e) {
-    var searchText = e.detail.value;
-    var that = this;
-    that.setData({
-      searchText: searchText
-    })
-    full_request(that);
-  },
+
   // 删除已选商品
   to_del_goods: function () {
     var that = this;
@@ -150,7 +139,7 @@ global.wxPage({
     //         }, false);
     //         return false;
     //       }
-    //     }, { strategy_id: that.data.strategy_id, store_id: that.data.store_id });
+    //     }, { strategy_id: that.data.strategy_id });
     //   } else {
     //     util.showModal("提示", res.message, function () {
     //       util.jumpLink("pages/index/index", 'redirectTo')
@@ -163,37 +152,46 @@ global.wxPage({
     //     action: "strategy"
     //   })
   },
+
   // 查看已选商品列表
   showCheck: function (e) {
     var that = this;
     that.setData({
       checkMode: false
     });
-    // util.api('/api/wxapp/fullprice/checkedlist', function (res) {
-    //   if (res.error == 0) {
-    //     full_change_info = res.content;
-    //     can_del = 0;
-    //     that.data.can_del = 0;
-    //     full_change_info.count = 0;
-    //     for (var i = 0; i < full_change_info.list.length; i++) {
-    //       full_change_info.list[i].is_zuida = 0;
-    //       if (full_change_info.list[i].goods_number == 1) {
-    //         full_change_info.list[i].is_zuixiao = 1;
-    //       } else {
-    //         full_change_info.list[i].is_zuixiao = 0;
-    //       }
-    //       full_change_info.count += full_change_info.list[i].goods_number;
-    //     }
-    //     that.setData({
-    //       full_change_info: full_change_info,
-    //       can_del: can_del,
-    //     })
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, { strategy_id: that.data.strategy_id, store_id: that.data.store_id });
+    util.api('/api/wxapp/fullprice/checkedlist', function (res) {
+      if (res.error == 0) {
+        var full_change_info = res.content;
+        full_change_info.count = 0;
+        full_change_info.forEach(item => {
+          item.is_zuida = 0
+          if (item.prdNumber == 1) {
+            item.is_zuixiao = 1
+          } else {
+            item.is_zuixiao = 0
+          }
+          item.count += item.prdNumber
+        })
+        // for (var i = 0; i < full_change_info.list.length; i++) {
+        //   full_change_info.list[i].is_zuida = 0;
+        //   if (full_change_info.list[i].goods_number == 1) {
+        //     full_change_info.list[i].is_zuixiao = 1;
+        //   } else {
+        //     full_change_info.list[i].is_zuixiao = 0;
+        //   }
+        //   full_change_info.count += full_change_info.list[i].goods_number;
+        // }
+        that.setData({
+          full_change_info: full_change_info,
+          can_del: 0,
+        })
+      } else {
+        util.showModal("提示", res.message);
+        return false;
+      }
+    }, { strategyId: that.data.strategy_id });
   },
+
   // 关闭已选商品弹窗
   closeCheck: function () {
     var that = this;
@@ -203,6 +201,7 @@ global.wxPage({
       can_del: 0
     });
   },
+
   // 换购商品-
   btn_del_al: function (e) {
     var that = this;
@@ -247,8 +246,9 @@ global.wxPage({
     //     util.showModal("提示", res.message);
     //     return false;
     //   }
-    // }, { action: 2, btn_click: 0, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[this_cheks].prd_id, prd_number: full_change_info.list[this_cheks].goods_number, store_id: that.data.store_id })
+    // }, { action: 2, btn_click: 0, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[this_cheks].prd_id, prd_number: full_change_info.list[this_cheks].goods_number })
   },
+
   // 换购商品+
   btn_add_al: function (e) {
     var that = this;
@@ -278,8 +278,9 @@ global.wxPage({
     //     util.showModal("提示", res.message);
     //     return false;
     //   }
-    // }, { action: 2, btn_click: 1, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[this_chek].prd_id, prd_number: full_change_info.list[this_chek].goods_number, store_id: that.data.store_id })
+    // }, { action: 2, btn_click: 1, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[this_chek].prd_id, prd_number: full_change_info.list[this_chek].goods_number })
   },
+
   // 选择商品数量
   get_al_num: function (e) {
     var that = this;
@@ -311,8 +312,9 @@ global.wxPage({
     //     util.showModal("提示", res.message);
     //     return false;
     //   }
-    // }, { action: 2, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[inp_check].prd_id, prd_number: full_change_info.list[inp_check].goods_number, store_id: that.data.store_id })
+    // }, { action: 2, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: full_change_info.list[inp_check].prd_id, prd_number: full_change_info.list[inp_check].goods_number })
   },
+
   // 加入购物车
   add_to_cart: function (e) {
     var that = this;
@@ -405,7 +407,6 @@ global.wxPage({
         lat: null
     })
   },
-
   
   // 获取规格信息
   getProduct({
@@ -467,41 +468,6 @@ global.wxPage({
       showSpec: false,
       triggerButton: ''
     })
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
   },
 
   /**
@@ -573,6 +539,7 @@ global.wxPage({
       checkMode: true
     })
   },
+  
   // 跳转商品详情
   to_items: function (e) {
     var goods_id = e.currentTarget.dataset.goods_id;

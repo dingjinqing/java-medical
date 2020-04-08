@@ -745,7 +745,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.CAT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.SORT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
-    				.orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
+    				.orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
     				.limit(limitNum).fetchInto(GoodsLabelsVo.class);
     		
     	}
@@ -757,7 +757,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_TWO).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.CAT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_THREE).and(GOODS_LABEL_COUPLE.GTA_ID.eq(GOODS.SORT_ID)).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)))
     				.or(GOODS_LABEL_COUPLE.TYPE.eq(LABEL_TYPE_FOUR).and(GOODS_LABEL.DEL_FLAG.eq(NOT_DELETE)).and(GOODS_LABEL.GOODS_DETAIL.eq(IS_ON_SALE)))
-    				.orderBy(DSL.min(GOODS_LABEL_COUPLE.TYPE).asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
+    				.orderBy(GOODS_LABEL_COUPLE.TYPE.asc(), GOODS_LABEL.LEVEL.desc(), GOODS_LABEL.CREATE_TIME.desc())
     				.limit(limitNum).fetchInto(GoodsLabelsVo.class);
     	}
     	return list;

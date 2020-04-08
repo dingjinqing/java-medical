@@ -1578,6 +1578,20 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/fullDiscountFullCut/fullCutAdd'
       )
+  },
+  // 直播
+  {
+    path: '/admin/home/main/live',
+    name: 'live_broadcast',
+    meta: {
+      crumbTitle: 'router.live_broadcast',
+      meta: 'first_market_manage',
+      category: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/live/live'
+      )
   }
 ]
 export default routes

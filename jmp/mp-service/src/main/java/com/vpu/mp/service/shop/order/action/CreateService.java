@@ -609,12 +609,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             logger().info("calculateResult:{}", calculateResult);
-            //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
-
             //限时降价
             if(calculateResult.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) && calculateResult.getActivityId() != null){
                 Integer limitAmount = uniteMarkeingtBo.get(temp.getProductId()).getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getLimitAmount();
@@ -638,39 +635,33 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     temp.setGoodsPriceAction(calculateResult.getActivityType());
                 }
             }
-
-            //会员专享校验
-
-            //非加价购 && 非限次卡
-            if(Boolean.TRUE) {
-                if(temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-                if(temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-            }
-
-            //price 副本
-
-            //if else 加价购-straid
-
-            //非加价购 复制 11111分支
-
-            //判断副本与实际计算价格大小、
-
-
+            goodsNumLimit(temp);
             //非加价购 改价
             if(Boolean.TRUE) {
                 temp.setProductPrice(calculateResult.getPrice());
                 temp.setGoodsPriceAction(calculateResult.getActivityType());
             }
-
             //TODO temp goodsprice 取规格
             boList.add(orderGoods.initOrderGoods(temp));
         }
         param.setBos(boList);
         return boList;
+    }
+
+    /**
+     * 商品限购
+     * @param temp
+     * @throws MpException
+     */
+    private void goodsNumLimit(Goods temp) throws MpException {
+        if (temp.getIsAlreadylimitNum() != null && !temp.getIsAlreadylimitNum()) {
+            if (temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+            if (temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+        }
     }
 
     /**
@@ -686,7 +677,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
             OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
-
+            goodsNumLimit(temp);
             boList.add(bo);
         }
         param.setBos(boList);

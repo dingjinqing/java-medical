@@ -96,29 +96,29 @@
         <text wx:if='{{can_del == 1 && full_change_info.count != 0}}' bindtap='to_del_goods'>{{i18n.$t(localePack,"pages.cart.fullDialog3")}}</text>
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='closeCheck' />
       </view>
-      <view class='pro_content clearfix' wx:if='{{full_change_info.list != ""}}'>
-        <view class='each_change clearfix' wx:for='{{full_change_info.list}}' wx:key='key'>
+      <view class='pro_content clearfix' wx:if='{{full_change_info != ""}}'>
+        <view class='each_change clearfix' wx:for='{{full_change_info}}' wx:key='key'>
           <view class='every_goods clearfix'>
             <view class='radio_button' wx:if='{{can_del == 1}}' bindtap='to_del_geted' data-cart_id='{{item.cartId}}'>
               <text class='iconfont iconshanchu1' style='color:{{comColor}};font-size:40rpx;'></text>
             </view>
             <view class='eg_lefts'>
-              <image src='{{item.goods_img}}' wx:if='{{item.prd_img == ""}}'></image>
-              <image src='{{item.prd_img}}' wx:if='{{item.prd_img != ""}}'></image>
+              <image src='{{item.goodsImg}}' wx:if='{{item.prdImg == ""}}'></image>
+              <image src='{{imageUrl}}/{{item.prdImg}}' wx:if='{{item.prdImg != ""}}'></image>
               <view class='reduce_price' wx:if="{{item.goods_price_action == 2}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel1")}}</view>
               <view class='reduce_price' wx:if="{{item.goods_price_action == 3}}" style='background:{{linColor}};color:#fff'>{{i18n.$t(localePack,"pages.cart.activeLabel2")}}</view>
               <view></view>
             </view>
             <view class='eg_right' style='width:{{can_del == 0?"490rpx":"430rpx;"}}'>
-              <view class='goods_name'>{{item.goods_name}}</view>
-              <view class='goods_desc'>{{item.prd_desc}}</view>
-              <view class='goods_amount' wx:if='{{item.limit_amount > 0}}' style='color:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.fullDialog4")}}{{item.limit_amount}}{{i18n.$t(localePack,"pages.cart.fullDialog5")}}</view>
+              <view class='goods_name'>{{item.goodsName}}</view>
+              <view class='goods_desc'>{{item.prdDesc}}</view>
+              <view class='goods_amount' wx:if='{{item.limitAmount > 0}}' style='color:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.fullDialog4")}}{{item.limitAmount}}{{i18n.$t(localePack,"pages.cart.fullDialog5")}}</view>
               <view class='goods_bottom clearfix'>
                 <view class='price_info clearfix'>
                   <view class='sale_price' style='color:{{comColor}}'>￥
-                    <text>{{item.prd_price}}</text>
+                    <text>{{item.prdPrice}}</text>
                   </view>
-                  <view class='original_price' wx:if='{{item.market_price!=null}}'>￥{{item.market_price}}</view>
+                  <view class='original_price' wx:if='{{item.originalPrice!=null}}'>￥{{item.originalPrice}}</view>
                 </view>
                 <view class='num_choose clearfix'>
                   <view class='btn_jian' bindtap='btn_del_al' data-prds_id='{{item.prdId}}' data-num="{{item.goodsNumber}}" data-idnes='{{index}}' wx:if='{{item.is_zuixiao == 0}}' style='background:#fff;color:#666'>-</view>
@@ -133,7 +133,7 @@
           </view>
         </view>
       </view>
-      <view class='pro_content_no' wx:if='{{full_change_info.list == ""}}'>
+      <view class='pro_content_no' wx:if='{{full_change_info == ""}}'>
         <image src='{{imageUrl}}/image/wxapp/no_result.png' mode='widthFix'></image>
         <view class='empty_tips'>{{i18n.$t(localePack,"pages.cart.fullDialog6")}}</view>
       </view>
