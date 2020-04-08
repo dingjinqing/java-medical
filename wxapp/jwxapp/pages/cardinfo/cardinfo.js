@@ -265,31 +265,32 @@ global.wxPage({
   },
   // 判断底部按钮
   handleToJudgementBottom (carInfo) {
-    console.log(carInfo)
     let text = ''
     let type = null
-    if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
-      text = '立即开通'
-      type = 1
-    }
-    if (carInfo.status) {
-      if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
+    console.log(carInfo)
+      if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
+        text = '立即开通'
+        type = 1
+      }
+      if (carInfo.status) {
+        if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
+          text = '领取会员卡'
+          type = 2
+        } else if (carInfo.activation == 1 && carInfo.activationTime == null && carInfo.cardNo) {
+          text = '激活会员卡'
+          type = 3
+        } else if (carInfo.isDefault == 0 && carInfo.cardNo) {
+          text = '设置默认会员卡'
+          type = 4
+        } else {
+          text = '默认会员卡'
+        }
+      }
+      if (!carInfo.cardNo && carInfo.cardType == 2 && carInfo.status) {
         text = '领取会员卡'
         type = 2
-      } else if (carInfo.activation == 1 && carInfo.activationTime == null && carInfo.cardNo) {
-        text = '激活会员卡'
-        type = 3
-      } else if (carInfo.isDefault == 0 && carInfo.cardNo) {
-        text = '设置默认会员卡'
-        type = 4
-      } else {
-        text = '默认会员卡'
       }
-    }
-    if (!carInfo.cardNo && carInfo.cardType == 2 && carInfo.status) {
-      text = '领取会员卡'
-      type = 2
-    }
+    
     console.log(text, type)
     this.setData({
       bottomBtnText: text,
