@@ -36,6 +36,10 @@ export default {
     visiable: {
       type: Boolean,
       default: false
+    },
+    refuseDesc: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -50,7 +54,12 @@ export default {
   },
   data () {
     return {
-      desc: ''
+      desc: null
+    }
+  },
+  watch: {
+    refuseDesc (val) {
+      this.desc = val
     }
   },
   methods: {
