@@ -4,7 +4,7 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
@@ -12,11 +12,11 @@
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list select">
-          <span>上传数量：</span>
-          <i>最多</i>
+          <span>{{$t('formDecorationModel.uploadQuantity')}}</span>
+          <i>{{$t('formDecorationModel.most')}}</i>
           <el-select
             v-model="modulesSaveData.max_number"
             size="small"
@@ -31,15 +31,15 @@
           </el-select>
         </div>
         <div class="list">
-          <span>图片尺寸：</span>
+          <span>{{$t('formDecorationModel.pictureSize')}}</span>
           <el-radio
             v-model="modulesSaveData.size_types"
             :label="0"
-          >不限制</el-radio>
+          >{{$t('formDecorationModel.noRestriction')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.size_types"
             :label="1"
-          >限制</el-radio>
+          >{{$t('formDecorationModel.limit')}}</el-radio>
         </div>
         <!--图片尺寸选择限制的时候显示的隐藏模块-->
         <div
@@ -61,8 +61,8 @@
 
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -70,7 +70,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -144,7 +144,7 @@ export default {
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     }
