@@ -60,9 +60,9 @@ public class CartProcessorContext {
         executeStrategy(gradeCard,cartBo);
 
         //满折满减
-        executeStrategy(fullReduction,cartBo);
+//        executeStrategy(fullReduction,cartBo);2.9屏蔽
         //加价购
-        executeStrategy(purchasePrice,cartBo);
+//        executeStrategy(purchasePrice,cartBo);2.9屏蔽
         //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }
