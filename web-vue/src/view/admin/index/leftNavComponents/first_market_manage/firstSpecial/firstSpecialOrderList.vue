@@ -41,7 +41,7 @@
                 class="goods_info"
               >
                 <img
-                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  :src="goodsItem.goodsImg"
                   alt=""
                   class="goods_img"
                 >
