@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.goods.label;
 
 
-
+import java.util.Objects;
 
 /**
  * 商品标签下拉列表vo
@@ -35,5 +35,19 @@ public class GoodsLabelSelectListVo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GoodsLabelSelectListVo that = (GoodsLabelSelectListVo) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

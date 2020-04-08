@@ -621,20 +621,37 @@ public class GoodsService extends ShopBaseService {
     protected void disposeGoodsPageListVo(List<GoodsPageListVo> dataList, GoodsPageListParam pageListParam) {
 
         // 处理商品平台分类：通过id值获取name值
-        saas.sysCate.disposeCategoryName(dataList);
+//        saas.sysCate.disposeCategoryName(dataList);
 
         // 处理标签名称准备数据
-        List<Integer> goodsIds = dataList.stream().map(GoodsPageListVo::getGoodsId).collect(Collectors.toList());
-        Map<Integer, List<GoodsLabelSelectListVo>> goodsLabels = this.getGoodsLabels(goodsIds);
+        List<Integer> goodsIds = new ArrayList<>(dataList.size());
+        List<Integer> sortIds = new ArrayList<>(dataList.size());
+        for (GoodsPageListVo goodsPageListVo : dataList) {
+            goodsIds.add(goodsPageListVo.getGoodsId());
+            sortIds.add(goodsPageListVo.getSortId());
+        }
+        sortIds = goodsSort.getChildrenIdByParentIdsDao(sortIds);
+
+        Map<Integer, List<GoodsLabelSelectListVo>> goodsPointLabels = goodsLabel.getGtaLabelMap(goodsIds, GoodsLabelCoupleTypeEnum.GOODSTYPE);
+        Map<Integer, List<GoodsLabelSelectListVo>> goodsSortLabels = goodsLabel.getGtaLabelMap(sortIds, GoodsLabelCoupleTypeEnum.SORTTYPE);
+        List<GoodsLabelSelectListVo> allGoodsLabels = goodsLabel.getAllGoodsLabels();
 
         // 获取商品对应的规格集合数据
         Map<Integer, List<GoodsSpecProduct>> goodsIdPrdGroups = goodsSpecProductService.selectGoodsSpecPrdGroup(goodsIds);
 
         dataList.forEach(item -> {
-            // 设置标签名称
-            List<GoodsLabelSelectListVo> labelSelectListVos = goodsLabels.getOrDefault(item.getGoodsId(), new ArrayList<>());
-            item.setGoodsLabels(labelSelectListVos.size() > GoodsConstant.GOODS_LABEL_MAX_COUNT ?
-                labelSelectListVos.subList(0, GoodsConstant.GOODS_LABEL_MAX_COUNT) : labelSelectListVos);
+            Integer goodsId = item.getGoodsId();
+            // 设置指定标签
+            if (goodsPointLabels.get(goodsId) != null && goodsPointLabels.get(goodsId).size() > 0) {
+                item.getGoodsPointLabels().addAll(goodsPointLabels.get(goodsId));
+            }
+            // 设置普通标签
+            if (goodsSortLabels.get(goodsId)!=null && goodsSortLabels.get(goodsId).size() > 0){
+                item.getGoodsNormalLabels().addAll(goodsSortLabels.get(goodsId));
+            }
+            if (allGoodsLabels.size() > 0) {
+                item.getGoodsNormalLabels().addAll(allGoodsLabels);
+            }
 
             // 设置图片绝对地址
             item.setGoodsImg(getImgFullUrlUtil(item.getGoodsImg()));
@@ -684,15 +701,6 @@ public class GoodsService extends ShopBaseService {
                 goods.setGoodsSpecProducts(goodsSpecProducts);
             }
         }
-    }
-
-    /**
-     * 获取商品的关联的标签
-     *
-     * @param goodsIds 商品ids
-     */
-    private Map<Integer, List<GoodsLabelSelectListVo>> getGoodsLabels(List<Integer> goodsIds) {
-        return goodsLabel.getGtaLabelMap(goodsIds, GoodsLabelCoupleTypeEnum.GOODSTYPE);
     }
 
     /**

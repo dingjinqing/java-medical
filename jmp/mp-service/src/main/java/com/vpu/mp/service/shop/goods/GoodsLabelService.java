@@ -237,6 +237,18 @@ public class GoodsLabelService extends ShopBaseService {
     }
 
     /**
+     * 获取绑定为全部商品的标签
+     * @return 标签集合
+     */
+    public  List<GoodsLabelSelectListVo> getAllGoodsLabels(){
+       return db().select(GOODS_LABEL_COUPLE.GTA_ID, GOODS_LABEL.ID, GOODS_LABEL.NAME)
+            .from(GOODS_LABEL).innerJoin(GOODS_LABEL_COUPLE).on(GOODS_LABEL.ID.eq(GOODS_LABEL_COUPLE.LABEL_ID))
+            .where(GOODS_LABEL_COUPLE.TYPE.eq(GoodsLabelCoupleTypeEnum.ALLTYPE.getCode()))
+            .orderBy(GOODS_LABEL.LEVEL.desc(),GOODS_LABEL.CREATE_TIME.desc())
+            .fetchInto(GoodsLabelSelectListVo.class);
+    }
+
+    /**
      * 获取所有标签列表
      *
      * @return
