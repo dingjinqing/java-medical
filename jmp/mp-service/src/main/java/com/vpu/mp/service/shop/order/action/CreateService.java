@@ -635,15 +635,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     temp.setGoodsPriceAction(calculateResult.getActivityType());
                 }
             }
-            //非加价购 && 非限次卡
-            if(Boolean.TRUE) {
-                if(temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-                if(temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-            }
+            goodsNumLimit(temp);
             //非加价购 改价
             if(Boolean.TRUE) {
                 temp.setProductPrice(calculateResult.getPrice());
@@ -654,6 +646,22 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         param.setBos(boList);
         return boList;
+    }
+
+    /**
+     * 商品限购
+     * @param temp
+     * @throws MpException
+     */
+    private void goodsNumLimit(Goods temp) throws MpException {
+        if (temp.getIsAlreadylimitNum() != null && !temp.getIsAlreadylimitNum()) {
+            if (temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+            if (temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+        }
     }
 
     /**
@@ -669,7 +677,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
             OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
-
+            goodsNumLimit(temp);
             boList.add(bo);
         }
         param.setBos(boList);
