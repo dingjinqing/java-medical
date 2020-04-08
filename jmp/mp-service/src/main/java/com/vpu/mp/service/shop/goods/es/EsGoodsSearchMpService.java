@@ -31,6 +31,7 @@ import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -94,7 +95,18 @@ public class EsGoodsSearchMpService extends EsBaseSearchService {
         Integer shopId = getShopId();
         try {
             EsGoods esGoods = getEsGoodsById(goodsId,shopId);
-            return DETAIL_CONVERT.convert(esGoods);
+            //TODO 先功能实现，结构优化后续再说
+            List<EsGoodsLabel> goodsLabels =
+                esGoodsLabelSearchService.getGoodsLabelByGoodsId(goodsId,EsGoodsConstant.GOODS_DETAIL_PAGE);
+            GoodsDetailMpBo result = DETAIL_CONVERT.convert(esGoods);
+            if( CollectionUtils.isNotEmpty(goodsLabels) ){
+                List<String> labelNames = goodsLabels.stream().
+                    filter(x-> StringUtils.isNotBlank(x.getName())).
+                    map(EsGoodsLabel::getName).
+                    collect(Collectors.toList());
+                result.setLabels(labelNames);
+            }
+            return result;
         } catch (IOException e) {
             log.error("EsGoodsSearchMpService-->queryGoodsById ElasticSearch connection error when querying");
             throw e;

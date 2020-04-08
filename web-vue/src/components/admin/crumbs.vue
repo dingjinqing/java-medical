@@ -262,10 +262,6 @@ export default {
               this.$router.push({
                 name: 'bargain_bargain_user'
               })
-            } else if (name === '砍价') {
-              this.$router.push({
-                name: 'bargain'
-              })
             } else {
               this.$router.push({
                 name: this.turnArr[this.nameArr.indexOf(this.$route.name)]
