@@ -1443,10 +1443,8 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
-        try {
             /** 1.-获取数据库中的存储的信息 */
             UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
-
             /** 2-判断会员卡余额是属于充值还是消费 */
             if (isConsump(data)) {
                 /** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
@@ -1456,22 +1454,14 @@ public class MemberCardService extends ShopBaseService {
                 /** -消费会员卡余额 */
                 consumpUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
             } else {
-                logger().error(data.toString());
                 /** 2.2 充值会员卡余额 */
                 chargeUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
             }
             /** 3-更新user_card用户会员卡的余额 */
-            logger().error(userCard.toString());
-            logger().error(data.toString());
             updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
             logger().error(data.toString());
             insertCardAccountTradesRecord(data, tradeOpt);
             // TODO模板消息
-        }catch (Throwable throwable) {
-            throwable.printStackTrace();
-            throw throwable;
-        }
-
 	}
 
 	private boolean isConsump(CardConsumpData data) {
