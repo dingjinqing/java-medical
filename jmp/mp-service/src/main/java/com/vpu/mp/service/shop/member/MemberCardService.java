@@ -14,6 +14,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
@@ -2056,7 +2057,7 @@ public class MemberCardService extends ShopBaseService {
 							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
 					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
 					.userIdList(arrayList)
-					.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
 			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
 			
 		}
