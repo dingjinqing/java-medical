@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.distribution.UserRebateLevelDetail;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.user.user.UserService;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -54,6 +55,9 @@ public class DistributorLevelService extends ShopBaseService{
 
     @Autowired
     DistributorLevelRecordService distributorLevelRecord;
+
+    @Autowired
+    OrderOperateSendMessage sendMessage;
 
 	/**
 	 * 分销员等级配置
@@ -248,11 +252,17 @@ public class DistributorLevelService extends ShopBaseService{
 			.execute();
 		}
 	}
-	
-	public boolean updateUserLevel(List<Integer> upUserIds) {
+
+    /**
+     *
+     * @param upUserIds
+     * @param updateNote
+     * @return
+     */
+	public boolean updateUserLevel(List<Integer> upUserIds, String updateNote) {
 	    //auto_levels order by LEVEL(asc)
-		Result<DistributorLevelRecord> auto_levels = this.getAutoUpdateLevels();
-		if(auto_levels.size() <= 0) {
+		Result<DistributorLevelRecord> autoLevels = this.getAutoUpdateLevels();
+		if(autoLevels.size() <= 0) {
 			return true;
 		}
 		//获取分销员分销信息（分销金额）USER.USER_ID,USER_TOTAL_FANLI.SUBLAYER_NUMBER,USER.DISTRIBUTOR_LEVEL,DISTRIBUTOR_LEVEL.LEVEL_NAME
@@ -267,7 +277,7 @@ public class DistributorLevelService extends ShopBaseService{
 		for(UserRebateLevelDetail upUser : distributorInfo) {
 			//获取用户的订单和门店买单消费总额
 			DistributorSpendVo userSpend = this.getTotalSpend(upUser.getUserId());
-			for(DistributorLevelRecord level : auto_levels) {
+			for(DistributorLevelRecord level : autoLevels) {
 				//不用升级
 				if(upUser.getDistributorLevel() > level.getLevelId()){
 					continue;
@@ -282,9 +292,9 @@ public class DistributorLevelService extends ShopBaseService{
                     UserRecord userInfo = user.getUserByUserId(upUser.getUserId());
                     UpdateUserLevel updateUserLevel = updateUserLevelMsg.get(userInfo.getUserId());
                     if(updateUserLevel == null) {
-                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, upUser.getDistributorLevel(), upUser.getLevelName(), level.getLevelId(), level.getLevelName(), ""));
+                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, upUser.getDistributorLevel(), upUser.getLevelName(), level.getLevelId(), level.getLevelName(), updateNote));
                     }else {
-                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, updateUserLevel.getOldLevel(), updateUserLevel.getOldLevelName(), level.getLevelId(), level.getLevelName(), ""));
+                        updateUserLevelMsg.put(userInfo.getUserId(), new UpdateUserLevel(upUser.getUserId(), (byte)1, updateUserLevel.getOldLevel(), updateUserLevel.getOldLevelName(), level.getLevelId(), level.getLevelName(), updateNote));
                     }
                     userInfo.setDistributorLevel(level.getLevelId());
                     updateUser.add(userInfo);
@@ -298,7 +308,8 @@ public class DistributorLevelService extends ShopBaseService{
 		db().batchUpdate(updateUser).execute();
 		//等级变化记录
         distributorLevelRecord.add(updateUserLevelMsg.values());
-
+        //消息推送
+        sendMessage.rebateUpdateUserLevel(updateUserLevelMsg.values());
 		return true;
 	}
 	

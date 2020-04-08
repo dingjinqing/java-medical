@@ -12,6 +12,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
 import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+import com.vpu.mp.service.pojo.shop.distribution.UpdateUserLevel;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -302,6 +304,28 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("返利增加余额消息推送end");
     }
 
+    /**
+     * 分销员等级变换消息推送
+     * @param values
+     */
+    public void rebateUpdateUserLevel(Collection<UpdateUserLevel> values) {
+        if(!isSendMp(MessageTemplateConfigConstant.FAIL_REVIEW)) {
+           return;
+        }
+        for (UpdateUserLevel value: values) {
+            //公众号数据
+            String[][] mpData = new String[][] { { "等级提升通知" }, { value.getOldLevelName() }, { value.getNewLevelName() }, { DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL)}};
+            //参数
+            RabbitMessageParam param = RabbitMessageParam.builder()
+                .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
+                .page("pages/distribution/distribution")
+                .shopId(getShopId())
+                .userIdList(Collections.singletonList(value.getUserId()))
+                .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+                .build();
+            saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
+        }
+    }
     private String getGoodsName(List<OrderGoodsRecord> orderGoods) {
         return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(OrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
     }
