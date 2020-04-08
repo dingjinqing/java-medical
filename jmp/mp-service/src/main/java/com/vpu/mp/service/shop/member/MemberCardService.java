@@ -1443,7 +1443,6 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
-    try {
         /** 1.-获取数据库中的存储的信息 */
         UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
 
@@ -1464,11 +1463,6 @@ public class MemberCardService extends ShopBaseService {
         logger().error(data.toString());
         insertCardAccountTradesRecord(data, tradeOpt);
         // TODO模板消息
-    }catch (Throwable throwable) {
-        throwable.printStackTrace();
-        throw throwable;
-    }
-
 
 	}
 
