@@ -4,7 +4,7 @@
       :data="goodList">
       <el-table-column
         prop="name"
-        label="商品信息"
+        :label="$t('live.goodInfo')"
         width="130px">
         <template slot-scope="scope">
           <img :src="scope.row.coverImg" style="width: 50px;height: 50px;float: left;" />
@@ -13,15 +13,15 @@
       </el-table-column>
       <el-table-column
         prop="goodsSn"
-        label="商品货号">
+        :label="$t('live.goodsSn')">
       </el-table-column>
       <el-table-column
         prop="shopPrice"
-        label="店铺售价（元）">
+       :label="$t('live.shopPrice')">
       </el-table-column>
       <el-table-column
         prop="livePrice"
-        label="直播售价（元） "
+        :label="$t('live.livePrice')">
         >
         <template slot-scope="scope">
           <div v-if="scope.row.priceType===1">
@@ -31,22 +31,22 @@
             {{scope.row.price}} - {{scope.row.priceEnd}}
           </div>
          <div v-if="scope.row.priceType===3">
-            <div style=" float:left;">原价:{{scope.row.price}}</div>
-            <div style=" float:left;"> 现价:{{scope.row.priceEnd}}</div>
+            <div style=" float:left;">{{$t('live.oldPrice')}}:{{scope.row.price}}</div>
+            <div style=" float:left;"> {{$t('live.newPrice')}}:{{scope.row.priceEnd}}</div>
           </div>
         </template>
       </el-table-column>
       <el-table-column
         prop="goodsNumber"
-        label="库存">
+        :label="$t('live.goodsNumber')">
       </el-table-column>
       <el-table-column
         prop="sortName"
-        label="商家分类">
+       :label="$t('live.sortName')">
       </el-table-column>
       <el-table-column
         prop="goodsTag"
-        label="商品标签">
+        :label="$t('live.goodsTag')">
         <template slot-scope="scope">
           <div v-for="item in scope.row.goodsTag" :key="item.id">
             {{item.name}}
@@ -55,7 +55,7 @@
       </el-table-column>
       <el-table-column
         prop="brandName"
-        label="品牌">
+        :label="$t('live.brandName')">
       </el-table-column>
     </el-table>
   </div>

@@ -404,6 +404,10 @@ import {
 import {
   cn as groupIntegration
 } from './views/admin_new/cn/index/marketManagement/groupIntegration/groupIntegrationCn'
+// 直播
+import {
+  cn as live
+} from './views/admin_new/cn/index/marketManagement/live/liveCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -1070,6 +1074,7 @@ const cn = {
   evaluationGiftAdd,
   packagePrice, // 打包一口价
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡

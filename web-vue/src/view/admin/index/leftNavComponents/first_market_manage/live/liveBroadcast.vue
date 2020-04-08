@@ -2,29 +2,29 @@
   <div class="formStatisticsHome">
       <div class="formStatisticsTop">
       <el-form :inline="true" :model="form" label-width="90px"  class="form-inline" size="small">
-        <el-form-item label="直播间标题">
+        <el-form-item :label="$t('live.liveTitle')">
           <el-input v-model="form.name" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="开播时间">
+        <el-form-item :label="$t('live.liveStartTime')">
             <el-date-picker
             v-model="form.beginStartTime"
             type="datetime"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间">
+            :placeholder="$t('live.please')">
           </el-date-picker>
-          <span>至</span>
+          <span>{{$t('live.to')}}</span>
           <el-date-picker
             size="small"
             v-model="form.beginEndTime"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             default-time="23:59:59"
-            placeholder="选择日期时间">
+            :placeholder="$t('live.please')">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="直播状态">
-          <el-select v-model="form.liveStatus" size="small" placeholder="直播状态">
+        <el-form-item :label="$t('live.liveState')">
+          <el-select v-model="form.liveStatus" size="small" :placeholder="$t('live.liveState')">
           <el-option
               v-for="item in statusOptions"
               :key="item.value"
@@ -34,29 +34,29 @@
             </el-option>
           </el-select>
         </el-form-item>
-         <el-form-item label="主播昵称">
+         <el-form-item :label="$t('live.anchorName')">
           <el-input v-model="form.anchorName" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="结束时间">
+        <el-form-item :label="$t('live.livefinishTime')">
             <el-date-picker
             v-model="form.finishStartTime"
             type="datetime"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期时间">
+             :placeholder="$t('live.please')">
           </el-date-picker>
-          <span>至</span>
+          <span>{{$t('live.to')}}</span>
           <el-date-picker
             v-model="form.finishEndTime"
             type="datetime"
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
             default-time="23:59:59"
-            placeholder="选择日期时间">
+             :placeholder="$t('live.please')">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="" style="margin-left: 22px;">
-          <el-button type="primary" @click="getList" size="small">查询</el-button>
+          <el-button type="primary" @click="getList" size="small">{{$t('live.toSearch')}}</el-button>
         </el-form-item>
       </el-form>
       </div>
@@ -72,44 +72,44 @@
         >
           <el-table-column
             prop="name"
-            label="直播间标题"
+            :label="$t('live.liveTitle')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="anchorName"
-            label="主播昵称"
+            :label="$t('live.anchorName')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="startTime"
-            label="开播时间"
+            :label="$t('live.liveStartTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="endTime"
-            label="结束时间"
+            :label="$t('live.livefinishTime')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="liveStatusSign"
-            label="直播状态"
+            :label="$t('live.liveState')"
             :formatter="liveStatusMatter"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            label="观看人数"
+            :label="$t('live.numb')"
             align="center"
           >
           -
           </el-table-column>
           <el-table-column
             prop="goodsListNum"
-            label="活动商品"
+            :label="$t('live.goodsListNum')"
             align="center"
           >
           <template slot-scope="scope">
@@ -118,13 +118,13 @@
           </el-table-column>
           <el-table-column
             prop="addCartNum"
-            label="活动加购"
+            :label="$t('live.addCartNum')"
             align="center"
           >
           </el-table-column>
           <el-table-column
             prop="orderNum"
-            label="活动订单"
+            :label="$t('live.orderNum')"
             align="center"
           >
            <template slot-scope="scope">
@@ -146,7 +146,7 @@
       </div>
     </div>
     <!--商品弹窗-->
-    <el-dialog title="活动商品" :visible.sync="dialogTableVisible" width="900px">
+    <el-dialog :title="$t('live.goodsListNum')" :visible.sync="dialogTableVisible" width="900px">
       <liveGoods v-if="dialogTableVisible" :liveId="liveId"/>
     </el-dialog>
   </div>
@@ -170,34 +170,12 @@ export default {
       form: {
         liveStatus: -1
       },
-      statusOptions: [
-        {
-          value: -1,
-          label: '全部'
-        },
-        {
-          value: 101,
-          label: '直播中'
-        }, {
-          value: 102,
-          label: '未开始'
-        }, {
-          value: 103,
-          label: '已结束'
-        }, {
-          value: 104,
-          label: '禁播'
-        }, {
-          value: 105,
-          label: '暂停中'
-        }, {
-          value: 106,
-          label: '异常'
-        }, {
-          value: 107,
-          label: '已过期'
-        }
-      ]
+      statusOptions: this.$t('live.statusOptions')
+    }
+  },
+  watch: {
+    lang (newData) {
+      this.statusOptions = this.$t('live.statusOptions')
     }
   },
   mounted () {
@@ -236,26 +214,25 @@ export default {
       let sign = '未知'
       switch (row.liveStatus) {
         case 101:
-          sign = '直播中'
+          sign = this.$t('live.status101')
           break
         case 102:
-          console.log('进来')
-          sign = '未开始'
+          sign = this.$t('live.status102')
           break
         case 103:
-          sign = '已结束'
+          sign = this.$t('live.status103')
           break
         case 104:
-          sign = '禁播'
+          sign = this.$t('live.status104')
           break
         case 105:
-          sign = '暂停中'
+          sign = this.$t('live.status105')
           break
         case 106:
-          sign = '异常'
+          sign = this.$t('live.status106')
           break
         case 107:
-          sign = '已过期'
+          sign = this.$t('live.status107')
           break
       }
       row.liveStatusSign = sign

@@ -420,6 +420,10 @@ import {
 import {
   en as groupIntegration
 } from './views/admin_new/en/index/marketManagement/groupIntegration/groupIntegrationEn'
+// 直播
+import {
+  en as live
+} from './views/admin_new/en/index/marketManagement/live/liveEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -1062,6 +1066,7 @@ const en = {
   packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡
