@@ -41,7 +41,7 @@
                 class="goods_info"
               >
                 <img
-                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  :src="goodsItem.goodsImg"
                   alt=""
                   class="goods_img"
                 >
@@ -203,7 +203,6 @@ export default {
     background-color: #fff;
     padding: 15px;
     margin-top: 10px;
-    font-weight: bold;
     color: #000;
     .goods_price {
       border-bottom: 1px solid #ebeef5;
