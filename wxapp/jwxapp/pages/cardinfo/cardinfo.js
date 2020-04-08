@@ -73,7 +73,7 @@ global.wxPage({
         } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
 
           that.setData({
-            carStatus: "审核失败"
+            carStatus: "未通过"
           })
         } else {
           that.setData({
@@ -173,7 +173,7 @@ global.wxPage({
         } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
 
           that.setData({
-            carStatus: "审核失败"
+            carStatus: "未通过"
           })
         } else {
           that.setData({
