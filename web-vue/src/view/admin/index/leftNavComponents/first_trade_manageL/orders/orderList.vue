@@ -848,7 +848,8 @@ export default {
         cityCode: null,
         districtCode: null,
         orderStatus2: '-1',
-        shippingNo: ''
+        shippingNo: '',
+        roomId: null
       },
       orderTime: null,
       completeTime: null,
@@ -890,6 +891,8 @@ export default {
     let userId = this.$route.query.userId
     let userName = this.$route.query.userName
     this.searchParams.userName = userName || null
+    let roomId = this.$route.query.roomId
+    this.searchParams.roomId = roomId || null
     console.log(userId)
     console.log('mounted-----------------------')
     this.searchParams.orderStatus = this.$route.query.orderStatus ? this.$route.query.orderStatus : this.$route.params.orderStatus ? this.$route.params.orderStatus : null
