@@ -127,6 +127,9 @@
             label="活动订单"
             align="center"
           >
+           <template slot-scope="scope">
+            <el-link type="primary" :underline="false" @click="toOrderList(scope.row.roomId)">{{scope.row.orderNum}}</el-link>
+          </template>
           </el-table-column>
         </el-table>
         <div class="footer">
@@ -267,6 +270,15 @@ export default {
     showGoods (data) {
       this.liveId = data
       this.dialogTableVisible = true
+    },
+    toOrderList (data) {
+      console.log(data)
+      this.$router.push({
+        name: 'order',
+        query: {
+          roomId: data
+        }
+      })
     }
   }
 }

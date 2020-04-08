@@ -20,8 +20,21 @@
         label="店铺售价（元）">
       </el-table-column>
       <el-table-column
-        prop="price"
-        label="直播售价（元） ">
+        prop="livePrice"
+        label="直播售价（元） "
+        >
+        <template slot-scope="scope">
+          <div v-if="scope.row.priceType===1">
+            {{scope.row.price}}
+          </div>
+          <div v-if="scope.row.priceType===2">
+            {{scope.row.price}} - {{scope.row.priceEnd}}
+          </div>
+         <div v-if="scope.row.priceType===3">
+            <div style=" float:left;">原价:{{scope.row.price}}</div>
+            <div style=" float:left;"> 现价:{{scope.row.priceEnd}}</div>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
         prop="goodsNumber"

@@ -93,7 +93,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 		}
 		// 手机号
 		if(isNotNull(param.getMobile())) {
-			select.where(USER.MOBILE.eq(param.getMobile()));
+			select.where(USER.MOBILE.like(likeValue(param.getMobile())));
 		}
 		// 申请时间 - 开始
 		if(isNotNull(param.getFirstTime())) {

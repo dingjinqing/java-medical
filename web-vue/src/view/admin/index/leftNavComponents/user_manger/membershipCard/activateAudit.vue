@@ -83,6 +83,7 @@
           <div class="operate_box">
             <div
               class="content"
+              v-if='item.status === 1'
             >
               <div style="margin-bottom:5px">
                 <el-button
@@ -113,6 +114,7 @@
               v-if='item.status === 3'
             >
               <div>{{ $t('memberCard.failedAuditT') }}</div>
+              <div class="fail-detail" @click="showFailDetail(item)">查看详情</div>
             </div>
           </div>
         </div>
@@ -125,6 +127,8 @@
 
       <my-fail-dialog
         :visiable.sync="showAuditFailedDialog"
+        :refuseDesc="currentDesc"
+        :status="currentStatus"
         @handleDesc="handleFailAudit"
       >
       </my-fail-dialog>
@@ -159,7 +163,9 @@ export default {
       ids: null,
       maritals: [],
       showAuditFailedDialog: false,
-      currentId: null
+      currentId: null,
+      currentDesc: null,
+      currentStatus: 1
     }
   },
   watch: {
@@ -267,12 +273,13 @@ export default {
         })
       } else if (flag === 1) {
         this.showAuditFailedDialog = true
+        this.currentStatus = item.status
+        this.currentDesc = null
         this.currentId = item.id
       }
     },
     handleFailAudit (val) {
       // reject
-      alert(val)
       let obj = {
         'id': this.currentId,
         'refuseDesc': val
@@ -284,6 +291,11 @@ export default {
           this.defaultData()
         }
       })
+    },
+    showFailDetail (item) {
+      this.currentDesc = item.refuseDesc
+      this.currentStatus = item.status
+      this.showAuditFailedDialog = true
     }
   }
 }
@@ -377,5 +389,10 @@ export default {
       }
     }
   }
+.fail-detail{
+  padding: 5px 10px;
+  color: blue;
+  cursor: pointer;
+}
 }
 </style>

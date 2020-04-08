@@ -63,4 +63,7 @@ public class ActiveAuditVo {
 	private String city;
 	private Integer districtCode;
 	private String district;
+	
+	// 拒绝原因
+	private String refuseDesc;
 }

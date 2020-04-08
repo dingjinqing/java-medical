@@ -313,7 +313,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      * @throws MpException
      */
     public void processOrderEffective(OrderInfoRecord orderInfo) throws MpException {
-        if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
+        if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)&&!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING)){
             return;
         }
         OrderBeforeParam orderBeforeParam = createOrderBeforeParam(orderInfo);
