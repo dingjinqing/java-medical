@@ -107,7 +107,6 @@ global.wxPage({
   },
   loadFilter (options) {
     return new Promise((resolve, reject) => {
-      if(options.scene) options = this.resetScene(options.scene)
       let target = {
         filterData: {},
         data: {}

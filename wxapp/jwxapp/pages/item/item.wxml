@@ -23,8 +23,8 @@
        <!-- <text class="live-desc">商品正在参与直播，立即查看 ></text> -->
        <text class="live-desc">直播将在20:00开始</text>
        <!-- <view class="subscribe-button" style="color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;">立即订阅</view> -->
-        <subscribe room-id="1"></subscribe>
-        <!-- <view class="subscribe-button" style="color:rgba(247,145,61,1);">已订阅</view> -->
+        <subscribe room-id="5"></subscribe>
+        <view class="subscribe-button" bindtap="goLive" style="color:rgba(247,145,61,1);">已订阅</view>
         <image class="live-close" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
       </view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
@@ -163,7 +163,7 @@
     <!-- 优惠券&促销信息 -->
     <v-coupon-promotion wx:if="{{!filter.includes([1,3,4,8,5,10],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}" goods-gifts="{{goodsGifts}}" />
     <!-- 选择规格（包含无规格情况） -->
-    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
+    <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" room-id="{{roomId}}">
       <!-- 服务规则 -->
       <view class="flex_box" bindtap="goPledge" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">服务</view>
@@ -247,7 +247,7 @@
     <!-- 购买记录  -->
     <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
-  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" custom-service="{{goodsInfo.customService}}" activity="{{specParams.activity}}" room-id="{{roomId}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
   <v-pre-sale-rule show="{{preSaleRuleShow}}" />
 
 

@@ -239,7 +239,8 @@ global.wxComponent({
     customService:{ //展示客服按钮
       type:Number,
       value:0
-    }
+    },
+    roomId:String
   },
   /**
    * 组件的初始数据
@@ -421,7 +422,9 @@ global.wxComponent({
     },
     
     toCheckOut() {
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]) })}`, "navigateTo")
+      let customParams = {}
+      if(this.data.roomId) customParams.roomId = this.data.roomId
+      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]),...customParams })}`, "navigateTo")
       this.triggerEvent('close')
     },
     async actCheckOut(){
@@ -438,6 +441,7 @@ global.wxComponent({
         delete params.preSaleInfo.preSalePrdMpVos
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
+      if(this.data.roomId) params.roomId = this.data.roomId
       util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
       this.triggerEvent('close')
     },

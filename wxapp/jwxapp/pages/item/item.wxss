@@ -316,6 +316,7 @@
 }
 .goods-image  .subscribe--live-player-notSubscribe{
   color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;
+  line-height: 50rpx;
 }
 .goods-image  .subscribe--live-player-hasSubscribe{
   color:rgba(247,145,61,1);
