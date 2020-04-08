@@ -155,6 +155,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         private GoodsRecord goodsInfo;
         /**积分兑换需要的积分*/
         private Integer goodsScore;
+        /**是否校验过限购，true校验过*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private Boolean isAlreadylimitNum;
 	}
 
     /**
