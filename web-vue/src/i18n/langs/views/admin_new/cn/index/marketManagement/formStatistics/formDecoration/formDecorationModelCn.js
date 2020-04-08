@@ -20,5 +20,48 @@ export const cn = {
   optionSettings: '选项设置：',
   option: '选项',
   delete: '删除',
-  addOptions: '添加选项'
+  addOptions: '添加选项',
+  // 性别模块
+  presentation: '展现形式：',
+  transverse: '横向',
+  portrait: '纵向',
+  // 输入框
+  multipleRows: '多行',
+  singleRow: '单行',
+  singleRowLong: '单行纵向',
+  hint: '提示语',
+  hintTip: '请输入提示语',
+  atLeastInput: '至少输入',
+  word: '字',
+  atMostInput: '至多输入',
+  inputTips: '字不可超过500字',
+  // 选项补充
+  singleElection: '单选',
+  multipleSelection: '多选',
+  // 图片上传
+  uploadQuantity: '上传数量：',
+  most: '最多',
+  pictureSize: '图片尺寸：',
+  noRestriction: '不限制',
+  limit: '限制',
+  // 视频上传
+  note: '注：',
+  videoTip: '每个表单视频模块最多可由用户上传一个小视频，时长不可超过3min，大小不能超过10M',
+  // 广告模块
+  advertisingPicture: '广告图片模块',
+  advertisingPictureTip: '图片建议尺寸：宽度630',
+  previewOriginal: '预览原图：',
+  no: '否',
+  yes: '是',
+  yesTips: '选择是，则在图片没有添加链接时，前端用户点击可以预览原图。选择否，则未添加图片链接时，不可预览原图',
+  photo: '图片：',
+  text: '文本：',
+  textTip: '最多19个字',
+  links: '链接：',
+  selectLink: '选择链接',
+  // 电话号码模块
+  phoneNumber: '电话号码模块',
+  phoneNumberTitle: '电话号码：',
+  selectaStyle: '选择样式：'
+
 }
