@@ -203,7 +203,6 @@ export default {
     background-color: #fff;
     padding: 15px;
     margin-top: 10px;
-    font-weight: bold;
     color: #000;
     .goods_price {
       border-bottom: 1px solid #ebeef5;
