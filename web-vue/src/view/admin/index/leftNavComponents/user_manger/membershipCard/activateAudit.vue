@@ -71,12 +71,14 @@
         </div>
         <div class="member_content">
           <ul>
-            <li>{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
-            <li>{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
-            <li>{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
-          </ul>
-          <ul>
-            <li>{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
+            <li v-if="item.realName">{{ $t('memberCard.realName') }}：<strong>{{item.realName}}</strong></li>
+            <li v-if="item.cid">{{ $t('memberCard.cid') }}：<strong>{{item.cid}}</strong></li>
+            <li v-if="item.sex !== null">{{ $t('memberCard.sex') }}: <strong>{{item.sex}}</strong></li>
+            <li v-if="item.birthDayYear !== null">{{$t('memberCard.birthday')}}: <strong>{{item.birthDayYear}}-{{item.birthDayMonth}}-{{item.birthDayDay}}</strong></li>
+            <li v-if="item.maritalStatus !== null">{{ $t('memberCard.maritalStatus') }}: <strong>{{item.maritalStatus}}</strong></li>
+            <li v-if="item.education">{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
+            <li v-if="item.industry">{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
+            <li v-if="item.city">{{ $t('memberCard.address') }}:{{item.province}} {{item.city}} {{item.district}}</li>
           </ul>
           <div class="operate_box">
             <div
@@ -112,6 +114,7 @@
               v-if='item.status === 3'
             >
               <div>{{ $t('memberCard.failedAuditT') }}</div>
+              <div class="fail-detail" @click="showFailDetail(item)">查看详情</div>
             </div>
           </div>
         </div>
@@ -121,13 +124,25 @@
         :page-params.sync="pageParams"
         @pagination="search"
       />
+
+      <my-fail-dialog
+        :visiable.sync="showAuditFailedDialog"
+        :refuseDesc="currentDesc"
+        :status="currentStatus"
+        @handleDesc="handleFailAudit"
+      >
+      </my-fail-dialog>
     </div>
   </div>
 </template>
 <script>
 import { getActivateAuditListRequest, passActivateAuditRequest, rejectActivateAudit } from '@/api/admin/memberManage/memberCard.js'
+import activateFailDialog from './subcomponents/cardAuditFailDialog.vue'
 export default {
-  components: { Pagination: () => import('@/components/admin/pagination/pagination') },
+  components: {
+    Pagination: () => import('@/components/admin/pagination/pagination'),
+    myFailDialog: activateFailDialog
+  },
   data () {
     return {
       pageParams: {
@@ -145,11 +160,17 @@ export default {
       tabOneData: [],
       tabTwoData: [],
       tabThreeData: [],
-      ids: null
+      ids: null,
+      maritals: [],
+      showAuditFailedDialog: false,
+      currentId: null,
+      currentDesc: null,
+      currentStatus: 1
     }
   },
   watch: {
     lang () {
+      this.maritals = this.$t('membershipIntroduction.maritalStatus')
       this.defaultData()
     },
     activeName (newData) {
@@ -186,6 +207,20 @@ export default {
         if (res.error === 0) {
           // success
           this.tabData = res.content.dataList
+          this.tabData.forEach(item => {
+            // 婚姻状态
+            if (item.maritalStatus) {
+              item.maritalStatus = this.maritals[item.maritalStatus - 1]
+            }
+            if (item.sex) {
+              let sexTmp = this.$t('membershipIntroduction.GenderValueOptions')
+              for (let s of sexTmp) {
+                if (s.value === item.sex) {
+                  item.sex = s.label
+                }
+              }
+            }
+          })
           // pagination
           this.pageParams = res.content.page
         }
@@ -237,20 +272,30 @@ export default {
           }
         })
       } else if (flag === 1) {
-        // reject
-        let obj = {
-          'id': item.id,
-          'refuseDesc': this.refuseDesc
-        }
-
-        rejectActivateAudit(obj).then(res => {
-          if (res.error === 0) {
-            // success message
-            this.$message.success(this.$t('memberCard.auditOption'))
-            this.defaultData()
-          }
-        })
+        this.showAuditFailedDialog = true
+        this.currentStatus = item.status
+        this.currentDesc = null
+        this.currentId = item.id
       }
+    },
+    handleFailAudit (val) {
+      // reject
+      let obj = {
+        'id': this.currentId,
+        'refuseDesc': val
+      }
+      rejectActivateAudit(obj).then(res => {
+        if (res.error === 0) {
+          // success message
+          this.$message.success(this.$t('memberCard.auditOption'))
+          this.defaultData()
+        }
+      })
+    },
+    showFailDetail (item) {
+      this.currentDesc = item.refuseDesc
+      this.currentStatus = item.status
+      this.showAuditFailedDialog = true
     }
   }
 }
@@ -344,5 +389,10 @@ export default {
       }
     }
   }
+.fail-detail{
+  padding: 5px 10px;
+  color: blue;
+  cursor: pointer;
+}
 }
 </style>

@@ -1,12 +1,18 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -15,6 +21,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.MemberCardDetailMpVo;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -25,7 +33,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,7 +54,7 @@ import static com.vpu.mp.service.pojo.wxapp.cart.CartConstant.GOODS_STATUS_EXCLU
  */
 @Service
 @Slf4j
-public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy {
+public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy,CreateOrderProcessor {
     @Autowired
     MemberCardProcessorDao memberCardProcessorDao;
     @Autowired
@@ -237,5 +250,54 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                 goods.setGoodsStatus(GOODS_STATUS_EXCLUSIVE);
             }
         });
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+        for (OrderBeforeParam.Goods one: param.getGoods()) {
+            if(GoodsConstant.CARD_EXCLUSIVE.equals(one.getGoodsInfo().getIsCardExclusive())) {
+                // 获取商品所有专享卡（包含普通卡和等级卡）
+                List<MemberCardRecord> exclusiveCards = memberCardProcessorDao.getExclusiveInfo(one.getGoodsInfo().getGoodsId(), one.getGoodsInfo().getCatId(), one.getGoodsInfo().getSortId(), one.getGoodsInfo().getBrandId());
+                //会员可用会员卡
+                List<OrderMemberVo> userCards = userCardService.userCardDao.getOrderMembers(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
+                //flag
+                boolean flag = false;
+                for (MemberCardRecord exclusiveCard: exclusiveCards) {
+                    for(OrderMemberVo userCard : userCards) {
+                        if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if(flag) {
+                        break;
+                    }
+                }
+                if(!flag) {
+                    log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
+                    throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        //无
+    }
+
+    @Override
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        //无
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        //无
+    }
+
+    @Override
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+
     }
 }

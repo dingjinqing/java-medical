@@ -4,22 +4,22 @@
       <!--模块私有区域-->
       <div class="main">
         <div class="list">
-          <span>展示形式：</span>
+          <span>{{$t('formDecorationModel.presentation')}}</span>
           <el-radio
             v-model="modulesSaveData.show_types"
             label="0"
-          >多行</el-radio>
+          >{{$t('formDecorationModel.multipleRows')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.show_types"
             label="1"
-          >单行</el-radio>
+          >{{$t('formDecorationModel.singleRow')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.show_types"
             label="2"
-          >单行纵向</el-radio>
+          >{{$t('formDecorationModel.singleRowLong')}}</el-radio>
         </div>
         <div class="list">
-          <span>标题文字：</span>
+          <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
@@ -27,41 +27,41 @@
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list">
-          <span>提示语：</span>
+          <span>{{$t('formDecorationModel.hint')}}</span>
           <el-input
             v-model="modulesSaveData.placeholder"
             size="small"
-            placeholder="请输入提示语"
+            :placeholder="$t('formDecorationModel.hintTip')"
           ></el-input>
         </div>
         <div class="list">
           <span></span>
-          <div class="tips">最多可输入20个字</div>
+          <div class="tips">{{$t('formDecorationModel.titleTextTip')}}</div>
         </div>
         <div class="list">
-          <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <span>{{$t('formDecorationModel.conditionValidation')}}</span>
+          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <div class="list lastInput">
           <span></span>
-          至少输入<el-input
+          {{$t('formDecorationModel.atLeastInput')}}<el-input
             v-model="modulesSaveData.least_number"
             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
             size="small"
             placeholder="1"
-          ></el-input>字
+          ></el-input>{{$t('formDecorationModel.word')}}
         </div>
         <div class="list lastInput">
           <span></span>
-          至多输入<el-input
+          {{$t('formDecorationModel.atMostInput')}}<el-input
             v-model="modulesSaveData.least_number"
             onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
             size="small"
             placeholder="500"
-          ></el-input>字不可超过500字
+          ></el-input>{{$t('formDecorationModel.inputTips')}}
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -69,7 +69,7 @@
             type="primary"
             size="small"
             @click="handleToClickSure()"
-          >确定</el-button>
+          >{{$t('formDecorationModel.determine')}}</el-button>
         </div>
       </div>
     </div>
@@ -122,7 +122,7 @@ export default {
     handleToClickSure () {
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
-        message: '模块保存成功',
+        message: this.$t('formDecorationModel.savedSuccessfully'),
         showClose: true
       })
     }
