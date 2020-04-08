@@ -221,7 +221,7 @@ global.wxPage({
     let that = this
     scene = options.scene;
     let serviceId = options.service_id
-    if (!serviceId) {
+    if (!serviceId && !scene) {
       that.toBack()
       return false
     }
@@ -232,6 +232,9 @@ global.wxPage({
       if (res.error === 0) {
         console.log(res.content)
         let serviceInfo = res.content.serviceInfo
+        that.setData({
+          serviceId: serviceInfo.id
+        })
         let storeInfo = res.content.storeInfo
         let commentInfo = res.content.commentInfo
         let reservationInfoList = res.content.reservationInfoList
