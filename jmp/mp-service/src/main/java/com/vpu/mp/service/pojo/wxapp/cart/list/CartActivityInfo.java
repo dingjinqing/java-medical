@@ -40,7 +40,7 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     private Integer limitMaxNum;
     /**
-     * 限制类型
+     * 限制类型 1禁止超限购买，0超限全部恢复原价
      */
     private Byte limitNumberType;
     /**

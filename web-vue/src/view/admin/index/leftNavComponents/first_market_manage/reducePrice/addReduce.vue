@@ -850,11 +850,12 @@ export default {
           this.extendTime = this.reduceData.extendTime
           this.CycleData = this.reduceData.pointTime
           // 限购数量
-          if (this.reduceData.limitAmount > 0 || this.reduceData.limitAmount !== null) {
+          if (this.reduceData.limitAmount !== null && this.reduceData.limitAmount > 0) {
             this.reduceData.isLimit = '1'
           } else {
             this.reduceData.isLimit = '0'
           }
+
           // 活动分享
           this.reduceData.shareConfig = res.content.shopShareConfig
 

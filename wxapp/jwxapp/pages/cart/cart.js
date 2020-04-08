@@ -80,40 +80,12 @@ global.wxPage({
             })
           }
           // 限购样式
-          if (item.activityType == null) {
-            // 普通商品
-            if (item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum) || item.cartNumber == 1) {
-              item.limitMinStyle = 1
-            }
-            if (item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum) || (item.cartNumber >= item.prdNumber)) {
-              item.limitMaxStyle = 1
-            }
-          } else {
-            // 营销商品
-            if (item.activityLimitMinNum == null || item.activityLimitMinNum == 0) {
-              // 营销不限制走商品最小限制
-              if (item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum) || item.cartNumber == 1) {
-                item.limitMinStyle = 1
-              }
-            } else {
-              if (item.cartNumber <= item.activityLimitMinNum || item.activityLimitMaxNum == 1) {
-                item.limitMinStyle = 1
-              }
-            }
-
-            if (item.activityLimitMaxNum == null || item.activityLimitMaxNum == 0) {
-              // 营销不限制走商品最大限制
-              if (item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum) || (item.cartNumber >= item.prdNumber)) {
-                item.limitMaxStyle = 1
-              } 
-            } else {
-              if ((item.cartNumber >= item.activityLimitMaxNum) || (item.cartNumber >= item.prdNumber)) {
-                item.limitMaxStyle = 1
-              }
-            }
+          if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
+            item.limitMaxStyle = 1
           }
-          
-
+          if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
+            item.limitMinStyle = 1
+          }
         })
         this.setData({
           canBuyGoodsList: this.data.canBuyGoodsList,
@@ -161,25 +133,55 @@ global.wxPage({
     let cartId = e.currentTarget.dataset.cart_id;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
-    let limitMinStyle = e.currentTarget.dataset.limit_min_style;
-    let limitMaxStyle = e.currentTarget.dataset.limit_max_style;
-    if (type == 'add' && limitMaxStyle == 1) {
-      util.showModal('提示', '最大限购量为' + cartNumber + '个');
-      return false
-    } 
-    if (type == 'minus' && limitMinStyle == 1) {
-      util.showModal('提示', '最小限购量为' + cartNumber + '个');
+    let activityType = e.currentTarget.dataset.activity_type;
+    let activityId = e.currentTarget.dataset.activity_id;
+
+    let item = e.currentTarget.dataset.item
+    let value = 0
+    if (type == 'add') {
+      value = cartNumber + 1
+    } else {
+      value = cartNumber - 1
+    }
+    
+    if (value > item.prdNumber) {
+      util.showModal('提示', '购买数量不能大于商品库存');
       return false
     }
-    util.api('/api/wxapp/cart/change', res => {
+    if (item.activityLimitMaxNum != null && value > item.activityLimitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.activityLimitMaxNum + '个');
+      return false
+    }
+    if (item.activityLimitMinNum != null && value < item.activityLimitMinNum) {
+      util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
+      util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      return false
+    }
+    if (value < 1) {
+      util.showModal('提示', '最小限购量为1个');
+      return false
+    }
+
+    util.api('/api/wxapp/cart/add', res => {
       if (res.error == 0) {
         this.requestCartList()
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     }, {
-        cartId: cartId,
-        productId: prdId,
-        cartNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1
-      })
+        goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
+        prdId,
+        activityType,
+        activityId
+    })
   },
 
   // 校验商品数量
@@ -187,22 +189,57 @@ global.wxPage({
     var that = this;
     var value = Number(e.detail.value)
     var cartId = e.currentTarget.dataset.cart_id
+    var prdId = e.currentTarget.dataset.prd_id
+    var activityType = e.currentTarget.dataset.activity_type
+    var activityId = e.currentTarget.dataset.activity_id
+
+    var item = e.currentTarget.dataset.item
     var re = /^[1-9]\d*$/
     if (!value || !re.test(value)) {
-      util.showModal('提示', '输入内容不正确');
+      util.showModal('提示', '购买数量输入不正确');
       this.requestCartList()
       return false
     }
-    that.data.canBuyGoodsList.forEach((item, index) => {
-      if (item.cartId == cartId) {
-        util.api('/api/wxapp/cart/change', res => {
+    if (value > item.prdNumber) {
+      util.showModal('提示', '购买数量不能大于商品库存');
+      this.requestCartList()
+      return false
+    }
+    if (item.activityLimitMaxNum != null && value > item.activityLimitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.activityLimitMaxNum + '个');
+      this.requestCartList()
+      return false
+    }
+    if (item.activityLimitMinNum != null && value < item.activityLimitMinNum) {
+      util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      this.requestCartList()
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
+      this.requestCartList()
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
+      util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      this.requestCartList()
+      return false
+    }
+
+    that.data.canBuyGoodsList.forEach((val, index) => {
+      if (val.cartId == cartId) {
+        util.api('/api/wxapp/cart/add', res => {
           if (res.error == 0) {
             this.requestCartList()
+          } else {
+            util.showModal('提示', res.message)
+            return false
           }
         }, {
-            cartId: item.cartId,
-            productId: item.productId,
-            cartNumber: value
+            goodsNumber: value,
+            prdId,
+            activityType,
+            activityId
           })
       }
     })

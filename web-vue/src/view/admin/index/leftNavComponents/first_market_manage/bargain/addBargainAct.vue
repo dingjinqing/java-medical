@@ -767,7 +767,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(res.message)
@@ -793,7 +793,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(this.$t('marketCommon.failureOperation'))

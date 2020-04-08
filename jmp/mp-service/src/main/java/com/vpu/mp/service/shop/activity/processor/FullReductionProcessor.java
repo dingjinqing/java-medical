@@ -281,12 +281,13 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         fullReductionProcessorDao.fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
         //给商品分配规则
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
-            if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+            if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
                 List<FullReductionGoodsCartBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());
                 fullReductionGoodsBos.forEach(FullReductionGoodsCartBo -> {
-                    if (FullReductionGoodsCartBo.getProductId().equals(goods.getProductId())){
+                    if (FullReductionGoodsCartBo.getCartId().equals(goods.getCartId())){
                         goods.getCartActivityInfos().forEach(cartActivityInfo -> {
-                            if (cartActivityInfo.getActivityId().equals(goods.getActivityId())){
+                            if (cartActivityInfo.getActivityType()!=null&&cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)
+                            && goods.getActivityId().equals(cartActivityInfo.getActivityId())){
                                 cartActivityInfo.getFullReduction().setRule(FullReductionGoodsCartBo.getFullReductionRule());
                             }
                         });
@@ -294,30 +295,10 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 });
             }
         }
-        //活动是否生效
-
         //国际化
-        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
-            goods.getCartActivityInfos().forEach(cartActivityInfo -> {
-                if (cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
-                    CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
-                    if (fullReduction!=null){
-                        CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRule();
-                        //当前选中的国际化
-                        if (fullReductionRule!=null){
-                            String message = fullReductionProcessorDao.fullReductionRuleToString(fullReduction,fullReductionRule);
-                            fullReduction.setCondition(message);
-                        }
-                        fullReduction.getRules().forEach(rule->{
-                            rule.setName(fullReductionProcessorDao.fullReductionRuleToString(fullReduction,rule));
-                        });
-                    }
-                }
-            });
-        }
-
-
+        fullReductionProcessorDao.internationalMessage(cartBo);
     }
+
 
 
 }

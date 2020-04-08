@@ -85,7 +85,7 @@ public class WxAppCartGoods {
     /**
      * 限制活动类型
      */
-    private Byte limitActivityType  =1;
+    private Byte limitActivityType  =BaseConstant.ACTIVITY_TYPE_GENERAL;
 
     private Integer storeId;
     private Integer userId;

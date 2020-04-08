@@ -162,11 +162,11 @@ public class GoodsMpService extends ShopBaseService {
         } else {
             List<SortField<?>> orderFields = new ArrayList<>();
             if (GoodsListMpParam.SALE_NUM_SORT.equals(param.getSortType())) {
-                orderFields.add(GOODS.GOODS_SALE_NUM.desc());
+                orderFields.add(GOODS.GOODS_SALE_NUM.add(GOODS.BASE_SALE).desc());
             } else if (GoodsListMpParam.SHOP_PRICE_SORT.equals(param.getSortType())) {
                 orderFields.add(GOODS.SHOP_PRICE.asc());
             } else {
-                orderFields.add(GOODS.GOODS_ID.desc());
+                orderFields.add(GOODS.SALE_TIME.desc());
             }
             pageResult = findActivityGoodsListCapsulesDao(condition, orderFields, param.getCurrentPage(), param.getGoodsNum(), null);
         }

@@ -45,7 +45,7 @@ public class FirstSpecialAddParam {
     private FirstSpecialGoodsParam[] firstSpecialGoodsParams;
 
     /** 批量打几折 */
-    private Byte batchDiscount;
+    //private Byte batchDiscount;
 
     /** 批量减多少 */
     private BigDecimal batchReduce;
