@@ -143,24 +143,17 @@
       </div>
     </div>
     <!--商品弹窗-->
-    <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
-  <el-table :data="goodList">
-    <el-table-column property="name" label="商品信息" ></el-table-column>
-    <el-table-column property="goodsSn" label="商品货号" ></el-table-column>
-    <el-table-column property="shopPrice" label="店铺售价（元）"></el-table-column>
-    <el-table-column property="price" label="直播售价（元） " ></el-table-column>
-    <el-table-column property="goodsNumber" label="库存" ></el-table-column>
-    <el-table-column property="sortName" label="商家分类" ></el-table-column>
-    <el-table-column property="goodsTag" label="商品标签" ></el-table-column>
-    <el-table-column property="brandName" label="品牌" ></el-table-column>
-  </el-table>
-</el-dialog>
+    <el-dialog title="收货地址" :visible.sync="dialogTableVisible" width="900px">
+      <liveGoods v-if="dialogTableVisible" :liveId="liveId"/>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getLiveList, getGoodsList } from '@/api/admin/marketManage/live'
+import liveGoods from './liveGoods'
+import { getLiveList } from '@/api/admin/marketManage/live'
 export default {
-  computed: {
+  components: {
+    liveGoods
   },
   data () {
     return {
@@ -170,6 +163,7 @@ export default {
       tableData: [],
       goodList: [],
       dialogTableVisible: false,
+      liveId: 0,
       form: {
         liveStatus: -1
       },
@@ -271,12 +265,8 @@ export default {
       this.getList()
     },
     showGoods (data) {
-      getGoodsList(data).then(res => {
-        if (res.error === 0) {
-          this.goodList = res.content
-          this.dialogTableVisible = true
-        }
-      })
+      this.liveId = data
+      this.dialogTableVisible = true
     }
   }
 }
