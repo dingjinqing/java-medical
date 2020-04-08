@@ -92,10 +92,10 @@ global.wxPage({
             repurchaseList.push(item)
           }
           // 限购样式
-          if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
+          if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
             item.limitMaxStyle = 1
           }
-          if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
+          if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
             item.limitMinStyle = 1
           }
         })
@@ -170,11 +170,11 @@ global.wxPage({
       util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
       return false
     }
-    if (item.limitMaxNum != 0 && value > item.limitMaxNum) {
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
       util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
       return false
     }
-    if (item.limitBuyNum != 0 && value < item.limitBuyNum) {
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
       util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
       return false
     }
@@ -229,12 +229,12 @@ global.wxPage({
       this.requestCartList()
       return false
     }
-    if (item.limitMaxNum != 0 && value > item.limitMaxNum) {
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
       util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
       this.requestCartList()
       return false
     }
-    if (item.limitBuyNum != 0 && value < item.limitBuyNum) {
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
       util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
       this.requestCartList()
       return false
