@@ -420,7 +420,7 @@
 			<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 		</view>
 	</view>
-	<view class="flex_footer">
+	<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1)}}">
 		<view
 		 class="footer_btn"
 		 data-btnType="{{btnType}}"
