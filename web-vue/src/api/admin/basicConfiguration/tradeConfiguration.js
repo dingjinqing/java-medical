@@ -56,8 +56,8 @@ export const returnSelect = () => service({
 
 // 服务条款配置
 export const termUpdate = data => service({
-  url: `/api/admin/config/trade/conftermsofservice?service_document=${data}`,
-  method: 'get',
+  url: '/api/admin/config/trade/conftermsofservice',
+  method: 'post',
   data
 })
 
