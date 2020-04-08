@@ -49,6 +49,7 @@ public class WxAppCouponController extends WxAppBaseController {
 	 */
 	@PostMapping("/detail")
 	public JsonResult availCouponDetail(@RequestBody AvailCouponDetailParam param) {
+        param.initScene();
 		AvailCouponDetailVo couponDetail = shop().coupon.getCouponDetail(param);
 		return this.success(couponDetail);
 	}
