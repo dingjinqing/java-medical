@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,7 @@ public class CardVerifyService extends ShopBaseService {
 	/**
 	 *  分页查询
 	 */
-	public PageResult<ActiveAuditVo> getPageList(ActiveAuditParam param) {
+	public PageResult<? extends Record> getPageList(ActiveAuditParam param) {
 		return verifyDao.getVerifyPageList(param);
 	}
 

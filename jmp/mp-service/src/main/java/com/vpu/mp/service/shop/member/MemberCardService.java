@@ -48,15 +48,19 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.*;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
+import com.vpu.mp.service.shop.member.wxapp.WxAppCardActivationService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 import jodd.util.StringUtil;
+
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
@@ -68,6 +72,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -128,6 +133,8 @@ public class MemberCardService extends ShopBaseService {
 	private GradeCardOpt gradeCardOpt;
 	@Autowired
 	private CardFreeShipService freeShipSvc;
+	@Autowired
+	private WxAppCardActivationService wxCardActSvc;
 
     
 	/**
@@ -1881,25 +1888,77 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-
-		PageResult<ActiveAuditVo> results = cardVerifyService.getPageList(param);
+		logger().info("分页查询激活信息");
+		PageResult<? extends Record> results = cardVerifyService.getPageList(param);
+		PageResult<ActiveAuditVo> res = new PageResult<>();
+		res.setPage(results.getPage());
+		List<ActiveAuditVo> myList = new ArrayList<>();
+		
+		if(results.dataList.size()>0) {
+			// 所有的卡
+			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
+			Map<String, MemberCardRecord> cardMap = cardDao.getCardByNo(nos.toArray(new String[0]));
+			Map<String,List<String>> cardCfgMap = new HashMap<>();
+			// 提前获取激活的选项
+			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
+				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
+				cardCfgMap.put(entry.getKey(), cfg);
+			}
+			for(Record record: results.dataList) {
+				ActiveAuditVo vo = new ActiveAuditVo();
+				vo.setCardNo(record.get(CARD_EXAMINE.CARD_NO));
+				vo.setMobile(record.get(USER.MOBILE));
+				vo.setUsername(record.get(USER.USERNAME));
+				vo.setCreateTime(record.get(CARD_EXAMINE.CREATE_TIME));
+				// 激活数据项
+				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
+				for(String name: activationCfg) {
+					if("birthday".equals(name)) {
+						vo.setBirthDayDay(record.get(CARD_EXAMINE.BIRTHDAY_DAY));
+						vo.setBirthDayMonth(record.get(CARD_EXAMINE.BIRTHDAY_MONTH));
+						vo.setBirthDayYear(record.get(CARD_EXAMINE.BIRTHDAY_YEAR));
+					}else if("address".equals(name)){
+						vo.setProvinceCode(record.get(CARD_EXAMINE.PROVINCE_CODE));
+						vo.setCityCode(record.get(CARD_EXAMINE.CITY_CODE));
+						vo.setDistrictCode(record.get(CARD_EXAMINE.DISTRICT_CODE));
+					}else {
+						try {
+							Object value = record.get(Util.humpToUnderline(name));
+							PropertyUtils.setProperty(vo, name, value);
+						} catch (Exception e) {
+							// 该属性为空 
+						}		
+					}
+				}
+				myList.add(vo);
+			}
+		}
 		// deal with industry and education
-		for (ActiveAuditVo activeAuditVo : results.dataList) {
+		for (ActiveAuditVo activeAuditVo : myList) {
 			// education
 			if(activeAuditVo.getEducation()!= null) {
 				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
 				activeAuditVo.setEducationStr(educationStr);
 			}
-			
 			// industry
 			if(activeAuditVo.getIndustryInfo() != null) {
 				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
 				activeAuditVo.setIndustry(industry);
 			}
-			
+			// deal address
+			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
+				Map<String,Object> adMap = new HashMap<>();
+				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
+				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
+				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
+				wxCardActSvc.dealWithAddressCode(adMap);
+				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
+				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
+				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
+			}
 		}
-		return results;
-
+		res.setDataList(myList);
+		return res;
 	}
 
 	/**

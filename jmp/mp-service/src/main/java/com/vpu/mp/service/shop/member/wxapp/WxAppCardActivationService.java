@@ -50,9 +50,9 @@ public class WxAppCardActivationService extends ShopBaseService {
 	@Autowired
 	private MemberCardService memberCardService;
 	
-	final static String PROVINCE_CODE = "provinceCode";
-	final static String CITY_CODE = "cityCode";
-	final static String DISTRICT_CODE = "districtCode";
+	public final static String PROVINCE_CODE = "provinceCode";
+	public final static String CITY_CODE = "cityCode";
+	public final static String DISTRICT_CODE = "districtCode";
 	// 100000 110000 110100在省，市，区中都对应无效值
 	final static Integer DEFAULT_PROVINCEID = 100000;
 	final static Integer DEFAULT_CITYID = 110000;
@@ -112,7 +112,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 		return userMap;
 	}
 	
-	private void dealWithAddressCode(Map<String, Object> userMap) {
+	public void dealWithAddressCode(Map<String, Object> userMap) {
 		logger().info("处理用户地址信息");
 		
 		Integer provinceId = userMap.get(PROVINCE_CODE)==null? 
@@ -128,12 +128,18 @@ public class WxAppCardActivationService extends ShopBaseService {
 		
 		if(provinceName!=null) {
 			userMap.put(PROVINCE_CODE, provinceName.getName());
+		}else {
+			userMap.put(PROVINCE_CODE, null);
 		}
 		if(cityName != null) {
 			userMap.put(CITY_CODE, cityName.getName());
+		}else {
+			userMap.put(CITY_CODE, null);
 		}
 		if(districtName != null) {
 			userMap.put(DISTRICT_CODE, districtName.getName());
+		}else {
+			userMap.put(DISTRICT_CODE, null);
 		}
 	}
 	
