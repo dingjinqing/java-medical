@@ -307,7 +307,7 @@ public class PreSaleService extends ShopBaseService {
         BigDecimal presaleMoney = product.getPresaleMoney();
         BigDecimal preDiscountMoney1 = product.getPreDiscountMoney1();
         BigDecimal preDiscountMoney2 = product.getPreDiscountMoney2();
-        if (preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
+        if (param.getPresaleType() == PresaleConstant.PRESALE && preDiscountMoney1.compareTo(presaleMoney) < 0 || preDiscountMoney1.compareTo(presalePrice) > 0) {
             logger().error("预售--抵扣金额异常");
             throw new IllegalArgumentException("Discount money error");
         }

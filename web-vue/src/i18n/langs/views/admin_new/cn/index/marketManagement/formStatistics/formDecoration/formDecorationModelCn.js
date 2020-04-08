@@ -62,6 +62,10 @@ export const cn = {
   // 电话号码模块
   phoneNumber: '电话号码模块',
   phoneNumberTitle: '电话号码：',
-  selectaStyle: '选择样式：'
-
+  selectaStyle: '选择样式：',
+  ordinary: '普通',
+  suspension: '悬浮',
+  centerOrNot: '是否居中：',
+  centered: '居中',
+  atTheLeft: '居左'
 }
