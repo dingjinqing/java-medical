@@ -321,7 +321,7 @@ public class StoreServiceService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.SERVICE_APPOINTMENT, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getUrl());
+        vo.setPagePath(QrCodeTypeEnum.SERVICE_APPOINTMENT.getUrl());
         return vo;
     }
 
