@@ -12,6 +12,7 @@
     "v-recommend": "/components/item/recommend/index",
     "v-pre-sale-rule": "/components/item/popup/pre_sale_rule/index",
     "v-distribution": "/components/item/distribution/index",
-    "v-purchase_record": "/components/item/purchase_record/index"
+    "v-purchase_record": "/components/item/purchase_record/index",
+    "subscribe": "plugin-private://wx2b03c6e691cd7370/components/subscribe/subscribe"
   }
 }

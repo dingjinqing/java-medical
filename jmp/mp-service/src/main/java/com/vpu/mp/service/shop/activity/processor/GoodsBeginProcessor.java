@@ -107,6 +107,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
             goods.setPrdNumber(productRecord.getPrdNumber());
             //初始化价格
             goods.setPrdPrice(productRecord.getPrdPrice());
+            goods.setPrdMarketPrice(productRecord.getPrdMarketPrice());
             goods.setGoodsPrice(productRecord.getPrdPrice());
         }
 

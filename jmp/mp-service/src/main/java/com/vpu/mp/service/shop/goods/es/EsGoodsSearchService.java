@@ -58,7 +58,7 @@ public class EsGoodsSearchService extends EsBaseSearchService{
                 if( !labelMap.isEmpty() && labelMap.containsKey(vo.getGoodsId()) ){
                     List<GoodsLabelSelectListVo> labelVos = Lists.newLinkedList();
                     labelMap.get(vo.getGoodsId()).forEach(y->labelVos.add(new GoodsLabelSelectListVo(y.getId(),y.getName())));
-                    vo.setGoodsLabels(labelVos);
+                    vo.setGoodsPointLabels(labelVos);
                 }
                 voList.add(vo);
             });

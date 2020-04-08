@@ -36,9 +36,9 @@ global.wxPage({
   // 去规则说明
   toRule: function () {
     // util.api('/api/wxapp/rebate/config', function (res) {
-    //   var rule_info = res.content;
-    //   util.jumpToWeb('/wxapp/distribution/help', rule_info);
+    //   util.jumpToWeb('/wxapp/distribution/help', res.content);
     // }, {});
+    util.jumpToWeb('/wxapp/distribution/help');
   },
   // 待返利佣金说明
   a_tips: function () {

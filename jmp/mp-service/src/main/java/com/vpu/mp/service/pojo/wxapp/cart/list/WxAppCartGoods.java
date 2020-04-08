@@ -33,6 +33,10 @@ public class WxAppCartGoods {
      */
     private BigDecimal prdPrice;
     /**
+     * 规格的市场价
+     */
+    private BigDecimal prdMarketPrice;
+    /**
      * 添加购物车时价格
      */
     private BigDecimal originalPrice;

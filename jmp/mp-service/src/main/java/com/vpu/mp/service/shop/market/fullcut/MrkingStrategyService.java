@@ -501,6 +501,11 @@ public class MrkingStrategyService extends ShopBaseService {
         return doc;
     }
 
+    public List<WxAppCartGoods> getWxAppCheckedGoodsList(MrkingStrategyGoodsListParam param,Integer userId){
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
+        return cartBo.getCartGoodsList();
+    }
+
 
 
 }

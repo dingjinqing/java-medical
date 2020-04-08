@@ -106,8 +106,13 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> activityGoods = new ArrayList<>();
         cartBo.getCartGoodsList().forEach(goods -> {
             if (activityType != null && activityId != null) {
-                if (goods.getActivityType().equals(activityType) && goods.getActivityId().equals(activityId)) {
-                    if (goodsIds != null && goodsIds.contains(goods.getGoodsId())) {
+                if (activityType.equals(goods.getActivityType()) && activityId.equals(goods.getActivityId())) {
+                    if (goodsIds != null) {
+                        //取交集
+                        if(goodsIds.contains(goods.getGoodsId())){
+                            activityGoods.add(goods);
+                        }
+                    }else{
                         activityGoods.add(goods);
                     }
                 } else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)) {
@@ -121,6 +126,9 @@ public class CartService extends ShopBaseService {
                 }
             }
         });
+        if(goodsIds != null || (activityId != null && activityId > 0)){
+            cartBo.setCartGoodsList(activityGoods);
+        }
         return cartBo;
     }
 

@@ -17,7 +17,8 @@ global.wxComponent({
       }
     },
     price:Number,
-    goodsPrice:String
+    goodsPrice:String,
+    goodsId:Number
   },
 
   /**
@@ -94,7 +95,9 @@ global.wxComponent({
     goShareRebate(){
       util.jumpLink(`pages1/sharerebate/sharerebate${util.getUrlParams({
         goodsPrice:this.data.goodsPrice,
-        rebateId:this.data.distribution.rebateRatio.rebateId
+        rebateId:this.data.distribution.rebateRatio.rebateId,
+        rebateRatio:this.data.distribution.rebateRatio.rebateRatio,
+        goodsId:this.data.goodsId
       })}`,'navigateTo')
     }
   }

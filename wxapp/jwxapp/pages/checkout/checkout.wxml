@@ -49,6 +49,7 @@
           </view>
           <view class="goods_price">
             <text class="goods-price-tag" wx:if="{{goodsItem.firstSpecialId > 0}}" style="background-color:{{comColor}};">首单特惠</text>
+            <text class="goods-price-tag" wx:if="{{goodsItem.reducePriceId > 0}}" style="background-color:{{comColor}};">限时降价</text>
             <text class="price" decode='true' style="color:{{comColor}}">
               <block wx:if="{{params.activityType != 4}}">{{i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice || '0'})}}</block>
               <block wx:else>{{goodsItem.discountedGoodsPrice ? i18n.$t(localePack,"pages.checkout.currency",{price:goodsItem.discountedGoodsPrice}) : ''}}{{goodsItem.discountedGoodsPrice && goodsItem.goodsScore ? ' + ' : ''}}{{goodsItem.goodsScore ? goodsItem.goodsScore + '积分' : ''}}
@@ -243,10 +244,10 @@
       </view>
 
       <view class="pay_content term" wx:if="{{orderInfo.term.serviceTerms === 1}}">
-        <view class="pay_list_item">
-          <text class="iconfont {{orderInfo.term.serviceChoose === 1 ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};" bindtap="changeTerm"></text>
+        <view class="pay_list_item" bindtap="changeTerm">
+          <text class="iconfont {{orderInfo.term.serviceChoose === 1 ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>
           <text class="pay_list_content" style="text-align: left;">同意{{orderInfo.term.serviceName}}</text>
-          <view class="pay_list_right" bindtap="goService" style="width:auto">
+          <view class="pay_list_right" catchtap="goService" style="width:auto">
             <text>查看详情</text>
             <image class="right_arrow" src="{{imageUrl}}image/wxapp/right_into.png"></image>
           </view>     

@@ -128,7 +128,7 @@ global.wxPage({
         if (res.error == 0) {
           var user_info = res.content.userBaseInfo;
           // 自定义激活项
-          var custom_arr = res.content.cfg.custom_options
+          var custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
               if (custom_arr[i].custom_type == 0) {
@@ -373,21 +373,21 @@ global.wxPage({
         console.log(res)
         if (res.error === 0) {
           // 模拟自定义激活项数据
-          let custom_arr = [{
-            custom_title: "测试1",
-            custom_type: "1",
-            is_checked: 1,
-            option_arr: [
-              { option_title: "vvv", checked: true },
-              { option_title: "111", checked: false },
-              { option_title: "222", checked: false },
-              { option_title: "333", checked: false }
-            ],
-            option_ver: 1
-          }]
+          // let custom_arr = [{
+          //   custom_title: "测试1",
+          //   custom_type: "0",
+          //   is_checked: 1,
+          //   option_arr: [
+          //     { option_title: "vvv", checked: true },
+          //     { option_title: "111", checked: false },
+          //     { option_title: "222", checked: false },
+          //     { option_title: "333", checked: false }
+          //   ],
+          //   option_ver: 1
+          // }]
 
           // 自定义激活项
-          // var custom_arr = res.content.cfg.custom_options
+          let custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
 
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
@@ -411,10 +411,10 @@ global.wxPage({
               } else if (custom_arr[i].custom_type == 2) {
                 custom_arr[i].text = ''
               }
-              // that.setData({
-              //   if_custom: 1,
-              //   custom_arr: custom_arr
-              // })
+              that.setData({
+                if_custom: 1,
+                custom_arr: custom_arr
+              })
             }
 
           }
@@ -879,6 +879,19 @@ global.wxPage({
     } else {
       util.showModal("提示", '请勿重复提交');
     }
+  },
+  // 单选 选项
+  bindRadiosChange (e) {
+    console.log(e.detail.value)
+    // var m = this.data.m;
+    // m.module_value = e.detail.value;
+    // this.$set();
+  },
+  // 多选 选项
+  bindCheckboxChange (e) {
+    console.log(e.detail.value)
+    // var m = this.data.m;
+    // m.module_value = e.detail.value;
   },
   bindDateChange: function (e) {
     dates = e.detail.value;

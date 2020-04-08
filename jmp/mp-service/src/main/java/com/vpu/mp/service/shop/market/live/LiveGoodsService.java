@@ -58,9 +58,6 @@ public class LiveGoodsService extends ShopBaseService {
 						GOODS.BRAND_ID, GOODS.GOODS_IMG)
 				.from(LIVE_GOODS).leftJoin(GOODS).on(LIVE_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
 				.where(LIVE_GOODS.LIVE_ID.eq(id)).fetchInto(LiveRomeGoodListVo.class);
-		for (LiveRomeGoodListVo item : list) {
-			item.setGoodsImg(imageUrl(item.getGoodsImg()));
-		}
 		return list;
 	}
 
@@ -78,11 +75,11 @@ public class LiveGoodsService extends ShopBaseService {
 			}
 			if (goods.getSortId() != null) {
 				SortRecord sortRecord = db().selectFrom(SORT).where(SORT.SORT_ID.eq(goods.getSortId())).fetchAny();
-				goods.setSortName(sortRecord.getSortName());
+				goods.setSortName(sortRecord==null?null:sortRecord.getSortName());
 			}
 			if (goods.getBrandId() != null) {
 				GoodsBrandRecord brand = goodsBrandService.getBrandById(goods.getBrandId());
-				goods.setBrandName(brand.getBrandName());
+				goods.setBrandName(brand==null?null:brand.getBrandName());
 			}
 			List<GoodsLabelsVo> goodsTag = goodsMp.mpGoodsRecommendService.getGoodsLabelsByGoods(goods.getGoodsId(), 5,
 					ONE);

@@ -335,6 +335,8 @@ export const cn = {
   feedbackStatistics: ['营销管理', '表单统计', '反馈统计'],
   // 营销管理 表单统计  查看详情页
   feedbackDetails: ['营销管理', '表单统计', '反馈列表', '反馈详情'],
+  // 直播
+  live_broadcast: ['营销管理', '直播'],
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情
@@ -382,5 +384,6 @@ export const cn = {
   // 门店管理 门店服务配置
   store_service_config: ['门店管理', '门店服务配置'],
   // 门店公告
-  store_announcement: ['门店管理', '门店公告']
+  store_announcement: ['门店管理', '门店公告'],
+  store_announcement_add: ['门店管理', '门店公告', '添加公告']
 }
