@@ -91,6 +91,7 @@ global.wxComponent({
         if(activity && [1,5,10].includes(activity.activityType)){
           this.data.productsInfo.products[0].prdNumber = activity[actPrdType[activity.activityType]['prdListName']][0].stock
           if(activity.activityType === 1){
+            this.data.productsInfo.products[0].prdRealPrice = activity.groupBuyPrdMpVos[0].groupPrice
             limitBuyNum = activity.limitBuyNum
             limitMaxNum = activity.limitMaxNum
           }
