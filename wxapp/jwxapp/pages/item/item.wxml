@@ -24,7 +24,7 @@
        <text class="live-desc">直播将在20:00开始</text>
        <!-- <view class="subscribe-button" style="color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;">立即订阅</view> -->
         <subscribe room-id="5"></subscribe>
-        <view class="subscribe-button" bindtap="goLive" style="color:rgba(247,145,61,1);">已订阅</view>
+        <!-- <view class="subscribe-button" bindtap="goLive" style="color:rgba(247,145,61,1);">已订阅</view> -->
         <image class="live-close" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
       </view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
