@@ -128,6 +128,7 @@
       <my-fail-dialog
         :visiable.sync="showAuditFailedDialog"
         :refuseDesc="currentDesc"
+        :status="currentStatus"
         @handleDesc="handleFailAudit"
       >
       </my-fail-dialog>
@@ -163,7 +164,8 @@ export default {
       maritals: [],
       showAuditFailedDialog: false,
       currentId: null,
-      currentDesc: null
+      currentDesc: null,
+      currentStatus: 1
     }
   },
   watch: {
@@ -271,12 +273,12 @@ export default {
         })
       } else if (flag === 1) {
         this.showAuditFailedDialog = true
+        this.currentStatus = item.status
         this.currentId = item.id
       }
     },
     handleFailAudit (val) {
       // reject
-      alert(val)
       let obj = {
         'id': this.currentId,
         'refuseDesc': val
@@ -291,6 +293,7 @@ export default {
     },
     showFailDetail (item) {
       this.currentDesc = item.refuseDesc
+      this.currentStatus = item.status
       this.showAuditFailedDialog = true
     }
   }
