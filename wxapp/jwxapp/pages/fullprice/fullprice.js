@@ -20,6 +20,7 @@ global.wxPage({
     last_page: 1,
     checkMode: true, // 换购商品弹窗
     can_del: 0, // 是否显示删除按钮 默认0 不显示
+    selectCount: 0, // 已选数量
     showSpec: false, // 规格弹窗
     specParams: {} // 规格信息
   },
@@ -88,6 +89,7 @@ global.wxPage({
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
+          full_request(that)
         } else {
           util.showModal("提示", res.message);
           return false;
@@ -222,28 +224,25 @@ global.wxPage({
     util.api('/api/wxapp/fullprice/checkedlist', function (res) {
       if (res.error == 0) {
         var full_change_info = res.content;
-        full_change_info.count = 0;
+        var selectCount = 0;
         full_change_info.forEach(item => {
-          item.is_zuida = 0
-          if (item.prdNumber == 1) {
-            item.is_zuixiao = 1
-          } else {
-            item.is_zuixiao = 0
+          item.limitMinStyle = 0
+          item.limitMaxStyle = 0
+          // 限购样式
+          if ((item.cartNumber >= item.prdNumber) || (item.activityLimitMaxNum != null && (item.cartNumber >= item.activityLimitMaxNum)) || (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && (item.cartNumber >= item.limitMaxNum))) {
+            item.limitMaxStyle = 1
           }
-          item.count += item.prdNumber
+          if ((item.cartNumber <= 1) || (item.activityLimitMinNum != null && (item.cartNumber <= item.activityLimitMinNum)) || (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && (item.cartNumber <= item.limitBuyNum))) {
+            item.limitMinStyle = 1
+          }
+          // 已选数量
+          selectCount += item.cartNumber
         })
-        // for (var i = 0; i < full_change_info.list.length; i++) {
-        //   full_change_info.list[i].is_zuida = 0;
-        //   if (full_change_info.list[i].goods_number == 1) {
-        //     full_change_info.list[i].is_zuixiao = 1;
-        //   } else {
-        //     full_change_info.list[i].is_zuixiao = 0;
-        //   }
-        //   full_change_info.count += full_change_info.list[i].goods_number;
-        // }
+
         that.setData({
           full_change_info: full_change_info,
-          can_del: 0,
+          selectCount: selectCount,
+          can_del: 0
         })
       } else {
         util.showModal("提示", res.message);
@@ -272,182 +271,149 @@ global.wxPage({
     })
   },
 
-  // 关闭已选商品弹窗
+  // 符号关闭已选商品弹窗
   closeCheck: function () {
     var that = this;
     full_request(that);
     that.setData({
-      checkMode: true,
-      can_del: 0
+      checkMode: true
     });
   },
 
   // 删除已选商品
   to_del_geted: function (e) {
-    var goods_num = e.currentTarget.dataset.goods_number;
-    var cart_id = e.currentTarget.dataset.cart_id;
     var that = this;
+    var cartId = e.currentTarget.dataset.cart_id
     wx.showLoading({
       title: '删除中...',
     })
-    // util.api("/api/wxapp/common/removegoods", function (res) {
-    //   if (res.error == 0) {
-    //     util.api('/api/wxapp/fullprice/checkedlist', function (res) {
-    //       if (res.error == 0) {
-    //         wx.hideLoading();
-    //         var full_change_info = res.content;
-    //         full_change_info.count = 0;
-
-    //         for (var i = 0; i < full_change_info.list.length; i++) {
-    //           full_change_info.list[i].is_zuida = 0;
-    //           if (full_change_info.list[i].goods_number == 1) {
-    //             full_change_info.list[i].is_zuixiao = 1;
-    //           } else {
-    //             full_change_info.list[i].is_zuixiao = 0;
-    //           }
-    //           full_change_info.count += full_change_info.list[i].goods_number;
-    //         }
-
-    //         if (full_change_info.count != 0) {
-    //           that.setData({ can_del: 1 })
-    //         } else {
-    //           that.setData({ can_del: 0 })
-    //         }
-
-    //         that.setData({
-    //           full_change_info: full_change_info
-    //         })
-    //       } else {
-    //         util.showModal("提示", res.message, function () {
-    //           util.jumpLink("pages/index/index", "redirectTo")
-    //         }, false);
-    //         return false;
-    //       }
-    //     }, { strategy_id: that.data.strategy_id });
-    //   } else {
-    //     util.showModal("提示", res.message, function () {
-    //       util.jumpLink("pages/index/index", 'redirectTo')
-    //     }, false);
-    //     return false;
-    //   }
-    // }, {
-    //     identity_id: '',
-    //     param_id: cart_id,
-    //     action: "strategy"
-    //   })
+    util.api('/api/wxapp/cart/remove', (res) => {
+      wx.hideLoading();
+      if (res.error === 0) {
+        that.showCheck()
+      } else {
+        util.showModal('提示', res.message)
+        return false;
+      }
+    }, { cartId: cartId })
   },
 
-  // 已选商品数量-
-  btn_del_al: function (e) {
-    var that = this;
-    var this_cheks = e.currentTarget.dataset.idnes;
-    if (that.data.full_change_info.list[this_cheks].goods_number < 1) {
-      that.data.full_change_info.list[this_cheks].is_zuixiao = 1;
-      that.data.full_change_info.list[this_cheks].goods_number = 1;
-      that.setData({
-        full_change_info: that.data.full_change_info
+  // 更改商品数量
+  goodsNumChange(e) {
+    let type = e.currentTarget.dataset.type;
+    let cartId = e.currentTarget.dataset.cart_id;
+    let prdId = e.currentTarget.dataset.prd_id;
+    let cartNumber = e.currentTarget.dataset.cart_number;
+    let activityType = e.currentTarget.dataset.activity_type;
+    let activityId = e.currentTarget.dataset.activity_id;
+
+    let item = e.currentTarget.dataset.item
+    let value = 0
+    if (type == 'add') {
+      value = cartNumber + 1
+    } else {
+      value = cartNumber - 1
+    }
+
+    if (value > item.prdNumber) {
+      util.showModal('提示', '购买数量不能大于商品库存');
+      return false
+    }
+    if (item.activityLimitMaxNum != null && value > item.activityLimitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.activityLimitMaxNum + '个');
+      return false
+    }
+    if (item.activityLimitMinNum != null && value < item.activityLimitMinNum) {
+      util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
+      util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      return false
+    }
+    if (value < 1) {
+      util.showModal('提示', '最小限购量为1个');
+      return false
+    }
+
+    util.api('/api/wxapp/cart/add', res => {
+      if (res.error == 0) {
+        this.showCheck()
+      } else {
+        util.showModal('提示', res.message)
+        return false
+      }
+    }, {
+        goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
+        prdId,
+        activityType,
+        activityId
       })
-      return false;
-    }
-    that.data.full_change_info.list[this_cheks].goods_number = parseInt(that.data.full_change_info.list[this_cheks].goods_number) - 1;
-    if (that.data.full_change_info.list[this_cheks].goods_number < 1) {
-      that.data.full_change_info.list[this_cheks].goods_number = 1;
-      that.data.full_change_info.list[this_cheks].is_zuixiao = 1;
-      that.setData({
-        full_change_info: that.data.full_change_info
-      });
-      return false;
-    }
-    // util.api('/api/wxapp/cart/addnew', function (res) {
-    //   if (res.error == 0) {
-    //     that.data.full_change_info.count -= 1;
-    //     that.setData({
-    //       full_change_info: full_change_info,
-    //       al_goods_prices: res.content.full_price,
-    //       all_goods_doc: res.content.change_doc,
-    //     });
-    //   } else if (res.error == 10) {
-    //     util.showModal("提示", res.message, function () {
-    //       that.data.full_change_info.list[this_cheks].is_zuixiao = 1;
-    //       that.data.full_change_info.list[this_cheks].goods_number = parseInt(that.data.full_change_info.list[this_cheks].goods_number) + 1;
-    //       that.setData({
-    //         full_change_info: that.data.full_change_info,
-    //         al_goods_prices: res.content.full_price,
-    //         all_goods_doc: res.content.change_doc,
-    //       });
-    //     });
-    //     return false;
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, { action: 2, btn_click: 0, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: that.data.full_change_info.list[this_cheks].prd_id, prd_number: that.data.full_change_info.list[this_cheks].goods_number })
   },
 
-  // 已选商品数量+
-  btn_add_al: function (e) {
+  // 校验商品数量
+  checkNumber(e) {
     var that = this;
-    var this_chek = e.currentTarget.dataset.indexs;
-    that.data.full_change_info.list[this_chek].goods_number = parseInt(that.data.full_change_info.list[this_chek].goods_number) + 1;
-    if (that.data.full_change_info.list[this_chek].goods_number > 1) {
-      that.data.full_change_info.list[this_chek].is_zuixiao = 0;
-    }
-    // util.api('/api/wxapp/cart/addnew', function (res) {
-    //   if (res.error == 0) {
-    //     that.data.full_change_info.count += 1;
-    //     that.setData({
-    //       full_change_info: that.data.full_change_info
-    //     });
-    //   } else if (res.error == 10) {
-    //     util.showModal("提示", res.message, function () {
-    //       that.data.full_change_info.list[this_chek].is_zuida = 1;
-    //       that.data.full_change_info.list[this_chek].goods_number = parseInt(that.data.full_change_info.list[this_chek].goods_number) - 1;
-    //       that.setData({
-    //         full_change_info: that.data.full_change_info,
-    //         al_goods_prices: res.content.full_price,
-    //         all_goods_doc: res.content.change_doc,
-    //       });
-    //     });
-    //     return false;
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, { action: 2, btn_click: 1, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: that.data.full_change_info.list[this_chek].prd_id, prd_number: that.data.full_change_info.list[this_chek].goods_number })
-  },
+    var value = Number(e.detail.value)
+    var cartId = e.currentTarget.dataset.cart_id
+    var prdId = e.currentTarget.dataset.prd_id
+    var activityType = e.currentTarget.dataset.activity_type
+    var activityId = e.currentTarget.dataset.activity_id
 
-  // 自定义商品数量
-  get_al_num: function (e) {
-    var that = this;
-    var this_goods_number = e.detail.value;
-    var inp_check = e.currentTarget.dataset.idnes;
-    that.data.full_change_info.list[inp_check].goods_number = this_goods_number;
-    // util.api('/api/wxapp/cart/addnew', function (res) {
-    //   if (res.error == 0) {
-    //     that.data.full_change_info.count = 0;
-    //     for (var i = 0; i < that.data.full_change_info.list.length; i++) {
-    //       that.data.full_change_info.count += parseInt(that.data.full_change_info.list[i].goods_number);
-    //     }
-    //     that.setData({
-    //       full_change_info: that.data.full_change_info,
-    //       al_goods_prices: res.content.full_price,
-    //       all_goods_doc: res.content.change_doc,
-    //     });
-    //   } else if (res.error == 10) {
-    //     util.showModal("提示", res.message, function () {
-    //       that.data.full_change_info.list[inp_check].is_zuida = 1;
-    //       that.setData({
-    //         full_change_info: that.data.full_change_info,
-    //         al_goods_prices: res.content.full_price,
-    //         all_goods_doc: res.content.change_doc,
-    //       });
-    //     });
-    //     return false;
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //     return false;
-    //   }
-    // }, { action: 2, identity_id: that.data.strategy_id, change_goods_number: 1, product_id: that.data.full_change_info.list[inp_check].prd_id, prd_number: that.data.full_change_info.list[inp_check].goods_number })
+    var item = e.currentTarget.dataset.item
+    var re = /^[1-9]\d*$/
+    if (!value || !re.test(value)) {
+      util.showModal('提示', '购买数量输入不正确');
+      this.showCheck()
+      return false
+    }
+    if (value > item.prdNumber) {
+      util.showModal('提示', '购买数量不能大于商品库存');
+      this.showCheck()
+      return false
+    }
+    if (item.activityLimitMaxNum != null && value > item.activityLimitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.activityLimitMaxNum + '个');
+      this.showCheck()
+      return false
+    }
+    if (item.activityLimitMinNum != null && value < item.activityLimitMinNum) {
+      util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      this.showCheck()
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
+      util.showModal('提示', '最大限购量为' + item.limitMaxNum + '个');
+      this.showCheck()
+      return false
+    }
+    if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
+      util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      this.showCheck()
+      return false
+    }
+
+    that.data.full_change_info.forEach((val, index) => {
+      if (val.cartId == cartId) {
+        util.api('/api/wxapp/cart/add', res => {
+          if (res.error == 0) {
+            this.showCheck()
+          } else {
+            util.showModal('提示', res.message)
+            return false
+          }
+        }, {
+            goodsNumber: value,
+            prdId,
+            activityType,
+            activityId
+          })
+      }
+    })
   },
 
   /**
