@@ -90,7 +90,7 @@
               <view class="presale_info" wx:if="{{item.bkOrderPaid === 1}}">
                 <view class="money">
                   {{i18n.$t(localePack,"pages.order.presaleInfo")}}：
-                  <text>￥{{item.bkOrderPaid}}</text>
+                  <text>￥{{item.bkOrderMoney}}</text>
                 </view>
                 <view class="time">
                   {{i18n.$t(localePack,"pages.order.presaleTime")}}：{{filter.substring(item.preSaleTimeInterval[0],0,16)}} - {{filter.substring(item.preSaleTimeInterval[1],0,16)}}
