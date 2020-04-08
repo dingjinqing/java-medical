@@ -274,6 +274,7 @@ export default {
       } else if (flag === 1) {
         this.showAuditFailedDialog = true
         this.currentStatus = item.status
+        this.currentDesc = null
         this.currentId = item.id
       }
     },
