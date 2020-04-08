@@ -113,4 +113,24 @@ public class FieldsUtil {
 		return sb.toString();
 	}
 
+	/**
+	 * 打印对象值
+	 * @param obj
+	 * @return
+	 */
+	public static String objectToString(Object obj) {
+		Class cls = obj.getClass();
+		Field[] fields = cls.getDeclaredFields();
+		StringBuilder sb = new StringBuilder();
+		sb.append(obj.getClass().getSimpleName()).append("{");
+		for (Field field : fields) {
+			field.setAccessible(true);
+			try {
+				sb.append(field.getName()).append(":").append(field.get(obj)).append(",");
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb.deleteCharAt(sb.length() - 1).append("}").toString();
+	}
 }

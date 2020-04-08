@@ -430,6 +430,7 @@ public class PreSaleService extends ShopBaseService {
     	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
     }
 
+
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
         return db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)
             .leftJoin(SUB_TABLE).on(SUB_TABLE.PRESALE_ID.eq(TABLE.ID))
