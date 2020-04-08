@@ -146,12 +146,12 @@ public class AdminTradeController extends AdminBaseController {
     /**
      * 服务条款配置
      *
-     * @param serviceDocument 服务条款配置内容
+     * @param param 服务条款配置内容
      */
-    @RequestMapping("/api/admin/config/trade/conftermsofservice")
-    public JsonResult confTermsOfService(@RequestParam("service_document") String serviceDocument) {
+    @PostMapping("/api/admin/config/trade/conftermsofservice")
+    public JsonResult confTermsOfService(@RequestBody ServiceDocumentParam param) {
         try {
-            shop().trade.confTermsOfService(serviceDocument);
+            shop().trade.confTermsOfService(param.getServiceDocument());
             return success();
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
