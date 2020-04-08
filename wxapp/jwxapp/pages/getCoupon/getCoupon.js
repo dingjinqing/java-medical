@@ -8,6 +8,7 @@ var app = getApp();
 
 var total_micro_second;
 var set_time_out;
+var scene;
 global.wxPage({
 
   /**
@@ -29,6 +30,7 @@ global.wxPage({
   onLoad: function (options) {
     clearTimeout(set_time_out);
     var that = this;
+    scene = options.scene;
 
     // 优惠券状态
     if (options.type) {
@@ -36,7 +38,7 @@ global.wxPage({
         couponType: options.type 
       })
     }
-    if (options.couponSn || options.id) {
+    if (options.couponSn || options.id || options.scene) {
       that.setData({
         couponSn: options.couponSn,
         couponId: Number(options.id)
@@ -55,7 +57,8 @@ global.wxPage({
         }
       }, { 
         couponSn: that.data.couponSn, 
-        couponId: that.data.couponId
+        couponId: that.data.couponId,
+        scene: scene
       })
     }
   },
