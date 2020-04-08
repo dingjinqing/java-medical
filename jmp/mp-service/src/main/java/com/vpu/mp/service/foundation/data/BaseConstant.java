@@ -86,11 +86,11 @@ public final  class  BaseConstant {
     /**
      * 继续购买
      */
-    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONTINUE =0;
+    public final static Byte LIMIT_FLAG_CONTINUE =0;
     /**
      * 限制购买
      */
-    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONFINE =1;
+    public final static Byte LIMIT_FLAG_CONFINE =1;
 
 
     //******************普通标识********************************

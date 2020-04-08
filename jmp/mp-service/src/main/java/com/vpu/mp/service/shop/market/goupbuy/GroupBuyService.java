@@ -228,7 +228,8 @@ public class GroupBuyService extends ShopBaseService {
      * @return 二维码信息
      */
     public ShareQrCodeVo shareGroupBuy(Integer id) {
-        String pathParam = "paramId=" + id;
+        GroupBuyDefineRecord groupBuyRecord = getGroupBuyRecord(id);
+        String pathParam = "gid=" + groupBuyRecord.getGoodsId() + "&atp=1&aid=" + id;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GROUP_BOOKING, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);

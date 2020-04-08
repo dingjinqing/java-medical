@@ -23,7 +23,7 @@ public enum QrCodeTypeEnum {
     /*小程序页面*/
     INDEX((byte) 7, "pages/index/index"),
     /*拼团*/
-    GROUP_BOOKING((byte) 8, "pages/groupbuyitem/groupbuyitem"),
+    GROUP_BOOKING((byte) 8, "pages/item/item"),
     /*表单*/
     FORM((byte) 9, "pages/form/form"),
     /*砍价商品*/
