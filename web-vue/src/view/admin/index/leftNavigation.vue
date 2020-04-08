@@ -531,6 +531,13 @@ export default {
             imgUrl: this.$imageHost + '/image/admin/icon_left/store_announce.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_announce_h.png',
             span: '',
+            name: 'store_permission',
+            flag: true
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/store_announce.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_announce_h.png',
+            span: '',
             name: 'store_announcement',
             flag: true
           }
