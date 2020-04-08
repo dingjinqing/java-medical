@@ -119,6 +119,9 @@ public class FieldsUtil {
 	 * @return
 	 */
 	public static String objectToString(Object obj) {
+		if (obj==null){
+			return "";
+		}
 		Class cls = obj.getClass();
 		Field[] fields = cls.getDeclaredFields();
 		StringBuilder sb = new StringBuilder();
