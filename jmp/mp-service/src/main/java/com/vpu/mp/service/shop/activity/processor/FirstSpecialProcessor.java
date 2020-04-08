@@ -289,7 +289,7 @@ public class FirstSpecialProcessor implements Processor, ActivityGoodsListProces
                                 GoodsActivityInfo firstActivityInfo = new GoodsActivityInfo();
                                 firstActivityInfo.setActivityType(ACTIVITY_TYPE_FIRST_SPECIAL);
                                 firstActivityInfo.setFirstSpecialPrice(firstSpecial.getPrdPrice());
-                                firstActivityInfo.setActivityId(firstSpecial.getId());
+                                firstActivityInfo.setActivityId(firstSpecial.getFirstSpecialId());
                                 firstActivityInfo.setFirstSpecialNumber(firstSpecial.getLimitAmount());
                                 firstActivityInfo.setFirstSpecialNumberType(firstSpecial.getLimitFlag());
                                 if (firstSpecial.getLimitAmount() > 0 && product.getGoodsNumber() > firstSpecial.getLimitAmount()) {
