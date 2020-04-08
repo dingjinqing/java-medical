@@ -83,7 +83,6 @@
           <div class="operate_box">
             <div
               class="content"
-              v-if='item.status === 1'
             >
               <div style="margin-bottom:5px">
                 <el-button
@@ -123,13 +122,23 @@
         :page-params.sync="pageParams"
         @pagination="search"
       />
+
+      <my-fail-dialog
+        :visiable.sync="showAuditFailedDialog"
+        @handleDesc="handleFailAudit"
+      >
+      </my-fail-dialog>
     </div>
   </div>
 </template>
 <script>
 import { getActivateAuditListRequest, passActivateAuditRequest, rejectActivateAudit } from '@/api/admin/memberManage/memberCard.js'
+import activateFailDialog from './subcomponents/cardAuditFailDialog.vue'
 export default {
-  components: { Pagination: () => import('@/components/admin/pagination/pagination') },
+  components: {
+    Pagination: () => import('@/components/admin/pagination/pagination'),
+    myFailDialog: activateFailDialog
+  },
   data () {
     return {
       pageParams: {
@@ -148,7 +157,9 @@ export default {
       tabTwoData: [],
       tabThreeData: [],
       ids: null,
-      maritals: []
+      maritals: [],
+      showAuditFailedDialog: false,
+      currentId: null
     }
   },
   watch: {
@@ -196,7 +207,6 @@ export default {
               item.maritalStatus = this.maritals[item.maritalStatus - 1]
             }
             if (item.sex) {
-              debugger
               let sexTmp = this.$t('membershipIntroduction.GenderValueOptions')
               for (let s of sexTmp) {
                 if (s.value === item.sex) {
@@ -256,20 +266,24 @@ export default {
           }
         })
       } else if (flag === 1) {
-        // reject
-        let obj = {
-          'id': item.id,
-          'refuseDesc': this.refuseDesc
-        }
-
-        rejectActivateAudit(obj).then(res => {
-          if (res.error === 0) {
-            // success message
-            this.$message.success(this.$t('memberCard.auditOption'))
-            this.defaultData()
-          }
-        })
+        this.showAuditFailedDialog = true
+        this.currentId = item.id
       }
+    },
+    handleFailAudit (val) {
+      // reject
+      alert(val)
+      let obj = {
+        'id': this.currentId,
+        'refuseDesc': val
+      }
+      rejectActivateAudit(obj).then(res => {
+        if (res.error === 0) {
+          // success message
+          this.$message.success(this.$t('memberCard.auditOption'))
+          this.defaultData()
+        }
+      })
     }
   }
 }
