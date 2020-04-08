@@ -234,8 +234,6 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
     }
 
     private void updateUserLevel(ArrayList<Integer> updateLevel, Byte isMp) {
-        mpDistributionGoods.updateUserLevel(updateLevel, isMp);
-        mpDistributionGoods.updateUserLevel(updateLevel, isMp);
     }
 
     /**
