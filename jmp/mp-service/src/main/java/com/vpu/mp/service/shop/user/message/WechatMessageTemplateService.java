@@ -82,14 +82,18 @@ public class WechatMessageTemplateService extends ShopBaseService {
     	//type大于2000为小程序
         //String formId = getFormId(info.getUserId());
     	logger().info("小程序和公众号发送其中一个");
-        Boolean success = Boolean.TRUE;
-        if( param.getMaTemplateData() != null && (type>2000)){
+        Boolean success = Boolean.FALSE;
+        if( param.getMaTemplateData() != null && !param.getType().equals(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE)){
         	logger().info("发小程序");
             success = sendMaMessage(param,info);
             logger().info("发小程序结果："+success);
         }
 
-        if( param.getMpTemplateData() != null && type < 2000 ){
+        if( param.getMpTemplateData() != null && !success ){
+            if( !saas().getShopApp(param.getShopId()).config.messageConfigService.checkConfig(param.getType()) ){
+                logger().debug("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
+                return false;
+            }
             if(StringUtils.isBlank(info.getMpOpenId()) ){
                 return false;
             }
