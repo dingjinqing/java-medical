@@ -66,16 +66,14 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != param.getLabelId() ){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_LABEL,param.getLabelId()));
         }
-//        if( null != param.getSaleTimeStart() ){
-//            //TODO 上架时间开始
-//            propertyList.add(new FieldProperty(EsSearchName.C,shopId));
-//
-//        }
-//        if( null != param.getSaleTimeEnd() ){
-//            //TODO 上架时间截止
-////            propertyList.add(new FieldProperty(EsSearchName.Sa,shopId));
-//
-//        }
+        if( null != param.getSaleTimeStart() ){
+            propertyList.add(new FieldProperty(EsSearchName.SALE_TIME,param.getSaleTimeStart(),Operator.GTE));
+
+        }
+        if( null != param.getSaleTimeEnd() ){
+            propertyList.add(new FieldProperty(EsSearchName.SALE_TIME,param.getSaleTimeStart(),Operator.LTE));
+
+        }
         if( null != param.getBrandId() ){
             propertyList.add(new FieldProperty(EsSearchName.BRAND_ID,param.getBrandId()));
         }
