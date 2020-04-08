@@ -2,10 +2,10 @@
   <div class="riName">
     <div class="riNameMain">
       <!--模块私有区域-->
-      <h2>电话号码模块</h2>
+      <h2>{{$t('formDecorationModel.phoneNumber')}}</h2>
       <div class="main">
         <div class="text">
-          <span>电话号码：</span>
+          <span>{{$t('formDecorationModel.phoneNumberTitle')}}</span>
           <el-input
             size="small"
             v-model="modulesSaveData.title"
@@ -14,15 +14,15 @@
           <div style="margin-left:10px;color:#999">{{$t('textModule.tips')}}</div>
         </div>
         <div class="text">
-          <span>选择样式：</span>
+          <span>{{$t('formDecorationModel.selectaStyle')}}</span>
           <el-radio
             v-model="modulesSaveData.show_type"
             label="0"
-          >普通</el-radio>
+          >{{$t('formDecorationModel.ordinary')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.show_type"
             label="1"
-          >悬浮</el-radio>
+          >{{$t('formDecorationModel.suspension')}}</el-radio>
         </div>
         <div class="text">
           <span></span>
@@ -31,15 +31,15 @@
             v-if="modulesSaveData.show_type==='0'"
           >
             <div class="list">
-              <span>是否居中：</span>
+              <span>{{$t('formDecorationModel.centerOrNot')}}</span>
               <el-radio
                 v-model="modulesSaveData.align_type"
                 label="1"
-              >居中</el-radio>
+              >{{$t('formDecorationModel.centered')}}</el-radio>
               <el-radio
                 v-model="modulesSaveData.align_type"
                 label="0"
-              >居左</el-radio>
+              >{{$t('formDecorationModel.atTheLeft')}}</el-radio>
             </div>
             <div class="list">
               <span>{{$t('textModule.fontColor')}}：</span>
