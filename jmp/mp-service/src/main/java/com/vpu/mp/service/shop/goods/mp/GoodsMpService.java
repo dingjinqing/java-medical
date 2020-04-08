@@ -26,6 +26,7 @@ import com.vpu.mp.service.shop.activity.factory.GoodsListMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.factory.ProcessorFactoryBuilder;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
@@ -87,6 +88,8 @@ public class GoodsMpService extends ShopBaseService {
     public GoodsGroupMpService goodsGroupMpService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private MpDistributionGoodsService mpDisGoods;
 
     /**
      * 从es或者数据库内获取数据，并交给处理器进行处理
@@ -416,6 +419,10 @@ public class GoodsMpService extends ShopBaseService {
         }
         //添加足迹
         footPrintService.addFootprint(param.getUserId(), param.getGoodsId());
+
+        //添加分销改价信息
+        mpDisGoods.addRebatePrice(param);
+
 
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
