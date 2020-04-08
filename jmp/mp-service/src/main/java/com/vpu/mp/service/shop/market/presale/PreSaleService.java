@@ -561,22 +561,6 @@ public class PreSaleService extends ShopBaseService {
     	return db().select(TABLE.START_TIME,TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchOne();
     }
 
-    /**
-     * 判断是否支持原价
-     * @param goodsId 商品ID
-     */
-    public Boolean getPreGoodsBuyType(Integer goodsId) {
-        Timestamp nowDate =new Timestamp(System.currentTimeMillis());
-        Record1<Byte> buyType = db().select(TABLE.BUY_TYPE).from(TABLE)
-                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and(TABLE.STATUS.eq(NAVBAR_TYPE_NOT_STARTED)).and(TABLE.GOODS_ID.eq(goodsId))
-                .and((
-                        (TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME.lt(nowDate)).and(TABLE.PRE_END_TIME.gt(nowDate)))
-                                .or(TABLE.PRE_PAY_STEP.eq((byte) 2).and(TABLE.PRE_START_TIME_2.lt(nowDate)).and(TABLE.PRE_END_TIME_2.gt(nowDate)))
-                ).or(
-                        TABLE.PRE_PAY_STEP.eq((byte) 1).and(TABLE.PRE_START_TIME.lt(nowDate).and(TABLE.PRE_END_TIME.gt(nowDate)))
-                )).fetchOne();
-        return buyType!=null&&buyType.component1().equals((byte)1);
-    }
 
     public Optional<Record2<Integer,BigDecimal>> getPresaleProductRecordByGoodsId(Integer goodsId, Timestamp date){
         return db().select(TABLE.ID,SUB_TABLE.PRESALE_PRICE).from(TABLE)
