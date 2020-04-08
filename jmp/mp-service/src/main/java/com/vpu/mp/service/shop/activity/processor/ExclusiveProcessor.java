@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +264,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
                 boolean flag = false;
                 for (MemberCardRecord exclusiveCard: exclusiveCards) {
                     for(OrderMemberVo userCard : userCards) {
-                        if(exclusiveCard.getId().equals(userCard.getCardId())) {
+                        if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
                             flag = true;
                             break;
                         }
@@ -295,7 +297,7 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
     }
 
     @Override
-    public void processReturn(Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
-        //无
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+
     }
 }
