@@ -549,6 +549,6 @@ export const en = {
   store_service_config: ['Store management', 'Store Service Configuration'],
   // 门店公告
   store_announcement: ['Store Management', 'Store Announcement'],
-  // 门店公告新增
+  // 门店公告 添加公告
   store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement']
 }

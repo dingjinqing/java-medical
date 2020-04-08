@@ -529,6 +529,10 @@ import {
 import {
   cn as serviceConfig
 } from './views/admin_new/cn/index/storeManagement/storeService/serviceConfigCn'
+// 门店公告
+import {
+  cn as storeAnnouncement
+} from './views/admin_new/cn/index/storeManagement/storeAnnouncement/storeAnnouncementCn'
 
 // admin>公共组件
 // 选择时间
@@ -1100,6 +1104,7 @@ const cn = {
   returnconfiguration, // 退换货配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storeAnnouncement, // 门店公告
   authRoleList, // 店铺权限
   actionRecord, // 操作记录
   decorationHome, // 页面装修部分
