@@ -696,7 +696,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==0"
+                      v-if="val.icon_name=='wait_pay'"
                     >
                       <div
                         class="imgContainter"
@@ -722,7 +722,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==1"
+                      v-if="val.icon_name=='wait_deliver'"
                     >
                       <div
                         class="imgContainter"
@@ -748,7 +748,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==2"
+                      v-if="val.icon_name=='wait_receive'"
                     >
                       <div
                         class="imgContainter"
@@ -784,7 +784,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==3"
+                      v-if="val.icon_name=='wait_comment'"
                     >
                       <div
                         class="imgContainter"
@@ -820,7 +820,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==4"
+                      v-if="val.icon_name=='refund'"
                     >
                       <div
                         class="imgContainter"
@@ -1274,7 +1274,7 @@
                     :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key>8"
+                    v-if="val.icon_name==='custom_icon'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
