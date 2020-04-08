@@ -710,6 +710,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
     public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
     public static final String MSG_ORDER_MUST_NOT_NULL = "order.must.not.null";
+    public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
+    public static final String  MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";

@@ -202,6 +202,10 @@ public enum JsonResultCode {
     CODE_ORDER_GIFT_GOODS_ZERO(120087, JsonResultMessage.MSG_ORDER_GIFT_GOODS_ZERO),
     /**下单必填*/
     CODE_ORDER_MUST_NOT_NULL(120088, JsonResultMessage.MSG_ORDER_MUST_NOT_NULL),
+    /**会员专享商品不可购买*/
+    CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY(120089, JsonResultMessage.MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY),
+    /**为预售商品，不支持现购*/
+    CODE_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY(120090, JsonResultMessage.MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY),
     /**
      * 去支付
      */
