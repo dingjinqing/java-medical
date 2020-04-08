@@ -52,11 +52,10 @@
           <view class='member_label' wx:if='{{item.goodsPriceAction == 1}}'>{{i18n.$t(localePack,"pages.cart.activeLabel3")}}</view>
           <view class='price_info clearfix'>
             <view class='jiaqian'>
-              <!-- <view class='member_icon' wx:if='{{item.goodsPriceAction == 1}}'>会员专享</view> -->
               <view class='sale_price' style='color:{{comColor}}'>￥
                 <text>{{item.goodsPrice}}</text>
               </view>
-              <view class='original_price' wx:if='{{item.marketPrice!=null}}'>￥{{item.marketPrice}}</view>
+              <view class='original_price' wx:if='{{item.shopPrice!=null}}'>￥{{item.shopPrice}}</view>
             </view>
             <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id="{{item.prdId}}">
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
