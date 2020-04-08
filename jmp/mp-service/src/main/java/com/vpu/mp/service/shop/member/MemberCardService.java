@@ -12,12 +12,15 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
@@ -26,12 +29,15 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -44,6 +50,8 @@ import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+
 import jodd.util.StringUtil;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -1844,7 +1852,41 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void rejectActivateAudit(ActiveAuditParam param) {
 		CardExamineRecord record = setRejectData(param);
-		cardDao.updateCardExamine(record);
+		int res = cardDao.updateCardExamine(record);
+		if(res>0) {
+			logger().info("发送订阅消息");
+			CardExamineRecord re = cardDao.getCardExamineRecordById(record.getId());
+			Integer userId = re.getUserId();
+			String cardNo = re.getCardNo();
+			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
+			// 订阅消息
+			String[][] maData = new String[][] {
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{"审核不通过"},
+				{"很遗憾，您提交的会员卡激活申请未通过审核"}
+			};
+			// 公众号消息
+			String[][] mpData = new String[][] {
+				{"审核未通过"},
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{re.getRefuseDesc()},
+				{re.getCreateTime().toLocalDateTime().toString()},
+				{"申请会员卡激活"}
+			};
+			RabbitMessageParam param2 = RabbitMessageParam.builder()
+					.maTemplateData(
+							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(maData).build())
+					.mpTemplateData(
+							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
+					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+					.userIdList(arrayList)
+					.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
+			
+		}
+		
+		
+		
 	}
 
 	/**

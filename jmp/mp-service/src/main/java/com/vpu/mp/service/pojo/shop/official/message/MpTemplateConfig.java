@@ -105,6 +105,11 @@ public enum MpTemplateConfig {
         "OPENTM202314085",
         "订单确认收货通知",
         "{{first.DATA}}订单号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}下单时间：{{keyword3.DATA}}发货时间：{{keyword4.DATA}}确认收货时间：{{keyword5.DATA}}{{remark.DATA}}"
+    ),
+    AUDIT(
+    	"AT0442",
+    	"审核未通过提醒",
+    	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}未通过原因{{keyword3.DATA}}申请时间{{keyword4.DATA}}申请内容{{keyword5.DATA}}"
     );
 	/**
 	 * 模板编号
