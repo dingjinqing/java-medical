@@ -118,7 +118,7 @@ public class LiveService extends ShopBaseService {
      */
     public PageResult<LiveListVo> getListForGoodsEdit(BasePageParam pageParam) {
         SelectSeekStep1<LiveBroadcastRecord, Integer> liveBroadcastRecords = db().selectFrom(LIVE_BROADCAST)
-            .where(LIVE_BROADCAST.LIVE_STATUS.in(Arrays.asList(LIVING_ON, LIVING_NOT_START, LIVING_END, LIVING_PAUSE)))
+            .where(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(LIVE_BROADCAST.LIVE_STATUS.in(Arrays.asList(LIVING_ON, LIVING_NOT_START, LIVING_END, LIVING_PAUSE))))
             .orderBy(LIVE_BROADCAST.ROOM_ID.desc());
         return this.getPageResult(liveBroadcastRecords, pageParam.getCurrentPage(), pageParam.getPageRows(), LiveListVo.class);
     }
