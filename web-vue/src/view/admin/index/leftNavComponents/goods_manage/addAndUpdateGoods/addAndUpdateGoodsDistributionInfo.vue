@@ -203,17 +203,17 @@
           />
         </div>
       </el-form-item>
-      <el-form-item label="商品直播：">
-        <p>添加直播活动后，将在小程序端商品详情页面展示入口</p>
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.goodsLive')">
+        <p>{{$t('goodsAddEditInfo.goodsDistribution.goodsLiveTipInfo')}}</p>
         <div v-if="goodsDistributionInfo.roomId !== null"
              style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;">
-            <div>已选：</div>
+            <div>{{$t('goodsAddEditInfo.alreadySelected')}}</div>
             <div  class="selectedWrap">
                 {{goodsDistributionInfo.roomName}}
                 <span class="deleteIcon" @click='deleteSelectedRoom'>×</span>
             </div>
         </div>
-        <el-button @click="openRoomSelectedDialog">选择直播活动</el-button>
+        <el-button @click="openRoomSelectedDialog">{{$t('goodsAddEditInfo.goodsDistribution.selectLiveRoomInfo')}}</el-button>
       </el-form-item>
     </el-form>
     <!--解决图片弹框非单例的问题-->
@@ -223,22 +223,22 @@
       @handleSelectImg='imgDialogSelectedCallback'
     />
       <!--直播信息弹窗-->
-      <el-dialog title="添加直播活动" :visible.sync="liveRoomInfo.isDialogShow">
+      <el-dialog :title="$t('goodsAddEditInfo.goodsDistribution.liveRoomName')" :visible.sync="liveRoomInfo.isDialogShow">
         <div class="live-content">
           <div class="live-content-table">
             <el-table :data="liveRoomInfo.liveRoomsData"
             border max-height="300" style="width: 100%;" highlight-current-row @current-change="handleLiveRoomSelectedChange">
-              <el-table-column prop="name" label="直播间标题"/>
-              <el-table-column label="直播状态">
+              <el-table-column prop="name" :label="$t('goodsAddEditInfo.goodsDistribution.liveRoomName')"/>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStatus')">
                 <template slot-scope="{row}">
-                  <span v-if="row.liveStatus === 101">直播中</span>
-                  <span v-if="row.liveStatus === 102">直播未开始</span>
-                  <span v-if="row.liveStatus === 103">直播已结束</span>
-                  <span v-if="row.liveStatus === 105">直播暂停中</span>
+                  <span v-if="row.liveStatus === 101">{{$t('goodsAddEditInfo.goodsDistribution.onLiving')}}</span>
+                  <span v-if="row.liveStatus === 102">{{$t('goodsAddEditInfo.goodsDistribution.liveNotStart')}}</span>
+                  <span v-if="row.liveStatus === 103">{{$t('goodsAddEditInfo.goodsDistribution.liveEnd')}}</span>
+                  <span v-if="row.liveStatus === 105">{{$t('goodsAddEditInfo.goodsDistribution.livePausing')}}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="直播开始时间" prop="startTime"/>
-              <el-table-column label="直播结束时间" prop="endTime"/>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStartTime')" prop="startTime"/>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveEndTime')" prop="endTime"/>
             </el-table>
           </div>
           <pagination
@@ -247,8 +247,8 @@
           />
         </div>
          <span slot="footer" class="dialog-footer">
-            <el-button @click=liveRoomDialogCancel>取 消</el-button>
-            <el-button type="primary" @click="liveRoomDialogConfirm">确 定</el-button>
+            <el-button @click=liveRoomDialogCancel>{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
+            <el-button type="primary" @click="liveRoomDialogConfirm">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
           </span>
       </el-dialog>
   </div>
@@ -402,7 +402,7 @@ export default {
     /* 直播列表弹窗确认 */
     liveRoomDialogConfirm () {
       if (this.liveRoomInfo.currentSelectedRow === null) {
-        this.$message.info({message: '请选择直播间', type: 'info'})
+        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.selectLiveInfoWarning')})
         return
       }
 

@@ -269,7 +269,7 @@
             v-if="labelSelectedItems.length>0"
             style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;"
           >
-            <div>已选：</div>
+            <div>{{$t('goodsAddEditInfo.basicInfoOther.alreadySelected')}}</div>
             <div
               class="selectedWrap"
               v-for="(item,index) in labelSelectedItems"
@@ -611,6 +611,9 @@ export default {
         { value: null, label: i18nUnitOptions[19] }
       ]
       this.goodsProductInfo.unit = this.unitSelectOptions[0].value
+      this.basicInfoRules.goodsName[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsName')
+      this.basicInfoRules.goodsImgs[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsImage')
+      this.basicInfoRules.unit[0].message = this.$t('goodsAddEditInfo.warningInfo.requireGoodsUnit')
     }
   },
   methods: {

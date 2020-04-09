@@ -96,9 +96,9 @@
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecShopCost')}}</th>
               <th>市场价</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsNum')}}</th>
-              <th v-if="goodsWeightCfg === 1">规格重量</th>
+              <th v-if="goodsWeightCfg === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecPrdWeight')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdSn')}}</th>
-              <th v-if="needPrdCodes === 1">商品条码</th>
+              <th v-if="needPrdCodes === 1">{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsPrdCodes')}}</th>
               <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.goodsSpecGoodsImg')}}</th>
             </tr>
             <tr
@@ -164,9 +164,9 @@
             <span class="batchSpan ">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchUpdate')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdCostPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchCost')}}</span>
-            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">市场价</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdMarketPrice')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchMarketPrice')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdNumber')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchNum')}}</span>
-            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">规格重量</span>
+            <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdWeight')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchWeight')}}</span>
             <span class="batchSpan linkSpan" @click="unifyPrdSpecAttr('prdImg')">{{$t('goodsAddEditInfo.stockAndPriceInfo.batchImgSrc')}}</span>
           </div>
         </div>
@@ -236,14 +236,15 @@
       </el-form-item>
       <!--商品会员价格设置table-->
       <el-form-item
-        label="会员价设置："
+        :label="$t('goodsAddEditInfo.stockAndPriceInfo.goodsGradeMemberSetting')"
         v-if="memberCardPrdShow"
       >
         <div class="specInfoWrap">
           <table v-if="specInfoSwitch">
             <tr>
-              <th>未计算</th>
-              <th>规格价格(元)</th>
+              <th></th>
+              <!--规格价格（元）-->
+              <th>{{$t('goodsAddEditInfo.stockAndPriceInfo.prdPrice')}}</th>
               <template v-for="item in memberCards">
                 <th
                   :key="item.id"
@@ -276,7 +277,7 @@
                   size="small"
                   :underline="false"
                   @click="unifyMemberCardsPrice(item)"
-                >统一会员价</el-link>
+                >{{$t('goodsAddEditInfo.stockAndPriceInfo.unifyMemberPrice')}}</el-link>
               </td>
             </tr>
           </table>
