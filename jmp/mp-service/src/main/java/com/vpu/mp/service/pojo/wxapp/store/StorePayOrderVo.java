@@ -72,4 +72,8 @@ public class StorePayOrderVo {
      * 积分支付下限开关(0不限制，1限制)
      */
     private Byte scorePayLimit;
+    /**
+     * 积分兑换比
+     */
+    private Integer scoreProportion;
 }

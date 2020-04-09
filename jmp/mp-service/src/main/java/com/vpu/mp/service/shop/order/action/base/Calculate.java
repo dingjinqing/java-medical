@@ -13,6 +13,8 @@ import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.GoodsActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
@@ -90,7 +92,7 @@ public class Calculate extends ShopBaseService {
      * @return 折扣总额
      */
     public BigDecimal calculateOrderGoodsDiscount(BaseMarketingBaseVo mbv, List<OrderGoodsBo> bos, Byte mType) {
-        logger().info("计算订单商品折扣金额start,营销活动:{},活动类型（0会员卡，1优惠卷，2满折满减）：{}", mbv, mType);
+        logger().info("计算订单商品折扣金额start,营销活动:{},活动类型（0会员卡，1优惠卷，2满折满减，3预售）：{}", mbv, mType);
         if (mbv == null || CollectionUtils.isEmpty(mbv.getBos()) || !mbv.checkRatio()) {
             return BigDecimal.ZERO;
         }
@@ -235,6 +237,9 @@ public class Calculate extends ShopBaseService {
                             logger().info("优惠券折扣金额不大于0删除");
                             i.remove();
                         }
+                    }else {
+                        logger().info("优惠券折扣金额不大于0删除(getTolalNumberAndPriceByType校验)");
+                        i.remove();
                     }
                 } else {
                     logger().info("优惠券无匹配商品删除");
@@ -649,9 +654,15 @@ public class Calculate extends ShopBaseService {
         //TODO 分销改价
 
         //首单特惠
-        if(uniteMarkeingt != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL) != null && uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice() != null) {
-            goods.setFirstSpecialId(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
-            return UniteMarkeingtRecalculateBo.create(uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL).getActivityId());
+        if(uniteMarkeingt != null) {
+            GoodsActivityInfo firstSpecial = uniteMarkeingt.getActivity(ACTIVITY_TYPE_FIRST_SPECIAL);
+            if (firstSpecial!=null&&firstSpecial.getStatus().equals(CartConstant.ACTIVITY_STATUS_VALID)&&firstSpecial.getFirstSpecialPrice()!=null){
+                goods.setFirstSpecialId(firstSpecial.getActivityId());
+                if (firstSpecial.getFirstSpecialNumber()!=null&&!firstSpecial.getFirstSpecialNumber().equals(0)){
+                    goods.setIsAlreadylimitNum(true);
+                }
+                return UniteMarkeingtRecalculateBo.create(firstSpecial.getFirstSpecialPrice(), ACTIVITY_TYPE_FIRST_SPECIAL, firstSpecial.getActivityId());
+            }
         }
 
         //限时降价

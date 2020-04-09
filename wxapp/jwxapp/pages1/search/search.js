@@ -15,10 +15,12 @@ global.wxPage({
     filterData: {
       minPrice: null,
       maxPrice: null,
-      sortId: null,
+      sortIds: [],
       brandIds: [],
       activityTypes: [],
-      labelIds: []
+      labelIds: [],
+      pageFrom:null,
+      goodsIds:[]
     }
   },
 
@@ -68,13 +70,13 @@ global.wxPage({
   },
   // 获取右侧筛选信息
   getSelectedData (data) {
-    let { selectedSort: sortId, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice } = data.detail
+    let { selectedSort: sortIds, selectedBrands: brandIds, selectedLabels: labelIds, selectedActTypes: activityTypes, minPrice, maxPrice } = data.detail
     console.log(data)
     this.setData({
       filterData: {
         minPrice,
         maxPrice,
-        sortId,
+        sortIds,
         brandIds,
         labelIds,
         activityTypes
@@ -94,6 +96,9 @@ global.wxPage({
       'pageParams.currentPage': 1,
       dataList: []
     })
+    // 添加热词
+    util.api('/api/wxapp/search/addHotWords', function (res) {
+    }, { userId: util.getCache("user_id"), hotWords: this.data.keyWords })
     this.requestList()
   },
   loadFilter (options) {
@@ -115,7 +120,6 @@ global.wxPage({
           } catch (error) {
             target['data'][item] = options[item]
           }
-
         }
       })
       this.setData({
@@ -166,7 +170,7 @@ global.wxPage({
     this.setData({
       product:e.detail,
       limitInfo:{
-        activityType:this.data.productsInfo.activityType,
+        activityType:this.data.productsInfo.activity ? this.data.productsInfo.activity.activityType : null,
         limitBuyNum:e.detail.limitBuyNum,
         limitMaxNum:e.detail.limitMaxNum,
         prdNumber:e.detail.prdNumber

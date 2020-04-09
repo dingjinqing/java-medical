@@ -69,6 +69,7 @@
       ><span>{{$t('marketCommon.shippingAddress')}}</span>
         <areaLinkage
           @areaData="handleAreaData"
+          :areaCode="areaLinkage"
           style="width:365px;"
         />
       </div>
@@ -98,6 +99,11 @@ export default {
   props: { requestParams: Object },
   data () {
     return {
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   methods: {
@@ -108,9 +114,14 @@ export default {
       this.$emit('export', this.requestParams)
     },
     handleAreaData (data) {
-      this.requestParams.provinceCode = data.province
-      this.requestParams.cityCode = data.city
-      this.requestParams.districtCode = data.district
+      console.log(data, 'gets-data')
+      if (data.province === 1) {
+        this.requestParams.provinceCode = ''
+      } else {
+        this.requestParams.provinceCode = data.province
+        this.requestParams.cityCode = data.city
+        this.requestParams.districtCode = data.district
+      }
     }
   }
 }

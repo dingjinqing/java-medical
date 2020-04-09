@@ -264,7 +264,9 @@
 		"name": "商家分类管理",
 		"linkUrl": "/admin/goods/sort",
 		"topIndex": 2,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/goods/sort/*"
+    ]
 
 	},
 	{
@@ -336,7 +338,9 @@
 		"linkUrl": "/admin/market/bargain",
 		"name": "砍价",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/bargain/*"
+    ]
 
 	},
 	{
@@ -416,7 +420,9 @@
 		"linkUrl": "/admin/market/couponpackage",
 		"name": "优惠券礼包",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/couponpack/*"
+    ]
 
 	},
 	{
@@ -424,7 +430,9 @@
 		"linkUrl": "/admin/market/reduce",
 		"name": "限时降价",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/reduceprice/*"
+    ]
 
 	},
 	{
@@ -440,7 +448,9 @@
 		"linkUrl": "/admin/market/first",
 		"name": "首单特惠",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/firstspecial/*"
+    ]
 
 	},
 	{
@@ -448,7 +458,9 @@
 		"linkUrl": "/admin/market/presale",
 		"name": "定金膨胀",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/pre_sale/*"
+    ]
 
 	},
 	{
@@ -456,7 +468,9 @@
 		"linkUrl": "/admin/market/seckill",
 		"name": "秒杀",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/seckill/*"
+    ]
 
 	},
 	{
@@ -464,7 +478,9 @@
 		"linkUrl": "/admin/market/gift",
 		"name": "赠品",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/gift/*"
+    ]
 
 	},
 	{
@@ -472,7 +488,9 @@
 		"linkUrl": "/admin/market/fullcut",
 		"name": "满折满减",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/fullcut/*"
+    ]
 
 	},
 	{
@@ -480,7 +498,9 @@
 		"linkUrl": "/admin/market/package",
 		"name": "打包一口价",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/packsale/*"
+    ]
 
 	},
 	{
@@ -488,7 +508,9 @@
 		"linkUrl": "/admin/market/purchase",
 		"name": "加价购",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/market/increasepurchase/*"
+    ]
 
 	},
 	{
@@ -536,7 +558,9 @@
 		"linkUrl": "/admin/market/form",
 		"name": "表单统计",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/formstatistics/*"
+    ]
 
 	},
 	{
@@ -560,7 +584,7 @@
 		"linkUrl": "/admin/market/message",
 		"name": "消息推送",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": ["/api/admin/market/message/template/*"]
 
 	},
 	{
@@ -568,7 +592,7 @@
 		"linkUrl": "/admin/market/channel",
 		"name": "渠道页面分析",
 		"topIndex": 4,
-		"includeApi": []
+		"includeApi": ["/api/admin/market/channel/*"]
 
 	},
 	{
@@ -629,7 +653,9 @@
 		"name": "管理员核销",
 		"linkUrl": "/admin/store/verification",
 		"topIndex": 6,
-		"includeApi": []
+		"includeApi": [
+      "api/admin/store/verifier/*"
+    ]
 
 	},
 	{
@@ -637,7 +663,9 @@
 		"name": "门店商品管理",
 		"linkUrl": "/admin/store/goods",
 		"topIndex": 6,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/store/goods/*"
+    ]
 
 	},
 	{
@@ -645,7 +673,9 @@
 		"name": "分组管理",
 		"linkUrl": "/admin/store/group",
 		"topIndex": 6,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/store/group/*"
+    ]
 
 	},
 	{
@@ -653,7 +683,9 @@
 		"name": "门店服务配置",
 		"linkUrl": "/admin/store/config",
 		"topIndex": 6,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/store/config/*"
+    ]
 
 	},
 	{
@@ -685,7 +717,8 @@
 		"name": "模板消息",
 		"linkUrl": "/admin/config/message",
 		"topIndex": 7,
-		"includeApi": []
+		"includeApi": [
+      "/api/admin/config/message/template/*"]
 
 	},
 	{
@@ -701,6 +734,6 @@
 		"name": "服务承诺",
 		"linkUrl": "/admin/config/pledge",
 		"topIndex": 7,
-		"includeApi": []
+		"includeApi": ["/api/admin/config/pledge/*"]
 	}
 ]

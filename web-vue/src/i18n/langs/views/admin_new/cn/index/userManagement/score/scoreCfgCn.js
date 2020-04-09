@@ -11,7 +11,9 @@ export const cn = {
   defineSelf: '自定义',
   scorePayDesOne: '每单支付的积分数量少于',
   scorePayDesTwo: '积分，不可使用积分支付',
-  print: '请填写大于100积分且为100积分的整数倍的数值',
+  print: '请填写大于',
+  print2: '积分且为',
+  print3: '积分的整数倍的数值',
   scoreScale: '积分抵扣比例',
   scoreScaleDesOne: '用户可使用积分抵扣订单折后金额的',
   scoreScaleDesTwo: '%, 不可使用积分支付',
@@ -33,7 +35,7 @@ export const cn = {
   score: '积分',
   loginDescTwo: '每日仅首次登陆赠送积分',
   signSendScore: '签到送积分',
-  signDescOne: '开关开启，则系统开启签到14天',
+  signDescOne: '开关开启，则系统开启签到送积分，最多设置连续签到30天',
   view: '查看签到会员',
   continueSign: '连续签到',
   daySend: '天，送',
@@ -48,7 +50,7 @@ export const cn = {
   fromGetScore: '从获得积分当天起',
   innerEffective: '内有效',
   exchange: '积分兑换比',
-  formula: '100积分=1元RMB',
+  formula: '积分=1元RMB',
   day: '日',
   week: '周',
   month: '月',
@@ -88,5 +90,8 @@ export const cn = {
   show: '用于向用户推荐积分相关活动商品',
   chooseTemplate: '选择模板',
   refresh: '刷新',
-  addTemplate: '添加模板'
+  addTemplate: '添加模板',
+  titelError: '系统开启签到上线为30天',
+  titelMsg: '修改积分抵扣比例将带来店铺积分价值的变化，请谨慎修改',
+  titelMsg2: '订单折后金额是否包含运费 '
 }

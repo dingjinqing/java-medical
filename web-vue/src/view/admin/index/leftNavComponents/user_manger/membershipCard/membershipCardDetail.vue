@@ -156,15 +156,18 @@
                   class="noneBlockList"
                   v-for="(item,index) in noneBlockDiscArr"
                   :key="index"
-                  @click="hanldeToAddGoodS(index)"
                 >
-                  <div class="noneBlockLeft">
+                  <div
+                    class="noneBlockLeft"
+                    @click="hanldeToAddGoodS(index, false)"
+                  >
                     <img :src="$imageHost+'/image/admin/icon_jia.png'">
                     {{item.name}}
                   </div>
                   <div
                     v-if="item.num"
                     class="noneBlockRight"
+                    @click="hanldeToAddGoodS(index, true)"
                   >{{ $t('memberCard.alreadyChoosedCate') }}：{{item.num}}{{ $t('memberCard.unitCate') }}</div>
                 </div>
               </div>
@@ -186,15 +189,18 @@
                   class="noneBlockList"
                   v-for="(item,index) in noneBlockVipArr"
                   :key="index"
-                  @click="hanldeToAddGoodSUser(index)"
                 >
-                  <div class="noneBlockLeft">
+                  <div
+                    class="noneBlockLeft"
+                    @click="hanldeToAddGoodSUser(index, false)"
+                  >
                     <img :src="$imageHost+'/image/admin/icon_jia.png'">
                     {{item.name}}
                   </div>
                   <div
                     v-if="item.num"
                     class="noneBlockRight"
+                    @click="hanldeToAddGoodSUser(index, true)"
                   >{{ $t('memberCard.alreadyChoosedCate') }}：{{item.num}}{{ $t('memberCard.unitCate') }}</div>
                 </div>
               </div>
@@ -555,7 +561,7 @@
                   >
                     <div
                       class="noneBlockLeft"
-                      @click="handleToCallGoodsDialog('limit')"
+                      @click="handleToCallGoodsDialog('limit', false)"
                     >
                       <img :src="$imageHost+'/image/admin/icon_jia.png'">
                       选择商品
@@ -563,6 +569,7 @@
                     <div
                       class="noneBlockRight"
                       v-if="suitebleGoods.length"
+                      @click="handleToCallGoodsDialog('limit', true)"
                     >已选择商品：{{suitebleGoods.length}}&nbsp;&nbsp;件</div>
                     <div style="margin-left: 20px;color: #999;height:30px;line-height:30px">最多可选择20件</div>
                   </div>
@@ -1009,6 +1016,7 @@
       @resultGoodsIds='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
       :chooseGoodsBack='choosingGoodsDateTmpContainer'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
     <!--选择商家,平台分类弹窗-->
     <AddingBusClassDialog
@@ -1056,7 +1064,6 @@ export default {
   },
   data () {
     var validName = (rule, value, callback) => {
-      console.log(value)
       if (value === '') {
         callback(new Error('请输入会员卡名称'))
       }
@@ -1349,7 +1356,8 @@ export default {
         { label: 'v8', value: 'v8' },
         { label: 'v9', value: 'v9' }
       ],
-      gradeValue: null
+      gradeValue: null,
+      isOnlyShowChooseGoods: false
     }
   },
   filters: {
@@ -1964,7 +1972,7 @@ export default {
       this.couponList.splice(index, 1)
     },
     // 点击指定商品出现的添加类弹窗汇总
-    hanldeToAddGoodS (index) {
+    hanldeToAddGoodS (index, only) {
       console.log('指定商品')
       this.userDialogFlag = '1'
       console.log(index)
@@ -1973,6 +1981,7 @@ export default {
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
+          this.isOnlyShowChooseGoods = only
           break
         case 1:
           this.AtreeType = 1
@@ -1998,7 +2007,7 @@ export default {
       }
     },
     // 点击会员专享商品出现的添加类弹窗汇总
-    hanldeToAddGoodSUser (index) {
+    hanldeToAddGoodSUser (index, only) {
       console.log('会员专享')
       this.userDialogFlag = '2'
       console.log(index)
@@ -2007,6 +2016,7 @@ export default {
           // 商品弹窗显示
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           this.choosingGoodsDateTmpContainer = this.ownGoodsId
+          this.isOnlyShowChooseGoods = only
           break
         case 1:
           this.AtreeType = 1
@@ -2044,7 +2054,7 @@ export default {
             this.$message.error('请填写批次名称')
             break
           }
-          this.receiveCodeDialogVisible = true
+          this.receiveCodeDialogVisible = !this.receiveCodeDialogVisible
           this.receiveCodeTmpIndex = indexH
           this.currentBatchName = this.codeAddDivArr[indexH].batchName
           this.currentBatchId = this.codeAddDivArr[indexH].batchId
@@ -2132,11 +2142,12 @@ export default {
       }
     },
     // 限次会员卡中显示的适用商品里面的选择商品调起事件
-    handleToCallGoodsDialog (flag) {
+    handleToCallGoodsDialog (flag, only) {
       // 商品弹窗显示
       this.currentFlag = flag
       this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
       this.choosingGoodsDateTmpContainer = this.suitebleGoods
+      this.isOnlyShowChooseGoods = only
     },
     dealWithReceiveCodeId (id) {
       console.log(id, this.receiveCodeDialogVisible)

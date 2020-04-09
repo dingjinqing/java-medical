@@ -7,6 +7,8 @@ export const en = {
   to: 'to',
   brandClassify: 'Brand classification',
   isRecommendBrand: 'Is it a recommended brand',
+  recommend_yes: 'Yes',
+  recommend_no: 'No',
   screen: 'screen',
   addBrand: 'Add brand',
   classifyName: 'Classification name',

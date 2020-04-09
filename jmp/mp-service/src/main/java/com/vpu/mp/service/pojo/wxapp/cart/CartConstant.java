@@ -40,6 +40,21 @@ public class CartConstant {
      * 专享
      */
     public final static byte GOODS_STATUS_EXCLUSIVE = 5;
+    /**
+     * 失效
+     */
+    public final static byte GOODS_STATUS_DISABLED = 6;
+    /**
+     * 商品规格删除
+     */
+    public final static byte GOODS_STATUS_PRODUCT_DELETE = 7;
+    /**
+     * 商品没有规格
+     */
+    public final static byte GOODS_STATUS_PRODUCT_CHANGE = 8;
+    /**商品库存不足*/
+    public final static byte GOODS_STATUS_STOCK_SHORTAGE = 9;
+
 
     //******************************************活动状态 0 失效 1 生效
     /**
@@ -50,4 +65,15 @@ public class CartConstant {
      * 生效
      */
     public final static byte ACTIVITY_STATUS_VALID = 1;
+
+    //***************************************购物车消息状态
+    /**
+     * 无
+     */
+    public final static byte CART_NOTICE_STATUS_COMMON = 0;
+    /**
+     * 警告
+     */
+    public final static byte CART_NOTICE_STATUS_WARNINGS = 1;
+
 }

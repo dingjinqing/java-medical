@@ -128,7 +128,7 @@ export default {
             module_name: 'm_goods', // 模块名称
             title: '', // 标题  y
             title_link: '', // 标题链接 y
-            tit_center: false, // 标题位置 false不选中标题居中  true选中标题居中 y
+            tit_center: 0, // 标题位置 false不选中标题居中  true选中标题居中 y
             recommend_type: 0, // 模块推荐 0自动推荐  1手动推荐 y
             goods_items: [
               // 商品列表数据 y
@@ -645,6 +645,17 @@ export default {
               })
               flag = false
             }
+            break
+          case 'm_hot_area':
+            console.log(item)
+            if (!item.data.bg_img_url) {
+              this.$message.error({
+                message: '请设置图片热区',
+                showClose: true
+              })
+              flag = false
+            }
+
             break
         }
       })

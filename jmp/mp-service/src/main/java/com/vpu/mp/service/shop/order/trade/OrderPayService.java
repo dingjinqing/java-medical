@@ -1,9 +1,7 @@
 package com.vpu.mp.service.shop.order.trade;
 
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -29,13 +27,11 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.payment.MpPaymentService;
-import org.jooq.impl.DefaultDSLContext;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 /**
  * 订单支付
@@ -95,15 +91,12 @@ public class OrderPayService extends ShopBaseService{
      */
     public WebPayVo isContinuePay(OrderInfoRecord orderInfo, String orderSn, BigDecimal money, String goodsNameForPay,String ClientIp, String openId, Byte activityType) throws MpException {
         logger().info("继续支付接口start");
-        ArrayList<String> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToArray(orderInfo.getGoodsType()));
         if(orderInfo.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY || orderInfo.getOrderStatus() == OrderConstant.ORDER_PIN_PAYED_GROUPING){
             return null;
-        }else if(OrderConstant.ORDER_WAIT_PAY == orderInfo.getOrderStatus() &&
-            (((orderInfo.getBkOrderPaid() > 0 && goodsType.contains(String.valueOf(BaseConstant.ACTIVITY_TYPE_PRE_SALE))))
-                || OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay())) {
-            //待支付 && （（预售 && 已付定金或已付尾款） || 好友代付）
+        }else if(OrderConstant.PAY_WAY_FRIEND_PAYMENT == orderInfo.getOrderPayWay()) {
+            //TODO好友代付
             return null;
-        }else {
+        }else if(BigDecimalUtil.compareTo(money, null) > 0) {
             //非系统金额支付
             try {
                 logger().info("微信预支付调用接口调用start");
@@ -121,6 +114,7 @@ public class OrderPayService extends ShopBaseService{
                 throw new MpException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
             }
         }
+        return null;
     }
 
     public String getGoodsNameForPay(OrderInfoRecord orderInfo, List<OrderGoodsBo> orderGoodsBo) {
@@ -225,7 +219,7 @@ public class OrderPayService extends ShopBaseService{
         }
         //金额换算成积分
         Integer score = BigDecimalUtil.multiplyOrDivide(
-            BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+            BigDecimalPlus.create(new BigDecimal(order.getScoreProportion()), Operator.multiply),
             BigDecimalPlus.create(money,null)
         ).intValue();
 

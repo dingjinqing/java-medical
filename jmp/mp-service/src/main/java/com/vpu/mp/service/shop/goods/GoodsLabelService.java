@@ -143,7 +143,7 @@ public class GoodsLabelService extends ShopBaseService {
 
         GoodsLabelVo vo = record.into(GoodsLabelVo.class);
 
-        if (!GoodsLabelTypeEnum.ALL.getCode().equals(id)) {
+        if (!GoodsLabelTypeEnum.ALL.getCode().equals(vo.getIsAll())) {
             Map<Byte, List<Integer>> byteListMap = goodsLabelCoupleService.selectGatIdsByLabelIds(Collections.singletonList(id));
             vo.setGoodsIds(byteListMap.getOrDefault(GoodsLabelCoupleTypeEnum.GOODSTYPE.getCode(),new ArrayList<>()));
             vo.setSortIds(byteListMap.getOrDefault(GoodsLabelCoupleTypeEnum.SORTTYPE.getCode(),new ArrayList<>()));

@@ -55,6 +55,7 @@ public class FreeShippingGoodsService extends ShopBaseService {
      * @return
      */
     public FreeShipGoodsSearchVo freeShipGoodsList(FreeShippingGoodsListParam param,String lang){
+        param.initScene();
         /*
          * 活动查询
          */
@@ -182,8 +183,8 @@ public class FreeShippingGoodsService extends ShopBaseService {
             //查询条件拼接
             Condition condition = goodsMpService.handleSearchCondition(goodsSearchParam);
             List<Integer> goodsIds = goodsMpService.getGoodsIdsByCondition(condition);
-            return  cartService.getCartList(userId, goodsIds);
+            return  cartService.getCartList(userId, goodsIds,null,null);
         }
-        return cartService.getCartList(userId, new ArrayList<>());
+        return  cartService.getCartList(userId, new ArrayList<>(),null,null);
     }
 }

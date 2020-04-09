@@ -191,7 +191,7 @@ public class OrderOperationJudgment {
 	 */
 	public static boolean mpIsClose(OrderListInfoVo order) {
 		if(//待支付不存在补款或补款未支付
-            (order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && (order.getBkOrderPaid() == OrderConstant.BK_PAY_NO || order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT))
+            (order.getOrderStatus() == OrderConstant.ORDER_WAIT_PAY && order.getBkOrderPaid() == OrderConstant.BK_PAY_NO)
 			//待发货 且 货到付款 且 系统支付0
 			|| (order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY && BigDecimalUtil.compareTo(getOnlinePayAmount(order), null) == 0 && OrderConstant.PAY_CODE_COD.equals(order.getPayCode()))) {
 			return true;

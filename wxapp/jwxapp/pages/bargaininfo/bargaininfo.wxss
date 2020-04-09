@@ -447,7 +447,7 @@ button::after{
   top: 700rpx;
   right: 15rpx;
   color: #fff;
-  z-index: 9999;
+  z-index: 99999;
   border-radius: 1000rpx;
   background: linear-gradient(top,#ff9d52,#ff785f);
   background: -webkit-linear-gradient(top,#ff9d52,#ff785f);

@@ -45,7 +45,7 @@
         <el-input
           type="tel"
           :placeholder="$t('reservationManage.keywords')"
-          style="width: 170px;"
+          style="width: 210px;"
           size="small"
           v-model="queryParams.keywords"
         >
@@ -108,6 +108,7 @@
               'background-color':'#f5f5f5',
               'border':'none'
             }"
+            @sort-change="sortChange"
           >
             <el-table-column
               :label="$t('reservationManage.subscriber')"
@@ -126,6 +127,7 @@
             <el-table-column
               :label="$t('reservationManage.serviceDate')"
               prop="serviceDate"
+              sortable="custom"
             ></el-table-column>
             <el-table-column
               :label="technicianConfigName"
@@ -134,6 +136,11 @@
             <el-table-column
               :label="$t('reservationManage.serviceSubsist')"
               prop="serviceSubsist"
+            ></el-table-column>
+            <el-table-column
+              :label="$t('reservationManage.createTime')"
+              prop="createTime"
+              sortable="custom"
             ></el-table-column>
             <el-table-column
               :label="$t('reservationManage.message')"
@@ -362,20 +369,26 @@
       <div class="table_list">
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.subscriber')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.chooseUser')"
                 v-model="userRowData.userName"
+                size="small"
+                class="new-input"
               >
               </el-input>
               <el-button
                 type="primary"
+                size="small"
                 @click="hanldeModifyPerson()"
               >{{$t('reservationManage.chooseUser')}}</el-button>
             </el-col>
@@ -383,16 +396,21 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.mobile')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.mobile')"
                 v-model="reservation.mobile"
+                size="small"
+                class="new-input"
               >
               </el-input>
             </el-col>
@@ -400,10 +418,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.serviceDate')}}：
             </el-col>
             <el-col :span="10">
@@ -414,6 +435,8 @@
                 :placeholder="$t('reservationManage.serviceDate')"
                 align="right"
                 :picker-options="pickerOptions"
+                size="small"
+                class="new-input"
               >
               </el-date-picker>
             </el-col>
@@ -421,10 +444,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk">*</span> {{$t('reservationManage.serviceName')}}：
             </el-col>
             <el-col :span="10">
@@ -434,6 +460,8 @@
                   clearable
                   :placeholder="$t('reservationManage.serviceName')"
                   @change="changeEvent()"
+                  size="small"
+                  class="new-input"
                 >
                   <el-option
                     v-for="item in reservationService"
@@ -449,10 +477,13 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               <span class="span_asterisk"></span> {{this.technicianConfigName}}：
             </el-col>
             <el-col :span="10">
@@ -461,6 +492,8 @@
                   v-model="reservation.technicianId"
                   clearable
                   :placeholder="technicianConfigName"
+                  size="small"
+                  class="new-input"
                 >
                   <el-option
                     v-for="item in reservationTech"
@@ -476,16 +509,21 @@
         </div>
         <div>
           <el-row
-            :gutter="15"
+            :gutter="5"
             class="row_style"
           >
-            <el-col :span="5">
+            <el-col
+              :span="8"
+              class="add-dialog-text"
+            >
               {{$t('reservationManage.message')}}：
             </el-col>
             <el-col :span="10">
               <el-input
                 :placeholder="$t('reservationManage.messageLimit')"
                 v-model="reservation.adminMessage"
+                size="small"
+                class="new-input"
               >
               </el-input>
             </el-col>
@@ -518,6 +556,7 @@
 <script>
 import { getList, availableCard, getChargeAccount, addMessage, add, charge, cancel, techList } from '@/api/admin/storeManage/storemanage/reservationManage'
 import { getAllService, getServiceConfig } from '@/api/admin/storeManage/storemanage/serviceManage'
+import '@/util/date.js'
 
 import pagination from '@/components/admin/pagination/pagination'
 export default {
@@ -656,12 +695,21 @@ export default {
       }],
       storeId: 0,
       serviceId: 0,
-      modifypersonDialogVisible: false
+      modifypersonDialogVisible: false,
+      sortParams: {}
     }
   },
   created () {
-    this.queryParams.storeId = this.$route.query.id
-    this.storeId = this.$route.query.id
+    console.log(this.$route)
+    if (this.$route.query.id) {
+      this.queryParams.storeId = this.$route.query.id
+      this.storeId = this.$route.query.id
+      localStorage.setItem('V-reservationListId', this.$route.query.id)
+    } else {
+      this.queryParams.storeId = localStorage.getItem('V-reservationListId')
+      this.storeId = localStorage.getItem('V-reservationListId')
+    }
+
     this.langDefault()
     this.initDataList()
     this.getStoreService()
@@ -769,6 +817,10 @@ export default {
     // 添加预约弹窗-点击触发弹窗
     showMess3 (orderSn) {
       this.orderSn = orderSn
+      if (!Number(this.$route.query.businessState)) {
+        this.$message.warning('该店铺未营业，不能预约')
+        return false
+      }
       this.showReservation = true
     },
     // 关闭添加预约弹窗
@@ -777,15 +829,29 @@ export default {
     },
     // 添加预约
     add () {
+      // 校验是否在营业时间内
+      let businessHours = this.$route.query.businessHours
+      if (businessHours && this.dateTime) {
+        let datetime = new Date(this.dateTime)
+        let date = datetime.format('yyyy-MM-dd')
+        let times = businessHours.split('-')
+        let startTime = date + ' ' + times[0].trim() + ':00'
+        let endTime = date + ' ' + times[1].trim() + ':00'
+        console.log(times, startTime, endTime)
+        if (datetime < new Date(startTime) || datetime > new Date(endTime)) {
+          this.$message.warning('预约时间需在店铺营业时间' + businessHours + '内')
+          return false
+        }
+      }
       // 必填项校验
-      if (this.userRowData === {}) {
-        this.$message.info('必填项不可为空！')
-      } else if (this.mobile === '') {
-        this.$message.info('必填项不可为空！')
+      if (!this.userRowData.userName) {
+        this.$message.warning('预约人不能为空！')
+      } else if (this.reservation.mobile === '') {
+        this.$message.warning('手机号不能为空！')
       } else if (this.dateTime === '') {
-        this.$message.info('必填项不可为空！')
-      } else if (this.reservation.serviceId === 0) {
-        this.$message.info('必填项不可为空！')
+        this.$message.warning('预约时间不能为空！')
+      } else if (!this.reservation.serviceId) {
+        this.$message.warning('预约服务不能为空！')
       } else {
         console.log('技师列表：' + this.reservationTech)
         if (!this.reservationTech) {
@@ -801,11 +867,12 @@ export default {
         add(this.reservation).then(res => {
           if (res.error === 0) {
             this.$message.success('添加成功')
+            this.showReservation = false
             this.initDataList()
+          } else {
+            this.$message.error(res.message)
             this.showReservation = false
           }
-          this.$message.error('添加失败')
-          this.showReservation = false
         })
       }
     },
@@ -930,7 +997,7 @@ export default {
       }
     },
     initDataList () {
-      let params = Object.assign({}, this.queryParams, this.pageParams)
+      let params = Object.assign({}, this.queryParams, this.pageParams, this.sortParams)
       getList(params).then(res => {
         if (res.error === 0) {
           this.tableData = [...res.content.pageList.dataList]
@@ -952,6 +1019,17 @@ export default {
     // 会员组件 返回数据处理
     dealRowData (data) {
       this.userRowData = data
+    },
+    // 排序
+    sortChange ({ column, prop, order }) {
+      console.log(column, prop, order)
+      if (order !== null) {
+        this.sortParams = {
+          orderField: prop,
+          orderDirection: (order === 'ascending' ? 'asc' : 'desc')
+        }
+      }
+      this.initDataList()
     }
   }
 }
@@ -1013,6 +1091,10 @@ export default {
   .list_info {
     margin-top: 20px;
     padding-bottom: 10px;
+    & > label {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
     .filter_input {
       width: 170px;
     }
@@ -1029,5 +1111,11 @@ export default {
       cursor: pointer !important;
     }
   }
+}
+.new-input {
+  width: 190px;
+}
+.add-dialog-text {
+  line-height: 32px;
 }
 </style>

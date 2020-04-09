@@ -22,6 +22,15 @@
             ></el-input>
           </div>
           <div class="filters_item">
+            <span>{{$t('order.shippingNo')}}：</span>
+            <el-input
+              v-model="searchParams.shippingNo"
+              :placeholder="$t('order.shippingNo')"
+              size="small"
+              class="default_input"
+            ></el-input>
+          </div>
+          <div class="filters_item">
             <span>{{$t('order.orderStatusText')}}：</span>
             <el-select
               v-model="searchParams.orderStatus"
@@ -154,7 +163,7 @@
           >
             <span>{{$t('order.paymentType')}}：</span>
             <el-select
-              v-model="searchParams.paymentType"
+              v-model="searchParams.payWay"
               :placeholder="$t('order.defaultSelect')"
               size="small"
               class="default_input"
@@ -199,6 +208,7 @@
           >
             <span>{{$t('order.shippingAddress')}}：</span>
             <areaLinkage
+              :areaCode="areaLinkage"
               @areaData="handleAreaData"
               style="width:365px;"
             />
@@ -432,7 +442,10 @@
                         alt=""
                       >
                       <div class="right_info">
-                        <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{goodsItem.goodsName}}</span></div>
+                        <div class="goods_name"><span><i
+                              class="goods-tag"
+                              v-if="goodsItem.isGift === 1"
+                            >赠品</i>{{goodsItem.goodsName}}</span></div>
                         <div class="goods_spec">{{goodsItem.goodsAttr}}</div>
                       </div>
                     </div>
@@ -619,7 +632,10 @@
                           alt=""
                         >
                         <div class="right_info">
-                          <div class="goods_name"><span><i class="goods-tag" v-if="goodsItem.isGift === 1">赠品</i>{{childGoods.goodsName}}</span></div>
+                          <div class="goods_name"><span><i
+                                class="goods-tag"
+                                v-if="goodsItem.isGift === 1"
+                              >赠品</i>{{childGoods.goodsName}}</span></div>
                           <div class="goods_spec">{{childGoods.goodsAttr}}</div>
                         </div>
                       </div>
@@ -805,6 +821,7 @@ export default {
       moreFilters: false,
       pageParams: {},
       searchParams: {
+        activityId: this.$route.query.id,
         pinStatus: [],
         goodsName: '',
         orderSn: '',
@@ -815,7 +832,7 @@ export default {
         createTimeStart: null,
         createTimeEnd: null,
         deliverType: null,
-        paymentType: null,
+        payWay: null,
         userName: '',
         source: null,
         tagIds: [],
@@ -827,7 +844,8 @@ export default {
         provinceCode: null,
         cityCode: null,
         districtCode: null,
-        orderStatus2: '-1'
+        orderStatus2: '-1',
+        shippingNo: ''
       },
       orderTime: null,
       completeTime: null,
@@ -856,7 +874,12 @@ export default {
       notesOrderSn: null,
       showExportColumnSelect: false,
       showExportConfirm: false,
-      shopHelperParams: {}
+      shopHelperParams: {},
+      areaLinkage: {
+        provinceCode: '',
+        cityCode: '',
+        districtCode: ''
+      }
     }
   },
   inject: ['adminReload'],
@@ -921,7 +944,7 @@ export default {
       this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
     },
     search () {
-      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus.split(',') : []
+      this.searchParams.pinStatus = this.$route.query.pinStatus ? this.$route.query.pinStatus : []
       this.searchParams.currentPage = this.pageParams.currentPage
       this.searchParams.pageRows = this.pageParams.pageRows
       this.searchType = 0
@@ -929,7 +952,7 @@ export default {
         ...this.searchParams,
         orderStatus: this.searchParams.orderStatus !== null ? [this.searchParams.orderStatus] : [],
         goodsType: this.searchParams.goodsType !== null ? [this.searchParams.goodsType] : [],
-        paymentType: this.searchParams.paymentType !== null ? [this.searchParams.paymentType] : [],
+        payWay: this.searchParams.payWay !== null ? this.searchParams.payWay : null,
         ...this.shopHelperParams
       }
       list(obj).then(res => {
@@ -1211,7 +1234,7 @@ export default {
                 text-align: left;
                 justify-content: space-between;
                 .goods_name {
-                  .goods-tag{
+                  .goods-tag {
                     border: 1px solid;
                     vertical-align: middle;
                     margin-right: 5px;

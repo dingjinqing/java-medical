@@ -228,6 +228,7 @@ export function advertisementDelete (data) {
   })
 }
 
+// -------------分销员分组---------------------
 // 分销员分组列表
 export function distributionGroup (data) {
   return service({
@@ -273,6 +274,34 @@ export function distributionGroupDel (data) {
   })
 }
 
+// 设置分组是否在小程序端展示
+export function setGroupShow (data) {
+  return service({
+    url: '/api/admin/distribution/group/show',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分组是否在小程序端展示
+export function getGroupShow (data) {
+  return service({
+    url: '/api/admin/distribution/group/get',
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取分销员弹窗数据( 数据筛选 )
+export function getDistributor (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/list',
+    method: 'post',
+    data: data
+  })
+}
+
+// -------------分销员审核--------------------
 // 分销员列表
 export function distributorList (data) {
   return service({
@@ -321,6 +350,51 @@ export function delDistributor (data) {
   return service({
     url: `/api/admin/distribution/distributor/del?userId=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 设置邀请码
+export function setInviteCode (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/inviteCode/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 批量设置分组
+export function setBatchGroup (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/group/set',
+    method: 'post',
+    data: data
+  })
+}
+
+// 添加备注信息
+export function addRemarks (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/userRemark/add',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除备注信息
+export function delRemarks (data) {
+  return service({
+    url: `/api/admin/distribution/distrobutor/userRemark/del?id=${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 获取备注列表
+export function getRemarksList (data) {
+  return service({
+    url: '/api/admin/distribution/distrobutor/userRemark/list',
+    method: 'post',
     data: data
   })
 }
@@ -392,6 +466,15 @@ export function cancleDefaultGroup (data) {
   return service({
     url: `/api/admin/distribution/group/cancle?id=${data}`,
     method: 'get',
+    data: data
+  })
+}
+
+// 返利提现审核
+export function setCanSelect (data) {
+  return service({
+    url: '/api/admin/distribution/distributor/group/select',
+    method: 'post',
     data: data
   })
 }

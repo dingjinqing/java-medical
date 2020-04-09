@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.invoice.InvoiceVo;
@@ -214,13 +215,13 @@ public class StoreWxService extends ShopBaseService {
         } else if (BYTE_ONE.equals(param.getType()) && param.getCardId() != null) {
             // type为1,并且cardId不为空;表示入口为会员卡详情页
             MemberCardPojo memberCardPojo = memberCardService.getMemberCardInfoById(param.getCardId());
-            if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ONE)) {
+            if (memberCardPojo.getStoreUseSwitch().equals(CardConstant.UNAVAILABLE_IN_STORE)) {
                 return new ArrayList<>(0);
             } else {
                 // 会员卡支持门店列表,为空支持所有
                 List<Integer> supportStoreList = Util.json2Object(memberCardPojo.getStoreList(), new TypeReference<List<Integer>>() {
                 }, false);
-                if (CollectionUtils.isNotEmpty(supportStoreList)) {
+                if (supportStoreList.size()>0 && supportStoreList.get(0) != 0) {
                     storeList = db().selectFrom(STORE).where(STORE.STORE_ID.in(supportStoreList)).and(DEL_CONDITION).fetchInto(StorePojo.class);
                 } else {
                     storeList = getStoreByCustomCondition(new HashMap<String, Byte>(2) {{
@@ -373,6 +374,7 @@ public class StoreWxService extends ShopBaseService {
      * @return the wxapp store detail
      */
     public StoreInfoVo getWxappStoreDetail(StoreInfoParam param) {
+        param.setScene();
         Integer storeId = param.getStoreId();
         Integer userId = param.getUserId();
         if (userId != null) {
@@ -449,6 +451,8 @@ public class StoreWxService extends ShopBaseService {
         payOrderVo.setScoreDiscountRatio(baseScoreCfgService.getScoreDiscountRatio());
         payOrderVo.setScorePayNum(baseScoreCfgService.getScorePayNum());
         payOrderVo.setScorePayLimit(baseScoreCfgService.getScorePayLimit());
+        //积分兑换比
+        payOrderVo.setScoreProportion(baseScoreCfgService.getScoreProportion());
         return payOrderVo;
     }
 

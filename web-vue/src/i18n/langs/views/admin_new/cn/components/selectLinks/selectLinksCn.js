@@ -117,7 +117,7 @@ export const cn = {
     },
     {
       title: '全部商品',
-      path: 'pages/searchs/search',
+      path: 'pages1/search/search',
       spanId: ''
     },
     {

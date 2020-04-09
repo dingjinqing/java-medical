@@ -75,12 +75,12 @@
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop=""
+                prop="type"
                 :label="$t('pledge.goods')+'：'"
                 align="center"
               ></el-table-column>
               <el-table-column
-                prop=""
+                prop="level"
                 :label="$t('pledge.priority')+'：'"
                 align="center"
               ></el-table-column>
@@ -165,11 +165,14 @@
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.nameTip')}}</span>
               </el-form-item>
               <!-- 优先级 -->
-              <el-form-item :label="$t('pledge.priority')+'：'">
+              <el-form-item
+                :label="$t('pledge.priority')+'：'"
+                prop="priority"
+              >
                 <el-input
                   style="width:200px"
                   size="small"
-                  v-model="form.first"
+                  v-model="form.priority"
                   :placeholder="$t('pledge.priorityCheck')"
                 ></el-input>
                 <span style="padding-left: 15px;color:#999">{{$t('pledge.priorityTip')}}</span>
@@ -213,15 +216,37 @@
               <!-- 选择商品 -->
               <el-form-item :label="$t('pledge.chooseGoods')+'：'">
                 <el-radio
-                  v-model="form.goods"
-                  label=1
+                  v-model="form.type"
+                  :label='1'
                 >{{$t('pledge.allGoods')}}</el-radio>
                 <el-radio
-                  v-model="form.goods"
-                  label=2
+                  v-model="form.type"
+                  :label='2'
                 >{{$t('pledge.someGoods')}}</el-radio>
+
+                <!-- 选择全部商品部分商品-->
+                <div v-if="form.type === 2">
+                  <div
+                    v-for="(item,index) in storeArr"
+                    :key="index"
+                  >
+                    <el-button
+                      @click="hanldeToAddGoodS(index)"
+                      style="margin: 10px 0;margin-right: 10px;"
+                      size="small"
+                    >
+                      <i class="el-icon-plus"></i> {{ item.name }}
+                    </el-button>
+                    <span v-if="index === 0">{{ $t('pledge.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('pledge.goodsTip2') }}</span>
+                    <span v-if="index === 1">{{ $t('pledge.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('pledge.goodsTip3') }}</span>
+                    <span v-if="index === 2">{{ $t('pledge.goodsTip1') }} {{ brandsInfo.length > 0 ? brandsInfo.length : 0 }} {{ $t('pledge.goodsTip4') }}</span>
+                  </div>
+                </div>
+
               </el-form-item>
+
             </el-form>
+
           </div>
           <!-- 保存按钮 -->
           <div class="footer">
@@ -240,18 +265,54 @@
       :tuneUp="showImageDialog"
       @handleSelectImg='imgDialogSelectedCallback'
     />
+    <!--选择商品弹窗-->
+    <ChoosingGoods
+      :tuneUpChooseGoods="tuneUpChooseGoods"
+      @resultGoodsDatas="choosingGoodsResult"
+      :chooseGoodsBack="goodsInfo"
+    />
+    <!-- 选择 1商家分类;2平台分类弹窗 -->
+    <AddingBusClassDialog
+      :dialogVisible.sync="tuneUpBusClassDialog"
+      :classFlag="classFlag"
+      @BusClassTrueDetailData="busClassDialogResult"
+      @backDataArr="commInfo"
+    />
+    <!-- 选择商品品牌弹窗 -->
+    <AddBrandDialog
+      :callAddBrand.sync="tuneUpBrandDialog"
+      :brandBackData="brandsInfo"
+      @handleToGetBackData="returnGoodsBrandData"
+    />
   </div>
 </template>
 
 <script>
 import ImageDalog from '@/components/admin/imageDalog'
+import AddBrandDialog from '@/components/admin/addBrandDialog'
 import { pledgeList, addPledge, delPledge, editPledge, totalSwitch, oneSwitch } from '@/api/admin/basicConfiguration/servicePledge.js'
 export default {
   components: {
-    ImageDalog
+    ChoosingGoods: () => import('@/components/admin/choosingGoods'),
+    AddingBusClassDialog: () => import('@/components/admin/addingBusClassDialog'),
+    ImageDalog,
+    AddBrandDialog
   },
   data () {
+    // var checkLevel = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('优先级不能为空'))
+    //   }
+    //
+    //   if (!Number.isInteger(value)) {
+    //     callback(new Error('请输入数字值'))
+    //   }
+    // }
     return {
+      // 选择商品品牌
+      tuneUpBrandDialog: false,
+      brandsInfoRow: [],
+      brandsInfo: [],
       tabValue: 'first',
       switchValue: '',
       tableData: [],
@@ -259,12 +320,15 @@ export default {
       // 表单数据
       form: {
         name: '',
-        first: '',
+        priority: '',
         icon: '',
         desc: '',
         // logos: '',
-
-        goods: '1'
+        type: 1,
+        goods: '1',
+        goodsIds: [],
+        goodsBrandIds: [],
+        sortIds: []
       },
       // 数据校验
       rules: {
@@ -278,6 +342,10 @@ export default {
         desc: [
           { required: true, message: this.$t('pledge.explanationCheck'), trigger: 'blur' },
           { max: 300, message: this.$t('pledge.explanationTip'), trigger: 'blur' }
+        ],
+        priority: [
+          { required: true, message: '优先级不能为空', trigger: 'blur' }
+          // {validator: checkLevel, trigger: 'blur'}
         ]
         // logos: [
         //   { required: true, message: this.$t('pledge.iconCheck'), trigger: 'blur' }
@@ -288,13 +356,104 @@ export default {
         src: `${this.$imageHost}/image/admin/add_img.png`
       },
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+
+      storeArr: [], // 添加商品数据
+      tuneUpChooseGoods: false, // 商品弹窗
+      tuneUpBusClassDialog: false, // 商家/平台弹窗
+      classFlag: 0, // 商家/平台类型
+      // 弹窗结果区分标识 1商家分类;2平台分类
+      flag: 0,
+      // 商品弹窗回调数据
+      goodsInfo: [],
+      goodsInfoRow: [],
+      // 商家分类弹窗回调数据
+      busClass: [],
+      busClassRow: [],
+      // 平台分类弹窗回调数据
+      platClass: [],
+      platClassRow: [],
+      // 平台分类/商家分类共享变量
+      commInfo: []
+    }
+  },
+  watch: {
+    lang () {
+      this.storeArr = this.$t('pledge.storeArr')
     }
   },
   created () {
     this.loadData()
+    this.langDefault()
   },
   methods: {
+    // 点击指定商品出现的添加类弹窗汇总
+    hanldeToAddGoodS (index) {
+      switch (index) {
+        case 0:
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = !this.tuneUpBusClassDialog
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBrandDialog = !this.tuneUpBrandDialog
+          break
+      }
+    },
+    // 选择商品品牌
+    returnGoodsBrandData (row) {
+      this.brandsInfoRow = row
+      this.brandsInfo = []
+      this.brandsInfoRow.map((item, index) => {
+        console.log('item is what ??? ', item)
+        this.brandsInfo.push(item.id)
+      })
+      this.form.goodsBrandIds = this.brandsInfo
+      console.log('this.brandsInfo', this.brandsInfo)
+      console.log('this.brandsInfoRow', this.brandsInfoRow)
+    },
+    // 选择商品弹窗回调显示
+    choosingGoodsResult (row) {
+      this.goodsInfoRow = row
+      this.goodsInfo = []
+      this.goodsInfoRow.map((item, index) => {
+        this.goodsInfo.push(item.goodsId)
+      })
+      this.form.goodsIds = this.goodsInfo
+      console.log('this.goodsInfo', this.goodsInfo)
+      console.log('this.goodsInfoRow', this.goodsInfoRow)
+      // this.goodsInfoRow = []
+      // this.goodsInfo = []
+    },
+    // 选择商家分类/平台分类弹窗回调显示
+    busClassDialogResult (row) {
+      if (this.flag === 1) {
+        // 商家分类
+        this.busClassRow = row
+        this.busClass = []
+        this.busClassRow.map((item, index) => {
+          this.busClass.push(item.sortId)
+        })
+        this.form.sortIds = this.busClass
+        // this.busClassRow = []
+        // this.busClass = []
+      } else {
+        // 平台分类
+        this.platClassRow = row
+        this.platClass = []
+        this.platClassRow.map((item, index) => {
+          this.platClass.push(item.catId)
+        })
+        this.form.sortIds = this.platClass
+        // this.platClassRow = []
+        // this.platClass = []
+      }
+    },
+
     clickTabs (tab, event) {
       console.log(tab, event)
       this.loadData()
@@ -303,11 +462,32 @@ export default {
     loadData () {
       this.form = {
         name: '',
-        first: '',
         icon: '',
         desc: '',
-        goods: '1'
+        goods: '1',
+        priority: '',
+        type: 1,
+        goodsIds: '',
+        goodsBrandIds: '',
+        sortIds: ''
       }
+      // this.storeArr = [] // 添加商品数据
+      // this.tuneUpChooseGoods = false // 商品弹窗
+      // this.tuneUpBusClassDialog = false // 商家/平台弹窗
+      // this.classFlag = 0 // 商家/平台类型
+      // // 弹窗结果区分标识 1商家分类;2平台分类
+      // this.flag = 0
+      // // 商品弹窗回调数据
+      this.goodsInfo = []
+      this.goodsInfoRow = []
+      // // 商家分类弹窗回调数据
+      this.busClass = []
+      this.busClassRow = []
+      // // 平台分类弹窗回调数据
+      this.platClass = []
+      this.platClassRow = []
+      // // 平台分类/商家分类共享变量
+      // this.commInfo = []
       this.id = null
       this.srcList.src = `${this.$imageHost}/image/admin/add_img.png`
       pledgeList().then(res => {
@@ -318,6 +498,14 @@ export default {
             item.pledgeLogo = `${this.$imageHost}` + `/` + item.pledgeLogo
           })
           this.tableData = res.content.list
+          this.tableData.map((item, index) => {
+            if (item.type === 1) {
+              item.type = this.$t('pledge.allGoods')
+            }
+            if (item.type === 2) {
+              item.type = this.$t('pledge.someGoods')
+            }
+          })
           console.log('state:', Boolean(res.content.state))
           this.switchValue = Boolean(res.content.state)
         }
@@ -328,18 +516,29 @@ export default {
     // 添加服务承诺
     addAct (form) {
       this.$refs[form].validate((valid) => {
+        console.log('form:', this.form)
         if (valid) {
           // 校验通过后...
           let addParam = {
             'pledgeName': this.form.name,
             'pledgeLogo': this.form.icon,
-            'pledgeContent': this.form.desc
+            'pledgeContent': this.form.desc,
+            'level': this.form.priority,
+            'type': this.form.type,
+            'goodsIds': this.form.goodsIds,
+            'goodsBrandIds': this.form.goodsBrandIds,
+            'sortIds': this.form.sortIds
           }
           let editParam = {
             'id': this.id,
             'pledgeName': this.form.name,
             'pledgeLogo': this.form.icon.substring(29),
-            'pledgeContent': this.form.desc
+            'pledgeContent': this.form.desc,
+            'level': this.form.priority,
+            'type': this.form.type,
+            'goodsIds': this.form.goodsIds,
+            'goodsBrandIds': this.form.goodsBrandIds,
+            'sortIds': this.form.sortIds
           }
           if (this.id !== null) {
             editPledge(editParam).then(res => {
@@ -397,10 +596,24 @@ export default {
     },
     // 编辑服务承诺
     editAct (row) {
+      console.log('row：', row)
       this.tabValue = 'second'
       this.form.name = row.pledgeName
       this.form.icon = row.pledgeLogo
       this.form.desc = row.pledgeContent
+      this.form.priority = row.level
+      this.form.goodsIds = row.goodsIds
+      this.form.goodsBrandIds = row.goodsBrandIds
+      this.form.sortIds = row.sortIds
+      this.goodsInfo = row.goodsIds
+      this.brandsInfo = row.goodsBrandIds
+      this.busClass = row.sortIds
+      if (row.type === this.$t('pledge.allGoods')) {
+        this.form.type = 1
+      }
+      if (row.type === this.$t('pledge.someGoods')) {
+        this.form.type = 2
+      }
       this.id = row.id
       this.srcList.src = this.form.icon
     },
@@ -435,7 +648,6 @@ export default {
     imgDialogSelectedCallback (src) {
       console.log('path:', src.imgPath)
       console.log('url:', src.imgUrl)
-      console.log('前缀:', `${this.$imageHost}`)
       this.form.icon = src.imgPath
       this.srcList.src = src.imgUrl
       console.log('icon:', this.form.icon)
@@ -455,7 +667,7 @@ export default {
       background-color: #f2f2f2;
       height: 120px;
       padding: 10px;
-      font-family: "微软雅黑";
+      /*font-family: "微软雅黑";*/
       font-size: 14px;
       display: flex;
       justify-content: space-between;
@@ -499,7 +711,7 @@ export default {
     }
     .footer {
       position: fixed;
-      bottom: 0;
+      bottom: -10px;
       right: 27px;
       left: 160px;
       height: 52px;

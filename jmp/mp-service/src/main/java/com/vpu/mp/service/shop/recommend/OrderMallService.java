@@ -130,7 +130,7 @@ public class OrderMallService extends ShopMallBaseService {
 		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
-		SendOrderBean bean=new SendOrderBean(1, jsonRootBean,getShopId());
+		SendOrderBean bean=new SendOrderBean(1, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
 //		WxOpenResult importOrder = importOrderAdd(jsonRootBean);
 //		return importOrder.isSuccess();
@@ -176,7 +176,7 @@ public class OrderMallService extends ShopMallBaseService {
 		List<OrderList> list = new ArrayList<OrderList>();
 		list.add(orderList);
 		JsonRootBean jsonRootBean = new JsonRootBean(list);
-		SendOrderBean bean=new SendOrderBean(2, jsonRootBean,getShopId());
+		SendOrderBean bean=new SendOrderBean(2, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendOrderBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
 //		WxOpenResult importOrder = importOrderUpdate(jsonRootBean);
 //		return importOrder.isSuccess();

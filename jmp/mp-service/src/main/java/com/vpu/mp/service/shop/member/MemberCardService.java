@@ -1,19 +1,37 @@
 package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
+import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
+import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
+import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
+import com.vpu.mp.db.shop.tables.records.ChargeMoneyRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsCardCoupleRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
-import com.vpu.mp.service.foundation.database.DslPlus;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelUtil;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
+import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
@@ -21,12 +39,55 @@ import com.vpu.mp.service.pojo.shop.member.account.MemberCard;
 import com.vpu.mp.service.pojo.shop.member.account.MemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.builder.CardBatchVoBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
+import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
+import com.vpu.mp.service.pojo.shop.member.card.BaseCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.BatchGroupVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBasicVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchDetailVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardBatchVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumeVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderExcelVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardHolderVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardInsertVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoExcelFailVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoExcelVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoImportTemplate;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoPwdExcelFailVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardNoPwdExcelVo;
+import com.vpu.mp.service.pojo.shop.member.card.CardParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
+import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
+import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.NormalCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardJson;
+import com.vpu.mp.service.pojo.shop.member.card.PowerCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -37,32 +98,101 @@ import com.vpu.mp.service.shop.member.card.GradeCardService;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 import com.vpu.mp.service.shop.member.card.NormalCardOpt;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
+import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
+import com.vpu.mp.service.shop.member.wxapp.WxAppCardActivationService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
 import jodd.util.StringUtil;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.Tables.CARD_CONSUMER;
+import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
+import static com.vpu.mp.db.shop.Tables.CHARGE_MONEY;
+import static com.vpu.mp.db.shop.Tables.GOODS_CARD_COUPLE;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
 import static com.vpu.mp.db.shop.tables.MemberCard.MEMBER_CARD;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.CHECKED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_BRAND;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_GOODS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_PLAT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.COUPLE_TP_STORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_COLOR;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_BGT_IMG;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_COUPON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_CTP_PACKAGE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DIS_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FOREVER;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_NON;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_BUY;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISP_DEFAULT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_RA_PWD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_CODE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_REA_PWD;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_NO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_SUSE_OK;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_GRADE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NORMAL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.NUM_LETTERS;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.PAY_OWN_GOOD_YES;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.REFUSED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.SHORT_ZERO;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.VERIFIED;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_CONTENT_CASH;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_TO_BE_CONFIRMED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
@@ -110,6 +240,8 @@ public class MemberCardService extends ShopBaseService {
 	private LimitCardOpt limitCardOpt;
 	@Autowired
 	private GradeCardOpt gradeCardOpt;
+	@Autowired
+	private WxAppCardActivationService wxCardActSvc;
 
     
 	/**
@@ -789,14 +921,32 @@ public class MemberCardService extends ShopBaseService {
 				.where(MEMBER_CARD.CARD_TYPE.equal(MCARD_TP_NORMAL)).and(MEMBER_CARD.DEL_FLAG.equal(MCARD_DF_NO))
 				.orderBy(MEMBER_CARD.ID.desc());
 
-		PageResult<NormalCardVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
-				NormalCardVo.class);
+		PageResult<MemberCardRecord> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MemberCardRecord.class);
+		PageResult<NormalCardVo> res = new PageResult<NormalCardVo>();
+		res.setPage(pageResult.getPage());
+		List<NormalCardVo> tmp = new ArrayList<>();
 		/** 将json配置文件转化成合适的数据给前端 */
-		for (NormalCardVo vo : pageResult.dataList) {
+		for (MemberCardRecord rec : pageResult.dataList) {
+			NormalCardVo vo = rec.into(NormalCardVo.class);
 			vo.changeJsonCfg();
+			
+			if(rec.getSendMoney()!= null && !StringUtils.isBlank(rec.getChargeMoney())) {
+				// 是否展示充值明细
+				Integer count = db().selectCount().from(CHARGE_MONEY).fetchOne(0, int.class);
+				if(count != 0) {
+					vo.setShowCharge(NumberUtils.BYTE_ONE);
+				}
+			}
+			
+			// TODO 退款记录
+			
+			// TODO 续费记录
+			
+			tmp.add(vo);	
 		}
-
-		return pageResult;
+		res.setDataList(tmp);
+		return res;
 	}
 
 	/**
@@ -902,8 +1052,14 @@ public class MemberCardService extends ShopBaseService {
 			logger().info("正在获取批次信息");
 			List<CardBatchRecord> batchList = cardReceiveCode.getAvailableCardBatchByCardId(card.getId());
 			List<CardBatchVo> res = new ArrayList<>();
+			boolean pwdBatch = CardUtil.isReceiveByPwd(card.getReceiveAction());
 			for (CardBatchRecord b : batchList) {
-				res.add(CardBatchVoBuilder.create().id(b.getId()).name(b.getName()).build());
+				res.add(CardBatchVoBuilder.create()
+							.id(b.getId())
+							.name(b.getName())
+							.pwdBatch(pwdBatch)
+							.action(b.getAction())
+							.build());
 			}
 			card.setBatchList(res);
 		}
@@ -1026,11 +1182,11 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	/**
-	 * 根据会员卡ID字符串（逗号分隔）取会员卡信息列表
+	 * 根据会员卡ID列表取会员卡信息列表
 	 */
-	public List<SimpleMemberCardVo> getMemberCardByCardIdsString(String cardIdsString) {
-		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME).from(MEMBER_CARD)
-				.where(DslPlus.findInSet(MEMBER_CARD.ID, cardIdsString))
+	public List<SimpleMemberCardVo> getMemberCardByCardIds(List<Integer> cardIds) {
+		return db().select(MEMBER_CARD.ID, MEMBER_CARD.CARD_NAME,MEMBER_CARD.CARD_TYPE).from(MEMBER_CARD)
+				.where(MEMBER_CARD.ID.in(cardIds))
 				.and(MEMBER_CARD.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).fetchInto(SimpleMemberCardVo.class);
 	}
 
@@ -1287,28 +1443,24 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void updateMemberCardAccount(CardConsumpData data, TradeOptParam tradeOpt)
 			throws MpException {
-
-		/** 1.-获取数据库中的存储的信息 */
-		UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
-
-		/** 2-判断会员卡余额是属于充值还是消费 */
-		if (isConsump(data)) {
-			/** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
-			if ((data.getMoney().add(userCard.getMoney())).compareTo(BigDecimal.ZERO) == -1) {
-				throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
-			}
-			/** -消费会员卡余额 */
-			consumpUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
-		} else {
-			/** 2.2 充值会员卡余额 */
-			chargeUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
-		}
-		/** 3-更新user_card用户会员卡的余额 */
-		updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
-
-		insertCardAccountTradesRecord(data, tradeOpt);
-		// TODO模板消息
-
+            /** 1.-获取数据库中的存储的信息 */
+            UserCardRecord userCard = getUserCardInfoByCardNo(data.getCardNo());
+            /** 2-判断会员卡余额是属于充值还是消费 */
+            if (isConsump(data)) {
+                /** 2.1-如果消费余额超出用户会员卡现有余额，则抛出异常 */
+                if ((data.getMoney().add(userCard.getMoney())).compareTo(BigDecimal.ZERO) == -1) {
+                    throw new MpException(JsonResultCode.CODE_MEMBER_ACCOUNT_UPDATE_FAIL);
+                }
+                /** -消费会员卡余额 */
+                consumpUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
+            } else {
+                /** 2.2 充值会员卡余额 */
+                chargeUserCard(data, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
+            }
+            /** 3-更新user_card用户会员卡的余额 */
+            updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
+            insertCardAccountTradesRecord(data, tradeOpt);
+            // TODO模板消息
 	}
 
 	private boolean isConsump(CardConsumpData data) {
@@ -1480,6 +1632,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
+		logger().info("会员卡充值记录");
 		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY,data);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
@@ -1516,6 +1669,10 @@ public class MemberCardService extends ShopBaseService {
 		}
 		if (data.getExchangeCount() != null) {
 			chargeMoneyRecord.setExchangCount(data.getExchangeCount());
+		}
+		
+		if(!StringUtils.isBlank(data.getPayment())) {
+			chargeMoneyRecord.setPayment("");
 		}
 		chargeMoneyRecord.insert();
 
@@ -1592,27 +1749,27 @@ public class MemberCardService extends ShopBaseService {
 
 	/**
 	 * 分页查询会员卡领取详情
-	 * 
-	 * @param param
-	 * @return
 	 */
 	public PageResult<CodeReceiveVo> getReceiveList(CodeReceiveParam param) {
+		logger().info("处理遮掩码");
 		PageResult<CodeReceiveVo> result = cardDao.getReceiveListSql(param);
 		/** 处理code 和 card_pwd */
 		for (CodeReceiveVo vo : result.dataList) {
 			String code = vo.getCode();
-			int lengthOfCode = code.length() - 4;
-
-			if (lengthOfCode > 0) {
-				String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+			if(!StringUtils.isBlank(code)) {
+				int lengthOfCode = code.length() - 4;
+				if (lengthOfCode > 0) {
+					String tmp = IntStream.range(0, lengthOfCode).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCode(code.substring(0, 2).concat(tmp).concat(code.substring(lengthOfCode + 2)));
+				}
 			}
-
 			String cardPwd = vo.getCardPwd();
-			int lengthOfCardPwd = cardPwd.length() - 4;
-			if (lengthOfCardPwd > 0) {
-				String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
-				vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+			if(!StringUtils.isBlank(cardPwd)) {
+				int lengthOfCardPwd = cardPwd.length() - 4;
+				if (lengthOfCardPwd > 0) {
+					String tmp = IntStream.range(0, lengthOfCardPwd).mapToObj(i -> "*").collect(Collectors.joining());
+					vo.setCardPwd(cardPwd.substring(0, 2).concat(tmp).concat(cardPwd.substring(lengthOfCardPwd + 2)));
+				}
 			}
 		}
 		return result;
@@ -1677,19 +1834,80 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-
-		PageResult<ActiveAuditVo> results = cardVerifyService.getPageList(param);
-		// deal with industry and education
-		for (ActiveAuditVo activeAuditVo : results.dataList) {
-			// education
-			String educationStr = MemberEducationEnum.getNameByCode(activeAuditVo.getEducation());
-			activeAuditVo.setEducationStr(educationStr);
-			// industry
-			String industry = MemberIndustryEnum.getNameByCode(activeAuditVo.getIndustryInfo());
-			activeAuditVo.setIndustry(industry);
+		logger().info("分页查询激活信息");
+		PageResult<? extends Record> results = cardVerifyService.getPageList(param);
+		PageResult<ActiveAuditVo> res = new PageResult<>();
+		res.setPage(results.getPage());
+		List<ActiveAuditVo> myList = new ArrayList<>();
+		
+		if(results.dataList.size()>0) {
+			// 所有的卡
+			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
+			Map<String, MemberCardRecord> cardMap = cardDao.getCardByNo(nos.toArray(new String[0]));
+			Map<String,List<String>> cardCfgMap = new HashMap<>();
+			// 提前获取激活的选项
+			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
+				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
+				cardCfgMap.put(entry.getKey(), cfg);
+			}
+			for(Record record: results.dataList) {
+				ActiveAuditVo vo = new ActiveAuditVo();
+				vo.setCardNo(record.get(CARD_EXAMINE.CARD_NO));
+				vo.setMobile(record.get(USER.MOBILE));
+				vo.setUsername(record.get(USER.USERNAME));
+				vo.setCreateTime(record.get(CARD_EXAMINE.CREATE_TIME));
+				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
+				vo.setId(record.get(CARD_EXAMINE.ID));
+				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
+				// 激活数据项
+				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
+				for(String name: activationCfg) {
+					if("birthday".equals(name)) {
+						vo.setBirthDayDay(record.get(CARD_EXAMINE.BIRTHDAY_DAY));
+						vo.setBirthDayMonth(record.get(CARD_EXAMINE.BIRTHDAY_MONTH));
+						vo.setBirthDayYear(record.get(CARD_EXAMINE.BIRTHDAY_YEAR));
+					}else if("address".equals(name)){
+						vo.setProvinceCode(record.get(CARD_EXAMINE.PROVINCE_CODE));
+						vo.setCityCode(record.get(CARD_EXAMINE.CITY_CODE));
+						vo.setDistrictCode(record.get(CARD_EXAMINE.DISTRICT_CODE));
+					}else {
+						try {
+							Object value = record.get(Util.humpToUnderline(name));
+							PropertyUtils.setProperty(vo, name, value);
+						} catch (Exception e) {
+							// 该属性为空 
+						}		
+					}
+				}
+				myList.add(vo);
+			}
 		}
-		return results;
-
+		// deal with industry and education
+		for (ActiveAuditVo activeAuditVo : myList) {
+			// education
+			if(activeAuditVo.getEducation()!= null) {
+				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
+				activeAuditVo.setEducationStr(educationStr);
+			}
+			// industry
+			if(activeAuditVo.getIndustryInfo() != null) {
+				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
+				activeAuditVo.setIndustry(industry);
+			}
+			// deal address
+			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
+				Map<String,Object> adMap = new HashMap<>();
+				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
+				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
+				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
+				wxCardActSvc.dealWithAddressCode(adMap);
+				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
+				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
+				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
+			}
+		}
+		res.setDataList(myList);
+		return res;
 	}
 
 	/**
@@ -1746,7 +1964,41 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void rejectActivateAudit(ActiveAuditParam param) {
 		CardExamineRecord record = setRejectData(param);
-		cardDao.updateCardExamine(record);
+		int res = cardDao.updateCardExamine(record);
+		if(res>0) {
+			logger().info("发送订阅消息");
+			CardExamineRecord re = cardDao.getCardExamineRecordById(record.getId());
+			Integer userId = re.getUserId();
+			String cardNo = re.getCardNo();
+			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
+			// 订阅消息
+			String[][] maData = new String[][] {
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{"审核不通过"},
+				{"很遗憾，您提交的会员卡激活申请未通过审核"}
+			};
+			// 公众号消息
+			String[][] mpData = new String[][] {
+				{"审核未通过"},
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{re.getRefuseDesc()},
+				{re.getCreateTime().toLocalDateTime().toString()},
+				{"申请会员卡激活"}
+			};
+			RabbitMessageParam param2 = RabbitMessageParam.builder()
+					.maTemplateData(
+							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(maData).build())
+					.mpTemplateData(
+							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
+					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+					.userIdList(arrayList)
+					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
+			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
+			
+		}
+		
+		
+		
 	}
 
 	/**
@@ -1845,7 +2097,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String code = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!codeList.contains(code) && !cardDao.isExistCode(code)) {
+				if (!codeList.contains(code) && !cardDao.isExistCodeInBatch(code,param.getBatchIdStr())) {
 					codeList.add(code);
 					break;
 				}
@@ -1887,7 +2139,7 @@ public class MemberCardService extends ShopBaseService {
 		for (int i = 0; i < number; i++) {
 			while (true) {
 				String cardNo = generateRandomStr(param.getCodePrefix(), param.getCodeSize());
-				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNo(cardNo)) {
+				if (!cardNoList.contains(cardNo) && !cardDao.isExistCardNoInBatch(cardNo,param.getBatchIdStr())) {
 					cardNoList.add(cardNo);
 					break;
 				}
@@ -1964,26 +2216,18 @@ public class MemberCardService extends ShopBaseService {
     /**
      * 	小程序装修会员卡模块显示异步调用
      * status : -1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
-     * @param cardId
+     * @param moduleCard
      * @param userId
      * @return
      */
-	public MemberCardPageDecorationVo getPageIndexMemberCard(int cardId,int userId){
-        MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(cardId)).fetchSingle().into(MemberCardPageDecorationVo.class);
-
-        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
-            //已停用
-            vo.setStatus((byte)3);
-        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
-            //已过期
-            vo.setStatus((byte)2);
-        }
-
+	public MemberCardPageDecorationVo getPageIndexMemberCard(ModuleCard moduleCard, int userId){
+        MemberCardPageDecorationVo vo = db().select().from(MEMBER_CARD).where(MEMBER_CARD.ID.eq(moduleCard.getCardId())).fetchSingle().into(MemberCardPageDecorationVo.class);
+        vo.setCardId(vo.getId());
         //用户已经领取该卡的数量
-        int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,cardId);
+        int userHasGotNumber = userCardService.userCardDao.getNumHasSendUser(userId,moduleCard.getCardId());
         if(vo.getCardType().equals(MCARD_TP_LIMIT)){
             //限次卡，还有库存 或 不限库存
-        	int hasSend = userCardService.userCardDao.calcNumCardById(cardId);
+        	int hasSend = userCardService.userCardDao.calcNumCardById(moduleCard.getCardId());
         	boolean canSend = vo.getStock() > 0 && hasSend < vo.getStock();
             if(vo.getStock() == 0 || canSend){
                 if(vo.getLimit() == null || vo.getLimit() == 0 || userHasGotNumber < vo.getLimit()){
@@ -1999,7 +2243,7 @@ public class MemberCardService extends ShopBaseService {
         }else if(vo.getCardType().equals(MCARD_TP_GRADE)){
             //只要拥有一张等级卡，就认为是已领取
         	MemberCardRecord mCard = userCardService.userCardDao.getUserGradeCard(userId);
-            if( mCard != null && cardId == mCard.getId()){
+            if( mCard != null && moduleCard.getCardId() == mCard.getId()){
             	if(CardUtil.isStopUsing(mCard.getFlag())) {
             		vo.setStatus((byte)3);
             	}else {
@@ -2019,7 +2263,15 @@ public class MemberCardService extends ShopBaseService {
                 vo.setStatus((byte)-1);
             }
         }
+        if(vo.getFlag().equals(CardConstant.MCARD_FLAG_STOP)){
+            //已停用
+            vo.setStatus((byte)3);
+        }else if(vo.getExpireType().equals(MCARD_ET_FIX) && DateUtil.getLocalDateTime().after(vo.getEndTime())){
+            //已过期
+            vo.setStatus((byte)2);
+        }
         logger().info("卡->status: "+vo.getStatus());
+        
         //图片域名
         String shopAvatar = saas().shop.getShopAvatarById(getShopId());
         if(StringUtil.isNotEmpty(shopAvatar)){
@@ -2030,6 +2282,8 @@ public class MemberCardService extends ShopBaseService {
         if(StringUtil.isNotEmpty(vo.getBgImg())){
             vo.setBgImg(domainConfig.imageUrl(vo.getBgImg()));
         }
+
+        vo.setHiddenCard(moduleCard.getHiddenCard());
 
         return vo;
     }
@@ -2054,29 +2308,26 @@ public class MemberCardService extends ShopBaseService {
 	}
 
 	public void sendCoupon(Integer userId, Integer cardId) {
+		logger().info("开卡赠送优惠券或优惠券礼包");
 		MemberCardRecord mCard = getCardById(cardId);
 		if(mCard==null) {
 			return;
 		}
 		if(CardUtil.isOpenCardSendCoupon(mCard.getSendCouponSwitch())) {
-			return;
+			List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
+			if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
+				couponGiveService.sendVoucher(userId,sendCouponList,CouponSrcConstant.OPEN_CARD);
+			}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
+				// TODO  
+				logger().info("虚拟商品下单");
+				// cardOrder.createCardOrder()
+			}
 		}
-		List<Integer> sendCouponList = CardUtil.parseCouponList(mCard.getSendCouponIds());
-		if(CardUtil.isSendCoupon(mCard.getSendCouponType()) && sendCouponList.size()>0) {
-			couponGiveService.sendVoucher(userId,sendCouponList,cardId,19,(byte)1);
-		}else if(NumberUtils.BYTE_ONE.equals(mCard.getSendCouponType()) || sendCouponList.size()>0){
-			// TODO  
-			logger().info("虚拟商品下单");
-			// cardOrder.createCardOrder()
-		}
-		
 	}
 	
 	public List<String> getAllNoDeleteCardGrade(){
 		return gradeCardService.getAllNoDeleteCardGrade();
 	}
-	
-	
 	
 	/**
 	 * 获取处理背景色与背景图片
@@ -2103,9 +2354,388 @@ public class MemberCardService extends ShopBaseService {
 		return bean;
 	}
 	
+	/**
+	 * 持卡会员导出
+	 * @param param
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getAllCardHolderExport(CardHolderParam param,String lang) {
+		List<CardHolderExcelVo> allCardHolderAll = cardDao.getAllCardHolderAll(param);
+		String expire = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ONOK, "excel","messages");
+		String ok = Util.translateMessage(lang, JsonResultMessage.USER_CARD_OK, "excel","messages");
+		String abolition = Util.translateMessage(lang, JsonResultMessage.USER_CARD_ABOLITION, "excel","messages");
+		for (CardHolderExcelVo item : allCardHolderAll) {
+			if (item.getExpireTime() != null &&
+					DateUtil.getLocalDateTime().after(item.getExpireTime())) {
+				String dateFormat = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, item.getUpdateTime());
+				item.setNflag(abolition+"("+dateFormat+")");
+			}else {
+				Byte flag = item.getFlag();
+				if(Objects.equals(flag, (byte)0)) {
+					item.setNflag(ok);
+				}
+				if(Objects.equals(flag, (byte)2)) {
+					item.setNflag(expire);
+				}
+			}
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(allCardHolderAll, CardHolderExcelVo.class);
+		return workbook;
+	}
+	
+	/**
+	 * 领取码导入模板
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getCardNoTemplate(String lang) {
+		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
+		for (int i = 11; i < 21; i++) {
+			CardNoExcelVo vo = new CardNoExcelVo();
+			vo.setCode("C1111" + i);
+			list.add(vo);
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, CardNoExcelVo.class);
+		return workbook;
+	}
+	/**
+	 * 文件导入领取码
+	 * @param lang
+	 * @param param
+	 * @return
+	 */
+	public CardInsertVo insertCardNo(String lang, CardBatchParam param) {
+		MultipartFile multipartFile = param.getFile();
+		ExcelTypeEnum type = ExcelUtil.checkFile(multipartFile);
+		if (type == null) {
+			// 文件类型不正确，请上传Excel文件
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_ERRO,0);
+		}
+		Workbook workbook = null;
+		try {
+			InputStream inputStream = multipartFile.getInputStream();
+			workbook = ExcelFactory.createWorkbook(inputStream, type);
+		} catch (IOException e) {
+			logger().info("excel读取错误");
+			logger().info(e.getMessage(), e);
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_READ_ERRO,0);
+		}
+		UserImExcelWrongHandler handler = new UserImExcelWrongHandler();
+		ExcelReader excelReader = new ExcelReader(lang, workbook, handler);
+		Byte receiveAction = param.getReceiveAction();
+		if (Objects.equals(receiveAction, (byte) 1)) {
+			logger().info("领取码");
+			List<CardNoExcelVo> models = excelReader.readModelList(CardNoExcelVo.class);
+			return importCardCode(models, param);
+		}
+		if (Objects.equals(receiveAction, (byte) 2)) {
+			logger().info("卡号+密码");
+			List<CardNoPwdExcelVo> models = excelReader.readModelList(CardNoPwdExcelVo.class);
+			return importCardPwd(models, param);
+		}
+		logger().info("excelReader："+excelReader);
+		return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
+	}
+	
+	/**
+	 * 插入领取码
+	 * @param list
+	 * @param param
+	 * @return
+	 */
+	public CardInsertVo importCardCode(List<CardNoExcelVo> list,CardBatchParam param) {
+		int newNumber = list.size();
+		if (newNumber > 10000) {
+			// return 单个批次不能超过10000';
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MAX,0);
+		}
+		if (newNumber == 0) {
+			// return 单个批次不能为0';
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MIN,0);
+		}
+		List<String> list2 = new ArrayList<String>();
+		for (CardNoExcelVo cardNoExcelVo : list) {
+			list2.add(cardNoExcelVo.getCode());
+		}
+		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
+		if (isRepeat) {
+			// return "存在重复的领取码，请检查！";
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_HAVE_SAME,0);
+		}
+		CardBatchParam param2=new CardBatchParam();
+		param2.setAction((byte)2);
+		param2.setNumber(newNumber);
+		param2.setBatchName(param.getBatchName());
+		param2.setBatchIdStr(param.getBatchIdStr());
+		Integer batchId = cardDao.createCardBatch(param2);
+		if(batchId==0) {
+			logger().info("生成batchId错误");
+			return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
+		}
+		Integer groupId = cardDao.generateGroupId(batchId);
+		param2.setBatchId(batchId);
+		param2.setGroupId(groupId);
+		int num = cardDao.insertCardReceiveCodeByCheck(param2, list2);
+		if(num==0) {
+			logger().info("导入存在问题");
+			return new CardInsertVo(JsonResultCode.CODE_FAIL,0);
+		}
+		return new CardInsertVo(JsonResultCode.CODE_SUCCESS,batchId);
+	}
 	
 	
+	/**
+	 * 插入卡号密码
+	 * @param list
+	 * @param param
+	 * @return
+	 */
+	public CardInsertVo importCardPwd(List<CardNoPwdExcelVo> list,CardBatchParam param) {
+		int newNumber = list.size();
+		if (newNumber > 10000) {
+			// return 单个批次不能超过10000';
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MAX, 0);
+		}
+		if (newNumber == 0) {
+			// return 单个批次不能为0';
+			return new CardInsertVo(JsonResultCode.CODE_EXCEL_NUM_MIN, 0);
+		}
+		List<String> list2 = new ArrayList<String>();
+		List<String> list3 = new ArrayList<String>();
+		for (CardNoPwdExcelVo cardNoExcelVo : list) {
+			list2.add(cardNoExcelVo.getCardNo());
+			list3.add(cardNoExcelVo.getCardPwd());
+		}
+//		boolean isRepeat = list2.size() != new HashSet<String>(list2).size();
+//		if (isRepeat) {
+//			// return "存在重复的卡号，请检查！";
+//			return JsonResultCode.CODE_EXCEL_HAVE_SAME;
+//		}
+		CardBatchParam param2=new CardBatchParam();
+		param2.setAction((byte)2);
+		param2.setNumber(newNumber);
+		param2.setBatchName(param.getBatchName());
+		Integer batchId = cardDao.createCardBatch(param2);
+		if(batchId==0) {
+			logger().info("生成batchId错误");
+			return new CardInsertVo(JsonResultCode.CODE_FAIL, 0);
+		}
+		Integer groupId = cardDao.generateGroupId(batchId);
+		param2.setBatchId(batchId);
+		param2.setGroupId(groupId);
+		int num = cardDao.insertIntoCardReceiveCodeByCheck(param2, list2,list3);
+		if(num==0) {
+			logger().info("导入存在问题");
+			return new CardInsertVo(JsonResultCode.CODE_FAIL, 0);
+		}
+		return new CardInsertVo(JsonResultCode.CODE_SUCCESS, batchId);
+	}
+
+	/**
+	 * 获得生成/导入记录
+	 * @param batchId
+	 * @return
+	 */
+	public BatchGroupVo getBatchGroupList(Integer batchId) {
+		CardBatchRecord batch = cardDao.getBatch(batchId);
+		if(batch==null) {
+			return new BatchGroupVo();
+		}
+		CardBatchDetailVo into = batch.into(CardBatchDetailVo.class);
+		List<CodeReceiveVo> list = cardDao.getBatchGroupList(batchId);
+		int successNum = 0;
+		int failNum = 0;
+		boolean flag=false;
+		for (CodeReceiveVo vo : list) {
+			if(StringUtil.isEmpty(vo.getCode())) {
+				flag=true;
+			}
+			String errorMsg = vo.getErrorMsg();
+			if (StringUtils.isEmpty(errorMsg)) {
+				successNum++;
+			} else {
+				failNum++;
+			}
+		}
+		return new BatchGroupVo(batchId, successNum, failNum,into.getName(),into.getCreateTime(),flag);
+	}
 	
 	
+	/**
+	 * 返回Excel信息
+	 * 
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getExcel(Integer batchId, String lang, Boolean success, Boolean isPwd) {
+		if (success) {
+			logger().info("获取导入成功的信息");
+			if (isPwd) {
+				logger().info("卡号+密码领取导出");
+				return getModelPwdMsg(lang, null, getSuccessPwdById(batchId, lang));
+			} else {
+				logger().info("领取码领取导出");
+				return getModelMsg(lang, null, getSuccessById(batchId, lang));
+			}
+		} else {
+			logger().info("获取导入失败的信息");
+			if (isPwd) {
+				logger().info("卡号+密码领取导出");
+				return getModelPwdMsg(lang, getErrorMsgPwdById(batchId, lang), null);
+			} else {
+				logger().info("领取码领取导出");
+				return getModelMsg(lang, getErrorMsgById(batchId, lang), null);
+			}
+		}
+
+	}
+
+	/**
+	 * 领取码领取导出
+	 * @param lang
+	 * @param list
+	 * @param list2
+	 * @return
+	 */
+	public Workbook getModelMsg(String lang, List<CardNoExcelFailVo> list, List<CardNoExcelVo> list2) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		if (null == list) {
+			excelWriter.writeModelList(list2, CardNoExcelVo.class);
+		}
+		if (null == list2) {
+			excelWriter.writeModelList(list, CardNoExcelFailVo.class);
+		}
+		return workbook;
+	}
+
+	/**
+	 * 查询领取码错误的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoExcelFailVo> getErrorMsgById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, false);
+		List<CardNoExcelFailVo> list = new ArrayList<CardNoExcelFailVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoExcelFailVo.class);
+		}
+		for (CardNoExcelFailVo vo : list) {
+			String errorMsg = CardNoImportTemplate.getNameByCode(vo.getErrorMsg(), lang);
+			if (StringUtil.isNotEmpty(errorMsg)) {
+				vo.setErrorMsg(errorMsg);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * 查询领取码正确的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoExcelVo> getSuccessById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, true);
+		List<CardNoExcelVo> list = new ArrayList<CardNoExcelVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoExcelVo.class);
+		}
+		return list;
+	}
+	
+	/**
+	 * 卡号+密码领取导出
+	 * @param lang
+	 * @param list
+	 * @param list2
+	 * @return
+	 */
+	public Workbook getModelPwdMsg(String lang, List<CardNoPwdExcelFailVo> list, List<CardNoPwdExcelVo> list2) {
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		if (null == list) {
+			excelWriter.writeModelList(list2, CardNoPwdExcelVo.class);
+		}
+		if (null == list2) {
+			excelWriter.writeModelList(list, CardNoPwdExcelFailVo.class);
+		}
+		return workbook;
+	}
+	
+	/**
+	 * 查询卡号+密码错误的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoPwdExcelFailVo> getErrorMsgPwdById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, false);
+		List<CardNoPwdExcelFailVo> list = new ArrayList<CardNoPwdExcelFailVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoPwdExcelFailVo.class);
+		}
+		for (CardNoPwdExcelFailVo vo : list) {
+			String errorMsg = CardNoImportTemplate.getNameByCode(vo.getErrorMsg(), lang);
+			if (StringUtil.isNotEmpty(errorMsg)) {
+				vo.setErrorMsg(errorMsg);
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * 查询卡号+密码正确的
+	 * @param batchId
+	 * @param lang
+	 * @return
+	 */
+	private List<CardNoPwdExcelVo> getSuccessPwdById(Integer batchId, String lang) {
+		Result<CardReceiveCodeRecord> fetch = cardDao.getBatchGroupListByMsg(batchId, true);
+		List<CardNoPwdExcelVo> list = new ArrayList<CardNoPwdExcelVo>();
+		if (fetch != null) {
+			list = fetch.into(CardNoPwdExcelVo.class);
+		}
+		return list;
+	}
+	
+	/**
+	 * 会员卡号+密码模板
+	 * @param lang
+	 * @return
+	 */
+	public Workbook getCardNoPwdTemplate(String lang) {
+		List<CardNoPwdExcelVo> list = new ArrayList<CardNoPwdExcelVo>();
+		for (int i = 11; i < 21; i++) {
+			CardNoPwdExcelVo vo = new CardNoPwdExcelVo();
+			vo.setCardNo("C1111" + i);
+			vo.setCardPwd("123456");
+			list.add(vo);
+		}
+		Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+		ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+		excelWriter.writeModelList(list, CardNoPwdExcelVo.class);
+		return workbook;
+	}
+	
+	/**
+	 * 	获取会员卡的分享二维码
+	 * @param cardId
+	 */
+	public ShareQrCodeVo getShareCode(Integer cardId) {
+		String paramStr = String.format("cardId=%d&inviteId=", cardId);
+		String imageUrl = qrCodeService.getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,paramStr);
+		ShareQrCodeVo vo = new ShareQrCodeVo();
+		vo.setImageUrl(imageUrl);
+		vo.setPagePath(QrCodeTypeEnum.USER_CARD_INFO.getPathUrl(paramStr));
+		return vo;
+	}
 	
 }

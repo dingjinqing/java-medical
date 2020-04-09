@@ -22,7 +22,8 @@ export const cn = {
   analysis_visit_source: ['概况', '来源分析'],
   // 概况 用户画像
   analysis_portrait: ['概况', '用户画像'],
-
+  // 概况 实时概况
+  situation: ['概况', '实时概况'],
   // 小程序管理 页面分类
   pageClassification: ['小程序管理', '页面分类'],
   // 小程序管理 图片空间
@@ -131,7 +132,7 @@ export const cn = {
   // 营销管理 多人拼团 拼团退款失败订单
   pin_group_activityEffectData: ['营销管理', '多人拼团', '活动效果数据'],
   // 营销管理 砍价
-  bargain: ['营销管理', '砍价'],
+  kanjia: ['营销管理', '砍价'],
   // 营销管理 砍价
   bargain_activity: ['营销管理', '砍价', '砍价活动'],
   // 营销管理 砍价订单
@@ -160,7 +161,7 @@ export const cn = {
   // 营销管理 好友助力参与明细
   promote_participate_details: ['营销管理', '好友助力', '好友助力活动参与明细'],
   // 营销管理 分享有礼
-  share_polite: ['营销管理', '分享有礼'],
+  share_award: ['营销管理', '分享有礼'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: ['营销管理', '分享有礼', '领取明细'],
   // 营销管理 分享有礼 添加分享有礼活动
@@ -179,6 +180,8 @@ export const cn = {
   group_user_detail: ['营销管理', '拼团抽奖', '获取新用户明细'],
   // 营销管理 拼团抽奖 开团明细
   group_detail: ['营销管理', '拼团抽奖', '开团明细'],
+  // 营销管理 拼团抽奖 活动效果
+  group_effect: ['营销管理', '拼团抽奖', '效果数据'],
 
   // 营销管理 分销
   distribution_info: ['营销管理', '分销'],
@@ -211,7 +214,7 @@ export const cn = {
   // 营销管理 优惠券礼包 订单明细
   coupon_Package_order_details: ['营销管理', '优惠券礼包', '订单明细'],
   // 营销管理 好友代付
-  friend_pay: ['营销管理', '好友代付'],
+  insteadpay: ['营销管理', '好友代付'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['营销管理', '幸运大抽奖'],
   // 营销管理 幸运大抽奖 抽奖明细
@@ -225,7 +228,7 @@ export const cn = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['营销管理', '限时降价', '效果数据'],
   // 营销管理 打包一口价
-  package_price: ['营销管理', '打包一口价'],
+  package: ['营销管理', '打包一口价'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: ['营销管理', '打包一口价', '参与明细'],
   // 营销管理 开屏有礼
@@ -233,7 +236,7 @@ export const cn = {
   // 营销管理 开屏有礼 活动明细
   open_screen_detail: ['营销管理', '开屏有礼', '活动明细'],
   // 营销管理 评价有礼
-  evaluation_gifted: ['营销管理', '评价有礼'],
+  comment_gift: ['营销管理', '评价有礼'],
   // 营销管理 首单特惠
   first_special: ['营销管理', '首单特惠'],
   // 营销管理 首单特惠 首单特惠订单
@@ -247,9 +250,9 @@ export const cn = {
   // 营销管理 定金膨胀修改
   presale_edit: ['营销管理', '修改定金膨胀活动'],
   // 营销管理 定金膨胀订单
-  presale_order_detail: ['营销管理', '查看活动订单'],
+  presale_order_detail: ['营销管理', '定金膨胀', '查看活动订单'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['营销管理', '活动明细'],
+  presale_detail: ['营销管理', '定金膨胀', '活动明细'],
   // 营销活动 普通优惠券
   ordinaryCoupon: ['营销管理', '普通优惠券'],
   // 营销管理 秒杀
@@ -267,7 +270,6 @@ export const cn = {
   // 营销管理 秒杀
   shipping: ['营销管理', '满包邮'],
   // 营销管理 加价购
-  increase_purchase: ['营销管理', '加价购'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: ['营销管理', '加价购', '换购订单'],
   // 营销管理 加价购 换购明细
@@ -306,7 +308,6 @@ export const cn = {
   full_cut: ['营销管理', '满折满减'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['营销管理', '满折满减活动'],
-
   // 订单管理 全部订单
   order: ['订单管理', '全部订单'],
   // 订单管理 查看详情

@@ -9,7 +9,10 @@
           :label="$t('distribution.distributionCfg')"
           name="first"
         >
-          <distributeSetting @tabChange="tabChange" />
+          <distributeSetting
+            @tabChange="tabChange"
+            @inviteCode="inviteCodeHandler"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorLevelCfg')"
@@ -27,13 +30,19 @@
           :label="$t('distribution.distributorList')"
           name="fouth"
         >
-          <distributorList />
+          <distributorList
+            :inviteFlag="inviteCode"
+            :optGroupId="optGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.distributorGroup')"
           name="fifth"
         >
-          <distributorGroup />
+          <distributorGroup
+            @tabChange="tabChange"
+            @optGroupId="getGroupId"
+          />
         </el-tab-pane>
         <el-tab-pane
           :label="$t('distribution.commissionStatistics')"
@@ -96,10 +105,18 @@ export default {
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      inviteCode: '',
+      optGroupId: 0
     }
   },
   mounted () {
+    this.$http.$on('toChangeActiveName', (flag) => {
+      if (flag) {
+        this.activeName = 'first'
+      }
+    })
+
     // 店铺助手跳转分销审核
     console.log(this.$route.params)
     if (this.$route.params.flag === 1) {
@@ -110,12 +127,19 @@ export default {
     }
   },
   methods: {
-    handleClick () {
-      // console.log(tab)
-
+    handleClick (tab) {
+      console.log(tab.index)
+      this.$http.$emit('distributionTap', tab.index)
     },
     tabChange () {
       this.activeName = 'fouth'
+    },
+    getGroupId (data) {
+      this.optGroupId = data
+      console.log(this.optGroupId)
+    },
+    inviteCodeHandler (val) {
+      this.inviteCode = val
     }
     // advertisementList()
   }

@@ -1,6 +1,5 @@
 {
-  "navigationBarTitleText": "商品搜索",
   "usingComponents": {
-    "v-recommend":"/components/item/recommend/index"
+    "v-recommend": "/components/item/recommend/index"
   }
 }

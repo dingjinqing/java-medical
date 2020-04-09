@@ -63,8 +63,16 @@ export const cn = {
   levelTips: '用于区分不同支付有礼活动的优先级，请填写正整数，数值越大优先级越高',
   relationship: '以下条件为"且"的关系',
   goodsCondition: '商品条件：',
-  selectedClassfication: '已选择分类：',
-  selectedNumber: '个分类',
+  selectedClassfication: [
+    '已选择商品：',
+    '已选择分类：',
+    '已选择分类：'
+  ],
+  selectedNumber: [
+    '个商品',
+    '个分类',
+    '个分类'
+  ],
   payCondition: '支付条件：',
   everyOrder: '每笔订单满',
   everyOrderTips: '元，参与活动',

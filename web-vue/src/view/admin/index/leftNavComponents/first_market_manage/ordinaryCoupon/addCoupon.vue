@@ -463,7 +463,7 @@
                 <el-form-item
                   :label="$t('ordinaryCoupon.suitGoods') + '：'"
                   prop="availableGoods"
-                  :style="{height:param.availableGoods === 1 ? '240px':''}"
+                  :style="{height:param.availableGoods === 1 ? '200px':''}"
                 >
                   <div>
                     <p>
@@ -497,9 +497,21 @@
                         >
                           <i class="el-icon-plus"></i> {{item.name}}
                         </el-button>
-                        <div v-if="index === 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
-                        <div v-if="index === 1">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }}</div>
-                        <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div>
+                        <div
+                          style="color: #e4393c; cursor: pointer;"
+                          v-if="index === 0"
+                          @click="onlyHanldeToAddGoodS(index)"
+                        >{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip2') }}</div>
+                        <div
+                          style="cursor: pointer;"
+                          v-if="index === 1"
+                          @click="hanldeToAddGoodS(index)"
+                        >
+                          <span v-if="busClass.length > 0">{{ $t('ordinaryCoupon.suitGoodsTip1') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                          <span v-else>{{ $t('ordinaryCoupon.suitGoodsTip6') }}{{ $t('ordinaryCoupon.suitGoodsTip5') }}</span>
+                        </div>
+                        <!-- {{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip3') }} -->
+                        <!-- <div v-if="index === 2">{{ $t('ordinaryCoupon.suitGoodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('ordinaryCoupon.suitGoodsTip4') }}</div> -->
                       </div>
                     </div>
                   </div>
@@ -531,6 +543,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
@@ -538,7 +551,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      @backDataArr="commInfo"
+      :backDataArr="commInfo"
     />
   </div>
 </template>
@@ -701,8 +714,8 @@ export default {
       paramRules: {
         type: { required: true, message: this.$t('ordinaryCoupon.validateType'), trigger: 'change' },
         actName: [
-          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'blur' },
-          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'blur' }
+          { required: true, message: this.$t('ordinaryCoupon.validateactName1'), trigger: 'change' },
+          { max: 10, message: this.$t('ordinaryCoupon.validateactName2'), trigger: 'change' }
         ],
         validityType: { required: true, validator: validateTime, trigger: 'change' },
         validityType1: { validator: validateTime1, trigger: 'change' },
@@ -750,6 +763,7 @@ export default {
 
       noneBlockDiscArr: [], // 指定商品
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -765,6 +779,13 @@ export default {
       platClassRow: [],
       // 平台分类/商家分类共享变量
       commInfo: []
+    }
+  },
+  watch: {
+    'param.couponDate': function (newVal) {
+      if (newVal === null) {
+        this.param.couponDate = ''
+      }
     }
   },
   mounted () {
@@ -885,14 +906,14 @@ export default {
           if (data.recommendGoodsId !== '' || data.recommendCatId !== '' || data.recommendSortId !== '') {
             // 指定商品
             this.param.availableGoods = 1
-            this.goodsInfo = data.recommendGoodsId.split(',')
+            this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
             this.goodsInfo = this.goodsInfo.map(Number)
 
-            this.busClass = data.recommendCatId.split(',')
+            this.busClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
             this.busClass = this.busClass.map(Number)
 
-            this.platClass = data.recommendSortId.split(',')
-            this.platClass = this.platClass.map(Number)
+            // this.platClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
+            // this.platClass = this.platClass.map(Number)
           } else {
             // 全部商品
             this.param.availableGoods = 0
@@ -997,6 +1018,30 @@ export default {
       console.log(index)
       switch (index) {
         case 0:
+          this.isOnlyShowChooseGoods = false
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+      console.log(this.commInfo)
+    },
+    // 点击指定商品出现的添加类弹窗汇总--部分
+    onlyHanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.isOnlyShowChooseGoods = true
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:

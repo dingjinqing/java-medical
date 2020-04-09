@@ -162,8 +162,8 @@
               </td>
               <td class="link">
                 <div class="operateDiv">
-                  <span @click="jumpToChargeDetail(item)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
-                  <span>-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
+                  <span @click="jumpToChargeDetail(item,1)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
+                  <span @click="jumpToChargeDetail(item,2)">-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
                   <span
                     v-if="!item.deleteShow"
                     @click="deleteUserCard(item)"
@@ -277,6 +277,8 @@ export default {
     this.userId = this.$route.query.id
     this.username = this.$route.query.name
     this.nameInput = this.$route.query.name
+    this.phoneNum = this.$route.query.phoneNum
+    this.CardTypeValue = this.$route.query.cardType
     console.log(this.userId, this.username)
 
     // 加载数据
@@ -425,13 +427,17 @@ export default {
       this.modifyDialogData.visiable = false
     },
 
-    jumpToChargeDetail (item) {
+    jumpToChargeDetail (item, flag) {
       // 充值明细
       this.$router.push({
         name: 'refillDetailsItem',
         query: {
           cardNo: item.cardNo,
-          cardType: item.cardType
+          cardType: item.cardType,
+          cardId: item.cardId,
+          userId: item.userId,
+          username: item.username,
+          activeName: flag
         }
       })
     }

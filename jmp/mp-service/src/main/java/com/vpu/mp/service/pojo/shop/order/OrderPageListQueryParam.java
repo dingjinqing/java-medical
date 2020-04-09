@@ -61,7 +61,7 @@ public class OrderPageListQueryParam {
 	public Byte[] pinStatus;
 
 	/**
-	 * 退货退款订单特色参数
+	 * 退货退款订单特色参数start
 	 */
     /**退款订单id*/
     public Integer[] retIds;
@@ -75,10 +75,19 @@ public class OrderPageListQueryParam {
 	public Timestamp returnEnd;
 	/** 退款退货状态*/
 	public Byte refundStatus;
+	/**状态集合:null全部；1商家待处理；2买家待处理；3已完成*/
+	public Byte stateCollection;
+    /**
+     * 退货退款订单特色参数end
+     */
     /**营销活动主键 过滤某营销活动订单*/
 	public Integer activityId;
 	/**用户id*/
 	public Integer userId;
+	/**快递单号*/
+	public String shippingNo;
+	/**TODO 订单来源 : 0 自营订单; 1平台订单（欧派寺库）*/
+	public Byte orderSource;
 	/**店铺助手查询动作*/
 	private Byte shopHelperAction;
 	/**店铺助手操作天数，默认3*/

@@ -706,6 +706,15 @@ export default {
               this.defaultValue = this.form.bg_img
             }
           }
+
+          // 邀请码是否选中
+          this.form.activation_cfg.forEach((item, index) => {
+            if (item === '邀请码' || item === 'Invitation code') {
+              this.$emit('inviteCode', true)
+            } else {
+              this.$emit('inviteCode', false)
+            }
+          })
         }
       })
     },
@@ -914,7 +923,7 @@ export default {
 
     // 跳转推广文案配置
     copyWritingHandler () {
-      this.$router.push({ name: 'distribution_copyWriting' })
+      this.$router.push({ name: 'distribution_info_copyWriting' })
     },
 
     // 跳转分销员列表

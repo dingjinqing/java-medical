@@ -62,8 +62,8 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	final public static String SCORE_DOCUMENT = "score_document";
 	// 积分兑换比
 	final public static String SCORE_PROPORTION = "score_proportion";
-	
-	
+	//订单折后金额是否包含运费 
+	public static final String DISCOUNT_HAS_SHIPPING="discount_has_shipping";
 	
 	//-------------------------------------------------------
 	
@@ -184,7 +184,7 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 	
 	public void setSignInScore(UserScoreSetValue obj){
 		if(obj == null) {
-			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0],BYTE_ZERO); 
 		}
 		String json = Util.toJson(obj);
 		set(SIGN_IN_SCORE, json,UserScoreSetValue.class);
@@ -194,9 +194,12 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 		UserScoreSetValue obj = null;
 		String value = get(SIGN_IN_SCORE);
 		if(value==null) {
-			obj = new UserScoreSetValue(BYTE_ZERO,new String[0]); 
+			obj = new UserScoreSetValue(BYTE_ZERO,new String[0],BYTE_ZERO); 
 		}else {
 			obj = Util.parseJson(value,UserScoreSetValue.class);
+			Byte signInRules2 = obj.getSignInRules();
+			signInRules2 = null == signInRules2 ? (byte) 0 : signInRules2;
+			obj.setSignInRules(signInRules2);
 		}
 		return obj;
 	}
@@ -223,6 +226,15 @@ public class BaseScoreCfgService extends BaseShopConfigService {
 
 	public Integer getScoreProportion() {
 		return get(SCORE_PROPORTION,Integer.class,SCORE_PROPORTION_LIST.get(2));
+	}
+	
+	
+	public void setDiscount(String value) {
+		set(DISCOUNT_HAS_SHIPPING, value);
+	}
+
+	public String getDiscount() {
+		return get(DISCOUNT_HAS_SHIPPING,String.class,"1");
 	}
 	
 }

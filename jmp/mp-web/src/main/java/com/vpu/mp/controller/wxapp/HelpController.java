@@ -59,6 +59,6 @@ public class HelpController extends HelpBaseController {
 		log.info("进入签到帮助页");
 		checkId();
 		CheckSignVo sCheckSignVo = saas.getShopApp(shop_id).userCard.scoreService.checkSignInScore(user_id);
-		return success(sCheckSignVo.getSignRule());
+		return success(sCheckSignVo);
 	}
 }

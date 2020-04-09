@@ -1,5 +1,5 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n" />
-<view class="goods-group-container" id="{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
+<view class="goods-group-container" id="c_{{m.cur_idx}}" style="min-height:{{m.fix_height}}px">
 	<!-- 顶部分组 -->
 	<block wx:if="{{m.position_style == '0' }}">
 		<view class='content_scroll_view'>
@@ -50,9 +50,9 @@
 							<view class='group_delete' wx:if='{{item.is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
 						</view>
 						<view class='module_text'>
-							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -84,17 +84,17 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!=1&&item.activityType!=5&&item.activityType!=3 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 
 
 
 
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:52rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
-									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goods_id}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
+									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
 
 
 
@@ -125,9 +125,9 @@
 							<include src="../product/goodscommon/labelcommon.wxml" />
 						</view>
 						<view class='module_text'>
-							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+							<view class='module_goods_name' >
 								<block wx:if='{{item.goods_type != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -160,7 +160,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5 }}">
@@ -203,9 +203,9 @@
 							<view class='group_delete' wx:if='{{item.is_delete == 1}}'>{{i18n.$t(localePack,'components.decorate.goodsDeleted')}}</view>
 						</view>
 						<view class='module_text' wx:if="{{item.activityType!=1|| item.activityType!=3 ||item.activityType!=5}}}}">
-							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType == 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -215,6 +215,7 @@
 										 wx:for="{{item.activityLabelData}}"
 										 wx:for-item="itemC"
 										 wx:for-index='indexC'
+										 wx:if="{{indexC!=(item.activityLabelData.length-1)|| indexC==0}}"
 										>
 											{{itemC.text}}
 										</view>
@@ -229,15 +230,15 @@
 									<view class='sale_price' wx:if='{{item.activityType != 10}}' style='color:{{comColor}};'>￥{{item.realPrice}}</view>
 									<view class='sale_price' wx:if='{{item.activityType == 10}}' style='color:{{comColor}};'>￥{{item.linePrice}}</view>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10}}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5}}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:4rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 								</block>
 							</view>
 						</view>
 						<view class='module_text' wx:else>
-								<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
-								<view class='van-ellipsis'>{{item.goodsName}}</view>
+							<view class='module_goods_name' >
+								<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
 								<view class='title_label' style="border:none">
 									<view class='pin_flagThree' style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}">{{item.activityType==1?i18n.$t(localePack,'components.decorate.assemble'):item.activityType==3?i18n.$t(localePack,'components.decorate.bargain'):i18n.$t(localePack,'components.decorate.seckill')}}</view>
 								</view>
@@ -271,7 +272,7 @@
 						 data-click='{{1}}'
 						 data-index="{{index}}"
 						 data-idx="{{m.cur_idx}}"
-						 wx:if="{{m.more_flag == 1 && index == 6 }}"
+						 wx:if="{{m.more_flag == 1 && index == 5 }}"
 						>
 							<view>{{i18n.$t(localePack,'components.decorate.viewMore')}}</view>
 							<view class="see_line" />
@@ -281,9 +282,9 @@
 							<include src="../product/goodscommon/labelcommon.wxml" />
 						</view>
 						<view class='module_text'>
-							<view class='module_goods_name' style='display:{{m.show_name == 1 ? "none":"block"}}'>
+							<view class='module_goods_name' >
 								<block wx:if='{{item.activityType != 10 || item.goodsActivities.length}}'>
-									<view class='van-ellipsis'>{{item.goodsName}}</view>
+									<view class='van-ellipsis' style='display:{{m.show_name == 1 ? "none":"block"}}'>{{item.goodsName}}</view>
 									<view class="title_box">
 
 										<view
@@ -320,10 +321,10 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType !=1&&item.activityType !=3&&item.activityType !=5 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:32rpx;color:{{comColor}};margin-top:3rpx;' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 
@@ -353,8 +354,8 @@
 							<include src="../product/goodscommon/labelcommon.wxml" />
 						</view>
 						<view class='module_text'>
-							<view class='module_goods_name' wx:if='{{m.show_name != 1}}'>
-								<view class='top_title'>
+							<view class='module_goods_name' >
+								<view class='top_title' wx:if='{{m.show_name != 1}}'>
 									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
 								</view>
 								<view class="title_box">
@@ -388,10 +389,10 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3}}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
-								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10 }}">
+								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&& item.activityType != 1&& item.activityType != 3&& item.activityType != 5 }}">
 									<text class='cart_btn iconfont icontianjia' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '0'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn iconfont icongouwuche1' style='font-size:46rpx;color:{{comColor}}' wx:if="{{m.cart_btn_choose == '1'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'/>
 									<text class='cart_btn right_buy_btn' style='background:{{comColor}}' wx:if="{{m.cart_btn_choose == '2'}}" catchtap='bindAddCart' data-goods_id='{{item.goodsId}}'>{{i18n.$t(localePack,'components.decorate.grabAtOnce')}}
@@ -417,7 +418,7 @@
 		>
 			<view class='click_see'>
 				<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
-				<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+				<image lazy-load='{{true}}' src='{{m.imageUrl}}image/wxapp/see_more_down.png' />
 			</view>
 		</view>
 	</block>
@@ -471,10 +472,10 @@
 							<include src="../product/goodscommon/labelcommon.wxml" />
 						</view>
 						<view class='module_text'>
-							<view class='module_goods_name' wx:if='{{m.show_name != 1}}'>
+							<view class='module_goods_name'>
 
-								<view class='top_title'>
-									<view class='van-two-ellipsis'>{{item.goodsName}}</view>
+								<view class='top_title'  wx:if='{{m.show_name != 1}}'>
+									<view class='van-two-ellipsis' >{{item.goodsName}}</view>
 								</view>
 								<view class="title_box">
 
@@ -507,7 +508,7 @@
 										<view class='market_price line-through-none'>{{item.goodsSaleNum > 999 ? '999+' : item.goodsSaleNum}}{{i18n.$t(localePack,'components.decorate.personalPayment')}}</view>
 									</block>
 									<block wx:if="{{m.show_market == 3 }}">
-										<view class='market_price line-through-none'>{{item.goodsNumber > 999 ? '999+' : item.goodsNumber}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
+										<view class='market_price line-through-none'>{{item.commentNum > 999 ? '999+' : item.commentNum}}{{i18n.$t(localePack,'components.decorate.humanEvaluation')}}</view>
 									</block>
 								</block>
 								<block wx:if="{{m.cart_btn == 0 && item.activityType != 10&&item.activityType!=1&&item.activityType!=3&&item.activityType!=5 }}">
@@ -538,7 +539,7 @@
 				>
 					<view class='click_see'>
 						<text>{{i18n.$t(localePack,'components.decorate.viewMore')}}</text>
-						<image lazy-load='{{true}}' src='{{m.imgUrl}}image/wxapp/see_more_down.png' />
+						<image lazy-load='{{true}}' src='{{m.imageUrl}}image/wxapp/see_more_down.png' />
 					</view>
 				</view>
 			</view>

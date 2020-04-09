@@ -38,6 +38,9 @@
   align-items: center;
   margin-right: 20rpx;
 }
+.join-group > .join-item-info > text{
+  white-space: nowrap;
+}
 .join-group > .join-item-info > text:last-of-type{
   color: #666;
 }
@@ -64,9 +67,12 @@
 
 
 .goods-info {
-  padding: 30rpx;
+  padding: 30rpx 0;
   background-color: #fff;
   font-size: 26rpx;
+}
+.goods-info > view {
+  padding: 0 30rpx;
 }
 .goods-info_top {
   display: flex;
@@ -174,4 +180,15 @@
 }
 .reduce-end-info{
   align-self: center;
+}
+.pre-sale-content{
+  flex-direction: column;
+  color: #999;
+  overflow:hidden;
+}
+.pre-sale-content > view{
+  margin-top: 15rpx;
+}
+.pre-sale-content > view:last-of-type{
+  margin-bottom: 15rpx;
 }

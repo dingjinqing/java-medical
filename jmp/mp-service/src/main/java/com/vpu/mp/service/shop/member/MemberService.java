@@ -1,53 +1,95 @@
 package com.vpu.mp.service.shop.member;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import static com.vpu.mp.db.shop.Tables.CHANNEL;
+import static com.vpu.mp.db.shop.Tables.MEMBER_CARD;
+import static com.vpu.mp.db.shop.Tables.ORDER_VERIFIER;
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_CARD;
+import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.date;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.InsertValuesStep2;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectWhereStep;
+import org.jooq.UpdateSetMoreStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.DistributionWithdrawRecord;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
+import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserImportDetailRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.*;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.CardUtil;
+import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.area.AreaCityVo;
 import com.vpu.mp.service.pojo.shop.area.AreaDistrictVo;
 import com.vpu.mp.service.pojo.shop.area.AreaProvinceVo;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
-import com.vpu.mp.service.pojo.shop.member.*;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.member.CommonMemberPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberDetailsVo;
+import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
+import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
+import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.MemberRecordExportVo;
+import com.vpu.mp.service.pojo.shop.member.MemberTransactionStatisticsVo;
+import com.vpu.mp.service.pojo.shop.member.MememberLoginStatusParam;
+import com.vpu.mp.service.pojo.shop.member.SourceNameEnum;
 import com.vpu.mp.service.pojo.shop.member.card.AvailableMemberCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailVo;
 import com.vpu.mp.service.pojo.shop.member.order.UserCenterNumBean;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.tag.UserTagParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.saas.area.AreaSelectService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.DistributorListService;
 import com.vpu.mp.service.shop.distribution.DistributorWithdrawService;
 import com.vpu.mp.service.shop.member.dao.MemberDaoService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.MemberConstant.*;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
 
 
 /**
@@ -85,6 +127,8 @@ public class MemberService extends ShopBaseService {
 	@Autowired
 	public OrderInfoService order;
 	@Autowired
+	public ReturnOrderService returnOrderSvc;
+	@Autowired
 	public AddressService address;
 	@Autowired
 	public DistributorListService distributorListService;
@@ -100,6 +144,13 @@ public class MemberService extends ShopBaseService {
 	public UserCardDaoService userCardDao;
 	@Autowired
 	public UserImportService userImportService;
+	@Autowired
+	public UserExportService userExpSvc;
+	@Autowired
+	public RecordAdminActionService recordAdminActionSvc;
+	@Autowired
+	public CouponService couponSvc;
+	
 	/**
 	 * 导出会员
 	 */
@@ -145,19 +196,17 @@ public class MemberService extends ShopBaseService {
 		/** 获取会员列表的基本信息 */
 		PageResult<MemberInfoVo> memberList = getMemberList(param);
 		logger().info("获取会员列表成功");
-		List<Integer> inDate = userCardService.useInDate();
-		
 		for (MemberInfoVo member : memberList.dataList) {
 			Integer userId = member.getUserId();
 
 			/** 只需要一张会员卡的信息即可 */
-			Record recordInfo = memberDao.getOneMemberCard(inDate, userId);
+			Record recordInfo = memberDao.getOneMemberCard(userId);
 
-				if(recordInfo != null) {
-					String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
-					logger().info(cardName);
-					member.setCardName(cardName);
-				}
+			if(recordInfo != null) {
+				String cardName = recordInfo.get(MEMBER_CARD.CARD_NAME);
+				logger().info(cardName);
+				member.setCardName(cardName);
+			}
 			/** 处理来源信息 */
 			String sourceName = getSourceName(language, member);
 
@@ -175,13 +224,26 @@ public class MemberService extends ShopBaseService {
 	 * 获取会员列表的基本信息 
 	 */
 	private PageResult<MemberInfoVo> getMemberList(MemberPageListParam param) {
-		return memberDao.getMemberList(param);
+		PageResult<MemberInfoVo> memberList = memberDao.getMemberList(param);
+		logger().info("积分检查");
+		for(MemberInfoVo vo: memberList.dataList) {
+			// 积分缓存
+			Integer currentScore = vo.getScore();
+			// 实际积分
+			Integer actualScore = score.getTotalAvailableScoreById(vo.getUserId());
+			if(!currentScore.equals(actualScore)) {
+				// 缓存积分失效需要更新
+				vo.setScore(actualScore);
+				score.updateUserScore(vo.getUserId(), actualScore);
+			}
+		}
+		return memberList;
 	}
 
 	/**
 	 * 获取用户来源
 	 */
-	private String getSourceName(String language, MemberInfoVo member) {
+	public String getSourceName(String language, MemberInfoVo member) {
 		logger().info("正在获取用户来源信息");
 		// 微信后台相关来源
 		String sourceName = SourceNameEnum.getI18NameByCode(member.getScene(), language);
@@ -258,9 +320,23 @@ public class MemberService extends ShopBaseService {
 
 		return select;
 	}
-
+	
+	/**
+	 *  获取用户信息
+	 */
 	public UserRecord getUserRecordById(Integer userId) {
 		UserRecord user = db().selectFrom(USER).where(USER.USER_ID.eq(userId)).fetchAny();
+		// 积分缓存
+		Integer currentScore = user.getScore();
+		// 实际积分
+		Integer actualScore = score.getTotalAvailableScoreById(userId);
+		if(!currentScore.equals(actualScore)) {
+			// 缓存积分失效需要更新
+			logger().info("缓存积分失效需要更新");
+			user.setScore(actualScore);
+			score.updateUserScore(userId, actualScore);
+		}
+		
 		return user;
 	}
 
@@ -294,14 +370,91 @@ public class MemberService extends ShopBaseService {
 	}
 
 	/**
-	 * 批量设置用户的登录状态 ： 禁止登录-恢复登录
+	 * 	批量设置用户的登录状态 ： 禁止登录-恢复登录
 	 */
 	public void changeLoginStatus(MememberLoginStatusParam param) {
+		logger().info("设置用户登录权限");
+		final List<Integer> ids;
+		if(param.getUserIdList() == null || param.getUserIdList().size()==0) {
+			return;
+		}
+		boolean allUserFlag = MememberLoginStatusParam.ALL_USER_ID.equals(param.getUserIdList().get(0));
+		if(allUserFlag && param.getSearchCnt() != null) {
+			ids = getAllUserIdBySeachCond(param.getSearchCnt());
+		}else {
+			ids = param.getUserIdList();
+		}
+		
+		transaction(()->{
+			int num = updateUserLoginPermission(param, ids);
+			if(num > 0) {
+				addLoginOptAdminRec(param, ids, num);
+			}
+		});
+	}
 
-		int result = db().update(USER).set(USER.DEL_FLAG, param.getIsDelete())
-				.where(USER.USER_ID.in(param.getUserIdList())).execute();
 
-		logger().info("更新  " + result + " 条数据");
+	/**
+	 * 	更新用户登录权限
+	 * @return num 更新权限的用户数
+	 */
+	private int updateUserLoginPermission(MememberLoginStatusParam param, final List<Integer> ids) {
+		logger().info("更新用户登录权限");
+		UpdateSetMoreStep<UserRecord> setSql = db().update(USER).set(USER.DEL_FLAG,(byte)param.getPermission().ordinal());
+		int num = 0;
+		if(MememberLoginStatusParam.ALL_USER_ID.equals(ids.get(0))) {
+			logger().info("更新系统中筛选出来的用户的状态");
+			num = setSql.where(USER.USER_ID.in(ids))
+						.and(USER.DEL_FLAG.notEqual((byte)param.getPermission().ordinal()))
+						.execute();
+		}else {
+			logger().info("更新指定用户登录状态");
+			num = setSql.where(USER.USER_ID.in(ids)).execute();
+		}
+		return num;
+	}
+
+
+	/**
+	 * 	记录admin管理员操作用户登录权限的记录
+	 */
+	private void addLoginOptAdminRec(MememberLoginStatusParam param, final List<Integer> ids, int num) {
+		logger().info("记录admin的改变用户登录权限的日志");
+		boolean flag = MememberLoginStatusParam.LoginPermission.on.equals(param.getPermission());
+		if(num == 1) {
+			MemberBasicInfoVo user = getMemberInfo(ids.get(0));
+			if(flag) {
+				logger().info("允许用户"+user.getUsername()+"登录");
+				recordAdminActionSvc.insertRecord(Collections.singletonList(RecordContentTemplate.MEMBER_LOGIN_ON.code),
+							String.valueOf(user.getUserId()),user.getUsername());
+			}else {
+				logger().info("禁止用户"+user.getUsername()+"登录");
+				recordAdminActionSvc.insertRecord(Collections.singletonList(RecordContentTemplate.MEMBER_LOGIN_OFF.code),
+						String.valueOf(user.getUserId()),user.getUsername());
+			}
+		}else {
+			Integer code;
+			if(flag) {
+				logger().info("批量允许"+num+"名用户登录");
+				code = RecordContentTemplate.MEMBER_BATCH_LOGIN_ON.code;
+			}else {
+				logger().info("批量禁止"+num+"名用户登录");
+				code = RecordContentTemplate.MEMBER_BATCH_LOGIN_OFF.code;
+			}
+			recordAdminActionSvc.insertRecord(Collections.singletonList(code), String.valueOf(num));
+		}
+	}
+
+
+	/**
+	 * 	通过筛选条件获得用户Id列表
+	 * @param param
+	 * @return List<Integer>用户ID列表
+	 */
+	private List<Integer> getAllUserIdBySeachCond(MemberPageListParam searchParam) {
+		logger().info("处理筛选出全部用户IDs");
+		PageResult<MemberInfoVo> memberList = this.memberDao.getMemberList(searchParam);
+		return memberList.dataList.stream().map(r->r.getUserId()).collect(Collectors.toList());
 	}
 
 	/**
@@ -331,6 +484,11 @@ public class MemberService extends ShopBaseService {
 		if(tagRecord==null) {
 			logger().info("userId："+userId+"添加tag"+tagId+"不存在");
 			return false;
+		}
+		UserTagRecord record2 = db().selectFrom(USER_TAG).where(USER_TAG.TAG_ID.eq(tagId).and(USER_TAG.USER_ID.eq(userId))).fetchAny();
+		if(record2!=null) {
+			logger().info("userId："+userId+"添加tag"+tagId+"已经存在，不用重复添加");
+			return true;
 		}
 		UserTagRecord record = db().newRecord(USER_TAG);
 		record.setTagId(tagId);
@@ -408,6 +566,9 @@ public class MemberService extends ShopBaseService {
 		/** 订单相关信息 */
 		getOrderInfo(userId, transStatistic, memberBasicInfoVo);
 
+		/** 优惠券 */
+		memberBasicInfoVo.setCanUseCouponNum(couponSvc.getCanUseCouponNum(userId));
+		
 		/** 详细地址 */
 		List<String> addressList = address.getUserAddressById(userId);
 		memberBasicInfoVo.setAddressList(addressList);
@@ -434,9 +595,18 @@ public class MemberService extends ShopBaseService {
 			memberBasicInfoVo.setIndustryInfo(name);
 		}
 		memberBasicInfoVo.setUserId(userId);
+		
+		/** 邀请人分销分组名称 */
+		memberBasicInfoVo.setInviteGroupName(distributorListService.getGroupName(userId));
+		
 		/** ---统计信息--- */
 		/** 最近下单的订单信息 */
-		setRecentOrderInfo(userId, transStatistic);
+		LocalDateTime lastOrderTime = order.lastOrderTime(userId);
+		if(lastOrderTime != null) {
+			transStatistic.setLastAddOrder(lastOrderTime.toString());
+		}else {
+			transStatistic.setLastAddOrder("0");
+		}
 		return memberBasicInfoVo;
 	}
 
@@ -492,36 +662,6 @@ public class MemberService extends ShopBaseService {
 			}
 		}
 		
-	}
-
-
-
-	/**
-	 * 最近下单的订单信息
-	 * @param userId
-	 * @param transStatistic
-	 */
-	public  void setRecentOrderInfo(Integer userId, MemberTransactionStatisticsVo transStatistic) {
-		Timestamp createTime = order.getRecentOrderInfoByUserId(userId);
-		if (createTime != null) {
-			LocalDate now = LocalDate.now();
-			LocalDate tmp = createTime.toLocalDateTime().toLocalDate();
-			long days = Duration.between(tmp.atStartOfDay(), now.atStartOfDay()).toDays();
-			StringBuilder lastAddOrder = new StringBuilder();
-			if (days < WEEK) {
-				lastAddOrder.append(days + DAY_FLAG );
-			} else if (days < MONTH) {
-				lastAddOrder.append(ONE_MONTH_FLAG);
-			} else if (days < YEAR) {
-				lastAddOrder.append((days / MONTH_DAYS) + MONTH_FLAG);
-			} else {
-				lastAddOrder.append((days / YEAR_DAYS) + YEAR_FLAG);
-			}
-			logger().info("最近下单距离现在 " + lastAddOrder.toString());
-			transStatistic.setLastAddOrder(lastAddOrder.toString());
-		} else {
-			transStatistic.setLastAddOrder("0");
-		}
 	}
 
 	/**
@@ -658,27 +798,24 @@ public class MemberService extends ShopBaseService {
 			MemberBasicInfoVo memberBasicInfoVo) {
 		
 		/** 累计消费金额 */
-		BigDecimal totalConsumpAmount = order.getAllConsumpAmount(userId);
-		memberBasicInfoVo.setTotalConsumpAmount(totalConsumpAmount);
-
+		UserOrderBean userOrder = order.getAllConsumeOrder(userId);
+		memberBasicInfoVo.setTotalConsumpAmount(userOrder.getTotalMoneyPaid());
+		
+		/** 客单价 */
+		memberBasicInfoVo.setUnitPrice(userOrder.getUnitPrice());
+		
 		/** 累计消费订单数 */
-		Integer orderNum = order.getAllOrderNum(userId);
-		transStatistic.setOrderNum(orderNum);
-		logger().info("累计消费订单数" + orderNum);
+		transStatistic.setOrderNum(userOrder.getOrderNum());
+		logger().info("累计消费订单数" + userOrder.getOrderNum());
 
-		/** 累计下单金额 */
-		BigDecimal orderMoney = order.getAllOrderMoney(userId);
-		transStatistic.setOrderMoney(orderMoney);
-
+		UserOrderBean returnOrder = returnOrderSvc.getReturnOrder(userId);
 		/** 累计退款金额 */
-		BigDecimal returnOrderMoney = order.getAllReturnOrderMoney(userId);
-		transStatistic.setReturnOrderMoney(returnOrderMoney);
-		logger().info("累计退款金额 " + returnOrderMoney);
+		transStatistic.setReturnOrderMoney(returnOrder.getTotalMoneyPaid());
+		logger().info("累计退款金额 " + returnOrder.getTotalMoneyPaid());
 
 		/** 累计退款订单数 */
-		Integer returnOrderNum = order.getAllReturnOrderNum(userId);
-		transStatistic.setReturnOrderNum(returnOrderNum);
-		logger().info("累计退款订单数 " + returnOrderNum);
+		transStatistic.setReturnOrderNum(returnOrder.getOrderNum());
+		logger().info("累计退款订单数 " + returnOrder.getOrderNum());
 	}
 
 
@@ -740,7 +877,7 @@ public class MemberService extends ShopBaseService {
 		
 		return db().selectFrom(USER_IMPORT_DETAIL)
 				.where(USER_IMPORT_DETAIL.MOBILE.eq(mobile)
-						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))))
+						.and(USER_IMPORT_DETAIL.ERROR_MSG.isNull().or(USER_IMPORT_DETAIL.ERROR_MSG.eq(""))).and(USER_IMPORT_DETAIL.USER_ACTION.eq(YES_DISTRIBUTOR)))
 				.orderBy(USER_IMPORT_DETAIL.ID.desc()).fetchAny();
 	}
 	
@@ -748,5 +885,5 @@ public class MemberService extends ShopBaseService {
 		memberDao.updateUserDetail(record);
 	}
 	
-	
+
 }

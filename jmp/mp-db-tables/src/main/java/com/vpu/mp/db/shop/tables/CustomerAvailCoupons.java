@@ -121,7 +121,7 @@ public class CustomerAvailCoupons extends TableImpl<CustomerAvailCouponsRecord> 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.used_time</code>.
      */
-    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CustomerAvailCouponsRecord, Timestamp> USED_TIME = createField("used_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(true).defaultValue(DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_customer_avail_coupons.access_mode</code>. 获取方式，0：发放，1：领取

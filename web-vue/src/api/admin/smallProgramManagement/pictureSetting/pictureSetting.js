@@ -103,3 +103,18 @@ export function getGoodsNum (data) {
     data: data
   })
 }
+
+// 装修模板弹窗数据获取
+export function getTemplatesData () {
+  return service({
+    url: '/api/admin/decorate/templates',
+    method: 'get'
+  })
+}
+// 获取处理过得装修弹窗数据
+export function getHandleTemplatesData (data) {
+  return service({
+    url: `/api/admin/decorate/templates/get?id=${data}`,
+    method: 'get'
+  })
+}

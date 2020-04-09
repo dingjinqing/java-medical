@@ -1,24 +1,17 @@
 package com.vpu.mp.controller.admin;
 
-import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
-import org.jooq.Result;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
 import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingChangeParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.shop.config.pledge.group.UpdateGroup;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
+import org.jooq.Result;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 满包邮活动
@@ -87,9 +80,9 @@ public class AdminFreeShippingController extends AdminBaseController {
         return success();
     }
 
-    @PostMapping("/admin/market/free/shipping/share")
-    public JsonResult shareFreeShipping(@RequestBody @Valid FreeShippingChangeParam param){
-        return success(shop().freeShipping.shareFreeShipping(param.getId()));
+    @GetMapping("/admin/market/free/shipping/share/{ruleId}")
+    public JsonResult shareFreeShipping(@PathVariable @NotEmpty Integer ruleId){
+        return success(shop().freeShipping.shareFreeShipping(ruleId));
     }
 
     /**

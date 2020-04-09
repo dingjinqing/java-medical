@@ -114,7 +114,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
      * @return
      */
     private String createGroupDrawShareImg(GroupDrawRecord groupDrawRecord, GoodsRecord goodsRecord, GroupDrawShareInfoParam param){
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE,null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.GROUP_DRAW_ACTION_SHARE,null);
 
         // 已存在生成的图片
         if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),groupDrawRecord.getUpdateTime())) {

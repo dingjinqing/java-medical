@@ -253,10 +253,10 @@ public class GoodsBrandSortMpService extends ShopBaseService{
 
     /**
      * 根据parentId获取其所有子孙节点id,返回值包含parentId
-     * @param parentId 父节点id
+     * @param parentIds 父节点id
      * @return 要查询的子孙节点id
      */
-    public List<Integer> getChildrenIds(Integer parentId){
-         return goodsSortService.getChildrenIdByParentIdsDao(Collections.singletonList(parentId));
+    public List<Integer> getChildrenIds(List<Integer> parentIds){
+         return goodsSortService.getChildrenIdByParentIdsDao(parentIds);
     }
 }

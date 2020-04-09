@@ -3,6 +3,8 @@ package com.vpu.mp.service.pojo.shop.member;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,4 +78,17 @@ public class MemberPageListParam extends BaseMemberPojo {
 	private Boolean hasImport=false;
 	
 	private String realName;
+	
+	/**
+	 * 获取用户列表排序规则
+	 */
+	private OrderRuleParam orderRule;
+	/**
+	 *	 会员导出参数
+	 */
+	private UserExpParam userExpParam;
+	
+	public MemberPageListParam() {
+		this.userExpParam = new UserExpParam();
+	}
 }

@@ -148,10 +148,17 @@
                   :span="20"
                   v-if="row.commImg"
                 >
-                  <img
+                  <el-image
+                    v-for="(img,index) in row.commImgList"
+                    :key="index"
+                    :src="img"
+                    :preview-src-list="row.commImgList"
+                    style="width:65px;height:65px;"
+                  ></el-image>
+                  <!-- <img
                     :src="row.commImg"
                     style="width: 65px; height: 65px"
-                  >
+                  > -->
                 </el-col>
               </el-row>
             </template>

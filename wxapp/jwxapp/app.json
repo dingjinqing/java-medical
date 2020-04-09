@@ -32,7 +32,10 @@
     "pages/storeinfo/storeinfo",
     "pages/checkout/checkout",
     "pages/servicecomment/servicecomment",
-    "pages/cardrecord/cardrecord"
+    "pages/cardrecord/cardrecord",
+    "pages/fullprice/fullprice",
+    "pages/maingoodslist/maingoodslist",
+    "pages/usercardup/usercardup"
   ],
   "window": {
     "backgroundTextStyle": "dark",
@@ -82,7 +85,9 @@
         "lotteryrule/lotteryrule",
         "pinlotterylist/pinlotterylist",
         "pinlotteryinfo/pinlotteryinfo",
-        "fullshiprule/fullshiprule"
+        "pledgeannounce/pledgeannounce",
+        "fullshiprule/fullshiprule",
+        "appointcomment/appointcomment"
       ]
     }
   ],

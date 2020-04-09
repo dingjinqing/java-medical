@@ -19,5 +19,6 @@ export const en = {
   finishedTimeEnd: 'finished time end',
   provinceCode: 'consignee province',
   cityCode: 'consignee city',
-  districtCode: 'consignee district'
+  districtCode: 'consignee district',
+  shippingNo: 'Logistics number'
 }

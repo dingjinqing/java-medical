@@ -1,23 +1,8 @@
 package com.vpu.mp.service.shop.order.refund;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
-import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
-import com.vpu.mp.service.shop.order.info.OrderInfoService;
-import com.vpu.mp.service.shop.payment.MpPaymentService;
-import com.vpu.mp.service.shop.payment.PaymentRecordService;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -25,6 +10,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.BigDecimalPlus;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
+import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.data.AccountData;
 import com.vpu.mp.service.pojo.shop.member.data.ScoreData;
@@ -36,9 +22,19 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.virtual.VirtualOrderPayInfo;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
+import com.vpu.mp.service.shop.payment.MpPaymentService;
+import com.vpu.mp.service.shop.payment.PaymentRecordService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 /**
  * 
  * @author 王帅
@@ -82,11 +78,11 @@ public class ReturnMethodService extends ShopBaseService{
 			if (cause instanceof MpException) {
 				throw new MpException(((MpException) cause).getErrorCode(), e.getMessage());
 			}else {
-				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId+"。异常信息：{}", e.getMessage());
+				logger().error("退款统一入口调用方法异常(非MpException)retId:"+retId, e);
 				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR, e.getMessage());
 			}
 		} catch (Exception e) {
-			logger().error("退款统一入口调用异常retId:"+retId+"。异常信息：{}", e.getMessage());
+			logger().error("退款统一入口调用异常retId:"+retId, e);
 			throw new MpException(JsonResultCode.CODE_ORDER_RETURN_METHOD_REFLECT_ERROR,e.getMessage());
 		}
 		return true;
@@ -186,7 +182,7 @@ public class ReturnMethodService extends ShopBaseService{
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(order.getScoreProportion()), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 				
@@ -249,9 +245,8 @@ public class ReturnMethodService extends ShopBaseService{
                 orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
                 logger().info("微信退款（refundMoneyPaid）end");
 			} catch (MpException e) {
-                logger().info("微信退款异常（refundMoneyPaid）");
+                logger().error("微信退款异常（refundMoneyPaid）,错误信息表ORDER_REFUND_RECORD");
                 orderRefundRecord.addRecord(refundSn, payRecord, refundResult, order, retId);
-				throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WX_FAIL);
 			}
 		}
 		if(!OrderConstant.PAY_CODE_COD.equals(order.getPayCode())){

@@ -360,6 +360,8 @@ export default {
           this.returnAmountMap = res.content.returnAmountMap
           this.returnShippingFee = res.content.returnShippingFee
           this.loading = false
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
@@ -393,7 +395,19 @@ export default {
       }
       console.log(obj)
       manualReturn(obj).then(res => {
-        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({ message: '退款成功',
+            onClose: () => {
+              this.$router.push({
+                name: 'order_return',
+                query: {
+                  orderSn: this.$route.query.orderSn
+                }
+              })
+            } })
+        } else {
+          this.$message.error(res.message)
+        }
       })
     },
     formatMoney (row, column, cellValue) {
@@ -411,6 +425,10 @@ export default {
       return returnMostAmount
     },
     selectable (row, index) {
+      if (row.returnable === 0) {
+        console.log(111)
+        return false
+      }
       if (this.params.returnType !== 3) {
         return true
       }

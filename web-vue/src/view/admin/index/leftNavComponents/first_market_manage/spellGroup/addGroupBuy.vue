@@ -36,7 +36,27 @@
               size="small"
               v-model="form.name"
               style="width: 170px"
+              placeholder="请输入活动名称"
             ></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item
+          :label="$t('groupBuy.activtiyLevel') + '：'"
+          prop="level"
+        >
+          <el-col :span="12">
+            <el-input
+              v-model="form.level"
+              controls-position="right"
+              style="width:170px"
+              size="small"
+              placeholder="请输入活动名称"
+            >
+            </el-input>
+            <div class="prompt">
+              {{$t('groupBuy.activtiyLevelComment')}}
+            </div>
+            <!-- <span>用于区分不同拼团活动的优先级，请填写正整数，数值越大优先级越高</span> -->
           </el-col>
         </el-form-item>
         <el-form-item
@@ -331,6 +351,17 @@
             <el-radio :label=2>{{$t('groupBuy.shippingOptionComment')}}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item :label="$t('groupBuy.beginNum') + '：'">
+          <el-input-number
+            v-model="form.beginNum"
+            controls-position="right"
+            :min="0"
+          >
+          </el-input-number>
+          <div class="prompt fontColor">
+            {{$t('groupBuy.beginNumComment')}}
+          </div>
+        </el-form-item>
 
         <!-- 收起、展开更多配置 -->
         <div
@@ -370,16 +401,24 @@
                       <span class="number">{{item.denomination}}</span>
                     </div>
                     <div
-                      class="coupon_list_top"
+                      class="coupon_list_tops"
                       v-if="item.actCode==='discount'"
                     >
-                      <span>{{item.denomination}}</span>
+                      <span class="discount_number">{{item.denomination}}</span>
                       <span>{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{item.useConsumeRestrict |
                       formatLeastConsume(item.leastConsume)}}
                     </div>
-                    <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{item.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus !==0"
+                    >剩余{{item.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="item.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="`background-image: url(${$imageHost}/image/admin/coupon_border.png)`"
@@ -520,7 +559,7 @@
       <!--添加商品弹窗-->
       <choosingGoods
         @resultGoodsRow="choosingGoodsResult"
-        :chooseGoodsBack="[form.goodsId]"
+        :chooseGoodsBack="goodsIdList"
         :tuneUpChooseGoods="isShowChoosingGoodsDialog"
         :singleElection="true"
         :showTips="true"
@@ -609,11 +648,22 @@ export default {
       }
       callback()
     }
+    var levelValid = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (value === '') {
+        return callback(new Error('请输入活动优先级'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
     return {
       // from 表单数据
       form: {
         id: null,
         name: '',
+        level: '',
         goodsId: '',
         limitAmount: 2,
         joinLimit: 0,
@@ -628,6 +678,7 @@ export default {
         rewardCouponId: '',
         limitMaxNum: 0,
         limitBuyNum: 0,
+        beginNum: 0,
         share: {
           shareAction: 1,
           shareDoc: '',
@@ -637,11 +688,16 @@ export default {
         product: [],
         shareInfo: ''
       },
+      goodsIdList: [],
       // 校验表单
       fromRules: {
         name: [
           { required: true, message: this.$t('groupBuy.activityNameRequiredRules'), trigger: 'blur' },
           { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
+        ],
+        level: [
+          { required: true, validator: levelValid, trigger: ['blur', 'change'] }
+          // { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
         ],
         goodsId: [
           { required: true, message: this.$t('groupBuy.goodsIdRequireRules'), trigger: 'change' }
@@ -656,7 +712,7 @@ export default {
           { type: 'integer', required: true, message: this.$t('groupBuy.openLimitRequireRules'), trigger: 'blur' }
         ],
         validityDate: [
-          { validator: dateValid, trigger: 'blur' }
+          { required: true, validator: dateValid, trigger: 'blur' }
         ],
         'share.shareDoc': [{ validator: shareDocValid, trigger: 'blur' }],
         shareInfo: [{ required: true, validator: shareInfoValid, trigger: 'blur' }]
@@ -729,7 +785,8 @@ export default {
       }
     },
     validateNum (rule, value, callback, prdNumber) {
-      var re = /(^0|\+?[1-9][0-9]\d*)$/
+      // var re = /(^0|\+?[1-9][0-9]\d*)$/
+      var re = /^([1-9]\d*|[0]{1,1})$/
       if (!re.test(value)) {
         callback(new Error('请填写0和正整数'))
       } else if (value > prdNumber) {
@@ -749,6 +806,7 @@ export default {
         this.form.activityType = data.activityType
         this.form.name = data.name
         this.form.goodsId = data.goodsId
+        this.form.level = data.level
         this.getGoodsInfo(data.goodsId)
         this.form.isGrouperCheap = data.isGrouperCheap
         this.form.product = data.productList
@@ -762,6 +820,7 @@ export default {
         this.form.openLimit = data.openLimit
         this.form.isDefault = data.isDefault
         this.form.shippingType = data.shippingType
+        this.form.beginNum = data.beginNum
         if (data.rewardCouponId) {
           this.form.rewardCouponId = data.rewardCouponId.split(',')
           this.rewardCouponIds = data.rewardCouponId.split(',')
@@ -844,22 +903,35 @@ export default {
     },
     // 获取商品ids
     choosingGoodsResult (row) {
-      console.log(row)
-
-      this.goodsRow = row
-      this.form.goodsId = row.goodsId
-      if (Object.keys(row).length === 0) {
-        return
-      }
-      // 初始化规格表格
-      getAllGoodsProductList(this.form.goodsId).then(res => {
-        console.log('product', res.content)
-        res.content.forEach((item, index) => {
-          item.index = index
+      console.log(row, 'get row')
+      if (row.goodsId) {
+        this.goodsRow = []
+        this.goodsRow = row
+        this.form.goodsId = row.goodsId
+        this.goodsIdList = []
+        this.goodsIdList.push(row.goodsId)
+        if (Object.keys(row).length === 0) {
+          return
+        }
+        // 初始化规格表格
+        getAllGoodsProductList(this.form.goodsId).then(res => {
+          console.log('product', res.content)
+          this.form.product = []
+          res.content.forEach((item, index) => {
+            item.index = index
+            item.productId = item.prdId
+          })
+          let list = res.content
+          list.map((item, index) => {
+            this.form.product.push(
+              Object.assign({}, item, { goodsId: row.goodsId })
+            )
+          })
         })
-        this.form.product = res.content
-        console.log(' this.form.product ', this.form.product)
-      })
+      } else {
+        this.form.product = []
+        this.goodsRow.ischecked = false
+      }
     },
     // 确认选择优惠券-新增
     handleToCheck (data, index) {
@@ -968,8 +1040,8 @@ export default {
   position: relative;
   width: 17px;
   height: 17px;
-  top: -118px;
-  left: 45px;
+  top: -114px;
+  left: 47px;
   cursor: pointer;
   opacity: 0.8;
   color: #fff;
@@ -1014,20 +1086,24 @@ export default {
   color: #f60;
 }
 
-.coupon_list_top:nth-of-type(2) {
-  font-size: 20px;
+.coupon_list_tops {
   font-weight: bold;
+  margin-top: 10px;
+  color: #f60;
+}
+.discount_number {
+  font-size: 20px;
 }
 
 .coupon_center_limit {
-  height: 20px;
   color: #f60;
   font-size: 12px !important;
 }
 
 .coupon_center_number {
-  height: 20px;
+  height: 18px;
   color: #fbb;
+  font-size: 12px;
 }
 
 .coupon_list_bottom {
@@ -1104,5 +1180,9 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.number {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

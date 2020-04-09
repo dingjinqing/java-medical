@@ -524,7 +524,7 @@
                 style="margin-bottom: 20px;"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===1"
+                v-if="item.module_name=='center_header'"
               >
                 <el-radio-group v-model="item.bg_type">
                   <el-radio
@@ -562,7 +562,7 @@
                 name="2"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===2"
+                v-if="item.module_name=='account_money'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.assetsLabel')">
@@ -642,7 +642,7 @@
                 name="3"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===3"
+                v-if="item.module_name=='order'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.orderLabel')">
@@ -681,7 +681,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==0"
+                      v-if="val.icon_name=='wait_pay'"
                     >
                       <div
                         class="imgContainter"
@@ -707,7 +707,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==1"
+                      v-if="val.icon_name=='wait_deliver'"
                     >
                       <div
                         class="imgContainter"
@@ -733,7 +733,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==2"
+                      v-if="val.icon_name=='wait_receive'"
                     >
                       <div
                         class="imgContainter"
@@ -759,7 +759,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==3"
+                      v-if="val.icon_name=='wait_comment'"
                     >
                       <div
                         class="imgContainter"
@@ -785,7 +785,7 @@
                       style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;position: relative"
                       v-for="(val, key) in item.content"
                       :key="key"
-                      v-if="key==4"
+                      v-if="val.icon_name=='refund'"
                     >
                       <div
                         class="imgContainter"
@@ -815,7 +815,7 @@
                 name="4"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===4"
+                v-if="item.module_name=='appointment'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.appointmentLabel')">
@@ -848,7 +848,7 @@
                 name="5"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===5"
+                v-if="item.module_name=='use_record'"
               >
                 <el-form label-width="120px">
                   <el-form-item :label="$t('personalCenter.shopLabel')">
@@ -911,7 +911,7 @@
                 name="6"
                 v-for="(item, index) in rightData"
                 :key="index"
-                v-if="index===6"
+                v-if="item.module_name=='service'"
               >
                 <el-form label-width="100px">
                   <el-form-item :label="$t('personalCenter.serveLabel')">
@@ -940,7 +940,7 @@
                     :label="$t('personalCenter.distribution') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==0"
+                    v-if="val.icon_name=='distribution'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -973,7 +973,7 @@
                     :label="$t('personalCenter.bargain') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==1"
+                    v-if="val.icon_name=='bargain'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1006,7 +1006,7 @@
                     :label="$t('personalCenter.award') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==2"
+                    v-if="val.icon_name=='award'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1040,7 +1040,7 @@
                     :label="$t('personalCenter.commentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==3"
+                    v-if="val.icon_name=='comment_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1073,7 +1073,7 @@
                     :label="$t('personalCenter.storeList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==4"
+                    v-if="val.icon_name=='store_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1106,7 +1106,7 @@
                     :label="$t('personalCenter.userActivate') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==5"
+                    v-if="val.icon_name=='user_activate'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1139,7 +1139,7 @@
                     :label="$t('personalCenter.orderVerify') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==6"
+                    v-if="val.icon_name=='order_verify'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1172,7 +1172,7 @@
                     :label="$t('personalCenter.presentList') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key==7"
+                    v-if="val.icon_name=='present_list'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1206,7 +1206,7 @@
                     :label="$t('personalCenter.customIcon') + '：'"
                     v-for="(val, key) in item.content"
                     :key="key"
-                    v-if="key>7"
+                    v-if="val.icon_name=='custom_icon'"
                   >
                     <el-radio-group
                       v-model="val.is_show"
@@ -1234,7 +1234,7 @@
                     <div style="display: flex;align-items: center;flex-wrap: wrap;overflow: hidden;">
                       <div
                         class="imgContainter"
-                        @click="changeImgHandler(item.module_name, val.icon_name)"
+                        @click="changeImgHandler(item.module_name, val.icon_name, key)"
                       >
                         <el-image
                           fit="scale-down"
@@ -1322,6 +1322,7 @@ export default {
       templateTitle: '', // 自定义模板标题
       imageSize: [], // 图片大小
       isDraggable: false, // 是否支持多选
+      imgIndex: 0, // 服务自定义模块图片索引
 
       leftData: [{
         module_name: 'global',
@@ -1770,9 +1771,10 @@ export default {
       }
     },
     // 切换图片
-    changeImgHandler (title, name) {
+    changeImgHandler (title, name, key) {
       this.moduleTitle = title
       this.module_name = name
+      this.imgIndex = key
       this.selfImgDialogShow = !this.selfImgDialogShow
       if (name !== '') {
         this.imageSize = [50, 50]
@@ -1812,10 +1814,19 @@ export default {
           this.bgImage = this.imgHost + this.bgImg
         } else {
           if (this.rightData[i].module_name === this.moduleTitle) {
-            for (let j = 0; j < this.rightData[i].content.length; j++) {
-              if (this.rightData[i].content[j].icon_name === this.module_name) {
-                this.rightData[i].content[j].icon = '/' + imgObj.imgPath
-                return
+            if (this.rightData[i].module_name === 'service') {
+              for (let j = 0; j < this.rightData[i].content.length; j++) {
+                if (j === this.imgIndex) {
+                  this.rightData[i].content[j].icon = '/' + imgObj.imgPath
+                  return
+                }
+              }
+            } else {
+              for (let j = 0; j < this.rightData[i].content.length; j++) {
+                if (this.rightData[i].content[j].icon_name === this.module_name) {
+                  this.rightData[i].content[j].icon = '/' + imgObj.imgPath
+                  return
+                }
               }
             }
           }
@@ -1824,10 +1835,19 @@ export default {
       // 左侧显示
       for (let i = 0; i < this.leftData.length; i++) {
         if (this.leftData[i].module_name === this.moduleTitle) {
-          for (let j = 0; j < this.leftData[i].content.length; j++) {
-            if (this.leftData[i].content[j].icon_name === this.module_name) {
-              this.leftData[i].content[j].icon = imgObj.imgPath
-              return
+          if (this.leftData[i].module_name === 'service') {
+            for (let j = 0; j < this.leftData[i].content.length; j++) {
+              if (j === this.imgIndex) {
+                this.leftData[i].content[j].icon = '/' + imgObj.imgPath
+                return
+              }
+            }
+          } else {
+            for (let j = 0; j < this.leftData[i].content.length; j++) {
+              if (this.leftData[i].content[j].icon_name === this.module_name) {
+                this.leftData[i].content[j].icon = imgObj.imgPath
+                return
+              }
             }
           }
         }
@@ -2154,6 +2174,7 @@ export default {
 }
 
 .each_serve {
+  height: 60px;
   width: 105px;
   margin-bottom: 20px;
   float: left;
@@ -2167,6 +2188,7 @@ export default {
 
 .serve_img {
   margin-bottom: 10px;
+  height: 25px;
 }
 
 .serve_img img {
@@ -2175,6 +2197,7 @@ export default {
 }
 
 .serve_word {
+  height: 24px;
   font-size: 12px;
   color: #666;
 }

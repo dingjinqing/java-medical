@@ -102,7 +102,16 @@
             </div>
           </el-form-item>
           <el-form-item :label="$t('scoreCfg.exchange') + '：'">
-            {{$t('scoreCfg.formula')}}
+              <el-select v-model="form.scoreProportion" size="small" class="selectWidth">
+                <el-option
+                  v-for="item in scoreProportionOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+           {{$t('scoreCfg.formula')}}
+           <span style="color:#FF0000;margin-left: 10px;">{{$t('scoreCfg.titelMsg')}}</span>
           </el-form-item>
         </div>
 
@@ -128,10 +137,9 @@
                   size="small"
                   v-model="form.scorePayNum"
                   controls-position="right"
-                  :min="100"
-                  :max="10000"
+                  :min="1"
                 ></el-input-number>{{$t('scoreCfg.scorePayDesTwo')}}
-                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}</span>
+                <span style="margit-left:20px;color:#999">{{$t('scoreCfg.print')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print2')}}{{this.form.scoreProportion}}{{$t('scoreCfg.print3')}}</span>
               </span>
             </div>
           </el-form-item>
@@ -149,8 +157,10 @@
               ></el-input-number>{{$t('scoreCfg.scoreScaleDesTwo')}}
               <span style="margit-left:20px;color:#999">{{$t('scoreCfg.prineTwo')}}</span>
             </span>
+            <div> {{$t('scoreCfg.titelMsg2')}}
+              <el-radio v-model="form.discountHasShipping" label="1" style="margin-left:15px">包含运费</el-radio>
+              <el-radio v-model="form.discountHasShipping" label="2">不包含运费</el-radio></div>
           </el-form-item>
-
         </div>
 
         <div class="integralRule">
@@ -170,7 +180,7 @@
               inactive-value=''
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.shoppingScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.shoppingScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.scoreGetDescTwo')}}</span>
             <div v-if="form.shoppingScore === 'on'">
               <div
@@ -246,9 +256,10 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
+              @change="checkStoreRights"
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.storeScore? $t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.storeScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.storeSendDescOne')}}</span>
           </el-form-item>
           <el-form-item
@@ -262,7 +273,7 @@
               inactive-value=''
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.loginScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.loginScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999">{{$t('scoreCfg.loginDescOne')}}</span>
             <div
               v-if="form.loginScore === 'on'"
@@ -279,7 +290,6 @@
                 ></el-input-number>{{$t('scoreCfg.score')}}
                 <span style="color:#f66">{{$t('scoreCfg.loginDescTwo')}}</span>
               </span>
-
             </div>
           </el-form-item>
           <el-form-item
@@ -291,13 +301,21 @@
               active-color="#f7931e"
               active-value='on'
               inactive-value=''
+              @change="checkSignRight"
             >
             </el-switch>
-            <span style="display:inline-block;margin:0 20px">{{form.signInScore?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
+            <span style="display:inline-block;margin:0 20px">{{form.signInScore==='on'?$t('scoreCfg.alreadyOpen'):$t('scoreCfg.alreadyClose')}}</span>
             <span style="color:#999;margin-right:10px;display:inline-block">{{$t('scoreCfg.signDescOne')}}</span><i
               @click="handleToCheckMember()"
               style="cursor:pointer;color:#5a8bff"
             >{{$t('scoreCfg.view')}}</i>
+
+            <div>
+             <el-radio v-model="form.signInRules" label="0" style="margin-right:1px">连续签到</el-radio>
+                <el-popover trigger="hover" content="连续签到N+1天时，将循环按第N天签到积分数量赠送（N为连续签到上限）"><img :src="iconUrl" slot="reference"></el-popover>
+             <el-radio v-model="form.signInRules" label="1" style="margin-right:1px;margin-left: 12px;">循环签到</el-radio>
+                 <el-popover trigger="hover" content="连续签到N+1天时，将循环按第一天签到积分数量赠送（N为连续签到上限）"><img :src="iconUrl" slot="reference"></el-popover>
+            </div>
             <div
               v-if="form.signInScore === 'on'"
               class="hiddenLoginDiv"
@@ -366,13 +384,10 @@ export default {
       }
     }
     var validatePayLimit = (rule, value, callback) => {
-      var re = /^[1-9]\d*00$/
       if (!value) {
         callback(new Error('请选择积分支付限制'))
       } else if (value === '1' && !this.form.scorePayNum) {
         callback(new Error('请完整填写积分支付限制'))
-      } else if (value === '1' && !re.test(this.form.scorePayNum)) {
-        callback(new Error('请正确填写积分支付限制'))
       } else {
         callback()
       }
@@ -621,7 +636,10 @@ export default {
         loginScore: 'off', // 登录送积分
         scoreLogin: 1, // 登录积分
         signInScore: 'off', // 签到送积分
-        signScore: [] // 签到积分
+        signScore: [], // 签到积分
+        signInRules: '0',
+        scoreProportion: 100,
+        discountHasShipping: '1'
       },
       // 校验表单
       fromRules: {
@@ -631,7 +649,23 @@ export default {
         shoppingScore: { required: true, validator: validateshopping, trigger: 'change' },
         loginScore: { required: true, validator: validateLogin, trigger: 'change' },
         signInScore: { required: true, validator: validateSignIn, trigger: 'change' }
-      }
+      },
+      iconUrl: this.$imageHost + '/image/admin/system_icon.png',
+      scoreProportionOptions: [{
+        value: 1,
+        label: '1'
+      }, {
+        value: 10,
+        label: '10'
+      },
+      {
+        value: 100,
+        label: '100'
+      },
+      {
+        value: 1000,
+        label: '1000'
+      }]
     }
   },
   watch: {
@@ -673,7 +707,9 @@ export default {
           this.form.scoreYear = data.scoreYear
           this.form.scoreLimitNumber = data.scoreLimitNumber
           this.form.scorePeriod = data.scorePeriod
-
+          this.form.signInRules = String(data.signInRules)
+          this.form.scoreProportion = data.scoreProportion
+          this.form.discountHasShipping = String(data.discountHasShipping)
           if (!data.scorePayLimit === null) {
             this.form.scorePayLimit = '0'
           } else {
@@ -716,10 +752,8 @@ export default {
               right: null
             })
           }
-
           // 门店买单送积分
           this.form.storeScore = data.storeScore
-
           // 登陆送积分
           this.form.loginScore = data.loginScore
           this.form.scoreLogin = data.scoreLogin
@@ -747,6 +781,10 @@ export default {
     saveScoreHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if (!this.checkScorePayNum()) {
+            console.log('错了')
+            return
+          }
           // 购物送积分
           if (this.form.scoreType === '0') {
             this.form.buy = []
@@ -777,7 +815,19 @@ export default {
       })
       this.submitStatus = false
     },
-
+    checkScorePayNum () {
+      if (this.form.scorePayLimit === '1') {
+        let scoreProportion = Number(this.form.scoreProportion)
+        let scorePayNum = Number(this.form.scorePayNum)
+        if (scorePayNum < scoreProportion || scorePayNum % scoreProportion !== 0) {
+          this.$message.error('积分支付限制应大于等于' + scoreProportion + ',且为' + scoreProportion + '的整数倍')
+          return false
+        } else {
+          return true
+        }
+      }
+      return true
+    },
     // 3- 添加购物满
     handleToAddIntegral () {
       this.shopFullArr.push({
@@ -792,13 +842,13 @@ export default {
     // 签到送积分点击添加icon
     handleToAdd () {
       let obj = {
-        input: ''
+        input: '1'
       }
-      if (this.signInput.length < 14) {
+      if (this.signInput.length < 30) {
         this.signInput.push(obj)
         this.signData++
       } else {
-        this.$message.warning('系统开启签到上线为14天')
+        this.$message.warning(this.$t('scoreCfg.titelError'))
       }
     },
     // 签到送积分点击删除icon
@@ -812,6 +862,24 @@ export default {
       this.$router.push({
         name: 'viewSigninMembers'
       })
+    },
+    // 检查门店权限
+    checkStoreRights () {
+      if (this.form.storeScore === 'on') {
+        this.form.storeScore = 'off'
+        this.handleToJudgeTwoDiction('score', 'pay_score').then(res => {
+          this.form.storeScore = res ? 'on' : 'off'
+        })
+      }
+    },
+    // 检查登录积分权限
+    checkSignRight () {
+      if (this.form.signInScore === 'on') {
+        this.form.signInScore = 'off'
+        this.handleToJudgeTwoDiction('score', 'sign_score').then(res => {
+          this.form.signInScore = res ? 'on' : 'off'
+        })
+      }
     }
   }
 }
@@ -999,10 +1067,13 @@ export default {
 }
 // 结束
 .footer {
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
   background: #fff;
   border-top: 1px solid #e4e7ed;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  padding: 10px 0;
+  left: 0;
+  right: 0;
 }
 </style>

@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.Tables.USER_IMPORT_DETAIL;
 import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_USERNAME;
+import static com.vpu.mp.service.pojo.shop.member.MemberConstant.INVITE_MOBILE;
 import static com.vpu.mp.service.pojo.shop.member.MemberConstant.LOGIN_FORBID;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
@@ -17,8 +18,10 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_FG_USI
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Condition;
@@ -32,6 +35,8 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep3;
+import org.jooq.SortField;
+import org.jooq.Table;
 import  org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +52,11 @@ import com.vpu.mp.service.pojo.shop.member.MemberBasicInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.MemberParam;
+import com.vpu.mp.service.pojo.shop.member.OrderRuleParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardDetailParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpCardVo;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpParam;
+import com.vpu.mp.service.pojo.shop.member.userExp.UserExpVo;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -84,9 +93,24 @@ public class MemberDaoService extends ShopBaseService {
 				.leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(USER.USER_ID));
 
 		buildOptionsForTable(param,select);
-		select.where(buildOptions(param))
-			  .orderBy(USER.USER_ID.desc());
+		SortField<? extends Object> order= USER.USER_ID.desc();
+		if(param.getOrderRule()!=null) {
+			OrderRuleParam orderRule = param.getOrderRule();
+			switch (orderRule.getRule()) {
+				case OrderRuleParam.SCORE_RULE:
+					// 积分排序
+					order = orderRule.isDesc() ? USER.SCORE.desc() : USER.SCORE.asc();
+					break;
+				case OrderRuleParam.REGIST_TIME_RULE:
+					// 注册时间
+					order = orderRule.isDesc() ? USER.CREATE_TIME.desc(): USER.CREATE_TIME.asc();
+					break;
+				default:
+					break;
+			}
+		}
 		
+		select.where(buildOptions(param)).orderBy(order);
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), MemberInfoVo.class);
 	}
 	
@@ -102,6 +126,23 @@ public class MemberDaoService extends ShopBaseService {
 				UserRecord.class);
 		return memberList.dataList;
 	}
+	
+	/**
+	 * 	获取用户的导出会员 第二版
+	 * @param param
+	 * @return
+	 */
+	public List<UserExpVo> getExportAllUserList(MemberPageListParam param) {
+		SelectJoinStep<Record> select = db().select(USER.asterisk()).from(USER);
+		buildOptionsForTable(param,select);
+		UserExpParam expParam = param.getUserExpParam();
+		return select.where(buildOptions(param))
+			  .orderBy(USER.USER_ID.desc())
+			  .limit(expParam.getStartNum(), expParam.getEndNum())
+			  .fetchInto(UserExpVo.class);
+	}
+	
+	
 	
 	/**
 	 * 通过活动新增用户
@@ -145,9 +186,9 @@ public class MemberDaoService extends ShopBaseService {
 		User a = USER.as("a");
 		User b = USER.as("b");
 		Field<?> inviteName = db().select(b.USERNAME).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_USERNAME);
-		
-		return db().select(a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
-				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
+		Field<?>  inviteMobile = db().select(b.MOBILE).from(b).where(b.USER_ID.eq(a.INVITE_ID)).asField(INVITE_MOBILE);
+		return db().select(a.USER_ID,a.USERNAME, a.WX_UNION_ID, a.CREATE_TIME, a.MOBILE, a.WX_OPENID,a.SCORE,a.ACCOUNT,
+				a.INVITE_ID, a.SOURCE,a.SCENE, a.UNIT_PRICE, inviteName,inviteMobile, USER_DETAIL.REAL_NAME, USER_DETAIL.EDUCATION,USER_DETAIL.INDUSTRY_INFO,
 				USER_DETAIL.PROVINCE_CODE, a.IS_DISTRIBUTOR, USER_DETAIL.CITY_CODE, USER_DETAIL.DISTRICT_CODE,
 				USER_DETAIL.BIRTHDAY_DAY, USER_DETAIL.BIRTHDAY_MONTH, USER_DETAIL.BIRTHDAY_YEAR, USER_DETAIL.SEX,
 				USER_DETAIL.MARITAL_STATUS, USER_DETAIL.MONTHLY_INCOME, USER_DETAIL.CID,USER_DETAIL.USER_AVATAR)
@@ -173,11 +214,26 @@ public class MemberDaoService extends ShopBaseService {
 	 * 获取一张会员卡信息,此会员卡为等级会员，限次会员卡再到普通会员卡
 	 * @param inData 工作日，休息，或 无限制
 	 */
-	public Record getOneMemberCard(List<Integer> inData, Integer userId) {
-			//.limit(1).fetchAny();
-		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inData,userId);
+	public Record getOneMemberCard(Integer userId) {
+		List<Integer> inDate = userCardService.useInDate();
+		SelectSeekStep3<Record, Byte, Byte, String> sql = getMemberCardSql(inDate,userId);
 		return sql.limit(1).fetchAny();
 	}
+	
+	/**
+	 * 获取用户其中的一张卡，改卡的顺序为等级卡》限次卡》普通卡
+	 * @param userIds
+	 * @return List<UserExpCardVo> 用户卡信息列表 || null
+	 */
+	public Map<Integer, UserExpCardVo> getUserOneCard(List<Integer> userIds) {
+		if(userIds == null || userIds.size()==0) {
+			return null;
+		}
+		List<Integer> inDate = userCardService.useInDate();
+		Map<Integer, UserExpCardVo>  res = getMemberCardSql(inDate,userIds);
+		return res;
+	}
+	
 	
 	/**
 	 * 获取用户的所有可用会员卡
@@ -206,6 +262,28 @@ public class MemberDaoService extends ShopBaseService {
 		.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc());
 	}
 
+	private Map<Integer, UserExpCardVo> getMemberCardSql(List<Integer> inData, List<Integer> userIds) {
+		// 防止mysql5.7groupby对之前的order by不生效
+		int count = db().fetchCount(USER_CARD);
+		Table<?> nested = db()
+						.select(USER_CARD.USER_ID,USER_CARD.CARD_ID,MEMBER_CARD.CARD_NAME)
+						.from(USER_CARD.leftJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID)))
+						.where(USER_CARD.USER_ID.in(userIds)
+								.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+								.and(MEMBER_CARD.USE_TIME.in(inData).or(MEMBER_CARD.USE_TIME.isNull()))
+								.and((MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FIX).and(MEMBER_CARD.START_TIME.le(DateUtil.getLocalDateTime())))
+										.or(MEMBER_CARD.EXPIRE_TYPE.in(MCARD_ET_DURING, MCARD_ET_FOREVER))))
+						.orderBy(USER_CARD.IS_DEFAULT.desc(),MEMBER_CARD.CARD_TYPE.desc(), MEMBER_CARD.GRADE.desc())
+						.limit(count)
+						.asTable("nested");
+		
+		Map<Integer, UserExpCardVo> res = db().select(nested.field("user_id"),DSL.max(nested.field("card_id")).as("card_id"),
+					DSL.max(nested.field("card_name")).as("card_name"))
+					.from(nested)
+					.groupBy(nested.field("user_id"))
+					.fetchMap(nested.field("user_id").cast(Integer.class), UserExpCardVo.class);
+		return res;
+	}
 	
 	
 	/**
@@ -368,7 +446,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getMobileCondition(String mobile) {
 		Condition condition = DSL.noCondition();
-		return isNotBlank(mobile)?condition.and(USER.MOBILE.eq(mobile)):condition;
+		if(isNotBlank(mobile)) {
+			condition = condition.and(USER.MOBILE.like(likeValue(mobile)));
+		}
+		return condition;
 	}
 	
 	/**
@@ -392,7 +473,7 @@ public class MemberDaoService extends ShopBaseService {
 	private Condition getSourceCondition(Integer source,Integer type,Integer channelId) {
 		Condition condition = DSL.noCondition();
 		
-		if(isNotNull(source)) {
+		if(isNotNull(source) && source != 0) {
 			if(source<0) {
 				// 微信来源
 				condition = condition.and(USER.SCENE.eq(source));
@@ -436,7 +517,7 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getUserCardCondition(Integer cardId) {
 		Condition condition = DSL.noCondition();
-		if(isNotNull(cardId)) {
+		if(isNotNull(cardId) && cardId != 0) {
 			condition = condition
 			.and(USER_CARD.CARD_ID.eq(cardId))
 			.and(USER_CARD.FLAG.eq(UCARD_FG_USING));
@@ -603,7 +684,11 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasMobileCondition(boolean hasMobile) {
 		Condition condition = DSL.noCondition();
-		return hasMobile?condition.and(USER.MOBILE.isNotNull()):condition;
+		if(hasMobile) {
+			condition = condition.and(USER.MOBILE.isNotNull())
+						.and(USER.MOBILE.length().gt(0));
+		}
+		return condition;
 	}
 	
 	/**
@@ -611,7 +696,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasScoreCondition(boolean hasScore) {
 		Condition condition = DSL.noCondition();
-		return hasScore?condition.and(USER.SCORE.gt(NumberUtils.INTEGER_ZERO)):condition;
+		if(hasScore) {
+			condition = condition.and(USER.SCORE.gt(NumberUtils.INTEGER_ZERO));
+		}
+		return condition;
 	}
 	
 	/**
@@ -619,7 +707,10 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getHasBalance(boolean hasBalance) {
 		Condition condition = DSL.noCondition();
-		return hasBalance?condition.and(USER.ACCOUNT.gt(BigDecimal.ZERO)):condition;
+		if(hasBalance) {
+			condition = condition.and(USER.ACCOUNT.gt(BigDecimal.ZERO));
+		}
+		return condition;
 	}
 	
 	/**
@@ -635,11 +726,14 @@ public class MemberDaoService extends ShopBaseService {
 	}
 	
 	/**
-	 * 是否禁止条件
+	 * 是否禁止登录条件
 	 */
 	private Condition getIsForbidLoginCondition(boolean isLogin) {
 		Condition condition = DSL.noCondition();
-		return isLogin?condition.and(USER.DEL_FLAG.eq(LOGIN_FORBID)):condition;
+		if(isLogin) {
+			condition = condition.and(USER.DEL_FLAG.eq(LOGIN_FORBID));
+		}
+		return condition;
 	}
 	
 	/**
@@ -714,5 +808,12 @@ public class MemberDaoService extends ShopBaseService {
 	
 	public void updateUserDetail(UserDetailRecord record) {
 		db().executeUpdate(record, USER_DETAIL.USER_ID.eq(record.getUserId()));
+	}
+	
+	/**
+	 * 	获取用户总数
+	 */
+	public int getNumOfUser(MemberPageListParam param) {
+		return db().fetchCount(USER, buildOptions(param));
 	}
 }

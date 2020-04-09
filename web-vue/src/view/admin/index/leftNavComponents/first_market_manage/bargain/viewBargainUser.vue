@@ -33,8 +33,11 @@
             :placeholder="$t('marketCommon.selectPlaceholder')"
             size="small"
             class="inputWidth"
-            clearable
           >
+            <el-option
+              :value="-1"
+              label="全部"
+            ></el-option>
             <el-option
               :value="1"
               :label="$t('bargainList.bargainStatusSuccessful')"
@@ -86,30 +89,37 @@
           style="font-size: 20px;"
           center
         >
-          <!-- <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div> -->
-          <!-- <div class="tips-content2">筛选条件：无</div> -->
+          <div class="tips-content1">根据以下条件筛选出{{totalRows}}条数据,是否确认导出？</div>
           <div>筛选条件：</div>
           <div
-            v-for="(item, key, index) in param"
-            :key="index"
-          >
-            <div v-if="ok(key,item)">
-              <div v-if="key === 'orderStatus'">
-                {{$t('orderSearch.'+key)}}:
-                <span
-                  v-for="status in item"
-                  :key="status"
-                >
-                  {{orderStatusMap.get(status)}}
-                </span>
-              </div>
-              <div
-                v-else
-                style="margin-top: 10px;"
-              >{{$t('orderSearch.'+key)}}:{{item}}</div>
-            </div>
-          </div>
-
+            v-if="requestParams.username"
+            style="margin-top:10px"
+          >用户昵称：{{requestParams.username}}</div>
+          <div
+            v-if="requestParams.mobile"
+            style="margin-top:10px"
+          >手机号：{{requestParams.mobile}}</div>
+          <div
+            v-if="requestParams.status === -1"
+            style="margin-top:10px"
+          >砍价状态：全部</div>
+          <div
+            v-if="requestParams.status === 1"
+            style="margin-top:10px"
+          >砍价状态：成功</div>
+          <div
+            v-if="requestParams.status === 2"
+            style="margin-top:10px"
+          >砍价状态：失败</div>
+          <div
+            v-if="requestParams.status === 0"
+            style="margin-top:10px"
+          >砍价状态：砍价中</div>
+          <div
+            v-if="createDate"
+            style="margin-top:10px"
+          >发起时间：{{requestParams.startTime}}-{{requestParams.endTime.split(' ')[0] + ' 23:59:59'}}</div>
+          <!-- <div v-else>无</div> -->
           <span
             slot="footer"
             class="dialog-footer"
@@ -228,16 +238,27 @@ export default {
   components: { pagination },
   mounted () {
     this.langDefault()
+    console.log(this.$route)
     if (this.$route.query.id > 0) {
       console.log(this.$route, 'get id')
+      localStorage.setItem('V-viewBargainUser', this.$route.query.id)
       this.actId = this.$route.query.id
+      this.initDataList()
+    } else {
+      this.actId = localStorage.getItem('V-viewBargainUser')
       this.initDataList()
     }
   },
   data () {
     return {
       loading: false,
-      requestParams: {},
+      requestParams: {
+        username: '',
+        mobile: '',
+        status: -1,
+        startTime: null,
+        endTime: null
+      },
       pageParams: {},
       tableData: [],
       createDate: '',
@@ -248,15 +269,22 @@ export default {
 
       // 导出数据接口参数
       dialogVisible: false,
-      param: Object
+      totalRows: 0,
+      param: Object,
+      paramString: Object
     }
   },
   methods: {
     initDataList () {
       this.loading = true
       this.requestParams.bargainId = this.actId
-      this.requestParams.startTime = this.createDate[0]
-      this.requestParams.endTime = this.createDate[1]
+      if (!this.createDate) {
+        this.requestParams.startTime = ''
+        this.requestParams.endTime = ''
+      } else {
+        this.requestParams.startTime = this.createDate[0]
+        this.requestParams.endTime = this.createDate[1]
+      }
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       getRecordPageList(this.requestParams).then((res) => {
@@ -267,6 +295,13 @@ export default {
           this.handleData(originalData)
           this.pageParams = res.content.page
           this.loading = false
+          this.totalRows = res.content.page.totalRows
+        }
+      })
+
+      Object.keys(this.paramString).forEach((item, index) => {
+        if (!this.paramString[item]) {
+          delete this.paramString[item]
         }
       })
     },
@@ -274,6 +309,9 @@ export default {
     handleData (data) {
       data.map((item, index) => {
         switch (item.status) {
+          case -1:
+            item.status = '全部'
+            break
           case 0:
             item.status = this.$t('bargainList.bargainStatusProcessing')
             break
@@ -303,19 +341,22 @@ export default {
       this.dialogVisible = true
     },
     handelConfirm () {
-      console.log(this.tableData, 'get tableData')
-      exportBargainUserData({
-        // 'bargainId': this.actId,
-        // 'status': this.tableData.status[1],
-        // 'username': this.tableData.username[1]
-      }).then(res => {
-        if (res.error === 0) {
-          console.log(res, 'excle-res')
-          let fileName = localStorage.getItem('V-content-disposition')
-          fileName = fileName.split(';')[1].split('=')[1]
-          download(res, decodeURIComponent(fileName))
-        }
-      }).catch(err => console.log(err))
+      console.log(this.tableData, 'get-tableData')
+      let obj = {
+        bargainId: this.actId,
+        startTime: this.createDate[0],
+        endTime: this.createDate[1]
+      }
+      console.log(obj, 'objParams')
+      exportBargainUserData(Object.assign(this.requestParams, obj)).then(res => {
+        let fileName = localStorage.getItem('V-content-disposition')
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '砍价订单导出.xlsx'
+        this.dialogVisible = false
+        download(res, decodeURIComponent(fileName))
+      }).catch((err, data) => {
+        this.dialogVisible = false
+        console.log(err)
+      })
     }
   },
   watch: {

@@ -14,6 +14,7 @@ var input_vali;
 var goods_ids;
 var total_micro_second;
 var set_time_out;
+var scene;
 global.wxPage({
 
   /**
@@ -23,6 +24,7 @@ global.wxPage({
     imageUrl: "http://miniimg.cn/",
     act_info: {},
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
+    type: '0', // 优惠券状态(未使用, 已使用,已过期)
   },
 
   /**
@@ -32,12 +34,19 @@ global.wxPage({
     clearTimeout(set_time_out);
     var _this = this;
     goods_ids = options.goods_id;
+    scene = options.scene;
 
-    if (options.couponSn) {
+    if (options.type) {
+      _this.setData({
+        type: options.type 
+      })
+    }
+    if (options.couponSn || options.id || options.scene) {
       couponSn = options.couponSn
+      couponId = Number(options.id)
       // 个人中心查看详情
-      util.api("api/wxapp/coupon/detail",function(res){
-        if(res.error == 0){
+      util.api("api/wxapp/coupon/detail", function (res) {
+        if (res.error == 0) {
           _this.initHandler(res, 0)
         } else {
           util.toast_fail('操作失败');
@@ -47,12 +56,12 @@ global.wxPage({
             })
           }, 2000);
         }
-      },{couponSn:options.couponSn})
-    } 
+      }, { couponSn, couponId, scene: scene })
+    }
   },
 
   // 优化数据
-  initHandler: function(res, type) {
+  initHandler: function (res, type) {
     var _this = this;
     // 是否过期
     var time_now = util.formatTime(new Date);
@@ -110,65 +119,56 @@ global.wxPage({
   //立即领取
   fetch_coupon: function (e) {
     // 领取码
-    vali = this.data.act_info.validationCode;
-    // form_id = e.detail.formId;
-    // open_id = util.getCache("openid");
-    if (vali != null) {
+    if (this.data.act_info.validationCode != '') {
+      vali = this.data.act_info.validationCode;
       if (input_vali != vali) {
         util.toast_fail('领取码错误');
-      } else {
-        var that = this;
-        that.setData({
-          disableds: true
-        })
-        util.api("/api/wxapp/coupon/get", function (res) {
-          if (res.error == 0) {
-            if (res.content == 0) {
-              util.toast_success('领取成功', function () {
-                setTimeout(function () {
-                  if (goods_ids) {
-                    util.navigateTo({
-                      url: '/pages/item/item?gid=' + goods_ids,
-                    })
-                  } else {
-                    wx.navigateBack({
-                      url: '/pages/index/index',
-                    })
-                  }
-                }, 2000);
-              });
-            } else if (res.content == 1) {
-              util.toast_fail('优惠券不存在');
-            } else if (res.content == 2) {
-              util.toast_fail('优惠券已过期');
-            } else if (res.content == 3) {
-              util.toast_fail('优惠券已停用');
-            } else if (res.content == 4) {
-              util.toast_fail('优惠券库存为0');
-            } else if (res.content == 5) {
-              util.toast_fail('可用积分不足');
-            } else if (res.content == 6) {
-              util.toast_fail('积分更新失败');
-            } else if (res.content == 7) {
-              util.toast_fail('领取次数达上限');
-            }
-          } else {
-            util.toast_fail('领取失败');
+        return
+      }
+    }
+    // 直接领取 / 积分兑换
+    if (this.data.act_info.useScore == 0) {
+      util.api("/api/wxapp/coupon/get", function (res) {
+        if (res.error == 0) {
+          if (res.content == 0) {
+            util.toast_success('领取成功', function () {
+              setTimeout(function () {
+                if (goods_ids) {
+                  util.navigateTo({
+                    url: '/pages/item/item?gid=' + goods_ids,
+                  })
+                } else {
+                  wx.navigateBack({
+                    url: '/pages/index/index',
+                  })
+                }
+              }, 2000);
+            });
+          } else if (res.content == 1) {
+            util.toast_fail('优惠券不存在');
+          } else if (res.content == 2) {
+            util.toast_fail('优惠券已过期');
+          } else if (res.content == 3) {
+            util.toast_fail('优惠券已停用');
+          } else if (res.content == 4) {
+            util.toast_fail('优惠券库存为0');
+          } else if (res.content == 5) {
+            util.toast_fail('可用积分不足');
+          } else if (res.content == 6) {
+            util.toast_fail('积分更新失败');
+          } else if (res.content == 7) {
+            util.toast_fail('领取次数达上限');
           }
-        }, { 
-          couponId: d.coupon_id,
-        })
-      }
-    } else {
-      var that = this;
-      if (this.data.act_info.useScore == 1) {
-        let showTitle = '是否使用' + this.data.act_info.scoreNumber + '积分兑换此优惠券';
-        util.showModal(showTitle, '', function () {
-          that.getUserCoupon();
-        }, true);
-      } else {
+        } else {
+          util.toast_fail('领取失败');
+        }
+      }, { couponId })
+    } else if (this.data.act_info.useScore == 1) {
+      var that = this
+      let showTitle = '是否使用' + this.data.act_info.scoreNumber + '积分兑换此优惠券';
+      util.showModal(showTitle, '', function () {
         that.getUserCoupon();
-      }
+      }, true, "取消", "确定");
     }
   },
 
@@ -207,14 +207,13 @@ global.wxPage({
       } else {
         util.toast_fail('领取失败');
       }
-    }, { couponId: couponId }, '', true)
+    }, { couponId }, '', true)
   },
 
   // 立即使用
-  to_search: function () {
-    util.navigateTo({
-      url: '/pages/searchs/search?coupon_sn=' + coupon_sn
-    })
+  to_search: function (e) {
+    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
   },
 
   // 我的优惠券
@@ -230,5 +229,5 @@ global.wxPage({
       url: '/pages/index/index',
     })
   }
-  
+
 })

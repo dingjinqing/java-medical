@@ -33,7 +33,7 @@
 }
 .goods_item > .goods_img > .invalid {
   position: absolute;
-  bottom: 0;
+  bottom: 7rpx;
   width: 100%;
   line-height: 40rpx;
   background-color:rgba(0,0,0,0.5);
@@ -55,7 +55,7 @@
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   overflow-wrap: break-word;
   word-break: break-all;
@@ -111,23 +111,16 @@
 .cart-goods_item .clearfix {
   _height: auto;
 }
-.cart-goods_item .act_info>view {
+/* .cart-goods_item .act_info>view {
   font-size: 26rpx;
   display: flex;
   align-items: center;
-}
+} */
 .cart-goods_item .act_info .ai_left {
-  flex: 1.7;
-}
-.full_member_icon{
-  /* float: left; */
-  background-color:#fff;
-  padding:0rpx 10rpx;
-  border-radius:4rpx;
-  color:#c5a050;
-  border: 2rpx solid #c5a050; 
-  font-size:26rpx;
-  margin-right: 10rpx;
+  flex: 1.6;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start
 }
 .ai_left .full_icon {
   border: 2rpx solid #f66;
@@ -137,6 +130,8 @@
   border-radius: 4rpx;
 }
 .act_content {
+}
+.act_content_full {
   width: 400rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -144,8 +139,10 @@
 }
 .go_full {
   color: #f66;
+  flex: 0.4;
+  display: flex;
+  align-items: center;
   justify-content: flex-end;
-  flex: 0.3;
 }
 .go_full image {
   width: 15rpx;
@@ -213,13 +210,16 @@
   align-items: center;
   justify-content: flex-start
 }
-.cf_left view:last-of-type{
+.cf_left .cf_left_title {
+
+}
+.cf_left .cf_left_content {
   color: #666;
   margin-left: 10rpx;
   width: 370rpx;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap
+  white-space: nowrap;
 }
 .cf_right{
   flex: 0.5;
@@ -465,3 +465,107 @@ movable-view{
   font-size: 30rpx;
   border-radius: 10rpx;
 }
+
+/* 换购部分 */
+.change_goods_area {
+  margin-left: 60rpx;
+  width: 650rpx;
+}
+.each_cga_goods {
+  position: relative;
+  width: 650rpx;
+  padding-top: 20rpx;
+  overflow-y: hidden;
+}
+.cga_left {
+  float: left;
+  width: 120rpx;
+  height: 120rpx;
+  position: relative;
+}
+.cga_left .cg_img {
+  width: 120rpx;
+  height: 120rpx;
+}
+.cga_right {
+  float: right;
+  width: 510rpx;
+  height: 120rpx;
+  position: relative;
+}
+.cga_right .cga_names {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 26rpx;
+  position: absolute;
+  top: 0;
+}
+.cga_right .cga_names text {
+  border: 1rpx solid #f66;
+  color: #f66;
+  margin-right: 5rpx;
+  border-radius: 5rpx;
+  padding: 0 5rpx;
+  font-size: 22rpx;
+  box-sizing: border-box;
+  height: 33rpx;
+  display: inline-block;
+}
+.cga_right .cga_specs {
+  font-size: 24rpx;
+  color: #666;
+  position: absolute;
+  top: 40rpx;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.cga_right .cga_price_info {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.cga_price_info .cga_rice {
+  flex: 1.6;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.cga_market {
+  color: #f66;
+  font-size: 30rpx;
+  margin-right: 8rpx;
+}
+.cga_price_info .cga_nums {
+  flex: 0.4;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.each_cga_goods .del_btn {
+  width: 120rpx;
+  height: 140rpx;
+  color: #fff;
+  background: #f66;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: -120rpx;
+}
+
+
+
+
+
+
+
+
+

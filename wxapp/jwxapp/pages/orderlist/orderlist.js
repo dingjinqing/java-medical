@@ -39,21 +39,17 @@ global.wxPage({
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
-    util.api("/api/wxapp/order/statistic", res => {
-      this.setData({
-        navStatusNum: res.content
-      });
-    });
     util.api(
       "/api/wxapp/order/list",
       res => {
         if (res.error === 0) {
-          let dataList = this.formatData(res.content.dataList);
+          let dataList = this.formatData(res.content.orders.dataList);
           if(dataList.length < 20){
             this.selectComponent('#recommend').resetDataList().resetPage().requestData()
           }
           this.setData({
-            pageParams: res.content.page,
+            navStatusNum: res.content.orderStatuCount,
+            pageParams: res.content.orders.page,
             ["dataList[" + (parseInt(currentPage) - 1) + "]"]: dataList
           });
         }
@@ -75,7 +71,9 @@ global.wxPage({
         "isRemindShip",
         "isShowCommentType",
         "isDelete",
-        "isCancel"
+        "isCancel",
+        "isShowFriendPay",
+        "isShowEndPay"
       ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
@@ -110,7 +108,8 @@ global.wxPage({
     this.setData({
       scrollIntoId: e.currentTarget.id,
       pageParams: null,
-      dataList: []
+      dataList: [],
+      searchInput:''
     });
     this.requestList();
   },

@@ -12,7 +12,7 @@ public class PledgeListParam {
   /** 商品id */
   private Integer goodsId;
   /** 种类id */
-  private Integer sortId;
+  private Integer catId;
   /** 品牌id */
   private Integer brandId;
 }

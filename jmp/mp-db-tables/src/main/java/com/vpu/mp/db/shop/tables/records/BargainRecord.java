@@ -5,14 +5,12 @@ package com.vpu.mp.db.shop.tables.records;
 
 
 import com.vpu.mp.db.shop.tables.Bargain;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
 
-    private static final long serialVersionUID = -373066966;
+    private static final long serialVersionUID = -2096986137;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_bargain.id</code>.
@@ -394,6 +392,34 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
         return (Byte) get(25);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.need_bind_mobile</code>. 是否需要绑定手机号，1是
+     */
+    public void setNeedBindMobile(Byte value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.need_bind_mobile</code>. 是否需要绑定手机号，1是
+     */
+    public Byte getNeedBindMobile() {
+        return (Byte) get(26);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.initial_sales</code>. 初始销量
+     */
+    public void setInitialSales(Integer value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.initial_sales</code>. 初始销量
+     */
+    public Integer getInitialSales() {
+        return (Integer) get(27);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -420,7 +446,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
     /**
      * Create a detached, initialised BargainRecord
      */
-    public BargainRecord(Integer id, String bargainName, Integer goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig, Byte bargainType, BigDecimal floorPrice, Byte bargainMoneyType, BigDecimal bargainFixedMoney, BigDecimal bargainMinMoney, BigDecimal bargainMaxMoney, Byte freeFreight) {
+    public BargainRecord(Integer id, String bargainName, Integer goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig, Byte bargainType, BigDecimal floorPrice, Byte bargainMoneyType, BigDecimal bargainFixedMoney, BigDecimal bargainMinMoney, BigDecimal bargainMaxMoney, Byte freeFreight, Byte needBindMobile, Integer initialSales) {
         super(Bargain.BARGAIN);
 
         set(0, id);
@@ -449,5 +475,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
         set(23, bargainMinMoney);
         set(24, bargainMaxMoney);
         set(25, freeFreight);
+        set(26, needBindMobile);
+        set(27, initialSales);
     }
 }

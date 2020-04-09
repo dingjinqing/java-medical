@@ -1,7 +1,6 @@
 package com.vpu.mp.service.foundation.util;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -350,6 +349,17 @@ public class CardUtil {
 	 */
 	public static boolean isStopUsing(Byte flag) {
 		return CardConstant.MCARD_FLAG_STOP.equals(flag);
+	}
+	
+	/**
+	 * 将time转化为localdate
+	 */
+	public static LocalDate timeToLocalDate(Timestamp time) {
+		if(time==null) {
+			return null;
+		}else {
+			return time.toLocalDateTime().toLocalDate();
+		}
 	}
 	
 }

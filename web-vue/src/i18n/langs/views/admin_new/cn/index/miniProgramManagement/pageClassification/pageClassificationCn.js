@@ -10,6 +10,7 @@ export const cn = {
   operate: '操作',
   edit: '编辑',
   remove: '删除',
+  deleteConfirm: '确认要删除吗？',
   viewPage: '查看页面',
   addCatergory: '添加页面分类'
 }

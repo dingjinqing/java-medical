@@ -21,11 +21,6 @@ import java.util.Set;
 @Setter
 public class GoodsDetailMpBo extends GoodsDetailMpVo{
     //************ElasticSearch中的数据**************start
-    /** 平台、商家、品牌分类id */
-    @JsonIgnore
-    private Integer catId;
-    @JsonIgnore
-    private Integer sortId;
     /**商品初始销量*/
     @JsonIgnore
     private Integer baseSale;
@@ -57,8 +52,6 @@ public class GoodsDetailMpBo extends GoodsDetailMpVo{
     @Override
     public String toString() {
         return "GoodsDetailMpBo{" +
-            "catId=" + catId +
-            ", sortId=" + sortId +
             ", baseSale=" + baseSale +
             ", isOnSale=" + isOnSale +
             ", goodsVideoId=" + goodsVideoId +

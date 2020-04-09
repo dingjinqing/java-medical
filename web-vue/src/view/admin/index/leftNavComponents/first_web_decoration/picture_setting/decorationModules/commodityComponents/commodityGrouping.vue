@@ -122,38 +122,38 @@
                     >￥{{Number(item.realPrice).toFixed(2)}}</span>
                     <span
                       style="text-decoration: line-through;color: #c0c0c0"
-                      v-if="data.show_market==='1'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >￥{{Number(item.linePrice).toFixed(2)}}</span>
+                      v-if="item.linePrice&&data.show_market==='1'&&data.other_message==='0'&&data.shop_style!=='2'"
+                    >￥{{Number(item.linePrice).toFixed(2)==='0.00'?'':Number(item.linePrice).toFixed(2)}}</span>
                     <span
-                      style="text-decoration: line-through;color: #c0c0c0"
+                      style="color: #c0c0c0"
                       v-if="data.show_market==='2'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                    >{{item.goodsSaleNum}}人付款</span>
                     <span
-                      style="text-decoration: line-through;color: #c0c0c0"
+                      style="color: #c0c0c0"
                       v-if="data.show_market==='3'&&data.other_message==='0'&&data.shop_style!=='2'"
-                    >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                    >{{item.commentNum}}人评价</span>
                     <!--购买按钮-->
                     <i
                       class="iconfont icontianjia icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     ></i>
                     <i
                       class="iconfont icongouwuche1 icon_font_size new_class"
                       :style="`color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     ></i>
                     <i
                       class="right_buy new_back"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;backgroundColor:${bgColor}`:`backgroundColor:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     >
                       {{$t('commodity.grabAtOnce')}}
                     </i>
                     <i
                       class="cart_buy"
                       :style="data.shop_style==='2'?`width:44px;height:22px;line-height:22px;color:${bgColor};border-color:${bgColor}`:`color:${bgColor};border-color:${bgColor};`+`${data.shop_style==='3'?'position:static':''}`"
-                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
+                      v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                     >{{$t('commodity.purchase')}}</i>
                   </div>
                 </div>
@@ -279,38 +279,38 @@
                       ></span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
-                        v-if="data.show_market==='1'&&data.other_message==='0'"
+                        v-if="item.linePrice&&data.show_market==='1'&&data.other_message==='0'"
                       >{{Number(item.linePrice).toFixed(2)}}</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='2'&&data.other_message==='0'"
-                      >{{Number(item.goodsSaleNum).toFixed(2)}}</span>
+                      >{{item.goodsSaleNum}}人付款</span>
                       <span
                         style="text-decoration: line-through;color: #c0c0c0"
                         v-if="data.show_market==='3'&&data.other_message==='0'"
-                      >{{Number(item.goodsNumber).toFixed(2)}}</span>
+                      >{{item.commentNum}}人评价</span>
                       <!--购买按钮-->
                       <i
                         class="iconfont icontianjia icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '0'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       ></i>
                       <i
                         class="iconfont icongouwuche1 icon_font_size new_class"
                         :style="`color:${bgColor};`+'position:static'"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose === '1'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       ></i>
                       <i
                         class="right_buy new_back"
                         :style="`backgroundColor:${bgColor};right:0;line-height:27px;height:27px;top:0;width:55px`"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='2'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       >
                         {{$t('commodity.grabAtOnce')}}
                       </i>
                       <i
                         class="cart_buy"
                         :style="`color:${bgColor};border-color:${bgColor};right:0;line-height:27px;height:27px;top:0`"
-                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'"
+                        v-if="data.cart_btn==='0'&&data.cart_btn_choose==='3'&&item.activityType!==1&&item.activityType!==3&&item.activityType!==5"
                       >{{$t('commodity.purchase')}}</i>
                     </div>
                   </div>
@@ -498,7 +498,7 @@ export default {
       groupData.forEach((item, idnex) => {
         let obj = {}
         obj['sort_id'] = item.sort_id
-        obj['sort_type'] = item.sort_type
+        obj['sort_type'] = JSON.stringify(Number(item.sort_type))
         obj['group_goods_id'] = item.group_goods_id ? item.group_goods_id : null
         obj['is_all'] = item.is_all
         arr.push(obj)
@@ -891,6 +891,7 @@ export default {
     }
   }
   .right {
+    overflow: hidden;
     flex: 1;
     .rightTop {
       width: 100%;

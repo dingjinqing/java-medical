@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil.Operator;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVo
 import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -33,6 +35,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -193,6 +196,7 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setUserId(order.getUserId());
 		returnOrder.setShopId(getShopId());
 		returnOrder.setCurrency(order.getCurrency());
+        returnOrder.setIsAutoReturn(param.getIsAutoReturn());
 		//除退货外,refund_status为4
         returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
@@ -519,14 +523,13 @@ public class ReturnOrderService extends ShopBaseService{
 
     /**
      * 获取自动退款的退款订单
-     * @param autoReturnTime
      * @param returnMoneyDays
      * @param returnAddressDays
      * @param returnShoppingDays
      * @param returnPassDays
      * @return Result<ReturnOrderRecord>
      */
-    public Result<ReturnOrderRecord> getAutoReturnOrder(Timestamp autoReturnTime, Byte returnMoneyDays, Byte returnAddressDays, Byte returnShoppingDays, Byte returnPassDays){
+    public Result<ReturnOrderRecord> getAutoReturnOrder(Byte returnMoneyDays, Byte returnAddressDays, Byte returnShoppingDays, Byte returnPassDays){
         Instant now = Instant.now();
         Timestamp returnMoneTime = Timestamp.from(now.plusSeconds(-returnMoneyDays * 24 * 60 * 60));
         Timestamp returnAddressTime = Timestamp.from(now.plusSeconds(-returnAddressDays * 24 * 60 * 60));
@@ -536,28 +539,75 @@ public class ReturnOrderService extends ShopBaseService{
             //买家发起退款申请后，商家在 returnMoneyDays 日内未处理，系统将自动退款
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_ONLY_MONEY))
-                .and(TABLE.SHIPPING_OR_REFUND_TIME.ge(autoReturnTime)
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES)
                 .and(TABLE.SHIPPING_OR_REFUND_TIME.le(returnMoneTime)))
         ).or(
             //商家已发货，买家发起退款退货申请，商家在 ? 日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDITING)
                 .and(TABLE.RETURN_TYPE.in(OrderConstant.RT_GOODS, OrderConstant.RT_CHANGE))
-                .and(TABLE.APPLY_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.APPLY_TIME.le(returnAddressTime))
         ).or(
             //买家已提交物流信息，商家在 ? 日内未处理，系统将默认同意退款退货，并自动退款给买家
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS))
-                .and(TABLE.SHIPPING_OR_REFUND_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.SHIPPING_OR_REFUND_TIME.le(returnShoppingTime))
         ).or(
             //商家同意退款退货，买家在 ? 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动撤销。
             TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_AUDIT_PASS)
                 .and(TABLE.RETURN_TYPE.eq(OrderConstant.RT_GOODS))
-                .and(TABLE.APPLY_TIME.ge(autoReturnTime))
+                .and(TABLE.IS_AUTO_RETURN.eq(OrderConstant.YES))
                 .and(TABLE.APPLY_PASS_TIME.le(returnPassTime))
         ).fetch();
     }
+    
+    
+    /**
+	 * 获取用户所有的退款订单信息
+	 */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户所有的退款订单信息");
+		// 普通订单
+		UserOrderBean order = getReturnNormalOrder(userId);
+		// 虚拟订单
+		UserOrderBean cardOrder = saas().getShopApp(getShopId()).memberCardOrder.getReturnOrder(userId);
+		
+		// 门店买单订单
+		UserOrderBean storeOrder = saas().getShopApp(getShopId()).store.reservation.storeOrderService.getReturnOrder(userId);
+		
+		// 服务订单
+		UserOrderBean serviceOrder = saas().getShopApp(getShopId()).store.serviceOrder.getReturnOrder(userId);
+		
+		Integer count = order.getOrderNum()+cardOrder.getOrderNum()+storeOrder.getOrderNum()+serviceOrder.getOrderNum();
+		BigDecimal orderAmount = BigDecimal.ZERO;
+		List<BigDecimal> tmp = Arrays.<BigDecimal>asList(order.getTotalMoneyPaid(),cardOrder.getTotalMoneyPaid(),storeOrder.getTotalMoneyPaid(),serviceOrder.getTotalMoneyPaid());
+		for(BigDecimal val: tmp) {
+			orderAmount = BigDecimalUtil.add(orderAmount, val);
+		}
+		return UserOrderBean.builder().orderNum(count).totalMoneyPaid(orderAmount).build();
+	}
+	
+	/**
+	 * 获取用户退款普通订单
+	 */
+	public UserOrderBean getReturnNormalOrder(Integer userId) {
+		logger().info("获取用户退款普通订单");
+		Record2<BigDecimal, BigDecimal> resOne = db().select(DSL.sum(TABLE.MONEY),DSL.sum(TABLE.SHIPPING_FEE))
+				.from(TABLE)
+				.where(TABLE.USER_ID.eq(userId))
+				.and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
+				.fetchAny();
+		BigDecimal orderAmount = BigDecimalUtil.add((BigDecimal)resOne.get(0), (BigDecimal)resOne.get(1));
+		int count = db().select(DSL.countDistinct(TABLE.ORDER_SN))
+			.from(TABLE)
+			.where(TABLE.USER_ID.eq(userId))
+			.and(TABLE.REFUND_STATUS.eq(OrderConstant.REFUND_STATUS_FINISH))
+			.fetchOne(0,int.class);
+		
+		return UserOrderBean.builder().orderNum(count).totalMoneyPaid(orderAmount).build();
+	}
+	
 }
 
 

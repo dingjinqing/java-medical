@@ -19,7 +19,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -46,33 +45,25 @@ public final class RedisLockAspect extends ShopBaseService {
 
     private String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-    private ThreadLocal<String> currentValue = ThreadLocal.withInitial(StringUtils.EMPTY::toString);
+    private ThreadLocal<String> currentValue = new ThreadLocal<>();
 
-    private ThreadLocal<List<String>> currentKeys = ThreadLocal.withInitial(Lists::newArrayList);
+    private ThreadLocal<List<String>> currentKeys = new ThreadLocal<>();
 
     @Around("@annotation(com.vpu.mp.service.foundation.util.lock.annotation.RedisLock)")
-    public void around(ProceedingJoinPoint joinPoint) throws MpException {
+    public Object around(ProceedingJoinPoint joinPoint) throws MpException {
         logger().info("redis环绕批量锁start");
-        //keys
-        List<String> keys = null;
-        //开始时间
-        long nano = System.nanoTime();
-        //获取签名
-        Signature signature = joinPoint.getSignature();
-        Object[] args = joinPoint.getArgs();
-        //获取方法签名
-        MethodSignature methodSignature = (MethodSignature) signature;
         addLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法start");
+        Object proceed;
         try {
-            joinPoint.proceed();
+            proceed = joinPoint.proceed();
         } catch (Throwable throwable) {
             logger().error("批量锁执行joinPoint.proceed()异常", throwable);
             throw new MpException(JsonResultCode.CODE_ORDER_UPDATE_STOCK_FAIL);
         }
+        releaseLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法end");
-
-
+        return proceed;
     }
 
     /**
@@ -105,7 +96,7 @@ public final class RedisLockAspect extends ShopBaseService {
             //集合类
             List<Object> keyObjs = (List<Object>) args[keyIndex];
             if(keyObjs.get(0).getClass().getClassLoader() == null){
-                //jdk自带类型
+                //非开发设计的类
                 for (Object keyObj : keyObjs) {
                     keys.add(keyObj.toString());
                 }
@@ -249,7 +240,7 @@ public final class RedisLockAspect extends ShopBaseService {
                 logger().info("批量锁获取成功，执行后续方法");
                 break;
             }
-        } while (nano - System.nanoTime() < redisLockAnnotation.maxWait() * 1000000);
+        } while (System.nanoTime() - nano < redisLockAnnotation.maxWait() * 1000000);
         if (fail.size() != keys.size()) {
             //释放
             releaseLocks(fail, currentValue.get());

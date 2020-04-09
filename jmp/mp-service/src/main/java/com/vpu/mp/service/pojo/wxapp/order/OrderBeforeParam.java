@@ -144,6 +144,9 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
 		private GoodsSpecProductRecord productInfo;
         @JsonIgnore
         private GoodsRecord goodsInfo;
+        /**是否校验过限购，true校验过*/
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private Boolean isAlreadylimitNum;
 	}
 
     /**
@@ -156,7 +159,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
             orderCartProductBo.setStoreId(getStoreId());
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber()));
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(),x.getProductInfo()));
 			});
 		}
         return orderCartProductBo;

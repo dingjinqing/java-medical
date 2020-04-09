@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PaymentRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ServiceOrderRecord;
+import com.vpu.mp.db.shop.tables.records.StoreServiceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.MemberCardPojo;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
@@ -34,8 +36,10 @@ import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.payment.PaymentService;
+import com.vpu.mp.service.shop.store.postsale.ServiceTechnicianService;
 import com.vpu.mp.service.shop.store.store.StoreReservation;
 import com.vpu.mp.service.shop.user.user.UserService;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
@@ -129,6 +133,12 @@ public class ServiceOrderService extends ShopBaseService {
     public StoreReservation reservation;
 
     /**
+     * 技师管理
+     */
+    @Autowired
+    public ServiceTechnicianService serviceTechnician;
+
+    /**
      * 订单状态 0：待付款，1：待服务，2：已取消，3：已完成
      */
     public static final Byte ORDER_STATUS_WAIT_PAY = 0;
@@ -180,11 +190,22 @@ public class ServiceOrderService extends ShopBaseService {
                 , SERVICE_ORDER.SUBSCRIBER
                 , STORE_SERVICE.SERVICE_NAME
                 , SERVICE_ORDER.MOBILE
+                , SERVICE_ORDER.CREATE_TIME
                 , SERVICE_ORDER.SERVICE_DATE, SERVICE_ORDER.SERVICE_PERIOD, SERVICE_ORDER.TECHNICIAN_NAME, STORE_SERVICE.SERVICE_SUBSIST, SERVICE_ORDER.ADD_MESSAGE).
                 from(SERVICE_ORDER).
                 leftJoin(STORE_SERVICE).on(SERVICE_ORDER.SERVICE_ID.eq(STORE_SERVICE.ID));
         select = this.buildOptions(select, param);
-        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId())).orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        select.where(SERVICE_ORDER.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(SERVICE_ORDER.STORE_ID.eq(param.getStoreId()));
+
+        if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.asc(),SERVICE_ORDER.SERVICE_PERIOD.asc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.SERVICE_DATE) && param.getOrderDirection().equals(ServiceOrderListQueryParam.DESC)){
+            select.orderBy(SERVICE_ORDER.SERVICE_DATE.desc(),SERVICE_ORDER.SERVICE_PERIOD.desc());
+        }else if(StringUtil.isNotBlank(param.getOrderField()) && param.getOrderField().equals(ServiceOrderListQueryParam.CREATE_TIME) && param.getOrderDirection().equals(ServiceOrderListQueryParam.ASC)){
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.asc());
+        }else{
+            select.orderBy(SERVICE_ORDER.CREATE_TIME.desc());
+        }
         return getPageResult(select, param.getCurrentPage(), param.getPageRows(), ServiceOrderListQueryVo.class);
     }
 
@@ -336,6 +357,35 @@ public class ServiceOrderService extends ShopBaseService {
     }
 
     /**
+     * admin创建预约订单的校验
+     * @param param
+     * @return
+     */
+    public JsonResultCode checkServiceOrderAdd(ServiceOrderAddParam param){
+        StoreServiceRecord storeServiceRecord = storeService.getStoreServiceById(param.getServiceId());
+        Timestamp serviceTime = DateUtil.convertToTimestamp(param.getServiceDate() + " " + param.getServicePeriod());
+
+        if(serviceTime.after(storeServiceRecord.getStartDate()) && serviceTime.before(storeServiceRecord.getEndDate())){
+            Timestamp storeServiceStartDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getStartPeriod() + ":00");
+            Timestamp storeServiceEndDate = DateUtil.convertToTimestamp(param.getServiceDate() +" " + storeServiceRecord.getEndPeriod() + ":00");
+            if(serviceTime.before(storeServiceStartDate) || serviceTime.after(storeServiceEndDate)){
+                return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+            }
+        }else{
+            return JsonResultCode.CODE_SERVICE_ORDER_WRONG_SERVICE_DATE;
+        }
+        if(storeServiceRecord.getServiceType() == 1){
+            if(param.getTechnicianId()  == null || param.getTechnicianId() <= 0 || !StringUtil.isNotEmpty(param.getTechnicianName())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL;
+            }
+            if(!serviceTechnician.isTechnicianEnable(param.getTechnicianId(),param.getServiceDate(),param.getServicePeriod())){
+                return JsonResultCode.CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE;
+            }
+        }
+        return JsonResultCode.CODE_SUCCESS;
+    }
+
+    /**
      * Pay method verify.下单前支付方式校验
      * todo 门店相关支付业务暂不确定是否参与交易配置
      *
@@ -409,7 +459,7 @@ public class ServiceOrderService extends ShopBaseService {
                 log.error("会员卡【{}】无效", cardNo);
                 throw new BusinessException(JsonResultCode.CODE_ORDER_CARD_INVALID);
             }
-            // 会员卡余额（门店服务不涉及会员卡折扣）
+            // 会员卡余额（todo 门店服务不涉及会员卡折扣）
             BigDecimal money = userCardService.getSingleField(USER_CARD.MONEY, USER_CARD.CARD_NO.eq(cardNo));
             // 会员卡抵扣金额大于会员卡余额
             if (cardDis.compareTo(money) > 0) {
@@ -875,5 +925,41 @@ public class ServiceOrderService extends ShopBaseService {
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
+    /**
+     * 获取用户的门店服务订单
+     */
+	public UserOrderBean getConsumerOrder(Integer userId) {
+		logger().info("获取用户的门店服务订单");
+		return db().select(DSL.count(SERVICE_ORDER.ORDER_ID).as("orderNum"),
+				DSL.sum(SERVICE_ORDER.MONEY_PAID.add(SERVICE_ORDER.USE_ACCOUNT)
+						.add(SERVICE_ORDER.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+				.from(SERVICE_ORDER)
+				.where(SERVICE_ORDER.ORDER_STATUS.in(ORDER_STATUS_WAIT_PAY,ORDER_STATUS_CANCELED))
+				.and(SERVICE_ORDER.USER_ID.eq(userId))
+				.fetchAnyInto(UserOrderBean.class);
+	}
+	/**
+     * 获取用户的门店服务退款订单信息
+     */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户的门店服务退款订单信息");
+		// TODO等待门店服务退款业务功能添加  service_order_refund 
+		
+		
+		return UserOrderBean.builder().orderNum(0).totalMoneyPaid(BigDecimal.ZERO).build();
+	}
+
+	/**
+	 * 获取门店服务订单最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店服务订单最近下单时间");
+		return db().select(SERVICE_ORDER.CREATE_TIME)
+					.from(SERVICE_ORDER)
+					.where(SERVICE_ORDER.USER_ID.eq(userId))
+					.orderBy(SERVICE_ORDER.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+		
+	}
 
 }

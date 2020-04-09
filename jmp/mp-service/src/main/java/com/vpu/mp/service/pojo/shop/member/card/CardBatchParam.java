@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 /**
@@ -28,4 +30,8 @@ public class CardBatchParam {
 	private Integer batchId;
 	// 分组id
 	private Integer groupId;
+	
+	private MultipartFile file;
+	/** 已经生成的批次的batchId */
+	private Integer[] batchIdStr;
 }

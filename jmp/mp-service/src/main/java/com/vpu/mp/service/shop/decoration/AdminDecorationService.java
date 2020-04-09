@@ -10,12 +10,16 @@ import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.config.StorageConfig;
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.config.UpYunConfig;
+import com.vpu.mp.db.main.tables.records.DecorationTemplateRecord;
 import com.vpu.mp.db.shop.tables.records.XcxCustomerPageRecord;
 import com.vpu.mp.service.foundation.image.ImageDefault;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.decorate.DecorationTemplatePojo;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.decoration.*;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -28,6 +32,7 @@ import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -328,7 +333,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleBargain = saas.getShopApp(getShopId()).bargain.getPageIndexBargain(moduleBargain);
                     return moduleBargain;
                 case ModuleConstant.M_SECKILL:
-                    ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+                    ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
                     moduleSecKill = saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
                     return moduleSecKill;
                 case ModuleConstant.M_INTEGRAL:
@@ -370,6 +375,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         }
         if("page_cfg".equals(node.getKey())){
             PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+                pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
+            }
             if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
                 pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
             }
@@ -483,7 +491,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
 
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.INDEX.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.INDEX.getUrl());
         return vo;
     }
 
@@ -528,7 +536,9 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         //入库
         if(page.getPageId() != null && page.getPageId() > 0){
             record.setPageId(page.getPageId());
-            return record.update();
+            if(record.update() > 0){
+                return record.getPageId();
+            }
         }else {
             if(record.insert() > 0){
                 page.setPageId(record.getPageId());
@@ -620,6 +630,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     }
                     return moduleTitle;
                 case ModuleConstant.M_VIDEO:
+                    checkAuth(VersionName.SUB_2_M_VIDEO);
                     ModuleVideo moduleVideo = objectMapper.readValue(node.getValue().toString(), ModuleVideo.class);
                     if(StringUtil.isNotEmpty(moduleVideo.getVideoUrl())){
                         moduleVideo.setVideoUrl(new URL(moduleVideo.getVideoUrl()).getPath());
@@ -644,18 +655,45 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     moduleMap.setImgPath(imgPath);
                     return moduleMap;
                 case ModuleConstant.M_CARD:
+                	checkAuth(VersionName.SUB_2_M_MEMBER_CARD);
                     ModuleCard moduleCard = objectMapper.readValue(node.getValue().toString(), ModuleCard.class);
                     if(StringUtil.isNotEmpty(moduleCard.getBgImg())){
                         moduleCard.setBgImg(new URL(moduleCard.getBgImg()).getPath());
                     }
                     return moduleCard;
                 case ModuleConstant.M_GROUP_DRAW:
+                	checkAuth(VersionName.SUB_2_M_GROUP_DRAW);
                     ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
                     if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
                         moduleGroupDraw.setModuleImg(new URL(moduleGroupDraw.getModuleImg()).getPath());
                     }
                     return moduleGroupDraw;
-
+                case ModuleConstant.M_INTEGRAL:
+                	checkAuth(VersionName.SUB_2_M_INTEGRAL_GOODS);
+                    ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+                    if(!moduleIntegral.getIntegralGoods().isEmpty()){
+                        for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
+                            if(StringUtil.isNotEmpty(g.getGoodsImg())){
+                                g.setGoodsImg(new URL(g.getGoodsImg()).getPath());
+                            }
+                        }
+                    }
+                    return moduleIntegral;
+                case ModuleConstant.M_COUPON:
+                	checkAuth(VersionName.SUB_2_M_VOUCHER);
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
+                	
+                case ModuleConstant.M_BARGAIN:
+                	checkAuth(VersionName.SUB_2_M_BARGAIN);
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
+                	
+                case ModuleConstant.M_SECKILL:
+                	checkAuth(VersionName.SUB_2_M_SECKILL_GOODS);
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
+                	
+                case ModuleConstant.M_PIN_INTEGRATION:
+                	checkAuth(VersionName.SUB_2_M_PIN_INTEGRATION);
+                	return objectMapper.readValue(node.getValue().toString(), Object.class);
                 //TODO 其他保存前需要处理的模块
                 default:
 
@@ -673,6 +711,16 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
+
+    /**
+     * 店铺权限的一些校验
+     * @param moduName
+     */
+	private void checkAuth(String moduName) {
+		String[] auth1 = saas.shop.version.verifyVerPurview(getShopId(), moduName);
+		logger().info("{}权限：{}",moduName,auth1[0]);
+		Assert.isTrue(auth1[0].equals("true"), moduName+"have no auth");
+	}
 
     /**
      * 记录页面变化部分
@@ -738,5 +786,65 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
     @Override
     public UpYun getUpYunClient() {
         return new UpYun(upYunConfig.getServer(), upYunConfig.getName(), upYunConfig.getPassword());
+    }
+
+    /**
+     * 将页面模板数据处理成前端可以直接用的
+     * @param templateId
+     * @return
+     */
+    public DecorationTemplatePojo covertTemplate(int templateId){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        DecorationTemplateRecord decorationTemplateRecord = saas.shop.decoration.getRow(templateId);
+        String pageContent = StringUtils.isBlank(decorationTemplateRecord.getPageContent()) ? "{}" : decorationTemplateRecord.getPageContent();
+        Map<String, Object> result = new LinkedHashMap<>();
+
+        try {
+            JsonNode root = objectMapper.readTree(pageContent);
+            Iterator<Map.Entry<String, JsonNode>> elements = root.fields();
+
+            while (elements.hasNext()) {
+                Map.Entry<String, JsonNode> node = elements.next();
+                String key = node.getKey();
+                Object element = this.processTemplateModuleForGet(objectMapper, node);
+                result.put(key, element);
+            }
+        } catch (Exception e) {
+            logger().error("装修模板转换错误:",e);
+        }
+
+        try {
+            DecorationTemplatePojo vo = new DecorationTemplatePojo();
+            vo.setPageName(decorationTemplateRecord.getPageName());
+            vo.setPageId(decorationTemplateRecord.getPageId());
+            vo.setPageImg(decorationTemplateRecord.getPageImg());
+            vo.setPageContent(objectMapper.writeValueAsString(result));
+            return vo;
+        } catch (IOException e) {
+            logger().error("装修模板",e);
+            return null;
+        }
+    }
+
+    private Object processTemplateModuleForGet(ObjectMapper objectMapper, Map.Entry<String, JsonNode> node) throws IOException, ClassNotFoundException {
+        if (node.getKey().startsWith("c_")) {
+            String moduleName = node.getValue().get("module_name").asText();
+
+            String moduleClassName = Util.underlineToHump(moduleName.split("_",2)[1]);
+            moduleClassName = moduleClassName.substring(0, 1).toUpperCase() + moduleClassName.substring(1);
+            moduleClassName = "com.vpu.mp.service.pojo.shop.decoration.module." + "Module" + moduleClassName;
+            Class m = Class.forName(moduleClassName);
+            return objectMapper.readValue(node.getValue().toString(), m);
+        }
+        if("page_cfg".equals(node.getKey())){
+            PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+            if(pageCfg.getPictorial() != null && StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+                pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
+            }
+            return pageCfg;
+        }
+        return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
 }

@@ -228,7 +228,8 @@ public class GroupBuyService extends ShopBaseService {
      * @return 二维码信息
      */
     public ShareQrCodeVo shareGroupBuy(Integer id) {
-        String pathParam = "paramId=" + id;
+        GroupBuyDefineRecord groupBuyRecord = getGroupBuyRecord(id);
+        String pathParam = "gid=" + groupBuyRecord.getGoodsId() + "&atp=1&aid=" + id;
         String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GROUP_BOOKING, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
@@ -508,6 +509,7 @@ public class GroupBuyService extends ShopBaseService {
      * @param groupId
      */
     public void groupBuySuccess(Integer groupBuyId, Integer groupId, String goodsName) {
+        logger().info("拼团成功检查-开始");
         List<GroupBuyUserInfo> pinUserList = groupBuyListService.getGroupUserList(groupId);
         List<GroupBuyUserInfo> groupUserList = pinUserList.stream().filter(p -> p.getStatus().equals(STATUS_ONGOING)).collect(Collectors.toList());
         GroupBuyUserInfo first = pinUserList.stream().findFirst().get();
@@ -517,12 +519,13 @@ public class GroupBuyService extends ShopBaseService {
             logger().info("拼团成功,groupId:{}", groupId);
             Timestamp date = DateUtil.getLocalDateTime();
             List<String> orderSnList = groupUserList.stream().map(GroupBuyUserInfo::getOrderSn).collect(Collectors.toList());
-            updateGroupSuccess(groupBuyId, date, orderSnList);
+            updateGroupSuccess(groupId, date, orderSnList);
             logger().info("修改订单状态");
             orderInfoService.batchChangeToWaitDeliver(orderSnList);
             List<Integer> userIds = groupUserList.stream().map(GroupBuyUserInfo::getUserId).collect(Collectors.toList());
             groupBuySuccessMessage(userIds, groupBuyId,first.getUsername(), goodsName);
         }
+        logger().info("拼团成功检查-结束");
     }
 
     /**
@@ -574,6 +577,16 @@ public class GroupBuyService extends ShopBaseService {
     private void updateGroupSuccess(Integer groupId, Timestamp date, List<String> orderSnList) {
         db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_SUCCESS).set(GROUP_BUY_LIST.END_TIME, date)
                 .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.in(orderSnList)).execute();
+    }
+    /**
+     * 拼团中
+     * @param groupId     团id
+     * @param date        时间
+     * @param orderSn 订单号
+     */
+    public void updateGroupSuccess(Integer groupId, Timestamp date, String orderSn) {
+        db().update(GROUP_BUY_LIST).set(GROUP_BUY_LIST.STATUS, STATUS_ONGOING).set(GROUP_BUY_LIST.END_TIME, date)
+                .where(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ORDER_SN.eq(orderSn)).execute();
     }
 
     /**

@@ -110,7 +110,7 @@ public class PreSalePictorialService extends ShopBaseService {
      */
     @SuppressWarnings("all")
     private String createPreSaleShareImg(PresaleRecord presaleRecord, GoodsRecord goodsRecord, PreSaleShareInfoParam param){
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.PRE_SALE_ACTION_SHARE,null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.PRE_SALE_ACTION_SHARE,null);
         // 已存在生成的图片
         if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),presaleRecord.getUpdateTime())) {
             return pictorialRecord.getPath();

@@ -152,13 +152,6 @@ public class AdminGroupBuyController extends AdminBaseController {
         if (param.getStatus().equals(status)){
             return success();
         }
-        if(param.getStatus().equals(BaseConstant.ACTIVITY_STATUS_NORMAL)){
-            Timestamp date = DateUtil.getLocalDateTime();
-            Boolean flag = shop().groupBuy.validGroupGoods(groupBuyRecord.getId(),groupBuyRecord.getGoodsId(),groupBuyRecord.getStartTime(),groupBuyRecord.getEndTime(), date);
-            if (!flag){
-                return fail(JsonResultMessage.GROUP_BUY_ACTIVITY_GOODS_OVERLAPPING);
-            }
-        }
         int resFlag = shop().groupBuy.changeStatusActivity(param.getId(),param.getStatus());
         if (resFlag>0){
          return success();

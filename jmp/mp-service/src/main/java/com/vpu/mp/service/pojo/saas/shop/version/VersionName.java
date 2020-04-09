@@ -116,11 +116,11 @@ public class VersionName {
 	/** 分享有礼 */
 	public static final String SUB_4_SHARE_AWARD = "share_award";
 
-	/** 门店买单 */
+	/** 门店买单开关配置 */
 	public static final String SUB_5_STORE_PAY = "store_pay";
-	/** 技师管理 */
+	/** 职称配置 */
 	public static final String SUB_5_TECHNICIAN = "technician";
-	/** 服务管理 */
+	/** 门店列表-门店管理-技师管理tab */
 	public static final String SUB_5_SERVICE = "service";
 	/** 同城配送 */
 	public static final String SUB_5_SERVICE_CITY = "service_city";

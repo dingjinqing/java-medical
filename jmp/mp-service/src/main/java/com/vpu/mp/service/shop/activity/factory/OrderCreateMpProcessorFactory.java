@@ -7,6 +7,8 @@ import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.shop.activity.processor.CreateOrderProcessor;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
+import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -62,7 +64,16 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * 退款
      */
     public final static List<Byte> RETURN_ACTIVITY = Arrays.asList(
-        BaseConstant.ACTIVITY_TYPE_GIFT
+        BaseConstant.ACTIVITY_TYPE_GIFT,
+        BaseConstant.ACTIVITY_TYPE_GROUP_BUY,
+        BaseConstant.ACTIVITY_TYPE_SEC_KILL,
+        BaseConstant.ACTIVITY_TYPE_BARGAIN,
+        BaseConstant.ACTIVITY_TYPE_LOTTERY_PRESENT,
+        BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
+        BaseConstant.ACTIVITY_TYPE_INTEGRAL,
+        BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER,
+        BaseConstant.ACTIVITY_TYPE_PRE_SALE
+
     );
 
     /**
@@ -154,6 +165,34 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         for (CreateOrderProcessor processor : processorGlobalList) {
             //全局活动
             processor.processSaveOrderInfo(param, order);
+        }
+    }
+
+    /**
+     * 保存数据（该方法不要在并发情况下出现临界资源）
+     *
+     * @param param
+     * @param order
+     */
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        Byte[] types = OrderInfoService.orderTypeToByte(order.getGoodsType());
+        //过滤活动
+        for (Byte type : types) {
+            if(AtomicOperation.filterAct.contains(type)) {
+                return;
+            }
+        }
+        if (param.getActivityId() != null) {
+            //单一营销
+            processorMap.get(param.getActivityType()).processUpdateStock(param, order);
+        } else {
+            for (CreateOrderProcessor processor : processorGeneralList) {
+                processor.processUpdateStock(param, order);
+            }
+        }
+        for (CreateOrderProcessor processor : processorGlobalList) {
+            //全局活动
+            processor.processUpdateStock(param, order);
         }
     }
 

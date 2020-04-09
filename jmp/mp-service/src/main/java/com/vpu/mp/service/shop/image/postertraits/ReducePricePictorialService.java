@@ -110,7 +110,7 @@ public class ReducePricePictorialService extends ShopBaseService {
      * @return
      */
     private String createReducePriceShareImg(ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ReducePriceShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
         // 已存在生成的图片
         if (pictorialRecord != null && pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(), goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime())) {
             return pictorialRecord.getPath();

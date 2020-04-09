@@ -37,6 +37,8 @@ public class ReturnOrderListMp {
     private String shippingName;
     private String shippingNo;
     private String phone;
-    /**拒绝原因*/
+    /**拒绝退款退货原因*/
     private String refundRefuseReason;
+    /**拒绝申请原因*/
+    private String applyNotPassReason;
 }

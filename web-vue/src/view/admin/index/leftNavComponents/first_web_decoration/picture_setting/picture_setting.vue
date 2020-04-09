@@ -9,7 +9,7 @@
             size="small"
             @click="handleToNewPage()"
           >{{$t('pictureSetting.newMicroPage')}}</el-button>
-          <div class="tipsDiv">{{$t('pictureSetting.titleTips')}}<img :src="iconUrl">
+          <div class="tipsDiv">当前版本为{{shopType==='v1'?'体验版':shopType==='v2'?'基础版':shopType==='v3'?'高级版':shopType==='v4'?'旗舰版':''}}，不限制微页面个数<img :src="iconUrl">
             <div class="tipsHidden">
               <div class="tipsTop">
                 <p>
@@ -157,7 +157,7 @@
                 >
                   <span
                     class="el-icon-share iconSpn"
-                    @click="handleOperation(scope.row,3)"
+                    @click="handleOperation(scope.row)"
                   ></span>
                 </el-tooltip>
               </div>
@@ -279,10 +279,43 @@
         >{{$t('pictureSetting.sure')}}</el-button>
       </span>
     </el-dialog>
+    <!--分享弹窗-->
+    <el-dialog
+      title="扫一扫分享给好友吧~"
+      :visible.sync="shareVisible"
+      width="20%"
+    >
+      <div class="copyContainer">
+        <img
+          :src="shareImageUrl"
+          alt=""
+          style="width:160px;height:160px"
+          class="code_imgs"
+        >
+      </div>
+      <div
+        class="copyContainer"
+        style="color:#999"
+      >
+        下载二维码
+      </div>
+      <div class="copyContainer copyDiv">
+        <el-input
+          size="small"
+          v-model="posterAddress"
+          ref="qrCodePageUrlInput"
+        ></el-input>
+        <span
+          class="copy"
+          @click="handelToCopy"
+        >复制</span>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy } from '@/api/admin/decoration/pageSet.js'
+import { pageList, setFirstPage, getPageCate, setPageCate, batchSet, delPage, pageCopy, pegeShare } from '@/api/admin/decoration/pageSet.js'
 import pagination from '@/components/admin/pagination/pagination'
 export default {
   components: { SelectTemplateDialog: () => import('./selectTemplateDialog'), pagination },
@@ -319,8 +352,11 @@ export default {
       pageIds: '',
       isBatch: 0,
       delPageId: '',
-      setRowData: ''
-
+      setRowData: '',
+      shareVisible: false, // 分享弹窗flag
+      posterAddress: '', // 路径
+      shareImageUrl: '', // 分享路径
+      shopType: ''
     }
   },
   watch: {
@@ -375,11 +411,16 @@ export default {
   },
   mounted () {
     console.log(this.currencyPool)
+    if (this.$route.query.cartId) {
+      this.selectValue = Number(this.$route.query.cartId)
+    }
     this.restaurants = this.loadAll()
     // 初始化语言
     this.langDefault()
     this.list()
     this.getPageCate(-1)
+    this.shopType = localStorage.getItem('V-ShopType')
+    console.log(localStorage.getItem('V-ShopType'))
   },
   methods: {
     querySearch (queryString, cb) {
@@ -495,11 +536,11 @@ export default {
         return item.ischeck === true
       })
       this.pageIds = newarr.join(',')
-
+      console.log(newarr.join(','), this.pageIds.length)
       if (this.pageIds.length === 0) {
         this.$message.error(this.pleaseSelectAPage)
       } else {
-        this.getPageCate()
+        this.getPageCate(-1)
         this.pageSetdialogVisible = true
       }
     },
@@ -567,6 +608,23 @@ export default {
           pageId: res
         }
       })
+    },
+    // 点击分享
+    handleOperation ({ pageId }) {
+      console.log(pageId)
+      pegeShare(pageId).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.posterAddress = res.content.pagePath
+          this.shareImageUrl = res.content.imageUrl
+          this.shareVisible = true
+        }
+      })
+    },
+    // 点击复制
+    handelToCopy () {
+      this.$refs.qrCodePageUrlInput.select()
+      document.execCommand('Copy')
     }
   }
 }
@@ -753,6 +811,22 @@ export default {
           line-height: 28px;
         }
       }
+    }
+  }
+  .copyContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    /deep/ .el-input {
+      width: 220px;
+      margin-right: 5px;
+    }
+    .copy {
+      white-space: nowrap;
+      color: #5a8bff;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 }

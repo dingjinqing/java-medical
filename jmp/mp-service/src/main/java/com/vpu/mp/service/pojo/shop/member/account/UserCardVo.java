@@ -85,6 +85,7 @@ public class UserCardVo {
 	private Boolean isGet;
 	// 卡是否可用  1 可用，-1不可用
 	private Integer status;
+
 	@JsonProperty("startDate")
 	private LocalDate startDate;
 	@JsonProperty("endDate")
@@ -111,4 +112,6 @@ public class UserCardVo {
 	private NextGradeCardVo next;
 	private Timestamp buyTime;
 	private WxAppCardExamineVo isExamine;
+	
+	private Byte cardVerifyStatus;
 }

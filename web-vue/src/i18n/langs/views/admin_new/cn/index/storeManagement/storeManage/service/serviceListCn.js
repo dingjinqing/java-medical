@@ -13,6 +13,7 @@ export const cn = {
   edit: '编辑',
   unShelf: '下架',
   shelf: '上架',
+  expired: '已过期',
   share: '分享',
   view: '查看评价',
   delete: '删除',

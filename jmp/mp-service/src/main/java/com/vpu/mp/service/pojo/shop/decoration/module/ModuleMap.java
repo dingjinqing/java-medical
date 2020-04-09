@@ -16,65 +16,65 @@ public class ModuleMap extends ModuleBase {
      * 省
      */
     @JsonProperty(value = "province")
-    private String province;
+    private String province="";
 
     /**
      *
      */
     @JsonProperty(value = "province_code")
-    private String provinceCode;
+    private String provinceCode="";
 
     /**
      *
      */
     @JsonProperty(value = "city")
-    private String city;
+    private String city="";
 
     /**
      *
      */
     @JsonProperty(value = "city_code")
-    private String cityCode;
+    private String cityCode="";
 
     /**
      *
      */
     @JsonProperty(value = "area")
-    private String area;
+    private String area="";
 
     /**
      *
      */
     @JsonProperty(value = "area_code")
-    private String areaCode;
+    private String areaCode="";
 
     /**
      *
      */
     @JsonProperty(value = "address")
-    private String address;
+    private String address="";
 
     /**
      *
      */
     @JsonProperty(value = "map_show")
-    private Byte mapShow;
+    private Byte mapShow=1;
 
     /**
      *
      */
     @JsonProperty(value = "latitude")
-    private String latitude;
+    private String latitude="";
 
     /**
      *
      */
     @JsonProperty(value = "longitude")
-    private String longitude;
+    private String longitude="";
 
     /**
      *
      */
     @JsonProperty(value = "img_path")
-    private String imgPath;
+    private String imgPath="";
 }

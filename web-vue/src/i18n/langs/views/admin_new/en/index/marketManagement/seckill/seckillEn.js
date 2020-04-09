@@ -75,6 +75,7 @@ export const en = {
   prdPrice: 'Price Spike',
   goodsNumber: 'Original Stock',
   prdNumber: 'Spike Inventory',
+  prdStock: 'stock',
   goodsSaleNum: 'Seconds Sold',
   prdTypeNum: 'Surplus Stock',
   save: 'Save',

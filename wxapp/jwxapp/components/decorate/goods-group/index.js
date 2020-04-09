@@ -8,6 +8,7 @@ global.wxComponent({
   ready () {
     var _this = this;
     this.getRect('.content_scroll_view').then(function (rect) {
+      console.log(rect)
       _this._nav_height = rect.height;
     })
   },
@@ -42,7 +43,8 @@ global.wxComponent({
       }
       initData.navlen = initData.sort_group_arr.length;
       initData.group_nav_index = 0;
-      if (initData.goodsListData.length > 6) {
+      console.log(initData.goodsListData)
+      if (initData.goodsListData.length > 5) {
         initData.more_flag = 1
       } else {
         initData.more_flag = 0
@@ -64,8 +66,33 @@ global.wxComponent({
       var _this = this;
       var m = this.data.m;
       console.log(m)
+      let sortIds = []
+      let brandIds = []
+      let labelIds = []
+      let goodsIds = []
+      m.sort_group_arr.forEach((item, index) => {
+        if (item.sort_id !== null) {
+          switch (item.sort_type) {
+            case '':
+              sortIds.push(item.sort_id)
+              break
+            case '1':
+              labelIds.push(item.sort_id)
+              break
+            case '2':
+              brandIds.push(item.sort_id)
+              break
+          }
+          sortIds.push(item.sort_id)
+        }
+        if (item.is_all == 2) {
+          if (item.group_goods_id != '') {
+            goodsIds.push(Number(item.group_goods_id))
+          }
+        }
+      })
       if (d.click == 1) {
-        util.jumpLink('/pages/newsearch/newsearch?cur_idx=' + m.idx + '&group_idx=' + m.group_nav_index + '&page_id=' + m.page_id);
+        util.jumpLink('/pages1/search/search?sortIds=' + JSON.stringify(sortIds) + '&brandIds=' + JSON.stringify(brandIds) + '&labelIds=' + JSON.stringify(labelIds) + '&pageFrom=' + 1 + '&goodsIds=' + JSON.stringify(goodsIds));
       } else {
         m.group_nav_index = d.index;
         m.page_num = 1;
@@ -97,7 +124,7 @@ global.wxComponent({
             _this.handleToGoodsActivities(data)
             m.goodsListData = data;
             m.more_flag = data.more_flag;
-            if (m.goodsListData.length > 6) {
+            if (m.goodsListData.length > 5) {
               m.more_flag = 1
             } else {
               m.more_flag = 0
@@ -113,9 +140,12 @@ global.wxComponent({
       var _this = this;
       var m = this.data.m;
       if (m.menu_style == 1) {
-        this.getRect(`#${m.cur_idx}`).then(function (rect) {
+        console.log(m.cur_idx)
+        this.getRect(`#c_${m.cur_idx}`).then(function (rect) {
+          console.log(rect)
           _this._nav_height = _this._nav_height || 0;
           var top = _this.getFixeTop();
+          console.log(rect.top, top, rect.bottom, top, _this._nav_height)
           if (!m.fixed && (rect.top <= top && rect.bottom > top + _this._nav_height)) {
             m.fixed = true;
             m.fix_height = rect.height;
@@ -131,6 +161,7 @@ global.wxComponent({
           }
         });
       }
+      console.log(m.fixed)
     }
   }
 });

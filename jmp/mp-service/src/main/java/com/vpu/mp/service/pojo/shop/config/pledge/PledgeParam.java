@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 
 /**
@@ -27,4 +28,16 @@ public class PledgeParam {
     @NotBlank(message = JsonResultMessage.CONFIG_PLEDGE_CONTENT_NULL)
     @Size(min = 1,max = 300,message = JsonResultMessage.CONFIG_PLEDGE_CONTENT_LENGTH)
     private String    pledgeContent;
+
+    private Integer level;
+
+    private Byte type;
+
+    private List<Integer> goodsIds;
+
+    private List<Integer> sortIds;
+
+    private List<Integer> goodsBrandIds;
+
+
 }

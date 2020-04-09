@@ -182,9 +182,7 @@ public class ShopMenuService extends MainBaseService {
 	 */
 	private static Boolean includeEname(List<?> eNameList, String reqEnName) {
 		for (Object allEname : eNameList) {
-			if (allEname.equals(reqEnName)) {
-				return true;
-			}
+			match(String.valueOf(allEname), reqEnName);
 		}
 		return false;
 	}
@@ -196,6 +194,16 @@ public class ShopMenuService extends MainBaseService {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean match(String regexp, String path) {
+		char asterisk = '*';
+		if (regexp.charAt(regexp.length() - 1) == asterisk) {
+			regexp = regexp.substring(0, regexp.length() - 1);
+			return path.startsWith(regexp);
+		} else {
+			return regexp.equals(path);
+		}
 	}
 
 	/**

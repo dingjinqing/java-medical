@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019年12月09日
  */
 @RestController
-public class WxAppGoodsSearchController extends WxAppBaseController{
+public class WxAppGoodsSearchController extends WxAppBaseController {
     /**
      * 搜索界面获取初始化搜索数据
+     *
      * @return {@link com.vpu.mp.service.pojo.wxapp.goods.search.GoodsSearchFilterConditionMpVo}
      */
     @PostMapping("/api/wxapp/goods/search/init")
@@ -31,6 +32,11 @@ public class WxAppGoodsSearchController extends WxAppBaseController{
     public JsonResult searchGoods(@RequestBody GoodsSearchMpParam param) {
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        return success(shop().goodsMp.searchGoods(param));
+
+        if (GoodsSearchMpParam.PAGE_FROM_GROUP_LIST.equals(param.getPageFrom())) {
+            return success(shop().goodsMp.getGoodsGroupListFromGoodsSearch(param));
+        } else {
+            return success(shop().goodsMp.searchGoods(param));
+        }
     }
 }

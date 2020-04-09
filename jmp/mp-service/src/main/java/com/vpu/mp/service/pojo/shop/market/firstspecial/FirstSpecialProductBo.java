@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 @Setter
 public class FirstSpecialProductBo {
     private Integer id;
+
+    private Integer firstSpecialId;
     /**
      * 规格`id
      */

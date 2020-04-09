@@ -7,13 +7,13 @@ import lombok.Data;
  */
 @Data
 public class FriendPromoteOptionParam {
-	/* 活动Id */
+	/** 活动Id */
 	private Integer id;
 	
-	/* 是否停用标识 */
-	public static final int BLOCKED = 0;
-	public static final int NOT_BLOCK = 1;
+	/** 是否停用标识 */
+	public static final Byte BLOCKED = 0;
+	public static final Byte NOT_BLOCK = 1;
 	
-	/* 删除标识 */
-	public static final int DELETED = 1;
+	/** 删除标识 */
+	public static final Byte DELETED = 1;
 }

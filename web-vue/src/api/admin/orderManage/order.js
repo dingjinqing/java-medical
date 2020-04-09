@@ -153,3 +153,11 @@ export function orderExport (data) {
     responseType: 'blob'
   })
 }
+// 查询商家默认收获地址
+export function getDefaultAddress (data) {
+  return service({
+    url: '/api/admin/config/trade/getdefaultaddress',
+    method: 'post',
+    data: data
+  })
+}

@@ -44,6 +44,13 @@ global.wxPage({
     gift_id = options.gift_id ? options.gift_id : 0;
 
     console.log(cardNo, cardId)
+    console.log(this.data)
+    if (this.data.linColor) {
+      let linColor = this.data.linColor.slice(0, this.data.linColor.lastIndexOf(',')) + ',0.3)';
+      this.setData({
+        bgColor: linColor
+      })
+    }
   },
   requestCardInfo (cardNo, cardId, card_list) {
     let that = this
@@ -51,17 +58,18 @@ global.wxPage({
       util.api('/api/card/detail', res => {
         console.log(res)
         let cardInfo = res.content
-        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
           that.setData({
             carStatus: "已领取"
           })
-        } else if (cardInfo.examine && cardInfo.cardVerifyStatus  === 1) {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
           that.setData({
             carStatus: "审核中"
           })
-        } else if (cardInfo.examine && cardInfo.cardVerifyStatus  === 3) {
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
+
           that.setData({
-            carStatus: "审核失败"
+            carStatus: "未通过"
           })
         } else {
           that.setData({
@@ -128,9 +136,22 @@ global.wxPage({
         let cardInfo = res.content.cardInfo
         that.handleToJudgementBottom(cardInfo) // 判断底部按钮
         console.log(cardInfo)
-        if (!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) {
+        if (!cardInfo.cardNo) {
+          that.setData({
+            carStatus: "未领取"
+          })
+        } else if ((!cardInfo.activation || (cardInfo.activation && cardInfo.activationTime)) && ((!cardInfo.examine) || (cardInfo.cardVerifyStatus === 2))) {
           that.setData({
             carStatus: "已领取"
+          })
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 1) {
+          that.setData({
+            carStatus: "审核中"
+          })
+        } else if (cardInfo.examine && cardInfo.cardVerifyStatus === 3) {
+
+          that.setData({
+            carStatus: "未通过"
           })
         } else {
           that.setData({
@@ -142,7 +163,7 @@ global.wxPage({
         cardInfo.cardTypeName = that.getTypeName(cardInfo.cardType);
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
-        cardInfo.storeList = cardInfo.storeList 
+        cardInfo.storeList = cardInfo.storeList
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -160,6 +181,13 @@ global.wxPage({
   },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
+    if (cardItem.expireType === 0) {
+      // 从领取之日起
+      let reDateType = ['日', '周', '月']
+      let i = cardItem.dateType === null ? 0 : Number(cardItem.dateType)
+      return `自领取之日起${cardItem.receiveDay}${reDateType[i]}内有效`
+
+    }
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
@@ -237,31 +265,32 @@ global.wxPage({
   },
   // 判断底部按钮
   handleToJudgementBottom (carInfo) {
-    console.log(carInfo)
     let text = ''
     let type = null
-    if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
-      text = '立即开通'
-      type = 1
-    }
-    if (carInfo.status) {
-      if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
+    console.log(carInfo)
+      if (carInfo.isPay == 1 && !carInfo.cardNo) {//判断是否立即开通
+        text = '立即开通'
+        type = 1
+      }
+      if (carInfo.status) {
+        if (!carInfo.cardNo && (carInfo.isPay == 0 || carInfo.isPay == 2)) {
+          text = '领取会员卡'
+          type = 2
+        } else if (carInfo.activation == 1 && carInfo.activationTime == null && carInfo.cardNo) {
+          text = '激活会员卡'
+          type = 3
+        } else if (carInfo.isDefault == 0 && carInfo.cardNo) {
+          text = '设置默认会员卡'
+          type = 4
+        } else {
+          text = '默认会员卡'
+        }
+      }
+      if (!carInfo.cardNo && carInfo.cardType == 2 && carInfo.status) {
         text = '领取会员卡'
         type = 2
-      } else if (carInfo.activation == 1 && carInfo.activationTime == null && carInfo.cardNo) {
-        text = '激活会员卡'
-        type = 3
-      } else if (carInfo.isDefault == 0 && carInfo.cardNo) {
-        text = '设置默认会员卡'
-        type = 4
-      } else {
-        text = '默认会员卡'
       }
-    }
-    if (!carInfo.cardNo && carInfo.cardType == 2 && carInfo.status) {
-      text = '领取会员卡'
-      type = 2
-    }
+    
     console.log(text, type)
     this.setData({
       bottomBtnText: text,
@@ -453,51 +482,23 @@ global.wxPage({
     util.api('/api/wxapp/card/code/receive', function (res) {
       console.log(res)
       if (res.error == 0) {
-        if (res.content.isMostGrade) {
-          util.toast_fail('当前等级已最高');
-          return;
-        } else if (res.content.gradeCard) {
-          var text = '没有达到该卡的条件';
-          if (res.content.gradeCard.score > 0) {
-            text = '累积积分未达到' + res.content.gradeCard.score + '积分';
-          }
-          if (res.content.gradeCard.amount > 0) {
-            text = text + ' 累积消费金额未达到' + res.content.gradeCard.amount + '元';
-          }
-          util.showModal('提示', text, function (res) {
-            return false;
-          }, false);
-          return;
-        } else if (res.content == -1) {
-          util.toast_fail('此卡已存在');
-        } else {
-          util.toast_success('领取成功', function () {
-            if (that.data.carInfo.activation) {
-              setTimeout(function () {
-                util.navigateTo({
-                  url: '/pages/memberinfo/memberinfo?act=1&card_no=' + res.content + '&examine=' + that.data.cardInfo.examine,
-                })
-              }, 2000);
-            } else {
-              setTimeout(function () {
-                util.redirectTo({
-                  url: '/pages/usercardlist/usercardlist',
-                })
-              }, 2000);
-            }
-          });
-        }
+        util.toast_success('领取成功', function () {
+          setTimeout(function () {
+            util.redirectTo({
+              url: '/pages/cardlist/cardlist',
+            })
+          }, 2000);
+        });
       } else {
         util.showModal('', res.message, function () {
           return false;
         }, false);
       }
-    }, { cardId: that.data.cardId, code: card_code, cardNo: card_num, cardPwd: card_pwd })
+    }, { cardId: Number(that.data.cardId), code: card_code, cardNo: card_num, cardPwd: card_pwd })
   },
   // 点击使用门店
   toStoreList () {
-      console.log(this.data)
-      util.jumpLink('/pages/storelist/storelist?cardId=' + this.data.cardInfo.cardId)
+    util.jumpLink('/pages/storelist/storelist?cardId=' + this.data.cardInfo.cardId)
   },
   // 点击使用记录
   toCardRecord (e) {
@@ -505,5 +506,21 @@ global.wxPage({
     util.navigateTo({
       url: '/pages1/usercardrecord/usercardrecord?cardNo=' + e.currentTarget.dataset.cardno,
     })
+  },
+  // 点击升降级记录
+  toUserCardUp () {
+    util.navigateTo({
+      url: '/pages/usercardup/usercardup',
+    })
+  },
+  // 点击优惠卷
+  viewCoupon (e) {
+    let coupon_id = e.currentTarget.dataset.coupon_id;
+    util.jumpLink('/pages/getCoupon/getCoupon?code=' + coupon_id, 'navigateTo')
+
+  },
+  to_cou_package (e) {
+    let pack_id = e.currentTarget.dataset.pack_id;
+    util.jumpLink("/pages/couponpackage/couponpackage?pack_id=" + pack_id)
   }
 })

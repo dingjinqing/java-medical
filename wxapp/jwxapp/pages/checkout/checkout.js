@@ -59,7 +59,7 @@ global.wxPage({
    */
   onLoad: function(options) {
     let goods = []
-    let { goodsList, activityType, activityId, recordId } = options
+    let { goodsList, activityType, activityId, recordId, preSaleInfo=null } = options
     JSON.parse(goodsList).forEach(item => {
       let {
         goodsId,
@@ -70,12 +70,17 @@ global.wxPage({
       } = item
       goods.push({ goodsId, goodsPrice, goodsNumber, productId, isCart })
     })
+    if(preSaleInfo){
+      preSaleInfo = JSON.parse(preSaleInfo)
+    }
+    console.log(preSaleInfo)
     this.setData({
       'params.goods': goods,
       'params.isCart': goods[0].isCart, //购物车来源|商品详情
       'params.activityType': activityType,
       'params.activityId': activityId,
-      'params.recordId': recordId
+      'params.recordId': recordId,
+      preSaleInfo
     })
     if (options.groupid) {
       this.setData({
@@ -159,7 +164,8 @@ global.wxPage({
       scorePayNum,
       userScore,
       scoreMaxDiscount,
-      paymentList
+      paymentList,
+      scoreProportion
     } = orderInfo
     if (isCardPay === 1 && memberCardMoney > 0) {
       let useCardBalance = moneyPaid - memberCardMoney > 0 ? memberCardMoney : moneyPaid
@@ -189,13 +195,13 @@ global.wxPage({
     }
     if (paymentList.score && isScorePay === 1 && userScore > scorePayNum && userScore > 0) {
       let useScore =
-        moneyPaid * 100 > scoreMaxDiscount * 100
-          ? scoreMaxDiscount * 100 > userScore
+        moneyPaid * scoreProportion > scoreMaxDiscount * scoreProportion
+          ? scoreMaxDiscount * scoreProportion > userScore
             ? userScore
-            : scoreMaxDiscount * 100
-          : moneyPaid * 100 > userScore
+            : scoreMaxDiscount * scoreProportion
+          : moneyPaid * scoreProportion > userScore
           ? userScore
-          : moneyPaid * 100
+          : moneyPaid * scoreProportion
       moneyPaid -= parseInt(useScore)
       this.setData({
         'usePayInfo.useScore': parseInt(useScore),
@@ -400,10 +406,11 @@ global.wxPage({
     let moneyPaid = this.data.orderInfo.moneyPaid,
       useScore = this.data.usePayInfo.useScore,
       useBalance = this.data.usePayInfo.useBalance,
-      useCardBalance = this.data.usePayInfo.useCardBalance
-    let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / 100).toFixed(3)
+      useCardBalance = this.data.usePayInfo.useCardBalance,
+      scoreProportion = this.data.orderInfo.scoreProportion
+    let floatNum = parseFloat(moneyPaid - useCardBalance - useBalance - useScore / scoreProportion).toFixed(3)
     floatNum = parseFloat(floatNum.substring(0, floatNum.length - 1))
-    let floatScoreMoney = (useScore / 100).toFixed(3)
+    let floatScoreMoney = (useScore / scoreProportion).toFixed(3)
     floatScoreMoney = parseFloat(floatScoreMoney.substring(0, floatScoreMoney.length - 1))
     this.setData({
       'usePayInfo.moneyPaid': floatNum,
@@ -454,7 +461,7 @@ global.wxPage({
         break
       default:
         this.setData({
-          'must.must': value
+          'must.custom': value
         })
         break
     }
@@ -519,17 +526,16 @@ global.wxPage({
       })
       return false
     }
-    if (
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) ||
-      (this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom)
-    ) {
-      wx.showToast({
-        title: '请输入必填项',
-        icon: 'none'
-      })
+    console.log(this.data.orderInfo.must)
+    console.log(this.data.must)
+    let mustTips = ''
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) mustTips = '下单人身份证为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderRealName && !this.data.must.orderRealName) mustTips = '下单人姓名为必填项，请输入'
+    if(this.data.orderInfo.must.isShow && this.data.orderInfo.must.custom && !this.data.must.custom) mustTips = `${this.data.orderInfo.must.custom}为必填项，请输入`
+    if(mustTips){
+      util.showModal('提示',mustTips)
       return false
     }
     return true
@@ -556,89 +562,94 @@ global.wxPage({
   },
   // 提交订单
   confirmOrder() {
-    let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
-      this.data.orderInfo || {}
-    let {
-      useBalance: balance,
-      useCardBalance: cardBalance,
-      useScore: scoreDiscount
-    } = this.data.usePayInfo
-    let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
-    let couponSn =
-      (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn) || null
-    let memberCardNo =
-      (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
-      null
-    goods = goods.filter(item => {
-      return item.isGift !== 1
-    })
-
+    console.log(11111)
+    util.throttle(this.confirm,5000)()
+  },
+  confirm(){
     if(!this.canSubmit()) return
-    let params = {
-      goods,
-      action: 10,
-      orderAmount,
-      addressId,
-      balance,
-      cardBalance,
-      scoreDiscount,
-      deliverType: this.data.params.deliverType,
-      orderPayWay: this.data.choosePayTypeIndex,
-      couponSn,
-      message: this.data.message,
-      memberCardNo,
-      activityType,
-      activityId,
-      recordId: this.data.params.recordId,
-      groupId: this.data.params.groupId,
-      isCart:this.data.params.isCart
-    }
-    this.getMust(params)
-    util.api(
-      '/api/wxapp/order/submit',
-      res => {
-        if (res.error === 0) {
-          let { orderSn } = res.content
-          if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
-            wx.requestPayment({
-              timeStamp: res.content.webPayVo.timeStamp,
-              nonceStr: res.content.webPayVo.nonceStr,
-              package: res.content.webPayVo.package,
-              signType: 'MD5',
-              paySign: res.content.webPayVo.paySign,
-              success: res => {
-                util.toast_success('支付成功')
-                util.jumpLink(
-                  `pages1/payment/payment${this.getUrlParams({
-                    orderSn,
-                    useInfo: JSON.stringify({ ...this.data.usePayInfo })
-                  })}`,
-                  'redirectTo'
-                )
-              },
-              fail: res => {
-                console.log(res)
-                util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
-              },
-              complete: res => {}
-            })
+    util.getNeedTemplateId('add_order',()=>{
+      let { orderGoods: goods, orderAmount, paymentList, activityType, activityId } =
+      this.data.orderInfo || {}
+      let {
+        useBalance: balance,
+        useCardBalance: cardBalance,
+        useScore: scoreDiscount
+      } = this.data.usePayInfo
+      let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
+      let couponSn =
+        (this.data.orderInfo.defaultCoupon && this.data.orderInfo.defaultCoupon.couponSn) || null
+      let memberCardNo =
+        (this.data.orderInfo.defaultMemberCard && this.data.orderInfo.defaultMemberCard.cardNo) ||
+        null
+      goods = goods.filter(item => {
+        return item.isGift !== 1
+      })
+      let params = {
+        goods,
+        action: 10,
+        orderAmount,
+        addressId,
+        balance,
+        cardBalance,
+        scoreDiscount,
+        deliverType: this.data.params.deliverType,
+        orderPayWay: this.data.choosePayTypeIndex,
+        couponSn,
+        message: this.data.message,
+        memberCardNo,
+        activityType,
+        activityId,
+        recordId: this.data.params.recordId,
+        groupId: this.data.params.groupId,
+        isCart:this.data.params.isCart
+      }
+      this.getMust(params)
+      util.api(
+        '/api/wxapp/order/submit',
+        res => {
+          if (res.error === 0) {
+            let { orderSn } = res.content
+            if (this.data.choosePayTypeIndex === 0 && res.content.webPayVo && paymentList.wxpay) {
+              wx.requestPayment({
+                timeStamp: res.content.webPayVo.timeStamp,
+                nonceStr: res.content.webPayVo.nonceStr,
+                package: res.content.webPayVo.package,
+                signType: 'MD5',
+                paySign: res.content.webPayVo.paySign,
+                success: res => {
+                  util.toast_success('支付成功')
+                  util.jumpLink(
+                    `pages1/payment/payment${this.getUrlParams({
+                      orderSn,
+                      useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                    })}`,
+                    'redirectTo'
+                  )
+                },
+                fail: res => {
+                  console.log(res)
+                  util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${orderSn}`, 'redirectTo')
+                },
+                complete: res => {}
+              })
+            } else {
+              util.jumpLink(
+                `pages1/payment/payment${this.getUrlParams({
+                  orderSn,
+                  useInfo: JSON.stringify({ ...this.data.usePayInfo })
+                })}`,
+                'redirectTo'
+              )
+            }
           } else {
-            util.jumpLink(
-              `pages1/payment/payment${this.getUrlParams({
-                orderSn,
-                useInfo: JSON.stringify({ ...this.data.usePayInfo })
-              })}`,
-              'redirectTo'
-            )
+            util.showModal('提示', res.message, function() {
+              util.jumpLink('/pages/index/index', 'redirectTo')
+            })
           }
-        } else {
-          util.showModal('提示', res.message, function() {
-            util.jumpLink('/pages/index/index', 'redirectTo')
-          })
-        }
-      },
-      params
-    )
+        },
+        params
+      )
+    })
   },
   //整合参数
   getUrlParams(obj) {
@@ -646,6 +657,11 @@ global.wxPage({
       if (index !== 0) UrlStr += `&`
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
+  },
+  viewPreSaleRule(){
+    this.setData({
+      preSaleRuleShow:true
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

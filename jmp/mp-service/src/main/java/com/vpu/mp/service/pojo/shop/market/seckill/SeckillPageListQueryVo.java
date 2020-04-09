@@ -42,16 +42,23 @@ public class SeckillPageListQueryVo {
      */
     private BigDecimal secPrice;
     /**
-     * 活动库存
+     * 当前活动库存
      */
     private Integer stock;
+    /**
+     * 活动总库存
+     */
+    private Integer totalStock;
     /**
      * 停用启用的状态：1可用，0停用
      */
     private Byte status;
 
     /**商品交易数量*/
-    private Short saleNum;
+    private Integer saleNum;
+
+    /**初始销量*/
+    private Integer baseSale;
 
     /**单用户最大购买数量*/
     private Short limitAmount;

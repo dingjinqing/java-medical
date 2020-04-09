@@ -325,7 +325,7 @@ global.wxPage({
           util.showModal("提示", "授权失败，请重试！", function () { }, false);
         }
       },
-      { iv: iv, crypt_data: data }
+      { iv: iv, encrypted_data: data }
     );
   }
 });

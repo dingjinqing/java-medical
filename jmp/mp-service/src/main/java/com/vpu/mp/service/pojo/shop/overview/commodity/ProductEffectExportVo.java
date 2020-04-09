@@ -1,10 +1,13 @@
 package com.vpu.mp.service.pojo.shop.overview.commodity;
 
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelIgnore;
 import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @Author:liufei
@@ -15,7 +18,7 @@ import lombok.Data;
 @ExcelSheet
 public class ProductEffectExportVo{
     /** 商品信息，导出excel中格式为：商品名称 + 空格 + 商品价格 */
-    @ExcelColumn(columnIndex = 0,columnName = "overview.commodity.effect.goods_info")
+    @ExcelColumn(columnIndex = 0, columnName = JsonResultMessage.GOODS_EFFECT_GOODS_INFO)
     @ExcelColumnNotNull
     private String goodsInfo;
     /** 商品id */
@@ -30,47 +33,94 @@ public class ProductEffectExportVo{
     /** 商品价格 */
     @ExcelIgnore
     private double shopPrice;
-    /**  新成交客户数  */
-    @ExcelColumn(columnIndex = 5,columnName = "overview.commodity.effect.new_user_num")
+    /**
+     * 商品标签名
+     */
+    @ExcelColumn(columnIndex = 1, columnName = JsonResultMessage.GOODS_EFFECT_GOODS_LABEL)
     @ExcelColumnNotNull
-    private  int newUserNumber;
-    /**  老成交客户数  */
-    @ExcelColumn(columnIndex = 7,columnName = "overview.commodity.effect.old_user_num")
+    private String name;
+    /**
+     * 商品品牌名
+     */
+    @ExcelColumn(columnIndex = 2, columnName = JsonResultMessage.GOODS_EFFECT_GOODS_BRAND)
     @ExcelColumnNotNull
-    private  int oldUserNumber;
-    /**  浏览量  */
-    @ExcelColumn(columnIndex = 2,columnName = "overview.commodity.effect.pv")
+    private String brandName;
+    /**
+     * 商品商家分类名
+     */
+    @ExcelColumn(columnIndex = 3, columnName = JsonResultMessage.GOODS_EFFECT_GOODS_SORT)
     @ExcelColumnNotNull
-    private  int pv;
-    /**  访客数  */
-    @ExcelColumn(columnIndex = 1,columnName = "overview.commodity.effect.uv")
+    private String sortName;
+    /**
+     * 访客数
+     */
+    @ExcelColumn(columnIndex = 4, columnName = JsonResultMessage.GOODS_EFFECT_UV)
     @ExcelColumnNotNull
-    private  int uv;
-    /**  加购人数  */
-    @ExcelColumn(columnIndex = 3,columnName = "overview.commodity.effect.cart_uv")
+    private int uv;
+    /**
+     * 浏览量
+     */
+    @ExcelColumn(columnIndex = 5, columnName = JsonResultMessage.GOODS_EFFECT_PV)
     @ExcelColumnNotNull
-    private  int cartUv;
-    /**  付款人数  */
-    @ExcelColumn(columnIndex = 4,columnName = "overview.commodity.effect.paid_uv")
+    private int pv;
+    /**
+     * 加购人数
+     */
+    @ExcelColumn(columnIndex = 6, columnName = JsonResultMessage.GOODS_EFFECT_CART_UV)
     @ExcelColumnNotNull
-    private  int paidUv;
-    /**  付款商品件数  */
-    @ExcelColumn(columnIndex = 9,columnName = "overview.commodity.effect.paid_goods_num")
+    private int cartUv;
+    /**
+     * 付款人数
+     */
+    @ExcelColumn(columnIndex = 7, columnName = JsonResultMessage.GOODS_EFFECT_PAID_UV)
     @ExcelColumnNotNull
-    private  int paidGoodsNumber;
-    /**  新成交客户数占比  */
-    @ExcelColumn(columnIndex = 6,columnName = "overview.commodity.effect.new_user_percentage")
+    private int paidUv;
+    /**
+     * 新成交客户数
+     */
+    @ExcelColumn(columnIndex = 8, columnName = JsonResultMessage.GOODS_EFFECT_NEW_USER_NUM)
+    @ExcelColumnNotNull
+    private int newUserNumber;
+    /**
+     * 新成交客户数占比
+     */
+    @ExcelColumn(columnIndex = 9, columnName = JsonResultMessage.GOODS_EFFECT_NEW_USER_PERCENTAGE)
     @ExcelColumnNotNull
     private double newUserPercentage;
-    /**  老成交客户数占比  */
-    @ExcelColumn(columnIndex = 8,columnName = "overview.commodity.effect.old_user_percentage")
+    /**  老成交客户数  */
+    @ExcelColumn(columnIndex = 10, columnName = JsonResultMessage.GOODS_EFFECT_OLD_USER_NUM)
+    @ExcelColumnNotNull
+    private int oldUserNumber;
+    /**
+     * 老成交客户数占比
+     */
+    @ExcelColumn(columnIndex = 11, columnName = JsonResultMessage.GOODS_EFFECT_OLD_USER_PERCENTAGE)
     @ExcelColumnNotNull
     private double oldUserPercentage;
+    /**  付款商品件数  */
+    @ExcelColumn(columnIndex = 12, columnName = JsonResultMessage.GOODS_EFFECT_PAID_GOODS_NUM)
+    @ExcelColumnNotNull
+    private int paidGoodsNumber;
     /**  商品转化率  */
-    @ExcelColumn(columnIndex = 10,columnName = "overview.commodity.effect.uv2paid")
+    @ExcelColumn(columnIndex = 13, columnName = JsonResultMessage.GOODS_EFFECT_UV_2_PAID)
     @ExcelColumnNotNull
     private double uv2paidGoods;
-    /**  推荐人数  */
-
-    /**  收藏人数  */
+    /**
+     * 销售额
+     */
+    @ExcelColumn(columnIndex = 14, columnName = JsonResultMessage.GOODS_EFFECT_GOODS_SALES)
+    @ExcelColumnNotNull
+    private BigDecimal goodsSales;
+    /**
+     * 推荐人数
+     */
+    @ExcelColumn(columnIndex = 15, columnName = JsonResultMessage.GOODS_EFFECT_RECONNEND_USER_NUM)
+    @ExcelColumnNotNull
+    private int recommendUserNum;
+    /**
+     * 收藏人数
+     */
+    @ExcelColumn(columnIndex = 16, columnName = JsonResultMessage.GOODS_EFFECT_COLLECT_USER_NUM)
+    @ExcelColumnNotNull
+    private int collectUseNum;
 }

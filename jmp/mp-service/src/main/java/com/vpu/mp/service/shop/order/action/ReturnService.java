@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.order.action;
 import com.google.common.collect.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -35,6 +37,7 @@ import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -43,6 +46,7 @@ import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
+import com.vpu.mp.service.shop.order.refund.record.OrderRefundRecordService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Result;
@@ -53,7 +57,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,6 +106,14 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
     public GroupBuyService groupBuyService;
     @Autowired
     public GroupDrawService groupDraw;
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
+    @Autowired
+    private CouponService coupon;
+    @Autowired
+    private OrderRefundRecordService orderRefundRecord;
+    @Autowired
+    private ShopReturnConfigService returnCfg;
 
     @Override
 	public OrderServiceCode getServiceCode() {
@@ -156,6 +167,8 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 					if(rOrder == null) {
 						//订单状态记录
 						orderAction.addRecord(order, param, order.getOrderStatus() , "保存"+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]+"之前订单状态");
+						//设置是否自动退款
+                        param.setIsAutoReturn(shopReturncfg.getAutoReturn());
 						//if仅退运费 else非仅退运费
 						if(OrderConstant.RT_ONLY_SHIPPING_FEE == param.getReturnType()) {
 							//生成退款订单
@@ -174,13 +187,13 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 						orderInfo.updateInReturn(rOrder, null, null);
 						//退款订单记录
 						returnStatusChange.addRecord(rOrder, param.getIsMp(), "生成退款退货订单信息："+OrderConstant.RETURN_TYPE_CN[param.getReturnType()]);
-					    //返回退款订单号
-                        result.setResult(rOrder.getReturnOrderSn());
 					}
+                    //暂存退款订单
+                    result.setResult(rOrder);
 					//退款商品为空则初始化
 					if(CollectionUtils.isEmpty(returnGoods)) {
                         logger.info("退款商品为空则初始化");
-						returnGoods = returnOrderGoods.getReturnGoods(order.getOrderSn(), rOrder.getRetId());	
+						returnGoods = returnOrderGoods.getReturnGoods(order.getOrderSn(), rOrder.getRetId());
 					}
 					/**
 					 * 买家发起：
@@ -245,10 +258,22 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		}
 		//操作记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_RETURN.code }), new String[] {param.getOrderSn()});
-		return result;
+        //消息推送
+        ReturnOrderRecord rOrder = (ReturnOrderRecord)result.getResult();
+        sendMessage.send(rOrder, returnOrderGoods.getReturnGoods(rOrder.getOrderSn(), rOrder.getRetId()));
+        //判断
+        if(orderRefundRecord.isReturnSucess(rOrder.getRetId())) {
+            result.setResult(rOrder.getReturnOrderSn());
+            return result;
+        }else {
+            result.setErrorCode(JsonResultCode.CODE_ORDER_RETURN_WX_FAIL);
+            result.setResult(null);
+            return result;
+        }
+
 	}
 
-	@Override
+    @Override
 	public Object query(OrderOperateQueryParam param) throws MpException {
 		logger.info("获取可退款、退货信息参数为:" + param.toString());
 		Byte isMp = param.getIsMp();
@@ -535,8 +560,10 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		orderGoods.updateInReturn(order.getOrderSn(), returnGoodsRecord, returnOrderRecord);
 		//可退款退货商品数量是否为0(有状态依赖于ordergoods表的商品数量与已经退货退款数量)
 		boolean canReturnGoodsNumber = orderGoods.canReturnGoodsNumber(order.getOrderSn());
-		//更新orderinfo主表信息
+		//更新ordrinfo主表信息
 		orderInfo.updateInReturn(returnOrderRecord,order,canReturnGoodsNumber);
+		//退优惠券
+        returnCoupon(order);
 		//TODO 拆单逻辑特殊处理
 		
 		//部分发货退款完成,检查是否需要设置状态为已发货
@@ -557,24 +584,42 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 
     private void updateStockAndSales(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, ReturnOrderRecord returnOrderRecord) throws MpException {
         List<Byte> goodsType = Lists.newArrayList(OrderInfoService.orderTypeToByte(order.getGoodsType()));
-        //货到付款 、拼团抽奖未中奖（TODO）、退运费、手动退款
-        if(OrderConstant.IS_COD_NO.equals(order.getIsCod()) ||
+        //售后商品库存配置
+        Byte autoReturnGoodsStock = returnCfg.getAutoReturnGoodsStock();
+        //货到付款 、拼团抽奖未中奖、退运费、手动退款
+        if(OrderConstant.IS_COD_YES.equals(order.getIsCod()) ||
             (goodsType.contains(BaseConstant.ACTIVITY_TYPE_GROUP_DRAW) && !groupDraw.IsWinDraw(order.getOrderSn())) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_SHIPPING_FEE) ||
             returnOrderRecord.getReturnType().equals(OrderConstant.RT_MANUAL)) {
             //不进行修改库存销量操作
             return;
         }
-        //是否恢复库存（仅限普通商品与赠品）->
-        // （(退款退货 || 换货) || (退款待发货)）
-        boolean isRestore = ((returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))
-            || (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
+        //是否恢复库存（仅限普通商品与赠品）->(配置可退 && (退款退货 || 换货)) || (退款待发货)）
+        boolean isRestore = (
+            (autoReturnGoodsStock == OrderConstant.YES && (returnOrderRecord.getReturnType().equals(OrderConstant.RT_GOODS) || returnOrderRecord.getReturnType().equals(OrderConstant.RT_CHANGE))) ||
+                (returnOrderRecord.getReturnType().equals(OrderConstant.RT_ONLY_MONEY) && order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)));
         //修改商品库存-销量
         updateNormalStockAndSales(returnGoods, order, isRestore);
         //获取退款活动(goodsType.retainAll后最多会出现一个单一营销+赠品活动)
         goodsType.retainAll(OrderCreateMpProcessorFactory.RETURN_ACTIVITY);
+        //处理活动库存等
+        processAct(order, returnGoods, goodsType, isRestore);
+    }
+
+    /**
+     *
+     * @param order 订单
+     * @param returnGoods 退款商品
+     * @param goodsType 订单类型
+     * @param isRestore 是否可退
+     * @throws MpException
+     */
+    private void processAct(OrderInfoVo order, List<OrderReturnGoodsVo> returnGoods, List<Byte> goodsType, boolean isRestore) throws MpException {
+        if(!isRestore) {
+            return;
+        }
         for (Byte type : goodsType) {
-            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type) && isRestore && OrderConstant.DELIVER_TYPE_COURIER == order.getDeliverType()){
+            if(BaseConstant.ACTIVITY_TYPE_GIFT.equals(type)){
                 //赠品修改活动库存
                 orderCreateMpProcessorFactory.processReturnOrder(BaseConstant.ACTIVITY_TYPE_GIFT,null,returnGoods.stream().filter(x->OrderConstant.IS_GIFT_Y.equals(x.getIsGift())).collect(Collectors.toList()));
             }else {
@@ -588,7 +633,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 	 * 	更新库存和销量
 	 * @param returnGoods
 	 * @param order
-	 * @param goodsType
 	 * @param isRestore 是否恢复库存
 	 */
 	public void updateNormalStockAndSales(List<OrderReturnGoodsVo> returnGoods, OrderInfoVo order, boolean isRestore) {
@@ -597,11 +641,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
 		List<Integer> goodsIds = returnGoods.stream().map(OrderReturnGoodsVo::getGoodsId).collect(Collectors.toList());
 		List<Integer> proIds = returnGoods.stream().map(OrderReturnGoodsVo::getProductId).collect(Collectors.toList());
 		//查询规格
-		Map<Integer, GoodsSpecProductRecord> products = null;
-		if(order.getOrderStatus() == OrderConstant.ORDER_WAIT_DELIVERY) {
-			//待发货涉及恢复规格库存
-			products = goodsSpecProduct.selectSpecByProIds(proIds);
-		}
+        Map<Integer, GoodsSpecProductRecord> products = goodsSpecProduct.selectSpecByProIds(proIds);
 		//更新规格数组
 		ArrayList<GoodsSpecProductRecord> updateProducts = new ArrayList<GoodsSpecProductRecord>();
 		//查询商品
@@ -703,8 +743,6 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
      */
     public void autoReturnOrder(){
         if(OrderConstant.YES == shopReturncfg.getAutoReturn()){
-            //自动退款退货设置开关开启时间
-            Timestamp autoReturnTime = shopReturncfg.getAutoReturnTime();
             //买家发起仅退款申请后，商家在returnMoneyDays日内未处理，系统将自动退款。
             Byte returnMoneyDays = shopReturncfg.getReturnMoneyDays();
             //商家已发货，买家发起退款退货申请，商家在 returnAddressDays日内未处理，系统将默认同意退款退货，并自动向买家发送商家的默认收获地址
@@ -713,7 +751,7 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             Byte returnShoppingDays = shopReturncfg.getReturnShippingDays();
             //商家同意退款退货，买家在 returnPassDays 日内未提交物流信息，且商家未确认收货并退款，退款申请将自动完成。
             Byte returnPassDays = shopReturncfg.getReturnPassDays();
-            Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(autoReturnTime, returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
+            Result<ReturnOrderRecord> autoReturnOrder = returnOrder.getAutoReturnOrder(returnMoneyDays, returnAddressDays, returnShoppingDays, returnPassDays);
             autoReturnOrder.forEach(order->{
                 RefundParam param = new RefundParam();
                 param.setAction(Integer.valueOf(OrderServiceCode.RETURN.ordinal()).byteValue());
@@ -751,6 +789,23 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
                     logger().error("订单自动任务,完成失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());
                 }
             });
+        }
+    }
+
+    /**
+     * 退款时释放优惠券
+     * @param order
+     */
+    private void returnCoupon(OrderInfoVo order){
+        if(order.getOrderStatus().equals(OrderConstant.ORDER_FINISHED)) {
+            logger.info("订单完成，不可退优惠券");
+            return;
+        }
+        OrderInfoRecord orderInfoRecord = orderInfo.getOrderByOrderSn(order.getOrderSn());
+        if(BigDecimalUtil.compareTo(order.getDiscount(), BigDecimal.ZERO) > 0
+            && orderInfoRecord.getIsRefundCoupon().equals(OrderConstant.YES)
+            && (orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_REFUND_FINISHED) || orderInfoRecord.getOrderStatus().equals(OrderConstant.ORDER_RETURN_FINISHED))) {
+            coupon.releaserCoupon(order.getOrderSn());
         }
     }
 }

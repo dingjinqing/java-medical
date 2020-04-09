@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
@@ -14,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.SelectHavingStep;
@@ -32,11 +35,7 @@ import static com.vpu.mp.db.shop.Tables.GIVE_GIFT_CART;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.date;
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.sum;
-import static org.jooq.impl.DSL.when;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author: 王兵兵
@@ -47,6 +46,8 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
 
     @Autowired
     private OrderGoodsService orderGoods;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      *
@@ -265,8 +266,11 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @param goodsType
      */
     private SelectJoinStep<? extends Record> buildMarketOrderOptions(MarketOrderListParam param, byte goodsType){
-        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile")).from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectJoinStep<? extends Record> select = db().select(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE.as("userMobile")).
+            from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).
+            leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param, goodsType);
+        select.orderBy(ORDER_INFO.ORDER_ID);
         return select;
     }
 
@@ -288,9 +292,9 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         orderParam.setCityCode(param.getCityCode());
         orderParam.setDistrictCode(param.getDistrictCode());
 
-        buildOptions(select, orderParam);
+        buildOptions(select, orderParam,true);
         select.where(ORDER_INFO.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
-        select.orderBy(ORDER_INFO.ORDER_ID);
+        select.groupBy(ORDER_INFO.ORDER_SN,ORDER_INFO.ORDER_STATUS,ORDER_INFO.REFUND_STATUS,ORDER_INFO.CONSIGNEE,ORDER_INFO.MOBILE,ORDER_INFO.PAY_CODE,ORDER_INFO.DELIVER_TYPE,ORDER_INFO.CREATE_TIME,ORDER_INFO.SHIPPING_FEE,ORDER_INFO.MONEY_PAID,ORDER_INFO.SCORE_DISCOUNT,ORDER_INFO.USE_ACCOUNT,ORDER_INFO.MEMBER_CARD_BALANCE,ORDER_INFO.USER_ID,USER.USERNAME,USER.MOBILE);
     }
 
     /**
@@ -305,7 +309,13 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         PageResult<MarketOrderListVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
         /** 填充商品行 */
         for(MarketOrderListVo order : res.dataList){
-            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
+            List<MarketOrderGoodsListVo> goods = orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn());
+            goods.forEach(g->{
+                if(StringUtil.isNotBlank(g.getGoodsImg())){
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            });
+            order.setGoods(goods);
         }
 
         return res;
@@ -337,9 +347,9 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
      * @return
      */
     public int getMarketOrderListSize(MarketOrderListParam param, byte goodsType){
-        SelectJoinStep<? extends Record> select = db().selectCount().from(ORDER_INFO).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectJoinStep<? extends Record> select = selectOne().from(ORDER_INFO).leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
         buildMarketOrderOptionsParam(select,param,goodsType);
-        return select.fetchOptionalInto(Integer.class).orElse(0);
+        return db().selectCount().from(select).fetchOptionalInto(Integer.class).orElse(0);
     }
 
 

@@ -12,7 +12,11 @@ export const en = {
   scorePayDesOne: 'The number of points paid per order is less than',
   scorePayDesTwo: "Points, can't pay with points",
   print:
-    'Please fill in a value greater than 100 points and an integer multiple of 100 points',
+    'Please fill in a value greater than',
+  print2:
+    ' points and an integer multiple of ',
+  print3:
+    ' points',
   scoreScale: 'point deduction ratio',
   scoreScaleDesOne:
     "The user can use the points to deduct the amount of the order's discounted amount",
@@ -94,5 +98,8 @@ export const en = {
   show: 'Use to recommend points related activity items to users',
   chooseTemplate: 'Select template',
   refresh: 'Refresh',
-  addTemplate: 'Add template'
+  addTemplate: 'Add template',
+  titelError: 'The system opens the check-in for 30 days',
+  titelMsg: 'Changing the points deduction ratio will bring changes to the value of the store points, please be careful to modify it',
+  titelMsg2: 'Does the shipping amount include shipping costs?'
 }

@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <saleOnAndInStockContent ref="saleOnAndInStockContentCmp" />
+    <saleOnAndInStockContent ref="saleOnAndInStockContentCmp" @sortChange="sortChange"/>
   </div>
 </template>
 
@@ -63,6 +63,10 @@ export default {
         isOnSale: 0,
         // 查询分类信息展示其商品数量是以商品为统计对象还是以规格为统计对象 1 以商品为对象
         selectType: 1
+      },
+      sortData: {
+        orderField: null,
+        orderDirection: null
       }
     }
   },
@@ -70,12 +74,26 @@ export default {
     tabItemClicked (routerName) {
       this.$router.push({ name: routerName })
     },
+    /* 更新排序字段 */
+    sortChange (prop, order) {
+      console.log(prop)
+      console.log(order)
+      if (order === null) {
+        this.sortData.orderField = null
+        this.sortData.orderDirection = null
+      } else {
+        this.sortData.orderField = prop
+        this.sortData.orderDirection = (order === 'ascending' ? 'asc' : 'desc')
+      }
+      this.searchGoodsData()
+    },
     /* 触发商品分页查询 */
     searchGoodsData () {
       let formFilterData = this.$refs.allGoodsHeaderCmp.getFormData()
       let params = {
         ...formFilterData,
-        ...this.initFilterData
+        ...this.initFilterData,
+        ...this.sortData
       }
       this.$refs.saleOnAndInStockContentCmp.fetchGoodsData(params)
     },
@@ -85,7 +103,8 @@ export default {
       let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
       let params = {
         ...formFilterData,
-        ...this.initFilterData
+        ...this.initFilterData,
+        ...this.sortData
       }
       this.$refs.saleOnAndInStockContentCmp.showExportDialog(params, formFilterDataString)
     },

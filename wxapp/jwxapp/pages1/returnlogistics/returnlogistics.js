@@ -134,7 +134,7 @@ global.wxPage({
       shippingType: that.data.couriers[that.data.courierIndex].shippingId,
       shippingNo: that.data.shippingNo, // 物流单号
       phone: that.data.phone,
-      voucherImages: '',
+      voucherImages: '[]',
       returnType: that.data.orderInfo.returnType
     }
     if (!params.shippingNo) {

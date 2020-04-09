@@ -15,6 +15,7 @@ global.wxPage({
     click_look: imageUrl + 'image/wxapp/click_look.png',
     add_img: imageUrl + '/image/wxapp/return_img_icom.png',
     dele_service: imageUrl + '/image/admin/dele_service.png',
+    checkbox_no: imageUrl + '/image/admin/select.png',
     orderInfo: {},
     activityName: '',
     goodsType: '',
@@ -30,7 +31,8 @@ global.wxPage({
     returnMoney: 0.00, //退款金额
     uploadedImg: [], // 已经上传的图片
     reasonDesc: '', // 申请说明
-    isRefund: false // 是否需要退运费
+    isRefund: false, // 是否需要退运费
+    hasShipped: false // 是否包含已发货
   },
 
   /**
@@ -83,10 +85,14 @@ global.wxPage({
         }
         // 选中状态
         let goodsInfo = orderInfo.refundGoods || []
+        let hasShipped = false // 是否包含已发货商品
         goodsInfo.forEach(item => {
           item.checked = false
           if (!item.goodsImg) {
             item.goodsImg = 'image/wxapp/no_order.png'
+          }
+          if (item.sendNumber > 0) {
+            hasShipped = true
           }
         })
         // 商品活动
@@ -118,7 +124,8 @@ global.wxPage({
           goodsInfo: goodsInfo ? goodsInfo : [],
           activityName: activityName,
           goodsType: goodsType,
-          isRefund: isRefund
+          isRefund: isRefund,
+          hasShipped: hasShipped
         })
       }
     }, {
@@ -152,6 +159,10 @@ global.wxPage({
   toggleGoodsSelect (e) {
     let id = e.currentTarget.dataset.sku
     let index = e.currentTarget.dataset.index
+    let good = this.data.goodsInfo[index]
+    if (good.sendNumber <= 0 && this.data.returnType == 1) {
+      return false
+    }
     this.data.goodsInfo[index].checked = !this.data.goodsInfo[index].checked
     this.computedRetureMoney()
     this.setData({
@@ -231,7 +242,14 @@ global.wxPage({
   submitRefund () {
     let that = this
     // 退款商品处理
-    let selectGoods = that.data.goodsInfo.filter(data => data.checked).map(item => {
+    let checkedGoods = that.data.goodsInfo.filter(data => data.checked)
+    // 校验商品是否可退
+    let cannotRefundGoods = checkedGoods.find(item => item.isCanReturn == 0)
+    if (typeof cannotRefundGoods === 'object' && Object.keys(cannotRefundGoods).length > 0) {
+      util.showModal(that.$t("page1.afterSale.prompt"), '商品' +cannotRefundGoods.goodsName+'不支持退款')
+      return false
+    }
+    let selectGoods = checkedGoods.map(item => {
       return {
         recId: item.recId,
         returnNumber: item.returnable, // 可退数量
@@ -269,6 +287,8 @@ global.wxPage({
         util.redirectTo({
           url: '/pages1/returndetail/returndetail?return_sn=' + content
         })
+      } else {
+        util.showModal(that.$t("page1.afterSale.prompt"), res.message)
       }
     }, params)
   },

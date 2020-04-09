@@ -183,11 +183,32 @@ public class JsonResultMessage {
     public static final String BARGAIN_ORDER_LIST_FILENAME = "bargain.order.list.file_name";
     public static final String BARGAIN_ORDER_LIST_ORDER_SN = "bargain.order.list.order_sn";
     public static final String BARGAIN_ORDER_LIST_BARGAIN_GOODS = "bargain.order.list.bargain_goods";
-    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.user.order.price";
+    public static final String BARGAIN_ORDER_LIST_PRICE = "bargain.order.list.price";
     public static final String BARGAIN_ORDER_LIST_CREATE_TIME = "bargain.order.list.create_time";
     public static final String BARGAIN_ORDER_LIST_ORDER_USER = "bargain.order.list.order_user";
     public static final String BARGAIN_ORDER_LIST_CONSIGNEE = "bargain.order.list.consignee";
     public static final String BARGAIN_ORDER_LIST_ORDER_STATUS = "bargain.order.list.order_status";
+
+    /**
+     *  营销-秒杀excel导出-秒杀订单
+     */
+    public static final String SECKILL_ORDER_LIST_FILENAME = "seckill.order.list.file_name";
+    public static final String SECKILL_ORDER_LIST_ACT_NAME = "seckill.order.list.act_name";
+    public static final String SECKILL_ORDER_LIST_ORDER_SN = "seckill.order.list.order_sn";
+    public static final String SECKILL_ORDER_LIST_GOODS_NAME = "seckill.order.list.goods_name";
+    public static final String SECKILL_ORDER_LIST_GOODS_PRICE = "seckill.order.list.goods_price";
+    public static final String SECKILL_ORDER_LIST_CREATE_TIME = "seckill.order.list.create_time";
+    public static final String SECKILL_ORDER_LIST_USERNAME = "seckill.order.list.username";
+    public static final String SECKILL_ORDER_LIST_CONSIGNEE = "seckill.order.list.consignee";
+    public static final String SECKILL_ORDER_LIST_MONEY_PAID = "seckill.order.list.money_paid";
+    public static final String SECKILL_ORDER_LIST_ORDER_STATUS = "seckill.order.list.order_status";
+
+    /**
+     *  营销-预售excel导出-秒杀订单
+     */
+    public static final String PRESALE_ORDER_LIST_FILENAME = "presale.order.list.file_name";
+
+
 
 
 
@@ -234,6 +255,8 @@ public class JsonResultMessage {
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX="group.buy.activity.group.join.limit.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX="group.buy.activity.group.emploees.max";
 	public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
+	public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
     /**
      * 营销-秒杀
      */
@@ -277,7 +300,11 @@ public class JsonResultMessage {
 	public static final String LOTTERY_SCORE_LESS="lottery.score.less";
 	public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";
 	public static final String LOTTERY_TIME_USE_UP="lottery.time.use.up";
-
+	/**
+	 * 首单特惠
+	 */
+	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.sprecial.number.limit";
+	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.sprecial.kind.limit";
 
 	/**
 	 * 营销- 支付有礼
@@ -406,6 +433,9 @@ public class JsonResultMessage {
 	public static final String SERVICE_ORDER_VERIFY_REASON_IS_NULL = "store.service.order.verify.reason.is.null";
 	public static final String SERVICE_ORDER_VERIFY_INSUFFICIENT_BALANCE = "store.service.order.verify.insufficient.balance";
 	public static final String SERVICE_ORDER_CANCEL_REASON_IS_NULL = "store.service.order.verify.cancel_reason.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_IS_NULL = "store.service.order.technician.is.null";
+    public static final String CODE_SERVICE_ORDER_TECHNICIAN_NO_SCHEDULE = "store.service.order.technician.no.schedule";
+    public static final String CODE_SERVICE_ORDER_WRONG_SERVICE_DATE = "store.service.order.wrong.service.date";
 
     /**
      * 门店核销员列表导出列
@@ -453,7 +483,7 @@ public class JsonResultMessage {
 	public static final String MSG_MEMBER_SCORE_NOT_ENOUGH = "member.score.not.enough";
 	public static final String MSG_MEMBER_SCORE_NOT_NULL = "member.score.not.null";
 	public static final String MSG_MEMBER_SCORE_NOT_BE_NEGATIVE = "member.score.not.be.negative";
-
+	public static final String MSG_MEMBER_SCORE_EXPIRED = "member.score.expired";
 	/**
 	 * 会员余额
 	 */
@@ -489,7 +519,7 @@ public class JsonResultMessage {
 	public static final String MSG_CARD_RECEIVE_VALIDPWD  = "member.card.receive.validpwd";
 	public static final String MSG_CARD_RECEIVE_VALIDCODE  = "member.card.receive.validcode";
 	public static final String CODE_CARD_NO = "code.card.no";
-
+	
 	//会员导入
 	public static final String CODE_EXPLAIN_MUST = "code.expalin.must";
 	public static final String CODE_NEED_ONE = "code.need.one";
@@ -511,7 +541,52 @@ public class JsonResultMessage {
 	public static final String CODE_EXCEL_SORRY = "excel.sorry";
 	public static final String CODE_EXCEL_OK = "excel.ok";
 	public static final String BATCHID_NOT_NULL = "batchId.not.null";
-
+	public static final String CODE_EXCEL_READ_ERRO = "code.excel.read.erro";
+	public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
+	public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
+	public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
+	
+	/**
+	 *  会员列表导出
+	 */
+    public static final String USER_EXPORT="user.export";
+    public static final String UEXP_USER_ID = "user.export.user_id";
+    public static final String UEXP_USERNAME = "user.export.username";
+    public static final String UEXP_MOBILE = "user.export.mobile";
+    public static final String UEXP_WX_OPENID = "user.export.wx_openid";
+    public static final String UEXP_ACCOUNT = "user.export.account";
+    public static final String UEXP_SCORE = "user.export.score";
+    public static final String UEXP_USER_SOURCE = "user.export.user_source";
+    public static final String UEXP_CREATE_TIME = "user.export.create_time";
+    public static final String UEXP_USER_CARD = "user.export.user_card";
+    public static final String UEXP_USER_ADDRESS = "user.export.user_address";
+    public static final String UEXP_ORDER_AMOUNT = "user.export.order_amount";
+    public static final String UEXP_ORDER = "user.export.order";
+    public static final String UEXP_RETURN_ORDER_MONEY = "user.export.return_order_money";
+    public static final String UEXP_RETURN_ORDER = "user.export.return_order";
+    public static final String UEXP_REMARK = "user.export.remark";
+    public static final String UEXP_INVITE_USER_NAME = "user.export.invite_user_name";
+    public static final String UEXP_INVITE_MOBILE = "user.export.invite_mobile";
+    public static final String UEXP_INVITE_GROUP_NAME = "user.export.invite_group_name";
+    public static final String UEXP_REBATE_ORDER_NUM = "user.export.rebate_order_num";
+    public static final String UEXP_CALCULATE_MONEY = "user.export.calculate_money";
+    public static final String UEXP_REBATE_MONEY = "user.export.rebate_money";
+    public static final String UEXP_WITHDRAW_MONEY = "user.export.withdraw_money";
+    public static final String UEXP_SUBLAYER_NUMBER = "user.export.sublayer_number";
+    public static final String UEXP_LEVEL_NAME = "user.export.level_name";
+    public static final String UEXP_GROUP_NAM = "user.export.group_name";
+    
+    // 会员卡优惠券信息
+    public static final String CARD_COUPON_RECEIVE_DAY_START = "card.receive.day.start";
+    public static final String CARD_COUPON_DAY = "card.receive.day";
+    public static final String CARD_COUPON_HOUR = "card.receive.hour";
+    public static final String CARD_COUPON_MINUTE = "card.receive.minute";
+    public static final String CARD_COUPON_NOLIMIT = "card.coupon.nolimit";
+    public static final String CARD_COUPON_SATISFY = "card.coupon.satisfiy";
+    public static final String CARD_COUPON_CON_ALL = "user.card.coupon.condition.all";
+    public static final String CARD_COUPON_CON_PART = "user.card.coupon.condition.part";
+    
+    
 	/**
 	 * 概览
 	 */
@@ -557,7 +632,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_RETURN_ORDER_SN_NOT_NULL = "order.return.order.sn.not.null";
     public static final String MSG_ORDER_REMARK_NOT_NULL = "order.remark.not.null";
     public static final String MSG_ORDER_REMARK_TYPE_NOT_NULL = "order.remark.type.not.null";
-    public static final String MSG_ORDER_RETURN_WX_FAILL = "order.return.wx.fail";
+    public static final String MSG_ORDER_RETURN_WX_FAIL = "order.return.wx.fail";
     public static final String MSG_ORDER_RETURN_METHOD_REFLECT_ERROR = "order.return.method.reflect.error";
     public static final String MSG_ORDER_RETURN_AFTER_RETURNAMOUNT_GREAT_THAN_ZERO = "order.return.after.returnamount.great.than.zero";
     public static final String MSG_ORDER_RETURNING_RETURN_METHOD_ERROR = "order.returning.return.method.error";
@@ -635,6 +710,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_GOODS_LIMIT_MAX = "order.goods.limit.max";
     public static final String MSG_ORDER_GIFT_GOODS_ZERO = "order.gift.goods.zero";
     public static final String MSG_ORDER_MUST_NOT_NULL = "order.must.not.null";
+    public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
+    public static final String  MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";
@@ -763,6 +840,10 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_USER_SOURCE_ADMIN = "order.export.user.source.admin";
     public static final String ORDER_EXPORT_USER_SOURCE_UNKNOWN = "order.export.user.source.unknown";
     public static final String ORDER_EXPORT_USER_SOURCE_CHANNEL = "order.export.user.source.channel";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_COURIER = "order.export.deliver.type.courier";
+    public static final String ORDER_EXPORT_DELIVER_TYPE_SELF = "order.export.deliver.type.self";
+    public static final String ORDER_EXPORT_CITY_EXPRESS_SERVICE = "order.export.deliver.type.express";
+
     /**
      * 下单必填信息的title
      */
@@ -888,5 +969,40 @@ public class JsonResultMessage {
     public static final String WX_MA_PRESALE_SHARE_DOC = "wx.ma.presale.share.doc";
     /**"200.00元,限时预售" 分享图片*/
     public static final String WX_MA_PRESALE_PICTORIAL_DOC = "wx.ma.presale.pictorial.doc";
+    //持卡会员导出
+    public static final String USER_CARD_OK = "user.card.ok";
+    public static final String USER_CARD_ONOK = "user.card.onok";
+    public static final String USER_CARD_TEMPLATE_NAME = "user.card.template.name";
+    public static final String USER_CARD_ABOLITION = "user.card.abolition";
+    
+    public static final String CARD_NO_TEMPLATE_NAME = "card.no.template.name";
+    public static final String CARD_NO_IMPORT_NAME = "card.no.import.name";
+    public static final String CARD_PWD_TEMPLATE_NAME = "card.pwd.template.name";
+    
+    // 商品效果导出
+    public static final String GOODS_EFFECT_FILE_NAME = "overview.commodity.effect.file_name";
+    public static final String GOODS_EFFECT_GOODS_INFO = "overview.commodity.effect.goods_info";
+    public static final String GOODS_EFFECT_GOODS_LABEL = "overview.commodity.effect.goods_label";
+    public static final String GOODS_EFFECT_GOODS_BRAND = "overview.commodity.effect.goods_brand";
+    public static final String GOODS_EFFECT_GOODS_SORT = "overview.commodity.effect.goods_sort";
+    public static final String GOODS_EFFECT_UV = "overview.commodity.effect.uv";
+    public static final String GOODS_EFFECT_PV = "overview.commodity.effect.pv";
+    public static final String GOODS_EFFECT_CART_UV = "overview.commodity.effect.cart_uv";
+    public static final String GOODS_EFFECT_PAID_UV = "overview.commodity.effect.paid_uv";
+    public static final String GOODS_EFFECT_NEW_USER_NUM = "overview.commodity.effect.new_user_num";
+    public static final String GOODS_EFFECT_NEW_USER_PERCENTAGE = "overview.commodity.effect.new_user_percentage";
+    public static final String GOODS_EFFECT_OLD_USER_NUM = "overview.commodity.effect.old_user_num";
+    public static final String GOODS_EFFECT_OLD_USER_PERCENTAGE = "overview.commodity.effect.old_user_percentage";
+    public static final String GOODS_EFFECT_PAID_GOODS_NUM = "overview.commodity.effect.paid_goods_num";
+    public static final String GOODS_EFFECT_UV_2_PAID = "overview.commodity.effect.uv2paid";
+    public static final String GOODS_EFFECT_GOODS_SALES = "overview.commodity.effect.goods_sales";
+    public static final String GOODS_EFFECT_RECONNEND_USER_NUM = "overview.commodity.effect.recommend_user_num";
+    public static final String GOODS_EFFECT_COLLECT_USER_NUM = "overview.commodity.effect.collect_use_num";
 
+    // 商品排行导出
+    public static final String GOODS_RANKING_SALES_TOP10 = "overview.commodity.rank.sales_top10";
+    public static final String GOODS_RANKING_SALES_ORDER_TOP10 = "overview.commodity.rank.sales_order_top10";
+    public static final String GOODS_RANKING_GOODS_NAME = "overview.commodity.rank.goods_name";
+   
+  
 }

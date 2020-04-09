@@ -126,7 +126,7 @@
                 <el-button
                   v-if="chooseGoods && chooseGoods.length > 0"
                   type="text"
-                  @click="chooseGoodsDialog"
+                  @click="onlyChooseGoodsDialog"
                 >{{$t('evaluationGiftAdd.selectedProduct')}}{{chooseGoods.length}}{{$t('evaluationGiftAdd.items')}}</el-button>
               </div>
               <div v-else-if="form.goodsType === 3">
@@ -329,6 +329,7 @@
     <!-- 选择商品 -->
     <choosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="chooseGoods"
       @result="chooseGoodsHandle"
     ></choosingGoods>
@@ -449,6 +450,7 @@ export default {
       },
       couponLength: 0,
       tuneUpChooseGoods: false, // 选择商品
+      isOnlyShowChooseGoods: false,
       chooseGoods: [], // 商品回显 id数组
       imageDalogVisible: false, // 选择图片
       uploadHover: false,
@@ -505,6 +507,12 @@ export default {
     },
     // 选择商品
     chooseGoodsDialog () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    // 选择商品 部分商品
+    onlyChooseGoodsDialog () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     initCouponItem (item) {

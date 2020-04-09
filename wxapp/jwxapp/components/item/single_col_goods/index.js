@@ -100,42 +100,45 @@ global.wxComponent({
             this.triggerEvent('cartChange') //购物车改变触发
           }
         },
-        { recId: e.currentTarget.dataset.cartId }
+        { cartId: e.currentTarget.dataset.cartId }
       )
     },
     // 更改购物车商品数量
     changeGoodsNum(e) {
       let { type } = e.currentTarget.dataset
-      let { cartNumber, productId } = this.data.goodsData
-      util.api(
-        '/api/wxapp/cart/change',
-        res => {
-          if (res.error == 0) {
-            this.triggerEvent('cartChange') //购物车改变触发
-          }
-        },
-        {
-          productId: productId,
-          cartNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1
+      let { cartId, cartNumber, productId, activityType, activityId } = this.data.goodsData
+      util.api('/api/wxapp/cart/add', res => {
+        if (res.error == 0) {
+          this.triggerEvent('cartChange') //购物车改变触发
+        } else {
+          util.showModal('提示', res.message)
+          return false
         }
-      )
+      }, {
+          goodsNumber: type === 'plus' ? cartNumber + 1 : cartNumber - 1,
+          prdId: productId,
+          activityType: activityType,
+          activityId: activityId
+      })
     },
     changeCartInput(e){
       let cartNumber = parseInt(e.detail.value)
-      let { productId } = this.data.goodsData
+      let { cartId, productId, activityType, activityId } = this.data.goodsData
       if(!isNaN(cartNumber)){
-        util.api(
-          '/api/wxapp/cart/change',
-          res => {
-            if (res.error == 0) {
-              this.triggerEvent('cartChange') //购物车改变触发
-            }
-          },
-          {
-            productId,
-            cartNumber
+
+        util.api('/api/wxapp/cart/add', res => {
+          if (res.error == 0) {
+            this.triggerEvent('cartChange') //购物车改变触发
+          } else {
+            util.showModal('提示', res.message)
+            return false
           }
-        )
+        }, {
+            goodsNumber: cartNumber,
+            prdId: productId,
+            activityType: activityType,
+            activityId: activityId
+          })
       }
     },
     // 打开规格弹窗

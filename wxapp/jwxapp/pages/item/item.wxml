@@ -3,8 +3,12 @@
     if (arr.length === 0) return false
     return arr.indexOf(target) === -1 ? false : true
   }
+  substring = function (str,start,end) {
+    return str.substring(start,end)
+  }
   module.exports = {
     includes:includes
+    substring:substring
   }
 </wxs>
 <view class="body">
@@ -64,18 +68,29 @@
           <view class="goods-price-tag" wx:if="{{filter.includes([22,98],goodsInfo.activity.activityType)}}" style="background: linear-gradient(to left, #e0c787, #d9ae69);">
             会员价
           </view>
+          <text wx:if="{{goodsInfo.activity.activityType === 10}}">预售价</text>
           <text>￥</text>
           <text>{{goodsInfo.prdRealPrice}}</text>
         </view>
-        <view class="marking_price">
+        <view class="marking_price" wx:if="{{goodsInfo.prdLinePrice}}">
           ￥
           <text>{{goodsInfo.prdLinePrice}}</text>
         </view>
       </view>
       <view class="label-content" wx:if="{{goodsInfo.labels && goodsInfo.labels.length > 0}}">
-        <text class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
+        <view class="label-content_style" style='background:{{somColor}};color:{{comColor}}' wx:for="{{goodsInfo.labels}}" wx:key="index">
           {{item}}
-        </text>
+        </view>
+      </view>
+      <view wx:if="{{goodsInfo.activity.activityType === 10}}" class="flex-wrap pre-sale-content" style="background-color:{{speColor}};">
+        <view wx:if="{{goodsInfo.activity.preSaleType !== 1}}">现在支付定金可抵：￥{{PreSaleDiscountPrice}}</view>
+        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">尾款支付时间：{{filter.substring(goodsInfo.activity.finalPaymentStart,5,16)}} - {{filter.substring(goodsInfo.activity.finalPaymentEnd,5,16)}}</view>
+        <view>{{goodsInfo.activity.deliverType === 1 ? '发货时间：' + filter.substring(goodsInfo.activity.deliverTime,0,10)  : '发货时间：尾款支付完成'+goodsInfo.activity.deliverDays+'天后发货'}}</view>
+        <view bindtap="viewPreSaleRule">
+          {{goodsInfo.activity.preSaleType === 0 ? '活动规则：支付定金-支付尾款-等待发货':'活动规则：支付定金-等待发货'}}
+          <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: sub;"></image>
+        </view>
+        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{gd.preSale.returnDeposit?'可':'不予'}}退还</view>
       </view>
       <view class="flex-wrap">
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
@@ -88,12 +103,15 @@
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 3}}">
           参与砍价人数：{{goodsInfo.activity.bargainJoinNum}}
         </view>
-        <view class="flex-item" wx:if="{{!filter.includes([1,3,5],goodsInfo.activity.activityType)}}">
+        <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 10 && goodsInfo.activity.showPreSaleNumber}}">
+          已预定：{{goodsInfo.activity.saleNumber || 0}}
+        </view>
+        <view class="flex-item" wx:if="{{!filter.includes([1,3,5,10],goodsInfo.activity.activityType)}}">
           销量：{{goodsInfo.goodsSaleNum}}
         </view>
         <view class="flex-item">运费：{{goodsInfo.deliverPrice}}</view>
       </view>
-      <view class="flex-wrap" wx:if="{{!filter.includes([1,3,5],goodsInfo.activity.activityType)}}">
+      <view class="flex-wrap" wx:if="{{!filter.includes([1,3,5,10],goodsInfo.activity.activityType)}}">
         <view class="flex-item">配送：快递</view>
         <view class="flex-item">
           门店自提
@@ -113,16 +131,16 @@
       </view>
     </view>
     <!-- 优惠券&促销信息 -->
-    <v-coupon-promotion wx:if="{{!filter.includes([1,3,5],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}" goods-gifts="{{goodsGifts}}" />
+    <v-coupon-promotion wx:if="{{!filter.includes([1,3,5,10],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}" goods-gifts="{{goodsGifts}}" />
     <!-- 选择规格（包含无规格情况） -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}">
       <!-- 服务规则 -->
-      <view class="flex_box" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
+      <view class="flex_box" bindtap="goPledge" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}">
         <view class="item_left">服务</view>
         <view class="item_middle pledge-content">
           <block wx:for="{{pledgeInfo.pledgeListVo}}" wx:for-item="pledgeItem" wx:key="index">
             <view class="pledge-item" wx:if="{{index <= 2}}">
-              <image src="{{pledgeItem.pledgeLogo}}" />
+              <image src="{{imageUrl}}{{pledgeItem.pledgeLogo}}" />
               <text>{{pledgeItem.pledgeName}}</text>
             </view>
           </block>
@@ -147,9 +165,9 @@
             <text class="user-name">{{groupItem.userName}}</text>
             <view class="join-item-info">
               <text>
-                还差
+                <text>还差</text>
                 <text style="color:{{comColor}}">{{groupItem.remainNum}}人</text>
-                成团
+                <text>成团</text>
               </text>
               <text>剩余{{groupItem.countDown}}</text>
             </view>
@@ -184,7 +202,10 @@
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
   </view>
-  <v-item-footer wx:if="{{productInfo}}" product-info="{{productInfo}}" dealt-act="{{dealtAct}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-item-footer wx:if="{{specParams.products}}" product-info="{{productInfo}}" activity="{{specParams.activity}}" isDefaultPrd="{{defaultPrd}}" bindshowSpecDialog="showSpecDialog" products="{{specParams.products}}"/>
+  <v-pre-sale-rule show="{{preSaleRuleShow}}" />
+
+
   <include src="../common/footer.wxml" />
 </view>
 <!-- 分享|下载海报|多图弹窗 -->

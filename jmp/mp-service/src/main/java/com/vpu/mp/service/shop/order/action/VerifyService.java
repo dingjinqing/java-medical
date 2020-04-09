@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PartOrderGoodsShipRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -48,6 +50,9 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 	
 	@Autowired
 	public RecordAdminActionService record;
+
+	@Autowired
+    private OrderOperateSendMessage sendMessage;
 	
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -62,9 +67,9 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 	@Override
 	public ExecuteResult execute(verifyParam param) {
 		
-		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
+		OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
 		
-		if (!OrderOperationJudgment.isVerify(order)) {
+		if (!OrderOperationJudgment.isVerify(order.into(OrderInfoVo.class))) {
 			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED, null);
 		}
 		
@@ -94,8 +99,8 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		});
 		//action操作
 		orderAction.addRecord(order, param, OrderConstant.ORDER_WAIT_DELIVERY, param.getIsCheck() ? "核销" : "强制核销");
-		//TODO 操作记录 b2c_record_admin_action  需要测试记录
 		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_VERIFY.code }), new String[] {param.getOrderSn()});
+		sendMessage.sendSelfPickupSuccess(orderInfo.getRecord(param.getOrderId()));
 		return null;
 	}
 

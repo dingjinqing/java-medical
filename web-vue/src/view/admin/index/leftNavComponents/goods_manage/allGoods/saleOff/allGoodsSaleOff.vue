@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <saleOut ref="saleOutCmp" />
+    <saleOut ref="saleOutCmp"  @sortChange="sortChange"/>
   </div>
 </template>
 
@@ -57,6 +57,10 @@ export default {
         isOnSale: 1,
         isSaleOut: true,
         selectType: 2
+      },
+      sortData: {
+        orderField: null,
+        orderDirection: null
       }
     }
   },
@@ -68,12 +72,27 @@ export default {
     tabItemClicked (routerName) {
       this.$router.push({ name: routerName })
     },
+    /* 更新排序字段 */
+    sortChange (prop, order) {
+      console.log(prop)
+      console.log(order)
+      if (order === null) {
+        this.sortData.orderField = null
+        this.sortData.orderDirection = null
+      } else {
+        this.sortData.orderField = prop
+        this.sortData.orderDirection = (order === 'ascending' ? 'asc' : 'desc')
+      }
+      this.searchGoodsData()
+    },
     /* 触发商品分页查询 */
     searchGoodsData () {
       let formFilterData = this.$refs.goodsHeaderFormCmp.getFormData()
       let params = {
         ...formFilterData,
-        ...this.initFilterData
+        ...this.initFilterData,
+        ...this.initFilterData,
+        ...this.sortData
       }
       this.$refs.saleOutCmp.fetchGoodsData(params)
     },

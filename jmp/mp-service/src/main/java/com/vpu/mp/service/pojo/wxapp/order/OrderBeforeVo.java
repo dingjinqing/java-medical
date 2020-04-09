@@ -104,6 +104,8 @@ public class OrderBeforeVo {
     private Byte canShipping;
     /**积分最大抵用金额*/
     private BigDecimal scoreMaxDiscount;
+    /**积分兑换比*/
+    private Integer scoreProportion;
     /**发票开关*/
     private Byte invoiceSwitch;
     /**
@@ -170,6 +172,8 @@ public class OrderBeforeVo {
         orderRecord.setMemberCardBalance(getMemberCardDiscount());
         orderRecord.setPackageDiscount(getPackageDiscount());
         orderRecord.setPreSaleDiscount(getPreSaleDiscount());
+        //订单付款方式，0全款 1定金 2好友代付(此处只是设置默认值，后续可能修改)
+        orderRecord.setOrderPayWay(getOrderPayWay() == null ? OrderConstant.PAY_WAY_FULL : getOrderPayWay());
         if(getBkOrderMoney() != null){
             orderRecord.setBkOrderMoney(getBkOrderMoney());
         }
@@ -188,6 +192,9 @@ public class OrderBeforeVo {
         if(getActivityId() != null && getActivityType() != null){
             //营销活动订单
             orderRecord.setActivityId(getActivityId());
+        }
+        if(getScoreProportion() != null) {
+            orderRecord.setScoreProportion(getScoreProportion());
         }
     }
 }

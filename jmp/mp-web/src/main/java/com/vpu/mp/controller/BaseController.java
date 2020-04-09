@@ -57,7 +57,7 @@ public class BaseController {
   }
 
   public JsonResult fail(ResultMessage message) {
-    return result(message.getJsonResultCode(), null, message.getMessages());
+    return result(message.getJsonResultCode(), null, message.getMessages().toArray());
   }
 
   public JsonResult fail() {

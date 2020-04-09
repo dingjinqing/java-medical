@@ -2,6 +2,7 @@
 let util = require('../../utils/util')
 let app = getApp()
 let imageUrl = app.globalData.imageUrl;
+var scene;
 
 global.wxPage({
   /**
@@ -22,6 +23,7 @@ global.wxPage({
     img_iconsel: imageUrl + '/image/wxapp/selected.png',
     img_service: imageUrl + 'image/wxapp/icon_service.png',
     square_no: imageUrl + 'image/wxapp/icon_rectangle.png',
+    nickAvatar: imageUrl + 'image/wxapp/icon_no_4.png',
 
     storeInfo: {}, // 门店信息
     serviceInfo: {}, // 门店服务信息
@@ -72,7 +74,12 @@ global.wxPage({
   /**
    * 评价
    */
-  click_to_detail () { },
+  click_to_detail () {
+    console.log('查看全部')
+    util.navigateTo({
+      url: '/pages1/appointcomment/appointcomment?serviceId=' + this.data.serviceId
+    })
+  },
   clickComment (e) {
     console.log(e)
     let url = e.currentTarget.dataset.src
@@ -212,8 +219,9 @@ global.wxPage({
    */
   onLoad: function (options) {
     let that = this
+    scene = options.scene;
     let serviceId = options.service_id
-    if (!serviceId) {
+    if (!serviceId && !scene) {
       that.toBack()
       return false
     }
@@ -224,6 +232,9 @@ global.wxPage({
       if (res.error === 0) {
         console.log(res.content)
         let serviceInfo = res.content.serviceInfo
+        that.setData({
+          serviceId: serviceInfo.id
+        })
         let storeInfo = res.content.storeInfo
         let commentInfo = res.content.commentInfo
         let reservationInfoList = res.content.reservationInfoList
@@ -276,7 +287,7 @@ global.wxPage({
       } else {
         that.toBack()
       }
-    }, { serviceId: serviceId })
+    }, { serviceId: serviceId, scene: scene })
   },
 
   /**

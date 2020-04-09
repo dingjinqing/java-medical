@@ -44,27 +44,33 @@ export const en = {
   transactionData: [
     {
       title: 'Latest order time',
-      content: 'No order yet'
+      content: 'No order yet',
+      tip: 'Last time the user placed an order (including refunded orders)'
     },
     {
       title: 'Passenger Unit Price',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Average consumption amount per order (including refunded orders)'
     },
     {
       title: 'Cumulative order amount',
-      content: 'No order yet'
+      content: 'No order yet',
+      tip: 'Accumulated consumption amount of users in the mall (paid part, including refunded order amount)'
     },
     {
       title: 'Cumulative consumption orders',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Cumulative consumption orders of users in the mall (paid part, including refunded orders)'
     },
     {
       title: 'Accumulated refund',
-      content: '0'
+      content: '0',
+      tip: 'Accumulated refund'
     },
     {
       title: 'Cumulative refund orders',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: 'Cumulative number of refund orders of users in the mall (orders with refund behavior)'
     }
   ],
   OrderList: 'Order List',
@@ -128,6 +134,10 @@ export const en = {
   integral: 'Integral',
   Balance: 'Balance',
   banLogin: 'Landing has been banned',
+  alreadyPhone: 'HasPhone',
+  alreadyScore: 'HasScore',
+  alreadyBalance: 'HasMoney',
+  alreadyCard: 'HasCard',
   importMembers: 'Imported Members',
   screen: 'screen',
   membershipExport: 'Membership Export',
@@ -237,6 +247,7 @@ export const en = {
   placeWXNameNum: 'Please enter your Weixin nickname',
   placeChoise: 'Please choose',
   placeinpuLabel: 'Please enter the label',
+  cardOptions: [{id: 0, cardName: 'ALL'}],
   userFromSource: [{
     value: '0',
     label: 'ALL'
@@ -452,5 +463,42 @@ export const en = {
   normalCardFull: 'NormalCard',
   limiteCardFull: 'LimiteCard',
   gradeCard: 'GradeCard',
-  addCardTips: 'Note: the card that needs to be activated is issued directly to the user'
+  addCardTips: 'Note: the card that needs to be activated is issued directly to the user',
+
+  // 导出弹窗
+  exportTable: 'Export table',
+  filterOnFollowing: 'Filter based on the following conditions',
+  articleData: 'Article data',
+  ayExport: 'Are you sure to export?',
+  filterCirteria: 'Filter criteria',
+  numExports: 'Number of exports (maximum export at a time',
+  articleDatas: 'Article data',
+  basicInformation: 'basic information',
+  userId2: 'User id',
+  nickname2: 'nickname',
+  phone: 'phone number',
+  balance: 'Balance',
+  integral2: 'integral',
+  userSource: 'User Source',
+  registrationTime2: 'Registration time',
+  memberShip: 'membership card',
+  address2: 'address',
+  cumulativeSpending: 'Cumulative spending amount',
+  cumulativeConsumption: 'Cumulative Consumption Orders',
+  cumulativeRefund: 'Cumulative refund amount',
+  cumulativeOrder: 'Cumulative refund orders',
+  remarks: 'Remarks',
+  distributionIntro: 'Distribution Information',
+  invitePe: 'Invite people',
+  inviteMobile: "Inviter's mobile number",
+  invitedDistribut: 'Invited by distributors',
+  numRebate: 'Number of rebate orders',
+  rebateProducts: 'Total amount of rebate products',
+  totalRebate: 'Total Rebate Order Commission',
+  totalCommission: 'Total Commission Withdrawn',
+  numSubordinate: 'Number of subordinate users',
+  distributorLevel: 'Distributor Level',
+  distributorGroup: 'Distributor Group',
+  determine: 'determine',
+  cancel2: 'cancel'
 }

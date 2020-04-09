@@ -29,6 +29,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index PLEDGE_RELATED_BPR_PLEDGE_ID = Indexes0.PLEDGE_RELATED_BPR_PLEDGE_ID;
+    public static final Index PLEDGE_RELATED_PRIMARY = Indexes0.PLEDGE_RELATED_PRIMARY;
     public static final Index SEARCH_HISTORY_PRIMARY = Indexes0.SEARCH_HISTORY_PRIMARY;
     public static final Index MP_SCENE_RECORD_PRIMARY = Indexes0.MP_SCENE_RECORD_PRIMARY;
     public static final Index TRADES_PRIMARY = Indexes0.TRADES_PRIMARY;
@@ -485,12 +487,16 @@ public class Indexes {
     public static final Index SUBSCRIBE_MESSAGE_WX_OPENID = Indexes0.SUBSCRIBE_MESSAGE_WX_OPENID;
     public static final Index PAY_AWARD_PRIZE_PRIMARY = Indexes0.PAY_AWARD_PRIZE_PRIMARY;
     public static final Index USER_CARD_PRIMARY = Indexes0.USER_CARD_PRIMARY;
+    public static final Index USER_REMARK_PRIMARY = Indexes0.USER_REMARK_PRIMARY;
+    public static final Index USER_REMARK_USER_ID = Indexes0.USER_REMARK_USER_ID;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index PLEDGE_RELATED_BPR_PLEDGE_ID = Internal.createIndex("bpr_pledge_id", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.PLEDGE_ID }, false);
+        public static Index PLEDGE_RELATED_PRIMARY = Internal.createIndex("PRIMARY", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.ID }, true);
         public static Index SEARCH_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.ID }, true);
         public static Index MP_SCENE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", MpSceneRecord.MP_SCENE_RECORD, new OrderField[] { MpSceneRecord.MP_SCENE_RECORD.ID }, true);
         public static Index TRADES_PRIMARY = Internal.createIndex("PRIMARY", Trades.TRADES, new OrderField[] { Trades.TRADES.ID }, true);
@@ -947,5 +953,7 @@ public class Indexes {
         public static Index SUBSCRIBE_MESSAGE_WX_OPENID = Internal.createIndex("wx_openid", SubscribeMessage.SUBSCRIBE_MESSAGE, new OrderField[] { SubscribeMessage.SUBSCRIBE_MESSAGE.WX_OPENID }, false);
         public static Index CART_PRIMARY = Internal.createIndex("PRIMARY", Cart.CART, new OrderField[] { Cart.CART.CART_ID }, true);
         public static Index CART_USER_ID = Internal.createIndex("user_id", Cart.CART, new OrderField[] { Cart.CART.CART_ID, Cart.CART.STORE_ID }, false);
+        public static Index USER_REMARK_PRIMARY = Internal.createIndex("PRIMARY", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.ID }, true);
+        public static Index USER_REMARK_USER_ID = Internal.createIndex("user_id", UserRemark.USER_REMARK, new OrderField[] { UserRemark.USER_REMARK.USER_ID }, false);
     }
 }

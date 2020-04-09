@@ -231,7 +231,7 @@ public class AdminChooseLinkController extends AdminBaseController{
 	 */
 	@GetMapping(value = "/admin/decorate/card/list")
 	public JsonResult cardList() {
-		 List<ActivityVo> cardList = shop().chooselink.getCardList();
+		 List<CardLinkVo> cardList = shop().chooselink.getCardList();
 		 return this.success(cardList);
 	}
 	

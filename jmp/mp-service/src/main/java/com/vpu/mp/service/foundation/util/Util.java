@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -227,7 +228,7 @@ public class Util {
             }
             return t;
         } catch (IOException e) {
-			log.error("数据 ->{}<- 反序列化失败", json);
+			log.error("数据 ->{}<- 反序列化失败", e);
             throw new BusinessException(JsonResultCode.CODE_JACKSON_DESERIALIZATION_FAILED);
         }
     }
@@ -583,6 +584,9 @@ public class Util {
 	 * @return
 	 */
 	public static List<Integer> splitValueToList(String value){
+	    if(StringUtil.isBlank(value)){
+	        return Collections.emptyList();
+        }
 		return valueOf(value.split(","));
 	}
 

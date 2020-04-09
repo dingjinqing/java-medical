@@ -69,6 +69,7 @@ export default {
     dialogVisible: Boolean, // 弹窗调起flag
     classFlag: Number,
     backDataArr: Array,
+    showFatherNode: Boolean,
     singleElection: {
       type: Boolean,
       default: false
@@ -122,10 +123,13 @@ export default {
       }
     },
     singleElection (newData) {
+      console.log(newData)
       this.singleEle = newData
     }
   },
   mounted () {
+    console.log(this.singleElection)
+    this.singleEle = this.singleElection
     // this.$http.$on('addingBusClassDialog', (res, flag) => {
     //   console.log(flag)
     //   this.dialogVisible = true
@@ -162,9 +166,9 @@ export default {
   methods: {
     // 节点点击
     handleClick (data, checked, node) {
-      console.log(data, checked, node)
+      console.log(this.singleEle, data, this.flag, checked, node)
       if (checked && this.singleEle) {
-        this.$refs.cardTree.setCheckedNodes([data])
+        this.$refs.sortTree.setCheckedNodes([data])
       }
     },
     // 弹窗确认
@@ -179,15 +183,37 @@ export default {
       if (this.flag === 2) {
         detailData = this.$refs.cardTree.getCheckedNodes()
       } else {
-        detailData = this.$refs.sortTree.getCheckedNodes()
+        if (this.showFatherNode) {
+          detailData = this.getSimpleCheckedNodes(this.$refs.sortTree.store)
+        } else {
+          detailData = this.$refs.sortTree.getCheckedNodes()
+        }
       }
-      console.log(this.$refs.sortTree.getCheckedNodes())
+      console.log(this.getSimpleCheckedNodes(this.$refs.sortTree.store), this.showFatherNode, this.flag)
       console.log(arr, detailData)
       this.$emit('BusClassTrueDetailData', detailData) // 返回选中节点详细数据
       this.$emit('BusClassTrueArr', arr) // 返回选中节点id数据
       this.$emit('update:dialogVisible', false)
       this.busClassDialogVisible = false
     },
+    getSimpleCheckedNodes (store) {
+      const checkedNodes = []
+      const traverse = function (node) {
+        const childNodes = node.root ? node.root.childNodes : node.childNodes
+
+        childNodes.forEach(child => {
+          if (child.checked) {
+            checkedNodes.push(child.data)
+          }
+          if (child.indeterminate) {
+            traverse(child)
+          }
+        })
+      }
+      traverse(store)
+      return checkedNodes
+    },
+
     defaultData (backData, flag) {
       console.log(flag)
       this.flag = flag
@@ -196,9 +222,9 @@ export default {
         needSysCategory: true
       }
       if (flag === 2) {
-        this.dialogTitle = '添加平台分类'
+        this.dialogTitle = '选择平台分类'
       } else {
-        this.dialogTitle = '添加商家分类'
+        this.dialogTitle = '选择商家分类'
       }
       // 弹窗数据获取
       cateListApi(params).then((res) => {

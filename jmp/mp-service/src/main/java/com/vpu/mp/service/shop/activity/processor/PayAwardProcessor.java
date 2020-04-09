@@ -32,6 +32,7 @@ import com.vpu.mp.service.shop.market.payaward.PayAwardService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.AccountService;
 import com.vpu.mp.service.shop.member.ScoreService;
+import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
     private PrizeRecordService prizeRecordService;
     @Autowired
     private JedisManager jedisManager;
+    @Autowired
+    private AtomicOperation atomicOperation;
     @Override
     public Byte getPriority() {
         return GoodsConstant.ACTIVITY_BARGAIN_PRIORITY;
@@ -118,6 +121,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
      */
     @Override
     public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+
     }
 
     /**
@@ -226,6 +230,8 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 payAwardRecordRecord.setAwardData(payAwardContentBo.getProductId().toString());
                 payAwardRecordRecord.setKeepDays(payAwardContentBo.getKeepDays());
                 payAwardRecordRecord.insert();
+                //扣商品库存
+                atomicOperation.updateStockAndSalesByLock(payAwardContentBo.getProduct().getGoodsId(),payAwardContentBo.getProductId(),1,true);
                 PrizeRecordRecord prizeRecordRecord = prizeRecordService.savePrize(order.getUserId(), payAward.getId(), payAwardContentBo.getId(), PRIZE_SOURCE_PAY_AWARD, payAwardContentBo.getProductId(), payAwardContentBo.getKeepDays());
                 payAwardRecordRecord.setSendData(prizeRecordRecord.getId().toString());
                 break;
@@ -305,19 +311,20 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId(), 60000,
+            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
                     () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-            int circleTimes = (joinAwardCount+1) / payAwardSize;
-            logger().info("循环次数:{}", circleTimes);
-            if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() <= circleTimes) {
+
+            int circleTimes = (joinAwardCount - 1) / payAwardSize + 1;
+            int currentAward = (joinAwardCount - 1) % payAwardSize + 1;
+            logger().info("当前第:{}轮,第:{}次", circleTimes,currentAward);
+            if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*payAwardSize < joinAwardCount) {
                 jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
                 logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
                 return;
             }
-            int currentAward = joinAwardCount % payAwardSize;
             logger().info("当前的奖励层级:{}", currentAward);
-            PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward);
+            PayAwardContentBo payAwardContentBo = payAward.getAwardContentList().get(currentAward-1);
             logger().info("当前奖励:" + payAwardContentBo.toString());
             if (payAwardContentBo.getGiftType().equals(GIVE_TYPE_NO_PRIZE)) {
                 logger().info("当前奖励无奖品");
@@ -354,6 +361,11 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             e.printStackTrace();
 
         }
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 
     @Override

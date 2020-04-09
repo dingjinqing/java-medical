@@ -54,8 +54,8 @@
             >
               <template slot-scope="scope">
                 <div class="goodsInfo">
-                  <img :src="scope.row.goodsImg">
-                  <div>{{scope.row.goodsName}}</div>
+                  <img :src="scope.row.goods_img">
+                  <div>{{scope.row.goods_name}}</div>
                 </div>
               </template>
             </el-table-column>
@@ -279,34 +279,34 @@ export default {
       }],
       value: -1,
       tableData: [ // 模拟数据
-        {
-          'goods_id': '1139',
-          'integral_goods_id': '175',
-          'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191211/yGJPwQANqKOHCqWS.jpeg',
-          'goods_name': '夜间保湿修护唇膜 补水保湿 20克',
-          'stock_sum': '4',
-          'prd_price': '59.00',
-          'money': '10.00',
-          'score': '100',
-          'start_time': '2019-12-25 14:10:31',
-          'end_time': '2020-01-02 14:10:33',
-          'is_on_sale': '1',
-          'is_delete': '0'
-        },
-        {
-          'goods_id': '1156',
-          'integral_goods_id': '176',
-          'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190929/5b641c86N5b3f6ae6.jpg',
-          'goods_name': '原味泡芙',
-          'stock_sum': '132',
-          'prd_price': '200.00',
-          'money': '22.00',
-          'score': '34',
-          'start_time': '2019-12-29 14:51:47',
-          'end_time': '2020-01-09 14:51:53',
-          'is_on_sale': '1',
-          'is_delete': '0'
-        }
+        // {
+        //   'goods_id': '1139',
+        //   'integral_goods_id': '175',
+        //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20191211/yGJPwQANqKOHCqWS.jpeg',
+        //   'goods_name': '夜间保湿修护唇膜 补水保湿 20克',
+        //   'stock_sum': '4',
+        //   'prd_price': '59.00',
+        //   'money': '10.00',
+        //   'score': '100',
+        //   'start_time': '2019-12-25 14:10:31',
+        //   'end_time': '2020-01-02 14:10:33',
+        //   'is_on_sale': '1',
+        //   'is_delete': '0'
+        // },
+        // {
+        //   'goods_id': '1156',
+        //   'integral_goods_id': '176',
+        //   'goods_img': 'http://mpdevimg2.weipubao.cn/upload/4748160/image/20190929/5b641c86N5b3f6ae6.jpg',
+        //   'goods_name': '原味泡芙',
+        //   'stock_sum': '132',
+        //   'prd_price': '200.00',
+        //   'money': '22.00',
+        //   'score': '34',
+        //   'start_time': '2019-12-29 14:51:47',
+        //   'end_time': '2020-01-09 14:51:53',
+        //   'is_on_sale': '1',
+        //   'is_delete': '0'
+        // }
       ],
       isShowTable: false,
       selectData: [], // 添加活动弹窗选中数据
@@ -381,14 +381,14 @@ export default {
         console.log(this.tableData, this.moduleData.integral_goods)
         let arr = []
         this.tableData.forEach((item, index) => {
-          arr.push(item.goodsId)
+          arr.push(item.integralGoodsId)
         })
         console.log(this.moduleData.integral_goods, arr)
         this.$refs.addActTable.clearSelection()
         if (this.moduleData.integral_goods.length) {
           arr.forEach((item, index) => {
             this.moduleData.integral_goods.forEach((itemC, indexC) => {
-              if (item === itemC.goodsId) {
+              if (item === itemC.integral_goods_id) {
                 this.$refs.addActTable.toggleRowSelection(this.tableData[index], true)
               }
             })
@@ -409,7 +409,27 @@ export default {
     },
     // 添加活动弹窗确定事件
     handleToSure () {
-      this.moduleData.integral_goods = this.selectData
+      console.log(this.selectData)
+      let arr = []
+      this.selectData.forEach((item, index) => {
+        let obj = {
+          'goods_id': item.goodsId,
+          'integral_goods_id': item.integralGoodsId,
+          'goods_img': item.goodsImg,
+          'goods_name': item.goodsName,
+          'stock_sum': item.stockSum,
+          'prd_price': item.prdPrice,
+          'money': item.money,
+          'score': item.score,
+          'start_time': item.startTime,
+          'end_time': item.endTime,
+          'is_on_sale': item.isOnSale,
+          'is_delete': item.isDelete
+        }
+        arr.push(obj)
+      })
+      console.log(arr)
+      this.moduleData.integral_goods = arr
       this.dialogVisible = false
     },
     // 搜索点击
@@ -576,6 +596,8 @@ export default {
   }
 }
 .dialogMain {
+  height: 425px;
+  overflow-y: auto;
   .goodsInfo {
     display: flex;
     img {

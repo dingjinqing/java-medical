@@ -72,6 +72,8 @@ export const en = {
   suitGoodsTip2: 'Commodity',
   suitGoodsTip3: 'Businesses',
   suitGoodsTip4: 'Platform',
+  suitGoodsTip5: 'Merchant classification',
+  suitGoodsTip6: 'Unselected',
   useExplain: 'Instructions',
   useExplainTip: 'Please enter instructions',
   useExplainTip2: 'No instructions for use',
@@ -85,12 +87,12 @@ export const en = {
       name: 'Add product category',
       value: '2',
       num: ''
-    },
-    {
-      name: 'Add platform category',
-      value: '3',
-      num: ''
     }
+    // {
+    //   name: 'Add platform category',
+    //   value: '3',
+    //   num: ''
+    // }
   ],
 
   save: 'Save',

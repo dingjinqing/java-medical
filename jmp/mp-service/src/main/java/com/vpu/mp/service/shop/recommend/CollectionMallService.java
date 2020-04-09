@@ -98,7 +98,7 @@ public class CollectionMallService extends ShopMallBaseService {
 		if(skuProductList.size()>0) {
 			param.setSkuProductList(skuProductList);
 			param.setUserOpenId(openId);
-			SendCollectBean bean=new SendCollectBean(1, param,getShopId());
+			SendCollectBean bean=new SendCollectBean(1, param,getShopId(),null);
 			saas.taskJobMainService.dispatchImmediately(bean,SendCollectBean.class.getName(),getShopId(),TaskJobEnum.WX_ADDSHOPPINGLIST.getExecutionType());
 			//WxOpenResult result = addshoppinglistAdd(param);
 			//return result.isSuccess();
@@ -134,7 +134,7 @@ public class CollectionMallService extends ShopMallBaseService {
 			skuProductList.add(skuProduct);
 		}
 		param.setSkuProductList(skuProductList);
-		SendCollectBean bean=new SendCollectBean(2, param,getShopId());
+		SendCollectBean bean=new SendCollectBean(2, param,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendCollectBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTORDER.getExecutionType());
 //		WxOpenResult result = addshoppinglistDel(param);
 //		return result.isSuccess();

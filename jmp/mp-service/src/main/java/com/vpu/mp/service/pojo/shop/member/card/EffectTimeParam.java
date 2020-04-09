@@ -4,7 +4,11 @@ import java.sql.Timestamp;
 
 import lombok.Builder;
 import lombok.Data;
-
+/**
+ * 
+ * @author 黄壮壮
+ * 用户卡有效时间入参参数
+ */
 @Data
 public class EffectTimeParam {
 	/** 有效时间戳 - 起始时间 */

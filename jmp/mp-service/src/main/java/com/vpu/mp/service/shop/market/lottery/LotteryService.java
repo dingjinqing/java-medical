@@ -378,6 +378,7 @@ public class LotteryService extends ShopBaseService {
             //分享次数
             Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE);
             Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
+            Integer usedShareTimes= shareRecord != null ? shareRecord.getUseShareTimes() : 0;
             if (shareTimes >usedShareRecordTimes&& usedShareRecordTimes < lottery.getShareChances()) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);

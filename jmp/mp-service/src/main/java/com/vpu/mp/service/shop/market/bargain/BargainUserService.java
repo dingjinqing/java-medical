@@ -88,7 +88,7 @@ public class BargainUserService extends ShopBaseService{
 
 	public Workbook exportBargainUserList(BargainUserListQueryParam param, String lang){
 		SelectWhereStep<? extends Record> select = db().select(
-				BARGAIN_USER_LIST.ID,USER.USERNAME,USER.MOBILE,BARGAIN_USER_LIST.CREATE_TIME,BARGAIN_USER_LIST.BARGAIN_MONEY
+				BARGAIN_USER_LIST.USER_ID,USER.USERNAME,USER.MOBILE,BARGAIN_USER_LIST.CREATE_TIME,BARGAIN_USER_LIST.BARGAIN_MONEY
 		).
 				from(BARGAIN_USER_LIST).
 				leftJoin(USER).on(BARGAIN_USER_LIST.USER_ID.eq(USER.USER_ID));
@@ -244,16 +244,15 @@ public class BargainUserService extends ShopBaseService{
     private BigDecimal getAbnormalBargainMoney(BargainRecord bargain,BargainRecordRecord bargainRecord,int userId){
         BigDecimal bargainMoney;
         BargainUserListRecord firstBargain;
+        BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getFloorPrice() : BigDecimal.ZERO);
         if(bargainRecord.getUserId() == userId && (firstBargain = getFirstUserBargain(userId,bargainRecord.getId())) != null){
             //给自己砍的第二次，与第一次相同金额(翻倍)，或者剩下的全砍掉
-            BigDecimal remainMoney = bargainRecord.getGoodsPrice().subtract(bargainRecord.getBargainMoney()).subtract(bargain.getFloorPrice().compareTo(BigDecimal.ZERO) > 0 ? bargain.getFloorPrice() : BigDecimal.ZERO);
-            if(remainMoney.compareTo(firstBargain.getBargainMoney()) > 0){
-                bargainMoney = firstBargain.getBargainMoney();
-            }else{
-                bargainMoney = remainMoney;
-            }
+            bargainMoney = firstBargain.getBargainMoney();
         }else{
             bargainMoney = getFixedBargainMoney(bargain);
+        }
+        if(remainMoney.compareTo(bargainMoney) < 0){
+            bargainMoney = remainMoney;
         }
 
         return bargainMoney;

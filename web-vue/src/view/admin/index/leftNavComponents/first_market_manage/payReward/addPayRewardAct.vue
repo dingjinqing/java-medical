@@ -22,7 +22,7 @@
               :key="index"
             >
               <img
-                :src="item.src"
+                :src="$imageHost + item.src"
                 alt=""
                 style="height: 100%; width: 100%;"
               >
@@ -110,27 +110,30 @@
               <div>
                 <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label=1>{{$t('payReward.allGoods')}}</el-radio>
-                  <el-radio :label=2>{{$t('payReward.partOfGoods')}}</el-radio>
+                  <el-radio :label=0>{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label=1>{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
-                  v-if="params.goodsAreaType === 2"
+                  v-if="params.goodsAreaType === 1"
                 >
                   <div
                     class="noneBlockList"
                     v-for="(item,index) in noneBlockDiscArr"
                     :key="index"
-                    @click="hanldeToAddGoodS(index)"
                   >
-                    <div class="noneBlockLeft">
+                    <div
+                      class="noneBlockLeft"
+                      @click="hanldeToAddGoodS(index)"
+                    >
                       <img :src="$imageHost+'/image/admin/icon_jia.png'">
                       {{item.name}}
                     </div>
                     <div
                       v-if="item.num"
                       class="noneBlockRight"
-                    >{{$t('payReward.selectedClassfication')}}{{item.num}}{{$t('payReward.selectedNumber')}}</div>
+                      @click="hanldeToShowGoodS(index)"
+                    >{{$t('payReward.selectedClassfication')[index]}} {{item.num}}{{$t('payReward.selectedNumber')[index]}}</div>
                   </div>
                 </div>
               </div>
@@ -273,7 +276,7 @@
                     <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
-                      style="font-size:12px"
+                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                     >
                       <span v-if="itemC.scoreNumber === 0">领取</span>
                       <div v-if="itemC.scoreNumber !== 0">
@@ -348,7 +351,7 @@
                     <div class="coupon_center_number">剩余{{itemD.surplus}}张</div>
                     <div
                       class="coupon_list_bottom"
-                      style="font-size:12px"
+                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
                     >
                       <span v-if="itemD.scoreNumber === 0">领取</span>
                       <div v-if="itemD.scoreNumber !== 0">
@@ -622,6 +625,7 @@
       @result='getGoodsIdFromChoosingGoods'
       :tuneUpChooseGoods='controlChoosingGoodsDialog'
       :chooseGoodsBack='choosingGoodsDateTmpContainer'
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
     />
 
     <!-- 选择支付奖励 - 自定义 - 链接弹窗 -->
@@ -737,15 +741,15 @@ export default {
       AtreeType: null,
       idInfo: null,
       carouselList: [
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift1.jpg' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift2.jpg' },
-        { src: 'http://mpdevimg2.weipubao.cn/image/admin/pay_gift3.jpg' }
+        { src: '/image/admin/pay_gift1.jpg' },
+        { src: '/image/admin/pay_gift2.jpg' },
+        { src: '/image/admin/pay_gift3.jpg' }
       ],
       options: [],
       noneBlockDiscArr: [
         { name: '选择商品', num: 0 },
-        { name: '选择商家分类', num: 0 },
-        { name: '选择平台分类', num: 0 }
+        { name: '选择商家分类', num: 0 }
+        // { name: '选择平台分类', num: 0 }
       ],
       controlChoosingGoodsDialog: false,
       userDialogFlag: null,
@@ -756,6 +760,7 @@ export default {
       tuneUpSelectLinkDialog: false,
       tuneUpImageDialog: false,
       isShowChoosingGoodsDialog: false,
+      isOnlyShowChooseGoods: false,
       showCouponDialog2: false,
       disCouponIdList: [],
       addCouponVisible: false, // 优惠券
@@ -771,7 +776,7 @@ export default {
         startTime: '',
         endTime: '',
         actFirst: '', //  优先级
-        goodsAreaType: 1, // 商品范围类型
+        goodsAreaType: 0, // 商品范围类型
         goodsIds: '', // 商品id
         goodsCatIds: '', // 商品平台分类
         goodsSortIds: '', // 商品商家分类
@@ -949,6 +954,38 @@ export default {
       switch (index) {
         case 0:
           // 商品弹窗显示
+          this.isOnlyShowChooseGoods = false
+          this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
+          this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
+          break
+        case 1:
+          this.AtreeType = 1
+          console.log('商家分类')
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
+          this.classFlag = 1
+          this.shopAndPlatformBackDataArr = this.shopCategoryIds
+          break
+        case 2:
+          this.AtreeType = 2
+          console.log('平台分类')
+          this.isShowBusinessPlatformDialog = !this.isShowBusinessPlatformDialog
+          // this.businessDialogVisible = true
+          this.classFlag = 2
+          this.shopAndPlatformBackDataArr = this.platformCategoryIds
+          break
+      }
+    },
+
+    // 点击会员专享商品出现的添加类弹窗汇总
+    hanldeToShowGoodS (index) {
+      console.log('回显')
+      this.userDialogFlag = '1'
+      console.log(index)
+      switch (index) {
+        case 0:
+          // 商品弹窗显示
+          this.isOnlyShowChooseGoods = true
           this.controlChoosingGoodsDialog = !this.controlChoosingGoodsDialog
           this.choosingGoodsDateTmpContainer = this.choosingGoodsDateFlag1
           break
@@ -1146,6 +1183,9 @@ export default {
         }
       })
     },
+    gotoHome () {
+      this.$router.push('/admin/home/main/payReward')
+    },
 
     // 新增支付有礼活动
     addActivity (requestParams) {
@@ -1153,6 +1193,7 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.$message.success('保存成功')
+          this.gotoHome()
         } else {
           this.$message.warning('保存失败')
         }
@@ -1174,6 +1215,7 @@ export default {
       updatePayReward(requestParams).then(res => {
         if (res.error === 0) {
           this.$message.success('更新成功')
+          this.gotoHome()
         } else {
           this.$message.warning('更新失败')
         }
@@ -1525,11 +1567,11 @@ export default {
               .coupon_list_bottom {
                 height: 24px;
                 line-height: 30px;
+                font-size: 12px;
                 border-bottom-left-radius: 8px;
                 border-bottom-right-radius: 8px;
                 color: #fff;
                 background: #f66;
-                background-image: url("http://mpdevimg2.weipubao.cn/image/admin/coupon_border.png");
                 background-repeat: repeat-x;
               }
             }

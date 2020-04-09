@@ -55,10 +55,9 @@ export function changeShipping (data) {
 }
 
 // 分享
-export function shareShipping (data) {
+export function shareShipping (ruleId) {
   return service({
-    url: '/api/admin/market/free/shipping/share',
-    method: 'post',
-    data: data
+    url: `/api/admin/market/free/shipping/share/${ruleId}`,
+    method: 'get'
   })
 }

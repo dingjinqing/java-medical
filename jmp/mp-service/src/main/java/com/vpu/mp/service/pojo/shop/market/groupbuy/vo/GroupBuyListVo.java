@@ -29,7 +29,10 @@ public class GroupBuyListVo {
      * 商品名称
      */
     private String goodsName;
-
+    /**
+     * 优先级
+     */
+    private Integer level;
 
     /**
      * 有效期

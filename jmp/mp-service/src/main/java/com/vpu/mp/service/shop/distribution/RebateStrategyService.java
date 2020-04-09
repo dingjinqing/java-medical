@@ -26,8 +26,8 @@ import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
 
 public class RebateStrategyService extends ShopBaseService{
 
-    public static final Byte STATUS_NORMAL = 1;
-    public static final Byte STATUS_DISABLED = 0;
+    public static final Byte STATUS_NORMAL = 0;
+    public static final Byte STATUS_DISABLED = 1;
 	
 	/**
 	 * 添加返利策略

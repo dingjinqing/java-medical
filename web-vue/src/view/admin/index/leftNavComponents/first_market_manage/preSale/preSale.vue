@@ -1,7 +1,6 @@
 <!--
 * 定金膨胀活动列表
-*
-* @author 郑保乐
+* @author 赵鑫
 -->
 <template>
   <div class="container">
@@ -21,6 +20,7 @@
               placeholder="活动名称"
               style="width:180px"
               size="small"
+              clearable
             ></el-input>
           </div>
           <div class="money_paytime">
@@ -32,6 +32,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -42,6 +43,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
           </div>
@@ -56,6 +58,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -66,6 +69,7 @@
               size="small"
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
+              clearable
             >
             </el-date-picker>
           </div>
@@ -108,6 +112,9 @@
         >
           <template slot-scope="scope">
             {{scope.row.preStartTime}}<br>至<br>{{scope.row.preEndTime}}
+            <div v-if="scope.row.preStartTime2 && scope.row.preEndTime2">
+              {{scope.row.preStartTime2}}<br>至<br>{{scope.row.preEndTime2}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -117,7 +124,9 @@
           width="160"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            <div v-if="scope.row.presaleType === 0">
+              {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -208,7 +217,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-tickets"
+                  class="el-icon-s-unfold"
                   @click="receiveDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -219,7 +228,7 @@
               >
                 <span
                   style="font-size: 22px;"
-                  class="el-icon-document"
+                  class="el-icon-tickets"
                   @click="activityDetails(scope.row.id)"
                 ></span>
               </el-tooltip>
@@ -243,11 +252,20 @@
         @pagination="initDataList"
       />
     </div>
+
+    <!-- 分享弹窗 -->
+    <shareDialog
+      :show="showShareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="showShareDialog=false"
+    />
   </div>
 </template>
 <script>
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import pagination from '@/components/admin/pagination/pagination.vue'
+import shareDialog from '@/components/admin/shareDialog'
 // import { couldEdit, couldStop, couldStart, couldDelete, getNameById } from '@/components/admin/marketManage/status/status'
 import { getPageList, disablePreSale, sharePreSale, enablePreSale, deletePreSale } from '@/api/admin/marketManage/preSale'
 
@@ -255,7 +273,8 @@ export default {
 
   components: {
     statusTab,
-    pagination
+    pagination,
+    shareDialog
   },
 
   watch: {
@@ -280,7 +299,10 @@ export default {
         preEndTime: null
       },
       pageParams: {},
-      tableData: []
+      tableData: [],
+      showShareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: ''
     }
   },
   methods: {
@@ -301,14 +323,26 @@ export default {
     gotoAdd () {
       this.$router.push('/admin/home/main/presale/add')
     },
+    // 编辑活动
     gotoEdit (id) {
       console.log(12345)
       console.log(id, 'get id')
-      this.$router.push(`/admin/home/main/presale/edit/${id}`)
+      this.$router.push({
+        path: `/admin/home/main/presale/edit/${id}`,
+        query: {
+          id: id
+        }
+      })
     },
+    // 分享活动
     share (id) {
-      sharePreSale(id).then(r => {
-        // todo share
+      // alert(id)
+      sharePreSale(id).then(res => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+          this.showShareDialog = !this.showShareDialog
+        }
       })
     },
     // 停用活动
@@ -365,7 +399,12 @@ export default {
     // 领取明细
     receiveDetails (id) {
       console.log(id)
-      this.$router.push(`/admin/home/main/presale/order_detail/${id}`)
+      this.$router.push({
+        path: `/admin/home/main/presale/order_detail/${id}`,
+        query: {
+          id: id
+        }
+      })
     },
     // 活动明细
     activityDetails (id) {

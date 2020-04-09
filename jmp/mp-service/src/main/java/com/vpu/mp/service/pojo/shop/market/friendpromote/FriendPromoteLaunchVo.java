@@ -8,24 +8,24 @@ import lombok.Data;
  */
 @Data
 public class FriendPromoteLaunchVo {
-	/* 发起用户昵称 */
+	/** 发起用户昵称 */
 	private String username;
 	
-	/* 发起用户手机号 */
+	/** 发起用户手机号 */
 	private String mobile;
 	
-	/* 助力活动Id（用户发起） */
+	/** 助力活动Id（用户发起） */
 	private Integer id;
 	
-	/* 参与人数 */
+	/** 参与人数 */
 	private Integer joinNum;
 	
-	/* 助力次数 */
+	/** 助力次数 */
 	private Integer promoteTimes;
 	
-	/* 助力值 */
+	/** 助力值 */
 	private Integer promoteValue;
 	
-	/* 是否助力成功 0:未成功 1、2:成功 */
+	/** 是否助力成功 0:未成功 1、2:成功 */
 	private Integer promoteStatus;
 }

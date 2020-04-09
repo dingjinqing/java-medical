@@ -44,7 +44,7 @@
 .countdown > .count {
   display: inline-block;
   background: #fff;
-  width: 33rpx;
+  min-width: 33rpx;
   margin: 0 6rpx;
   border-radius: 6rpx;
   text-align: center;
@@ -54,4 +54,10 @@
 }
 .countdown > .text:last-child {
   margin-right: 0;
+}
+.act_left > .pre-sale{
+  font-size: 30rpx;
+  border-left: 1rpx solid #fff;
+  padding-left: 20rpx;
+  margin-left: 20rpx;
 }

@@ -170,8 +170,22 @@
             v-model="tradeProcessConfig.service_name"
           ></el-input>
           <span>{{$t('tradeConfiguration.servicenameshow')}} </span>
-          <span>{{$t('tradeConfiguration.udpateterm')}}</span>
-          <span>{{$t('tradeConfiguration.showexample')}}</span>
+          <span
+            class="eidt-term"
+            @click="handleTerm"
+          >{{$t('tradeConfiguration.udpateterm')}}</span>
+          <el-popover
+            placement="right"
+            width="220"
+            trigger="hover"
+          >
+            <el-image :src="src1"></el-image>
+            <el-button
+              slot="reference"
+              type="text"
+              style="font-size:13px"
+            >{{$t('tradeConfiguration.showexample')}}</el-button>
+          </el-popover>
         </div>
       </div>
       <div
@@ -255,6 +269,7 @@
           class="noneBlockList"
           @click="showBusClassDialog(2)"
           style="margin: 10px 0"
+          v-if="false"
         >
           <div class="noneBlockLeft">
             <img :src="src">
@@ -790,6 +805,7 @@ export default {
       serviceTerms: false,
       serviceChoose: null,
       src: `${this.$imageHost}/image/admin/icon_jia.png`,
+      src1: `${this.$imageHost}/image/admin/new_preview_image/service_config.jpg`,
       province: ``,
       district: ``,
       city: ``,
@@ -1175,6 +1191,12 @@ export default {
       this.showBind = false
       this.$refs[fromName].resetFields()
     },
+    // 编辑条款跳转
+    handleTerm () {
+      this.$route.push({
+        path: ''
+      })
+    },
     // 绑定物流公司
     bindCompany (fromName) {
       this.$refs[fromName].validate((valid) => {
@@ -1264,8 +1286,9 @@ export default {
         margin: 0 5px;
       }
       .onText {
-        margin-left: 20px;
+        margin-left: 15px;
         color: #999;
+        font-size: 12px;
       }
     }
 
@@ -1344,8 +1367,9 @@ export default {
     margin-top: 20px;
   }
   .onText {
-    margin-left: 20px;
+    margin-left: 15px;
     color: #999;
+    font-size: 12px;
   }
   .requiredInfo {
     .necessaryGoodsInfo {
@@ -1413,6 +1437,10 @@ export default {
         margin: 0 30px 0 20px;
       }
     }
+  }
+  .eidt-term {
+    color: #409eff;
+    margin: 0 10px;
   }
 }
 </style>

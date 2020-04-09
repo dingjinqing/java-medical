@@ -1,23 +1,23 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.overview.Tuple2;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductEffectVo;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewParam;
-import com.vpu.mp.service.pojo.shop.overview.commodity.ProductOverviewVo;
+import com.vpu.mp.service.pojo.shop.overview.commodity.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Locale;
+import java.util.Objects;
+
+import static com.vpu.mp.service.pojo.shop.order.OrderExportVo.LANGUAGE_TYPE_EXCEL;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 /**
  * author liufei
@@ -94,16 +94,69 @@ public class AdminCommodityStatisticsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/commoditystatistics/export2Excel")
     public void export2Excel(@RequestBody @Validated ProductEffectParam param, HttpServletResponse response) {
-        try {
-            Workbook workbook = shop().statisticsService.export2Excel(param);
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            String fileName = "商品效果" + System.currentTimeMillis() + ".xlsx";
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setLocale(Locale.ENGLISH);
-            workbook.write(response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Workbook workbook = shop().statisticsService.export2Excel(param);
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.GOODS_EFFECT_FILE_NAME, LANGUAGE_TYPE_EXCEL, "messages");
+        export2Excel(workbook, fileName, response);
     }
 
+    /**
+     * Product ranking.商品排行
+     *
+     * @param param the param
+     */
+    @PostMapping("/api/admin/commoditystatistics/productRanking")
+    public JsonResult productRanking(@RequestBody @Validated RankingParam param) {
+        if (Objects.isNull(param.getStartTime()) || Objects.isNull(param.getEndTime())) {
+            // 默认获取最近30天的数据
+            param.defaultValue();
+        }
+        return success(shop().statisticsService.getGoodsRanking(param));
+    }
+
+    @GetMapping("/api/admin/commoditystatistics/getDate/{unit}")
+    public JsonResult getDate(@PathVariable Byte unit) {
+        RankingParam param = new RankingParam();
+        LocalDate now = LocalDate.now();
+        switch (unit) {
+            case 7:
+                param.setStartTime(Date.valueOf(now.minusDays(7)));
+                break;
+            case 30:
+                param.setStartTime(Date.valueOf(now.minusDays(30)));
+                break;
+            default:
+                param.setStartTime(Date.valueOf(now.minusDays(1)));
+                break;
+        }
+        param.setEndTime(Date.valueOf(now));
+        return success(param);
+    }
+
+    /**
+     * 商品排行导出excel
+     *
+     * @param param    the param
+     * @param response the response
+     * @return
+     */
+    @PostMapping("/api/admin/commoditystatistics/rankExport")
+    public void rankExport(@RequestBody @Validated RankingParam param, HttpServletResponse response) {
+        if (Objects.isNull(param.getStartTime()) || Objects.isNull(param.getEndTime())) {
+            // 默认获取最近30天的数据
+            param.defaultValue();
+        }
+        if (Objects.isNull(param.getUnit())) {
+            // 默认粒度为天
+            param.setUnit(BYTE_ZERO);
+        }
+        String message;
+        if (BYTE_ZERO.equals(param.getFlag())) {
+            message = JsonResultMessage.GOODS_RANKING_SALES_TOP10;
+        } else {
+            message = JsonResultMessage.GOODS_RANKING_SALES_ORDER_TOP10;
+        }
+        Workbook workbook = shop().statisticsService.rankExport(param);
+        String fileName = Util.translateMessage(getLang(), message, LANGUAGE_TYPE_EXCEL, "messages");
+        export2Excel(workbook, fileName, response);
+    }
 }

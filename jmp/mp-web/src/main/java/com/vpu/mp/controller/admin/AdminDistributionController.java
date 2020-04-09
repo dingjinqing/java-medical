@@ -11,6 +11,8 @@ import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.shop.ShopApplication;
+import org.hibernate.validator.constraints.pl.REGON;
+import org.jooq.types.UInteger;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -184,6 +186,22 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorGroupListVo> groupList = shop().distributorGroup.getDistributorGroupList(param);
 		return this.success(groupList);
 	}
+
+    /**
+     * 设置分销分组是否在小程序端展示
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/group/show")
+	public JsonResult showDistributionGroup(@RequestBody ShowDistributionGroupParam param){
+        int res = shop().distributorGroup.showDistributionGroup(param);
+        return this.success(res);
+    }
+    @PostMapping("/admin/distribution/group/get")
+    public JsonResult getGroupCfg(){
+        int groupCfg = shop().distributorGroup.getGroupCfg();
+        return this.success(groupCfg);
+    }
 	
 	/**
 	 * 添加分销员分组
@@ -278,6 +296,17 @@ public class AdminDistributionController extends AdminBaseController{
 		boolean res = shop().distributorGroup.addDistributorGroup(param);
 		return this.success(res);
 	}
+
+    /**
+     * 分销分组是否支持用户可选 1；支持 0：不支持
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distributor/group/select")
+	public JsonResult userCanSelect(@RequestBody GroupCanSelectParam param){
+        int res = shop().distributorGroup.userCanSelect(param);
+        return this.success(res);
+    }
 	
 	//分销员等级配置
 	/**
@@ -410,7 +439,51 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorListVo> distributorList = shop().distributorList.getPageList(param);
 		return this.success(distributorList); 
 	}
-	
+
+    /**
+     * 分销员编辑设置分组（支持批量设置）
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distrobutor/group/set")
+	public JsonResult setGroup(@RequestBody DistributorSetGroupParam param){
+        int res = shop().distributorList.setGroup(param);
+        return this.success(res);
+    }
+
+    /**
+     * 添加会员备注
+     * @param param
+     * @return
+     */
+    @PostMapping("/admin/distribution/distrobutor/userRemark/add")
+	public JsonResult addUserRemark(@RequestBody UserRemarkListVo param){
+        int res = shop().distributorList.addUserRemark(param);
+        return this.success(res);
+    }
+
+    /**
+     * 会员备注列表
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distrobutor/userRemark/list")
+	public JsonResult userRemarkList(@RequestBody UserRemarkListVo param){
+        List<UserRemarkListVo> userRemarkListVos = shop().distributorList.userRemarkList(param);
+        return this.success(userRemarkListVos);
+    }
+
+    /**
+     * 删除会员备注
+     * @param id
+     * @return
+     */
+    @GetMapping("/admin/distribution/distrobutor/userRemark/del")
+    public JsonResult delUserRemark(Integer id){
+        int res = shop().distributorList.delUserRemark(id);
+        return this.success(res);
+    }
+
 	/**
 	 * 分销员已邀请用户列表
 	 * @param param
@@ -432,6 +505,17 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().distributorList.delDistributor(userId);
 		return this.success(result);
 	}
+
+    /**
+     * 分销员设置邀请码
+     * @param param
+     * @return
+     */
+	@PostMapping("/admin/distribution/distributor/inviteCode/set")
+	public JsonResult setInviteCode(@RequestBody SetInviteCodeParam param){
+        int res = shop().distributorList.setInviteCode(param);
+        return this.success(res);
+    }
 	
 	/**
 	 * 佣金统计

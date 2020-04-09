@@ -81,14 +81,15 @@ public class GroupBuyListService extends ShopBaseService {
                 .from(GROUP_BUY_LIST)
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
-        SelectConditionStep<? extends Record> records = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
+        SelectConditionStep<? extends Record> records = db().select(
+                GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.NAME, GOODS.GOODS_NAME,GROUP_BUY_DEFINE.LEVEL, GROUP_BUY_DEFINE.ACTIVITY_TYPE,
                 GROUP_BUY_DEFINE.START_TIME, GROUP_BUY_DEFINE.END_TIME, GROUP_BUY_DEFINE.STATUS, GROUP_BUY_DEFINE.LIMIT_AMOUNT,
                 DSL.ifnull(table.field(GROUP_ORDER_NUM), 0).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_DEFINE)
                 .leftJoin(GOODS).on(GROUP_BUY_DEFINE.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(table).on(table.field(GROUP_BUY_LIST.ACTIVITY_ID).eq(GROUP_BUY_DEFINE.ID))
                 .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
-        records.orderBy(GROUP_BUY_DEFINE.ID.desc());
+        records.orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_DEFINE.ID.desc());
         this.buildOptions(param, records);
 
         PageResult<GroupBuyListVo> page = getPageResult(records, param.getCurrentPage(), param.getPageRows(), GroupBuyListVo.class);
@@ -223,7 +224,7 @@ public class GroupBuyListService extends ShopBaseService {
         return db().selectFrom(GROUP_BUY_LIST)
                 .where(GROUP_BUY_LIST.STATUS.ge(STATUS_ONGOING))
                 .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
-                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchOne();
+                .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchAny();
 
     }
 
@@ -256,7 +257,8 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("活动已经结束[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_STATUS_END).build();
             }
-            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId))
+                    .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
@@ -284,13 +286,14 @@ public class GroupBuyListService extends ShopBaseService {
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_EMPLOEES_MAX).build();
             }
             Integer count = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.IS_GROUPER.eq(isGrouper))
-                    .and(GROUP_BUY_LIST.USER_ID.eq(userId))
+                    .and(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS, STATUS_ONGOING)).fetchOneInto(Integer.class);
             if (!groupBuyRecord.getJoinLimit().equals(JOIN_LIMIT_N.shortValue())&&groupBuyRecord.getJoinLimit()<=count){
                 logger().debug("该活动参团个数已经达到上限[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOIN_LIMIT_MAX).build();
             }
-            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId)).and(GROUP_BUY_LIST.GROUP_ID.eq(groupId))
+            Integer joinFlag = db().selectCount().from(GROUP_BUY_LIST).where(GROUP_BUY_LIST.USER_ID.eq(userId))
+                    .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).and(GROUP_BUY_LIST.ACTIVITY_ID.eq(activityId))
                     .and(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING, STATUS_SUCCESS)).fetchOneInto(Integer.class);
             if (joinFlag>0){
                 logger().debug("你已参加过该团[activityId:{}]",activityId);

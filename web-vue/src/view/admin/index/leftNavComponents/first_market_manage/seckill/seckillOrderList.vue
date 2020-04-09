@@ -46,14 +46,22 @@
         ></el-table-column>
         <el-table-column
           :label="this.$t('seckill.username')"
-          prop="username"
           align="center"
-        ></el-table-column>
+        >
+          <template
+            slot-scope="scope"
+            @click="jumpUserInfo(scope.row.userId)"
+          >
+            <span>{{scope.row.username}}</span><br><span>{{scope.row.userMobile}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           :label="this.$t('seckill.consignee')"
-          prop="consignee"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span>{{scope.row.consignee}}</span><br><span>{{scope.row.mobile}}</span>
+          </template></el-table-column>
         <el-table-column
           :label="this.$t('seckill.moneyPaid')"
           prop="moneyPaid"
@@ -71,7 +79,11 @@
         @pagination="initDataList"
       />
     </div>
-
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+    />
   </div>
 </template>
 <script>
@@ -85,7 +97,8 @@ export default {
   components: {
     marketOrderSearchTab,
     pagination,
-    areaLinkage
+    areaLinkage,
+    exportForm: () => import('./seckillOrderExportConfirmDialog.vue')
   },
   data () {
     return {
@@ -93,24 +106,9 @@ export default {
       pageParams: {},
       requestParams: {},
       tableData: [],
-      // 订单状态
-      orderStatusArr: {
-        null: '全部订单',
-        1: '待付款',
-        2: '订单取消',
-        3: '订单关闭',
-        4: '代发货/待核销',
-        5: '已发货',
-        6: '已收货/已自提',
-        7: '订单完成',
-        8: '退货中',
-        9: '退货完成',
-        10: '退款中',
-        11: '退款完成',
-        12: '送礼完成'
-      },
       orderStatusMap: {},
-      createTime: '' // 创建时间
+      createTime: '', // 创建时间
+      showExportConfirm: false // 是否展示导出数据弹窗
     }
   },
   watch: {
@@ -131,10 +129,20 @@ export default {
       this.requestParams.currentPage = this.pageParams.currentPage
       this.requestParams.pageRows = this.pageParams.pageRows
       // 订单状态
-      if (this.requestParams.selectedOrderStatus) {
-        this.requestParams.orderStatus = []
-        this.requestParams.orderStatus.push(this.requestParams.selectedOrderStatus)
+      var arr = []
+      if (this.requestParams.selectedOrderStatus || this.requestParams.selectedOrderStatus === 0) {
+        arr[0] = this.requestParams.selectedOrderStatus
       }
+      if (arr !== []) {
+        this.requestParams.orderStatus = arr
+      }
+      // 下单时间
+      if (this.requestParams.createTimeStart) {
+        this.requestParams.createTimeEnd = this.requestParams.createTimeStart.replace('00:00:00', '23:59:59')
+      } else {
+        this.requestParams.createTimeEnd = null
+      }
+      console.log(this.requestParams)
       orderSeckillList(this.requestParams).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content.dataList)
@@ -146,8 +154,6 @@ export default {
 
     // 表格数据处理
     handleData (data) {
-      console.log('订单状态', this.orderStatusArr)
-
       data.forEach(item => {
         item.orderStatusText = this.orderStatusMap.get(item.orderStatus)
         item.name = this.$route.query.name
@@ -169,15 +175,7 @@ export default {
 
     // 导出数据
     exportDataList () {
-      this.$confirm('此操作将导出数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.success({ message: '导出成功' })
-      }).catch(() => {
-        this.$message.info({ message: '已取消导出' })
-      })
+      this.showExportConfirm = true
     }
 
   }

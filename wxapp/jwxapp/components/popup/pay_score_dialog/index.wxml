@@ -9,7 +9,8 @@
         <view class="info_top">
           <view class="info_tips">
             <image src="{{imageUrl}}image/wxapp/main_goods_notice.png"></image>
-            <text>{{i18n.$t(localePack,"pages.checkout.integralTips[0]",{canUse:useMaxScore === scoreMin || useMaxScore === 0 ? useMaxScore : ( useMaxScore < scoreMin ? scoreMin : scoreMin + '-' + useMaxScore) || "0"})}}</text>
+            <text wx:if="{{scoreProportion !==1000 }}">{{i18n.$t(localePack,"pages.checkout.integralTips[0]",{canUse:useMaxScore === scoreMin || useMaxScore === 0 ? useMaxScore : ( useMaxScore < scoreMin ? scoreMin : scoreMin + '-' + useMaxScore) || "0"})}}</text>
+            <text wx:else>{{i18n.$t(localePack,"pages.checkout.integralTips[9]",{canUse:useMaxScore === scoreMin || useMaxScore === 0 ? useMaxScore : ( useMaxScore < scoreMin ? scoreMin : scoreMin + '-' + useMaxScore) || "0"})}}</text>
           </view>
           <view class="input_box">
             <text>{{i18n.$t(localePack,"pages.checkout.pay")+i18n.$t(localePack,"pages.checkout.integral")}}</text>
@@ -18,7 +19,7 @@
           </view>
           <view class="info_total">
             <view>{{i18n.$t(localePack,"pages.checkout.my",{name:i18n.$t(localePack,"pages.checkout.integral")})}}：{{userScore}}</view>
-            <view>{{i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.cash")}}: {{scoreInPut / 100}}</view>
+            <view>{{i18n.$t(localePack,"pages.checkout.deduction")+i18n.$t(localePack,"pages.checkout.cash")}}: {{scoreInPut / scoreProportion}}</view>
           </view>
         </view>
     </view>

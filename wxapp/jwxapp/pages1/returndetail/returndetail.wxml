@@ -132,7 +132,7 @@
         <view wx:if="{{voucherImages.length > 0}}" class="order-block-detail-item">
           <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.returnDocument")}}：</text>
           <view class="details-item-content">
-            <block wx:for="{{voucherImages}}">
+            <block wx:for="{{voucherImages}}" wx:key="key">
               <image class="details-item-img" src="{{imageUrl + item}}"></image>
             </block>
           </view>
@@ -176,10 +176,16 @@
           <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
           <text>{{orderInfo.money}}元</text>
         </view>
-        <view class="order-block-detail-item">
-          <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
-          <text wx:if="{{refundStatus == 5}}">{{orderInfo.shippingFee}}元</text>
-          <text wx:else>{{orderInfo.canReturnShippingFee}}元</text>
+        <view class="order-block-detail-item" wx:if="{{(returnType == 0 && refundStatus == 4) || refundStatus == 5}}">
+          <!-- 运费金额展示 -->
+          <block wx:if="{{refundStatus == 5}}">
+            <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
+            <text>{{orderInfo.shippingFee}}元</text>
+          </block>
+          <block wx:elif="{{returnType==0 && refundStatus == 4}}">
+            <text class="details-item-title">{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
+            <text>{{orderInfo.canReturnShippingFee}}元</text>
+          </block>
         </view>
         <!-- 0	'协商一致退款'
         1	'未按约定时间发货',
@@ -222,7 +228,7 @@
         </view>
       </view>
     </view>
-    <view class="customer-wrap">
+    <view class="customer-wrap" wx:if="{{orderInfo.returnService === 'undefined' || orderInfo.returnService == 1}}">
       <button open-type="contact" class="customer-btn" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.afterSale.contactCustomer")}}</button>
     </view>
   </block>

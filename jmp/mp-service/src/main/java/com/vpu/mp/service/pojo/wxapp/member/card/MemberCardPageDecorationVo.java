@@ -6,6 +6,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author: 王兵兵
  * @create: 2019-11-20 14:49
@@ -18,7 +20,8 @@ public class MemberCardPageDecorationVo {
      *-1未领取， 1已领取， 2过期= ， 3停用,4已达到领取上限，5无库存
      */
     private Byte status = 1;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Integer id;
     private Byte activation;
     private String bgColor;
     private String bgImg;
@@ -38,5 +41,11 @@ public class MemberCardPageDecorationVo {
     private Integer limit;
     private Integer stock;
     private String shipImg;
+    /**
+     * 限次卡门店使用次数
+     */
+    private Integer count;
+
+    private Byte hiddenCard=0;
 
 }

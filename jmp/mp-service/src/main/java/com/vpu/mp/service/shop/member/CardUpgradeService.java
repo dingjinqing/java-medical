@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.shop.member.dao.CardUpgradeDao;
 
 /**
@@ -15,10 +18,21 @@ import com.vpu.mp.service.shop.member.dao.CardUpgradeDao;
 @Service
 public class CardUpgradeService extends ShopBaseService{
 	@Autowired
-	private CardUpgradeDao cardUpgradeDao;
+	private CardUpgradeDao dao;
 	public void recordCardUpdateGrade(Integer userId,MemberCardRecord oldCard, MemberCardRecord newCard,String option) {
 		logger().info("保存会员卡升级信息");
-		cardUpgradeDao.insert(userId,oldCard,newCard,option);
+		dao.insert(userId,oldCard,newCard,option);
+	}
+	
+	
+	
+	/**
+	 * 获取用户升降级记录
+	 * @return 
+	 */
+	public PageResult<CardUpgradeVo> getGradeList(SearchCardParam param) {
+		logger().info("查询会员卡升级信息");
+		return dao.getGradeList(param);
 	}
 
 }

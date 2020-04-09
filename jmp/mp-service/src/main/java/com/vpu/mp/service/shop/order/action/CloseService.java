@@ -1,14 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
-import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -27,13 +19,19 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.record.OrderActionService;
-
+import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -60,6 +58,9 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 
     @Autowired
     private ReturnMethodService returnMethod;
+
+    @Autowired
+    private CouponService coupon;
 
 	@Override
 	public OrderServiceCode getServiceCode() {
@@ -89,7 +90,10 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 				returnOrder(order);
 				//TODO 好友代付退
 				orderInfo.setOrderstatus(order.getOrderSn(), OrderConstant.ORDER_CLOSED);
-				//操作记录
+                //退优惠券
+                if(BigDecimalUtil.compareTo(order.getDiscount() , null) > 0) {
+                    coupon.releaserCoupon(order.getOrderSn());
+                }
 
 			});
 		} catch (Exception e) {
@@ -202,7 +206,7 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
 		}
 		//金额换算成积分
 		Integer score = BigDecimalUtil.multiplyOrDivide(
-				BigDecimalPlus.create(new BigDecimal(OrderConstant.TUAN_FEN_RATIO), Operator.multiply),
+				BigDecimalPlus.create(new BigDecimal(order.getScoreProportion()), Operator.multiply),
 				BigDecimalPlus.create(money,null)
 				).intValue();
 
@@ -239,7 +243,6 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
             param.setOrderSn(order.getOrderSn());
             ExecuteResult result = execute(param);
             if(result == null || result.isSuccess()) {
-                //TODO 退优惠券
                 logger().info("订单自动任务,关闭订单成功,orderSn:{}", order.getOrderSn());
             }else {
                 logger().error("订单自动任务,关闭订单失败,orderSn:{},错误信息{}{}", order.getOrderSn(), result.getErrorCode().toString() , result.getErrorParam());

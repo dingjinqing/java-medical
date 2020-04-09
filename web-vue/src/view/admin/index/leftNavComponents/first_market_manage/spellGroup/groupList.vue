@@ -1,3 +1,6 @@
+<!--
+*** 多人拼团-列表页面
+-->
 <template>
   <div class="content">
     <div class="main">
@@ -55,12 +58,18 @@
           prop="goodsName"
           :label="$t('groupBuy.goodsName')"
           align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="level"
+          :label="$t('groupBuy.activtiyLevel')"
+          align="center"
         >
         </el-table-column>
         <el-table-column
           prop="vaildDate"
           :label="$t('groupBuy.validDate')"
           align="center"
+          width="160"
         >
           <template slot-scope="scope">
             {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
@@ -206,10 +215,10 @@
 
     <!-- 分享弹窗 -->
     <shareDialog
-      :show="shareDialog"
+      :show="showShareDialog"
       :imgPath="shareImg"
       :pagePath="sharePath"
-      @close="shareDialog=false"
+      @close="showShareDialog=false"
     />
 
   </div>
@@ -224,7 +233,8 @@ import {
   changeStatusActivity,
   deleteGroupBuyActivity,
   getGroupBuyDetail,
-  groupBuyList
+  groupBuyList,
+  shareActivity
 } from '@/api/admin/marketManage/spellGroup.js'
 
 export default {
@@ -249,7 +259,7 @@ export default {
       editData: {},
       isEdite: true,
       loading: false,
-      shareDialog: false, // 分享弹窗
+      showShareDialog: false, // 分享弹窗
       shareImg: '',
       sharePath: ''
     }
@@ -449,7 +459,8 @@ export default {
     },
     refundFailureOrder (id) {
       console.log('跳转到拼团退款失败订单 id = ', id)
-      this.$router.push({ path: `/admin/home/main/spellGroup/refundFailureOrder/2/${id}` })
+      // this.$router.push({ path: `/admin/home/main/spellGroup/refundFailureOrder/2/${id}`, query: { id: id } })
+      this.$router.push({ path: `/admin/home/main/orders/pinGroup/fail`, query: { id: id, pinStatus: 2 } })
     },
     activityEffectData (id) {
       console.log('跳转到活动效果数据页面 id = ', id)
@@ -457,8 +468,18 @@ export default {
     },
 
     // 分享弹窗
-    shareActivity (id) {
-      this.shareDialog = !this.shareDialog
+    shareActivity (shareId) {
+      // this.shareDialog = !this.shareDialog
+      let obj = {
+        'id': shareId
+      }
+      shareActivity(obj).then(res => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+          this.showShareDialog = !this.showShareDialog
+        }
+      })
     }
 
   }

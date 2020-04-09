@@ -14,7 +14,7 @@ global.wxPage({
   onLoad: function (options) {
     this.requestList();
   },
-  requestList() {
+  requestList () {
     let currentPage = this.data.pageParams
       ? this.data.pageParams.currentPage
       : 1;
@@ -37,7 +37,7 @@ global.wxPage({
     );
   },
   // 触摸开始
-  handleTouchStart(e) {
+  handleTouchStart (e) {
     this.startX = e.touches[0].clientX;
     let dataIdx = e.currentTarget.dataset.data_idx;
     let itemIdx = e.currentTarget.dataset.item_idx;
@@ -49,7 +49,7 @@ global.wxPage({
     });
   },
   // 触摸移动
-  handleTouchMove(e) {
+  handleTouchMove (e) {
     var touch = e.touches[0];
     let dataIdx = e.currentTarget.dataset.data_idx;
     let itemIdx = e.currentTarget.dataset.item_idx;
@@ -75,7 +75,7 @@ global.wxPage({
     });
   },
   // 触摸结束
-  handleTouchEnd(e) {
+  handleTouchEnd (e) {
     let dataIdx = e.currentTarget.dataset.data_idx;
     let itemIdx = e.currentTarget.dataset.item_idx;
     let target = `dataList[${dataIdx}][${itemIdx}].x`;
@@ -88,7 +88,7 @@ global.wxPage({
     });
   },
   // 格式化数据
-  formatData(dataList) {
+  formatData (dataList) {
     let newDataList = JSON.parse(JSON.stringify(dataList))
     newDataList.map(item => {
       item.cardTypeName = this.getTypeName(item.cardType);
@@ -101,7 +101,7 @@ global.wxPage({
     return newDataList;
   },
   // 获取卡类型
-  getTypeName(cardType) {
+  getTypeName (cardType) {
     switch (cardType) {
       case 0:
         return '普通卡';
@@ -112,7 +112,7 @@ global.wxPage({
     }
   },
   // 获取会员卡背景
-  getCardBg(cardItem) {
+  getCardBg (cardItem) {
     console.log(cardItem);
     switch (cardItem.bgType) {
       case 0:
@@ -122,7 +122,7 @@ global.wxPage({
     }
   },
   // 获取会员卡停用/删除状态图片
-  getCardStopImage(cardItem) {
+  getCardStopImage (cardItem) {
     if (cardItem.cardType === 2 && cardItem.flag === 2) {
       return `${this.data.imageUrl}image/wxapp/card_stop.png`
     }
@@ -132,14 +132,14 @@ global.wxPage({
     return ``
   },
   // 获取会员卡过期时间
-  getCardExpireTime(cardItem) {
+  getCardExpireTime (cardItem) {
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
   },
   // 删除会员卡
-  delCard(e) {
+  delCard (e) {
     let card_no = e.currentTarget.dataset.card_no;
     util.showModal(
       '',
@@ -150,6 +150,7 @@ global.wxPage({
           '/api/wxapp/card/del',
           function (res) {
             if (res.error === 0) {
+              this.requestList();
             }
           },
           { card_no: card_no }
@@ -161,7 +162,7 @@ global.wxPage({
     );
   },
   // 查看会员卡详情
-  checkDetail(e) {
+  checkDetail (e) {
     console.log(111, this.data.dataList[e.currentTarget.dataset.data_idx][e.currentTarget.dataset.item_idx])
     let card_no = this.data.dataList[e.currentTarget.dataset.data_idx][e.currentTarget.dataset.item_idx].cardNo
     util.jumpLink(`pages/cardinfo/cardinfo?cardNo=${card_no}`, 'navigateTo')
@@ -180,7 +181,11 @@ global.wxPage({
     });
     this.requestList();
   },
-
+  // 点击立即续费
+  to_renew (e) {
+    // var card_no = e.currentTarget.dataset.card_no;
+    // util.jumpLink("/pages/usercardrenew/usercardrenew?card_no=" + card_no)
+  },
   /**
    * 用户点击右上角分享
    */

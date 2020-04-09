@@ -13,19 +13,20 @@ import com.vpu.mp.service.pojo.shop.member.score.ScoreFrontVo;
 import com.vpu.mp.service.pojo.shop.member.score.UserScoreSetValue;
 import com.vpu.mp.service.shop.decoration.MpDecorationService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.ShopCfg.SHOP_CFG;
 import static com.vpu.mp.db.shop.tables.UserScoreSet.USER_SCORE_SET;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_OFF;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUTTON_ON;
 /**
  * 积分配置Service
  *
@@ -102,10 +103,10 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			setScoreLogin(param.getScoreLogin());
 		}
 
-
+		setDiscount(String.valueOf(param.getDiscountHasShipping()));
         //签到送积分
 		byte signInScore = BUTTON_ON.equals(param.getSignInScore()) ? ONE:ZERO;
-		setSignScore(signInScore,param.getSignScore());
+		setSignScore(signInScore,param.getSignScore(),param.getSignInRules());
 		return result;
 	}
 
@@ -156,21 +157,11 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	/**
 	 * 更新设置签到积分
 	 */
-	private void setSignScore(Byte enable,String[] signScore) {
-	
-		String value=null;
-		UserScoreSetValue userScore = null;
-		if(NumberUtils.BYTE_ONE.equals(enable)) {
-			userScore = new UserScoreSetValue(enable,signScore);
-		}else {
-			userScore = getScoreValueThird(SIGN_IN_SCORE);
-			if(userScore != null){
-				userScore.setEnable(enable);
-			}
-		}	
-		value = Util.toJson(userScore);
-		deleteRecord(SIGN_IN_SCORE);
-		setSignInScore(userScore);
+	private void setSignScore(Byte enable,String[] signScore,Byte signInRules) {
+		signInRules=null==signInRules?ZERO:signInRules;
+		signScore=null==signScore?new String[] {"0"}:signScore;
+		UserScoreSetValue userScore=new UserScoreSetValue(enable, signScore, signInRules);
+		String value = Util.toJson(userScore);
 		setJsonObject(SIGN_IN_SCORE,enable,value);
 	}
 
@@ -192,8 +183,17 @@ public class ScoreCfgService extends BaseScoreCfgService {
 	 * 插入到数据库
 	 */
 	private void setJsonObject(String scoreName,Byte status,String value) {
-		this.db().insertInto(USER_SCORE_SET,USER_SCORE_SET.SCORE_NAME,USER_SCORE_SET.STATUS,USER_SCORE_SET.SET_VAL3)
-				.values(scoreName, status,value).execute();
+		UserScoreSetRecord record = db().selectFrom(USER_SCORE_SET).where(USER_SCORE_SET.SCORE_NAME.eq(scoreName)).fetchAny();
+		if(record!=null) {
+			record.setStatus(status);
+			record.setSetVal3(value);
+			int update = record.update();
+			logger().info("更新积分设置："+value+"。状态："+update);
+		}else {
+			int execute = this.db().insertInto(USER_SCORE_SET,USER_SCORE_SET.SCORE_NAME,USER_SCORE_SET.STATUS,USER_SCORE_SET.SET_VAL3)
+			.values(scoreName, status,value).execute();
+			logger().info("插入积分设置："+value+"。状态："+execute);
+		}
 	}
 
 	/**
@@ -307,8 +307,12 @@ public class ScoreCfgService extends BaseScoreCfgService {
 		}
 		
         // 处理签到积分
-		UserScoreSetValue userScore = getSignInScore();
-		if(userScore.getEnable()!=null && ONE == userScore.getEnable()) {
+		logger().info("处理签到积分");
+		UserScoreSetValue userScore = getScoreValueThird(SIGN_IN_SCORE);
+		if(null==userScore) {
+			userScore=new UserScoreSetValue(ZERO, new String[] {"0"}, ZERO);
+		}
+		if(userScore.getEnable()!=null && ONE.equals(userScore.getEnable())) {
 			vo.setSignInScore(BUTTON_ON);
 		}else {
 			vo.setSignInScore(BUTTON_OFF);
@@ -317,7 +321,8 @@ public class ScoreCfgService extends BaseScoreCfgService {
 
         vo.setSignScore(userScore.getScore());
         logger().info("处理签到数据成功");
-        
+        Byte signInRules = userScore.getSignInRules();
+        vo.setSignInRules(signInRules==null?ZERO:signInRules);
         // 模板名称
 		if(!StringUtils.isBlank(vo.getScorePageId())) {
 			XcxCustomerPageRecord xcxCustomerPage = mpDecoration.getPageById(Integer.parseInt(vo.getScorePageId()));
@@ -326,6 +331,10 @@ public class ScoreCfgService extends BaseScoreCfgService {
 			}
 		}
 		logger().info("模板名称处理成功");
+		Integer scoreProportion = getScoreProportion();
+		logger().info("积分兑换比查询："+scoreProportion);
+		vo.setScoreProportion(scoreProportion==null?100:scoreProportion);
+		vo.setDiscountHasShipping(Byte.valueOf(getDiscount()));
 		return vo;
 	}
 

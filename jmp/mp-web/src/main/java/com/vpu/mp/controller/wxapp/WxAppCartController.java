@@ -1,14 +1,11 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumVo;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
-import com.vpu.mp.service.pojo.wxapp.cart.WxAppSwitchCartProductsParam;
+import com.vpu.mp.service.pojo.wxapp.cart.*;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *  购物车
@@ -42,19 +42,12 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/add")
     public JsonResult addGoodsToCart(@RequestBody @Valid WxAppAddGoodsToCartParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        // 检查库存数量
-        Integer productNumber = shop().cart.getCartProductNumber(user.getUserId(), param.getPrdId())+param.getGoodsNumber();
-        // 检查商品合法性
-        ResultMessage resultMessage = shop().cart.checkProductNumber(param.getPrdId(),productNumber);
-        if (!resultMessage.getFlag()){
-            return fail(resultMessage);
+        param.setUserId(user.getUserId());
+        ResultMessage s = shop().cart.addGoodsToCart(param);
+        if (s.getFlag()){
+            return success();
         }
-        //检查商品活动
-        // 活动校验
-
-        //添加商品到购物车
-        shop().cart.addSpecProduct(user.getUserId(),param.getPrdId(),param.getGoodsNumber());
-        return success();
+        return fail(s);
     }
 
     /**
@@ -65,7 +58,7 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/remove")
     public JsonResult deleteCartById(@RequestBody @Valid WxAppRemoveCartProductParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        shop().cart.removeCartProductById(user.getUserId(),param.getRecId());
+        shop().cart.removeCartProductById(user.getUserId(),param.getCartId());
         return success();
     }
 
@@ -77,7 +70,7 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/change")
     public JsonResult changeGoodsNumber(@RequestBody @Valid WxAppChangeNumberParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        ResultMessage resultMessage = shop().cart.changeGoodsNumber(user.getUserId(), 0, param.getProductId(), param.getCartNumber());
+        ResultMessage resultMessage = shop().cart.changeGoodsNumber(user.getUserId(), 0, param.getCartId(),param.getProductId(), param.getCartNumber());
         if (!resultMessage.getFlag()){
             return fail(resultMessage);
         }
@@ -92,7 +85,7 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/removes")
     public JsonResult close(@RequestBody @Valid WxAppRemoveCartProductsParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        shop().cart.removeCartProductByIds(user.getUserId(),param.getRecIds());
+        shop().cart.removeCartProductByIds(user.getUserId(),param.getCartIds());
         return success();
     }
 
@@ -104,7 +97,22 @@ public class WxAppCartController extends WxAppBaseController {
     @PostMapping("/switch")
     public JsonResult checked(@RequestBody @Valid WxAppSwitchCartProductsParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        int flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getRecIds(),param.getIsChecked());
+        int flag = shop().cart.switchCheckedProduct(user.getUserId(), param.getCartIds(),param.getIsChecked());
+        if (flag>0){
+            return success();
+        }
+        return fail();
+    }
+
+    /**
+     *  切换选择活动
+     * @param param id
+     * @return
+     */
+    @PostMapping("/switch/activity")
+    public JsonResult checkedActivity(@RequestBody @Valid CartSwitchActivityParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        int flag = shop().cart.switchActivityGoods(user.getUserId(), param.getCartIds(),param.getActivityId(),param.getActivityType());
         if (flag>0){
             return success();
         }
@@ -116,9 +124,9 @@ public class WxAppCartController extends WxAppBaseController {
      * @return
      */
     @PostMapping("/goods/num")
-    public JsonResult cartGoodsNum(){
+    public JsonResult cartGoodsNum(@RequestBody @Valid CartGoodsNumParam param){
         WxAppSessionUser user = wxAppAuth.user();
-        Integer num = shop().cart.cartGoodsNum(user.getUserId());
+        Integer num = shop().cart.cartGoodsNum(user.getUserId(),param.getGoodsId());
         CartGoodsNumVo cartGoodsNumVo =new CartGoodsNumVo();
         cartGoodsNumVo.setGoodsNum(num==null?0:num);
         return success(cartGoodsNumVo);

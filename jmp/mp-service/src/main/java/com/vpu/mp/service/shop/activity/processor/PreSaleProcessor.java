@@ -10,6 +10,10 @@ import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
@@ -25,9 +29,13 @@ import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Record3;
+import org.jooq.Record4;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,18 +52,21 @@ import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 
 /**
+ * 预售
  * @author 李晓冰
  * @date 2019年11月01日
  */
 @Service
 @Slf4j
-public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor {
+public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,CreateOrderProcessor,ActivityCartListStrategy {
 
     @Autowired
     PreSaleProcessorDao preSaleProcessorDao;
 
     @Autowired
     OrderInfoService order;
+    @Autowired
+    private CartService cartService;
 
     /*****处理器优先级*****/
     @Override
@@ -108,6 +119,7 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         List<PreSalePrdMpVo> preSalePrdMpVos = goodsPreSaleInfo.getPreSalePrdMpVos();
 
         int goodsNum = 0;
+        int saleNumber = 0;
         List<PreSalePrdMpVo> newPreSalePrds = new ArrayList<>(prdMap.size());
         for (PreSalePrdMpVo preSalePrd : preSalePrdMpVos) {
             GoodsPrdMpVo goodsPrdMpVo = prdMap.get(preSalePrd.getProductId());
@@ -118,14 +130,16 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
             int stock = preSalePrd.getStock()>goodsPrdMpVo.getPrdNumber()? goodsPrdMpVo.getPrdNumber():preSalePrd.getStock();
             preSalePrd.setStock(stock);
             goodsNum+=stock;
+            saleNumber+=preSalePrd.getSaleNumber();
             preSalePrd.setPrdPrice(goodsPrdMpVo.getPrdRealPrice());
             newPreSalePrds.add(preSalePrd);
         }
         if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(goodsPreSaleInfo.getActState())) {
-            log.debug("小程序-商品详情-砍价商品数量已用完");
+            log.debug("小程序-商品详情-预售商品数量已用完");
             goodsPreSaleInfo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
         capsule.setGoodsNumber(goodsNum);
+        capsule.setGoodsSaleNum(saleNumber);
         goodsPreSaleInfo.setPreSalePrdMpVos(newPreSalePrds);
         capsule.setActivity(goodsPreSaleInfo);
     }
@@ -146,12 +160,19 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+        log.info("预售下单更新库存start");
         Map<Integer, Integer> updateParam = param.getBos().stream()
             .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
             .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
         if(updateParam.size() != 0){
             preSaleProcessorDao.updateStockAndSales(updateParam, order.getActivityId());
         }
+        log.info("预售下单更新库存end,data{}",updateParam);
     }
 
     @Override
@@ -207,5 +228,35 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
         vo.setBkReturnType(activityInfo.getReturnType());
         log.info("预售处理金额end");
         return result;
+    }
+
+    //*******************购物车***************/
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车-预售-开始");
+        //预购商品
+        List<Integer> productList = cartBo.getCartGoodsList().stream()
+                .filter(goods -> BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(goods.getGoodsRecord().getGoodsType()))
+                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
+        Map<Integer, List<Record5<Integer, Integer, Integer, Integer, BigDecimal>>> goodsPreSaleList = preSaleProcessorDao.getGoodsPreSaleList(productList, cartBo.getDate());
+        if (goodsPreSaleList!=null&&goodsPreSaleList.size()>0){
+            cartBo.getCartGoodsList().forEach(goods->{
+                if (goodsPreSaleList.get(goods.getProductId())!=null){
+                    log.info("购物车-预售商品-不可选中,不可购买");
+                    Record5<Integer, Integer,Integer, Integer, BigDecimal> record5s = goodsPreSaleList.get(goods.getProductId()).get(0);
+                    CartActivityInfo seckillProductInfo =new CartActivityInfo();
+                    seckillProductInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+                    seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
+                    seckillProductInfo.setProductPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
+                    goods.getCartActivityInfos().add(seckillProductInfo);
+                    goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                    goods.setBuyStatus(BaseConstant.NO);
+                    if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                        cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                    }
+                }
+            });
+        }
+        log.info("购物车-预售-结束");
     }
 }

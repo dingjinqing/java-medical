@@ -98,3 +98,45 @@
   height: 200rpx;
   margin-bottom: 20rpx;
 }
+.card-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+  margin-left: -8rpx;
+}
+.moren {
+  padding: 5rpx 20rpx;
+  font-size: 26rpx;
+  border-radius: 40rpx;
+  color: #fff;
+  border: 1px solid #fff;
+}
+.card_discount {
+  margin-bottom: 5rpx;
+  font-size: 26rpx;
+}
+.right_renew {
+  margin-top: 5rpx;
+  width: 130rpx;
+  height: 44rpx;
+  background: rgba(0, 0, 0, 0.1);
+  line-height: 44rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #fff;
+  border-radius: 10rpx;
+}
+.del_btn {
+  width: 120rpx;
+  height: 270rpx;
+  color: #fff;
+  background: #f66;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  border-radius: 10rpx;
+  right: -146rpx;
+}

@@ -101,7 +101,11 @@ public class BargainProcessorDao extends ShopBaseService {
         vo.setStock(bargainRecord.getStock());
         // 砍价活动表 免运费为1 不免运费为0,正好和前端相反
         vo.setFreeShip((byte) (bargainRecord.getFreeFreight()==1?0:1));
-        vo.setBargainJoinNum(getBargainJoinNum(activityId));
+        int bargainJoinNum = getBargainJoinNum(activityId);
+        if(bargainRecord.getInitialSales() != null && bargainRecord.getInitialSales() > 0 && saas.shop.account.getAccountInfoForId(getSysId()).getBaseSale() == 1){
+            bargainJoinNum += bargainRecord.getInitialSales();
+        }
+        vo.setBargainJoinNum(bargainJoinNum);
         return vo;
     }
 

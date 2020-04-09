@@ -47,10 +47,12 @@
         </el-table-column>
 
         <el-table-column
-          prop="validity"
           :label="$t('distribution.strategyValidity')"
           align="center"
         >
+          <template slot-scope="scope">
+            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -89,6 +91,7 @@
             <el-tooltip
               :content="$t('seckill.edit')"
               placement="top"
+              v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
             >
               <span
                 style="font-size: 22px;color: #5a8bff;"
@@ -97,8 +100,9 @@
               ></span>
             </el-tooltip>
             <el-tooltip
-              :content="$t('seckill.edit')"
+              :content="$t('seckill.delete')"
               placement="top"
+              v-if="scope.row.currentState !== 1"
             >
               <span
                 style="font-size: 22px;color: #5a8bff;"
@@ -109,7 +113,7 @@
             <el-tooltip
               :content="$t('seckill.stop')"
               placement="top"
-              v-if="scope.row.status === 1"
+              v-if="scope.row.currentState === 1 || scope.row.currentState === 2"
             >
               <span
                 style="font-size: 22px;color: #5a8bff;"
@@ -120,7 +124,7 @@
             <el-tooltip
               :content="$t('seckill.start')"
               placement="top"
-              v-if="scope.row.status === 0"
+              v-if="scope.row.currentState === 4"
             >
               <span
                 style="font-size: 22px;color: #5a8bff;"
@@ -186,14 +190,34 @@ export default {
           this.pageParams = res.content.page
           // 表格数据处理
           this.tableData.map((item, index) => {
-            item.validity = `${item.startTime}` + `至` + `${item.endTime}`
             if (item.status === 0) {
-              item.status = 1
+              item.status = 1 // 启用
             } else {
-              item.status = 0
+              item.status = 0 // 停用
+            }
+
+            item.fanliRatioRate = `${item.fanliRatio}` + `%`
+
+            // 状态判断
+            var startTime = new Date(item.startTime).getTime()
+            var endTime = new Date(item.endTime).getTime()
+            var nowTime = new Date().getTime()
+            if (item.status === 1) {
+              if ((nowTime >= startTime) && (nowTime <= endTime)) {
+                // 进行中
+                item.currentState = 1
+              } else if (nowTime < startTime) {
+                // 未开始
+                item.currentState = 2
+              } else if (nowTime > endTime) {
+                // 已过期
+                item.currentState = 3
+              }
+            } else {
+              // 已停用
+              item.currentState = 4
             }
             item.statusText = this.getActStatusString(item.currentState)
-            item.fanliRatioRate = `${item.fanliRatio}` + `%`
           })
         }
       })

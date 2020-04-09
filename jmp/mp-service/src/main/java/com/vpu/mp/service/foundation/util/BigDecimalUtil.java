@@ -300,6 +300,16 @@ public class BigDecimalUtil {
             return new BigDecimalPlus(bigDecimal, operator);
         }
 
+        /**
+         * 静态构造器(最后一个操作数)
+         *
+         * @param bigDecimal bigDecimal
+         * @return BigDecimalPlus
+         */
+        public static BigDecimalPlus create(BigDecimal bigDecimal) {
+            return new BigDecimalPlus(bigDecimal, null);
+        }
+
         private BigDecimalPlus toOperator(BigDecimalPlus bigDecimalPlus) {
             if (operator == null) {
                 throw new IllegalArgumentException("non-last parameter must be input operator");

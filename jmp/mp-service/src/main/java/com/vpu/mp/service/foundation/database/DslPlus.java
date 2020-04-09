@@ -107,6 +107,16 @@ public class DslPlus {
     }
 
     /**
+     * Group con cat field.默认逗号分隔
+     *
+     * @param field the field
+     * @return the field
+     */
+    public static Field<?> groupConCat(Field<?> field) {
+        return DSL.field("group_concat({0})", field);
+    }
+
+    /**
      * mysql CONCAT_WS(separator,str1,str2...)函数
      * @param separator 分隔符
      * @param fields 分割字段

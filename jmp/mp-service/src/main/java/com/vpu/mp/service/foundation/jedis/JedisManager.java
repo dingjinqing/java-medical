@@ -118,7 +118,11 @@ public class JedisManager {
 	 */
 	public void delete(Set<String> keys) {
 		try (Jedis jedis = getJedisPool().getResource()){
-			jedis.del(keys.toArray(new String[]{}));
+			for (String key:keys){
+				if (jedis.exists(key)){
+					jedis.del(key);
+				}
+			}
 		}
 	}
 
@@ -131,6 +135,17 @@ public class JedisManager {
 	public String get(String key) {
 		try (Jedis jedis = getJedisPool().getResource()){
 			return jedis.get(key);
+		}
+	}
+
+	/**
+	 * 命令用于检查给定 key 是否存在。
+	 * @param key key
+	 * @return true or false
+	 */
+	public Boolean exists(String key){
+		try (Jedis jedis = getJedisPool().getResource()){
+			return jedis.exists(key);
 		}
 	}
 

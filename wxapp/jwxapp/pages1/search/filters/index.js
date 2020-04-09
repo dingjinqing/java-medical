@@ -12,7 +12,7 @@ global.wxComponent({
     filterData:{
       type:Object,
       observer(val){
-        let {minPrice,maxPrice,sortId:selectedSort,brandIds:selectedBrands,labelIds:selectedLabels,activityTypes:selectedActTypes} = val
+        let {minPrice,maxPrice,sortIds:selectedSort,brandIds:selectedBrands,labelIds:selectedLabels,activityTypes:selectedActTypes} = val
         this.setData({
           minPrice,
           maxPrice,
@@ -45,7 +45,14 @@ global.wxComponent({
    */
   data: {
     showSortDialog:false,
-    showBrandDialog:false
+    showBrandDialog:false,
+    activityName:{
+      1:'多人拼团',
+      3:'砍价',
+      5:'秒杀',
+      6:'限时降价',
+      10:'定金膨胀'
+    }
   },
 
   /**
@@ -68,7 +75,7 @@ global.wxComponent({
       this.setData({
         minPrice: null,
         maxPrice: null,
-        selectedSort: null,
+        selectedSort: [],
         selectedBrands: [],
         selectedLabels: [],
         selectedActTypes: []
@@ -88,13 +95,14 @@ global.wxComponent({
       let { sortId } = e.detail.sortId ? e.detail : e.currentTarget.dataset
       let selectedSort = this.data.selectedSort
       if(sortId === selectedSort){
-        selectedSort = null
+        selectedSort = []
       } else {
-        selectedSort = sortId
+        selectedSort = [sortId]
       }
       this.setData({
         selectedSort
       })
+      console.log(selectedSort)
     },
     // 选择品牌
     chooseBrands(e){
@@ -109,6 +117,17 @@ global.wxComponent({
       }
       this.setData({ selectedBrands })
       console.log(this.data.selectedBrands)
+    },
+    chooseActivity(e){
+      let {activityType} = e.currentTarget.dataset
+      let selectedActTypes = this.data.selectedActTypes
+      let idx = selectedActTypes.indexOf(activityType)
+      if (idx === -1) {
+        selectedActTypes.push(activityType)
+      } else {
+        selectedActTypes.splice(idx,1)
+      }
+      this.setData({ selectedActTypes })
     },
     // 选择标签
     chooseLabels(e){

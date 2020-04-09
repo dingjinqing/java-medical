@@ -34,6 +34,7 @@ import com.vpu.mp.service.shop.market.goupbuy.GroupBuyListService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.action.base.OrderOperationJudgment;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -100,6 +101,9 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
 
     @Autowired
     private PreSaleProcessorDao preSaleProcessorDao;
+
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
 
     /**
      * 营销活动processorFactory
@@ -173,7 +177,7 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         if (order.getBkOrderPaid() == OrderConstant.BK_PAY_FRONT) {
             //定金订单支付尾款
             Record2<Timestamp, Timestamp> timeInterval = preSale.getTimeInterval(order.getActivityId());
-            if (timeInterval.value1().getTime() < currenTmilliseconds) {
+            if (timeInterval.value1().getTime() > currenTmilliseconds) {
                 return ExecuteResult.create(JsonResultCode.CODE_ORDER_TOPAY_BK_PAY_NOT_START, null);
             }
             if (currenTmilliseconds > timeInterval.value2().getTime()) {
@@ -278,13 +282,17 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
         orderInfo.update();
 
         //订单商品
-        List<OrderGoodsBo> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId()).into(OrderGoodsBo.class);
-        //库存销量
-        atomicOperation.updateStockAndSalesByLock(orderInfo, goods, false);
+        Result<OrderGoodsRecord> goods = orderGoodsService.getByOrderId(orderInfo.getOrderId());
+        if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+            //库存销量
+            atomicOperation.updateStockAndSalesByLock(orderInfo, goods.into(OrderGoodsBo.class), false);
+        }
         //TODO 异常订单处理等等
-
         // 订单生效时营销活动后续处理
         processOrderEffective(orderInfo, orderInfo);
+        //模板消息
+        sendMessage.send(orderInfo, goods);
+
     }
 
     /**
@@ -293,7 +301,8 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
     public void autoExpiringNoPayOrderNotify(){
         Result<OrderInfoRecord> orders = orderInfo.getExpiringNoPayOrderList();
         orders.forEach(order->{
-            //TODO 小程序消息推送
+            //模板消息
+            sendMessage.send(order);
         });
 
     }
@@ -305,27 +314,34 @@ public class PayService  extends ShopBaseService implements IorderOperate<OrderO
      * @throws MpException
      */
     private void processOrderEffective(OrderInfoRecord param, OrderInfoRecord orderInfo) throws MpException {
-        if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)){
+        if (!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)&&!orderInfo.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING)){
             return;
         }
+        OrderBeforeParam orderBeforeParam = createOrderBeforeParam(orderInfo);
+        marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
+        if(orderInfo.getIsLock().equals(OrderConstant.NO)) {
+            marketProcessorFactory.processUpdateStock(orderBeforeParam, orderInfo);
+        }
+    }
+
+    public OrderBeforeParam createOrderBeforeParam(OrderInfoRecord orderInfo) {
         String[] strings = OrderInfoService.orderTypeToArray(orderInfo.getGoodsType());
         List<Byte> activityTypeList = Arrays.stream(strings).map(Byte::valueOf).collect(Collectors.toList());
-        Byte activityType = OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY.stream().filter(activityTypeList::contains).findFirst().get();
+        Byte activityType =  activityTypeList.stream().filter(OrderCreateMpProcessorFactory.SINGLENESS_ACTIVITY::contains).findFirst().get();
         OrderBeforeParam orderBeforeParam =new OrderBeforeParam();
         orderBeforeParam.setActivityType(activityType);
         orderBeforeParam.setActivityId(orderInfo.getActivityId());
-        orderBeforeParam.setDate(param.getCreateTime());
+        orderBeforeParam.setDate(orderInfo.getCreateTime());
         orderBeforeParam.setGoods(new ArrayList<>());
         List<GoodsRecord> goodsList = orderGoodsService.getGoodsInfoRecordByOrderSn(orderInfo.getOrderSn());
-        Map<Integer, OrderBeforeParam.Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, OrderBeforeParam.Goods.class);
+        Map<Integer, Goods> orderGoodsMap = orderGoodsService.getOrderGoods(orderInfo.getOrderSn()).intoMap(OrderGoods.ORDER_GOODS.GOODS_ID, Goods.class);
         goodsList.forEach(goods->{
-            OrderBeforeParam.Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
+            Goods goodsParam = orderGoodsMap.get(goods.getGoodsId());
             goodsParam.setGoodsInfo(goods);
             orderBeforeParam.getGoods().add(goodsParam);
         });
-        marketProcessorFactory.processOrderEffective(orderBeforeParam,orderInfo);
+        return orderBeforeParam;
     }
-
 
 
 }

@@ -243,8 +243,67 @@ export function exportExcel (data) {
     responseType: 'blob'
   })
 }
-// 查询可用会员卡列表
-export const getUsableMemberCardList = () => service({
-  url: `/api/admin/member/card/usable/list`,
-  method: 'post'
-})
+
+// 获取导入领取码模板
+export function getExportExcel () {
+  return service({
+    url: `/api/admin/member/card/code/getTemplate`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+
+// 获取导入卡号+密码模板
+export function getPwdExportExcel () {
+  return service({
+    url: `/api/admin/member/card/codePwd/getTemplate`,
+    method: 'get',
+    responseType: 'blob'
+  })
+}
+// 导入模板
+export function importInsertExcel (data) {
+  return service({
+    url: '/api/admin/member/card/code/import/insert',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+//  获得生成/导入记录
+export function getExcelList (data) {
+  return service({
+    url: `/api/admin/member/card/code/importlist/${data}`,
+    method: 'get',
+    data: data
+  })
+}
+
+// 下载成功数据
+export function getSuccessExcel (data) {
+  return service({
+    url: '/api/admin/member/card/code/import/success',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+// 下载失败数据
+export function getFailExcel (data) {
+  return service({
+    url: '/api/admin/member/card/code/import/fail',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
+
+export function getShareCode (cardId) {
+  return service({
+    url: `/api/admin/member/card/getqrcode/${cardId}`,
+    method: 'post'
+  })
+}

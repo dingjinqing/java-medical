@@ -80,7 +80,18 @@ public abstract class BaseCardVo {
 	@JsonProperty("storeList")
 	protected List<StoreBasicVo> storeDataList;
 	
-
+	/**
+	 * 	是否展示充值明细
+	 */
+	protected Byte showCharge = 0;
+	/**
+	 * 	是否展示退款明细
+	 */
+	protected Byte hasRefund = 0;
+	/**
+	 *	 是否展示续费记录
+	 */
+	protected Byte renewRecord = 0;
 	public abstract void changeJsonCfg();
 
 }

@@ -75,6 +75,9 @@ export default {
       hoverTips: 'hoverTips', // 英文适配  模块公共
       // 模块私有
       data: {
+        data: {
+          bg_img_url: ''
+        }
 
       }
     }

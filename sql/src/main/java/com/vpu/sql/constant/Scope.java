@@ -2,7 +2,7 @@ package com.vpu.sql.constant;
 
 public enum  Scope {
 
-    main("main"),shop("shop"),appoint_shop("appoint_shop");
+    main("main"),shop("shop");
 
 
 

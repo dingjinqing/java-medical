@@ -28,8 +28,12 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**商品最高价格*/
     private BigDecimal maxPrice;
 
-    /**商家分类id*/
+    /**卢光耀修改后需要删除本字段*/
+    @Deprecated
     private Integer sortId;
+
+    /**商家分类id集合，为了满足从商品分组处跳转时使用*/
+    private List<Integer> sortIds;
 
     /**品牌id集合*/
     private List<Integer> brandIds;
@@ -53,6 +57,11 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**排序方向*/
     private SortDirectionEnum sortDirection;
 
-
+    /**当页面从商品分组跳转至搜索页面时此字段可能会被赋予指定值*/
     private List<Integer> goodsIds;
+
+    /**从商品分组页面跳转至此*/
+    public static final Byte PAGE_FROM_GROUP_LIST = 1;
+    /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
+    private Byte pageFrom;
 }

@@ -16,6 +16,10 @@ public class CollectListVo {
 	 * id
 	 */
 	private Integer id;
+    /**
+     * 商品id
+     */
+	private Integer goodsId;
 	/**
 	 * 用户ID
 	 */
@@ -48,5 +52,9 @@ public class CollectListVo {
 	 * 收藏时间
 	 */
 	private Timestamp createTime;
+    /**
+     * 拼团价
+     */
+	private BigDecimal groupPrice;
 	
 }

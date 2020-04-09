@@ -6,6 +6,7 @@
         class="tableClass"
         border
         style="width: 100%"
+        @sort-change="sortChange"
       >
         <el-table-column
           align="center"
@@ -41,6 +42,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="shopPrice"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.shopPrice')"
           width="100"
@@ -70,12 +73,12 @@
           :label="$t('allGoods.allGoodsData.prdSn')"
           width="100"
         />
-        <el-table-column
-          align="center"
-          prop="catName"
-          :label="$t('allGoods.allGoodsData.cat')"
-          width="100"
-        />
+        <!--<el-table-column-->
+          <!--align="center"-->
+          <!--prop="catName"-->
+          <!--:label="$t('allGoods.allGoodsData.cat')"-->
+          <!--width="100"-->
+        <!--/>-->
         <el-table-column
           align="center"
           prop="sortName"
@@ -90,6 +93,8 @@
         >
         </el-table-column>
         <el-table-column
+          prop="goodsNumber"
+          sortable="custom"
           align="center"
           :label="$t('allGoods.allGoodsData.goodsNumber')"
           width="130"
@@ -157,7 +162,7 @@
       </el-table>
       <pagination
         :page-params.sync="pageParams"
-        @pagination="fetchGoodsData"
+        @pagination="paginationFetchGoodsData"
       />
     </div>
 
@@ -293,50 +298,51 @@ export default {
     },
     /* 商品价格输入框处理函数 */
     prdPriceChange (row) {
-      row.prdPriceEdit = false
       if (typeof row.prdPriceOld !== 'number' || row.prdPriceOld < 0) {
-        row.prdPriceOld = row.shopPrice
+        row.prdPriceOld = row.prdPrice
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.shopPriceRequired') })
+        row.prdPriceEdit = false
         return
       }
-      row.shopPrice = row.prdPriceOld
-      let shopPrices = {}
-      shopPrices[row.goodsId] = [{
+      // 规格修改之前的价格
+      let originalPrice = row.prdPrice
+      row.prdPrice = row.prdPriceOld
+      let param = {
         prdId: row.prdId,
-        shopPrice: row.shopPrice
-      }]
-      batchOperateSpecPrdPriceNumber({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: shopPrices
-      }).then(res => {
+        shopPrice: row.prdPrice
+      }
+
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.prdPriceEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: '设置成功!' })
+        } else {
+          row.prdPrice = originalPrice
         }
       })
     },
     /* 商品数量输入框处理函数 */
     goodsNumberChange (row) {
-      row.prdNumberEdit = false
       if (typeof row.prdNumberOld !== 'number' || row.prdNumberOld < 0) {
-        row.prdNumberOld = row.goodsNumber
+        row.prdNumberOld = row.prdNumber
         this.$message.warning({ type: 'warning', message: this.$t('allGoods.allGoodsData.goodsNumberRequired') })
+        row.prdNumberEdit = false
         return
       }
-      row.goodsNumber = parseInt(row.prdNumberOld)
-      row.prdNumberOld = row.goodsNumber
+      let originalNum = row.prdNumber
+      row.prdNumber = parseInt(row.prdNumberOld)
 
-      let goodsNumbers = {}
-      goodsNumbers[row.goodsId] = [{
+      let param = {
         prdId: row.prdId,
-        goodsNumber: row.goodsNumber
-      }]
-      batchOperateSpecPrdPriceNumber({
-        goodsIds: [row.goodsId],
-        goodsPriceNumbers: goodsNumbers
-      }).then(res => {
+        goodsNumber: row.prdNumber
+      }
+      batchOperateSpecPrdPriceNumber(param).then(res => {
+        row.prdNumberEdit = false
         if (res.error === 0) {
           this.$message.success({ type: 'info', message: '设置成功!' })
           this.fetchGoodsData()
+        } else {
+          row.prdNumber = originalNum
         }
       })
     },
@@ -410,6 +416,10 @@ export default {
         this.qrCodeData.isShow = true
       })
     },
+    /* 表头排序 */
+    sortChange (data) {
+      this.$emit('sortChange', data.prop, data.order)
+    },
     /* 操作确认弹框 */
     _$confirm (questionMessage, confirmMesage, confirmCallback, cancelCallback) {
       this.$confirm(questionMessage, this.$t('allGoods.allGoodsData.tip'), {
@@ -429,6 +439,10 @@ export default {
         }
       })
     },
+    /* 分页组件使用的分页方法，为了传递filterData数据 */
+    paginationFetchGoodsData () {
+      this.fetchGoodsData(this.filterData)
+    },
     /* 分页查询数据 */
     fetchGoodsData (filterData) {
       if (filterData !== undefined) {
@@ -441,9 +455,7 @@ export default {
       getGoodsProductList(params).then(res => {
         let { content: { page, dataList } } = res
 
-        this.pageParams.totalRows = page.totalRows
-        this.pageParams.currentPage = page.currentPage
-        this.pageParams.pageRows = page.pageRows
+        this.pageParams = page
 
         dataList.forEach(item => {
           // item.sourceName = item.source === 0 ? '自营' : '非自营'
@@ -475,7 +487,8 @@ export default {
           item.prdNumberOld = item.prdNumber
         })
 
-        this.goodsData = dataList
+        // this.goodsData = dataList
+        this.$set(this, 'goodsData', dataList)
       })
     },
     showExportDialog (filterData, filterDataString) {

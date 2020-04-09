@@ -119,13 +119,25 @@
   display: flex;
 }
 .order-goods-img {
-  width: 202rpx;
+  position: relative;
+  width: 162rpx;
   height: 160rpx;
+  margin: 0 20rpx;
+}
+.no-shippied {
+  position: absolute;
+  width: 100%;
+  bottom: -1px;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+  line-height: 44rpx;
+  font-size: 24rpx
 }
 .goods-img {
   width: 160rpx;
   height: 160rpx;
-  margin: 0 20rpx;
   border: 1px solid #eee;
 }
 .goods-name {

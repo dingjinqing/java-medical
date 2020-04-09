@@ -15,6 +15,10 @@ export const cn = {
   integral: '积分',
   Balance: '余额',
   banLogin: '已禁止登录',
+  alreadyPhone: '有手机号',
+  alreadyScore: '有积分',
+  alreadyBalance: '有余额',
+  alreadyCard: '有会员卡',
   importMembers: '已导入的会员',
   screen: '筛选',
   membershipExport: '会员导出',
@@ -128,7 +132,7 @@ export const cn = {
   enddate: '结束日期',
   chooseDate: '选择日期',
   purchasetimes: '累计购买次数',
-  designatedgoods: '累计指定商品',
+  designatedgoods: '购买指定商品',
   choiseGoods: '选择商品',
   setup: '设置',
   Forscreened: '对筛选出来的',
@@ -172,27 +176,34 @@ export const cn = {
   transactionData: [
     {
       title: '最近下单时间',
-      content: '暂未下单'
+      content: '暂未下单',
+      tip: '用户最近一次下单的时间(包括已退款订单)'
+
     },
     {
       title: '客单价',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: '用户平均每笔订单消费金额（包括已退款订单）'
     },
     {
-      title: '累计下单金额',
-      content: '暂未下单'
+      title: '累计消费金额',
+      content: '暂未下单',
+      tip: '用户在商城累计消费金额（已支付部分，包括已退款订单金额）'
     },
     {
       title: '累计消费订单数',
-      content: '0'
+      content: '0',
+      tip: '用户在商城累计消费订单数（已支付部分，包括已退款订单）'
     },
     {
       title: '累计退款',
-      content: '￥ 0.00'
+      content: '￥ 0.00',
+      tip: '用户在商城累计退款金额'
     },
     {
       title: '累计退款订单数',
-      content: '暂未退单'
+      content: '暂未退单',
+      tip: '用户在商城累计退款订单数（发生退款行为的订单）'
     }
   ],
   distributionData: [
@@ -235,6 +246,7 @@ export const cn = {
   servicestimes: '门店服务次数(次)',
   ExchangeFrequency: '兑换商品次数(次)',
   noData: '暂无相关数据',
+  cardOptions: [{id: 0, cardName: '全部'}],
   userFromSource: [{
     value: '0',
     label: '全部'
@@ -449,5 +461,42 @@ export const cn = {
   normalCardFull: '普通会员卡',
   limiteCardFull: '限次会员卡',
   gradeCard: '等级会员卡',
-  addCardTips: '你可以在这里编辑该会员的会员卡信息，添加会员卡，注意：需要激活的会员卡直接发放到用户'
+  addCardTips: '你可以在这里编辑该会员的会员卡信息，添加会员卡，注意：需要激活的会员卡直接发放到用户',
+
+  // 导出弹窗
+  exportTable: '导出表格',
+  filterOnFollowing: '根据以下条件筛选出',
+  articleData: '条数据',
+  ayExport: '是否确认导出',
+  filterCirteria: '筛选条件',
+  numExports: '导出条数(一次最多导出',
+  articleDatas: '条数据',
+  basicInformation: '基础信息',
+  userId2: '用户id',
+  nickname2: '昵称',
+  phone: '手机号',
+  balance: '余额',
+  integral2: '积分',
+  userSource: '用户来源',
+  registrationTime2: '注册时间',
+  memberShip: '会员卡',
+  address2: '地址',
+  cumulativeSpending: '累计消费金额',
+  cumulativeConsumption: '累计消费单数',
+  cumulativeRefund: '累计退款金额',
+  cumulativeOrder: '累计退款订单数',
+  remarks: '备注',
+  distributionIntro: '分销信息',
+  invitePe: '邀请人',
+  inviteMobile: '邀请人手机号',
+  invitedDistribut: '邀请人分销员分组',
+  numRebate: '获返利订单数量',
+  rebateProducts: '返利商品总金额',
+  totalRebate: '获返利订单佣金总额',
+  totalCommission: '已提现佣金总额',
+  numSubordinate: '下级用户数',
+  distributorLevel: '分销员等级',
+  distributorGroup: '分销员分组',
+  determine: '确定',
+  cancel2: '取消'
 }

@@ -68,7 +68,8 @@ global.wxPage({
     save_flag: 1,
     img_len: 0,
     image: false,
-    comm_img: []
+    comm_img: [],
+    mobile: util.getCache('mobile')
   },
 
   /**
@@ -108,8 +109,10 @@ global.wxPage({
     that.setData({
       user_block: 0,
       examine: examine,
-      distribution: distribution
+      distribution: distribution,
+      mobile: util.getCache('mobile')
     })
+    console.log(that.data.mobile)
     wx.showLoading({
       title: '加载中',
     })
@@ -373,8 +376,8 @@ global.wxPage({
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
           console.log(fi_arr)
-          let keyArr = ['if_username', 'if_mobile', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
-          let valArr = ['username', 'mobile', 'realName', 'invitation_code', 'cid', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
+          let keyArr = ['if_username', 'if_mobile','if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+          let valArr = ['username', 'mobile','cid', 'realName', 'invitation_code',  'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
           fi_arr.map((item, index) => {
             var val = keyArr[valArr.indexOf(fi_arr[index])]
             let obj = {}
@@ -619,6 +622,7 @@ global.wxPage({
       util.showModal("提示", "请填写真实姓名");
       return;
     }
+    console.log(user_info, this.data)
     if (user_info.mobile == '' && this.data.if_mobile == 1) {
       util.showModal("提示", "请授权手机号");
       return;
@@ -689,9 +693,17 @@ global.wxPage({
 
       } else {
         console.log(card_no)
+        console.log(user_info)
         util.api('/api/wxapp/activation/card', function (res) {
           console.log(res)
           if (res.error === 0) {
+            util.toast_success('激活成功', function () {
+              setTimeout(function () {
+                util.redirectTo({
+                  url: '/pages/cardlist/cardlist',
+                })
+              }, 2000);
+            });
             that.data.template_ids = res.content.template_ids || [];
             var user_info = res.content.data;
             var fi_arr = res.content.fields;
@@ -808,7 +820,7 @@ global.wxPage({
           that.setData({
             user_block: 1
           })
-        }, { cardNo: card_no, isSetting: 0 })
+        }, { cardNo: card_no, isSetting: 1, activateOption: user_info })
 
 
 

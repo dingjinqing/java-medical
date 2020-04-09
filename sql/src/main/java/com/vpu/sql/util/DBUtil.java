@@ -45,7 +45,7 @@ public class DBUtil {
                 ex.printStackTrace();
 
             }
-            String column = RegexUtil.getDuplicateColumn(e.getMessage());
+            String column = RegexUtil.getDuplicateColumn(e.getMessage()+";");
             String index = RegexUtil.getDuplicateIndex(e.getMessage());
             if( !StringUtils.isEmpty(column) ){
                 throw new DuplicateColumnException(column);
@@ -54,6 +54,43 @@ public class DBUtil {
             }else if( RegexUtil.isChangColumnException(sql,e.getMessage()) ){
                 changeColumnNumbers.getAndIncrement();
                 log.warn("重复执行的修改表字段的sql-->{}",sql);
+            }else{
+                errorNumbers.getAndIncrement();
+                throw new SQLRunTimeException(e.getMessage());
+
+            }
+
+        }
+    }
+    /**
+     * 执行sql
+     * @param con 连接
+     * @param sql sql
+     */
+    public static void realExecuteSQL(Connection con, String sql){
+        try {
+            con.setAutoCommit(false);
+            con.prepareStatement(sql).executeUpdate();
+            con.commit();
+            executeNumbers.getAndIncrement();
+        } catch (SQLException e) {
+            try {
+                con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+
+            }
+            String column = RegexUtil.getDuplicateColumn(e.getMessage()+";");
+            String index = RegexUtil.getDuplicateIndex(e.getMessage());
+            if( !StringUtils.isEmpty(column) ){
+                log.debug("列已存在");
+            }else if( !StringUtils.isEmpty(index) ){
+                log.debug("索引已存在");
+            }else if( RegexUtil.isChangColumnException(sql,e.getMessage()) ){
+                changeColumnNumbers.getAndIncrement();
+                log.warn("重复执行的修改表字段的sql-->{}",sql);
+            }else if("Multiple primary key defined".equals(e.getMessage().trim())){
+
             }else{
                 errorNumbers.getAndIncrement();
                 throw new SQLRunTimeException(e.getMessage());

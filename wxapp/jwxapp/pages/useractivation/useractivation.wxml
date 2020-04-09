@@ -21,7 +21,7 @@
       <view>{{i18n.$t(localePack,"page1.usercenter.pointsReward")}}</view>
       <view style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.usercenter.obtain")}} {{success_info.score}} {{i18n.$t(localePack,"page1.usercenter.points")}}  </view>
     </view>
-    <view class='coupon' bindtap='{{to_activation == 0 ? "to_coupon" : ""}}' wx:if='{{success_info.couponList}}'>
+    <view class='coupon' bindtap='{{to_activation == 0 ? "to_coupon" : ""}}' wx:if='{{success_info.couponList.length>0}}'>
       <view>{{i18n.$t(localePack,"page1.usercenter.couponReward")}}</view>
       <view style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.usercenter.obtain")}} {{success_info.couponList.length}} {{i18n.$t(localePack,"page1.usercenter.coupon2")}}</view>
     </view>

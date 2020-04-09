@@ -43,6 +43,9 @@ public class CardUserOpt extends CardOpt {
 	
 	@Override
 	protected String sendCard(Integer userId, Integer cardId, boolean isActivate) {
+		
+	
+		
 		return decorate.sendCard(userId, cardId, isActivate);
 	}
 

@@ -116,9 +116,9 @@ var base = {
             }
           } else if (itemC.actCode === 'discount') {
             if (itemC.useConsumeRestrict === 1) {
-              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}￥${itemC.denomination}`
+              obj.text = `${this.$t("components.decorate.full")}${itemC.leastConsume}${this.$t("components.decorate.hit")}${itemC.denomination}${this.$t("components.decorate.fracture")}`
             } else {
-              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}￥${itemC.denomination}${this.$t("components.decorate.fracture")}`
+              obj.text = `${this.$t("components.decorate.coupon")}${this.$t("components.decorate.hit")}${itemC.denomination}${this.$t("components.decorate.fracture")}`
             }
           }
           break
@@ -137,6 +137,12 @@ var base = {
       }
 
       // console.log(item, itemC)
+    },
+    // 触发规格窗
+    bindAddCart (e) {
+      console.log('触发规格弹窗', e)
+      let { goodsId, activityType, activityId } = this.data.m.goodsListData.find(item => { return item.goodsId === e.currentTarget.dataset.goods_id })
+      this.triggerEvent('addCart', { goodsId, activityType, activityId })
     }
   }
 };

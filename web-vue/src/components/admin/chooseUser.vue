@@ -93,16 +93,16 @@
         slot="footer"
         class="dialog-footer"
       >
-          <el-button
-            size="small"
-            @click="modifypersonDialogVisible = false"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="comfirm()"
-          >确 定</el-button>
-        </span>
+        <el-button
+          size="small"
+          @click="modifypersonDialogVisible = false"
+        >取 消</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="comfirm()"
+        >确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -119,7 +119,7 @@ export default {
     },
     queryParams: {
       type: Object,
-      default: () => {}
+      default: () => { }
     }
   },
   data () {
@@ -138,11 +138,18 @@ export default {
     }
   },
   watch: {
-    dialogVisible () {
-      this.modifypersonDialogVisible = true
-      // 清空弹出框的输入数据
-      this.clearInputData()
-      this.getUserTabelListData()
+    dialogVisible (val) {
+      if (val) {
+        this.modifypersonDialogVisible = true
+        // 清空弹出框的输入数据
+        this.clearInputData()
+        this.getUserTabelListData()
+      }
+    },
+    modifypersonDialogVisible (val) {
+      if (!val) {
+        this.$emit('update:dialogVisible', val)
+      }
     }
   },
   created () {
@@ -155,6 +162,9 @@ export default {
       // 返回组件出参
       this.$emit('rowData', this.currentRow)
       this.$refs.multipleTable.clearSelection()
+    },
+    beforeClose () {
+      this.$emit('update:dialogVisible', false)
     },
     // 获取会员用户
     getUserTabelListData () {
@@ -189,54 +199,53 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .table_list {
-    position: relative;
-    .table_footer {
-      background: #666;
+.table_list {
+  position: relative;
+  .table_footer {
+    background: #666;
+  }
+}
+.content {
+  margin-top: 10px;
+}
+.la .modifypersonDivTop .el-input__inner {
+  width: 140px !important;
+}
+.modifypersonDivTop,
+.modifypersonDivTop > div {
+  display: flex;
+}
+.modifypersonDivTop > div > span {
+  line-height: 32px;
+  height: 32px;
+  display: block;
+  width: 56px;
+}
+.baseInfo .el-dialog__body {
+  padding-bottom: 0 !important;
+}
+.baseInfo .el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+.technician_list_page {
+  margin: 0 25px;
+  .list_info {
+    padding-bottom: 10px;
+    .filter_input {
+      width: 170px;
+    }
+    .technician_list_img {
+      display: inline-block;
+      width: 60px;
+      height: 60px;
     }
   }
-  .content {
-    margin-top: 10px;
-  }
-  .la
-  .modifypersonDivTop .el-input__inner {
-    width: 140px !important;
-  }
-  .modifypersonDivTop,
-  .modifypersonDivTop > div {
-    display: flex;
-  }
-  .modifypersonDivTop > div > span {
-    line-height: 32px;
-    height: 32px;
-    display: block;
-    width: 56px;
-  }
-  .baseInfo .el-dialog__body {
-    padding-bottom: 0 !important;
-  }
-  .baseInfo .el-dialog__footer {
-    border-top: 1px solid #eee;
-  }
-  .technician_list_page {
-    margin: 0 25px;
-    .list_info {
-      padding-bottom: 10px;
-      .filter_input {
-        width: 170px;
-      }
-      .technician_list_img {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-      }
-    }
-    .list_table {
-      .iconSpan {
-        color: #5a8bff;
-        text-decoration: none;
-        cursor: pointer !important;
-      }
+  .list_table {
+    .iconSpan {
+      color: #5a8bff;
+      text-decoration: none;
+      cursor: pointer !important;
     }
   }
+}
 </style>

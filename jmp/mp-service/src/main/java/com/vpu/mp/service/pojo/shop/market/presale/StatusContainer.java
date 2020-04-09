@@ -49,6 +49,8 @@ public interface StatusContainer {
      */
     Timestamp getPreEndTime2();
 
+    Byte getPrePayStep();
+
     /**
      * 获取状态
      *

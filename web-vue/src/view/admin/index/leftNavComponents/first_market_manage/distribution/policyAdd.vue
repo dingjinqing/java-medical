@@ -16,6 +16,8 @@
         >
           <el-input
             v-model="form.strategyName"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip1')"
           ></el-input>
         </el-form-item>
@@ -25,6 +27,8 @@
         >
           <el-input
             v-model.number="form.strategyLevel"
+            size="small"
+            class="inputWidth"
             :placeholder="$t('distribution.strategyTip2')"
           ></el-input>
           <div class="text">{{ $t('distribution.strategyTip3') }}</div>
@@ -35,6 +39,7 @@
         >
           <el-date-picker
             v-model="form.validity"
+            size="small"
             type="datetimerange"
             :range-separator="$t('seckill.to')"
             :start-placeholder="$t('seckill.startTime')"
@@ -109,6 +114,8 @@
               <template slot-scope="scope">
                 <el-input
                   v-model="scope.row.levelName"
+                  size="small"
+                  class="inputWidth"
                   disabled
                 ></el-input>
               </template>
@@ -133,24 +140,26 @@
                   <div style="width:50%;float: left;">
                     <div>{{ $t('distribution.proportionTip3') }}
                       <el-input
-                        v-model.number="scope.row.fanliRatio"
+                        v-model="scope.row.fanliRatio"
+                        @change="checkPercentage(scope.$index)"
                         size="mini"
-                        style="width: 50px;"
+                        style="width: 55px;"
                       ></el-input> %
                     </div>
                     <div style="margin-top: 10px;">{{ $t('distribution.proportionTip4') }}
                       <el-input
-                        v-model.number="scope.row.rebateRatio"
+                        v-model="scope.row.rebateRatio"
+                        @change="checkPercentage(scope.$index)"
                         size="mini"
-                        style="width: 50px;"
+                        style="width: 55px;"
                       ></el-input> %
                     </div>
                   </div>
                   <div
-                    style="width:50%;float: left;"
-                    v-if="scope.row.level === '1'"
+                    style="width:50%;float: left;margin-top: 10px;"
+                    v-if="scope.row.lowValue || scope.row.heightValue || scope.row.lowValue === 0 || scope.row.heightValue === 0"
                   >
-                    {{ $t('distribution.proportionTip5') }}
+                    {{ $t('distribution.proportionTip5') }} {{ scope.row.lowValue }}%-{{ scope.row.heightValue }}%
                   </div>
                 </div>
                 <div
@@ -159,8 +168,9 @@
                 >{{ $t('distribution.proportionTip6') }}
                   <el-input
                     v-model="scope.row.firstRatio"
+                    @change="checkFirstPercentage(scope.$index)"
                     size="mini"
-                    style="width: 50px;"
+                    style="width: 55px;"
                   ></el-input> %
                 </div>
               </template>
@@ -183,26 +193,46 @@
           >{{ $t('distribution.authorityTip1') }}</el-checkbox>
           <span class="tips">{{ $t('distribution.authorityTip2') }}</span>
         </el-form-item>
+
+        <div style="height: 40px;line-height: 40px;background: #f8f8f8;padding-left: 10px;margin-bottom: 20px;">分销商品</div>
         <el-form-item
-          :label="$t('distribution.distributionGoods')"
-          prop=""
+          label=""
+          style="margin-left: -120px;"
+          prop="recommendType"
         >
-          <el-radio-group v-model="form.recommendType">
-            <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
-            <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
-          </el-radio-group>
-          <div v-if="form.recommendType === 1">
-            <div
-              v-for="(item,index) in storeArr"
-              :key="index"
-              class="storeContent"
-            >
-              <el-button @click="hanldeToAddGoodS(index)">
-                <i class="el-icon-plus"></i> {{ item.name }}
-              </el-button>
-              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
-              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+          <div>
+            <el-radio-group v-model="form.recommendType">
+              <el-radio :label="0">{{ $t('distribution.goodsRadio1') }}</el-radio>
+              <el-radio :label="1">{{ $t('distribution.goodsRadio2') }}</el-radio>
+            </el-radio-group>
+            <div v-if="form.recommendType === 1">
+              <div
+                v-for="(item,index) in storeArr"
+                :key="index"
+                class="storeContent"
+              >
+                <el-button
+                  @click="hanldeToAddGoodS(index)"
+                  size="small"
+                >
+                  <i class="el-icon-plus"></i> {{ item.name }}
+                </el-button>
+                <span
+                  style="color: #e4393c; cursor: pointer;"
+                  v-if="index === 0"
+                  @click="onlyHanldeToAddGoodS(index)"
+                >{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+                <span
+                  style="cursor: pointer;"
+                  v-if="index === 1"
+                  @click="hanldeToAddGoodS(index)"
+                >
+                  <span v-if="busClass.length > 0">{{ $t('distribution.goodsTip1')}}{{ $t('distribution.goodsTip5') }}</span>
+                  <span v-else>{{ $t('distribution.goodsTip6') }}{{ $t('distribution.goodsTip5') }}</span>
+                </span>
+                <!-- {{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }} -->
+                <!-- <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span> -->
+              </div>
             </div>
           </div>
         </el-form-item>
@@ -225,6 +255,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
@@ -232,7 +263,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      @backDataArr="commInfo"
+      :backDataArr="commInfo"
     />
 
   </div>
@@ -247,6 +278,14 @@ export default {
   },
   props: ['isEdite', 'editId'],
   data () {
+    // 自定义校验可使用商品
+    var validateRecommendType = (rule, value, callback) => {
+      if (value === 1 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
+        callback(new Error(this.$t('ordinaryCoupon.validatesuitGoods1')))
+      } else {
+        callback()
+      }
+    }
     return {
       // 表单
       form: {
@@ -269,7 +308,8 @@ export default {
         strategyName: { required: true, message: '请填写返利策略名称', trigger: 'blur' },
         strategyLevel: { required: true, message: '请填写返利策略优先级', trigger: 'blur' },
         validity: { required: true, message: '请填写有效期', trigger: 'change' },
-        selfPurchase: { required: true, message: '请选择是否开启自购返利', trigger: 'change' }
+        selfPurchase: { required: true, message: '请选择是否开启自购返利', trigger: 'change' },
+        recommendType: { required: true, validator: validateRecommendType, trigger: 'change' }
       },
       tipContent: `
         <p>成本价保护：</p>
@@ -282,8 +322,8 @@ export default {
       tableData: [{
         levelId: 1,
         levelName: '分销员测试',
-        fanliRatio: 0, // 直接比例
-        rebateRatio: 0, // 间接比例
+        fanliRatio: null, // 直接比例
+        rebateRatio: null, // 间接比例
         firstRatio: null // 首单返利
       }, {
         levelId: 2,
@@ -312,6 +352,7 @@ export default {
       }],
       storeArr: [], // 分销商品
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -338,28 +379,42 @@ export default {
   },
   mounted () {
     this.langDefault()
-    this.initDataList()
-    // 编辑初始化
+    this.getLevelList()
     if (this.isEdite === true) {
+      // 编辑初始化
       this.editSeckillInit(this.editId)
     }
   },
   methods: {
     // 获取分销员等级
-    initDataList () {
+    getLevelList () {
       getDistributionLevel().then((res) => {
         if (res.error === 0) {
-          this.handleData(res.content.levelList)
+          this.tableData.forEach((item, index) => {
+            res.content.levelList.forEach((val, key) => {
+              if (index === key) {
+                item.levelId = val.levelId
+                item.levelName = val.levelName
+                item.levelStatus = val.levelStatus
+              }
+            })
+          })
+          this.handleData(this.tableData)
         }
       })
     },
 
     // 表格数据处理
     handleData (data) {
-      console.log(this.tableData)
-      this.tableData.map((item, index) => {
-        item.levelId = data[index].levelId
-        item.levelName = data[index].levelName
+      data.map((item, index) => {
+        // 佣金比例范围
+        item.lowValue = null
+        item.heightValue = null
+        if (item.levelStatus === 0) {
+          item.levelName = item.levelName + '(已停用)'
+        } else {
+          item.levelName = item.levelName + '(已启用)'
+        }
         switch (item.levelId) {
           case 1:
             item.levelText = '一级'
@@ -378,7 +433,6 @@ export default {
             break
         }
       })
-      console.log(this.tableData)
     },
 
     // 编辑初始化
@@ -417,20 +471,34 @@ export default {
           this.tableData[4].firstRatio = data.firstRatio_5
 
           // 返利商品
-          this.goodsInfo = data.recommendGoodsId.split(',')
+          this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
           this.goodsInfo = this.goodsInfo.map(Number)
 
-          this.busClass = data.recommendCatId.split(',')
+          this.busClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
           this.busClass = this.busClass.map(Number)
 
-          this.platClass = data.recommendSortId.split(',')
-          this.platClass = this.platClass.map(Number)
+          // this.platClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
+          // this.platClass = this.platClass.map(Number)
         }
       })
     },
 
     // 保存返利策略
     saveClickHandler () {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].fanliRatio !== undefined && !re.test(this.tableData[i].fanliRatio)) {
+          this.$message.warning('直接邀请返利比例在0%-50%之间')
+          return
+        } else if (this.tableData[i].rebateRatio !== undefined && !re.test(this.tableData[i].rebateRatio)) {
+          this.$message.warning('间接邀请返利比例在0%-50%之间')
+          return
+        } else if (this.form.firstRebate === 1 && this.tableData[i].firstRatio !== undefined && !re.test(this.tableData[i].firstRatio)) {
+          this.$message.warning('首单返利比例在0%-50%之间')
+          return
+        }
+      }
+
       this.submitStatus = true
 
       // 有效期
@@ -438,25 +506,25 @@ export default {
       this.form.endTime = this.form.validity[1]
 
       // 直接返利
-      this.form.fanliRatio = this.tableData[0].fanliRatio
-      this.form.fanliRatio_2 = this.tableData[1].fanliRatio
-      this.form.fanliRatio_3 = this.tableData[2].fanliRatio
-      this.form.fanliRatio_4 = this.tableData[3].fanliRatio
-      this.form.fanliRatio_5 = this.tableData[4].fanliRatio
+      this.form.fanliRatio = Number(this.tableData[0].fanliRatio)
+      this.form.fanliRatio_2 = Number(this.tableData[1].fanliRatio)
+      this.form.fanliRatio_3 = Number(this.tableData[2].fanliRatio)
+      this.form.fanliRatio_4 = Number(this.tableData[3].fanliRatio)
+      this.form.fanliRatio_5 = Number(this.tableData[4].fanliRatio)
 
       // 间接返利
-      this.form.rebateRatio = this.tableData[0].rebateRatio
-      this.form.rebateRatio_2 = this.tableData[1].rebateRatio
-      this.form.rebateRatio_3 = this.tableData[2].rebateRatio
-      this.form.rebateRatio_4 = this.tableData[3].rebateRatio
-      this.form.rebateRatio_5 = this.tableData[4].rebateRatio
+      this.form.rebateRatio = Number(this.tableData[0].rebateRatio)
+      this.form.rebateRatio_2 = Number(this.tableData[1].rebateRatio)
+      this.form.rebateRatio_3 = Number(this.tableData[2].rebateRatio)
+      this.form.rebateRatio_4 = Number(this.tableData[3].rebateRatio)
+      this.form.rebateRatio_5 = Number(this.tableData[4].rebateRatio)
 
       // 首单返利
-      this.form.firstRatio = this.tableData[0].firstRatio
-      this.form.firstRatio_2 = this.tableData[1].firstRatio
-      this.form.firstRatio_3 = this.tableData[2].firstRatio
-      this.form.firstRatio_4 = this.tableData[3].firstRatio
-      this.form.firstRatio_5 = this.tableData[4].firstRatio
+      this.form.firstRatio = Number(this.tableData[0].firstRatio)
+      this.form.firstRatio_2 = Number(this.tableData[1].firstRatio)
+      this.form.firstRatio_3 = Number(this.tableData[2].firstRatio)
+      this.form.firstRatio_4 = Number(this.tableData[3].firstRatio)
+      this.form.firstRatio_5 = Number(this.tableData[4].firstRatio)
 
       // 返利商品
       this.form.recommendGoodsId = this.goodsInfo.toString() // 商品
@@ -497,6 +565,7 @@ export default {
     hanldeToAddGoodS (index) {
       switch (index) {
         case 0:
+          this.isOnlyShowChooseGoods = false
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:
@@ -514,6 +583,29 @@ export default {
       }
     },
 
+    // 点击指定商品出现的添加类弹窗汇总--部分
+    onlyHanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.isOnlyShowChooseGoods = true
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+    },
+
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       console.log('选择商品弹窗回调显示:', row)
@@ -522,6 +614,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.$refs['form'].validateField('recommendType')
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
@@ -541,14 +634,74 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+      this.$refs['form'].validateField('recommendType')
+    },
+
+    // 直接间接返利比例
+    checkPercentage (index) {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].fanliRatio)) {
+        this.tableData[index].fanliRatio = 0
+        this.$message.warning('直接邀请返利比例在0%-50%之间')
+      }
+      if (this.tableData[index].rebateRatio !== undefined && !re.test(this.tableData[index].rebateRatio)) {
+        this.tableData[index].rebateRatio = 0
+        this.$message.warning('间接邀请返利比例在0%-50%之间')
+      }
+
+      var fanliRatio = Number(this.tableData[index].fanliRatio)
+      var rebateRatio = Number(this.tableData[index].rebateRatio)
+
+      if (!rebateRatio) {
+        if (fanliRatio === 0) {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = 0
+        } else {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = fanliRatio
+        }
+      } else if (!fanliRatio) {
+        if (rebateRatio === 0) {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = 0
+        } else {
+          this.tableData[index].lowValue = 0
+          this.tableData[index].heightValue = rebateRatio
+        }
+      } else {
+        if (fanliRatio === rebateRatio) {
+          this.tableData[index].lowValue = fanliRatio
+          this.tableData[index].heightValue = fanliRatio
+        } else if (fanliRatio > rebateRatio) {
+          this.tableData[index].lowValue = rebateRatio
+          this.tableData[index].heightValue = fanliRatio
+        } else if (fanliRatio < rebateRatio) {
+          this.tableData[index].lowValue = fanliRatio
+          this.tableData[index].heightValue = rebateRatio
+        }
+      }
+
+      console.log(this.tableData)
+    },
+
+    // 首单返利
+    checkFirstPercentage (index) {
+      var re = /^([0-9]|([1-4][0-9]|50))(\.\d{1})?$/
+      if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].firstRatio)) {
+        this.tableData[index].firstRatio = 0
+        this.$message.warning('首单返利比例在0%-50%之间')
+      }
     }
   }
 }
 </script>
 <style scoped>
-.el-input {
-  width: 200px;
+.inputWidth {
+  width: 170px;
 }
+/* .el-input {
+  width: 200px;
+} */
 .container {
   margin-top: 10px;
   padding: 10px;

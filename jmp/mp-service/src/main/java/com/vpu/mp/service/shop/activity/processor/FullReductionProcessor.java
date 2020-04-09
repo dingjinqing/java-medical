@@ -12,10 +12,15 @@ import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.FullReductionPromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -37,6 +42,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,7 +54,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class FullReductionProcessor implements Processor,ActivityGoodsListProcessor, CreateOrderProcessor,GoodsDetailProcessor {
+public class FullReductionProcessor implements Processor, ActivityGoodsListProcessor, CreateOrderProcessor, GoodsDetailProcessor, ActivityCartListStrategy {
 
     @Autowired
     FullReductionProcessorDao fullReductionProcessorDao;
@@ -106,6 +112,7 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
             BaseConstant.ACTIVITY_TYPE_GROUP_DRAW,
             BaseConstant.ACTIVITY_TYPE_SEC_KILL,
             BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE,
+            BaseConstant.ACTIVITY_TYPE_PRE_SALE,
             BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER,
             BaseConstant.ACTIVITY_TYPE_PROMOTE_ORDER,
             BaseConstant.ACTIVITY_TYPE_ASSESS_ORDER
@@ -158,6 +165,11 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         //无
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
     }
 
     @Override
@@ -225,5 +237,68 @@ public class FullReductionProcessor implements Processor,ActivityGoodsListProces
         return result;
     }
 
-    /**订单处理end**/
+    /**
+     * 订单处理end
+     **/
+
+    //*******************购物车--满折满减
+    @Override
+    public void doCartOperation(WxAppCartBo cartBo) {
+        log.info("购物车-满折满减");
+        //可用的会员
+        List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(cartBo.getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
+        List<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
+        //活动和商品信息
+        Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap = new HashMap<>();
+        Set<CartActivityInfo> cartActivityInfos = new HashSet<>();
+        //获取商品可用的活动
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            List<CartActivityInfo> cartActivityInfoList = fullReductionProcessorDao.getGoodsFullReductionActivityList(goods.getGoodsId(),
+                    goods.getGoodsRecord().getCatId(),
+                    goods.getGoodsRecord().getBrandId(),
+                    goods.getGoodsRecord().getSortId(),
+                    cardIds,
+                    cartBo.getDate());
+            if (cartActivityInfoList != null && cartActivityInfoList.size() > 0) {
+                goods.getCartActivityInfos().addAll(cartActivityInfoList);
+                cartActivityInfos.addAll(cartActivityInfoList);
+                //商品是否已经选择活动 且商品选中状态
+                if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)) {
+                    Optional<CartActivityInfo> any = cartActivityInfoList.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(goods.getExtendId())).findAny();
+                    if (any.isPresent()&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)) {
+                        //商品活动
+                        goods.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
+                        goods.setActivityId(goods.getExtendId());
+                        //活动记录
+                        fullReductionProcessorDao.getFullReductionGoodsBo(ruleCartIdMap, goods);
+                    } else {
+                        //活动失效 todo 购物车操作
+                    }
+                }
+            }
+        }
+        //当前活动选择规则
+        fullReductionProcessorDao.fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
+        //给商品分配规则
+        for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
+            if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
+                List<FullReductionGoodsCartBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());
+                fullReductionGoodsBos.forEach(FullReductionGoodsCartBo -> {
+                    if (FullReductionGoodsCartBo.getCartId().equals(goods.getCartId())){
+                        goods.getCartActivityInfos().forEach(cartActivityInfo -> {
+                            if (cartActivityInfo.getActivityType()!=null&&cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)
+                            && goods.getActivityId().equals(cartActivityInfo.getActivityId())){
+                                cartActivityInfo.getFullReduction().setRule(FullReductionGoodsCartBo.getFullReductionRule());
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        //国际化
+        fullReductionProcessorDao.internationalMessage(cartBo);
+    }
+
+
+
 }

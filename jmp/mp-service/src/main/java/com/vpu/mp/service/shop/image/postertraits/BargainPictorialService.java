@@ -64,7 +64,7 @@ public class BargainPictorialService extends ShopBaseService {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
         BargainRecord bargainRecord = bargainService.getBargainActById(param.getActivityId());
 
-        // 拼团活动信息不可用
+        // 砍价活动信息不可用
         if (bargainRecord == null) {
             bargainLog("分享", "砍价活动信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.ACTIVITY_DELETED);
@@ -72,7 +72,7 @@ public class BargainPictorialService extends ShopBaseService {
         }
 
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
-        // 拼团商品信息不可用
+        // 砍价商品信息不可用
         if (goodsRecord == null) {
             bargainLog("分享", "砍价商品信息不可用");
             shareInfoVo.setShareCode(GoodsShareInfo.GOODS_DELETED);
@@ -91,6 +91,9 @@ public class BargainPictorialService extends ShopBaseService {
             }
             shareInfoVo.setShareDoc(shareConfig.getShareDoc());
         } else {
+            ShopRecord shop = saas.shop.getShopById(getShopId());
+            String shareDoc =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_DOC, "messages",param.getRealPrice().setScale(2,BigDecimal.ROUND_HALF_UP));
+            shareInfoVo.setShareDoc(shareDoc);
             String imgPath = createBargainShareImg(bargainRecord, goodsRecord, param);
             shareInfoVo.setImgUrl(imgPath);
         }
@@ -112,7 +115,7 @@ public class BargainPictorialService extends ShopBaseService {
      * @return
      */
     private String createBargainShareImg(BargainRecord bargainRecord, GoodsRecord goodsRecord,BargainShareInfoParam param) {
-        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), PictorialConstant.BARGAIN_ACTION_SHARE,null);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.BARGAIN_ACTION_SHARE,null);
         // 已存在生成的图片
         if (pictorialRecord != null&&pictorialService.isGoodsSharePictorialRecordCanUse(pictorialRecord.getRule(),goodsRecord.getUpdateTime(),bargainRecord.getUpdateTime())) {
             return pictorialRecord.getPath();
@@ -166,10 +169,10 @@ public class BargainPictorialService extends ShopBaseService {
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(bargainRecord.getGoodsId());
 
         if (bargainRecord == null || goodsRecord == null) {
-            bargainLog("pictorial", "商品或拼团信息已删除或失效");
+            bargainLog("pictorial", "商品或砍价信息已删除或失效");
             return null;
         }
-        bargainLog("pictorial", "读取拼团海报配置信息");
+        bargainLog("pictorial", "读取砍价海报配置信息");
         PictorialShareConfig shareConfig = Util.parseJson(bargainRecord.getShareConfig(), PictorialShareConfig.class);
 
 
@@ -209,7 +212,7 @@ public class BargainPictorialService extends ShopBaseService {
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("record_id=%d", bargainRecord.getId()));
         }
         BufferedImage qrCodeImage;
         try {

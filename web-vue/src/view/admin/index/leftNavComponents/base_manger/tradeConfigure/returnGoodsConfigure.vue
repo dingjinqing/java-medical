@@ -1,7 +1,7 @@
 <template>
   <div class="returnGoodsConfigure">
     <!--售后配置-->
-    <section class="configureWrapper">
+    <section :class="returnParam.post_sale_status === true ?'configureWrapper':'configureWrapper-close'">
       <div class="title">
         <span></span>{{$t('returnconfiguration.afterconfig')}}
         <el-switch
@@ -34,124 +34,127 @@
           <el-radio :label=1>{{$t('returnconfiguration.cannotreturngoods')}} </el-radio>
           <el-radio :label=0>{{$t('returnconfiguration.canreturngoods')}}</el-radio>
         </el-radio-group>
-        <div
-          v-if="returnParam.return_change_goods_status === 1"
-          class="chooseInfo"
-        >{{$t('returnconfiguration.choosecannotreturn')}}</div>
-        <div
-          v-if="returnParam.return_change_goods_status === 0"
-          class="chooseInfo"
-        >{{$t('returnconfiguration.choosecanreturn')}}</div>
+        <section v-if="returnParam.return_change_goods_status !==2">
+          <div
+            v-if="returnParam.return_change_goods_status === 1"
+            class="chooseInfo"
+          >{{$t('returnconfiguration.choosecannotreturn')}}</div>
+          <div
+            v-if="returnParam.return_change_goods_status === 0"
+            class="chooseInfo"
+          >{{$t('returnconfiguration.choosecanreturn')}}</div>
 
-        <div
-          class="noneBlockList"
-          @click="showChoosingGoods"
-        >
-          <div class="noneBlockLeft">
-            <img :src="src">
-            <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+          <div
+            class="noneBlockList"
+            @click="showChoosingGoods"
+          >
+            <div class="noneBlockLeft">
+              <img :src="src">
+              <span>{{$t('tradeConfiguration.selectgoods')}}</span>
+            </div>
+            <div
+              class="noneBlockRight"
+              v-if="goodsN"
+            >已选择：
+              <el-input
+                size="mini"
+                style="width:50px"
+                :disabled="true"
+                placeholder="0"
+                v-model.number="goodsN"
+              ></el-input> 件 商品
+            </div>
           </div>
           <div
-            class="noneBlockRight"
-            v-if="goodsN"
-          >已选择：
-            <el-input
-              size="mini"
-              style="width:50px"
-              :disabled="true"
-              placeholder="0"
-              v-model.number="goodsN"
-            ></el-input> 件 商品
-          </div>
-        </div>
-        <div
-          class="noneBlockList"
-          @click="showBusClassDialog(2)"
-          style="margin: 10px 0"
-        >
-          <div class="noneBlockLeft">
-            <img :src="src">
-            <span>{{$t('tradeConfiguration.selectplant')}}</span>
-          </div>
-          <div
-            class="noneBlockRight"
-            v-if="platN"
-          >已选择：
-            <el-input
-              size="mini"
-              style="width:50px"
-              :disabled="true"
-              placeholder="0"
-              v-model.number="platN"
-            ></el-input> 个 平台分类
-          </div>
-        </div>
-        <div
-          class="noneBlockList"
-          @click="showBusClassDialog(1)"
-          style="margin: 10px 0"
-        >
-          <div class="noneBlockLeft">
-            <img :src="src">
-            <span>{{$t('tradeConfiguration.selectshop')}}</span>
+            class="noneBlockList"
+            @click="showBusClassDialog(2)"
+            style="margin: 10px 0"
+            v-if="false"
+          >
+            <div class="noneBlockLeft">
+              <img :src="src">
+              <span>{{$t('tradeConfiguration.selectplant')}}</span>
+            </div>
+            <div
+              class="noneBlockRight"
+              v-if="platN"
+            >已选择：
+              <el-input
+                size="mini"
+                style="width:50px"
+                :disabled="true"
+                placeholder="0"
+                v-model.number="platN"
+              ></el-input> 个 平台分类
+            </div>
           </div>
           <div
-            class="noneBlockRight"
-            v-if="busClassN"
-          >已选择：
-            <el-input
-              size="mini"
-              style="width:50px"
-              :disabled="true"
-              placeholder="0"
-              v-model.number="busClassN"
-            ></el-input> 个 商家分类
-          </div>
-        </div>
-        <div
-          class="noneBlockList"
-          @click="showProductLabel"
-          style="margin: 10px 0"
-        >
-          <div class="noneBlockLeft">
-            <img :src="src">
-            <span>{{$t('tradeConfiguration.selectlabel')}}</span>
-          </div>
-          <div
-            class="noneBlockRight"
-            v-if="labelN"
-          >已选择：
-            <el-input
-              size="mini"
-              style="width:50px"
-              :disabled="true"
-              placeholder="0"
-              v-model.number="labelN"
-            ></el-input> 个 商品标签
-          </div>
-        </div>
-        <div
-          class="noneBlockList"
-          @click="showBrandDialog"
-          style="margin: 10px 0"
-        >
-          <div class="noneBlockLeft">
-            <img :src="src">
-            <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+            class="noneBlockList"
+            @click="showBusClassDialog(1)"
+            style="margin: 10px 0"
+          >
+            <div class="noneBlockLeft">
+              <img :src="src">
+              <span>{{$t('tradeConfiguration.selectshop')}}</span>
+            </div>
+            <div
+              class="noneBlockRight"
+              v-if="busClassN"
+            >已选择：
+              <el-input
+                size="mini"
+                style="width:50px"
+                :disabled="true"
+                placeholder="0"
+                v-model.number="busClassN"
+              ></el-input> 个 商家分类
+            </div>
           </div>
           <div
-            class="noneBlockRight"
-            v-if="brandN"
-          >已选择：
-            <el-input
-              size="mini"
-              style="width:50px"
-              :disabled="true"
-              placeholder="0"
-              v-model.number="brandN"
-            ></el-input> 个 商品品牌
+            class="noneBlockList"
+            @click="showProductLabel"
+            style="margin: 10px 0"
+          >
+            <div class="noneBlockLeft">
+              <img :src="src">
+              <span>{{$t('tradeConfiguration.selectlabel')}}</span>
+            </div>
+            <div
+              class="noneBlockRight"
+              v-if="labelN"
+            >已选择：
+              <el-input
+                size="mini"
+                style="width:50px"
+                :disabled="true"
+                placeholder="0"
+                v-model.number="labelN"
+              ></el-input> 个 商品标签
+            </div>
           </div>
-        </div>
+          <div
+            class="noneBlockList"
+            @click="showBrandDialog"
+            style="margin: 10px 0"
+          >
+            <div class="noneBlockLeft">
+              <img :src="src">
+              <span>{{$t('tradeConfiguration.selectbrand')}}</span>
+            </div>
+            <div
+              class="noneBlockRight"
+              v-if="brandN"
+            >已选择：
+              <el-input
+                size="mini"
+                style="width:50px"
+                :disabled="true"
+                placeholder="0"
+                v-model.number="brandN"
+              ></el-input> 个 商品品牌
+            </div>
+          </div>
+        </section>
       </div>
 
     </section>
@@ -493,7 +496,6 @@ export default {
     },
     initData () {
       returnSelect().then(res => {
-        console.log(res)
         if (res.error === 0) {
           this.returnParam = res.content
           this.goodsInfo = this.returnParam.order_return_goods_package.add_goods
@@ -506,6 +508,8 @@ export default {
           this.busClassN = this.busClass.length
           this.platClass = this.returnParam.order_return_goods_package.add_cate
           this.platN = this.platClass.length
+          this.returnParam.post_sale_status = Boolean(res.content.post_sale_status)
+          this.returnParam.order_can_exchange = Boolean(res.content.order_can_exchange)
         } else {
           this.$message.error('请求数据失败，请稍后重试！')
         }
@@ -605,6 +609,16 @@ export default {
           }
         }
       }
+    }
+  }
+  .configureWrapper-close {
+    font-size: 13px;
+    .title {
+      height: 40px;
+      line-height: 40px;
+      background: #eef1f6;
+      padding-left: 16px;
+      margin-bottom: 20px;
     }
   }
   .configureWrapper {

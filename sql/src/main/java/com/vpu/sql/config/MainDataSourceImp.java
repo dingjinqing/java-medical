@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MainDataSourceImp implements MainDataSource {
@@ -53,16 +54,15 @@ public class MainDataSourceImp implements MainDataSource {
     @Override
     public List<String> getShopDbConfig(List<Integer> shopIds) throws SQLException {
         if( !CollectionUtils.isEmpty(shopIds) ){
-            DB_CONFIG_SQL = DB_CONFIG_SQL +"where shop_id in (?)";
+            String sql = shopIds.stream().map(x->"shop_id ="+x).collect(Collectors.joining(" or "));
+
+            DB_CONFIG_SQL = DB_CONFIG_SQL +" where 1=1 and "+sql;
         }
         List<String> result = Lists.newArrayList();
         try(Connection con = dataSource.getConnection();
             PreparedStatement pst = con.prepareStatement( DB_CONFIG_SQL );
         ){
-            if( !CollectionUtils.isEmpty(shopIds) ){
-                Array array = con.createArrayOf("INTEGER",shopIds.toArray());
-                pst.setArray(1,array);
-            }
+
             ResultSet rs = pst.executeQuery();
             while (rs.next()){
                 result.add(rs.getString("db_config"));

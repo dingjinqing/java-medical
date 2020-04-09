@@ -18,7 +18,7 @@
               @mouseleave="leave(index)"
             >
               <div class="width:150px;height:210px">
-                <img :src="item.imgUrl">
+                <img :src="item.pageImg">
                 <div
                   class="template_li_hidden"
                   :class="item.flag === index?'hiddleFlag':''"
@@ -27,14 +27,14 @@
                     <el-button
                       type="primary"
                       size="small"
-                      @click="handleToDecPage()"
+                      @click="handleToDecPage(item)"
                     >{{index===0?'自定义':'使用模板'}}</el-button>
                   </div>
 
                 </div>
               </div>
 
-              <div class="title">{{item.title}}</div>
+              <div class="title">{{item.pageName}}</div>
             </div>
 
           </div>
@@ -45,6 +45,7 @@
   </div>
 </template>
 <script>
+import { getTemplatesData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting'
 export default {
   props: {
     tuneUpMiniPage: Boolean
@@ -65,7 +66,27 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '订单',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/upload/0/image/crop_iwpm2uCcmvqt8TTk.jpeg',
+          title: '图书（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '食品（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '女装（不可修改）',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '美妆（模板不可修改）',
           flag: ''
         },
         {
@@ -75,7 +96,17 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '测试213',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '教育',
+          flag: ''
+        },
+        {
+          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
+          title: '摄影',
           flag: ''
         },
         {
@@ -85,42 +116,27 @@ export default {
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '汽车4s店',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '数码',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '美发',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '鲜花',
           flag: ''
         },
         {
           imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
-          flag: ''
-        },
-        {
-          imgUrl: this.$imageHost + '/image/admin/shop_beautify/tpl_type1.jpg',
-          title: '顶部导航',
+          title: '化妆品专卖',
           flag: ''
         }
       ]
@@ -153,7 +169,28 @@ export default {
       }
     }
   },
+  mounted () {
+    // 初始获取模板数据
+    this.handleToInitData()
+  },
   methods: {
+    handleToInitData () {
+      getTemplatesData().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let obj = {
+            pageImg: this.$imageHost + '/image/admin/shop_beautify/shop_decorate_module1.jpg',
+            pageName: '自定义模板',
+            pageId: -1
+          }
+          res.content.unshift(obj)
+          res.content.forEach((item, index) => {
+            item.flag = ''
+          })
+          this.dialogData = res.content
+        }
+      })
+    },
     // 鼠标移入
     enter (index) {
       console.log(index)
@@ -166,11 +203,15 @@ export default {
       this.dialogData[index].flag = ''
     },
     // 跳转到装修主页
-    handleToDecPage () {
+    handleToDecPage (item) {
+      console.log(item)
+
       this.$router.push({
         path: '/admin/home/main/decorationHome',
         query: {
+          pageParams: item.pageId,
           pageId: -1
+
         }
       })
     }

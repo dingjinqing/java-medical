@@ -1,117 +1,125 @@
+<!--
+*** 多人拼团-参团明细
+-->
 <template>
   <div class="content">
     <div class="main">
-      <el-form
-        label-width="100px"
-        style="height: 40px;"
-      >
-        <el-row :gutter=24>
-          <el-col :span="5">
-            <el-form-item :label="$t('groupBuy.userMobileNumber') + '：'">
-              <el-input
-                size="small"
-                v-model="mobile"
-                :placeholder="$t('groupBuy.mobileNumber')"
-                maxlength="11"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item :label="$t('groupBuy.userNickname') + '：'">
-              <el-input
-                size="small"
-                v-model="nickname"
-                :placeholder="$t('groupBuy.nickname')"
-                clearable
-                class="inputWidth"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item :label="$t('groupBuy.grouponState') + '：'">
-              <el-select
-                size="small"
-                v-model="stauts"
-                class="inputWidth"
-              >
-                <el-option
-                  v-for="item in stateOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-button
-              size="small"
-              type="primary"
-              @click="searchData"
-              style="margin: 4px 0 0 0"
-            >{{$t('groupBuy.searchDataText')}}
-            </el-button>
-          </el-col>
-        </el-row>
-      </el-form>
+      <section class="filter-condition">
+        <div>
+          <span>{{$t('groupBuy.userMobileNumber')+'：'}}</span>
+          <el-input
+            size="small"
+            v-model="mobile"
+            :placeholder="$t('groupBuy.mobileNumber')"
+            maxlength="11"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </div>
+        <div>
+          <span>{{$t('groupBuy.userNickname') + '：'}}</span>
+          <el-input
+            size="small"
+            v-model="nickname"
+            :placeholder="$t('groupBuy.nickname')"
+            clearable
+            class="inputWidth"
+          ></el-input>
+        </div>
+        <div>
+          <span>{{$t('groupBuy.grouponState') + '：'}}</span>
+          <el-select
+            size="small"
+            v-model="status"
+            class="inputWidth"
+          >
+            <el-option
+              v-for="item in stateOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <div>
+          <el-button
+            size="small"
+            type="primary"
+            @click="searchData"
+          >{{$t('groupBuy.searchDataText')}}
+          </el-button>
+        </div>
+      </section>
 
     </div>
 
     <div class="table_list">
       <el-table
-        class="version-manage-table"
         header-row-class-name="tableClss"
         :data="tableData"
         border
         style="width: 100%"
       >
-        <el-table-column
+        <!-- <el-table-column
           prop="groupId"
           :label="$t('groupBuy.groupId')"
           align="center"
-        ></el-table-column>       <el-table-column
+        ></el-table-column> -->
+
+        <el-table-column
           prop="commanderName"
           :label="$t('groupBuy.commanderName')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="commanderMobile"
           :label="$t('groupBuy.commanderMobile')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="username"
           :label="$t('groupBuy.username')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="mobile"
           :label="$t('groupBuy.mobile')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="status"
           :label="$t('groupBuy.grouponState')"
           align="center"
+          :formatter="statusText"
         ></el-table-column>
+
         <el-table-column
-          prop="isDefault"
           :label="$t('groupBuy.isDefault')"
           align="center"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            {{scope.row.status === '已成团' || scope.row.status === '拼团中' ? '是':'否'}}
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="orderSn"
           :label="$t('groupBuy.orderSn')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="startTime"
           :label="$t('groupBuy.startTime')"
           align="center"
         ></el-table-column>
+
         <el-table-column
           prop="endTime"
           :label="$t('groupBuy.endTime')"
@@ -129,20 +137,18 @@
 </template>
 
 <script>
-import wrapper from '@/components/admin/wrapper/wrapper'
 import { detailGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import pagination from '@/components/admin/pagination/pagination.vue'
 
 export default {
   components: {
-    wrapper,
     pagination
   },
   data () {
     return {
       mobile: null,
       nickname: null,
-      stauts: 0,
+      status: null,
       tableData: [],
       pageParams: {},
       stateOptions: {}
@@ -167,19 +173,40 @@ export default {
       }
       this.searchData()
     },
+    statusText (row) {
+      console.log(row, 'get-row')
+      switch (row.status) {
+        case 0:
+          row.status = '成团中'
+          break
+        case 1:
+          row.status = '已成团'
+          break
+        case 2:
+          row.status = '未成团'
+          break
+        case 3:
+          row.status = '已成团'
+          break
+        case -1:
+          row.status = '未付款'
+          break
+      }
+      return row.status
+    },
     // 查询
     searchData () {
       this.tableData.loading = true
       let obj = {
         nickName: this.nickname,
         mobile: this.mobile,
-        stauts: this.stauts,
+        status: this.status,
         activityId: this.$route.query.id,
         currentPage: this.pageParams.currentPage,
         pageRows: this.pageParams.pageRows
       }
       detailGroupBuy(obj).then(res => {
-        console.log(res)
+        console.log(res, 'get-res')
         this.pageParams = res.content.page
         this.tableData = res.content.dataList
         this.tableData.loading = true
@@ -200,13 +227,12 @@ export default {
     position: relative;
     background-color: #fff;
     padding: 15px;
-    .el-col {
-      height: 40px;
-      line-height: 40px;
-    }
-    .wrapper {
-      .el-button {
-        margin-left: 5px;
+    .filter-condition {
+      display: flex;
+      margin-left: 15px;
+      padding: 10px 0;
+      div {
+        margin-right: 20px;
       }
     }
   }

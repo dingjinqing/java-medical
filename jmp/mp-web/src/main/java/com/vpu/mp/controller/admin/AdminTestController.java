@@ -192,4 +192,10 @@ public class AdminTestController extends AdminBaseController {
 		logger().info("混合发送发出");
 		return success();
 	}
+	@RequestMapping(value = "/api/admin/test/testDrew")
+	public JsonResult testDrew() {
+		saas.getShopApp(8984736).groupDraw.groupDrawUser.dealOpenGroupDraw();
+		return null;
+		
+	}
 }

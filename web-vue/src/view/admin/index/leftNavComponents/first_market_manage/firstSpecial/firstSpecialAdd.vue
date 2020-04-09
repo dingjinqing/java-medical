@@ -118,7 +118,8 @@
           >
             <el-input-number
               v-model="form.first"
-              :min='0'
+              :min='1'
+              :max='127'
               controls-position="right"
             ></el-input-number>
             <p class="form_tip">{{$t('firstSpecialAdd.priorityTip')}}</p>
@@ -144,7 +145,7 @@
                 <el-input-number
                   v-model="form.limitAmount"
                   :disabled="!limit"
-                  :min='1'
+                  :min="0"
                   style="margin-left: 10px;"
                   controls-position="right"
                 ></el-input-number>
@@ -161,10 +162,14 @@
           <!-- 活动商品 -->
           <el-form-item
             :label="$t('firstSpecialAdd.activeGoods')+'：'"
+            v-if="!isEditFlag"
             required
           >
             <el-button @click="selectGoodsHandle">+{{$t('firstSpecialAdd.chooseGoods')}}</el-button>
-            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}}</p>
+            <p class="form_tip">{{$t('firstSpecialAdd.selectUp')}} <span
+                @click="onlySelectGoodsHandle"
+                style="color: #e4393c"
+              >{{$t('adSharePolite.alreadyChoose')}}{{this.goodsIdList.length}}{{$t('adSharePolite.goods')}}</span></p>
           </el-form-item>
           <!-- 设置商品首单优惠 -->
           <div
@@ -226,6 +231,7 @@
                 <el-button
                   type="text"
                   @click="deleteSelectGoods"
+                  v-if="!isEditFlag"
                 >{{$t('firstSpecialAdd.batchDeletion')}}</el-button>
                 <el-button
                   type="text"
@@ -273,22 +279,22 @@
                 prop="goodsNumber"
               ></el-table-column>
               <el-table-column :label="$t('firstSpecialAdd.discount')">
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <el-input
                     style="width:80px;"
                     size="small"
                     v-model="row.batchDiscount"
-                    @change="tableBatchDiscountChange(row)"
+                    @input="tableBatchDiscountChange(row, $index)"
                   ></el-input>
                 </template>
               </el-table-column>
               <el-table-column :label="$t('firstSpecialAdd.priceReduction')">
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <el-input
-                    style="width:60px;"
+                    style="width:80px;"
                     size="small"
                     v-model="row.batchReduce"
-                    @change="tableBatchReduceChange(row)"
+                    @input="tableBatchReduceChange(row, $index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -296,7 +302,7 @@
                 :label="$t('firstSpecialAdd.firstUnitPrice')"
                 width="150"
               >
-                <template slot-scope="{row}">
+                <template slot-scope="{row, $index}">
                   <p
                     v-if="row.tips"
                     style="color:red;font-size:12px;"
@@ -304,12 +310,12 @@
                   <el-input
                     style="width:80px;"
                     size="small"
-                    v-model="row.batchFinalPrice"
-                    @change="tableBatchFinalPriceChange(row)"
+                    v-model.lazy="row.batchFinalPrice"
+                    @input="tableBatchFinalPriceChange(row, $index)"
                   ></el-input>
                   <el-button
                     type="text"
-                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0"
+                    v-if="row.goodsProductParams && row.goodsProductParams.length > 0 && row.isDefaultProduct != 1"
                     @click="getProductInfo(row)"
                   >{{row.goodsProductParams?row.goodsProductParams.length:0}}{{$t('firstSpecialAdd.specialPrice')}}</el-button>
                 </template>
@@ -317,6 +323,7 @@
               <el-table-column
                 :label="$t('firstSpecialAdd.operate')"
                 align="center"
+                v-if="!isEditFlag"
               >
                 <template slot-scope="{row}">
                   <div style="align: center;">
@@ -339,7 +346,7 @@
           </el-button>
           <div
             class="more-setting"
-            v-if="showmore"
+            v-show="showmore"
           >
             <el-form-item
               :label="$t('firstSpecialAdd.sharing')"
@@ -453,6 +460,7 @@
     <choosingGoods
       @resultGoodsIds="getGoodsIds"
       :tuneUpChooseGoods="tuneUpChooseGoods"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsIdList"
     />
     <!-- 图片上传 -->
@@ -516,6 +524,7 @@ export default {
       },
       limit: 0,
       tuneUpChooseGoods: false,
+      isOnlyShowChooseGoods: false,
       goodsIdList: [],
       tableData: [],
       selectGoods: [],
@@ -620,6 +629,11 @@ export default {
       this.discountType = String(index)
     },
     selectGoodsHandle () {
+      this.isOnlyShowChooseGoods = false
+      this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+    },
+    onlySelectGoodsHandle () {
+      this.isOnlyShowChooseGoods = true
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
     },
     // 选择商品后，得到商品id
@@ -664,6 +678,7 @@ export default {
         this.tableData = this.tableData.filter(function (item, i) {
           return item.goodsId !== goodsId
         })
+        this.goodsIdList = this.tableData.map(item => item.goodsId)
       })
     },
     handleSelectionChange (rows) {
@@ -719,15 +734,15 @@ export default {
         if (this.discountType === '0') {
           item.batchDiscount = this.form.batchDiscount
           item.batchFinalPrice = (item.batchDiscount / 10 * price).toFixed(2)
-          item.batchReduce = price - item.batchFinalPrice
+          item.batchReduce = Number(price - item.batchFinalPrice).toFixed(2)
         } else if (this.discountType === '1') {
           item.batchReduce = this.form.batchReduce
           item.batchFinalPrice = Number(price - item.batchReduce).toFixed(2)
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
         } else if (this.discountType === '2') {
           item.batchFinalPrice = this.form.batchFinalPrice
-          item.batchDiscount = (item.batchFinalPrice / price).toFixed(2) * 10
-          item.batchReduce = price - item.batchFinalPrice
+          item.batchDiscount = (item.batchFinalPrice / price * 10).toFixed(2)
+          item.batchReduce = Number(price - item.batchFinalPrice).toFixed(2)
         }
         // 验证计算值安全性
         console.log(item)
@@ -761,7 +776,7 @@ export default {
       })
     },
     // 表格内输入折扣
-    tableBatchDiscountChange (row) {
+    tableBatchDiscountChange (row, index) {
       console.log('BatchDiscountChange')
       let price = Number(row.shopPrice)
       let batchDiscount = Number(row.batchDiscount)
@@ -771,37 +786,45 @@ export default {
         return false
       }
       let batchFinalPrice = (batchDiscount / 10 * price).toFixed(2)
-      let batchReduce = price - batchFinalPrice
-      this.$set(row, 'batchFinalPrice', batchFinalPrice)
-      this.$set(row, 'batchReduce', batchReduce)
+      let batchReduce = parseFloat(price - batchFinalPrice).toFixed(2)
+      // this.$set(row, 'batchFinalPrice', batchFinalPrice)
+      // this.$set(row, 'batchReduce', batchReduce)
+      row.batchFinalPrice = batchFinalPrice
+      row.batchReduce = batchReduce
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'discount')
     },
     // 表格内输入减价
-    tableBatchReduceChange (row) {
+    tableBatchReduceChange (row, index) {
       console.log('BatchReduceChange')
       let price = Number(row.shopPrice)
       let batchReduce = Number(row.batchReduce)
-      let batchFinalPrice = price - batchReduce
-      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
+      console.log(batchReduce)
+      let batchFinalPrice = parseFloat(price - batchReduce).toFixed(2)
+      let batchDiscount = (batchFinalPrice / price * 10).toFixed(2)
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
-      this.$set(row, 'batchFinalPrice', batchFinalPrice)
-      this.$set(row, 'batchDiscount', batchDiscount)
+      row.batchFinalPrice = batchFinalPrice
+      row.batchDiscount = batchDiscount
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'reduce')
     },
     // 表格内输入首单价
-    tableBatchFinalPriceChange (row) {
+    tableBatchFinalPriceChange (row, index) {
       console.log('BatchFinalPriceChange')
       let price = Number(row.shopPrice)
       let batchFinalPrice = Number(row.batchFinalPrice)
-      let batchReduce = price - batchFinalPrice
-      let batchDiscount = (batchFinalPrice / price).toFixed(2) * 10
-      this.$set(row, 'batchReduce', batchReduce)
+      let batchReduce = parseFloat(price - batchFinalPrice).toFixed(2)
+      let batchDiscount = (batchFinalPrice / price * 10).toFixed(2)
       if (isNaN(Number(batchDiscount))) {
         batchDiscount = 0
       }
-      this.$set(row, 'batchDiscount', batchDiscount)
+      row.batchReduce = batchReduce
+      row.batchDiscount = batchDiscount
+      // this.$set(row, 'batchReduce', batchReduce)
+      // this.$set(row, 'batchDiscount', batchDiscount)
+      this.$set(this.tableData, index, row)
       this.watchbatchFinalPrice(price, batchFinalPrice, row, 'final')
     },
     watchbatchFinalPrice (price, batchFinalPrice, row, operate) {
@@ -862,6 +885,7 @@ export default {
             return item
           }
         })
+        that.goodsIdList = that.tableData.map(item => item.goodsId)
       })
     },
     // 批量价格取整
@@ -879,14 +903,16 @@ export default {
         if (that.selectGoods.length > 0) {
           that.selectGoods.forEach(function (item, i) {
             let index = that.tableData.findIndex((row, j) => row.goodsId === item.goodsId)
-            let batchFinalPrice = Math.ceil(that.tableData[index].batchFinalPrice)
+            let batchFinalPrice = Math.round(that.tableData[index].batchFinalPrice)
             item.batchFinalPrice = batchFinalPrice
-            item.goodsProductParams = item.goodsProductParams.map((good, k) => {
-              if (good.prdPrice) {
-                good.prdPrice = Math.ceil(good.prdPrice)
-              }
-              return good
-            })
+            if (item.goodsProductParams && item.goodsProductParams.length > 0) {
+              item.goodsProductParams = item.goodsProductParams.map((good, k) => {
+                if (good.prdPrice) {
+                  good.prdPrice = Math.round(good.prdPrice)
+                }
+                return good
+              })
+            }
             that.$set(that.tableData, index, item)
             console.log(that.tableData[index])
           })
@@ -923,6 +949,13 @@ export default {
     },
     paramsAssign () {
       this.form.firstSpecialGoodsParams = this.tableData.map((item, i) => {
+        if (!item.goodsProductParams) {
+          item.goodsProductParams = [{
+            prdId: item.prdId,
+            productId: item.prdId,
+            prdPrice: Number(item.batchFinalPrice || item.shopPrice)
+          }]
+        }
         let param = {
           goodsId: item.goodsId,
           goodsName: item.goodsName,

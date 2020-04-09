@@ -151,8 +151,8 @@ public class AdminShopDecorateController extends AdminBaseController {
 	 * 分享装修页面获取小程序二维码
 	 * @return
 	 */
-	@PostMapping(value = "/admin/decorate/page/share")
-	public JsonResult getPageShareCode(@RequestBody Integer pageId) throws Exception {
+	@GetMapping(value = "/admin/decorate/page/share")
+	public JsonResult getPageShareCode(@RequestParam Integer pageId) {
 		return success(shop().adminDecoration.getMpQrCode(pageId));
 	}
 
@@ -257,5 +257,24 @@ public class AdminShopDecorateController extends AdminBaseController {
     	}
         shop().config.searchCfg.setSearchConfig(config);
         return success();
+    }
+
+
+    /**
+     * 全部页面模板
+     * @return
+     */
+    @GetMapping(value = "/admin/decorate/templates")
+    public JsonResult getTemplates() {
+        return success(saas.shop.decoration.getAll());
+    }
+
+    /**
+     * 模板
+     * @return
+     */
+    @GetMapping(value = "/admin/decorate/templates/get")
+    public JsonResult getTemplateContent(Integer id) {
+        return success(shop().adminDecoration.covertTemplate(id));
     }
 }

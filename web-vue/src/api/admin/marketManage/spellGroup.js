@@ -91,3 +91,12 @@ export function newUserList (data) {
     data: data
   })
 }
+
+// 分享
+export function shareActivity (data) {
+  return service({
+    url: '/api/admin/market/groupbuy/share',
+    method: 'post',
+    data: data
+  })
+}

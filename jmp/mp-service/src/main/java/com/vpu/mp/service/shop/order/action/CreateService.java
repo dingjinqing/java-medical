@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -33,6 +35,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -60,13 +63,16 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record3;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -151,10 +157,12 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private FreeShippingService freeShippingService;
 
+    @Autowired
+    PreSaleProcessorDao preSaleProcessorDao;
     /**
      * 营销活动processorFactory
      */
-   @Autowired(required = false)
+   @Autowired
     private OrderCreateMpProcessorFactory marketProcessorFactory;
 
     @Override
@@ -258,20 +266,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 //必填信息
                 must.addRecord(param.getMust());
                 orderBo.setOrderId(order.getOrderId());
-                if(OrderConstant.PAY_CODE_COD.equals(order.getPayCode()) ||
-                    OrderConstant.PAY_CODE_BALANCE_PAY.equals(order.getPayCode()) ||
-                    (OrderConstant.PAY_CODE_SCORE_PAY.equals(order.getPayCode()) && BigDecimalUtil.compareTo(order.getMoneyPaid(), BigDecimal.ZERO) == 0) ||
-                    (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && order.getBkOrderPaid() > OrderConstant.BK_PAY_NO)
-                ) {
-                    //加锁
-                    atomicOperation.addLock(orderBo.getOrderGoodsBo());
-                    //货到付款、余额、积分(非微信混合)付款，生成订单时加销量减库存
-                    marketProcessorFactory.processOrderEffective(param,order);
-                    logger().info("加锁{}",order.getOrderSn());
-                    atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
-                    logger().info("更新成功{}",order.getOrderSn());
-                    //营销活动支付回调
-                }
+                //待发货、拼团中、预售支付定金或支付完成
+                processEffective(param, orderBo, order);
             });
             orderAfterRecord = orderInfo.getRecord(orderBo.getOrderId());
             createVo.setOrderSn(orderAfterRecord.getOrderSn());
@@ -286,10 +282,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (Exception e) {
             logger().error("下单捕获mp异常", e);
             return ExecuteResult.create(JsonResultCode.CODE_ORDER, null);
-        }finally {
-            //释放锁
-            logger().info("释放锁{}",orderSn);
-            atomicOperation.releaseLocks();
         }
         //购物车删除
         if(OrderConstant.CART_Y.equals(param.getIsCart())){
@@ -353,9 +345,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 自提时间
 
             // 会员卡
-            currencyMember(StringUtil.isBlank(param.getMemberCardNo()) ? null : userCard.userCardDao.getValidByCardNo(param.getMemberCardNo())).
+                currentMember(StringUtil.isBlank(param.getMemberCardNo()) ? null : userCard.userCardDao.getValidByCardNo(param.getMemberCardNo())).
             //优惠卷
-            currencyCupon(StringUtil.isBlank(param.getCouponSn()) ? null : coupon.getValidCoupons(param.getCouponSn())).
+                currentCupon(StringUtil.isBlank(param.getCouponSn()) ? null : coupon.getValidCoupons(param.getCouponSn())).
             orderType(type).
             build();
     }
@@ -373,11 +365,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             throw new MpException(JsonResultCode.CODE_ORDER_ADDRESS_NO_NULL);
         }
         //会员卡失效
-        if(StringUtil.isNotBlank(param.getMemberCardNo()) && bo.getCurrencyMember() == null) {
+        if(StringUtil.isNotBlank(param.getMemberCardNo()) && bo.getCurrentMember() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_CARD_INVALID);
         }
         //优惠卷失效
-        if(StringUtil.isNotBlank(param.getCouponSn()) && bo.getCurrencyCupon() == null) {
+        if(StringUtil.isNotBlank(param.getCouponSn()) && bo.getCurrentCupon() == null) {
             throw new MpException(JsonResultCode.CODE_ORDER_COUPON_INVALID);
         }
         logger().info("校验checkCreateOrderBo,end");
@@ -537,8 +529,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processBeforeUniteActivity(param, vo);
         //服务条款
         setServiceTerms(vo);
-        // 积分使用规则
-        setScorePayRule(vo);
         //支付方式
         if(param.getPaymentList() != null){
             vo.setPaymentList(param.getPaymentList());
@@ -573,7 +563,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-
+            //TODO 预售商品，不支持现购买 && $card_type!=1 && !$storeId
+            if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(temp.getGoodsInfo().getGoodsType())) {
+                preSaleCheck(temp);
+            }
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             logger().info("calculateResult:{}", calculateResult);
@@ -583,20 +576,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
-
-            //会员专享校验
-
-            //预售商品，不支持现购买
-
             //非加价购 && 非限次卡
-            if(Boolean.TRUE) {
-                if(temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-                if(temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-            }
+            goodsNumLimit(temp);
 
             //price 副本
 
@@ -620,6 +601,41 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         return boList;
     }
 
+    private void preSaleCheck(Goods temp) throws MpException {
+        // key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Lists.newArrayList(temp.getGoodsId()), DateUtil.getLocalDateTime());
+        if(MapUtils.isNotEmpty(goodsPreSaleListInfo)) {
+            //当前商品对应的预售信息
+            List<Record3<Integer, Integer, BigDecimal>> preSaleInfos = goodsPreSaleListInfo.get(temp.getGoodsId());
+            if(CollectionUtils.isNotEmpty(preSaleInfos)) {
+                for (Record3<Integer, Integer, BigDecimal> info : preSaleInfos) {
+                    PreSaleVo detail = preSaleProcessorDao.getDetail(info.get(1, Integer.class));
+                    if(detail.getBuyType().equals(NO)) {
+                        throw new MpException(JsonResultCode.CODE_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY, "为预售商品，不支持现购", temp.getGoodsInfo().getGoodsName());
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * 商品限购
+     * @param temp
+     * @throws MpException
+     */
+    private void goodsNumLimit(Goods temp) throws MpException {
+        //TODO 非加价购 && 非限次卡
+        if (!Boolean.TRUE.equals(temp.getIsAlreadylimitNum())) {
+            if (temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+            if (temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitMaxNum().toString());
+            }
+        }
+    }
+
     /**
      * 营销、非营销处理后初始化orderGoods对象
      * @param param 结算参数
@@ -633,7 +649,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
             OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
-
+            goodsNumLimit(temp);
             boList.add(bo);
         }
         param.setBos(boList);
@@ -648,7 +664,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     public void checkGoodsAndProduct(Goods goods) throws MpException {
         if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
             logger().error("checkGoodsAndProduct,商品不存在");
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, goods.getGoodsInfo().getGoodsName());
+            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
         }
         if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
             logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
@@ -695,9 +711,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public void processOrderBeforeVo(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos) {
         logger().info("金额处理赋值(processOrderBeforeVo),start");
+        //积分兑换比
+        Integer scoreProportion = scoreCfg.getScoreProportion();
         //积分抵扣金额()
         BigDecimal scoreDiscount =
-            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal("100"));
+            BigDecimalUtil.divide(new BigDecimal(param.getScoreDiscount() == null ? 0: param.getScoreDiscount()), new BigDecimal(scoreProportion));
         //余额抵扣金额
         BigDecimal useAccount = param.getBalance();
         //会员卡抵扣金额
@@ -756,22 +774,25 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             tolalDiscountAfterPrice = BigDecimal.ZERO;
         }
         //TODO 同城配送运费
+        //商品+运费
+        BigDecimal goodsPricsAndShipping = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
+        //当前微信支付金额
+        BigDecimal currentMoneyPaid = goodsPricsAndShipping;
+        //预售处理
+        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
+            vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
+            if(BigDecimalUtil.compareTo(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()) > 0) {
+                vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));
+                currentMoneyPaid = orderPreSale.getTotalPreSaleMoney();
+            }
+        }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
-            BigDecimalUtil.BigDecimalPlus.create(tolalDiscountAfterPrice, BigDecimalUtil.Operator.add),
-            BigDecimalUtil.BigDecimalPlus.create(vo.getShippingFee(), BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(currentMoneyPaid, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(scoreDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(useAccount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(cardBalance, null)
         );
-        //预售处理
-        if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && orderPreSale != null && PreSaleService.PRE_SALE_TYPE_SPLIT.equals(orderPreSale.getInfo().getPresaleType())){
-            vo.setOrderPayWay(OrderConstant.PAY_WAY_DEPOSIT);
-            if(BigDecimalUtil.compareTo(moneyPaid, orderPreSale.getTotalPreSaleMoney()) > 0) {
-                vo.setBkOrderMoney(BigDecimalUtil.subtrac(moneyPaid, orderPreSale.getTotalPreSaleMoney()));
-                moneyPaid = orderPreSale.getTotalPreSaleMoney();
-            }
-        }
         //支付金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(moneyPaid, BigDecimal.ZERO) < 0){
             moneyPaid = BigDecimal.ZERO;
@@ -781,11 +802,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //折后订单金额
         BigDecimal moneyAfterDiscount = BigDecimalUtil.add(tolalDiscountAfterPrice, vo.getShippingFee());
         //最大积分抵扣
-        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivide(
-            BigDecimalUtil.BigDecimalPlus.create(moneyAfterDiscount, BigDecimalUtil.Operator.multiply),
+        BigDecimal scoreMaxDiscount = BigDecimalUtil.multiplyOrDivideByMode(
+            RoundingMode.HALF_DOWN,
+            BigDecimalUtil.BigDecimalPlus.create(scoreCfg.getDiscount().equals(String.valueOf(YES)) ? moneyAfterDiscount : tolalDiscountAfterPrice, BigDecimalUtil.Operator.multiply),
             BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(scoreCfg.getScoreDiscountRatio()), BigDecimalUtil.Operator.divide),
-            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal("100"), null)
-        );
+            BigDecimalUtil.BigDecimalPlus.create(new BigDecimal(100)));
         //会员信息
         UserRecord user = member.getUserRecordById(param.getWxUserInfo().getUserId());
         //赋值
@@ -806,6 +827,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setMoneyAfterDiscount(moneyAfterDiscount);
         vo.setExchang(vo.getDefaultMemberCard() == null ? NO : (CardConstant.MCARD_TP_LIMIT.equals(vo.getDefaultMemberCard().getCardType()) ? YES : NO));
         vo.setScoreMaxDiscount(scoreMaxDiscount);
+        vo.setScoreProportion(scoreProportion);
         vo.setInvoiceSwitch(tradeCfg.getInvoice());
         vo.setCancelTime(tradeCfg.getCancelTime());
         vo.setActivityType(param.getActivityType());
@@ -814,6 +836,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         vo.setIsScorePay(tradeCfg.getScoreFirst());
         vo.setIsBalancePay(tradeCfg.getBalanceFirst());
         vo.setTolalDiscountAfterPrice(tolalDiscountAfterPrice);
+        // 积分使用规则
+        setScorePayRule(vo);
         logger().info("金额处理赋值(processOrderBeforeVo),end");
     }
 
@@ -863,6 +887,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if(BigDecimalUtil.compareTo(vo.getScoreDiscount(), vo.getScoreMaxDiscount()) == 1){
             throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
         }
+        //积分支付最小限制
+        if(vo.getScorePayLimit().equals(YES) && param.getScoreDiscount() > vo.getScorePayNum()){
+            throw new MpException(JsonResultCode.CODE_ORDER_SCORE_LIMIT);
+        }
         //TODO 限次卡校验
         if(Boolean.FALSE){
             throw new MpException(JsonResultCode.CODE_ORDER_MCARD_TP_LIMIT_LIMIT);
@@ -884,7 +912,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void setOtherValue(OrderInfoRecord order, CreateOrderBo orderBo, OrderBeforeVo beforeVo){
         //TODO 订单类型拼接(支付有礼)
         orderBo.getOrderType().addAll(orderGoods.getGoodsType(orderBo.getOrderGoodsBo()));//支付信息
-        if(BigDecimalUtil.add(beforeVo.getMoneyPaid(), beforeVo.getBkOrderMoney()).compareTo(BigDecimal.ZERO) == 0){
+        if(BigDecimalUtil.addOrSubtrac(
+            BigDecimalUtil.BigDecimalPlus.create(beforeVo.getMoneyPaid(), BigDecimalUtil.Operator.add),
+            BigDecimalUtil.BigDecimalPlus.create(beforeVo.getBkOrderMoney(), BigDecimalUtil.Operator.add),
+            BigDecimalUtil.BigDecimalPlus.create(beforeVo.getInsteadPayMoney())).compareTo(BigDecimal.ZERO) == 0){
             logger().info("支付信息:余额支付");
             //非补款
             order.setPayCode(OrderConstant.PAY_CODE_BALANCE_PAY);
@@ -954,6 +985,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         order.setReturnDaysCfg(tradeCfg.getDrawbackDays().byteValue());
         //确认收货后order_timeout_days天，订单完成
         order.setOrderTimeoutDays(tradeCfg.getOrderTimeoutDays().shortValue());
+        //是否下单减库存
+        order.setIsLock(tradeCfg.getIsLock());
     }
 
     /**
@@ -1123,7 +1156,47 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         return freeGoodsIds;
     }
 
-    public void updateStockAndSales(){
-
+    /**
+     *
+     * @param param
+     * @param orderBo
+     * @param order
+     * @throws MpException
+     */
+    private void processEffective(CreateParam param, CreateOrderBo orderBo, OrderInfoRecord order) throws MpException {
+        //lock
+        boolean flag = false;
+        try{
+            if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY) || order.getOrderStatus().equals(OrderConstant.ORDER_PIN_PAYED_GROUPING) ||
+                (BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType()) && order.getBkOrderPaid() > OrderConstant.BK_PAY_NO)) {
+                logger().info("下单时待发货、拼团中、预售支付定金或支付完成减库存、调用Effective方法");
+                //加锁
+                atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                flag = true;
+                //货到付款、余额、积分(非微信混合)付款，生成订单时修改活动状态
+                marketProcessorFactory.processOrderEffective(param,order);
+                //更新活动库存
+                marketProcessorFactory.processUpdateStock(param,order);
+                logger().info("加锁{}",order.getOrderSn());
+                atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
+                logger().info("更新成功{}",order.getOrderSn());
+            }else if(order.getOrderStatus().equals(OrderConstant.ORDER_WAIT_PAY) && order.getIsLock().equals(YES)) {
+                logger().info("下单时待付款且配置为下单减库存调用更新库存方法");
+                flag = true;
+                //加锁
+                atomicOperation.addLock(orderBo.getOrderGoodsBo());
+                //下单减库存
+                marketProcessorFactory.processUpdateStock(param,order);
+                logger().info("加锁{}",order.getOrderSn());
+                atomicOperation.updateStockandSalesByActFilter(order, orderBo.getOrderGoodsBo(), true);
+                logger().info("更新成功{}",order.getOrderSn());
+            }
+        } finally {
+            if(flag) {
+                //释放锁
+                logger().info("释放锁{}",order.getOrderSn());
+                atomicOperation.releaseLocks();
+            }
+        }
     }
 }

@@ -70,7 +70,47 @@ public enum MpTemplateConfig {
     BARGAIN_SUCCESS(
         "OPENTM410292733",
         "砍价成功提醒",
-        "{{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}");
+        "{{first.DATA}}商品名称：{{keyword1.DATA}}底价：{{keyword2.DATA}}{{remark.DATA}}"),
+    ORDER_DELIVER(
+        "OPENTM200565259",
+        "订单发货提醒",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}物流公司：{{keyword2.DATA}}物流单号：{{keyword3.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_REFUND (
+        "TM00004",
+        "退款通知",
+        "{{first.DATA}}退款原因：{{reason.DATA}}退款金额：{{refund.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_REFUND_FAIL (
+        "OPENTM412546294",
+        "退款失败通知",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}退款时间：{{keyword2.DATA}}退款金额：{{keyword3.DATA}}失败原因：{{keyword4.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_WXPAY_SUCCESS (
+        "OPENTM416836000",
+        "订单支付成功提醒",
+        "{{first.DATA}}订单编号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}订单总价：{{keyword3.DATA}}订单状态：{{keyword4.DATA}}下单时间：{{keyword5.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_NOPAY_NOTIFY (
+        "OPENTM401717201",
+        "待支付订单提醒",
+        "{{first.DATA}}商品详情：{{keyword1.DATA}} 待付金额：{{keyword2.DATA}} 交易单号：{{keyword3.DATA}} 交易时间：{{keyword4.DATA}}交易有效期：{{keyword5.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_SELFPICKUP_SUCCESS (
+        "OPENTM412465579",
+        "取货成功通知",
+        "{{first.DATA}}订单号：{{keyword1.DATA}}取货时间：{{keyword2.DATA}}{{remark.DATA}}"
+    ),
+    ORDER_RECEIVED (
+        "OPENTM202314085",
+        "订单确认收货通知",
+        "{{first.DATA}}订单号：{{keyword1.DATA}}商品名称：{{keyword2.DATA}}下单时间：{{keyword3.DATA}}发货时间：{{keyword4.DATA}}确认收货时间：{{keyword5.DATA}}{{remark.DATA}}"
+    ),
+    AUDIT(
+    	"AT0442",
+    	"审核未通过提醒",
+    	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}未通过原因{{keyword3.DATA}}申请时间{{keyword4.DATA}}申请内容{{keyword5.DATA}}"
+    );
 	/**
 	 * 模板编号
 	 */

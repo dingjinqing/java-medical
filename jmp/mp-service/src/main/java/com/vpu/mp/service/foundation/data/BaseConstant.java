@@ -72,6 +72,8 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_MEMBER_EXCLUSIVE = 23;
     /** 我的奖品 */
     public final static byte ACTIVITY_TYPE_MY_PRIZE = 24;
+    /** 加价购商品*/
+    public final static byte ACTIVITY_TYPE_PURCHASE_GOODS = 97;
     /** 限时降价和等级会员价共存 */
     public final static Byte ACTIVITY_TYPE_GRADE_REDUCE_PRICE = 98;
     /** 代付订单 */
@@ -80,15 +82,15 @@ public final  class  BaseConstant {
     public final static Byte ACTIVITY_TYPE_SWEEP_CODE_BUY = 100;
 
 
-    //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 0可以 1不可以
+    //*************************首单特惠 超出限购数量后，买家不可继续添加购买该商品 1禁止超限购买，0超限全部恢复原价
     /**
      * 继续购买
      */
-    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONTINUE =0;
+    public final static Byte LIMIT_FLAG_CONTINUE =0;
     /**
      * 限制购买
      */
-    public final static byte FIRST_SPECIAL_LIMIT_FLAG_CONFINE =1;
+    public final static Byte LIMIT_FLAG_CONFINE =1;
 
 
     //******************普通标识********************************
@@ -252,7 +254,7 @@ public final  class  BaseConstant {
     /** 8参与活动的某规格无可使用活动数量 */
     public final static Byte ACTIVITY_STATUS_PRD_NOT_HAS_NUM = 8;
     /** 9有待支付对应订单 */
-    public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 8;
+    public final static Byte ACTIVITY_STATUS_HAS_ORDER_READY_TO_PAY = 9;
 
     public static boolean needToConsiderNotHasNum(Byte actState){
         if (ACTIVITY_STATUS_CAN_USE.equals(actState) || ACTIVITY_STATUS_NOT_START.equals(actState)) {

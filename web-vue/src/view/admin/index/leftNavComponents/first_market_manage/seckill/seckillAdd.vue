@@ -150,6 +150,12 @@
               align="center"
             ></el-table-column>
             <el-table-column
+              v-if="isEdite"
+              :label="$t('seckill.prdStock')"
+              prop="totalStock"
+              align="center"
+            ></el-table-column>
+            <el-table-column
               :label="$t('seckill.prdNumber')"
               align="center"
             >
@@ -212,10 +218,8 @@
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
 
-        <el-form-item
-          label="活动初始销量："
-          prop="limitAmount"
-        >
+        <el-form-item label="活动初始销量：">
+          <!-- prop="limitAmount" -->
           <el-input-number
             :disabled="this.isEdite"
             v-model="form.baseSale"
@@ -223,7 +227,7 @@
             :min="0"
             size="small"
           ></el-input-number>
-          <span style="color: #999; margin-left: 10px;">初始销量必填</span>
+          <!-- <span style="color: #999; margin-left: 10px;">初始销量必填</span> -->
         </el-form-item>
 
         <!-- 收起、展开更多配置 -->
@@ -519,8 +523,8 @@ export default {
       // 分享
       showImageDialog: false,
       srcList: {
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`
+        src1: `${this.$imageHost}/image/admin/share/seckill_share.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/seckill_pictorial.jpg`
       },
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
@@ -561,17 +565,18 @@ export default {
           this.form.goodsId = data.goods.goodsId
           this.getGoodsInfo(data.goodsId)
           this.form.secKillProduct = data.secKillProduct
-          this.form.secKillProduct.forEach((item, index) => {
-            if (item.prdDesc === '') {
-              item.prdDesc = data.goods.goodsName
-            }
-          })
+          // this.form.secKillProduct.forEach((item, index) => {
+          //   if (item.prdDesc === '') {
+          //     item.prdDesc = data.goods.goodsName
+          //   }
+          // })
           this.form.startTime = data.startTime
           this.form.endTime = data.endTime
           this.form.validity = [data.startTime, data.endTime]
           this.form.limitAmount = data.limitAmount
           this.form.limitPaytime = data.limitPaytime
           this.form.freeFreight = data.freeFreight
+          this.form.baseSale = data.baseSale
           // 展开设置
           this.arrorFlag = false
           // 会员卡

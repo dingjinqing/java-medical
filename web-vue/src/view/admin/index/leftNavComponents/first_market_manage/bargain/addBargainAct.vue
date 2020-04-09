@@ -154,30 +154,32 @@
                 v-else
                 prop="shopPrice"
                 :label="$t('addBargainAct.sttlementAmount')"
-                align="center"
                 class="tableHeaderHeight"
+                align="center"
               >
                 <template slot-scope="scope">
                   <div>
-                    <el-input-number
-                      :disabled="isEditFlag"
-                      v-model="param.floorPrice"
-                      size="mini"
-                      controls-position="right"
-                      :min="0"
-                      :max="scope.row.shopPrice"
-                    >
-                    </el-input-number>
-                    <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
-                    <el-input-number
-                      :disabled="isEditFlag"
-                      v-model="param.expectationPrice"
-                      size="mini"
-                      controls-position="right"
-                      :min="0"
-                      :max="scope.row.shopPrice"
-                    >
-                    </el-input-number>
+                    <div style="display: flex;justify-content: center;">
+                      <el-input-number
+                        :disabled="isEditFlag"
+                        v-model="param.floorPrice"
+                        size="mini"
+                        controls-position="right"
+                        :min="0"
+                        :max="scope.row.shopPrice"
+                      >
+                      </el-input-number>
+                      <span style="margin: 3px 6px;">{{$t('marketCommon.to')}}</span>
+                      <el-input-number
+                        :disabled="isEditFlag"
+                        v-model="param.expectationPrice"
+                        size="mini"
+                        controls-position="right"
+                        :min="0"
+                        :max="scope.row.shopPrice"
+                      >
+                      </el-input-number>
+                    </div>
                     <div style="margin-top:5px;">
                       <span>({{$t('addBargainAct.default0')}})</span>
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
@@ -194,6 +196,15 @@
           <!-- 砍到指定金额计算部分内容区域 -->
           <div v-if="this.param.bargainType==0">
 
+            <el-form-item
+              label="帮砍设置:"
+              prop=""
+            >
+              <el-checkbox
+                label="帮砍好友需要授权手机号才可以参与砍价"
+                v-model="param.needBindMobile"
+              ></el-checkbox>
+            </el-form-item>
             <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
@@ -218,30 +229,41 @@
               <div class="fontColor">{{$t('addBargainAct.expectPeopleTip')}}</div>
             </el-form-item>
 
-            <el-form-item :label="$t('addBargainAct.goodsFirstBargainProportion')+':'">
+            <el-form-item
+              :label="$t('addBargainAct.goodsFirstBargainProportion')+':'"
+              prop="bargainMin"
+            >
               <div>
-                <el-input-number
+                <el-input
                   v-model="param.bargainMin"
-                  controls-position="right"
                   size="small"
                   style="width:150px"
-                  :min="0"
-                  :max="50"
-                ></el-input-number>&nbsp;%&nbsp;{{$t('marketCommon.to')}}&nbsp;
-                <el-input-number
+                ></el-input>&nbsp;%&nbsp;{{$t('marketCommon.to')}}&nbsp;
+                <el-input
                   v-model="param.bargainMax"
                   size="small"
-                  controls-position="right"
                   style="width:150px"
-                  :min="0"
-                  :max="50"
-                ></el-input-number>&nbsp;%
+                  ref="bargainMax"
+                ></el-input>&nbsp;%
                 <span style="margin-left:10px">({{$t('addBargainAct.proportionIntervalTip')}})</span>
               </div>
               <div
                 class="fontColor"
                 style="line-height:24px;margin-top:10px;width: 880px;"
               >{{$t('addBargainAct.proportionInterval')}}</div>
+            </el-form-item>
+
+            <el-form-item label="活动初始参与砍价人次：">
+              <el-input-number
+                :disabled="isEditFlag"
+                v-model="param.initialSales"
+                size="small"
+                controls-position="right"
+                style="width:150px"
+                :min="0"
+              >
+              </el-input-number>
+              <div class="fontColor">活动商品初始参与砍价人次，将展示在小程序端。参与砍价人次=活动初始参与砍价人次+实际砍价人次，不填写则表示0</div>
             </el-form-item>
           </div>
 
@@ -285,6 +307,15 @@
             </el-form-item>
 
             <el-form-item
+              label="帮砍设置:"
+              prop=""
+            >
+              <el-checkbox
+                label="帮砍好友需要授权手机号才可以参与砍价"
+                v-model="param.needBindMobile"
+              ></el-checkbox>
+            </el-form-item>
+            <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
             >
@@ -292,6 +323,19 @@
                 <el-radio :label="1">{{$t('marketCommon.freeShipping')}}</el-radio>
                 <el-radio :label="0">{{$t('marketCommon.useOriginalProductShippingTemplate')}}</el-radio>
               </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="活动初始参与砍价人次：">
+              <el-input-number
+                :disabled="isEditFlag"
+                v-model="param.initialSales"
+                size="small"
+                controls-position="right"
+                style="width:150px"
+                :min="0"
+              >
+              </el-input-number>
+              <div class="fontColor">活动商品初始参与砍价人次，将展示在小程序端。参与砍价人次=活动初始参与砍价人次+实际砍价人次，不填写则表示0</div>
             </el-form-item>
           </div>
 
@@ -359,10 +403,11 @@
                           class="coupon_list_bottom"
                           style="font-size:12px"
                         >
-                          <span v-if="item.scoreNumber === 0">领取</span>
+                          <!-- <span v-if="item.scoreNumber === 0">领取</span>
                           <div v-if="item.scoreNumber !== 0">
                             <span>{{item.scoreNumber}}</span>积分 兑换
-                          </div>
+                          </div> -->
+                          <span>领取</span>
                         </div>
                       </section>
                       <!-- <span
@@ -444,10 +489,11 @@
                         class="coupon_list_bottom"
                         style="font-size:12px"
                       >
-                        <span v-if="item.scoreNumber === 0">领取</span>
+                        <!-- <span v-if="item.scoreNumber === 0">领取</span>
                         <div v-if="item.scoreNumber !== 0">
                           <span>{{item.scoreNumber}}</span>积分 兑换
-                        </div>
+                        </div> -->
+                        <span>领取</span>
                       </div>
                     </section>
                     <div
@@ -543,10 +589,16 @@ export default {
           this.rewardCouponObjs = res.content.rewardCouponList
           this.goodsRow.push(res.content.goods)
           let resultConfig = res.content.shopShareConfig
-          console.log(resultConfig)
           this.shareConfig = resultConfig
           this.shareConfig.shareImg = resultConfig.shareImgFullUrl
-          console.log(this.shareConfig)
+          this.param.needBindMobile = Boolean(res.content.needBindMobile)
+          if (res.content.bargainMin === null && res.content.bargainMax === null) {
+            this.param.bargainMin = ''
+            this.param.bargainMax = ''
+          } else {
+            this.param.bargainMin = res.content.bargainMin
+            this.param.bargainMax = res.content.bargainMax
+          }
         }
       })
     }
@@ -561,6 +613,22 @@ export default {
     }
   },
   data () {
+    var validMin = (rule, value, callback) => {
+      let validMax = this.$refs.bargainMax.value
+      if (!value && !validMax) {
+        callback()
+      }
+      var reg = /^(0|[1-9][0-9]*)$/
+      if (!reg.test(value) || !reg.test(validMax)) {
+        callback(new Error('请输入0和正整数'))
+      } else {
+        if (value > 50 || validMax > 50) {
+          callback(new Error('数值不能大于50'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       // 向帮忙砍价的用户赠送优惠券
       mrkingVoucherObjs: [],
@@ -586,6 +654,10 @@ export default {
         effectiveDate: '',
         goodsId: 0,
         expectationPrice: 0,
+        needBindMobile: false,
+        initialSales: 0,
+        bargainMin: '',
+        bargainMax: '',
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
@@ -623,6 +695,9 @@ export default {
         ],
         effectiveDate: [
           { required: true, message: this.$t('promoteList.check'), trigger: 'change' }
+        ],
+        bargainMin: [
+          { validator: validMin, trigger: ['change', 'blur'] }
         ]
       }
     }
@@ -686,13 +761,13 @@ export default {
           this.param.endTime = this.param.effectiveDate[1]
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
-
+          this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
           if (this.validParam()) {
             addBargain(this.param).then((res) => {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(res.message)
@@ -712,12 +787,13 @@ export default {
           this.param.endTime = this.param.effectiveDate[1]
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
+          this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
           if (this.validParam()) {
             updateBargain(this.param).then((res) => {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(this.$t('marketCommon.failureOperation'))
@@ -862,6 +938,7 @@ export default {
           width: 100px;
           height: 101px;
           margin-bottom: 10px;
+          border-radius: 10px;
           background: #fff;
           border: 1px solid #e4e4e4;
           cursor: pointer;

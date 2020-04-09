@@ -1,26 +1,20 @@
 package com.vpu.mp.controller.admin;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.OrderListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
-import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * 定金膨胀
@@ -72,8 +66,28 @@ public class AdminPreSaleController extends AdminBaseController {
      * 活动订单列表
      */
     @PostMapping("/order")
-    public JsonResult getOrderList(@RequestBody @Valid OrderListParam param) {
+    public JsonResult getOrderList(@RequestBody @Valid MarketOrderListParam param) {
         return success(shop().preSaleOrder.getOrderList(param));
+    }
+
+    /**
+     * 活动订单
+     * 取将要导出的行数
+     */
+    @PostMapping("/order/export/rows")
+    public JsonResult getActivityOrderExportTotalRows(@RequestBody @Valid MarketOrderListParam param) {
+        return success(shop().readOrder.marketOrderInfo.getMarketOrderListSize(param, BaseConstant.ACTIVITY_TYPE_PRE_SALE));
+    }
+
+    /**
+     * 活动订单
+     * 订单导出
+     */
+    @PostMapping("/order/export")
+    public void activityOrderExport(@RequestBody @Valid MarketOrderListParam param, HttpServletResponse response) {
+        Workbook workbook =shop().preSaleOrder.exportOrderList(param,getLang());
+        String fileName = Util.translateMessage(getLang(), JsonResultMessage.PRESALE_ORDER_LIST_FILENAME , OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
+        export2Excel(workbook,fileName,response);
     }
 
     /**
@@ -115,26 +129,6 @@ public class AdminPreSaleController extends AdminBaseController {
      */
     @PostMapping("/share/{id}")
     public JsonResult sharePreSale(@PathVariable Integer id) {
-        String pagePath = shop().preSale.sharePreSale(id);
-        String code = shop().qrCode.getMpQrCode(QrCodeTypeEnum.DOWN_PAYMENT_INFO, pagePath);
-        ShareQrCodeVo vo = new ShareQrCodeVo();
-        vo.setImageUrl(code);
-        vo.setPagePath(pagePath);
-        return success(vo);
-    }
-
-    /**
-     * 导出活动订单
-     */
-    @PostMapping("/order/export")
-    public void exportOrderExcel(
-        @RequestBody @Valid OrderListParam param, HttpServletResponse response) throws IOException {
-        Workbook workbook = shop().preSaleOrder.exportOrderList(param, getLang());
-        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-        String fileName =
-            Util.translateMessage(getLang(),
-                JsonResultMessage.PRESALE_ORDER_EXCEL, LANGUAGE_TYPE_EXCEL) + DateUtil.getLocalDateTime().toString();
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
-        workbook.write(response.getOutputStream());
+        return success(shop().preSale.getMpQrCode(id));
     }
 }

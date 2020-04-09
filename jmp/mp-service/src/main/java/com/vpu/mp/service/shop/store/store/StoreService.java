@@ -33,10 +33,13 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import static com.vpu.mp.db.shop.tables.CommentService.COMMENT_SERVICE;
 import static com.vpu.mp.db.shop.tables.Store.STORE;
 import static com.vpu.mp.db.shop.tables.StoreGoods.STORE_GOODS;
 import static com.vpu.mp.db.shop.tables.StoreGroup.STORE_GROUP;
+import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 
 
 /**
@@ -211,7 +214,11 @@ public class StoreService extends ShopBaseService {
      * @return StorePojo
      */
     public StorePojo getStore(Integer storeId) {
-        return db().fetchOne(STORE, STORE.STORE_ID.eq(storeId)).into(StorePojo.class);
+        StoreRecord r = db().fetchOne(STORE, STORE.STORE_ID.eq(storeId));
+        if(r == null){
+            return null;
+        }
+        return r.into(StorePojo.class);
     }
 
     /**
@@ -373,7 +380,7 @@ public class StoreService extends ShopBaseService {
         String imageUrl = qrCodeService.getMpQrCode(qrCodeTypeEnum, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.SECKILL_GOODS_ITEM_INFO.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.SHOP_SHARE.getUrl());
         return vo;
     }
 
@@ -428,5 +435,18 @@ public class StoreService extends ShopBaseService {
             storeList = storeList;
         }
         return storeList;
+    }
+
+    /**
+     * Gets charge store list.所有服务评价待审核的门店列表
+     *
+     * @return the charge store list
+     */
+    public Map<Integer, String> getChargeStoreList() {
+        return db().selectDistinct(COMMENT_SERVICE.STORE_ID, STORE.STORE_NAME).from(COMMENT_SERVICE)
+            .leftJoin(STORE).on(COMMENT_SERVICE.STORE_ID.eq(STORE.STORE_ID))
+            .where(COMMENT_SERVICE.DEL_FLAG.eq(BYTE_ZERO))
+            .and(COMMENT_SERVICE.FLAG.eq(BYTE_ZERO))
+            .fetchMap(COMMENT_SERVICE.STORE_ID, STORE.STORE_NAME);
     }
 }

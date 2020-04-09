@@ -47,6 +47,15 @@ public class EsBaseSearchService extends ShopBaseService {
     private static final String[] DEFAULT_STR = {GOODS_ID,SHOP_ID,IS_ON_SALE,GOODS_NUMBER};
 
     private static final String[] GOODS_SEARCH_STR = {
+        V1,
+        V2,
+        V3,
+        V4,
+        V5,
+        V6,
+        V7,
+        V8,
+        V9,
         GOODS_ID,
         SHOP_ID,
         IS_ON_SALE,
@@ -72,7 +81,9 @@ public class EsBaseSearchService extends ShopBaseService {
         MIN_SPEC_PRD_PRICE,
         FREIGHT_TEMPLATE_ID,
         PRD_JSON,
-        BASE_SALE
+        BASE_SALE,
+        DEFAULT_PRD,
+        MARKET_PRICE
     };
 
 
@@ -216,6 +227,7 @@ public class EsBaseSearchService extends ShopBaseService {
         }
         QueryBuilder queryBuilder = assemblySearchBuilder(param.getSearchList());
         sourceBuilder.query(queryBuilder);
+
         if( param.isQueryByPage() ){
             Integer totalRow =  assemblyPage(sourceBuilder,indexName);
             Page page = Page.getPage(totalRow,param.getCurrentPage(),param.getPageRows());
@@ -226,6 +238,9 @@ public class EsBaseSearchService extends ShopBaseService {
                 from = page.getTotalRows();
             }
             sourceBuilder.from( from ).size( size );
+        }
+        if( null != param.getSort() ){
+            sourceBuilder.sort(param.getSort().getSortName(),param.getSort().getSortOrder());
         }
         if( param.getFactList() != null ){
             assemblyAggregationBuilder(param.getFactList()).forEach(sourceBuilder::aggregation);

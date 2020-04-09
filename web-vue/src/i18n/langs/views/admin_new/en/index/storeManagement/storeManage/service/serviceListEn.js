@@ -13,6 +13,7 @@ export const en = {
   edit: 'edit',
   unShelf: 'under the shelf',
   shelf: 'shelf',
+  expired: 'expired',
   share: 'share',
   view: 'View evaluation',
   delete: 'delete',

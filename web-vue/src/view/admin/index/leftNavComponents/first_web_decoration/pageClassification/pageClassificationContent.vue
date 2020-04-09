@@ -135,7 +135,7 @@
             >{{$t('pageClassification.remove')}}</a>
             <a
               style="color: #5A8BFF;cursor: pointer;"
-              @click="jumpCatergory(scope.row)"
+              @click="jumpCatergory(scope.row, $event)"
             >{{$t('pageClassification.viewPage')}}</a>
           </template>
         </el-table-column>
@@ -231,14 +231,18 @@ export default {
     // 查询
     handleQuery () {
       this.loading = true
-      getPageclassificationData(this.requestParams).then(res => {
+      let params = Object.assign({}, this.requestParams, this.pageParams)
+      getPageclassificationData(params).then(res => {
+        this.loading = false
         console.log(res)
         this.pageParams = res.content.page
         this.requestParams.pageRows = res.content.page.pageRows
         this.requestParams.currentPage = res.content.page.currentPage
         this.tableData = res.content.dataList
-      }).catch(err => console.log(err))
-      this.loading = false
+      }).catch(err => {
+        this.loading = false
+        console.log(err)
+      })
     },
     addCatergory () {
       addPageclassification(this.requestFrom).then(res => {
@@ -257,7 +261,7 @@ export default {
       }).catch(err => console.log(err))
     },
     removeCatergory (row) {
-      this.$confirm(this.$t('pageClassification.cancel'), {
+      this.$confirm(this.$t('pageClassification.deleteConfirm'), {
         confirmButtonText: this.$t('pageClassification.confirm'),
         cancelButtonText: this.$t('pageClassification.cancel'),
         type: 'warning'
@@ -269,8 +273,13 @@ export default {
       }).catch(() => {
       })
     },
-    jumpCatergory (row) {
-
+    jumpCatergory (row, e) {
+      e.preventDefault()
+      console.log(row)
+      this.$router.push({
+        path: '/admin/home/main/pictureSetting',
+        query: { cartId: row.id }
+      })
     },
     handleEdit (row) {
       this.$prompt(this.$t('pageClassification.catergoryNamePlease'), {

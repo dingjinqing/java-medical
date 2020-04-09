@@ -207,8 +207,8 @@ export default {
         stock: undefined,
         limits: undefined,
         hasSend: 0,
-        codeAddDivArr: [{ batchName: null, batchId: null }],
-        codeAddDivArrBottom: [{ pwdName: null, pwdId: null }],
+        codeAddDivArr: [{ batchName: null, batchId: null, action: null }],
+        codeAddDivArrBottom: [{ pwdName: null, pwdId: null, action: null }],
         valid: false
       },
       cardActiveCfgData: {
@@ -292,6 +292,7 @@ export default {
       this.cardUsageCfgData.mobile = data.mobile
 
       // 领取设置
+      debugger
       this.cardReceiveCfgData.isPay = String(data.isPay)
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
@@ -302,22 +303,26 @@ export default {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArr = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId })
+            if (!item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArr.push({ batchName: item.name, batchId: item.batchId, action: item.action, disabled: true })
+            }
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null }]
+        this.cardReceiveCfgData.codeAddDivArr = [{ batchName: null, batchId: null, action: null, disabled: false }]
       }
 
       if (data.batchList && this.cardReceiveCfgData.receiveAction === '2') {
         if (data.batchList.length > 0) {
           this.cardReceiveCfgData.codeAddDivArrBottom = []
           data.batchList.forEach(item => {
-            this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId })
+            if (item.pwdBatch) {
+              this.cardReceiveCfgData.codeAddDivArrBottom.push({ pwdName: item.name, pwdId: item.batchId, action: item.action, disabled: true })
+            }
           })
         }
       } else {
-        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null }]
+        this.cardReceiveCfgData.codeAddDivArrBottom = [{ pwdName: null, pwdId: null, action: null, disabled: false }]
       }
       this.cardReceiveCfgData.stock = data.stock ? data.stock : 0
       this.cardReceiveCfgData.limits = data.limit ? data.limit : 0
@@ -388,6 +393,7 @@ export default {
       this.$refs.cardStoreCfgData.$emit('checkRule')
       this.$refs.cardReceiveCfgData.$emit('checkRule')
       this.$refs.cardActiveCfgData.$emit('checkRule')
+
       if (this.cardNameAndBg.valid && this.cardEffectTime.valid && this.cardStoreCfgData.valid &&
            this.cardReceiveCfgData.valid && this.cardActiveCfgData.valid) {
         this.prepareCardData()
@@ -400,6 +406,16 @@ export default {
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
       }
+      // 处理领取码
+      let batchIds = null
+      if (Number(this.cardReceiveCfgData.receiveAction) === 1) {
+        // 领取码
+        batchIds = this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId)
+      } else {
+        // 卡号+密码
+        batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
+      }
+
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -427,7 +443,7 @@ export default {
         'payMoney': this.cardReceiveCfgData.payMoney,
         'payScore': this.cardReceiveCfgData.payScore,
         'receiveAction': this.cardReceiveCfgData.receiveAction,
-        'batchIdList': this.cardReceiveCfgData.codeAddDivArr.map(({ batchId }) => batchId),
+        'batchIdList': batchIds,
         'stock': this.cardReceiveCfgData.stock,
         'limits': this.cardReceiveCfgData.limits,
         'activation': this.cardActiveCfgData.activation,

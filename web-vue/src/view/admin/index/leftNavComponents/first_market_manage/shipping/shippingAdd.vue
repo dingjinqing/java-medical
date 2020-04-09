@@ -77,12 +77,27 @@
               :key="index"
               class="storeContent"
             >
-              <el-button @click="hanldeToAddGoodS(index)">
+              <el-button
+                @click="hanldeToAddGoodS(index)"
+                size="small"
+              >
                 <i class="el-icon-plus"></i> {{ item.name }}
               </el-button>
-              <span v-if="index === 0">{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
-              <span v-if="index === 1">{{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }}</span>
-              <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span>
+              <span
+                style="color: #e4393c; cursor: pointer;"
+                v-if="index === 0"
+                @click="onlyHanldeToAddGoodS(index)"
+              >{{ $t('distribution.goodsTip1') }} {{ goodsInfo.length > 0 ? goodsInfo.length : 0 }} {{ $t('distribution.goodsTip2') }}</span>
+              <span
+                style="cursor: pointer;"
+                v-if="index === 1"
+                @click="hanldeToAddGoodS(index)"
+              >
+                <span v-if="busClass.length > 0">{{ $t('distribution.goodsTip1')}}{{ $t('distribution.goodsTip5') }}</span>
+                <span v-else>{{ $t('distribution.goodsTip6') }}{{ $t('distribution.goodsTip5') }}</span>
+              </span>
+              <!-- {{ $t('distribution.goodsTip1') }} {{ busClass.length > 0 ? busClass.length : 0 }} {{ $t('distribution.goodsTip3') }} -->
+              <!-- <span v-if="index === 2">{{ $t('distribution.goodsTip1') }} {{ platClass.length > 0 ? platClass.length : 0 }} {{ $t('distribution.goodsTip4') }}</span> -->
             </div>
           </div>
         </el-form-item>
@@ -199,6 +214,7 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       @resultGoodsDatas="choosingGoodsResult"
+      :onlyShowChooseGoods="isOnlyShowChooseGoods"
       :chooseGoodsBack="goodsInfo"
     />
     <!-- 选择 1商家分类;2平台分类弹窗 -->
@@ -206,7 +222,7 @@
       :dialogVisible.sync="tuneUpBusClassDialog"
       :classFlag="classFlag"
       @BusClassTrueDetailData="busClassDialogResult"
-      @backDataArr="commInfo"
+      :backDataArr="commInfo"
     />
 
   </div>
@@ -241,7 +257,7 @@ export default {
       }
     }
     var validateType = (rule, value, callback) => {
-      if (value === 0 && (this.goodsInfo.length === 0 || this.busClass.length === 0 || this.platClass.length === 0)) {
+      if (value === 0 && (this.goodsInfo.length === 0 && this.busClass.length === 0 && this.platClass.length === 0)) {
         callback(new Error('请选择商品信息'))
       } else {
         callback()
@@ -286,6 +302,7 @@ export default {
       storeArr: [], // 添加商品数据
 
       tuneUpChooseGoods: false, // 商品弹窗
+      isOnlyShowChooseGoods: false,
       tuneUpBusClassDialog: false, // 商家/平台弹窗
       classFlag: 0, // 商家/平台类型
       // 弹窗结果区分标识 1商家分类;2平台分类
@@ -370,9 +387,9 @@ export default {
           this.form.level = data.level
           this.form.type = data.type
           if (this.form.type === 0) {
-            this.goodsInfo = data.recommendGoodsId.split(',')
-            this.busClass = data.recommendCatId.split(',')
-            this.platClass = data.recommendSortId.split(',')
+            this.goodsInfo = data.recommendGoodsId !== '' ? data.recommendGoodsId.split(',') : []
+            this.busClass = data.recommendCatId !== '' ? data.recommendCatId.split(',') : []
+            // this.platClass = data.recommendSortId !== '' ? data.recommendSortId.split(',') : []
           }
           this.form.ruleList = data.ruleList
 
@@ -553,6 +570,7 @@ export default {
     hanldeToAddGoodS (index) {
       switch (index) {
         case 0:
+          this.isOnlyShowChooseGoods = false
           this.tuneUpChooseGoods = !this.tuneUpChooseGoods
           break
         case 1:
@@ -570,6 +588,29 @@ export default {
       }
     },
 
+    // 点击指定商品出现的添加类弹窗汇总--部分
+    onlyHanldeToAddGoodS (index) {
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.isOnlyShowChooseGoods = true
+          this.tuneUpChooseGoods = !this.tuneUpChooseGoods
+          break
+        case 1:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 1
+          this.flag = 1
+          this.commInfo = this.busClass
+          break
+        case 2:
+          this.tuneUpBusClassDialog = true
+          this.classFlag = 2
+          this.flag = 2
+          this.commInfo = this.platClass
+          break
+      }
+    },
+
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
       this.goodsInfoRow = row
@@ -577,6 +618,7 @@ export default {
       this.goodsInfoRow.map((item, index) => {
         this.goodsInfo.push(item.goodsId)
       })
+      this.$refs['form'].validateField('type')
     },
     // 选择商家分类/平台分类弹窗回调显示
     busClassDialogResult (row) {
@@ -595,6 +637,7 @@ export default {
           this.platClass.push(item.catId)
         })
       }
+      this.$refs['form'].validateField('type')
     },
 
     // 添加包邮规则

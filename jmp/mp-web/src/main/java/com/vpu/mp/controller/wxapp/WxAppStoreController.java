@@ -89,6 +89,7 @@ public class WxAppStoreController extends WxAppBaseController{
      */
     @PostMapping("/service/reservation")
     public JsonResult reservation(@RequestBody @Validated ReservationParam param) {
+        param.initScene();
         return this.success(shop().store.reservation.reservationDetail(param.getServiceId()));
     }
 
@@ -185,6 +186,14 @@ public class WxAppStoreController extends WxAppBaseController{
     public JsonResult createComment(@RequestBody @Validated(ValidCon.class) ServiceCommentVo param) {
         shop().store.reservation.createComment(param);
         return this.success();
+    }
+
+    /**
+     * 查看服务的全部评价
+     */
+    @PostMapping("/service/allComment")
+    public JsonResult allComment(@RequestBody @Validated AllCommentParam param) {
+        return this.success(shop().store.reservation.commentService.getAllComment(param));
     }
 
     /**

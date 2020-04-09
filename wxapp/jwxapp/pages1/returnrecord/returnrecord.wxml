@@ -97,7 +97,7 @@
           {{i18n.$t(localePack,"page1.afterSale.submitDeliveryTime")}}：{{orderInfo.shippingOrRefundTime}}
         </view>
         <view class='main_cen_left'>
-          {{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：{{orderInfo.shippingType}}
+          {{i18n.$t(localePack,"page1.afterSale.logisticsCompany")}}：{{orderInfo.shippingName}}
         </view>
         <view class='main_cen_left'>
           {{i18n.$t(localePack,"page1.afterSale.waybillNumber")}}：{{orderInfo.shippingNo}}
@@ -285,13 +285,13 @@
               {{orderInfo.return_score}}{{i18n.$t(localePack,"page1.afterSale.points")}}
             </view>
           </block>
-          <view class='main_cen_left'>
+          <view class='main_cen_left' wx:if="{{(orderInfo.returnType==0 && orderInfo.refundStatus==4)||orderInfo.refundStatus == 5}}">
             <block wx:if='{{orderInfo.refundStatus == 5}}'>
               <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
               ￥{{orderInfo.shippingFee}}
             </block>
-            <block wx:if='{{orderInfo.refundStatus != 5}}'>
-              <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
+            <block wx:if="{{orderInfo.returnType==0 && orderInfo.refundStatus==4}}">
+              <text>{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
               ￥{{orderInfo.canReturnShippingFee}}
             </block>
           </view>

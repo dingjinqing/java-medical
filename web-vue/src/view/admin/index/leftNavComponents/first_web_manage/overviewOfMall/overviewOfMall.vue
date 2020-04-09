@@ -983,9 +983,9 @@
       >
         <el-option
           v-for="item in cardList"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.cardName"
+          :value="item.id"
         >
         </el-option>
       </el-select>
@@ -995,12 +995,12 @@
       >
         <el-button
           size="small"
-          @click="sureCardActive"
+          @click="cancelCardActive"
         >取 消</el-button>
         <el-button
           type="primary"
           size="small"
-          @click="cancelCardActive"
+          @click="sureCardActive"
         >确 定</el-button>
       </span>
     </el-dialog>
@@ -1019,8 +1019,8 @@
         placeholder="请选择"
       >
         <el-option
-          v-for="item in storeRevieweList"
-          :key="item.value"
+          v-for="(item, index) in storeRevieweList"
+          :key="index"
           :label="item.label"
           :value="item.value"
         >
@@ -1048,7 +1048,7 @@
 // 引入组件
 import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
-import { getAllOverview, toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, shopShareRequest, shopInfoRequest, getAllStore } from '@/api/admin/survey.js'
+import { getAllOverview, toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, shopShareRequest, shopInfoRequest, getAllStore, getExamineList } from '@/api/admin/survey.js'
 export default {
   components: {
     VCharts,
@@ -1135,6 +1135,7 @@ export default {
     this.getShopShare() // 店铺分享
     this.getShopInfo() // 店铺信息
     this.getAllStore() // 获取服务门店
+    this.getExamineList() // 获取会员卡激活待审核
   },
   mounted () {
     this.langDefault()
@@ -1157,6 +1158,7 @@ export default {
       this.getShopShare() // 店铺分享
       this.getShopInfo() // 店铺信息
       this.getAllStore() // 获取服务门店
+      this.getExamineList() // 获取会员卡激活待审核
     }
   },
   methods: {
@@ -1234,7 +1236,25 @@ export default {
     getAllStore () {
       getAllStore().then(res => {
         if (res.error === 0) {
-          this.storeRevieweList = res.content
+          // this.storeRevieweList = res.content
+
+          this.storeRevieweList = []
+          var obj = res.content
+          for (var key in obj) {
+            this.storeRevieweList.push({
+              value: key,
+              label: obj[key]
+            })
+          }
+        }
+      })
+    },
+
+    // 获取会员卡激活待审核
+    getExamineList () {
+      getExamineList().then(res => {
+        if (res.error === 0) {
+          this.cardList = res.content
         }
       })
     },
@@ -1332,7 +1352,7 @@ export default {
     // 确定会员激活
     sureCardActive () {
       this.cardDialog = false
-      // window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
+      window.open('/admin/home/main/activateAudit?cardId=' + this.cardValue)
       this.cardValue = ''
     },
 

@@ -19,6 +19,8 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListParam;
 import com.vpu.mp.service.pojo.shop.member.score.ScorePageListVo;
 import com.vpu.mp.service.pojo.shop.member.score.ScoreSetParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSignParam;
+import com.vpu.mp.service.pojo.shop.member.score.ScoreSignVo;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月13日
@@ -91,16 +93,15 @@ public class AdminMemberScoreController extends AdminBaseController {
 		return success(param.toString());
 	}
 	
-	@PostMapping("/api/admin/member/score/test")
-	public JsonResult testScoreMethod() {
-		logger().info("测试用户可用积分");
-		try {
-			shop().member.userCardService.updateGrade(6,null,(byte)1);
-		} catch (MpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return success();
+	/**
+	 * 查看签到会员
+	 * @return
+	 */
+	@PostMapping("/api/admin/user/manage/score/sign")
+	public JsonResult testScoreMethod(@RequestBody ScoreSignParam param) {
+		logger().info("获取用户签到积分");
+		PageResult<ScoreSignVo> res = shop().member.score.userSign(param);
+		return success(res);
 	}
 	
 }

@@ -3,7 +3,6 @@ package com.vpu.mp.service.pojo.wxapp.market.bargain;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -37,6 +36,16 @@ public class BargainInfoVo {
      * 目标价格
      */
     private BigDecimal bargainPrice;
+
+    /**
+     * 是否需要绑定(授权)手机号，1是
+     */
+    private Byte needBindMobile;
+
+    /**
+     * 初始销量(初始砍价人次)
+     */
+    private Integer initialSales;
 
     private BargainRecordInfo recordInfo;
     private PictorialShareConfigVo recordShareImg;

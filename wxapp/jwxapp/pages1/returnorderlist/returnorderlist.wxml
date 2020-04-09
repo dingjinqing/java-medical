@@ -13,7 +13,7 @@
     </view>
   </view>
   <view class="content">
-    <block wx:for="{{returnOrderList}}" :key="index">
+    <block wx:for="{{returnOrderList}}" wx:key="index">
       <view class="order-no">
         {{i18n.$t(localePack,"page1.afterSale.afterSaleNum")}}：{{item.returnOrderSn}}
       </view>
@@ -64,13 +64,13 @@
                     <text>{{i18n.$t(localePack,"page1.afterSale.refundAmount")}}：</text>
                     ￥{{item.returnMoney}}
                   </view>
-                  <view class='order-item-title'>
+                  <view class='order-item-title' wx:if="{{item.returnScore}}">
                     <text>{{i18n.$t(localePack,"page1.afterSale.refundPoints")}}：</text>
                     {{item.returnScore}}{{i18n.$t(localePack,"page1.afterSale.points")}}
                   </view>
                 </view>
               </view>
-              <view>
+              <view wx:if="{{item.refundStatus == 5}}">
                 <text class="order-item-title">{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
                 <text>￥{{item.shippingFee?item.shippingFee:canReturnShippingFee}}</text>
               </view>
@@ -110,10 +110,10 @@
               <text>{{i18n.$t(localePack,"page1.afterSale.applyRejectTime")}}：</text>
               {{item.finishTime}}
             </view>
-            <block wx:if="{{item.refundRefuseReason != null}}">
+            <block wx:if="{{item.applyNotPassReason != null}}">
               <view class='order-item-title'>
                 <text>{{i18n.$t(localePack,"page1.afterSale.reasonOfRefusal")}}：</text>
-                {{item.refundRefuseReason}}
+                {{item.applyNotPassReason}}
               </view>
             </block>
             <block wx:else>
@@ -151,8 +151,9 @@
                 {{item.returnScore}}{{i18n.$t(localePack,"page1.afterSale.points")}}
               </view>
             </block>
-            <view class='order-item-title'>
-              <text>{{i18n.$t(localePack,"page1.afterSale.shippingAmount")}}：</text>
+            <view class='order-item-title' wx:if="{{item.returnType==0 && item.refundStatus==4}}">
+               <!-- 参考运费 -->
+              <text>{{i18n.$t(localePack,"page1.afterSale.freightRefundAmount")}}：</text>
               ￥{{item.shippingFee?item.shippingFee:canReturnShippingFee}}
             </view>
             <view class='order-item-title return_descs clearfix' wx:if='{{item.reasonDesc != "" }}'>

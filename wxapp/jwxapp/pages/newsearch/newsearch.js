@@ -3,7 +3,7 @@ var app = new getApp();
 var util = require('../../utils/util.js');
 var imageUrl = app.globalData.imageUrl;
 var mobile = util.getCache('mobile');
-var hot_info = [];
+var userId = util.getCache('user_id');
 var search_word = '';
 var input_value = "";
 global.wxPage({
@@ -13,12 +13,14 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    hot_info: [],
     null_marginTop: "200rpx",
     null_marginBottom: "20rpx",
     footer_color: "#fff",
-    search_word: "",
+    search_word: "", // 自定义搜索内容
     input_value: "",
+
+    history_words: [], // 搜索历史
+    search_config: [] // 搜索配置
   },
 
   /**
@@ -30,49 +32,38 @@ global.wxPage({
     search_word = '';
     input_value = '';
 
-
-    hot_info = {
-      history_words: ['123', '男装', '女装'],
-      search_config: {
-        is_open_history: "1",
-        is_open_hot_words: "1",
-        title_action: "3",
-        title_custom: "香奈儿",
-        hot_words: ['Q10Viking', '123456', '男鞋']
+    // 获取历史搜索
+    util.api('/api/wxapp/search/userSearchHot', function (res) {
+      if (res.error == 0) {
+        that.setData({
+          history_words: res.content
+        })
+      } else {
+        util.showModal("提示", res.message);
       }
-    };
-    if (hot_info.search_config.title_action == 3) {
-      search_word = hot_info.search_config.title_custom;
-      that.setData({
-        search_word: search_word,
-        auto_set_word: search_word
-      })
-      that.setData({
-        hot_info: hot_info
-      })
-    }
+    }, {
+      userId: userId,
+      num: 10
+    })
+
+    // 获取搜索配置, 热词搜索
+    util.api('/api/wxapp/search/config', function (res) {
+      if (res.error == 0) {
+        that.setData({
+          search_config: res.content
+        })
+        // 自定义
+        if (res.content.title_action == 3) {
+          search_word = res.content.title_custom;
+          that.setData({
+            search_word: search_word,
+            auto_set_word: search_word
+          })
+        }
+      }
+    })
+
     this.selectComponent('#recommend').resetDataList().resetPage().requestData() //推荐商品
-    // util.api('/api/wxapp/search/hotwords', function (res) {
-    //   if (res.error == 0) {
-    //     hot_info = res.content;
-    //     if (hot_info.search_config.title_action == 3) {
-    //       search_word = hot_info.search_config.title_custom;
-    //       that.setData({
-    //         search_word: search_word,
-    //         auto_set_word: search_word
-    //       })
-    //     }
-    //     that.setData({
-    //       hot_info: hot_info
-    //     })
-    //   } else {
-    //     util.showModal("提示", res.message);
-    //   }
-    // }, { num: 10 })
-  },
-  bindSearchConfirm: function (e) {
-    var search_text = e.detail.value;
-    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo");
   },
   save_zhi: function (e) {
     search_word = e.detail.value;
@@ -82,9 +73,7 @@ global.wxPage({
   },
   // 自定义的时候获取焦点
   chang_value: function (e) {
-    // input_value = hot_info.search_config.title_custom;
     this.setData({
-      // input_value: input_value,
       auto_set_word: ''
     })
   },
@@ -94,21 +83,32 @@ global.wxPage({
       search_word: search_word
     })
   },
+  // 搜索
   bindSearch: function (e) {
-    console.log(2);
     console.log(search_word);
-    util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
+    // 添加热词
+    util.api('/api/wxapp/search/addHotWords', function (res) {
+      if (res.error == 0) {
+        util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
+      }
+    }, {
+      userId: userId,
+      hotWords: search_word
+    })
+
   },
   to_search: function (e) {
-    var search_text = e.currentTarget.dataset.value;
-    util.jumpLink('/pages1/search/search?keyWords=' + search_text, "redirectTo")
+    search_word = e.currentTarget.dataset.value
+    this.setData({
+      search_word: e.currentTarget.dataset.value
+    })
+    this.bindSearch()
   },
 
   clear_value: function (e) {
     console.log(1);
     search_word = "";
     this.data.search_word = "";
-    // auto_set_word = "";
     input_value = "";
     console.log(search_word);
     this.setData({
@@ -117,16 +117,19 @@ global.wxPage({
       auto_set_word: ''
     })
   },
+
+  // 删除搜索词
   to_del: function () {
     var that = this;
-    util.api('/api/wxapp/search/clearwords', function (res) {
+    util.api('/api/wxapp/search/clearWords', function (res) {
       if (res.error == 0) {
-        hot_info.history_words = "";
         that.setData({
-          hot_info: hot_info
+          history_words: ""
         })
       }
-    }, {});
+    }, {
+      userId: userId
+    });
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

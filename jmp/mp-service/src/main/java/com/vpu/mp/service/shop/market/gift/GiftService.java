@@ -24,16 +24,19 @@ import com.vpu.mp.service.pojo.shop.market.gift.RuleParam;
 import com.vpu.mp.service.pojo.shop.market.gift.RuleVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.gift.OrderGiftProductVo;
+import com.vpu.mp.service.shop.image.ImageService;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.DSLContext;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.function.Supplier;
@@ -65,6 +68,8 @@ import static org.springframework.util.StringUtils.isEmpty;
 public class GiftService extends ShopBaseService {
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    protected ImageService imageService;
 
     public static final Gift TABLE = Gift.GIFT;
     public static final GiftProduct SUB_TABLE = GiftProduct.GIFT_PRODUCT;
@@ -76,7 +81,7 @@ public class GiftService extends ShopBaseService {
     protected static final Byte CONDITION_ALL = 0;
 
     /**只赠送其中优先级最高的活动赠品*/
-    protected static final Byte CONDITION_PRIORITY = 1;
+    public static final Byte CONDITION_PRIORITY = 1;
 
     /**
      * 添加赠品活动
@@ -260,7 +265,7 @@ public class GiftService extends ShopBaseService {
     /**
      * 出参格式转换
      */
-    protected void transformVo(GiftVo giftVo) {
+    public void transformVo(GiftVo giftVo) {
         giftVo.setGoodsIds(stringToList(giftVo.getGoodsId()));
         String rule = giftVo.getRule();
         RuleJson ruleJson = underLineStyleGson().fromJson(rule, RuleJson.class);
@@ -391,13 +396,20 @@ public class GiftService extends ShopBaseService {
      * 列表查询
      */
     private SelectConditionStep<?> getPageListQuery() {
-        return db().select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS, DSL.count(ORDER_GOODS.REC_ID).as("giftTimes"))
-            .from(TABLE)
-            .leftJoin(ORDER_GOODS).on(ORDER_GOODS.IS_GIFT.eq(1)
-                .and(ORDER_GOODS.ACTIVITY_ID.eq(TABLE.ID)
-                    .and(ORDER_GOODS.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_GIFT))))
-            .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        Table<Record2<Integer, String>> giftTimes = db()
+                .select(ORDER_GOODS.GIFT_ID, ORDER_GOODS.ORDER_SN)
+                .from(ORDER_GOODS)
+                .where(ORDER_GOODS.IS_GIFT.eq(BaseConstant.YES.intValue()))
+                .groupBy(ORDER_GOODS.GIFT_ID, ORDER_GOODS.ORDER_SN).asTable("t");
+        Table<Record2<Integer, Integer>> giftTimes2 = db().select(giftTimes.field(ORDER_GOODS.GIFT_ID), DSL.count().as("giftTimes")).from(giftTimes).groupBy(giftTimes.field(ORDER_GOODS.GIFT_ID)).asTable("t2");
+        SelectConditionStep<? extends Record7<Integer, String, Timestamp, Timestamp, Short, Byte, ?>> query = db()
+                .select(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME, TABLE.LEVEL, TABLE.STATUS, giftTimes2.field("giftTimes"))
+                .from(TABLE)
+                .leftJoin(giftTimes2).on(giftTimes2.field(ORDER_GOODS.GIFT_ID).eq(TABLE.ID))
+                .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()));
+        query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
+                TABLE.LEVEL, TABLE.STATUS,giftTimes2.field("giftTimes"));
+        return query;
     }
 
     /**
@@ -406,14 +418,13 @@ public class GiftService extends ShopBaseService {
     private void buildOptions(SelectConditionStep<?> query, GiftListParam param) {
         Byte status = param.getStatus();
         String name = param.getName();
-        if (null != status && !status.equals(0)) {
+        if (null != status && !status.equals((byte)0)) {
             addStatusCondition(query, status);
         }
         if (isNotEmpty(name)) {
-            query.and(TABLE.NAME.like(format("%s%%", name)));
+            query.and(TABLE.NAME.like(likeValue(name)));
         }
-        query.groupBy(TABLE.ID, TABLE.NAME, TABLE.START_TIME, TABLE.END_TIME,
-            TABLE.LEVEL, TABLE.STATUS);
+
     }
 
     /**
@@ -509,16 +520,56 @@ public class GiftService extends ShopBaseService {
     private Integer getGiftOrderedNumber(Integer productId, Integer giftId) {
         return db().select(countDistinct(ORDER_INFO.ORDER_SN))
             .from(ORDER_INFO)
-            .where(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY)
+            .where(ORDER_INFO.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY)
+            .or(ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_PAY)
+                    .and(ORDER_INFO.IS_LOCK.ge(OrderConstant.ORDER_WAIT_DELIVERY))))
                 .and(ORDER_INFO.ORDER_SN
                     .in(select(ORDER_GOODS.ORDER_SN).from(ORDER_GOODS)
                         .where(ORDER_GOODS.IS_GIFT.eq(1)
                             .and(ORDER_GOODS.PRODUCT_ID.eq(productId)
-                                .and(ORDER_INFO.ACTIVITY_ID.eq(giftId))
+                                .and(ORDER_GOODS.GIFT_ID.eq(giftId))
                             )
                         )
                     )
-                )
             ).fetchOneInto(Integer.class);
+    }
+
+    /**
+     * 订单-购物车 商品转换
+     * @param orderGoods 订单商品
+     * @param giftVo 赠品活动
+     * @param userId
+     */
+    public WxAppCartGoods getOrderGoodsToCartGoods(OrderGoodsBo orderGoods, GiftVo giftVo, Integer userId) {
+        WxAppCartGoods cartGoods =new WxAppCartGoods();
+        cartGoods.setPrdPrice(BigDecimal.ZERO);
+        cartGoods.setCartNumber(1);
+        cartGoods.setType(cartGoods.getType());
+        cartGoods.setExtendId(giftVo.getId());
+        cartGoods.setStoreId(0);
+        cartGoods.setUserId(userId);
+        cartGoods.setGoodsId(orderGoods.getGoodsId());
+        cartGoods.setGoodsSn(orderGoods.getGoodsSn());
+        cartGoods.setGoodsName(orderGoods.getGoodsName());
+        cartGoods.setGoodsImg(getImgFullUrlUtil(orderGoods.getGoodsImg()));
+        cartGoods.setPrdDesc("");
+        cartGoods.setProductId(orderGoods.getProductId());
+        cartGoods.setActivityType(BaseConstant.ACTIVITY_TYPE_GIFT);
+        cartGoods.setActivityId(giftVo.getId());
+        return cartGoods;
+    }
+
+    /**
+     * 将相对路劲修改为全路径
+     *
+     * @param relativePath 相对路径
+     * @return null或全路径
+     */
+    private String getImgFullUrlUtil(String relativePath) {
+        if (StringUtils.isBlank(relativePath)) {
+            return null;
+        } else {
+            return imageService.imageUrl(relativePath);
+        }
     }
 }

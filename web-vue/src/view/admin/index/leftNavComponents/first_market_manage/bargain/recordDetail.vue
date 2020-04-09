@@ -5,24 +5,26 @@
 -->
 <template>
   <div>
-    <wrapper>
+    <div class="warpper_content">
       <section class="newuserDetailContent">
-        <div>
-          <span>{{$t('marketCommon.username')}}</span>
+        <div class="username">
+          <span>{{$t('marketCommon.username')+'：'}}</span>
           <el-input
             v-model="requestParams.username"
             class="inputWidth"
             size="small"
             :placeholder="$t('marketCommon.usernamePlaceholder')"
+            clearable
           ></el-input>
         </div>
         <div>
-          <span>{{$t('marketCommon.mobile')}}</span>
+          <span>{{$t('marketCommon.mobile')+'：'}}</span>
           <el-input
             v-model="requestParams.mobile"
             class="inputWidth"
             size="small"
             :placeholder="$t('marketCommon.mobilePlaceholder')"
+            clearable
           ></el-input>
         </div>
         <el-button
@@ -33,14 +35,14 @@
         >{{$t('marketCommon.filter')}}</el-button>
         <el-button
           @click="exportDataList"
-          class="btn"
+          class="btn button"
           type="primary"
           size="small"
         >{{$t('marketCommon.export')}}</el-button>
       </section>
-    </wrapper>
+    </div>
 
-    <wrapper>
+    <div class="warpper_content">
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -89,18 +91,17 @@
           @pagination="initDataList"
         />
       </div>
-    </wrapper>
+    </div>
   </div>
 </template>
 
 <script>
 import { download } from '@/util/excelUtil.js'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination'
 import { getBargainUserPageList, exportBargainUserList } from '@/api/admin/marketManage/bargain.js'
 
 export default {
-  components: { wrapper, pagination },
+  components: { pagination },
   mounted () {
     if (this.$route.query.recordId > 0) {
       this.recordId = this.$route.query.recordId
@@ -141,8 +142,8 @@ export default {
       this.requestParams.pageRows = this.pageParams.pageRows
       exportBargainUserList(this.requestParams).then((res) => {
         let fileName = localStorage.getItem('V-content-disposition')
-        fileName = fileName.split(';')[1].split('=')[1]
-        download(res, fileName)
+        fileName = fileName && fileName !== 'undefined' ? fileName.split(';')[1].split('=')[1] : '帮忙砍价用户列表.xlsx'
+        download(res, decodeURIComponent(fileName))
       })
     },
     // 表格数据处理
@@ -157,19 +158,27 @@ export default {
 * {
   font-size: 14px;
 }
+.warpper_content {
+  margin: 10px;
+  padding: 15px;
+  background: #fff;
+}
 .newuserDetailContent {
   display: flex;
   div {
-    margin-right: 10px;
-    span {
-      margin-right: 10px;
-    }
+    margin-right: 20px;
     .inputWidth {
       width: 150px;
     }
   }
+  .username {
+    margin-left: 30px;
+  }
   .btn {
     margin-left: 5px;
+  }
+  .button {
+    margin-left: 20px;
   }
 }
 

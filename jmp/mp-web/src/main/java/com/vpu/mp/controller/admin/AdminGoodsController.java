@@ -50,6 +50,7 @@ public class AdminGoodsController extends AdminBaseController {
      */
     @PostMapping("/api/admin/goods/filterItem/list")
     public JsonResult getGoodsFilterItem(@RequestBody GoodsFilterItemInitParam param) {
+        param.setNeedSysCategory(false);
         GoodsFilterItemInitVo vo = shop().goods.getGoodsFilterItem(param);
         return success(vo);
     }
@@ -102,8 +103,14 @@ public class AdminGoodsController extends AdminBaseController {
         return success(shop().goods.getProductPageList(param));
     }
 
+    /**
+     * 商品规格分页查询id
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/goods/product/listAllIds")
     public JsonResult getProductIdsListAll(@RequestBody GoodsPageListParam param) {
+        param.setSelectType(GoodsPageListParam.GOODS_PRD_LIST);
         return success(shop().goods.getProductIdsListAll(param));
     }
 
@@ -161,9 +168,10 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断平台分类是否为空
-        if (goods.getCatId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
+//        if (goods.getCatId() == null) {
+//            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+//        }
+        goods.setCatId(0);
 
         //判断商品主图是否为空
         if (StringUtils.isBlank(goods.getGoodsImg())) {
@@ -256,14 +264,29 @@ public class AdminGoodsController extends AdminBaseController {
         }
     }
 
+    /**
+     * 商品批处理操作
+     * @param param
+     * @return
+     */
     @PostMapping("/api/admin/goods/batch")
     public JsonResult batchOperate(@RequestBody GoodsBatchOperateParam param) {
-        shop().goods.batchOperate(param);
+        // 上下价处理，调用的方法同步es时会进行同步处理，而其他的批量处理是异步的
+        if (param.getIsOnSale() != null) {
+            shop().goods.batchIsOnSaleOperate(param);
+        } else {
+            shop().goods.batchOperate(param);
+        }
         return success();
     }
 
+    /**
+     * 单独修改规格对应的价格或数量
+     * @param param PrdPriceNumberParam
+     * @return JsonResult
+     */
     @PostMapping("/api/admin/goodsPrd/updatePriceNumber")
-    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody GoodsBatchOperateParam param) {
+    public JsonResult updateGoodsPrdPriceNumbers(@RequestBody PrdPriceNumberParam param) {
         shop().goods.updateGoodsPrdPriceNumbers(param);
         return success();
     }
@@ -290,9 +313,10 @@ public class AdminGoodsController extends AdminBaseController {
         }
 
         //判断平台分类是否为空
-        if (goods.getCatId() == null) {
-            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
-        }
+//        if (goods.getCatId() == null) {
+//            return fail(JsonResultCode.GOODS_SORT_ID_IS_NULL);
+//        }
+        goods.setCatId(0);
 
         //判断商品主图是否为空
         if (StringUtils.isBlank(goods.getGoodsImg())) {
@@ -572,6 +596,7 @@ public class AdminGoodsController extends AdminBaseController {
     public JsonResult getGoodsNumByCondition(@RequestBody GoodsNumCountParamModel param) {
         return success(shop().goods.getGoodsNum(param.getGoodsNumCountParams()));
     }
+
 
     /**
      * 小程序装修商品列表模块数据接口

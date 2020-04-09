@@ -52,7 +52,7 @@
           >{{$t('pageSetUp.notAdd')}}</el-radio>
           <div
             class="marginHeight"
-            v-if="ruleForm.show_margin==='1'"
+            v-if="ruleForm.show_margin===1"
           >
             <span
               :class="moduleHeight"
@@ -288,7 +288,7 @@ export default {
         'hsva(120, 40, 94, 0.5)',
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
-        '#c7158577'
+        '#FF0000'
       ],
       pageClassification: 'pageClassification', // 页面分类英文适配
       navigation: 'navigation', // 底部导航英文适配
@@ -301,17 +301,17 @@ export default {
       classificationOptions: [],
       ruleForm: {
         'is_ok': 1,
-        'cat_id': '',
+        'cat_id': 0,
         'page_name': '',
-        'bg_types': '0',
-        'has_bottom': '0',
-        'show_margin': '0',
-        'margin_val': '10',
+        'bg_types': 0,
+        'has_bottom': 0,
+        'show_margin': 0,
+        'margin_val': 0,
         'page_bg_color': '#ffffff',
         'page_bg_image': '',
         'pictorial': { // 分享海报相关配置
-          'is_add': '0', // 是否添加分享海报
-          'user_visibility': '1', // 是所有用户可见还是仅分销员可见
+          'is_add': 0, // 是否添加分享海报
+          'user_visibility': 0, // 是所有用户可见还是仅分销员可见
           'share_btn_name': '', // 按钮名称
           'share_desc': '', // 分享语
           'share_img_path': '', // 分享图片路径
@@ -394,9 +394,35 @@ export default {
               })
             }
           })
-
-          console.log(this.pageClassify)
+          if (newData.pictorial === null) {
+            newData.pictorial = { // 分享海报相关配置
+              'is_add': 0, // 是否添加分享海报
+              'user_visibility': 0, // 是所有用户可见还是仅分销员可见
+              'share_btn_name': '', // 按钮名称
+              'share_desc': '', // 分享语
+              'share_img_path': '', // 分享图片路径
+              'name_length': 0 // 按钮名称长度
+            }
+          }
           this.ruleForm = newData
+          // Object.keys(this.ruleForm).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     console.log(item, itemC)
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm[item] = newData[itemC]
+          //     }
+          //   })
+          // })
+          // Object.keys(this.ruleForm.pictorial).forEach((item, index) => {
+          //   Object.keys(newData).forEach((itemC, indexC) => {
+          //     if (JSON.stringify(item) === JSON.stringify(itemC)) {
+          //       console.log(itemC)
+          //       this.ruleForm.pictorial[item] = newData[itemC]
+          //     }
+          //   })
+          // })
+          // this.ruleForm = newData
         }
       },
       immediate: true,
@@ -440,6 +466,7 @@ export default {
       this.tuneUp = !this.tuneUp
     },
     handleSelectImg ({ imgUrl }) {
+      console.log(imgUrl)
       if (this.picFlag) {
         this.ruleForm.pictorial.share_img_path = imgUrl
       } else {

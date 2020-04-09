@@ -1,20 +1,19 @@
 package com.vpu.mp.service.pojo.shop.market.packagesale;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
+import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author huangronggang
@@ -46,10 +45,14 @@ public class PackSaleParam {
 	/** 商品组3 */
 	private GoodsGroup group3;
 	
-	@Data
-	@NoArgsConstructor
-	public class GoodsGroup{
-		
+	@Setter
+    @Getter
+	public static class GoodsGroup{
+        /**
+         * 取值1或2或3
+         */
+		private Byte groupId;
+
 		/** 商品组1名称 */
 		@NotBlank
 		private String groupName;

@@ -27,6 +27,8 @@ export const en = {
   analysis_visit_source: ['Overview', 'source Analysis'],
   // 概况 用户画像
   analysis_portrait: ['Overview', 'User portrait'],
+  // 概况 实时概况
+  situation: ['Overview', 'Real Time Profile'],
   // 会员管理 会员卡
   userCard: ['Membership', 'Normal Card'],
   // 会员管理 限次
@@ -163,7 +165,7 @@ export const en = {
     'activityEffectData'
   ],
   // 营销管理 砍价
-  bargain: ['Marketing management', 'Bargain'],
+  kanjia: ['Marketing management', 'Bargain'],
   // 营销管理 砍价
   bargain_activity: ['Marketing management', 'Bargaining activity'],
   // 营销管理 砍价订单
@@ -229,6 +231,8 @@ export const en = {
   group_user_detail: ['Marketing management', 'raffle draw', 'Get new user details'],
   // 营销管理 拼团抽奖 开团明细
   group_detail: ['Marketing management', 'raffle draw', 'Opening details'],
+  // 营销管理 拼团抽奖 活动效果
+  group_effect: ['Marketing management', 'raffle draw', 'Effect data'],
 
   // 营销管理 分销
   distribution_info: ['Marketing management', 'distribution'],
@@ -295,7 +299,7 @@ export const en = {
   // // 营销管理 组团瓜分积分
   // group_integration: ['Marketing management', 'Group integration'],
   // 营销管理 好友代付
-  friend_pay: ['Marketing management', 'friends paid'],
+  insteadpay: ['Marketing management', 'friends paid'],
   // 营销管理 幸运大抽奖
   lottery_activity: ['Marketing management', 'Lucky draw'],
   // 营销管理 幸运大抽奖  抽奖明细
@@ -303,7 +307,7 @@ export const en = {
   // 营销管理 幸运大抽奖 获取新用户明细
   lottery_activity_newUserList: ['Marketing management', 'Lucky draw', 'Get new user details'],
   // 营销管理 分享有礼
-  share_polite: ['Marketing management', 'share polite'],
+  share_award: ['Marketing management', 'share polite'],
   // 营销管理 分享有礼 领取明细
   share_polite_detail: [
     'Marketing management',
@@ -327,7 +331,7 @@ export const en = {
   // 营销管理 限时降价 效果数据
   reduceEffect: ['Marketing management', 'Limited Time Price Reduction', 'Effect Data'],
   // 营销管理 打包一口价
-  package_price: ['Marketing management', 'Package Price'],
+  package: ['Marketing management', 'Package Price'],
   // 营销管理 打包一口价 参与明细
   package_price_detail: [
     'Marketing management',
@@ -339,7 +343,7 @@ export const en = {
   // 营销管理 开屏有礼 活动明细
   open_screen_detail: ['Marketing management', 'Open screen courtesy', 'Activity details'],
   // 营销管理 评价有礼
-  evaluation_gifted: ['Marketing management', 'Evaluation Gift'],
+  comment_gift: ['Marketing management', 'Evaluation Gift'],
   // 营销管理 首单特惠
   first_special: ['Marketing Management', 'First Special Offer'],
   // 营销管理 首单特惠 首单特惠订单
@@ -357,9 +361,9 @@ export const en = {
   // 营销管理 定金膨胀修改
   presale_edit: ['Marketing Management', 'Edit Pre Sale'],
   // 营销管理 定金膨胀订单
-  presale_order_detail: ['Marketing Management', 'View Pre Sale Order Detail'],
+  presale_order_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Order Detail'],
   // 营销管理 定金膨胀活动明细
-  presale_detail: ['Marketing Management', 'View Pre Sale Detail'],
+  presale_detail: ['Marketing Management', 'Pre Sale', 'View Pre Sale Detail'],
   // 营销活动 普通优惠券
   ordinaryCoupon: ['Marketing Management', 'General Coupons'],
   // 营销管理 秒杀
@@ -377,7 +381,6 @@ export const en = {
   // 营销管理 满包邮
   shipping: ['Marketing Management', 'Shipping'],
   // 营销管理 加价购
-  increase_purchase: ['Marketing management', 'Increase Purchase'],
   // 营销管理 加价购 换购订单
   purchase_redemption_order: [
     'Marketing management',
@@ -429,6 +432,7 @@ export const en = {
   collectGift: ['Marketing management', 'Collect Gift'],
   // 营销管理 微信好物圈
   wechateGoodsCicle: ['Marketing management', 'WeChat good circle'],
+
   // 营销管理 支付有礼
   payreward: ['Marketing management', 'Pay Reward'],
   // 营销管理 添加支付有礼活动
@@ -439,7 +443,6 @@ export const en = {
   full_cut: ['Marketing management', 'Full Discount Full Cut'],
   // 营销管理 添加满折满减活动
   fullCutActivity: ['Marketing management', 'Add Full Discount Full Cut Activity'],
-
   // 订单管理 全部订单
   order: ['Order management', 'All orders'],
   // 订单管理 查看详情

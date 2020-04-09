@@ -1,9 +1,7 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,13 +9,16 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -28,8 +29,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
 import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,8 @@ public class ReducePriceService extends ShopBaseService {
     GoodsService goodsService;
     @Autowired
     DomainConfig domainConfig;
+    @Autowired
+    private MemberCardProcessorDao memberCardProcessorDao;
     /**
      * 新建限时降价活动
      */
@@ -124,7 +127,7 @@ public class ReducePriceService extends ShopBaseService {
                 default:
             }
         }
-        select.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(REDUCE_PRICE.CREATE_TIME.desc());
+        select.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc());
         PageResult<ReducePricePageListQueryVo> res = getPageResult(select, param.getCurrentPage(), param.getPageRows(), ReducePricePageListQueryVo.class);
 
         /**查询活动商品数量、订单付款数、付款用户数、付款总金额 */
@@ -256,13 +259,12 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     /**
-     * 根据商品ID和当前时间获取限时降价的商品价格
-     *
-     * @param goodsId 商品ID
-     * @param date    当前时间
-     * @return 在活动有效期内返回价格否则返回null
+     * 根据商品ID和当前时间获取第一个正在进行的限时降价
+     * @param goodsId
+     * @param date
+     * @return
      */
-    public BigDecimal getShowPriceByGoodsId(Integer goodsId, Timestamp date) {
+    public ReducePriceRecord getOnGoingReducePrice(Integer goodsId, Timestamp date){
         Integer reducePriceId = db().select(REDUCE_PRICE.ID)
             .from(REDUCE_PRICE_GOODS)
             .leftJoin(REDUCE_PRICE).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
@@ -271,29 +273,17 @@ public class ReducePriceService extends ShopBaseService {
             .and(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(REDUCE_PRICE.START_TIME.lessThan(date))
             .and(REDUCE_PRICE.END_TIME.greaterThan(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME.asc())
+            .orderBy(REDUCE_PRICE.FIRST.desc())
             .fetchOne(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID);
         if (reducePriceId == null) {
             return null;
         }
         Optional<ReducePriceRecord> reducePriceRecordOptional =
             db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(reducePriceId)).fetchOptional();
-        if (!reducePriceRecordOptional.isPresent()) {
+        if (!reducePriceRecordOptional.isPresent() || !isActivityGoingOn(reducePriceRecordOptional.get())) {
             return null;
-        }
-        ReducePriceRecord reducePriceRecord = reducePriceRecordOptional.get();
-
-        Optional<ReducePriceProductRecord> priceProductRecordOptional =
-            getReducePriceProductRecordByGoodsId(reducePriceId, goodsId);
-        if (!priceProductRecordOptional.isPresent()) {
-            return null;
-        }
-        ReducePriceProductRecord reducePriceProductRecord = priceProductRecordOptional.get();
-        BigDecimal price = reducePriceProductRecord.getPrdPrice();
-        if (!isActivityGoingOn(reducePriceRecord)) {
-            return null;
-        } else {
-            return price;
+        }else{
+            return reducePriceRecordOptional.get();
         }
     }
 
@@ -443,12 +433,18 @@ public class ReducePriceService extends ShopBaseService {
         return false;
     }
 
-    private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsId(Integer reducePriceId, Integer goodsId) {
+    /**
+     * 获取限时降价的商品
+     * @param reducePriceId
+     * @param goodsId
+     * @return
+     */
+    private List<ReducePriceProductRecord> getReducePriceProductRecordByGoodsId(Integer reducePriceId, Integer goodsId) {
         return db().selectFrom(REDUCE_PRICE_PRODUCT)
             .where(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(reducePriceId))
             .and(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(goodsId))
             .orderBy(REDUCE_PRICE_PRODUCT.PRD_PRICE.asc())
-            .fetchOptional();
+            .fetch();
     }
 
     private Optional<ReducePriceProductRecord> getReducePriceProductRecordByGoodsIds(List<Integer> reducePriceId, Integer goodsId) {
@@ -474,6 +470,84 @@ public class ReducePriceService extends ShopBaseService {
     public ReducePriceRecord getReducePriceRecord(Integer activityId){
        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(REDUCE_PRICE.ID.eq(activityId)))
             .fetchAny();
+    }
+
+    /**
+     * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
+     * 首单特惠最高优先级，限时降价与等级会员之间价取低价
+     * @param goodsId
+     * @param userId
+     * @return
+     */
+    public GoodsPriceBo parseGoodsPrice(Integer goodsId,Integer userId){
+        GoodsPriceBo res = new GoodsPriceBo();
+
+        //处理首单特惠
+        if(saas.getShopApp(getShopId()).readOrder.orderInfo.isNewUser(userId)){
+            FirstSpecialRecord firstSpecialRecord = saas.getShopApp(getShopId()).firstSpecial.getActInfoByGoodsId(goodsId);
+            if(null != firstSpecialRecord){
+                List<FirstSpecialProductRecord> firstSpecialProductRecordList = saas.getShopApp(getShopId()).firstSpecial.getProductListById(firstSpecialRecord.getId(),goodsId);
+                List<BigDecimal> prdPriceList = firstSpecialProductRecordList.stream().map(FirstSpecialProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+
+                res.setGoodsPrice(prdPriceList.get(0));
+                res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                res.setLimitAmount(firstSpecialRecord.getLimitAmount());
+                res.setGoodsPriceAction((byte)3);
+                return res;
+            }
+        }
+
+        GoodsRecord goodsInfo = goodsService.getGoodsRecordById(goodsId);
+
+        //处理限时降价
+        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goodsInfo.getGoodsType())){
+            //当前生效的活动
+            ReducePriceRecord reducePriceRecord = getOnGoingReducePrice(goodsId,DateUtil.getLocalTimeDate());
+            if(reducePriceRecord != null){
+                List<ReducePriceProductRecord> reducePriceProductRecords = getReducePriceProductRecordByGoodsId(reducePriceRecord.getId(),goodsId);
+                if(CollectionUtils.isNotEmpty(reducePriceProductRecords)){
+                    List<BigDecimal> prdPriceList = reducePriceProductRecords.stream().map(ReducePriceProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+
+                    res.setGoodsPrice(prdPriceList.get(0));
+                    res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                    res.setLimitAmount(reducePriceRecord.getLimitAmount());
+                    res.setGoodsPriceAction((byte)2);
+                }
+            }
+
+        }
+
+        //处理会员等级
+        String userCardGrade = saas.getShopApp(getShopId()).userCard.userCardDao.getUserCardGrade(userId);
+        if(StringUtil.isNotEmpty(userCardGrade)){
+            List<GradePrdRecord> gradePrdRecords = memberCardProcessorDao.getGoodsGradePrdListByGrade(goodsId,userCardGrade);
+            if(CollectionUtils.isNotEmpty(gradePrdRecords)){
+                List<BigDecimal> prdPriceList = gradePrdRecords.stream().map(GradePrdRecord::getGradePrice).sorted().collect(Collectors.toList());
+
+                //有生效的限时降价价格，需要比较价格，取低的一个
+                if(res.getGoodsPrice() != null && res.getGoodsPrice().compareTo(BigDecimal.ZERO) > 0){
+                    if(prdPriceList.get(0).compareTo(res.getGoodsPrice()) < 0){
+                        res.setGoodsPrice(prdPriceList.get(0));
+                        res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+                        res.setGoodsPriceAction((byte)1);
+                    }
+                }
+            }
+        }
+
+        if(res.getGoodsPriceAction() != null && res.getGoodsPriceAction() > 0){
+            return res;
+        }else{
+            //没有可参与的活动，取商品原价
+            List<GoodsSpecProductRecord> goodsSpecProductRecords = goodsService.goodsSpecProductService.getGoodsDetailPrds(goodsId);
+            List<BigDecimal> prdPriceList = goodsSpecProductRecords.stream().map(GoodsSpecProductRecord::getPrdPrice).sorted().collect(Collectors.toList());
+
+            res.setGoodsPrice(prdPriceList.get(0));
+            res.setMaxPrice(prdPriceList.get(prdPriceList.size() - 1));
+            res.setGoodsPriceAction((byte)0);
+
+            return res;
+        }
     }
 
 }

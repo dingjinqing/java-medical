@@ -18,6 +18,7 @@ import com.vpu.mp.db.shop.tables.records.TradesRecord;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
+import org.jooq.types.UInteger;
 
 import javax.annotation.Generated;
 
@@ -39,6 +40,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_RELATED_PRIMARY;
+    public static final Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Identities0.IDENTITY_PLEDGE_RELATED;
     public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_SEARCH_HISTORY_PRIMARY;
     public static final Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Identities0.IDENTITY_SEARCH_HISTORY;
     public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_MP_SCENE_RECORD_PRIMARY;
@@ -260,6 +263,9 @@ public class Keys {
     public static final Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Identities0.IDENTITY_SUBSCRIBE_MESSAGE;
     public static final Identity<CartRecord, Integer> IDENTITY_CART = Identities0.IDENTITY_CART;
     public static final Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Identities0.IDENTITY_PAY_AWARD_PRIZE;
+    public static final Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Identities0.IDENTITY_USER_REMARK;
+
+
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -509,6 +515,9 @@ public class Keys {
     public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = UniqueKeys0.KEY_B2C_USER_COLLECTION_PRIMARY;
     public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = UniqueKeys0.KEY_B2C_USER_RFM_SUMMARY_PRIMARY;
     public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = UniqueKeys0.KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY;
+    public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = UniqueKeys0.KEY_B2C_USER_REMARK_PRIMARY;
+
+
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -520,6 +529,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Internal.createIdentity(PledgeRelated.PLEDGE_RELATED, PledgeRelated.PLEDGE_RELATED.ID);
         public static Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Internal.createIdentity(SearchHistory.SEARCH_HISTORY, SearchHistory.SEARCH_HISTORY.ID);
         public static Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Internal.createIdentity(MpSceneRecord.MP_SCENE_RECORD, MpSceneRecord.MP_SCENE_RECORD.ID);
         public static Identity<TradesRecord, Integer> IDENTITY_TRADES = Internal.createIdentity(Trades.TRADES, Trades.TRADES.ID);
@@ -737,9 +747,11 @@ public class Keys {
         public static Identity<SubscribeMessageRecord, Long> IDENTITY_SUBSCRIBE_MESSAGE = Internal.createIdentity(SubscribeMessage.SUBSCRIBE_MESSAGE, SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
         public static Identity<CartRecord, Integer> IDENTITY_CART = Internal.createIdentity(Cart.CART, Cart.CART.CART_ID);
         public static Identity<PayAwardPrizeRecord, Integer> IDENTITY_PAY_AWARD_PRIZE = Internal.createIdentity(PayAwardPrize.PAY_AWARD_PRIZE, PayAwardPrize.PAY_AWARD_PRIZE.ID);
+        public static Identity<UserRemarkRecord, Integer> IDENTITY_USER_REMARK = Internal.createIdentity(UserRemark.USER_REMARK, UserRemark.USER_REMARK.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = Internal.createUniqueKey(PledgeRelated.PLEDGE_RELATED, "KEY_b2c_pledge_related_PRIMARY", PledgeRelated.PLEDGE_RELATED.ID);
         public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = Internal.createUniqueKey(SearchHistory.SEARCH_HISTORY, "KEY_b2c_search_history_PRIMARY", SearchHistory.SEARCH_HISTORY.ID);
         public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = Internal.createUniqueKey(MpSceneRecord.MP_SCENE_RECORD, "KEY_b2c_mp_scene_record_PRIMARY", MpSceneRecord.MP_SCENE_RECORD.ID);
         public static final UniqueKey<TradesRecord> KEY_B2C_TRADES_PRIMARY = Internal.createUniqueKey(Trades.TRADES, "KEY_b2c_trades_PRIMARY", Trades.TRADES.ID);
@@ -990,5 +1002,6 @@ public class Keys {
         public static final UniqueKey<UserCollectionRecord> KEY_B2C_USER_COLLECTION_PRIMARY = Internal.createUniqueKey(UserCollection.USER_COLLECTION, "KEY_b2c_user_collection_PRIMARY", UserCollection.USER_COLLECTION.ID);
         public static final UniqueKey<UserRfmSummaryRecord> KEY_B2C_USER_RFM_SUMMARY_PRIMARY = Internal.createUniqueKey(UserRfmSummary.USER_RFM_SUMMARY, "KEY_b2c_user_rfm_summary_PRIMARY", UserRfmSummary.USER_RFM_SUMMARY.ID);
         public static final UniqueKey<SubscribeMessageRecord> KEY_B2C_SUBSCRIBE_MESSAGE_PRIMARY = Internal.createUniqueKey(SubscribeMessage.SUBSCRIBE_MESSAGE, "KEY_b2c_subscribe_message_PRIMARY", SubscribeMessage.SUBSCRIBE_MESSAGE.REC_ID);
+        public static final UniqueKey<UserRemarkRecord> KEY_B2C_USER_REMARK_PRIMARY = Internal.createUniqueKey(UserRemark.USER_REMARK, "KEY_b2c_user_remark_PRIMARY", UserRemark.USER_REMARK.ID);
     }
 }

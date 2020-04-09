@@ -249,10 +249,10 @@ public class UserCardDaoService extends ShopBaseService{
 	private SelectConditionStep<Record> selectValidCardCondition(Integer userId, Byte[] cardType) {
 		return selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
 							.and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+							.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 							.and(MEMBER_CARD.CARD_TYPE.in(cardType))
 							.and(
 									(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()).or(USER_CARD.EXPIRE_TIME.isNull()))
-									.or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
 								)
 							.and(
 									(MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -277,6 +277,7 @@ public class UserCardDaoService extends ShopBaseService{
         return selectValidCardSQL()
 			.where(USER_CARD.USER_ID.eq(userId))
 			.and(USER_CARD.FLAG.eq(MCARD_DF_NO))
+			.and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
 			.and(
 					(USER_CARD.EXPIRE_TIME.isNull())
 					.or(USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
@@ -522,8 +523,7 @@ public class UserCardDaoService extends ShopBaseService{
         ValidUserCardBean card = selectValidCardSQL().where(USER_CARD.CARD_NO.eq(cardNo))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
             .and(
-                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+                (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime())).or(USER_CARD.EXPIRE_TIME.isNull())
             )
             .and(
                 (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -562,10 +562,11 @@ public class UserCardDaoService extends ShopBaseService{
     public OrderMemberVo getOrderGradeCard(Integer userId){
         OrderMemberVo card = selectValidCardSQL().where(USER_CARD.USER_ID.eq(userId))
             .and(USER_CARD.FLAG.eq(UCARD_FG_USING))
+            .and(MEMBER_CARD.FLAG.eq(MCARD_FLAG_USING))
             .and(MEMBER_CARD.CARD_TYPE.eq(MCARD_TP_GRADE))
             .and(
                 (USER_CARD.EXPIRE_TIME.greaterThan(DateUtil.getLocalDateTime()))
-                    .or(MEMBER_CARD.EXPIRE_TYPE.eq(MCARD_ET_FOREVER))
+                    .or(USER_CARD.EXPIRE_TIME.isNull())
             )
             .and(
                 (MEMBER_CARD.USE_TIME.in(userCardService.useInDate()))
@@ -619,13 +620,18 @@ public class UserCardDaoService extends ShopBaseService{
         	CardBgBean bg = saas.getShopApp(getShopId()).member.card.getBackground(card.getBgType(), card.getBgColor(), card.getBgImg());
         	BeanUtils.copyProperties(bg, card);
         }
-        
-        
         if(CollectionUtils.isEmpty(validCardList)){
             return Lists.newArrayList();
         }
         List<OrderMemberVo> result = new ArrayList<>(validCardList.size());
         for (ValidUserCardBean card : validCardList) {
+        	if(CardUtil.isGradeCard(card.getCardType())) {
+        		MemberCardRecord tmpCard = db().selectFrom(MEMBER_CARD).where(MEMBER_CARD.ID.eq(card.getCardId())).fetchOne();
+        		if(CardConstant.MCARD_FLAG_STOP.equals(card.getFlag())) {
+        			// 等级卡已经停止使用
+        			continue;
+        		}
+        	}
             result.add(new OrderMemberVo().init(card));
         }
         return result;
@@ -688,7 +694,17 @@ public class UserCardDaoService extends ShopBaseService{
     	return getUserCard(condition);
     }
     
-	public UserCardVo getUserCard(Condition condition) {
+    public UserCardRecord getCardByUserCardId(Integer userId,Integer cardId) {
+    	UserCardRecord res = db().select(USER_CARD.CARD_ID,USER_CARD.CARD_NO).from(USER_CARD)
+    		.where(USER_CARD.USER_ID.eq(userId))
+    		.and(USER_CARD.CARD_ID.eq(cardId))
+    		.and(USER_CARD.FLAG.eq(CardConstant.UCARD_FG_USING))
+            .fetchAnyInto(USER_CARD);
+    	return res;
+    }
+
+
+    public UserCardVo getUserCard(Condition condition) {
 		
 		return db().select(USER_CARD.USER_ID,USER_CARD.CARD_ID,USER_CARD.FLAG.as("uFlag"),USER_CARD.CARD_NO,USER_CARD.EXPIRE_TIME,USER_CARD.IS_DEFAULT,
 				USER_CARD.MONEY,USER_CARD.SURPLUS,USER_CARD.EXCHANG_SURPLUS,USER_CARD.ACTIVATION_TIME,USER_CARD.CREATE_TIME.as("uCreateTime"),MEMBER_CARD.asterisk())

@@ -63,8 +63,16 @@ export const en = {
   levelTips: 'It is used to distinguish the priority of different courtesy activities. Please fill in a positive integer',
   relationship: 'The following conditions are "and" relationships',
   goodsCondition: 'Goods condition',
-  selectedClassfication: 'Selected classification:',
-  selectedNumber: 'Classifications',
+  selectedClassfication: [
+    'Selected goods:：',
+    'Selected classification:：',
+    'Selected classification:：'
+  ],
+  selectedNumber: [
+    'goods',
+    'Classifications',
+    'Classifications'
+  ],
   payCondition: 'Payment conditions:',
   everyOrder: 'Every order is full',
   everyOrderTips: 'RMB, participate in activities',

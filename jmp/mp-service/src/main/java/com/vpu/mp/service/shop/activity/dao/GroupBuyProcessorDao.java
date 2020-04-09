@@ -84,21 +84,23 @@ public class GroupBuyProcessorDao extends GroupBuyService {
         }
         vo.setEndTime((groupBuyDefineRecord.getEndTime().getTime() - now.getTime())/1000);
 
+        /**拼团类型*/
+        vo.setGroupType(groupBuyDefineRecord.getActivityType());
         /**是否团长优惠*/
         vo.setIsGrouperCheap(groupBuyDefineRecord.getIsGrouperCheap());
         /**参团人数*/
         vo.setLimitAmount(groupBuyDefineRecord.getLimitAmount());
 
         /** 商品拼团最小最大购买数量 */
-        vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum());
-        vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum());
+        vo.setLimitBuyNum(groupBuyDefineRecord.getLimitBuyNum().intValue());
+        vo.setLimitMaxNum(groupBuyDefineRecord.getLimitMaxNum().intValue());
 
         /** 拼团表中 shippingType 活动运费 1 免运费 2 按照商品原运费模板*/
         vo.setFreeShip((byte) (groupBuyDefineRecord.getShippingType() == 1 ? 0 : 1));
 
         /**已成功拼团数量*/
         logger().debug("小程序-商品详情-拼团信息-已成团数量");
-        vo.setGroupBuySuccessCount(getGroupBuySuccessCount(activityId));
+        vo.setGroupBuySuccessCount(getGroupBuySuccessCount(activityId)+groupBuyDefineRecord.getBeginNum());
 
         /** 正在进行中拼团信息列表 */
         logger().debug("小程序-商品详情-拼团信息-正在拼团列表信息");

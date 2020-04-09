@@ -95,7 +95,7 @@ export default {
       hoverTips: 'hoverTips', // 英文适配
       // 模块私有
       moduleSavedata: {
-
+        image_list: []
       }
     }
   },
@@ -130,6 +130,7 @@ export default {
     backData: {
       handler (newData) {
         if (newData) {
+          console.log(newData)
           let turnToString = this.handleToTurnNumToStr(newData)
           console.log(turnToString)
           this.moduleSavedata = turnToString

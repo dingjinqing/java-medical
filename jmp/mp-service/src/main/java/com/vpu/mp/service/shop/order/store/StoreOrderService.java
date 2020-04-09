@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardConsumpData;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
@@ -28,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.order.store.StoreOrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
+import com.vpu.mp.service.pojo.wxapp.store.StoreConstant;
 import com.vpu.mp.service.pojo.wxapp.store.StoreOrderTran;
 import com.vpu.mp.service.pojo.wxapp.store.StorePayOrderInfo;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -39,6 +41,7 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -337,8 +340,11 @@ public class StoreOrderService extends ShopBaseService {
                 log.error("未开启积分支付");
                 throw new BusinessException(JsonResultCode.CODE_ORDER_PAY_WAY_NO_SUPPORT_SCORE);
             }
+            //积分兑换比
+            int scoreProportion = baseScoreCfgService.getScoreProportion();
+            BigDecimal proportion = BigDecimal.valueOf(scoreProportion);
             // 积分使用上下限限制
-            int scoreValue = scoreAmount.multiply(HUNDRED).intValue();
+            int scoreValue = scoreAmount.multiply(proportion).intValue();
             // 积分下限开关（0： 不限制使用下限值；1：限制）
             byte scorePayLimitSwitch = baseScoreCfgService.getScorePayLimit();
             if (scorePayLimitSwitch != 0) {
@@ -354,14 +360,14 @@ public class StoreOrderService extends ShopBaseService {
             }
             if (scoreValue > userInfo.getScore()) {
                 // 积分不足，无法下单
-                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换率为1:100)，无法下单", userInfo.getScore(), scoreAmount);
+                log.error("积分[{}]不足(实际抵扣金额[{}]，金额积分兑换比为1:{})，无法下单", userInfo.getScore(), scoreAmount, scoreProportion);
                 throw new BusinessException(JsonResultCode.CODE_SCORE_INSUFFICIENT);
             }
             scoreParam = new ScoreParam() {{
                 setScoreDis(userInfo.getScore());
                 setUserId(userInfo.getUserId());
                 // 积分变动数额
-                setScore(scoreValue);
+                setScore(-scoreValue);
                 setOrderSn(orderSn);
                 setRemarkCode(RemarkTemplate.STORE_PAYMEMBT.code);
             }};
@@ -400,7 +406,7 @@ public class StoreOrderService extends ShopBaseService {
         orderRecord.setDelFlag(BYTE_ZERO);
         orderRecord.setCardNo(Objects.nonNull(cardNo) ? cardNo : StringUtils.EMPTY);
         orderRecord.setAliTradeNo(StringUtils.EMPTY);
-        orderRecord.setCurrency("CNY");
+        orderRecord.setCurrency(saas().shop.getCurrency(getShopId()));
         return StoreOrderTran.builder()
             .account(accountParam)
             .cardConsumpData(cardConsumpData)
@@ -524,29 +530,33 @@ public class StoreOrderService extends ShopBaseService {
 //            购物满
             if (scoreType == CONDITION_ZERO) {
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY, totalMoney.toString());
-                // 满...金额
-                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
-                // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
-                if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
-                    return;
+                if(record2s != null){
+                    // 满...金额
+                    String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                    // 送...积分
+                    String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
+                    if (org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                        giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                        return;
+                    }
+                    sendScore = Integer.parseInt(setVal2);
+                    log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
                 }
-                sendScore = Integer.parseInt(setVal2);
-                log.debug("支付完成送积分:非会员卡满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else if (scoreType == CONDITION_ONE) {
 //                购物每满
                 Result<Record2<String, String>> record2s = scoreCfgService.getValFromUserScoreSet(BUY_EACH);
-                // 每满...金额
-                String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
-                // 送...积分
-                String setVal2 = record2s.getValue(1, USER_SCORE_SET.SET_VAL2);
-                if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
-                    giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
-                    return;
+                if(record2s != null){
+                    // 每满...金额
+                    String setVal = record2s.getValue(0, USER_SCORE_SET.SET_VAL);
+                    // 送...积分
+                    String setVal2 = record2s.getValue(0, USER_SCORE_SET.SET_VAL2);
+                    if (org.apache.commons.lang3.StringUtils.isBlank(setVal) || org.apache.commons.lang3.StringUtils.isBlank(setVal2)) {
+                        giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
+                        return;
+                    }
+                    sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
+                    log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
                 }
-                sendScore = totalMoney.divide(NumberUtils.createBigDecimal(setVal), 0, RoundingMode.DOWN).multiply(NumberUtils.createBigDecimal(setVal2)).intValue();
-                log.debug("支付完成送积分:非会员卡每满[{}]元,送[{}]积分;订单金额[{}],赠送积分[{}]", setVal, setVal2, totalMoney, sendScore);
             } else {
                 giftScore(orderInfo.getOrderSn(), INTEGER_ZERO, orderInfo.getUserId());
                 return;
@@ -608,4 +618,42 @@ public class StoreOrderService extends ShopBaseService {
             setPayName(Objects.nonNull(paymentVo) ? paymentVo.getPayName() : StringUtils.EMPTY);
         }});
     }
+    
+    /**
+     * 获取用户门店买单信息
+     */
+    public UserOrderBean getConsumerOrder(Integer userId) {
+    	logger().info("获取用户门店买单信息");
+    	return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+						   DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+					.from(TABLE)
+    			    .where(TABLE.ORDER_STATUS.ge(StoreConstant.PAY_SUCCESS))
+					.and(TABLE.USER_ID.eq(userId))
+					.fetchAnyInto(UserOrderBean.class);
+    }
+    
+    /**
+     * 获取用户门店买单退款订单信息
+     */
+	public UserOrderBean getReturnOrder(Integer userId) {
+		logger().info("获取用户门店买单退款订单信息");
+		return db().select(DSL.count(TABLE.ORDER_ID).as("orderNum"),
+				DSL.sum(TABLE.MONEY_PAID.add(TABLE.USE_ACCOUNT).add(TABLE.MEMBER_CARD_BALANCE)).as("totalMoneyPaid"))
+			.from(TABLE)
+			.where(TABLE.ORDER_STATUS.eq(StoreConstant.REFUND_SUCCESS))
+			.and(TABLE.USER_ID.eq(userId))
+			.fetchAnyInto(UserOrderBean.class);
+	}
+	
+	/**
+	 * 获取门店最近下单时间
+	 */
+	public Timestamp lastOrderTime(Integer userId) {
+		logger().info("获取门店最近下单时间");
+		return db().select(TABLE.CREATE_TIME)
+					.from(TABLE)
+					.where(TABLE.USER_ID.eq(userId))
+					.orderBy(TABLE.CREATE_TIME.desc())
+					.fetchAnyInto(Timestamp.class);
+	}
 }

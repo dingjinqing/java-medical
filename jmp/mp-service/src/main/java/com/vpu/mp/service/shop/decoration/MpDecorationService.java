@@ -198,7 +198,9 @@ public class MpDecorationService extends ShopBaseService {
         String pageContent;
         if (pageId == null || pageId == 0) {
             if(StringUtil.isNotEmpty(param.getScene())){
-                //scene的格式为page_id=1,url编码
+                //scene的格式有：
+                // page_id=1,url编码，表示装修预览，取未发布的装修内容
+                // page=1,url编码，表示页面分享，取已发布的装修内容
                 String scene = null;
                 try {
                     scene = URLDecoder.decode(param.getScene(),"UTF-8");
@@ -209,8 +211,17 @@ public class MpDecorationService extends ShopBaseService {
                     String[] sceneParam = scene.split("=",2);
                     pageId =  Integer.valueOf(sceneParam[1]);
                     record = getPageById(pageId);
-                    //页面预览
-                    pageContent = record.getPageContent();
+                    if("page_id".equals(sceneParam[0])){
+                        //页面预览
+                        pageContent = record.getPageContent();
+                    }else if("page".equals(sceneParam[0])){
+                        //页面分享
+                        pageContent = record.getPagePublishContent();
+                    }else{
+                        logger().error("未知scene");
+                        pageContent = null;
+                    }
+
                 }else {
                     return null;
                 }
@@ -362,6 +373,8 @@ public class MpDecorationService extends ShopBaseService {
                     return this.convertMapForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SHOP:
                     return this.convertShopBgForIndex(objectMapper, node, user);
+                case ModuleConstant.M_INTEGRAL:
+                    return this.convertIntegralForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
                  */
@@ -457,8 +470,8 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private ModuleSecKill convertSeckillForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+    private ModuleSeckill convertSeckillForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
         moduleSecKill.setNeedRequest(true);
         return moduleSecKill;
     }
@@ -661,7 +674,14 @@ public class MpDecorationService extends ShopBaseService {
      * @throws IOException
      */
     private PageCfgVo convertPageCfgIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        return objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+        PageCfgVo pageCfg =  objectMapper.readValue(node.getValue().toString(), PageCfgVo.class);
+        if(StringUtil.isNotEmpty(pageCfg.getPageBgImage())){
+            pageCfg.setPageBgImage(imageUrl(pageCfg.getPageBgImage()));
+        }
+        if(StringUtil.isNotEmpty(pageCfg.getPictorial().getShareImgPath())){
+            pageCfg.getPictorial().setShareImgPath(imageUrl(pageCfg.getPictorial().getShareImgPath()));
+        }
+        return pageCfg;
     }
 
     /**
@@ -727,6 +747,8 @@ public class MpDecorationService extends ShopBaseService {
                             return  this.convertPinIntegrationForModule(objectMapper, node, user);
                         case ModuleConstant.M_GROUP_DRAW:
                             return  this.convertGroupDrawForModule(objectMapper, node, user);
+                        case ModuleConstant.M_INTEGRAL:
+                            return  this.convertIntegralForModule(objectMapper, node, user);
                         //TODO case
                         default:
                     }
@@ -838,7 +860,7 @@ public class MpDecorationService extends ShopBaseService {
         Integer userId = user.getUserId();
 
         // 转换实时信息
-        return member.card.getPageIndexMemberCard(moduleCard.getCardId(), userId);
+        return member.card.getPageIndexMemberCard(moduleCard, userId);
     }
 
     /**
@@ -866,8 +888,8 @@ public class MpDecorationService extends ShopBaseService {
      * @return
      * @throws IOException
      */
-    private ModuleSecKill convertSeckillForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
-        ModuleSecKill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSecKill.class);
+    private ModuleSeckill convertSeckillForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleSeckill moduleSecKill = objectMapper.readValue(node.getValue().toString(), ModuleSeckill.class);
 
         // 转换实时信息
         return saas.getShopApp(getShopId()).seckill.getPageIndexSeckill(moduleSecKill);
@@ -904,6 +926,22 @@ public class MpDecorationService extends ShopBaseService {
         // 转换实时信息
         return saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
     }
+
+    /**
+     * 积分兑换模块
+     *
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForModule(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+
+        // 转换实时信息
+        return saas.getShopApp(getShopId()).integralConvertService.getPageIndexIntegral(moduleIntegral);
+    }
     
     /**
      * 店招模块
@@ -922,5 +960,19 @@ public class MpDecorationService extends ShopBaseService {
         	moduleShop.setShopBgPath("/"+shopInfo.getShopAvatar());
         }
 		return moduleShop;
+    }
+
+    /**
+     * 店招模块
+     * @param objectMapper
+     * @param node
+     * @param user
+     * @return
+     * @throws IOException
+     */
+    private ModuleIntegral convertIntegralForIndex(ObjectMapper objectMapper, Entry<String, JsonNode> node, UserRecord user) throws IOException {
+        ModuleIntegral moduleIntegral = objectMapper.readValue(node.getValue().toString(), ModuleIntegral.class);
+        moduleIntegral.setNeedRequest(true);
+        return moduleIntegral;
     }
 }

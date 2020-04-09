@@ -25,13 +25,13 @@ public class ModuleImageGuide extends ModuleBase {
 	 * 前景色值
 	 */
 	@JsonProperty(value = "font_color")
-	String fontColor;
+	String fontColor="rgba(255, 69, 0, 1)";
 	
 	/**
 	 * 背景色值
 	 */
 	@JsonProperty(value = "bg_color")
-	String bgColor;
+	String bgColor="rgba(255, 255, 255, 1)";
 	
 	/**
 	 * 导航链接组

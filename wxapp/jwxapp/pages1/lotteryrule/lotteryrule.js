@@ -95,31 +95,6 @@ global.wxPage({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    console.log('onReachBottom....')
-    this.lotteryListRequest()
-    // var that = this;
-    // if (that.data.page == that.data.last_page) return;
-    // that.data.page = that.data.page + 1;
-    // util.api('/api/wxapp/lottery/user/list', function (res) {
-    //   var lottL = res.content;
-    //   that.data.last_page = lottL.last_page;
-    //   var server_list_r = res.content.data;
-    //   var lotteryList = [];
-    //   if (server_list_r.length > 0) {
-    //     lotteryList = server_list_r;
-    //     if (lotteryList[i].lotteryType == 3) {
-    //       if (lotteryList[i].lotteryAward.length > 20) {
-    //         lotteryList[i].lotteryAward = lotteryList[i].lotteryAward.substring(0, 19) + "...";
-    //         lotteryList[i].is_length = 1
-    //       }
-    //     }
-    //   }
-    //   that.setData({
-    //     lotteryList: that.data.lotteryList.concat(lotteryList),
-    //     page_num: lottL.last_page,
-    //     curpage: lottL.current_page,
-    //   });
-    // }, {   lotteryId: lotteryId, pageNo: that.data.page });
   },
 
   to_detail:function(e){

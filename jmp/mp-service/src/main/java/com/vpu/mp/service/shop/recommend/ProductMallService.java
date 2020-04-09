@@ -99,7 +99,7 @@ public class ProductMallService extends ShopMallBaseService {
 		JsonProductBean jsonRootBean=new JsonProductBean(vo);
 //		WxOpenResult importProductUpdate = importProductUpdate(jsonRootBean);
 //		return importProductUpdate.isSuccess();
-		SendProductBean bean=new SendProductBean(1, jsonRootBean,getShopId());
+		SendProductBean bean=new SendProductBean(1, jsonRootBean,getShopId(),null);
 		saas.taskJobMainService.dispatchImmediately(bean,SendProductBean.class.getName(),getShopId(),TaskJobEnum.WX_IMPORTPRODUCT.getExecutionType());
 		return true;
 		

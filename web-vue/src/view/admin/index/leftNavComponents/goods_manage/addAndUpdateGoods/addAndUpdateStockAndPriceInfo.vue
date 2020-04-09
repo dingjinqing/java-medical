@@ -546,9 +546,13 @@ export default {
           item.prdCostPrice = 0
         }
         if (inputId.indexOf('prdNumber_') > -1) {
-          item.prdCostPrice = 0
+          item.prdNumber = 0
         }
         document.getElementById(inputId).focus()
+      } else {
+        if (inputId.indexOf('prdNumber_') > -1) {
+          item.prdNumber = parseInt(item.prdNumber)
+        }
       }
     },
     /* 规格编码改变 */
@@ -998,7 +1002,7 @@ export default {
     },
     /* 会员价格change处理函数 */
     memberCardPriceChange (prdPrice, cardPrice, inputId, item) {
-      if (cardPrice === undefined || cardPrice === '') {
+      if (isNumberBlank(cardPrice)) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.warningInfo.gradPrdPriceIsNull'), type: 'warning' })
         document.getElementById(inputId).focus()
         return
@@ -1315,24 +1319,25 @@ export default {
       }
 
       // 验证限购数量
-      if ((isNumberBlank(this.goodsProductInfo.limitBuyNum) || this.goodsProductInfo.limitBuyNum < 0) &&
-        (isNumberBlank(this.goodsProductInfo.limitMaxNum) || this.goodsProductInfo.limitMaxNum < 0)) {
-        if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
-          this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
-          this.$refs.limitBuyNumInput.focus()
-          return false
+      if (this.goodsProductInfo.limitBuyNum !== 0 && this.goodsProductInfo.limitMaxNum !== 0) {
+        if (!isNumberBlank(this.goodsProductInfo.limitBuyNum) && !isNumberBlank(this.goodsProductInfo.limitMaxNum)) {
+          if (this.goodsProductInfo.limitBuyNum > this.goodsProductInfo.limitMaxNum) {
+            this.$message.warning({ message: '最小限购数量不可大于最大限购数量', type: 'warning' })
+            this.$refs.limitBuyNumInput.focus()
+            return false
+          }
         }
       }
+
       return true
     },
     /* 获取传给后台的表单数据 */
     getFormData () {
       let retData = {}
       // 自定义规格和默认规格公共数据
-      retData.marketPrice = this.goodsProductInfo.marketPrice
-      retData.baseSale = this.goodsProductInfo.baseSale
-      retData.limitBuyNum = this.goodsProductInfo.limitBuyNum
-      retData.limitMaxNum = this.goodsProductInfo.limitMaxNum
+      retData.baseSale = this.goodsProductInfo.baseSale | 0
+      retData.limitBuyNum = this.goodsProductInfo.limitBuyNum | 0
+      retData.limitMaxNum = this.goodsProductInfo.limitMaxNum | 0
       retData.specInfoSwitch = this.specInfoSwitch
 
       // 剔除无效规格
@@ -1364,7 +1369,7 @@ export default {
             return
           }
           retData.goodsGradePrds.push({
-            prdDesc: null,
+            prdDesc: '',
             gradePrice: card.cardPrice,
             grade: card.grade
           })
@@ -1380,7 +1385,7 @@ export default {
           prdNumber: this.goodsProductInfo.prdNumber,
           prdPrice: this.goodsProductInfo.prdPrice,
           prdCostPrice: this.goodsProductInfo.prdCost,
-          prdMarketPrice: this.goodsProductInfo.marketPrice
+          prdMarketPrice: this.goodsProductInfo.marketPrice | 0
         }]
       } else {
         retData.isDefaultProduct = 0
@@ -1397,9 +1402,9 @@ export default {
             prdSpecs: specProduct.prdSpecs,
             prdDescTemp: specProduct.prdDescTemp,
             prdPrice: specProduct.prdPrice,
-            prdCostPrice: specProduct.prdCostPrice,
+            prdCostPrice: specProduct.prdCostPrice | 0,
             prdNumber: specProduct.prdNumber,
-            prdMarketPrice: this.goodsProductInfo.marketPrice,
+            prdMarketPrice: this.goodsProductInfo.marketPrice | 0,
             prdSn: specProduct.prdSn,
             prdImg: specProduct.prdImg.imgPath
           })

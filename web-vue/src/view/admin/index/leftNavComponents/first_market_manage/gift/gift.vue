@@ -102,9 +102,10 @@
         >
           <template slot-scope="scope">
             <inputEdit
-                    v-model="scope.row.level"
-                    @update="updateGiftLevel(scope.row.id, scope.row.level)"
+              v-model="scope.row.level"
+              @update="updateGiftLevel(scope.row.id, scope.row.level, arguments)"
             />
+            <!-- @update="updateGiftLevel(scope.row.id, scope.row.level)" -->
           </template>
         </el-table-column>
         <el-table-column
@@ -239,6 +240,7 @@ export default {
           this.pageParams = res.content.page
           this.tableData.map((item, index) => {
             item.statusText = this.getActStatusString(item.currentState)
+            item.giftTimes = item.giftTimes ? item.giftTimes : 0
           })
         }
       })
@@ -252,9 +254,12 @@ export default {
     },
 
     // 修改活动优先级
-    updateGiftLevel (id, level) {
+    updateGiftLevel (id, level, data) {
       updateGiftLevel({ id, level }).then((res) => {
-        this.$message.success({ message: this.$t('gift.editSuccess') })
+        if (res.error === 0) {
+          this.$message.success({ message: this.$t('gift.editSuccess') })
+          this.initDataList()
+        }
       })
     },
 

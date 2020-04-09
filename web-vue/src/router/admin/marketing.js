@@ -12,12 +12,13 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/firstMarketManage'
       )
   },
+
   // 分享有礼活动
   {
     path: '/admin/home/main/sharePoliteList',
-    name: 'share_polite',
+    name: 'share_award',
     meta: {
-      crumbTitle: 'router.share_polite',
+      crumbTitle: 'router.share_award',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -57,9 +58,9 @@ const routes = [
   // 砍价
   {
     path: '/admin/home/main/bargain',
-    name: 'bargain',
+    name: 'kanjia',
     meta: {
-      crumbTitle: 'router.bargain',
+      crumbTitle: 'router.kanjia',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -74,7 +75,8 @@ const routes = [
     name: 'bargain_activity',
     meta: {
       crumbTitle: 'router.bargain_activity',
-      meta: 'first_market_manage'
+      meta: 'first_market_manage',
+      category: 'bargain'
     },
     component: () =>
       import(
@@ -205,8 +207,7 @@ const routes = [
   },
   // 多人拼团  拼团退款失败订单
   {
-    path:
-      '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
+    path: '/admin/home/main/spellGroup/refundFailureOrder/:pintStatus/:activityId',
     name: ' pin_group_refundFailureOrder',
     meta: {
       crumbTitle: 'router.pin_group_refundFailureOrder',
@@ -243,10 +244,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/distribution'
       )
   },
-  // 分销 返利提现审核
+  // 分销-返利提现审核
   {
     path: '/admin/home/main/withdrawDepositCheck',
-    name: 'withdrawDeposit_check',
+    name: 'distribution_info_withdrawDeposit',
     meta: {
       crumbTitle: 'router.distribution_info',
       meta: 'first_market_manage'
@@ -256,10 +257,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/withdrawDepositCheck'
       )
   },
-  // 分销推广测试
+  // 分销-推广文案
   {
     path: '/admin/home/main/distribution/copyWriting',
-    name: 'distribution_copyWriting',
+    name: 'distribution_info_copyWriting',
     meta: {
       crumbTitle: 'router.distribution_copyWriting',
       meta: 'first_market_manage'
@@ -269,10 +270,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/copyWriting'
       )
   },
-  // 分销员已邀请的用户
+  // 分销-分销员已邀请的用户
   {
     path: '/admin/home/main/distribution/inviteUserList',
-    name: 'inviteUser',
+    name: 'distribution_info_inviteUser',
     meta: {
       crumbTitle: 'router.distribution_info',
       meta: 'first_market_manage'
@@ -282,10 +283,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/inviteUserList'
       )
   },
-  // 返利提现详情
+  // 分销-返利提现详情
   {
     path: '/admin/home/main/distribution/withdraw/detail',
-    name: 'withdrawDetail',
+    name: 'distribution_info_withdrawDetail',
     meta: {
       crumbTitle: 'router.distribution_info',
       meta: 'first_market_manage'
@@ -295,10 +296,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/withdrawDetail'
       )
   },
-  // 查看商品返利详情
+  // 分销-商品返利详情
   {
     path: '/admin/home/main/distribution/goodsReturnStaticticsDetail',
-    name: 'goodsReturnStaticticsDetail',
+    name: 'distribution_info_goodsStatictics',
     meta: {
       crumbTitle: 'router.distribution_info',
       meta: 'first_market_manage'
@@ -308,7 +309,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/distribution/goodsReturnStaticticsDetail'
       )
   },
-  // // 组团瓜分积分
+  // 组团瓜分积分
   {
     path: '/admin/home/main/divideIntegral',
     name: 'pin_integration',
@@ -394,7 +395,7 @@ const routes = [
   // 限时降价
   {
     path: '/admin/home/main/reduce',
-    name: 'reduce',
+    name: 'reduce_price',
     meta: {
       crumbTitle: 'router.reduce',
       meta: 'first_market_manage',
@@ -408,7 +409,7 @@ const routes = [
   // 添加限时降价
   {
     path: '/admin/home/main/reduce/add',
-    name: 'reduce_add_view',
+    name: 'reduce_price_add',
     meta: {
       crumbTitle: 'router.reduce',
       meta: 'first_market_manage',
@@ -419,10 +420,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/addReduce'
       )
   },
-  // 限时降价订单列表
+  // 限时降价-订单列表
   {
     path: '/admin/home/main/reduce/orderList',
-    name: 'reduce_order_list',
+    name: 'reduce_price_order',
     meta: {
       crumbTitle: 'router.reduce_order_list',
       meta: 'first_market_manage',
@@ -433,10 +434,10 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/reducePrice/reduceOrderList'
       )
   },
-  // 限时降价活动数据
+  // 限时降价-活动数据
   {
     path: '/admin/home/main/reduce/reduceEffect',
-    name: 'reduce_effect_view',
+    name: 'reduce_price_effect',
     meta: {
       crumbTitle: 'router.reduceEffect',
       meta: 'first_market_manage',
@@ -557,7 +558,7 @@ const routes = [
   // 拼团抽奖 活动订单
   {
     path: '/admin/home/main/lotteryDraw/orderList',
-    name: 'lottery_order_view',
+    name: 'group_draw_order',
     meta: {
       crumbTitle: 'router.group_order',
       meta: 'first_market_manage',
@@ -571,7 +572,7 @@ const routes = [
   // 拼团抽奖 参与用户
   {
     path: '/admin/home/main/lotteryDraw/userList',
-    name: 'lottery_user_view',
+    name: 'group_draw_user',
     meta: {
       crumbTitle: 'router.group_user',
       meta: 'first_market_manage',
@@ -585,7 +586,7 @@ const routes = [
   // 拼团抽奖 用户明细
   {
     path: '/admin/home/main/lotteryDraw/detailList',
-    name: 'lottery_detail_view',
+    name: 'group_draw_detail',
     meta: {
       crumbTitle: 'router.group_user_detail',
       meta: 'first_market_manage',
@@ -599,7 +600,7 @@ const routes = [
   // 拼团抽奖 开团明细
   {
     path: '/admin/home/main/lotteryDraw/groupList',
-    name: 'lottery_group_view',
+    name: 'group_draw_group',
     meta: {
       crumbTitle: 'router.group_detail',
       meta: 'first_market_manage',
@@ -613,9 +614,9 @@ const routes = [
   // 拼团抽奖 活动效果数据
   {
     path: '/admin/home/main/lotteryDraw/lotteryEffect',
-    name: 'lottery_effect_view',
+    name: 'group_draw_effect',
     meta: {
-      // crumbTitle: 'router.resultSeckill',
+      crumbTitle: 'router.group_effect',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -637,21 +638,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDraw'
       ),
-    children: [
-      {
-        path: '/admin/home/main/luckyDraw/luckyDrawAdd',
-        name: 'lucky_draw_add',
-        meta: {
-          crumbTitle: 'router.lottery_activity',
-          meta: 'first_market_manage',
-          category: 'first_market_manage'
-        },
-        component: () =>
-          import(
-            '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawAdd'
-          )
-      }
-    ]
+    children: [{
+      path: '/admin/home/main/luckyDraw/luckyDrawAdd',
+      name: 'lucky_draw_add',
+      meta: {
+        crumbTitle: 'router.lottery_activity',
+        meta: 'first_market_manage',
+        category: 'first_market_manage'
+      },
+      component: () =>
+        import(
+          '@/view/admin/index/leftNavComponents/first_market_manage/luckyDraw/luckyDrawAdd'
+        )
+    }]
   },
   // 幸运大抽奖活动--详情页面
   {
@@ -684,9 +683,9 @@ const routes = [
   // 好友代付
   {
     path: '/admin/home/main/friendPay',
-    name: 'friend_pay',
+    name: 'insteadpay',
     meta: {
-      crumbTitle: 'router.friend_pay',
+      crumbTitle: 'router.insteadpay',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -823,9 +822,9 @@ const routes = [
   // 打包一口价活动
   {
     path: '/admin/home/main/packsale/list',
-    name: 'package_price',
+    name: 'package',
     meta: {
-      crumbTitle: 'router.package_price',
+      crumbTitle: 'router.package',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -884,9 +883,9 @@ const routes = [
   // 评价有礼
   {
     path: '/admin/home/main/evaluationGift/list',
-    name: 'evaluation_gifted',
+    name: 'comment_gift',
     meta: {
-      crumbTitle: 'router.evaluation_gifted',
+      crumbTitle: 'router.comment_gift',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -937,7 +936,7 @@ const routes = [
   // 定金膨胀
   {
     path: '/admin/home/main/presale',
-    name: 'presale_view',
+    name: 'presale',
     meta: {
       crumbTitle: 'router.presale',
       meta: 'first_market_manage',
@@ -1021,7 +1020,7 @@ const routes = [
   // 秒杀-添加
   {
     path: '/admin/home/main/seckill/add',
-    name: 'seckill_add_view',
+    name: 'sec_kill_add',
     meta: {
       crumbTitle: 'router.addSeckill',
       meta: 'first_market_manage',
@@ -1035,7 +1034,7 @@ const routes = [
   // 秒杀 秒杀订单
   {
     path: '/admin/home/main/seckill/orderList',
-    name: 'seckill_order_view',
+    name: 'sec_kill_order',
     meta: {
       crumbTitle: 'router.orderSeckill',
       meta: 'first_market_manage',
@@ -1049,7 +1048,7 @@ const routes = [
   // 秒杀 用户明细
   {
     path: '/admin/home/main/seckill/detailList',
-    name: 'seckill_detail_view',
+    name: 'sec_kill_detail',
     meta: {
       crumbTitle: 'router.detailSeckill',
       meta: 'first_market_manage',
@@ -1063,7 +1062,7 @@ const routes = [
   // 秒杀 秒杀用户
   {
     path: '/admin/home/main/seckill/userList',
-    name: 'seckill_user_view',
+    name: 'sec_kill_user',
     meta: {
       crumbTitle: 'router.userSeckill',
       meta: 'first_market_manage',
@@ -1077,7 +1076,7 @@ const routes = [
   // 秒杀 活动效果数据
   {
     path: '/admin/home/main/seckill/seckillEffect',
-    name: 'seckill_effect_view',
+    name: 'sec_kill_effect',
     meta: {
       crumbTitle: 'router.resultSeckill',
       meta: 'first_market_manage',
@@ -1091,7 +1090,7 @@ const routes = [
   // 满包邮
   {
     path: '/admin/home/main/shipping',
-    name: 'shipping_view',
+    name: 'free_ship',
     meta: {
       crumbTitle: 'router.shipping',
       meta: 'first_market_manage',
@@ -1105,9 +1104,9 @@ const routes = [
   // 加价购活动
   {
     path: '/api/admin/market/addPriceBuy/list',
-    name: 'increase_purchase',
+    name: 'purchase_price',
     meta: {
-      crumbTitle: 'router.increase_purchase',
+      crumbTitle: 'router.purchase_price',
       meta: 'first_market_manage',
       category: 'first_market_manage'
     },
@@ -1336,6 +1335,7 @@ const routes = [
         '@/view/admin/index/leftNavComponents/first_market_manage/wechateGoodsCicle/wechateGoodsCicle'
       )
   },
+
   // 支付有礼
   {
     path: '/admin/home/main/payReward',

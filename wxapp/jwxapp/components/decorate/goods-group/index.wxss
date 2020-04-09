@@ -664,13 +664,16 @@
 }
 
 .group_list_module .title_label, .goods_left_module .title_label {
-  position: absolute;
-  bottom: 0rpx;
-  left: 10rpx;
+  /* position: absolute; */
+  /* bottom: 0rpx; */
+  /* left: 10rpx; */
 }
 
 .module_goods_name {
   padding-left: 8rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .exclusive {

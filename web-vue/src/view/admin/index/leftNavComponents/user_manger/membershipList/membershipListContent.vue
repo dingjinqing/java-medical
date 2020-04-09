@@ -69,18 +69,19 @@
               :class="minixLabel"
               class="labelClass"
             >{{$t('membershipIntroduction.label')}}：</span>
-             <el-select
-                v-model="labelVal"
-                multiple
-                collapse-tags
-                size="small"
-               :placeholder="$t('membershipIntroduction.placeinpuLabel')"
-               >
+            <el-select
+              v-model="labelVal"
+              multiple
+              collapse-tags
+              size="small"
+              :placeholder="$t('membershipIntroduction.placeinpuLabel')"
+            >
               <el-option
                 v-for="(item,index) in tagSource"
                 :key="index"
                 :label="item.value"
-                :value="item.id">
+                :value="item.id"
+              >
               </el-option>
             </el-select>
           </div>
@@ -132,6 +133,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -161,6 +163,7 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
@@ -190,28 +193,39 @@
               :start-placeholder="$t('membershipIntroduction.startdata')"
               :end-placeholder="$t('membershipIntroduction.enddate')"
               value-format='yyyy-MM-dd HH:mm:ss'
+              :default-time="['00:00:00', '23:59:59']"
               size="small"
             >
             </el-date-picker>
           </div>
-          <div class="brand_title">
-            <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
-            <div
-              class="choiseDivClass"
-              @click="handleClickChoiseGood()"
-            >
-              <img :src="choiseGoodImgUrl">
-              {{$t('membershipIntroduction.choiseGoods')}}
+          <div>
+            <div  class="brand_title">
+              <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
+              <div
+                class="choiseDivClass"
+                @click="handleClickChoiseGood()"
+              >
+                <img :src="choiseGoodImgUrl">
+                {{$t('membershipIntroduction.choiseGoods')}}
+              </div>
+            </div>
+            <div class="goods_list">
+
+                <div class="goods" v-for="(item,index) in chooseGoodsDatas"
+                  :key="index">
+                    <span class="name">{{item.goodsName}}</span>
+                    <span class="el-icon-circle-close my-close" @click="deleteChooseGood(index)"></span>
+                </div>
             </div>
           </div>
         </li>
       </ul>
       <ul class="ulsThree">
         <li>
-          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.phoneNum')}}</el-checkbox>
-          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.integral')}}</el-checkbox>
-          <el-checkbox v-model="balance">{{$t('membershipIntroduction.Balance')}}</el-checkbox>
-          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.membershipCard')}}</el-checkbox>
+          <el-checkbox v-model="checkPhone">{{$t('membershipIntroduction.alreadyPhone')}}</el-checkbox>
+          <el-checkbox v-model="checkIntegr">{{$t('membershipIntroduction.alreadyScore')}}</el-checkbox>
+          <el-checkbox v-model="balance">{{$t('membershipIntroduction.alreadyBalance')}}</el-checkbox>
+          <el-checkbox v-model="membershipCard">{{$t('membershipIntroduction.alreadyCard')}}</el-checkbox>
           <el-checkbox v-model="noLanding">{{$t('membershipIntroduction.banLogin')}}</el-checkbox>
           <el-checkbox v-model="importMembership">{{$t('membershipIntroduction.importMembers')}}</el-checkbox>
         </li>
@@ -226,6 +240,7 @@
             type="info"
             size="small"
             plain
+            @click="membershipExportVisible = !membershipExportVisible"
           >{{$t('membershipIntroduction.membershipExport')}}</el-button>
         </li>
       </ul>
@@ -257,10 +272,45 @@
               <td style="width:8%">{{$t('membershipIntroduction.phoneNum')}}</td>
               <td style="width:8%">{{$t('membershipIntroduction.inviter')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.Balance')}}</td>
-              <td style="width:7%">{{$t('membershipIntroduction.integral')}}</td>
+              <td style="width:7%">
+                <span
+                  @click="getScoreOrder"
+                  class="score-order"
+                >
+                  {{$t('membershipIntroduction.integral')}}
+                  <span v-if="scoreArrow">
+                    <span
+                      class="score-order"
+                      v-if="!scoreDesc"
+                    >↑</span>
+                    <span
+                      class="score-order"
+                      v-if="scoreDesc"
+                    >↓</span>
+                  </span>
+                </span>
+              </td>
               <td style="width:8%">{{$t('membershipIntroduction.membershipCard')}}</td>
               <td style="width:7%">{{$t('membershipIntroduction.source')}}</td>
-              <td style="width:10%">{{$t('membershipIntroduction.registrationTime')}}</td>
+              <td style="width:10%">
+
+                <span
+                  @click="getRegistTimeOrder"
+                  class="score-order"
+                >
+                  {{$t('membershipIntroduction.registrationTime')}}
+                  <span v-if="registArrow">
+                    <span
+                      class="score-order"
+                      v-if="!registTimeDesc"
+                    >↑</span>
+                    <span
+                      class="score-order"
+                      v-if="registTimeDesc"
+                    >↓</span>
+                  </span>
+                </span>
+              </td>
               <td style="width:15%">{{$t('membershipIntroduction.operation')}}</td>
             </tr>
           </thead>
@@ -279,7 +329,10 @@
                 </div>
 
               </td>
-              <td :class="isCenterFlag?'tdCenter':''" style="width: 150px;">
+              <td
+                :class="isCenterFlag?'tdCenter':''"
+                style="width: 150px;"
+              >
                 <span
                   @click="hanldeToDetail(item.userId)"
                   style="color: #5A8BFF;cursor:pointer;width: 100px;word-break: break-all;display:inline-block;"
@@ -314,7 +367,10 @@
                 <div class="member">
                   <span style="text-align: left;line-height: 20px; margin-right: 5px;">{{item.cardName}}</span>
                   <div>
-                    <span style="margin-top: 5px;" @click="handleSetUp(item.userId)">{{$t('membershipIntroduction.setup')}}</span>
+                    <span
+                      style="margin-top: 5px;"
+                      @click="handleSetUp(item.userId)"
+                    >{{$t('membershipIntroduction.setup')}}</span>
                     <span
                       @click="handleToTurnMore('receiveDetail',item.userName,item.userId)"
                       style="margin-top:8px;margin-bottom: 0px;"
@@ -363,7 +419,10 @@
           <span>暂无相关数据</span>
         </div>
         <!--表格底部-->
-        <div class="tableFooter" style="height: 30px;">
+        <div
+          class="tableFooter"
+          style="height: 30px;"
+        >
           <div class="footer_t">
 
             <el-checkbox
@@ -474,6 +533,9 @@
     <ChoosingGoods
       :tuneUpChooseGoods="tuneUpChooseGoods"
       :chooseGoodsBack="chooseGoodsBack"
+      :checkedNumMax="3"
+      @resultGoodsDatas="chooseGoodsHandle"
+      @result="chooseGoodIdssHandle"
     />
     <!--修改余额&修改积分弹窗-->
     <div class="balanceDialo">
@@ -481,8 +543,8 @@
         :model="modifyDialogData"
         :userId="userId"
         @submitRes="hanldeModifyData"
-        >
-        </ModifyData>
+      >
+      </ModifyData>
     </div>
     <!--设置会员卡弹窗-->
     <div class="balanceDialo setUpDialog">
@@ -633,10 +695,10 @@
                   </div>
                   <span v-if="index>100">
                     <img
-                    style="cursor:pointer"
-                    @click="handleReadd(2,index)"
-                    src="../../../../../../assets/adminImg/hy_icon_delete.png"
-                  >
+                      style="cursor:pointer"
+                      @click="handleReadd(2,index)"
+                      src="../../../../../../assets/adminImg/hy_icon_delete.png"
+                    >
                   </span>
                 </div>
 
@@ -831,6 +893,11 @@
         >确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 会员导出弹窗 -->
+    <membershipExportDialog
+      :dialogVisible.sync="membershipExportVisible"
+      :queryParams="queryParams"
+    />
   </div>
 </template>
 <script>
@@ -840,9 +907,10 @@ import { mapActions } from 'vuex'
 import ChoosingGoods from '@/components/admin/choosingGoods'
 import SetUpMemCDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/setUpMemCDialog'
 import SelectingUsersDialog from '@/view/admin/index/leftNavComponents/user_manger/membershipList/selectingUsersDialog'
+import membershipExportDialog from './membershipExportDialog'
 import ModifyData from './modifyData'
 export default {
-  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData },
+  components: { ChoosingGoods, SetUpMemCDialog, SelectingUsersDialog, ModifyData, membershipExportDialog },
   props: ['labelText'],
   data () {
     return {
@@ -865,10 +933,10 @@ export default {
       vxName: '',
       inviteUserName: '',
       sourceOptions: [],
-      sourceValue: '',
+      sourceValue: '0',
       membershipCardOptions: [],
       noImg: this.$imageHost + '/image/admin/no_data.png',
-      membershipCardVal: '',
+      membershipCardVal: 0,
       labelVal: [],
       datePickerVal: '',
       checkPhone: false,
@@ -955,14 +1023,24 @@ export default {
       cardUserId: '', // 设置会员卡时临时存放的id
       tuneUpChooseGoods: false,
       singleElection: true,
-      chooseGoodsBack: []
+      chooseGoodsBack: [],
+      chooseGoodsDatas: [],
+      orderRule: null,
+      scoreDesc: false,
+      scoreArrow: false,
+      registArrow: false,
+      registTimeDesc: false,
+      membershipExportVisible: false,
+      batchLoginOpt: false,
+      batchLoginOptAll: false
     }
   },
   watch: {
     lang () {
       this.balanceDialogData = this.$t('membershipIntroduction.balanceDialogData')
       this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
-      this.sourceOptions = this.$t('membershipIntroduction.userFromSource')
+      this.sourceOptions = []
+      this.sourceOptions.push(...this.$t('membershipIntroduction.userFromSource'))
       // 初始化会员列表数据
       this.defaultTabelListData()
       // 初始化会员卡下拉框列表
@@ -994,6 +1072,61 @@ export default {
     '$store.goodsManagement.state.goodsIds' (newData) {
     }
   },
+  computed: {
+    queryParams: {
+      get () {
+        // 来源sourceOptions 会员卡membershipCardOptions 标签tagSource 商品chooseGoodsDatas做额外处理
+        let sourceLabel = this.sourceOptions.find(item => item.value === this.sourceValue)
+        let membershipCardLabel = this.membershipCardOptions.find(item => item.id === this.membershipCardVal)
+        let tagLabels = []
+        this.labelVal.forEach(id => {
+          let tag = this.tagSource.find(item => item.id === id)
+          tagLabels.push(tag.value)
+        })
+        let chooseGoodsLabel = this.chooseGoodsDatas.map(item => item.goodsName)
+        console.log(sourceLabel, membershipCardLabel, tagLabels, chooseGoodsLabel)
+        return {
+          'userId': this.userId,
+          'realName': '',
+          'mobile': String(this.phoneNum).trim(),
+          'username': this.vxName,
+          'source': this.sourceValue,
+          'sourceLabel': sourceLabel ? sourceLabel.label : '',
+          'inviteUserName': this.inviteUserName,
+          'createTime': this.datePickerVal ? this.datePickerVal[0] : null,
+          'endTime': this.datePickerVal ? this.datePickerVal[1] : null,
+          'cardId': this.membershipCardVal,
+          'membershipCardLabel': membershipCardLabel ? membershipCardLabel.cardName : '',
+          'tagName': this.labelVal,
+          'tagSourceLabel': tagLabels.length > 0 ? tagLabels.join(',') : [],
+          'loginStartTime': this.datePickerVal_one ? this.datePickerVal_one[0] : null,
+          'loginEndTime': this.datePickerVal_one ? this.datePickerVal_one[1] : null,
+          'cartStartTime': this.datePickerVal_two ? this.datePickerVal_two[0] : null,
+          'cartEndTime': this.datePickerVal_two ? this.datePickerVal_two[1] : null,
+          'buyStartTime': this.datePickerVal_three ? this.datePickerVal_three[0] : null,
+          'buyEndTime': this.datePickerVal_three ? this.datePickerVal_three[1] : null,
+          'unitPriceLow': this.unitPriceLeft,
+          'unitPriceHight': this.unitPriceRight,
+          'buyCountLow': this.frequencyLeft,
+          'buyCountHight': this.frequencyRight,
+          'goodsId': this.goodsIdsArr,
+          'chooseGoodsLabel': chooseGoodsLabel.length > 0 ? chooseGoodsLabel.join(',') : [],
+          'hasMobile': this.checkPhone,
+          'hasScore': this.checkIntegr,
+          'hasBalance': this.balance,
+          'hasCard': this.membershipCard,
+          'hasDelete': this.noLanding,
+          'hasImport': this.importMembership,
+          // 'currentPage': this.currentPage3,
+          // 'pageRow': '20',
+          'orderRule': this.orderRule
+        }
+      },
+      set (val) {
+        console.log('setQueryParams:', val)
+      }
+    }
+  },
   created () {
     // console.log(this.$route.params.tagName)
     // this.labelVal = this.$route.params.tagName
@@ -1018,18 +1151,9 @@ export default {
   },
   methods: {
     ...mapActions(['ToTurnMemberShipDetail', 'toHandleSetUpMemDialog', 'toHandleSelectingUsersDialog']),
-    // 初始化会员列表数据
-    defaultTabelListData () {
-      if (this.labelText) {
-        this.labelVal = this.labelText
-      }
-      this.options_one = this.$t('membershipIntroduction.options_one')
-      this.options_two = this.$t('membershipIntroduction.options_two')
-      this.options_three = this.$t('membershipIntroduction.options_three')
-      this.options_four = this.$t('membershipIntroduction.options_four')
-      this.options_five = this.$t('membershipIntroduction.options_five')
 
-      let obj = {
+    getSearchParam () {
+      return {
         'mobile': String(this.phoneNum).trim(),
         'username': this.vxName,
         'source': this.sourceValue,
@@ -1048,10 +1172,30 @@ export default {
         'unitPriceHight': this.unitPriceRight,
         'buyCountLow': this.frequencyLeft,
         'buyCountHight': this.frequencyRight,
-        'goodsId': this.goodsIdsArr,
+        'goodsId': this.chooseGoodsBack,
         'currentPage': this.currentPage3,
-        'pageRows': '20'
+        'pageRows': '20',
+        'orderRule': this.orderRule,
+        'hasMobile': this.checkPhone,
+        'hasScore': this.checkIntegr,
+        'hasBalance': this.balance,
+        'hasCard': this.membershipCard,
+        'hasDelete': this.noLanding,
+        'hasImport': this.importMembership
       }
+    },
+    // 初始化会员列表数据
+    defaultTabelListData () {
+      if (this.labelText) {
+        this.labelVal = this.labelText
+      }
+      this.options_one = this.$t('membershipIntroduction.options_one')
+      this.options_two = this.$t('membershipIntroduction.options_two')
+      this.options_three = this.$t('membershipIntroduction.options_three')
+      this.options_four = this.$t('membershipIntroduction.options_four')
+      this.options_five = this.$t('membershipIntroduction.options_five')
+
+      let obj = this.getSearchParam()
       console.log(this.labelVal[0], typeof this.labelVal[0])
       membershipListRequest(obj).then((res) => {
         console.log(res)
@@ -1079,7 +1223,9 @@ export default {
     // 获取会员卡
     getAllUserCard () {
       allUserCardRequest().then(res => {
-        this.membershipCardOptions = res.content
+        this.membershipCardOptions = []
+        this.membershipCardOptions.push(...this.$t('membershipIntroduction.cardOptions'))
+        this.membershipCardOptions.push(...res.content)
       })
     },
     // 获取来源
@@ -1095,6 +1241,20 @@ export default {
         console.log(res.content)
         this.tagSource = res.content
       })
+    },
+    // 商品选择后回调
+    chooseGoodsHandle (goods) {
+      console.log('goods:', goods)
+      this.chooseGoodsDatas = goods
+    },
+    // 删除选中商品
+    deleteChooseGood (index) {
+      this.chooseGoodsDatas.splice(index, 1)
+      this.chooseGoodsBack.splice(index, 1)
+    },
+    // 商品选择id后回调
+    chooseGoodIdssHandle (ids) {
+      this.chooseGoodsBack = ids
     },
     // 筛选按钮
     handleScreen () {
@@ -1119,7 +1279,7 @@ export default {
     // 点击选择商品按钮
     handleClickChoiseGood () {
       this.tuneUpChooseGoods = !this.tuneUpChooseGoods
-      this.chooseGoodsBack = [11]
+      // this.chooseGoodsBack = [11]
     },
     // 当前页发生变化
     handleCurrentChange () {
@@ -1172,12 +1332,18 @@ export default {
     },
     // 表格底部下拉框选中事件
     handleFooterSelect (index) {
+      console.log(this.value_one)
+
       if (index === 0) {
+        console.log(this.batchLoginOpt)
+
         switch (this.value_one) {
           case '1':
+            this.batchLoginOpt = true
             this.handlePdIsChecked('0')
             break
           case '2':
+            this.batchLoginOptAll = true
             this.noLandingDialogVisible = true
         }
       } else if (index === 1) {
@@ -1429,7 +1595,7 @@ export default {
               this.setUpSelectVal_threeTmp--
             }
             this.setUpSelectVal_three.splice(index, 1)
-            // this.handleGradeCardShow()
+          // this.handleGradeCardShow()
         }
       }
     },
@@ -1497,18 +1663,35 @@ export default {
 
     // 改变用户登录状态
     changeLoginStatus () {
-      var isDelete
+      console.log(this.userId)
+      let userIdList
+      let searchCnt = null
+      if (this.batchLoginOpt) {
+        userIdList = this.trList.filter(r => r.ischecked).map(({userId}) => userId)
+        this.batchLoginOpt = false
+      } else if (this.batchLoginOptAll) {
+        userIdList = [-1]
+        searchCnt = this.getSearchParam()
+        searchCnt.pageRows = this.totalNum
+        this.batchLoginOptAll = false
+      } else {
+        userIdList = [this.userId]
+      }
+      let permission
       if (this.noLandingDialogVisible) {
-        isDelete = 1
+        permission = 'off'
         this.noLandingDialogVisible = false
       } else if (this.resumeLoginVisible) {
-        isDelete = 0
+        permission = 'on'
         this.resumeLoginVisible = false
       }
       let obj = {
-        'userIdList': [this.userId],
-        'isDelete': isDelete
+        searchCnt,
+        userIdList,
+        permission
       }
+      console.log(obj)
+
       // 请求api
       loginStatusRequest(obj).then(res => {
         if (res.error === 0) {
@@ -1533,7 +1716,7 @@ export default {
         console.log(this.labelDialogInput)
         setTagForMemberRequest(obj).then(res => {
           if (res.error === 0) {
-          // 提示框
+            // 提示框
             this.getSuccessMessagePrompt()
             // 清空tagUserId
             this.tagUserId = null
@@ -1594,6 +1777,29 @@ export default {
         type: 'error'
       })
     },
+    getScoreOrder () {
+      this.scoreArrow = true
+      this.registArrow = false
+      let scoreDesc = this.scoreDesc
+      this.scoreDesc = !this.scoreDesc
+      this.orderRule = {
+        'rule': 0,
+        'desc': scoreDesc
+      }
+      this.defaultTabelListData()
+    },
+
+    getRegistTimeOrder () {
+      this.scoreArrow = false
+      this.registArrow = true
+      let registTimeDesc = this.registTimeDesc
+      this.registTimeDesc = !this.registTimeDesc
+      this.orderRule = {
+        'rule': 1,
+        'desc': registTimeDesc
+      }
+      this.defaultTabelListData()
+    },
     // 点击表格中更多&&余额明细&&积分明细
     handleToTurnMore (params, name, id) {
       switch (params) {
@@ -1629,7 +1835,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped >
 .membershioListContent {
   padding: 10px;
   padding-bottom: 5px;
@@ -1674,6 +1880,14 @@ export default {
   margin-top: 10px;
   display: flex;
 }
+
+.uls /deep/ .el-tag:first-child .el-select__tags-text{
+  display: inline-block;
+  width: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ulsThree {
   margin-top: 15px;
   display: flex;
@@ -1725,6 +1939,41 @@ i {
   display: flex;
   justify-content: flex-start;
 }
+
+.goods_list{
+  margin-right: -195px;
+  padding-left: 117px;
+}
+.goods_list .goods{
+    margin-left: 20px;
+    width: 97px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    margin-top: 15px;
+    display: inline-block;
+    float: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+    position: relative;
+}
+.goods_list .goods .name{
+  color: #5a8bff;
+  text-align: center;
+}
+.my-close{
+  position: absolute;
+  top: -1px;
+  right: -31px;
+  font-size: 17px;
+}
+
 .nameClass {
   white-space: nowrap;
   margin: 0 5px;
@@ -1896,21 +2145,21 @@ img {
   margin-left: 0px;
   cursor: pointer;
 }
-.mAccountDiv{
+.mAccountDiv {
   display: flex;
   width: 100px;
 }
 
-.mAccountDiv > span{
+.mAccountDiv > span {
   width: 95px;
 }
 
-.mScoreDiv{
+.mScoreDiv {
   display: flex;
   /* justify-content: space-between; */
   width: 90px;
 }
-.mScoreDiv > span{
+.mScoreDiv > span {
   width: 80px;
   text-align: center;
 }
@@ -1963,7 +2212,7 @@ img {
   line-height: 30px;
   display: flex;
 }
-.cardTypeName{
+.cardTypeName {
   width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2097,5 +2346,8 @@ img {
 }
 .hy_common .el-input__inner {
   width: 168px !important;
+}
+.score-order {
+  color: #5a8bff;
 }
 </style>

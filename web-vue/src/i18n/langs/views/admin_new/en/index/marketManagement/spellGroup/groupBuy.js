@@ -95,6 +95,8 @@ export const en = {
   openIsDefault: 'Open the default group',
   openIsDefaultComment: 'After opening the default group, the number of people who are not full within 24 hours, the system will simulate the "anonymous buyer" to fill the number, so that the group will be a group. You only need to ship the real buyer who has paid for the group. Proposed to open reasonably to increase the group rate',
   shippingOption: 'Shipping setting',
+  beginNum: 'Initialize to the number of clusters',
+  beginNumComment: 'The initial order number of active goods will be displayed at the applet end. Active commodity group quantity = active initial group quantity + actual group quantity, if not filled in, it means 0',
   freeShipping: 'free shipping',
   shippingOptionComment: 'Use original product shipping template',
   consolationPrize: 'Encouragement Award',
@@ -103,6 +105,8 @@ export const en = {
   addCoupon: 'add Coupon',
   // 拼团活动
   activityName: 'activityName',
+  activtiyLevel: 'priority',
+  activtiyLevelComment: 'To distinguish the priority of different activities, please fill in a positive integer. The higher the value, the higher the priority',
   activityType: 'activityType',
   addActivity: 'addActivity',
   editActivity: 'editActivity',
@@ -165,17 +169,18 @@ export const en = {
   endTime: 'endTime',
   searchDataText: 'search',
   stateOptions: [{
+    value: null,
+    label: 'All'
+  },
+  {
     value: 0,
-    label: 'all'
+    label: 'In the group'
   }, {
     value: 1,
-    label: 'Groupon proceed'
+    label: 'Has been grouped'
   }, {
     value: 2,
-    label: 'Groupon end'
-  }, {
-    value: 3,
-    label: 'Groupon failure'
+    label: 'Ungrouped'
   }],
   changeStatusComment: 'This operation will enable the activity, do you want to continue?',
   deleteComment: 'TThis operation will delete the activity, will it continue?',

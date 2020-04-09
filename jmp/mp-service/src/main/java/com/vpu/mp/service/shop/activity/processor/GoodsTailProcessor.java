@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.config.pledge.PledgeBo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
@@ -15,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.activity.dao.TailProcessorDao;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,11 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -41,6 +47,8 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     private UpYunConfig upYunConfig;
     @Autowired
     private Calculate calculate;
+    @Autowired
+    private CartService cartService;
 
     /*****处理器优先级*****/
     @Override
@@ -146,6 +154,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
     public void doCartOperation(WxAppCartBo cartBo) {
         BigDecimal totalPrice  =new BigDecimal(0);
         byte isAllCheck  = 1;
+        //总价 全部选中
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getPrdPrice()==null){
                 goods.setPrdPrice(goods.getGoodsPrice());
@@ -156,9 +165,15 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
                 isAllCheck=0;
             }
         }
+        //图片链接
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
+        });
+        cartBo.getInvalidCartList().forEach(cartGoods->{
+            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
+        });
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
-
 
     }
 
