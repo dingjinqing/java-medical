@@ -119,7 +119,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
-                mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
+                mpData = new String[][] { { "退款成功" }, { OrderConstant.getReturnReasonDesc(returnOrder.getReasonType() == null ? null : returnOrder.getReasonType().intValue()) }, { money }, { StringUtils.EMPTY }};
             }
             //参数
             MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).build();
