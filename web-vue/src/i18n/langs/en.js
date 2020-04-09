@@ -298,6 +298,10 @@ import {
   en as couponReceive
 } from './views/admin_new/en/index/marketManagement/ordinaryCoupon/couponReceiveEn'
 // 好友助力
+// 营销管理  积分兑换
+import {
+  en as mintegralExchange
+} from './views/admin_new/en/index/marketManagement/integralExchange/mintegralExchangeEn'
 import {
   en as promoteList
 } from './views/admin_new/en/index/marketManagement/friendPromote/promoteListEn'
@@ -1136,6 +1140,7 @@ const en = {
   goodsStaticties, // 商品统计
   formDecorationHome, // 表单装修主页
   formStatisticsHome, // 表单列表主页
-  formDecorationModel // 表单装修所有模块
+  formDecorationModel, // 表单装修所有模块
+  mintegralExchange // 营销活动  积分兑换模块
 }
 export default en
