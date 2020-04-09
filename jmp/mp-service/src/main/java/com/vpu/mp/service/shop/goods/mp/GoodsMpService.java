@@ -420,10 +420,6 @@ public class GoodsMpService extends ShopBaseService {
         //添加足迹
         footPrintService.addFootprint(param.getUserId(), param.getGoodsId());
 
-        //添加分销改价信息
-        mpDisGoods.addRebatePrice(param);
-
-
         GoodsDetailMpProcessorFactory processorFactory = processorFactoryBuilder.getProcessorFactory(GoodsDetailMpProcessorFactory.class);
         GoodsDetailCapsuleParam capsuleParam = new GoodsDetailCapsuleParam();
         capsuleParam.setUserId(param.getUserId());
@@ -432,6 +428,10 @@ public class GoodsMpService extends ShopBaseService {
         capsuleParam.setLat(param.getLat());
         capsuleParam.setLon(param.getLon());
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
+        if(param.getRebateConfig() != null){
+            mpDisGoods.addRebatePrice(goodsDetailMpBo,param);
+        }
+
         return goodsDetailMpBo;
     }
 
