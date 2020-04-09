@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -46,6 +47,7 @@ import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.user.UserLoginRecordService;
 import com.vpu.mp.service.shop.user.user.UserService;
@@ -102,6 +104,8 @@ public class Calculate extends ShopBaseService {
     private MpDistributionGoodsService distributionGoods;
     @Autowired
     private OrderGoodsRebateService orderGoodsRebate;
+    @Autowired
+    private OrderGoodsService orderGoods;
 
     /**
      * 计算订单商品折扣金额
@@ -680,7 +684,7 @@ public class Calculate extends ShopBaseService {
      * @param uniteMarkeingt
      * @return
      */
-    public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt) {
+    public UniteMarkeingtRecalculateBo uniteMarkeingtRecalculate(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt,int userId) throws MpException {
         logger().info("uniteMarkeingtRecalculate start,参数为:{}", uniteMarkeingt);
         //分销改价
         if (uniteMarkeingt != null) {
@@ -706,7 +710,6 @@ public class Calculate extends ShopBaseService {
 
         //限时降价
         if(uniteMarkeingt != null && uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) != null && uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getReducePricePrdPrice() != null){
-            goods.setReducePriceId(uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
             reducePrice = uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getReducePricePrdPrice();
         }
 
@@ -715,18 +718,50 @@ public class Calculate extends ShopBaseService {
             memberGradePrice = uniteMarkeingt.getActivity(ACTIVITY_TYPE_MEMBER_GRADE).getMemberPrice();
         }
 
-        //会员等级价 和 限时降价 二取一取低价
+        //会员等级价 和 限时降价 二取一，取低价
         if(memberGradePrice != null && reducePrice != null){
-            return memberGradePrice.compareTo(reducePrice) > 0 ?
-             UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId()) :
-            UniteMarkeingtRecalculateBo.create(memberGradePrice, ACTIVITY_TYPE_MEMBER_GRADE, null);
+            if( memberGradePrice.compareTo(reducePrice) > 0){
+                return calculateReducePrice(goods,uniteMarkeingt,userId,reducePrice);
+            }else {
+                return UniteMarkeingtRecalculateBo.create(memberGradePrice, ACTIVITY_TYPE_MEMBER_GRADE, null);
+            }
         }else if(memberGradePrice != null){
             return UniteMarkeingtRecalculateBo.create(memberGradePrice, ACTIVITY_TYPE_MEMBER_GRADE, null);
         }else if(reducePrice != null){
-            return UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
+            return calculateReducePrice(goods,uniteMarkeingt,userId,reducePrice);
         }
 
         return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
+    }
+
+    /**
+     * 计算限时降价的限购
+     * @param goods
+     * @param uniteMarkeingt
+     * @param userId
+     * @param reducePrice
+     * @return
+     * @throws MpException
+     */
+    private UniteMarkeingtRecalculateBo calculateReducePrice(OrderBeforeParam.Goods goods, OrderCartProductBo.OrderCartProduct uniteMarkeingt,int userId,BigDecimal reducePrice) throws MpException {
+        goods.setReducePriceId(uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
+        goods.setIsAlreadylimitNum(true);
+
+        Integer limitAmount = uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getLimitAmount();
+        Byte limitFlag = uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getLimitFlag();
+        //限时降价的限购
+        if(limitAmount > 0){
+            if(goods.getGoodsNumber() > limitAmount || (orderGoods.getBuyGoodsNumberByReducePriceId(userId,uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId(),goods.getProductId()) + goods.getGoodsNumber()) > limitAmount){
+                if (BaseConstant.LIMIT_FLAG_CONFINE.equals(limitFlag)){
+                    //已达到限时降价设置的限购数量，并且禁止继续购买
+                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "限时降价最大限购", goods.getGoodsInfo().getGoodsName(), limitAmount.toString());
+                }else{
+                    //不禁止继续下单时以原价购买
+                    return UniteMarkeingtRecalculateBo.create(goods.getProductPrice(), BaseConstant.ACTIVITY_TYPE_GENERAL, null);
+                }
+            }
+        }
+        return UniteMarkeingtRecalculateBo.create(reducePrice, BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE, uniteMarkeingt.getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getActivityId());
     }
 
 

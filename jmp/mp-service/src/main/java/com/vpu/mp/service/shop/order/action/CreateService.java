@@ -621,31 +621,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 preSaleCheck(temp);
             }
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
-            UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
+            UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()),userId);
             logger().info("calculateResult:{}", calculateResult);
-            //限时降价
-            if(calculateResult.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) && calculateResult.getActivityId() != null){
-                Integer limitAmount = uniteMarkeingtBo.get(temp.getProductId()).getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getLimitAmount();
-                Byte limitFlag = uniteMarkeingtBo.get(temp.getProductId()).getActivity(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE).getLimitFlag();
-                //限时降价的限购
-                if(limitAmount > 0){
-                    if(temp.getGoodsNumber() > limitAmount || (orderGoods.getBuyGoodsNumberByReducePriceId(userId,calculateResult.getActivityId(),temp.getProductId()) + temp.getGoodsNumber()) > limitAmount){
-                        if (BaseConstant.LIMIT_FLAG_CONFINE.equals(limitFlag)){
-                            //已达到限时降价设置的限购数量，并且禁止继续购买
-                            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "限时降价最大限购", temp.getGoodsInfo().getGoodsName(), limitAmount.toString());
-                        }else{
-                            //不禁止继续下单时以原价购买
-                            calculateResult.setActivityId(0);
-                            calculateResult.setActivityType((byte)0);
-                            calculateResult.setPrice(temp.getProductPrice());
-                        }
-                    }
-                }else{
-                    temp.setReducePriceId(calculateResult.getActivityId());
-                    temp.setProductPrice(calculateResult.getPrice());
-                    temp.setGoodsPriceAction(calculateResult.getActivityType());
-                }
-            }
             goodsNumLimit(temp);
             //非加价购 改价
             if(Boolean.TRUE) {

@@ -6,6 +6,10 @@ import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
 import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.excel.bean.ClassList;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -17,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.firstspecial.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import jodd.util.StringUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Record;
 import org.jooq.SelectWhereStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +30,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.FirstSpecial.FIRST_SPECIAL;
 import static com.vpu.mp.db.shop.tables.FirstSpecialGoods.FIRST_SPECIAL_GOODS;
@@ -284,5 +291,48 @@ public class FirstSpecialService extends ShopBaseService {
      */
     public List<FirstSpecialProductRecord> getProductListById(Integer firstSpecialId, Integer goodsId){
         return db().selectFrom(FIRST_SPECIAL_PRODUCT).where(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID.eq(firstSpecialId)).and(FIRST_SPECIAL_PRODUCT.GOODS_ID.eq(goodsId)).fetch();
+    }
+
+    /**
+     * 订单导出
+     * @param param
+     * @param lang
+     * @return
+     */
+    public Workbook exportFirstSpecialOrderList(MarketOrderListParam param, String lang){
+        List<MarketOrderListVo> list = saas.getShopApp(getShopId()).readOrder.marketOrderInfo.getMarketOrderList(param, BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+
+        List<FirstSpecialOrderExportVo> res = new ArrayList<>();
+        list.forEach(order->{
+            FirstSpecialOrderExportVo vo = new FirstSpecialOrderExportVo();
+            vo.setOrderSn(order.getOrderSn());
+            vo.setGoods(order.getGoods().stream().map((g)->{
+                FirstSpecialOrderGoodsExportVo goods = new FirstSpecialOrderGoodsExportVo();
+                goods.setGoodsName(g.getGoodsName());
+                goods.setPrice(g.getGoodsPrice());
+                return goods;
+            }).collect(Collectors.toList()));
+            vo.setCreateTime(order.getCreateTime());
+            vo.setOrderUser(order.getUsername() + ";" + (StringUtil.isNotBlank(order.getUserMobile()) ? order.getUserMobile() : ""));
+            vo.setMoneyPaid(order.getMoneyPaid());
+            vo.setConsignee(order.getConsignee() + ";" + order.getMobile());
+            vo.setOrderStatus(OrderConstant.getOrderStatusName(order.getOrderStatus(),lang));
+
+            res.add(vo);
+        });
+
+        Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang,workbook);
+        ClassList cList = new ClassList();
+        cList.setUpClazz(FirstSpecialOrderExportVo.class);
+        cList.setInnerClazz(FirstSpecialOrderGoodsExportVo.class);
+        try {
+            excelWriter.writeModelListByRegion(res, cList);
+        } catch (Exception e) {
+            logger().error("excel error",e);
+        }
+
+        excelWriter.writeModelList(res, FirstSpecialOrderExportVo.class);
+        return workbook;
     }
 }

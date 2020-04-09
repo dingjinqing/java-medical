@@ -312,8 +312,21 @@ public class JsonResultMessage {
 	/**
 	 * 首单特惠
 	 */
-	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.sprecial.number.limit";
-	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.sprecial.kind.limit";
+	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.special.number.limit";
+	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.special.kind.limit";
+
+    /**
+     *  营销-首单特惠excel导出
+     */
+    public static final String FIRST_SPECIAL_ORDER_LIST_FILENAME = "first.special.order.list.file_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_SN = "first.special.order.list.order_sn";
+    public static final String FIRST_SPECIAL_ORDER_LIST_GOODS_NAME = "first.special.order.list.goods_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_PRICE = "first.special.order.list.price";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CREATE_TIME = "first.special.order.list.create_time";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_USER = "first.special.order.list.order_user";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CONSIGNEE = "first.special.order.list.consignee";
+    public static final String FIRST_SPECIAL_ORDER_LIST_MONEY_PAID = "first.special.order.list.money_paid";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_STATUS = "first.special.order.list.order_status";
 
 
     /**

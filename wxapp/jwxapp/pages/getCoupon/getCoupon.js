@@ -8,7 +8,6 @@ var app = getApp();
 
 var total_micro_second;
 var set_time_out;
-var scene;
 global.wxPage({
 
   /**
@@ -18,10 +17,12 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     couponSn: '',
     couponId: null, // 优惠券id
+    user: '',
+    scene: '',
     act_info: {},
     input_vali: '', // 领取码
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
-    couponType: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
+    couponStatus: '0', // 优惠券状态(0未使用, 1已使用,2已过期)
   },
 
   /**
@@ -30,37 +31,29 @@ global.wxPage({
   onLoad: function (options) {
     clearTimeout(set_time_out);
     var that = this;
-    scene = options.scene;
-
-    // 优惠券状态
-    if (options.type) {
-      that.setData({
-        couponType: options.type 
-      })
-    }
-    if (options.couponSn || options.id || options.scene) {
-      that.setData({
-        couponSn: options.couponSn,
-        couponId: Number(options.id)
-      })
-      // 个人中心查看详情
-      util.api("api/wxapp/coupon/detail", function (res) {
-        if (res.error == 0) {
-          that.initHandler(res, 0)
-        } else {
-          util.toast_fail(res.message);
-          setTimeout(function () {
-            util.reLaunch({
-              url: '/pages/index/index',
-            })
-          }, 2000);
-        }
-      }, { 
-        couponSn: that.data.couponSn, 
+    that.setData({
+      couponSn: options.couponSn,
+      couponId: Number(options.id),
+      couponStatus: options.type,
+      scene: options.scene
+    })
+    // 查看详情
+    util.api("api/wxapp/coupon/detail", function (res) {
+      if (res.error == 0) {
+        that.initHandler(res, 0)
+      } else {
+        util.toast_fail(res.message);
+        setTimeout(function () {
+          util.reLaunch({
+            url: '/pages/index/index',
+          })
+        }, 2000);
+      }
+    }, {
+        couponSn: that.data.couponSn,
         couponId: that.data.couponId,
-        scene: scene
+        scene: that.data.scene
       })
-    }
   },
 
   // 优化数据
@@ -229,7 +222,7 @@ global.wxPage({
     var that = this;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id + "&invite_id=" + util.getCache('user_id'),
+      path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
       imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
@@ -245,9 +238,9 @@ global.wxPage({
 
   // 领取记录
   to_getRecord: function () {
+    var that = this;
     util.navigateTo({
-      // url: '/pages/splitinfo/splitinfo?user=' + user + "&coupon_sn=" + coupon_sn + "&coupon_id=" + coupon_id,
-      url: '/pages/splitinfo/splitinfo',
+      url: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + that.data.couponSn + "&couponId=" + that.data.couponId,
     })
   },
 

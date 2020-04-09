@@ -301,6 +301,8 @@ ALTER TABLE b2c_goods_label MODIFY del_flag TINYINT not NULL default 0 COMMENT '
 ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是否不选择商品： 1：是  0： 否';
 
 ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
+-- 商品表添加直播间id字段
+ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 /*********************2.11*************************END*/
 
 
