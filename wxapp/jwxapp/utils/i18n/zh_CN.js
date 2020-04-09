@@ -17,6 +17,7 @@ var decorate = require('./components/decorate/decorate.js')
 var item = require('./pages/item.js')
 var search = require('./page1/search.js') //搜索页
 var virtualCheckout = require('./page1/virtualCheckout.js') //虚拟商品结算
+var actPage = require('./page1/actPage.js') //活动商品页
 var zh_CN = {
   "common": {
     "info": {
@@ -75,7 +76,8 @@ var zh_CN = {
     'promote': promote,
     'pinintegration': pinintegration,
     'search': search,
-    'virtualCheckout': virtualCheckout
+    'virtualCheckout': virtualCheckout,
+    'actPage': actPage
   },
   "page2": {
 
