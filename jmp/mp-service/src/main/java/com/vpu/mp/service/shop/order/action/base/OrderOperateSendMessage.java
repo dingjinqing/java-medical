@@ -88,7 +88,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.ORDER_SEND).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("发货模板消息end");
     }
@@ -151,7 +151,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
                 .page(page)
                 .shopId(getShopId())
                 .userIdList(Collections.singletonList(returnOrder.getUserId()))
-                .type(RabbitParamConstant.Type.STATUS_RETURN_MONEY)
+                .type(RabbitParamConstant.Type.FAIL_RETURN_MONEY)
                 .build();
         }else {
             logger().info("此次退款操作无消息推送end");
@@ -179,7 +179,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.ORDER_SUCCESS_PAY).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("订单支付成功模板消息end");
     }
@@ -211,7 +211,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.ORDER_NO_PAY).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("订单未支付提醒模板消息end");
     }
@@ -232,7 +232,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.SUCCESS_GET_GOODS).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("订单取货成功通知模板消息end");
     }
@@ -254,7 +254,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.GET_GOODS).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("订单收货模板消息end");
     }
@@ -289,7 +289,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             .page(null)
             .shopId(getShopId())
             .userIdList(Collections.singletonList(subOrder.getUserId()))
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+            .type(RabbitParamConstant.Type.STATUS_RETURN_MONEY)
             .build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         logger().info("代付退款操作消息推送end");
@@ -321,7 +321,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
                 .page("pages/distribution/distribution")
                 .shopId(getShopId())
                 .userIdList(Collections.singletonList(value.getUserId()))
-                .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+                .type(RabbitParamConstant.Type.LEVEL_UP)
                 .build();
             saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
         }
