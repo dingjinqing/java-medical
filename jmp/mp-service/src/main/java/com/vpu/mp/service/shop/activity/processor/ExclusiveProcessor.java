@@ -27,6 +27,7 @@ import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,25 +259,28 @@ public class ExclusiveProcessor implements Processor,ActivityGoodsListProcessor,
             if(GoodsConstant.CARD_EXCLUSIVE.equals(one.getGoodsInfo().getIsCardExclusive())) {
                 // 获取商品所有专享卡（包含普通卡和等级卡）
                 List<MemberCardRecord> exclusiveCards = memberCardProcessorDao.getExclusiveInfo(one.getGoodsInfo().getGoodsId(), one.getGoodsInfo().getCatId(), one.getGoodsInfo().getSortId(), one.getGoodsInfo().getBrandId());
-                //会员可用会员卡
-                List<OrderMemberVo> userCards = userCardService.userCardDao.getOrderMembers(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
-                //flag
-                boolean flag = false;
-                for (MemberCardRecord exclusiveCard: exclusiveCards) {
-                    for(OrderMemberVo userCard : userCards) {
-                        if(exclusiveCard.getId().equals(userCard.getInfo().getCardId())) {
-                            flag = true;
+                if(CollectionUtils.isNotEmpty(exclusiveCards)) {
+                    //会员可用会员卡
+                    List<OrderMemberVo> userCards = userCardService.userCardDao.getOrderMembers(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, OrderConstant.MEMBER_CARD_ONLINE);
+                    //flag
+                    boolean flag = false;
+                    for (MemberCardRecord exclusiveCard: exclusiveCards) {
+                        for(OrderMemberVo userCard : userCards) {
+                            if(exclusiveCard.getId().equals(userCard.getCardId())) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if(flag) {
                             break;
                         }
                     }
-                    if(flag) {
-                        break;
+                    if(!flag) {
+                        log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
+                        throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
                     }
                 }
-                if(!flag) {
-                    log.info("专享商品不可购买,{}" ,one.getGoodsInfo().getGoodsName());
-                    throw new MpException(JsonResultCode.CODE_ORDER_EXCLUSIVE_GOODS_NO_BUY, "专享商品不可购买", one.getGoodsInfo().getGoodsName());
-                }
+
             }
         }
     }
