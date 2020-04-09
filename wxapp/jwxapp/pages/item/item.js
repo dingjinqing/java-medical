@@ -189,8 +189,8 @@ global.wxPage({
     let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null } = options
     this.setData({
       goodsId,
-      activityId,
-      activityType,
+      activityId:activityId === 'null' ? null : activityId,
+      activityType:activityType === 'null' || activityType === '0' ? null : activityType,
       roomId:roomId
     })
     this.requestGoodsInfo()
