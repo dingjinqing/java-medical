@@ -292,7 +292,6 @@ export default {
       this.cardUsageCfgData.mobile = data.mobile
 
       // 领取设置
-      debugger
       this.cardReceiveCfgData.isPay = String(data.isPay)
       this.cardReceiveCfgData.payType = String(data.payType)
       this.cardReceiveCfgData.payMoney = data.payMoney
