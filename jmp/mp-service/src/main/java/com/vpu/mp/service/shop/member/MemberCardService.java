@@ -1698,6 +1698,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
+		logger().info("会员卡充值记录");
 		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY,data);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
@@ -1735,6 +1736,10 @@ public class MemberCardService extends ShopBaseService {
 		if (data.getExchangeCount() != null) {
 			chargeMoneyRecord.setExchangCount(data.getExchangeCount());
 		}
+		
+		if(!StringUtils.isBlank(data.getPayment())) {
+			chargeMoneyRecord.setPayment("");
+		}
 		chargeMoneyRecord.insert();
 
 	}
@@ -1761,6 +1766,9 @@ public class MemberCardService extends ShopBaseService {
 		}
 		if (data.getOrderSn() != null) {
 			cardConsumerRecord.setOrderSn(data.getOrderSn());
+		}
+		if (data.getPayment() != null) {
+			
 		}
 		cardConsumerRecord.insert();
 	}
