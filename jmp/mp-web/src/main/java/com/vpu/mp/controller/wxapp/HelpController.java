@@ -87,7 +87,7 @@ public class HelpController extends HelpBaseController {
      *
      * @return 服务条款配置内容
      */
-    @GetMapping("/api/admin/order/termsofservice")
+    @GetMapping("/api/wxapp/order/termsofservice")
     public JsonResult getTermsOfService(@RequestParam Integer shopId) {
         try {
             return success(saas.getShopApp(shopId).trade.getTermsOfService());
