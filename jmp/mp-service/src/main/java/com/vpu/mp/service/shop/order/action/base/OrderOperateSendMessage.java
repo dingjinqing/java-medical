@@ -129,7 +129,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
                 .page(page)
                 .shopId(getShopId())
                 .userIdList(Collections.singletonList(returnOrder.getUserId()))
-                .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+                .type(RabbitParamConstant.Type.STATUS_RETURN_MONEY)
                 .build();
         }else if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS || returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_REFUSE) {
             //失败
@@ -151,7 +151,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
                 .page(page)
                 .shopId(getShopId())
                 .userIdList(Collections.singletonList(returnOrder.getUserId()))
-                .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE)
+                .type(RabbitParamConstant.Type.STATUS_RETURN_MONEY)
                 .build();
         }else {
             logger().info("此次退款操作无消息推送end");
