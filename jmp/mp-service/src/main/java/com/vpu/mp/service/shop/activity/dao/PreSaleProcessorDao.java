@@ -83,6 +83,7 @@ public class PreSaleProcessorDao extends PreSaleService {
             .where(PRESALE_PRODUCT.PRODUCT_ID.in(productIds))
             .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(PRESALE.BUY_TYPE.eq(BaseConstant.NO))
             .and(condition)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.PRODUCT_ID)));
     }
