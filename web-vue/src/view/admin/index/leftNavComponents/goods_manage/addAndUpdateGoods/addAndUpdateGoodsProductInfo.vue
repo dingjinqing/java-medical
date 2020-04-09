@@ -10,14 +10,15 @@
     <el-dialog title="商品信息缺失"
                :visible.sync="goodsWeightDialogShow"
                width="30%">
-      <p class="infoContent">当前商品运费设置已选【重量运费模板】，必须填写商品重量后保存。</p>
-      <p class="infoContent">如页面未展示商品提示信息，请前往"基础配置-店铺基础配置-店铺通用配置"页面，开启"商品重量配置项设置"开关后,重新编辑商品信息。</p>
-      <p class="infoContent">点击确定按钮，可自动开启</p>
+      <p class="infoContent">
+        当前商品运费设置已选【重量运费模板】，必须填写商品重量后保存。
+        如页面未展示商品提示信息，请前往"基础配置-店铺基础配置-店铺通用配置"页面，开启"商品重量配置项设置"开关后,重新编辑商品信息。
+        点击确定按钮，可自动开启
+      </p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="goodsWeightDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
-    <el-button @click="goodsWeightDialogShow=true">点击</el-button>
   </div>
 </template>
 <script>

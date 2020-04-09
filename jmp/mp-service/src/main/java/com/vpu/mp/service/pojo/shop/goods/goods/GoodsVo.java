@@ -23,6 +23,8 @@ public class GoodsVo extends Goods {
     private String goodsPageName;
     private String goodsImgPath;
     private List<String> goodsImgsPath;
+    /**直播间名称*/
+    private String roomName;
     /**
      * 商品视频全路径
      */
