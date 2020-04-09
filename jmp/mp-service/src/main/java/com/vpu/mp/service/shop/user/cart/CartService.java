@@ -116,7 +116,7 @@ public class CartService extends ShopBaseService {
                         activityGoods.add(goods);
                     }
                 } else if (BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)) {
-                    if (goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS) && goods.getActivityId().equals(activityId)) {
+                    if (BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(goods.getActivityType()) && activityId.equals(goods.getActivityId())) {
                         activityGoods.add(goods);
                     }
                 }
