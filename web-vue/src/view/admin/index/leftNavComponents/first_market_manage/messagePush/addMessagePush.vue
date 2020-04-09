@@ -389,6 +389,28 @@
         :dialogVisible="dialogVisible"
       />
     </el-card>
+    <!--保存时页面勾选提示弹窗-->
+    <el-dialog
+      title="提示"
+      :visible.sync="checklistVisible"
+      width="30%"
+    >
+      <div class="checklistMain">为确保消息正常发送，请在"基础配置-公众号消息"页面勾选【自定义消息模板推送】后保存当前活动信息</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToSetCheck()"
+        >去设置</el-button>
+        <el-button
+          size="small"
+          @click="checklistVisible = false"
+        >已完成设置</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -420,7 +442,7 @@ export default {
   },
   data () {
     return {
-
+      checklistVisible: false, // 是否页面勾选弹窗flag
       checkedData: [], // 初始化弹窗选中的行
       urls: {
         url1: `${this.$imageHost}/image/admin/notice_img.png`,
@@ -680,7 +702,6 @@ export default {
       } else {
         link = this.pageLink
       }
-
       const params = {
         name: this.formData.name,
         title: this.formData.title,
@@ -696,6 +717,7 @@ export default {
       }
       console.log(params)
       console.log(this.$refs.form)
+
       this.$refs['form'].validate((valid) => {
         if (valid) {
           console.log(this.handleToJudge())
@@ -712,6 +734,8 @@ export default {
                 this.$router.push({
                   name: `all_message_push`
                 })
+              } else if (error === 140201) {
+                this.checklistVisible = true
               }
             }).catch(err => console.log(err))
           }
@@ -1055,6 +1079,12 @@ export default {
         console.log('sssss')
         return true
       }
+    },
+    // 点击去设置
+    handleToSetCheck () {
+      this.$router.push({
+        name: 'message_config'
+      })
     }
   }
 }
@@ -1301,5 +1331,9 @@ export default {
       cursor: not-allowed;
     }
   }
+}
+.checklistMain {
+  height: 100px;
+  line-height: 20px;
 }
 </style>
