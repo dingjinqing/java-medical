@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.goods.goods;
 
+import com.google.common.collect.Lists;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import lombok.Data;
@@ -31,9 +32,9 @@ public class  GoodsPageListVo {
     private Integer goodsNumber;
     private Integer goodsSaleNum;
     /** 指定标签集合（在商品列表只展示可修改的标签）*/
-    private List<GoodsLabelSelectListVo> goodsPointLabels = new ArrayList<>(3);
-    /** 普通标签集合（在商品列表只展示不可修改的标签）使用set避免商家分类上的标签和全部商品类型标签存在重复*/
-    private Set<GoodsLabelSelectListVo> goodsNormalLabels = new HashSet<>(3);
+    private List<GoodsLabelSelectListVo> goodsPointLabels = Lists.newArrayList();
+    /** 普通标签集合（在商品列表只展示不可修改的标签）商家分类上的标签和全部商品类型标签*/
+    private List<GoodsLabelSelectListVo> goodsNormalLabels = Lists.newArrayList();
     /**
      * 商品对应的规格数据,未使用
      */
