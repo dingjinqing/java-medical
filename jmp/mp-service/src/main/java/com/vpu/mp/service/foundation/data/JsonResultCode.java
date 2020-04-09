@@ -411,6 +411,12 @@ public enum JsonResultCode {
      */
     MESSAGE_TEMPLATE_NO_OPEN(140201,JsonResultMessage.MESSAGE_TEMPLATE_NO_OPEN),
 
+
+    /**
+     * 搜单特惠
+     */
+    MESSAGE_TEMPLATE_NO_OPEN(140201,JsonResultMessage.MESSAGE_TEMPLATE_NO_OPEN),
+
     //会员用户
     CODE_MEMBER_TAG_ADD_SUCCESS(0,JsonResultMessage.MSG_MEMBER_TAG_ADD_SUCCESS),
     CODE_MEMBER_TAG_NOT_LIMIT(15001,JsonResultMessage.MSG_MEMBER_TAG_LENGTH_LIMIT),
