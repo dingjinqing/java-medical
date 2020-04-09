@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
+import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseChangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseChangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.market.increasepurchase.PurchaseGoodsListParam;
@@ -550,6 +551,22 @@ public class IncreasePurchaseService extends ShopBaseService {
         }
         vo.setState((byte)0);
 
+        //换购规则
+        List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
+        List<PurchaseGoodsListVo.Rule> rules = new ArrayList<>();
+        ruleRecords.forEach(r->{
+            PurchaseGoodsListVo.Rule rule = new PurchaseGoodsListVo.Rule();
+            rule.setFullPrice(r.getFullPrice());
+            rule.setPurchasePrice(r.getPurchasePrice());
+            rules.add(rule);
+        });
+        vo.setRules(rules);
+
+        //用户的购物车
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        vo.setMainPrice(cartBo.getTotalPrice());
+        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
+
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
         List<Integer> userExclusiveGoodsIds = goodsCardCoupleService.getGoodsUserNotExclusive(userId);
@@ -567,27 +584,13 @@ public class IncreasePurchaseService extends ShopBaseService {
             if(StringUtil.isNotEmpty(goods.getGoodsImg())){
                 goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
             }
-
             if(goods.getIsDefaultProduct() == 1){
                 goods.setPrdId(goodsService.goodsSpecProductService.getDefaultPrdId(goods.getGoodsId()));
             }
+
+            goods.setCartGoodsNumber(cartBo.getCartGoodsList().stream().filter(cartGoods->cartGoods.getGoodsId().equals(goods.getGoodsId())).mapToInt(WxAppCartGoods::getCartNumber).sum());
         });
         vo.setGoods(goodsPageResult);
-
-        //换购规则
-        List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
-        List<PurchaseGoodsListVo.Rule> rules = new ArrayList<>();
-        ruleRecords.forEach(r->{
-            PurchaseGoodsListVo.Rule rule = new PurchaseGoodsListVo.Rule();
-            rule.setFullPrice(r.getFullPrice());
-            rule.setPurchasePrice(r.getPurchasePrice());
-            rules.add(rule);
-        });
-        vo.setRules(rules);
-
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
-        vo.setMainPrice(cartBo.getTotalPrice());
-        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
 
         return vo;
     }
