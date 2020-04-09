@@ -5,6 +5,7 @@ import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.gift.GoodsGiftMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PromotionBase;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import lombok.Getter;
@@ -60,6 +61,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
 
     /**商品规格信息*/
     List<GoodsPrdMpVo> products;
+    /**是否在售，0否1是*/
+    private Byte isOnSale;
     //************ElasticSearch中的数据**************end
 
     /**用户是否可以购买本商品*/
@@ -70,8 +73,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     private BigDecimal deliverPrice;
     /**是否已删除，当搜索的商品已删除时，需要前端判断并进行处理*/
     private Byte delFlag;
-    /**是否在售，0否1是*/
-    private Byte isOnSale;
+    /**商品关联的直播间信息*/
+    private RoomDetailMpVo roomDetailMpInfo;
     /**是否收藏*/
     private Boolean isCollected;
     /**商品评价信息*/
