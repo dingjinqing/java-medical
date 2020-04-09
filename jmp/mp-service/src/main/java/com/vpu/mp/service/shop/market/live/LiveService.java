@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.base.BasePageParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListParam;
 import com.vpu.mp.service.pojo.shop.market.live.LiveListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.live.RoomDetailMpVo;
 import com.vpu.mp.service.wechat.api.WxMaLiveService;
 import com.vpu.mp.service.wechat.bean.open.WxMaLiveInfoResult;
 import com.vpu.mp.service.wechat.bean.open.WxMaLiveRoomInfo;
@@ -51,9 +52,12 @@ public class LiveService extends ShopBaseService {
 	private static final int LIVING_NOT_START= 102;
     /** 直播已结束 */
 	private static final int LIVING_END = 103;
+	/**禁播*/
+	private static final int LIVING_FORBIDDEN = 104;
     /** 直播暂停中 */
 	private static final int LIVING_PAUSE = 105;
-
+	/** 直播已过期*/
+    private static final int LIVING_OUT_OF_DATE = 107;
 
 	/**
 	 * 直播列表页
@@ -132,6 +136,22 @@ public class LiveService extends ShopBaseService {
         return db().selectFrom(LIVE_BROADCAST)
             .where(LIVE_BROADCAST.ROOM_ID.eq(roomId).and(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)))
             .fetchAny();
+    }
+
+    /**
+     * 根据roomId获取直播信息(未结束、未禁播、未过期、未删除的)
+     * @param roomId 直播id
+     * @return 直播信息
+     */
+    public RoomDetailMpVo getLiveInfoForGoodsMpDetail(Integer roomId) {
+        LiveBroadcastRecord liveBroadcastRecord = db().selectFrom(LIVE_BROADCAST)
+            .where(LIVE_BROADCAST.ROOM_ID.eq(roomId).and(LIVE_BROADCAST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(LIVE_BROADCAST.LIVE_STATUS.notIn(Arrays.asList(LIVING_END, LIVING_FORBIDDEN,LIVING_OUT_OF_DATE))).and(LIVE_BROADCAST.END_TIME.gt(DateUtil.getLocalDateTime())))
+            .fetchAny();
+        if (liveBroadcastRecord == null) {
+            return null;
+        }
+        return liveBroadcastRecord.into(RoomDetailMpVo.class);
     }
 	/**
 	 * 获得订单数
