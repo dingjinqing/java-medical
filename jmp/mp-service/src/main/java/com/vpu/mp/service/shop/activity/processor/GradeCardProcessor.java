@@ -229,7 +229,6 @@ public class GradeCardProcessor implements Processor, ActivityGoodsListProcessor
                         log.info("购物车-会员价-修改价格{}",gradePriceBo.getGradePrice());
                         goods.getCartActivityInfos().add(gradePriceInfo);
                         goods.setPrdPrice(gradePriceBo.getGradePrice());
-                        goods.setActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                         goods.setPriceActivityType(ACTIVITY_TYPE_MEMBER_GRADE);
                     }
                 }
