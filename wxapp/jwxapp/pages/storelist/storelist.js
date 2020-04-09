@@ -74,7 +74,8 @@ global.wxPage({
       scan_stores: scan_stores ? scan_stores : 0,
       de_type: de_type,
       goods_id: goods_id,
-      card_id
+      card_id,
+      type:card_id ? 1 : 0
     })
   },
 
