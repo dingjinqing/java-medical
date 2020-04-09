@@ -214,7 +214,7 @@ public class StoreWxService extends ShopBaseService {
         } else if (BYTE_ONE.equals(param.getType()) && param.getCardId() != null) {
             // type为1,并且cardId不为空;表示入口为会员卡详情页
             MemberCardPojo memberCardPojo = memberCardService.getMemberCardInfoById(param.getCardId());
-            if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ONE)) {
+            if (memberCardPojo.getStoreUseSwitch().equals(BYTE_ZERO)) {
                 return new ArrayList<>(0);
             } else {
                 // 会员卡支持门店列表,为空支持所有
