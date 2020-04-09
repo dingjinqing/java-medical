@@ -22,13 +22,16 @@ import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -247,5 +250,20 @@ public class AdminOrderController extends AdminBaseController {
         Workbook workbook =shop().readOrder.exportOrderList(param,columns,getLang());
         String fileName = Util.translateMessage(getLang(), JsonResultMessage.ORDER_EXPORT_FILE_NAME ,OrderConstant.LANGUAGE_TYPE_EXCEL,OrderConstant.LANGUAGE_TYPE_EXCEL) + DateUtil.dateFormat(DateUtil.DATE_FORMAT_SHORT);
         export2Excel(workbook,fileName,response);
+    }
+
+    /**
+     * 查询服务条款配置
+     *
+     * @return 服务条款配置内容
+     */
+    @GetMapping("/termsofservice")
+    public JsonResult getTermsOfService(@RequestParam Integer shopId) {
+        try {
+            return success(saas.getShopApp(shopId).trade.getTermsOfService());
+        } catch (IOException e) {
+            logger().error("服务条款配置内容错误", e);
+            return fail();
+        }
     }
 }
