@@ -70,6 +70,7 @@ export default {
   .top {
     background: #fff;
     padding: 15px;
+    margin-bottom: 50px;
     .filter-list {
       position: relative;
       .go-store-backstage {
@@ -78,21 +79,6 @@ export default {
         top: 0px;
       }
     }
-  }
-  .content {
-    background: #fff;
-    margin-top: 10px;
-    padding: 15px;
-  }
-  .footer {
-    position: fixed;
-    left: 150px;
-    bottom: 0;
-    width: calc(100% - 150px);
-    line-height: 50px;
-    border-top: 1px solid #f2f2f2;
-    background: #f8f8fa;
-    text-align: center;
   }
 }
 </style>
