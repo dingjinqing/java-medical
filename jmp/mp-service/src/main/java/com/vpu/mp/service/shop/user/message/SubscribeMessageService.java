@@ -595,6 +595,7 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 */
 	private String toCheck(String name, String value,String content) {
+		String targValue = " ";
 		switch (name) {
 		case RuleKey.THING:
 			value = subLimit(name,value, 20);
@@ -602,13 +603,13 @@ public class SubscribeMessageService extends ShopBaseService {
 		case RuleKey.NUMBER:
 			value = subLimit(name,value, 32);
 			if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.LETTER:
 			value = subLimit(name,value, 32);
 			if (!Pattern.matches(RuleKey.LETTER_PATTERN, value)) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.SYMBOL:
@@ -619,20 +620,20 @@ public class SubscribeMessageService extends ShopBaseService {
 			value = subLimit(name,value, 32);
 			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
 				//包含中文
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.TIME:
 			boolean specialDate = specialDate(value, DateUtil.DATE_FORMAT_FULL);
 			if(!specialDate) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.DATE:
 			boolean specialDate1 = specialDate(value, DateUtil.DATE_FORMAT_FULL);
 			boolean specialDate2 = specialDate(value, DateUtil.DATE_FORMAT_SIMPLE);
 			if(!specialDate1&&!specialDate2) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.AMOUNT:
@@ -640,19 +641,19 @@ public class SubscribeMessageService extends ShopBaseService {
 			if(yuan>0) {
 				value = subLimit(name,value,yuan);
 				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
-					value = toReturnAnLog(name, value,"");
+					value = toReturnAnLog(name, value,targValue);
 				}
 			}
 			break;
 		case RuleKey.PHONE_NUMBER:
 			value = subLimit(name,value,17);
 			if (Pattern.matches(RuleKey.PHONE_NUMBER_PATTERN, value)) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.CAR_NUMBER:
 			if (!Pattern.matches(RuleKey.CAR_NUMBER_PATTERN, value)) {
-				value = toReturnAnLog(name, value,"");
+				value = toReturnAnLog(name, value,targValue);
 			}
 			break;
 		case RuleKey.NAME:
@@ -678,7 +679,15 @@ public class SubscribeMessageService extends ShopBaseService {
 		case RuleKey.PHRASE:
 			if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
 				//包含非中文
-				value = toReturnAnLog(name, value,"");
+				logger().info("类型：{}，校验不通过，原来值：{}",name,value);
+				StringBuilder builder=new StringBuilder();
+				for (int i = 0; i < value.length(); i++) {
+					if(isChineseChar(value.charAt(i))) {
+						builder.append(value.charAt(i));
+					}
+				}
+				value=builder.toString();
+				logger().info("类型：{}，校验不通过，新值：{}",name,value);
 			}
 			break;
 		default:
@@ -770,4 +779,12 @@ public class SubscribeMessageService extends ShopBaseService {
 		value=builder.toString();
 		return value;
 	}
+	
+    public boolean isChineseChar(char c) {
+        try {
+            return String.valueOf(c).getBytes("UTF-8").length > 1;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

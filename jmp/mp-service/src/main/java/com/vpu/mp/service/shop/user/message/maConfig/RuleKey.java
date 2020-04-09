@@ -40,7 +40,7 @@ public final class RuleKey {
 	public static final String CHARACTER_STRING_PATTERN = ".*[\\u4e00-\\u9fa5]+.*$";
 	public static final String PHONE_NUMBER_PATTERN = "[a-zA-Z0-9\\u4E00-\\u9FA5]*";
 	public static final String CAR_NUMBER_PATTERN = "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1}(([A-HJ-Z]{1}[A-HJ-NP-Z0-9]{5})|([A-HJ-Z]{1}(([DF]{1}[A-HJ-NP-Z0-9]{1}[0-9]{4})|([0-9]{5}[DF]{1})))|([A-HJ-Z]{1}[A-D0-9]{1}[0-9]{3}警)))|([0-9]{6}使)|((([沪粤川云桂鄂陕蒙藏黑辽渝]{1}A)|鲁B|闽D|蒙E|蒙H)[0-9]{4}领)|(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼·•]{1}[0-9]{4}[TDSHBXJ0-9]{1})|([VKHBSLJNGCE]{1}[A-DJ-PR-TVY]{1}[0-9]{5})";
-	public static final String PHRASE_PATTERN = "^[\\\\u4e00-\\\\u9fa5]{0,}$";
+	public static final String PHRASE_PATTERN = "^[\\u4e00-\\u9fa5]{0,}$";
 	/** 是否有数字*/
 	public static final String HAVENUM_PATTERN=".*\\d+.*";
 }
