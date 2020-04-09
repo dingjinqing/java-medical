@@ -5,7 +5,7 @@
 -->
 <template>
   <div>
-    <div class="warpper_content">
+    <div class="filter-conditions">
       <section class="newuserDetailContent">
         <div class="username">
           <span>{{$t('marketCommon.username')+'：'}}</span>
@@ -42,7 +42,7 @@
       </section>
     </div>
 
-    <div class="warpper_content">
+    <div class="table">
       <div class="table_list">
         <el-table
           v-loading="loading"
@@ -158,8 +158,13 @@ export default {
 * {
   font-size: 14px;
 }
-.warpper_content {
+.filter-conditions {
   margin: 10px;
+  padding: 20px 30px;
+  background: #fff;
+}
+.table {
+  margin: 0 10px 10px;
   padding: 15px;
   background: #fff;
 }
