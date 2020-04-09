@@ -4,26 +4,26 @@
       <div class="mainTop">
         <div class="mainTopList">
           <div class="filters_item">
-            <span>商品名称：</span>
+            <span>{{$t('mintegralExchange.commodityName')}}：</span>
             <el-input
               size="small"
               v-model="goodsNameInput"
-              placeholder="商品名称"
+              :placeholder="$t('mintegralExchange.commodityName')"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>订单号：</span>
+            <span>{{$t('mintegralExchange.orderNumber')}}：</span>
             <el-input
               size="small"
               v-model="goodsNameInput"
-              placeholder="订单号"
+              :placeholder="$t('mintegralExchange.orderNumber')"
             ></el-input>
           </div>
           <div class="filters_item select">
-            <span>订单状态：</span>
+            <span>{{$t('mintegralExchange.orderNumber')}}</span>
             <el-select
               v-model="orderStatus"
-              placeholder="请选择"
+              :placeholder="$t('mintegralExchange.pleaseChoose')"
               size="small"
             >
               <el-option
@@ -38,28 +38,28 @@
         </div>
         <div class="mainTopList">
           <div class="filters_item">
-            <span>收货人姓名：</span>
+            <span>{{$t('mintegralExchange.nameOfConsignee')}}：</span>
             <el-input
               size="small"
               v-model="consigneeName"
-              placeholder="收货人姓名"
+              :placeholder="$t('mintegralExchange.nameOfConsignee')"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>收货人手机号：</span>
+            <span>{{$t('mintegralExchange.mobileNumber')}}：</span>
             <el-input
               size="small"
               v-model="consigneePhone"
-              placeholder="收货人手机号"
+              :placeholder="$t('mintegralExchange.mobileNumber')"
             ></el-input>
           </div>
           <div class="filters_item">
-            <span>下单时间：</span>
+            <span>{{$t('mintegralExchange.orderTime')}}：</span>
             <el-date-picker
               size="small"
               v-model="orderTime"
               type="date"
-              placeholder="下单时间"
+              :placeholder="$t('mintegralExchange.orderTime')"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
             >
@@ -67,7 +67,7 @@
           </div>
         </div>
         <div class="bottom">
-          <span>收获地址：</span>
+          <span>{{$t('mintegralExchange.harvestAddress')}}</span>
           <areaLinkage
             :areaCode="areaLinkage"
             @areaData="handleAreaData"
@@ -79,13 +79,13 @@
               type="primary"
               size="small"
               @click="initDataList()"
-            >筛选</el-button>
+            >{{$t('mintegralExchange.screen')}}</el-button>
             <el-button
               type="info"
               size="small"
               plain
               @click="handleToExport()"
-            >导出</el-button>
+            >{{$t('mintegralExchange.export')}}</el-button>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@
           >
             <el-table-column
               prop="orderSn"
-              label="订单号"
+              :label="$t('mintegralExchange.orderNumber')"
               align="center"
             >
               <template slot-scope="scope">
@@ -112,7 +112,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="积分兑换商品"
+              :label="$t('mintegralExchange.pointsExchangeProducts')"
               align="center"
               prop="goodsName"
               width="250"
@@ -130,29 +130,29 @@
             </el-table-column>
             <el-table-column
               prop="goodsPrice"
-              label="商品原价"
+              :label="$t('mintegralExchange.orderOriginalPrice')"
               align="center"
             ></el-table-column>
             <el-table-column
               prop="number"
-              label="商品数量"
+              :label="$t('mintegralExchange.quantityOfCommodities')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="money"
-              label="兑换现金(元)"
+              :label="$t('mintegralExchange.cashExchange')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="score"
-              label="兑换积分数量"
+              :label="$t('mintegralExchange.numberOfPoints')"
               align="center"
             >
             </el-table-column>
             <el-table-column
-              label="下单人信息"
+              :label="$t('mintegralExchange.nextPersonInformation')"
               align="center"
               prop="xdrName"
             >
@@ -171,7 +171,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="收货人信息"
+              :label="$t('mintegralExchange.consigneeInformation')"
               align="center"
               prop="consignee"
             >
@@ -186,7 +186,7 @@
                   </div>
                   <div style="color:#5a8bff;cursor:pointer">
                     <el-tooltip
-                      content="复制收件人信息"
+                      :content="$t('mintegralExchange.copyRecipient')"
                       placement="top"
                     >
                       <span
@@ -201,11 +201,11 @@
             </el-table-column>
             <el-table-column
               prop="orderStatus"
-              label="订单人状态"
+              :label="$t('mintegralExchange.ordererStatus')"
               align="center"
             >
               <template slot-scope="scope">
-                {{scope.row.orderStatus === 0?'待付款':scope.row.orderStatus === 1?'客户已取消':scope.row.orderStatus === 2?'卖家已关闭':scope.row.orderStatus === 3?'待发货':scope.row.orderStatus === 4?'已发货':scope.row.orderStatus === 5?'已收货':scope.row.orderStatus === 6?'已完成':''}}
+                {{scope.row.orderStatus === 0?$t('mintegralExchange.pendingPayment'):scope.row.orderStatus === 1?$t('mintegralExchange.customerCancelled'):scope.row.orderStatus === 2?$t('mintegralExchange.sellerClosed'):scope.row.orderStatus === 3?$t('mintegralExchange.tobShipped'):scope.row.orderStatus === 4?$t('mintegralExchange.shipped'):scope.row.orderStatus === 5?$t('mintegralExchange.eeceivedGoods'):scope.row.orderStatus === 6?$t('mintegralExchange.completed'):''}}
               </template>
             </el-table-column>
           </el-table>
@@ -220,7 +220,7 @@
     </div>
     <!--导出弹窗-->
     <el-dialog
-      title="提示"
+      :title="$t('mintegralExchange.tips')"
       :visible.sync="dialogVisible"
       width="30%"
     >
@@ -228,20 +228,20 @@
         <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出{{screenLength}}条数据,是否确认导出？</span></p>
       </div>
       <div class="export_title ">
-        <p>筛选条件：无</p>
+        <p>{{$t('mintegralExchange.filterCondition')}}</p>
       </div>
       <div class="export_title ">
-        <p style="font-weight: bold;">导出数据</p>
+        <p style="font-weight: bold;">{{$t('mintegralExchange.derivedData')}}</p>
       </div>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">{{$t('mintegralExchange.cancellation')}}</el-button>
         <el-button
           type="primary"
           @click="handleToClickSure()"
-        >确 定</el-button>
+        >{{$t('mintegralExchange.determine')}}</el-button>
       </span>
     </el-dialog>
     <!--点击复制出现的提示部分-->
@@ -249,7 +249,7 @@
       class="model"
       v-if="modelFlag"
     >
-      <div class="modelTop">已复制到剪切板</div>
+      <div class="modelTop">{{$t('mintegralExchange.copiedToClipboard')}}</div>
       <div class="modelContent">
         {{modelData}}
       </div>
@@ -268,49 +268,6 @@ export default {
     return {
       goodsNameInput: '', // 商品名称input值
       orderStatus: -1, // 订单select选中值
-      orderStatusOptions: [{
-        value: -1,
-        label: '全部订单'
-      }, {
-        value: 0,
-        label: '待付款'
-      }, {
-        value: 1,
-        label: '订单取消'
-      }, {
-        value: 2,
-        label: '订单关闭'
-      }, {
-        value: 3,
-        label: '待发货/待核销'
-      }, {
-        value: 4,
-        label: '已发货'
-      }, {
-        value: 5,
-        label: '已发货/已自提'
-      }, {
-        value: 6,
-        label: '订单完成'
-      }, {
-        value: 7,
-        label: '售后中'
-      }, {
-        value: 6,
-        label: '售后完成'
-      }, {
-        value: 8,
-        label: '送礼完成'
-      }, {
-        value: 9,
-        label: '待接单'
-      }, {
-        value: 10,
-        label: '待接单-取件中'
-      }, {
-        value: 11,
-        label: '已取件-配送中'
-      }],
       consigneeName: '', // 收货人姓名
       consigneePhone: '', // 收货人手机号
       orderTime: '', // 下单时间
@@ -337,6 +294,11 @@ export default {
         district: ''
       },
       screenLength: 0
+    }
+  },
+  computed: {
+    orderStatusOptions () {
+      return this.$t('mintegralExchange.orderStatusOptions')
     }
   },
   mounted () {

@@ -6,27 +6,27 @@
         @tab-click="handleClick"
       >
         <el-tab-pane
-          label="全部积分兑换活动"
+          :label="$t('mintegralExchange.allPoints')"
           name="first"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="进行中"
+          :label="$t('mintegralExchange.haveInHand')"
           name="second"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="未开始"
+          :label="$t('mintegralExchange.notYetBegun')"
           name="third"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="已过期"
+          :label="$t('mintegralExchange.expired')"
           name="fourth"
         >
         </el-tab-pane>
         <el-tab-pane
-          label="已停用"
+          :label="$t('mintegralExchange.deactivated')"
           name="fifth"
         >
 
@@ -46,7 +46,7 @@
         type="primary"
         @click="addActivity"
         v-if="!showSix"
-      >添加积分兑换活动</el-button>
+      >{{$t('mintegralExchange.addPoints')}}</el-button>
     </div>
     <div
       class="table_list"
@@ -61,14 +61,14 @@
       >
         <el-table-column
           prop="name"
-          label="活动名称"
+          :label="$t('mintegralExchange.activityName')"
           align="center"
         >
 
         </el-table-column>
         <el-table-column
           prop="goodsName"
-          label="商品名称"
+          :label="$t('mintegralExchange.tradeName')"
           align="center"
           width="200"
         >
@@ -85,17 +85,17 @@
         </el-table-column>
         <el-table-column
           prop="actDate"
-          label="有效期"
+          :label="$t('mintegralExchange.termOfValidity')"
           align="center"
           width="200"
         >
           <template slot-scope="scope">
-            {{scope.row.startTime}}<br>至<br>{{scope.row.endTime}}
+            {{scope.row.startTime}}<br>{{$t('mintegralExchange.to')}}<br>{{scope.row.endTime}}
           </template>
         </el-table-column>
         <el-table-column
           prop="money"
-          label="兑换现金(元)"
+          :label="$t('mintegralExchange.cashExchange')"
           align="center"
         >
           <template slot-scope="scope">
@@ -105,7 +105,7 @@
 
         <el-table-column
           prop="score"
-          label="兑换积分数"
+          :label="$t('mintegralExchange.productScore')"
           align="center"
         >
           <template slot-scope="scope">
@@ -114,7 +114,7 @@
         </el-table-column>
         <el-table-column
           prop="goodsNumber"
-          label="商品库存"
+          :label="$t('mintegralExchange.commodityInventory')"
           align="center"
           width="90"
         >
@@ -124,7 +124,7 @@
         </el-table-column>
         <el-table-column
           prop="stock"
-          label="积分兑换库存"
+          :label="$t('mintegralExchange.exchangeInventory')"
           align="center"
           width="90"
         >
@@ -134,7 +134,7 @@
         </el-table-column>
         <el-table-column
           prop="number"
-          label="已兑换数量"
+          :label="$t('mintegralExchange.quantityRedeemed')"
           align="center"
           width="90"
         >
@@ -144,7 +144,7 @@
         </el-table-column>
         <el-table-column
           prop="userNumber"
-          label="兑换用户数"
+          :label="$t('mintegralExchange.redemptionUsers')"
           align="center"
           width="90"
         >
@@ -153,14 +153,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('mintegralExchange.operation')"
           align="center"
           width="170"
         >
           <template slot-scope="scope">
             <div class="opt">
               <el-tooltip
-                content="启用"
+                :content="$t('mintegralExchange.enable')"
                 placement="top"
                 v-if="scope.row.status===0&&scope.row.actStatus!==3"
               >
@@ -170,7 +170,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('mintegralExchange.delete')"
                 placement="top"
                 v-if="scope.row.actStatus===3 || scope.row.actStatus===4"
               >
@@ -180,7 +180,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="编辑"
+                :content="$t('mintegralExchange.edit')"
                 placement="top"
                 v-if="scope.row.actStatus===1 || scope.row.actStatus===2"
               >
@@ -190,7 +190,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="分享"
+                :content="$t('mintegralExchange.share')"
                 placement="top"
                 v-if="scope.row.actStatus!==3&&scope.row.actStatus!==4"
               >
@@ -200,7 +200,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="停用"
+                :content="$t('mintegralExchange.discontinueUse')"
                 placement="top"
                 v-if="(scope.row.status===1&&scope.row.actStatus!==3)"
               >
@@ -211,7 +211,7 @@
               </el-tooltip>
 
               <el-tooltip
-                content="查看积分兑换订单"
+                :content="$t('mintegralExchange.viewPoint')"
                 placement="top"
                 v-if="scope.row.status!==2"
               >
@@ -221,7 +221,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="获取新用户明细"
+                :content="$t('mintegralExchange.getNewUser')"
                 placement="top"
                 v-if="scope.row.status!==2"
               >
@@ -231,7 +231,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-                content="查看积分兑换用户"
+                :content="$t('mintegralExchange.viewPointRedemption')"
                 placement="top"
                 v-if="scope.row.status!==2"
               >
@@ -250,25 +250,25 @@
       />
       <!--二次确认弹窗-->
       <el-dialog
-        title="提示"
+        :title="$t('mintegralExchange.tips')"
         :visible.sync="secondaryVisible"
         width="30%"
       >
-        <div class="dialogTip">确认删除吗？</div>
+        <div class="dialogTip">{{$t('mintegralExchange.sureToDelete')}}</div>
         <span
           slot="footer"
           class="dialog-footer"
         >
-          <el-button @click="secondaryVisible = false">取 消</el-button>
+          <el-button @click="secondaryVisible = false">{{$t('mintegralExchange.cancellation')}}</el-button>
           <el-button
             type="primary"
             @click="handleToSecondSure()"
-          >确 定</el-button>
+          >{{$t('mintegralExchange.determine')}}</el-button>
         </span>
       </el-dialog>
       <!--分享弹窗-->
       <el-dialog
-        title="扫一扫分享给好友吧~"
+        :title="$t('mintegralExchange.shareWithFriends')"
         :visible.sync="shareVisible"
         width="30%"
       >
@@ -284,10 +284,10 @@
           class="copyContainer"
           style="color:#999"
         >
-          下载海报码
+          {{$t('mintegralExchange.downloadPoster')}}
         </div>
         <div class="copyContainer copyDiv">
-          <span>下载海报链接：</span>
+          <span>{{$t('mintegralExchange.downloadPosterLink')}}</span>
           <el-input
             size="small"
             v-model="posterAddress"
@@ -296,7 +296,7 @@
           <span
             class="copy"
             @click="handelToCopy"
-          >复制</span>
+          >{{$t('mintegralExchange.copy')}}</span>
         </div>
       </el-dialog>
     </div>
@@ -323,7 +323,6 @@ export default {
       },
       showSix: false, // 是否显示第六个隐藏的tap
       isEditId: 0,
-      sixTitle: '添加积分兑换活动', // 隐藏tap文案
       editId: -1, // 编辑id
       secondaryVisible: false, // 二次确认弹窗flag
       nowClickOptionFlag: null, // 当前点击的操作项
@@ -333,8 +332,13 @@ export default {
       posterAddress: '' // 分享地址链接
     }
   },
+  computed: {
+    sixTitle () {
+      return this.$t('mintegralExchange.addPoints')
+    }
+  },
   mounted () {
-    // 初始化数据
+    // 初始化语言
     this.langDefault()
     // 初始化数据
     this.handleToInit()
@@ -380,13 +384,13 @@ export default {
           integralDiscontinueUse({ id: row.id }).then(res => {
             if (res.error === 0) {
               this.$message.success({
-                message: '启用成功',
+                message: this.$t('mintegralExchange.enabledSuccessfully'),
                 showClose: true
               })
               this.handleToInit()
             } else {
               this.$message.error({
-                message: '启用失败',
+                message: this.$t('mintegralExchange.failedToEnable'),
                 showClose: true
               })
             }
@@ -415,13 +419,13 @@ export default {
           integralDiscontinueUse({ id: row.id }).then(res => {
             if (res.error === 0) {
               this.$message.success({
-                message: '停用成功',
+                message: this.$t('mintegralExchange.shutdownSuccessful'),
                 showClose: true
               })
               this.handleToInit()
             } else {
               this.$message.error({
-                message: '停用失败',
+                message: this.$t('mintegralExchange.shutdownFailure'),
                 showClose: true
               })
             }
@@ -475,13 +479,13 @@ export default {
             console.log(res)
             if (res.error === 0) {
               this.$message.success({
-                message: '删除成功',
+                message: this.$t('mintegralExchange.deleteSuccessful'),
                 showClose: true
               })
               this.handleToInit()
             } else {
               this.$message.error({
-                message: '删除失败',
+                message: this.$t('mintegralExchange.deleteFailed'),
                 showClose: true
               })
             }
