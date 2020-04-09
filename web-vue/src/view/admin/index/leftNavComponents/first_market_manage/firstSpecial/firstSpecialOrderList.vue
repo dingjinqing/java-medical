@@ -36,12 +36,12 @@
           >
             <template slot-scope="scope">
               <div
-                v-for="goodsItem in scope.row.goods.slice(0, 1)"
+                v-for="goodsItem in scope.row.goods"
                 :key="goodsItem.goodsId"
                 class="goods_info"
               >
                 <img
-                  :src="$imageHost+'/image/admin/icon_jia.png'"
+                  :src="goodsItem.goodsImg"
                   alt=""
                   class="goods_img"
                 >
@@ -55,7 +55,7 @@
           >
             <template slot-scope="scope">
               <div
-                v-for="goodsItem in scope.row.goods.slice(0, 1)"
+                v-for="goodsItem in scope.row.goods"
                 :key="goodsItem.goodsId"
                 class="goods_info"
               >
@@ -107,6 +107,11 @@
         />
       </div>
     </div>
+    <!-- 导出数据确认弹窗 -->
+    <exportForm
+      :show.sync="showExportConfirm"
+      :param="this.requestParams"
+    />
   </div>
 </template>
 
@@ -115,7 +120,8 @@ import { getFirstSpecialOrderList } from '@/api/admin/marketManage/firstSpecial.
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination'),
-    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue')
+    marketOrderSearchTab: () => import('@/components/admin/marketManage/marketOrderSearchTab.vue'),
+    exportForm: () => import('./firstSpecialOrderExportConfirmDialog.vue')
   },
   mounted () {
     if (this.$route.query.id > 0) {
@@ -140,6 +146,7 @@ export default {
       tableData: [],
       orderStatusMap: {},
       actId: null,
+      showExportConfirm: false, // 是否展示导出数据弹窗
 
       // 表格原始数据
       originalData: []
@@ -182,7 +189,7 @@ export default {
       }
     },
     exportDataList () {
-      alert(11)
+      this.showExportConfirm = true
     }
   },
   watch: {
@@ -203,7 +210,6 @@ export default {
     background-color: #fff;
     padding: 15px;
     margin-top: 10px;
-    font-weight: bold;
     color: #000;
     .goods_price {
       border-bottom: 1px solid #ebeef5;

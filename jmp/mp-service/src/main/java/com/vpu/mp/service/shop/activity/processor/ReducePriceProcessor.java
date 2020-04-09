@@ -137,7 +137,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                 if (reducePrize.compareTo(goods.getPrdPrice())<0){
                     Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
                     Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
-                    if (limitNum.equals(0)||goods.getCartNumber()<=limitNum||(goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONFINE))){
+                    if (limitNum.equals(0)||goods.getCartNumber()<=limitNum||(goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))){
                         log.info("购物车-限时降价-商品{}",goods.getGoodsName());
                         CartActivityInfo activityInfo = new CartActivityInfo();
                         activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
@@ -149,12 +149,13 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                         log.info("购物车限时减价-修改价格");
                         goods.setPriceActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                         goods.setPrdPrice(reducePrize);
-                        if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.FIRST_SPECIAL_LIMIT_FLAG_CONFINE)) {
+                        goods.setLimitMaxNum(limitNum);
+                        goods.setActivityLimitType(limitFlag);
+                        if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
                             log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);
                             cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                             goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                            goods.setLimitMaxNum(limitNum);
-                            goods.setActivityLimitType(limitFlag);
+                            goods.setBuyStatus(BaseConstant.NO);
                         }
                     }
                 }

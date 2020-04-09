@@ -1,6 +1,11 @@
 <view class="body">
 	<include src="../common/header.wxml" />
 	<view class="main-container" wx:if="{{cardInfo}}">
+    <view class="merchant_message" wx:if="{{cardInfo.cardVerifyStatus===3 && cardInfo.activationTime===null && cardInfo.activation===1}}">
+      <text>商家未通过您的激活申请</text>
+      <text v-if="cardInfo.isExamine.refuseDesc">
+        驳回原因:{{cardInfo.isExamine.refuseDesc}}</text>
+    </view>
 		<view class="card_surface_details" style="{{cardInfo.cardBgStyle}}">
 			<view class="card_type">{{cardInfo.cardTypeName}}</view>
 			<view class="card_info">
@@ -360,7 +365,7 @@
 		</view>
 	</view>
 
-	<view class="flex_footer">
+	<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1)}}">
 		<view
 		 class="footer_btn"
 		 data-btnType="{{btnType}}"

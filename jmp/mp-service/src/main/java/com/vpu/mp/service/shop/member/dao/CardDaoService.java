@@ -22,6 +22,7 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_U
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.vpu.mp.db.shop.tables.User;
 import org.apache.commons.lang3.StringUtils;
@@ -330,10 +331,15 @@ public class CardDaoService extends ShopBaseService {
 	 * 
 	 * @param record
 	 */
-	public void updateCardExamine(CardExamineRecord record) {
-		db().executeUpdate(record, CARD_EXAMINE.ID.eq(record.getId()));
+	public int updateCardExamine(CardExamineRecord record) {
+		return db().executeUpdate(record, CARD_EXAMINE.ID.eq(record.getId()));
 	}
 
+	public CardExamineRecord getCardExamineRecordById(Integer id) {
+		return db().selectFrom(CARD_EXAMINE)
+					.where(CARD_EXAMINE.ID.eq(id))
+					.fetchAnyInto(CARD_EXAMINE);
+	}
 	/**
 	 * 更新user_card 激活时间
 	 * 
@@ -783,6 +789,20 @@ public class CardDaoService extends ShopBaseService {
 			.from(MEMBER_CARD)
 			.where(MEMBER_CARD.ID.in(ids))
 			.fetchInto(CardBasicVo.class);
+	}
+	
+	/**
+	 * 获取卡号-会员卡详情
+	 * @param nos
+	 * @return
+	 */
+	public Map<String, MemberCardRecord> getCardByNo(String ...nos) {
+		 return db().select(USER_CARD.CARD_NO).select(MEMBER_CARD.fields())
+			.from(USER_CARD)
+			.innerJoin(MEMBER_CARD).on(USER_CARD.CARD_ID.eq(MEMBER_CARD.ID))
+			.where(USER_CARD.CARD_NO.in(nos))
+			.fetchMap(USER_CARD.CARD_NO, MemberCardRecord.class);
+			
 	}
 	
 }

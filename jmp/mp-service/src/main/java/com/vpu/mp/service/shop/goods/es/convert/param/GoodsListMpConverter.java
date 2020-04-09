@@ -100,10 +100,10 @@ public class GoodsListMpConverter implements EsParamConvertInterface {
         if( param.getSortType() != null ){
             switch (param.getSortType()){
                 case 1:
-                    sorts.add(getSort(EsSearchName.CREATE_TIME, SortOrder.DESC));
+                    sorts.add(getSort(EsSearchName.SALE_TIME, SortOrder.DESC));
                     break;
                 case 2:
-                    sorts.add(getSort(EsSearchName.GOODS_SALE_NUM,SortOrder.DESC));
+                    sorts.add(getSort(EsSearchName.TOTAL_SALE_NUMBER,SortOrder.DESC));
                     break;
                 case 3:
                     sorts.add(getSort(EsSearchName.SHOW_PRICE,SortOrder.ASC));

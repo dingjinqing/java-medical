@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order.action;
 
+import com.beust.jcommander.internal.Lists;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -16,6 +17,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
+import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
@@ -36,6 +38,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
+import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
 import com.vpu.mp.service.shop.activity.processor.GiftProcessor;
 import com.vpu.mp.service.shop.config.InsteadPayConfigService;
@@ -65,8 +68,10 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record3;
 import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -165,6 +170,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     @Autowired
     private SeckillService seckillService;
 
+    @Autowired
+    PreSaleProcessorDao preSaleProcessorDao;
     /**
      * 营销活动processorFactory
      */
@@ -607,7 +614,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
-
+            //TODO 预售商品，不支持现购买 && $card_type!=1 && !$storeId
+            if(BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(temp.getGoodsInfo().getGoodsType())) {
+                preSaleCheck(temp);
+            }
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()));
             logger().info("calculateResult:{}", calculateResult);
@@ -617,20 +627,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
             //会员等级->限时降价/等级会员卡专享价格/商品价格（三取一）return
             //限时降价
-
-            //会员专享校验
-
-            //预售商品，不支持现购买
-
             //非加价购 && 非限次卡
-            if(Boolean.TRUE) {
-                if(temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-                if(temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()){
-                    throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
-                }
-            }
+            goodsNumLimit(temp);
 
             //price 副本
 
@@ -654,6 +652,41 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         return boList;
     }
 
+    private void preSaleCheck(Goods temp) throws MpException {
+        // key:商品id，value:List<Record3<Integer, Integer, BigDecimal>> PRESALE.ID, PRESALE.GOODS_ID, PRESALE_PRODUCT.PRESALE_PRICE
+        Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsPreSaleListInfo = preSaleProcessorDao.getGoodsPreSaleListInfo(Lists.newArrayList(temp.getGoodsId()), DateUtil.getLocalDateTime());
+        if(MapUtils.isNotEmpty(goodsPreSaleListInfo)) {
+            //当前商品对应的预售信息
+            List<Record3<Integer, Integer, BigDecimal>> preSaleInfos = goodsPreSaleListInfo.get(temp.getGoodsId());
+            if(CollectionUtils.isNotEmpty(preSaleInfos)) {
+                for (Record3<Integer, Integer, BigDecimal> info : preSaleInfos) {
+                    PreSaleVo detail = preSaleProcessorDao.getDetail(info.get(1, Integer.class));
+                    if(detail.getBuyType().equals(NO)) {
+                        throw new MpException(JsonResultCode.CODE_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY, "为预售商品，不支持现购", temp.getGoodsInfo().getGoodsName());
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * 商品限购
+     * @param temp
+     * @throws MpException
+     */
+    private void goodsNumLimit(Goods temp) throws MpException {
+        //TODO 非加价购 && 非限次卡
+        if (!Boolean.TRUE.equals(temp.getIsAlreadylimitNum())) {
+            if (temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
+            }
+            if (temp.getGoodsInfo().getLimitMaxNum() > 0 && temp.getGoodsNumber() > temp.getGoodsInfo().getLimitMaxNum()) {
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MAX, "最大限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitMaxNum().toString());
+            }
+        }
+    }
+
     /**
      * 营销、非营销处理后初始化orderGoods对象
      * @param param 结算参数
@@ -667,7 +700,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
             OrderGoodsBo bo = orderGoods.initOrderGoods(temp);
-
+            goodsNumLimit(temp);
             boList.add(bo);
         }
         param.setBos(boList);

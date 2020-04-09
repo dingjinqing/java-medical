@@ -991,8 +991,10 @@ export default {
           } else {
             return false
           }
-          if (this.param.deliverTime < this.param.endTime) {
-            this.$message.warning('指定发货时间应大于尾款支付时间')
+          if (this.param.deliverType === 1) {
+            if (this.param.deliverTime < this.param.endTime) {
+              this.$message.warning('指定发货时间应大于尾款支付时间')
+            }
           }
         } else {
           console.log('error submit')

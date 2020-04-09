@@ -13,12 +13,16 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponSrcConstant;
 import com.vpu.mp.service.pojo.shop.decoration.module.ModuleCard;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.gift.UserAction;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.AddMemberCardParam;
@@ -33,12 +37,16 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -47,15 +55,21 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.card.*;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
 import com.vpu.mp.service.shop.member.excel.UserImExcelWrongHandler;
+import com.vpu.mp.service.shop.member.wxapp.WxAppCardActivationService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.store.service.ServiceOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+
 import jodd.util.StringUtil;
+
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.Condition;
 import org.jooq.InsertValuesStep3;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectSeekStep1;
 import org.jooq.impl.DSL;
@@ -67,6 +81,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -127,6 +142,8 @@ public class MemberCardService extends ShopBaseService {
 	private GradeCardOpt gradeCardOpt;
 	@Autowired
 	private CardFreeShipService freeShipSvc;
+	@Autowired
+	private WxAppCardActivationService wxCardActSvc;
 
     
 	/**
@@ -1681,6 +1698,7 @@ public class MemberCardService extends ShopBaseService {
 	 * @param data
 	 */
 	private void insertIntoChargeMoney(CardConsumpData data) {
+		logger().info("会员卡充值记录");
 		ChargeMoneyRecord chargeMoneyRecord = db().newRecord(CHARGE_MONEY,data);
 		/** 处理数据库表中带下划线的字段 */
 		if (data.getUserId() != null) {
@@ -1717,6 +1735,10 @@ public class MemberCardService extends ShopBaseService {
 		}
 		if (data.getExchangeCount() != null) {
 			chargeMoneyRecord.setExchangCount(data.getExchangeCount());
+		}
+		
+		if(!StringUtils.isBlank(data.getPayment())) {
+			chargeMoneyRecord.setPayment("");
 		}
 		chargeMoneyRecord.insert();
 
@@ -1879,25 +1901,80 @@ public class MemberCardService extends ShopBaseService {
 	 * @return
 	 */
 	public PageResult<ActiveAuditVo> getActivateAuditList(ActiveAuditParam param) {
-
-		PageResult<ActiveAuditVo> results = cardVerifyService.getPageList(param);
+		logger().info("分页查询激活信息");
+		PageResult<? extends Record> results = cardVerifyService.getPageList(param);
+		PageResult<ActiveAuditVo> res = new PageResult<>();
+		res.setPage(results.getPage());
+		List<ActiveAuditVo> myList = new ArrayList<>();
+		
+		if(results.dataList.size()>0) {
+			// 所有的卡
+			List<String> nos = results.dataList.stream().map(x->x.get(CARD_EXAMINE.CARD_NO)).distinct().collect(Collectors.toList());
+			Map<String, MemberCardRecord> cardMap = cardDao.getCardByNo(nos.toArray(new String[0]));
+			Map<String,List<String>> cardCfgMap = new HashMap<>();
+			// 提前获取激活的选项
+			for(Map.Entry<String, MemberCardRecord> entry: cardMap.entrySet()) {
+				List<String> cfg = CardUtil.parseActivationCfg(entry.getValue().getActivationCfg());
+				cardCfgMap.put(entry.getKey(), cfg);
+			}
+			for(Record record: results.dataList) {
+				ActiveAuditVo vo = new ActiveAuditVo();
+				vo.setCardNo(record.get(CARD_EXAMINE.CARD_NO));
+				vo.setMobile(record.get(USER.MOBILE));
+				vo.setUsername(record.get(USER.USERNAME));
+				vo.setCreateTime(record.get(CARD_EXAMINE.CREATE_TIME));
+				vo.setStatus(record.get(CARD_EXAMINE.STATUS));
+				vo.setId(record.get(CARD_EXAMINE.ID));
+				vo.setRefuseDesc(record.get(CARD_EXAMINE.REFUSE_DESC));
+				// 激活数据项
+				List<String> activationCfg = cardCfgMap.get(vo.getCardNo());
+				for(String name: activationCfg) {
+					if("birthday".equals(name)) {
+						vo.setBirthDayDay(record.get(CARD_EXAMINE.BIRTHDAY_DAY));
+						vo.setBirthDayMonth(record.get(CARD_EXAMINE.BIRTHDAY_MONTH));
+						vo.setBirthDayYear(record.get(CARD_EXAMINE.BIRTHDAY_YEAR));
+					}else if("address".equals(name)){
+						vo.setProvinceCode(record.get(CARD_EXAMINE.PROVINCE_CODE));
+						vo.setCityCode(record.get(CARD_EXAMINE.CITY_CODE));
+						vo.setDistrictCode(record.get(CARD_EXAMINE.DISTRICT_CODE));
+					}else {
+						try {
+							Object value = record.get(Util.humpToUnderline(name));
+							PropertyUtils.setProperty(vo, name, value);
+						} catch (Exception e) {
+							// 该属性为空 
+						}		
+					}
+				}
+				myList.add(vo);
+			}
+		}
 		// deal with industry and education
-		for (ActiveAuditVo activeAuditVo : results.dataList) {
+		for (ActiveAuditVo activeAuditVo : myList) {
 			// education
 			if(activeAuditVo.getEducation()!= null) {
 				String educationStr = MemberEducationEnum.getNameByCode((int)activeAuditVo.getEducation());
 				activeAuditVo.setEducationStr(educationStr);
 			}
-			
 			// industry
 			if(activeAuditVo.getIndustryInfo() != null) {
 				String industry = MemberIndustryEnum.getNameByCode((int)activeAuditVo.getIndustryInfo());
 				activeAuditVo.setIndustry(industry);
 			}
-			
+			// deal address
+			if(activeAuditVo.getCityCode()!=null && activeAuditVo.getCityCode()!=null) {
+				Map<String,Object> adMap = new HashMap<>();
+				adMap.put(WxAppCardActivationService.PROVINCE_CODE, activeAuditVo.getProvinceCode());
+				adMap.put(WxAppCardActivationService.CITY_CODE, activeAuditVo.getCityCode());
+				adMap.put(WxAppCardActivationService.DISTRICT_CODE, activeAuditVo.getDistrictCode());
+				wxCardActSvc.dealWithAddressCode(adMap);
+				activeAuditVo.setCity((String)adMap.get(WxAppCardActivationService.CITY_CODE));
+				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
+				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
+			}
 		}
-		return results;
-
+		res.setDataList(myList);
+		return res;
 	}
 
 	/**
@@ -1954,7 +2031,42 @@ public class MemberCardService extends ShopBaseService {
 	 */
 	public void rejectActivateAudit(ActiveAuditParam param) {
 		CardExamineRecord record = setRejectData(param);
-		cardDao.updateCardExamine(record);
+		int res = cardDao.updateCardExamine(record);
+		if(res>0) {
+			logger().info("发送订阅消息");
+			CardExamineRecord re = cardDao.getCardExamineRecordById(record.getId());
+			Integer userId = re.getUserId();
+			String cardNo = re.getCardNo();
+			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
+			// 订阅消息
+			String[][] maData = new String[][] {
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{"审核不通过"},
+				{"很遗憾，您提交的会员卡激活申请未通过审核"}
+			};
+			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
+			// 公众号消息
+			String[][] mpData = new String[][] {
+				{"审核未通过"},
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{re.getRefuseDesc()},
+				{re.getCreateTime().toLocalDateTime().toString()},
+				{"申请会员卡激活"}
+			};
+			RabbitMessageParam param2 = RabbitMessageParam.builder()
+					.maTemplateData(
+							MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
+					.mpTemplateData(
+							MpTemplateData.builder().config(MpTemplateConfig.AUDIT).data(mpData).build())
+					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+					.userIdList(arrayList)
+					.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
+			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
+			
+		}
+		
+		
+		
 	}
 
 	/**

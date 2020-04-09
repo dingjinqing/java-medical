@@ -376,8 +376,8 @@ global.wxPage({
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
           console.log(fi_arr)
-          let keyArr = ['if_username', 'if_mobile', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
-          let valArr = ['username', 'mobile', 'realName', 'invitation_code', 'cid', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
+          let keyArr = ['if_username', 'if_mobile','if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+          let valArr = ['username', 'mobile','cid', 'realName', 'invitation_code',  'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
           fi_arr.map((item, index) => {
             var val = keyArr[valArr.indexOf(fi_arr[index])]
             let obj = {}

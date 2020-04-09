@@ -9,10 +9,14 @@ import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyResultVo;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -41,15 +45,18 @@ public class CardVerifyDaoService extends ShopBaseService {
 	}
 	
 	
-	public PageResult<ActiveAuditVo> getVerifyPageList(ActiveAuditParam param) {
-		SelectJoinStep<?> select = 
-			db().select(CARD_EXAMINE.ID,CARD_EXAMINE.REAL_NAME,CARD_EXAMINE.CARD_NO,
-					    CARD_EXAMINE.STATUS,CARD_EXAMINE.CREATE_TIME,CARD_EXAMINE.CID,
-					    CARD_EXAMINE.EDUCATION,CARD_EXAMINE.INDUSTRY_INFO,
-					    USER.MOBILE,USER.USERNAME)
-				.from(CARD_EXAMINE.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID)));
+	public PageResult<? extends Record> getVerifyPageList(ActiveAuditParam param) {
+		Field<?>[] fields = CARD_EXAMINE.fields();
+		List<Field<?>> f = new ArrayList<>(Arrays.asList(fields));
+		f.add(USER.MOBILE);
+		f.add(USER.USERNAME);
+		Field<?>[] myFields = f.toArray(new Field<?>[0]);
+		Record myRecord = db().newRecord(myFields);
+		SelectJoinStep<?> select = db().select(myFields)
+					.from(CARD_EXAMINE)
+					.leftJoin(USER).on(CARD_EXAMINE.USER_ID.eq(USER.USER_ID));
 		buildOptions(select,param);
-		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), ActiveAuditVo.class);
+		return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), myRecord.getClass());
 	}
 	
 	public CardExamineRecord getLastRecord(ActiveAuditParam param) {
@@ -86,7 +93,7 @@ public class CardVerifyDaoService extends ShopBaseService {
 		}
 		// 手机号
 		if(isNotNull(param.getMobile())) {
-			select.where(USER.MOBILE.eq(param.getMobile()));
+			select.where(USER.MOBILE.like(likeValue(param.getMobile())));
 		}
 		// 申请时间 - 开始
 		if(isNotNull(param.getFirstTime())) {

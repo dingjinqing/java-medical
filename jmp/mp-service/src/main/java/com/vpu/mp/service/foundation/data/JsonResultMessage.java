@@ -304,8 +304,21 @@ public class JsonResultMessage {
 	/**
 	 * 首单特惠
 	 */
-	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.sprecial.number.limit";
-	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.sprecial.kind.limit";
+	public static final String FIRST_SPECIAL_NUMBER_LIMIT = "first.special.number.limit";
+	public static final String FIRST_SPECIAL_KIND_LIMIT = "first.special.kind.limit";
+
+    /**
+     *  营销-首单特惠excel导出
+     */
+    public static final String FIRST_SPECIAL_ORDER_LIST_FILENAME = "first.special.order.list.file_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_SN = "first.special.order.list.order_sn";
+    public static final String FIRST_SPECIAL_ORDER_LIST_GOODS_NAME = "first.special.order.list.goods_name";
+    public static final String FIRST_SPECIAL_ORDER_LIST_PRICE = "first.special.order.list.price";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CREATE_TIME = "first.special.order.list.create_time";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_USER = "first.special.order.list.order_user";
+    public static final String FIRST_SPECIAL_ORDER_LIST_CONSIGNEE = "first.special.order.list.consignee";
+    public static final String FIRST_SPECIAL_ORDER_LIST_MONEY_PAID = "first.special.order.list.money_paid";
+    public static final String FIRST_SPECIAL_ORDER_LIST_ORDER_STATUS = "first.special.order.list.order_status";
 
 
     /**
@@ -348,6 +361,12 @@ public class JsonResultMessage {
     public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_NUM = "free.shipping.activity.message.condition.num";
     public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
     public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
+
+
+    /**
+     * 营销--消息推送
+     */
+    public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
 
     /**
      * 文章_分类
@@ -740,6 +759,8 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_WAY = "order.pay.way.no.support.instead.pay.way";
     public static final String MSG_ORDER_PAY_WAY_NO_SUPPORT_INSTEAD_PAY_MONEY_ZERO = "order.pay.way.no_support.instead.pay.money.zero";
     public static final String MSG_ORDER_PAY_WAY_INSTEAD_PAY_FINISH = "order.pay.way.instead.pay.finish";
+    public static final String MSG_ORDER_EXCLUSIVE_GOODS_NO_BUY = "order.exclusive.goods.no.buy";
+    public static final String  MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";

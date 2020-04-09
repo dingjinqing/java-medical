@@ -60,7 +60,6 @@ public class PurchaseGoodsListVo {
         private Byte isCardExclusive;
         private Integer sortId;
         private Integer catId;
-
         /**
          * 1默认规格，0自定义规格（多规格）
          */
@@ -78,6 +77,12 @@ public class PurchaseGoodsListVo {
         private BigDecimal goodsPrice;
         private BigDecimal maxPrice;
         private Integer limitAmount;
+
+        //购物车数据
+        /**
+         * 购物车里该商品的数量
+         */
+        private Integer cartGoodsNumber;
     }
 
     @Setter

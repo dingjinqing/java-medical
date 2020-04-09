@@ -1,10 +1,12 @@
 package com.vpu.mp.service.shop.order.info;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
+import com.vpu.mp.service.pojo.shop.market.MarketOrderGoodsListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.givegift.record.GiveGiftRecordListParam;
@@ -14,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import jodd.util.StringUtil;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.SelectHavingStep;
@@ -43,6 +46,8 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
 
     @Autowired
     private OrderGoodsService orderGoods;
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      *
@@ -270,6 +275,7 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
     }
 
     private void buildMarketOrderOptionsParam(SelectJoinStep<? extends Record> select,MarketOrderListParam param, byte goodsType){
+        param.initOrderStatus();
         OrderPageListQueryParam orderParam = new OrderPageListQueryParam();
         orderParam.setCurrentPage(param.getCurrentPage());
         orderParam.setPageRows(param.getPageRows());
@@ -304,7 +310,13 @@ public class AdminMarketOrderInfoService extends OrderInfoService {
         PageResult<MarketOrderListVo> res = getPageResult(select,param.getCurrentPage(),param.getPageRows(),MarketOrderListVo.class);
         /** 填充商品行 */
         for(MarketOrderListVo order : res.dataList){
-            order.setGoods(orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn()));
+            List<MarketOrderGoodsListVo> goods = orderGoods.getMarketOrderGoodsByOrderSn(order.getOrderSn());
+            goods.forEach(g->{
+                if(StringUtil.isNotBlank(g.getGoodsImg())){
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            });
+            order.setGoods(goods);
         }
 
         return res;
