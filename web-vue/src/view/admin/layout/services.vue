@@ -25,7 +25,9 @@ export default {
   methods: {
     requestServices () {
       getMiniProgramServices(this.shopId).then(res => {
-        console.log(res)
+        if (res.error === 0 && res.content) {
+          this.data = res.content
+        }
       })
     }
   }
@@ -37,5 +39,7 @@ export default {
   height: 100%;
   background-color: #fff;
   padding: 0 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
