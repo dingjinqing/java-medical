@@ -11,10 +11,7 @@ global.wxPage({
     user: '',
     couponSn: '',
     couponId: '',
-
-    split_info: [],
-    split_info1: [],
-    get_count: 0 // 领取人数
+    split_info: []
   },
 
   /**
@@ -34,18 +31,15 @@ global.wxPage({
   // 立即领取
   get_this_coupon: function (e) {
     var that = this;
-    that.data.get_count++;
-    if (that.data.get_count > 1) return;
     // util.api('/api/wxapp/coupon/getsplit', function (res) {
     //   if (res.error == 0) {
-    //     that.setData({
-    //       split_info1: res.content
-    //     })
-    //     if (that.data.split_info1.error == -4) {
+    //     if (res.content.error == -4) {
     //       util.showModal('提示', '优惠券领取成功!');
     //       reLoad(that);
-    //       get_count = 0;
     //     }
+    //   } else {
+    //     util.showModal('提示', res.message);
+    //     return false;
     //   }
     // }, { 
     //   user: that.data.user, 
@@ -69,24 +63,17 @@ global.wxPage({
   },
 
   /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
  * 用户点击右上角分享,立即分享
  */
   onShareAppMessage: function (res) {
+    var that = this;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + this.data.user + "&couponSn=" + this.data.couponSn + "&couponId=" + this.data.couponId + "&inviteId=" + util.getCache('user_id'),
-      imageUrl: this.data.imageUrl + 'image/wxapp/share_icon.jpg'
+      path: '/pages/splitinfo/splitinfo?user=' + that.data.user + "&couponSn=" + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg'
     }
   }
 })
-
 function reLoad(that) {
   // util.api('/api/wxapp/coupon/splitinfo', function (res) {
   //   if (res.error == 0) {

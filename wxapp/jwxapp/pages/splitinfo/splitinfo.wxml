@@ -1,6 +1,7 @@
 <!--pages/splitinfo/splitinfo.wxml-->
 <include src="../common/header.wxml" />
 <view class='all'>
+  <!-- 领取优惠券信息 -->
   <view class='sc_content' style='background:url("{{imageUrl}}/image/wxapp/split_coupon_bg.png") no-repeat;background-size:100% 100%'>
     <block wx:if='{{split_info.is_oneself == 1}}'>
       <!--领取详情  -->
@@ -28,12 +29,12 @@
       <!--立即领取  -->
       <view class='top_tips' wx:if="{{split_info.error=='0'}}">
         <view class='tt_top'>送您1张优惠券</view>
-        <view class='tt_bottom use_expire' wx:if="{{!(split_info.coupon.validity > 0 || split_info.coupon.validity_hour > 0 || split_info.coupon.validity_minute > 0)}}">有效期：{{split_info.coupon.start_time}}-{{split_info.coupon.end_time}}</view>
-        <view class='tt_bottom use_expire' wx:if="{{split_info.coupon.validity > 0 || split_info.coupon.validity_hour > 0 || split_info.coupon.validity_minute > 0}}">
+        <view class='tt_bottom use_expire' wx:if="{{!(split_info.coupon.validity > 0 || split_info.coupon.validityHour > 0 || split_info.coupon.validityMinute > 0)}}">有效期：{{split_info.coupon.startTime}}-{{split_info.coupon.endTime}}</view>
+        <view class='tt_bottom use_expire' wx:if="{{split_info.coupon.validity > 0 || split_info.coupon.validityHour > 0 || split_info.coupon.validityMinute > 0}}">
           有效期：领取后
           <block wx:if='{{split_info.coupon.validity > 0}}'>{{split_info.coupon.validity}}天</block>
-          <block wx:if='{{split_info.coupon.validity_hour > 0}}'>{{split_info.coupon.validity_hour}}小时</block>
-          <block wx:if='{{split_info.coupon.validity_minute > 0}}'>{{split_info.coupon.validity_minute}}分钟</block>内有效
+          <block wx:if='{{split_info.coupon.validityHour > 0}}'>{{split_info.coupon.validityHour}}小时</block>
+          <block wx:if='{{split_info.coupon.validityMinute > 0}}'>{{split_info.coupon.validityMinute}}分钟</block>内有效
         </view>
       </view>
     </block>
@@ -54,7 +55,6 @@
         <button form-type='submit'>立即领取</button>
       </form>
     </block>
-
     <block wx:else>
       <view class='get_notice'>快去分享给您的朋友吧~</view>
       <view class='detail_btn_group'>
@@ -64,6 +64,7 @@
         <view class='btn_to_store' bindtap="goIndex">进店逛逛</view>
       </view>
     </block>
+
     <!--领取详情  -->
     <view class='get_detail'>
       <view class="gd_bg1">
@@ -76,10 +77,10 @@
           <view class='hr'></view>
         </view>
         <view class='other_get'>
-          <block wx:for='{{split_info.user_list}}' wx:key="index">
+          <block wx:for='{{split_info.userList}}' wx:key="index">
             <view class='each_other'>
               <view class='eo_left'> 
-                <image src='{{item.user_avatar}}' />
+                <image src='{{item.userAvatar}}' />
               </view>
               <view class='eo_right'>
                 <view class='eo_name'>{{item.username}}</view>
