@@ -6,40 +6,43 @@
   <view class="coupon-container">
     <block>
       <!-- 优惠券名称 -->
-      <view class="coupon-name" style="background:{{ act_info.is_expire == 1 ? '#fff' : comColor }}">
+      <view class="coupon-name" style="background:{{ act_info.is_expire == 1 ? '#ccc' : comColor }}">
         <view class="vip_exclusive" wx:if="{{act_info.cardId != ''}}">
           {{i18n.$t(localePack,"pages.coupon.card")}}
         </view>
         <!-- <view class="record" bindtap="to_getRecord">领取记录</view> -->
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>{{i18n.$t(localePack,"pages.coupon.couponName")}}</text>
-        <!-- 列表 -->
-        <text class="name-bottom" wx:if="{{act_info.type === 0 && act_info.linkSource === 0}}">
-          ￥{{act_info.amount}}
-        </text>
-        <text class="name-bottom" wx:if="{{act_info.type === 1 && act_info.linkSource === 0}}">
-          {{act_info.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}
-        </text>
-        <!-- 链接样式 -->
-        <text class="name-bottom" wx:if="{{act_info.actCode === 'voucher' && act_info.linkSource === 1}}">
-          ￥{{act_info.denomination}}
-        </text>
-        <text class="name-bottom" wx:if="{{act_info.actCode === 'discount' && act_info.linkSource === 1}}">
-          {{act_info.denomination}}{{i18n.$t(localePack,"pages.coupon.amount")}}
-        </text>
-        <!-- 分裂样式 -->
-        <!-- <text class="name-bottom">￥{{act_info.amount}} <text style="font-size:8px;">最高</text></text> 
-        <text>随机金额</text> -->
+        <!-- 来源列表 / 装修链接 -->
+        <view wx:if="{{act_info.linkSource == 0}}">
+          <text class="name-bottom" wx:if="{{act_info.type == 0}}">￥{{act_info.amount}}</text>
+          <text class="name-bottom" wx:if="{{act_info.type == 1}}">{{act_info.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
+        </view>
+        <view wx:else>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'voucher'}}">￥{{act_info.denomination}}</text>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'discount'}}">{{act_info.denomination}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
+        </view>
+        <!-- <view wx:if="{{act_info.linkSource == 0}}">
+          <view wx:if="{{act_info.type == 0}}">
+            <text wx:if="{{act_info.couponType == 1 && act_info.isShare == 0 && act_info.actCode == 'random'}}" class="name-bottom">￥{{act_info.randomMax}}最高</text>
+            <text wx:else class="name-bottom">￥{{act_info.amount}}</text>
+          </view>
+          <view wx:if="{{act_info.type == 1}}">{{act_info.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</view>
+        </view>
+        <view wx:else>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'voucher'}}">￥{{act_info.denomination}}</text>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'random' && act_info.isShare == 1}}">￥{{act_info.amount}}</text>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'random' && act_info.isShare == 1}}">随机优惠</text>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'random' && act_info.isShare == 0}}">￥{{act_info.randomMax}}最高</text>
+          <text class="name-bottom" wx:if="{{act_info.actCode === 'discount'}}">{{act_info.denomination}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
+        </view> -->
         <image src="{{imageUrl}}image/wxapp/no_use_bg1.png" class="coupon-top-img" mode="widthFix"></image>
-        <!-- 图标 -->
-        <!-- 已使用 -->
+        <!-- 已使用图标 -->
         <block wx:if="{{act_info.isUsed == 1}}">
-          <image src="{{imageUrl}}/image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
           <image src="{{imageUrl}}/image/wxapp/used.png" class="coupon-top-rt-img" mode="widthFix"></image>
         </block>
-        <!-- 已过期 -->
-        <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 1 || act_info.have_expired == 1}}">
-          <image src="{{imageUrl}}/image/wxapp/coupon_top_gray.png" class="coupon-top-img" mode="widthFix"></image>
+        <!-- 已过期图标 -->
+        <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 1}}">
           <image src="{{imageUrl}}/image/wxapp/out_time.png" class="coupon-top-rt-img" mode="widthFix"></image>
         </block>
       </view>
@@ -48,7 +51,7 @@
       <view class="coupon-time" wx:if="{{ act_info.linkSource === 0 }}">
         <view class='cou_bom_tit'>{{i18n.$t(localePack,"pages.coupon.couponTime")}}：</view>
         <!-- 未使用 -->
-        <block wx:if="{{couponType == '0'}}">
+        <block wx:if="{{couponStatus == '0'}}">
           <!-- 固定日期 -->
           <view class="coupon-time-btm" style="font-size:24rpx;" wx:if="{{act_info.remainDays != 0 &&  !(act_info.validity > 0 || act_info.validityHour > 0 || act_info.validityMinute > 0)}}">
             {{act_info.startTime}} - {{act_info.endTime}}
@@ -64,11 +67,11 @@
           </view>
         </block>
         <!-- 已使用 / 已过期 -->
-        <block wx:if="{{couponType == '1' || couponType == '2'}}">
+        <block wx:if="{{couponStatus == '1' || couponStatus == '2'}}">
           <view class="coupon-time-btm" style="font-size:24rpx;">
             {{act_info.startTime}} - {{act_info.endTime}}
             <!-- 已过期 -->
-            <view wx:if="{{couponType == '2'}}">{{i18n.$t(localePack,"pages.coupon.overdue")}}</view>
+            <view wx:if="{{couponStatus == '2'}}">{{i18n.$t(localePack,"pages.coupon.overdue")}}</view>
           </view>
         </block>
       </view>
@@ -155,17 +158,24 @@
                 </button>
               </view>
             </block>
-            <!-- 分裂分享 || 分裂使用 -->
+            <!-- 去使用 && 去分享 -->
             <!-- <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0 && act_info.divisionEnabled == 0}}">
               <view class="coupon-vw-btn vw-btn">
                 <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}};border-color:{{comColor}}'>立即使用</button>
                 <block  wx:if="{{act_info.couponType == 1}}">
-                  <button class="coupon-button" open-type="share" style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{act_info.canShare != 0}}'>分享好友</button>
-                  <button wx:else class="coupon-button" style="color:#666;border-color:#666" bindtap="full_people" >分享好友</button>
+                  <button class="coupon-button" open-type="share" style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{act_info.canShare == 1}}'>分享好友</button>
+                  <button wx:else class="coupon-button" style="color:#666;border-color:#666" bindtap="full_people">分享好友</button>
                 </block>
               </view>
             </block> -->
-            <block wx:if="{{act_info.isUsed == 1 || act_info.is_expire == 1 || (act_info.from == 1 && act_info.can_fetch_num <= 0) || act_info.have_expired == 1}}">
+            <!-- 分享 -->
+            <!-- <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0 && act_info.divisionEnabled == 1}}">
+              <view style="color:#999;font-size:24rpx;text-align:center;margin:10rpx 0;">把券分享给好友，好友领取后本券即可使用</view>
+              <view class="coupon-vw-btn">
+                <button class="coupon-button" open-type="share" style='color:{{comColor}};border-color:{{comColor}}'>分享好友</button>
+              </view>
+            </block> -->
+            <block wx:if="{{act_info.isUsed == 1 || act_info.is_expire == 1}}">
               <view class="coupon-use-btn">
                 <button class="coupon-mine" bindtap="myCoupon" style='color:{{comColor}};border-color:{{comColor}}'>
                   {{i18n.$t(localePack,"pages.coupon.myCoupon")}}
@@ -175,13 +185,6 @@
                 </button>
               </view>
             </block>
-            <!-- 分裂分享 -->
-            <!-- <block wx:if="{{act_info.isUsed == 0 && act_info.isExpire == 0 && act_info.divisionEnabled == 1}}">
-              <view style="color:#999;font-size:24rpx;text-align:center;margin:10rpx 0;">把券分享给好友，好友领取后本券即可使用</view>
-              <view class="coupon-vw-btn">
-                <button class="coupon-button" style='margin-top:0;background:#fff;' style='color:{{comColor}};border-color:{{comColor}}' open-type="share">分享好友</button>
-              </view>
-            </block> -->
           </block>
         </form>
       </view>
