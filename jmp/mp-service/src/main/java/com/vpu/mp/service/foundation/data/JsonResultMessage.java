@@ -349,6 +349,12 @@ public class JsonResultMessage {
     public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_CONDITION_ACCOUNT_OR_NUM = "free.shipping.activity.message.condition.account.or.num";
     public static final String FREE_SHIPPING_ACTIVITY_MESSAGE_RULE_TEXT = "free.shipping.activity.message.ruleText";
 
+
+    /**
+     * 营销--消息推送
+     */
+    public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
+
     /**
      * 文章_分类
      */

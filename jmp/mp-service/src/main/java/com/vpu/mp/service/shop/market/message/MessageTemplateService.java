@@ -154,7 +154,7 @@ public class MessageTemplateService extends ShopBaseService {
     private RabbitMessageParam assemblyRabbitMessageParam(TemplateConfigRecord templateConfigRecord,String userIdStr,Integer shopId ){
         return RabbitMessageParam.builder()
             .shopId(shopId)
-            .type(RabbitParamConstant.Type.GENERAL_TYPE)
+            .type(RabbitParamConstant.Type.DIY_MESSAGE_TEMPLATE)
             .page(templateConfigRecord.getPageLink())
             .messageTemplateId(templateConfigRecord.getId())
             .userIdList(Arrays.stream(userIdStr.split(",")).map(Integer::parseInt).collect(Collectors.toList()))
