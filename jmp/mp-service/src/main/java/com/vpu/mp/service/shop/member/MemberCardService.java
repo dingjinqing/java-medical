@@ -1769,9 +1769,6 @@ public class MemberCardService extends ShopBaseService {
 		if (data.getOrderSn() != null) {
 			cardConsumerRecord.setOrderSn(data.getOrderSn());
 		}
-		if (data.getPayment() != null) {
-			
-		}
 		cardConsumerRecord.insert();
 	}
 
