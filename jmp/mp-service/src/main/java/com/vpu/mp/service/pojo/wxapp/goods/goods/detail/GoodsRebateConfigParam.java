@@ -5,6 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @Author 常乐
@@ -12,12 +13,6 @@ import java.util.ArrayList;
  */
 @Data
 public class GoodsRebateConfigParam {
-    private ArrayList<PrdInfo> rebatePrice;
+    private Map<Integer,BigDecimal> rebatePrice;
     private Long rebateTime;
-
-    @Data
-    public static class PrdInfo {
-        private Integer prdId;
-        private BigDecimal prdPrice;
-    }
 }
