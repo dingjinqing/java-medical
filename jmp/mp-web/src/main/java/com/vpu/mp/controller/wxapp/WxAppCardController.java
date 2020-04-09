@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 
+import com.vpu.mp.service.pojo.shop.member.account.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -13,13 +14,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
-import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
@@ -181,4 +175,12 @@ public class WxAppCardController extends WxAppBaseController {
 		}
 		return fail();
 	}
+    /**
+     * 	会员卡续费-详情页
+     */
+    @PostMapping(value="/api/wxapp/card/renew")
+    public JsonResult cardRenew(@RequestBody CardRenewParam param) {
+        UserCardParam res = shop().userCard.cardRenew(param);
+        return success(res);
+    }
 }
