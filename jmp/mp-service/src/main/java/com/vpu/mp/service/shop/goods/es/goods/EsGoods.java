@@ -350,4 +350,10 @@ public class EsGoods  {
      */
     @EsFiled(name=EsSearchName.SALE_TIME,type = EsFiledTypeConstant.DATE)
     private String saleTime;
+
+    /**
+     * 商品总销售数量（base_sale+goods_sale）
+     */
+    @EsFiled(name=EsSearchName.TOTAL_SALE_NUMBER,type = EsFiledTypeConstant.INTEGER)
+    private Integer totalSaleNumber;
 }

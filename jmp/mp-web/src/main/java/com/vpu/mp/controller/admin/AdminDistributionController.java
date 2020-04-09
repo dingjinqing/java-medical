@@ -4,16 +4,49 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
-import com.vpu.mp.service.pojo.shop.decoration.DistributorApplyParam;
-import com.vpu.mp.service.pojo.shop.distribution.*;
+import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToGroupParam;
+import com.vpu.mp.service.pojo.shop.distribution.AddDistributorToLevelParam;
+import com.vpu.mp.service.pojo.shop.distribution.BrokerageListParam;
+import com.vpu.mp.service.pojo.shop.distribution.BrokerageListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionApplyOptParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionDocumentParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorCheckListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorInvitedListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelCfgVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorListVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorSetGroupParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawDetailVo;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListParam;
+import com.vpu.mp.service.pojo.shop.distribution.DistributorWithdrawListVo;
+import com.vpu.mp.service.pojo.shop.distribution.GroupCanSelectParam;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageAddParam;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListParam;
+import com.vpu.mp.service.pojo.shop.distribution.PromotionLanguageListVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailParam;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsDetailVo;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsParam;
+import com.vpu.mp.service.pojo.shop.distribution.RebateGoodsVo;
+import com.vpu.mp.service.pojo.shop.distribution.SetInviteCodeParam;
+import com.vpu.mp.service.pojo.shop.distribution.ShowDistributionGroupParam;
+import com.vpu.mp.service.pojo.shop.distribution.UserRemarkListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
-import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
-import com.vpu.mp.service.shop.ShopApplication;
-import org.hibernate.validator.constraints.pl.REGON;
-import org.jooq.types.UInteger;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -380,7 +413,7 @@ public class AdminDistributionController extends AdminBaseController{
 			}
 			//受影响的等级用户重新定级
 			if(upUserIds.size() > 0) {
-				shop().distributorLevel.updateUserLevel(upUserIds);
+				shop().distributorLevel.updateUserLevel(upUserIds,"保存更改等级配置");
 			}
 		}
 		return this.success();

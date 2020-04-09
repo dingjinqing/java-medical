@@ -75,8 +75,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.aspectj.apache.bcel.generic.RET;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1948,12 +1950,33 @@ public class UserCardService extends ShopBaseService {
      * 会员卡续费接口
      * @param param 用户id 会员卡编号
      */
-    public void cardRenew(CardRenewParam param){
+    public UserCardParam cardRenew(CardRenewParam param){
         //得到用户持有会员卡的详细信息
-        UserCardParam ret = userCardDao.getUserCardInfo(param.getCardNo());
+        CardRenewInfoVo ret = new CardRenewInfoVo();
+
+        Record extracted = userCardDao.getUserCardInfoBycardNo(param.getCardNo());
+        if(extracted!=null) {
+            ret = extracted.into(CardRenewInfoVo.class);
+        }
         if (ret!=null){
             //should_renew_money
             //should_renew_date
+            if (ret.getRenewMemberCard()==(byte)1){
+                //设置支付时应当花费的钱或积分
+                if (ret.getRenewType()==(byte)0){
+                    ret.setShouldRenewMoney("￥"+ret.getRenewNum());
+                }else {
+                    ret.setShouldRenewMoney(ret.getRenewNum()+"积分");
+                }
+                //设置续费日期
+                if (ret.getRenewDateType()==(byte)0){
+                    ret.setShouldRenewDate(ret.getRenewTime()+"日");
+                }else if (ret.getRenewDateType()==(byte)1){
+                    ret.setShouldRenewDate(ret.getRenewTime()+"周");
+                }else {
+                    ret.setShouldRenewDate(ret.getRenewTime()+"月");
+                }
+            }
             if (ret.getExpireTime()!=null){
                 ret.setStartTime(ret.getCreateTime());
                 ret.setEndTime(ret.getExpireTime());
@@ -1965,12 +1988,12 @@ public class UserCardService extends ShopBaseService {
             }
             if (ret.getExpireType()!=(byte)2){
                 if (ret.getExpireTime()!=null&&ret.getExpireTime().before(DateUtil.getLocalDateTime())){
-                    ret.setExpireDateStatus((byte)-1);
+                    ret.setStatus((byte)-1);
                 }else {
-                    ret.setExpireDateStatus((byte)1);
+                    ret.setStatus((byte)1);
                 }
             }else {
-                ret.setExpireDateStatus((byte)-1);
+                ret.setStatus((byte)-1);
             }
             //门店信息
             if (ret.getStoreList()!=null&&ret.getStoreUseSwitch()==(byte)0){
@@ -1979,7 +2002,7 @@ public class UserCardService extends ShopBaseService {
                     .collect(Collectors.toList());
                 List<StoreBasicVo> storeInfoList = getStoreList(storeList);
                 if (storeInfoList!=null){
-                    ret.setStoreInfo(storeInfoList);
+                    ret.setStoreInfoList(storeInfoList);
                 }
             }
             //用户积分和余额
@@ -1990,7 +2013,7 @@ public class UserCardService extends ShopBaseService {
             List<RenewValidCardList> cardList = getRenewValidCardList(param.getUserId());
             Map<String,RenewValidCardList> memberCardList = new HashMap<>();
             String memberCardNo;
-            if (cardList!=null){
+            if (cardList!=null&&cardList.size()>0){
                 cardList.forEach(c-> memberCardList.put(c.getCardNo(),c));
                 memberCardNo = cardList.get(0).getCardNo();
             }else {
@@ -2002,7 +2025,7 @@ public class UserCardService extends ShopBaseService {
             ret.setCardFirst(tradeService.getCardFirst());
             ret.setBalanceFirst(tradeService.getBalanceFirst());
         }
-
+        return ret;
     }
 
     /**
@@ -2036,5 +2059,17 @@ public class UserCardService extends ShopBaseService {
             .fetchInto(RenewValidCardList.class);
         return cardList;
     }
+
+    public void renewCardCheckout(CardRenewCheckoutParam param){
+        Integer userId = param.getUserId();
+        String cardNo = param.getCardNo();
+        UserCardParam memberCard = userCardDao.getUserCardInfo(param.getCardNo());
+        UserRecord userRecord = userService.getUserByUserId(userId);
+    }
+
+    public void createRenewMemberOrder(UserRecord userInfo,UserCardParam memberCard){
+
+    }
+
 }
 
