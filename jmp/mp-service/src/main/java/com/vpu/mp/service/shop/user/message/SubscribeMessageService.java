@@ -643,11 +643,20 @@ public class SubscribeMessageService extends ShopBaseService {
 				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
 					value = toReturnAnLog(name, value,targValue);
 				}
+			}else {
+				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+					value = toReturnAnLog(name, value,targValue);
+				}
 			}
 			break;
 		case RuleKey.PHONE_NUMBER:
 			value = subLimit(name,value,17);
-			if (Pattern.matches(RuleKey.PHONE_NUMBER_PATTERN, value)) {
+			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+				//包含中文
+				value = toReturnAnLog(name, value,targValue);
+			}
+			if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
+				//包含英文
 				value = toReturnAnLog(name, value,targValue);
 			}
 			break;

@@ -43,4 +43,6 @@ public final class RuleKey {
 	public static final String PHRASE_PATTERN = "^[\\u4e00-\\u9fa5]{0,}$";
 	/** 是否有数字*/
 	public static final String HAVENUM_PATTERN=".*\\d+.*";
+	/** 是否包含英文*/
+	public static final String HAVEENGILSH_PATTERN=".*[a-zA-Z]+.*";
 }
