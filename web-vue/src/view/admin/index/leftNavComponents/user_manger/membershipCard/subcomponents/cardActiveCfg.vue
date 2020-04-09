@@ -45,6 +45,7 @@
               <el-checkbox label="address">{{ $t('memberCard.address') }}</el-checkbox>
             </el-checkbox-group>
           </div>
+          <my-action/>
           <div class="active-bottom">
             <div class="exmine-tip">{{ $t('memberCard.isactiveInfo') }}</div>
             <el-radio
@@ -62,7 +63,11 @@
   </div>
 </template>
 <script>
+import cardSelfDefActivation from './CardSelfDefActivation'
 export default {
+  components: {
+    myAction: cardSelfDefActivation
+  },
   props: {
     val: {
       type: Object,
