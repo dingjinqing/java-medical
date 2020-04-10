@@ -291,12 +291,12 @@
           </el-form-item>
           <!-- 活动分享 -->
           <el-form-item
-            prop="shareConfig.share_action"
+            prop="shareConfig.shareAction"
             label="活动分享："
           >
             <div class="shareContent">
               <el-radio
-                v-model="form.shareConfig.share_action"
+                v-model="form.shareConfig.shareAction"
                 :label="1"
               >默认样式</el-radio>
               <el-popover
@@ -325,33 +325,33 @@
             </div>
             <div>
               <el-radio
-                v-model="form.shareConfig.share_action"
+                v-model="form.shareConfig.shareAction"
                 :label="2"
               >自定义样式</el-radio>
-              <div v-if="form.shareConfig.share_action === 2">
+              <div v-if="form.shareConfig.shareAction === 2">
                 <span>文案：</span>
                 <el-input
-                  v-model="form.shareConfig.share_doc"
+                  v-model="form.shareConfig.shareDoc"
                   size="small "
                   style="width: 180px;"
                 ></el-input>
               </div>
-              <div v-if="form.shareConfig.share_action === 2">
+              <div v-if="form.shareConfig.shareAction === 2">
                 <span>分享图：</span>
                 <el-radio
-                  v-model="form.shareConfig.share_img_action"
+                  v-model="form.shareConfig.shareImgAction"
                   :label="1"
                 >活动商品信息图</el-radio>
                 <div style="margin-left: 60px;">
                   <el-radio
-                    v-model="form.shareConfig.share_img_action"
+                    v-model="form.shareConfig.shareImgAction"
                     :label="2"
                   >自定义图片</el-radio>
                 </div>
 
                 <div
                   style="display: flex"
-                  v-if="form.shareConfig.share_img_action === 2"
+                  v-if="form.shareConfig.shareImgAction === 2"
                 >
                   <div
                     class="imgContent"
@@ -359,13 +359,13 @@
                   >
                     <div>
                       <img
-                        v-if="form.shareConfig.share_img === ''"
+                        v-if="form.shareConfig.shareImg === ''"
                         src="http://jmpdevimg.weipubao.cn/image/admin/shop_beautify/add_decorete.png"
                         alt=""
                       >
                       <img
-                        v-if="form.shareConfig.share_img !== ''"
-                        :src="form.shareConfig.share_img"
+                        v-if="form.shareConfig.shareImg !== ''"
+                        :src="form.shareConfig.shareImg"
                         alt=""
                         class="shareImg"
                       >
@@ -449,10 +449,10 @@ export default {
     // 活动专享
     var validateShare = (rule, value, callback) => {
       if (value === 2) {
-        if (this.form.shareConfig.share_doc === '') {
+        if (this.form.shareConfig.shareDoc === '') {
           callback(new Error('请填写活动文案'))
-        } else if (this.form.shareConfig.share_img_action === 2) {
-          if (this.form.shareConfig.share_img === '') {
+        } else if (this.form.shareConfig.shareImgAction === 2) {
+          if (this.form.shareConfig.shareImg === '') {
             callback(new Error('请选择活动图片'))
           } else {
             callback()
@@ -480,10 +480,10 @@ export default {
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
         shareConfig: {
-          share_action: 1,
-          share_doc: '',
-          share_img_action: 1,
-          share_img: ''
+          shareAction: 1,
+          shareDoc: '',
+          shareImgAction: 1,
+          shareImg: ''
         }
       },
       // 校验表单
@@ -512,7 +512,7 @@ export default {
         cardId: [
           { validator: validateCard, trigger: 'change' }
         ],
-        'shareConfig.share_action': [
+        'shareConfig.shareAction': [
           { validator: validateShare, trigger: 'change' }
         ]
       },
@@ -598,10 +598,12 @@ export default {
             this.showMember = false
           }
           // 活动分享
-          this.form.shareConfig.share_action = data.shopShareConfig.share_action
-          this.form.shareConfig.share_doc = data.shopShareConfig.share_doc
-          this.form.shareConfig.share_img_action = data.shopShareConfig.share_img_action
-          this.form.shareConfig.share_img = data.shopShareConfig.share_img
+          if (data.shopShareConfig) {
+            this.form.shareConfig.shareAction = data.shopShareConfig.shareAction
+            this.form.shareConfig.shareDoc = data.shopShareConfig.shareDoc
+            this.form.shareConfig.shareImgAction = data.shopShareConfig.shareImgAction
+            this.form.shareConfig.shareImg = data.shopShareConfig.shareImg
+          }
           // 总库存
           this.form.stock = 0
 
@@ -665,10 +667,10 @@ export default {
             this.form.cardId = ''
           }
           // 活动分享
-          if (this.form.shareConfig.share_action === 1) {
-            this.form.shareConfig.share_doc = ''
-            this.form.shareConfig.share_img_action = 1
-            this.form.shareConfig.share_img = ''
+          if (this.form.shareConfig.shareAction === 1) {
+            this.form.shareConfig.shareDoc = ''
+            this.form.shareConfig.shareImgAction = 1
+            this.form.shareConfig.shareImg = ''
           }
           // 总库存
           this.form.secKillProduct.forEach((item, index) => {
@@ -790,7 +792,7 @@ export default {
     // 图片点击回调函数
     handleSelectImg (res) {
       if (res != null) {
-        this.form.shareConfig.share_img = res.imgUrl
+        this.form.shareConfig.shareImg = res.imgUrl
       }
     },
 
