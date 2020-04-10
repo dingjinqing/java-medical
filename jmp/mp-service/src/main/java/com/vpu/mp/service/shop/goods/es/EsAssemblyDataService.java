@@ -203,6 +203,8 @@ public class EsAssemblyDataService extends ShopBaseService {
         esGoods.setShopId(shopId);
         esGoods.setTotalSaleNumber(goodsSaleNumber.orElse(0)+baseSaleNumber.orElse(0));
         esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
+        esGoods.setSaleTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getSaleTime()));
+        esGoods.setCreateTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getCreateTime()));
         esGoods.setAddEsDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
         esGoods.setUpdateDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getUpdateTime()));
         return esGoods;
