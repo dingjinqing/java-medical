@@ -42,7 +42,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         DistributionParam distributionCfg = distributionConf.getDistributionCfg();
 
         //分销开关开启
-        if(distributionCfg.getStatus() == 1){
+        if(distributionCfg != null && distributionCfg.getStatus() == 1){
             //返利策略
             DistributionStrategyParam goodsRebateStrategy = this.getGoodsRebateStrategy(goodsId, catId, sortId);
             return goodsRebateStrategy;
