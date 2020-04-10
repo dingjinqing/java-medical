@@ -16,7 +16,7 @@
   <view class="main-container" wx:if="{{goodsInfo}}">
     <!-- 商品图片 -->
     <view class="goods-image">
-      <view class="live-tips">
+      <view class="live-tips" wx:if="{{roomDetailMpInfo}}">
        <view class="live-avatar-content">
         <image class="live-avatar" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200327/T4N240u3jDGM06osjNAj.jpeg"></image>
        </view>

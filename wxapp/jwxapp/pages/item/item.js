@@ -186,18 +186,21 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null } = options
     this.setData({
       goodsId,
       activityId:activityId === 'null' ? null : activityId,
       activityType:activityType === 'null' || activityType === '0' ? null : activityType,
-      roomId:roomId
+      roomId:roomId,
+      rebateConfig
     })
     this.requestGoodsInfo()
   },
   // 商品详情请求
   async requestGoodsInfo () {
     let result = new Promise((resolve, reject) => {
+      let customParams = {}
+      if(this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
       util.api(
         '/api/wxapp/goods/detail',
         res => {
@@ -244,7 +247,8 @@ global.wxPage({
               goodsGifts,
               showSalesNumber,
               customService,
-              goodsDistribution
+              goodsDistribution,
+              roomDetailMpInfo
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -286,7 +290,8 @@ global.wxPage({
               couponList: coupons, //优惠券
               goodsDescInfo,
               goodsGifts, // 赠品,
-              goodsDistribution //分销信息
+              goodsDistribution, //分销信息,
+              roomDetailMpInfo
             })
             this.setData({
               specParams
@@ -324,7 +329,8 @@ global.wxPage({
           activityType: this.data.activityType,
           userId: util.getCache('user_id'),
           lon: null,
-          lat: null
+          lat: null,
+          ...customParams
         }
       )
     })
