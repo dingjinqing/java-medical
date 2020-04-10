@@ -88,7 +88,8 @@ public class EsBaseSearchService extends ShopBaseService {
         LIMIT_BUY_NUM,
         LIMIT_MAX_NUM,
         MARKET_PRICE,
-        GOODS_PAGE_ID
+        GOODS_PAGE_ID,
+        GOODS_WEIGHT
     };
 
 
