@@ -2060,12 +2060,11 @@ public class UserCardService extends ShopBaseService {
         return cardList;
     }
 
-    // TODO修改
-    public void renewCardCheckout(Object param){
-//        Integer userId = param.getUserId();
-//        String cardNo = param.getCardNo();
-//        UserCardParam memberCard = userCardDao.getUserCardInfo(param.getCardNo());
-//        UserRecord userRecord = userService.getUserByUserId(userId);
+    public void renewCardCheckout(CardRenewCheckoutParam  param){
+        Integer userId = param.getUserId();
+        String cardNo = param.getCardNo();
+        UserCardParam memberCard = userCardDao.getUserCardInfo(param.getCardNo());
+        UserRecord userRecord = userService.getUserByUserId(userId);
     }
 
     public void createRenewMemberOrder(UserRecord userInfo,UserCardParam memberCard){
