@@ -282,14 +282,17 @@ public class SystemMpAuthShopController extends SystemBaseController {
 	 */
 	@GetMapping("/api/system/mp/version/batch_apply/{templateId}")
 	public JsonResult batchApply(@PathVariable Integer templateId) {
-		if(templateId==null) {
-			return fail();
-		}
-		JsonResultCode rBoolean = saas.shop.mp.batchUploadCodeAndApplyAudit(templateId);
-		if(rBoolean.equals(JsonResultCode.CODE_SUCCESS)) {
-			return success();
-		}
-		return fail(rBoolean);		
+		//先注释，方便测试
+		log.info("批量提交小程序审核");
+		return success();
+//		if(templateId==null) {
+//			return fail();
+//		}
+//		JsonResultCode rBoolean = saas.shop.mp.batchUploadCodeAndApplyAudit(templateId);
+//		if(rBoolean.equals(JsonResultCode.CODE_SUCCESS)) {
+//			return success();
+//		}
+//		return fail(rBoolean);		
 	}
 	
 	/**
