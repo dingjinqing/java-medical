@@ -520,7 +520,7 @@ public class GroupBuyService extends ShopBaseService {
         RabbitMessageParam param1 = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(build).build())
             .page(page).shopId(getShopId()).userIdList(userIds)
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
         saas.taskJobMainService.dispatchImmediately(param1, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
