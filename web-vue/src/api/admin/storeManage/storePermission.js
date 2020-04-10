@@ -51,3 +51,12 @@ export function getSettingApi () {
     method: 'get'
   })
 }
+
+//
+export function setStorePermissionApi (data) {
+  return service({
+    url: '/api/admin/store/account/setting',
+    data,
+    method: 'post'
+  })
+}
