@@ -17,7 +17,15 @@ public class WxAppPackageSaleController extends WxAppBaseController  {
      * 	一口价活动页的商品列表接口
      */
     @PostMapping("/api/wxapp/packagesale/goodslist")
-    public JsonResult mrkingStrategyGoodsList(@RequestBody @Validated PackageSaleGoodsListParam param) {
+    public JsonResult packageSaleGoodsList(@RequestBody @Validated PackageSaleGoodsListParam param) {
         return success(shop().packSale.getWxAppGoodsList(param,wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 	一口价活动页的已选商品列表接口
+     */
+    @PostMapping("/api/wxapp/packagesale/checkedlist")
+    public JsonResult packageSaleCheckedList(@RequestBody @Validated PackageSaleGoodsListParam param) {
+        return success(shop().packSale.getCheckedGoodsList(param,wxAppAuth.user().getUserId()));
     }
 }

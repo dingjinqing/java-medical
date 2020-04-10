@@ -524,6 +524,10 @@ import {
 import {
   en as serviceConfig
 } from './views/admin_new/en/index/storeManagement/storeService/serviceConfigEn'
+// 门店权限
+import {
+  en as storePermission
+} from './views/admin_new/en/index/storeManagement/storePermission/storePermissionEn'
 // 门店公告
 import {
   en as storeAnnouncement
@@ -1104,6 +1108,7 @@ const en = {
   payConfiguration, // 支付配置
   templateMessage, // 运费模板
   serviceConfig, // 门店服务配置
+  storePermission, // 门店权限
   storeAnnouncement, // 门店公告
   decorationHome, // 小程序页面装修home页
   pageSetUp, // 小程序页面设置
