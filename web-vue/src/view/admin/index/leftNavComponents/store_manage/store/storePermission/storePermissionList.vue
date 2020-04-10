@@ -6,54 +6,54 @@
         :inline="true"
         class="store-permission-form"
       >
-        <el-form-item label="门店账户：">
+        <el-form-item :label="$t('storePermission.storeAccount')+'：'">
           <el-input
             class="form-input"
             v-model="queryParams.accountName"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="手机号：">
+        <el-form-item :label="$t('storePermission.phone')+'：'">
           <el-input
             class="form-input"
             v-model="queryParams.mobile"
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="角色：">
+        <el-form-item :label="$t('storePermission.roles')+'：'">
           <el-select
             v-model="queryParams.accountType"
             class="form-input"
           >
             <el-option
-              label="全部"
+              :label="$t('storePermission.all')"
               :value="0"
             ></el-option>
             <el-option
-              label="店长"
+              :label="$t('storePermission.storeManager')"
               :value="2"
             ></el-option>
             <el-option
-              label="店员"
+              :label="$t('storePermission.clerk')"
               :value="1"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="账户状态：">
+        <el-form-item :label="$t('storePermission.accountStatus')+'：'">
           <el-select
             v-model="queryParams.status"
             class="form-input"
           >
             <el-option
-              label="全部"
+              :label="$t('storePermission.all')"
               :value="-1"
             ></el-option>
             <el-option
-              label="使用中"
+              :label="$t('storePermission.using')"
               :value="1"
             ></el-option>
             <el-option
-              label="已停用"
+              :label="$t('storePermission.terminated')"
               :value="0"
             ></el-option>
           </el-select>
@@ -62,14 +62,14 @@
           type="primary"
           size="small"
           @click="initDataList"
-        >筛选</el-button>
+        >{{$t('storePermission.filter')}}</el-button>
       </el-form>
       <div>
         <el-button
           type="primary"
           size="small"
           @click="addAccountHandle"
-        >添加账户</el-button>
+        >{{$t('storePermission.addAccount')}}</el-button>
       </div>
     </div>
     <div class="center">
@@ -80,46 +80,46 @@
         border
       >
         <el-table-column
-          label="门店账户"
+          :label="$t('storePermission.storeAccount')"
           prop="accountName"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="手机号"
+          :label="$t('storePermission.phone')"
           prop="mobile"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="角色"
+          :label="$t('storePermission.roles')"
           prop="accountType"
           :formatter="accountTypeFmt"
           align="center"
         ></el-table-column>
-        <el-table-column label="有权限门店">
+        <el-table-column :label="$t('storePermission.AuthorizedStore')">
           <template slot-scope="{row}">
             <div style="text-align:center;">
               <span v-text="row.storeLists.length"></span>
               <el-button
                 type="text"
                 @click="setStoreListDialog(row)"
-              >设置</el-button>
+              >{{$t('storePermission.settings')}}</el-button>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          label="账户状态"
+          :label="$t('storePermission.accountStatus')"
           :formatter="statusFmt"
           align="center"
         ></el-table-column>
         <el-table-column
-          label="操作"
+          :label="$t('storePermission.operate')"
           align="center"
         >
           <template slot-scope="{row}">
             <div>
               <el-tooltip
                 v-if="row.status === 1 || row.stauts==='1'"
-                content="停用"
+                :content="$t('storePermission.disable')"
                 effect="light"
                 placement="top"
               >
@@ -130,7 +130,7 @@
               </el-tooltip>
               <el-tooltip
                 v-if="row.status === 0 || row.stauts === '0'"
-                content="启用"
+                :content="$t('storePermission.enable')"
                 effect="light"
                 placement="top"
               >
@@ -140,7 +140,7 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                content="删除"
+                :content="$t('storePermission.delete')"
                 effect="light"
                 placement="top"
               >
@@ -150,7 +150,7 @@
                 ></i>
               </el-tooltip>
               <el-tooltip
-                content="编辑"
+                :content="$t('storePermission.edit')"
                 effect="light"
                 placement="top"
               >
@@ -170,7 +170,7 @@
     </div>
     <!-- 添加账户 -->
     <el-dialog
-      :title="isEdit?'编辑账户':'添加账户'"
+      :title="isEdit?$t('storePermission.editAccount'):$t('storePermission.addAccount')"
       :visible.sync="accountDialogVisible"
       width="500px"
     >
@@ -184,7 +184,7 @@
           :rules="accountFormRules"
         >
           <el-form-item
-            label="账户角色："
+            :label="$t('storePermission.accountRole')+'：'"
             prop="accountType"
           >
             <el-select
@@ -192,29 +192,29 @@
               v-model="accountForm.accountType"
             >
               <el-option
-                label="店长"
+                :label="$t('storePermission.storeManager')"
                 :value="2"
               ></el-option>
               <el-option
-                label="店员"
+                :label="$t('storePermission.clerk')"
                 :value="1"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item
-            label="门店账户："
+            :label="$t('storePermission.storeAccount')+'：'"
             prop="accountName"
           >
             <el-input
               class="form-input"
               v-model="accountForm.accountName"
               maxlength="20"
-              placeholder="最长可输入20位"
+              :placeholder="$t('storePermission.storeLimit1')"
             ></el-input>
-            <p class="form-tip">支持输入字母/数字</p>
+            <p class="form-tip">{{$t('storePermission.storeLimit2')}}</p>
           </el-form-item>
           <el-form-item
-            label="手机号："
+            :label="$t('storePermission.phone')+'：'"
             prop="mobile"
           >
             <el-input
@@ -226,7 +226,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
-            label="密码："
+            :label="$t('storePermission.pwd')+'：'"
             prop="accountPasswd"
           >
             <el-input
@@ -237,10 +237,10 @@
               autocomplete="off"
               auto-complete="new-password"
             ></el-input>
-            <p class="form-tip">编辑时密码为空即不修改密码</p>
+            <p class="form-tip">{{$t('storePermission.pwdLimit')}}</p>
           </el-form-item>
           <el-form-item
-            label="有权限门店："
+            :label="$t('storePermission.AuthorizedStore')+'：'"
             prop="storeList"
           >
             <el-select
@@ -266,21 +266,21 @@
           type="primary"
           size="small"
           @click="saveAccountHandle"
-        >保存</el-button>
+        >{{$t('storePermission.save')}}</el-button>
         <el-button
           size="small"
           @click="accountDialogVisible = false"
-        >取消</el-button>
+        >{{$t('storePermission.cancel')}}</el-button>
       </div>
     </el-dialog>
     <!-- 设置权限门店 -->
     <el-dialog
-      title="模板应用门店设置"
+      :title="$t('storePermission.templateSet')"
       :visible.sync="setStoresVisible"
       width="500px"
     >
       <div>
-        <span style="width:110px;">选择门店：</span>
+        <span style="width:110px;">{{$t('storePermission.chooseStore')}}：</span>
         <el-select
           v-model="accountStoreList"
           class="form-input"
@@ -299,11 +299,11 @@
           type="primary"
           size="small"
           @click="setStoreList"
-        >确定</el-button>
+        >{{$t('storePermission.yes')}}</el-button>
         <el-button
           @click="setStoresVisible = false"
           size="small"
-        >取消</el-button>
+        >{{$t('storePermission.cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -320,39 +320,39 @@ export default {
     let that = this
     function validName (rule, value, callback) {
       if (!value) {
-        callback(new Error('请输入账户名称'))
+        callback(new Error(that.$t('storePermission.peAccountName')))
       }
       if (!/^[^\u4e00-\u9fa5]{1,20}$/.test(value)) {
-        callback(new Error('请正确填写账户名称'))
+        callback(new Error(that.$t('storePermission.peCorrectAN')))
       }
       callback()
     }
     // 校验手机号
     function validMobile (rule, value, callback) {
       if (!value) {
-        callback(new Error('请填写手机号'))
+        callback(new Error(that.$t('storePermission.pePhone')))
       }
       let reg = /^1[3|7|8]\d{9}$|^19[8-9]\d{8}$|^166\d{8}|^15[0-3|5-9]\d{8}|^14[5|7]\d{8}$/
       if (!reg.test(value)) {
-        callback(new Error('请填写有效的手机号'))
+        callback(new Error(that.$t('storePermission.peCorrectP')))
       }
       callback()
     }
     function validPassword (rule, value, callback) {
       if (!value && !that.isEdit) {
-        callback(new Error('请填写密码(6~16位)'))
+        callback(new Error(that.$t('storePermission.pePwd')))
       }
       if (value === '' && that.isEdit) {
         callback()
       }
       if (!/^[^\u4e00-\u9fa5]{6,16}$/.test(value)) {
-        callback(new Error('请正确填写的密码(6~16位)'))
+        callback(new Error(that.$t('storePermission.peCorrectPwd')))
       }
       callback()
     }
     function validStoreList (rule, value, callback) {
       if (!value || value.length === 0) {
-        callback(new Error('请选择有权限门店'))
+        callback(new Error(that.$t('storePermission.psPStore')))
       }
       callback()
     }
@@ -377,7 +377,7 @@ export default {
       accountForm: {},
       storeList: [], // 门店列表
       accountFormRules: {
-        accountType: [{ required: true, message: '请选择账户角色', trigger: 'blur' }],
+        accountType: [{ required: true, message: that.$t('storePermission.psAr'), trigger: 'blur' }],
         accountName: [{ required: true, validator: validName, trigger: 'blur' }],
         mobile: [{ required: true, validator: validMobile, trigger: 'blur' }],
         accountPasswd: [{ required: true, validator: validPassword, trigger: 'blur' }],
@@ -457,17 +457,17 @@ export default {
     accountTypeFmt (row, column) {
       let val = row.accountType
       if (val === 1 || val === '1') {
-        return '店员'
+        return this.$t('storePermission.clerk')
       } else if (val === 2 || val === '2') {
-        return '店长'
+        return this.$t('storePermission.storeManager')
       }
     },
     statusFmt (row, column) {
       let val = row.status
       if (val === 0 || val === '0') {
-        return '已停用'
+        return this.$t('storePermission.terminated')
       } else if (val === 1 || val === '1') {
-        return '使用中'
+        return this.$t('storePermission.using')
       }
     },
     setStoreListDialog (row) {
@@ -498,27 +498,27 @@ export default {
       let that = this
       switch (operate) {
         case 'stop':
-          that.$confirm('确认要停用吗？', '提醒', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          that.$confirm(that.$t('storePermission.ayStop'), that.$t('storePermission.remind'), {
+            confirmButtonText: that.$t('storePermission.yes'),
+            cancelButtonText: that.$t('storePermission.cancel'),
             type: 'warning'
           }).then(() => {
             that.editRequest(operate, row)
           })
           break
         case 'start':
-          that.$confirm('确认要启用吗？', '提醒', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          that.$confirm(that.$t('storePermission.ayStart'), that.$t('storePermission.remind'), {
+            confirmButtonText: that.$t('storePermission.yes'),
+            cancelButtonText: that.$t('storePermission.cancel'),
             type: 'warning'
           }).then(() => {
             that.editRequest(operate, row)
           })
           break
         case 'del':
-          that.$confirm('确认要删除吗？', '提醒', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          that.$confirm(that.$t('storePermission.ayDelete'), that.$t('storePermission.remind'), {
+            confirmButtonText: that.$t('storePermission.yes'),
+            cancelButtonText: that.$t('storePermission.cancel'),
             type: 'warning'
           }).then(() => {
             that.editRequest(operate, row)

@@ -7,12 +7,12 @@
           @tab-click="tabClickHandle"
         >
           <el-tab-pane
-            label="门店账户列表"
+            :label="$t('storePermission.storeAccountList')"
             name="1"
           >
           </el-tab-pane>
           <el-tab-pane
-            label="店员权限配置"
+            :label="$t('storePermission.storeStaff')"
             name="2"
           ></el-tab-pane>
         </el-tabs>
@@ -20,7 +20,7 @@
           class="go-store-backstage"
           type="primary"
           size="small"
-        >门店后台</el-button>
+        >{{$t('storePermission.storeBackstage')}}</el-button>
       </div>
       <router-view></router-view>
     </div>

@@ -1,11 +1,11 @@
 <template>
   <div class="store-permissions-configuration">
-    <h2>页面权限</h2>
+    <h2>{{$t('storePermission.pageP')}}</h2>
     <el-checkbox
       class="page-check-all"
       v-model="selectAll"
       @change="selectAllChangeHandle($event)"
-    >全选</el-checkbox>
+    >{{$t('storePermission.selectAll')}}</el-checkbox>
     <table class="page-table">
       <tbody>
         <tr
@@ -32,19 +32,19 @@
         </tr>
       </tbody>
     </table>
-    <h2>功能权限</h2>
+    <h2>{{$t('storePermission.functionP')}}</h2>
     <el-checkbox-group v-model="functionalAuthority">
-      <el-checkbox label="after_sale_process">售后处理</el-checkbox>
-      <el-checkbox label="evaluation_review">评价审核</el-checkbox>
-      <el-checkbox label="evaluation_del">评价删除</el-checkbox>
-      <el-checkbox label="order_modify_price">订单改价</el-checkbox>
+      <el-checkbox label="after_sale_process">{{$t('storePermission.afsale')}}</el-checkbox>
+      <el-checkbox label="evaluation_review">{{$t('storePermission.evReview')}}</el-checkbox>
+      <el-checkbox label="evaluation_del">{{$t('storePermission.evDelete')}}</el-checkbox>
+      <el-checkbox label="order_modify_price">{{$t('storePermission.orderPriceChange')}}</el-checkbox>
     </el-checkbox-group>
     <div class="footer">
       <el-button
         type="primary"
         size="small"
         @click="savePermissionHandle"
-      >保存</el-button>
+      >{{$t('storePermission.save')}}</el-button>
     </div>
   </div>
 </template>
