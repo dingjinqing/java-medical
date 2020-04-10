@@ -96,8 +96,9 @@ export default {
     dialogVisiable (val) {
       if (val) {
         // 开始初始化数据
-        console.log(this.customAction)
         this.action = JSON.parse(JSON.stringify(this.customAction))
+        // 默认为创建新激活项
+        this.createFlag = true
         if (this.action.title !== null) {
           this.createFlag = false
         }
@@ -117,6 +118,9 @@ export default {
         titleRule: [{required: true, message: '请输入自定义标题', trigger: 'blur'}]
       }
     }
+  },
+  mounted () {
+    this.langDefault()
   },
   methods: {
     addContent () {
