@@ -13,17 +13,17 @@
         class="demo-ruleForm"
       >
         <el-form-item
-          label="活动名称："
+          :label="$t('mintegralExchange.addActivityName')"
           prop="name"
         >
           <el-input
             size="small"
             v-model="ruleForm.name"
           ></el-input>
-          <span class="tips">只作为商家记录使用，用户不会看到这个名称</span>
+          <span class="tips">{{$t('mintegralExchange.addActivityNameTip')}}</span>
         </el-form-item>
         <el-form-item
-          label="有效期："
+          :label="$t('mintegralExchange.addtermOfValidity')"
           required
         >
           <div class="date">
@@ -39,7 +39,7 @@
               >
               </el-date-picker>
             </el-form-item>
-            &nbsp;至&nbsp;
+            &nbsp;{{$t('mintegralExchange.to')}}&nbsp;
             <el-form-item prop="customTimeEnd">
               <el-date-picker
                 size="small"
@@ -56,7 +56,7 @@
 
         </el-form-item>
         <el-form-item
-          label="单个用户最多可兑换数量："
+          :label="$t('mintegralExchange.redeemablequantity')"
           prop="maxExchangeNum"
         >
           <el-input
@@ -64,10 +64,10 @@
             v-model="ruleForm.maxExchangeNum"
             onkeyup="value=value.replace(/[^\d.]/g,'')"
           ></el-input>
-          <span class="tips">填0则不限制</span>
+          <span class="tips">{{$t('mintegralExchange.notLimited')}}</span>
         </el-form-item>
         <el-form-item
-          label="添加商品："
+          :label="$t('mintegralExchange.addItem')"
           prop="checkGoodsName"
         >
           <div>
@@ -76,18 +76,18 @@
               @click="handleToChooseGoods()"
               v-if="!ruleForm.checkGoodsName"
             >
-              + 选择商品
+              + {{$t('mintegralExchange.chooseCommodity')}}
             </span>
             <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
             <span
               v-if="ruleForm.checkGoodsName"
               @click="handleToChooseGoods()"
               class="modify"
-            >修改</span>
+            >{{$t('mintegralExchange.modify')}}</span>
           </div>
         </el-form-item>
         <el-form-item
-          label="积分兑换设置："
+          :label="$t('mintegralExchange.exchangeSettings')"
           prop="tableData"
         >
           <el-table
@@ -100,13 +100,13 @@
           >
             <el-table-column
               prop="goodsName"
-              label="商品名称/规格"
+              :label="$t('mintegralExchange.specification')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="originPrice"
-              label="原价（元）"
+              :label="$t('mintegralExchange.originalPrice')"
               align="center"
             >
               <template slot-scope="scope">
@@ -117,12 +117,12 @@
                       class="batchSpan"
                       @click.stop="handleToClick(1)"
                       :style="batchFlag===1?'color: #606266':''"
-                    >商品兑换价格</span>
+                    >{{$t('mintegralExchange.exchangePrice')}}</span>
                     <span
                       class="batchSpan"
                       @click.stop="handleToClick(2)"
                       :style="batchFlag===2?'color: #606266':''"
-                    >商品兑换库存</span>
+                    >{{$t('mintegralExchange.exchangeStock')}}</span>
                   </div>
                 </div>
 
@@ -130,7 +130,7 @@
             </el-table-column>
             <el-table-column
               prop="exchange"
-              label="商品兑换价格"
+              :label="$t('mintegralExchange.exchangePrice')"
               align="center"
             >
               <template slot-scope="scope">
@@ -140,26 +140,26 @@
                     v-model="scope.row.exchange.money"
                     onkeyup="value=value.replace(/[^\d.]/g,'')"
                   ></el-input>
-                  <span>元 +</span>
+                  <span>{{$t('mintegralExchange.element')}} +</span>
                   <el-input
                     size="small"
                     v-model="scope.row.exchange.score"
                     onkeyup="value=value.replace(/[^\d.]/g,'')"
                   ></el-input>
-                  <span>积分</span>
+                  <span>{{$t('mintegralExchange.integral')}}</span>
                 </div>
 
               </template>
             </el-table-column>
             <el-table-column
               prop="goodsStock"
-              label="商品库存"
+              :label="$t('mintegralExchange.commodityInventory')"
               align="center"
             >
             </el-table-column>
             <el-table-column
               prop="stock"
-              label="兑换商品库存"
+              :label="$t('mintegralExchange.goodsInventory')"
               align="center"
             >
               <template slot-scope="scope">
@@ -174,7 +174,7 @@
         </el-form-item>
       </el-form>
       <div class="showMore">
-        <span @click="showMoreFlag = !showMoreFlag">{{showMoreFlag?'收起更多配置':'展开更多配置'}}</span>
+        <span @click="showMoreFlag = !showMoreFlag">{{showMoreFlag?$t('mintegralExchange.foldUpMore'):$t('mintegralExchange.expandMore')}}</span>
         <img :src="showMoreFlag?($imageHost+'/image/admin/info_up.png'):($imageHost+'/image/admin/info_down.png')">
       </div>
       <el-form
@@ -186,7 +186,7 @@
         v-if="showMoreFlag"
       >
         <el-form-item
-          label="店铺分享："
+          :label="$t('mintegralExchange.storeSharing')"
           prop="style"
           required
         >
@@ -195,7 +195,7 @@
               <el-radio
                 v-model="formBottom.style"
                 label="1"
-              >默认样式</el-radio>
+              >{{$t('mintegralExchange.defaultStyle')}}</el-radio>
               <a
                 href="javascript:;"
                 class="show_eg"
@@ -204,7 +204,7 @@
                 @mouseover="mouseover(1)"
                 @mouseleave="mouseleave(1)"
                 @click.stop="hoverFlag=1"
-              >查看示例
+              >{{$t('mintegralExchange.viewExamples')}}
                 <div
                   class="hover_show"
                   style="top: -31px;"
@@ -220,7 +220,7 @@
                 :class="holdToPost?'holdToSeeLi':''"
                 @mouseover="mouseover(0)"
                 @mouseleave="mouseleave(0)"
-              >下载海报
+              >{{$t('mintegralExchange.addDdownloadPoster')}}
                 <div
                   class="hover_show"
                   style="top: -31px;"
@@ -233,14 +233,14 @@
               <el-radio
                 v-model="formBottom.style"
                 label="2"
-              >自定义样式</el-radio>
+              >{{$t('mintegralExchange.customStyle')}}</el-radio>
             </div>
             <el-form-item prop="copywriting">
               <div
                 class="cumtom"
                 v-if="formBottom.style==='2'"
               >
-                <span>文案：</span>
+                <span>{{$t('mintegralExchange.copywriting')}}</span>
                 <el-input
                   size="small"
                   v-model="formBottom.copywriting"
@@ -251,19 +251,19 @@
               class="cumtom"
               v-if="formBottom.style==='2'"
             >
-              <span>分享图：</span>
+              <span>{{$t('mintegralExchange.sharingChart')}}</span>
               <div class="shareImg">
                 <div>
                   <el-radio
                     v-model="sharedGraph"
                     label="1"
-                  >活动商品信息图</el-radio>
+                  >{{$t('mintegralExchange.informationChart')}}</el-radio>
                 </div>
                 <div>
                   <el-radio
                     v-model="sharedGraph"
                     label="2"
-                  >自定义图片</el-radio>
+                  >{{$t('mintegralExchange.customPicture')}}</el-radio>
                 </div>
               </div>
             </div>
@@ -284,9 +284,9 @@
                       v-if="formBottom.checkImgData"
                       :src="formBottom.checkImgData.imgUrl"
                     >
-                    <span>重新选择</span>
+                    <span>{{$t('mintegralExchange.reSelection')}}</span>
                   </div>
-                  <span>建议尺寸: 800*800像素</span>
+                  <span>{{$t('mintegralExchange.reSelectionTips')}}</span>
                 </div>
               </el-form-item>
             </div>
@@ -302,7 +302,7 @@
             type="primary"
             size="small"
             @click="handleToClickSave()"
-          >保存</el-button>
+          >{{$t('mintegralExchange.preservation')}}</el-button>
         </div>
       </div>
     </div>
@@ -342,11 +342,11 @@ export default {
       value.forEach((item, index) => {
         if (index !== (value.length - 1)) {
           if (!Number(item.stock)) {
-            callback(new Error('兑换商品库存不能为空'))
+            callback(new Error(this.$t('mintegralExchange.cannotBeEmpty')))
           } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
-            callback(new Error('兑换商品库存不能大于商品库存'))
+            callback(new Error(this.$t('mintegralExchange.tipsTwo')))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
-            callback(new Error('兑换所需金额不能大于原价'))
+            callback(new Error(this.$t('mintegralExchange.tipsThree')))
           } else {
             callback()
           }
@@ -357,7 +357,7 @@ export default {
       console.log(value)
       if (this.formBottom.style === '2') {
         if (value === '') {
-          callback(new Error('请输入文案'))
+          callback(new Error(this.$t('mintegralExchange.enteraCopy')))
         } else {
           callback()
         }
@@ -369,7 +369,7 @@ export default {
       console.log(value)
       if (this.formBottom.style === '2') {
         if (this.sharedGraph === '2' && !this.formBottom.checkImgData) {
-          callback(new Error('请上传图片'))
+          callback(new Error(this.$t('mintegralExchange.uploadThePicture')))
         } else {
           callback()
         }
@@ -380,7 +380,7 @@ export default {
     var validateTime = (rule, value, callback) => {
       console.log(value)
       if (!value) {
-        callback(new Error('请选择日期'))
+        callback(new Error(this.$t('mintegralExchange.selectaDate')))
       } else {
         callback()
       }
@@ -580,7 +580,7 @@ export default {
               this.$emit('backHome', true)
             } else {
               this.$message.error({
-                message: '保存失败',
+                message: this.$t('mintegralExchange.saveFfailed'),
                 showClose: true
               })
             }
@@ -593,7 +593,7 @@ export default {
               this.$emit('backHome', true)
             } else {
               this.$message.error({
-                message: '保存失败',
+                message: this.$t('mintegralExchange.saveFfailed'),
                 showClose: true
               })
             }
@@ -661,7 +661,7 @@ export default {
             arr.push(obj)
           })
           let lastObj = {
-            goodsName: '批量设置：',
+            goodsName: this.$t('mintegralExchange.batcSettings'),
             originPrice: '1',
             exchange: '',
             goodsStock: '',
@@ -720,7 +720,8 @@ export default {
   }
   .addGoods {
     display: inline-block;
-    width: 120px;
+    // width: 120px;
+    padding: 0 15px;
     height: 30px;
     line-height: 30px;
     text-align: center;
