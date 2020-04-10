@@ -7,7 +7,6 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.distribution.GoodsDistributionVo;
@@ -30,11 +29,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE;
 
 /**
  * 小程序-商品列表-处理最终价格信息
@@ -147,10 +142,12 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             Integer defaultNum  = Integer.valueOf(0).equals(goodsDetailMpBo.getLimitBuyNum())? 1:goodsDetailMpBo.getLimitBuyNum();
             BigDecimal deliverPrice = calculate.calculateShippingFee(param.getUserId(),param.getLon(), param.getLat(), param.getGoodsId(), goodsDetailMpBo.getDeliverTemplateId(), defaultNum,goodsDetailMpBo.getProducts().get(0).getPrdRealPrice(),goodsDetailMpBo.getGoodsWeight());
             goodsDetailMpBo.setDeliverPrice(deliverPrice);
+            log.debug("小程序-商品详情-处理运费信息结束");
         }
 
         //商品分销
         if(goodsDetailMpBo.getCanRebate() == 1){
+            log.debug("小程序-商品详情-处理分销信息");
             GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
             //获取用户分销等级
             UserDistributionVo distributionLevel = distributionGoods.userDistributionLevel(param.getUserId());
@@ -159,6 +156,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             goodsDistributionVo.setCanRebate((byte)1);
             goodsDistributionVo.setRebateRatio(rebateRatioVo);
             goodsDetailMpBo.setGoodsDistribution(goodsDistributionVo);
+            log.debug("小程序-商品详情-处理分销信息结束");
         }
     }
 
