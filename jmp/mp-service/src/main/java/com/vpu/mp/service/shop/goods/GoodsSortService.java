@@ -266,7 +266,7 @@ public class GoodsSortService extends ShopBaseService {
             //是一级节点，有子分类
             if (GoodsConstant.ROOT_PARENT_ID.equals(sortRecord.getParentId())
                 &&GoodsConstant.HAS_CHILD.equals(sortRecord.getHasChild())){
-                List<Integer> childIds = db.select(SORT.SORT_ID).where(SORT.PARENT_ID.eq(sortId)).fetch(SORT.SORT_ID);
+                List<Integer> childIds = db.select(SORT.SORT_ID).from(SORT).where(SORT.PARENT_ID.eq(sortId)).fetch(SORT.SORT_ID);
                 sortIds.addAll(childIds);
                 db.delete(SORT).where(SORT.PARENT_ID.eq(sortId)).execute();
             }
