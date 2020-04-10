@@ -2,7 +2,10 @@ package com.vpu.mp.service.pojo.shop.market.presale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -67,6 +70,10 @@ public class PreSaleVo  {
     private Integer preTime;
     /**优先级*/
     private Integer first;
+    /**
+     * 商品规格
+     */
+    private List<PreSaleGoods> goodsList;
 
     @JsonIgnore
     private Integer saleNumber;
@@ -78,4 +85,28 @@ public class PreSaleVo  {
     private Timestamp createTime;
     @JsonIgnore
     private Timestamp updateTime;
+
+
+    @Setter
+    @Getter
+    public static class PreSaleGoods{
+        private Integer goodsId;
+        private String goodsName;
+        /** 商品主图 */
+        private String goodsImg;
+        /** 商品库存 */
+        private Integer goodsNumber;
+
+        /** 商品价格 */
+        private BigDecimal shopPrice;
+        /** 单位 */
+        private String unit;
+        /**
+         * 产品规格配置
+         */
+        private List<ProductVo> productList;
+    }
+
+
+
 }
