@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vpu.mp.service.foundation.util.NumericBooleanDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,30 +24,37 @@ public class CardCustomAction {
 	/**
 	 * 类型：0单选，1多选，2文本
 	 */
+	@JsonAlias({"type"})
 	@JsonProperty("custom_type")
 	private Byte type;
 	
 	/**
 	 * 标题
 	 */
+	@JsonAlias({"title"})
 	@JsonProperty("custom_title")
 	private String title;
 	
 	/**
 	 * 选项内容
 	 */
+	@JsonAlias({"content"})
 	@JsonProperty("option_arr")
 	private List<String> content;
 	
 	/**
 	 * 条件校验必须 
 	 */
+	@JsonAlias({"conditionChecked"})
 	@JsonProperty("option_ver")
-	private Boolean conditionChecked;
+	@JsonDeserialize(using = NumericBooleanDeserializer.class)
+	private Byte conditionChecked;
 	
 	/**
 	 * 是否使用改激活项
 	 */
+	@JsonAlias({"checked"})
 	@JsonProperty("is_checked")
-	private Boolean checked;
+	@JsonDeserialize(using = NumericBooleanDeserializer.class)
+	private Byte checked;
 }

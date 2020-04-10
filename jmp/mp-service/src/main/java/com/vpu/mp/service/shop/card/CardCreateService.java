@@ -423,7 +423,7 @@ public class CardCreateService extends ShopBaseService{
 		logger().info("初始化自定义激活项");
 		List<CardCustomAction> customAction = param.getCustomAction();
 		if(customAction != null) {
-			String customOptions = Util.toJson(customAction);
+			String customOptions = Util.toJsonNotNull(customAction);
 			cardBuilder.customOptions(customOptions);
 		}
 	}
