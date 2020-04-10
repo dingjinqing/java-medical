@@ -94,6 +94,12 @@ public class MrkingStrategyGoodsListVo {
         private BigDecimal goodsPrice;
 
         private BigDecimal maxPrice;
+
+        //购物车数据
+        /**
+         * 购物车里该商品的数量
+         */
+        private Integer cartGoodsNumber;
     }
 
     /**

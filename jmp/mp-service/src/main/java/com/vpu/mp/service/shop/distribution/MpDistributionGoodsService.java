@@ -1,6 +1,8 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.UserRebatePrice;
+import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -11,6 +13,11 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsRebateConfigParam;
 import com.vpu.mp.service.pojo.wxapp.distribution.BaseGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.GoodsRebateChangePriceVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
@@ -21,15 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @Author 常乐
@@ -255,5 +258,55 @@ public class MpDistributionGoodsService extends ShopBaseService {
         goodsRebateChangePriceVo.setGoods(goods);
         goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
         return goodsRebateChangePriceVo;
+    }
+
+    /**
+     * 保存/更新商品分销价
+     * @param param
+     */
+    public void addRebatePrice(GoodsDetailMpBo goodsDetailMpBo,GoodsDetailMpParam param){
+        UserRebatePriceRecord userRebatePrice = new UserRebatePriceRecord();
+        long rebateTime1 = param.getRebateConfig().getRebateTime();
+        int addTime = 24*60*60;
+        long toTime = (rebateTime1 + addTime) * 1000;
+
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String rebateTime = simpleDateFormat.format(toTime);
+        Timestamp rebateToTime = Timestamp.valueOf(rebateTime);
+
+        Timestamp nowTime = Util.currentTimeStamp();
+
+        //判断当前用户对该商品是否进行过分销改价
+        param.getRebateConfig().getRebatePrice().forEach((prdId,prdPrice)->{
+            Record record = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
+                .and(USER_REBATE_PRICE.PRODUCT_ID.eq(prdId))
+                .fetchOne();
+            userRebatePrice.setUserId(param.getUserId());
+            userRebatePrice.setGoodsId(param.getGoodsId());
+            userRebatePrice.setProductId(prdId);
+            userRebatePrice.setAdvicePrice(prdPrice);
+            userRebatePrice.setExpireTime(rebateToTime);
+//            添加商品分销价
+            if(record == null) {
+                db().executeInsert(userRebatePrice);
+            }else{
+                UserRebatePriceRecord rebateInfo = record.into(UserRebatePriceRecord.class);
+                //更新商品分销价
+               db().update(USER_REBATE_PRICE).set(userRebatePrice).where(USER_REBATE_PRICE.ID.eq(rebateInfo.getId())).execute();
+            }
+            Record record1 = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
+                .and(USER_REBATE_PRICE.PRODUCT_ID.eq(prdId)).and(USER_REBATE_PRICE.EXPIRE_TIME.gt(nowTime))
+                .fetchOne();
+            System.out.println(param.getUserId());
+            System.out.println(record1);
+            if(record1 != null){
+                for(GoodsPrdMpVo item : goodsDetailMpBo.getProducts()){
+                    if(item.getPrdId().equals(prdId)){
+                        System.out.println(123);
+                        item.setPrdRealPrice(prdPrice);
+                    }
+                }
+            }
+        });
     }
 }

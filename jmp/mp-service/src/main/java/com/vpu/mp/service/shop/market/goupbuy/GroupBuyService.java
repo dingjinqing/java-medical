@@ -207,11 +207,11 @@ public class GroupBuyService extends ShopBaseService {
      * @return 二维码信息
      */
     public ShareQrCodeVo shareGroupBuy(Integer id) {
-        String pathParam = "pageFrom=1&actId=" + id;
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GOODS_SEARCH, pathParam);
+        String pathParam = "paramId=" + id;
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.GROUP_BOOKING, pathParam);
         ShareQrCodeVo vo = new ShareQrCodeVo();
         vo.setImageUrl(imageUrl);
-        vo.setPagePath(QrCodeTypeEnum.GOODS_SEARCH.getPathUrl(pathParam));
+        vo.setPagePath(QrCodeTypeEnum.GROUP_BOOKING.getPathUrl(pathParam));
         return vo;
     }
 
@@ -520,7 +520,7 @@ public class GroupBuyService extends ShopBaseService {
         RabbitMessageParam param1 = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(build).build())
             .page(page).shopId(getShopId()).userIdList(userIds)
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
         saas.taskJobMainService.dispatchImmediately(param1, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }

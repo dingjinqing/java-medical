@@ -13,7 +13,6 @@ import java.net.URLDecoder;
  */
 @Data
 public class ReservationParam {
-    @PositiveOrZero
     private Integer serviceId;
     @PositiveOrZero(groups = {ConfirmReservation.class, ValidCon.class, ValidCon1.class})
     private Integer userId;

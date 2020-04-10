@@ -45,6 +45,7 @@ import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabelCreateService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -101,6 +102,8 @@ public class GoodsService extends ShopBaseService {
     public GoodsLabelCoupleService goodsLabelCouple;
     @Autowired
     public GoodsDeliverTemplateService goodsDeliver;
+    @Autowired
+    LiveService liveService;
     @Autowired
     public ChooseLinkService chooseLink;
     @Autowired
@@ -1086,6 +1089,9 @@ public class GoodsService extends ShopBaseService {
         GoodsRecord goodsRecord = db().fetchOne(GOODS, GOODS.GOODS_ID.eq(goods.getGoodsId()));
 
         assign(goods, goodsRecord);
+        if (goods.getRoomId() == null) {
+            goodsRecord.setRoomId(null);
+        }
         if (goods.getMarketPrice() == null) {
             goodsRecord.setMarketPrice(null);
         }
@@ -1760,6 +1766,16 @@ public class GoodsService extends ShopBaseService {
         goodsSharePostConfig.setShareImgPath(goodsSharePostConfig.getShareImgUrl());
         goodsSharePostConfig.setShareImgUrl(getImgFullUrlUtil(goodsSharePostConfig.getShareImgUrl()));
         goodsVo.setGoodsSharePostConfig(goodsSharePostConfig);
+
+        // 设置直播间名称
+        if (goodsVo.getRoomId() !=  null) {
+            LiveBroadcastRecord liveBroadcastRecord = liveService.getLiveInfoByRoomId(goodsVo.getRoomId());
+            if (liveBroadcastRecord == null) {
+                goodsVo.setRoomId(null);
+            } else {
+                goodsVo.setRoomName(liveBroadcastRecord.getName());
+            }
+        }
 
         return goodsVo;
     }

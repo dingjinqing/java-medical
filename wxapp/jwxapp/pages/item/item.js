@@ -1,4 +1,5 @@
 var util = require('../../utils/util.js')
+const livePlayer = requirePlugin('live-player-plugin')
 const actBaseInfo = {
   1: {
     actName: '拼团',
@@ -178,26 +179,30 @@ global.wxPage({
         title: '拼团抽奖玩法',
         ruleList: [['image/wxapp/pl_icons1.png', '付款开团'], ['image/wxapp/pl_icons2.png', '邀请好友'], ['image/wxapp/pl_icons3.png', '成团抽奖'], ['image/wxapp/pl_icons4.png', '中奖发货']]
       }
-    }
+    },
+    showLive:true
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
-    if (options.scene) options = this.resetScene(options.scene)
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null } = options
     this.setData({
       goodsId,
-      activityId,
-      activityType
+      activityId:activityId === 'null' ? null : activityId,
+      activityType:activityType === 'null' || activityType === '0' ? null : activityType,
+      roomId:roomId,
+      rebateConfig
     })
     this.requestGoodsInfo()
   },
   // 商品详情请求
   async requestGoodsInfo () {
     let result = new Promise((resolve, reject) => {
+      let customParams = {}
+      if(this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
       util.api(
         '/api/wxapp/goods/detail',
         res => {
@@ -244,7 +249,8 @@ global.wxPage({
               goodsGifts,
               showSalesNumber,
               customService,
-              goodsDistribution
+              goodsDistribution,
+              roomDetailMpInfo
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -286,7 +292,8 @@ global.wxPage({
               couponList: coupons, //优惠券
               goodsDescInfo,
               goodsGifts, // 赠品,
-              goodsDistribution //分销信息
+              goodsDistribution, //分销信息,
+              roomDetailMpInfo
             })
             this.setData({
               specParams
@@ -311,6 +318,7 @@ global.wxPage({
               this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
             }
             this.getPromotions(res.content)
+            if (this.data.roomDetailMpInfo) this.getLiveInfo()
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -324,7 +332,8 @@ global.wxPage({
           activityType: this.data.activityType,
           userId: util.getCache('user_id'),
           lon: null,
-          lat: null
+          lat: null,
+          ...customParams
         }
       )
     })
@@ -865,16 +874,35 @@ global.wxPage({
       JSON.stringify(this.data.pledgeInfo.pledgeListVo)
     )
   },
-  resetScene (scene) {
-    return decodeURIComponent(scene).split('&').reduce((defaultData, item) => {
-      let params = item.split('=')
-      defaultData[params[0]] = params[1]
-      return defaultData
-    }, {})
-  },
   viewPreSaleRule () {
     this.setData({
       preSaleRuleShow: true
+    })
+  },
+  goLive(){
+    let {roomId} = this.data.roomDetailMpInfo
+    roomId = [roomId]
+    wx.navigateTo({
+      url: `plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id=${roomId}`
+    })
+  },
+  getLiveInfo(){
+    let {roomId} = this.data.roomDetailMpInfo
+    livePlayer.getLiveStatus({room_id:roomId})
+      .then(res=>{
+        let liveStatus = res.liveStatus
+        this.setData({
+          liveStatus
+        })
+        console.log('get live status', liveStatus)
+      })
+      .catch(err=>{
+        console.log('get live status', err)
+      })
+  },
+  closeLive(){
+    this.setData({
+      showLive:false
     })
   },
   /**

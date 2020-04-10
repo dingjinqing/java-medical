@@ -197,8 +197,11 @@ public class EsAssemblyDataService extends ShopBaseService {
     private EsGoods assemblyEsGoods(GoodsRecord goods, Integer shopId) {
         EsGoods esGoods = new EsGoods();
         BeanUtils.copyProperties(goods, esGoods);
+        Optional<Integer> goodsSaleNumber = Optional.ofNullable(goods.getGoodsSaleNum());
+        Optional<Integer> baseSaleNumber = Optional.ofNullable(goods.getBaseSale());
         esGoods.setFreightTemplateId(goods.getDeliverTemplateId());
         esGoods.setShopId(shopId);
+        esGoods.setTotalSaleNumber(goodsSaleNumber.orElse(0)+baseSaleNumber.orElse(0));
         esGoods.setGoodsImg(imageService.imageUrl(goods.getGoodsImg()));
         esGoods.setAddEsDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, new Date()));
         esGoods.setUpdateDate(DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, goods.getUpdateTime()));

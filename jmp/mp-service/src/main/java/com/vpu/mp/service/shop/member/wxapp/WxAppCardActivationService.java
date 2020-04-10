@@ -161,7 +161,7 @@ public class WxAppCardActivationService extends ShopBaseService {
 		
 		if(activeData != null ) {
 			// prepare card examine data 
-			setActiveAddressInfo(activeData);
+			// setActiveAddressInfo(activeData);
 			activeData.put("cardNo",param.getCardNo());
 			activeData.put("cardId",uCard.getCardId());
 			activeData.put("userId",uCard.getUserId());
@@ -182,14 +182,15 @@ public class WxAppCardActivationService extends ShopBaseService {
 				memberService.updateUserDetail(userDetailRecord);
 				
 				// update usercard activate time
-				userCardService.updateActivationTime(param.getCardNo(), null);
-				
+				if(!CardUtil.isCardExamine(uCard.getExamine())) {
+					userCardService.updateActivationTime(param.getCardNo(), null);
+					// send coupon
+					memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
+				}
 				// add data into card examine
 				CardExamineRecord cardExamineRecord = db().newRecord(CARD_EXAMINE);
 				cardExamineRecord.fromMap(data);
 				cardExamineRecord.insert();
-				// send coupon
-				memberCardService.sendCoupon(uCard.getUserId(), uCard.getCardId());
 			});
 		}else {
 			logger().info("没有传入激活数据,actovateOption=NullNode");

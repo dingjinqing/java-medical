@@ -203,6 +203,18 @@
           />
         </div>
       </el-form-item>
+      <el-form-item :label="$t('goodsAddEditInfo.goodsDistribution.goodsLive')">
+        <p>{{$t('goodsAddEditInfo.goodsDistribution.goodsLiveTipInfo')}}</p>
+        <div v-if="goodsDistributionInfo.roomId !== null"
+             style="display: flex;flex-wrap: wrap;align-items:center;background-color: #f8f8f8;">
+            <div>{{$t('goodsAddEditInfo.alreadySelected')}}</div>
+            <div  class="selectedWrap">
+                {{goodsDistributionInfo.roomName}}
+                <span class="deleteIcon" @click='deleteSelectedRoom'>×</span>
+            </div>
+        </div>
+        <el-button @click="openRoomSelectedDialog">{{$t('goodsAddEditInfo.goodsDistribution.selectLiveRoomInfo')}}</el-button>
+      </el-form-item>
     </el-form>
     <!--解决图片弹框非单例的问题-->
     <ImageDalog
@@ -210,20 +222,53 @@
       pageIndex='pictureSpace'
       @handleSelectImg='imgDialogSelectedCallback'
     />
+      <!--直播信息弹窗-->
+      <el-dialog :title="$t('goodsAddEditInfo.goodsDistribution.liveRoomName')" :visible.sync="liveRoomInfo.isDialogShow">
+        <div class="live-content">
+          <div class="live-content-table">
+            <el-table :data="liveRoomInfo.liveRoomsData"
+            border max-height="300" style="width: 100%;" highlight-current-row @current-change="handleLiveRoomSelectedChange">
+              <el-table-column prop="name" :label="$t('goodsAddEditInfo.goodsDistribution.liveRoomName')"/>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStatus')">
+                <template slot-scope="{row}">
+                  <span v-if="row.liveStatus === 101">{{$t('goodsAddEditInfo.goodsDistribution.onLiving')}}</span>
+                  <span v-if="row.liveStatus === 102">{{$t('goodsAddEditInfo.goodsDistribution.liveNotStart')}}</span>
+                  <span v-if="row.liveStatus === 103">{{$t('goodsAddEditInfo.goodsDistribution.liveEnd')}}</span>
+                  <span v-if="row.liveStatus === 105">{{$t('goodsAddEditInfo.goodsDistribution.livePausing')}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveStartTime')" prop="startTime"/>
+              <el-table-column :label="$t('goodsAddEditInfo.goodsDistribution.liveEndTime')" prop="endTime"/>
+            </el-table>
+          </div>
+          <pagination
+                  :page-params.sync="liveRoomInfo.pageParams"
+                  @pagination="paginationFetchLivesData"
+          />
+        </div>
+         <span slot="footer" class="dialog-footer">
+            <el-button @click=liveRoomDialogCancel>{{$t('goodsAddEditInfo.cancelBtn')}}</el-button>
+            <el-button type="primary" @click="liveRoomDialogConfirm">{{$t('goodsAddEditInfo.confirmBtn')}}</el-button>
+          </span>
+      </el-dialog>
   </div>
 </template>
 
 <script>
 // 组件导入
 import ImageDalog from '@/components/admin/imageDalog'
+import pagination from '@/components/admin/pagination/pagination'
 // js工具函数导入
 import { isStrBlank } from '@/util/typeUtil'
+
+import {getLiveListForGoodsEdit} from '@/api/admin/marketManage/live'
 
 export default {
   name: 'addingGoodsDistributionInfo',
   props: ['goodsProductInfoData'],
   inject: ['isUpdateWrap'],
   components: {
+    pagination,
     ImageDalog
   },
   data () {
@@ -239,7 +284,18 @@ export default {
         shareDoc: null,
         shareImgAction: 1,
         shareImgObj: null,
-        imgHost: `${this.$imageHost}`
+        imgHost: `${this.$imageHost}`,
+        roomId: null,
+        roomName: null
+      },
+      liveRoomInfo: {
+        isDialogShow: false,
+        pageParams: {
+          currentPage: 1,
+          pageRows: 20
+        },
+        liveRoomsData: [],
+        currentSelectedRow: null
       }
     }
   },
@@ -310,6 +366,50 @@ export default {
     imgDialogSelectedCallback (imgObj) {
       this.goodsDistributionInfo.shareImgObj = { imgPath: imgObj.imgPath, imgUrl: imgObj.imgUrl }
     },
+    /* 删除已选直播间信息 */
+    deleteSelectedRoom () {
+      this.goodsDistributionInfo.roomId = null
+      this.goodsDistributionInfo.roomName = null
+    },
+    /* 获取直播间数据 */
+    _fetchLivesData () {
+      getLiveListForGoodsEdit(this.liveRoomInfo.pageParams).then(res => {
+        let {content: {pageList}} = res
+        if (pageList === null) {
+          return
+        }
+        this.liveRoomInfo.pageParams = pageList.page
+        this.liveRoomInfo.liveRoomsData = pageList.dataList
+      })
+    },
+    /* 打开直播间选择弹窗 */
+    openRoomSelectedDialog () {
+      this.liveRoomInfo.isDialogShow = true
+      this._fetchLivesData()
+    },
+    /* 直播列表分页按钮操作 */
+    paginationFetchLivesData () {
+      this._fetchLivesData()
+    },
+    /* 直播列表选择改变事件 */
+    handleLiveRoomSelectedChange (val) {
+      this.liveRoomInfo.currentSelectedRow = val
+    },
+    /* 直播列表弹窗取消 */
+    liveRoomDialogCancel () {
+      this.liveRoomInfo.isDialogShow = false
+    },
+    /* 直播列表弹窗确认 */
+    liveRoomDialogConfirm () {
+      if (this.liveRoomInfo.currentSelectedRow === null) {
+        this.$message.warning({message: this.$t('goodsAddEditInfo.goodsDistribution.selectLiveInfoWarning')})
+        return
+      }
+
+      this.goodsDistributionInfo.roomId = this.liveRoomInfo.currentSelectedRow.roomId
+      this.goodsDistributionInfo.roomName = this.liveRoomInfo.currentSelectedRow.name
+      this.liveRoomInfo.isDialogShow = false
+    },
     /* 初始化待修改商品数据 */
     initDataForUpdate (goodsData) {
       this.goodsDistributionInfo.canRebate = goodsData.canRebate === 1
@@ -328,6 +428,9 @@ export default {
       }
       // 初始化规格数据
       this._watchGoodsProductInfoDataGoodsSpecProducts(goodsData.goodsSpecProducts)
+      // 初始化直播信息
+      this.goodsDistributionInfo.roomId = goodsData.roomId
+      this.goodsDistributionInfo.roomName = goodsData.roomName
     },
     /* 处理复制操作的数据 */
     disposeDataForCopy () {
@@ -364,7 +467,8 @@ export default {
         goodsRebatePrices: [],
         promotionLanguageSwitch: this.goodsDistributionInfo.promotionLanguageSwitch ? 1 : 0,
         promotionLanguage: this.goodsDistributionInfo.promotionLanguage,
-        goodsSharePostConfig: {}
+        goodsSharePostConfig: {},
+        roomId: this.goodsDistributionInfo.roomId
       }
 
       if (this.goodsDistributionInfo.canRebate) {
@@ -423,5 +527,31 @@ table tr:nth-child(odd) {
 
 table tr:nth-child(even) {
   background: #f5fafa;
+}
+.selectedWrap {
+    min-width: 70px;
+    height: 22px;
+    border: 1px solid #ccc;
+    line-height: 22px;
+    text-align: center;
+    padding: 0px 5px;
+    margin: 0px 5px;
+    background-color: #fff;
+    position: relative;
+}
+.selectedWrap .deleteIcon {
+    width: 17px;
+    height: 17px;
+    color: #fff;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    line-height: 17px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    cursor: pointer;
+    opacity: 0.8;
 }
 </style>

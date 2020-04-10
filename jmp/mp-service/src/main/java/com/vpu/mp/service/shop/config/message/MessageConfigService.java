@@ -33,4 +33,16 @@ public class MessageConfigService extends ShopBaseService {
     public MessageConfigVo getMessageConfig(Integer id){
         return  db().selectFrom(MESSAGE_TEMPLATE_CONFIG).where(MESSAGE_TEMPLATE_CONFIG.ID.eq(id)).fetchOneInto(MessageConfigVo.class);
     }
+
+    /**
+     * 校验是否配置开通发送对因类型的消息
+     * @param type 消息类型
+     * @return true 开通
+     */
+    public boolean checkConfig(Integer type){
+        Byte openMp = db().select(MESSAGE_TEMPLATE_CONFIG.OPEN_MP).
+            from(MESSAGE_TEMPLATE_CONFIG).
+            where(MESSAGE_TEMPLATE_CONFIG.ID.eq(type)).fetchOne(MESSAGE_TEMPLATE_CONFIG.OPEN_MP);
+        return openMp != null && openMp == 1;
+    }
 }

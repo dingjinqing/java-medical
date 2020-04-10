@@ -17,8 +17,11 @@ export const cn = {
   returnToList: '返回列表',
   filter: '筛选',
   createTime: '创建时间',
+  alreadySelected: '已选：',
   confirmBtn: '确定',
   cancelBtn: '取消',
+  goodsInfoMissing: '商品信息缺失',
+  goodsWeightConfigInfo: ' 当前商品运费设置已选【重量运费模板】，必须填写商品重量后保存。如页面未展示商品提示信息，请前往"基础配置-店铺基础配置-店铺通用配置"页面，开启"商品重量配置项设置"开关后,重新编辑商品信息。点击确定按钮，可自动开启',
   warningInfo: {
     requireGoodsName: '请输入商品名称',
     requirePlatformClassify: '请选择平台分类',
@@ -41,7 +44,17 @@ export const cn = {
     goodsPrdSnRepeat: '商品规格编码已存在',
     goodsSpec: '规格: ',
     priceIsWrong: ' 价格填写错误',
-    goodsNumIsWrong: ' 库存写错误'
+    goodsNumIsWrong: ' 库存写错误',
+    goodsWeightIsNull: '请填写商品重量',
+    goodsPrdWeightIsNull: '请填写商品规格重量',
+    goodsPrdCodesInnerRepeated: '商品条码内部重复',
+    goodsPrdCodesExist: '商品条码已存在',
+    goodsNumberWrong: '商品库存填写错误',
+    goodsPriceWrong: '商品价格填写错误',
+    costPriceWrong: '成本价格填写错误',
+    memberPriceIsNull: '会员价不可为空',
+    memberPriceIsLarger: '会员价可不高于商品原价',
+    limitPriceIsWrong: '最小限购数量不可大于最大限购数量'
   },
   basicInfo: {
     title: '基本信息',
@@ -85,6 +98,7 @@ export const cn = {
     unitTip: '长度限制为3个中文字符',
     sortId: '商家分类：',
     sortIdDefault: '请选择商家分类',
+    alreadySelected: '已选：',
     goodsLabel: '商品标签：',
     goodsLabelDefault: '请选择商品标签',
     goodsLabelNew: '新建标签',
@@ -113,12 +127,16 @@ export const cn = {
     goodsSpecShopPrice: '价格(元)',
     goodsSpecShopCost: '成本价格(元)',
     goodsSpecGoodsNum: '库存',
+    goodsSpecPrdWeight: '规格重量',
     goodsSpecGoodsPrdSn: '规格编码',
+    goodsSpecGoodsPrdCodes: '商品条码',
     goodsSpecGoodsImg: '规格图片',
     batchUpdate: '批量设置',
     batchPrice: '价格',
     batchCost: '成本价格',
+    batchMarketPrice: '市场价',
     batchNum: '库存',
+    batchWeight: '规格重量',
     batchImgSrc: '规格图片',
     goodsNumber: '商品库存：',
     goodsNumberTip: '设置了规格库存商品库存将失效，不在前端展示',
@@ -128,7 +146,10 @@ export const cn = {
     goodsGradeMember: '会员价：',
     goodsGradeMemberTip:
       '会员价仅针对等级会员卡设定，非等级会员卡不可设置会员价。若等级会员卡也包含会员折扣，则会员价和会员折扣可同时享受，优先计算会员价',
-    goodsGradeMemberSetting: '会员价设置：'
+    goodsGradeMemberSetting: '会员价设置：',
+    prdPrice: '规格价格(元)',
+    goodsPrice: '商品价格(元)',
+    unifyMemberPrice: '统一会员价'
   },
   stockAndPriceInfoOther: {
     limitBuyNum: '最小限购数量：',
@@ -140,7 +161,8 @@ export const cn = {
     baseSale: '初始销量：',
     baseSaleSetting:
       '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
-    goodsPrdSn: '商品规格编码：'
+    goodsPrdSn: '商品规格编码：',
+    prdCodes: '商品条码：'
   },
   deliverAndOtherInfo: {
     title: '配送信息',
@@ -244,6 +266,19 @@ export const cn = {
     shareGoodsDocTip: '请输入15个以内的字符',
     shareGoodsImg: '分享图',
     shareGoodsImgRadio1: '商品主图',
-    shareGoodsImgRadio2: '自定义图片'
+    shareGoodsImgRadio2: '自定义图片',
+    goodsLive: '商品直播：',
+    goodsLiveTipInfo: '添加直播活动后，将在小程序端商品详情页面展示入口',
+    selectLiveRoomInfo: '选择直播活动',
+    addLiveRoomInfo: '添加直播活动',
+    liveRoomName: '直播间标题',
+    liveStatus: '直播状态',
+    onLiving: '直播中',
+    liveNotStart: '直播未开始',
+    liveEnd: '直播已结束',
+    livePausing: '直播暂停中',
+    liveStartTime: '直播开始时间',
+    liveEndTime: '直播结束时间',
+    selectLiveInfoWarning: '请选择直播间'
   }
 }

@@ -45,7 +45,7 @@
               </view>
               <view class='original_price' wx:if='{{item.marketPrice!=null && item.marketPrice != ""}}'>￥{{item.marketPrice}}</view>
             </view>
-            <view class='btn_add_cart' bindtap='add_to_cart' data-item="{{item}}" data-goods_id='{{item.goodsId}}' data-prd_id='{{item.prdId}}'>
+            <view class='btn_add_cart' bindtap='add_to_cart' data-goods_id='{{item.goodsId}}' data-prd_id='{{item.prdId}}' data-cart_number="{{item.cartGoodsNumber}}" data-limit_amount="{{item.limitAmount}}">
               <text class='iconfont iconjiarugouwuche' style='color:{{comColor}};font-size:60rpx;'></text>
             </view>
           </view>
@@ -75,7 +75,7 @@
         <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" class='pro_close' bindtap='close_change' />
       </view>
       <view class='pro_content clearfix' wx:if='{{change_goods_info.list != ""}}'>
-        <view class='each_change clearfix' wx:for='{{change_goods_info.list}}' wx:key='key' data-is_check="{{item.isChecked}}" data-keys='{{index}}' bindtap='{{item.tip ?"":"choose_chenage"}}'>
+        <view class='each_change clearfix' wx:for='{{change_goods_info.list}}' wx:key='key' data-is_check="{{item.isChecked}}" data-keys='{{index}}' data-tip="{{item.tip}}" bindtap='choose_chenage'>
           <view class='radio_button'>
             <text class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx;' wx:if='{{item.isChecked == 1}}'></text>
             <image src='{{imageUrl}}/image/wxapp/icon_rectangle.png' wx:if='{{item.isChecked == 0}}'></image>

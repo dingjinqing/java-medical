@@ -152,6 +152,10 @@ import {
 import {
   cn as spike
 } from './views/admin_new/cn/index/miniProgramManagement/pictureSetting/decorationModules/marketingComponents/spikeCn'
+// 营销管理  积分兑换
+import {
+  cn as mintegralExchange
+} from './views/admin_new/cn/index/marketManagement/integralExchange/mintegralExchangeCn'
 // 积分兑换
 import {
   cn as integralExchange
@@ -404,6 +408,10 @@ import {
 import {
   cn as groupIntegration
 } from './views/admin_new/cn/index/marketManagement/groupIntegration/groupIntegrationCn'
+// 直播
+import {
+  cn as live
+} from './views/admin_new/cn/index/marketManagement/live/liveCn'
 
 // 订单管理系列模块化
 // 订单通用
@@ -1070,6 +1078,7 @@ const cn = {
   evaluationGiftAdd,
   packagePrice, // 打包一口价
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡
@@ -1140,7 +1149,8 @@ const cn = {
   goodsStaticties, // 商品统计
   formDecorationHome, //  表单装修主页
   formStatisticsHome, // 表单统计列表主页
-  formDecorationModel // 表单统计装修所有模块
+  formDecorationModel, // 表单统计装修所有模块
+  mintegralExchange // 营销管理积分兑换
 }
 
 export default cn

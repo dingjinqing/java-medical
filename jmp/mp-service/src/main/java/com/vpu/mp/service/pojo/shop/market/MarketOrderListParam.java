@@ -49,4 +49,20 @@ public class MarketOrderListParam{
      */
     protected Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     protected Integer pageRows = Page.DEFAULT_PAGE_ROWS;
+
+    /**
+     * 前端查询订单状态与OrderConstant的订单状态不对应，需要处理一下
+     */
+    public void initOrderStatus(){
+        if(orderStatus.length == 1 && orderStatus[0] == 8){
+            //售后完成
+            orderStatus = new Byte[]{8, 10};
+        }else if(orderStatus.length == 1 && (orderStatus[0] == 9 || orderStatus[0] == 10 || orderStatus[0] == 11)){
+            //同城配送的状态，先过滤掉
+            orderStatus= new Byte[]{127};
+        }else if(orderStatus.length == 1 && orderStatus[0] == 7){
+            //售后中
+            orderStatus = new Byte[]{7, 9};
+        }
+    }
 }

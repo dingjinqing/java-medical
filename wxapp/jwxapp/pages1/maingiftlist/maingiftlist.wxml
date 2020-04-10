@@ -1,10 +1,11 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
   <view slot="rule" class="rule" wx:if="{{ruleStr}}">
     <text>{{ruleStr}}</text>
   </view>
   <view slot="rule" class="gift-list">
-    <text>赠品：</text>
+    <text>{{i18n.$t(localePack,"page1.actPage.gift")}}：</text>
     <view class="gift-list-info">
      <block wx:for="{{giftList}}" wx:key="id">
       <view class="list-item image-item" wx:if="{{giftList.length <= 6}}">
@@ -15,8 +16,8 @@
       </view>
      </block>
       <view class="list-item" bindtap="setGiftViewMore" wx:if="{{giftList.length > 6}}">
-        <text class="gift-num">共{{giftList.length}}件</text>
-        <text class="view-more">查看更多</text>
+        <text class="gift-num">{{i18n.$t(localePack,"page1.actPage.totalNum,{num:giftList.length || '0'}")}}</text>
+        <text class="view-more">{{i18n.$t(localePack,"page1.actPage.viewMore")}}</text>
       </view>
     </view>
   </view>
@@ -30,14 +31,14 @@
   <view class="footer" slot="footer">
     <view class="selected-price">
       <view>
-        已选<text style="color:{{comColor}};">￥{{checkedGoodsPrice || 0.00}}</text>
+        {{i18n.$t(localePack,"page1.actPage.selected")}}<text style="color:{{comColor}};">￥{{checkedGoodsPrice || 0.00}}</text>
       </view>
       <view wx:if="{{changeDoc}}">
         {{changeDoc}}
       </view>
     </view>
-    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">查看已选商品</view>
-    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">去购物车</view>	
+    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">{{i18n.$t(localePack,"page1.actPage.viewSelectedGoods")}}</view>
+    <view class="cart" style="background-color:{{comColor}}" bindtap="goCart">{{i18n.$t(localePack,"page1.actPage.goCart")}}</view>	
   </view>
 </v-container>
 
@@ -48,7 +49,7 @@
   <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
   <view class="spec-footer" slot="footer">
     <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
-    <text>加入购物车</text>
+    <text>{{i18n.$t(localePack,"page1.actPage.addCart")}}</text>
   </view>
   </view>
 </v-spec-dialog>

@@ -47,7 +47,7 @@ public class PreSaleParam {
     @NotNull
     private String goodsId;
     @NotNull
-    /** 预告时间*/
+    /** 预告时间 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数*/
     private Integer preTime;
     /** 发货时间模式 **/
     @NotNull

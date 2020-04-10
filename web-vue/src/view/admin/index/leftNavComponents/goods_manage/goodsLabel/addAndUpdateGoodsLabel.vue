@@ -98,7 +98,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="1"
-                >样式1</el-radio>
+                >{{$t('allGoodsLabel.labelStyle1')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=2">
@@ -107,7 +107,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="2"
-                >样式2</el-radio>
+                >{{$t('allGoodsLabel.labelStyle2')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=3">
@@ -116,7 +116,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="3"
-                >样式3</el-radio>
+                >{{$t('allGoodsLabel.labelStyle3')}}</el-radio>
               </div>
               <div style="flex-grow: 1;text-align: center;">
                 <div class="imgWrap" @click="goodsLabelData.listPattern=4">
@@ -125,7 +125,7 @@
                 <el-radio
                   v-model="goodsLabelData.listPattern"
                   :label="4"
-                >样式4</el-radio>
+                >{{$t('allGoodsLabel.labelStyle4')}}</el-radio>
               </div>
             </div>
           </div>
@@ -145,16 +145,26 @@
               <el-radio
                 v-model="goodsLabelData.isAll"
                 :label="2"
-              >不添加商品</el-radio>
+              >{{$t('addAndUpdateGoodsLabel.notAddGoods')}}</el-radio>
             </div>
             <div v-if="goodsLabelData.isAll ===0">
               <div @click="addGoodsClicked" class="pointGoodsItemBtnWrap">
                 <el-button size="small">+{{$t('addAndUpdateGoodsLabel.addGoods')}}</el-button>
-                <span>已选{{selectedGoodsList.length}}件商品</span>
+                <!--已选8件商品-->
+                <span>
+                  {{$t('addAndUpdateGoodsLabel.alreadySelected')}}
+                  {{selectedGoodsList.length}}
+                  {{$t('addAndUpdateGoodsLabel.selectGoods')}}
+                </span>
               </div>
               <div @click="tuneUpChooseSort=true" class="pointGoodsItemBtnWrap">
                 <el-button  size="small">+{{$t('addAndUpdateGoodsLabel.addSort')}}</el-button>
-                <span>已选{{selectedSortList.length}}件商家</span>
+                <!--已选9件商家分类-->
+                <span>
+                  {{$t('addAndUpdateGoodsLabel.alreadySelected')}}
+                  {{selectedSortList.length}}
+                  {{$t('addAndUpdateGoodsLabel.selectSorts')}}
+                </span>
               </div>
             </div>
           </div>
@@ -364,9 +374,9 @@ export default {
         return
       }
       if (this.isUpdate && this.goodsLabelData.isAll === 2 && (this.selectedGoodsList.length > 0 || this.selectedSortList.length > 0)) {
-        this.$confirm('是否确认清除已设置的商品标签？', '清除商品标签', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$t('addAndUpdateGoodsLabel.isResetGoodsLabels'), this.$t('addAndUpdateGoodsLabel.resetGoodsLabels'), {
+          confirmButtonText: this.$t('addAndUpdateGoodsLabel.confirm'),
+          cancelButtonText: this.$t('addAndUpdateGoodsLabel.cancel'),
           type: 'warning'
         }).then(() => {
           this.saveAction()
@@ -452,7 +462,7 @@ export default {
 }
 .pointGoodsItemBtnWrap{
   cursor: pointer;
-  width: 200px;
+  width: 250px;
 }
 .contentFooter {
   position: absolute;

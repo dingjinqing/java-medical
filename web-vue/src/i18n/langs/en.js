@@ -298,6 +298,10 @@ import {
   en as couponReceive
 } from './views/admin_new/en/index/marketManagement/ordinaryCoupon/couponReceiveEn'
 // 好友助力
+// 营销管理  积分兑换
+import {
+  en as mintegralExchange
+} from './views/admin_new/en/index/marketManagement/integralExchange/mintegralExchangeEn'
 import {
   en as promoteList
 } from './views/admin_new/en/index/marketManagement/friendPromote/promoteListEn'
@@ -420,6 +424,10 @@ import {
 import {
   en as groupIntegration
 } from './views/admin_new/en/index/marketManagement/groupIntegration/groupIntegrationEn'
+// 直播
+import {
+  en as live
+} from './views/admin_new/en/index/marketManagement/live/liveEn'
 
 // 会员管理系列模块化
 // 会员列表
@@ -1062,6 +1070,7 @@ const en = {
   packagePrice, // 打包一口价
   dateTimePicker, // 选择时间
   groupIntegration, // 组团瓜分积分
+  live, // 直播
 
   // 会员管理
   memberCard, // 会员管理-会员卡
@@ -1131,6 +1140,7 @@ const en = {
   goodsStaticties, // 商品统计
   formDecorationHome, // 表单装修主页
   formStatisticsHome, // 表单列表主页
-  formDecorationModel // 表单装修所有模块
+  formDecorationModel, // 表单装修所有模块
+  mintegralExchange // 营销活动  积分兑换模块
 }
 export default en

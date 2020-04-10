@@ -257,8 +257,6 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
                     seckillProductInfo.setActivityId(record5s.get(PRESALE.ID));
                     seckillProductInfo.setProductPrice(record5s.get(PRESALE_PRODUCT.PRESALE_PRICE));
                     goods.getCartActivityInfos().add(seckillProductInfo);
-                    goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
-                    goods.setActivityId(record5s.get(PRESALE.ID));
                     goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                     goods.setBuyStatus(BaseConstant.NO);
                     if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){

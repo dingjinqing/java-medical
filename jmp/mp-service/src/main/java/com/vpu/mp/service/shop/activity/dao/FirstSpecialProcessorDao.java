@@ -120,7 +120,7 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
      * @return firstSpecialsPrdIdList
      */
     public Result<? extends Record> getGoodsFirstSpecialPrdId(List<Integer> productIdList, Timestamp date) {
-        Result<Record5<Integer, Integer, BigDecimal, Integer, Byte>> record5s = db().select(FIRST_SPECIAL_PRODUCT.ID, FIRST_SPECIAL_PRODUCT.PRD_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE, FIRST_SPECIAL.LIMIT_AMOUNT, FIRST_SPECIAL.LIMIT_FLAG)
+        Result<Record6<Integer, Integer,Integer, BigDecimal, Integer, Byte>> record6s = db().select(FIRST_SPECIAL_PRODUCT.ID,FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID, FIRST_SPECIAL_PRODUCT.PRD_ID, FIRST_SPECIAL_PRODUCT.PRD_PRICE, FIRST_SPECIAL.LIMIT_AMOUNT, FIRST_SPECIAL.LIMIT_FLAG)
                 .from(FIRST_SPECIAL_PRODUCT)
                 .leftJoin(FIRST_SPECIAL).on(FIRST_SPECIAL.ID.eq(FIRST_SPECIAL_PRODUCT.FIRST_SPECIAL_ID))
                 .where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
@@ -132,17 +132,17 @@ public class FirstSpecialProcessorDao extends ShopBaseService {
                 .orderBy(FIRST_SPECIAL.FIRST.desc(), FIRST_SPECIAL.ID.desc())
                 .fetch();
         List<Integer> prdIds =new ArrayList<>();
-        for (int i = 0; i < record5s.size(); i++) {
-            Record5<Integer, Integer, BigDecimal, Integer, Byte> record5 = record5s.get(i);
-            Integer prdId = record5.get(FIRST_SPECIAL_PRODUCT.PRD_ID);
+        for (int i = 0; i < record6s.size(); i++) {
+            Record6<Integer, Integer,Integer, BigDecimal, Integer, Byte> record6 = record6s.get(i);
+            Integer prdId = record6.get(FIRST_SPECIAL_PRODUCT.PRD_ID);
             if (prdIds.contains(prdId)){
-                record5s.remove(record5);
+                record6s.remove(record6);
                 i--;
                 continue;
             }
-            prdIds.add(record5.get(FIRST_SPECIAL_PRODUCT.PRD_ID));
+            prdIds.add(record6.get(FIRST_SPECIAL_PRODUCT.PRD_ID));
         }
-        return record5s;
+        return record6s;
     }
 
 }

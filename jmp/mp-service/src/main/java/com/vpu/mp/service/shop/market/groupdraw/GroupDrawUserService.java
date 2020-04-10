@@ -323,7 +323,6 @@ public class GroupDrawUserService extends ShopBaseService {
 		String goodsName = good.getGoodsName();
 		String page = "pages/pinlotteryinfo/pinlotteryinfo?group_id=" + userJoinGroup.getGroupId() + "&group_draw_id="
 				+ userJoinGroup.getGroupDrawId() + "&goods_id=" + goodsId;
-		goodsName = goodsName.length() > 20 ? goodsName.substring(0, 19) + "等" : goodsName;
 		String msg = Objects.equals(isWinDraw, ONE) ? "恭喜您中奖了" : "很遗憾您未中奖";
 		String marketName = groupDrawInfo.getName();
 		String[][] data = new String[][] { { marketName }, { Util.getdate("yyyy-MM-dd HH:mm:ss") }, { msg } };
@@ -334,7 +333,7 @@ public class GroupDrawUserService extends ShopBaseService {
 				.maTemplateData(
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(buildData).build())
 				.page(page).shopId(getShopId()).userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.INVITE_SUCCESS_GROUPBUY).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 

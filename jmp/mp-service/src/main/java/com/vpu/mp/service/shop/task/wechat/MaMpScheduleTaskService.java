@@ -481,7 +481,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 							MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
 					.page(page).shopId(getShopId())
 					.userIdList(userIdList)
-					.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+					.type(RabbitParamConstant.Type.INVITE_SUCCESS_FRIEND_PROMOTE).build();
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}else {
 			log.info("type不为1，为"+type);

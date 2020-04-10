@@ -1,6 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.seckill;
 
-import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -67,5 +67,5 @@ public class SeckillAddParam {
     private Byte first;
 
     /** 分享设置*/
-    private ShopShareConfig shareConfig;
+    private PictorialShareConfig shareConfig;
 }

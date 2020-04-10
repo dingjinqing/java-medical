@@ -55,22 +55,7 @@ global.wxPage({
         })
       }
     }, 200)
-    // setTimeout(() => {
-    //   console.log(this.data.pageContent)
-    //   var pageCfg = this.data.pageContent.page_info.page_cfg;
-    //   var color = "#f5f5f5";
-    //   if (pageCfg) {
-    //     if (pageCfg.bg_types == 0) {
-    //       color = "background:" + pageCfg.page_bg_color;
-    //     } else if (pageCfg.bg_types == 1) {
-    //       color = "background:url(" + pageCfg.page_bg_image + ") repeat;background-size:100% auto";
-    //     }
-    //   }
-    //   console.log(color)
-    //   this.setData({
-    //     color: color
-    //   })
-    // }, 500);
+
   },
 
   //  渲染装修模块

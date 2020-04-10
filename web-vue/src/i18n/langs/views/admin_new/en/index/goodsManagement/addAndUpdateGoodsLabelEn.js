@@ -16,6 +16,7 @@ export const en = {
   addGoodsTip: 'Choose the goods needed to be added label',
   allGoods: 'All Goods',
   pointGoods: 'Point Goods',
+  notAddGoods: 'Not add goods',
   addSort: 'Add User Sort',
   addCategory: 'Add Platform Category',
   goodsName: 'Goods Name',
@@ -24,5 +25,10 @@ export const en = {
   operate: 'Operate',
   deleteOperate: 'Delete',
   save: 'Save',
-  labelLevelIsWrong: 'Priority is wrong'
+  labelLevelIsWrong: 'Priority is wrong',
+  alreadySelected: 'Already Selected',
+  selectGoods: 'select goods',
+  selectSorts: 'select sorts',
+  isResetGoodsLabels: 'is select goods labels？',
+  resetGoodsLabels: 'reset goods labels'
 }

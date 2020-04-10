@@ -15,7 +15,6 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    page_id:1,
     imageUrl: app.globalData.imageUrl,
     unusedNum:0, // 未使用个数
     usedNum: 0, // 已使用个数
@@ -23,7 +22,7 @@ global.wxPage({
     this_type: 0, // 状态
     allCoupon:[], // 列表数据
     page: 1,
-    last_page: 1,
+    lastPage: 1,
     pageRows: 20,
   },
  
@@ -45,9 +44,10 @@ global.wxPage({
     })
     clearTimeout(set_time_out);
     util.api('/api/wxapp/coupon/list', function (res) {
+      wx.hideLoading();
       if (res.error == 0) {
         that.setData({
-          last_page: res.content.couponList.page.lastPage,
+          lastPage: res.content.couponList.page.lastPage,
           unusedNum: res.content.unusedNum,
           usedNum: res.content.usedNum,
           expiredNum: res.content.expiredNum,
@@ -60,18 +60,15 @@ global.wxPage({
               item.startTime = item.startTime.toString().slice(0, 10)
               item.endTime = item.endTime.toString().slice(0, 10)
             }
-            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
+            item.remainSecondsAll = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
           })
           // 倒计时
           that.countdown(that, that.data.allCoupon);
         }
 
-        console.log(that.data.allCoupon)
-
         that.setData({
           allCoupon: that.data.allCoupon
         }) 
-        wx.hideLoading();
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
@@ -92,11 +89,11 @@ global.wxPage({
     set_time_out = setTimeout(function () {
       // 放在最后--
       for (var i in dataList) {
-        dataList[i].remain_seconds_all -= 1;
-        if (dataList[i].remain_seconds_all < 0 || dataList[i].remain_seconds_all == NaN) {
+        dataList[i].remainSecondsAll -= 1;
+        if (dataList[i].remainSecondsAll < 0 || dataList[i].remainSecondsAll == NaN) {
           dataList[i].time_tips = "";
         } else {
-          dataList[i].time_tips = util.dateformat(dataList[i].remain_seconds_all);
+          dataList[i].time_tips = util.dateformat(dataList[i].remainSecondsAll);
           // console.log(dataList[i].time_tips)
         }
       }
@@ -112,17 +109,18 @@ global.wxPage({
    */
   onReachBottom: function () {
     var that = this;
-    if (that.data.page == that.data.last_page) { return false };
+    if (that.data.page == that.data.lastPage) { return false };
     that.data.page = that.data.page + 1;
     clearTimeout(set_time_out);
     wx.showLoading({
       title: '加载中···',
     })
     util.api('/api/wxapp/coupon/list', function (res) {
+      wx.hideLoading();
       if (res.error == 0) {
         var cou_listL = res.content.couponList.dataList;
         var cou_list = [];
-        that.data.last_page = res.content.couponList.page.lastPage;
+        that.data.lastPage = res.content.couponList.page.lastPage;
         if (cou_listL.length > 0) {
           cou_list = cou_listL;
           cou_list = that.data.allCoupon.concat(cou_list);
@@ -132,11 +130,10 @@ global.wxPage({
               item.startTime = item.startTime.toString().slice(0, 10)
               item.endTime = item.endTime.toString().slice(0, 10)
             }
-            item.remain_seconds_all = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
+            item.remainSecondsAll = item.remainHours * 3600 + item.remainMinutes * 60 + item.remainSeconds
           })
           that.countdown(that, cou_list);
         }
-        wx.hideLoading();
         that.setData({
           allCoupon: cou_list,
         })
@@ -151,43 +148,6 @@ global.wxPage({
         currentPage: that.data.page,
         pageRows: that.data.pageRows
     });
-    console.log(this.data)
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function (res) {
-    var that = this;
-    var user = res.target.dataset.user;
-    var couponSn = res.target.dataset.coupon_sn;
-    var couponId = res.target.dataset.coupon_id;
-    var idx = Number(res.target.dataset.index);
-    // var cou = 'allCoupon[' + idx + '].is_share';
-    // util.api('/api/wxapp/divsionCoupon/share', function (res) {
-    //   that.setData({
-    //     [cou]: 1,
-    //   })
-    // }, { coupon_sn: coupon_sn });
-    return {
-      title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
-      imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
-    }
-  },
-
-  /**
-   * 分享已满员
-   */
-  full_people: function (e) {
-    var user = e.target.dataset.user;
-    var couponSn = e.target.dataset.coupon_sn;
-    var couponId = e.target.dataset.coupon_id;
-    util.showModal("提示", '领取人数已满', function () {
-      util.navigateTo({
-        url: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId,
-      })
-    }, true, '取消', '领取记录');
   },
 
   /**
@@ -351,5 +311,34 @@ global.wxPage({
   to_search: function (opt) {
     var coupon_sn = opt.currentTarget.dataset.coupon_sn;
     util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+  },
+
+  /**
+  * 分享已满员
+  */
+  full_people: function (e) {
+    var user = e.target.dataset.user;
+    var couponSn = e.target.dataset.coupon_sn;
+    var couponId = e.target.dataset.coupon_id;
+    util.showModal("提示", '领取人数已满', function () {
+      util.navigateTo({
+        url: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId,
+      })
+    }, true, '取消', '领取记录');
+  },
+
+  /**
+  * 用户点击右上角分享
+  */
+  onShareAppMessage: function (res) {
+    var that = this;
+    var user = res.target.dataset.user;
+    var couponSn = res.target.dataset.coupon_sn;
+    var couponId = res.target.dataset.coupon_id;
+    return {
+      title: '分享优惠券',
+      path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+      imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
+    }
   }
 })

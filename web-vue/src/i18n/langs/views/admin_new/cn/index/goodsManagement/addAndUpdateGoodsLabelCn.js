@@ -16,6 +16,7 @@ export const cn = {
   addGoodsTip: '选择需要添加商品标签的商品',
   allGoods: '全部商品',
   pointGoods: '指定商品',
+  notAddGoods: '不指定任何商品',
   addSort: '添加商家分类',
   addCategory: '添加平台分类',
   goodsName: '商品名称',
@@ -24,5 +25,10 @@ export const cn = {
   operate: '操作',
   deleteOperate: '删除',
   save: '保存',
-  labelLevelIsWrong: '优先级填写错误'
+  labelLevelIsWrong: '优先级填写错误',
+  alreadySelected: '已选',
+  selectGoods: '件商品',
+  selectSorts: '件分类',
+  isResetGoodsLabels: '是否确认清除已设置的商品标签？',
+  resetGoodsLabels: '清除商品标签'
 }

@@ -22,7 +22,9 @@ global.wxPage({
     can_del: 0, // 是否显示删除按钮 默认0 不显示
     selectCount: 0, // 已选数量
     showSpec: false, // 规格弹窗
-    specParams: {} // 规格信息
+    specParams: {}, // 规格信息
+    basicNumber: 0, // 多规格添加购物车时的基础数量
+    basicLimit: null // 多规格添加购物车时的限制
   },
 
   /**
@@ -59,6 +61,12 @@ global.wxPage({
     var that = this;
     var prdId = e.currentTarget.dataset.prd_id
     var goodsId = e.currentTarget.dataset.goods_id
+    var cartNumber = e.currentTarget.dataset.cart_number
+    var limitAmount = e.currentTarget.dataset.limit_amount
+    that.setData({
+      basicNumber: e.currentTarget.dataset.cart_number,
+      basicLimit: e.currentTarget.dataset.limit_amount
+    })
     // 不可参与购买且会员列表不为空
     if (that.data.full_info.state == 4 && that.data.full_info.cardList.length == 1 && that.data.full_info.cardList[0].cardType == 2) {
       util.showModal("提示", '您当前的会员等级不满足，仅拥有' + that.data.full_info.cardList[0].cardName + '等级卡用户可购买此商品。可在"个人中心"查看会员卡权益');
@@ -86,6 +94,11 @@ global.wxPage({
     // 添加购物车
     if (prdId) {
       // 单规格
+      var value = cartNumber + 1
+      if (limitAmount != null && limitAmount != 0 && (value > limitAmount)) {
+        util.showModal('提示', '最大限购量为' + limitAmount + '个');
+        return false
+      }
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
@@ -95,7 +108,7 @@ global.wxPage({
           return false;
         }
       }, {
-          goodsNumber: 1,
+          goodsNumber: value,
           prdId: prdId,
           activityType: 21,
           activityId: that.data.strategy_id
@@ -186,21 +199,28 @@ global.wxPage({
   },
   // 规格添加购物车
   addCart() {
-    let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+    var that = this
+    let { goodsNum: goodsNumber, prdId } = that.data.productInfo
+    // 限购校验
+    let value = that.data.basicNumber + goodsNumber
+    if (that.data.basicLimit != null && that.data.basicLimit != 0 && (value > that.data.basicLimit)) {
+      util.showModal('提示', '最大限购量为' + that.data.basicLimit + '个');
+      return false
+    }
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
         util.toast_success('已加入购物车');
-        full_request(this)
+        full_request(that)
       } else {
         util.showModal("提示", res.message);
         return false;
       }
-      this.bindCloseSpec()
+      that.bindCloseSpec()
     }, {
-        goodsNumber: goodsNumber,
+        goodsNumber: value,
         prdId: prdId,
         activityType: 21,
-        activityId: this.data.strategy_id
+        activityId: that.data.strategy_id
       });
   },
 

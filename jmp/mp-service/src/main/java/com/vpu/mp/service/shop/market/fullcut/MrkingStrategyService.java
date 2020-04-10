@@ -222,6 +222,16 @@ public class MrkingStrategyService extends ShopBaseService {
             return vo;
         }
 
+        //Conditions
+        List<MrkingStrategyCondition> conditions = getMrkingStrategyCondition(param.getStrategyId());
+        vo.setCondition(conditions);
+        vo.setType(MrkingStrategyAct.getType());
+
+        //根据购物车里的商品计算底边条的提醒文案
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
+        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
+        vo.setTotalPrice(cartBo.getTotalPrice());
+
         if(StringUtil.isNotEmpty(MrkingStrategyAct.getCardId())){
             //设置了持有会员卡才可以参与活动
             List<Integer> cardIds = Util.splitValueToList(MrkingStrategyAct.getCardId());
@@ -261,18 +271,14 @@ public class MrkingStrategyService extends ShopBaseService {
             goods.setGoodsPrice(goodsPriceBo.getGoodsPrice());
             goods.setMaxPrice(goodsPriceBo.getMaxPrice());
             goods.setMarketPrice(goodsPriceBo.getMaxPrice());
+
+            goods.setCartGoodsNumber(cartBo.getCartGoodsList().stream().filter(cartGoods->cartGoods.getGoodsId().equals(goods.getGoodsId())).mapToInt(WxAppCartGoods::getCartNumber).sum());
         });
         vo.setGoods(goodsPageResult);
 
-        //Conditions
-        List<MrkingStrategyCondition> conditions = getMrkingStrategyCondition(param.getStrategyId());
-        vo.setCondition(conditions);
-        vo.setType(MrkingStrategyAct.getType());
 
-        //根据购物车里的商品计算底边条的提醒文案
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
-        vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
-        vo.setTotalPrice(cartBo.getTotalPrice());
+
+
 
         return vo;
     }

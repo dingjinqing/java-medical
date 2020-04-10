@@ -488,6 +488,23 @@
 		]
 	},
 	{
+		"vsName": "wx_mcode",
+		"name": "一物一码",
+		"enName": "wx_mcode",
+		"topIndex": 4,
+		"includeApi": []
+	},
+	{
+		"vsName": "live_broadcast",
+		"name": "直播 ",
+		"enName": "live_broadcast",
+		"topIndex": 4,
+		"includeApi": [
+			"/api/admin/market/live/*",
+			"/api/admin/market/goods/edit/live/list"
+		]
+	},
+	{
 		"vsName": "store_pay",
 		"name": "门店买单",
 		"enName": "store_service_config",

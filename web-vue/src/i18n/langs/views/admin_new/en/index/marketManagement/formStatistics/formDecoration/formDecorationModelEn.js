@@ -57,5 +57,14 @@ export const en = {
   text: 'Text:',
   textTip: 'Up to 19 words',
   links: 'Links:',
-  selectLink: 'Select link'
+  selectLink: 'Select link',
+  // 电话号码模块
+  phoneNumber: 'Phone number module',
+  phoneNumberTitle: 'phone number:',
+  selectaStyle: 'Select a style:',
+  ordinary: 'ordinary',
+  suspension: 'suspension',
+  centerOrNot: 'Center or not:',
+  centered: 'Centered',
+  atTheLeft: 'be at the left side'
 }

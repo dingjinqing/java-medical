@@ -69,3 +69,22 @@ export function getFirstSpecialOrderList (data) {
     data: data
   })
 }
+
+// 活动订单 取将要导出的行数
+export function getExportTotalRows (data) {
+  return service({
+    url: '/api/admin/market/firstspecial/order/export/rows',
+    method: 'post',
+    data: data
+  })
+}
+
+// 订单导出
+export function orderListExport (data) {
+  return service({
+    url: '/api/admin/market/firstspecial/order/export',
+    method: 'post',
+    data: data,
+    responseType: 'blob'
+  })
+}
