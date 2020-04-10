@@ -50,6 +50,10 @@ export default {
       console.log(this.myData)
     },
     showActionDialog (index) {
+      //  // 处理type2文本
+      if (index >= 0 && this.myData[index].type === 2) {
+        this.myData[index].content = [null, null]
+      }
       this.currentIndex = index
       this.showDialog = true
     },

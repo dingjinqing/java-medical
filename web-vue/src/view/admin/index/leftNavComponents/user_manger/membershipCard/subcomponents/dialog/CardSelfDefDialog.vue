@@ -133,6 +133,9 @@ export default {
       this.$refs['content'].validate((valid) => {
         if (valid) {
           let res = JSON.parse(JSON.stringify(this.action))
+          if (res.type === 2) {
+            delete res.content
+          }
           if (this.createFlag) {
             // 新建
             this.$emit('setNewCustomAction', res)

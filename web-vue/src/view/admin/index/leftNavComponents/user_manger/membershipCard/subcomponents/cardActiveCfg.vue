@@ -89,11 +89,9 @@ export default {
   computed: {
     ruleForm: {
       get () {
-        debugger
         return this.val
       },
       set () {
-        debugger
         if (this.ruleForm.activationCfgBox.length > 0 || this.ruleForm.activation === '0') {
           this.activeError = false
         }
