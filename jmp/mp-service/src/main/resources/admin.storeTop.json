@@ -89,12 +89,6 @@
 				"isOnly": 0
 			},
 			{
-				"enName": "picked_up_order",
-				"name": "自提订单",
-				"check": 1,
-				"isOnly": 0
-			},
-			{
 				"enName": "after_sale_center",
 				"name": "售后中心",
 				"check": 1,
