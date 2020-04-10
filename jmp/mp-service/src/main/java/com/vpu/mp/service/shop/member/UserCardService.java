@@ -900,7 +900,7 @@ public class UserCardService extends ShopBaseService {
 		MemberCardRecord mCard = new MemberCardRecord();
 		mCard.setCustomRights(card.getCustomRights());
 		mCard.setCustomRightsFlag(card.getCustomRightsFlag());
-		CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+		CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
 		card.setCardCustomRights(customRights);
 		return card;
 	}
@@ -919,7 +919,7 @@ public class UserCardService extends ShopBaseService {
 				gVal = gVal+1;
 				continue;
 			}
-			RankCardToVo resCard = memberCardService.changeToGradeCardDetail(gradeCard);
+			RankCardToVo resCard = memberCardService.cardDetailSvc.changeToGradeCardDetail(gradeCard);
 			NextGradeCardVo vo = new NextGradeCardVo();
 			vo.setCardName(resCard.getCardName());
 			vo.setPowerCount(resCard.getPowerCount());
@@ -1373,7 +1373,7 @@ public class UserCardService extends ShopBaseService {
 			// 包邮信息
 			dealWithJudgeFreeship(lang, userCard);
 			// 自定义权益信息
-			CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+			CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
 			userCard.setCardCustomRights(customRights);
 			
 			
@@ -1469,7 +1469,7 @@ public class UserCardService extends ShopBaseService {
 			dealWithJudgeFreeship(lang, uCard);
 			// 自定义权益信息
 
-			CardCustomRights customRights = memberCardService.getCustomRights(mCard);
+			CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
 			uCard.setCardCustomRights(customRights);
 						
 			dealSendCouponInfo(uCard,lang);
@@ -2060,11 +2060,12 @@ public class UserCardService extends ShopBaseService {
         return cardList;
     }
 
-    public void renewCardCheckout(CardRenewCheckoutParam param){
-        Integer userId = param.getUserId();
-        String cardNo = param.getCardNo();
-        UserCardParam memberCard = userCardDao.getUserCardInfo(param.getCardNo());
-        UserRecord userRecord = userService.getUserByUserId(userId);
+    // TODO修改
+    public void renewCardCheckout(Object param){
+//        Integer userId = param.getUserId();
+//        String cardNo = param.getCardNo();
+//        UserCardParam memberCard = userCardDao.getUserCardInfo(param.getCardNo());
+//        UserRecord userRecord = userService.getUserByUserId(userId);
     }
 
     public void createRenewMemberOrder(UserRecord userInfo,UserCardParam memberCard){

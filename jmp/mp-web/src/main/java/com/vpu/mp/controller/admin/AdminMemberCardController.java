@@ -61,7 +61,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/add")
 	public JsonResult createMemberCard(@RequestBody CardParam card) {
 		logger().info("创建会员卡");
-		shop().member.card.createMemberCard(card);
+		shop().member.card.cardCreateSvc.createMemberCard(card);
 		return this.success();
 	}
 	
@@ -71,7 +71,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/update")
 	public JsonResult updateCard(@RequestBody CardParam param) {
 		logger().info("更新会员卡");
-		shop().member.card.updateMemberCard(param);
+		shop().member.card.cardCreateSvc.updateMemberCard(param);
 		return success();
 	}
 
@@ -123,7 +123,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	@PostMapping("/card/get")
 	public JsonResult getCardById(@RequestBody @Valid CardIdParam param) {
 		logger().info("获取会员卡的详细信息");
-		BaseCardVo card = shop().member.card.getCardDetailById(param);
+		BaseCardVo card = shop().member.card.cardDetailSvc.getCardDetailById(param);
 		return success(card);
 	}	
 	
