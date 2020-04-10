@@ -16,16 +16,16 @@
   <view class="main-container" wx:if="{{goodsInfo}}">
     <!-- 商品图片 -->
     <view class="goods-image">
-      <view class="live-tips" wx:if="{{roomDetailMpInfo}}">
+      <view class="live-tips" wx:if="{{roomDetailMpInfo && filter.includes([101,102],liveStatus) && showLive}}">
        <view class="live-avatar-content">
-        <image class="live-avatar" src="http://jmpdevimg.weipubao.cn/upload/245547/image/20200327/T4N240u3jDGM06osjNAj.jpeg"></image>
+        <image class="live-avatar" src="{{roomDetailMpInfo.anchorImg}}"></image>
        </view>
-       <!-- <text class="live-desc">商品正在参与直播，立即查看 ></text> -->
-       <text class="live-desc">直播将在20:00开始</text>
+       <text class="live-desc" wx:if="{{liveStatus === 101}}" bindtap="goLive">商品正在参与直播，立即查看 ></text>
+       <text class="live-desc" wx:if="{{liveStatus === 102}}">直播将在{{roomDetailMpInfo.startTime}}开始</text>
        <!-- <view class="subscribe-button" style="color:#fff;background:linear-gradient(90deg,rgba(243,177,62,1),rgba(247,145,61,1));border:none;">立即订阅</view> -->
-        <subscribe room-id="5"></subscribe>
-        <!-- <view class="subscribe-button" bindtap="goLive" style="color:rgba(247,145,61,1);">已订阅</view> -->
-        <image class="live-close" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
+        <subscribe room-id="{{roomDetailMpInfo.roomId}}" wx:if="{{liveStatus === 102}}"></subscribe>
+        <!-- <view class="subscribe-button" style="color:rgba(247,145,61,1);">已订阅</view> -->
+        <image class="live-close" bindtap="closeLive" src="{{imageUrl}}image/wxapp/invite_close_live.png"></image>
       </view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
