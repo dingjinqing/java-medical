@@ -20,6 +20,7 @@
           class="go-store-backstage"
           type="primary"
           size="small"
+          @click="goStoreBackstage"
         >{{$t('storePermission.storeBackstage')}}</el-button>
       </div>
       <router-view></router-view>
@@ -55,6 +56,9 @@ export default {
           path: '/admin/home/main/store/storePermission/setting'
         })
       }
+    },
+    goStoreBackstage () {
+      window.open('https://mpdev.weipubao.cn/store/login')
     }
   }
 }
