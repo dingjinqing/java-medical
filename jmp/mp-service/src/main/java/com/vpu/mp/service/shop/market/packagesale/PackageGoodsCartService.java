@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -7,10 +8,12 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCartGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import jodd.util.StringUtil;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,6 +29,8 @@ import static com.vpu.mp.db.shop.tables.PackageGoodsCart.PACKAGE_GOODS_CART;
  **/
 @Service
 public class PackageGoodsCartService extends ShopBaseService {
+    @Autowired
+    private DomainConfig domainConfig;
 
     /**
      * 获取确定分组已选的商品数量
@@ -132,12 +137,21 @@ public class PackageGoodsCartService extends ShopBaseService {
      * @return
      */
     public List<PackageSaleCartGoodsVo> getUserGroupCartGoods(Integer userId,Integer packageId,Byte groupId){
-        return db().select(PACKAGE_GOODS_CART.GOODS_ID,PACKAGE_GOODS_CART.PRODUCT_ID,PACKAGE_GOODS_CART.GOODS_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS.GOODS_NAME,GOODS.SHOP_PRICE,GOODS.GOODS_IMG,GOODS.MARKET_PRICE)
+        List<PackageSaleCartGoodsVo> list = db().select(PACKAGE_GOODS_CART.GOODS_ID,PACKAGE_GOODS_CART.PRODUCT_ID,PACKAGE_GOODS_CART.GOODS_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC,GOODS_SPEC_PRODUCT.PRD_IMG,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS.GOODS_NAME,GOODS.SHOP_PRICE,GOODS.GOODS_IMG,GOODS.MARKET_PRICE)
             .from(PACKAGE_GOODS_CART).innerJoin(GOODS).on(GOODS.GOODS_ID.eq(PACKAGE_GOODS_CART.GOODS_ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(PACKAGE_GOODS_CART.PRODUCT_ID))
             .where(PACKAGE_GOODS_CART.USER_ID.eq(userId))
             .and(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId))
             .and(PACKAGE_GOODS_CART.GROUP_ID.eq(groupId))
             .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(PackageSaleCartGoodsVo.class);
+        list.forEach(g->{
+            if(StringUtil.isNotBlank(g.getGoodsImg())){
+                g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+            }
+            if(StringUtil.isNotBlank(g.getPrdImg())){
+                g.setPrdImg(domainConfig.imageUrl(g.getPrdImg()));
+            }
+        });
+        return list;
     }
 }
