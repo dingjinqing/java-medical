@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.member.card.create;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

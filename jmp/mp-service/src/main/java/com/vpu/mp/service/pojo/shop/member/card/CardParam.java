@@ -201,6 +201,6 @@ public class CardParam {
 	/**
 	 * 卡的自定义激活项
 	 */
-	private CardCustomAction customAction;
+	private List<CardCustomAction> customAction;
 	
 }
