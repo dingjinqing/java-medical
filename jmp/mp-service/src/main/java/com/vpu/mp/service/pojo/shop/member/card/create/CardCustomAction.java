@@ -4,9 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vpu.mp.service.foundation.util.NumericBooleanDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +44,6 @@ public class CardCustomAction {
 	 */
 	@JsonAlias({"conditionChecked"})
 	@JsonProperty("option_ver")
-	@JsonDeserialize(using = NumericBooleanDeserializer.class)
 	private Byte conditionChecked;
 	
 	/**
@@ -55,6 +51,5 @@ public class CardCustomAction {
 	 */
 	@JsonAlias({"checked"})
 	@JsonProperty("is_checked")
-	@JsonDeserialize(using = NumericBooleanDeserializer.class)
 	private Byte checked;
 }
