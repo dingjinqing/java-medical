@@ -2,9 +2,23 @@
 <template>
 <!-- 用户自定激活组件 -->
   <div>
-      <span @click="showDialog=true">{{msg}}</span>
-
-     <my-dialog :visiable.sync="showDialog"/>
+      <el-button size="small" @click="showActionDialog(-1)">{{msg}}</el-button>
+      <div class="container">
+        <div v-for="(item,index) in myData" :key="index">
+          <el-checkbox v-model="item.checked"></el-checkbox>
+          <span class="title">{{item.title}}</span>
+          <el-tooltip content="编辑" placement="top" effect="light">
+            <i class="el-icon-edit-outline icon-style" @click="showActionDialog(index)"></i>
+          </el-tooltip>
+          <el-tooltip content="删除" placement="top" effect="light">
+            <i class="el-icon-delete icon-style"></i>
+          </el-tooltip>
+          <span v-if="item.conditionChecked" class="tip">必填</span>
+        </div>
+      </div>
+     <my-dialog :visiable.sync="showDialog"
+                :customAction.sync="myData[currentIndex]"
+      @setNewCustomAction="setNewCustomAction"/>
   </div>
 </template>
 
@@ -18,12 +32,49 @@ export default {
     return {
       msg: '自定义激活项',
       showDialog: false,
-      myData: []
+      myData: [],
+      currentIndex: -1
+    }
+  },
+  methods: {
+    setNewCustomAction (action) {
+      this.myData.push({
+        ...action,
+        checked: false
+      })
+      console.log(this.myData)
+    },
+    showActionDialog (index) {
+      debugger
+      console.log(this.myData)
+
+      this.currentIndex = index
+      this.showDialog = true
     }
   }
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+  .container{
+    background-color: #fff;
+    border: 1px dashed #ccc;
+    width: 60%;
+    padding-left: 30px;
+    .title{
+      padding-left: 10px;
+      display: inline-block;
+      width: 180px;
+    }
+    .icon-style{
+      color: #5a8bff;
+      cursor: pointer;
+    }
+    .tip{
+      margin-left: 10px;
+      color: #999;
+      font-size: 12px;
+    }
+  }
 
 </style>
