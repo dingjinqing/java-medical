@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 67270883;
+    private static final long serialVersionUID = 339050332;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -362,6 +362,11 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      * The column <code>jmini_shop_489258.b2c_member_card.custom_rights_flag</code>. 自定义权益开关
      */
     public final TableField<MemberCardRecord, Byte> CUSTOM_RIGHTS_FLAG = createField("custom_rights_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "自定义权益开关");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.custom_options</code>. 自定义激活信息配置
+     */
+    public final TableField<MemberCardRecord, String> CUSTOM_OPTIONS = createField("custom_options", org.jooq.impl.SQLDataType.CLOB, this, "自定义激活信息配置");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference
