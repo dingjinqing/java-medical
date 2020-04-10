@@ -299,7 +299,7 @@ export default {
       this.$emit('checkList', param)
       this.$emit('close', false)
     },
-    checkChange() {
+    checkChange () {
       // for (let i = 0; i < this.checkList.length; i++) {
       //     if (this.checkList[i] === 1) {
       //
@@ -307,7 +307,7 @@ export default {
       //     }
       // }
     },
-    showInner(scope, id) {
+    showInner (scope, id) {
       this.innerTemp = this.checkList
       let list = scope.row.areaCity
       for (let i = 0; i < list.length; i++) {
@@ -319,7 +319,7 @@ export default {
       }
       this.innerVisible = true
     },
-    closeInner() {
+    closeInner () {
       // for (let i = 0; i < this.areaList.length; i++) {
       //     for (let j = 0; j < this.checkList.length; j++) {
       //         if (this.checkList[j] === this.areaList[i].districtId) {
@@ -330,10 +330,10 @@ export default {
       this.checkList = this.innerTemp
       this.innerVisible = false
     },
-    reset() {
+    reset () {
       this.checkList = []
     },
-    confirInner() {
+    confirInner () {
       // for (let i = 0; i < this.areaList.length; i++) {
       //     for (let j = 0; j < this.checkList.length; j++) {
       //         if (this.checkList[j] === this.areaList[i].districtId) {
@@ -358,7 +358,7 @@ export default {
       // }
       this.innerVisible = false
     },
-    checkedSingleChange(val, b) {
+    checkedSingleChange (val, b) {
       let value = b.target._value
       let obj = Object.assign({}, this.innerObj)
       if (this.checkList.length !== this.total) {

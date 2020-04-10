@@ -5,9 +5,12 @@ import static com.vpu.mp.db.shop.tables.SubscribeMessage.SUBSCRIBE_MESSAGE;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,12 @@ import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
 import com.vpu.mp.db.shop.tables.records.SubscribeMessageRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.pojo.wxapp.subscribe.UpdateTemplateParam;
+import com.vpu.mp.service.shop.user.message.maConfig.RuleKey;
 import com.vpu.mp.service.shop.user.message.maConfig.SubscribeMessageConfig;
 import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessage;
 import com.vpu.mp.service.shop.user.message.maConfig.WxMaSubscribeMessageData;
@@ -191,6 +196,9 @@ public class SubscribeMessageService extends ShopBaseService {
 		if(postData==null) {
 			return false;
 		}
+		//进行要发送数据的格式校验 
+		verification(templateList, templateId, postData);
+		
 		logger().info("开始发送：{}",postData.toJson());
 		WxOpenResult sendResult = open.getMaExtService().sendTemplate(getMaAppId(),postData);
 		boolean success = sendResult.isSuccess();
@@ -507,4 +515,285 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		return true;
 	}
+	
+	/**
+	 * 对数据的格式进行校验并修改
+	 * @param templateList
+	 * @param templateId
+	 * @param postData
+	 */
+	public void verification(WxOpenMaSubScribeGetTemplateListResult templateLists,String templateId,WxMaSubscribeMessage postData) {
+		logger().info("进入格式校验");
+		List<WxOpenSubscribeTemplate> templateList = templateLists.getData();
+		String content = null;
+		for (WxOpenSubscribeTemplate wxOpenSubscribeTemplate : templateList) {
+			if(wxOpenSubscribeTemplate.getPriTmplId().equals(templateId)) {
+				content=wxOpenSubscribeTemplate.getContent();
+				break;
+			}
+		}
+		String[] contents = content.split("\n");
+		List<String> list=new ArrayList<String>();
+		for (String string : contents) {
+			String[] split = string.split(":");
+			list.add(split[0]);
+		}
+		thingRule(postData.getData(),list);
+		logger().info("出格式校验");
+	}
+	
+	/**
+	 * 对数据切割，目前没啥用
+	 * @param content
+	 * @return
+	 */
+	private List<String> toGetRuleKey(String content){
+		List<String> list=new ArrayList<String>();
+		if(content==null) {
+			return list;
+		}
+		String key="\n";
+		String[] split = content.split(key);
+		for (String string : split) {
+			int indexOf = string.indexOf("{{");
+			String substring = string.substring(indexOf+2, string.length()-7);
+			String str2=null;
+			for (int i = 0; i < substring.length(); i++) {
+				//防止末尾数字大于两位，直接判断数字第一次出现位置进行裁切
+				if(substring.charAt(i)>=48 && substring.charAt(i)<=57){
+					str2 = substring.substring(0,i);
+					break;
+				}
+			}
+			list.add(str2);
+		}
+		return list;
+	}
+	
+	public void ruleCheck(List<String> ruleKeys,List<WxMaSubscribeMessageData> data) {
+		for (int i = 0; i < ruleKeys.size(); i++) {
+			
+		}
+		
+	}
+	
+	private void thingRule(List<WxMaSubscribeMessageData> data,List<String> contentList) {
+		for (int i = 0; i < data.size(); i++) {
+			String name = data.get(i).getName();
+			name = clearNum(name);
+			String content = contentList.get(i);
+			String value = data.get(i).getValue();
+			String check = toCheck(name, value,content);
+			data.get(i).setValue(check);
+		}
+
+	}
+	/**
+	 * 具体根据类型校验
+	 * @param name
+	 * @param value
+	 * @return
+	 */
+	private String toCheck(String name, String value,String content) {
+		String targValue = " ";
+		switch (name) {
+		case RuleKey.THING:
+			value = subLimit(name,value, 20);
+			break;
+		case RuleKey.NUMBER:
+			value = subLimit(name,value, 32);
+			if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.LETTER:
+			value = subLimit(name,value, 32);
+			if (!Pattern.matches(RuleKey.LETTER_PATTERN, value)) {
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.SYMBOL:
+			value = subLimit(name,value, 5);
+			value = specialSymbol(value,false);
+			break;
+		case RuleKey.CHARACTER_STRING:
+			value = subLimit(name,value, 32);
+			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+				//包含中文
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.TIME:
+			boolean specialDate = specialDate(value, DateUtil.DATE_FORMAT_FULL);
+			if(!specialDate) {
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.DATE:
+			boolean specialDate1 = specialDate(value, DateUtil.DATE_FORMAT_FULL);
+			boolean specialDate2 = specialDate(value, DateUtil.DATE_FORMAT_SIMPLE);
+			if(!specialDate1&&!specialDate2) {
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.AMOUNT:
+			int yuan = value.indexOf("元");
+			if(yuan>0) {
+				value = subLimit(name,value,yuan);
+				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+					value = toReturnAnLog(name, value,targValue);
+				}
+			}else {
+				if (!Pattern.matches(RuleKey.NUMBER_PATTERN, value)) {
+					value = toReturnAnLog(name, value,targValue);
+				}
+			}
+			break;
+		case RuleKey.PHONE_NUMBER:
+			value = subLimit(name,value,17);
+			if (Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+				//包含中文
+				value = toReturnAnLog(name, value,targValue);
+			}
+			if (Pattern.matches(RuleKey.HAVEENGILSH_PATTERN, value)) {
+				//包含英文
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.CAR_NUMBER:
+			if (!Pattern.matches(RuleKey.CAR_NUMBER_PATTERN, value)) {
+				value = toReturnAnLog(name, value,targValue);
+			}
+			break;
+		case RuleKey.NAME:
+			if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
+				//有数字
+				value="店铺活动";
+				if(content.equals("活动名称")) {
+					value = toReturnAnLog(name, value,"店铺活动");
+				}
+				if(content.equals("奖品名称")) {
+					value = toReturnAnLog(name, value,"店铺奖品");
+				}
+				logger().info("最后：{}",value);
+				break;
+			}
+			if (!Pattern.matches(RuleKey.CHARACTER_STRING_PATTERN, value)) {
+				//不包含中文
+				value = subLimit(name,value,20);
+			}else {
+				value = subLimit(name,value,10);
+			}
+			break;
+		case RuleKey.PHRASE:
+			if (!Pattern.matches(RuleKey.PHRASE_PATTERN, value)) {
+				//包含非中文
+				logger().info("类型：{}，校验不通过，原来值：{}",name,value);
+				StringBuilder builder=new StringBuilder();
+				for (int i = 0; i < value.length(); i++) {
+					if(isChineseChar(value.charAt(i))) {
+						builder.append(value.charAt(i));
+					}
+				}
+				value=builder.toString();
+				logger().info("类型：{}，校验不通过，新值：{}",name,value);
+			}
+			break;
+		default:
+			break;
+		}
+		return value;
+	}
+
+	/**
+	 * 类型校验不通过的log
+	 * @param name       thing之类
+	 * @param value      原来的值
+	 * @param targValue  要变成的值
+	 * @return
+	 */
+	private String toReturnAnLog(String name, String value,String targValue) {
+		logger().info("类型：{}，校验不通过，原来值：{}",name,value);
+		value=targValue;
+		logger().info("类型：{}，校验不通过，新值：{}",name,value);
+		return value;
+	}
+	
+	/**
+	 * 对末尾的数字类型进行处理
+	 * @param name
+	 * @return
+	 */
+	private String clearNum(String name) {
+		for (int i = 0; i < name.length(); i++) {
+			// 防止末尾数字大于两位，直接判断数字第一次出现位置进行裁切
+			if (name.charAt(i) >= 48 && name.charAt(i) <= 57) {
+				name = name.substring(0, i);
+				break;
+			}
+		}
+		return name;
+	}
+	
+	/**
+	 * 长度的截取
+	 * @param value
+	 * @param num
+	 * @return
+	 */
+	private String subLimit(String name,String value,int num) {
+		if (value.length() > num) {
+			logger().info("类型：{}，原来值：{}；长度要求:{}",name,value,num);
+			value = value.substring(0, num);
+			logger().info("类型：{}，长度要求:{}，新值：{}；",name,num,value);
+		}
+		return value;
+	}
+	
+	/**
+	 * 对时间样式的校验
+	 * @param value
+	 * @param type
+	 * @return
+	 */
+	private  boolean  specialDate(String value,String type) {
+		try {
+			LocalDate parse = LocalDate.parse(value, DateTimeFormatter.ofPattern(type));
+		} catch (Exception e) {
+			//打log
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @param flag  true:返回为去掉特殊符号的值；false：返回值为特殊符号的值
+	 * @return
+	 */
+	private String specialSymbol(String value,boolean flag) {
+		StringBuilder builder=new StringBuilder();
+		for (int i = 0; i < value.length(); i++) {
+			if(flag) {
+				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))<0) {
+					builder.append(value.charAt(i));
+				}				
+			}else {
+				if(RuleKey.SYMBOL_CHARACTERSTR.indexOf(value.charAt(i))>=0) {
+					builder.append(value.charAt(i));
+				}
+			}
+		}
+		value=builder.toString();
+		return value;
+	}
+	
+    public boolean isChineseChar(char c) {
+        try {
+            return String.valueOf(c).getBytes("UTF-8").length > 1;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

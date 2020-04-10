@@ -166,7 +166,7 @@ public class AdminTestController extends AdminBaseController {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
 				.page(null).shopId(adminAuth.user().getLoginShopId())
 				.userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
 		String[][] data3 = new String[][] { { "金色传说测试" }, { "传说" }, { Util.getdate("yyyy-MM-dd HH:mm:ss")}};
 		return success();
@@ -195,7 +195,7 @@ public class AdminTestController extends AdminBaseController {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.DRAW_RESULT).data(data).build())
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(mpData).build())
 				.page(page).shopId(adminAuth.user().getLoginShopId()).userIdList(arrayList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		//想混合发RabbitParamConstant选小程序的
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(),
 				adminAuth.user().getLoginShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());

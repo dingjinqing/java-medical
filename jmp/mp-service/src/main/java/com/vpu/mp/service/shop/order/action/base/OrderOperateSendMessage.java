@@ -72,14 +72,16 @@ public class OrderOperateSendMessage extends ShopBaseService {
         ExpressVo expressVo = express.get(order.getShippingId());
         String shippingName = expressVo == null ? "other" : expressVo.getShippingName();
         //小程序数据
-        String[][] maData = new String[][] { { goodsName }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, { order.getCompleteAddress() }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
+        String[][] maData = new String[][] { { goodsName }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }};
+        String[][] maData2 = new String[][] { { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, { order.getCompleteAddress() }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
+        String[][] maData3 = new String[][] { { goodsName }, { order.getShippingNo() }};
+
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SEND)) {
             mpData = new String[][] { { "亲，宝贝已经启程了，好想快点来到你身边" }, { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, {StringUtils.EMPTY}};
         }
-        String[][] maData2 = new String[][] { { order.getOrderSn() }, { shippingName }, { order.getShippingNo() }, { order.getCompleteAddress() }, { Util.getdate(DateUtil.DATE_FORMAT_FULL) }};
-        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).build();
+        MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData2).data786(maData3).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(buildData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())
@@ -117,7 +119,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
-                mpData = new String[][] { { "退款" }, { returnOrder.getReasonDesc() }, { money }, { StringUtils.EMPTY }};
+                mpData = new String[][] { { "退款成功" }, { OrderConstant.getReturnReasonDesc(returnOrder.getReasonType() == null ? null : returnOrder.getReasonType().intValue()) }, { money }, { StringUtils.EMPTY }};
             }
             //参数
             MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).build();
