@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
@@ -196,5 +197,10 @@ public class CardParam {
 	 * 续费功能
 	 */
 	private CardRenew cardRenew;
+	
+	/**
+	 * 卡的自定义激活项
+	 */
+	private CardCustomAction customAction;
 	
 }
