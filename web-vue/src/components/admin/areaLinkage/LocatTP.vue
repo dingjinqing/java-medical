@@ -52,7 +52,7 @@
                     @click="showInner(scope,city.cityId)"
                   >
                     {{city.cityName}}<span
-                      v-if="innerObj[city.cityId]!==undefined&&innerObj[city.cityId]!==null&&innerObj[city.cityId]!==0&&innerObj[city]"
+                      v-if="innerObj[city.cityId]!==undefined&&innerObj[city.cityId]!==null&&innerObj[city.cityId]!==0"
                       style="color: crimson"
                     >({{innerObj[city.cityId]}})</span>
                   </el-button>

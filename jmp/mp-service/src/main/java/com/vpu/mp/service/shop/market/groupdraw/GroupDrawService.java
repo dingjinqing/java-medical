@@ -1193,7 +1193,7 @@ public class GroupDrawService extends ShopBaseService {
 						MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(data).build())
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(mpData).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList)
-				.type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+				.type(RabbitParamConstant.Type.SUCCESS_TEAM).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
 	}

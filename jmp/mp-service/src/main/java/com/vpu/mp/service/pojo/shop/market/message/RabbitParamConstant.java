@@ -76,8 +76,14 @@ public class RabbitParamConstant {
          * 赋值范围:4001开始
          * eg. public static final Integer ONLY_MA_ = 4001;
          */
+        /** 拼团抽奖结果通知 */
+        public static final Integer INVITE_SUCCESS_GROUPBUY = 4002;
+        
+        /** 好友助力邀请成功通知 */
+        public static final Integer INVITE_SUCCESS_FRIEND_PROMOTE = 4003;
 
-
+        /** 砍价成功通知 */
+        public static final Integer INVITE_SUCCESS_BARGAIN = 4004;
 
 
 
@@ -96,7 +102,7 @@ public class RabbitParamConstant {
         /**
          * 小程序订阅消息，小程序请以2开头。切大于2000 否则发不出去
          */
-        public static final Integer MA_SUBSCRIBEMESSAGE_TYPE=2001;
+//        public static final Integer MA_SUBSCRIBEMESSAGE_TYPE=2001;
 
         /**
          *微信公众号模板消息类型,用户没有使用过小程序，比如扫公众号二维码

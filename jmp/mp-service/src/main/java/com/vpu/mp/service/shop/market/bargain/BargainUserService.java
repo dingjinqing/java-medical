@@ -397,7 +397,7 @@ public class BargainUserService extends ShopBaseService{
                 MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
             .page(null).shopId(getShopId())
             .userIdList(arrayList)
-            .type(RabbitParamConstant.Type.MA_SUBSCRIBEMESSAGE_TYPE).build();
+            .type(RabbitParamConstant.Type.INVITE_SUCCESS_BARGAIN).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
     }
 
