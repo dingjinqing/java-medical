@@ -138,7 +138,7 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <span>此操作将批量伟所有小程序客户上传模板版本{{this.upTemplateId}}并提交审核，是否确认此操作</span>
+      <span>此操作将批量将所有小程序客户上传模板版本{{this.upTemplateId}}并提交审核，是否确认此操作</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -282,10 +282,10 @@ export default {
             this.defaluteData()
           }
         })
+        this.$router.push({
+          name: 'backgroundTaskList'
+        })
       }
-      this.$router.push({
-        name: 'backgroundTaskList'
-      })
       this.dialogVisible = false
     }
   }
