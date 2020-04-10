@@ -46,7 +46,15 @@ export const cn = {
     priceIsWrong: ' 价格填写错误',
     goodsNumIsWrong: ' 库存写错误',
     goodsWeightIsNull: '请填写商品重量',
-    goodsPrdWeightIsNull: '请填写商品规格重量'
+    goodsPrdWeightIsNull: '请填写商品规格重量',
+    goodsPrdCodesInnerRepeated: '商品条码内部重复',
+    goodsPrdCodesExist: '商品条码已存在',
+    goodsNumberWrong: '商品库存填写错误',
+    goodsPriceWrong: '商品价格填写错误',
+    costPriceWrong: '成本价格填写错误',
+    memberPriceIsNull: '会员价不可为空',
+    memberPriceIsLarger: '会员价可不高于商品原价',
+    limitPriceIsWrong: '最小限购数量不可大于最大限购数量'
   },
   basicInfo: {
     title: '基本信息',
@@ -141,7 +149,7 @@ export const cn = {
     goodsGradeMemberSetting: '会员价设置：',
     prdPrice: '规格价格(元)',
     goodsPrice: '商品价格(元)',
-    unifyMemberPrice: 'Unify Member Price'
+    unifyMemberPrice: '统一会员价'
   },
   stockAndPriceInfoOther: {
     limitBuyNum: '最小限购数量：',
@@ -153,7 +161,8 @@ export const cn = {
     baseSale: '初始销量：',
     baseSaleSetting:
       '设置后，您的用户看到的销量=初始销量+下单量，初始销量不计入统计。',
-    goodsPrdSn: '商品规格编码：'
+    goodsPrdSn: '商品规格编码：',
+    prdCodes: '商品条码：'
   },
   deliverAndOtherInfo: {
     title: '配送信息',

@@ -46,7 +46,15 @@ export const en = {
     priceIsWrong: ' price is wrong',
     goodsNumIsWrong: ' goods number is wrong',
     goodsWeightIsNull: 'goods weight is null',
-    goodsPrdWeightIsNull: 'goods prd weight is null'
+    goodsPrdWeightIsNull: 'goods prd weight is null',
+    goodsPrdCodesInnerRepeated: 'goods prd codes inner repeated',
+    goodsPrdCodesExist: 'goods prd codes exist',
+    goodsNumberWrong: 'goods number is wrong',
+    goodsPriceWrong: 'goods price is wrong',
+    costPriceWrong: 'cost price is wrong',
+    memberPriceIsNull: 'member price is null',
+    memberPriceIsLarger: 'member price is lager than goods price',
+    limitPriceIsWrong: 'limit price is larger than max price'
   },
   basicInfo: {
     title: 'basicinfo',
@@ -157,7 +165,8 @@ export const en = {
     baseSale: 'Initial sales：',
     baseSaleSetting:
       'After setting, the sales volume seen by your user = initial sales volume + order quantity, the initial sales volume is not counted into the statistics.',
-    goodsPrdSn: 'Goods SKU SN：'
+    goodsPrdSn: 'Goods SKU SN：',
+    prdCodes: 'Prd Codes：'
   },
   deliverAndOtherInfo: {
     title: 'Deliver info',
