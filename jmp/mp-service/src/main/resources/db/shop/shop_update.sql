@@ -303,6 +303,9 @@ ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是
 ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
 -- 商品表添加直播间id字段
 ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
 /*********************2.11*************************END*/
 
 

@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
  * @Date: 2019年11月1日
  * @Description:
  */
+
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
 	
@@ -457,7 +458,15 @@ public class MemberCardRecordBuilder {
 		return this;
 	}
 
+	public MemberCardRecordBuilder customOptions (String customOptions) {
+		if(customOptions != null){
+			record.setCustomOptions(customOptions);
+		}
+		return this;
+	}
+
 	public MemberCardRecord build() {
 		return record;
 	}
 }
+

@@ -7,8 +7,10 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
@@ -90,6 +92,11 @@ public class NormalCardVo extends BaseCardVo {
 	 */
 	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
 	protected CardCustomRights cardCustomRights;
+	
+	/**
+	 * 自定义激活项
+	 */
+	protected List<CardCustomAction> customAction;
 
 	/**
 	 * 设置开关及是否过期
