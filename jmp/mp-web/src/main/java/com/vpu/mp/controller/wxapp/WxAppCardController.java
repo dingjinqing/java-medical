@@ -2,6 +2,8 @@ package com.vpu.mp.controller.wxapp;
 
 
 import com.vpu.mp.service.pojo.shop.member.account.*;
+import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
+import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -183,4 +185,25 @@ public class WxAppCardController extends WxAppBaseController {
         UserCardParam res = shop().userCard.cardRenew(param);
         return success(res);
     }
+
+	/**
+	 * 购买会员卡结算
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/card/buy/clearing")
+	public JsonResult toBuyCardClearing(CardBuyClearingParam param){
+		WxAppSessionUser user = wxAppAuth.user();
+		param.setUserId(user.getUserId());
+		shop().userCard.toBuyCardClearing(param);
+		return success();
+	}
+
+	/**
+	 * 购买会员卡支付
+	 * @return
+	 */
+	@PostMapping("/api/wxapp/card/buy/pay")
+	public JsonResult toBuyCard(){
+    return success();
+	}
 }

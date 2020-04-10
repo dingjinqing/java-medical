@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.member;
 
 import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
@@ -2071,5 +2073,14 @@ public class UserCardService extends ShopBaseService {
 
     }
 
+	/**
+	 * 购买结算
+	 * @param param
+	 */
+	public void toBuyCardClearing(CardBuyClearingParam param) {
+		ShopRecord shop = saas.shop.getShopById(this.getShopId());
+		String logo = shop.getLogo();
+
+	}
 }
 

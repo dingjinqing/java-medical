@@ -63,6 +63,10 @@ public class PreSaleVo  {
     private String shareImg;
     /** 活动状态 **/
     private Byte status;
+    /** 预告时间 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数*/
+    private Integer preTime;
+    /**优先级*/
+    private Integer first;
 
     @JsonIgnore
     private Integer saleNumber;
