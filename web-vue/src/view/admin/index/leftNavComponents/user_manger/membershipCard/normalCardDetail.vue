@@ -256,6 +256,7 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
       },
       sampleCardData: {
@@ -641,6 +642,7 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction,
         'freeship': this.freeship,
         'cardRenew': this.cardRenew,
         'customRights': this.customRights

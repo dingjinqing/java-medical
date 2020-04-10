@@ -45,7 +45,7 @@
               <el-checkbox label="address">{{ $t('memberCard.address') }}</el-checkbox>
             </el-checkbox-group>
           </div>
-          <my-action/>
+          <my-action :myData.sync="val.customAction"/>
           <div class="active-bottom">
             <div class="exmine-tip">{{ $t('memberCard.isactiveInfo') }}</div>
             <el-radio
@@ -75,7 +75,8 @@ export default {
         return {
           activation: '0',
           activationCfgBox: [],
-          examine: '0'
+          examine: '0',
+          customAction: []
         }
       }
     }
@@ -88,9 +89,11 @@ export default {
   computed: {
     ruleForm: {
       get () {
+        debugger
         return this.val
       },
       set () {
+        debugger
         if (this.ruleForm.activationCfgBox.length > 0 || this.ruleForm.activation === '0') {
           this.activeError = false
         }

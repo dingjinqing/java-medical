@@ -179,6 +179,7 @@ $container-height: 263px;
     .ruleTitle{
       display: flex;
       flex-direction: row;
+      align-items: center;
     }
     .left-title{
         display: inline-block;
