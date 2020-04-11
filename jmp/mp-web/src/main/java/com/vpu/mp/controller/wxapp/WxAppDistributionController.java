@@ -41,7 +41,7 @@ public class WxAppDistributionController extends WxAppBaseController{
         ActivationInfoVo activationInfo = shop().mpDistribution.getActivationInfo(userId,getLang());
         return this.success(activationInfo);
     }
-	
+
 	/**
 	 * 用户申请成为分销员接口
 	 * @param param
@@ -104,10 +104,15 @@ public class WxAppDistributionController extends WxAppBaseController{
         return this.success(inviteList);
     }
 
+    /**
+     * 分销员邀请用户返利订单列表
+     * @param param
+     * @return
+     */
     @PostMapping("rebateOrder")
-    public JsonResult rebateOrderList(){
-        shop().mpDistribution.rebateOrder();
-        return this.success();
+    public JsonResult rebateOrderList(@RequestBody RebateOrderParam param){
+        PageResult<RebateOrderVo> rebateOrderVo = shop().mpDistribution.rebateOrder(param);
+        return this.success(rebateOrderVo);
     }
 
     //分销改价相关
