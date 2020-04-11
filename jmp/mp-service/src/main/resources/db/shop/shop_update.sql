@@ -306,6 +306,24 @@ ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 -- 2020年04月10日 添加自定义激活配置
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
+--2020-04-10 分裂优惠券分享领取记录
+CREATE TABLE `b2c_division_receive_record` (
+  `id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `user` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享的user_id',
+  `user_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享后领取的user_id',
+  `coupon_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分裂优惠券id 对应优惠券表中id',
+  `coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '分裂优惠券的sn唯一标识',
+  `receive_num` int(11) NOT NULL DEFAULT '0' COMMENT '可领取个数',
+  `receive_per_num` smallint(3) NOT NULL DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制',
+  `source` tinyint(2) DEFAULT NULL COMMENT '送券活动来源',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '打折或减价量',
+  `receive_coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '领取的sn唯一标识',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0主分裂优惠券 1 点击链接领取的',
+  `is_share` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未分享 1分享',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '领取时间',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+);
 /*********************2.11*************************END*/
 
 
