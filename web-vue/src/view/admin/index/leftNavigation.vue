@@ -528,6 +528,13 @@ export default {
             flag: false
           },
           {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/store_authority.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_authority_h.png',
+            span: '',
+            name: 'store_permission',
+            flag: true
+          },
+          {
             imgUrl: this.$imageHost + '/image/admin/icon_left/store_announce.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/store_announce_h.png',
             span: '',

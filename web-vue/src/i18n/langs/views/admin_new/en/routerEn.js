@@ -550,5 +550,7 @@ export const en = {
   // 门店公告
   store_announcement: ['Store Management', 'Store Announcement'],
   // 门店公告 添加公告
-  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement']
+  store_announcement_add: ['Store Management', 'Store Announcement', 'Add announcement'],
+  // 门店权限
+  store_permission: ['Store Management', 'Store permissions']
 }

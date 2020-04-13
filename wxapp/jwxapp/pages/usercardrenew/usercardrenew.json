@@ -1,5 +1,8 @@
 {
   "usingComponents": {
-    "v-poster": "/components/item/popup/poster/index"
+    "v-poster": "/components/item/popup/poster/index",
+    "v-select_card_dialog": "/components/popup/select_card_dialog/index",
+    "v-pay_card_balance_dialog": "/components/popup/pay_card_balance_dialog/index",
+    "v-pay_balance_dialog": "/components/popup/pay_balance_dialog/index"
   }
 }

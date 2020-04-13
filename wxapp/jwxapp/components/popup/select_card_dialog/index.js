@@ -6,8 +6,8 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    memberCardList:Array,
-    defaultMemberCardNo:String
+    memberCardList: Array,
+    defaultMemberCardNo: String
   },
 
   /**
@@ -21,20 +21,20 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
-    init(){
-      console.log(this.data.defaultMemberCardNo)
-     let cardList =  this.data.memberCardList.map(item=>{
+    init () {
+      console.log(this.data.defaultMemberCardNo, this.data.memberCardList)
+      let cardList = this.data.memberCardList.map(item => {
         let cardItem = JSON.parse(JSON.stringify(item))
         cardItem.cardBgStyle = this.getCardBg(cardItem);
         cardItem.cardExpireTime = this.getCardExpireTime(cardItem)
         cardItem.isChecked = (this.data.defaultMemberCardNo && cardItem.cardNo === this.data.defaultMemberCardNo)
         return cardItem
-     })
-     this.setData({
-       cardList
-     })
+      })
+      this.setData({
+        cardList
+      })
     },
-    getCardBg(cardItem) {
+    getCardBg (cardItem) {
       console.log(cardItem);
       switch (cardItem.bgType) {
         case 0:
@@ -44,22 +44,22 @@ global.wxComponent({
       }
     },
     // 获取会员卡过期时间
-    getCardExpireTime(cardItem) {
+    getCardExpireTime (cardItem) {
       if (cardItem.cardType === 2) return null
       if (cardItem.expireType === 2) return `永久有效`
       if (cardItem.expire === 1) return `此卡已过期，如需继续使用请联系商家`
       return `${cardItem.startDate} 至 ${cardItem.endDate}`
     },
-    selectCard(e){
+    selectCard (e) {
       let idx = e.currentTarget.dataset.index
-      if (this.data.cardList[idx].isChecked === true){
+      if (this.data.cardList[idx].isChecked === true) {
         let target = `cardList[${idx}].isChecked`
         this.setData({
-          [target]:false
+          [target]: false
         })
       } else {
-        let oldTargetIdx = this.data.cardList.findIndex(item=>item.isChecked === true)
-        if (oldTargetIdx !== -1){
+        let oldTargetIdx = this.data.cardList.findIndex(item => item.isChecked === true)
+        if (oldTargetIdx !== -1) {
           this.setData({
             [`cardList[${oldTargetIdx}].isChecked`]: false,
           })
@@ -69,10 +69,11 @@ global.wxComponent({
         })
       }
     },
-    confirm(){
-      let target = this.data.cardList.find(item=>item.isChecked === true)
+    confirm () {
+      let target = this.data.cardList.find(item => item.isChecked === true)
       this.bindClose()
-      if (!target) {this.triggerEvent('confirm', null); return}
+      if (!target) { this.triggerEvent('confirm', null); return }
+      console.log(target)
       this.triggerEvent('confirm', target.cardNo)
     }
   },

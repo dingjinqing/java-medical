@@ -69,12 +69,14 @@ public class StoreManageService extends MainBaseService {
 			}
 			List<Sub> sub = list.get(i).getSub();
 			Byte hasSubCheck = StoreConstant.CHECK_ZERO;
+			list.get(i).setCheck(hasSubCheck);
 			if (sub != null && sub.size() > 0) {
 				for (int j = 0; j < sub.size(); j++) {
 					if (sub.get(j).getIsOnly().equals(StoreConstant.ISONLY_TWO)) {
 						sub.remove(j--);
 						continue;
 					}
+					sub.get(j).setCheck(StoreConstant.CHECK_ZERO);
 					if (cfgInfo != null && cfgInfo.getSubMenuCfg().size() > 0
 							&& inList(sub.get(j).getEnName(), cfgInfo.getSubMenuCfg())) {
 						sub.get(j).setCheck(StoreConstant.CHECK_ONE);

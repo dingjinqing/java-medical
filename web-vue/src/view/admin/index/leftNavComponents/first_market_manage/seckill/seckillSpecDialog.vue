@@ -17,60 +17,54 @@
             'text-align':'center'
           }"
     >
-        <el-table-column
-          prop="prdDesc"
-          label="规格名称"
-        ></el-table-column>
-        <el-table-column
-          prop="prdPrice"
-          label="原价"
-        ></el-table-column>
-        <el-table-column
-          label="秒杀价"
-        >
+      <el-table-column
+        prop="prdDesc"
+        label="规格名称"
+      ></el-table-column>
+      <el-table-column
+        prop="prdPrice"
+        label="原价"
+      ></el-table-column>
+      <el-table-column label="秒杀价">
         <template slot-scope="scope">
-            <el-input
-              v-model="scope.row.secKillPrice"
-              :disabled="isEdit"
-              size="small"
-              class="small_input"
-            ></el-input>
+          <el-input
+            v-model="scope.row.secKillPrice"
+            size="small"
+            class="small_input"
+          ></el-input>
         </template>
-        </el-table-column>
-        <el-table-column
-          prop="prdNumber"
-          label="规格库存"
-        >
-        </el-table-column>
-        <el-table-column
-          label="秒杀库存"
-        >
+      </el-table-column>
+      <el-table-column
+        prop="prdNumber"
+        label="规格库存"
+      >
+      </el-table-column>
+      <el-table-column label="秒杀库存">
         <template slot-scope="scope">
-            <el-input
-                v-model="scope.row.stock"
-                :disabled="isEdit"
-                size="small"
-                class="small_input"
-            ></el-input>
-            </template>
-        </el-table-column>
-        <!-- <el-table-column
+          <el-input
+            v-model="scope.row.stock"
+            :disabled="isEdit"
+            size="small"
+            class="small_input"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
           label="已售数量"
           v-if="isEdit"
         ></el-table-column> -->
-        <el-table-column
-          v-if="isEdit"
-          label="剩余秒杀库存"
-        >
+      <el-table-column
+        v-if="isEdit"
+        label="剩余秒杀库存"
+      >
         <template slot-scope="scope">
-            <el-input
-                v-model="scope.row.stock"
-                :disabled="isEdit"
-                size="small"
-                class="small_input"
-            ></el-input>
+          <el-input
+            v-model="scope.row.stock"
+            size="small"
+            class="small_input"
+          ></el-input>
         </template>
-        </el-table-column>
+      </el-table-column>
     </el-table>
     <div
       slot="footer"
@@ -129,10 +123,8 @@ export default {
     },
     confrim () {
       if (!this.checkInput()) return
-      console.log(this.isEdit)
-      if (!this.isEdit) {
-        this.$emit('confrim', {goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct})
-      }
+      this.$emit('confrim', { goodsId: this.productInfo.goodsId, prdInfo: this.secKillProduct })
+
       this.productShow = false
     },
     checkInput () {

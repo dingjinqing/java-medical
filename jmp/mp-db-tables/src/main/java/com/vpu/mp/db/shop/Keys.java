@@ -40,6 +40,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // IDENTITY definitions
     // -------------------------------------------------------------------------
+    public static final Identity<DivisionReceiveRecordRecord, Integer> IDENTITY_DIVISION_RECEIVE_RECORD = Identities0.IDENTITY_DIVISION_RECEIVE_RECORD;
+    public static final Identity<CardOrderRecord, Integer> IDENTITY_CARD_ORDER = Identities0.IDENTITY_CARD_ORDER;
     public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = UniqueKeys0.KEY_B2C_PLEDGE_RELATED_PRIMARY;
     public static final Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Identities0.IDENTITY_PLEDGE_RELATED;
     public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = UniqueKeys0.KEY_B2C_SEARCH_HISTORY_PRIMARY;
@@ -273,6 +275,8 @@ public class Keys {
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
+    public static final UniqueKey<DivisionReceiveRecordRecord> KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY;
+    public static final UniqueKey<CardOrderRecord> KEY_B2C_CARD_ORDER_PRIMARY = UniqueKeys0.KEY_B2C_CARD_ORDER_PRIMARY;
     public static final UniqueKey<UserCardRecord> KEY_B2C_USER_CARD_PRIMARY = UniqueKeys0.KEY_B2C_USER_CARD_PRIMARY;
     public static final UniqueKey<PrizeRecordRecord> KEY_B2C_PRIZE_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_PRIZE_RECORD_PRIMARY;
     public static final UniqueKey<PayAwardPrizeRecord> KEY_B2C_PAY_AWARD_PRIZE_PRIMARY = UniqueKeys0.KEY_B2C_PAY_AWARD_PRIZE_PRIMARY;
@@ -537,6 +541,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<DivisionReceiveRecordRecord, Integer> IDENTITY_DIVISION_RECEIVE_RECORD = Internal.createIdentity(DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.ID);
+        public static Identity<CardOrderRecord, Integer> IDENTITY_CARD_ORDER = Internal.createIdentity(CardOrder.CARD_ORDER, CardOrder.CARD_ORDER.ORDER_ID);
         public static Identity<PledgeRelatedRecord, Integer> IDENTITY_PLEDGE_RELATED = Internal.createIdentity(PledgeRelated.PLEDGE_RELATED, PledgeRelated.PLEDGE_RELATED.ID);
         public static Identity<SearchHistoryRecord, Integer> IDENTITY_SEARCH_HISTORY = Internal.createIdentity(SearchHistory.SEARCH_HISTORY, SearchHistory.SEARCH_HISTORY.ID);
         public static Identity<MpSceneRecordRecord, Integer> IDENTITY_MP_SCENE_RECORD = Internal.createIdentity(MpSceneRecord.MP_SCENE_RECORD, MpSceneRecord.MP_SCENE_RECORD.ID);
@@ -764,6 +770,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<DivisionReceiveRecordRecord> KEY_B2C_DIVISION_RECEIVE_RECORD_PRIMARY = Internal.createUniqueKey(DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, "KEY_b2c_division_receive_record_PRIMARY", DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.ID);
+        public static final UniqueKey<CardOrderRecord> KEY_B2C_CARD_ORDER_PRIMARY = Internal.createUniqueKey(CardOrder.CARD_ORDER, "KEY_b2c_card_order_PRIMARY", CardOrder.CARD_ORDER.ORDER_ID);
         public static final UniqueKey<PledgeRelatedRecord> KEY_B2C_PLEDGE_RELATED_PRIMARY = Internal.createUniqueKey(PledgeRelated.PLEDGE_RELATED, "KEY_b2c_pledge_related_PRIMARY", PledgeRelated.PLEDGE_RELATED.ID);
         public static final UniqueKey<SearchHistoryRecord> KEY_B2C_SEARCH_HISTORY_PRIMARY = Internal.createUniqueKey(SearchHistory.SEARCH_HISTORY, "KEY_b2c_search_history_PRIMARY", SearchHistory.SEARCH_HISTORY.ID);
         public static final UniqueKey<MpSceneRecordRecord> KEY_B2C_MP_SCENE_RECORD_PRIMARY = Internal.createUniqueKey(MpSceneRecord.MP_SCENE_RECORD, "KEY_b2c_mp_scene_record_PRIMARY", MpSceneRecord.MP_SCENE_RECORD.ID);

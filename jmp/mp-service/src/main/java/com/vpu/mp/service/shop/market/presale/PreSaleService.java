@@ -13,11 +13,13 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
@@ -64,8 +66,8 @@ public class PreSaleService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private QrCodeService qrCode;
-
-
+    @Autowired
+    private GoodsService goodsService;
 
 
 
@@ -371,7 +373,24 @@ public class PreSaleService extends ShopBaseService {
             .leftJoin(GOODS_SPEC_PRODUCT).on(GOODS_SPEC_PRODUCT.PRD_ID.eq(SUB_TABLE.PRODUCT_ID))
             .leftJoin(GOODS).on(GOODS.GOODS_ID.eq(SUB_TABLE.GOODS_ID))
             .where(SUB_TABLE.PRESALE_ID.eq(preSaleId)).fetchInto(ProductVo.class);
+        Map<Integer, List<ProductVo>> goodsProductMap = productVos.stream().collect(Collectors.groupingBy(ProductVo::getGoodsId));
+        List<GoodsView> goodsViews = goodsService.selectGoodsViewList(Util.splitValueToList(preSaleVo.getGoodsId()));
+        Map<Integer, GoodsView> goodsMap = goodsViews.stream().collect(Collectors.toMap(GoodsView::getGoodsId, (a) -> a));
+        List<PreSaleVo.PreSaleGoods> goodsList =new ArrayList<>();
+        goodsProductMap.forEach((k,v)->{
+            GoodsView goodsView = goodsMap.get(k);
+            PreSaleVo.PreSaleGoods groupBuyGoods =new PreSaleVo.PreSaleGoods();
+            groupBuyGoods.setGoodsId(k);
+            groupBuyGoods.setGoodsImg(goodsView.getGoodsImg());
+            groupBuyGoods.setGoodsName(goodsView.getGoodsName());
+            groupBuyGoods.setGoodsNumber(goodsView.getGoodsNumber());
+            groupBuyGoods.setShopPrice(goodsView.getShopPrice());
+            groupBuyGoods.setUnit(goodsView.getUnit());
+            groupBuyGoods.setProductList(v);
+            goodsList.add(groupBuyGoods);
+        });
         preSaleVo.setProducts(productVos);
+        preSaleVo.setGoodsList(goodsList);
         ShareConfig shareConfig = shareConfig(preSaleVo);
         preSaleVo.setShareAction(shareConfig.getShareAction());
         preSaleVo.setShareDoc(shareConfig.getShareDoc());

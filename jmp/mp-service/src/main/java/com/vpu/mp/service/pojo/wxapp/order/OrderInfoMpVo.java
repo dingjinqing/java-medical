@@ -83,4 +83,9 @@ public class OrderInfoMpVo extends OrderListMpVo{
 		this.verifierName = verifierName;
 		this.verifierMobile = verifierMobile;
 	}
+
+    /**
+     * 客服按钮展示开关
+     */
+    private Byte orderDetailService;
 }

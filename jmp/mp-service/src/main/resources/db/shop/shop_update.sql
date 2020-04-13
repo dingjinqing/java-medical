@@ -303,6 +303,78 @@ ALTER TABLE b2c_goods_label add COLUMN is_none TINYINT(1) DEFAULT 0 COMMENT '是
 ALTER TABLE `b2c_order_info` ADD COLUMN `room_id` INT(11) NULL DEFAULT '0' COMMENT '直播间ID';
 -- 商品表添加直播间id字段
 ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
+-- 2020年4月10日kdc   新增会员卡订单表
+CREATE TABLE IF NOT EXISTS `b2c_card_order`
+(
+    `order_id`            int(8)                  NOT NULL AUTO_INCREMENT COMMENT '订单id',
+    `card_id`             int(11)                 NOT NULL DEFAULT '0' COMMENT '会云卡id',
+    `card_no`             varchar(32)             NOT NULL DEFAULT '0' COMMENT '会员卡NO',
+    `order_sn`            varchar(20)             NOT NULL DEFAULT '' COMMENT '订单编号',
+    `user_id`             int(8)                  NOT NULL DEFAULT '0' COMMENT '用户id',
+    `order_status`        tinyint(1)              NOT NULL DEFAULT '0' COMMENT '订单状态',
+    `invoice_id`          int(11)                 NOT NULL DEFAULT '0' COMMENT '发票id',
+    `invoice_detail`      text COMMENT '发票内容：json存储',
+    `add_message`         varchar(191)                     DEFAULT '' COMMENT '客户留言',
+    `pay_code`            varchar(30)                      DEFAULT NULL COMMENT '支付代号',
+    `pay_name`            varchar(120)                     DEFAULT NULL COMMENT '支付名称',
+    `prepay_id`           varchar(191)                     DEFAULT NULL COMMENT '微信支付Id，用于发送模板消息',
+    `pay_sn`              varchar(32)                      DEFAULT NULL COMMENT '支付流水号',
+    `money_paid`          decimal(10, 2)                   DEFAULT '0.00' COMMENT '订单应付金额',
+    `use_account`         decimal(10, 2)                   DEFAULT '0.00' COMMENT '用户消费余额',
+    `use_score`           decimal(10, 2)                   DEFAULT '0.00' COMMENT '用户消费余额',
+    `order_amount`        decimal(10, 2)                   DEFAULT '0.00' COMMENT '订单总金额',
+    `add_time`            timestamp               NULL     DEFAULT CURRENT_TIMESTAMP COMMENT '订单提交时间',
+    `pay_time`            timestamp               NULL     DEFAULT NULL COMMENT '支付时间',
+    `seller_remark`       varchar(512)                     DEFAULT '' COMMENT '卖家备注',
+    `star_flag`           tinyint(1)                       DEFAULT '0' COMMENT '标星订单：0 未标星 1 标星',
+    `del_flag`            tinyint(1)                       DEFAULT '0' COMMENT '删除',
+    `ali_trade_no`        varchar(60)                      DEFAULT '' COMMENT '支付宝交易单号',
+    `order_status_name`   varchar(32)             NOT NULL DEFAULT '' COMMENT '订单状态名称',
+    `return_flag`         tinyint(1)                       DEFAULT '0' COMMENT '0:未申请退款，1：退款失败，2：退款成功',
+    `return_score`        decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '积分抵扣金额',
+    `return_account`      decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '退款余额',
+    `return_money`        decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '退款余额',
+    `return_time`         timestamp               NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
+    `order_action`        tinyint(4)                       DEFAULT '1' COMMENT '订单类型：1 会员卡订单 2 优惠券订单',
+    `member_card_balance` decimal(10, 2)                   DEFAULT '0.00' COMMENT '会员卡消费',
+    `return_card_balance` decimal(10, 2)                   DEFAULT '0.00' COMMENT '会员卡退款',
+    `still_send_flag`     tinyint(1)                       DEFAULT '1' COMMENT '退款完成厚是否继续发放优惠券（优惠礼包订单） 1：继续发放，0：停止发放',
+    `score_proportion`    int(9)                           DEFAULT '100' COMMENT '积分比例',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`order_id`)
+) COMMENT ='会员卡订单表';
+
+-- 2020年04月10日 添加自定义激活配置
+ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
+
+-- 2020-04-10 分裂优惠券分享领取记录
+CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
+  `id` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `user` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享的user_id',
+  `user_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享后领取的user_id',
+  `coupon_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分裂优惠券id 对应优惠券表中id',
+  `coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '分裂优惠券的sn唯一标识',
+  `receive_num` int(11) NOT NULL DEFAULT '0' COMMENT '可领取个数',
+  `receive_per_num` smallint(3) NOT NULL DEFAULT '0' COMMENT '分裂优惠券领券人数是否限制 0不限制 1限制',
+  `source` tinyint(2) DEFAULT NULL COMMENT '送券活动来源',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '打折或减价量',
+  `receive_coupon_sn` varchar(60) NOT NULL DEFAULT '' COMMENT '领取的sn唯一标识',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0主分裂优惠券 1 点击链接领取的',
+  `is_share` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未分享 1分享',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '领取时间',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+);
+-- 2020年4月13日 增加分裂优惠券是否可用
+ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `division_enabled` tinyint(1) NOT NULL  DEFAULT 0 COMMENT '是否可用,0可用 1不可用(只适用分裂优惠券)';
+
+-- 2020年04月13日 添加自定义激活信息
+ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
+
 /*********************2.11*************************END*/
 
 

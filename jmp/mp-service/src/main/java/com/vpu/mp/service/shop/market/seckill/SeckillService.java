@@ -245,7 +245,23 @@ public class SeckillService extends ShopBaseService{
             }
             record.setShareConfig(Util.toJson(param.getShareConfig()));
         }
-        db().executeUpdate(record);
+        transaction(()->{
+            int totalStock = 0;
+            for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
+                if(secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null){
+                    db().update(SEC_KILL_PRODUCT_DEFINE)
+                        .set(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,secKillProduct.getSecKillPrice())
+                        .set(SEC_KILL_PRODUCT_DEFINE.STOCK,secKillProduct.getStock())
+                        .where(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(secKillProduct.getProductId()).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()))).execute();
+                    totalStock += secKillProduct.getStock();
+                }
+            }
+            if(totalStock > 0){
+                record.setStock(totalStock);
+            }
+            db().executeUpdate(record);
+        });
+
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
     }
@@ -320,6 +336,7 @@ public class SeckillService extends ShopBaseService{
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.START_TIME.le(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .groupBy(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
             .fetchMap(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
