@@ -135,6 +135,7 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.member.card.show.CardUseStats;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
@@ -2104,6 +2105,10 @@ public class MemberCardService extends ShopBaseService {
 					.haveReceivedNum(userCardService.getReceiveCardNum(card.getId()))
 					.haveNormalNum(userCardService.getCanUseCardNum(card))
 					.build();
+	}
+	
+	public CardFullDetail getCardDetailByNo(String cardNo) {
+		return cardDao.getCardDetailByNo(cardNo);
 	}
 	
 }

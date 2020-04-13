@@ -372,6 +372,9 @@ CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
 -- 2020年4月13日 增加分裂优惠券是否可用
 ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `division_enabled` tinyint(1) NOT NULL  DEFAULT 0 COMMENT '是否可用,0可用 1不可用(只适用分裂优惠券)';
 
+-- 2020年04月13日 添加自定义激活信息
+ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
+
 /*********************2.11*************************END*/
 
 

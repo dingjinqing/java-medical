@@ -224,6 +224,7 @@ public class CardDetailService extends ShopBaseService{
 		}
 	}
 	
+	
 	/**
 	 * 装配会员卡批次信息
 	 * 
