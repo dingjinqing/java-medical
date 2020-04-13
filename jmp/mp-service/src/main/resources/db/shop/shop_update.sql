@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `b2c_card_order`
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
 -- 2020-04-10 分裂优惠券分享领取记录
-CREATE TABLE `b2c_division_receive_record` (
+CREATE TABLE IF NOT EXISTS `b2c_division_receive_record` (
   `id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `user` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享的user_id',
   `user_id` mediumint(8)  NOT NULL DEFAULT '0' COMMENT '分享后领取的user_id',
