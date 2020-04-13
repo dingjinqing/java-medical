@@ -2106,4 +2106,8 @@ public class MemberCardService extends ShopBaseService {
 					.build();
 	}
 	
+	public Object getCardByNotest(String cardNo) {
+		return cardDao.getCardDetailByNo(cardNo);
+	}
+	
 }
