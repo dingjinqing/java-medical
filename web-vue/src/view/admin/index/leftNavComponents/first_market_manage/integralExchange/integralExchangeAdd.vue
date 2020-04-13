@@ -667,7 +667,7 @@ export default {
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
-      if (!res.prdDesc) {
+      if (res.prdDesc) {
         let arr = []
         let obj = {
           goodsName: res.prdDesc,
