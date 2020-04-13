@@ -22,21 +22,30 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_NOR
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.vpu.mp.db.shop.tables.MemberCard;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.UserCard;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
+import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.InsertValuesStep4;
 import org.jooq.InsertValuesStep5;
+import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.RecordMapper;
 import org.jooq.Result;
+import org.jooq.RowN;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectSeekStep1;
 import org.jooq.SelectSeekStep2;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +53,7 @@ import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.db.shop.tables.records.CardReceiveCodeRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -64,6 +74,7 @@ import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveParam;
 import com.vpu.mp.service.pojo.shop.member.card.CodeReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
+import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 
 import ch.qos.logback.classic.db.DBAppender;
 
@@ -820,4 +831,32 @@ public class CardDaoService extends ShopBaseService {
 			
 	}
 	
+	public CardFullDetail getCardDetailByNo(String cardNo) {
+		logger().info("根据卡号获取卡的详细信息");
+		MemberCard memberCard = MEMBER_CARD.as("memberCardd");
+		UserCard userCard = USER_CARD.as("userCard");
+		CardFullDetail res = db().select(memberCard.fields()).select(userCard.fields())
+			.from(userCard)
+			.innerJoin(memberCard).on(userCard.CARD_ID.eq(memberCard.ID))
+			.where(userCard.CARD_NO.eq(cardNo))
+			.fetchSingle(recordMapToCardFullDetail(userCard,memberCard));
+		return res;
+	}
+	
+
+	private RecordMapper<? super Record, CardFullDetail> recordMapToCardFullDetail(UserCard uCard,MemberCard mCard) {
+		return record->{
+			Table<MemberCardRecord> mCardTable = MEMBER_CARD.as(mCard.getName());
+			MemberCardRecord memberCard = mCardTable.from(record);
+			Table<UserCardRecord> uCardTable = USER_CARD.as(uCard.getName());
+			UserCardRecord userCard = uCardTable.from(record);
+			return CardFullDetail.builder()
+						.userId(userCard.getUserId())
+						.cardNo(userCard.getCardNo())
+						.userCard(userCard)
+						.memberCard(memberCard)
+						.build();
+		};
+	}
+
 }
