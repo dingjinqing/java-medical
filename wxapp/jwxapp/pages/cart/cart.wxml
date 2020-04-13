@@ -34,7 +34,7 @@
 
               <!-- 秒杀活动 -->
               <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
-                <view class='sec_kill_area' wx:if="{{val.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&&atp=5&&gid={{item.goodsId}}" style='background:{{somColor}};'>
+                <view class='sec_kill_area' wx:if="{{val.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&atp=5&gid={{item.goodsId}}" style='background:{{somColor}};'>
                   <view class='sec_left'>
                     <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
                     <view class='sec_tips'>该商品正在参与秒杀</view>
