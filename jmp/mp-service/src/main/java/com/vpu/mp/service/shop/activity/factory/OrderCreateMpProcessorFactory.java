@@ -40,8 +40,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
         BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
         BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
         BaseConstant.ACTIVITY_TYPE_REBATE,
-        BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE
-        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+        BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,
         BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
     );
     /**
