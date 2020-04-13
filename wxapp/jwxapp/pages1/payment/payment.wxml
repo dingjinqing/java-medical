@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="../../pages/common/header.wxml" />
   <view class="main-container">
@@ -5,13 +6,13 @@
       <image src="{{imageUrl}}/image/wxapp/icon_payment.png"></image>
       <view>
         <block wx:for="{{useInfo}}" wx:for-item="useItem" wx:key="index">
-          <text wx:if="{{useItem > 0}}">{{test[index]}}：<text style="color:{{comColor}}">{{index === 'useScore' ? useItem + '积分' : '￥' + useItem}}</text></text>
+          <text wx:if="{{useItem > 0}}">{{test[index]}}：<text style="color:{{comColor}}">{{index === 'useScore' ? useItem + i18n.$t(localePack,"pages.order.score") : '￥' + useItem}}</text></text>
         </block>
       </view>
     </view>
     <view class="button-info">
-      <view style="background-color:{{comColor}};color:#fff" wx:if="{{!isNotGoods}}" bindtap="checkOrder">查看订单</view>
-      <view bindtap="goHome">返回首页</view>
+      <view style="background-color:{{comColor}};color:#fff" wx:if="{{!isNotGoods}}" bindtap="checkOrder">{{i18n.$t(localePack,"pages.order.viewOrder")}}</view>
+      <view bindtap="goHome">{{i18n.$t(localePack,"pages.order.returnIndex")}}</view>
     </view>
     <v-recommend id="recommend" pageName="payment" />
   </view>

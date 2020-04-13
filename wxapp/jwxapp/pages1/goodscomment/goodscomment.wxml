@@ -1,14 +1,15 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <view class="comment-top">
     <view class="comment-top-left">
       <text style="color:{{comColor}}">{{rating.positive}}%</text>
-      <text>好评度</text>
+      <text>{{i18n.$t(localePack,"page1.goodsComment.positiveRating")}}</text>
     </view>
     <view class="comment-top-right">
-      <view><text>好评({{rating.positive}}%)</text><progress color="{{comColor}}" percent="{{rating.positive}}"></progress></view>
-      <view><text>中评({{rating.moderate}}%)</text><progress color="{{comColor}}" percent="{{rating.moderate}}"></progress></view>
-      <view><text>差评({{rating.negative}}%)</text><progress color="{{comColor}}" percent="{{rating.negative}}"></progress></view>
+      <view><text>{{i18n.$t(localePack,"page1.goodsComment.positive")}}({{rating.positive}}%)</text><progress color="{{comColor}}" percent="{{rating.positive}}"></progress></view>
+      <view><text>{{i18n.$t(localePack,"page1.goodsComment.moderate")}}({{rating.moderate}}%)</text><progress color="{{comColor}}" percent="{{rating.moderate}}"></progress></view>
+      <view><text>{{i18n.$t(localePack,"page1.goodsComment.negative")}}({{rating.negative}}%)</text><progress color="{{comColor}}" percent="{{rating.negative}}"></progress></view>
     </view>
   </view>
   <view class="tabs">
@@ -22,7 +23,7 @@
         <view class="single-comment-content">
           <view class="comment-user-star-info">
             <image src="{{imageUrl+item.userAvatar}}"></image>
-            <text class="user-name">{{item.anonymousflag ? '匿名用户' : item.username}}</text>
+            <text class="user-name">{{item.anonymousflag ? i18n.$t(localePack,"page1.goodsComment.anonymous") : item.username}}</text>
             <view class="star-num">
               <block wx:for="{{item.commentStarNum}}" wx:key="*this">
                 <text class="iconfont iconshoucang" style="color:{{comColor}}"></text>
@@ -30,7 +31,7 @@
             </view>
           </view>
           <view class="comment-text">
-            {{item.commNote	|| '此用户没有填写用户心得'}}
+            {{item.commNote	|| i18n.$t(localePack,"page1.goodsComment.userNoComment")}}
           </view>
           <view class="image-content" wx:if="{{item.commentImageList && item.commentImageList.length > 0}}">
             <block wx:for="{{item.commentImageList}}" wx:key="*this" wx:for-item="imageItem" wx:for-index="imageIndex">
@@ -40,7 +41,7 @@
           <text class="goods-spec" wx:if="{{item.prdDesc}}">{{item.prdDesc}}</text>
           <text class="comment-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
           <view class="reply-text" wx:if="{{item.answer}}">
-            <text>回复：</text>
+            <text>{{i18n.$t(localePack,"page1.goodsComment.reply")}}：</text>
             <text>{{item.answer}}</text>
           </view>
         </view>
@@ -48,7 +49,7 @@
    </block>
   </view>
   <view class="tabs-content" wx:else>
-    <view class="no-comment">暂无评价</view>
+    <view class="no-comment">{{i18n.$t(localePack,"page1.goodsComment.noComment")}}</view>
   </view>
 </view>
 <include src="/pages/common/footer.wxml" />

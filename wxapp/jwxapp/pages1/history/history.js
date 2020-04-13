@@ -16,7 +16,7 @@ global.wxPage({
   onLoad: function(options) {
     console.log(options);
     let action = options.action ? options.action : 1;
-    let page_name = parseInt(action) === 1 ? '历史购买' : '我的足迹'
+    let page_name = parseInt(action) === 1 ? this.$t("page1.history.historyBuy") : this.$t("page1.history.footprint")
       this.setData({
         page_name,
         action

@@ -48,7 +48,8 @@ module.exports = {
     "wxpay": "微信支付",
     "balance": "余额支付",
     "score": "积分支付",
-    "cod": "货到付款"
+    "cod": "货到付款",
+    "cardBalance":"会员卡余额支付"
   },
   "inFight": "拼团中",
   "completeFight": "拼团完成",
@@ -56,5 +57,8 @@ module.exports = {
   "fight": "拼团",
   "bargain": "砍价",
   "seckill": "秒杀",
-  "failGetFight": "获取拼团详情失败"
+  "failGetFight": "获取拼团详情失败",
+  "viewOrder":"查看订单",
+  "returnIndex":"返回首页",
+  "score":"积分"
 }

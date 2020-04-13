@@ -1,3 +1,4 @@
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="/pages/common/header.wxml"/>
   <view class="main-container" wx:if="{{dataList}}">
@@ -6,7 +7,7 @@
         <view>
         <icon size="13" type="search" role="img"></icon>
         </view>
-        <input placeholder="请输入搜索关键字" bindconfirm="handleSearch" value="{{searchText}}"></input>
+        <input placeholder='{{i18n.$t(localePack,"page1.history.searchPlaceholder")}}' bindconfirm="handleSearch" value="{{searchText}}"></input>
       </view>
     </view>
     <view class="content">
@@ -25,7 +26,7 @@
       <block wx:else>
         <view class="is-null" >
           <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
-          <text>抱歉！没有找到相关的商品</text>
+          <text>{{i18n.$t(localePack,"page1.history.errorTips")}}</text>
         </view>
       </block>
     </view>
