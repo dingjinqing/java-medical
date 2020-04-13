@@ -35,4 +35,10 @@ public class SeckillUpdateParam {
 
     /** 分享设置*/
     private PictorialShareConfig shareConfig;
+
+    /** 秒杀商品规格价格设置实体*/
+    private SeckillProductAddParam[] secKillProduct;
+
+    /**优先级*/
+    private Byte first;
 }
