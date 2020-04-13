@@ -79,6 +79,10 @@
             <li v-if="item.education">{{ $t('memberCard.education') }}：<strong>{{item.education}}</strong></li>
             <li v-if="item.industry">{{ $t('memberCard.industry') }}：<strong>{{item.industry}}</strong></li>
             <li v-if="item.city">{{ $t('memberCard.address') }}:{{item.province}} {{item.city}} {{item.district}}</li>
+            <li v-for="(opt,key) in item.customOptions"
+                :key="key">
+                {{opt.title}}：<strong>{{opt.content}}</strong>
+            </li>
           </ul>
           <div class="operate_box">
             <div
@@ -207,6 +211,7 @@ export default {
         if (res.error === 0) {
           // success
           this.tabData = res.content.dataList
+          console.log(this.tabData)
           this.tabData.forEach(item => {
             // 婚姻状态
             if (item.maritalStatus) {
@@ -220,6 +225,10 @@ export default {
                 }
               }
             }
+
+            // 自定义激活数据
+            let opts = this.dealWithCustomOptions(item.customOptions)
+            item.customOptions = opts
           })
           // pagination
           this.pageParams = res.content.page
@@ -254,7 +263,48 @@ export default {
       console.log(data)
       this.defaultData()
     },
+    // 自定义激活数据
+    dealWithCustomOptions (opts) {
+      let tmpContainer = []
+      if (opts && opts.length > 0) {
+        for (const opt of opts) {
+          // 单选
+          if (opt.custom_type === 0) {
+            let content = null
+            for (const op of opt.option_arr) {
+              if (op.is_checked === 1) {
+                content = op.option_title
+                break
+              }
+            }
+            tmpContainer.push(
+              {
+                title: opt.custom_title, content: content
+              }
+            )
+          } else if (opt.custom_type === 1) {
+            let content = ''
+            // 多选
+            for (const op of opt.option_arr) {
+              content += op.option_title + ' '
+            }
+            tmpContainer.push(
+              {
+                title: opt.custom_title, content: content
+              }
+            )
+          } else if (opt.custom_type === 2) {
+            tmpContainer.push(
+              {
+                title: opt.custom_title, content: opt.text
+              }
+            )
+          }
+        }
+      }
 
+      return tmpContainer
+    },
     // 是否通过点击
     handleToIsAdopt (flag, item) {
       console.log(flag, item.id, item.cardNo)
