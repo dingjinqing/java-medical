@@ -1,4 +1,4 @@
-export const cn = {
+export const en = {
   storeAccountList: 'Store account list',
   storeStaff: 'Store staff permission configuration',
   storeBackstage: 'Store backstage',
