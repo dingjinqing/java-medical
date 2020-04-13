@@ -336,6 +336,7 @@ public class SeckillService extends ShopBaseService{
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.START_TIME.le(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .groupBy(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
             .fetchMap(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
