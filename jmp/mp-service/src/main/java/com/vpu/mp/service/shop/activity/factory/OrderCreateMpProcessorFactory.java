@@ -38,15 +38,15 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
     private final static List<Byte> GENERAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL,
         BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE,
-        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE
+        BaseConstant.ACTIVITY_TYPE_MEMBER_EXCLUSIVE,
+        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
     );
     /**
      * 全局的活动  支付有礼
      */
     private final static List<Byte> GLOBAL_ACTIVITY = Arrays.asList(
         BaseConstant.ACTIVITY_TYPE_PAY_AWARD,
-        BaseConstant.ACTIVITY_TYPE_GIFT,
-        BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION
+        BaseConstant.ACTIVITY_TYPE_GIFT
     );
 
     /**

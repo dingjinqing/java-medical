@@ -1,23 +1,5 @@
 package com.vpu.mp.service.shop.user.cart;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
-import static com.vpu.mp.db.shop.tables.Cart.CART;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
@@ -49,6 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.STORE_GOODS;
+import static com.vpu.mp.db.shop.tables.Cart.CART;
 
 
 
@@ -466,7 +452,7 @@ public class CartService extends ShopBaseService {
      */
     public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId) {
         //TODO 后期加参数
-        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER.as("goodsNumber"))
+        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER.as("goodsNumber"), CART.TYPE.as("cartType"), CART.EXTEND_ID.as("cartExtendId"))
                 .from(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))
