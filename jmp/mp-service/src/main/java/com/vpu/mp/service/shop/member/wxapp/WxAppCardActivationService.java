@@ -91,16 +91,16 @@ public class WxAppCardActivationService extends ShopBaseService {
 		List<String> allEducation = MemberEducationEnum.getAllEducation(lang,true);
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang,true);
 		
-		
-		List<CardCustomAction> customOptions = wxCardDetailSvc.getNeedActivationCustomOptions(null);
+		MemberCardRecord memberCard = memberCardService.getCardDetailByNo(param.getCardNo()).getMemberCard();
+		List<CardCustomAction> customOptions = wxCardDetailSvc.getNeedActivationCustomOptions(memberCard);
 		//TODO 订阅消息
-		
 		return ActivateCardVo
 				.builder()
 				.education(allEducation)
 				.industryInfo(allIndustryName)
 				.data(userMap)
 				.fields(fields)
+				.customOptions(customOptions)
 				.build();
 	}
 	
