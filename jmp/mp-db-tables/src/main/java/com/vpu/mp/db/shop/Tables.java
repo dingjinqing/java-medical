@@ -23,6 +23,16 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>mini_shop_471752.b2c_division_receive_record</code>.
+     */
+    public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
+
+    /**
+     * 会员卡订单表
+     */
+    public static final CardOrder CARD_ORDER = com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
+
+    /**
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
      */
     public static final PrizeRecord PRIZE_RECORD = com.vpu.mp.db.shop.tables.PrizeRecord.PRIZE_RECORD;
