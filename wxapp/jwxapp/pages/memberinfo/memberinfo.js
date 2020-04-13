@@ -126,37 +126,49 @@ global.wxPage({
       // console.log(options)
       util.api('/api/wxapp/distribution/distributor/activation', function (res) {
         if (res.error == 0) {
+          console.log(res.content)
           var user_info = res.content.userBaseInfo;
           // 自定义激活项
-          var custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
+          let custom_arr = res.content.customOptions ? res.content.customOptions : []
+
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
-              if (custom_arr[i].custom_type == 0) {
+              if (custom_arr[i].customType == 0) {
                 custom_arr[i].custom_select = 0
-                for (var j in custom_arr[i].option_arr) {
-                  if (custom_arr[i].is_checked == 1) {
+                for (var j in custom_arr[i].optionArr) {
+                  let obj = {
+                    optionTitle: custom_arr[i].optionArr[j],
+                    isChecked: 0
+                  }
+                  custom_arr[i].optionArr[j] = obj
+                  if (custom_arr[i].isChecked == 1) {
                     if (j == 0) {
-                      custom_arr[i].option_arr[j].checked = true
+                      custom_arr[i].optionArr[j].isChecked = true
                     } else {
-                      custom_arr[i].option_arr[j].checked = false
+                      custom_arr[i].optionArr[j].isChecked = false
                     }
                   } else {
-                    custom_arr[i].option_arr[j].checked = false
+                    custom_arr[i].optionArr[j].isChecked = false
                   }
                 }
-              } else if (custom_arr[i].custom_type == 1) {
-                for (var j in custom_arr[i].option_arr) {
-                  custom_arr[i].option_arr[j].checked = false
+              } else if (custom_arr[i].customType == 1) {
+                for (var j in custom_arr[i].optionArr) {
+                  let obj = {
+                    optionTitle: custom_arr[i].optionArr[j],
+                    isChecked: 0
+                  }
+                  custom_arr[i].optionArr[j] = obj
+                  custom_arr[i].optionArr[j].isChecked = false
                 }
-              } else if (custom_arr[i].custom_type == 2) {
+              } else if (custom_arr[i].customType == 2) {
                 custom_arr[i].text = ''
               }
-              that.setData({
-                if_custom: 1,
-                custom_arr: custom_arr
-              })
-            }
 
+            }
+            console.log(custom_arr)
+            that.setData({
+              custom_arr: custom_arr
+            })
           }
           var fi_arr = res.content.cfg.activation_cfg
           for (var i in fi_arr) {
@@ -372,60 +384,57 @@ global.wxPage({
       util.api('/api/wxapp/activation/card', function (res) {
         console.log(res)
         if (res.error === 0) {
-          // 模拟自定义激活项数据
-          // let custom_arr = [{
-          //   custom_title: "测试1",
-          //   custom_type: "0",
-          //   is_checked: 1,
-          //   option_arr: [
-          //     { option_title: "vvv", checked: true },
-          //     { option_title: "111", checked: false },
-          //     { option_title: "222", checked: false },
-          //     { option_title: "333", checked: false }
-          //   ],
-          //   option_ver: 1
-          // }]
 
           // 自定义激活项
-          let custom_arr = res.content.cfg ? res.content.cfg.custom_options : []
+          let custom_arr = res.content.customOptions ? res.content.customOptions : []
 
           if (custom_arr.length > 0) {
             for (var i in custom_arr) {
-              if (custom_arr[i].custom_type == 0) {
+              if (custom_arr[i].customType == 0) {
                 custom_arr[i].custom_select = 0
-                for (var j in custom_arr[i].option_arr) {
-                  if (custom_arr[i].is_checked == 1) {
+                for (var j in custom_arr[i].optionArr) {
+                  let obj = {
+                    optionTitle: custom_arr[i].optionArr[j],
+                    isChecked: 0
+                  }
+                  custom_arr[i].optionArr[j] = obj
+                  if (custom_arr[i].isChecked == 1) {
                     if (j == 0) {
-                      custom_arr[i].option_arr[j].checked = true
+                      custom_arr[i].optionArr[j].isChecked = true
                     } else {
-                      custom_arr[i].option_arr[j].checked = false
+                      custom_arr[i].optionArr[j].isChecked = false
                     }
                   } else {
-                    custom_arr[i].option_arr[j].checked = false
+                    custom_arr[i].optionArr[j].isChecked = false
                   }
                 }
-              } else if (custom_arr[i].custom_type == 1) {
-                for (var j in custom_arr[i].option_arr) {
-                  custom_arr[i].option_arr[j].checked = false
+              } else if (custom_arr[i].customType == 1) {
+                for (var j in custom_arr[i].optionArr) {
+                  let obj = {
+                    optionTitle: custom_arr[i].optionArr[j],
+                    isChecked: 0
+                  }
+                  custom_arr[i].optionArr[j] = obj
+                  custom_arr[i].optionArr[j].isChecked = false
                 }
-              } else if (custom_arr[i].custom_type == 2) {
+              } else if (custom_arr[i].customType == 2) {
                 custom_arr[i].text = ''
               }
-              that.setData({
-                if_custom: 1,
-                custom_arr: custom_arr
-              })
-            }
 
+            }
+            console.log(custom_arr)
+            that.setData({
+              custom_arr: custom_arr
+            })
           }
-          // 模拟自定义激活项数据end
+
 
           that.data.template_ids = res.content.template_ids || [];
           var user_info = res.content.data;
           var fi_arr = res.content.fields;
           console.log(fi_arr)
-          let keyArr = ['if_username', 'if_mobile','if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
-          let valArr = ['username', 'mobile','cid', 'realName', 'invitation_code',  'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
+          let keyArr = ['if_username', 'if_mobile', 'if_cid', 'if_realname', 'if_invitation_code', 'if_work', 'if_citydoce', 'if_sex', 'if_birthdayyear', 'if_mar', 'if_edu']
+          let valArr = ['username', 'mobile', 'cid', 'realName', 'invitation_code', 'industryInfo', 'cityCode', 'sex', 'birthdayYear', 'maritalStatus', 'education']
           fi_arr.map((item, index) => {
             var val = keyArr[valArr.indexOf(fi_arr[index])]
             let obj = {}
@@ -644,30 +653,43 @@ global.wxPage({
     var custom_arr = that.data.custom_arr
     var custom_options = []
     for (var i in custom_arr) {
-      if (custom_arr[i].is_checked == 1) {
+      if (custom_arr[i].isChecked == 1) {
         // 必填项
-        if (custom_arr[i].option_ver == 1) {
-          if (custom_arr[i].custom_type == 0 || custom_arr[i].custom_type == 1) {
-            var result = custom_arr[i].option_arr.some(function (item) {
-              if (item.checked == true) {
+        if (custom_arr[i].optionVer == 1) {
+          if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
+            var result = custom_arr[i].optionArr.some(function (item) {
+              if (item.isChecked == true) {
                 return true
               } else {
                 return false;
               }
             })
             if (result == false) {
-              util.showModal("提示", "请填写" + custom_arr[i].custom_title);
+              util.showModal("提示", "请填写" + custom_arr[i].customTitle);
               return;
             }
-          } else if (custom_arr[i].custom_type == 2 && custom_arr[i].text == '') {
-            util.showModal("提示", "请填写" + custom_arr[i].custom_title);
+
+
+          } else if (custom_arr[i].customType == 2 && custom_arr[i].text == '') {
+            util.showModal("提示", "请填写" + custom_arr[i].customTitle);
             return;
           }
         }
+        if (custom_arr[i].customType == 0 || custom_arr[i].customType == 1) {
+          // isChecked处理
+          custom_arr[i].optionArr.forEach((item, index) => {
+            if (item.isChecked == true) {
+              custom_arr[i].optionArr[index].isChecked = 1
+            } else {
+              custom_arr[i].optionArr[index].isChecked = 0
+            }
+          })
+        }
         custom_options.push(custom_arr[i])
-        user_info.custom_options = custom_options
+
       }
     }
+    console.log(custom_options)
     //激活
     if (user_info.real_name == "" && this.data.if_realname == 1) {
       util.showModal("提示", "请填写真实姓名");
@@ -745,6 +767,7 @@ global.wxPage({
       } else {
         console.log(card_no)
         console.log(user_info)
+
         util.api('/api/wxapp/activation/card', function (res) {
           console.log(res)
           if (res.error === 0) {
@@ -871,7 +894,7 @@ global.wxPage({
           that.setData({
             user_block: 1
           })
-        }, { cardNo: card_no, isSetting: 1, activateOption: user_info })
+        }, { cardNo: card_no, isSetting: 1, activateOption: user_info, customOptions: custom_options })
 
 
 
@@ -883,9 +906,20 @@ global.wxPage({
   // 单选 选项
   bindRadiosChange (e) {
     console.log(e.detail.value)
-    // var m = this.data.m;
-    // m.module_value = e.detail.value;
-    // this.$set();
+    let that = this
+    let index = e.target.dataset.index
+    let custom_arr = that.data.custom_arr
+    let valueList = e.detail.value
+    console.log(index)
+    custom_arr[index].optionArr.find((item, index) => {
+      item.isChecked = false
+      if (valueList == index) {
+        item.isChecked = true
+      }
+    })
+    that.setData({
+      custom_arr: custom_arr
+    })
   },
   // 多选 选项
   bindCheckboxChange (e) {
@@ -999,16 +1033,16 @@ global.wxPage({
   },
   // 自定义多选
   checkboxChange: function (e) {
-    var that = this
-    var index = e.target.dataset.index
-    var custom_arr = that.data.custom_arr
-    var valueList = e.detail.value
-
-    custom_arr[index].option_arr.find((item, index) => {
-      item.checked = false
+    let that = this
+    let index = e.target.dataset.index
+    let custom_arr = that.data.custom_arr
+    let valueList = e.detail.value
+    console.log(index)
+    custom_arr[index].optionArr.find((item, index) => {
+      item.isChecked = false
       valueList.find((val, key) => {
-        if (val == item.option_title) {
-          item.checked = true
+        if (val == item.optionTitle) {
+          item.isChecked = true
         }
       })
     })

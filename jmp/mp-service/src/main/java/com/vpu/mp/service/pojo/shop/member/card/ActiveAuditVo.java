@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
-
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 
 import lombok.Data;
 
@@ -66,4 +67,7 @@ public class ActiveAuditVo {
 	
 	// 拒绝原因
 	private String refuseDesc;
+	
+	// 自定义激活数据
+	private List<CardCustomActionParam> customOptions;
 }

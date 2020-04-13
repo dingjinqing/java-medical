@@ -272,7 +272,7 @@
       <text class="order_item" selectable>{{i18n.$t(localePack,"pages.order.orderTime")}}：{{orderInfo.createTime}}</text>
     </view>
     <!-- 联系客服 -->
-    <view class="kefu_btn" v-if="orderInfo.orderDetailService === 1">
+    <view class="kefu_btn" v-if="{{orderInfo.orderDetailService === 1||orderInfo.orderDetailService === '1'}}">
       <button open-type="contact" class="con_button" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"page1.afterSale.contactCustomer")}}</button>
     </view>
       

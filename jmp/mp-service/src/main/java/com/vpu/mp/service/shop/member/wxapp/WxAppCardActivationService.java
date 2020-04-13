@@ -2,10 +2,13 @@ package com.vpu.mp.service.shop.member.wxapp;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import com.vpu.mp.db.main.tables.records.DictCityRecord;
 import com.vpu.mp.db.main.tables.records.DictDistrictRecord;
 import com.vpu.mp.db.main.tables.records.DictProvinceRecord;
 import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.db.shop.tables.records.UserDetailRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.CardUtil;
@@ -24,10 +28,14 @@ import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardVerifyConstant;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
+import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -49,6 +57,8 @@ public class WxAppCardActivationService extends ShopBaseService {
 	private MemberService memberService;
 	@Autowired
 	private MemberCardService memberCardService;
+	@Autowired
+	private WxCardDetailService wxCardDetailSvc;
 	
 	public final static String PROVINCE_CODE = "provinceCode";
 	public final static String CITY_CODE = "cityCode";
@@ -63,7 +73,8 @@ public class WxAppCardActivationService extends ShopBaseService {
 	 */
 	public ActivateCardVo getActivationCard(ActivateCardParam param,String lang) {
 		logger().info("获取会员卡激活信息");
-		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());	
+		UserCardVo uCard = userCardService.getUserCardByCardNo(param.getCardNo());
+		
 		if(uCard == null) {
 			return null;
 		}
@@ -85,14 +96,26 @@ public class WxAppCardActivationService extends ShopBaseService {
 		List<String> allEducation = MemberEducationEnum.getAllEducation(lang,true);
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang,true);
 		
+		MemberCardRecord memberCard = memberCardService.getCardDetailByNo(param.getCardNo()).getMemberCard();
+		List<CardCustomAction> tmpOptions = wxCardDetailSvc.getNeedActivationCustomOptions(memberCard);
+		List<CardCustomActionVo> customOptions = new ArrayList<>();
+		for(CardCustomAction t: tmpOptions) {
+			try {
+				CardCustomActionVo vo = new CardCustomActionVo();
+				PropertyUtils.copyProperties(vo, t);
+				customOptions.add(vo);
+			} catch (Exception e) {
+			}
+			
+		}
 		//TODO 订阅消息
-		
 		return ActivateCardVo
 				.builder()
 				.education(allEducation)
 				.industryInfo(allIndustryName)
 				.data(userMap)
 				.fields(fields)
+				.customOptions(customOptions)
 				.build();
 	}
 	
@@ -158,7 +181,13 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		Map<String, Object> activeData = this.filterActiveOption(fields, param.getActivateOption());
-		
+		// 自定已激活项
+		List<CardCustomActionParam> customOptions = param.getCustomOptions();
+		if(customOptions!=null) {
+			String customOptJson = Util.toJsonNotNull(customOptions);
+			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
+		}
+
 		if(activeData != null ) {
 			// prepare card examine data 
 			// setActiveAddressInfo(activeData);

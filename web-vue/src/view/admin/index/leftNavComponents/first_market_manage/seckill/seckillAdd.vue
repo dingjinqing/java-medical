@@ -44,7 +44,6 @@
           prop="first"
         >
           <el-input-number
-            :disabled="this.isEdite"
             v-model="form.first"
             controls-position="right"
             :min="1"
@@ -414,7 +413,6 @@
     <seckillSpecDialog
       :productDialog.sync="showSpecDialog"
       :product-info="productInfo"
-      :isEdit="isEdite"
       @confrim="getProductdata"
     />
 
@@ -693,7 +691,7 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let { prdId: productId, secKillPrice, stock } = specItem
+                let { productId, secKillPrice, stock } = specItem
                 let goodsId = item.goodsId
                 secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock) })
                 this.form.stock += Number(stock)
@@ -704,7 +702,7 @@ export default {
               this.form.stock += Number(stock)
             }
           })
-          console.log(secKillProduct)
+
           if (this.isEdite === false) {
             // 添加秒杀
             addSeckillList({ ...this.form, secKillProduct, goodsId }).then((res) => {
@@ -721,7 +719,9 @@ export default {
               skId: this.editId,
               name: this.form.name,
               cardId: this.form.cardId,
-              shareConfig: this.form.shareConfig
+              first: this.form.first,
+              shareConfig: this.form.shareConfig,
+              secKillProduct: secKillProduct
             }).then((res) => {
               if (res.error === 0) {
                 this.$message.success({ message: '修改成功' })

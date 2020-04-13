@@ -79,7 +79,7 @@
               </el-date-picker>
               <el-button
                 size="small"
-                v-show="!twoSteps"
+                v-show="!twoSteps&&!isEditeFlag"
                 @click="handleTwoState"
               >添加定金支付时段</el-button>
             </el-form-item>
@@ -108,6 +108,7 @@
               <el-button
                 size="small"
                 @click="handleDelete"
+                v-if="!isEditeFlag"
               >删除</el-button>
             </el-form-item>
 
@@ -173,17 +174,27 @@
           </div>
           <div>
             <el-radio-group v-model="activityType">
-              <el-radio :label="1">
+              <el-radio
+                :label="1"
+                :disabled="isEditeFlag"
+              >
                 活动开始前
                 <el-input
                   v-model="param.preTime"
+                  :disabled="isEditeFlag"
                   style="width:80px"
                   size="small"
                 ></el-input>
                 小时进行预告
               </el-radio>
-              <el-radio :label="-1">活动创建完成后即进行公告</el-radio>
-              <el-radio :label="0">不进行活动预告</el-radio>
+              <el-radio
+                :label="-1"
+                :disabled="isEditeFlag"
+              >活动创建完成后即进行公告</el-radio>
+              <el-radio
+                :label="0"
+                :disabled="isEditeFlag"
+              >不进行活动预告</el-radio>
             </el-radio-group>
           </div>
         </el-form-item>
@@ -203,10 +214,9 @@
 
           <el-input
             :disabled="true"
-            v-if="false"
             v-model="param.goodsId"
             size="small"
-            style="width: 170px;"
+            style="width: 170px;display:none"
           ></el-input>
           <el-button
             :disabled="isEditeFlag"
@@ -226,14 +236,6 @@
               :label="1"
               style="line-height: 40px"
             >&nbsp;指定发货开始时间</el-radio>
-            <!-- <el-form-item
-              prop="deliverTime"
-              :rules="[
-                {required: true, message:'请填写发货开始时间', trigger: ['blur','change']},
-                {validator: (rule, value, callback) => { validateSendTime(rule,value, callback)}}
-              ]"
-              :inline-message="true"
-            > -->
             <el-date-picker
               :disabled="param.deliverType==2 || isEditeFlag"
               v-model="param.deliverTime"
@@ -243,7 +245,6 @@
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
-            <!-- </el-form-item> -->
           </div>
           <div style="display:flex">
             <el-radio
@@ -255,14 +256,6 @@
               <span v-if="this.param.presaleType === 0">&nbsp;尾款支付完成</span>
               <span v-if="this.param.presaleType === 1">&nbsp;支付完成后</span>
             </el-radio>
-            <!-- <el-form-item
-              prop="deliverDays"
-              :rules="[
-                { required: true,trigger: 'blur' },
-                { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] }
-              ]"
-              :inline-message="true"
-            > -->
             <el-input
               :disabled="param.deliverType==1 || isEditeFlag"
               v-model="param.deliverDays"
@@ -271,7 +264,6 @@
               :min=0
             />
             <span style="margin-left:10px">天后发货</span>
-            <!-- </el-form-item> -->
           </div>
         </el-form-item>
         <el-form-item
@@ -741,7 +733,6 @@ import inputEdit from '@/components/admin/inputEdit'
 import choosingGoods from '@/components/admin/choosingGoods'
 import ImageDalog from '@/components/admin/imageDalog'
 import status from '@/components/admin/marketManage/status/status'
-// import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 import { format } from '@/util/date'
 import { createPreSale, updatePreSale, getDetail } from '@/api/admin/marketManage/preSale'
 import preSaleDialog from './preSaleDialog'
@@ -754,15 +745,6 @@ export default {
     preSaleDialog
   },
   data () {
-    // 活动商品校验
-    var checkGoods = (rule, value, callback) => {
-      console.log(value)
-      if (!this.param.goodsId) {
-        return callback(new Error('请选择活动商品'))
-      } else {
-        callback()
-      }
-    }
     // 发货时间校验
     var checkDeliverType = (rule, value, callback) => {
       console.log(value)
@@ -860,7 +842,7 @@ export default {
       formRules: {
         presaleType: { required: true },
         presaleName: { required: true, message: '请填写活动名称', trigger: 'blur' },
-        goodsId: { required: true, validator: checkGoods, trigger: 'change' },
+        goodsId: [{ required: true, message: '请选择活动商品', trigger: 'change' }],
         deliverType: { required: true, validator: checkDeliverType, trigger: 'change' },
         discountType: { required: true },
         returnType: { required: true },
@@ -940,24 +922,6 @@ export default {
         callback()
       }
     },
-    // // 验证发货时间
-    // validateSendTime (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverTime === 1) {
-    //     callback(new Error('请指定发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
-    // // 验证尾款支付完成
-    // validatePayment (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverType === 2) {
-    //     callback(new Error('请填写尾款发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -976,13 +940,41 @@ export default {
     add () {
       this.param.buyNumber = Number(this.param.buyNumber)
       this.param.first = Number(this.param.first)
-      if (this.activeType === 0) {
+      if (this.activityType === 0) {
         this.param.preTime = 0
-      } else if (this.activeType === -1) {
+      } else if (this.activityType === -1) {
         this.param.preTime = -1
       } else {
         this.param.preTime = Number(this.param.preTime)
       }
+
+      this.param.products.forEach((item, index) => {
+        console.log(item)
+        item.productId = Number(item.prdId)
+        item.presalePrice = Number(item.presalePrice)
+        item.presaleNumber = Number(item.presaleNumber)
+        item.presaleMoney = Number(item.presaleMoney)
+        item.preDiscountMoney1 = Number(item.preDiscountMoney1)
+        item.preDiscountMoney2 = Number(item.preDiscountMoney2)
+      })
+      let products = []
+      // this.param.stock = 0
+      this.param.products.forEach(item => {
+        if (item.goodsSpecProducts) {
+          console.log(item.goodsSpecProducts)
+          item.goodsSpecProducts.forEach(specItem => {
+            let { prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = specItem
+            let goodsId = item.goodsId
+            products.push({ goodsId, productId: prdId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
+            // this.param.stock += Number(stock)
+          })
+        } else {
+          let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
+          products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+          // this.param.stock += Number(stock)
+        }
+      })
+
       const { param } = this
 
       console.log(param, 'get param')
@@ -991,7 +983,7 @@ export default {
         return
       }
       if (this.update) {
-        updatePreSale(param).then(res => {
+        updatePreSale({ ...this.param, products }).then(res => {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('更新成功')
@@ -1001,7 +993,7 @@ export default {
           }
         })
       } else {
-        createPreSale(param).then(res => {
+        createPreSale({ ...this.param, products }).then(res => {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('添加成功')
@@ -1036,8 +1028,9 @@ export default {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
-        this.param.products = this.initEditProduct(content.products)
+        this.param.products = this.initEditProduct(content.goodsList)
         this.param.preTime = this.initActivityNotice(content.preTime)
+        this.param.goodsId = content.goodsId
         this.getImgeUrl(content.shareImg)
 
         this.loadStatus(content)
@@ -1278,44 +1271,33 @@ export default {
     // 获取商品ids
     choosingGoodsResult (row) {
       console.log(row, 'goodsInfo')
-      // this.param.goodsName = row.goodsName
-      // this.param.goodsId = row.goodsId
-      // this.goodsIdList.push(row.goodsId)
       this.goodsIdList = row.map(item => { return item.goodsId })
+      this.param.goodsId = this.goodsIdList.join(',')
       this.param.products = row
-
-      // // 初始化规格表格
-      // getAllGoodsProductList(this.param.goodsId).then(res => {
-      //   console.log(res.content, 'param')
-      //   res.content.forEach((item, index) => {
-      //     item.index = index
-      //     item.productId = item.prdId
-      //   })
-      //   this.param.products = res.content
-      //   console.log(this.param.products, 'this.form.products')
-      // })
     },
     // 处理回显的所选商品数据显示
     initEditProduct (goods) {
-      console.log(goods)
-      let newArr = []
-      goods.map(item => {
-        console.log(item)
-        let expand = goods.length < 2 ? { ...goods[0], shopPrice: item.presalePrice, goodsNumber: item.presaleNumber } : { ...item, shopPrice: item.presalePrice, goodsNumber: item.presaleNumber, goodsSpecProducts: goods }
-        newArr.push({ ...expand })
+      let newdata = []
+      goods.forEach(item => {
+        let expand = item.productList.length < 2 ? { ...item.productList[0], goodsName: item.goodsName } : { ...item.productList[0], goodsSpecProducts: item.productList, goodsName: item.goodsName }
+        newdata.push({ ...item, ...expand })
       })
-      return newArr
+      return newdata
     },
     initActivityNotice (val) {
       console.log(val)
       if (val === -1) {
         this.activityType = -1
+        this.preTime = 24
       } else if (val === 0) {
         this.activityType = 0
-      } else {
+        this.preTime = 24
+      } else if (val > 0) {
         this.activityType = 1
         this.param.preTime = val
+      } else {
       }
+      return this.param.preTime
     },
     // 分享 - 调起图片弹窗
     addGoodsImg () {
