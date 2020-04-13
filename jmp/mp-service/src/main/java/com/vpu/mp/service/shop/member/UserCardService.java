@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
@@ -24,6 +25,7 @@ import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
+import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardBgBean;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
@@ -41,7 +43,6 @@ import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
-import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -74,10 +75,9 @@ import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.user.user.UserService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.aspectj.apache.bcel.generic.RET;
+import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -97,17 +97,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.LOWEST_GRADE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_DAY;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_MONTH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DT_WEEK;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_DURING;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ET_FIX;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_TP_LIMIT;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.UCARD_ACT_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_DF_NO;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_FLAG_USING;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.*;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
 
 /**
@@ -2123,10 +2113,63 @@ public class UserCardService extends ShopBaseService {
 	 * 购买结算
 	 * @param param
 	 */
-	public void toBuyCardClearing(CardBuyClearingParam param) {
-		ShopRecord shop = saas.shop.getShopById(this.getShopId());
-		String logo = shop.getLogo();
+	public CardBuyClearingVo toBuyCardClearing(CardBuyClearingParam param) {
+		logger().info("会员卡-购买结算-开始");
+		CardBuyClearingVo cardBuyVo =new CardBuyClearingVo();
 
+		logger().info("会员卡-结算-店铺配置");
+		ShopRecord shop = saas.shop.getShopById(this.getShopId());
+		if(StringUtil.isNotEmpty(shop.getLogo())){
+			cardBuyVo.setShopLogo(domainConfig.imageUrl(shop.getLogo()));
+		}
+		if(StringUtil.isNotEmpty(shop.getShopAvatar())){
+			cardBuyVo.setShopAvatar(domainConfig.imageUrl(shop.getShopAvatar()));
+		}
+		cardBuyVo.setInvoiceSwitch(shopCommonConfigService.getInvoice());
+		cardBuyVo.setScoreProportion(memberService.score.scoreCfgService.getScoreProportion());
+		cardBuyVo.setIsShowServiceTerms(shopCommonConfigService.getServiceTerms());
+		if(cardBuyVo.getIsShowServiceTerms() == 1){
+			cardBuyVo.setServiceChoose(tradeService.getServiceChoose());
+			cardBuyVo.setServiceName(tradeService.getServiceName());
+			cardBuyVo.setServiceDocument(tradeService.getServiceDocument());
+		}
+		logger().info("会员卡-结算-会员卡配置");
+		MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
+		cardBuyVo.setOrderAmount(cardInfo.getPayFee());
+		CardBuyClearingVo.CardInfo into = cardInfo.into(CardBuyClearingVo.CardInfo.class);
+		cardBuyVo.setCardInfo(into);
+		if (MCARD_ET_FIX.equals(into.getExpireType())){
+			into.setStartTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,cardInfo.getStartTime()));
+			into.setEndTime(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,cardInfo.getEndTime()));
+		}
+		if(StringUtil.isNotBlank(into.getBgImg())){
+			into.setBgImg(domainConfig.imageUrl(into.getBgImg()));
+		}
+		if (MCARD_CARD_PAY_CASH.equals(cardInfo.getPayType())){
+			BigDecimal divide = cardBuyVo.getOrderAmount().divide(BigDecimal.valueOf(cardBuyVo.getScoreProportion()),2,BigDecimal.ROUND_HALF_UP);
+			cardBuyVo.setOrderAmount(divide);
+			cardBuyVo.setMoneyPaid(BigDecimal.ZERO);
+		}else {
+			cardBuyVo.setMoneyPaid(cardBuyVo.getOrderAmount());
+		}
+		logger().info("会员卡-结算-cardNo{}",param.getCardNo());
+		List<GeneralUserCardVo> canUseCardList = getCanUseGeneralCardList(param.getUserId());
+		if (!Objects.equals(param.getCardNo(), "1")&&canUseCardList.size()>0) {
+			if (Strings.isEmpty(param.getCardNo())&&canUseCardList.size()>0){
+				GeneralUserCardVo generalUserCardVo = canUseCardList.get(0);
+				cardBuyVo.setMemberCardInfo(generalUserCardVo);
+				cardBuyVo.setMemberCardNo(generalUserCardVo.getCardNo());
+			}else {
+				GeneralUserCardVo generalUserCardVo = canUseCardList.stream().filter(card -> card.getCardNo().equals(param.getCardNo())).findFirst().orElse(null);
+				if (generalUserCardVo!=null){
+					cardBuyVo.setMemberCardInfo(generalUserCardVo);
+					cardBuyVo.setMemberCardNo(generalUserCardVo.getCardNo());
+				}
+			}
+		}
+
+		logger().info("会员卡-购买结算-结束");
+		return cardBuyVo;
 	}
 }
 

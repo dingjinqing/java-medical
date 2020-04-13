@@ -191,11 +191,10 @@ public class WxAppCardController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/card/buy/clearing")
-	public JsonResult toBuyCardClearing(CardBuyClearingParam param){
+	public JsonResult toBuyCardClearing(@RequestBody @Validated CardBuyClearingParam param){
 		WxAppSessionUser user = wxAppAuth.user();
 		param.setUserId(user.getUserId());
-		shop().userCard.toBuyCardClearing(param);
-		return success();
+		return success(shop().userCard.toBuyCardClearing(param));
 	}
 
 	/**

@@ -30,7 +30,17 @@ public class CardConstant {
 	public static final Byte MCARD_REA_CODE = 1;
 	/** receive_action 卡号+密码 2*/
 	public static final Byte MCARD_REA_PWD = 2;
-	
+
+	//******* 0:不支持现金购买，1:支持现金购买
+	/**
+	 * 0:不支持现金购买
+	 */
+	public static final Byte MCARD_CARD_PAY_NO_CASH = 0;
+	/**
+	 *1:支持现金购买
+	 */
+	public static final Byte MCARD_CARD_PAY_CASH = 1;
+
 	/** 过期类型  */
 	/** expire_type固定日期 */
 	public static final Byte MCARD_ET_FIX = 0;
