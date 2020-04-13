@@ -162,10 +162,10 @@ global.wxPage({
   toWhere: function (e) {
     var bargain_id = bargain_info.recordInfo.bargainId;
     var goods_id = bargain_info.recordInfo.goodsId;
-    console.log('pages/item/item?aid=' + bargain_id + '&&atp=3&&gid=' + goods_id)
+    console.log('pages/item/item?aid=' + bargain_id + '&atp=3&gid=' + goods_id)
     // 判断是否为多规格
     if (bargain_info.recordInfo.isDefaultProduct == 0) {
-      var url = 'pages/item/item?aid=' + bargain_id + '&&atp=3&&gid=' + goods_id;
+      var url = 'pages/item/item?aid=' + bargain_id + '&atp=3&gid=' + goods_id;
       util.jumpLink(url);
     } else if (bargain_info.recordInfo.isDefaultProduct == 1) {
       util.api("/api/wxapp/bargain/apply", function (res) {
