@@ -2,10 +2,13 @@ package com.vpu.mp.service.shop.member.wxapp;
 
 import static com.vpu.mp.db.shop.Tables.CARD_EXAMINE;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
 import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -93,7 +97,17 @@ public class WxAppCardActivationService extends ShopBaseService {
 		List<String> allIndustryName = MemberIndustryEnum.getAllIndustryName(lang,true);
 		
 		MemberCardRecord memberCard = memberCardService.getCardDetailByNo(param.getCardNo()).getMemberCard();
-		List<CardCustomAction> customOptions = wxCardDetailSvc.getNeedActivationCustomOptions(memberCard);
+		List<CardCustomAction> tmpOptions = wxCardDetailSvc.getNeedActivationCustomOptions(memberCard);
+		List<CardCustomActionVo> customOptions = new ArrayList<>();
+		for(CardCustomAction t: tmpOptions) {
+			try {
+				CardCustomActionVo vo = new CardCustomActionVo();
+				PropertyUtils.copyProperties(vo, t);
+				customOptions.add(vo);
+			} catch (Exception e) {
+			}
+			
+		}
 		//TODO 订阅消息
 		return ActivateCardVo
 				.builder()

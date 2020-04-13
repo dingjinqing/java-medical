@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.foundation.util.I18N;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardCustomActionVo;
 
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +37,5 @@ public class ActivateCardVo {
 	/**
 	 * 	自定义激活选项
 	 */
-	@JsonProperty("custom_options")
-	private List<CardCustomAction> customOptions;
+	private List<CardCustomActionVo> customOptions;
 }
