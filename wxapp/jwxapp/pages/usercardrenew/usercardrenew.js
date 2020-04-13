@@ -18,7 +18,6 @@ global.wxPage({
       account: 100
     },
     cardChooseName: '',
-    choose_card: {},
     cardInfo: {
       cardType: 0,
       discount: 6, // 二维码弹窗折数
@@ -65,18 +64,6 @@ global.wxPage({
     this.setData({
       viewHeight: viewHeight,
     })
-    //   {
-    //     src_yes: this.data.imageUrl + 'image/wxapp/selected.png',
-    //     src_no: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
-    //     card_src: this.data.imageUrl + 'image/wxapp/icon_rectangle.png',
-    //     // card_src: 1,
-    //     shop_logo: this.data.imageUrl + 'image/wxapp/shop_logo_default.png',
-    //     bg: '#0081FF',
-    //     card_name: '腾飞测试3',
-    //     card_type: 0,
-    //     expire_time: null,
-    //     card_no: 1
-    //   }
     let that = this;
     let userId = util.getCache('user_id')
     console.log(JSON.parse(options.cardNo))
@@ -128,19 +115,19 @@ global.wxPage({
       bg: bg,
       sgan: sgan
     })
-    that.data.create_order.money_paid = cardInfo.renewNum;
+    that.data.create_order.money_paid = cardInfo.renewNum; // 续费金额或积分
     that.data.create_order.account_discount = 0;
     that.data.create_order.member_card_balance = 0;
     opt.score_num = 0;
     if (cardInfo.renewType == 0) { // 现金处理
-      that.data.user_money.account = cardInfo.account;
-      //   // 会员卡
-      let cardArray = cardInfo.memberCardList;
+      that.data.user_money.account = cardInfo.account; // 用户余额
+      // 会员卡
+      let cardArray = cardInfo.memberCardList; // 用户可以用来进行续费支付的卡的集合
       let memberCards = []
       for (var i in cardArray) {
-        cardArray[i].src_yes = imageUrl + 'image/wxapp/selected.png';
-        cardArray[i].src_no = imageUrl + 'image/wxapp/icon_rectangle.png';
-        cardArray[i].card_src = imageUrl + 'image/wxapp/icon_rectangle.png';
+        // cardArray[i].src_yes = imageUrl + 'image/wxapp/selected.png';
+        // cardArray[i].src_no = imageUrl + 'image/wxapp/icon_rectangle.png';
+        // cardArray[i].card_src = imageUrl + 'image/wxapp/icon_rectangle.png';
         // 店铺头像
         if (!that.data.bottom.logo) {
           cardArray[i].avatar = imageUrl + 'image/wxapp/shop_logo_default.png';
@@ -153,7 +140,7 @@ global.wxPage({
         }
         console.log(i, cardInfo)
         if (i.toString() == cardInfo.memberCardNo.toString()) {
-          cardArray[i].card_src = 1; // 存疑
+          that.data.user_money.member_card_money = parseFloat(cardArray[i].money); // 选择支付的卡的余额
           that.setData({
             cardChooseName: cardArray[i].cardName,
             memberCardNo: cardArray[i].cardNo
@@ -164,19 +151,20 @@ global.wxPage({
       console.log(memberCards)
       that.setData({
         memberCardsList: memberCards,
-        card_array: cardArray,
         user_money: that.data.user_money,
-        create_order: that.data.create_order,
-        member_card_input: '',
-        user_account_input: '',
+        create_order: that.data.create_order
       })
       console.log(that.data.memberCardsList)
-      //   // 默认支付填充
+      // 默认支付填充  
+      // 如果优先用卡支付并且所选择支付的卡的有余额
       if (cardInfo.cardFirst == '1' && that.data.user_money.member_card_money != undefined) {
+        // 卡付多少
         member_card_input = that.data.create_order.money_paid - that.data.user_money.member_card_money > 0 ? that.data.user_money.member_card_money : that.data.create_order.money_paid;
+        // 扣除卡付的之后还需付多少
         new_money_paid = (parseFloat(that.data.create_order.money_paid) - parseFloat(member_card_input)).toFixed(2);
+        // 会员卡所付数额保存两位小数
         member_card_balance = parseFloat(member_card_input).toFixed(2);
-        console.log(member_card_input, new_money_paid, member_card_balance)
+        console.log(new_money_paid, member_card_balance)
         that.setData({
           member_card_input: member_card_input > 0 ? member_card_input : '',
           pay_card: 1,
@@ -185,14 +173,17 @@ global.wxPage({
         })
       }
       console.log(cardInfo)
+      // 如果优先用余额支付
       if (cardInfo.balanceFirst == '1') {
         var count = 0;
+        // 所需支付的金额
         user_account_input = that.data.create_order.money_paid - that.data.user_money.account > 0 ? that.data.user_money.account : that.data.create_order.money_paid;
         if (parseInt(user_account_input) == 0) {
           count++;
         }
         console.log(count)
-        if (count == 0) {
+        if (count == 0) { // 如果所需支付金额不为0
+          // 计算扣除当前用户余额后还需支付的余额
           new_money_paid = (parseFloat(that.data.create_order.money_paid) - parseFloat(user_account_input)).toFixed(2);
           account_discount = parseFloat(user_account_input).toFixed(2);
           console.log(account_discount)
@@ -204,7 +195,7 @@ global.wxPage({
           })
         }
       }
-    } else {
+    } else {  //  积分支付
       opt.score_num = cardInfo.renewNum;
     }
 
@@ -257,7 +248,7 @@ global.wxPage({
       })
     }
   },
-  checkCancelYue: function (e) {
+  checkCancelYue: function (e) { // 用户余额
     new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.account_discount);
     this.setData({
       'create_order.money_paid': new_money_paid,
@@ -268,7 +259,7 @@ global.wxPage({
       'create_order.account_discount': 0,
     })
   },
-  checkCancelCard: function (e) {
+  checkCancelCard: function (e) { // 会员卡余额
     new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.member_card_balance);
     this.setData({
       'create_order.money_paid': new_money_paid,
@@ -282,7 +273,18 @@ global.wxPage({
   // 余额支付弹窗确定事件
   getInputBalance (e) {
     console.log(e)
+    if (e.detail) {
+      user_account_input = e.detail.value ? e.detail.value : 0;
+    } else {
+      if (this.data.user_account_input == '') {
+        user_account_input = this.data.create_order.money_paid - this.data.user_money.account > 0 ? this.data.user_money.account : this.data.create_order.money_paid;
+      } else {
+        user_account_input = this.data.user_account_input;
+      }
+    }
+    this.data.create_order.account_discount = parseFloat(user_account_input).toFixed(2);
     this.setData({
+      user_account_input: user_account_input <= 0 ? '' : user_account_input,
       pay_yue: 1,
       'create_order.account_discount': e.detail,
       payMode: false
@@ -292,7 +294,18 @@ global.wxPage({
   // 会员卡余额支付弹窗确定事件
   getInputCardBalance (e) {
     console.log(e)
+    if (e.detail) {
+      member_card_input = e.detail.value ? e.detail.value : 0;
+    } else {
+      if (this.data.member_card_input == '') {
+        member_card_input = this.data.create_order.money_paid - this.data.user_money.member_card_money > 0 ? this.data.user_money.member_card_money : this.data.create_order.money_paid;
+      } else {
+        member_card_input = this.data.member_card_input;
+      }
+    }
+    this.data.create_order.member_card_balance = parseFloat(member_card_input).toFixed(2);
     this.setData({
+      member_card_input: member_card_input > 0 ? member_card_input : '',
       pay_card: 1,
       'create_order.member_card_balance': e.detail,
       cardPayMode: false
@@ -305,10 +318,10 @@ global.wxPage({
       cardMode: true
     })
   },
-  definePay () {
+  definePay () {  // mask
     this.data.create_order.money_paid = new_money_paid > 0 ? new_money_paid : 0;
     this.setData({
-      create_order: this.data.create_order,
+      create_order: this.data.create_order
     })
   },
   //  提交订单
@@ -316,13 +329,13 @@ global.wxPage({
     var that = this;
     opt.openid = util.getCache('openid');
     opt.form_id = e.detail.formId;
-    if (that.data.cardInfo.renewType == 0) {
+    if (that.data.cardInfo.renewType == 0) { // 现金支付
       opt.money_paid = that.data.create_order.money_paid; // 续费金额
       opt.use_account = that.data.create_order.account_discount; // 余额支付
-      opt.member_card_balance = that.data.create_order.member_card_balance; // 会员卡余额支付
+      opt.member_card_balance = that.data.create_order.member_card_balance; // 会员卡支付的价钱数额
       opt.member_card_no = that.data.memberCardNo;
       opt.score_num = 0;
-    } else {
+    } else {  // 积分支付
       opt.money_paid = that.data.cardInfo.renewNum;
       opt.use_account = 0;
       opt.member_card_balance = 0;
