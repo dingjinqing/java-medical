@@ -642,35 +642,60 @@ export default {
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
-      goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          let arr = []
-          res.content.forEach((item, index) => {
-            let obj = {
-              goodsName: item.prdDesc,
-              originPrice: item.prdPrice,
-              exchange: {
-                'money': '',
-                'score': '',
-                'prdId': item.prdId
-              },
-              goodsStock: item.prdNumber,
+      if (res.prdDesc) {
+        let arr = []
+        let obj = {
+          goodsName: res.prdDesc,
+          originPrice: res.prdPrice,
+          exchange: {
+            'money': '',
+            'score': '',
+            'prdId': res.prdId
+          },
+          goodsStock: res.prdNumber,
+          stock: ''
+        }
+        arr.push(obj)
+        let lastObj = {
+          goodsName: this.$t('mintegralExchange.batcSettings'),
+          originPrice: '1',
+          exchange: '',
+          goodsStock: '',
+          stock: ''
+        }
+        arr.push(lastObj)
+        this.ruleForm.tableData = arr
+      } else {
+        goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            let arr = []
+            res.content.forEach((item, index) => {
+              let obj = {
+                goodsName: item.prdDesc,
+                originPrice: item.prdPrice,
+                exchange: {
+                  'money': '',
+                  'score': '',
+                  'prdId': item.prdId
+                },
+                goodsStock: item.prdNumber,
+                stock: ''
+              }
+              arr.push(obj)
+            })
+            let lastObj = {
+              goodsName: this.$t('mintegralExchange.batcSettings'),
+              originPrice: '1',
+              exchange: '',
+              goodsStock: '',
               stock: ''
             }
-            arr.push(obj)
-          })
-          let lastObj = {
-            goodsName: this.$t('mintegralExchange.batcSettings'),
-            originPrice: '1',
-            exchange: '',
-            goodsStock: '',
-            stock: ''
+            arr.push(lastObj)
+            this.ruleForm.tableData = arr
           }
-          arr.push(lastObj)
-          this.ruleForm.tableData = arr
-        }
-      })
+        })
+      }
     },
     handleToCheckImg () { // 调起图片让弹窗
       this.imageTuneUp = !this.imageTuneUp
@@ -777,6 +802,7 @@ export default {
       align-items: center;
       display: inline-block;
       margin: 0 5px;
+      white-space: nowrap;
     }
   }
   .hiddleShare {
