@@ -1230,6 +1230,11 @@ public class MemberCardService extends ShopBaseService {
 						}		
 					}
 				}
+				
+				// deal with custom option
+				if(!StringUtils.isBlank((String)record.get(CARD_EXAMINE.CUSTOM_OPTIONS))) {
+					
+				}
 				myList.add(vo);
 			}
 		}
@@ -1256,6 +1261,7 @@ public class MemberCardService extends ShopBaseService {
 				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
 				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
 			}
+			
 		}
 		res.setDataList(myList);
 		return res;
