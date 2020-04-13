@@ -622,6 +622,8 @@ public class OrderReadService extends ShopBaseService {
 
 		//优惠卷
 
+        //客服按钮展示开关
+        order.setOrderDetailService(shopCommonConfigService.getOrderDetailService());
 
 		return order;
 

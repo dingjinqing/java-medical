@@ -90,6 +90,13 @@ public class ShopCommonCfgInfo {
     public Byte returnService;
 
     /**
+     *客服入口开关-订单详情页是否展示
+     */
+    @NotNull
+    @JsonProperty(value = "order_detail_service")
+    public Byte orderDetailService;
+
+    /**
      *商品默认平台分类id
      */
     @NotNull
