@@ -617,7 +617,32 @@ export default {
       }
     },
     handleToClick (flag) { // 点击批量设置子项
+      console.log(flag)
+      // 批量设置处理
+      this.handleToBatchData(flag)
       this.batchFlag = flag
+    },
+    // 批量设置处理
+    handleToBatchData (flag) {
+      console.log(this.ruleForm.tableData)
+      let yuanData = ''
+      let scoreData = ''
+      let kuCunData = ''
+      if (this.ruleForm.tableData.length) {
+        yuanData = this.ruleForm.tableData[0].exchange.money
+        scoreData = this.ruleForm.tableData[0].exchange.score
+        kuCunData = this.ruleForm.tableData[0].stock
+      }
+      if (flag === 1) {
+        this.ruleForm.tableData.forEach((item, index) => {
+          item.exchange.money = yuanData
+          item.exchange.score = scoreData
+        })
+      } else {
+        this.ruleForm.tableData.forEach((item, index) => {
+          item.stock = kuCunData
+        })
+      }
     },
     handleToreset () { // 重置批量设置子项
       console.log('触发')
@@ -642,7 +667,7 @@ export default {
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
-      if (res.prdDesc) {
+      if (!res.prdDesc) {
         let arr = []
         let obj = {
           goodsName: res.prdDesc,
