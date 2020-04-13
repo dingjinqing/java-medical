@@ -103,6 +103,11 @@ public class ShopCommonConfigService extends BaseShopConfigService{
      */
     final public static String K_RETURN_SERVICE = "return_service";
 
+    /**
+     * 订单详情页-客服入口开关
+     */
+    final public static String K_ORDER_DETAIL_SERVICE = "order_detail_service";
+
 	/**
 	 * 商品搜索页以及推荐商品列表中会显示购买按钮
 	 */
@@ -434,7 +439,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	}
 
     /**
-	 * 客服入口开关
+	 * 客服入口开关-商品详情页
 	 * @return
 	 */
 	public Byte getCustomService() {
@@ -442,7 +447,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	}
 
     /**
-	 * 设置客服入口开关
+	 * 设置客服入口开关-商品详情页
 	 * @param value 0 或者 1
 	 * @return
 	 */
@@ -452,18 +457,35 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 	}
 
     /**
-     * todo
+     * 客服入口开关-退/换货中心（售后中心）
      */
     public Byte getReturnService() {
         return this.get(K_RETURN_SERVICE, Byte.class, (byte) 0);
     }
 
     /**
+     * 设置客服入口开关-退/换货中心（售后中心）
      * @param value 0 或者 1
      */
     public int setReturnService(Byte value) {
     	Assert.isTrue(value == (byte) 0 || value == (byte) 1,"setReturnService need value equal zero or one");
         return this.set(K_RETURN_SERVICE, value, Byte.class);
+    }
+
+    /**
+     * 客服入口开关-订单详情页
+     */
+    public Byte getOrderDetailService() {
+        return this.get(K_ORDER_DETAIL_SERVICE, Byte.class, (byte) 0);
+    }
+
+    /**
+     * 设置客服入口开关-订单详情页
+     * @param value 0 或者 1
+     */
+    public int setOrderDetailService(Byte value) {
+        Assert.isTrue(value == (byte) 0 || value == (byte) 1,"setOrderDetailService need value equal zero or one");
+        return this.set(K_ORDER_DETAIL_SERVICE, value, Byte.class);
     }
 
     /**
@@ -782,6 +804,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
             commonCfg.setGoodsRecord(this.getGoodsRecord());
             commonCfg.setCustomService(this.getCustomService());
             commonCfg.setReturnService(this.getReturnService());
+            commonCfg.setOrderDetailService(this.getOrderDetailService());
             commonCfg.setDefaultSort(this.getDefaultSort());
             commonCfg.setShareConfig(this.getShareConfig());
             commonCfg.setBindMobile(this.getBindMobile());
@@ -811,6 +834,7 @@ public class ShopCommonConfigService extends BaseShopConfigService{
 			this.setGoodsRecord(commonCfg.getGoodsRecord());
 			this.setCustomService(commonCfg.getCustomService());
 			this.setReturnService(commonCfg.getReturnService());
+            this.setOrderDetailService(commonCfg.getOrderDetailService());
 			if(commonCfg.getDefaultSort() != null && commonCfg.getDefaultSort() > 0){
                 this.setDefaultSort(commonCfg.getDefaultSort());
             }
