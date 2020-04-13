@@ -1,5 +1,6 @@
 <view class="body">
     <include src="../common/header.wxml" />
+    <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
     <view class="main-container">
         <!-- 可购买商品列表 -->
         <view class="list_box" wx:if="{{canBuyGoodsList.length > 0}}">
@@ -7,13 +8,13 @@
               <!-- 满折满减 -->
               <view class='act_info clearfix' wx:if="{{item.activityType == 21}}" bindtap='to_fullpage' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}">
                 <view class='ai_left'>
-                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>满折满减</view>
+                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityType1")}}</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
                     <view wx:if="{{proItem.activityType == 21 && item.activityId == proItem.activityId}}">{{ proItem.fullReduction.condition }}</view>
                   </view>
                 </view>
                 <view class='go_full clearfix'>
-                  <view style='color:{{comColor}}'>再逛逛</view>
+                  <view style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityTip1")}}</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
@@ -21,13 +22,13 @@
               <!-- 加价购 -->
               <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}">
                 <view class='ai_left'>
-                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>加价购</view>
+                  <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityType2")}}</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
                     <view wx:if="{{proItem.activityType == 7 && item.activityId == proItem.activityId}}">{{proItem.purchasePrice.condition}}</view>
                   </view>
                 </view>
                 <view class='go_full clearfix'>
-                  <view style='color:{{comColor}}'>去换购</view>
+                  <view style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityTip2")}}</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
@@ -36,11 +37,11 @@
               <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
                 <view class='sec_kill_area' wx:if="{{val.activityType == 5}}"  bindtap='to_seckill' data-link="pages/item/item?aid={{item.activityId}}&&atp=5&&gid={{item.goodsId}}" style='background:{{somColor}};'>
                   <view class='sec_left'>
-                    <view class='sec_icon' style='background:{{comColor}};'>秒杀</view>
-                    <view class='sec_tips'>该商品正在参与秒杀</view>
+                    <view class='sec_icon' style='background:{{comColor}};'>{{i18n.$t(localePack,"pages.cart.activityType3")}}</view>
+                    <view class='sec_tips'>{{i18n.$t(localePack,"pages.cart.activityTip3")}}</view>
                   </view>
                   <view class='sec_right'>
-                    <view class='go_kill' style='color:{{comColor}}'>去抢购</view>
+                    <view class='go_kill' style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityTip4")}}</view>
                     <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                   </view>
                 </view>
@@ -58,11 +59,11 @@
                             <view class="goods_img">
                                 <image src="{{item.goodsImg}}" />
                                 <!-- 会员专享标签 / 预售标签 / 已告罄标签 -->
-                                <view class="member_tip" wx:if="{{item.goodsStatus == 4}}">已告罄</view>
+                                <view class="member_tip" wx:if="{{item.goodsStatus == 4}}">{{i18n.$t(localePack,"pages.cart.cartLabel1")}}</view>
                                 <view wx:if="{{ item.goodsStatus != 4 && item.cartActivityInfos.length > 0 }}" class="member_tip">
                                   <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
-                                    <view wx:if="{{ val.activityType == 23 }}">专享商品</view>
-                                    <view wx:if="{{ val.activityType == 10 }}">预售商品</view>
+                                    <view wx:if="{{ val.activityType == 23 }}">{{i18n.$t(localePack,"pages.cart.cartLabel3")}}</view>
+                                    <view wx:if="{{ val.activityType == 10 }}">{{i18n.$t(localePack,"pages.cart.cartLabel2")}}</view>
                                   </view>
                                 </view>
                                 <view class="invalid" wx:if="{{item.tip}}">
@@ -79,7 +80,7 @@
                                     </view>
                                 </view>
                                 <!-- 降价提示 -->
-                                <view class="ng_goods_jiang" wx:if="{{item.diffPrice}}" style="color:{{comColor}}">比加入时降了{{item.diffPrice}}元</view>
+                                <view class="ng_goods_jiang" wx:if="{{item.diffPrice}}" style="color:{{comColor}}">{{i18n.$t(localePack,"pages.cart.cartLabel4")}}{{item.diffPrice}}{{i18n.$t(localePack,"pages.cart.cartLabel5")}}</view>
                                 <view class="goods_price">
                                     <view style="display: flex;">
                                       <!-- 普通价格 -->
@@ -88,9 +89,9 @@
                                       <view class="price" wx:if="{{item.priceActivityType != 0}}" style="color:{{comColor}}">
                                         <view wx:for="{{ item.cartActivityInfos }}" wx:for-item="val" wx:key="index">
                                           <view style="display: flex;">
-                                            <view class='reduce_icon' wx:if="{{val.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>首单特惠</view>
-                                            <view class='reduce_icon' wx:if="{{val.activityType == 6}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>限时降价</view>
-                                            <view class='reduce_icon' wx:if="{{val.activityType == 22}}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>会员价</view>
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 18}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"pages.cart.cartLabel6")}}</view>
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 6}}" style='background:-webkit-linear-gradient(left,{{linColor}},{{comColor1}})'>{{i18n.$t(localePack,"pages.cart.cartLabel7")}}</view>
+                                            <view class='reduce_icon' wx:if="{{val.activityType == 22}}" style='background:linear-gradient(to left,#e0c787,#d9ae69)'>{{i18n.$t(localePack,"pages.cart.cartLabel8")}}</view>
                                             <view wx:if="{{item.priceActivityType == val.activityType}}">￥{{val.productPrice}}</view>
                                           </view>
                                         </view>
@@ -108,20 +109,20 @@
                   </movable-view>
                 </movable-area>
                 <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}" style='background:{{comColor}}'>
-                  删除
+                  {{i18n.$t(localePack,"pages.cart.cartDelete")}}
                 </view>
               </view> 
 
               <!-- 促销活动 -->
               <view class='change_fullact' wx:if="{{item.isSales == 1}}" bindtap='proClcik' data-cart_id="{{item.cartId}}" data-activity_type="{{item.activityType}}">
                 <view class='cf_left'>
-                  <view class="cf_left_title">促销</view>
-                  <view wx:if="{{item.activityType == null}}" class="cf_left_content">不参与促销活动</view>
+                  <view class="cf_left_title">{{i18n.$t(localePack,"pages.cart.cartSale1")}}</view>
+                  <view wx:if="{{item.activityType == null}}" class="cf_left_content">{{i18n.$t(localePack,"pages.cart.cartSale2")}}</view>
                   <view wx:if="{{item.activityType == 7}}" class="cf_left_content">{{item.ruleList}}</view>
                   <view wx:if="{{item.activityType == 21}}" class="cf_left_content">{{item.ruleList}}</view>
                 </view>
                 <view class='cf_right'>
-                  <view>修改</view>
+                  <view>{{i18n.$t(localePack,"pages.cart.cartSale3")}}</view>
                   <image src='{{imageUrl}}/image/wxapp/right_into.png' mode='widthFix'></image>
                 </view>
               </view>
@@ -136,7 +137,7 @@
                     </view>
                     <view class='cga_right'>
                       <view class='cga_names'>
-                        <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>换购</text>{{val.goodsName}}
+                        <text class='cga_icons' style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.cartRepurchase")}}</text>{{val.goodsName}}
                       </view>
                       <view class='cga_specs' wx:if="{{item.prdDesc!=''}}">{{val.prdDesc}}</view>
                       <view class='cga_price_info'>
@@ -146,7 +147,7 @@
                         <view class='cga_nums'>X{{val.cartNumber}}</view>
                       </view>
                     </view>
-                    <view class='del_btn' bindtap='delCartGoods' data-cart_id="{{val.cartId}}"  style='background:{{comColor}}'>删除</view>
+                    <view class='del_btn' bindtap='delCartGoods' data-cart_id="{{val.cartId}}"  style='background:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.cartDelete")}}</view>
                   </view>
                 </view>
               </view>
@@ -157,20 +158,20 @@
         <!-- 失效商品列表 -->
         <view class="list_box" wx:if="{{invalidGoodsList.length > 0}}">
           <view class="invalid_title">
-            <text class="title_left">失效商品 <text class="invalid_num" style="color:{{comColor}}">{{invalidGoodsList.length}}</text> 件</text>
-            <text class="title_right" style="color:{{comColor}}" bindtap="clearCart">清空</text>
+            <text class="title_left">{{i18n.$t(localePack,"pages.cart.cartInvalid1")}} <text class="invalid_num" style="color:{{comColor}}">{{invalidGoodsList.length}}</text> {{i18n.$t(localePack,"pages.cart.cartInvalid2")}}</text>
+            <text class="title_right" style="color:{{comColor}}" bindtap="clearCart">{{i18n.$t(localePack,"pages.cart.cartInvalid3")}}</text>
           </view>
           <view class="cart-goods_item" wx:for="{{invalidGoodsList}}" wx:key="index">
             <view class="goods_content">
                 <movable-area>
                   <movable-view damping="100" x="{{item.x}}" out-of-bounds="true" direction="horizontal" bindchange="handleTouchChange" bindtouchend="handleTouchEnd" data-index="{{index}}">
                     <view class="flex_goods">
-                      <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">失效</view>
+                      <view class="checkbox_box" style="font-size: 22rpx;color: #fff;background: #ccc;padding: 5rpx 10rpx;border-radius: 20rpx;">{{i18n.$t(localePack,"pages.cart.cartInvalid4")}}</view>
                       <view class="goods_item">
                           <view class="goods_img">
                               <image src="{{item.goodsImg}}"/>
                               <view class="invalid">
-                                失效商品
+                                {{i18n.$t(localePack,"pages.cart.cartInvalid1")}}
                               </view>
                           </view>
                           <view class="goods_info">
@@ -183,8 +184,8 @@
                                   </view>
                               </view>
                               <view class="goods_price">
-                                <view class="price" wx:if="{{item.goodsStatus == 2}}">商品已下架</view>
-                                <view class="price" wx:else>商品已删除</view>
+                                <view class="price" wx:if="{{item.goodsStatus == 2}}">{{i18n.$t(localePack,"pages.cart.cartInvalid5")}}</view>
+                                <view class="price" wx:else>{{i18n.$t(localePack,"pages.cart.cartInvalid6")}}</view>
                                 <!-- <view class="price" style="color:{{comColor}}">￥{{item.goodsPrice}}</view>
                                 <view class="num_cfg">
                                   <view class="num_minus {{item.cartNumber <= item.limitBuyNum ? 'not_tap' : ''}}" disabled="true">-</view>
@@ -198,7 +199,7 @@
                   </movable-view>
                 </movable-area>
                 <view class="goods_del" bindtap="delCartGoods" data-cart_id="{{item.cartId}}" style='background:{{comColor}}'>
-                  删除
+                  {{i18n.$t(localePack,"pages.cart.cartDelete")}}
                 </view>
             </view> 
           </view>
@@ -207,23 +208,23 @@
         <!-- 列表无数据时 -->
         <view class="is-null" wx:if="{{canBuyGoodsList.length === 0 && invalidGoodsList.length === 0}}">
           <image src="{{imageUrl}}image/wxapp/common_cart_no.png"></image>
-          <text>购物车竟然是空的</text>
-          <text class="null-btn" bindtap="toIndex" style="background-color:{{comColor}}">随便逛逛</text>
+          <text>{{i18n.$t(localePack,"pages.cart.cartListTip1")}}</text>
+          <text class="null-btn" bindtap="toIndex" style="background-color:{{comColor}}">{{i18n.$t(localePack,"pages.cart.cartListTip2")}}</text>
         </view>
 
         <!-- 底部按钮 -->
         <view class="flex_footer" wx:if="{{canBuyGoodsList.length > 0}}" style="{{!isIpx ? 'bottom:110rpx' :'bottom:160rpx'}}">
             <view class="footer_left">
                 <text class="iconfont {{isAllCheck ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}}" bindtap="changeAllChecked"></text>
-                <text>全选</text>
+                <text>{{i18n.$t(localePack,"pages.cart.cartButton1")}}</text>
             </view>
             <view class="footer_center">  
-                <text>合计</text>
+                <text>{{i18n.$t(localePack,"pages.cart.cartButton2")}}</text>
                  <text class="total_price" style="color:{{comColor}}">￥{{totalPrice}}</text>
             </view>
             <view class="footer_right" >
                 <view class="footer_btn" bindtap="toCheckOut" style="color:#fff;background-color:{{comColor}};">
-                    去结算
+                    {{i18n.$t(localePack,"pages.cart.cartButton3")}}
                 </view>
             </view>
         </view>
@@ -232,15 +233,15 @@
         <action-sheet hidden="{{proMode}}" bindchange="proActionSheetChange">
           <view class='promotion' hidden="{{ proMode }}">
             <view class='pro_title'>
-              切换促销活动
+              {{i18n.$t(localePack,"pages.cart.cartChange1")}}
               <image src='{{imageUrl}}/image/wxapp/close_icon.png' mode="widthFix" bindtap="proCancel" class='pro_close' />
             </view>
             <view class='pro_content'>
               <view class='pro_tips'>
                  <image src='{{imageUrl}}/image/wxapp/main_goods_notice.png' mode='widthFix'></image>
-                 <view wx:if="{{isType == 0}}">参与满折满减、加价购活动，不与优惠券、会员卡折扣叠加使用</view>
-                 <view wx:if="{{isType == 1}}">参与加价购活动，不与优惠券、会员卡折扣叠加使用</view>
-                 <view wx:if="{{isType == 2}}">参与满折满减活动，不与优惠券、会员卡折扣叠加使用</view>
+                 <view wx:if="{{isType == 0}}">{{i18n.$t(localePack,"pages.cart.cartChange2")}}</view>
+                 <view wx:if="{{isType == 1}}">{{i18n.$t(localePack,"pages.cart.cartChange3")}}</view>
+                 <view wx:if="{{isType == 2}}">{{i18n.$t(localePack,"pages.cart.cartChange4")}}</view>
               </view>
               <view class='pro_con_list clearfix' bindtap='choose_acts' wx:for='{{proPurchaseInfo}}' wx:key='key' data-activity_id="{{item.activityId}}" data-activity_type="{{item.activityType}}" wx:if="{{item.activityType == 7 || item.activityType == 21 || item.activityType == null}}">
                   <view class='btn_check'>
@@ -248,19 +249,19 @@
                     <text wx:if='{{item.is_che == 1}}' class='iconfont icondanxuan' style='color:{{comColor}};font-size:40rpx'></text>
                   </view>
                   <view class='for_style' wx:if="{{item.status == 1}}">
-                    <view wx:if="{{item.activityType == null}}">不参与活动</view>
+                    <view wx:if="{{item.activityType == null}}">{{i18n.$t(localePack,"pages.cart.cartChange5")}}</view>
                     <view wx:if="{{item.activityType == 7}}" style="display: flex;">
-                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>加价购</view>
+                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>{{i18n.$t(localePack,"pages.cart.activityType2")}}</view>
                         <view style="flex: 0.8;">
                           <view wx:for="{{item.purchasePrice.purchasePriceRule}}" wx:for-item="ritem" wx:key="index">
                           <!-- 该活动规则是否为会员专享 -->
                           <!-- wx:if="{{item.fullReduction.isExclusive == true}}" -->
-                            <view>满{{ritem.fullPrice}}元另加{{ritem.purchasePrice}}元即可换购商品</view>
+                            <view>{{i18n.$t(localePack,"pages.cart.mainRule2")}}{{ritem.fullPrice}}{{i18n.$t(localePack,"pages.cart.mainRule3")}}{{i18n.$t(localePack,"pages.cart.mainRule4")}}{{ritem.purchasePrice}}{{i18n.$t(localePack,"pages.cart.mainRule3")}}{{i18n.$t(localePack,"pages.cart.mainRule5")}}</view>
                           </view>
                         </view>
                     </view>
                     <view wx:if="{{item.activityType == 21}}" style="display: flex;">
-                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>满折满减</view>
+                      <view class='pro_list_span jiajiagou_icon' style='color:{{comColor}};border-color:{{comColor}};flex: 0.2'>{{i18n.$t(localePack,"pages.cart.activityType1")}}</view>
                       <view style="flex: 0.8;">
                         <view wx:for="{{item.fullReduction.rules}}" wx:for-item="ritem" wx:key="index" >
                         <!-- 该活动规则是否为会员专享 -->
