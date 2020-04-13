@@ -1631,7 +1631,6 @@ public class MpAuthShopService extends MainBaseService {
 			}
 			vo.setShopExpireStatus(expireStatus);
 			List<MpOperateVo> operateLog = saas.shop.mpOperateLog.getOperateLog(vo.getAppId());
-			System.out.println(operateLog);
 			if(operateLog.size()>0) {
 				MpOperateVo mpOperateVo = operateLog.get(0);
 				vo.setStartTime(mpOperateVo.getCreateTime());
