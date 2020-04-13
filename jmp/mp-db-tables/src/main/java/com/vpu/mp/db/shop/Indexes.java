@@ -29,6 +29,9 @@ public class Indexes {
     // -------------------------------------------------------------------------
     // INDEX definitions
     // -------------------------------------------------------------------------
+    public static final Index DIVISION_RECEIVE_RECORD_PRIMARY = Indexes0.DIVISION_RECEIVE_RECORD_PRIMARY;
+    public static final Index DIVISION_RECEIVE_RECORD_USER = Indexes0.DIVISION_RECEIVE_RECORD_USER;
+    public static final Index CARD_ORDER_PRIMARY = Indexes0.CARD_ORDER_PRIMARY;
     public static final Index PLEDGE_RELATED_BPR_PLEDGE_ID = Indexes0.PLEDGE_RELATED_BPR_PLEDGE_ID;
     public static final Index PLEDGE_RELATED_PRIMARY = Indexes0.PLEDGE_RELATED_PRIMARY;
     public static final Index SEARCH_HISTORY_PRIMARY = Indexes0.SEARCH_HISTORY_PRIMARY;
@@ -504,6 +507,9 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index DIVISION_RECEIVE_RECORD_PRIMARY = Internal.createIndex("PRIMARY", DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, new OrderField[] { DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.ID }, true);
+        public static Index DIVISION_RECEIVE_RECORD_USER = Internal.createIndex("user", DivisionReceiveRecord.DIVISION_RECEIVE_RECORD, new OrderField[] { DivisionReceiveRecord.DIVISION_RECEIVE_RECORD.USER }, false);
+        public static Index CARD_ORDER_PRIMARY = Internal.createIndex("PRIMARY", CardOrder.CARD_ORDER, new OrderField[] { CardOrder.CARD_ORDER.ORDER_ID }, true);
         public static Index PLEDGE_RELATED_BPR_PLEDGE_ID = Internal.createIndex("bpr_pledge_id", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.PLEDGE_ID }, false);
         public static Index PLEDGE_RELATED_PRIMARY = Internal.createIndex("PRIMARY", PledgeRelated.PLEDGE_RELATED, new OrderField[] { PledgeRelated.PLEDGE_RELATED.ID }, true);
         public static Index SEARCH_HISTORY_PRIMARY = Internal.createIndex("PRIMARY", SearchHistory.SEARCH_HISTORY, new OrderField[] { SearchHistory.SEARCH_HISTORY.ID }, true);

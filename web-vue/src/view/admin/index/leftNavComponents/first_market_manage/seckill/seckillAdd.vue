@@ -447,21 +447,15 @@ export default {
       }
     }
     // 活动专享
-    var validateShare = (rule, value, callback) => {
-      if (value === 2) {
-        if (this.form.shareConfig.shareDoc === '') {
-          callback(new Error('请填写活动文案'))
-        } else if (this.form.shareConfig.shareImgAction === 2) {
-          if (this.form.shareConfig.shareImg === '') {
-            callback(new Error('请选择活动图片'))
-          } else {
-            callback()
-          }
-        }
-      } else {
-        callback()
-      }
-    }
+    // var validateShare = (rule, value, callback) => {
+    //   if (value === 2 && this.form.shareConfig.shareDoc === '') {
+    //     callback(new Error('请填写活动文案'))
+    //   } else if (value === 2 && this.form.shareConfig.shareImgAction === 2 && !this.form.shareConfig.shareImg) {
+    //     callback(new Error('请选择活动图片'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       activeIndex: 0, // 批量设置
       // 表单
@@ -511,10 +505,10 @@ export default {
         ],
         cardId: [
           { validator: validateCard, trigger: 'change' }
-        ],
-        'shareConfig.shareAction': [
-          { validator: validateShare, trigger: 'change' }
         ]
+        // 'shareConfig.shareAction': [
+        //   { validator: validateShare, trigger: 'change' }
+        // ]
       },
       disabledFlag: true, // 是否可编辑
       submitStatus: false, // 提交
@@ -653,6 +647,15 @@ export default {
 
     // 保存秒杀活动
     saveClickHandler () {
+      // 校验活动分享
+      if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareDoc === '') {
+        this.$message.warning('请填写活动文案')
+        return false
+      } else if (this.form.shareConfig.shareAction === 2 && this.form.shareConfig.shareImgAction === 2 && !this.form.shareConfig.shareImg) {
+        this.$message.warning('请选择活动图片')
+        return false
+      }
+
       this.$refs['form'].validate((valid) => {
         let goodsId = this.form.goodsId.join(',')
         if (valid) {
