@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.member.CardVerifyService;
 import com.vpu.mp.service.shop.member.MemberCardService;
@@ -166,7 +167,13 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		Map<String, Object> activeData = this.filterActiveOption(fields, param.getActivateOption());
-		
+		// 自定已激活项
+		List<CardCustomActionParam> customOptions = param.getCustomOptions();
+		if(customOptions!=null) {
+			String customOptJson = Util.toJsonNotNull(customOptions);
+			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
+		}
+
 		if(activeData != null ) {
 			// prepare card examine data 
 			// setActiveAddressInfo(activeData);
