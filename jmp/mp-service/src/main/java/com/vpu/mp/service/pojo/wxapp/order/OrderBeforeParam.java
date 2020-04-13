@@ -161,6 +161,10 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
         /**是否校验过限购，true校验过*/
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private Boolean isAlreadylimitNum;
+        /**购物车参数：选择活动类型*/
+        private Byte cartType;
+        /**购物车参数：对应type的id*/
+        private Integer cartExtendId;
 	}
 
     /**
