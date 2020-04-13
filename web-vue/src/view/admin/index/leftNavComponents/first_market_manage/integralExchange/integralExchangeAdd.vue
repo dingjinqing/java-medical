@@ -617,7 +617,32 @@ export default {
       }
     },
     handleToClick (flag) { // 点击批量设置子项
+      console.log(flag)
+      // 批量设置处理
+      this.handleToBatchData(flag)
       this.batchFlag = flag
+    },
+    // 批量设置处理
+    handleToBatchData (flag) {
+      console.log(this.ruleForm.tableData)
+      let yuanData = ''
+      let scoreData = ''
+      let kuCunData = ''
+      if (this.ruleForm.tableData.length) {
+        yuanData = this.ruleForm.tableData[0].exchange.money
+        scoreData = this.ruleForm.tableData[0].exchange.score
+        kuCunData = this.ruleForm.tableData[0].stock
+      }
+      if (flag === 1) {
+        this.ruleForm.tableData.forEach((item, index) => {
+          item.exchange.money = yuanData
+          item.exchange.score = scoreData
+        })
+      } else {
+        this.ruleForm.tableData.forEach((item, index) => {
+          item.stock = kuCunData
+        })
+      }
     },
     handleToreset () { // 重置批量设置子项
       console.log('触发')
@@ -642,35 +667,60 @@ export default {
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
-      goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          let arr = []
-          res.content.forEach((item, index) => {
-            let obj = {
-              goodsName: item.prdDesc,
-              originPrice: item.prdPrice,
-              exchange: {
-                'money': '',
-                'score': '',
-                'prdId': item.prdId
-              },
-              goodsStock: item.prdNumber,
+      if (res.prdDesc) {
+        let arr = []
+        let obj = {
+          goodsName: res.prdDesc,
+          originPrice: res.prdPrice,
+          exchange: {
+            'money': '',
+            'score': '',
+            'prdId': res.prdId
+          },
+          goodsStock: res.prdNumber,
+          stock: ''
+        }
+        arr.push(obj)
+        let lastObj = {
+          goodsName: this.$t('mintegralExchange.batcSettings'),
+          originPrice: '1',
+          exchange: '',
+          goodsStock: '',
+          stock: ''
+        }
+        arr.push(lastObj)
+        this.ruleForm.tableData = arr
+      } else {
+        goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            let arr = []
+            res.content.forEach((item, index) => {
+              let obj = {
+                goodsName: item.prdDesc,
+                originPrice: item.prdPrice,
+                exchange: {
+                  'money': '',
+                  'score': '',
+                  'prdId': item.prdId
+                },
+                goodsStock: item.prdNumber,
+                stock: ''
+              }
+              arr.push(obj)
+            })
+            let lastObj = {
+              goodsName: this.$t('mintegralExchange.batcSettings'),
+              originPrice: '1',
+              exchange: '',
+              goodsStock: '',
               stock: ''
             }
-            arr.push(obj)
-          })
-          let lastObj = {
-            goodsName: this.$t('mintegralExchange.batcSettings'),
-            originPrice: '1',
-            exchange: '',
-            goodsStock: '',
-            stock: ''
+            arr.push(lastObj)
+            this.ruleForm.tableData = arr
           }
-          arr.push(lastObj)
-          this.ruleForm.tableData = arr
-        }
-      })
+        })
+      }
     },
     handleToCheckImg () { // 调起图片让弹窗
       this.imageTuneUp = !this.imageTuneUp
@@ -777,6 +827,7 @@ export default {
       align-items: center;
       display: inline-block;
       margin: 0 5px;
+      white-space: nowrap;
     }
   }
   .hiddleShare {
