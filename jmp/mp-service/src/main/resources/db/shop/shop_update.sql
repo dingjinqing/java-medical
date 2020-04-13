@@ -307,7 +307,7 @@ ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
 
--- 2020年04月13日 添加自定义激活配置
+-- 2020年04月13日 添加自定义激活信息
 ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
 
 /*********************2.11*************************END*/
