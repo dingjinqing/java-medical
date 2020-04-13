@@ -207,47 +207,50 @@
 				</block>
 			</view>
 			<!-- 自定义激活项 -->
-			<view wx:for="{{custom_arr}}" wx:key="index" wx:if="{{item.is_checked == 1}}">
-				<view wx:if="{{if_custom == 1}}" class="simpleChoise">
-					<view class='customTitle' style="{{item.custom_type == 2?'border-bottom:0':''}}"><text class="must_choose" wx:if='{{item.option_ver == 1}}'>*</text>{{item.custom_title}}</view>
-					<view class='main_ipt main_picker' wx:if="{{item.custom_type == 0}}" style="padding-left:0">
+				<view wx:for="{{custom_arr}}" wx:key="index">
+					<view wx:if="{{item.isChecked == 1&& item.customType == 0}}" class="simpleChoise">
+							<view class='customTitle'><text class="must_choose" wx:if='{{item.optionVer == 1}}'>*</text>{{item.customTitle}}</view>
+							<view class='main_ipt main_picker' style="padding-left:0">
 						
-						<radio-group bindchange="bindRadiosChange">
-							<view class="customTitle" wx:for='{{item.option_arr}}' wx:for-item="itemC" wx:for-index="indexC" wx:key="indexC">
-								<label class='choose_list'>
-									<radio name='choose_item' color='{{comColor}}' value="{{indexC}}" checked="{{itemC.checked}}" />
-										{{itemC.option_title}}
-								</label>
+								<radio-group bindchange="bindRadiosChange" data-index="{{index}}">
+								<view class="customTitle" wx:for='{{item.optionArr}}' wx:for-item="itemC" wx:for-index="indexC" wx:key="indexC">
+									<label class='choose_list'>
+										<radio name='choose_item' color='{{comColor}}' value="{{indexC}}" checked="{{itemC.isChecked}}" />
+											{{itemC.optionTitle}}
+									</label>
+								</view>
+								</radio-group>
 							</view>
-						</radio-group>
 					</view>
-					<view class='main_ipt main_picker' wx:if="{{item.custom_type == 1}}">
+					<view class='main_ipt main_picker' wx:if="{{item.isChecked == 1&& item.customType == 1}}">
+						<view class='customTitle' style="border-bottom:0"><text class="must_choose" wx:if='{{item.optionVer == 1}}'>*</text>{{item.customTitle}}</view>
 						<checkbox-group bindchange="checkboxChange" data-index="{{index}}">
 							<label
 							 class="checkbox"
-							 wx:for="{{item.option_arr}}"
+							 wx:for="{{item.optionArr}}"
 							 wx:for-item="val"
 							 wx:for-index="bindex"
 							 wx:key="bindex"
 							>
-              <view class="customTitle">
-								<checkbox value="{{val.option_title}}" checked="{{val.checked}}" />
-								{{val.option_title}}
-                </view>
+              					<view class="customTitle">
+								<checkbox value="{{val.optionTitle}}" checked="{{val.isChecked}}" />
+								{{val.optionTitle}}
+               			 		</view>
 							</label>
               
 						</checkbox-group>
 					</view>
-					<view class='main_ipt main_picker' style="padding-left:0" wx:if="{{item.custom_type == 2}}">
+					<view class='main_ipt main_picker' style="padding-left:0" wx:if="{{item.isChecked == 1&& item.customType == 2}}">
+						<view class='customTitle'><text class="must_choose" wx:if='{{item.optionVer == 1}}'>*</text>{{item.customTitle}}</view>
 						<view class="custom_area">
-            <textarea class="textarea" bindblur='textBlur' value="{{ item.text }}" data-index='{{index}}'>
-				</textarea>
-			</view>
-		</view>
-</view>
+							<textarea class="textarea" bindblur='textBlur' value="{{ item.text }}" data-index='{{index}}'>
+							</textarea>
+						</view>
+					</view>
+				</view>
 </view>
 
-</view>
+
 <!-- <view class='footer'>
       <form report-submit='true' bindsubmit='toSave'>
         <block wx:if="{{distribution == 1}}">
@@ -268,6 +271,7 @@
 		<button style='background:{{comColor}};' wx:if="{{examine == 1}}" bindtap="toSave">提交激活申请</button>
 	</block>
 </view>
+
 </block>
 </view>
 
