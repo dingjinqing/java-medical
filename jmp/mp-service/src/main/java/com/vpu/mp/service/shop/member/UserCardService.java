@@ -1945,7 +1945,6 @@ public class UserCardService extends ShopBaseService {
     public UserCardParam cardRenew(CardRenewParam param){
         //得到用户持有会员卡的详细信息
         CardRenewInfoVo ret = new CardRenewInfoVo();
-
         Record extracted = userCardDao.getUserCardInfoBycardNo(param.getCardNo());
         if(extracted!=null) {
             ret = extracted.into(CardRenewInfoVo.class);
@@ -2059,7 +2058,14 @@ public class UserCardService extends ShopBaseService {
         UserRecord userInfo = userService.getUserByUserId(userId);
     }
 
-    public void createRenewMemberOrder(UserRecord user,CardRenewCheckoutParam orderInfo,UserCardParam memberCard){
+    /**
+     * 创建会员卡续费支付订单
+     * @param user
+     * @param orderInfo
+     * @param memberCard
+     * @return
+     */
+    public CardRenewRecord createRenewMemberOrder(UserRecord user,CardRenewCheckoutParam orderInfo,UserCardParam memberCard){
         //判断当前卡是否删除，是否可续费
         if (orderInfo.getCardNo()!=null){
             if (memberCard.getUserCardFlag()==(byte)1){
@@ -2073,9 +2079,16 @@ public class UserCardService extends ShopBaseService {
         if(orderInfo.getCardId()==null){
             logger().info("续费失败");
         }
+        //账户余额
+        BigDecimal accountNum = orderInfo.getUseAccount()!=null?orderInfo.getUseAccount():new BigDecimal(0);
+        //会员卡余额
+        BigDecimal memberCardReduce = orderInfo.getMemberCardBalance()!=null?orderInfo.getMemberCardBalance():new BigDecimal(0);
+        //应付金额
+        BigDecimal moneyPaid = orderInfo.getRenewNum().subtract(accountNum).subtract(memberCardReduce).setScale(2,BigDecimal.ROUND_HALF_UP);
+        //积分值
+        Integer scoreNum = orderInfo.getScoreNum()!=null?orderInfo.getScoreNum():0;
         //积分续费
         if (memberCard.getRenewType()==(byte)1){
-            Integer scoreNum = orderInfo.getScoreNum()!=null?orderInfo.getScoreNum():0;
             //校验用户积分
             if (scoreNum>user.getScore()){
                 logger().info("积分不足，无法下单");
@@ -2091,24 +2104,77 @@ public class UserCardService extends ShopBaseService {
             if (!orderInfo.getRenewNum().equals(memberCard.getRenewNum())){
                 logger().info("金额数量不对，无法下单");
             }
-            BigDecimal accountNum = orderInfo.getUseAccount()!=null?orderInfo.getUseAccount():new BigDecimal(0);
+
             if (accountNum.compareTo(user.getAccount()) > 0){
                 logger().info("余额不足，无法下单");
             }
-            BigDecimal memberCardReduce = orderInfo.getMemberCardBalance()!=null?orderInfo.getMemberCardBalance():new BigDecimal(0);
             if (memberCardReduce.compareTo(BigDecimal.ZERO)>0){
                 BigDecimal memberCardMoney = userCardDao.getUserCardInfo(orderInfo.getMemberCardNo()).getMoney();
                 if (memberCardReduce.compareTo(memberCardMoney)>0){
                     logger().info("会员卡余额不足，无法下单");
                 }
             }
-            BigDecimal moneyPaid = orderInfo.getRenewNum().subtract(accountNum).subtract(memberCardReduce).setScale(2,BigDecimal.ROUND_HALF_UP);
             if (orderInfo.getMoneyPaid().compareTo(BigDecimal.ZERO)<0|| !orderInfo.getMoneyPaid().equals(moneyPaid)){
                 logger().info("应付金额计算错误");
             }
         }//else结束
+
+        String orderSn = generateOrderSn();
+        String payCode;
+        //如果是积分支付
+        if (memberCard.getRenewType()==(byte)1){
+            payCode = "score";
+            moneyPaid = BigDecimal.ZERO;
+            memberCardReduce = BigDecimal.ZERO;
+            accountNum = BigDecimal.ZERO;
+        }
+        //现金支付
+        else{
+            payCode = moneyPaid.compareTo(BigDecimal.ZERO) > 0?"wxpay":(accountNum.compareTo(BigDecimal.ZERO)>0?"balance":"member_card");
+        }
+        CardRenewRecord record = new CardRenewRecord();
+        record.setCardId(orderInfo.getCardId());
+        record.setCardNo(orderInfo.getCardNo());
+        record.setRenewOrderSn(orderSn);
+        record.setUserId(user.getUserId());
+        record.setOrderStatus((byte)0);
+        record.setPayCode(payCode);
+        record.setMoneyPaid(moneyPaid);
+        record.setMemberCardNo(orderInfo.getMemberCardNo());
+        record.setMemberCardRedunce(memberCardReduce);
+        record.setUseScore(new BigDecimal(scoreNum));
+        record.setUseAccount(accountNum);
+        record.setRenewMoney(orderInfo.getRenewNum()!=null?orderInfo.getRenewNum():BigDecimal.ZERO);
+        record.setRenewTime(memberCard.getRenewTime());
+        record.setRenewDateType(memberCard.getRenewDateType());
+        record.setRenewType(memberCard.getRenewType());
+        db().insertInto(CARD_RENEW).values(record);
+        Integer id =  db().lastID().intValue();
+        CardRenewRecord cardRenewRecord = db().select()
+            .from(CARD_RENEW)
+            .where(CARD_RENEW.ID.eq(id))
+            .limit(1)
+            .fetchOneInto(CardRenewRecord.class);
+        return cardRenewRecord;
     }
 
+    /**
+     * 生成订单号
+     * @return 订单号
+     */
+    public String generateOrderSn(){
+        String orderSn = null;
+        CardRenewRecord record = new CardRenewRecord();
+        while (record!=null){
+            Double randomNum = (Math.random()*(9999-1000+1)+1000);
+            orderSn = "xf"+DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE,DateUtil.getLocalDateTime())+randomNum.intValue();
+            record = db().select().from(CARD_RENEW)
+                .where(CARD_RENEW.RENEW_ORDER_SN.eq(orderSn))
+                .limit(1)
+                .fetchOneInto(CardRenewRecord.class);
+        }
+        return orderSn;
+    }
 	/**
 	 * 购买结算
 	 * @param param
@@ -2171,5 +2237,6 @@ public class UserCardService extends ShopBaseService {
 		logger().info("会员卡-购买结算-结束");
 		return cardBuyVo;
 	}
+
 }
 
