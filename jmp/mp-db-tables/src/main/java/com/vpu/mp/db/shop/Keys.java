@@ -270,7 +270,7 @@ public class Keys {
     public static final Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Identities0.IDENTITY_ARTICLE;
     public static final Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Identities0.IDENTITY_LIVE_GOODS;
     public static final Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Identities0.IDENTITY_LIVE_BROADCAST;
-    public static final Identity<CardRenewRecord, UInteger> IDENTITY_CARD_RENEW = Identities0.IDENTITY_CARD_RENEW;
+    public static final Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Identities0.IDENTITY_CARD_RENEW;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -766,7 +766,7 @@ public class Keys {
         public static Identity<ArticleRecord, Integer> IDENTITY_ARTICLE = Internal.createIdentity(Article.ARTICLE, Article.ARTICLE.ARTICLE_ID);
         public static Identity<LiveGoodsRecord, Integer> IDENTITY_LIVE_GOODS = Internal.createIdentity(LiveGoods.LIVE_GOODS, LiveGoods.LIVE_GOODS.ID);
         public static Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Internal.createIdentity(LiveBroadcast.LIVE_BROADCAST, LiveBroadcast.LIVE_BROADCAST.ID);
-        public static Identity<CardRenewRecord, UInteger> IDENTITY_CARD_RENEW = Internal.createIdentity(CardRenew.CARD_RENEW, CardRenew.CARD_RENEW.ID);
+        public static Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Internal.createIdentity(CardRenew.CARD_RENEW, CardRenew.CARD_RENEW.ID);
     }
 
     private static class UniqueKeys0 {

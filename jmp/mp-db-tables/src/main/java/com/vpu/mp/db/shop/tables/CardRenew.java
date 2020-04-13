@@ -5,8 +5,8 @@ package com.vpu.mp.db.shop.tables;
 
 
 import com.vpu.mp.db.shop.Indexes;
-import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.CardRenewRecord;
 
 import java.math.BigDecimal;
@@ -28,7 +28,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -44,10 +43,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardRenew extends TableImpl<CardRenewRecord> {
 
-    private static final long serialVersionUID = -1514739841;
+    private static final long serialVersionUID = 208363799;
 
     /**
-     * The reference instance of <code>jmini_shop_489258.b2c_card_renew</code>
+     * The reference instance of <code>mini_shop_471752.b2c_card_renew</code>
      */
     public static final CardRenew CARD_RENEW = new CardRenew();
 
@@ -60,136 +59,136 @@ public class CardRenew extends TableImpl<CardRenewRecord> {
     }
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.id</code>.
+     * The column <code>mini_shop_471752.b2c_card_renew.id</code>.
      */
-    public final TableField<CardRenewRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).identity(true), this, "");
+    public final TableField<CardRenewRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.user_id</code>. 用户id
+     * The column <code>mini_shop_471752.b2c_card_renew.user_id</code>. 用户id
      */
-    public final TableField<CardRenewRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
+    public final TableField<CardRenewRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.card_id</code>. 续费会员卡id
+     * The column <code>mini_shop_471752.b2c_card_renew.card_id</code>. 续费会员卡id
      */
-    public final TableField<CardRenewRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "续费会员卡id");
+    public final TableField<CardRenewRecord, Integer> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "续费会员卡id");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.card_no</code>. 会员卡号
+     * The column <code>mini_shop_471752.b2c_card_renew.card_no</code>. 会员卡号
      */
-    public final TableField<CardRenewRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡号");
+    public final TableField<CardRenewRecord, String> CARD_NO = createField("card_no", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡号");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.add_time</code>. 续费时间
+     * The column <code>mini_shop_471752.b2c_card_renew.add_time</code>. 续费时间
      */
     public final TableField<CardRenewRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "续费时间");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_money</code>. 续费金额
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_money</code>. 续费金额
      */
-    public final TableField<CardRenewRecord, BigDecimal> RENEW_MONEY = createField("renew_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "续费金额");
+    public final TableField<CardRenewRecord, BigDecimal> RENEW_MONEY = createField("renew_money", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "续费金额");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_time</code>. 续费时间
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_time</code>. 续费时间
      */
     public final TableField<CardRenewRecord, Integer> RENEW_TIME = createField("renew_time", org.jooq.impl.SQLDataType.INTEGER, this, "续费时间");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
      */
     public final TableField<CardRenewRecord, Byte> RENEW_DATE_TYPE = createField("renew_date_type", org.jooq.impl.SQLDataType.TINYINT, this, "0:日，1:周 2: 月");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_type</code>. 0:现金 1：积分
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_type</code>. 0:现金 1：积分
      */
-    public final TableField<CardRenewRecord, Byte> RENEW_TYPE = createField("renew_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:现金 1：积分");
+    public final TableField<CardRenewRecord, Byte> RENEW_TYPE = createField("renew_type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:现金 1：积分");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.payment</code>. 支付方式
+     * The column <code>mini_shop_471752.b2c_card_renew.payment</code>. 支付方式
      */
     public final TableField<CardRenewRecord, String> PAYMENT = createField("payment", org.jooq.impl.SQLDataType.VARCHAR(90).nullable(false), this, "支付方式");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.pay_code</code>. 支付代号
+     * The column <code>mini_shop_471752.b2c_card_renew.pay_code</code>. 支付代号
      */
-    public final TableField<CardRenewRecord, String> PAY_CODE = createField("pay_code", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付代号");
+    public final TableField<CardRenewRecord, String> PAY_CODE = createField("pay_code", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付代号");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * The column <code>mini_shop_471752.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
      */
     public final TableField<CardRenewRecord, String> PREPAY_ID = createField("prepay_id", org.jooq.impl.SQLDataType.VARCHAR(191), this, "微信支付Id，用于发送模板消息");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.message</code>. 备注
+     * The column <code>mini_shop_471752.b2c_card_renew.message</code>. 备注
      */
-    public final TableField<CardRenewRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
+    public final TableField<CardRenewRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR(191).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_order_sn</code>. 续费单号
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_order_sn</code>. 续费单号
      */
-    public final TableField<CardRenewRecord, String> RENEW_ORDER_SN = createField("renew_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "续费单号");
+    public final TableField<CardRenewRecord, String> RENEW_ORDER_SN = createField("renew_order_sn", org.jooq.impl.SQLDataType.VARCHAR(20).nullable(false).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "续费单号");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.money_paid</code>. 订单应付金额
+     * The column <code>mini_shop_471752.b2c_card_renew.money_paid</code>. 订单应付金额
      */
-    public final TableField<CardRenewRecord, BigDecimal> MONEY_PAID = createField("money_paid", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单应付金额");
+    public final TableField<CardRenewRecord, BigDecimal> MONEY_PAID = createField("money_paid", org.jooq.impl.SQLDataType.DECIMAL(10, 2).nullable(false).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "订单应付金额");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
+     * The column <code>mini_shop_471752.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
      */
-    public final TableField<CardRenewRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态 0：待支付，1：已完成");
+    public final TableField<CardRenewRecord, Byte> ORDER_STATUS = createField("order_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "订单状态 0：待支付，1：已完成");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.member_card_no</code>. 会员卡NO
+     * The column <code>mini_shop_471752.b2c_card_renew.member_card_no</code>. 会员卡NO
      */
-    public final TableField<CardRenewRecord, String> MEMBER_CARD_NO = createField("member_card_no", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡NO");
+    public final TableField<CardRenewRecord, String> MEMBER_CARD_NO = createField("member_card_no", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员卡NO");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
+     * The column <code>mini_shop_471752.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
      */
-    public final TableField<CardRenewRecord, BigDecimal> MEMBER_CARD_REDUNCE = createField("member_card_redunce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡抵扣金额");
+    public final TableField<CardRenewRecord, BigDecimal> MEMBER_CARD_REDUNCE = createField("member_card_redunce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "会员卡抵扣金额");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.use_score</code>. 积分抵扣金额
+     * The column <code>mini_shop_471752.b2c_card_renew.use_score</code>. 积分抵扣金额
      */
-    public final TableField<CardRenewRecord, BigDecimal> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分抵扣金额");
+    public final TableField<CardRenewRecord, BigDecimal> USE_SCORE = createField("use_score", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "积分抵扣金额");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.use_account</code>. 用户消费余额
+     * The column <code>mini_shop_471752.b2c_card_renew.use_account</code>. 用户消费余额
      */
-    public final TableField<CardRenewRecord, BigDecimal> USE_ACCOUNT = createField("use_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
+    public final TableField<CardRenewRecord, BigDecimal> USE_ACCOUNT = createField("use_account", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "用户消费余额");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.pay_time</code>. 支付时间
+     * The column <code>mini_shop_471752.b2c_card_renew.pay_time</code>. 支付时间
      */
     public final TableField<CardRenewRecord, Timestamp> PAY_TIME = createField("pay_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "支付时间");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
+     * The column <code>mini_shop_471752.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
      */
-    public final TableField<CardRenewRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
+    public final TableField<CardRenewRecord, String> ALI_TRADE_NO = createField("ali_trade_no", org.jooq.impl.SQLDataType.VARCHAR(60).defaultValue(DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "支付宝交易单号");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
+     * The column <code>mini_shop_471752.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
      */
     public final TableField<CardRenewRecord, Timestamp> RENEW_EXPIRE_TIME = createField("renew_expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "续费后过期时间");
 
     /**
-     * Create a <code>jmini_shop_489258.b2c_card_renew</code> table reference
+     * Create a <code>mini_shop_471752.b2c_card_renew</code> table reference
      */
     public CardRenew() {
         this(DSL.name("b2c_card_renew"), null);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_489258.b2c_card_renew</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_card_renew</code> table reference
      */
     public CardRenew(String alias) {
         this(DSL.name(alias), CARD_RENEW);
     }
 
     /**
-     * Create an aliased <code>jmini_shop_489258.b2c_card_renew</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_card_renew</code> table reference
      */
     public CardRenew(Name alias) {
         this(alias, CARD_RENEW);
@@ -227,7 +226,7 @@ public class CardRenew extends TableImpl<CardRenewRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<CardRenewRecord, UInteger> getIdentity() {
+    public Identity<CardRenewRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CARD_RENEW;
     }
 

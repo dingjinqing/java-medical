@@ -375,6 +375,8 @@ ALTER TABLE `b2c_customer_avail_coupons` ADD COLUMN `division_enabled` tinyint(1
 -- 2020年04月13日 添加自定义激活信息
 ALTER TABLE `b2c_card_examine` ADD COLUMN `custom_options` text COMMENT '自定义激活信息';
 
+-- 2020年04月13日 修改会员卡续费表字段
+ALTER TABLE `b2c_card_renew` MODIFY COLUMN `id` int(20) NOT NULL AUTO_INCREMENT;
 /*********************2.11*************************END*/
 
 

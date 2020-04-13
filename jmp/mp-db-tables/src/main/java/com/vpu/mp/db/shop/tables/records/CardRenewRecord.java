@@ -13,7 +13,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -29,325 +28,325 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CardRenewRecord extends UpdatableRecordImpl<CardRenewRecord> {
 
-    private static final long serialVersionUID = 1456595380;
+    private static final long serialVersionUID = 856402716;
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.id</code>.
+     * Setter for <code>mini_shop_471752.b2c_card_renew.id</code>.
      */
-    public void setId(UInteger value) {
+    public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.id</code>.
+     * Getter for <code>mini_shop_471752.b2c_card_renew.id</code>.
      */
-    public UInteger getId() {
-        return (UInteger) get(0);
+    public Integer getId() {
+        return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.user_id</code>. 用户id
+     * Setter for <code>mini_shop_471752.b2c_card_renew.user_id</code>. 用户id
      */
     public void setUserId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.user_id</code>. 用户id
+     * Getter for <code>mini_shop_471752.b2c_card_renew.user_id</code>. 用户id
      */
     public Integer getUserId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.card_id</code>. 续费会员卡id
+     * Setter for <code>mini_shop_471752.b2c_card_renew.card_id</code>. 续费会员卡id
      */
     public void setCardId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.card_id</code>. 续费会员卡id
+     * Getter for <code>mini_shop_471752.b2c_card_renew.card_id</code>. 续费会员卡id
      */
     public Integer getCardId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.card_no</code>. 会员卡号
+     * Setter for <code>mini_shop_471752.b2c_card_renew.card_no</code>. 会员卡号
      */
     public void setCardNo(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.card_no</code>. 会员卡号
+     * Getter for <code>mini_shop_471752.b2c_card_renew.card_no</code>. 会员卡号
      */
     public String getCardNo() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.add_time</code>. 续费时间
+     * Setter for <code>mini_shop_471752.b2c_card_renew.add_time</code>. 续费时间
      */
     public void setAddTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.add_time</code>. 续费时间
+     * Getter for <code>mini_shop_471752.b2c_card_renew.add_time</code>. 续费时间
      */
     public Timestamp getAddTime() {
         return (Timestamp) get(4);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_money</code>. 续费金额
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_money</code>. 续费金额
      */
     public void setRenewMoney(BigDecimal value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_money</code>. 续费金额
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_money</code>. 续费金额
      */
     public BigDecimal getRenewMoney() {
         return (BigDecimal) get(5);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_time</code>. 续费时间
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_time</code>. 续费时间
      */
     public void setRenewTime(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_time</code>. 续费时间
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_time</code>. 续费时间
      */
     public Integer getRenewTime() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
      */
     public void setRenewDateType(Byte value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_date_type</code>. 0:日，1:周 2: 月
      */
     public Byte getRenewDateType() {
         return (Byte) get(7);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_type</code>. 0:现金 1：积分
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_type</code>. 0:现金 1：积分
      */
     public void setRenewType(Byte value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_type</code>. 0:现金 1：积分
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_type</code>. 0:现金 1：积分
      */
     public Byte getRenewType() {
         return (Byte) get(8);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.payment</code>. 支付方式
+     * Setter for <code>mini_shop_471752.b2c_card_renew.payment</code>. 支付方式
      */
     public void setPayment(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.payment</code>. 支付方式
+     * Getter for <code>mini_shop_471752.b2c_card_renew.payment</code>. 支付方式
      */
     public String getPayment() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.pay_code</code>. 支付代号
+     * Setter for <code>mini_shop_471752.b2c_card_renew.pay_code</code>. 支付代号
      */
     public void setPayCode(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.pay_code</code>. 支付代号
+     * Getter for <code>mini_shop_471752.b2c_card_renew.pay_code</code>. 支付代号
      */
     public String getPayCode() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Setter for <code>mini_shop_471752.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
      */
     public void setPrepayId(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
+     * Getter for <code>mini_shop_471752.b2c_card_renew.prepay_id</code>. 微信支付Id，用于发送模板消息
      */
     public String getPrepayId() {
         return (String) get(11);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.message</code>. 备注
+     * Setter for <code>mini_shop_471752.b2c_card_renew.message</code>. 备注
      */
     public void setMessage(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.message</code>. 备注
+     * Getter for <code>mini_shop_471752.b2c_card_renew.message</code>. 备注
      */
     public String getMessage() {
         return (String) get(12);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_order_sn</code>. 续费单号
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_order_sn</code>. 续费单号
      */
     public void setRenewOrderSn(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_order_sn</code>. 续费单号
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_order_sn</code>. 续费单号
      */
     public String getRenewOrderSn() {
         return (String) get(13);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.money_paid</code>. 订单应付金额
+     * Setter for <code>mini_shop_471752.b2c_card_renew.money_paid</code>. 订单应付金额
      */
     public void setMoneyPaid(BigDecimal value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.money_paid</code>. 订单应付金额
+     * Getter for <code>mini_shop_471752.b2c_card_renew.money_paid</code>. 订单应付金额
      */
     public BigDecimal getMoneyPaid() {
         return (BigDecimal) get(14);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
+     * Setter for <code>mini_shop_471752.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
      */
     public void setOrderStatus(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
+     * Getter for <code>mini_shop_471752.b2c_card_renew.order_status</code>. 订单状态 0：待支付，1：已完成
      */
     public Byte getOrderStatus() {
         return (Byte) get(15);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.member_card_no</code>. 会员卡NO
+     * Setter for <code>mini_shop_471752.b2c_card_renew.member_card_no</code>. 会员卡NO
      */
     public void setMemberCardNo(String value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.member_card_no</code>. 会员卡NO
+     * Getter for <code>mini_shop_471752.b2c_card_renew.member_card_no</code>. 会员卡NO
      */
     public String getMemberCardNo() {
         return (String) get(16);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
+     * Setter for <code>mini_shop_471752.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
      */
     public void setMemberCardRedunce(BigDecimal value) {
         set(17, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
+     * Getter for <code>mini_shop_471752.b2c_card_renew.member_card_redunce</code>. 会员卡抵扣金额
      */
     public BigDecimal getMemberCardRedunce() {
         return (BigDecimal) get(17);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.use_score</code>. 积分抵扣金额
+     * Setter for <code>mini_shop_471752.b2c_card_renew.use_score</code>. 积分抵扣金额
      */
     public void setUseScore(BigDecimal value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.use_score</code>. 积分抵扣金额
+     * Getter for <code>mini_shop_471752.b2c_card_renew.use_score</code>. 积分抵扣金额
      */
     public BigDecimal getUseScore() {
         return (BigDecimal) get(18);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.use_account</code>. 用户消费余额
+     * Setter for <code>mini_shop_471752.b2c_card_renew.use_account</code>. 用户消费余额
      */
     public void setUseAccount(BigDecimal value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.use_account</code>. 用户消费余额
+     * Getter for <code>mini_shop_471752.b2c_card_renew.use_account</code>. 用户消费余额
      */
     public BigDecimal getUseAccount() {
         return (BigDecimal) get(19);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.pay_time</code>. 支付时间
+     * Setter for <code>mini_shop_471752.b2c_card_renew.pay_time</code>. 支付时间
      */
     public void setPayTime(Timestamp value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.pay_time</code>. 支付时间
+     * Getter for <code>mini_shop_471752.b2c_card_renew.pay_time</code>. 支付时间
      */
     public Timestamp getPayTime() {
         return (Timestamp) get(20);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
+     * Setter for <code>mini_shop_471752.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
      */
     public void setAliTradeNo(String value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
+     * Getter for <code>mini_shop_471752.b2c_card_renew.ali_trade_no</code>. 支付宝交易单号
      */
     public String getAliTradeNo() {
         return (String) get(21);
     }
 
     /**
-     * Setter for <code>jmini_shop_489258.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
+     * Setter for <code>mini_shop_471752.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
      */
     public void setRenewExpireTime(Timestamp value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>jmini_shop_489258.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
+     * Getter for <code>mini_shop_471752.b2c_card_renew.renew_expire_time</code>. 续费后过期时间
      */
     public Timestamp getRenewExpireTime() {
         return (Timestamp) get(22);
@@ -361,7 +360,7 @@ public class CardRenewRecord extends UpdatableRecordImpl<CardRenewRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Record1<UInteger> key() {
+    public Record1<Integer> key() {
         return (Record1) super.key();
     }
 
@@ -379,7 +378,7 @@ public class CardRenewRecord extends UpdatableRecordImpl<CardRenewRecord> {
     /**
      * Create a detached, initialised CardRenewRecord
      */
-    public CardRenewRecord(UInteger id, Integer userId, Integer cardId, String cardNo, Timestamp addTime, BigDecimal renewMoney, Integer renewTime, Byte renewDateType, Byte renewType, String payment, String payCode, String prepayId, String message, String renewOrderSn, BigDecimal moneyPaid, Byte orderStatus, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal useScore, BigDecimal useAccount, Timestamp payTime, String aliTradeNo, Timestamp renewExpireTime) {
+    public CardRenewRecord(Integer id, Integer userId, Integer cardId, String cardNo, Timestamp addTime, BigDecimal renewMoney, Integer renewTime, Byte renewDateType, Byte renewType, String payment, String payCode, String prepayId, String message, String renewOrderSn, BigDecimal moneyPaid, Byte orderStatus, String memberCardNo, BigDecimal memberCardRedunce, BigDecimal useScore, BigDecimal useAccount, Timestamp payTime, String aliTradeNo, Timestamp renewExpireTime) {
         super(CardRenew.CARD_RENEW);
 
         set(0, id);
