@@ -1469,7 +1469,7 @@ public class MpAuthShopService extends MainBaseService {
 						//MpOfficialAccountUserRecord user = saas.shop.mpOfficialAccountUserService.getUser(appId, userInfo.getOpenId());
 						List<Integer> userIdList = new ArrayList<Integer>();
 						String[][] data = new String[][] { {firest,"#173177"},{shopName,"#173177"},{Util.getdate("yyyy-MM-dd HH:mm:ss"),"#173177"},{content,"#173177"},{"","#173177"}};
-						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
+						Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYP_NO;
 						//unioId在登录过小程序后才会传
 						if(StringUtils.isEmpty(userInfo.getUnionId())) {
 							logger().info("用户没有登录过小程序");

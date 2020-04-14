@@ -503,7 +503,7 @@ public class GroupBuyService extends ShopBaseService {
             {"感觉您的惠顾，更多拼团请点击详情！", "#173177"}};
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
-            .page(page).shopId(getShopId()).userIdList(userIds).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+            .page(page).shopId(getShopId()).userIdList(userIds).type(RabbitParamConstant.Type.SUCCESS_TEAM)
             .build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
             TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -536,7 +536,7 @@ public class GroupBuyService extends ShopBaseService {
         String[][] data = new String[][] { { first, "#173177" }, { goodsName, "#173177" }, { "", "#173177" }, {remake, "#173177" } };
         RabbitMessageParam param = RabbitMessageParam.builder()
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
-                .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+                .page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.FAIL_TEAM)
                 .build();
         logger().info("准备发组团瓜分积失败");
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),

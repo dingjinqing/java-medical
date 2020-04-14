@@ -47,7 +47,7 @@ public class MessageTemplateListener implements BaseRabbitHandler {
 
         List<Integer> failList = new ArrayList<>();
         List<WxUserInfo> userInfoList = shopApplication.wechatMessageTemplateService.
-            getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId());
+            getUserInfoList(param.getUserIdList(),param.getType(),param.getShopId(),param);
         int allSize = userInfoList.size();
         if( allSize  != param.getUserIdList().size() ){
             log.debug("【消息模板监听】---推送消息接收人数不对");
