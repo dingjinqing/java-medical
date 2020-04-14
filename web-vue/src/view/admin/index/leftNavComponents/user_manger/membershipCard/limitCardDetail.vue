@@ -454,6 +454,7 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
+      this.dealWithCustomAction()
       this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
@@ -549,6 +550,17 @@ export default {
     },
     dealWithCardTag () {
       this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
+      }
     }
   }
 
