@@ -2,7 +2,8 @@
     <div>
         <el-form label-width="180px" label-position="right">
             <el-form-item label="同步打标签:">
-                <el-checkbox  label="1">给领卡用户打标签 <span class="choose-label">选择标签</span></el-checkbox>
+                <el-checkbox  label="1">给领卡用户打标签 </el-checkbox>
+                <span class="choose-label" @click="visiable=true">选择标签</span>
             </el-form-item>
             <el-form-item label="会员卡转赠:">
                 <el-switch
@@ -24,11 +25,15 @@
                 </div>
             </el-form-item>
         </el-form>
+        <user-tag :visiable.sync="visiable"/>
     </div>
 </template>
 
 <script>
 export default {
+  components: {
+    userTag: () => import('./dialog/CardUserTagSet')
+  },
   computed: {
     switchInfo () {
       return this.val ? '已开启' : '已关闭'
@@ -36,7 +41,8 @@ export default {
   },
   data () {
     return {
-      val: true
+      val: true,
+      visiable: false
     }
   }
 }
@@ -50,6 +56,7 @@ export default {
 .choose-label{
     color: #5A8BFF;
     cursor: pointer;
+    margin-left: 10px;
 }
 .max-give{
     display: inline-block;
