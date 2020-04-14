@@ -44,7 +44,6 @@ module.exports = {
   "cartChange3": "参与加价购活动，不与优惠券、会员卡折扣叠加使用",
   "cartChange4": "参与满折满减活动，不与优惠券、会员卡折扣叠加使用",
   "cartChange5": "不参与活动",
-  "cartChange6": "不参与活动",
 
   // 活动页共用
   "activeSearch": "请输入搜索关键字",

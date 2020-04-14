@@ -5,13 +5,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    imageUrl: util.getImageUrl(""),
-    test:{
-      moneyPaid:'微信支付',
-      useCardBalance:'会员卡余额支付',
-      useScore:'积分支付',
-      useBalance:'余额支付'
-    }
+    imageUrl: util.getImageUrl("")
   },
   /**
    * 生命周期函数--监听页面加载
@@ -19,6 +13,12 @@ global.wxPage({
   onLoad: function (options) {
     let {orderSn = null,useInfo,isNotGoods=null} = options
     this.setData({
+      test:{
+        moneyPaid:this.$t("pages.order.payCode.wxpay"),
+        useCardBalance:this.$t("pages.order.payCode.cardBalance"),
+        useScore:this.$t("pages.order.payCode.score"),
+        useBalance:this.$t("pages.order.payCode.balance")
+      },
       orderSn,
       useInfo:JSON.parse(useInfo),
       isNotGoods

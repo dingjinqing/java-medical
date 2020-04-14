@@ -18,6 +18,8 @@ var item = require('./pages/item.js')
 var search = require('./page1/search.js') //搜索页
 var virtualCheckout = require('./page1/virtualCheckout.js') //虚拟商品结算
 var actPage = require('./page1/actPage.js') //活动商品页
+var history = require('./page1/history.js') //购买历史，我的足迹
+var goodsComment = require('./page1/goodsComment.js') //商品评价详情
 var zh_CN = {
   "common": {
     "info": {
@@ -77,7 +79,9 @@ var zh_CN = {
     'pinintegration': pinintegration,
     'search': search,
     'virtualCheckout': virtualCheckout,
-    'actPage': actPage
+    'actPage': actPage,
+    "history": history,
+    "goodsComment": goodsComment
   },
   "page2": {
 

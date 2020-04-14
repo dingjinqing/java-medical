@@ -130,27 +130,24 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         if(CollectionUtils.isEmpty(straIds)) {
             return;
         }
-        Map<Integer, MrkingStrategyPageListQueryVo> processingActivity = fullReductionProcessorDao.getProcessingActivity(param.getDate(), straIds.toArray(new Integer[straIds.size()])).stream().collect(Collectors.toMap(MrkingStrategyPageListQueryVo::getId, Function.identity()));
+        //可用会员卡
+        List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
+        Set<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toSet());
+        //活动
+        Map<Integer, MrkingStrategyPageListQueryVo> processingActivity = fullReductionProcessorDao.getProcessingActivity(param.getDate(), straIds.toArray(new Integer[0])).stream().collect(Collectors.toMap(MrkingStrategyPageListQueryVo::getId, Function.identity()));
 
         for (OrderBeforeParam.Goods goods : param.getGoods()) {
-            if(goods.getStraId() != null && goods.getStraId() > 0){
-                MrkingStrategyPageListQueryVo activity = processingActivity.get(goods.getStraId());
+            if(goods.getCartType() != null && BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(goods.getCartType()) && goods.getCartExtendId() != null && goods.getCartExtendId() > 0){
+                MrkingStrategyPageListQueryVo activity = processingActivity.get(goods.getCartExtendId());
                 if(activity == null){
                     goods.setStraId(0);
                     continue;
                 }
                 //活动详情
                 MrkingStrategyVo activityInfo = fullReductionProcessorDao.getMrkingStrategyById(activity.getId());
-                //可用会员卡
-                List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(param.getWxUserInfo().getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
-                Set<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toSet());
                 //check
-                if(fullReductionProcessorDao.checkMemberCard(activityInfo, cardIds) &&
-                    fullReductionProcessorDao.checkGoods(activityInfo, goods.getGoodsInfo().into(OrderGoodsBo.class))) {
-                    if(Boolean.FALSE){
-                        //TODO 孔德成提供购物车方法
-                        goods.setStraId(0);
-                    }
+                if(fullReductionProcessorDao.checkMemberCard(activityInfo, cardIds) && fullReductionProcessorDao.checkGoods(activityInfo, goods.getGoodsInfo().into(OrderGoodsBo.class))) {
+                    goods.setStraId(goods.getCartExtendId());
                 }else {
                     goods.setStraId(0);
                 }

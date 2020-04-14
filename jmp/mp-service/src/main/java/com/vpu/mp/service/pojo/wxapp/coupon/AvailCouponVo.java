@@ -16,6 +16,10 @@ public class AvailCouponVo {
 	 * 记录ID
 	 */
 	public Integer id;
+    /**
+     * random 分裂优惠券随机金额
+     */
+	private String actCode;
 	/**
 	 * 优惠券名称
 	 */
@@ -69,4 +73,36 @@ public class AvailCouponVo {
      * 指定商家分类可用
      */
     private String     recommendSortId;
+    /**
+     * 优惠券类型；0：普通优惠券；1：分裂优惠券
+     */
+    private Integer couponType;
+    /**
+     * 发放情况 1：发放人；0"被发放
+     */
+    private Integer isGrant;
+    /**
+     * 是否分享
+     */
+    private Byte isShare;
+    /**
+     * 是否可以分享 0：不可以分享；1：可以分享
+     */
+    private Integer canShare;
+    /**
+     * 分裂优惠券可领券人数
+     */
+    private Integer receiveNum;
+    /**
+     * 分裂优惠券领券人数是否限制 0不限制 1限制
+     */
+    private Byte receivePerNum;
+    /**
+     * 随机金额最大金额
+     */
+    private BigDecimal randomMax;
+    /**
+     * 是否可用,0可用 1不可用(只适用分裂优惠券)
+     */
+    private Integer divisionEnabled;
 }

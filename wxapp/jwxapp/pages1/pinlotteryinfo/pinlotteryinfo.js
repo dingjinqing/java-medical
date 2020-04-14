@@ -128,7 +128,7 @@ global.wxPage({
     var goods_id = e.currentTarget.dataset.goods_id;
     var group_draw_id = e.currentTarget.dataset.draw_id;
     util.navigateTo({
-      url: 'pages/item/item?aid=' + group_draw_id + '&&atp=1&&gid=' + goods_id
+      url: 'pages/item/item?aid=' + group_draw_id + '&atp=1&gid=' + goods_id
     })
   },
   // 去参团

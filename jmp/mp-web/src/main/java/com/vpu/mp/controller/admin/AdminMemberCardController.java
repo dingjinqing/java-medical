@@ -243,6 +243,7 @@ public class AdminMemberCardController extends AdminBaseController {
 	 */
 	@PostMapping("/activateAudit/list")
 	public JsonResult getActivateAuditList(@RequestBody ActiveAuditParam param) {
+		logger().info("获取激活列表信息");
 		PageResult<ActiveAuditVo> activateAuditList = shop().member.card.getActivateAuditList(param);
 		return i18nSuccess(activateAuditList);
 	}

@@ -235,7 +235,7 @@ global.wxPage({
     if (e.currentTarget.dataset.type == 'FINISHED') {
       util.jumpLink('/pages/comment/comment')
     } else if (e.currentTarget.dataset.type == 'RETURNING') {
-      util.jumpLink('/pages/aftersaleorder/aftersaleorder')
+      util.jumpLink('/pages1/aftersaleorder/aftersaleorder')
     } else {
       util.navigateTo({ url: '/pages/orderlist/orderlist?datas=' + datas })
     }

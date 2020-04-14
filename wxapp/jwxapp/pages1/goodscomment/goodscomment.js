@@ -5,13 +5,6 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
-    commentTypeList:{
-      0:"全部评价",
-      1:"好评",
-      2:"中评",
-      3:"差评",
-      4:"有图"
-    },
     dataList: null,
     pageParams: null,
   },
@@ -22,6 +15,13 @@ global.wxPage({
   onLoad: function (options) {
     let {type,goodsId} = options
     this.setData({
+      commentTypeList:{
+        0:this.$t("page1.goodsComment.allComment"),
+        1:this.$t("page1.goodsComment.positive"),
+        2:this.$t("page1.goodsComment.moderate"),
+        3:this.$t("page1.goodsComment.negative"),
+        4:this.$t("page1.goodsComment.hasPic")
+      },
       type,
       goodsId,
       chooseTarget:type

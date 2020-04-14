@@ -454,7 +454,7 @@ public class CartService extends ShopBaseService {
      */
     public List<OrderBeforeParam.Goods> getCartCheckedData(Integer userId, Integer storeId) {
         //TODO 后期加参数
-        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER.as("goodsNumber"))
+        return db().select(CART.GOODS_ID, CART.PRODUCT_ID, CART.CART_NUMBER.as("goodsNumber"), CART.TYPE.as("cartType"), CART.EXTEND_ID.as("cartExtendId"))
                 .from(CART)
                 .where(CART.IS_CHECKED.eq(CartConstant.CART_IS_CHECKED))
                 .and(CART.USER_ID.eq(userId))

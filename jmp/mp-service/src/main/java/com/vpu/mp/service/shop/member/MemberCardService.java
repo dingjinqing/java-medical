@@ -63,6 +63,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CardBatchRecord;
 import com.vpu.mp.db.shop.tables.records.CardConsumerRecord;
@@ -135,6 +136,7 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardVo;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.dao.CardFullDetail;
 import com.vpu.mp.service.pojo.shop.member.card.show.CardUseStats;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
@@ -146,6 +148,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.store.service.order.ServiceOrderDetailVo;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardCustomActionParam;
 import com.vpu.mp.service.pojo.wxapp.member.card.MemberCardPageDecorationVo;
 import com.vpu.mp.service.shop.card.CardCreateService;
 import com.vpu.mp.service.shop.card.CardDetailService;
@@ -1230,6 +1233,14 @@ public class MemberCardService extends ShopBaseService {
 						}		
 					}
 				}
+				
+				// deal with custom option
+				String customOpts = record.get(CARD_EXAMINE.CUSTOM_OPTIONS);
+				if(!StringUtils.isBlank(customOpts)) {
+					 List<CardCustomActionParam> opts = Util.json2Object(customOpts,new TypeReference<List<CardCustomActionParam>>() {
+				        }, false);
+					 vo.setCustomOptions(opts);
+				}
 				myList.add(vo);
 			}
 		}
@@ -1256,6 +1267,7 @@ public class MemberCardService extends ShopBaseService {
 				activeAuditVo.setProvince((String)adMap.get(WxAppCardActivationService.PROVINCE_CODE));
 				activeAuditVo.setDistrict((String)adMap.get(WxAppCardActivationService.DISTRICT_CODE));
 			}
+			
 		}
 		res.setDataList(myList);
 		return res;

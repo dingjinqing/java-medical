@@ -17,13 +17,12 @@ import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
 import com.vpu.mp.service.pojo.shop.member.data.EducationVo;
 import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
-import com.vpu.mp.service.pojo.wxapp.distribution.ActivationInfoVo;
-import com.vpu.mp.service.pojo.wxapp.distribution.DistributorApplyDetailParam;
-import com.vpu.mp.service.pojo.wxapp.distribution.UserBaseInfoVo;
+import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
 import org.jooq.Record;
 import org.jooq.Record4;
 import org.jooq.Result;
+import org.jooq.SelectOnConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -355,7 +354,31 @@ public class MpDistributionService extends ShopBaseService{
         return invitedList;
     }
 
-    public void rebateOrder(){
-        //TODO：返利订单查询
+    /**
+     * 邀请用户返利订单
+     * @param param
+     * @return
+     */
+    public PageResult<RebateOrderVo> rebateOrder(RebateOrderParam param){
+        SelectOnConditionStep<Record> select = db().select().from(ORDER_GOODS_REBATE)
+            .leftJoin(ORDER_INFO).on(ORDER_GOODS_REBATE.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .leftJoin(USER).on(ORDER_INFO.USER_ID.eq(USER.USER_ID));
+        SelectOnConditionStep<Record> sql = rebateOrderOptions(select, param);
+        PageResult<RebateOrderVo> pageResult = getPageResult(sql, param.getCurrentPage(), param.getRowsPage(), RebateOrderVo.class);
+        return pageResult;
+    }
+
+    /**
+     * 返利订单条件查询
+     * @param select
+     * @param param
+     * @return
+     */
+    public SelectOnConditionStep<Record> rebateOrderOptions(SelectOnConditionStep<Record> select,RebateOrderParam param){
+        select.where(ORDER_GOODS_REBATE.REBATE_USER_ID.eq(param.getUserId()));
+        if(param.getStartTime() != null && param.getStartTime() != null){
+            select.and(ORDER_INFO.CREATE_TIME.gt(param.getStartTime())).and(ORDER_INFO.CREATE_TIME.lt(param.getEndTime()));
+        }
+        return select;
     }
 }
