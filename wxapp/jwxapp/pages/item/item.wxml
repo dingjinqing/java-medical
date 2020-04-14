@@ -90,7 +90,7 @@
           {{goodsInfo.activity.preSaleType === 0 ? '活动规则：支付定金-支付尾款-等待发货':'活动规则：支付定金-等待发货'}}
           <image src="{{imageUrl}}/image/wxapp/pre_tice2.png" style="width:30rpx;height:30rpx;vertical-align: sub;"></image>
         </view>
-        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{gd.preSale.returnDeposit?'可':'不予'}}退还</view>
+        <view wx:if="{{goodsInfo.activity.preSaleType === 0}}">退定金规则：逾期未付尾款，定金{{goodsInfo.activity.returnDeposit?'可':'不予'}}退还</view>
       </view>
       <view class="flex-wrap">
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
