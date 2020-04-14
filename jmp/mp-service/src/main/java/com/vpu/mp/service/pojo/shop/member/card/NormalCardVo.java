@@ -31,52 +31,81 @@ import lombok.extern.slf4j.Slf4j;
 public class NormalCardVo extends BaseCardVo {
 
 	/**
-	 * 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
+	 *	 会员有效期类型 0：固定日期；1：自领取多少内有效；2：永久有效
 	 */
 	protected Byte expireType;
-	/** 开始时间 */
+	
+	/**	
+	 * 	开始时间
+	 */
 	protected Timestamp startTime;
-	/** 结束时间 */
+	
+	/**
+	 * 	结束时间 
+	 */
 	protected Timestamp endTime;
-	/** 自领取之日内多少时间 */
+	
+	/**
+	 * 	自领取之日内多少时间 
+	 */
 	protected Integer receiveDay;
-	/** 时间类型 */
+	
+	/** 
+	 * 	时间类型 
+	 */
 	protected Byte dateType;
 
 	/**
 	 * 2-会员权益
 	 */
-	/** 会员折扣开关， 0表示关闭，1表示开启 */
+	/** 
+	 * 	会员折扣开关， 0表示关闭，1表示开启
+	 */
 	protected Byte powerCount;
-	/** 会员折扣 值为 0-10之间 */
+	
+	/** 
+	 * 	会员折扣 值为 0-10之间
+	 */
 	@JsonProperty("disCount")
 	protected BigDecimal discount;
+	
 	/**
 	 * 	是否和会员卡一起使用0:可以1：不可以
 	 */
 	private Byte cannotUseCoupon;
 
-	/** 会员专享商品 on表示打开 */
-	/** 是否专属购买商品 0不是 1是 */
+	/** 
+	 * 	会员专享商品 on表示打开
+	 * 	是否专属购买商品 0不是 1是
+	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected Byte payOwnGood;
 	protected String powerPayOwnGood;
 
 	/**
-	 * 积分获取开关， 0表示关闭，1表示开启
+	 * 	积分获取开关， 0表示关闭，1表示开启
 	 */
 	protected Byte powerScore;
-	/** 购物送积分策略json序列化对象 */
+	
+	/** 
+	 * 	购物送积分策略json序列化对象 
+	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected String buyScore;
 
-	/** 卡充值开关 0关闭；1开启 */
+	/** 
+	 * 	卡充值开关 0关闭；1开启
+	 */
 	protected Byte powerCard;
-	/** 卡充值送积分策略json数据 */
+	/** 
+	 * 	卡充值送积分策略json数据
+	 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected String chargeMoney;
 
-	/** 1:使用中，2:停止使用 3：过期 */
+	/** 
+	 *	1:使用中，2:停止使用 3：过期
+	 */
 	protected Byte flag;
 	
 	/**
@@ -84,7 +113,7 @@ public class NormalCardVo extends BaseCardVo {
 	 */
 	protected CardFreeship freeship;
 	/**
-	 * 续费信息
+	 * 	续费信息
 	 */
 	protected CardRenew cardRenew;
 	/**
@@ -94,29 +123,28 @@ public class NormalCardVo extends BaseCardVo {
 	protected CardCustomRights cardCustomRights;
 	
 	/**
-	 * 自定义激活项
+	 *	 自定义激活项
 	 */
 	protected List<CardCustomAction> customAction;
 
 	/**
-	 * 设置开关及是否过期
+	 * 	设置开关及是否过期
 	 */
 	@Override
 	public void changeJsonCfg() {
 		log.info("正在执行NormalCardVo的changeJsonCfg.");
-		/** 会员折扣开关， 0表示关闭，1表示开启 */
+		//	会员折扣开关， 0表示关闭，1表示开启 
 		powerCount = (byte) (discount == null ? 0 : 1);
 
-		/** 会员专享商品 on表示打开 */
+		//	会员专享商品 on表示打开 
 		powerPayOwnGood = payOwnGood.equals((byte) 0) ? "" : BUTTON_ON;
-		/** 积分获取开关， 0表示关闭，1表示开启 */
+		//	 积分获取开关， 0表示关闭，1表示开启 
 		powerScore = (byte) (buyScore == null ? 0 : 1);
-		/** 卡充值开关 0关闭；1开启 */
+		//	 卡充值开关 0关闭；1开启 
 		powerCard = (byte) (chargeMoney == null ? 0 : 1);
 		
-		/** 处理固定时间段，是否过期 */
+		//	 处理固定时间段，是否过期 
 		if (MCARD_ET_FIX.equals(expireType) && endTime != null) {
-			log.info("进入到if判断");
 			boolean isExpired = endTime.toLocalDateTime().toLocalDate().isBefore(CURRENT_DATE);
 			flag = isExpired ? MCARD_EXPIRED : flag;
 		}
