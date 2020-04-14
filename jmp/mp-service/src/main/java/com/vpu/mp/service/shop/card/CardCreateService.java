@@ -54,8 +54,10 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -140,6 +142,7 @@ public class CardCreateService extends ShopBaseService{
 		initRenewCardCfg(param,cardBuilder);
 		initCustonRights(param,cardBuilder);
 		initCustomActions(param,cardBuilder);
+		initCardCardTagCfg(param,cardBuilder);
 	}
 	
 	
@@ -153,7 +156,10 @@ public class CardCreateService extends ShopBaseService{
 		initCardApplicableGoodsCfg(param, cardBuilder);
 		initCardStoreList(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		initCardGiveCfg(param,cardBuilder);
+		initCardCardTagCfg(param,cardBuilder);
 	}
+
 
 	/**
 	 * 初始化等级会员卡配置信息
@@ -167,6 +173,7 @@ public class CardCreateService extends ShopBaseService{
 		initGradeBasicCfg(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
 	}
+	
 	
 	
 	/**
@@ -666,10 +673,36 @@ public class CardCreateService extends ShopBaseService{
 		updateMemberCardById(cardBuilder.build(), id);
 	}
 
+	/**
+	 * 	初始化会员卡转赠配置"
+	 */
+	private void initCardGiveCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化会员卡转赠配置");
+		CardGive cardGive = param.getCardGive();
+		if(cardGive != null) {
+			cardBuilder
+				.cardGiveAway((byte)cardGive.getCardGiveAway().ordinal())
+				.cardGiveContinue((byte)cardGive.getCardGiveContinue().ordinal())
+				.mostGiveAway(cardGive.getMostGiveAway());
+		}
+	}
 
-
-
-
+	/**
+	 * 	初始化会员卡同步用户标签配置
+	 */
+	private void initCardCardTagCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化会员卡同步用户标签配置");
+		CardTag cardTag = param.getCardTag();
+		if(cardTag!=null) {
+			String json = null;
+			if(cardTag.getCardTagId()!=null) {
+				json = Util.toJson(cardTag.getCardTagId());
+			}
+			cardBuilder
+				.cardTag((byte)cardTag.getCardTag().ordinal())
+				.cardTagId(json);
+		}
+	}
 	
 
 	
