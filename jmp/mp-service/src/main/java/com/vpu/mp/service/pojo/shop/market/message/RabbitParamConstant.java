@@ -86,10 +86,10 @@ public class RabbitParamConstant {
         public static final Integer INVITE_SUCCESS_BARGAIN = 4004;
 
 
-
-
-
-        //以下两个不校验，为调用properties里定义的appId可用，不要随便调用
+		
+		/**
+		 * 以下两个不校验，为调用properties里定义的appId可用，不要随便调用
+		 */
         /**
          *微信公众号模板消息类型,用户没有使用过小程序，比如扫公众号二维码
          */
