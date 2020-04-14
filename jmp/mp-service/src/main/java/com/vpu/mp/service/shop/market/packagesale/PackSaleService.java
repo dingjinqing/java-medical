@@ -1,5 +1,7 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -18,9 +20,7 @@ import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGro
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckedGoodsListVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
@@ -388,7 +388,7 @@ public class PackSaleService extends ShopBaseService {
      */
 	public PackageSaleGoodsListVo getWxAppGoodsList(PackageSaleGoodsListParam param,Integer userId){
         PackageSaleGoodsListVo vo = new PackageSaleGoodsListVo();
-        PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
         if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
             vo.setState((byte)1);
             return vo;
@@ -428,6 +428,7 @@ public class PackSaleService extends ShopBaseService {
         PageResult<PackageSaleGoodsListVo.Goods> goods = getGoods(getPackageSaleGroupGoodsIds(groups.get(param.getGroupId() - 1)),param.getSortName(),param.getSortOrder(),param.getSearch(),param.getCurrentPage(),param.getPageRows());
         goods.getDataList().forEach(g->{
             g.setChooseNumber(packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId(),g.getGoodsId()));
+            g.setGoodsProducts(goodsService.getAllProductListByGoodsId(g.getGoodsId()));
         });
         vo.setGoods(goods);
 
@@ -446,7 +447,7 @@ public class PackSaleService extends ShopBaseService {
      */
     private PageResult<PackageSaleGoodsListVo.Goods> getGoods(List<Integer> inGoodsIds,Byte sortName,Byte sortOrder,String search,Integer currentPage,Integer pageRows){
         Byte soldOutGoods = shopCommonConfigService.getSoldOutGoods();
-        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE).from(GOODS);
+        SelectWhereStep<? extends Record> select = db().select(GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,GOODS.SHOP_PRICE,GOODS.MARKET_PRICE,GOODS.CAT_ID,GOODS.GOODS_TYPE,GOODS.SORT_ID,GOODS.IS_CARD_EXCLUSIVE,GOODS.IS_DEFAULT_PRODUCT).from(GOODS);
         select.where(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         select.where(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
         if(!NumberUtils.BYTE_ONE.equals(soldOutGoods)){
@@ -508,7 +509,7 @@ public class PackSaleService extends ShopBaseService {
     public PackageSaleCheckedGoodsListVo getCheckedGoodsList(PackageSaleGoodsListParam param, Integer userId){
         PackageSaleCheckedGoodsListVo vo = new PackageSaleCheckedGoodsListVo();
 
-        PackageSaleRecord packageSaleRecord = db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(param.getPackageId())).fetchAny();
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
         List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
         List<PackageSaleCheckedGoodsListVo.GroupGoodsVo> goodsList = new ArrayList<>(3);
         groups.forEach(group -> {
@@ -524,6 +525,82 @@ public class PackSaleService extends ShopBaseService {
         vo.setTotalSelectMoney(packageGoodsCartService.getUserPackageMoney(userId,packageSaleRecord));
 
         return vo;
+    }
+
+    public PackageSaleRecord getRecord(int packageId){
+        return db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(packageId)).fetchAny();
+    }
+
+    /**
+     * 加购
+     * @param param
+     * @param userId
+     * @return
+     */
+    public PackageSaleAddCartVo addPackageGoodsToCart(PackageSaleGoodsAddParam param,int userId){
+        PackageSaleAddCartVo vo = new PackageSaleAddCartVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(param.getPackageId());
+        Byte state = checkPackage(packageSaleRecord);
+        if(!state.equals((byte)0)){
+            vo.setState(state);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        if(param.getGroupId() > groups.size()){
+            vo.setState((byte)5);
+            return vo;
+        }
+        PackSaleParam.GoodsGroup thisGroup = groups.get(param.getGroupId() -1);
+        List<Integer> effectiveGoodsIds = getPackageSaleGroupGoodsIds(thisGroup);
+        if(!effectiveGoodsIds.contains(param.getGoodsId())){
+            vo.setState((byte)5);
+            return vo;
+        }
+        int hasSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId());
+        if(hasSelectNumber >= thisGroup.getGoodsNumber() || (hasSelectNumber + param.getGoodsNumber()) > thisGroup.getGoodsNumber()){
+            vo.setState((byte)6);
+            return vo;
+        }
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getGoodsId());
+        if(goodsRecord == null || goodsRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            vo.setState((byte)7);
+            return vo;
+        }
+        if(goodsRecord.getIsOnSale().equals(GoodsConstant.OFF_SALE)){
+            vo.setState((byte)8);
+            return vo;
+        }
+        GoodsSpecProductRecord goodsSpecProductRecord = goodsService.goodsSpecProductService.selectSpecByProId(param.getProductId());
+        if(goodsSpecProductRecord == null){
+            vo.setState((byte)7);
+            return vo;
+        }
+        if(goodsSpecProductRecord.getPrdNumber() < param.getGoodsNumber()){
+            vo.setState((byte)9);
+            return vo;
+        }
+
+        //校验通过
+        packageGoodsCartService.addPackageGoods(param,userId);
+        return vo;
+    }
+
+    private Byte checkPackage(PackageSaleRecord packageSaleRecord){
+        if(packageSaleRecord == null || packageSaleRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
+            return (byte)1;
+        }
+        if(packageSaleRecord.getStatus().equals(BaseConstant.ACTIVITY_STATUS_DISABLE)){
+            return (byte)2;
+        }
+        if(packageSaleRecord.getEndTime().before(DateUtil.getLocalDateTime())){
+            return (byte)3;
+        }
+        if(packageSaleRecord.getStartTime().after(DateUtil.getLocalDateTime())){
+            return (byte)4;
+        }
+        return 0;
     }
 }
 

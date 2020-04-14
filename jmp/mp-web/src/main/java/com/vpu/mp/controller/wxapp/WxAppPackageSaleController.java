@@ -1,6 +1,7 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,5 +28,13 @@ public class WxAppPackageSaleController extends WxAppBaseController  {
     @PostMapping("/api/wxapp/packagesale/checkedlist")
     public JsonResult packageSaleCheckedList(@RequestBody @Validated PackageSaleGoodsListParam param) {
         return success(shop().packSale.getCheckedGoodsList(param,wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 	商品加购
+     */
+    @PostMapping("/api/wxapp/packagesale/add")
+    public JsonResult addPackageGoods(@RequestBody @Validated PackageSaleGoodsAddParam param) {
+        return success(shop().packSale.addPackageGoodsToCart(param,wxAppAuth.user().getUserId()));
     }
 }
