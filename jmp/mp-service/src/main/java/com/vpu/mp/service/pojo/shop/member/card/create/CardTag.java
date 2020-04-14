@@ -3,8 +3,11 @@ package com.vpu.mp.service.pojo.shop.member.card.create;
 import java.util.List;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -13,6 +16,9 @@ import lombok.Setter;
  *
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CardTag {
 	/**
 	 * 	同步打标签是否开启

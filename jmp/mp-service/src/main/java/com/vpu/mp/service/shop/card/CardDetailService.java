@@ -30,8 +30,12 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag.CardTagSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
@@ -111,10 +115,16 @@ public class CardDetailService extends ShopBaseService{
 		int numOfSendCard = memberCardSvc.getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
+		// 同步打标签
+		limitCard.setCardTag(getCardTag(card));
+		// 转赠数据
+		limitCard.setCardGive(getCardGive(card));
 		return limitCard;
 	}
 	
 	
+
+
 	public RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
 		logger().info("获取等级会员卡");
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
@@ -223,6 +233,38 @@ public class CardDetailService extends ShopBaseService{
 			return Collections.<CardCustomAction>emptyList();
 		}
 	}
+	
+	/**
+	 * 	获取会员卡同步打标签数据
+	 */
+	private CardTag getCardTag(MemberCardRecord card) {
+		logger().info("获取会员卡同步打标签数据");
+		CardTagSwitch cardTag = CardTag.CardTagSwitch.values()[card.getCardTag()];
+		String cardTagId = card.getCardTagId();
+		List<Integer> ids = new ArrayList<>();
+		if(!StringUtils.isBlank(cardTagId)) {
+			ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
+	        }, false);
+		}
+		return CardTag.builder()
+					.cardTag(cardTag)
+					.cardTagId(ids)
+					.build();
+	}
+	
+	/**
+	 * 	获取会员卡转赠数据
+	 */
+	private CardGive getCardGive(MemberCardRecord card) {
+		logger().info("获取会员卡转赠数据");
+		CardGiveSwitch[] switchs = CardGive.CardGiveSwitch.values();
+		return CardGive.builder()
+					.cardGiveAway(switchs[card.getCardGiveAway()])
+					.cardGiveContinue(switchs[card.getCardGiveContinue()])
+					.mostGiveAway(card.getMostGiveAway())
+					.build();
+	}
+
 	
 	
 	/**

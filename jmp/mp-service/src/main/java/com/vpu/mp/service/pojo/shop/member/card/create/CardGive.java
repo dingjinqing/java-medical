@@ -1,8 +1,11 @@
 package com.vpu.mp.service.pojo.shop.member.card.create;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +14,9 @@ import lombok.Setter;
  *
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CardGive {
 	/**
 	 * 	会员卡转赠开关
