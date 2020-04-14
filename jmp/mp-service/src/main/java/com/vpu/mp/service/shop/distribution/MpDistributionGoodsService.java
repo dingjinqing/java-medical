@@ -317,6 +317,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     public ShareUserInfoVo getShareUserInfo(ShareUserInfoParam param){
         ShareUserInfoVo info = db().select().from(USER).leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID)).where(USER.USER_ID.eq(param.getInviteId())).fetchOne().into(ShareUserInfoVo.class);
+        info.setUserAvatar(domainConfig.imageUrl(info.getUserAvatar()));
         return info;
     }
 }
