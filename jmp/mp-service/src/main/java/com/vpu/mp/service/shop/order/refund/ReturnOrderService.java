@@ -114,9 +114,9 @@ public class ReturnOrderService extends ShopBaseService{
         }
         if(!StringUtils.isBlank(search)) {
             select.innerJoin(SUB_TABLE).on(TABLE.RET_ID.eq(SUB_TABLE.RET_ID)).
-                where(TABLE.RETURN_ORDER_SN.like(search).
-                    or(TABLE.ORDER_SN.like(search)).
-                    or(SUB_TABLE.GOODS_NAME.like(search)));
+                where(TABLE.RETURN_ORDER_SN.like(likeValue(search)).
+                    or(TABLE.ORDER_SN.like(likeValue(search))).
+                    or(SUB_TABLE.GOODS_NAME.like(likeValue(search))));
         }
         return select;
     }
