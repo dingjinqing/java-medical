@@ -106,8 +106,8 @@ public class ShopService extends MainBaseService {
     @Autowired
     public StoreManageService storeManageService;
     
-    @Autowired
-    public ThirdPartyMsgServices thirdPartyMsgServices;
+//    @Autowired
+//    public ThirdPartyMsgServices thirdPartyMsgServices;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
