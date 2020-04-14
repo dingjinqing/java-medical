@@ -182,6 +182,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER) ) {
+    		//用户没有关注小程序没有unionId的，进行发公众号
     		for(Integer userId:userIdList) {
     			MpOfficialAccountUserRecord accountUserListByRecord =
     					saas.getShopApp(shopId).officialAccountUser.getAccountUserListByRecid(userId);
@@ -194,6 +195,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     		}
     		return resultList;
     	}if( null!=param.getMpTemplateData() && !type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER)) {
+    		//正常发公众号的
     		for(Integer userId:userIdList) {
 				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
 						.getAccountUserByUserId(userId);
@@ -207,6 +209,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     		}
     		return resultList;
     	}else if( param.getMaTemplateData()!=null ||type>4000 ){
+    		//发小程序的
             String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
             Map<Integer,UserRecord> userMap = userList.stream()
