@@ -113,7 +113,7 @@ public class NormalCardVo extends BaseCardVo {
 	 */
 	protected CardFreeship freeship;
 	/**
-	 * 续费信息
+	 * 	续费信息
 	 */
 	protected CardRenew cardRenew;
 	/**
@@ -123,29 +123,28 @@ public class NormalCardVo extends BaseCardVo {
 	protected CardCustomRights cardCustomRights;
 	
 	/**
-	 * 自定义激活项
+	 *	 自定义激活项
 	 */
 	protected List<CardCustomAction> customAction;
 
 	/**
-	 * 设置开关及是否过期
+	 * 	设置开关及是否过期
 	 */
 	@Override
 	public void changeJsonCfg() {
 		log.info("正在执行NormalCardVo的changeJsonCfg.");
-		/** 会员折扣开关， 0表示关闭，1表示开启 */
+		//	会员折扣开关， 0表示关闭，1表示开启 
 		powerCount = (byte) (discount == null ? 0 : 1);
 
-		/** 会员专享商品 on表示打开 */
+		//	会员专享商品 on表示打开 
 		powerPayOwnGood = payOwnGood.equals((byte) 0) ? "" : BUTTON_ON;
-		/** 积分获取开关， 0表示关闭，1表示开启 */
+		//	 积分获取开关， 0表示关闭，1表示开启 
 		powerScore = (byte) (buyScore == null ? 0 : 1);
-		/** 卡充值开关 0关闭；1开启 */
+		//	 卡充值开关 0关闭；1开启 
 		powerCard = (byte) (chargeMoney == null ? 0 : 1);
 		
-		/** 处理固定时间段，是否过期 */
+		//	 处理固定时间段，是否过期 
 		if (MCARD_ET_FIX.equals(expireType) && endTime != null) {
-			log.info("进入到if判断");
 			boolean isExpired = endTime.toLocalDateTime().toLocalDate().isBefore(CURRENT_DATE);
 			flag = isExpired ? MCARD_EXPIRED : flag;
 		}
