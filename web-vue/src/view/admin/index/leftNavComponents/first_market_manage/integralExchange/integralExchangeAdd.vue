@@ -308,7 +308,6 @@
     </div>
     <!--选择商品弹窗-->
     <ChoosingGoods
-      :loadProduct="true"
       :singleElection="true"
       :tuneUpChooseGoods="chooseFlag"
       :chooseGoodsBack="chooseGoodsBack"
@@ -377,12 +376,37 @@ export default {
         callback()
       }
     }
-    var validateTime = (rule, value, callback) => {
+    var validateTime1 = (rule, value, callback) => {
       console.log(value)
       if (!value) {
         callback(new Error(this.$t('mintegralExchange.selectaDate')))
       } else {
-        callback()
+        if (this.ruleForm.customTimeEnd) {
+          if (new Date(value).getTime() > new Date(this.ruleForm.customTimeEnd).getTime()) {
+            callback(new Error('开始日期不能大于结束日期'))
+          } else {
+            callback()
+          }
+        } else {
+          callback()
+        }
+      }
+    }
+    var validateTime2 = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        callback(new Error(this.$t('mintegralExchange.selectaDate')))
+      } else {
+        if (this.ruleForm.customTime) {
+          console.log(new Date(value).getTime())
+          if (new Date(value).getTime() < new Date(this.ruleForm.customTime).getTime()) {
+            callback(new Error('开始日期不能大于结束日期'))
+          } else {
+            callback()
+          }
+        } else {
+          callback()
+        }
       }
     }
     return {
@@ -424,10 +448,10 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         customTime: [
-          { validator: validateTime, required: true, trigger: 'change' }
+          { validator: validateTime1, required: true, trigger: 'change' }
         ],
         customTimeEnd: [
-          { validator: validateTime, required: true, trigger: 'change' }
+          { validator: validateTime2, required: true, trigger: 'change' }
         ],
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
@@ -502,7 +526,7 @@ export default {
                 this.showMoreFlag = true
               }
               this.formBottom.copywriting = objectShareConfig.share_doc
-              this.formBottom.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
+              this.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
               this.formBottom.checkImgData = { imgUrl: objectShareConfig.share_img }
               console.log(objectShareConfig)
             }
@@ -515,6 +539,8 @@ export default {
   methods: {
     // 点击保存
     handleToClickSave () {
+      this.isSureTop = false
+      this.isSureBottom = false
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           this.isSureTop = true
@@ -534,6 +560,8 @@ export default {
             return false
           }
         })
+      } else {
+        this.isSureBottom = true
       }
       console.log(this.isSureTop, this.isSureBottom)
       if (this.isSureTop && this.isSureBottom) {
@@ -667,60 +695,36 @@ export default {
       console.log(res)
       this.ruleForm.checkGoodsName = res.goodsName
       this.checkGoodsId = res.goodsId
-      if (res.prdDesc) {
-        let arr = []
-        let obj = {
-          goodsName: res.prdDesc,
-          originPrice: res.prdPrice,
-          exchange: {
-            'money': '',
-            'score': '',
-            'prdId': res.prdId
-          },
-          goodsStock: res.prdNumber,
-          stock: ''
-        }
-        arr.push(obj)
-        let lastObj = {
-          goodsName: this.$t('mintegralExchange.batcSettings'),
-          originPrice: '1',
-          exchange: '',
-          goodsStock: '',
-          stock: ''
-        }
-        arr.push(lastObj)
-        this.ruleForm.tableData = arr
-      } else {
-        goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
-          console.log(res)
-          if (res.error === 0) {
-            let arr = []
-            res.content.forEach((item, index) => {
-              let obj = {
-                goodsName: item.prdDesc,
-                originPrice: item.prdPrice,
-                exchange: {
-                  'money': '',
-                  'score': '',
-                  'prdId': item.prdId
-                },
-                goodsStock: item.prdNumber,
-                stock: ''
-              }
-              arr.push(obj)
-            })
-            let lastObj = {
-              goodsName: this.$t('mintegralExchange.batcSettings'),
-              originPrice: '1',
-              exchange: '',
-              goodsStock: '',
+
+      goodsSpecDetail({ goodsId: res.goodsId }).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let arr = []
+          res.content.forEach((item, index) => {
+            let obj = {
+              goodsName: item.prdDesc,
+              originPrice: item.prdPrice,
+              exchange: {
+                'money': '',
+                'score': '',
+                'prdId': item.prdId
+              },
+              goodsStock: item.prdNumber,
               stock: ''
             }
-            arr.push(lastObj)
-            this.ruleForm.tableData = arr
+            arr.push(obj)
+          })
+          let lastObj = {
+            goodsName: this.$t('mintegralExchange.batcSettings'),
+            originPrice: '1',
+            exchange: '',
+            goodsStock: '',
+            stock: ''
           }
-        })
-      }
+          arr.push(lastObj)
+          this.ruleForm.tableData = arr
+        }
+      })
     },
     handleToCheckImg () { // 调起图片让弹窗
       this.imageTuneUp = !this.imageTuneUp
@@ -820,7 +824,7 @@ export default {
   .scoreDiv {
     display: flex;
     /deep/ .el-input {
-      width: 60px;
+      min-width: 50px;
     }
     span {
       display: flex !important;
