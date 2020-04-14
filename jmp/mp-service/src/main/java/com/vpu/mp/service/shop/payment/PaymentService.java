@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.factory.OrderCreateMpProcessorFactory;
+import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.action.InsteadPayService;
 import com.vpu.mp.service.shop.order.action.PayService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
@@ -97,6 +98,10 @@ public class PaymentService extends ShopBaseService {
 
     @Autowired
     private CouponPackOrderService couponPackOrderService;
+    @Autowired
+    private MemberCardOrderService memberCardOrderService;
+    @Autowired
+    private UserCardService userCardService;
 
 	public PaymentVo getPaymentInfo(String payCode) {
 		return db().select(PAYMENT.asterisk()).from(PAYMENT).where(PAYMENT.PAY_CODE.eq(payCode)).fetchOneInto(PaymentVo.class);
@@ -155,6 +160,7 @@ public class PaymentService extends ShopBaseService {
                 break;
             case MemberCardOrderService.MEMBER_CARD_ORDER_SN_PREFIX:
                 //购买会员卡虚拟订单统一支付回调
+                onPayNotifyCardOrder(param);
                 break;
             case CouponPackOrderService.COUPON_PACK_ORDER_SN_PREFIX:
                 //购买优惠券礼包虚拟订单统一支付回调
@@ -355,7 +361,7 @@ public class PaymentService extends ShopBaseService {
      */
     public void onPayNotifyCouponPack(PaymentRecordParam param) throws WxPayException {
         String orderSn = param.getOrderSn();
-        VirtualOrderRecord orderInfo = couponPackOrderService.getRecord(orderSn);
+        VirtualOrderRecord orderInfo = memberCardOrderService.getRecord(orderSn);
         if (Objects.isNull(orderInfo)) {
             logger().error("优惠券礼包订单统一支付回调（onPayNotifyCouponPack）：订单【订单号：{}】不存在！", orderSn);
             throw new WxPayException("onPayNotifyCouponPack：orderSn 【" + orderSn + "】not found ！");
@@ -373,6 +379,34 @@ public class PaymentService extends ShopBaseService {
         // 完成支付
         couponPackOrderService.finishPayCallback(orderInfo, paymentRecord);
         logger().info("优惠券礼包订单统一支付回调SUCCESS完成！");
+    }
+
+    /**
+     * On pay notify service.
+     *  会员卡支付回调
+     * @param param the param
+     * @throws WxPayException the wx pay exception
+     */
+    public void onPayNotifyCardOrder(PaymentRecordParam param) throws WxPayException {
+        String orderSn = param.getOrderSn();
+        VirtualOrderRecord orderInfo = memberCardOrderService.getRecord(orderSn);
+        if (Objects.isNull(orderInfo)) {
+            logger().error("购买会员卡订单统一支付回调（onPayNotifyCardOrder）：订单【订单号：{}】不存在！", orderSn);
+            throw new WxPayException("onPayNotifyCardOrder：orderSn 【" + orderSn + "】not found ！");
+        }
+        if (NumberUtils.createBigDecimal(param.getTotalFee()).compareTo(orderInfo.getMoneyPaid()) != INTEGER_ZERO) {
+            logger().error("购买会员卡礼包订单统一支付回调（onPayNotifyCardOrder）：订单【订单号：{}】实付金额不符【系统计算金额：{} != 微信支付金额：{}】！", orderSn, orderInfo.getMoneyPaid(), param.getTotalFee());
+            throw new WxPayException("onPayNotifyCardOrder：orderSn 【 " + orderSn + "】 pay amount  did not match ！");
+        }
+        if (!VirtualOrderService.ORDER_STATUS_WAIT_PAY.equals(orderInfo.getOrderStatus())) {
+            logger().info("购买会员卡订单统一支付回调（onPayNotifyCardOrder）：订单【订单号：{}】已支付！", orderSn);
+            return;
+        }
+        // 添加支付记录（wx）
+        PaymentRecordRecord paymentRecord = record.addPaymentRecord(param);
+        // 完成支付
+        userCardService.finishPayCallback(orderInfo, paymentRecord);
+        logger().info("购买会员卡订单统一支付回调SUCCESS完成！");
     }
 
     /**

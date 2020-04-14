@@ -376,9 +376,7 @@ public class CouponPackOrderService extends VirtualOrderService {
         db().update(VIRTUAL_ORDER).set(VIRTUAL_ORDER.PREPAY_ID,prepayId).where(VIRTUAL_ORDER.ORDER_SN.eq(orderSn)).execute();
     }
 
-    public VirtualOrderRecord getRecord(String orderSn){
-        return db().fetchAny(VIRTUAL_ORDER,VIRTUAL_ORDER.ORDER_SN.eq(orderSn));
-    }
+
 
     /**
      * 更新stillSendFlag

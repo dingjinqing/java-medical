@@ -306,47 +306,6 @@ ALTER TABLE b2c_goods add COLUMN room_id int(4) COMMENT '直播间id';
 -- 2020年04月10日 添加自定义激活配置
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';
 
--- 2020年4月10日kdc   新增会员卡订单表
-CREATE TABLE IF NOT EXISTS `b2c_card_order`
-(
-    `order_id`            int(8)                  NOT NULL AUTO_INCREMENT COMMENT '订单id',
-    `card_id`             int(11)                 NOT NULL DEFAULT '0' COMMENT '会云卡id',
-    `card_no`             varchar(32)             NOT NULL DEFAULT '0' COMMENT '会员卡NO',
-    `order_sn`            varchar(20)             NOT NULL DEFAULT '' COMMENT '订单编号',
-    `user_id`             int(8)                  NOT NULL DEFAULT '0' COMMENT '用户id',
-    `order_status`        tinyint(1)              NOT NULL DEFAULT '0' COMMENT '订单状态',
-    `invoice_id`          int(11)                 NOT NULL DEFAULT '0' COMMENT '发票id',
-    `invoice_detail`      text COMMENT '发票内容：json存储',
-    `add_message`         varchar(191)                     DEFAULT '' COMMENT '客户留言',
-    `pay_code`            varchar(30)                      DEFAULT NULL COMMENT '支付代号',
-    `pay_name`            varchar(120)                     DEFAULT NULL COMMENT '支付名称',
-    `prepay_id`           varchar(191)                     DEFAULT NULL COMMENT '微信支付Id，用于发送模板消息',
-    `pay_sn`              varchar(32)                      DEFAULT NULL COMMENT '支付流水号',
-    `money_paid`          decimal(10, 2)                   DEFAULT '0.00' COMMENT '订单应付金额',
-    `use_account`         decimal(10, 2)                   DEFAULT '0.00' COMMENT '用户消费余额',
-    `use_score`           decimal(10, 2)                   DEFAULT '0.00' COMMENT '用户消费余额',
-    `order_amount`        decimal(10, 2)                   DEFAULT '0.00' COMMENT '订单总金额',
-    `add_time`            timestamp               NULL     DEFAULT CURRENT_TIMESTAMP COMMENT '订单提交时间',
-    `pay_time`            timestamp               NULL     DEFAULT NULL COMMENT '支付时间',
-    `seller_remark`       varchar(512)                     DEFAULT '' COMMENT '卖家备注',
-    `star_flag`           tinyint(1)                       DEFAULT '0' COMMENT '标星订单：0 未标星 1 标星',
-    `del_flag`            tinyint(1)                       DEFAULT '0' COMMENT '删除',
-    `ali_trade_no`        varchar(60)                      DEFAULT '' COMMENT '支付宝交易单号',
-    `order_status_name`   varchar(32)             NOT NULL DEFAULT '' COMMENT '订单状态名称',
-    `return_flag`         tinyint(1)                       DEFAULT '0' COMMENT '0:未申请退款，1：退款失败，2：退款成功',
-    `return_score`        decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '积分抵扣金额',
-    `return_account`      decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '退款余额',
-    `return_money`        decimal(10, 2) unsigned NOT NULL DEFAULT '0.00' COMMENT '退款余额',
-    `return_time`         timestamp               NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单退款时间',
-    `order_action`        tinyint(4)                       DEFAULT '1' COMMENT '订单类型：1 会员卡订单 2 优惠券订单',
-    `member_card_balance` decimal(10, 2)                   DEFAULT '0.00' COMMENT '会员卡消费',
-    `return_card_balance` decimal(10, 2)                   DEFAULT '0.00' COMMENT '会员卡退款',
-    `still_send_flag`     tinyint(1)                       DEFAULT '1' COMMENT '退款完成厚是否继续发放优惠券（优惠礼包订单） 1：继续发放，0：停止发放',
-    `score_proportion`    int(9)                           DEFAULT '100' COMMENT '积分比例',
-    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`order_id`)
-) COMMENT ='会员卡订单表';
 
 -- 2020年04月10日 添加自定义激活配置
 ALTER TABLE `b2c_member_card` ADD COLUMN `custom_options` text COMMENT '自定义激活信息配置';

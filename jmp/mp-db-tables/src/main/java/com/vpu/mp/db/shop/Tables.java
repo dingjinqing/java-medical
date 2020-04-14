@@ -27,10 +27,7 @@ public class Tables {
      */
     public static final DivisionReceiveRecord DIVISION_RECEIVE_RECORD = com.vpu.mp.db.shop.tables.DivisionReceiveRecord.DIVISION_RECEIVE_RECORD;
 
-    /**
-     * 会员卡订单表
-     */
-    public static final CardOrder CARD_ORDER = com.vpu.mp.db.shop.tables.CardOrder.CARD_ORDER;
+
 
     /**
      * The table <code>mini_shop_4748160.b2c_prize_record</code>.
