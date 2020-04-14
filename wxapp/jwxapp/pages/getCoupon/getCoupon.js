@@ -18,7 +18,6 @@ global.wxPage({
     couponSn: '',
     couponId: null, // 优惠券id
     user: '',
-    scene: '',
     act_info: {},
     input_vali: '', // 领取码
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
@@ -34,8 +33,7 @@ global.wxPage({
     that.setData({
       couponSn: options.couponSn,
       couponId: Number(options.id),
-      couponStatus: options.type,
-      scene: options.scene
+      couponStatus: options.type
     })
     // 查看详情
     util.api("api/wxapp/coupon/detail", function (res) {
@@ -43,16 +41,15 @@ global.wxPage({
         that.initHandler(res, 0)
       } else {
         util.toast_fail(res.message);
-        setTimeout(function () {
-          util.reLaunch({
-            url: '/pages/index/index',
-          })
-        }, 2000);
+        // setTimeout(function () {
+        //   util.reLaunch({
+        //     url: '/pages/index/index',
+        //   })
+        // }, 2000);
       }
     }, {
         couponSn: that.data.couponSn,
-        couponId: that.data.couponId,
-        scene: that.data.scene
+        couponId: that.data.couponId
       })
   },
 
@@ -62,12 +59,12 @@ global.wxPage({
     // 是否过期
     var time_now = util.formatTime(new Date);
     if (time_now > res.content.endTime) {
-      res.content.is_expire = 1;
+      res.content.isExpire = 1;
     } else if (time_now < res.content.endTime) {
       if (res.content.isUsed == 1) {
-        res.content.is_expire = 1;
+        res.content.isExpire = 1;
       } else {
-        res.content.is_expire = 0;
+        res.content.isExpire = 0;
       }
     }
     // 倒计时
