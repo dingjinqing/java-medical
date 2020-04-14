@@ -30,14 +30,20 @@ import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag.CardTagSwitch;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
 /**
@@ -67,6 +73,9 @@ public class CardDetailService extends ShopBaseService{
 	
 	@Autowired
 	private CardReceiveCodeService cardReceiveCode;
+	
+	@Autowired
+	private TagService tagSvc;
 
 	
 	/**
@@ -101,6 +110,8 @@ public class CardDetailService extends ShopBaseService{
 		normalCard.setCardCustomRights(getCustomRights(card));
 		// 自定义激活项
 		normalCard.setCustomAction(getCustomAction(card));
+		// 用户标签
+		normalCard.setMyCardTag(getCardTag(card));
 		return normalCard;
 	}
 	
@@ -111,10 +122,16 @@ public class CardDetailService extends ShopBaseService{
 		int numOfSendCard = memberCardSvc.getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
+		// 同步打标签
+		limitCard.setMyCardTag(getCardTag(card));
+		// 转赠数据
+		limitCard.setCardGive(getCardGive(card));
 		return limitCard;
 	}
 	
 	
+
+
 	public RankCardToVo changeToGradeCardDetail(MemberCardRecord card) {
 		logger().info("获取等级会员卡");
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
@@ -223,6 +240,40 @@ public class CardDetailService extends ShopBaseService{
 			return Collections.<CardCustomAction>emptyList();
 		}
 	}
+	
+	/**
+	 * 	获取会员卡同步打标签数据
+	 */
+	private CardTag getCardTag(MemberCardRecord card) {
+		logger().info("获取会员卡同步打标签数据");
+		CardTagSwitch cardTag = CardTag.CardTagSwitch.values()[card.getCardTag()];
+		String cardTagId = card.getCardTagId();
+		List<TagVo> tags = new ArrayList<>();
+		if(!StringUtils.isBlank(cardTagId)) {
+			List<Integer> ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
+	        }, false);
+			tags = tagSvc.getTagsById(ids);
+		}
+	
+		return CardTag.builder()
+					.cardTag(cardTag)
+					.cardTags(tags)
+					.build();
+	}
+	
+	/**
+	 * 	获取会员卡转赠数据
+	 */
+	private CardGive getCardGive(MemberCardRecord card) {
+		logger().info("获取会员卡转赠数据");
+		CardGiveSwitch[] switchs = CardGive.CardGiveSwitch.values();
+		return CardGive.builder()
+					.cardGiveAway(switchs[card.getCardGiveAway()])
+					.cardGiveContinue(switchs[card.getCardGiveContinue()])
+					.mostGiveAway(card.getMostGiveAway())
+					.build();
+	}
+
 	
 	
 	/**

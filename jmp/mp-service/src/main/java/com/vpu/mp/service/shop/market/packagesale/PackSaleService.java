@@ -559,7 +559,7 @@ public class PackSaleService extends ShopBaseService {
             return vo;
         }
         int hasSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId());
-        if(hasSelectNumber >= thisGroup.getGoodsNumber() || (hasSelectNumber + param.getGoodsNumber()) > thisGroup.getGoodsNumber()){
+        if((hasSelectNumber + param.getGoodsNumber()) > thisGroup.getGoodsNumber()){
             vo.setState((byte)6);
             return vo;
         }

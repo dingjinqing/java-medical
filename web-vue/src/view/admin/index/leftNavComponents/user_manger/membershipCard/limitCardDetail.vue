@@ -45,6 +45,12 @@
             ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
+        <div class="advance-setting">
+          <div class="rightTitle">高级设置</div>
+          <card-advance-cfg :cardTag="cardTag"
+              :cardGive="cardGive"
+              :cardType="cardType"/>
+        </div>
       </div>
     </div>
     <div class="footer">
@@ -99,6 +105,9 @@ export default {
     ),
     cardActiveCfg: () => import(
       './subcomponents/cardActiveCfg'
+    ),
+    cardAdvanceCfg: () => import(
+      './subcomponents/cardAdvanceCfg'
     )
   },
   computed: {
@@ -230,6 +239,15 @@ export default {
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
+      },
+      cardTag: {
+        cardTag: null,
+        cardTagId: []
+      },
+      cardGive: {
+        cardGiveAway: null,
+        cardGiveContinue: null,
+        mostGiveAway: null
       }
     }
   },
@@ -330,6 +348,16 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+
+      // 同步用户标签
+      if (data.cardTag) {
+        this.cardTag = {
+          cardTag: data.cardTag.cardTag,
+          cardTagId: data.cardTag.cardTags
+        }
+      }
+      // 转赠卡
+      this.cardGive = data.cardGive ? data.cardGive : this.cardGive
     },
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
@@ -414,7 +442,7 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
-
+      this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -447,9 +475,10 @@ export default {
         'limits': this.cardReceiveCfgData.limits,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'cardTag': this.cardTag,
+        'cardGive': this.cardGive
       }
-      console.log(obj)
       if (this.cardId) {
         // 更新会员卡
         console.log('更新会员卡')
@@ -504,6 +533,9 @@ export default {
         default:
           break
       }
+    },
+    dealWithCardTag () {
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
     }
   }
 
@@ -555,10 +587,21 @@ export default {
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
       padding: 10px 1%;
+      margin-bottom: 20px;
       .rightTitle {
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
+      }
+    }
+    .advance-setting{
+      background-color: #f8f8f8;
+      padding: 10px 1%;
+      border: 1px solid #e4e4e4;
+      .rightTitle{
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
       }
     }
   }
