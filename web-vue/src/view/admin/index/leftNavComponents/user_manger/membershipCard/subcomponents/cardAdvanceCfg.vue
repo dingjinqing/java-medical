@@ -4,6 +4,12 @@
             <el-form-item label="同步打标签:">
                 <el-checkbox  label="1">给领卡用户打标签 </el-checkbox>
                 <span class="choose-label" @click="visiable=true">选择标签</span>
+                <div v-if="showUserTagDetail">
+                    <div class="tip">最多可设置3个标签</div>
+                    <div v-for="item in userTags" :key="item.id" class="user-tag">
+                        <span>{{item.value}}</span><span class="close-tag">X</span>
+                    </div>
+                </div>
             </el-form-item>
             <el-form-item label="会员卡转赠:">
                 <el-switch
@@ -25,24 +31,36 @@
                 </div>
             </el-form-item>
         </el-form>
-        <user-tag :visiable.sync="visiable"/>
+        <user-tag :visiable.sync="visiable"
+            @chooseUserTag="setUserTag"/>
     </div>
 </template>
 
 <script>
 export default {
+
   components: {
     userTag: () => import('./dialog/CardUserTagSet')
   },
   computed: {
     switchInfo () {
       return this.val ? '已开启' : '已关闭'
+    },
+    showUserTagDetail () {
+      return this.userTags.length > 0
     }
   },
   data () {
     return {
       val: true,
-      visiable: false
+      visiable: false,
+      userTags: []
+    }
+  },
+  methods: {
+    setUserTag (data) {
+      this.userTags = data
+      console.log(data)
     }
   }
 }
@@ -61,5 +79,21 @@ export default {
 .max-give{
     display: inline-block;
     width: 60px;
+}
+.user-tag{
+    display: inline-block;
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    background: rgba(235,241,255,1);
+    border: 1px solid rgba(180,202,255,1);
+    align-items: center;
+    margin-right: 10px;
+}
+.close-tag{
+    margin-left: 10px;
+    font-size: 15px;
+    color:#7e7b7b;
+    cursor: pointer;
 }
 </style>

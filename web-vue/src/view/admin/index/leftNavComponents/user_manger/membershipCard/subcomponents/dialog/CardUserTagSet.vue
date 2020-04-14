@@ -17,7 +17,7 @@
                      v-for="item in tagOptions"
                      :key="item.id"
                      :label="item.value"
-                     :value="item.id"
+                     :value="item"
                      :disabled="item.disabled">
 
                     </el-option>
@@ -25,7 +25,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
             <el-button size="small" @click="dialogVisiable = false">取 消</el-button>
-            <el-button size="small" type="primary" @click="dialogVisiable = false">确 定</el-button>
+            <el-button size="small" type="primary" @click="chooseUserTag">确 定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -88,6 +88,10 @@ export default {
       } else {
         console.log(this.tagArr.length)
       }
+    },
+    chooseUserTag () {
+      this.dialogVisiable = false
+      this.$emit('chooseUserTag', this.tagArr)
     }
   }
 }
