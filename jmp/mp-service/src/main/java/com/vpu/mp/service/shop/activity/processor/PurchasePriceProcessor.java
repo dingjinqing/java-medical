@@ -1,12 +1,14 @@
 package com.vpu.mp.service.shop.activity.processor;
 
-import com.fasterxml.jackson.databind.JsonSerializable;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
-import com.vpu.mp.service.pojo.wxapp.cart.activity.FullReductionGoodsCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.PurchasePriceCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.CartActivityInfo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
@@ -14,6 +16,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PurchasePricePromotion;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.PurchasePriceProcessorDao;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +25,12 @@ import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_RULE;
 
@@ -36,7 +42,7 @@ import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_RULE;
  */
 @Service
 @Slf4j
-public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, ActivityCartListStrategy {
+public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, ActivityCartListStrategy, CreateOrderProcessor {
     @Autowired
     PurchasePriceProcessorDao purchasePriceProcessorDao;
     @Autowired
@@ -247,5 +253,30 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
         priceCartBo.getMoney().add(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
         priceCartBo.setPurchasePrice(cartActivityInfo.getPurchasePrice());
         activityMap.put(cartActivityInfo.getActivityId(), priceCartBo);
+    }
+
+    @Override
+    public void processInitCheckedOrderCreate(OrderBeforeParam param) throws MpException {
+
+    }
+
+    @Override
+    public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processUpdateStock(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
+
+    }
+
+    @Override
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods) throws MpException {
+
     }
 }
