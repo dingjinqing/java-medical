@@ -438,19 +438,11 @@ public class PayAwardService extends ShopBaseService {
      */
     public String getPayAwardMessage(PayAwardRecord payAward, List<PayAwardPrizeRecord> payAwardPrizeList, PayAwardRecordRecord payAwardRecord, String lang) {
         int size = payAwardPrizeList.size();
-        float joinAwardCount = Integer.parseInt(jedisManager.getValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT + payAward.getId() + ":" + payAwardRecord.getUserId(), 60000,
-                () -> payAwardRecordService.getJoinAwardCount(payAwardRecord.getUserId(), payAward.getId()).toString()))+1;
-        logger().info("用户:{},参与次数:{}", payAwardRecord.getUserId(), joinAwardCount);
-        int circleTimes = (int)Math.ceil(joinAwardCount / size);
-        int currentAwardTimes =  (int)joinAwardCount % size;
-        currentAwardTimes = (currentAwardTimes == 0) ? size : currentAwardTimes;
-        logger().info("当前第:{}轮,第:{}次", circleTimes, currentAwardTimes);
-        if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes() * size < joinAwardCount) {
-            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT + payAward.getId() + "," + payAwardRecord.getUserId());
-            logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
-            return "";
-        }
-        if (size > 1&&size!=currentAwardTimes) {
+        //一个循环内第几次
+        int joinAwardCount = payAwardRecord.getAwardTimes();
+        logger().info("用户:{},参与次数:{},奖品类型{}", payAwardRecord.getUserId(), joinAwardCount,payAwardRecord.getGiftType());
+        logger().info("一个循环{}次轮,当前第:{}次", size, joinAwardCount);
+        if (size > 1&&size!= joinAwardCount) {
             logger().info("多次");
             //下次获奖需要购买几次
             int count = 0;
@@ -488,7 +480,7 @@ public class PayAwardService extends ShopBaseService {
             } else {
                 count=0;
                 for (PayAwardPrizeRecord payAwardPrize:payAwardPrizeList){
-                    if (count>=currentAwardTimes&&!payAwardPrize.getGiftType().equals(GIVE_TYPE_NO_PRIZE)){
+                    if (count>= joinAwardCount &&!payAwardPrize.getGiftType().equals(GIVE_TYPE_NO_PRIZE)){
                         if (payAwardPrize.getAwardNumber()>0&&payAwardPrize.getAwardNumber()>payAwardPrize.getSendNum()){
                             count++;
                             break;
@@ -496,7 +488,7 @@ public class PayAwardService extends ShopBaseService {
                     }
                     count++;
                 }
-                if (count==currentAwardTimes){
+                if (count== joinAwardCount){
                     if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*size == joinAwardCount) {
                         logger().info("活动参加到上限,没有提示");
                         return "";
