@@ -18,6 +18,10 @@
             <view class='et_left' wx:if='{{item.actCode == "discount"}}' style='font-size:{{item.fontsize2}}rpx'>
               <text class="text" style='font-size:{{item.fontsize1}}rpx'>{{item.denomination}}</text>折
             </view>
+            <view class='et_left' wx:if='{{item.actCode == "random"}}' style='font-size:{{item.fontsize2}}rpx'>￥
+              <text class="text" style='font-size:{{item.fontsize1}}rpx'>{{item.randomMax}}</text>
+              <text class="text" style='font-size:22rpx'>最高</text>
+            </view>
             <!-- <view class='et_right'>{{item.rule}}</view> -->
             <view class='et_right' wx:if='{{item.useConsumeRestrict == 0}}'>无门槛</view>
             <view class='et_right' wx:if='{{item.useConsumeRestrict != 0}}'>满{{item.leastConsume}}可用</view>
