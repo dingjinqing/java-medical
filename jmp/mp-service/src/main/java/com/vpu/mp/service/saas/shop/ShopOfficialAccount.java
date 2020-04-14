@@ -334,7 +334,7 @@ public class ShopOfficialAccount extends MainBaseService {
 		String key = "official_scene_ticket@"+sceneValue;
 		String string = jedis.get(key);
 		if(StringUtils.isNotEmpty(string)) {
-			logger().debug("公众号 " + appId + "创建二维码,缓存中存在" +string);
+			logger().info("公众号 " + appId + "创建二维码,缓存中存在" +string);
 			return string;
 		}
 
@@ -342,9 +342,9 @@ public class ShopOfficialAccount extends MainBaseService {
 		WxMpQrCodeTicket qrCodeCreateTmpTicket = qrcodeService.qrCodeCreateTmpTicket(sceneValue, expireSeconds);
 		// 获取的二维码ticket
 		String ticket = qrCodeCreateTmpTicket.getTicket();
-		logger().debug("公众号 " + appId + "创建二维码ticket的值" + ticket);
+		logger().info("公众号 " + appId + "创建二维码ticket的值" + ticket);
 		String qrCodePictureUrl = qrcodeService.qrCodePictureUrl(ticket);
-		logger().debug("公众号 " + appId + "通过ticket换取二维码的结果 " + qrCodePictureUrl);
+		logger().info("公众号 " + appId + "通过ticket换取二维码的结果 " + qrCodePictureUrl);
 		jedis.set(key, qrCodePictureUrl, expireSeconds);
 		return qrCodePictureUrl;
 	}

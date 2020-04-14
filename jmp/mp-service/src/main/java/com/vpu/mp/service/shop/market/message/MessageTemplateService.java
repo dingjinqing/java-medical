@@ -50,6 +50,7 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateConfig;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.saas.schedule.TaskJobMainService;
+import com.vpu.mp.service.shop.order.trade.OrderPayService;
 import com.vpu.mp.service.shop.user.user.SendUserService;
 
 /**
@@ -65,6 +66,9 @@ public class MessageTemplateService extends ShopBaseService {
     private SendUserService sendUserService;
 
     private TaskJobMainService taskJobMainService;
+    
+	@Autowired
+	public OrderPayService orderPayService;
 
 
     @PostConstruct
