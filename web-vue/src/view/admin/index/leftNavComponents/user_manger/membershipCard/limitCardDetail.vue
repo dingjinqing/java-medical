@@ -45,6 +45,10 @@
             ref="cardActiveCfgData"
           ></cardActiveCfg>
         </div>
+        <div class="advance-setting">
+          <div class="rightTitle">高级设置</div>
+          <card-advance-cfg />
+        </div>
       </div>
     </div>
     <div class="footer">
@@ -99,6 +103,9 @@ export default {
     ),
     cardActiveCfg: () => import(
       './subcomponents/cardActiveCfg'
+    ),
+    cardAdvanceCfg: () => import(
+      './subcomponents/cardAdvanceCfg'
     )
   },
   computed: {
@@ -555,10 +562,21 @@ export default {
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
       padding: 10px 1%;
+      margin-bottom: 20px;
       .rightTitle {
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
+      }
+    }
+    .advance-setting{
+      background-color: #f8f8f8;
+      padding: 10px 1%;
+      border: 1px solid #e4e4e4;
+      .rightTitle{
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
       }
     }
   }
