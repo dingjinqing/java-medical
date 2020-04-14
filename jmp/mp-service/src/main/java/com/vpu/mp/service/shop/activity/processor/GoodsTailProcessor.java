@@ -146,7 +146,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
         }
 
         //商品分销
-        if(goodsDetailMpBo.getCanRebate() == 1){
+        if(GoodsConstant.REBATE.equals(goodsDetailMpBo.getCanRebate())){
             log.debug("小程序-商品详情-处理分销信息");
             GoodsDistributionVo goodsDistributionVo = new GoodsDistributionVo();
             //获取用户分销等级
