@@ -278,8 +278,10 @@
           </div>
         </div>
         <!-- 直播 -->
-        <div class="voucher box_style"
-            @click="to('live_broadcast')">
+        <div
+          class="voucher box_style"
+          @click="to('live_broadcast')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/zb.png'"
               alt=""
@@ -477,7 +479,10 @@
           </div>
         </div>
         <!-- 渠道页面分析 -->
-        <div class="voucher box_style">
+        <div
+          class="voucher box_style"
+          @click="to('channel')"
+        >
           <div class="activity_img"><img
               :src="$imageHost + '/image/admin/new_market/qdymfx.png'"
               alt=""

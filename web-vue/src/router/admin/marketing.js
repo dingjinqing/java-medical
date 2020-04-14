@@ -1592,6 +1592,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/live/live'
       )
+  },
+  // 渠道页面分析
+  {
+    path: '/admin/home/main/channel',
+    name: 'channel',
+    meta: {
+      crumbTitle: 'router.channel',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/channelPage/channelPage'
+      )
   }
 ]
 export default routes

@@ -336,6 +336,8 @@ export const en = {
   ],
   // live
   live_broadcast: ['Marketing management', 'live'],
+  // 营销管理 渠道页面分析
+  channel: ['Marketing management', 'Channel page analysis'],
   // 营销管理 限时降价
   reduce: ['Marketing management', 'Limited Time Price Reduction'],
   // 营销管理 限时降价 订单明细
