@@ -178,7 +178,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
      * @param userIdList
      * @return 相关信息
      */
-    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId) {
+    public List<WxUserInfo> getUserInfoList(List<Integer> userIdList,Integer type,Integer shopId,RabbitMessageParam param) {
     	List<WxUserInfo> resultList = new ArrayList<>(userIdList.size());
     	MpAuthShopRecord authShopByShopId = mpAuthShopService.getAuthShopByShopId(shopId);
     	if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER) ) {
@@ -193,7 +193,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     			resultList.add(info);
     		}
     		return resultList;
-    	}if( type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE) ) {
+    	}if( null!=param.getMpTemplateData() && !type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER)) {
     		for(Integer userId:userIdList) {
 				MpOfficialAccountUserRecord accountUserListByRecord = saas.getShopApp(shopId).officialAccountUser
 						.getAccountUserByUserId(userId);
@@ -206,7 +206,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     			resultList.add(info);
     		}
     		return resultList;
-    	}else if( type.equals(RabbitParamConstant.Type.GENERAL_TYPE)||type>2000 ){
+    	}else if( param.getMaTemplateData()!=null ||type>4000 ){
             String appId = mpAuthShopService.getAuthShopByShopId(getShopId()).get(MP_AUTH_SHOP.APP_ID);
             List<UserRecord> userList = userService.getUserRecordByIds(userIdList);
             Map<Integer,UserRecord> userMap = userList.stream()

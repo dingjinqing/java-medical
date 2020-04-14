@@ -86,7 +86,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		if (userAccount == null) {
 			return false;
 		}
-		Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYPE;
+		Integer mpTempleType = RabbitParamConstant.Type.MP_TEMPLE_TYP_NO;
 		List<Integer> userIdList = new ArrayList<Integer>();
 		if (StringUtils.isEmpty(userAccount.getUnionid())) {
 			logger().info("没有登录过小程序");
