@@ -136,7 +136,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		}
 		if (canSend) {
 			Integer num = db()
-					.select(DSL.count(THIRD_PARTY_SERVICES)).from(THIRD_PARTY_SERVICES).where(
+					.select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES).where(
 							THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
 									.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_FORMAT_SIMPLE)
 											.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
