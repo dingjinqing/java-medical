@@ -47,7 +47,7 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg />
+          <card-advance-cfg :cardTag="cardTag"/>
         </div>
       </div>
     </div>
@@ -237,6 +237,10 @@ export default {
         cardEffectTime: cardEffectTimeTmp,
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
+      },
+      cardTag: {
+        cardTag: null,
+        cardTagId: []
       }
     }
   },
@@ -421,7 +425,7 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
-
+      this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
@@ -454,8 +458,10 @@ export default {
         'limits': this.cardReceiveCfgData.limits,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'cardTag': this.cardTag
       }
+      debugger
       console.log(obj)
       if (this.cardId) {
         // 更新会员卡
@@ -511,6 +517,9 @@ export default {
         default:
           break
       }
+    },
+    dealWithCardTag () {
+      this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
     }
   }
 

@@ -2,11 +2,11 @@
     <div>
         <el-form label-width="180px" label-position="right">
             <el-form-item label="同步打标签:">
-                <el-checkbox  label="1">给领卡用户打标签 </el-checkbox>
+                <el-checkbox v-model="cardTag.cardTag" label="on">给领卡用户打标签 </el-checkbox>
                 <span class="choose-label" @click="visiable=true">选择标签</span>
                 <div v-if="showUserTagDetail">
                     <div class="tip">最多可设置3个标签</div>
-                    <div v-for="item in userTags" :key="item.id" class="user-tag">
+                    <div v-for="item in cardTag.cardTagId" :key="item.id" class="user-tag">
                         <span>{{item.value}}</span><img :src="imgUrl" class="close-tag" @click="deleteUserTag(item)" />
                     </div>
                 </div>
@@ -32,40 +32,49 @@
             </el-form-item>
         </el-form>
         <user-tag :visiable.sync="visiable"
-            :tags="userTags"
+            :tags="cardTag.cardTagId"
             @chooseUserTag="setUserTag"/>
     </div>
 </template>
 
 <script>
 export default {
-
+  props: {
+    cardTag: {
+      type: Object,
+      required: true,
+      default: () => {
+        return {
+          cardTag: null,
+          cardTagId: []
+        }
+      }
+    }
+  },
   components: {
     userTag: () => import('./dialog/CardUserTagSet')
   },
   computed: {
     switchInfo () {
-      return this.val ? '已开启' : '已关闭'
+      return this.val === 'on' ? '已开启' : '已关闭'
     },
     showUserTagDetail () {
-      return this.userTags.length > 0
+      return this.cardTag.cardTagId.length > 0
     }
   },
   data () {
     return {
-      val: true,
+      val: false,
       visiable: false,
-      userTags: [],
       imgUrl: this.$imageHost + '/image/admin/cash_close.png'
     }
   },
   methods: {
     setUserTag (data) {
-      this.userTags = data
-      console.log(data)
+      this.cardTag.cardTagId = data.map(({id}) => id)
     },
     deleteUserTag (tag) {
-      this.userTags = this.userTags.filter(item => item.id !== tag.id)
+      this.cardTag.cardTagId = this.cardTag.cardTagId.filter(item => item.id !== tag.id)
     }
   }
 }

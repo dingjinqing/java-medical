@@ -2,6 +2,10 @@ package com.vpu.mp.service.pojo.shop.member.card.create;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +23,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class CardTag {
 	/**
 	 * 	同步打标签是否开启
@@ -37,4 +42,9 @@ public class CardTag {
 	 * 	标签ID
 	 */
 	private List<Integer> cardTagId;
+	
+	/**
+	 * 	标签详情
+	 */
+	private List<TagVo> cardTags;
 }

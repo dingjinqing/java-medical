@@ -36,12 +36,14 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag.CardTagSwitch;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew.DateType;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.store.store.StoreService;
 
 /**
@@ -71,6 +73,9 @@ public class CardDetailService extends ShopBaseService{
 	
 	@Autowired
 	private CardReceiveCodeService cardReceiveCode;
+	
+	@Autowired
+	private TagService tagSvc;
 
 	
 	/**
@@ -241,14 +246,16 @@ public class CardDetailService extends ShopBaseService{
 		logger().info("获取会员卡同步打标签数据");
 		CardTagSwitch cardTag = CardTag.CardTagSwitch.values()[card.getCardTag()];
 		String cardTagId = card.getCardTagId();
-		List<Integer> ids = new ArrayList<>();
+		List<TagVo> tags = new ArrayList<>();
 		if(!StringUtils.isBlank(cardTagId)) {
-			ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
+			List<Integer> ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
 	        }, false);
+			tags = tagSvc.getTagsById(ids);
 		}
+	
 		return CardTag.builder()
 					.cardTag(cardTag)
-					.cardTagId(ids)
+					.cardTags(tags)
 					.build();
 	}
 	
