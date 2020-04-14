@@ -7,7 +7,10 @@
         <div>
             <div class="clearfix">
                 <span class="tip">请选择标签</span>
-                <span class="opt">刷新/新建</span>
+                <span class="opt">
+                    <span @click="refeshTag">刷新</span>/
+                    <span @click="jumpToTagPage">新建</span>
+                </span>
             </div>
             <el-select v-model="tagArr" size="mini" multiple placeholder="请选择" @change="checkTagLength">
                     <el-option
@@ -52,7 +55,8 @@ export default {
   data () {
     return {
       tagArr: [],
-      tagOptions: []
+      tagOptions: [],
+      isRefresh: false
     }
   },
   methods: {
@@ -60,8 +64,22 @@ export default {
       allTagRequest().then(res => {
         if (res.error === 0) {
           this.tagOptions = res.content
+          if (this.isRefresh) {
+            this.isRefresh = false
+            this.$message.success('刷新成功')
+          }
         }
       })
+    },
+    refeshTag () {
+      this.isRefresh = true
+      this.getUserTags()
+    },
+    jumpToTagPage () {
+      let routeData = this.$router.resolve({
+        name: 'user_tag'
+      })
+      window.open(routeData.href, '_blank')
     },
     checkTagLength () {
       if (this.tagArr.length >= 4) {
@@ -90,6 +108,7 @@ export default {
 .opt{
     float: right;
     color:#5A8BFF;
+    cursor: pointer;
 }
 .tip{
  color: #9d9d9d;
