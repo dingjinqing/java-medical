@@ -47,7 +47,9 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg :cardTag="cardTag" :cardGive="cardGive" :cardType="cardType"/>
+          <card-advance-cfg :cardTag="cardTag"
+              :cardGive="cardGive"
+              :cardType="cardType"/>
         </div>
       </div>
     </div>

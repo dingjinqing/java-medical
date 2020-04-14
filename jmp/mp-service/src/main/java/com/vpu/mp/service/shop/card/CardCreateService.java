@@ -142,6 +142,7 @@ public class CardCreateService extends ShopBaseService{
 		initRenewCardCfg(param,cardBuilder);
 		initCustonRights(param,cardBuilder);
 		initCustomActions(param,cardBuilder);
+		initCardCardTagCfg(param,cardBuilder);
 	}
 	
 	

@@ -110,6 +110,8 @@ public class CardDetailService extends ShopBaseService{
 		normalCard.setCardCustomRights(getCustomRights(card));
 		// 自定义激活项
 		normalCard.setCustomAction(getCustomAction(card));
+		// 用户标签
+		normalCard.setMyCardTag(getCardTag(card));
 		return normalCard;
 	}
 	
