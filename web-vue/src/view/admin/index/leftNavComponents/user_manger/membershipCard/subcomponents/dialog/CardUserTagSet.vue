@@ -37,6 +37,10 @@ export default {
     visiable: {
       type: Boolean,
       default: false
+    },
+    tags: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -46,6 +50,15 @@ export default {
       },
       set (val) {
         this.$emit('update:visiable', val)
+      }
+    }
+  },
+  watch: {
+    tags (val) {
+      if (this.visiable) {
+        this.tagArr = val
+      } else {
+        this.tagArr = []
       }
     }
   },

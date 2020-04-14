@@ -7,7 +7,7 @@
                 <div v-if="showUserTagDetail">
                     <div class="tip">最多可设置3个标签</div>
                     <div v-for="item in userTags" :key="item.id" class="user-tag">
-                        <span>{{item.value}}</span><span class="close-tag">X</span>
+                        <span>{{item.value}}</span><span class="close-tag" @click="deleteUserTag(item)" >X</span>
                     </div>
                 </div>
             </el-form-item>
@@ -61,6 +61,9 @@ export default {
     setUserTag (data) {
       this.userTags = data
       console.log(data)
+    },
+    deleteUserTag (tag) {
+      this.userTags = this.userTags.filter(item => item.id !== tag.id)
     }
   }
 }
