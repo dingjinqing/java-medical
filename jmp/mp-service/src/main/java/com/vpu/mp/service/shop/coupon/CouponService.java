@@ -342,7 +342,7 @@ public class CouponService extends ShopBaseService {
         //某用户全部优惠券
         SelectJoinStep<? extends Record> select = db().select(CUSTOMER_AVAIL_COUPONS.ID, CUSTOMER_AVAIL_COUPONS.COUPON_SN, CUSTOMER_AVAIL_COUPONS.TYPE, CUSTOMER_AVAIL_COUPONS.AMOUNT, CUSTOMER_AVAIL_COUPONS.START_TIME,
             CUSTOMER_AVAIL_COUPONS.END_TIME, CUSTOMER_AVAIL_COUPONS.IS_USED, CUSTOMER_AVAIL_COUPONS.LIMIT_ORDER_AMOUNT, MRKING_VOUCHER.ACT_NAME,MRKING_VOUCHER.RECOMMEND_GOODS_ID,MRKING_VOUCHER.RECOMMEND_CAT_ID,MRKING_VOUCHER.RECOMMEND_SORT_ID,
-           MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.TYPE.as("couponType"),MRKING_VOUCHER.ACT_CODE,CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RECEIVE_NUM)
+           MRKING_VOUCHER.CARD_ID,MRKING_VOUCHER.TYPE.as("couponType"),MRKING_VOUCHER.ACT_CODE,CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,MRKING_VOUCHER.RECEIVE_PER_NUM,MRKING_VOUCHER.RECEIVE_NUM,MRKING_VOUCHER.RANDOM_MAX)
             .from(CUSTOMER_AVAIL_COUPONS
                 .leftJoin(MRKING_VOUCHER).on(CUSTOMER_AVAIL_COUPONS.ACT_ID.eq(MRKING_VOUCHER.ID)));
 
@@ -362,6 +362,7 @@ public class CouponService extends ShopBaseService {
                     list.setIsGrant(1); //发放人
                     list.setIsShare(into.getIsShare());  //0:未分享；1：已分享
                 }else{
+                    list.setIsShare((byte)0);
                     list.setIsGrant(0); //被发放
                 }
 
@@ -487,7 +488,10 @@ public class CouponService extends ShopBaseService {
                 list.setCanShare(0); //0不可以分享；1可以分享
                 if (list.getCouponType() == 1) {
                     DivisionReceiveRecordRecord canShare = isCanShare(list.getCouponSn());
-                    list.setIsShare(canShare.getIsShare());
+                    if(canShare != null)
+                        list.setIsShare(canShare.getIsShare());
+                    else
+                        list.setIsShare((byte)0);
                     int hasReceive = hasReceive(param.getUserId(), param.couponSn);
                     if (!(list.getReceivePerNum() == 1 && hasReceive >= list.getReceiveNum())) {
                         list.setCanShare(1);
