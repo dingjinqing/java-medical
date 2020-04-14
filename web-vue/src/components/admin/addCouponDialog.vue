@@ -163,7 +163,7 @@ export default {
       if (this.type !== undefined && this.type !== '') {
         param.type = this.couponType
       } else {
-        param.type = 0
+        param.type = -1
       }
       getCouponSelectComponentData(param).then((res) => {
         if (res.error === 0) {
