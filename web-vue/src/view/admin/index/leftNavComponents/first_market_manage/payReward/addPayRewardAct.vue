@@ -273,7 +273,15 @@
                       <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{itemC.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemC.surplus !==0"
+                    >剩余{{itemC.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemC.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
@@ -348,7 +356,15 @@
                       <span style="font-size: 14px">折</span>
                     </div>
                     <div class="coupon_center_limit">{{itemD.useConsumeRestrict | formatLeastConsume(itemD.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{itemD.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{itemD.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemD.surplus !==0"
+                    >剩余{{itemD.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemD.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
@@ -574,8 +590,8 @@
                   v-model="params.awardList[index].awardNumber"
                   size="small"
                   style="width:100px"
-                ></el-input>
-                <span>已发{{params.awardList[index].sendNum}}份</span>
+                ></el-input>份
+                <span>(已发{{params.awardList[index].sendNum > 0 ? params.awardList[index].sendNum : 0}}份)</span>
                 <span>{{$t('payReward.giftTips2')}}</span>
                 <div class="tips">{{$t('payReward.giftTips3')}}</div>
               </div>
@@ -814,7 +830,7 @@ export default {
         'keepDays': '',
         'accountNumber': '',
         'scoreNumber': '',
-        'awardNumber': '',
+        'awardNumber': 0,
         'ordinaryCoupon': [],
         'splitCoupon': [],
         'splitCouponIdList': [],
@@ -1563,6 +1579,7 @@ export default {
               .coupon_center_number {
                 height: 20px;
                 color: #fbb;
+                font-size: 12px;
               }
               .coupon_list_bottom {
                 height: 24px;
