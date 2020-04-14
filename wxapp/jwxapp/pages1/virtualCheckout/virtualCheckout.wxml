@@ -45,24 +45,15 @@
 
   <!-- 会员卡结算样式 -->
   <block wx:else>
-    <view class="card_list_item" style="{{item.cardBgStyle}}margin-top:{{margin_top_nav + 18}}px;">
-      <view class="card_type">{{item.cardTypeName}}</view>
+    <view class="card_list_item" style="{{cardBgStyle}}margin-top:{{margin_top_nav + 18}}px;">
+      <view class="card_type">{{cardTypeName}}</view>
       <view class="card_item_info">
-        <image mode="widthFix" class="shop_img" src="{{item.avatar}}"></image>
+        <image mode="widthFix" class="shop_img" src="{{shopAvatar}}"></image>
         <view class="info_item">
-          <view class="item_row card_name">{{item.cardName}}</view>
-          <view class="item_row" wx:if="{{item.cardType !== 1 && item.discount}}">{{i18n.$t(localePack,"page1.virtualCheckout.discountComplete,{discount:item.discount || '0'}")}}</view>
-          <view class="item_row">{{i18n.$t(localePack,"page1.virtualCheckout.cardNo")}}：{{item.cardNo}}</view>
-          <block wx:if="{{item.cardType === 1}}">
-            <view class="item_row" wx:if="{{item.exchangSurplus}}">{{i18n.$t(localePack,"page1.virtualCheckout.remainderGoods")}}：{{item.exchangSurplus}}</view>
-            <view class="item_row" wx:if="{{item.surplus}}">{{i18n.$t(localePack,"page1.virtualCheckout.remainderService")}}：{{item.surplus}}</view>
-          </block>
+          <view class="item_row card_name">{{cardInfo.cardName}}</view>
+          <view class="item_row">{{cardExpireTime}}</view>
         </view>
       </view>
-      <view class="card_status" wx:if="{{item.cardStopImg}}">
-        <image mode="widthFix" src="{{item.cardStopImg}}"></image>
-      </view>
-      <view class="card_exp" wx:if="{{item.cardType !== 2}}">{{item.cardExpireTime}}</view>
     </view>
   </block>
 
