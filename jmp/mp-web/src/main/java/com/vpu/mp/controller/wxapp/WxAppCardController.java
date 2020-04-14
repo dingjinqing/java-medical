@@ -5,11 +5,9 @@ import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
-import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +16,6 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
@@ -187,7 +184,14 @@ public class WxAppCardController extends WxAppBaseController {
         UserCardParam res = shop().userCard.cardRenew(param);
         return success(res);
     }
-
+    /**
+     * 	会员卡续费-支付完成
+     */
+    @PostMapping(value="/api/wxapp/card/renew/checkout")
+    public JsonResult cardRenewCheckout(@RequestBody CardRenewCheckoutParam param) throws MpException {
+        CardRenewCheckoutVo res = shop().userCard.renewCardCheckout(param);
+        return success(res);
+    }
 	/**
 	 * 购买会员卡结算
 	 * @return

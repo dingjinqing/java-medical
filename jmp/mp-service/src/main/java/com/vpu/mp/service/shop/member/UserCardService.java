@@ -31,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayVo;
 import com.vpu.mp.service.pojo.shop.member.card.*;
+import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -40,6 +41,7 @@ import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -77,6 +79,7 @@ import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.aspectj.bridge.MessageWriter;
 import org.elasticsearch.common.Strings;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -93,6 +96,7 @@ import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -178,6 +182,8 @@ public class UserCardService extends ShopBaseService {
 	@Autowired
 	private MemberCardOrderService cardOrderService;
 
+    @Autowired
+    private AccountService accountService;
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -2061,11 +2067,86 @@ public class UserCardService extends ShopBaseService {
         return cardList;
     }
 
-    public void renewCardCheckout(CardRenewCheckoutParam  param){
+    /**
+     * 会员卡续费支付完成接口
+     * @param param 会员卡续费金额及时间详情
+     * @return 过期时间&金额
+     * @throws MpException
+     */
+    public CardRenewCheckoutVo renewCardCheckout(CardRenewCheckoutParam  param) throws MpException {
         Integer userId = param.getUserId();
         String cardNo = param.getCardNo();
         UserCardParam memberCard = userCardDao.getUserCardInfo(cardNo);
         UserRecord userInfo = userService.getUserByUserId(userId);
+        CardRenewRecord order = createRenewMemberOrder(userInfo,param,memberCard);
+        if(order==null){
+            return null;
+        }
+        CardRenewCheckoutVo vo = new CardRenewCheckoutVo();
+        Timestamp expireTime = null;
+        BigDecimal money = BigDecimal.ZERO;
+        //现金
+        if (order.getRenewType()==(byte)0){
+            //使用账户余额数量大于0
+            if (order.getUseAccount().compareTo(BigDecimal.ZERO)>0){
+                logger().info("开始扣减余额");
+                AccountParam accountParam = new AccountParam();
+                accountParam.setUserId(userId);
+                accountParam.setAccount(userInfo.getAccount());
+                accountParam.setOrderSn(order.getRenewOrderSn());
+                accountParam.setAmount(order.getUseAccount());
+                accountParam.setPayment("balance");
+                accountParam.setIsPaid((byte)1);
+                accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
+                accountParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
+                //扣减余额
+                accountService.updateUserAccount(accountParam,
+                    TradeOptParam.builder().tradeType((byte)2).tradeFlow((byte) 0).build());
+            }
+            if (order.getMemberCardRedunce().compareTo(BigDecimal.ZERO)>0){
+                logger().info("开始增加会员卡消费记录");
+                UserCardParam cardInfo = userCardDao.getUserCardInfo(order.getMemberCardNo());
+                //增加会员卡消费记录
+                CardConsumerRecord record = new CardConsumerRecord();
+                record.setUserId(userId);
+                record.setMoney(order.getMemberCardRedunce());
+                record.setCardNo(param.getMemberCardNo());
+                record.setCardId(cardInfo.getCardId());
+                record.setReason(order.getRenewOrderSn());
+                record.setType((byte)0);
+                db().executeInsert(record);
+            }
+//            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){}
+            //更新订单信息
+            updateOrderInfo(order.getRenewOrderSn());
+            //修改会员卡过期时间
+            expireTime = updateExpireTime(memberCard);
+            memberCard = userCardDao.getUserCardInfo(cardNo);
+            money = memberCard.getMoney();
+        }
+        //积分
+        else {
+            if (order.getUseScore().compareTo(BigDecimal.ZERO)>0){
+                logger().info("开始扣减积分");
+                ScoreParam scoreParam = new ScoreParam();
+                scoreParam.setScoreDis(userInfo.getScore());
+                scoreParam.setUserId(userId);
+                scoreParam.setScore(order.getUseScore().intValue());
+                scoreParam.setRemarkCode(RemarkTemplate.CARD_RENEW.code);
+                scoreParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
+                scoreParam.setChangeWay(61);
+                scoreService.updateMemberScore(scoreParam,0,(byte)1,(byte)0);
+            }
+            //更新订单信息
+            updateOrderInfo(order.getRenewOrderSn());
+            //修改会员卡过期时间
+            expireTime = updateExpireTime(memberCard);
+            memberCard = userCardDao.getUserCardInfo(cardNo);
+            money = memberCard.getMoney();
+        }
+        vo.setExpireTime(expireTime);
+        vo.setMoney(money);
+        return vo;
     }
 
     /**
@@ -2158,7 +2239,7 @@ public class UserCardService extends ShopBaseService {
         record.setRenewTime(memberCard.getRenewTime());
         record.setRenewDateType(memberCard.getRenewDateType());
         record.setRenewType(memberCard.getRenewType());
-        db().insertInto(CARD_RENEW).values(record);
+        db().executeInsert(record);
         Integer id =  db().lastID().intValue();
         CardRenewRecord cardRenewRecord = db().select()
             .from(CARD_RENEW)
@@ -2184,6 +2265,55 @@ public class UserCardService extends ShopBaseService {
                 .fetchOneInto(CardRenewRecord.class);
         }
         return orderSn;
+    }
+
+    /**
+     * 更新会员卡续费订单信息
+     * @param orderSn
+     */
+    private void updateOrderInfo(String orderSn){
+        db().update(CARD_RENEW)
+            .set(CARD_RENEW.ORDER_STATUS,(byte)1)
+            .set(CARD_RENEW.PAY_TIME,DateUtil.getSqlTimestamp())
+            .where(CARD_RENEW.RENEW_ORDER_SN.eq(orderSn))
+            .execute();
+    }
+
+    /**
+     * 更新用户会员卡过期时间
+     * @param memberCard 会员卡信息
+     * @return 新的过期时间
+     */
+    private Timestamp updateExpireTime(UserCardParam memberCard){
+        Timestamp expireTime = DateUtil.getLocalDateTime();
+        //已过期
+        if (memberCard.getExpireTime()==null||memberCard.getExpireTime().before(DateUtil.getLocalDateTime())){
+            //'0:固定日期 1：自领取之日起N单位内有效'
+            //date_type 0:日，1:周 2: 月
+            if (memberCard.getRenewDateType()==(byte)0){
+                expireTime = DateUtil.getTimeStampPlus(DateUtil.getLocalDateTime(),memberCard.getRenewTime(), ChronoUnit.DAYS);
+            }else if (memberCard.getRenewDateType()==(byte)1){
+                expireTime = DateUtil.getTimeStampPlus(DateUtil.getLocalDateTime(),memberCard.getRenewTime(), ChronoUnit.WEEKS);
+            }else if (memberCard.getRenewDateType()==(byte)2){
+                expireTime = DateUtil.getTimeStampPlus(DateUtil.getLocalDateTime(),memberCard.getRenewTime(), ChronoUnit.MONTHS);
+            }
+        }
+        //未过期
+        else {
+            if (memberCard.getRenewDateType()==(byte)0){
+                expireTime = DateUtil.getTimeStampPlus(memberCard.getExpireTime(),memberCard.getRenewTime(), ChronoUnit.DAYS);
+            }else if (memberCard.getRenewDateType()==(byte)1){
+                expireTime = DateUtil.getTimeStampPlus(memberCard.getExpireTime(),memberCard.getRenewTime(), ChronoUnit.WEEKS);
+            }else if (memberCard.getRenewDateType()==(byte)2){
+                expireTime = DateUtil.getTimeStampPlus(memberCard.getExpireTime(),memberCard.getRenewTime(), ChronoUnit.MONTHS);
+            }
+        }
+        logger().info("开始更新用户会员卡过期时间");
+        db().update(USER_CARD)
+            .set(USER_CARD.EXPIRE_TIME,expireTime)
+            .where(USER_CARD.CARD_NO.eq(memberCard.getCardNo()))
+            .execute();
+        return expireTime;
     }
 	/**
 	 * 购买结算
