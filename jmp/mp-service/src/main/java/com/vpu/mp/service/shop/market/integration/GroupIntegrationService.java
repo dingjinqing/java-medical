@@ -1076,7 +1076,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { "", "#173177" }, {remake, "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
-				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.FAIL_TEAM)
 				.build();
 		logger().info("准备发组团瓜分积失败");
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
@@ -1096,7 +1096,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
-				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.SUCCESS_TEAM)
 				.build();
 		logger().info("准备发组团瓜分积成功");
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
