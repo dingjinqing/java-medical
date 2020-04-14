@@ -54,9 +54,9 @@ export default {
     }
   },
   watch: {
-    tags (val) {
-      if (this.visiable) {
-        this.tagArr = val
+    dialogVisiable (val) {
+      if (val) {
+        this.tagArr = this.tags
       } else {
         this.tagArr = []
       }

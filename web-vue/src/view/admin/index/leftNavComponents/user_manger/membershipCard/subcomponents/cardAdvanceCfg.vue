@@ -7,7 +7,7 @@
                 <div v-if="showUserTagDetail">
                     <div class="tip">最多可设置3个标签</div>
                     <div v-for="item in userTags" :key="item.id" class="user-tag">
-                        <span>{{item.value}}</span><span class="close-tag" @click="deleteUserTag(item)" >X</span>
+                        <span>{{item.value}}</span><img :src="imgUrl" class="close-tag" @click="deleteUserTag(item)" />
                     </div>
                 </div>
             </el-form-item>
@@ -32,6 +32,7 @@
             </el-form-item>
         </el-form>
         <user-tag :visiable.sync="visiable"
+            :tags="userTags"
             @chooseUserTag="setUserTag"/>
     </div>
 </template>
@@ -54,7 +55,8 @@ export default {
     return {
       val: true,
       visiable: false,
-      userTags: []
+      userTags: [],
+      imgUrl: this.$imageHost + '/image/admin/cash_close.png'
     }
   },
   methods: {
