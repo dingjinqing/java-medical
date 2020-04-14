@@ -691,8 +691,9 @@ export default {
           this.form.secKillProduct.forEach(item => {
             if (item.goodsSpecProducts) {
               item.goodsSpecProducts.forEach(specItem => {
-                let { productId, secKillPrice, stock } = specItem
+                let { secKillPrice, stock } = specItem
                 let goodsId = item.goodsId
+                let productId = this.isEdite ? specItem.productId : specItem.prdId
                 secKillProduct.push({ goodsId, productId, secKillPrice: Number(secKillPrice), stock: Number(stock) })
                 this.form.stock += Number(stock)
               })
