@@ -105,6 +105,9 @@ public class ShopService extends MainBaseService {
     
     @Autowired
     public StoreManageService storeManageService;
+    
+    @Autowired
+    public ThirdPartyMsgServices thirdPartyMsgServices;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()
@@ -521,7 +524,7 @@ public class ShopService extends MainBaseService {
 	}
 
 	public Record getShop(Integer shopId) {
-		return db().select(SHOP.asterisk()).from(SHOP).join(MP_AUTH_SHOP)
+		return db().select(SHOP.fields()).from(SHOP).join(MP_AUTH_SHOP)
 				.on(SHOP.SHOP_ID.eq(MP_AUTH_SHOP.SHOP_ID)).where(SHOP.SHOP_ID.eq(shopId)).fetchAny();
 	}
 	
