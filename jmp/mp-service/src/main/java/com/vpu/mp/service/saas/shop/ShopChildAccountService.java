@@ -326,4 +326,15 @@ public class ShopChildAccountService extends MainBaseService {
 		return execute;
 
 	}
+	
+	/**
+	 * 获得绑定第三方公众号的账号
+	 * @param sysId
+	 * @return
+	 */
+	public List<ShopChildAccountPojo> getAccountByBindThird(Integer sysId) {
+		return db().selectFrom(SHOP_CHILD_ACCOUNT)
+				.where(SHOP_CHILD_ACCOUNT.SYS_ID.eq(sysId).and(SHOP_CHILD_ACCOUNT.IS_BIND.eq((byte) 1)))
+				.fetchInto(ShopChildAccountPojo.class);
+	}
 }

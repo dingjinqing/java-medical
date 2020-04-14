@@ -4,6 +4,8 @@ import com.vpu.mp.db.shop.tables.records.MessageTemplateConfigRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigParam;
 import com.vpu.mp.service.pojo.shop.config.message.MessageConfigVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
+
 import org.jooq.Batch;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,9 @@ public class MessageConfigService extends ShopBaseService {
      * @return true 开通
      */
     public boolean checkConfig(Integer type){
+    	if(type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYP_NO)||type.equals(RabbitParamConstant.Type.MP_TEMPLE_TYPE_NO_USER)) {
+    		return true;
+    	}
         Byte openMp = db().select(MESSAGE_TEMPLATE_CONFIG.OPEN_MP).
             from(MESSAGE_TEMPLATE_CONFIG).
             where(MESSAGE_TEMPLATE_CONFIG.ID.eq(type)).fetchOne(MESSAGE_TEMPLATE_CONFIG.OPEN_MP);

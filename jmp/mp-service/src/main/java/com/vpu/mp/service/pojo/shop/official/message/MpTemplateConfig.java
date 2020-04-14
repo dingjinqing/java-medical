@@ -135,8 +135,13 @@ public enum MpTemplateConfig {
         "OPENTM403179330",
         "分销商等级变动通知",
         "{{first.DATA}}当前等级：{{keyword1.DATA}}原始等级：{{keyword2.DATA}}升级时间：{{keyword3.DATA}}{{remark.DATA}}"
-    )
-    ;
+    ),
+    NEW_ORDER_REMIND(
+            "OPENTM204958750",
+            "店铺新订单成交通知",
+            "{{first.DATA}}订单金额：{{keyword1.DATA}}订单详情：{{keyword2.DATA}}订单号：{{keyword3.DATA}}买家会员：{{keyword4.DATA}}{{remark.DATA}}"
+        );
+    
 	/**
 	 * 模板编号
 	 */

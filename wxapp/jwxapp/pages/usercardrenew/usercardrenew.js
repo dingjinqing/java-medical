@@ -81,6 +81,8 @@ global.wxPage({
     })
   },
   loadData (cardInfo, sgan, that) {
+    //  模拟续费金额
+    // cardInfo.renewNum = 50
     console.log(cardInfo)
     // 二维码处理
     if (sgan == 0) {
@@ -115,6 +117,8 @@ global.wxPage({
       bg: bg,
       sgan: sgan
     })
+
+
     that.data.create_order.money_paid = cardInfo.renewNum; // 续费金额或积分
     that.data.create_order.account_discount = 0;
     that.data.create_order.member_card_balance = 0;
@@ -154,7 +158,7 @@ global.wxPage({
         user_money: that.data.user_money,
         create_order: that.data.create_order
       })
-      console.log(that.data.memberCardsList)
+      console.log(that.data.cardInfo)
       // 默认支付填充  
       // 如果优先用卡支付并且所选择支付的卡的有余额
       if (cardInfo.cardFirst == '1' && that.data.user_money.member_card_money != undefined) {
