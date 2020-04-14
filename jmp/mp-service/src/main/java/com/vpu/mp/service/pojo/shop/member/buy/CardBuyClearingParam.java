@@ -23,5 +23,4 @@ public class CardBuyClearingParam {
 
     private Integer userId;
 
-    private String cardNo;
 }

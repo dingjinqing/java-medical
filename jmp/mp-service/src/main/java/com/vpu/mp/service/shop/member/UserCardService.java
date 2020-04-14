@@ -2209,9 +2209,12 @@ public class UserCardService extends ShopBaseService {
 			cardBuyVo.setServiceName(tradeService.getServiceName());
 			cardBuyVo.setServiceDocument(tradeService.getServiceDocument());
 		}
+        logger().info("会员卡=结算-用户余额");
+        UserRecord user = memberService.getUserRecordById(param.getUserId());
+        cardBuyVo.setAccount(user.getAccount());
+        cardBuyVo.setScore(user.getScore());
 		logger().info("会员卡-结算-会员卡配置");
 		MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
-		cardBuyVo.setOrderAmount(cardInfo.getPayFee());
 		CardBuyClearingVo.CardInfo into = cardInfo.into(CardBuyClearingVo.CardInfo.class);
 		cardBuyVo.setCardInfo(into);
 		if (MCARD_ET_FIX.equals(into.getExpireType())){
@@ -2225,25 +2228,11 @@ public class UserCardService extends ShopBaseService {
 			BigDecimal divide = cardBuyVo.getOrderAmount().divide(BigDecimal.valueOf(cardBuyVo.getScoreProportion()),2,BigDecimal.ROUND_HALF_UP);
 			cardBuyVo.setOrderAmount(divide);
 			cardBuyVo.setMoneyPaid(BigDecimal.ZERO);
+            cardBuyVo.setOrderPayScore(cardInfo.getPayFee().intValue());
 		}else {
-			cardBuyVo.setMoneyPaid(cardBuyVo.getOrderAmount());
+            cardBuyVo.setOrderAmount(cardInfo.getPayFee());
+            cardBuyVo.setMoneyPaid(cardBuyVo.getOrderAmount());
 		}
-		logger().info("会员卡-结算-cardNo{}",param.getCardNo());
-		List<GeneralUserCardVo> canUseCardList = getCanUseGeneralCardList(param.getUserId());
-		if (!Objects.equals(param.getCardNo(), "1")&&canUseCardList.size()>0) {
-			if (Strings.isEmpty(param.getCardNo())&&canUseCardList.size()>0){
-				GeneralUserCardVo generalUserCardVo = canUseCardList.get(0);
-				cardBuyVo.setMemberCardInfo(generalUserCardVo);
-				cardBuyVo.setMemberCardNo(generalUserCardVo.getCardNo());
-			}else {
-				GeneralUserCardVo generalUserCardVo = canUseCardList.stream().filter(card -> card.getCardNo().equals(param.getCardNo())).findFirst().orElse(null);
-				if (generalUserCardVo!=null){
-					cardBuyVo.setMemberCardInfo(generalUserCardVo);
-					cardBuyVo.setMemberCardNo(generalUserCardVo.getCardNo());
-				}
-			}
-		}
-
 		logger().info("会员卡-购买结算-结束");
 		return cardBuyVo;
 	}
