@@ -24,7 +24,7 @@ public class CardGive {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	public static enum CardGiveSwitch{
-		OFF,ON
+		off,on
 	}
 	
 	/**

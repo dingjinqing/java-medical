@@ -47,7 +47,7 @@
         </div>
         <div class="advance-setting">
           <div class="rightTitle">高级设置</div>
-          <card-advance-cfg :cardTag="cardTag"/>
+          <card-advance-cfg :cardTag="cardTag" :cardGive="cardGive" :cardType="cardType"/>
         </div>
       </div>
     </div>
@@ -241,6 +241,11 @@ export default {
       cardTag: {
         cardTag: null,
         cardTagId: []
+      },
+      cardGive: {
+        cardGiveAway: null,
+        cardGiveContinue: null,
+        mostGiveAway: null
       }
     }
   },
@@ -341,6 +346,16 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+
+      // 同步用户标签
+      if (data.cardTag) {
+        this.cardTag = {
+          cardTag: data.cardTag.cardTag,
+          cardTagId: data.cardTag.cardTags
+        }
+      }
+      // 转赠卡
+      this.cardGive = data.cardGive ? data.cardGive : this.cardGive
     },
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
@@ -459,10 +474,9 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
-        'cardTag': this.cardTag
+        'cardTag': this.cardTag,
+        'cardGive': this.cardGive
       }
-      debugger
-      console.log(obj)
       if (this.cardId) {
         // 更新会员卡
         console.log('更新会员卡')

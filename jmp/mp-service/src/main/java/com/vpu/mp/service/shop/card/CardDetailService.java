@@ -121,7 +121,7 @@ public class CardDetailService extends ShopBaseService{
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
 		// 同步打标签
-		limitCard.setCardTag(getCardTag(card));
+		limitCard.setMyCardTag(getCardTag(card));
 		// 转赠数据
 		limitCard.setCardGive(getCardGive(card));
 		return limitCard;

@@ -70,7 +70,8 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	/**
 	 * 	同步打标签
 	 */
-	private CardTag cardTag;
+	@JsonProperty("cardTag")
+	private CardTag myCardTag;
 	
 	/**
 	 * 	会员卡转赠数据

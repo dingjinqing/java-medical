@@ -2,7 +2,7 @@
     <div>
         <el-form label-width="180px" label-position="right">
             <el-form-item label="同步打标签:">
-                <el-checkbox v-model="cardTag.cardTag" label="on">给领卡用户打标签 </el-checkbox>
+                <el-checkbox v-model="cardTag.cardTag" :true-label="on" :false-label="off">给领卡用户打标签 </el-checkbox>
                 <span class="choose-label" @click="visiable=true">选择标签</span>
                 <div v-if="showUserTagDetail">
                     <div class="tip">最多可设置3个标签</div>
@@ -11,20 +11,22 @@
                     </div>
                 </div>
             </el-form-item>
-            <el-form-item label="会员卡转赠:">
+            <el-form-item label="会员卡转赠:" v-if="isLimitCard">
                 <el-switch
-                 v-model="val"
+                 v-model="cardGive.cardGiveAway"
                  active-color="#f7931e"
-                 inactive-color="#C0CCDA">
+                 inactive-color="#C0CCDA"
+                 :active-value="on"
+                 :inactive-value="off">
                 </el-switch>
                 <span>{{switchInfo}}</span>
                 <span class="tip">开启后，用户可以将会员卡转赠给好友，好友领取后用户自己的会员卡将失效</span>
                 <div>
-                    <el-checkbox label="1">勾选后，用户转赠给好友，好友还可以继续转赠给其他人</el-checkbox>
+                    <el-checkbox v-model="cardGive.cardGiveContinue"  :true-label="on" :false-label="off">勾选后，用户转赠给好友，好友还可以继续转赠给其他人</el-checkbox>
                     <div>
                         最大转赠次数
                         <span class="max-give">
-                            <el-input size="small"></el-input>
+                            <el-input v-model.number="cardGive.mostGiveAway" size="small"></el-input>
                         </span>
                         <span class="tip">填0表示不限制</span>
                     </div>
@@ -40,6 +42,10 @@
 <script>
 export default {
   props: {
+    cardType: {
+      type: Number,
+      default: 0
+    },
     cardTag: {
       type: Object,
       required: true,
@@ -49,12 +55,25 @@ export default {
           cardTagId: []
         }
       }
+    },
+    cardGive: {
+      type: Object,
+      default: () => {
+        return {
+          cardGiveAway: null,
+          cardGiveContinue: null,
+          mostGiveAway: null
+        }
+      }
     }
   },
   components: {
     userTag: () => import('./dialog/CardUserTagSet')
   },
   computed: {
+    isLimitCard () {
+      return this.cardType === 1
+    },
     switchInfo () {
       return this.val === 'on' ? '已开启' : '已关闭'
     },
@@ -66,12 +85,14 @@ export default {
     return {
       val: false,
       visiable: false,
+      on: 'on',
+      off: 'off',
       imgUrl: this.$imageHost + '/image/admin/cash_close.png'
     }
   },
   methods: {
     setUserTag (data) {
-      this.cardTag.cardTagId = data.map(({id}) => id)
+      this.cardTag.cardTagId = data
     },
     deleteUserTag (tag) {
       this.cardTag.cardTagId = this.cardTag.cardTagId.filter(item => item.id !== tag.id)

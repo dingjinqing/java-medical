@@ -31,7 +31,7 @@ public class CardTag {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	public static enum CardTagSwitch{
-		OFF,ON
+		off,on
 	}
 	/**
 	 * 	同步打标签是否开启
