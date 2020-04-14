@@ -26,7 +26,7 @@ public class PackageSaleGoodsAddParam {
     private Integer productId;
 
     /**
-     * 增量
+     * 增量，可以是负数
      */
     @NotNull
     private Integer goodsNumber;

@@ -144,6 +144,7 @@ public class PackageGoodsCartService extends ShopBaseService {
             .where(PACKAGE_GOODS_CART.USER_ID.eq(userId))
             .and(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId))
             .and(PACKAGE_GOODS_CART.GROUP_ID.eq(groupId))
+            .and(PACKAGE_GOODS_CART.GOODS_NUMBER.gt(0))
             .and(GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchInto(PackageSaleCartGoodsVo.class);
         list.forEach(g->{
@@ -176,7 +177,7 @@ public class PackageGoodsCartService extends ShopBaseService {
             newRecord.setUserId(userId);
             newRecord.insert();
         }else{
-            packageGoodsCartRecord.setGoodsNumber(packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber());
+            packageGoodsCartRecord.setGoodsNumber(packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber() < 0 ? 0 : packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber());
             packageGoodsCartRecord.update();
         }
     }
