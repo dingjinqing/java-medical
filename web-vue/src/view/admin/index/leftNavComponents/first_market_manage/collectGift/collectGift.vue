@@ -348,7 +348,8 @@ export default {
             this.couponData = res.content.coupon_ids.split(',')
           }
           let param = {
-            'actName': ''
+            'actName': '',
+            'type': -1
           }
           getCouponSelectComponentData(param).then((res) => {
             if (res.error === 0) {
