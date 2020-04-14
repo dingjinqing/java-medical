@@ -11,6 +11,7 @@
         <text class="name-top" wx:else>优惠券名称</text>
         <text class="name-bottom" wx:if="{{act_info.actCode === 'voucher'}}">￥{{act_info.denomination}}</text>
         <text class="name-bottom" wx:if="{{act_info.actCode === 'discount'}}">{{act_info.denomination}}折</text> 
+        <text class="name-bottom" wx:if="{{act_info.actCode === 'random'}}">￥{{act_info.randomMax}}<text style="font-size:22rpx;">最高</text></text> 
       </view> <!--优惠券名称END  -->
 
       <!--有效日期  -->

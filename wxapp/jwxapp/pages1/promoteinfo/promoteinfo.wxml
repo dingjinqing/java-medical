@@ -28,8 +28,9 @@
           <!-- 赠送优惠券 -->
           <view class='goods_area coupon_area' wx:if='{{promote_info.rewardType == 2}}'>
               <view class='ca_top' style='color:{{comColor}}'>
-                <block wx:if='{{promote_info.couponInfo.actCode != "discount" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
+                <block wx:if='{{promote_info.couponInfo.actCode == "voucher" }}'>￥<text>{{promote_info.couponInfo.denomination}}</text></block>
                 <block wx:if='{{promote_info.coupon_info.actCode == "discount" }}'><text>{{promote_info.couponInfo.denomination}}</text>折</block>
+                <block wx:if='{{promote_info.couponInfo.actCode == "random" }}'>￥<text>{{promote_info.couponInfo.randomMax}}</text><text style="font-size: 22rpx;">最高</text></block>
                {{i18n.$t(localePack,"page1.promote.promoteReward5")}}
               </view>
               <view class='ca_center'>{{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward6")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}</view>

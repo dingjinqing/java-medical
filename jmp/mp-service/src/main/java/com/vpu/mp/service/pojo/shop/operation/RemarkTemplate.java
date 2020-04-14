@@ -70,7 +70,8 @@ public enum RemarkTemplate {
 	OPEN_CARD_SEND(3005,RemarkMessage.OPEN_CARD_SEND),
 	/**	系统检测升级 */
 	SYSTEM_UPGRADE(3006,RemarkMessage.SYSTEM_UPGRADE),
-
+    /**	会员卡续费 */
+    CARD_RENEW(3007,RemarkMessage.SYSTEM_UPGRADE),
 
 
 

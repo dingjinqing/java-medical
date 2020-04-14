@@ -1,8 +1,10 @@
 package com.vpu.mp.controller.wxapp;
 
 
+import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
+import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -202,7 +204,10 @@ public class WxAppCardController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/card/buy/pay")
-	public JsonResult toBuyCard(){
-    return success();
+	public JsonResult toBuyCard(@RequestBody @Validated CardToPayParam payParam){
+		WxAppSessionUser user = wxAppAuth.user();
+		payParam.setUser(user);
+		payParam.setClientIp(RequestUtil.getIp(request));
+    	return success(shop().userCard.buyCardCreateOrder(payParam));
 	}
 }

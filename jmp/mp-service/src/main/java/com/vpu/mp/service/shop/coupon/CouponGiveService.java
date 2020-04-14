@@ -581,6 +581,7 @@ public class CouponGiveService extends ShopBaseService {
                     MRKING_VOUCHER.VALIDITY,
                     MRKING_VOUCHER.VALIDITY_HOUR,
                     MRKING_VOUCHER.LEAST_CONSUME,
+                    MRKING_VOUCHER.TYPE,
                     MRKING_VOUCHER.VALIDITY_MINUTE)
                     .from(MRKING_VOUCHER)
                     .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
@@ -621,6 +622,11 @@ public class CouponGiveService extends ShopBaseService {
                 customerAvailCouponsRecord.setGetSource(param.getGetSource());
                 customerAvailCouponsRecord.setAccessOrderSn(StringUtil.isNotBlank(param.getAccessOrderSn()) ? param.getAccessOrderSn() : "");
                 customerAvailCouponsRecord.setLimitOrderAmount(couponDetails.getLeastConsume());
+                //判断如果是分裂优惠券默认不能使用
+                if(couponDetails.getType() == 1)
+                    customerAvailCouponsRecord.setDivisionEnabled((byte)1);
+                else
+                    customerAvailCouponsRecord.setDivisionEnabled((byte)0);
                 try {
                     this.transaction(()-> {
                         // 如果是限制库存类型

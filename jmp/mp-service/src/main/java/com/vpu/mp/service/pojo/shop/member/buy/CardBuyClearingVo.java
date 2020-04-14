@@ -63,23 +63,9 @@ public class CardBuyClearingVo {
      * 服务条款_服务条款名称
      */
     private String serviceDocument;
+
     /**
-     * 支付配置项
-     * 会员卡余额支付
-     */
-    private Byte cardFirst;
-    /**
-     * 支付配置项
-     * 余额支付
-     */
-    private Byte balanceFirst;
-    /**
-     * 支付配置项
-     * 积分支付
-     */
-    private Byte scoreFirst;
-    /**
-     *
+     *会员卡信息
      */
     private CardInfo cardInfo;
     /**
@@ -87,21 +73,13 @@ public class CardBuyClearingVo {
      */
     private BigDecimal orderAmount;
     /**
+     * 积分支付数量
+     */
+    private Integer orderPayScore;
+    /**
      * 订单应付金额
      */
     private BigDecimal moneyPaid;
-    /**
-     * 可用的会员卡
-     */
-    private List<GeneralUserCardVo> memberCardList;
-    /**
-     * 手动或默认选择的会员卡
-     */
-    private GeneralUserCardVo memberCardInfo;
-    /**
-     * 手动或默认选择的会员卡卡号
-     */
-    private String memberCardNo;
 
 
     @Getter
@@ -118,6 +96,7 @@ public class CardBuyClearingVo {
         /*0:普通会员卡，1:次卡,2:登记卡*/
         private Byte cardType;
         private Byte payType;
+        private BigDecimal  pay_fee;
         /*开卡送积分*/
         private Integer sorce;
         /*使用须知*/

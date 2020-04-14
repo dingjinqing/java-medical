@@ -409,9 +409,9 @@ public class MpAuthShopService extends MainBaseService {
 			result = maService.modifyDomain(action, Arrays.asList(httpsDomains),
 					Arrays.asList(wssDomains), Arrays.asList(httpsDomains), Arrays.asList(httpsDomains));
 		} catch (WxErrorException e) {
-			logger().debug(e.getMessage(),e);
+			logger().info(e.getMessage(),e);
 			//没有新增域名，请确认小程序已经添加了域名或该域名是否没有在第三方平台添加
-			logger().debug("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
+			logger().info("appId:"+appId+"修改域名modifyDomain失败："+e.getError().getErrorCode()+"  "+e.getError().getErrorMsg());
 			WxOpenResult fromJson =null;
 			if(noNewDomainCode.equals(String.valueOf(e.getError().getErrorCode()))) {
 				String setWebViewDomain = maService.setWebViewDomain(action, Arrays.asList(httpsDomains));
@@ -420,7 +420,7 @@ public class MpAuthShopService extends MainBaseService {
 					mp.setIsModifyDomain((byte) 1);
 					mp.update();
 				}else {
-					logger().debug("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
+					logger().info("appId:"+appId+"修改域名setWebViewDomain失败"+fromJson.getErrcode()+"  "+fromJson.getErrmsg());
 				}
 			}
 			result.setErrcode(fromJson.getErrcode());
@@ -432,7 +432,7 @@ public class MpAuthShopService extends MainBaseService {
 			mp.setIsModifyDomain((byte) 1);
 			mp.update();
 		}else {
-			logger().debug("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
+			logger().info("appId:"+appId+"修改域名modifyDomain失败"+result.getErrcode()+"  "+result.getErrmsg());
 		}
 		operateLogGlobal(mp, MpOperateLogService.OP_TYPE_MODIFY_DOMAIN, result, WxContentTemplate.WX_MODIFY_DOMAIN_SUCCESS.code, new String[] {});
 		return result;
@@ -533,15 +533,15 @@ public class MpAuthShopService extends MainBaseService {
 	 * @throws WxErrorException
 	 */
 	public WxOpenResult bindTester(String appId, String wechatId) throws WxErrorException {
-		logger().debug("绑定体验者开始···································");
+		logger().info("绑定体验者开始···································");
 		MpAuthShopRecord mp = this.getAuthShopByAppId(appId);
 		List<String> testers = StringUtils.isBlank(mp.getTester()) ? new ArrayList<>()
 				: Util.parseJson(mp.getTester(), new TypeReference<List<String>>() {
 				});
 		WxOpenMaService maService = this.getMaServiceByAppId(appId);
 		WxOpenResult result = maService.bindTester(wechatId);
-		logger().debug("绑定体验者"+result);
-		logger().debug(result.getErrcode()+result.getErrmsg());
+		logger().info("绑定体验者"+result);
+		logger().info(result.getErrcode()+result.getErrmsg());
 		if (result.isSuccess()) {
 			testers.add(wechatId);
 			mp.setTester(Util.toJson(testers));
@@ -567,7 +567,7 @@ public class MpAuthShopService extends MainBaseService {
 			logger().error("appId" + appId + "头像上传又拍云失败");
 			e.printStackTrace();
 		}
-		logger().debug("appId" + appId + "头像上传又拍云" + addImgeToUp);
+		logger().info("appId" + appId + "头像上传又拍云" + addImgeToUp);
 		return relativePath;
 	}
 
@@ -837,7 +837,7 @@ public class MpAuthShopService extends MainBaseService {
 			param1.setTemplateId(currentUseTemplateId);
 			param1.setPackageVersion(row.getPackageVersion());
 			Integer mainId = saas.taskJobMainService.dispatchImmediately(param1,BatchUploadCodeParam.class.getName(),0,TaskJobEnum.BATCH_UPLOAD.getExecutionType());
-			logger().debug("获取的任务id为"+mainId);
+			logger().info("获取的任务id为"+mainId);
 			saas.shop.backProcessService.updateProcessId(recId, mainId);
 			return JsonResultCode.CODE_SUCCESS;
 		}
@@ -1358,7 +1358,7 @@ public class MpAuthShopService extends MainBaseService {
 		WxMpXmlOutTextMessage wxMessage = OfficialAccountMessage(inMessage, appId);
 		WxMpXmlOutMessage messageTrans = MessageTrans(inMessage);
 		if(wxMessage==null) {
-			logger().debug("准备返回客服消息");
+			logger().info("准备返回客服消息");
 			return messageTrans;
 		}
 		return wxMessage;
@@ -1377,7 +1377,7 @@ public class MpAuthShopService extends MainBaseService {
 	public void processAuditEvent(WxMpXmlMessage inMessage, String appId) {
 		// processAuditEvent($appId, $message['Event'], $message['Reason']);
 		if (inMessage.getMsgType().equals("event") && (inMessage.getEvent().equals("weapp_audit_success")||inMessage.getEvent().equals("weapp_audit_fail"))) {
-			logger().debug("小程序有审核结果通知"+inMessage.getEvent());
+			logger().info("小程序有审核结果通知"+inMessage.getEvent());
 			MpAuthShopRecord mpRecord = getAuthShopByAppId(appId);
 			WxOpenResult wxOpenResult=new WxOpenResult();
 			if(mpRecord!=null) {
@@ -1429,13 +1429,13 @@ public class MpAuthShopService extends MainBaseService {
 			try {
 				process = processSubscribeEvent(inMessage, appId, officeAccountByAppId);
 			} catch (WxErrorException e) {
-				logger().debug(e.getMessage(),e);
+				logger().info(e.getMessage(),e);
 			}
 			if(StringUtils.isEmpty(process.getToUserName())) {
 				process=null;
 			}
 		}else {
-			logger().debug("processMessage方法接收的appid "+appId+"在数据库中不存在");
+			logger().info("processMessage方法接收的appid "+appId+"在数据库中不存在");
 		}
 		return process;
 	}
@@ -1444,10 +1444,10 @@ public class MpAuthShopService extends MainBaseService {
 		//subscribe（订阅）
 		WxMpXmlOutTextMessage message = WxMpXmlOutMessage.TEXT().build();
 		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("subscribe")) {
-			logger().debug("开始绑定公众号");
+			logger().info("开始绑定公众号");
 			//公众号获取用户信息
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
+			logger().info("用户Openid："+userInfo.getOpenId()+"开始绑定公众号："+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setOpenid(userInfo.getOpenId());
@@ -1469,7 +1469,7 @@ public class MpAuthShopService extends MainBaseService {
 				boolean parseAccountInfo = saas.shop.account.parseAccountInfo(appId, inMessage.getEventKey(), record.getOpenid());
 				logger().info("parseAccountInfo result "+parseAccountInfo);
 				if(parseAccountInfo) {
-					logger().debug("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
+					logger().info("用户Openid"+userInfo.getOpenId()+"组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒");
 					//packageResponseMsg 组装响应消息 欢迎关注， 您可在这里及时接收新订单提醒'
 				    message.setToUserName(userInfo.getOpenId());
 				    message.setFromUserName(inMessage.getToUser());
@@ -1477,7 +1477,7 @@ public class MpAuthShopService extends MainBaseService {
 				    message.setCreateTime(System.currentTimeMillis() / 1000L);
 				    return message;
 				}else {
-					logger().debug("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
+					logger().info("用户Openid"+userInfo.getOpenId()+"为你精心准备了关注礼品，快来点击查看吧!");
 					for(MpAuthShopRecord authShopRecord:officialAccountMps) {
 						Record shop = saas.shop.getShop(authShopRecord.getShopId());
 						String shopName = shop.get(SHOP.SHOP_NAME);
@@ -1510,16 +1510,16 @@ public class MpAuthShopService extends MainBaseService {
 		}
 		//取消订阅
 		if(StringUtils.isNotEmpty(inMessage.getEvent())&&inMessage.getEvent().equals("unsubscribe")) {
-			logger().debug("开始解绑");
+			logger().info("开始解绑");
 			WxMpUser userInfo = open().getWxOpenComponentService().getWxMpServiceByAppid(appId).getUserService().userInfo(inMessage.getFromUser());
-			logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号"+appId);
+			logger().info("用户Openid"+userInfo.getOpenId()+"解绑公众号"+appId);
 			if(userInfo!=null) {
 				MpOfficialAccountUserRecord record=MP_OFFICIAL_ACCOUNT_USER.newRecord();
 				record.setAppId(appId);
 				record.setOpenid(userInfo.getOpenId());
 				record.setSubscribe((byte)0);
 				saas.shop.officeAccount.addOrUpdateUser(appId, record, userInfo.getUnionId(), userInfo.getOpenId());
-				logger().debug("用户Openid"+userInfo.getOpenId()+"解绑公众号完成");
+				logger().info("用户Openid"+userInfo.getOpenId()+"解绑公众号完成");
 				return message;
 			}
 		}
@@ -1588,7 +1588,7 @@ public class MpAuthShopService extends MainBaseService {
 		build.setFromUserName(inMessage.getToUser());
 		build.setCreateTime((System.currentTimeMillis() / 1000L));
 		build.setMsgType(WxConsts.XmlMsgType.TRANSFER_CUSTOMER_SERVICE);
-		logger().debug("\n 发给客服的报文：\n{}",build.toXml().toString());
+		logger().info("\n 发给客服的报文：\n{}",build.toXml().toString());
 		return build;
 	}
 
