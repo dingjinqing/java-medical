@@ -247,13 +247,15 @@ public class SeckillService extends ShopBaseService{
         }
         transaction(()->{
             int totalStock = 0;
-            for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
-                if(secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null){
-                    db().update(SEC_KILL_PRODUCT_DEFINE)
-                        .set(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,secKillProduct.getSecKillPrice())
-                        .set(SEC_KILL_PRODUCT_DEFINE.STOCK,secKillProduct.getStock())
-                        .where(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(secKillProduct.getProductId()).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()))).execute();
-                    totalStock += secKillProduct.getStock();
+            if(param.getSecKillProduct() != null && param.getSecKillProduct().length > 0){
+                for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
+                    if(secKillProduct.getProductId() != null && secKillProduct.getSecKillPrice() != null && secKillProduct.getStock() != null){
+                        db().update(SEC_KILL_PRODUCT_DEFINE)
+                            .set(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE,secKillProduct.getSecKillPrice())
+                            .set(SEC_KILL_PRODUCT_DEFINE.STOCK,secKillProduct.getStock())
+                            .where(SEC_KILL_PRODUCT_DEFINE.PRODUCT_ID.eq(secKillProduct.getProductId()).and(SEC_KILL_PRODUCT_DEFINE.SK_ID.eq(param.getSkId()))).execute();
+                        totalStock += secKillProduct.getStock();
+                    }
                 }
             }
             if(totalStock > 0){
