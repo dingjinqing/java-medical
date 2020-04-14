@@ -376,12 +376,37 @@ export default {
         callback()
       }
     }
-    var validateTime = (rule, value, callback) => {
+    var validateTime1 = (rule, value, callback) => {
       console.log(value)
       if (!value) {
         callback(new Error(this.$t('mintegralExchange.selectaDate')))
       } else {
-        callback()
+        if (this.ruleForm.customTimeEnd) {
+          if (new Date(value).getTime() > new Date(this.ruleForm.customTimeEnd).getTime()) {
+            callback(new Error('开始日期不能大于结束日期'))
+          } else {
+            callback()
+          }
+        } else {
+          callback()
+        }
+      }
+    }
+    var validateTime2 = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        callback(new Error(this.$t('mintegralExchange.selectaDate')))
+      } else {
+        if (this.ruleForm.customTime) {
+          console.log(new Date(value).getTime())
+          if (new Date(value).getTime() < new Date(this.ruleForm.customTime).getTime()) {
+            callback(new Error('开始日期不能大于结束日期'))
+          } else {
+            callback()
+          }
+        } else {
+          callback()
+        }
       }
     }
     return {
@@ -423,10 +448,10 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         customTime: [
-          { validator: validateTime, required: true, trigger: 'change' }
+          { validator: validateTime1, required: true, trigger: 'change' }
         ],
         customTimeEnd: [
-          { validator: validateTime, required: true, trigger: 'change' }
+          { validator: validateTime2, required: true, trigger: 'change' }
         ],
         maxExchangeNum: [
           { required: true, message: '请输入单个用户最多可兑换数量', trigger: 'blur' }
@@ -501,7 +526,7 @@ export default {
                 this.showMoreFlag = true
               }
               this.formBottom.copywriting = objectShareConfig.share_doc
-              this.formBottom.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
+              this.sharedGraph = JSON.stringify(objectShareConfig.share_img_action)
               this.formBottom.checkImgData = { imgUrl: objectShareConfig.share_img }
               console.log(objectShareConfig)
             }
@@ -514,6 +539,8 @@ export default {
   methods: {
     // 点击保存
     handleToClickSave () {
+      this.isSureTop = false
+      this.isSureBottom = false
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           this.isSureTop = true
@@ -533,6 +560,8 @@ export default {
             return false
           }
         })
+      } else {
+        this.isSureBottom = true
       }
       console.log(this.isSureTop, this.isSureBottom)
       if (this.isSureTop && this.isSureBottom) {
@@ -795,7 +824,7 @@ export default {
   .scoreDiv {
     display: flex;
     /deep/ .el-input {
-      width: 60px;
+      min-width: 50px;
     }
     span {
       display: flex !important;
