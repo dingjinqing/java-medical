@@ -126,4 +126,15 @@ public class WxAppDistributionController extends WxAppBaseController{
         GoodsRebateChangePriceVo goodsRebateChangePriceVo = shop().mpDisGoods.rebateGoodsCfg(param);
         return this.success(goodsRebateChangePriceVo);
     }
+
+    /**
+     * 分享人信息
+     * @param param
+     * @return
+     */
+    @PostMapping("rebate/user/share")
+    public JsonResult shareUserInfo(@RequestBody ShareUserInfoParam param){
+        ShareUserInfoVo shareUserInfo = shop().mpDisGoods.getShareUserInfo(param);
+        return this.success(shareUserInfo);
+    }
 }
