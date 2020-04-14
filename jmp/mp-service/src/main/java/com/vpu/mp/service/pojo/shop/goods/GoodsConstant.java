@@ -86,6 +86,11 @@ public class GoodsConstant {
     public static final Byte OFF_SALE = 0;
 
     /**
+     * 商品进行分销
+     */
+    public static final Byte REBATE = 1;
+
+    /**
      * 加入仓库 设置saleType使用
      */
     public static final Byte IN_STOCK = 2;
