@@ -224,6 +224,7 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
       },
       sampleCardData: {
@@ -349,6 +350,17 @@ export default {
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
 
+      // 自定义激活数据
+      let action = data.customAction.map(item => {
+        return {
+          type: item.custom_type,
+          title: item.custom_title,
+          content: item.option_arr,
+          conditionChecked: Boolean(item.option_ver),
+          checked: Boolean(item.is_checked)
+        }
+      })
+      this.cardActiveCfgData.customAction = action
       // 同步用户标签
       if (data.cardTag) {
         this.cardTag = {
@@ -442,6 +454,7 @@ export default {
         // 卡号+密码
         batchIds = this.cardReceiveCfgData.codeAddDivArrBottom.map(({ pwdId }) => pwdId)
       }
+      this.dealWithCustomAction()
       this.dealWithCardTag()
       let obj = {
         'id': this.cardId,
@@ -476,6 +489,7 @@ export default {
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
         'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction,
         'cardTag': this.cardTag,
         'cardGive': this.cardGive
       }
@@ -536,6 +550,17 @@ export default {
     },
     dealWithCardTag () {
       this.cardTag.cardTagId = this.cardTag.cardTagId.map(({id}) => id)
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
+      }
     }
   }
 
