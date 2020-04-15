@@ -201,7 +201,7 @@ public class CardDetailService extends ShopBaseService{
 	 */
 	public CardCustomRights getCustomRights(MemberCardRecord card) {
 		logger().info("获取卡的自定义权益信息");
-		List<CardRight> customRightsAll = null;
+		List<CardRight> customRightsAll = new ArrayList<>();
 		CardCustomRights.RightSwitch flag = CardCustomRights.RightSwitch.off;
 		
 		if(!StringUtils.isBlank(card.getCustomRights())) {
