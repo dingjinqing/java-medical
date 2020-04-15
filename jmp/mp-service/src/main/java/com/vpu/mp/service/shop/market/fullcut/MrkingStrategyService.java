@@ -6,6 +6,7 @@ import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
@@ -272,7 +273,9 @@ public class MrkingStrategyService extends ShopBaseService {
         //根据购物车里的商品计算底边条的提醒文案
         WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION,param.getStrategyId());
         vo.setFullPriceDoc(getStrategyGoodsDoc(cartBo,MrkingStrategyAct.getType(),conditions));
-        vo.setTotalPrice(cartBo.getTotalPrice());
+        vo.setTotalPrice(cartBo.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add));
 
         return vo;
     }
@@ -338,7 +341,10 @@ public class MrkingStrategyService extends ShopBaseService {
      */
     private MrkingStrategyGoodsListVo.FullPriceDoc getStrategyGoodsDoc(WxAppCartBo cartBo,Byte strategyType,List<MrkingStrategyCondition> conditions){
         MrkingStrategyGoodsListVo.FullPriceDoc doc = new MrkingStrategyGoodsListVo.FullPriceDoc();
-        if(cartBo.getTotalPrice().compareTo(BigDecimal.ZERO) <= 0){
+        BigDecimal totalPrice = cartBo.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if(totalPrice.compareTo(BigDecimal.ZERO) <= 0){
             doc.setDocType((byte)0);
             return doc;
         }
@@ -349,13 +355,13 @@ public class MrkingStrategyService extends ShopBaseService {
                 MrkingStrategyCondition condition = conditions.get(0);
                 if(condition.getFullMoney() != null && condition.getFullMoney().compareTo(BigDecimal.ZERO) > 0){
                     //满金额类型
-                    if(cartBo.getTotalPrice().compareTo(condition.getFullMoney()) >= 0){
-                        BigDecimal reduceMoney = (cartBo.getTotalPrice().divide(condition.getFullMoney(),0,BigDecimal.ROUND_DOWN)).multiply(condition.getReduceMoney()).setScale(2,BigDecimal.ROUND_HALF_UP);
+                    if(totalPrice.compareTo(condition.getFullMoney()) >= 0){
+                        BigDecimal reduceMoney = (totalPrice.divide(condition.getFullMoney(),0,BigDecimal.ROUND_DOWN)).multiply(condition.getReduceMoney()).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)1);
                         doc.setReduceMoney(reduceMoney);
                         return doc;
                     }else{
-                        BigDecimal diffPrice = condition.getFullMoney().subtract(cartBo.getTotalPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
+                        BigDecimal diffPrice = condition.getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)2);
                         doc.setReduceMoney(condition.getReduceMoney());
                         doc.setDiffPrice(diffPrice);
@@ -386,7 +392,7 @@ public class MrkingStrategyService extends ShopBaseService {
                     conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
                     BigDecimal reduceMoney = null;
                     for(MrkingStrategyCondition c:conditions){
-                        if(cartBo.getTotalPrice().compareTo(c.getFullMoney()) >= 0){
+                        if(totalPrice.compareTo(c.getFullMoney()) >= 0){
                             reduceMoney = c.getReduceMoney();
                             break;
                         }
@@ -396,7 +402,7 @@ public class MrkingStrategyService extends ShopBaseService {
                         doc.setReduceMoney(reduceMoney);
                         return doc;
                     }else {
-                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(cartBo.getTotalPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
+                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)2);
                         doc.setReduceMoney(conditions.get(conditions.size() - 1).getReduceMoney());
                         doc.setDiffPrice(diffPrice);
@@ -435,18 +441,18 @@ public class MrkingStrategyService extends ShopBaseService {
                     conditions = conditions.stream().sorted(Comparator.comparing(MrkingStrategyCondition::getFullMoney).reversed()).collect(Collectors.toList());
                     BigDecimal discount = null;
                     for(MrkingStrategyCondition c:conditions){
-                        if(cartBo.getTotalPrice().compareTo(c.getFullMoney()) >= 0){
+                        if(totalPrice.compareTo(c.getFullMoney()) >= 0){
                             discount = c.getDiscount();
                             break;
                         }
                     }
                     if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
-                        BigDecimal reduceMoney = cartBo.getTotalPrice().multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
+                        BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)1);
                         doc.setReduceMoney(reduceMoney);
                         return doc;
                     }else {
-                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(cartBo.getTotalPrice()).setScale(2,BigDecimal.ROUND_HALF_UP);
+                        BigDecimal diffPrice = conditions.get(conditions.size() - 1).getFullMoney().subtract(totalPrice).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)3);
                         doc.setDiffPrice(diffPrice);
                         doc.setDiscount(conditions.get(conditions.size() - 1).getDiscount());
@@ -464,7 +470,7 @@ public class MrkingStrategyService extends ShopBaseService {
                         }
                     }
                     if(discount != null && discount.compareTo(BigDecimal.ZERO) > 0){
-                        BigDecimal reduceMoney = cartBo.getTotalPrice().multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
+                        BigDecimal reduceMoney = totalPrice.multiply(BigDecimal.ONE.subtract(discount.divide(BigDecimal.valueOf(10)))).setScale(2,BigDecimal.ROUND_HALF_UP);
                         doc.setDocType((byte)1);
                         doc.setReduceMoney(reduceMoney);
                         return doc;
