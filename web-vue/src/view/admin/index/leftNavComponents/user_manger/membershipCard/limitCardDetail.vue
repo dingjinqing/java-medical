@@ -253,7 +253,7 @@ export default {
         customRightsAll: []
       },
       cardTag: {
-        cardTag: null,
+        cardTag: 'off',
         cardTagId: []
       },
       cardGive: {

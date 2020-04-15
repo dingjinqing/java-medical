@@ -302,7 +302,7 @@ export default {
         customRightsAll: []
       },
       cardTag: {
-        cardTag: null,
+        cardTag: 'off',
         cardTagId: []
       }
     }
@@ -612,6 +612,7 @@ export default {
       }
       this.dealWithCustomAction()
       this.dealWithCardTag()
+      debugger
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
