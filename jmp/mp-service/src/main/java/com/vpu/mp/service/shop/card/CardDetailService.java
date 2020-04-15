@@ -141,6 +141,10 @@ public class CardDetailService extends ShopBaseService{
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
 		assignPayOwnGoods(gradeCard);
 		gradeCard.changeJsonCfg();
+		// 包邮信息
+		gradeCard.setFreeship(getFreeshipData(card));
+		// 自定义权益信息
+		gradeCard.setCardCustomRights(getCustomRights(card));
 		return gradeCard;
 	}
 	

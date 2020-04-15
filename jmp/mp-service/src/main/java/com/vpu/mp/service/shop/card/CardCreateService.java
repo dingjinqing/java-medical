@@ -174,6 +174,10 @@ public class CardCreateService extends ShopBaseService{
 		initIsAllowPayOwnGoods(param, cardBuilder);
 		initGradeBasicCfg(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		// 包邮
+		initFreeshipCfg(param,cardBuilder);
+		// 自定义权益
+		initCustonRights(param,cardBuilder);
 	}
 	
 	

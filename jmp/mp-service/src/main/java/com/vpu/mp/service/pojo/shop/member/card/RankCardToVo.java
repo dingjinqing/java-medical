@@ -4,6 +4,8 @@ import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +63,17 @@ public class RankCardToVo extends RankCardVo {
 	
 	/** 激活需要的信息 */
 	private String[] activationCfgBox;
+	
+	/**
+	 * 	包邮信息
+	 */
+	protected CardFreeship freeship;
+	
+	/**
+	 * 	自定义权益信息
+	 */
+	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
+	protected CardCustomRights cardCustomRights;
 	
 	/**
 	 * 处理策略
