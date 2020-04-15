@@ -110,12 +110,12 @@
               <div>
                 <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label=0>{{$t('payReward.allGoods')}}</el-radio>
-                  <el-radio :label=1>{{$t('payReward.partOfGoods')}}</el-radio>
+                  <el-radio :label=1>{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label=0>{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
-                  v-if="params.goodsAreaType === 1"
+                  v-if="params.goodsAreaType === 0"
                 >
                   <div
                     class="noneBlockList"
@@ -795,7 +795,7 @@ export default {
         startTime: '',
         endTime: '',
         actFirst: '', //  优先级
-        goodsAreaType: 0, // 商品范围类型
+        goodsAreaType: 1, // 商品范围类型
         goodsIds: '', // 商品id
         goodsCatIds: '', // 商品平台分类
         goodsSortIds: '', // 商品商家分类
