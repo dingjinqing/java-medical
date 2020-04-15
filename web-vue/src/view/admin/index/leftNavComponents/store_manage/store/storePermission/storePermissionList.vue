@@ -243,7 +243,7 @@
             :label="$t('storePermission.AuthorizedStore')+'：'"
             prop="storeList"
           >
-            <el-select
+            <!-- <el-select
               v-model="accountForm.storeList"
               class="form-input"
               multiple
@@ -254,7 +254,11 @@
                 :label="item.label"
                 :value="item.value"
               ></el-option>
-            </el-select>
+            </el-select> -->
+            <storeMultipleChoice
+              :storeDatas="storeList"
+              :selectedIds.sync="accountForm.storeList"
+            ></storeMultipleChoice>
           </el-form-item>
         </el-form>
       </div>
@@ -279,7 +283,7 @@
       :visible.sync="setStoresVisible"
       width="500px"
     >
-      <div>
+      <!-- <div>
         <span style="width:110px;">{{$t('storePermission.chooseStore')}}：</span>
         <el-select
           v-model="accountStoreList"
@@ -293,7 +297,12 @@
             :value="item.value"
           ></el-option>
         </el-select>
-      </div>
+      </div> -->
+      <storeMultipleChoice
+        :storeDatas="storeList"
+        :selectedIds.sync="accountStoreList"
+        showTitle
+      ></storeMultipleChoice>
       <div slot="footer">
         <el-button
           type="primary"
@@ -314,7 +323,8 @@ import { getAccountListApi, addAccountApi, editAccountApi, getAccountApi, update
 import { allSourceRequest } from '@/api/admin/membershipList.js'
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    storeMultipleChoice: () => import('@/components/admin/storeManage/storeMultipleChoice')
   },
   data () {
     let that = this

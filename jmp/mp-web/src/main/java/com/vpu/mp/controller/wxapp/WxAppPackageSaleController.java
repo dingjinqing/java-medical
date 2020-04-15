@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleIdParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,5 +37,13 @@ public class WxAppPackageSaleController extends WxAppBaseController  {
     @PostMapping("/api/wxapp/packagesale/add")
     public JsonResult addPackageGoods(@RequestBody @Validated PackageSaleGoodsAddParam param) {
         return success(shop().packSale.addPackageGoodsToCart(param,wxAppAuth.user().getUserId()));
+    }
+
+    /**
+     * 	结算前确认
+     */
+    @PostMapping("/api/wxapp/packagesale/checkout")
+    public JsonResult packageGoodsCheckout(@RequestBody @Validated PackageSaleIdParam param) {
+        return success(shop().packSale.toCheckout(param.getPackageId(),wxAppAuth.user().getUserId()));
     }
 }

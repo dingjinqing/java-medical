@@ -301,16 +301,16 @@ public class OrderGoodsService extends ShopBaseService{
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
             //商品质量
-            goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
+            goodsWeight(goods.getProductInfo().getPrdWeight()).
             //TODO 后续处理
             userCoupon(null).
             catId(goods.getGoodsInfo().getCatId()).
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
-            purchasePriceId(null).
-            purchasePriceRuleId(null).
             reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
+            purchasePriceId(goods.getPurchasePriceId()).
+            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
             reducePriceId(goods.getReducePriceId()).
@@ -318,7 +318,7 @@ public class OrderGoodsService extends ShopBaseService{
             build();
 
         //限时降价的ID和TYPE存入order_goods
-        if(goods.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) && goods.getReducePriceId() != null){
+        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
             bo.setActivityId(goods.getReducePriceId());
             bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         }

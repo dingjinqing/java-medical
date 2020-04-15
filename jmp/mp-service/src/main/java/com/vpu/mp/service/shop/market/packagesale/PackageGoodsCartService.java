@@ -8,6 +8,7 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCartGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckoutVo;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
 import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
 import jodd.util.StringUtil;
@@ -180,5 +181,22 @@ public class PackageGoodsCartService extends ShopBaseService {
             packageGoodsCartRecord.setGoodsNumber(packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber() < 0 ? 0 : packageGoodsCartRecord.getGoodsNumber() + param.getGoodsNumber());
             packageGoodsCartRecord.update();
         }
+    }
+
+    public List<PackageSaleCheckoutVo.CheckoutGoods> getUserGroupCartGoods(int packageId,int userId){
+        return db().select(PACKAGE_GOODS_CART.GOODS_ID,PACKAGE_GOODS_CART.PRODUCT_ID,PACKAGE_GOODS_CART.GOODS_NUMBER)
+            .from(PACKAGE_GOODS_CART)
+            .where(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId))
+            .and(PACKAGE_GOODS_CART.USER_ID.eq(userId))
+            .fetchInto(PackageSaleCheckoutVo.CheckoutGoods.class);
+    }
+
+    /**
+     * 下单删除购物车相关记录
+     * @param packageId
+     * @param userId
+     */
+    public void deleteUserCartGoods(int packageId,int userId){
+        db().delete(PACKAGE_GOODS_CART).where(PACKAGE_GOODS_CART.USER_ID.eq(userId)).and(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId)).execute();
     }
 }

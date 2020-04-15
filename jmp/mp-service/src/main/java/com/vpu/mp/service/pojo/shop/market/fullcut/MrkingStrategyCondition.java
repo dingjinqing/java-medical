@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.market.fullcut;
 
+import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -27,10 +28,10 @@ public class MrkingStrategyCondition implements Comparable<MrkingStrategyConditi
     @Override
     public int compareTo(MrkingStrategyCondition o) {
         //倒序
-        if(getFullMoney() != null && o.getFullMoney() != null) {
+        if(getFullMoney() != null && BigDecimalUtil.compareTo(getFullMoney(), null) > 0 && o.getFullMoney() != null && BigDecimalUtil.compareTo(o.getFullMoney(), null) > 0) {
             return getFullMoney().compareTo(o.getFullMoney()) > 0 ? -1 : 1;
         }
-        if(getAmount() != null && o.getAmount() != null) {
+        if(getAmount() != null && getAmount() > 0 && o.getAmount() != null && o.getAmount() > 0) {
             return getAmount().compareTo(o.getAmount()) > 0 ? -1 : 1;
         }
         //正常情况不会

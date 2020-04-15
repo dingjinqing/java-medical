@@ -181,9 +181,16 @@ public class WxAppCardActivationService extends ShopBaseService {
 		}
 		List<String> fields = cardVerifyService.getActiveRequiredFieldWithHump(uCard.getActivationCfg());
 		Map<String, Object> activeData = this.filterActiveOption(fields, param.getActivateOption());
-		// 自定已激活项
+		//	自定义激活项
 		List<CardCustomActionParam> customOptions = param.getCustomOptions();
+		
 		if(customOptions!=null) {
+			for(CardCustomActionParam item: customOptions) {
+				//	确保文本OptionArr不被存储
+				if(item.getCustomType()== (byte)2) {
+					item.setOptionArr(null);
+				}
+			}
 			String customOptJson = Util.toJsonNotNull(customOptions);
 			activeData.put(CARD_EXAMINE.CUSTOM_OPTIONS.getName(),customOptJson);
 		}

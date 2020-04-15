@@ -188,3 +188,15 @@
 .pay_content .pay_list_item{
   height: 90rpx;
 }
+.card-price{
+  position: absolute;
+  right: 20rpx;
+  bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+.card-price .real-price{
+  font-size: 30rpx;
+  font-weight: 600;
+}

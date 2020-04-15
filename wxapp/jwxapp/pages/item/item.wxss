@@ -293,16 +293,6 @@
   top: 50%;
   margin-top: -18rpx;
 }
-.subscribe-button{
-  height: 50rpx;
-  width: 140rpx;
-  border: 2rpx solid;
-  text-align: center;
-  margin-left: 18rpx;
-  line-height: 46rpx;
-  border-radius: 25rpx;
-  box-sizing: border-box;
-}
 .goods-image  .subscribe--live-player-subscribe__btn{
   height: 50rpx;
   width: 140rpx;
@@ -321,4 +311,15 @@
 .goods-image  .subscribe--live-player-hasSubscribe{
   color:rgba(247,145,61,1);
   background-color: transparent;
+}
+.sell-out{
+  text-align: center;
+  line-height: 80rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
 }

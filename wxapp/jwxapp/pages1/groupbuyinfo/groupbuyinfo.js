@@ -373,7 +373,8 @@ global.wxPage({
       activityId: that.data.groupbuyInfo.groupBuyDefineInfo.id,
       realPrice: that.data.groupbuyInfo.goodsInfo.minGroupBuyPrice,
       linePrice: that.data.groupbuyInfo.goodsInfo.shopPrice,
-      targetId: that.data.groupbuyInfo.goodsInfo.goodsId
+      targetId: that.data.groupbuyInfo.goodsInfo.goodsId,
+      groupId: that.data.groupId
     })
   },
 

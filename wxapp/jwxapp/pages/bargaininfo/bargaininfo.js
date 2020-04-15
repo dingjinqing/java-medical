@@ -307,7 +307,9 @@ global.wxPage({
         activityId: bargain_info.recordInfo.bargainId,
         realPrice: bargain_info.bargainPrice,
         linePrice: bargain_info.recordInfo.prdPrice,
-        pageType: 2
+        targetId: bargain_info.recordInfo.goodsId,
+        pageType: 2,
+        recordId: record_id
       })
   },
   // 取消海报

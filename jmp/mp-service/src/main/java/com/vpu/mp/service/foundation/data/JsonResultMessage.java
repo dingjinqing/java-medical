@@ -267,6 +267,8 @@ public class JsonResultMessage {
     public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
     public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
     public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS="group.buy.activity.group.success";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL="group.buy.activity.group.cancel";
     /**
      * 营销-秒杀
      */
@@ -376,6 +378,11 @@ public class JsonResultMessage {
      * 营销--消息推送
      */
     public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
+
+    /**
+     * 营销--打包一口价
+     */
+    public static final String PACKAGE_SALE_RULE_CHANGED = "package.sale.rules.changed";
 
     /**
      * 文章_分类
