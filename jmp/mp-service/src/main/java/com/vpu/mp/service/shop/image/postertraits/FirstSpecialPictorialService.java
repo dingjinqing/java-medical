@@ -202,6 +202,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         }
         String mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), firstSpecialRecord.getId(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL));
 
+        pictorialLog("pictorial", "mpQrcode:"+mpQrcode);
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
@@ -214,6 +215,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         PictorialImgPx imgPx = new PictorialImgPx();
 
         // 拼装背景图
+        pictorialLog("pictorial", "拼装背景图");
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
 
         BufferedImage iconImage;
