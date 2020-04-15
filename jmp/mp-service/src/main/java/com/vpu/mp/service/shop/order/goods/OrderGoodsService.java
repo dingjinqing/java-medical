@@ -346,6 +346,10 @@ public class OrderGoodsService extends ShopBaseService{
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
                 record.setActivityId(bo.getPurchasePriceId());
                 record.setActivityRule(bo.getPurchasePriceRuleId());
+            }else if(bo.getReducePriceId() != null && bo.getReducePriceId() > 0) {
+                //限时降价
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                record.setActivityId(bo.getReducePriceId());
             }
             records.add(record);
         }
