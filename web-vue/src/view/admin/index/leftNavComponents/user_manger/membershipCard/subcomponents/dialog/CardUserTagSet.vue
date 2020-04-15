@@ -92,7 +92,7 @@ export default {
             this.isRefresh = false
             setTimeout(() => {
               loading.close()
-            }, 1000)
+            }, 500)
           }
         }
       })
