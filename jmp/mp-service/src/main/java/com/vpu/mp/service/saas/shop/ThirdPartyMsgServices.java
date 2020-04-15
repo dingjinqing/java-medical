@@ -150,16 +150,18 @@ public class ThirdPartyMsgServices extends MainBaseService {
 			canSend = true;
 		}
 		if (canSend) {
-			Integer num = db()
-					.select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES).where(
-							THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
-									.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_MYSQL_SIMPLE)
-											.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
-					.fetchAnyInto(Integer.class);
-			if (num != null && num >= 5) {
-				canSend = false;
-			} else {
+			List<Integer> list = db().select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES)
+					.where(THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
+							.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_MYSQL_SIMPLE)
+									.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
+					.groupBy(THIRD_PARTY_SERVICES.ACCOUNT_ACTION, THIRD_PARTY_SERVICES.ACCOUNT_ID,
+							THIRD_PARTY_SERVICES.SERVICE_ACTION)
+					.having(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID).ge(5)).fetchInto(Integer.class);
+			logger().info(""+list);
+			if(list.size()==0) {
 				canSend = true;
+			}else {
+				canSend = false;
 			}
 		}
 		vo = new CanSendVo(canSend, shopAccount, subAccountList);
