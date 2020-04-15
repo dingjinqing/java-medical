@@ -730,6 +730,15 @@ public class IncreasePurchaseService extends ShopBaseService {
         return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
     }
 
-
+    /**
+     * 换购商品运费策略
+     * @param ActId
+     * @return
+     */
+    public boolean isFreeShip(Integer ActId) {
+        //换购商品运费策略，0免运费，1使用原商品运费模板
+        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(ActId)).fetchOneInto(Byte.class);
+        return NumberUtils.BYTE_ZERO.equals(isFreeShip);
+    }
 
 }

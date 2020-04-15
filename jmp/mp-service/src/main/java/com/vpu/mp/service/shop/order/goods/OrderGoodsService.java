@@ -286,7 +286,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
-            //限时降价
+            //满折满减
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //当前非赠品（赠品后续初始化）
