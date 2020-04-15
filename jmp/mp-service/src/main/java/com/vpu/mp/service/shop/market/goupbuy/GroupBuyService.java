@@ -1,12 +1,11 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -57,8 +56,8 @@ import java.util.stream.Collectors;
 import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
 
 /**
  * @author 孔德成
@@ -568,25 +567,45 @@ public class GroupBuyService extends ShopBaseService {
     /**
      * 活动详情
      *
-     * @param userId
-     * @param isGrouper
-     * @param createTime
-     * @param groupId
-     * @param activityId
-     * @param lang
+     * @param param 拼团id 用户id
+     * @param lang 语音
      * @return
      */
-    public GroupBuyInfoVo getGroupBuyInfo(Integer userId, Byte isGrouper, Timestamp createTime, Integer groupId, Integer activityId, String lang) {
+    public GroupBuyInfoVo getGroupBuyInfo(GroupBuyInfoParam param, String lang) {
+        GroupBuyInfoVo groupBuyInfoVo = new GroupBuyInfoVo();
+        GroupBuyListRecord grouperInfo = groupBuyListService.getGrouperByGroupId(param.getGroupId());
+        if (Objects.isNull(grouperInfo)){
+            logger().debug("拼团不存在或已经删除,[groupId:{}]",param.getGroupId());
+            GroupBuyStatusInfo statusInfo = new GroupBuyStatusInfo();
+            statusInfo.setStatus(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST.getCode());
+            statusInfo.setMessage(Util.translateMessage(lang, JsonResultMessage.GROUP_BUY_GROUPID_DOES_NOT_EXIST, "messages"));
+            groupBuyInfoVo.setStatusInfo(statusInfo);
+            return groupBuyInfoVo;
+        }
+        Byte isGrouper;
+        if (param.getUserId().equals(grouperInfo.getUserId())){
+            isGrouper=IS_GROUPER_Y;
+        }else {
+            isGrouper =IS_GROUPER_N;
+        }
         Timestamp date = DateUtil.getLocalDateTime();
         // 拼团状态
-        ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(userId, date, activityId, groupId, isGrouper);
+        ResultMessage resultMessage = groupBuyListService.canCreatePinGroupOrder(param.getUserId(), date, grouperInfo.getActivityId(), grouperInfo.getGroupId(), isGrouper);
         //拼团活动
-        GroupBuyDefineInfo groupBuy = getGroupBuyRecord(activityId).into(GroupBuyDefineInfo.class);
-        Result<Record3<Integer, BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityId)).fetch();
+        GroupBuyDefineInfo groupBuy = getGroupBuyRecord(grouperInfo.getActivityId()).into(GroupBuyDefineInfo.class);
+        Result<Record3<Integer, BigDecimal, Short>> groupBuyProductRecord = db().select(GROUP_BUY_PRODUCT_DEFINE.PRODUCT_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.STOCK).from(GROUP_BUY_PRODUCT_DEFINE).where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(grouperInfo.getActivityId())).fetch();
         //商品
-        GroupBuyGoodsInfo goodsRecord = goodsService.getGoodsById(groupBuy.getGoodsId()).get().into(GroupBuyGoodsInfo.class);
+        Optional<GoodsRecord> goodsRecord = goodsService.getGoodsById(grouperInfo.getGoodsId());
+        if (!goodsRecord.isPresent()){
+            GroupBuyStatusInfo statusInfo = new GroupBuyStatusInfo();
+            statusInfo.setStatus(JsonResultCode.GROUP_BUY_GROUPID_DOES_NOT_EXIST.getCode());
+            statusInfo.setMessage(Util.translateMessage(lang, JsonResultMessage.GROUP_BUY_GROUPID_DOES_NOT_EXIST, "messages"));
+            groupBuyInfoVo.setStatusInfo(statusInfo);
+          return groupBuyInfoVo;
+        }
+        GroupBuyGoodsInfo goodsInfo = goodsRecord.get().into(GroupBuyGoodsInfo.class);
         //sku
-        List<GoodsSpecProductRecord> prdInfos = goodsSpecProductService.getGoodsDetailPrds(groupBuy.getGoodsId());
+        List<GoodsSpecProductRecord> prdInfos = goodsSpecProductService.getGoodsDetailPrds(grouperInfo.getGoodsId());
         List<GoodsPrdMpVo> prdMpVos = prdInfos.stream().map(GoodsPrdMpVo::new).collect(Collectors.toList());
         prdMpVos.forEach(prd -> {
             groupBuyProductRecord.forEach(groupPrd -> {
@@ -599,36 +618,35 @@ public class GroupBuyService extends ShopBaseService {
             });
         });
         //用户
-        List<GroupBuyUserInfo> userList = groupBuyListService.getGroupUserList(groupId);
-        boolean newUser = orderInfoService.isNewUser(userId);
+        List<GroupBuyUserInfo> userList = groupBuyListService.getGroupUserList(param.getGroupId());
+        boolean newUser = orderInfoService.isNewUser(param.getUserId());
         //是否需要绑定手机号
         Byte bindMobile = shopCommonConfigService.getBindMobile();
         Integer groupBuyStock = groupBuyProductRecord.stream().mapToInt(Record3<Integer, BigDecimal, Short>::component3).sum();
         BigDecimal maxPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().max(BigDecimal::compareTo).get();
         BigDecimal minPrice = groupBuyProductRecord.stream().map(Record3<Integer, BigDecimal, Short>::component2).distinct().min(BigDecimal::compareTo).get();
-        long dateDiff = date.getTime() - createTime.getTime();
+        long dateDiff = date.getTime() - DateUtil.getLocalDateTime().getTime();
         long hour = 23 - (dateDiff / (60 * 60 * 1000));
         long min = 59 - (dateDiff % (60 * 60 * 1000)) / (60 * 1000);
         long s = 59 - ((dateDiff % (60 * 60 * 1000)) % (60 * 1000)) / 1000;
 
-        GroupBuyInfoVo groupBuyInfo = new GroupBuyInfoVo();
-        goodsRecord.setGroupBuygoodsNum(groupBuyStock);
-        goodsRecord.setMaxGroupBuyPrice(maxPrice);
-        goodsRecord.setMinGroupBuyPrice(minPrice);
+        goodsInfo.setGroupBuygoodsNum(groupBuyStock);
+        goodsInfo.setMaxGroupBuyPrice(maxPrice);
+        goodsInfo.setMinGroupBuyPrice(minPrice);
         GroupBuyStatusInfo statusInfo = new GroupBuyStatusInfo();
         statusInfo.setStatus(resultMessage.getJsonResultCode().getCode());
         statusInfo.setMessage(Util.translateMessage(lang, resultMessage.getJsonResultCode().getMessage(), "messages"));
-        groupBuyInfo.setGoodsInfo(goodsRecord);
-        groupBuyInfo.setPrdSpecsList(prdMpVos);
-        groupBuyInfo.setStatusInfo(statusInfo);
-        groupBuyInfo.setUserInfoList(userList);
-        groupBuyInfo.setGroupBuyDefineInfo(groupBuy);
-        groupBuyInfo.setHour(Math.toIntExact(hour));
-        groupBuyInfo.setMinute(Math.toIntExact(min));
-        groupBuyInfo.setSecond(Math.toIntExact(s));
-        groupBuyInfo.setBindMobile(bindMobile);
-        groupBuyInfo.setNewUser(newUser);
-        return groupBuyInfo;
+        groupBuyInfoVo.setGoodsInfo(goodsInfo);
+        groupBuyInfoVo.setPrdSpecsList(prdMpVos);
+        groupBuyInfoVo.setStatusInfo(statusInfo);
+        groupBuyInfoVo.setUserInfoList(userList);
+        groupBuyInfoVo.setGroupBuyDefineInfo(groupBuy);
+        groupBuyInfoVo.setHour(Math.toIntExact(hour));
+        groupBuyInfoVo.setMinute(Math.toIntExact(min));
+        groupBuyInfoVo.setSecond(Math.toIntExact(s));
+        groupBuyInfoVo.setBindMobile(bindMobile);
+        groupBuyInfoVo.setNewUser(newUser);
+        return groupBuyInfoVo;
     }
 
 
