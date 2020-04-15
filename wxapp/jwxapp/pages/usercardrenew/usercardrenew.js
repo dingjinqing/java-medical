@@ -2,7 +2,9 @@ var util = require('../../utils/util.js');
 var qrcode = require('../../utils/qrcode.js');
 var barcode = require('../../utils/barcode.js');
 var opt = {};
-var user_account_input = ''
+var user_account_input;
+var member_card_input;
+var new_money_paid;
 global.wxPage({
   /**
    * 页面的初始数据
@@ -278,7 +280,7 @@ global.wxPage({
   getInputBalance (e) {
     console.log(e)
     if (e.detail) {
-      user_account_input = e.detail.value ? e.detail.value : 0;
+      user_account_input = e.detail ? e.detail : 0;
     } else {
       if (this.data.user_account_input == '') {
         user_account_input = this.data.create_order.money_paid - this.data.user_money.account > 0 ? this.data.user_money.account : this.data.create_order.money_paid;
@@ -286,6 +288,7 @@ global.wxPage({
         user_account_input = this.data.user_account_input;
       }
     }
+    new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(user_account_input)).toFixed(2);
     this.data.create_order.account_discount = parseFloat(user_account_input).toFixed(2);
     this.setData({
       user_account_input: user_account_input <= 0 ? '' : user_account_input,
@@ -299,7 +302,7 @@ global.wxPage({
   getInputCardBalance (e) {
     console.log(e)
     if (e.detail) {
-      member_card_input = e.detail.value ? e.detail.value : 0;
+      member_card_input = e.detail ? e.detail : 0;
     } else {
       if (this.data.member_card_input == '') {
         member_card_input = this.data.create_order.money_paid - this.data.user_money.member_card_money > 0 ? this.data.user_money.member_card_money : this.data.create_order.money_paid;
@@ -307,6 +310,8 @@ global.wxPage({
         member_card_input = this.data.member_card_input;
       }
     }
+    console.log(this.data.create_order.money_paid)
+    new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(member_card_input)).toFixed(2);
     this.data.create_order.member_card_balance = parseFloat(member_card_input).toFixed(2);
     this.setData({
       member_card_input: member_card_input > 0 ? member_card_input : '',
@@ -322,7 +327,8 @@ global.wxPage({
       cardMode: true
     })
   },
-  definePay () {  // mask
+  definePay () {
+    console.log(new_money_paid)
     this.data.create_order.money_paid = new_money_paid > 0 ? new_money_paid : 0;
     this.setData({
       create_order: this.data.create_order
@@ -331,59 +337,71 @@ global.wxPage({
   //  提交订单
   OneClickBuy (e) {
     var that = this;
-    opt.openid = util.getCache('openid');
-    opt.form_id = e.detail.formId;
-    if (that.data.cardInfo.renewType == 0) { // 现金支付
-      opt.money_paid = that.data.create_order.money_paid; // 续费金额
-      opt.use_account = that.data.create_order.account_discount; // 余额支付
-      opt.member_card_balance = that.data.create_order.member_card_balance; // 会员卡支付的价钱数额
-      opt.member_card_no = that.data.memberCardNo;
-      opt.score_num = 0;
-    } else {  // 积分支付
-      opt.money_paid = that.data.cardInfo.renewNum;
-      opt.use_account = 0;
-      opt.member_card_balance = 0;
-      opt.member_card_no = 0;
+    let params = {
+      cardId: opt.card_id,
+      cardNo: opt.card_no,
+      memberCardBalance: 0,
+      memberCardNo: 0,
+      moneyPaid: 0,
+      renewNum: opt.renew_num,
+      scoreNum: opt.score_num,
+      useAccount: 0
     }
-    console.log(opt);
-    // util.api('/api/card/renew/checkout', function (res) {
-    //   var order_sn = res.content.order_sn;
-    //   if (res.error == 0) {
-    //     if (typeof (res.content.timeStamp) != 'undefined') {
-    //       console.log('wx**********************');
-    //       wx.requestPayment({
-    //         'timeStamp': res.content.timeStamp,
-    //         'nonceStr': res.content.nonceStr,
-    //         'package': res.content.package,
-    //         'signType': typeof res.content.signType == "undefined" ? 'MD5' : res.content.signType,
-    //         'paySign': res.content.paySign,
-    //         'success': function (ret) {
-    //           util.toast_success('支付成功');
-    //           that.setData({
-    //             'card_info.expire_time': res.content.expire_time,
-    //             'card_info.money': res.content.money,
-    //             success: 1
-    //           })
-    //         },
-    //         'fail': function (res) {
-    //           util.toast_fail('支付失败');
-    //         },
-    //         'complete': function (res) { }
-    //       });
-    //     } else {
-    //       that.setData({
-    //         'card_info.expire_time': res.content.expire_time,
-    //         'card_info.money': res.content.money,
-    //         success: 1
-    //       })
-    //     }
+    // opt.openid = util.getCache('openid');
+    // opt.form_id = e.detail.formId;
+    if (that.data.cardInfo.renewType == 0) { // 现金支付
+      params.moneyPaid = that.data.create_order.money_paid; // 续费金额
+      params.useAccount = that.data.create_order.account_discount; // 余额支付
+      params.memberCardBalance = that.data.create_order.member_card_balance; // 会员卡支付的价钱数额
+      params.memberCardNo = that.data.memberCardNo;
+      params.scoreNum = 0;
+    } else {  // 积分支付
+      params.moneyPaid = that.data.cardInfo.renewNum;
+      params.useAccount = 0;
+      params.memberCardBalance = 0;
+      params.memberCardNo = 0;
+    }
+    console.log(opt, params);
 
-    //   } else {
-    //     util.showModal('提示', res.message, function () {
+    util.api('/api/wxapp/card/renew/checkout', function (res) {
+      console.log(res)
+      //   var order_sn = res.content.order_sn;
+      //   if (res.error == 0) {
+      //     if (typeof (res.content.timeStamp) != 'undefined') {
+      //       console.log('wx**********************');
+      //       wx.requestPayment({
+      //         'timeStamp': res.content.timeStamp,
+      //         'nonceStr': res.content.nonceStr,
+      //         'package': res.content.package,
+      //         'signType': typeof res.content.signType == "undefined" ? 'MD5' : res.content.signType,
+      //         'paySign': res.content.paySign,
+      //         'success': function (ret) {
+      //           util.toast_success('支付成功');
+      //           that.setData({
+      //             'card_info.expire_time': res.content.expire_time,
+      //             'card_info.money': res.content.money,
+      //             success: 1
+      //           })
+      //         },
+      //         'fail': function (res) {
+      //           util.toast_fail('支付失败');
+      //         },
+      //         'complete': function (res) { }
+      //       });
+      //     } else {
+      //       that.setData({
+      //         'card_info.expire_time': res.content.expire_time,
+      //         'card_info.money': res.content.money,
+      //         success: 1
+      //       })
+      //     }
 
-    //     });
-    //   }
-    // }, opt)
+      //   } else {
+      //     util.showModal('提示', res.message, function () {
+
+      //     });
+      //   }
+    }, params)
   },
 
   to_index () {
