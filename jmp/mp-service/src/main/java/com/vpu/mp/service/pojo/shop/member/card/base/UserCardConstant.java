@@ -16,7 +16,21 @@ public class UserCardConstant {
 	
 	
 	/*********************************************
-	 *  flag
+	 *  give_away_status
 	 **********************************************/
+	/**
+	 * 	正常
+	 */
+	public static Byte GIVE_AWAY_NOR = 0;
+	/**
+	 * 	转赠中
+	 */
+	public static Byte GIVE_AWAY_ING = 1;
+	/**
+	 * 	转赠成功
+	 */
+	public static Byte GIVE_WAY_SUCCESS = 2;
+	
+	
 	 
 }

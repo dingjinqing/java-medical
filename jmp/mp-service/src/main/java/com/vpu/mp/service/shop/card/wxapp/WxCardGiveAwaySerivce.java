@@ -3,11 +3,15 @@ package com.vpu.mp.service.shop.card.wxapp;
 import static com.vpu.mp.db.shop.Tables.GIVE_CARD_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 
+import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.GiveCardRecordRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
+import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 
 import java.sql.Timestamp;
@@ -30,19 +34,24 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 		Timestamp currentTime = DateUtil.getLocalDateTime();
 		//	一天之后转赠失效
 		Timestamp tomorrowTime = Timestamp.valueOf(currentTime.toLocalDateTime().plusDays(1));
-		UserCardRecord userCardRecord = db().newRecord(USER_CARD);
 		
-		// 	插入数据库
-		GiveCardRecordRecordBuilder.create(db().newRecord(GIVE_CARD_RECORD))
+		UserCardRecord userCardRecord = UserCardRecordBuilder.create()
+			.flag(UserCardConstant.FLAG_CANNOT_USE)
+			.giveAwayStatus(UserCardConstant.GIVE_AWAY_ING)
+			.build();
+		
+		GiveCardRecordRecord giveCardRecordRecord = GiveCardRecordRecordBuilder.create(db().newRecord(GIVE_CARD_RECORD))
 			.userId(param.getUserId())
 			.cardNo(param.getCardNo())
 			.createTime(currentTime)
 			.deadline(tomorrowTime)
-			.build()
-			.insert();
+			.build();
 		
-		db().executeUpdate(record, condition)
-		
-			
+		this.transaction(()->{
+			//	记录转赠记录
+			giveCardRecordRecord.insert();
+			// 	更新用户卡转赠数据
+			db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
+		});
 	}
 }
