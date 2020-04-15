@@ -122,6 +122,8 @@ public class CardDetailService extends ShopBaseService{
 		int numOfSendCard = memberCardSvc.getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
+		// 自定义权益信息
+		limitCard.setCardCustomRights(getCustomRights(card));
 		// 自定义激活项
 		limitCard.setCustomAction(getCustomAction(card));
 		// 同步打标签
