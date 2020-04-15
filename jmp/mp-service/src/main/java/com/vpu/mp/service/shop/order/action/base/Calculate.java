@@ -426,6 +426,7 @@ public class Calculate extends ShopBaseService {
             }
             //检查加价购换购商品是否走运费计算
             if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0 && increasePurchase.isFreeShip(bo.getPurchasePriceId())) {
+                bo.setIsShipping(OrderConstant.YES);
                 continue;
             }
             if (totalMaps.get(bo.getDeliverTemplateId()) == null) {
