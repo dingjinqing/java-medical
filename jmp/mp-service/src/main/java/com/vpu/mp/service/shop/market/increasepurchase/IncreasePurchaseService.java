@@ -662,7 +662,19 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     public PurchaseChangeGoodsVo changePurchaseProductList(PurchaseChangeGoodsParam param,Integer userId){
         PurchaseChangeGoodsVo vo = new PurchaseChangeGoodsVo();
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS,param.getPurchasePriceId());
+        BigDecimal cartTotalPrice = BigDecimal.ZERO;
+        List<Integer> cartPrdIds = new ArrayList<>();
+        Integer cartTotalGoodsNumber = 0;
+        if(CollectionUtils.isNotEmpty(cartBo.getCartGoodsList())){
+            for(WxAppCartGoods g:cartBo.getCartGoodsList()){
+                cartTotalPrice = cartTotalPrice.add(g.getPrdPrice().multiply(BigDecimal.valueOf(g.getCartNumber())));
+                cartPrdIds.add(g.getProductId());
+                cartTotalGoodsNumber += g.getCartNumber();
+            }
+        }
+
         PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(param.getPurchasePriceId()));
 
         //用户不能买的专属商品
@@ -671,9 +683,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
         //输出商品列表
         List<PurchaseChangeGoodsVo.Goods> list = new ArrayList<>();
-        ruleRecords.forEach(rule->{
+        for(PurchasePriceRuleRecord rule : ruleRecords){
             Map<Integer, GoodsSpecProductRecord> prds = goodsService.goodsSpecProductService.goodsSpecProductByIds(Util.splitValueToList(rule.getProductId()));
-            prds.forEach((prdId,productRecord)->{
+            for(GoodsSpecProductRecord productRecord : prds.values()){
                 if(!userExclusiveGoodsIds.contains(productRecord.getGoodsId())){
                     PurchaseChangeGoodsVo.Goods goods = new PurchaseChangeGoodsVo.Goods();
                     GoodsRecord goodsView = goodsService.getGoodsRecordById(productRecord.getGoodsId());
@@ -686,7 +698,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                     goods.setMarketPrice(goodsView.getMarketPrice());
                     goods.setIsDelete(goodsView.getDelFlag());
                     goods.setIsOnSale(goodsView.getIsOnSale());
-                    goods.setPrdId(prdId);
+                    goods.setPrdId(productRecord.getPrdId());
                     goods.setPrdDesc(productRecord.getPrdDesc());
                     if(StringUtil.isNotBlank(productRecord.getPrdImg())){
                         goods.setPrdImg(domainConfig.imageUrl(productRecord.getPrdImg()));
@@ -695,21 +707,21 @@ public class IncreasePurchaseService extends ShopBaseService {
 
                     goods.setPrdPrice(rule.getPurchasePrice());
                     goods.setPurchaseRuleId(rule.getId());
-                    if(cartBo.getProductIdList().contains(prdId)){
+                    if(cartPrdIds.contains(productRecord.getPrdId())){
                         goods.setIsChecked((byte)1);
                     }
-                    if(rule.getFullPrice().compareTo(cartBo.getTotalPrice()) > 0){
+                    if(rule.getFullPrice().compareTo(cartTotalPrice) > 0){
                         goods.setTip((byte)0);
                         goods.setTipMoney(rule.getFullPrice());
                     }
 
                     list.add(goods);
                 }
-            });
-        });
+            }
+        }
         vo.setList(list);
         vo.setMaxChangePurchase(purchasePriceDefineRecord.getMaxChangePurchase());
-        vo.setAlreadyChangeNum(cartBo.getTotalGoodsNum());
+        vo.setAlreadyChangeNum(cartTotalGoodsNumber);
 
         return vo;
     }

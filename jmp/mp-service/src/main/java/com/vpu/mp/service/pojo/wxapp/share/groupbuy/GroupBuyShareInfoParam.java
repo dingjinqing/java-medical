@@ -12,5 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GroupBuyShareInfoParam extends GoodsShareBaseParam {
+    /**需要跳转的页面类型*/
     private Byte pageType;
+    /**pageType=2时,groupId为用户开团的开团记录id*/
+    private Integer groupId;
 }
