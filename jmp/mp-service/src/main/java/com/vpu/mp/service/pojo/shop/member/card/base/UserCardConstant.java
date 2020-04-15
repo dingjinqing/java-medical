@@ -12,5 +12,11 @@ public class UserCardConstant {
 	 * 	不可用状态
 	 */
 	public static Byte FLAG_CANNOT_USE = 2;
+	
+	
+	
+	/*********************************************
+	 *  flag
+	 **********************************************/
 	 
 }
