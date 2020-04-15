@@ -116,7 +116,7 @@ export const cn = {
   activityType: '活动类型',
   addActivity: '添加活动',
   editActivity: '编辑活动',
-  goodsName: '商品名称',
+  goodsNumber: '拼团商品',
   validDate: '有效期',
   startDate: '开始日期',
   endDate: '结束日期',
