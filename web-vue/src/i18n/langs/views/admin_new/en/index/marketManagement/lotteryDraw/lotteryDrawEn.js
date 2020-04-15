@@ -83,6 +83,18 @@ export const en = {
   goodsNumber: 'Commodity inventory',
   addSuccess: 'Add Success',
   editSuccess: 'Edit Success',
+  templateData: `
+  <div style="line-height: 1.5;">
+    <p>Participation steps</p>
+    <p>1.On the list page of low price lottery products, click the product to enter the product details page, and enter the order settlement page through the opening group entrance of the order. After the payment is successful, share it to wechat friends according to the page prompts；</p>
+    <p>2.Friends check the activity status through the landing page of the app, complete the payment and participate in the group；</p>
+    <p>3.If the number of payers reaches the threshold within the validity period, all users in the group will be eligible for the lottery and wait for the result of winning the prize to be announced；</p>
+    <p>4.The winning results will be announced at the end of the activity. All winning orders will enter the delivery process. Users who fail to win the prize and those who fail to form a group will be fully refunded to the original payment account。</p>
+    <p>Participation rules</p>
+    <p>1.During the activity, only one order can be purchased for each group commodity in the same account；</p>
+    <p>2.The inventory of the lottery goods is limited. If the rush purchase fails or the delivery fails due to insufficient inventory, the order will be fully refunded to the original payment account。</p>
+  </div>
+`,
 
   // 活动订单
   orderSn: 'Order number',
