@@ -361,6 +361,11 @@ CREATE TABLE `b2c_give_card_record`(
   PRIMARY KEY (`id`)
 );
 
+-- 2020年04月15日 在用户卡表中添加转赠字段
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_status` tinyint(1) DEFAULT 0 COMMENT '0:正常，1:转赠中，2转赠成功';
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_surplus` int(11) DEFAULT NULL COMMENT '卡剩余赠送次数';
+ALTER TABLE `b2c_user_card` ADD COLUMN `card_source` tinyint(1) NOT NULL DEFAULT 0 COMMENT '卡来源 0:正常  2 别人转赠 ';
+
 /*********************2.11*************************END*/
 
 
