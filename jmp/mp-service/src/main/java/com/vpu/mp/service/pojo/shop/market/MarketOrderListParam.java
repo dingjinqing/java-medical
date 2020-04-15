@@ -54,7 +54,9 @@ public class MarketOrderListParam{
      * 前端查询订单状态与OrderConstant的订单状态不对应，需要处理一下
      */
     public void initOrderStatus(){
-        if(orderStatus.length == 1 && orderStatus[0] == 8){
+        if (orderStatus==null){
+            orderStatus =new Byte[]{};
+        }else if(orderStatus.length == 1 && orderStatus[0] == 8){
             //售后完成
             orderStatus = new Byte[]{8, 10};
         }else if(orderStatus.length == 1 && (orderStatus[0] == 9 || orderStatus[0] == 10 || orderStatus[0] == 11)){
