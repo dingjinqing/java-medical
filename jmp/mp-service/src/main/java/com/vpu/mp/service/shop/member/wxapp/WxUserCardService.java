@@ -1,20 +1,14 @@
 package com.vpu.mp.service.shop.member.wxapp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
-import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeParam;
 import com.vpu.mp.service.pojo.shop.member.card.ChargeVo;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
@@ -23,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.CardUseListParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
+import com.vpu.mp.service.shop.card.wxapp.WxCardGiveAwaySerivce;
 import com.vpu.mp.service.shop.member.UserCardService;
 /**
  * @author 黄壮壮
@@ -34,6 +29,8 @@ public class WxUserCardService extends ShopBaseService {
 	private WxAppCardReceiveSerive wxAppCardReceiveSerive;
 	@Autowired
 	private WxAppCardActivationService wxAppCardActivationService;
+	@Autowired
+	private WxCardGiveAwaySerivce giveAwaySvc;
 	@Autowired 
 	private UserCardService userCardService;
 	
