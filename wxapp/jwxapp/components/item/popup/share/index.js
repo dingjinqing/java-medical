@@ -48,7 +48,7 @@ global.wxComponent({
         },
         18:{ //首单特惠
           api:'/api/wxapp/firstspecial/pictorial/info',
-          params:['realPrice','activityId','targetId']
+          params:['realPrice','linePrice','activityId','targetId']
         },
         'default':{ //普通商品
           api:'/api/wxapp/goods/pictorial/info',

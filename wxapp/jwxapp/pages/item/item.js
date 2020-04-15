@@ -188,13 +188,14 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null } = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null} = options
     this.setData({
       goodsId,
       activityId:activityId === 'null' ? null : activityId,
       activityType:activityType === 'null' || activityType === '0' ? null : activityType,
       roomId:roomId,
-      rebateConfig
+      rebateConfig,
+      inviteId
     })
     this.requestGoodsInfo()
   },
@@ -302,7 +303,8 @@ global.wxPage({
               goodsInfo: {
                 ...goodsInfo,
                 ...this.getPrice(goodsInfo)
-              }
+              },
+              goodsShowStock:this.getGoodsShowStock(specParams)
             })
             if (activity && activity.activityType === 3 && activity.actState === 6) {
               util.jumpLink(`/pages/bargaininfo/bargaininfo?record_id=${activity.recordId}`, 'redirectTo')
@@ -904,6 +906,12 @@ global.wxPage({
     this.setData({
       showLive:false
     })
+  },
+  getGoodsShowStock({goodsNumber,activity = null}){
+    if(activity && [1,3,4,5,10].includes(activity.activityType)){
+      return activity.stock
+    }
+    return goodsNumber
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

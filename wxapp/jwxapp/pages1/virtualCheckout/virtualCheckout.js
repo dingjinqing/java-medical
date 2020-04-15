@@ -61,7 +61,8 @@ global.wxPage({
           ...res.content,
           cardBgStyle:this.getCardBg(res.content.cardInfo),
           cardTypeName:this.getTypeName(res.content.cardInfo.cardType),
-          cardExpireTime:this.getCardExpireTime(res.content.cardInfo)
+          cardExpireTime:this.getCardExpireTime(res.content.cardInfo),
+          cardPrice:this.getCardPrice(res.content)
         })
         this.getIsScore(res.content)
         this.defaultInput(res.content)
@@ -90,6 +91,10 @@ global.wxPage({
         return '等级卡';
     }
   },
+  // 获取卡价格
+  getCardPrice(info){
+    return info.cardInfo.payType === 0 ? '￥' + info.orderAmount : info.orderPayScore + '积分'
+  },
   // 获取会员卡过期时间
   getCardExpireTime (cardItem) {
     if (cardItem.expireType === 1) {
@@ -114,7 +119,7 @@ global.wxPage({
       }
     }
     if(this.data.options.cardId){
-      if(this.data.cardInfo.isPay === 1 && this.data.cardInfo.payType === 1){
+      if(this.data.cardInfo.payType === 1){
         this.setData({
           isScorePay:true,
           orderPayScore:actInfo.orderPayScore
@@ -304,42 +309,8 @@ global.wxPage({
     }
     let apiStr = this.data.options.packId ? `/api/wxapp/coupon/pack/checkout` : `/api/wxapp/card/buy/pay`
     util.api(apiStr,res=>{
-      if(res.error === 0 && res.content){
-        wx.requestPayment({
-          timeStamp: res.content.timeStamp,
-          nonceStr: res.content.nonceStr,
-          package: res.content.package,
-          signType: 'MD5',
-          paySign: res.content.paySign,
-          success: res => {
-            util.toast_success('支付成功',()=>{
-              util.jumpLink(
-                `pages1/payment/payment${this.getUrlParams({
-                  isNotGoods:1,
-                  useInfo: JSON.stringify({ ...this.data.usePayInfo })
-                })}`,
-                'redirectTo'
-              )
-            })
-          },
-          fail: res => {
-            console.log(res)
-          },
-          complete: res => {}
-        })
-      } else if (res.error === 0 && !res.content){
-        util.toast_success('支付成功',()=>{
-          util.jumpLink(
-            `pages1/payment/payment${this.getUrlParams({
-              isNotGoods:1,
-              useInfo: JSON.stringify({ ...this.data.usePayInfo })
-            })}`,
-            'redirectTo'
-          )
-        })
-      } else {
-        util.showModal('提示',res.message)
-      }
+      if(this.data.options.packId) this.couponPackageAfter(res)
+      if(this.data.options.cardId) this.cardAfter(res)
     },{
       ...params
     })
@@ -351,8 +322,83 @@ global.wxPage({
       return (UrlStr += `${item}=${obj[item]}`)
     }, '?')
   },
-
-
+  // 优惠券礼包结算
+  couponPackageAfter(res){
+    if(res.error === 0 && res.content){
+      wx.requestPayment({
+        timeStamp: res.content.timeStamp,
+        nonceStr: res.content.nonceStr,
+        package: res.content.package,
+        signType: 'MD5',
+        paySign: res.content.paySign,
+        success: res => {
+          util.toast_success('支付成功',()=>{
+            util.jumpLink(
+              `pages1/payment/payment${this.getUrlParams({
+                isNotGoods:1,
+                useInfo: JSON.stringify({ ...this.data.usePayInfo })
+              })}`,
+              'redirectTo'
+            )
+          })
+        },
+        fail: res => {
+          console.log(res)
+        },
+        complete: res => {}
+      })
+    } else if (res.error === 0 && !res.content){
+      util.toast_success('支付成功',()=>{
+        util.jumpLink(
+          `pages1/payment/payment${this.getUrlParams({
+            isNotGoods:1,
+            useInfo: JSON.stringify({ ...this.data.usePayInfo })
+          })}`,
+          'redirectTo'
+        )
+      })
+    } else {
+      util.showModal('提示',res.message)
+    }
+  },
+  cardAfter(res){
+    if(res.error === 0 && res.content && res.content.package){
+      wx.requestPayment({
+        timeStamp: res.content.timeStamp,
+        nonceStr: res.content.nonceStr,
+        package: res.content.package,
+        signType: 'MD5',
+        paySign: res.content.paySign,
+        success: res => {
+          util.toast_success('支付成功',()=>{
+            util.jumpLink(
+              `pages1/payment/payment${this.getUrlParams({
+                isNotGoods:1,
+                useInfo: JSON.stringify({ ...this.data.usePayInfo })
+              })}`,
+              'redirectTo'
+            )
+          })
+        },
+        fail: res => {
+          console.log(res)
+        },
+        complete: res => {}
+      })
+    } else if (res.error === 0 && res.content){
+      util.toast_success('支付成功',()=>{
+        util.jumpLink(
+          `pages1/payment/payment${this.getUrlParams({
+            isNotGoods:1,
+            useInfo: JSON.stringify({ ...this.data.usePayInfo })
+          })}`,
+          'redirectTo'
+        )
+      })
+    } else {
+      util.showModal('提示',res.message)
+    }
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
