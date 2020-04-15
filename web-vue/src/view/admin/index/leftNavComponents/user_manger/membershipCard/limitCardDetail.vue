@@ -257,8 +257,8 @@ export default {
         cardTagId: []
       },
       cardGive: {
-        cardGiveAway: null,
-        cardGiveContinue: null,
+        cardGiveAway: 'off',
+        cardGiveContinue: 'off',
         mostGiveAway: null
       }
     }
