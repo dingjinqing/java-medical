@@ -228,14 +228,13 @@ public class GroupBuyListService extends ShopBaseService {
 
     /**
      * 根据拼团获取团长
-     *
      * @param groupId
      * @return
      */
     public GroupBuyListRecord getGrouperByGroupId(Integer groupId) {
         return db().selectFrom(GROUP_BUY_LIST)
-                .where(GROUP_BUY_LIST.STATUS.ge(STATUS_ONGOING))
-                .and(GROUP_BUY_LIST.IS_GROUPER.eq(IS_GROUPER_Y))
+                .where(GROUP_BUY_LIST.STATUS.in(STATUS_ONGOING,STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS,STATUS_FAILED))
+                .and(GROUP_BUY_LIST.IS_GROUPER.in(IS_GROUPER_Y))
                 .and(GROUP_BUY_LIST.GROUP_ID.eq(groupId)).fetchAny();
 
     }
@@ -311,6 +310,12 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
             }
+        }
+        GroupBuyListRecord grouperInfo = getGrouperByGroupId(groupId);
+        if (STATUS_SUCCESS.equals(grouperInfo.getStatus())|| STATUS_DEFAULT_SUCCESS.equals(grouperInfo.getStatus())){
+            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_SUCCESS).build();
+        }else if (grouperInfo.getStatus().equals(STATUS_FAILED)){
+            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
     }
