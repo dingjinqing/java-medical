@@ -713,6 +713,8 @@ public class IncreasePurchaseService extends ShopBaseService {
                     if(rule.getFullPrice().compareTo(cartTotalPrice) > 0){
                         goods.setTip((byte)0);
                         goods.setTipMoney(rule.getFullPrice());
+                    }else{
+                        goods.setTip((byte)1);
                     }
 
                     list.add(goods);
