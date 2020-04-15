@@ -110,7 +110,7 @@ public class IntegralConvertService extends ShopBaseService {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
 						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
-						GOODS.GOODS_NUMBER, imp.STOCK, DSL.sum(imr.NUMBER).as("number"),
+						GOODS.GOODS_NUMBER, DSL.sum(imp.STOCK).as("stock"), DSL.sum(imr.NUMBER).as("number"),
 						DSL.count(imr.USER_ID).as("user_number"),imd.STATUS,imd.DEL_FLAG)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
 				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
@@ -139,7 +139,7 @@ public class IntegralConvertService extends ShopBaseService {
 			sql.and(imd.STATUS.eq( IntegralConvertConstant.BLOCK));
 		}
 		sql.groupBy(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME, imd.END_TIME,
-				GOODS.GOODS_NUMBER, imp.STOCK,imd.STATUS,imd.DEL_FLAG)
+				GOODS.GOODS_NUMBER, imd.STATUS,imd.DEL_FLAG)
         .orderBy(imd.ID.desc());
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);

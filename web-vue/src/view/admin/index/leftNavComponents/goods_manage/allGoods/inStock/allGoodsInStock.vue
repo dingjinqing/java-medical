@@ -40,7 +40,10 @@
       </div>
     </div>
 
-    <saleOnAndInStockContent ref="saleOnAndInStockContentCmp" @sortChange="sortChange"/>
+    <saleOnAndInStockContent
+      ref="saleOnAndInStockContentCmp"
+      @sortChange="sortChange"
+    />
   </div>
 </template>
 
@@ -90,12 +93,14 @@ export default {
     /* 触发商品分页查询 */
     searchGoodsData () {
       let formFilterData = this.$refs.allGoodsHeaderCmp.getFormData()
+      let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
+      console.log(formFilterDataString)
       let params = {
         ...formFilterData,
         ...this.initFilterData,
         ...this.sortData
       }
-      this.$refs.saleOnAndInStockContentCmp.fetchGoodsData(params)
+      this.$refs.saleOnAndInStockContentCmp.fetchGoodsData(params, formFilterDataString)
     },
     /* 触发商品导出弹窗 */
     exportGoodsData () {

@@ -98,15 +98,18 @@ public class QrCodeService extends ShopBaseService {
 
             try {
                 //判断upYun上是否有该图片
+                logger().warn("判断upYun是否存在");
                 Map<String, String> fileInfo = this.imageService.getUpYunClient().getFileInfo(relativePath);
                 if (fileInfo != null) {
                     //有图片则直接返回图片全路径
+                    logger().warn("upYun图片已存在直接返回："+fullPath);
                     return fullPath;
                 }
             } catch (IOException | UpException e) {
                 //如果失败则认为图片不存在
                 logger().warn("upYun 获取图片信息失败："+e.getMessage());
             }
+            logger().warn("判断upYun不否存在");
             //upYun不存在则将该记录设置为删除状态
             db().update(CODE).set(CODE.DEL_FLAG,DelFlag.DISABLE.getCode())
                 .where(CODE.PARAM_ID.eq(paramId)).execute();

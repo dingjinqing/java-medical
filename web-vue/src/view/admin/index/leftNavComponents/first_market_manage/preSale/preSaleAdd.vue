@@ -74,7 +74,7 @@
               :rules="[{required: true, message:'请填写定金支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
               prop="preTime2Range"
-              v-show="twoSteps"
+              v-if="twoSteps&&!isFullPay"
             >
               <el-date-picker
                 v-model="param.preTime2Range"
@@ -101,6 +101,7 @@
               prop="tailPayTimeRange"
               :rules="[{required: true, message:'请填写尾款支付时间', trigger: ['blur','change']}]"
               :inline-message="true"
+              v-if="!isFullPay"
             >
               <el-date-picker
                 v-model="param.tailPayTimeRange"
@@ -898,7 +899,7 @@ export default {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('更新成功')
-            // this.gotoHome()
+            this.gotoHome()
           } else {
             this.$message.error('更新失败')
           }
@@ -908,7 +909,7 @@ export default {
           if (res.error === 0) {
             console.log(res)
             this.$message.success('添加成功')
-            // this.gotoHome()
+            this.gotoHome()
           }
         })
       }
@@ -993,6 +994,11 @@ export default {
           }
           if (this.param.deliverType === 1) {
             if (this.param.deliverTime < this.param.endTime) {
+              this.$message.warning('指定发货时间应大于尾款支付时间')
+            }
+          }
+          if (this.param.presaleType === 1) {
+            if (this.param.deliverTime < this.param.preEndTime) {
               this.$message.warning('指定发货时间应大于尾款支付时间')
             }
           }
