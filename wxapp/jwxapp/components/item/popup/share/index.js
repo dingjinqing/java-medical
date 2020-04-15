@@ -32,7 +32,7 @@ global.wxComponent({
         }, 
         3:{ //砍价
           api:'/api/wxapp/bargain/pictorial/info',
-          params:['realPrice','linePrice','activityId','pageType']
+          params: ['realPrice','linePrice','activityId','targetId','pageType']
         },
         6:{ //限时降价
           api:'/api/wxapp/reduceprice/pictorial/info',
