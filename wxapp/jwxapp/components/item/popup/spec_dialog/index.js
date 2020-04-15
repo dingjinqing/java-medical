@@ -276,7 +276,7 @@ global.wxComponent({
       } else {
         select_prd.prdNumber = select_prd['prdNumber']
       }
-      console.log(limitMaxNum)
+      console.log(select_prd)
       this.setData({
         checkedProduct: select_prd
       })
@@ -337,8 +337,6 @@ global.wxComponent({
       var stock = null
       if(this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && [1,5,10].includes(this.data.productsInfo.activity.activityType)){
         stock = prd_specs['actProduct']['stock']
-      } else if (this.data.productsInfo.activity && (this.data.triggerButton === 'right' || !this.data.triggerButton) && this.data.productsInfo.activity.activityType === 3){
-        stock = this.data.productsInfo.activity.stock
       } else {
         stock = prd_specs['prdNumber']
       }

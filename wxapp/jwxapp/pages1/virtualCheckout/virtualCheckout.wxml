@@ -54,6 +54,7 @@
           <view class="item_row">{{cardExpireTime}}</view>
         </view>
       </view>
+      <view class="card-price"><view class="real-price">{{cardPrice}}</view></view>
     </view>
   </block>
 
