@@ -150,7 +150,7 @@ public class CardDetailService extends ShopBaseService{
 	
 	
 	/**
-	 * 装配专享商品
+	 * 	装配专享商品
 	 */
 	private void assignPayOwnGoods(BaseCardVo card) {
 		if (CardUtil.isNormalCard(card.getCardType()) ||

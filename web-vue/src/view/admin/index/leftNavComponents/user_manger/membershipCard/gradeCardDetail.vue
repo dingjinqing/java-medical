@@ -298,6 +298,17 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+      // 自定义激活数据
+      let action = data.customAction.map(item => {
+        return {
+          type: item.custom_type,
+          title: item.custom_title,
+          content: item.option_arr,
+          conditionChecked: Boolean(item.option_ver),
+          checked: Boolean(item.is_checked)
+        }
+      })
+      this.cardActiveCfgData.customAction = action
     },
     isValidValue (data) {
       return data !== null && data !== undefined
@@ -386,6 +397,7 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
+      this.dealWithCustomAction()
       let pullPath = this.$imageHost + '/'
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
@@ -427,7 +439,8 @@ export default {
         'grade': this.cardGradeCfgData.gradeValue,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction
       }
       console.log(obj)
       if (this.cardId) {
@@ -483,6 +496,17 @@ export default {
           return 'GradeCard'
         default:
           break
+      }
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
       }
     }
   }
