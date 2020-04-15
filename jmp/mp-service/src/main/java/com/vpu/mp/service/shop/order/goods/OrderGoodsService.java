@@ -301,7 +301,7 @@ public class OrderGoodsService extends ShopBaseService{
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
             //商品质量
-            goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
+            goodsWeight(goods.getProductInfo().getPrdWeight()).
             //TODO 后续处理
             userCoupon(null).
             catId(goods.getGoodsInfo().getCatId()).
