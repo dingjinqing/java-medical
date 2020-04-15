@@ -96,7 +96,12 @@ public class CardBuyClearingVo {
         /*0:普通会员卡，1:次卡,2:登记卡*/
         private Byte cardType;
         private Byte payType;
-        private BigDecimal  pay_fee;
+        /*金额或者积分*/
+        private BigDecimal  payFee;
+        /*有效期0:日，1:周 2: 月*/
+        private Byte dateType;
+        /*领取之日起n*/
+        private Short receiveDay;
         /*开卡送积分*/
         private Integer sorce;
         /*使用须知*/
