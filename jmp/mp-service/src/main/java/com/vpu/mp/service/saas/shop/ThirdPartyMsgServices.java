@@ -57,9 +57,13 @@ public class ThirdPartyMsgServices extends MainBaseService {
 	 * @param order
 	 */
 	public void thirdPartService(OrderInfoRecord order) {
-		CanSendVo canService = isCanService(order.getShopId());
-		if (canService.getCanSend()) {
-			sendMsg(canService, order);
+		try {
+			CanSendVo canService = isCanService(order.getShopId());
+			if (canService.getCanSend()) {
+				sendMsg(canService, order);
+			}
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
 		}
 
 	}
