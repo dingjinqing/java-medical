@@ -180,6 +180,7 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
       },
       // 包邮信息
