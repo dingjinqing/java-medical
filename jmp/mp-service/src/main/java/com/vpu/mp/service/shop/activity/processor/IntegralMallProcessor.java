@@ -61,25 +61,25 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
         }
         List<IntegralMallPrdMpVo> integralMallPrdMpVos = integralMallMpVo.getIntegralMallPrdMpVos();
         Map<Integer, GoodsPrdMpVo> prdMap = capsule.getProducts().stream().collect(Collectors.toMap(GoodsPrdMpVo::getPrdId, Function.identity()));
-        List<IntegralMallPrdMpVo> newPrdMpVos = new ArrayList<>(integralMallPrdMpVos.size());
-        int goodsNum = 0;
+        List<IntegralMallPrdMpVo> newIntegralPrdVos = new ArrayList<>(integralMallPrdMpVos.size());
+        int stock = 0;
 
         for (IntegralMallPrdMpVo integralPrdMpVo : integralMallPrdMpVos) {
             GoodsPrdMpVo prd = prdMap.get(integralPrdMpVo.getProductId());
             // 无效规格信息
             if (prd == null) {
-                prdMap.remove(integralPrdMpVo.getProductId());
                 continue;
             }
             if (prd.getPrdNumber()<integralPrdMpVo.getStock()) {
                 integralPrdMpVo.setStock(prd.getPrdNumber());
             }
-            goodsNum+=integralPrdMpVo.getStock();
-            newPrdMpVos.add(integralPrdMpVo);
+            stock+=integralPrdMpVo.getStock();
+            newIntegralPrdVos.add(integralPrdMpVo);
         }
-        capsule.setProducts(new ArrayList<>(prdMap.values()));
-        capsule.setGoodsNumber(goodsNum);
-        if (goodsNum == 0 && BaseConstant.needToConsiderNotHasNum(integralMallMpVo.getActState())) {
+        integralMallMpVo.setStock(stock);
+        integralMallMpVo.setIntegralMallPrdMpVos(newIntegralPrdVos);
+
+        if (stock == 0 && BaseConstant.needToConsiderNotHasNum(integralMallMpVo.getActState())) {
             log.debug("小程序-商品详情-积分兑换商品数量已用完");
             integralMallMpVo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
@@ -87,7 +87,6 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
             log.debug("小程序-商品详情-积分兑换-商品规格信息和活动规格信息无交集");
             integralMallMpVo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
         }
-        integralMallMpVo.setIntegralMallPrdMpVos(newPrdMpVos);
         capsule.setActivity(integralMallMpVo);
     }
     @Override

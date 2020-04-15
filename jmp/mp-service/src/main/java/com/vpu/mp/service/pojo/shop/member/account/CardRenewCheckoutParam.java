@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,7 +13,13 @@ import java.math.BigDecimal;
 @Data
 public class CardRenewCheckoutParam {
     /** 用户id */
+    @JsonAlias({"userId", "user_id"})
     private Integer userId;
+    /** 店铺id 暂时用不到*/
+    @JsonAlias({"shopId", "shop_id"})
+    private Integer shopId;
+    /** 版本 暂时用不到*/
+    private String version;
     /** 会员卡id */
     private Integer cardId;
     /** 会员卡编号 */
