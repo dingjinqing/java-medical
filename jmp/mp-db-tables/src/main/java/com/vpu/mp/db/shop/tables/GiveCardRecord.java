@@ -28,7 +28,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -44,7 +43,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveCardRecord extends TableImpl<GiveCardRecordRecord> {
 
-    private static final long serialVersionUID = -180127193;
+    private static final long serialVersionUID = -831299863;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_give_card_record</code>
@@ -67,12 +66,12 @@ public class GiveCardRecord extends TableImpl<GiveCardRecordRecord> {
     /**
      * The column <code>jmini_shop_489258.b2c_give_card_record.user_id</code>. 转赠人用户ID
      */
-    public final TableField<GiveCardRecordRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "转赠人用户ID");
+    public final TableField<GiveCardRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "转赠人用户ID");
 
     /**
-     * The column <code>jmini_shop_489258.b2c_give_card_record.add_time</code>. 转赠时间
+     * The column <code>jmini_shop_489258.b2c_give_card_record.create_time</code>. 转赠时间
      */
-    public final TableField<GiveCardRecordRecord, Timestamp> ADD_TIME = createField("add_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "转赠时间");
+    public final TableField<GiveCardRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "转赠时间");
 
     /**
      * The column <code>jmini_shop_489258.b2c_give_card_record.card_no</code>. 转赠会员卡号
@@ -82,7 +81,7 @@ public class GiveCardRecord extends TableImpl<GiveCardRecordRecord> {
     /**
      * The column <code>jmini_shop_489258.b2c_give_card_record.get_user_id</code>. 获赠人用户ID
      */
-    public final TableField<GiveCardRecordRecord, UInteger> GET_USER_ID = createField("get_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "获赠人用户ID");
+    public final TableField<GiveCardRecordRecord, Integer> GET_USER_ID = createField("get_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "获赠人用户ID");
 
     /**
      * The column <code>jmini_shop_489258.b2c_give_card_record.get_time</code>. 领取时间

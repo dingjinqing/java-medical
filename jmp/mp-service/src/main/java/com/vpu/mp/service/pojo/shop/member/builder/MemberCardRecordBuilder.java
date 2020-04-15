@@ -8,7 +8,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 /**
  * @author 黄壮壮
  * @Date: 2019年11月1日
- * @Description:
+ * @Description: generate by generateRecordBuild.py
  */
 
 
