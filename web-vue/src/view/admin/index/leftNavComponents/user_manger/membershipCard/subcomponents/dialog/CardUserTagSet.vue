@@ -3,6 +3,7 @@
         :visible.sync="dialogVisiable"
         title="标签"
         width="355px"
+        id="card-user-tag-dialog"
         >
         <div>
             <div class="clearfix">
@@ -74,12 +75,24 @@ export default {
   },
   methods: {
     getUserTags () {
+      if (this.isRefresh) {
+        var target = document.getElementById('card-user-tag-dialog')
+        var loading = this.loading = this.$loading({
+          target,
+          lock: true,
+          text: '加载中...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0)'
+        })
+      }
       allTagRequest().then(res => {
         if (res.error === 0) {
           this.tagOptions = res.content
           if (this.isRefresh) {
             this.isRefresh = false
-            this.$message.success('刷新成功')
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
           }
         }
       })
@@ -129,5 +142,9 @@ export default {
 }
 .tip{
  color: #9d9d9d;
+}
+/deep/ .el-loading-mask .el-loading-spinner{
+  font-size: 36px;
+  top: 45%;
 }
 </style>
