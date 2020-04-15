@@ -17,4 +17,9 @@ public class PackageSaleAddCartVo {
      * 7商品不存在；8商品已下架；9商品库存不足
      */
     private Byte state = 0;
+
+    /**
+     * state == 6时的分组名称
+     */
+    private String groupName;
 }

@@ -405,12 +405,15 @@ public enum JsonResultCode {
 	FIRST_SPECIAL_NUMBER_LIMIT(140101,JsonResultMessage.FIRST_SPECIAL_NUMBER_LIMIT),
 	FIRST_SPECIAL_KIND_LIMIT(140101,JsonResultMessage.FIRST_SPECIAL_KIND_LIMIT),
 
-
     /**
      * 消息推送
      */
     MESSAGE_TEMPLATE_NO_OPEN(140201,JsonResultMessage.MESSAGE_TEMPLATE_NO_OPEN),
 
+    /**
+     * 打包一口价
+     */
+    PACKAGE_SALE_RULE_CHANGED(140301,JsonResultMessage.PACKAGE_SALE_RULE_CHANGED),
 
     //会员用户
     CODE_MEMBER_TAG_ADD_SUCCESS(0,JsonResultMessage.MSG_MEMBER_TAG_ADD_SUCCESS),

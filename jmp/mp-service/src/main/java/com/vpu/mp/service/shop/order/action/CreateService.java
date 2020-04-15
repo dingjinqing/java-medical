@@ -17,8 +17,8 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
-import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
@@ -29,14 +29,11 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
-import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.*;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
-import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.shop.activity.dao.PreSaleProcessorDao;
@@ -49,7 +46,6 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
-import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.BaseScoreCfgService;
 import com.vpu.mp.service.shop.member.MemberService;
@@ -80,17 +76,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
 
 /**
  * 下单逻辑处理
@@ -166,9 +156,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
 
     @Autowired
     private InsteadPayConfigService insteadPayConfig;
-
-    @Autowired
-    private SeckillService seckillService;
 
     @Autowired
     PreSaleProcessorDao preSaleProcessorDao;
@@ -768,6 +755,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         for (OrderFullReduce orderFullReduce: orderFullReduces) {
             fullReduceDiscount = fullReduceDiscount.add(calculate.calculateOrderGoodsDiscount(orderFullReduce, bos, OrderConstant.D_T_FULL_REDUCE));
         }
+        //打包一口价处理
+        OrderPackageSale orderPackageSale  = calculate.calculatePackageSale(param, bos, tolalNumberAndPrice, vo);
+        BigDecimal packageSaleDiscount = orderPackageSale != null ? orderPackageSale.getTotalDiscount() : BigDecimal.ZERO;
         //处理会员卡
         calculate.calculateCardInfo(param, vo);
         //处理当前会员卡
@@ -806,7 +796,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             BigDecimalUtil.BigDecimalPlus.create(memberDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(couponDiscount, BigDecimalUtil.Operator.subtrac),
             BigDecimalUtil.BigDecimalPlus.create(fullReduceDiscount, BigDecimalUtil.Operator.subtrac),
-            BigDecimalUtil.BigDecimalPlus.create(preSaleDiscount, null)
+            BigDecimalUtil.BigDecimalPlus.create(preSaleDiscount, BigDecimalUtil.Operator.subtrac),
+            BigDecimalUtil.BigDecimalPlus.create(packageSaleDiscount,null)
         );
         //折扣金额(使用大额优惠券，支付金额不为负的，等于运费金额)
         if(BigDecimalUtil.compareTo(tolalDiscountAfterPrice, BigDecimal.ZERO) < 0){
@@ -824,6 +815,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));
                 currentMoneyPaid = orderPreSale.getTotalPreSaleMoney();
             }
+        }else if(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType()) && orderPackageSale != null){
+            currentMoneyPaid = orderPackageSale.getTotalPrice();
         }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
