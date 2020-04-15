@@ -308,9 +308,9 @@ public class OrderGoodsService extends ShopBaseService{
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
-            purchasePriceId(null).
-            purchasePriceRuleId(null).
             reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
+            purchasePriceId(goods.getPurchasePriceId()).
+            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
             reducePriceId(goods.getReducePriceId()).
