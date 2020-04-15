@@ -177,15 +177,8 @@
               v-model="param.deliverType"
               :label="1"
               style="line-height: 40px"
+              @change="changTime"
             >&nbsp;指定发货开始时间</el-radio>
-            <!-- <el-form-item
-              prop="deliverTime"
-              :rules="[
-                {required: true, message:'请填写发货开始时间', trigger: ['blur','change']},
-                {validator: (rule, value, callback) => { validateSendTime(rule,value, callback)}}
-              ]"
-              :inline-message="true"
-            > -->
             <el-date-picker
               :disabled="param.deliverType==2 || isEditeFlag"
               v-model="param.deliverTime"
@@ -195,7 +188,6 @@
               value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
-            <!-- </el-form-item> -->
           </div>
           <div style="display:flex">
             <el-radio
@@ -203,18 +195,11 @@
               v-model="param.deliverType"
               :label="2"
               style="line-height:40px"
+              @change="changTime"
             >
               <span v-if="this.param.presaleType === 0">&nbsp;尾款支付完成</span>
               <span v-if="this.param.presaleType === 1">&nbsp;支付完成后</span>
             </el-radio>
-            <!-- <el-form-item
-              prop="deliverDays"
-              :rules="[
-                { required: true,trigger: 'blur' },
-                { validator: (rule, value, callback)=>{validatePayment(rule, value, callback)}, trigger: ['blur', 'change'] }
-              ]"
-              :inline-message="true"
-            > -->
             <el-input
               :disabled="param.deliverType==1 || isEditeFlag"
               v-model="param.deliverDays"
@@ -223,7 +208,6 @@
               :min=0
             />
             <span style="margin-left:10px">天后发货</span>
-            <!-- </el-form-item> -->
           </div>
         </el-form-item>
         <el-form-item
@@ -531,8 +515,16 @@
         <el-form
           label-width="120px"
           v-show="showMore"
+          ref="param-share"
+          :model="param"
         >
-          <el-form-item label="购买数量限制：">
+          <el-form-item
+            label="购买数量限制："
+            prop="buyNumber"
+            :rules="[
+                { validator: (rule, value, callback)=>{validateBuyNumber(rule, value, callback)}, trigger: ['blur', 'change'] }
+              ]"
+          >
             <div style="display:flex">
               <span>单用户最多可以购买</span>
               <el-input
@@ -699,10 +691,13 @@ export default {
     // 发货时间校验
     var checkDeliverType = (rule, value, callback) => {
       console.log(value)
+      var re = /^[1-9]\d*$/
       if (value === 1 && this.param.deliverTime === null) {
         callback(new Error('请选择发货开始时间'))
       } else if (value === 2 && (!this.param.deliverDays || this.param.deliverDays === null)) {
         callback(new Error('请填写尾款发货时间'))
+      } else if (value === 2 && !re.test(this.param.deliverDays)) {
+        callback(new Error('支付完成后发货日期必须大于0'))
       } else {
         callback()
       }
@@ -781,6 +776,7 @@ export default {
         returnType: { required: true },
         showSaleNumber: { required: true },
         buyType: { required: true }
+        // buyNumber: { required: true, validator: checkBuyNumber, trigger: 'change' }
       }
     }
   },
@@ -852,24 +848,22 @@ export default {
         callback()
       }
     },
-    // // 验证发货时间
-    // validateSendTime (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverTime === 1) {
-    //     callback(new Error('请指定发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
-    // // 验证尾款支付完成
-    // validatePayment (rule, value, callback) {
-    //   console.log(value)
-    //   if (!value && this.param.deliverType === 2) {
-    //     callback(new Error('请填写尾款发货时间'))
-    //   } else {
-    //     callback()
-    //   }
-    // },
+    // 验证数量
+    validateBuyNumber (rule, value, callback) {
+      console.log(value)
+      var re = /^([0]|[1-9][0-9]*)$/
+      if (!value) {
+        callback()
+      }
+      if (!re.test(value)) {
+        callback(new Error('请输入正确的数字'))
+      } else {
+        callback()
+      }
+    },
+    changTime (e) {
+      this.$refs.param.validateField('deliverType')
+    },
     // 一阶段定金支付时间
     dateChange (date) {
       this.param.preStartTime = date[0]
@@ -886,33 +880,33 @@ export default {
     },
     // 保存
     add () {
-      this.param.buyNumber = Number(this.param.buyNumber)
-      const { param } = this
+      this.$refs['param'].validate((valid) => {
+        this.param.buyNumber = Number(this.param.buyNumber)
+        const { param } = this
 
-      console.log(param, 'get param')
-      this.formatParam()
-      if (!this.validateParam()) {
-        return
-      }
-      if (this.update) {
-        updatePreSale(param).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('更新成功')
-            this.gotoHome()
-          } else {
-            this.$message.error('更新失败')
-          }
-        })
-      } else {
-        createPreSale(param).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('添加成功')
-            this.gotoHome()
-          }
-        })
-      }
+        console.log(param, 'get param')
+        this.formatParam()
+        this.validateParam()
+        if (this.update) {
+          updatePreSale(param).then(res => {
+            if (res.error === 0) {
+              console.log(res)
+              this.$message.success('更新成功')
+              this.gotoHome()
+            } else {
+              this.$message.error('更新失败')
+            }
+          })
+        } else {
+          createPreSale(param).then(res => {
+            if (res.error === 0) {
+              console.log(res)
+              this.$message.success('添加成功')
+              this.gotoHome()
+            }
+          })
+        }
+      })
     },
     formatParam () {
       this.formatTimes()
@@ -940,7 +934,6 @@ export default {
       const { id } = this.$route.params
       getDetail(id).then(({ content }) => {
         this.param = content
-        // this.param.shareImg = content.shareImg.split('.cn/')[1]
         console.log(this.param.shareImg)
         this.getImgeUrl(content.shareImg)
 
@@ -967,46 +960,48 @@ export default {
     // 参数校验
     validateParam () {
       this.formatParam()
-      // todo ......
-      this.$refs['param'].validate((valid) => {
-        console.log(valid, 'valid')
-        if (valid) {
-          if (this.param.preStartTime2) {
-            if (this.param.preEndTime > this.param.preStartTime2) {
-              this.$message.warning('一期结束时间应小于二期开始时间')
-              return false
-            }
-            if (this.param.startTime < this.param.preStartTime) {
-              this.$message.warning('尾款支付开始时间应大于一期开始时间')
-              return false
-            }
-            if (this.param.endTime < this.param.preEndTime2) {
-              this.$message.warning('尾款支付结束时间应大于二期结束时间')
-              return false
-            }
-          } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
-            if (this.param.startTime < this.param.prrStartTime) {
-              this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
-              return false
-            }
-          } else {
-            return false
-          }
-          if (this.param.deliverType === 1) {
-            if (this.param.deliverTime < this.param.endTime) {
-              this.$message.warning('指定发货时间应大于尾款支付时间')
-            }
-          }
-          if (this.param.presaleType === 1) {
-            if (this.param.deliverTime < this.param.preEndTime) {
-              this.$message.warning('指定发货时间应大于尾款支付时间')
-            }
-          }
-        } else {
-          console.log('error submit')
+      // 校验时间
+      if (this.param.preStartTime2) {
+        if (this.param.preEndTime > this.param.preStartTime2) {
+          this.$message.warning('一期结束时间应小于二期开始时间')
           return false
         }
-      })
+        if (this.param.startTime < this.param.preStartTime) {
+          this.$message.warning('尾款支付开始时间应大于一期开始时间')
+          return false
+        }
+        if (this.param.endTime < this.param.preEndTime2) {
+          this.$message.warning('尾款支付结束时间应大于二期结束时间')
+          return false
+        }
+      } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
+        if (this.param.startTime < this.param.prrStartTime) {
+          this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
+          return false
+        }
+      } else {
+        return false
+      }
+      if (this.param.deliverType === 1) {
+        if (this.param.deliverTime < this.param.endTime) {
+          this.$message.warning('指定发货时间应大于尾款支付时间')
+        }
+      }
+      if (this.param.presaleType === 1) {
+        if (this.param.deliverTime < this.param.preEndTime) {
+          this.$message.warning('指定发货时间应大于尾款支付时间')
+        }
+      }
+
+      if (this.param.shareAction === 2 && !this.param.shareDoc) {
+        this.$message.warning('请填写对应的分享文案')
+        return false
+      }
+
+      if (this.param.shareImgAction === 2 && (this.param.shareImg === null || this.param.shareImg === '')) {
+        this.$message.warning('请选择自定义图片')
+        return false
+      }
 
       this.$refs['param-s'].validate((valid) => {
         console.log(valid, 'valid')
@@ -1112,11 +1107,6 @@ export default {
     'param.goodsId': function (value) {
       if (value) {
         this.$refs.param.validateField('goodsId')
-      }
-    },
-    'param.deliverType': function (value) {
-      if (value) {
-        this.$refs.param.validateField('deliverType')
       }
     }
   },
