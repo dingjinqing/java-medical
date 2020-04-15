@@ -612,7 +612,6 @@ export default {
       }
       this.dealWithCustomAction()
       this.dealWithCardTag()
-      debugger
       let obj = {
         'id': this.cardId,
         'cardType': this.cardType,
