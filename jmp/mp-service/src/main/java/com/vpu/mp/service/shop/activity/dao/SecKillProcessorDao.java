@@ -110,6 +110,10 @@ public class SecKillProcessorDao extends ShopBaseService {
             logger().debug("小程序-商品详情-秒杀商品数量已用完");
             seckillVo.setActState(BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM);
         }
+        if (seckillVo.getActProducts().size() == 0) {
+            logger().debug("小程序-商品详情-商品规格信息和秒杀活动规格信息无交集");
+            seckillVo.setActState(BaseConstant.ACTIVITY_STATUS_NO_PRD_TO_USE);
+        }
         return seckillVo;
     }
 
