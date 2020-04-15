@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import com.vpu.mp.db.main.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.main.tables.records.ThirdPartyServicesRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
@@ -39,6 +40,8 @@ import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 public class ThirdPartyMsgServices extends MainBaseService {
 	public static final Byte BIND = 1;
 	public static final Byte NOBIND = 0;
+	public static final Byte ONE = 1;
+	public static final Byte TWO = 2;
 
 	@Value(value = "${official.appId}")
 	private String bindAppId;
@@ -57,9 +60,13 @@ public class ThirdPartyMsgServices extends MainBaseService {
 	 * @param order
 	 */
 	public void thirdPartService(OrderInfoRecord order) {
-		CanSendVo canService = isCanService(order.getShopId());
-		if (canService.getCanSend()) {
-			sendMsg(canService, order);
+		try {
+			CanSendVo canService = isCanService(order.getShopId());
+			if (canService.getCanSend()) {
+				sendMsg(canService, order);
+			}
+		} catch (Exception e) {
+			logger().info(e.getMessage(),e);
 		}
 
 	}
@@ -72,16 +79,16 @@ public class ThirdPartyMsgServices extends MainBaseService {
 				&& !bindOpenId.contains(accountInfo.getOfficialOpenId())) {
 			bindOpenId.add(accountInfo.getOfficialOpenId());
 			logger().info("主账户发送");
-			sendSingleMessage(order, accountInfo.getOfficialOpenId());
+			sendSingleMessage(order, accountInfo.getOfficialOpenId(),ONE,accountInfo.getSysId());
 		}
 
 		for (ShopChildAccountPojo account : subccountList) {
 			logger().info("子账户发送");
-			sendSingleMessage(order, account.getOfficialOpenId());
+			sendSingleMessage(order, account.getOfficialOpenId(),TWO,account.getAccountId());
 		}
 	}
 
-	private boolean sendSingleMessage(OrderInfoRecord order, String officialOpenId) {
+	private boolean sendSingleMessage(OrderInfoRecord order, String officialOpenId,Byte accountAction,Integer accountId) {
 		MpOfficialAccountUserRecord userAccount = mpOfficialAccountUserService.getUser(bindAppId, officialOpenId);
 		if (userAccount == null) {
 			return false;
@@ -107,7 +114,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		String formatMoney = df1.format(money);
 		UserRecord userRecord = saas.getShopApp(order.getShopId()).user.getUserByUserId(order.getUserId());
 		String userName = userRecord.getUsername();
-		String page = "pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn();
+		String page = "pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn();
 		String[][] data = new String[][] { { "店铺新订单成交通知", "#173177" }, { formatMoney, "#173177" },
 				{ goodsName, "#173177" }, { order.getOrderSn(), "#173177" }, { userName, "#173177" } };
 		RabbitMessageParam sendParam = RabbitMessageParam.builder()
@@ -116,6 +123,14 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		logger().info("准备发");
 		saas.taskJobMainService.dispatchImmediately(sendParam, RabbitMessageParam.class.getName(), order.getShopId(),
 				TaskJobEnum.SEND_MESSAGE.getExecutionType());
+		ThirdPartyServicesRecord newRecord = db().newRecord(THIRD_PARTY_SERVICES);
+		newRecord.setShopId(order.getShopId());
+		newRecord.setAccountAction(accountAction);
+		newRecord.setAccountId(accountId);
+		newRecord.setServiceDetail(order.getOrderSn());
+		newRecord.setAddTime(DateUtil.getSqlTimestamp());
+		int insert = newRecord.insert();
+		logger().info("插入结果 "+insert);
 		return true;
 	}
 

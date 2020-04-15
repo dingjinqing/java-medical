@@ -1,4 +1,5 @@
 <!--pages/aftersaleorder/aftersaleorder.wxml-->
+<wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <view class="main-container">
   <!-- 搜索 -->
@@ -38,13 +39,14 @@
                   <view class="goods_attr" wx:if='{{item1.goodsAttr != "" && item1.goodsAttr != null}}'>{{item1.goodsAttr}}</view>
               </view>
               <view class="goods_price">
-                  <view class="goods_money" style="color:{{comColor}}">￥{{item1.goodsPrice}}</view>
-                  <view class="goods_num">X{{item1.goodsNumber}}</view>
+                  <view class="goods_num">数量：{{item1.goodsNumber}}</view>
               </view>
           </view>
       </view>
       <view class="return_info" bindtap="to_detail"  data-order_sn='{{item.returnOrderSn}}' data-ret_id='{{item.retId}}'>
-        <view class="return_desc">{{item.refundRefuseReason?item.refundRefuseReason:''}}</view>
+        <view class="return_desc">
+        {{item.refundStatus == 1 || item.refundStatus == 4?i18n.$t(localePack,"page1.afterSale.waitMerchantsProcess"):item.refundStatus == 2?i18n.$t(localePack,"page1.afterSale.merchantAgreeApply"):item.refundStatus == 3?i18n.$t(localePack,"page1.afterSale.sellerRefues"):item.refundStatus == 5?i18n.$t(localePack,"page1.afterSale.afterSalesCompleted"):item.refundStatus == 6?i18n.$t(localePack,"page1.afterSale.rejectedApply"):item.refundStatus == 7?'退款撤销':''}}
+        </view>
         <!--{{item.refund_status_name}}-->
         <view class="btn_look_detail">查看详情</view>
       </view>

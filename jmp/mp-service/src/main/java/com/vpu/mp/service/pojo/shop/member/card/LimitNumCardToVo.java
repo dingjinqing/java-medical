@@ -12,6 +12,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
@@ -58,14 +59,22 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	private Byte payType;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private BigDecimal payFee;
-	/**购买类型0 为 现金购买金额 */
+	/**	
+	 * 	购买类型0 为 现金购买金额 
+	 */
 	private BigDecimal payMoney;
-	/**购买类型1 积分购买 */
+	/**	
+	 * 	购买类型1 积分购买
+	 */
 	private BigDecimal payScore;
 	
-	/** 领取限制 填0为不限制 */
+	/**	领取限制 填0为不限制 */
 	private Integer limit;
 	
+	/**
+	 * 自定义激活项
+	 */
+	protected List<CardCustomAction> customAction;
 	
 	/**
 	 * 	同步打标签

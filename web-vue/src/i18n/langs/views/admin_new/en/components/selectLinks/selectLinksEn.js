@@ -67,11 +67,11 @@ export const en = {
     }
   ],
   level_two_DataList_two: [
+    // {
+    //   flagindex: null, title: 'Platform classification'
+    // },
     {
-      flagindex: null, title: 'Platform classification'
-    },
-    {
-      flagindex: '', title: 'Merchant classification'
+      flagindex: null, title: 'Merchant classification'
     },
     {
       flagindex: '', title: 'Commodity brand'

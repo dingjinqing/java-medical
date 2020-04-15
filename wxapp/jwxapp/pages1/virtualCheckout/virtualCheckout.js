@@ -30,6 +30,7 @@ global.wxPage({
       options
     })
     if(options.packId) this.requestPackageData()
+    if(options.cardId) this.requestCardData()
   },
   requestPackageData(){
     this.setData({
@@ -52,7 +53,55 @@ global.wxPage({
     })
   },
   requestCardData(){
+    let {cardId} = this.data.options
+    util.api(`/api/wxapp/card/buy/clearing`,res=>{
+      if(res.error === 0){
+        console.log(res)
+        this.setData({
+          ...res.content,
+          cardBgStyle:this.getCardBg(res.content.cardInfo),
+          cardTypeName:this.getTypeName(res.content.cardInfo.cardType),
+          cardExpireTime:this.getCardExpireTime(res.content.cardInfo)
+        })
+        this.getIsScore(res.content)
+        this.defaultInput(res.content)
+      }
+    },{
+      cardId
+    })
+  },
+   // 获取会员卡背景
+   getCardBg (cardItem) {
+    switch (cardItem.bgType) {
+      case 0:
+        return `background-color:${cardItem.bgColor};`;
+      case 1:
+        return `background:url('${cardItem.bgImg}') no-repeat top left / 100% 100%;`;
+    }
+  },
+  // 获取卡类型
+  getTypeName (cardType) {
+    switch (cardType) {
+      case 0:
+        return '普通卡';
+      case 1:
+        return '限次卡';
+      case 2:
+        return '等级卡';
+    }
+  },
+  // 获取会员卡过期时间
+  getCardExpireTime (cardItem) {
+    if (cardItem.expireType === 1) {
+      // 从领取之日起
+      let reDateType = ['日', '周', '月']
+      let i = cardItem.dateType === null ? 0 : Number(cardItem.dateType)
+      return `自领取之日起${cardItem.receiveDay}${reDateType[i]}内有效`
 
+    }
+    if (cardItem.cardType === 2) return null
+    if (cardItem.expireType === 2) return `永久有效`
+    return `${cardItem.startTime} 至 ${cardItem.endTime}`
   },
   getIsScore(actInfo){
     if(this.data.options.packId){
@@ -65,7 +114,13 @@ global.wxPage({
       }
     }
     if(this.data.options.cardId){
-
+      if(this.data.cardInfo.isPay === 1 && this.data.cardInfo.payType === 1){
+        this.setData({
+          isScorePay:true,
+          orderPayScore:actInfo.orderPayScore
+        })
+        return
+      }
     }
     this.setData({
       isScorePay:false
@@ -238,12 +293,17 @@ global.wxPage({
     if(this.data.options.packId){
       params.packId = this.data.options.packId
     }
+    if(this.data.options.cardId){
+      params.cardId = this.data.options.cardId
+      params.moneyPaid = !this.data.isScorePay ? this.data.usePayInfo.moneyPaid : 0
+    }
     if(this.data.isScorePay){
       this.setData({
         'usePayInfo.useScore':this.data.orderPayScore
       })
     }
-    util.api('/api/wxapp/coupon/pack/checkout',res=>{
+    let apiStr = this.data.options.packId ? `/api/wxapp/coupon/pack/checkout` : `/api/wxapp/card/buy/pay`
+    util.api(apiStr,res=>{
       if(res.error === 0 && res.content){
         wx.requestPayment({
           timeStamp: res.content.timeStamp,

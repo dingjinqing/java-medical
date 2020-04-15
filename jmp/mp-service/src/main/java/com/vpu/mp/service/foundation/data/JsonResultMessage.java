@@ -46,7 +46,7 @@ public class JsonResultMessage {
     public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
     public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
     public static final String MSG_ACCOUNT_MOBILE_LENGTH_LIMIT = "account.mobile.length.limit";
-    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.mobile.same";
+    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.or.mobile.same";
     public static final String MSG_ACCOUNT_USERNAME_LENGTH_LIMIT = "account.username.length.limit";
     public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
 
