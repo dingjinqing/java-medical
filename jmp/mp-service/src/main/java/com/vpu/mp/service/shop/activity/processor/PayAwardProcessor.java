@@ -44,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
@@ -290,7 +289,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 return;
             }
             //活动商品
-            if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
+            if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_ALL.intValue())) {
                 boolean payAwardFlag = false;
                 for (OrderBeforeParam.Goods goods : param.getGoods()) {
                     boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
