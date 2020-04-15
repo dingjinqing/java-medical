@@ -360,6 +360,13 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
+            //获取进行中的活动
+            PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
+            if (payAward == null) {
+                logger().info("支付有礼活动为空!");
+                return;
+            }
+            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
             e.printStackTrace();
 
         }
