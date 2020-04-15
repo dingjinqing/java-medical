@@ -202,9 +202,11 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         }
         String mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), firstSpecialRecord.getId(), BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL));
 
+        pictorialLog("pictorial", "mpQrcode:"+mpQrcode);
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrcode));
+//            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -214,8 +216,9 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         PictorialImgPx imgPx = new PictorialImgPx();
 
         // 拼装背景图
+        pictorialLog("pictorial", "拼装背景图");
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
-
+        pictorialLog("pictorial", "拼装背景图完成");
         BufferedImage iconImage;
         // 拼装价值限时降价图片和商品价格
         try (InputStream firstSpecialIconStream = Util.loadFile(FIRST_SPECIAL_BG_IMG)) {
@@ -225,13 +228,14 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
-
+        pictorialLog("pictorial", "国际化价格");
         String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         // 自定义区域添加内容
+        pictorialLog("pictorial", "添加自定义内容");
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage,iconImage,realPriceText,linePriceText,true,imgPx);
 
-
+        pictorialLog("pictorial", "转换base64");
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
     }

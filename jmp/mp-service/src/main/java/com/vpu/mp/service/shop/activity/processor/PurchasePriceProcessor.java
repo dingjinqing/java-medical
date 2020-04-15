@@ -286,6 +286,9 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
             }
             else if(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(goods.getCartType())) {
                 PurchasePriceRuleRecord rule = actRules.get(goods.getCartExtendId());
+                if(rule == null) {
+                    throw new MpException(JsonResultCode.CODE_ORDER_ACTIVITY_END);
+                }
                 goods.setPurchasePriceId(rule.getPurchasePriceId());
                 goods.setPurchasePriceRuleId(rule.getId());
                 goods.setProductPrice(rule.getPurchasePrice());

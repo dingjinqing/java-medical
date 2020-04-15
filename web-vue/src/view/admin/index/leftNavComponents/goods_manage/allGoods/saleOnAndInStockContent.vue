@@ -96,10 +96,10 @@
         />
         <!--平台分类-->
         <!--<el-table-column-->
-          <!--align="center"-->
-          <!--prop="catName"-->
-          <!--:label="$t('allGoods.allGoodsData.cat')"-->
-          <!--width="100"-->
+        <!--align="center"-->
+        <!--prop="catName"-->
+        <!--:label="$t('allGoods.allGoodsData.cat')"-->
+        <!--width="100"-->
         <!--/>-->
         <!--商家分类-->
         <el-table-column
@@ -396,7 +396,18 @@
       <div
         style="margin-top:10px"
         v-if="isBottomClickIndex===2 || isBottomClickIndex===3"
-      >筛选条件：无</div>
+      >筛选条件：{{Object.keys(setupCondition).length!=0?'':'无'}}</div>
+      <div v-if="Object.keys(setupCondition).length!=0">
+        <div
+          v-for="(item,key,index) in setupCondition"
+          :key="index"
+          style="margin-top: 10px;"
+        >
+          <div v-if="ok(key,item)">
+            <div>{{$t('allGoods.allGoodsHeaderInputLabel.'+key)}}:{{item}}</div>
+          </div>
+        </div>
+      </div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -433,6 +444,7 @@ export default {
   },
   data () {
     return {
+      setupCondition: {}, // 批量处理筛选条件
       filterData: {},
       filterDataString: {}, // 用于导出时展示已选条件
       goodsData: [],
@@ -536,6 +548,8 @@ export default {
         this.bottomDialogVisible = true
         this.isBottomClickIndex = 3 // 当前选中的批量导出勾选结果
       }
+      // let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
+      console.log(this.$refs.allGoodsHeaderCmp)
     },
     lang () {
       this.paginationFetchGoodsData()
@@ -740,8 +754,25 @@ export default {
     paginationFetchGoodsData () {
       this.fetchGoodsData(this.filterData)
     },
+    ok (key, item) {
+      if (Array.isArray(item)) {
+        if (item.length !== 0) return true
+      } else {
+        if (key === 'currentPage' || key === 'pageRows' || key === 'exportRowStart' || key === 'exportRowEnd') {
+          return false
+        }
+        if (item) {
+          if (item === '请选择平台分类') {
+            return false
+          } else {
+            return true
+          }
+        }
+      }
+      return false
+    },
     /* 分页查询数据方法 */
-    fetchGoodsData (filterData) {
+    fetchGoodsData (filterData, formFilterDataString) {
       if (filterData !== undefined) {
         this.filterData = filterData
       }
@@ -749,6 +780,15 @@ export default {
         ...this.pageParams,
         ...this.filterData
       }
+      if (formFilterDataString) {
+        Object.keys(formFilterDataString).forEach((item, index) => {
+          if (!formFilterDataString[item]) {
+            delete formFilterDataString[item]
+          }
+        })
+        this.setupCondition = formFilterDataString
+      }
+      console.log(formFilterDataString)
       getGoodsList(params).then(res => {
         let { content: { page, dataList } } = res
 

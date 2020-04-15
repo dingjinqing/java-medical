@@ -1000,7 +1000,8 @@ public class GroupDrawService extends ShopBaseService {
 	 * @return
 	 */
 	public int generateGroupId() {
-		return db().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).from(JOIN_GROUP_LIST).fetchAnyInto(Integer.class) + 1;
+		Integer into = db().select(DSL.max(JOIN_GROUP_LIST.GROUP_ID)).from(JOIN_GROUP_LIST).fetchAnyInto(Integer.class);
+		return into==null?1:into+1;
 	}
 
 	/**
