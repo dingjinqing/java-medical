@@ -199,8 +199,8 @@ public class GoodsImportService extends ShopBaseService {
             Integer goodsId = goodsImportOperate(getShopId(), value, successGoodsList, illegalGoodsList, isUpdate, batchId);
             goodsIds.add(goodsId);
         }
-        int successNum = readyToImportGoodsList.size() - illegalGoodsList.size();
-        importRecordService.updateGoodsImportSuccessNum(successNum, batchId);
+
+        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), batchId);
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
         goodsService.updateEs(goodsIds);
