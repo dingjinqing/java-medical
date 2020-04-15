@@ -521,6 +521,7 @@ global.wxComponent({
           }
         },{
           skId,
+          goodsId,
           productId,
           goodsNumber
         })

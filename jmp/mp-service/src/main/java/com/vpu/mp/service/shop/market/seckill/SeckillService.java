@@ -511,7 +511,7 @@ public class SeckillService extends ShopBaseService{
 
         SecKillDefineRecord secKill = db().fetchAny(SEC_KILL_DEFINE,SEC_KILL_DEFINE.SK_ID.eq(param.getSkId()));
         int goodsNumber = saas.getShopApp(getShopId()).goods.getGoodsByProductId(param.getProductId()).into(GoodsRecord.class).getGoodsNumber();
-        byte res = this.canApplySecKill(secKill,goodsNumber,userId);
+        byte res = this.canApplySecKill(secKill,goodsNumber,userId,param.getGoodsId());
 
         if(res == 0){
             if(!this.checkSeckillProductStock(param.getSkId(),param.getProductId())){
@@ -523,7 +523,7 @@ public class SeckillService extends ShopBaseService{
                 vo.setOrderSn(orderSn);
             }
             if(secKill.getLimitAmount() != null && secKill.getLimitAmount() > 0){
-                int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId);
+                int seckillGoodsNum = getUserSeckilledGoodsNumber(param.getSkId(),userId,param.getGoodsId());
                 if((seckillGoodsNum + param.getGoodsNumber()) > secKill.getLimitAmount()){
                     vo.setState(BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT);
                     vo.setDiffNumber(secKill.getLimitAmount() - seckillGoodsNum);
@@ -541,7 +541,7 @@ public class SeckillService extends ShopBaseService{
      * @param goodsNumber goods表的库存
      * @return 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡
      */
-    public Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
+    public Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId,Integer goodsId) {
         if(secKill == null){
             return BaseConstant.ACTIVITY_STATUS_NOT_HAS;
         }
@@ -558,7 +558,7 @@ public class SeckillService extends ShopBaseService{
         if(minStock <= 0){
             return BaseConstant.ACTIVITY_STATUS_NOT_HAS_NUM;
         }
-        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId) >= secKill.getLimitAmount()){
+        if(secKill.getLimitAmount() > 0 && getUserSeckilledGoodsNumber(secKill.getSkId(),userId,goodsId) >= secKill.getLimitAmount()){
             return BaseConstant.ACTIVITY_STATUS_MAX_COUNT_LIMIT;
         }
         if(StringUtil.isNotEmpty(secKill.getCardId()) && !userCardExclusiveSeckillIsValid(secKill.getCardId(),userId)){
@@ -574,8 +574,12 @@ public class SeckillService extends ShopBaseService{
      * @param userId
      * @return
      */
-    private Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId) {
-        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN)).where(SEC_KILL_LIST.SK_ID.eq(skId).and(SEC_KILL_LIST.USER_ID.eq(userId)).and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))).groupBy(ORDER_INFO.USER_ID).fetchOptionalInto(Integer.class).orElse(0);
+    private Integer getUserSeckilledGoodsNumber(Integer skId,Integer userId,Integer goodsId) {
+        return db().select(DSL.sum(ORDER_INFO.GOODS_AMOUNT)).from(SEC_KILL_LIST).leftJoin(ORDER_INFO).on(SEC_KILL_LIST.ORDER_SN.eq(ORDER_INFO.ORDER_SN))
+            .where(SEC_KILL_LIST.SK_ID.eq(skId)
+                .and(SEC_KILL_LIST.USER_ID.eq(userId))
+                .and(SEC_KILL_LIST.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+                .and(SEC_KILL_LIST.GOODS_ID.eq(goodsId))).groupBy(ORDER_INFO.USER_ID).fetchOptionalInto(Integer.class).orElse(0);
     }
 
     /**
