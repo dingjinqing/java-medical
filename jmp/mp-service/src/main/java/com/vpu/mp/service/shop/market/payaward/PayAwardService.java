@@ -4,7 +4,6 @@ import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -73,7 +72,7 @@ public class PayAwardService extends ShopBaseService {
     /**
      * 全部商品
      */
-    private static final Integer ALL_GOODS = 1;
+    private static final Integer ALL_GOODS = 0;
 
     /**
      * 添加
