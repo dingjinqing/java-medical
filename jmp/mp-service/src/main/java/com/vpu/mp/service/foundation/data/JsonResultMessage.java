@@ -378,6 +378,11 @@ public class JsonResultMessage {
     public static final String MESSAGE_TEMPLATE_NO_OPEN = "message.template.no.open";
 
     /**
+     * 营销--打包一口价
+     */
+    public static final String PACKAGE_SALE_RULE_CHANGED = "package.sale.rules.changed";
+
+    /**
      * 文章_分类
      */
     public static final String ARTICLE_CATEGORY_IS_EXIST = "api.code.article_category_is_exist";

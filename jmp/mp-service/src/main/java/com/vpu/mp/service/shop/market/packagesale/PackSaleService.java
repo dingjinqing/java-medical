@@ -344,7 +344,7 @@ public class PackSaleService extends ShopBaseService {
 		return step;
 	}
 
-	private List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
+	public List<PackSaleParam.GoodsGroup> getPackageGroups(PackageSaleRecord packageSaleRecord){
 	    List<PackSaleParam.GoodsGroup> res = new ArrayList<>();
         PackSaleParam.GoodsGroup g1 = new PackSaleParam.GoodsGroup();
         g1.setGroupId((byte)1);
@@ -486,7 +486,7 @@ public class PackSaleService extends ShopBaseService {
      * @param group
      * @return
      */
-    private List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
+    public List<Integer> getPackageSaleGroupGoodsIds(PackSaleParam.GoodsGroup group){
         List<Integer> res = new ArrayList<>();
 
         if(CollectionUtils.isNotEmpty(group.getGoodsIdList())){
@@ -561,6 +561,7 @@ public class PackSaleService extends ShopBaseService {
         int hasSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,param.getPackageId(),param.getGroupId());
         if((hasSelectNumber + param.getGoodsNumber()) > thisGroup.getGoodsNumber()){
             vo.setState((byte)6);
+            vo.setGroupName(thisGroup.getGroupName());
             return vo;
         }
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getGoodsId());
@@ -601,6 +602,42 @@ public class PackSaleService extends ShopBaseService {
             return (byte)4;
         }
         return 0;
+    }
+
+    /**
+     * 去结算
+     * @param packageId
+     * @param userId
+     * @return
+     */
+    public PackageSaleCheckoutVo toCheckout(int packageId,int userId){
+        PackageSaleCheckoutVo vo = new PackageSaleCheckoutVo();
+
+        PackageSaleRecord packageSaleRecord = getRecord(packageId);
+        Byte state = checkPackage(packageSaleRecord);
+        if(!state.equals((byte)0)){
+            vo.setState(state);
+            return vo;
+        }
+
+        List<PackSaleParam.GoodsGroup> groups = getPackageGroups(packageSaleRecord);
+        for(PackSaleParam.GoodsGroup group : groups){
+            int groupSelectNumber = packageGoodsCartService.getUserGroupGoodsNumber(userId,packageId,group.getGroupId());
+            if(groupSelectNumber < group.getGoodsNumber()){
+                vo.setState((byte)4);
+                vo.setGroupName(group.getGroupName());
+                return vo;
+            }
+            if(groupSelectNumber > group.getGoodsNumber()){
+                vo.setState((byte)5);
+                vo.setGroupName(group.getGroupName());
+                return vo;
+            }
+        }
+
+        vo.setGoods(packageGoodsCartService.getUserGroupCartGoods(packageId,userId));
+        vo.setState((byte)0);
+        return vo;
     }
 }
 

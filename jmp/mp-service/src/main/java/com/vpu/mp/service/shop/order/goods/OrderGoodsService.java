@@ -318,7 +318,7 @@ public class OrderGoodsService extends ShopBaseService{
             build();
 
         //限时降价的ID和TYPE存入order_goods
-        if(goods.getGoodsPriceAction().equals(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE) && goods.getReducePriceId() != null){
+        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsPriceAction()) && goods.getReducePriceId() != null){
             bo.setActivityId(goods.getReducePriceId());
             bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         }

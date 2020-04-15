@@ -32,12 +32,14 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.base.BaseMarketingBaseVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
+import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.presale.OrderPreSale;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.rebate.RebateRecord;
 import com.vpu.mp.service.pojo.wxapp.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.wxapp.order.term.OrderTerm;
 import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
+import com.vpu.mp.service.shop.activity.processor.PackageSaleProcessor;
 import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
@@ -106,6 +108,8 @@ public class Calculate extends ShopBaseService {
     private OrderGoodsRebateService orderGoodsRebate;
     @Autowired
     private OrderGoodsService orderGoods;
+    @Autowired
+    private PackageSaleProcessor packageSaleProcessor;
 
     /**
      * 计算订单商品折扣金额
@@ -987,5 +991,21 @@ public class Calculate extends ShopBaseService {
             }
         }
         return result;
+    }
+
+    /**
+     * 计算打包一口价
+     *
+     * @param param
+     * @param bos
+     * @param totalNumberAndPrice
+     * @param vo
+     * @return
+     */
+    public OrderPackageSale calculatePackageSale(OrderBeforeParam param, List<OrderGoodsBo> bos, BigDecimal[] totalNumberAndPrice, OrderBeforeVo vo) {
+        if (!BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType())) {
+            return null;
+        }
+        return packageSaleProcessor.calculate(param, bos, totalNumberAndPrice, vo);
     }
 }
