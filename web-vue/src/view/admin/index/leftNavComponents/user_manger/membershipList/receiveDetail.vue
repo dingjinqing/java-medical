@@ -175,9 +175,6 @@
                 </div>
               </td>
 
-              <td class="tb_decorate_a">
-                {{item.path}}
-              </td>
             </tr>
           </tbody>
 

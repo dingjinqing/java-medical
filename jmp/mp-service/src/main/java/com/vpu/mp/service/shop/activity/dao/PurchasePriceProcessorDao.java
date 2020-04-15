@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,4 +88,16 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
       return  db().selectFrom(PURCHASE_PRICE_DEFINE).where(PURCHASE_PRICE_DEFINE.ID.eq(activityId)).fetchAny();
     }
 
+    /**
+     * 校验活动是否进行中
+     * @param actIds
+     * @return
+     */
+    public boolean checkActStatus(List<Integer> actIds) {
+        Integer count = db().selectCount().from(PURCHASE_PRICE_DEFINE).where(PURCHASE_PRICE_DEFINE.ID.in(actIds)
+            .and(PURCHASE_PRICE_DEFINE.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())))
+            .and(PURCHASE_PRICE_DEFINE.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))))
+            .fetchOneInto(int.class);
+        return actIds.size() == count;
+    }
 }

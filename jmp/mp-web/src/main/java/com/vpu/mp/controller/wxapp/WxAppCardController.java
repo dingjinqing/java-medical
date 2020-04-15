@@ -208,7 +208,7 @@ public class WxAppCardController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/card/buy/pay")
-	public JsonResult toBuyCard(@RequestBody @Validated CardToPayParam payParam){
+	public JsonResult toBuyCard(@RequestBody @Validated CardToPayParam payParam) throws MpException {
 		WxAppSessionUser user = wxAppAuth.user();
 		payParam.setUser(user);
 		payParam.setClientIp(RequestUtil.getIp(request));

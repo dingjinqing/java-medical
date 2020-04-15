@@ -6,12 +6,36 @@
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
-          <div class="rightTile">{{ $t('memberCard.basicSetting') }}</div>
+          <div class="rightTitle">{{ $t('memberCard.basicSetting') }}</div>
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
             ref="cardNameAndBg"
           ></cardNameAndBg>
+
+          <cardEffectTime
+            :val="cardEffectTime"
+            @input="initCardEffectTimeData"
+            ref="cardEffectTime"
+          ></cardEffectTime>
+          <!-- 续费开发 -->
+          <div v-show="Number(cardEffectTime.expiredType) !== 2">
+            <cardRenewCfg
+              v-bind.sync="cardRenew"
+              ref="cardRenew" />
+          </div>
+
+          <cardStoreCfg
+            :val="cardStoreCfgData"
+            @input="initCardStoreCfgData"
+          ></cardStoreCfg>
+          <cardUsageCfg
+            :val="cardUsageCfgData"
+            @input="initCardUsageCfgData"
+          ></cardUsageCfg>
+        </div>
+        <div class="member-rights">
+          <div class="rightTitle">会员权益</div>
           <scoreDiscount
             :val="disCountData"
             @input="initDiscountData"
@@ -42,29 +66,7 @@
             ref="freeship">
           </cardFreeshipCfg>
           <!-- 自定义权益 -->
-          <cardCustomRights v-bind.sync="customRights">
-
-          </cardCustomRights>
-          <cardEffectTime
-            :val="cardEffectTime"
-            @input="initCardEffectTimeData"
-            ref="cardEffectTime"
-          ></cardEffectTime>
-          <!-- 续费开发 -->
-          <cardRenewCfg
-            v-bind.sync="cardRenew"
-            ref="cardRenew"
-          >
-
-          </cardRenewCfg>
-          <cardStoreCfg
-            :val="cardStoreCfgData"
-            @input="initCardStoreCfgData"
-          ></cardStoreCfg>
-          <cardUsageCfg
-            :val="cardUsageCfgData"
-            @input="initCardUsageCfgData"
-          ></cardUsageCfg>
+          <cardCustomRights v-bind.sync="customRights" />
         </div>
         <div class="rightContainerBottom">
           <div class="rightTitle">{{ $t('memberCard.getSetting') }}</div>
@@ -297,16 +299,10 @@ export default {
       // 自定义权益
       customRights: {
         customRightsFlag: 'off',
-        customRightsAll: [
-          {
-            crightName: 'hhh1',
-            crightImage: null,
-            crightContent: 'Good Night'
-          }
-        ]
+        customRightsAll: []
       },
       cardTag: {
-        cardTag: null,
+        cardTag: 'off',
         cardTagId: []
       }
     }
@@ -811,21 +807,14 @@ export default {
     width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
-    .rightContainerTop {
+
+    .rightContainerTop,
+    .member-rights,
+    .rightContainerBottom,
+    .advance-setting  {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
-      margin-bottom: 20px;
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
-    .rightContainerBottom {
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      padding: 10px 1%;
       margin-bottom: 20px;
       .rightTitle {
         padding-bottom: 10px;
@@ -834,15 +823,8 @@ export default {
       }
     }
 
-    .advance-setting{
-      background-color: #f8f8f8;
-      padding: 10px 1%;
-      border: 1px solid #e4e4e4;
-      .rightTitle{
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-      }
+    .advance-setting {
+      margin-bottom: 0px;
     }
   }
   .footer {

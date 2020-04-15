@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,6 +157,7 @@ public class CardCreateService extends ShopBaseService{
 		initCardApplicableGoodsCfg(param, cardBuilder);
 		initCardStoreList(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		initCustonRights(param,cardBuilder);
 		initCustomActions(param,cardBuilder);
 		initCardGiveCfg(param,cardBuilder);
 		initCardCardTagCfg(param,cardBuilder);
@@ -173,6 +175,12 @@ public class CardCreateService extends ShopBaseService{
 		initIsAllowPayOwnGoods(param, cardBuilder);
 		initGradeBasicCfg(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		// 包邮
+		initFreeshipCfg(param,cardBuilder);
+		// 自定义权益
+		initCustonRights(param,cardBuilder);
+		// 自定义激活数据
+		initCustomActions(param,cardBuilder);
 	}
 	
 	
@@ -329,8 +337,15 @@ public class CardCreateService extends ShopBaseService{
 		if(cardRenew == null) {
 			return;
 		}
+		
+		Byte renewMemberCard = cardRenew.getRenewMemberCard();
+		if(CardUtil.isCardTimeForever(param.getExpiredType())) {
+			//	永久有效为不可续费
+			renewMemberCard = NumberUtils.BYTE_ZERO;
+		}
+		
 		cardBuilder
-			.renewMemberCard(cardRenew.getRenewMemberCard()) // 是否可续费
+			.renewMemberCard(renewMemberCard) // 是否可续费
 			.renewType(cardRenew.getRenewType()) // 续费类型
 			.renewNum(cardRenew.getRenewNum())	// 续费数值
 			.renewTime(cardRenew.getRenewTime()); // 续费时长
@@ -681,9 +696,19 @@ public class CardCreateService extends ShopBaseService{
 		logger().info("初始化会员卡转赠配置");
 		CardGive cardGive = param.getCardGive();
 		if(cardGive != null) {
+			
+			Byte giveAway = (byte)CardGive.CardGiveSwitch.off.ordinal();
+			if(cardGive.getCardGiveAway() != null) {
+				giveAway = (byte)cardGive.getCardGiveAway().ordinal();
+			}
+			
+			Byte giveContinue = (byte)CardGive.CardGiveSwitch.off.ordinal();
+			if(cardGive.getCardGiveContinue() != null) {
+				giveContinue = (byte)cardGive.getCardGiveContinue().ordinal();
+			}
 			cardBuilder
-				.cardGiveAway((byte)cardGive.getCardGiveAway().ordinal())
-				.cardGiveContinue((byte)cardGive.getCardGiveContinue().ordinal())
+				.cardGiveAway(giveAway)
+				.cardGiveContinue(giveContinue)
 				.mostGiveAway(cardGive.getMostGiveAway());
 		}
 	}
@@ -699,8 +724,13 @@ public class CardCreateService extends ShopBaseService{
 			if(cardTag.getCardTagId()!=null) {
 				json = Util.toJson(cardTag.getCardTagId());
 			}
+			Byte tagSwitch = (byte)CardTag.CardTagSwitch.off.ordinal();
+			if(cardTag.getCardTag() != null) {
+				tagSwitch = (byte)cardTag.getCardTag().ordinal();
+			}
+			
 			cardBuilder
-				.cardTag((byte)cardTag.getCardTag().ordinal())
+				.cardTag(tagSwitch)
 				.cardTagId(json);
 		}
 	}

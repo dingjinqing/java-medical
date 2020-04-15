@@ -387,7 +387,7 @@ public class PaymentService extends ShopBaseService {
      * @param param the param
      * @throws WxPayException the wx pay exception
      */
-    public void onPayNotifyCardOrder(PaymentRecordParam param) throws WxPayException {
+    public void onPayNotifyCardOrder(PaymentRecordParam param) throws WxPayException, MpException {
         String orderSn = param.getOrderSn();
         VirtualOrderRecord orderInfo = memberCardOrderService.getRecord(orderSn);
         if (Objects.isNull(orderInfo)) {
