@@ -234,7 +234,7 @@ export default {
 
 <style scoped lang="scss">
 .freeship_container{
-    margin-bottom: 25px;
+    margin-bottom: 0px;
     /deep/ .el-form-item {
         margin-bottom: 2px;
     }
