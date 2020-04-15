@@ -153,7 +153,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 			Integer num = db()
 					.select(DSL.count(THIRD_PARTY_SERVICES.ACCOUNT_ID)).from(THIRD_PARTY_SERVICES).where(
 							THIRD_PARTY_SERVICES.SHOP_ID.eq(shopId)
-									.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_FORMAT_SIMPLE)
+									.and(dateFormat(THIRD_PARTY_SERVICES.ADD_TIME, DateUtil.DATE_MYSQL_SIMPLE)
 											.eq(DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE))))
 					.fetchAnyInto(Integer.class);
 			if (num != null && num >= 5) {
