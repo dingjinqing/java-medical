@@ -126,7 +126,7 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         if(!OrderConstant.CART_Y.equals(param.getIsCart())){
             return;
         }
-        List<Integer> straIds = param.getGoods().stream().filter(x -> (x.getStraId() != null && x.getStraId() > 0)).map(OrderBeforeParam.Goods::getStraId).collect(Collectors.toList());
+        List<Integer> straIds = param.getGoods().stream().filter(x -> (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(x.getCartType()))).map(OrderBeforeParam.Goods::getCartExtendId).collect(Collectors.toList());
         if(CollectionUtils.isEmpty(straIds)) {
             return;
         }

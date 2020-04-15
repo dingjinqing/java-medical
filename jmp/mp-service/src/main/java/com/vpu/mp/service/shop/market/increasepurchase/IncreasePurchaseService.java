@@ -714,4 +714,10 @@ public class IncreasePurchaseService extends ShopBaseService {
         return vo;
     }
 
+    public Result<PurchasePriceRuleRecord> getRules(List<Integer> ruleIds) {
+        return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
+    }
+
+
+
 }
