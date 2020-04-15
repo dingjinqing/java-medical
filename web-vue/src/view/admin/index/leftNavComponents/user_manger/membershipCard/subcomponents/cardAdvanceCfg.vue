@@ -75,7 +75,7 @@ export default {
       return this.cardType === 1
     },
     switchInfo () {
-      return this.val === 'on' ? '已开启' : '已关闭'
+      return this.cardGive.cardGiveAway === 'on' ? '已开启' : '已关闭'
     },
     showUserTagDetail () {
       return this.cardTag.cardTagId.length > 0
