@@ -60,10 +60,11 @@
         <el-row>
           <el-col :span="24">
             <div class="footer">
-              <div
-                class="save"
+              <el-button
+                type="primary"
+                size="small"
                 @click="saveMsg"
-              >{{$t('groupIntegration.save')}}</div>
+              >{{$t('groupIntegration.save')}}</el-button>
             </div>
           </el-col>
         </el-row>
@@ -90,7 +91,19 @@ export default {
       editMsg: null,
       isUseDefault: 0,
       disabled: false,
-      msg: this.$t('groupIntegration.templateData')
+      // msg: this.$t('lotteryDraw.templateData')
+      msg: `
+        <div style="line-height: 1.5;">
+          <p>参与步骤</p>
+          <p>1.在低价抽奖商品列表页，点击商品进入商品详情页，通过下单开团入口进入订单结算页，付款成功后，按页面提示分享给微信好友；</p>
+          <p>2.好友通过小程序落地页查看活动现状，完成支付，参与拼团；</p>
+          <p>3.支付人数在有效期内达到门槛值，则团内所有用户都获得抽奖资格，等待公布中奖结果；</p>
+          <p>4.中奖结果在活动结束时公布，所有中奖订单进入发货流程，未中奖用户及未成团用户将全额退款至原支付账户。</p>
+          <p>参与规则</p>
+          <p>1.活动期间，同一账户每个拼团商品仅可购买一单；</p>
+          <p>2.拼团抽奖商品库存有限，如因库存不足导致抢购失败或发货失败，订单将全额退款至原支付账户。</p>
+        </div>
+      `
     }
   },
   methods: {
@@ -165,26 +178,8 @@ export default {
   }
 }
 .footer {
-  background: #f8f8fa;
-  border-top: 1px solid #f2f2f2;
   text-align: center;
-  position: fixed;
-  z-index: 2;
-  bottom: 0;
-  padding: 10px 0;
-  left: 0;
-  right: 0;
-  margin-right: 1%;
-  .save {
-    width: 70px;
-    height: 30px;
-    line-height: 30px;
-    border: none;
-    background: #5a8bff;
-    color: #fff;
-    margin: auto;
-    cursor: pointer;
-  }
+  margin-top: 15px;
 }
 .right {
   margin-left: 22px;
