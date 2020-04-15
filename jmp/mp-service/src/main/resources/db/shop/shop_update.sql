@@ -345,6 +345,22 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag_id` varchar(20) COMMENT '领�
 ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠';
 ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_continue` tinyint(1) DEFAULT 0 COMMENT '0:不可继续转赠，1:可以继续转赠';
 ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMMENT '最多可转赠多少次 0不限制';
+
+
+-- 2020年04月15日 添加限次卡转赠记录表
+CREATE TABLE `b2c_give_card_record`(
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id`       int(8) unsigned not null default 0    comment '转赠人用户ID',
+  `add_time`             timestamp      not null comment '转赠时间',
+  `card_no`              varchar(32) default ''        not null comment '转赠会员卡号',
+  `get_user_id`       int(8) unsigned  not null default 0    comment '获赠人用户ID',
+  `get_time`       timestamp       null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
+  `get_card_no`              varchar(32) default ''        not null comment '获赠会员卡号',
+  `flag`       tinyint(1)                        default '0' comment '正常 1放弃 2 转赠成功',
+  `deadline`             timestamp      not null comment '链接截止时间',
+  PRIMARY KEY (`id`)
+);
+
 /*********************2.11*************************END*/
 
 
