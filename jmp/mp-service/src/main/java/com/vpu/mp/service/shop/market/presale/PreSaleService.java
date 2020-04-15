@@ -113,7 +113,7 @@ public class PreSaleService extends ShopBaseService {
                 .leftJoin(ORDER_GOODS).on(ORDER_GOODS.ORDER_ID.eq(ORDER.ORDER_ID))
                 .where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE));
         buildOptions(query, param);
-        query.groupBy(TABLE.ID, TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
+        query.groupBy(TABLE.ID,  TABLE.FIRST,TABLE.PRESALE_TYPE,TABLE.PRESALE_NAME, TABLE.PRE_START_TIME, TABLE.PRE_END_TIME, TABLE.PRE_PAY_STEP,TABLE.START_TIME,
             TABLE.END_TIME, TABLE.STATUS, TABLE.PRE_START_TIME_2, TABLE.PRE_END_TIME_2);
         query.orderBy(TABLE.FIRST.desc(),TABLE.CREATE_TIME.desc());
         return getPageResult(query, param, PreSaleListVo.class);

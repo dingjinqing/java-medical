@@ -11,7 +11,7 @@ export function getLiveList (data) {
 // 获取商品编辑时可选的直播信息列表
 export function getLiveListForGoodsEdit (data) {
   return service({
-    url: '/api/admin/market/live/list',
+    url: '/api/admin/market/goods/edit/live/list',
     method: 'post',
     data: data
   })

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,8 +55,10 @@ import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRight;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 import com.vpu.mp.service.shop.member.CardReceiveCodeService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.member.dao.CardDaoService;
@@ -140,6 +143,7 @@ public class CardCreateService extends ShopBaseService{
 		initRenewCardCfg(param,cardBuilder);
 		initCustonRights(param,cardBuilder);
 		initCustomActions(param,cardBuilder);
+		initCardCardTagCfg(param,cardBuilder);
 	}
 	
 	
@@ -153,7 +157,12 @@ public class CardCreateService extends ShopBaseService{
 		initCardApplicableGoodsCfg(param, cardBuilder);
 		initCardStoreList(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		initCustonRights(param,cardBuilder);
+		initCustomActions(param,cardBuilder);
+		initCardGiveCfg(param,cardBuilder);
+		initCardCardTagCfg(param,cardBuilder);
 	}
+
 
 	/**
 	 * 初始化等级会员卡配置信息
@@ -166,7 +175,14 @@ public class CardCreateService extends ShopBaseService{
 		initIsAllowPayOwnGoods(param, cardBuilder);
 		initGradeBasicCfg(param, cardBuilder);
 		initReceiveCardCfg(param, cardBuilder);
+		// 包邮
+		initFreeshipCfg(param,cardBuilder);
+		// 自定义权益
+		initCustonRights(param,cardBuilder);
+		// 自定义激活数据
+		initCustomActions(param,cardBuilder);
 	}
+	
 	
 	
 	/**
@@ -321,8 +337,15 @@ public class CardCreateService extends ShopBaseService{
 		if(cardRenew == null) {
 			return;
 		}
+		
+		Byte renewMemberCard = cardRenew.getRenewMemberCard();
+		if(CardUtil.isCardTimeForever(param.getExpiredType())) {
+			//	永久有效为不可续费
+			renewMemberCard = NumberUtils.BYTE_ZERO;
+		}
+		
 		cardBuilder
-			.renewMemberCard(cardRenew.getRenewMemberCard()) // 是否可续费
+			.renewMemberCard(renewMemberCard) // 是否可续费
 			.renewType(cardRenew.getRenewType()) // 续费类型
 			.renewNum(cardRenew.getRenewNum())	// 续费数值
 			.renewTime(cardRenew.getRenewTime()); // 续费时长
@@ -666,10 +689,51 @@ public class CardCreateService extends ShopBaseService{
 		updateMemberCardById(cardBuilder.build(), id);
 	}
 
+	/**
+	 * 	初始化会员卡转赠配置"
+	 */
+	private void initCardGiveCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化会员卡转赠配置");
+		CardGive cardGive = param.getCardGive();
+		if(cardGive != null) {
+			
+			Byte giveAway = (byte)CardGive.CardGiveSwitch.off.ordinal();
+			if(cardGive.getCardGiveAway() != null) {
+				giveAway = (byte)cardGive.getCardGiveAway().ordinal();
+			}
+			
+			Byte giveContinue = (byte)CardGive.CardGiveSwitch.off.ordinal();
+			if(cardGive.getCardGiveContinue() != null) {
+				giveContinue = (byte)cardGive.getCardGiveContinue().ordinal();
+			}
+			cardBuilder
+				.cardGiveAway(giveAway)
+				.cardGiveContinue(giveContinue)
+				.mostGiveAway(cardGive.getMostGiveAway());
+		}
+	}
 
-
-
-
+	/**
+	 * 	初始化会员卡同步用户标签配置
+	 */
+	private void initCardCardTagCfg(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化会员卡同步用户标签配置");
+		CardTag cardTag = param.getCardTag();
+		if(cardTag!=null) {
+			String json = null;
+			if(cardTag.getCardTagId()!=null) {
+				json = Util.toJson(cardTag.getCardTagId());
+			}
+			Byte tagSwitch = (byte)CardTag.CardTagSwitch.off.ordinal();
+			if(cardTag.getCardTag() != null) {
+				tagSwitch = (byte)cardTag.getCardTag().ordinal();
+			}
+			
+			cardBuilder
+				.cardTag(tagSwitch)
+				.cardTagId(json);
+		}
+	}
 	
 
 	

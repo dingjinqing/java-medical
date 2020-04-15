@@ -307,6 +307,7 @@ global.wxPage({
         activityId: bargain_info.recordInfo.bargainId,
         realPrice: bargain_info.bargainPrice,
         linePrice: bargain_info.recordInfo.prdPrice,
+        targetId: bargain_info.recordInfo.goodsId,
         pageType: 2
       })
   },

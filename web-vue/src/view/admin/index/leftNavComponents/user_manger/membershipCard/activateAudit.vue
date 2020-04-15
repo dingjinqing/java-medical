@@ -407,6 +407,7 @@ export default {
       }
       .member_content {
         padding: 0 0 0 15px;
+        display: flex;
         ul {
           padding: 10px 0 10px 0;
           width: 80%;
@@ -424,7 +425,7 @@ export default {
         .operate_box {
           width: 20%;
           border-left: 1px solid #eee;
-          height: 97px;
+          padding: 10px 0 10px 0;
           display: flex;
           justify-content: center;
           align-items: center;

@@ -12,7 +12,8 @@
               <view style='padding-right:20rpx'>{{item.actName}}</view>
               <view class="coupon_left_text">
                 <text class="text" wx:if="{{item.actCode=='voucher'}}">￥<text class="text">{{item.denomination}}</text></text>
-                <text class="text" wx:else><text class="text">{{item.denomination}}</text>折</text>
+                <text class="text" wx:if="{{item.actCode=='discount'}}"><text class="text">{{item.denomination}}</text>折</text>
+                <text class="text" wx:if="{{item.actCode=='random'}}">￥<text class="text">{{item.randomMax}}</text><text style="font-size:22rpx;">最高</text></text>
               </view>
               <view class='coupon_xian'>
                 <image class="image" src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>

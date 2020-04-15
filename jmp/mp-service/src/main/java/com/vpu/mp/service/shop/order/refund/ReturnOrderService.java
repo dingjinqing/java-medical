@@ -103,7 +103,7 @@ public class ReturnOrderService extends ShopBaseService{
 	}
 
     public PageResult<ReturnOrderListMp> getPageList(OrderListParam param) {
-        SelectJoinStep<Record> select = db().select(TABLE.asterisk()).from(TABLE);
+        SelectJoinStep<Record> select = db().selectDistinct(TABLE.asterisk()).from(TABLE);
         buildOptionsReturn(select, param.getWxUserInfo().getUserId(), param.getSearch());
         return getPageResult(select,param.getCurrentPage(),param.getPageRows(), ReturnOrderListMp.class);
     }
@@ -114,9 +114,9 @@ public class ReturnOrderService extends ShopBaseService{
         }
         if(!StringUtils.isBlank(search)) {
             select.innerJoin(SUB_TABLE).on(TABLE.RET_ID.eq(SUB_TABLE.RET_ID)).
-                where(TABLE.RETURN_ORDER_SN.like(search).
-                    or(TABLE.ORDER_SN.like(search)).
-                    or(SUB_TABLE.GOODS_NAME.like(search)));
+                where(TABLE.RETURN_ORDER_SN.like(likeValue(search)).
+                    or(TABLE.ORDER_SN.like(likeValue(search))).
+                    or(SUB_TABLE.GOODS_NAME.like(likeValue(search))));
         }
         return select;
     }

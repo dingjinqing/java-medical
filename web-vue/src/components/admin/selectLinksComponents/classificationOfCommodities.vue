@@ -152,7 +152,7 @@ export default {
       console.log(newData)
       if (newData.levelIndex === 2) {
         switch (newData.index) {
-          case 0:
+          case 5:
             this.topName = this.classificationNameText
 
             this.classificationFlag = 0
@@ -178,7 +178,7 @@ export default {
               }
             })
             break
-          case 1:
+          case 0:
             this.topName = this.name
 
             this.classificationFlag = 1
@@ -204,7 +204,7 @@ export default {
               }
             })
             break
-          case 2:
+          case 1:
             this.topName = this.brandInformation
             this.classificationName = this.brandName
             this.topHiddenFlag = true
@@ -225,7 +225,7 @@ export default {
               }
             })
             break
-          case 3:
+          case 2:
             this.topName = this.labelInformation
             this.classificationName = this.labelName
             this.topHiddenFlag = true

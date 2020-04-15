@@ -44,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
@@ -64,6 +63,7 @@ import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_CRASH_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_SCORE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.UACCOUNT_RECHARGE;
+import static com.vpu.mp.service.pojo.shop.operation.RemarkTemplate.PAY_HAS_GIFT;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_COD;
 import static com.vpu.mp.service.pojo.shop.payment.PayCode.PAY_CODE_BALANCE_PAY;
@@ -205,7 +205,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                         setOrderSn(order.getOrderSn());
                         setPayment(PAY_CODE_BALANCE_PAY);
                         setIsPaid(UACCOUNT_RECHARGE.val());
-                        setRemarkId(RemarkTemplate.PAY_HAS_GIFT.code);
+                        setRemarkId(PAY_HAS_GIFT.code);
                     }};
                     TradeOptParam tradeOptParam = TradeOptParam.builder()
                             .tradeType(TYPE_CRASH_PAY_AWARD.val())
@@ -244,6 +244,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                     scoreParam.setUserId(order.getUserId());
                     scoreParam.setOrderSn(order.getOrderSn());
                     scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                    scoreParam.setRemarkCode(PAY_HAS_GIFT.code);
                     scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_SCORE_PAY_AWARD.val(), TRADE_FLOW_IN.val());
                     payAwardRecordRecord.setStatus(PAY_AWARD_GIVE_STATUS_RECEIVED);
                     payAwardRecordRecord.setSendData(payAwardContentBo.getScoreNumber().toString());
@@ -288,7 +289,7 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 return;
             }
             //活动商品
-            if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
+            if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_ALL.intValue())) {
                 boolean payAwardFlag = false;
                 for (OrderBeforeParam.Goods goods : param.getGoods()) {
                     boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
@@ -312,15 +313,15 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
                 logger().info("支付有礼没有配置奖品");
                 return;
             }
-            Integer joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
-                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue();
+            float joinAwardCount = jedisManager.getIncrValueAndSave(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId(), 60000,
+                    () -> payAwardRecordService.getJoinAwardCount(order.getUserId(), payAward.getId()).toString()).intValue()+1;
             logger().info("用户:{},参与次数:{}", order.getUserId(), joinAwardCount);
-
-            int circleTimes = (joinAwardCount - 1) / payAwardSize + 1;
-            int currentAward = (joinAwardCount - 1) % payAwardSize + 1;
+            double circleTimes = (int)Math.ceil(joinAwardCount / payAwardSize);
+            int currentAward =  (int)joinAwardCount % payAwardSize;
+            currentAward=currentAward==0?payAwardSize:currentAward;
             logger().info("当前第:{}轮,第:{}次", circleTimes,currentAward);
             if (payAward.getLimitTimes() > 0 && payAward.getLimitTimes()*payAwardSize < joinAwardCount) {
-                jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +","+order.getUserId());
+                jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
                 logger().info("参与次数到达上限:{}", payAward.getLimitTimes());
                 return;
             }
@@ -359,6 +360,13 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
+            //获取进行中的活动
+            PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
+            if (payAward == null) {
+                logger().info("支付有礼活动为空!");
+                return;
+            }
+            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
             e.printStackTrace();
 
         }

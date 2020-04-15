@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardRenew;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -202,5 +204,14 @@ public class CardParam {
 	 * 卡的自定义激活项
 	 */
 	private List<CardCustomAction> customAction;
+	/**
+	 * 	同步打标签
+	 */
+	private CardTag cardTag;
+	
+	/**
+	 * 	会员卡转赠
+	 */
+	private CardGive cardGive;
 	
 }

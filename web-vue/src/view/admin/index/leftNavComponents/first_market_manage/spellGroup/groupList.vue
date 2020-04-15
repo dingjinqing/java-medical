@@ -55,8 +55,8 @@
         >
         </el-table-column>
         <el-table-column
-          prop="goodsName"
-          :label="$t('groupBuy.goodsName')"
+          prop="goodsNumber"
+          :label="$t('groupBuy.goodsNumber')"
           align="center"
         ></el-table-column>
         <el-table-column
@@ -303,7 +303,6 @@ export default {
     },
     handleData (tabData) {
       tabData.map((item, index) => {
-        // item.vaildDate = `${item.startTime}` + this.$t('marketCommon.to') + `${item.endTime}`
         item.statusText = this.getActStatusString(item.currentState)
         this.activityTypeText.forEach(entity => {
           if (entity.value === item.activityType) {
@@ -313,6 +312,9 @@ export default {
         })
       })
       this.tableData = tabData
+      this.tableData.map(item => {
+        item.goodsNumber = item.goodsViews.length
+      })
     },
     closeStatus (id, status) {
       console.log(id, 'id---', status)

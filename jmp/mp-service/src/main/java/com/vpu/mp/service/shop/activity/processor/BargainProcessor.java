@@ -61,7 +61,6 @@ public class BargainProcessor implements Processor,ActivityGoodsListProcessor,Go
         // 设置最终库存
         int stock = capsule.getGoodsNumber()<bargainInfo.getStock()?capsule.getGoodsNumber():bargainInfo.getStock();
         bargainInfo.setStock(stock);
-        capsule.setGoodsNumber(stock);
 
         if (stock == 0 && BaseConstant.needToConsiderNotHasNum(bargainInfo.getActState())) {
             log.debug("小程序-商品详情-砍价商品数量已用完");

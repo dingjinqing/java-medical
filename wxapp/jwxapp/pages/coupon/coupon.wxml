@@ -17,66 +17,63 @@
     <view class="cou_area">
         <!-- 未使用 -->
         <block wx:if="{{this_type == 0}}">
-          <view class="cou_list" bindtap="couponDetail" data-couponSn="{{item.couponSn}}" data-check_action='{{this_type}}'  wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}">
-            <view class="left" style="background:{{comColor}}">
-              <view class="vip_exclusive" wx:if="{{item.isExclusive == 1}}">{{i18n.$t(localePack,"pages.coupon.vipExclusive")}}</view>
-              <view class='coupon_xian'>
-                <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
-              </view>
-              <!-- <view class="price" wx:if="{{item.type == 1}}">
-                <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random'}}">
-                  ￥<text>{{item.randomMax}}</text>最高
+          <view class="cou_list" wx:for="{{allCoupon}}" wx:key="index" wx:if="{{allCoupon.length != 0}}">
+            <view bindtap="couponDetail" data-couponSn="{{item.couponSn}}" data-check_action='{{this_type}}'>
+              <view class="left" style="background:{{comColor}}">
+                <view class="vip_exclusive" wx:if="{{item.isExclusive == 1}}">{{i18n.$t(localePack,"pages.coupon.vipExclusive")}}</view>
+                <view class='coupon_xian'>
+                  <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
                 </view>
-                <view wx:else>
-                  ￥<text>{{item.amount}}</text>
+                <view class="price" wx:if="{{item.type == 0}}">
+                  <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random'}}">
+                    ￥<text>{{item.randomMax}}</text><text style="font-size: 22rpx;">最高</text>
+                  </view>
+                  <view wx:else>
+                    ￥<text>{{item.amount}}</text>
+                  </view>
                 </view>
+                <view class="price" wx:if="{{item.type == 1}}"> <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
+                <view class='name'>{{item.actName}}</view>
               </view>
-              <view class="price" wx:if="{{item.type == 2}}">
-                <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
-              </view> -->
-              <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
-              <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
-              <view class='name'>{{item.actName}}</view>
+              <view class="right">
+                  <view class="case">
+                    <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
+                      {{i18n.$t(localePack,"pages.coupon.limitOrderAmount1")}}{{item.limitOrderAmount}}{{i18n.$t(localePack,"pages.coupon.limitOrderAmount2")}}
+                    </block> 
+                    <block wx:else> 
+                      {{i18n.$t(localePack,"pages.coupon.limitOrderAmount3")}}
+                    </block> 
+                  </view>
+                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}</view>
+                  <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
+                  <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remainSecondsAll <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
+                  <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remainSecondsAll > 0}}'>
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
+                    <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
+                    <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
+                  </view>
+                  <view class="share_tag" style="color:{{comColor}};background:{{somColor}};" wx:if='{{item.couponType == 1}}'>分享券</view>
+              </view>
             </view>
-            <view class="right">
-                <view class="case">
-                  <block wx:if="{{item.limitOrderAmount != 0 && item.limitOrderAmount != null}}">
-                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount1")}}{{item.limitOrderAmount}}{{i18n.$t(localePack,"pages.coupon.limitOrderAmount2")}}
-                  </block> 
-                  <block wx:else> 
-                    {{i18n.$t(localePack,"pages.coupon.limitOrderAmount3")}}
-                  </block> 
-                </view>
-                <view class="click_to_detail" wx:if="{{item.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}</view>
-                <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
-                <view class="time_canuse" wx:if='{{item.remainDays != 0 || item.remainSecondsAll <= 0}}'>{{item.startTime}} - {{item.endTime}}</view>
-                <view class='time_canuse clearfix daojishia' style='color:{{comColor}}' wx:if='{{item.remainDays == 0 && item.remainSecondsAll > 0}}'>
-                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[0]}}</text>:
-                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[1]}}</text>:
-                  <text class='time_square' style='background:{{comColor}}'>{{item.time_tips[2]}}</text>
-                  <text style='color:#666'>{{i18n.$t(localePack,"pages.coupon.timeTip")}}</text>
-                </view>
-                <!-- <view class="share_tag" style="color:{{comColor}};background:rgba(126,86,197,0.2)" wx:if='{{item.couponType == 1}}'>分享券</view> -->
-            </view>  
-            <view class="go_use" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>
-
-
+              
+            <!-- <view class="go_use" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view> -->
             <!-- 去使用 && 去分享 -->
-            <!-- <view class="go_use" wx:if='{{item.divisionEnabled == 0 && item.couponType == 1}}' style='color:{{comColor}};display: flex;align-items:center;justify-content: center;'>
+            <view class="go_use" wx:if='{{item.divisionEnabled == 0 && item.couponType == 1}}' style='color:{{comColor}};display: flex;align-items:center;justify-content: center;'>
               <text catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style="width:50%;display:inline-block;border-right: 1rpx solid #eee;height: 40rpx;line-height: 40rpx;">去使用</text>
-              <button class='split_btn_get' open-type="share" style="font-size:24rpx;color:{{comColor}};margin:0;width:50%;" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}" data-user='{{item.userId}}' data-index='{{index}}' wx:if='{{item.canShare != 0}}'>去分享</button>
+              <button class='split_btn_get' open-type="share" style="font-size:24rpx;color:{{comColor}};margin:0;width:50%;" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}" data-user='{{item.userId}}' data-index='{{index}}' wx:if='{{item.canShare == 1}}'>去分享</button>
               <text wx:else style='color:#666;width:50%;' catchtap="full_people" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}" data-user='{{item.userId}}' data-index='{{index}}'>去分享</text>
-            </view> -->
+            </view>
             <!-- 去使用 || 去分享 -->
-            <!-- <view class="go_use" wx:else style='color:{{comColor}}'>
-              <block wx:if='{{item.divisionEnabled == 0 && item.couponType == 2}}'>
+            <view class="go_use" wx:else style='color:{{comColor}}'>
+              <block wx:if='{{item.divisionEnabled == 0 && item.couponType == 0}}'>
                 <text catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style="width:100%;display:inline-block">去使用</text>
               </block>
               <block wx:else>
                 <text style="font-size:24rpx;color:#999;">把券分享给好友，且好友领取后本券即可使用</text>
                 <button class='split_btn_get' open-type="share" style="float:right;margin-right:20rpx;font-size:24rpx;color:{{comColor}}" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}" data-user='{{item.userId}}' data-index='{{index}}'>去分享</button>
               </block>
-            </view> -->
+            </view>
           </view>
 
           <view class="no_cou" wx:if="{{allCoupon.length == 0}}">
@@ -92,19 +89,15 @@
               <view class='coupon_xian'>
                 <image src='{{imageUrl}}/image/wxapp/new_cou_bg.png'></image>
               </view>
-              <!-- <view class="price" wx:if="{{item.type == 1}}">
+              <view class="price" wx:if="{{item.type == 0}}">
                 <view wx:if="{{item.couponType == 1 && item.isShare == 0 && item.actCode == 'random'}}">
-                  ￥<text>{{item.random_max}}</text>最高
+                  ￥<text>{{item.randomMax}}</text><text style="font-size: 22rpx;">最高</text>
                 </view>
                 <view wx:else>
                   ￥<text>{{item.amount}}</text>
                 </view>
               </view>
-              <view class="price" wx:if="{{item.type == 2}}">
-                <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text>
-              </view> -->
-              <view class="price" wx:if="{{item.type == '0'}}">￥<text>{{item.amount}}</text></view>
-              <view class="price" wx:if="{{item.type == '1'}}"><text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
+              <view class="price" wx:if="{{item.type == 1}}"> <text>{{item.amount}}{{i18n.$t(localePack,"pages.coupon.amount")}}</text></view>
               <view class='name'>{{item.actName}}</view>
             </view>
             <view class="right">

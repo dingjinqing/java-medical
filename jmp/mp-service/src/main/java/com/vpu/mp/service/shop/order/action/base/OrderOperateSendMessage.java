@@ -87,7 +87,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_DELIVER).data(buildData).build())
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_DELIVER).data(mpData).build())
-            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .page("pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.ORDER_SEND).build();
@@ -104,7 +104,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("退款操作消息推送start");
         //TODO 子单需要推送到主单用户
         // 跳转到退款页面
-        String page = "pages/returnorder/returnorder?order_sn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
+        String page = "pages/returnorder/returnorder?orderSn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
         //商品名称
         String goodsName = getReturnGoodsName(returnGoods);
         //金额
@@ -178,7 +178,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_WXPAY_SUCCESS).data(mpData).build())
-            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .page("pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.ORDER_SUCCESS_PAY).build();
@@ -210,7 +210,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_NOPAY_NOTIFY).data(mpData).build())
-            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .page("pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.ORDER_NO_PAY).build();
@@ -231,7 +231,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_SELFPICKUP_SUCCESS).data(mpData).build())
-            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .page("pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.SUCCESS_GET_GOODS).build();
@@ -253,7 +253,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         RabbitMessageParam param = RabbitMessageParam.builder()
             .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_RECEIVED).data(mpData).build())
-            .page("pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn())
+            .page("pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn())
             .shopId(getShopId())
             .userIdList(Collections.singletonList(order.getUserId()))
             .type(RabbitParamConstant.Type.GET_GOODS).build();

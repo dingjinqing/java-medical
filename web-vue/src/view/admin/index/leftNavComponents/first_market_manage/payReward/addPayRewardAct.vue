@@ -110,12 +110,12 @@
               <div>
                 <span>{{$t('payReward.goodsCondition')}}</span>
                 <el-radio-group v-model="params.goodsAreaType">
-                  <el-radio :label=0>{{$t('payReward.allGoods')}}</el-radio>
-                  <el-radio :label=1>{{$t('payReward.partOfGoods')}}</el-radio>
+                  <el-radio :label=1>{{$t('payReward.allGoods')}}</el-radio>
+                  <el-radio :label=0>{{$t('payReward.partOfGoods')}}</el-radio>
                 </el-radio-group>
                 <div
                   class="noneBlock"
-                  v-if="params.goodsAreaType === 1"
+                  v-if="params.goodsAreaType === 0"
                 >
                   <div
                     class="noneBlockList"
@@ -157,7 +157,10 @@
               </div>
             </el-form-item>
 
-            <el-form-item :label="$t('payReward.joinConstraint')">
+            <el-form-item
+              :label="$t('payReward.joinConstraint')"
+              required
+            >
               <div style="display:flex">
                 <span>{{$t('payReward.everyJoin')}}</span>
                 <el-form-item prop="limitTimes">
@@ -273,7 +276,15 @@
                       <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
                     </div>
                     <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{itemC.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{itemC.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemC.surplus !==0"
+                    >剩余{{itemC.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemC.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
@@ -348,7 +359,15 @@
                       <span style="font-size: 14px">折</span>
                     </div>
                     <div class="coupon_center_limit">{{itemD.useConsumeRestrict | formatLeastConsume(itemD.leastConsume)}}</div>
-                    <div class="coupon_center_number">剩余{{itemD.surplus}}张</div>
+                    <!-- <div class="coupon_center_number">剩余{{itemD.surplus}}张</div> -->
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemD.surplus !==0"
+                    >剩余{{itemD.surplus}}张</div>
+                    <div
+                      class="coupon_center_number"
+                      v-if="itemD.surplus ===0"
+                    >库存不限制</div>
                     <div
                       class="coupon_list_bottom"
                       :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
@@ -574,8 +593,8 @@
                   v-model="params.awardList[index].awardNumber"
                   size="small"
                   style="width:100px"
-                ></el-input>
-                <span>已发{{params.awardList[index].sendNum}}份</span>
+                ></el-input>份
+                <span>(已发{{params.awardList[index].sendNum > 0 ? params.awardList[index].sendNum : 0}}份)</span>
                 <span>{{$t('payReward.giftTips2')}}</span>
                 <div class="tips">{{$t('payReward.giftTips3')}}</div>
               </div>
@@ -776,7 +795,7 @@ export default {
         startTime: '',
         endTime: '',
         actFirst: '', //  优先级
-        goodsAreaType: 0, // 商品范围类型
+        goodsAreaType: 1, // 商品范围类型
         goodsIds: '', // 商品id
         goodsCatIds: '', // 商品平台分类
         goodsSortIds: '', // 商品商家分类
@@ -814,7 +833,7 @@ export default {
         'keepDays': '',
         'accountNumber': '',
         'scoreNumber': '',
-        'awardNumber': '',
+        'awardNumber': 0,
         'ordinaryCoupon': [],
         'splitCoupon': [],
         'splitCouponIdList': [],
@@ -1013,7 +1032,11 @@ export default {
       console.log(data, 'get data')
       // 添加商品id
       if (this.userDialogFlag === '1') {
-        this.choosingGoodsDateFlag1 = data
+        if (data.length > 0) {
+          this.choosingGoodsDateFlag1 = data
+        } else {
+          this.choosingGoodsDateFlag1 = null
+        }
         this.noneBlockDiscArr[0].num = data.length
         console.log(this.noneBlockDiscArr[0].num, 'num length')
       }
@@ -1052,13 +1075,21 @@ export default {
         // 折扣
         if (this.AtreeType === 1) {
           // 商家分类
-          this.shopCategoryIds = data
+          if (data.length > 0) {
+            this.shopCategoryIds = data
+          } else {
+            this.shopCategoryIds = null
+          }
           this.noneBlockDiscArr[1].num = data.length
           console.log(this.noneBlockDiscArr)
         }
         if (this.AtreeType === 2) {
           // 平台分类
-          this.platformCategoryIds = data
+          if (data.length > 0) {
+            this.platformCategoryIds = data
+          } else {
+            this.platformCategoryIds = null
+          }
           this.noneBlockDiscArr[2].num = data.length
         }
       }
@@ -1166,9 +1197,9 @@ export default {
             this.params.endTime = this.dateInterval[1]
           }
           let obj = {
-            goodsIds: this.goodsIds === null ? null : String(this.choosingGoodsDateFlag1), // 商品ID
-            goodsCatIds: this.goodsCatIds === null ? null : String(this.platformCategoryIds), // 商家平台分类
-            goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+            goodsIds: this.choosingGoodsDateFlag1 === null ? null : String(this.choosingGoodsDateFlag1), // 商品ID
+            goodsCatIds: this.platformCategoryIds === null ? null : String(this.platformCategoryIds), // 商家平台分类
+            goodsSortIds: this.shopCategoryIds === null ? null : String(this.shopCategoryIds) // 商品商家分类
           }
           let requestParams = Object.assign(this.params, obj)
           console.log(this.params.id, 'this.params.id', this.requestParams, 'this.requestParams', this.params, 'this.params')
@@ -1563,6 +1594,7 @@ export default {
               .coupon_center_number {
                 height: 20px;
                 color: #fbb;
+                font-size: 12px;
               }
               .coupon_list_bottom {
                 height: 24px;

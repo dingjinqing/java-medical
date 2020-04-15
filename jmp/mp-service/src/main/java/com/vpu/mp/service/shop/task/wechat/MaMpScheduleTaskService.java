@@ -128,7 +128,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 					{ "", "#173177" } };
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.COUPON_EXPIRE).data(data).build())
-					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.EXPIRED_MEMBER)
 					.build();
 			logger().info("准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
@@ -186,7 +186,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			RabbitMessageParam param = RabbitMessageParam.builder()
 					.mpTemplateData(
 							MpTemplateData.builder().config(MpTemplateConfig.APPOINTMENT_REMINDER).data(data).build())
-					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.MP_TEMPLE_TYPE)
+					.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.BOOKING_EXPIRED)
 					.build();
 			logger().info("预约服务提前一小时提醒准备发");
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
@@ -259,7 +259,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 						.mpTemplateData(
 								MpTemplateData.builder().config(MpTemplateConfig.PAYMENT_REMINDER).data(data).build())
 						.page(page).shopId(getShopId()).userIdList(userIdList)
-						.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+						.type(RabbitParamConstant.Type.ORDER_NO_PAY).build();
 				logger().info("尾款未支付前" + hours + "小时提醒");
 				saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(),
 						TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -398,7 +398,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 				.mpTemplateData(
 						MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList)
-				.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+				.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 		saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		return remark;
 	}
@@ -466,7 +466,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 						.mpTemplateData(
 								MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
 						.page(page).shopId(getShopId()).userIdList(userIdList)
-						.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+						.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 				saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 				return null;
 			}
@@ -510,7 +510,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 					.mpTemplateData(
 							MpTemplateData.builder().config(MpTemplateConfig.ACTIVITY_CONFIG).data(data).build())
 					.page(page).shopId(getShopId()).userIdList(userIdList)
-					.type(RabbitParamConstant.Type.MP_TEMPLE_TYPE).build();
+					.type(RabbitParamConstant.Type.LOTTERY_TEAM).build();
 			saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
 		return content;

@@ -89,6 +89,7 @@ public class GoodsConstant {
      */
     public static final Byte OFF_SALE = 0;
 
+
     /**
      * 加入仓库 设置saleType使用
      */

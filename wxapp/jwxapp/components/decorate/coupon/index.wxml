@@ -9,9 +9,11 @@
             <view class="coupon_list_top" wx:if="{{item.act_code=='discount'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
               <text class="text">{{item.denomination}}</text>{{i18n.$t(localePack,"pages.coupon.amount")}}
             </view>
-            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher' || item.act_code=='random'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
-              ￥
-              <text class="text">{{item.denomination}}</text>
+            <view class="coupon_list_top" wx:if="{{item.act_code=='voucher'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
+              ￥<text class="text">{{item.denomination}}</text>
+            </view>
+            <view class="coupon_list_top" wx:if="{{item.act_code=='random'}}" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">
+              ￥<text class="text">{{item.randomMax}}<text style="font-size:22rpx;">最高</text></text>
             </view>
             <view class="coupon_list_center">
               <view class="coupon_center_limit" style="color:{{ item.status == 1  || item.status == -1 ? comColor : '#ccc'}}">{{item.consume_text}}</view>

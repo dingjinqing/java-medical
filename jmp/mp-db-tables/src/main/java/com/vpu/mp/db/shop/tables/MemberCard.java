@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 339050332;
+    private static final long serialVersionUID = -1565160064;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -367,6 +367,31 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      * The column <code>jmini_shop_489258.b2c_member_card.custom_options</code>. 自定义激活信息配置
      */
     public final TableField<MemberCardRecord, String> CUSTOM_OPTIONS = createField("custom_options", org.jooq.impl.SQLDataType.CLOB, this, "自定义激活信息配置");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.card_tag</code>. 是否开启给领卡用户打标签0否，1是
+     */
+    public final TableField<MemberCardRecord, Byte> CARD_TAG = createField("card_tag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否开启给领卡用户打标签0否，1是");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.card_tag_id</code>. 领卡打标签id
+     */
+    public final TableField<MemberCardRecord, String> CARD_TAG_ID = createField("card_tag_id", org.jooq.impl.SQLDataType.VARCHAR(20), this, "领卡打标签id");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.card_give_away</code>. 0:不可转赠，1:可以转赠
+     */
+    public final TableField<MemberCardRecord, Byte> CARD_GIVE_AWAY = createField("card_give_away", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:不可转赠，1:可以转赠");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.card_give_continue</code>. 0:不可继续转赠，1:可以继续转赠
+     */
+    public final TableField<MemberCardRecord, Byte> CARD_GIVE_CONTINUE = createField("card_give_continue", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:不可继续转赠，1:可以继续转赠");
+
+    /**
+     * The column <code>jmini_shop_489258.b2c_member_card.most_give_away</code>. 最多可转赠多少次 0不限制
+     */
+    public final TableField<MemberCardRecord, Integer> MOST_GIVE_AWAY = createField("most_give_away", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最多可转赠多少次 0不限制");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference

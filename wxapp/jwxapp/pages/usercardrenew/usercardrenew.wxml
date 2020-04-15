@@ -84,7 +84,7 @@
 			</block>
 		</view>
 		<!--会员卡余额支付-->
-		<view class="card_item_title" wx:if="{{user_money.member_card_money > 0}}">
+		<view class="card_item_title" wx:if="{{user_money.member_card_money > 0 &&cardInfo.renewNum>0 &&cardInfo.renewType == 0}}">
 			<block>
 				<view class='yue_pay'>
 					<view>会员卡余额支付:</view>
@@ -107,7 +107,7 @@
 			</block>
 		</view>
 		<!--余额支付-->
-		<view class='card_item_title'>
+		<view class='card_item_title' wx:if="{{ user_money.account > 0&&cardInfo.renewNum>0&&cardInfo.renewType == 0}}">
 			<view class="payContainer">
 				<view>余额支付:</view>
 				<view class="payRight">
