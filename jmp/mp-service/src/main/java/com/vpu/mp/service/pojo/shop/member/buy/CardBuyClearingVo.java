@@ -114,6 +114,10 @@ public class CardBuyClearingVo {
          * 0:固定日期 1：自领取之日起 2:不过期
          */
         private Byte expireType;
+        /**
+         * 0：不用激活，1：需要激活
+         */
+        private Byte activation;
         private String startTime;
         private String endTime;
 

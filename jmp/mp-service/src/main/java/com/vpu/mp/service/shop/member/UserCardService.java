@@ -26,10 +26,7 @@ import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardParamBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingVo;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayVo;
+import com.vpu.mp.service.pojo.shop.member.buy.*;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.*;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
@@ -2371,7 +2368,7 @@ public class UserCardService extends ShopBaseService {
 	 * @param param
 	 * @return
 	 */
-	public WebPayVo buyCardCreateOrder(CardToPayParam param) {
+	public WebPayVo buyCardCreateOrder(CardToPayParam param) throws MpException {
 		logger().info("会员卡创建订单-开始");
 		UserRecord user = memberService.getUserRecordById(param.getUser().getUserId());
 		MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
@@ -2386,7 +2383,8 @@ public class UserCardService extends ShopBaseService {
 		WebPayVo vo = new WebPayVo();
 		if(param.getMoneyPaid().compareTo(BigDecimal.ZERO) <= 0){
 			logger().info("订单已支付");
-			this.finishPayCallback(insertVirtualOrderRecord,null);
+			String s = this.finishPayCallback(insertVirtualOrderRecord, null);
+			vo.setCardSn(s);
 		}else {
 			//微信支付接口
 			try {
@@ -2472,10 +2470,10 @@ public class UserCardService extends ShopBaseService {
 	/**
 	 * 支付回调
 	 */
-	public void finishPayCallback(VirtualOrderRecord orderRecord, PaymentRecordRecord paymentRecord){
+	public String finishPayCallback(VirtualOrderRecord orderRecord, PaymentRecordRecord paymentRecord) throws MpException {
 		logger().info("会员卡订单-支付完成(回调)-开始");
 		if(orderRecord.getOrderStatus().equals(ORDER_STATUS_FINISHED)){
-			return;
+			return null;
 		}
 		orderRecord.setOrderStatus(ORDER_STATUS_FINISHED);
 		orderRecord.setPaySn(paymentRecord==null?"":paymentRecord.getPaySn());
@@ -2514,31 +2512,12 @@ public class UserCardService extends ShopBaseService {
 				e.printStackTrace();
 			}
 		}
-		if(BigDecimalUtil.greaterThanZero(orderRecord.getMemberCardBalance()) && StringUtil.isNotBlank(orderRecord.getCardNo())){
-			CardConsumpData cardConsumpData = new CardConsumpData()
-					.setUserId(orderRecord.getUserId())
-					// 会员卡更新金额，区分正负号，这里是负号，意为扣减
-					.setMoney(orderRecord.getMemberCardBalance().negate())
-					.setCardNo(orderRecord.getCardNo())
-					.setReason(orderRecord.getOrderSn())
-					// 消费类型 :只支持普通卡0
-					.setType(MCARD_TP_NORMAL);
-			TradeOptParam tradeOpt = TradeOptParam
-					.builder()
-					.tradeFlow(TYPE_CRASH_MEMBER_CARD_PAY.val())
-					.tradeFlow(TRADE_FLOW_OUT.val())
-					.build();
-			try {
-				memberService.card.updateMemberCardAccount(cardConsumpData,tradeOpt);
-			} catch (MpException e) {
-				e.printStackTrace();
-			}
-		}
-		//发券
+		List<String> strings = addUserCard(orderRecord.getUserId(), orderRecord.getVirtualGoodsId());
 		List<VirtualOrderRecord> list = new ArrayList<>();
 		list.add(orderRecord);
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
 		logger().info("会员卡订单-支付完成(回调)-结束");
+		return strings.get(0);
 	}
 
 }
