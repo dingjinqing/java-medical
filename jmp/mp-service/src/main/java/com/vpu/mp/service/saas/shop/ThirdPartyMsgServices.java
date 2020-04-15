@@ -111,7 +111,7 @@ public class ThirdPartyMsgServices extends MainBaseService {
 		String formatMoney = df1.format(money);
 		UserRecord userRecord = saas.getShopApp(order.getShopId()).user.getUserByUserId(order.getUserId());
 		String userName = userRecord.getUsername();
-		String page = "pages/orderinfo/orderinfo?order_sn=" + order.getOrderSn();
+		String page = "pages/orderinfo/orderinfo?orderSn=" + order.getOrderSn();
 		String[][] data = new String[][] { { "店铺新订单成交通知", "#173177" }, { formatMoney, "#173177" },
 				{ goodsName, "#173177" }, { order.getOrderSn(), "#173177" }, { userName, "#173177" } };
 		RabbitMessageParam sendParam = RabbitMessageParam.builder()
