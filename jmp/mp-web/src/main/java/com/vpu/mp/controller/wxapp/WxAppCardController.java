@@ -5,7 +5,6 @@ import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.pojo.shop.member.account.*;
 import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
 import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
-import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -209,21 +208,10 @@ public class WxAppCardController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/api/wxapp/card/buy/pay")
-	public JsonResult toBuyCard(@RequestBody @Validated CardToPayParam payParam){
+	public JsonResult toBuyCard(@RequestBody @Validated CardToPayParam payParam) throws MpException {
 		WxAppSessionUser user = wxAppAuth.user();
 		payParam.setUser(user);
 		payParam.setClientIp(RequestUtil.getIp(request));
     	return success(shop().userCard.buyCardCreateOrder(payParam));
-	}
-
-	/**
-	 * 会员订单检查
-	 * @return
-	 */
-	@PostMapping("/api/wxapp/card/buy/checkout")
-	public JsonResult checkoutCardOrder(@RequestBody @Validated CardToPayParam payParam){
-
-
-		return success();
 	}
 }
