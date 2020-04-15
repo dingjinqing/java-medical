@@ -20,28 +20,29 @@
               class="morelength"
               v-model="form.actName"
             ></el-input>
-            <span style="margin-left: 10px">{{$t('promoteList.actRules')}}</span>
+            <span
+              style="margin-left: 10px;color: #5a8bff; cursor: pointer;"
+              @click="ruleHandler"
+            >{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.actValidityPeriod')"
-            prop=""
-            required
+            prop="validity"
           >
+            <el-date-picker
+              :disabled="isEditFlag"
+              v-model="form.validity"
+              type="datetimerange"
+              :range-separator="$t('promoteList.to')"
+              :start-placeholder="$t('promoteList.startTime')"
+              :end-placeholder="$t('promoteList.endTime')"
+              :default-time="['00:00:00','23:59:59']"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              size="small"
+            >
+            </el-date-picker>
 
-<!--            <el-date-picker-->
-<!--              v-model="form.timeInterval"-->
-<!--              type="datetimerange"-->
-<!--              size="small"-->
-<!--              range-separator="至"-->
-<!--              start-placeholder="开始时间"-->
-<!--              end-placeholder="结束时间"-->
-<!--              format="yyyy-MM-dd HH:mm:ss"-->
-<!--              value-format="yyyy-MM-dd HH:mm:ss"-->
-<!--              :default-time="['00:00:00', '23:59:59']"-->
-<!--              :disabled="isEditFlag"-->
-<!--            ></el-date-picker>-->
-
-            <section style="display: flex">
+            <!-- <section style="display: flex">
               <el-form-item prop="startTime">
                 <el-date-picker
                   v-model="form.startTime"
@@ -67,7 +68,7 @@
                 >
                 </el-date-picker>
               </el-form-item>
-            </section>
+            </section> -->
           </el-form-item>
           <el-form-item
             :label="$t('promoteList.rewardType')"
@@ -346,22 +347,23 @@
             >{{$t('promoteList.authorizeYes')}}</el-radio>
             <span class="gray">{{$t('promoteList.promoteConditionText')}}</span>
           </el-form-item>
-<!--  助力次数限制-->
+          <!--  助力次数限制-->
           <el-form-item
             label="助力次数限制"
             prop="promoteTimesPerDay"
           >
             <div style="display:flex">
-              <div >单个用户每天最多可帮忙助力</div>
+              <div>单个用户每天最多可帮忙助力</div>
               <el-input
                 size="small"
                 style="margin-right: 10px"
                 v-model="form.promoteTimesPerDay"
               ></el-input>
-              <div >{{$t('promoteList.time')}}</div>
+              <div>{{$t('promoteList.time')}}</div>
               <div
                 style="margin-left:12px"
-                class="gray">默认为0，表示不限制</div>
+                class="gray"
+              >默认为0，表示不限制</div>
             </div>
           </el-form-item>
 
@@ -607,7 +609,7 @@
 <script>
 import { mapActions } from 'vuex'
 import choosingGoods from '@/components/admin/choosingGoods'
-import {addActive, selectOneInfo, updateInfo, getGoodsInfo} from '@/api/admin/marketManage/friendHelp.js'
+import { addActive, selectOneInfo, updateInfo, getGoodsInfo } from '@/api/admin/marketManage/friendHelp.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 import ImageDalog from '@/components/admin/imageDalog'
 export default {
@@ -659,6 +661,7 @@ export default {
         },
         useDiscount: '0',
         useScore: '1',
+        validity: '',
         startTime: '',
         endTime: '',
         ruleForm: {},
@@ -741,11 +744,8 @@ export default {
         actName: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' }
         ],
-        startTime: [
-          { required: true, message: '开始时间不能为空', trigger: 'change' }
-        ],
-        endTime: [
-          { required: true, message: '结束时间不能为空', trigger: 'change' }
+        validity: [
+          { required: true, message: '请填写有效期', trigger: 'change' }
         ],
         rewardDuration: [
           { required: true, message: '奖励有效期不能为空', trigger: 'blur' }
@@ -805,6 +805,7 @@ export default {
         this.form.actName = res.content.actName
         this.form.startTime = res.content.startTime
         this.form.endTime = res.content.endTime
+        this.form.validity = [res.content.startTime, res.content.endTime]
         this.form.rewardType = res.content.rewardType.toString()
         this.form.rewardSet = JSON.parse(res.content.rewardContent)
         this.form.rewardDuration = res.content.rewardDuration
@@ -906,14 +907,11 @@ export default {
         console.log('rewardSet:', this.form.rewardSet)
         console.log('rewardContent:', this.form.rewardContent)
       }
-      if (this.form.endTime !== '') {
-        this.form.endTime = this.form.endTime.toString().substring(0, 11) + '23:59:59'
-      }
       let addParam = {
         'id': this.promoteId,
         'actName': this.form.actName,
-        'startTime': this.form.startTime,
-        'endTime': this.form.endTime,
+        'startTime': this.form.validity[0],
+        'endTime': this.form.validity[1],
         'rewardType': this.form.rewardType,
         'fpRewardContent': this.form.rewardSet,
         'rewardDuration': this.form.rewardDuration,
@@ -945,7 +943,7 @@ export default {
             updateInfo(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert(this.$t('promoteList.successUpdate'))
+                this.$message.success(this.$t('promoteList.successUpdate'))
                 this.$router.push({
                   name: 'promote'
                 })
@@ -958,7 +956,7 @@ export default {
             addActive(addParam).then(res => {
               console.log(res)
               if (res.error === 0) {
-                alert(this.$t('promoteList.successAdd'))
+                this.$message.success(this.$t('promoteList.successAdd'))
                 this.$router.push({
                   name: 'promote'
                 })
@@ -1046,6 +1044,11 @@ export default {
         this.coupon_duplicate = data
         console.log(this.coupon_duplicate)
       }
+    },
+
+    // 查看活动规则
+    ruleHandler () {
+      window.open('http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&fromuid=1')
     }
   }
 }
@@ -1117,6 +1120,7 @@ export default {
       padding: 10px 0;
       background: #fff;
       text-align: center;
+      z-index: 1;
     }
   }
 }
