@@ -157,7 +157,10 @@
               </div>
             </el-form-item>
 
-            <el-form-item :label="$t('payReward.joinConstraint')">
+            <el-form-item
+              :label="$t('payReward.joinConstraint')"
+              required
+            >
               <div style="display:flex">
                 <span>{{$t('payReward.everyJoin')}}</span>
                 <el-form-item prop="limitTimes">
@@ -1029,7 +1032,11 @@ export default {
       console.log(data, 'get data')
       // 添加商品id
       if (this.userDialogFlag === '1') {
-        this.choosingGoodsDateFlag1 = data
+        if (data.length > 0) {
+          this.choosingGoodsDateFlag1 = data
+        } else {
+          this.choosingGoodsDateFlag1 = null
+        }
         this.noneBlockDiscArr[0].num = data.length
         console.log(this.noneBlockDiscArr[0].num, 'num length')
       }
@@ -1068,13 +1075,21 @@ export default {
         // 折扣
         if (this.AtreeType === 1) {
           // 商家分类
-          this.shopCategoryIds = data
+          if (data.length > 0) {
+            this.shopCategoryIds = data
+          } else {
+            this.shopCategoryIds = null
+          }
           this.noneBlockDiscArr[1].num = data.length
           console.log(this.noneBlockDiscArr)
         }
         if (this.AtreeType === 2) {
           // 平台分类
-          this.platformCategoryIds = data
+          if (data.length > 0) {
+            this.platformCategoryIds = data
+          } else {
+            this.platformCategoryIds = null
+          }
           this.noneBlockDiscArr[2].num = data.length
         }
       }
@@ -1182,9 +1197,9 @@ export default {
             this.params.endTime = this.dateInterval[1]
           }
           let obj = {
-            goodsIds: this.goodsIds === null ? null : String(this.choosingGoodsDateFlag1), // 商品ID
-            goodsCatIds: this.goodsCatIds === null ? null : String(this.platformCategoryIds), // 商家平台分类
-            goodsSortIds: String(this.shopCategoryIds) // 商品商家分类
+            goodsIds: this.choosingGoodsDateFlag1 === null ? null : String(this.choosingGoodsDateFlag1), // 商品ID
+            goodsCatIds: this.platformCategoryIds === null ? null : String(this.platformCategoryIds), // 商家平台分类
+            goodsSortIds: this.shopCategoryIds === null ? null : String(this.shopCategoryIds) // 商品商家分类
           }
           let requestParams = Object.assign(this.params, obj)
           console.log(this.params.id, 'this.params.id', this.requestParams, 'this.requestParams', this.params, 'this.params')

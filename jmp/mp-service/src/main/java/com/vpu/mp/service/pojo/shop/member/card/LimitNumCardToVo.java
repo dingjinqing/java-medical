@@ -1,21 +1,24 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_CRASH;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.BUY_BY_SCORE;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_ALL;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_PART;
-import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_STP_BAN;
-
-import java.math.BigDecimal;
-import java.util.List;
 /**
 * @author 黄壮壮
 * @Date: 2019年8月7日
@@ -56,13 +59,35 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	private Byte payType;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private BigDecimal payFee;
-	/**购买类型0 为 现金购买金额 */
+	/**	
+	 * 	购买类型0 为 现金购买金额 
+	 */
 	private BigDecimal payMoney;
-	/**购买类型1 积分购买 */
+	/**	
+	 * 	购买类型1 积分购买
+	 */
 	private BigDecimal payScore;
 	
-	/** 领取限制 填0为不限制 */
+	/**	领取限制 填0为不限制 */
 	private Integer limit;
+	
+	/**
+	 * 自定义激活项
+	 */
+	protected List<CardCustomAction> customAction;
+	
+	/**
+	 * 	同步打标签
+	 */
+	@JsonProperty("cardTag")
+	private CardTag myCardTag;
+	
+	/**
+	 * 	会员卡转赠数据
+	 */
+	private CardGive cardGive;
+	
+	
 	
 	/**
 	 * 处理策略

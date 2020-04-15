@@ -68,11 +68,11 @@ export const cn = {
     }
   ],
   level_two_DataList_two: [
+    // {
+    //   flagindex: null, title: '平台分类'
+    // },
     {
-      flagindex: null, title: '平台分类'
-    },
-    {
-      flagindex: '', title: '商家分类'
+      flagindex: null, title: '商家分类'
     },
     {
       flagindex: '', title: '商品品牌'

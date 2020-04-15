@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -597187828;
+    private static final long serialVersionUID = 657036721;
 
     /**
      * Setter for <code>jmini_shop_489258.b2c_member_card.id</code>.
@@ -898,6 +898,76 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (String) get(61);
     }
 
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.card_tag</code>. 是否开启给领卡用户打标签0否，1是
+     */
+    public void setCardTag(Byte value) {
+        set(62, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.card_tag</code>. 是否开启给领卡用户打标签0否，1是
+     */
+    public Byte getCardTag() {
+        return (Byte) get(62);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.card_tag_id</code>. 领卡打标签id
+     */
+    public void setCardTagId(String value) {
+        set(63, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.card_tag_id</code>. 领卡打标签id
+     */
+    public String getCardTagId() {
+        return (String) get(63);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.card_give_away</code>. 0:不可转赠，1:可以转赠
+     */
+    public void setCardGiveAway(Byte value) {
+        set(64, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.card_give_away</code>. 0:不可转赠，1:可以转赠
+     */
+    public Byte getCardGiveAway() {
+        return (Byte) get(64);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.card_give_continue</code>. 0:不可继续转赠，1:可以继续转赠
+     */
+    public void setCardGiveContinue(Byte value) {
+        set(65, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.card_give_continue</code>. 0:不可继续转赠，1:可以继续转赠
+     */
+    public Byte getCardGiveContinue() {
+        return (Byte) get(65);
+    }
+
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.most_give_away</code>. 最多可转赠多少次 0不限制
+     */
+    public void setMostGiveAway(Integer value) {
+        set(66, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.most_give_away</code>. 最多可转赠多少次 0不限制
+     */
+    public Integer getMostGiveAway() {
+        return (Integer) get(66);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -924,7 +994,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType, Byte cannotUseCoupon, Byte customRightsFlag, String customOptions) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType, Byte cannotUseCoupon, Byte customRightsFlag, String customOptions, Byte cardTag, String cardTagId, Byte cardGiveAway, Byte cardGiveContinue, Integer mostGiveAway) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -989,5 +1059,10 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(59, cannotUseCoupon);
         set(60, customRightsFlag);
         set(61, customOptions);
+        set(62, cardTag);
+        set(63, cardTagId);
+        set(64, cardGiveAway);
+        set(65, cardGiveContinue);
+        set(66, mostGiveAway);
     }
 }
