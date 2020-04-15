@@ -71,8 +71,9 @@ public class WxAppUserCardVo extends UserCardParam {
 	public void calcRenewal() {
 		if(isPermanent()) {
 			setRenewal(NON_RENEWAL);
+		}else {
+			setRenewal(AVAILABLE_RENEWAL);
 		}
-		setRenewal(AVAILABLE_RENEWAL);
 	}
 	public void calcUsageTime() {
 		if(getUserCardCreateTime()!=null) {

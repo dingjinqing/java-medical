@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -336,8 +337,15 @@ public class CardCreateService extends ShopBaseService{
 		if(cardRenew == null) {
 			return;
 		}
+		
+		Byte renewMemberCard = cardRenew.getRenewMemberCard();
+		if(CardUtil.isCardTimeForever(param.getExpiredType())) {
+			//	永久有效为不可续费
+			renewMemberCard = NumberUtils.BYTE_ZERO;
+		}
+		
 		cardBuilder
-			.renewMemberCard(cardRenew.getRenewMemberCard()) // 是否可续费
+			.renewMemberCard(renewMemberCard) // 是否可续费
 			.renewType(cardRenew.getRenewType()) // 续费类型
 			.renewNum(cardRenew.getRenewNum())	// 续费数值
 			.renewTime(cardRenew.getRenewTime()); // 续费时长
