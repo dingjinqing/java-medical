@@ -610,10 +610,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     public List<OrderGoodsBo> initOrderGoods(OrderBeforeParam param, List<Goods> goods, Integer userId, String memberCardNo, OrderCartProductBo uniteMarkeingtBo, Integer storeId) throws MpException {
         logger().info("initOrderGoods开始");
-        // 会员卡类型
+        // TODO 会员卡类型校验（限次卡特殊处理）
         Byte cardType = StringUtil.isBlank(memberCardNo) ? null : userCard.getCardType(memberCardNo);
-
-        //
         List<OrderGoodsBo> boList = new ArrayList<>(goods.size());
         for (Goods temp : goods) {
             //TODO 预售商品，不支持现购买 && $card_type!=1 && !$storeId
@@ -623,9 +621,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             //TODO 扫码构改规格信息(前面查规格时已经用门店规格信息覆盖商品规格信息)
             UniteMarkeingtRecalculateBo calculateResult = calculate.uniteMarkeingtRecalculate(temp, uniteMarkeingtBo.get(temp.getProductId()),userId);
             logger().info("calculateResult:{}", calculateResult);
+            //数量限制
             goodsNumLimit(temp);
-            //非加价购 改价
-            if(Boolean.TRUE) {
+            //非加价购改价
+            if(!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())) {
                 temp.setProductPrice(calculateResult.getPrice());
                 temp.setGoodsPriceAction(calculateResult.getActivityType());
             }
@@ -661,6 +660,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     private void goodsNumLimit(Goods temp) throws MpException {
         //TODO 非加价购 && 非限次卡
+        if(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(temp.getCartType())) {
+            return;
+        }
         if (!Boolean.TRUE.equals(temp.getIsAlreadylimitNum())) {
             if (temp.getGoodsInfo().getLimitBuyNum() > 0 && temp.getGoodsNumber() < temp.getGoodsInfo().getLimitBuyNum()) {
                 throw new MpException(JsonResultCode.CODE_ORDER_GOODS_LIMIT_MIN, "最小限购", temp.getGoodsInfo().getGoodsName(), temp.getGoodsInfo().getLimitBuyNum().toString());
