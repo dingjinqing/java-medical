@@ -6,7 +6,7 @@
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
-          <div class="rightTile">{{ $t('memberCard.basicSetting') }}</div>
+          <div class="rightTitle">{{ $t('memberCard.basicSetting') }}</div>
           <cardAvailableCfg
             :val="cardAvailableCfgData"
             @input="initCardAvailableCfgData"
@@ -16,6 +16,14 @@
             @input="initCardNameAndBg"
             ref="cardNameAndBg"
           ></cardNameAndBg>
+
+          <cardUsageCfg
+            :val="cardUsageCfgData"
+            @input="initCardUsageCfgData"
+          ></cardUsageCfg>
+        </div>
+        <div class="member-rights">
+          <div class="rightTitle">会员权益</div>
           <scoreDiscount
             :val="disCountData"
             @input="initDiscountData"
@@ -30,10 +38,14 @@
             :val="ownGoodsData"
             @input="initOwnGoodsData"
           ></ownGoods>
-          <cardUsageCfg
-            :val="cardUsageCfgData"
-            @input="initCardUsageCfgData"
-          ></cardUsageCfg>
+          <!-- 包邮 -->
+          <cardFreeshipCfg
+            v-bind.sync="freeship"
+            ref="freeship">
+          </cardFreeshipCfg>
+
+          <!-- 自定义权益 -->
+          <cardCustomRights v-bind.sync="customRights" />
         </div>
         <div class="rightContainerMiddle">
           <div class="rightTitle">{{$t('memberCard.gradeSetting')}}</div>
@@ -80,6 +92,9 @@ export default {
     ownGoods: () => import(
       './subcomponents/ownGoods'
     ),
+    cardFreeshipCfg: () => import(
+      './subcomponents/cardFreeshipCfg'
+    ),
     cardScoreCfg: () => import(
       './subcomponents/cardScoreCfg'
     ),
@@ -94,6 +109,9 @@ export default {
     ),
     cardAvailableCfg: () => import(
       './subcomponents/cardAvailableCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   data () {
@@ -162,7 +180,19 @@ export default {
         activation: '0',
         activationCfgBox: [],
         examine: '0',
+        customAction: [],
         valid: false
+      },
+      // 包邮信息
+      freeship: {
+        num: null,
+        type: null,
+        valid: false
+      },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: []
       },
       sampleCardData: {
         cardType: cardTypeTmp,
@@ -245,6 +275,17 @@ export default {
       this.ownGoodsData.choosedPlatformId = data.ownPlatFormCategoryIds
       this.ownGoodsData.choosedBrandId = data.ownBrandId
 
+      // 包邮信息
+      if (data.freeship) {
+        this.freeship = data.freeship
+      }
+      this.freeship.valid = false
+
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
+      }
+
       // 适用须知
       this.cardUsageCfgData.desc = data.desc
       this.cardUsageCfgData.mobile = data.mobile
@@ -258,6 +299,17 @@ export default {
       this.cardActiveCfgData.activation = String(data.activation)
       this.cardActiveCfgData.activationCfgBox = data.activationCfgBox ? data.activationCfgBox : []
       this.cardActiveCfgData.examine = String(data.examine)
+      // 自定义激活数据
+      let action = data.customAction.map(item => {
+        return {
+          type: item.custom_type,
+          title: item.custom_title,
+          content: item.option_arr,
+          conditionChecked: Boolean(item.option_ver),
+          checked: Boolean(item.is_checked)
+        }
+      })
+      this.cardActiveCfgData.customAction = action
     },
     isValidValue (data) {
       return data !== null && data !== undefined
@@ -312,6 +364,7 @@ export default {
       this.$refs.cardGradeCfgData.$emit('checkRule')
       this.$refs.cardActiveCfgData.$emit('checkRule')
       this.$refs.cardScoreCfgData.$emit('checkRule')
+      this.$refs.freeship.$emit('checkRule')
       // 权益判断
       if (this.cardScoreCfgData.powerScore || this.ownGoodsData.powerOwnGoods || this.disCountData.powerDiscount) {
 
@@ -319,7 +372,8 @@ export default {
         this.$message.warning('至少选择一项会员权益')
       }
 
-      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid && this.cardActiveCfgData.valid && this.cardScoreCfgData.valid) {
+      if (this.cardNameAndBg.valid && this.disCountData.valid && this.cardGradeCfgData.valid &&
+            this.cardActiveCfgData.valid && this.cardScoreCfgData.valid && this.freeship.valid) {
         // 保存数据
         this.prepareCardData()
       }
@@ -344,6 +398,7 @@ export default {
     },
     prepareCardData () {
       this.dealWithDynamicArrayData()
+      this.dealWithCustomAction()
       let pullPath = this.$imageHost + '/'
       if (this.cardNameAndBg.bgImg) {
         this.cardNameAndBg.bgImg = this.cardNameAndBg.bgImg.replace(pullPath, '')
@@ -377,13 +432,16 @@ export default {
           'perGoodsMoney': this.cardScoreCfgData.shopingInputLeftM,
           'perGetScores': this.cardScoreCfgData.shopingInputRightM
         },
+        'freeship': this.freeship,
+        'customRights': this.customRights,
         'desc': this.cardUsageCfgData.desc,
         'mobile': this.cardUsageCfgData.mobile,
         'gradeConditionJson': { gradeScore: this.cardGradeCfgData.gradeScore, gradeMoney: this.cardGradeCfgData.gradeCrash },
         'grade': this.cardGradeCfgData.gradeValue,
         'activation': this.cardActiveCfgData.activation,
         'activationCfgBox': this.cardActiveCfgData.activationCfgBox,
-        'examine': this.cardActiveCfgData.examine
+        'examine': this.cardActiveCfgData.examine,
+        'customAction': this.cardActiveCfgData.customAction
       }
       console.log(obj)
       if (this.cardId) {
@@ -440,6 +498,17 @@ export default {
         default:
           break
       }
+    },
+    dealWithCustomAction () {
+      // true/false 转换1/0
+      if (this.cardActiveCfgData.customAction) {
+        let tmp = this.cardActiveCfgData.customAction
+        this.cardActiveCfgData.customAction = tmp.map(item => {
+          item.checked = Number(item.checked)
+          item.conditionChecked = Number(item.conditionChecked)
+          return item
+        })
+      }
     }
   }
 
@@ -476,37 +545,23 @@ export default {
     width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
-    .rightContainerTop {
-      padding: 10px 1%;
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      margin-bottom: 20px;
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
-    .rightContainerMiddle {
-      padding: 10px 1%;
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      margin-bottom: 20px;
-      .rightTitle {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
+    .rightContainerTop,
+    .member-rights,
+    .rightContainerMiddle,
     .rightContainerBottom {
+      padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
-      padding: 10px 1%;
+      margin-bottom: 20px;
       .rightTitle {
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
         margin-bottom: 10px;
       }
+    }
+
+    .rightContainerBottom {
+      margin-bottom: 0px;
     }
   }
   .footer {

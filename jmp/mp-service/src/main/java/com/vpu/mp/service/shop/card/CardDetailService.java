@@ -122,6 +122,8 @@ public class CardDetailService extends ShopBaseService{
 		int numOfSendCard = memberCardSvc.getNumSendCardById(limitCard.getId());
 		limitCard.setHasSend(numOfSendCard);
 		changeCardJsonCfgToDetailType(limitCard);
+		// 自定义权益信息
+		limitCard.setCardCustomRights(getCustomRights(card));
 		// 自定义激活项
 		limitCard.setCustomAction(getCustomAction(card));
 		// 同步打标签
@@ -139,12 +141,18 @@ public class CardDetailService extends ShopBaseService{
 		RankCardToVo gradeCard = card.into(RankCardToVo.class);
 		assignPayOwnGoods(gradeCard);
 		gradeCard.changeJsonCfg();
+		// 包邮信息
+		gradeCard.setFreeship(getFreeshipData(card));
+		// 自定义权益信息
+		gradeCard.setCardCustomRights(getCustomRights(card));
+		// 自定义激活项
+		gradeCard.setCustomAction(getCustomAction(card));
 		return gradeCard;
 	}
 	
 	
 	/**
-	 * 装配专享商品
+	 * 	装配专享商品
 	 */
 	private void assignPayOwnGoods(BaseCardVo card) {
 		if (CardUtil.isNormalCard(card.getCardType()) ||
@@ -199,7 +207,7 @@ public class CardDetailService extends ShopBaseService{
 	 */
 	public CardCustomRights getCustomRights(MemberCardRecord card) {
 		logger().info("获取卡的自定义权益信息");
-		List<CardRight> customRightsAll = null;
+		List<CardRight> customRightsAll = new ArrayList<>();
 		CardCustomRights.RightSwitch flag = CardCustomRights.RightSwitch.off;
 		
 		if(!StringUtils.isBlank(card.getCustomRights())) {

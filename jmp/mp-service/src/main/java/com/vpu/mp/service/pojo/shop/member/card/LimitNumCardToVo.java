@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
@@ -86,6 +87,12 @@ public class LimitNumCardToVo extends LimitNumCardVo {
 	 * 	会员卡转赠数据
 	 */
 	private CardGive cardGive;
+	
+	/**
+	 * 	自定义权益信息
+	 */
+	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
+	protected CardCustomRights cardCustomRights;
 	
 	
 	

@@ -6,7 +6,7 @@
       </div>
       <div class="rightContainer">
         <div class="rightContainerTop">
-          <div class="rightTile">{{ $t('memberCard.basicSetting') }}</div>
+          <div class="rightTitle">{{ $t('memberCard.basicSetting') }}</div>
           <cardNameAndBg
             :val="cardNameAndBg"
             @input="initCardNameAndBg"
@@ -17,11 +17,6 @@
             @input="initCardEffectTimeData"
             ref="cardEffectTime"
           ></cardEffectTime>
-          <cardSuiteGoodsCfg
-            :val="cardSuiteGoodsCfgData"
-            @input="initCardSuiteGoodsCfgData"
-          >
-          </cardSuiteGoodsCfg>
           <cardStoreCfg
             :val="cardStoreCfgData"
             @input="initCardStoreCfgData"
@@ -31,6 +26,14 @@
             :val="cardUsageCfgData"
             @input="initCardUsageCfgData"
           ></cardUsageCfg>
+        </div>
+        <div class="member-rights">
+          <div class="rightTitle">会员权益</div>
+          <cardSuiteGoodsCfg
+            :val="cardSuiteGoodsCfgData"
+            @input="initCardSuiteGoodsCfgData" />
+          <!-- 自定义权益 -->
+          <cardCustomRights v-bind.sync="customRights" />
         </div>
         <div class="rightContainerBottom">
           <div class="rightTitle">{{ $t('memberCard.getSetting') }}</div>
@@ -108,6 +111,9 @@ export default {
     ),
     cardAdvanceCfg: () => import(
       './subcomponents/cardAdvanceCfg'
+    ),
+    cardCustomRights: () => import(
+      './subcomponents/cardCustomRights'
     )
   },
   computed: {
@@ -241,6 +247,11 @@ export default {
         cardStoreCfgData: cardStoreCfgDataTmp,
         cardUsageCfgData: cardUsageCfgDataTmp
       },
+      // 自定义权益
+      customRights: {
+        customRightsFlag: 'off',
+        customRightsAll: []
+      },
       cardTag: {
         cardTag: null,
         cardTagId: []
@@ -370,6 +381,10 @@ export default {
       }
       // 转赠卡
       this.cardGive = data.cardGive ? data.cardGive : this.cardGive
+      // 自定义权益
+      if (data.customRights) {
+        this.customRights = data.customRights
+      }
     },
     getMiniLog (item) {
       return 'backgroundImage: url(' + item.backGroundImgUrl + ')'
@@ -491,7 +506,8 @@ export default {
         'examine': this.cardActiveCfgData.examine,
         'customAction': this.cardActiveCfgData.customAction,
         'cardTag': this.cardTag,
-        'cardGive': this.cardGive
+        'cardGive': this.cardGive,
+        'customRights': this.customRights
       }
       if (this.cardId) {
         // 更新会员卡
@@ -597,21 +613,13 @@ export default {
     width: 70%;
     font-size: 13px;
     margin-bottom: 10px;
-    .rightContainerTop {
+    .rightContainerTop,
+    .member-rights,
+    .rightContainerBottom,
+    .advance-setting {
       padding: 10px 1%;
       background: #f8f8f8;
       border: 1px solid #e4e4e4;
-      margin-bottom: 20px;
-      .rightTile {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-      }
-    }
-    .rightContainerBottom {
-      background: #f8f8f8;
-      border: 1px solid #e4e4e4;
-      padding: 10px 1%;
       margin-bottom: 20px;
       .rightTitle {
         padding-bottom: 10px;
@@ -620,14 +628,7 @@ export default {
       }
     }
     .advance-setting{
-      background-color: #f8f8f8;
-      padding: 10px 1%;
-      border: 1px solid #e4e4e4;
-      .rightTitle{
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-      }
+       margin-bottom: 0px;
     }
   }
   .footer {
