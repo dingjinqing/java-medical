@@ -178,6 +178,8 @@ public class CardCreateService extends ShopBaseService{
 		initFreeshipCfg(param,cardBuilder);
 		// 自定义权益
 		initCustonRights(param,cardBuilder);
+		// 自定义激活数据
+		initCustomActions(param,cardBuilder);
 	}
 	
 	

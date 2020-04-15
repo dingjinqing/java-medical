@@ -1,9 +1,12 @@
 package com.vpu.mp.service.pojo.shop.member.card;
 import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MAPPER;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
@@ -96,6 +99,11 @@ public class RankCardToVo extends RankCardVo {
 	 */
 	@JsonProperty(value="customRights", access = JsonProperty.Access.READ_ONLY)
 	protected CardCustomRights cardCustomRights;
+	
+	/**
+	 * 	自定义激活项
+	 */
+	protected List<CardCustomAction> customAction;
 	
 	/**
 	 * 	处理策略

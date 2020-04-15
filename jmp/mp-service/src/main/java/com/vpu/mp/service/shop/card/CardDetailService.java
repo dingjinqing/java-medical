@@ -145,6 +145,8 @@ public class CardDetailService extends ShopBaseService{
 		gradeCard.setFreeship(getFreeshipData(card));
 		// 自定义权益信息
 		gradeCard.setCardCustomRights(getCustomRights(card));
+		// 自定义激活项
+		gradeCard.setCustomAction(getCustomAction(card));
 		return gradeCard;
 	}
 	
