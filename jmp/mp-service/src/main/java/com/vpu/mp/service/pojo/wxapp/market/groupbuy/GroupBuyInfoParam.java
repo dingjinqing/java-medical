@@ -19,4 +19,8 @@ public  class GroupBuyInfoParam {
      */
     @NotNull
     private Integer groupId;
+    /**
+     * 用户id
+     */
+    private Integer userId;
 }
