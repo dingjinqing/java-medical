@@ -101,6 +101,7 @@ public class QrCodeService extends ShopBaseService {
                 Map<String, String> fileInfo = this.imageService.getUpYunClient().getFileInfo(relativePath);
                 if (fileInfo != null) {
                     //有图片则直接返回图片全路径
+                    logger().warn("upYun图片已存在直接返回："+fullPath);
                     return fullPath;
                 }
             } catch (IOException | UpException e) {
