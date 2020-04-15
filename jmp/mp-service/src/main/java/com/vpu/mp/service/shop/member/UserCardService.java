@@ -2355,8 +2355,7 @@ public class UserCardService extends ShopBaseService {
 			into.setBgImg(domainConfig.imageUrl(into.getBgImg()));
 		}
 		if (BUY_BY_SCORE.equals(cardInfo.getPayType())){
-			BigDecimal divide = cardBuyVo.getOrderAmount().divide(BigDecimal.valueOf(cardBuyVo.getScoreProportion()),2,BigDecimal.ROUND_HALF_UP);
-			cardBuyVo.setOrderAmount(divide);
+			cardBuyVo.setOrderAmount(BigDecimal.ZERO);
 			cardBuyVo.setMoneyPaid(BigDecimal.ZERO);
             cardBuyVo.setOrderPayScore(cardInfo.getPayFee().intValue());
 		}else {
