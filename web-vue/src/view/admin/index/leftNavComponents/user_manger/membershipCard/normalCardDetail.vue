@@ -19,7 +19,7 @@
             ref="cardEffectTime"
           ></cardEffectTime>
           <!-- 续费开发 -->
-          <div v-if="Number(cardEffectTime.expiredType) !== 2">
+          <div v-show="Number(cardEffectTime.expiredType) !== 2">
             <cardRenewCfg
               v-bind.sync="cardRenew"
               ref="cardRenew" />
