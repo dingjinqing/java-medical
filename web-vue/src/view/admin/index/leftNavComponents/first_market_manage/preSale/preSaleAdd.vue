@@ -950,10 +950,27 @@ export default {
       this.param.startTime = val[0]
       this.param.endTime = val[1]
     },
+    // 验证数量
+    validateBuyNumber (rule, value, callback) {
+      console.log(value)
+      var re = /^([0]|[1-9][0-9]*)$/
+      if (!value) {
+        callback()
+      }
+      if (!re.test(value)) {
+        callback(new Error('请输入正确的数字'))
+      } else {
+        callback()
+      }
+    },
+    changTime (e) {
+      this.$refs.param.validateField('deliverType')
+    },
     // 保存
     add () {
       this.param.buyNumber = Number(this.param.buyNumber)
       this.param.first = Number(this.param.first)
+      this.param.deliverDays = Number(this.param.deliverDays)
       if (this.activityType === 0) {
         this.param.preTime = 0
       } else if (this.activityType === -1) {
