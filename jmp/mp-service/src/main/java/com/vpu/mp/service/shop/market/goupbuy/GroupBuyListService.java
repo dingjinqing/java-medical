@@ -82,6 +82,7 @@ public class GroupBuyListService extends ShopBaseService {
         SelectHavingStep<Record2<Integer, Integer>> table = db()
                 .select(GROUP_BUY_LIST.ACTIVITY_ID, DSL.count(GROUP_BUY_LIST.ID).as(GROUP_ORDER_NUM))
                 .from(GROUP_BUY_LIST)
+                .where(GROUP_BUY_LIST.STATUS.in(STATUS_SUCCESS,STATUS_DEFAULT_SUCCESS))
                 .groupBy(GROUP_BUY_LIST.ACTIVITY_ID);
 
         SelectConditionStep<? extends Record> records = db().select(

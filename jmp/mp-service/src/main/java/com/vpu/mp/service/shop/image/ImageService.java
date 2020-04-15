@@ -451,6 +451,10 @@ public class ImageService extends ShopBaseService implements ImageDefault {
         }
         ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray);
         BufferedImage bufferedImage = ImageIO.read(inputStream);
+        // 读取的不是合法图片
+        if (bufferedImage == null) {
+            return null;
+        }
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();
         if (width == 0 || height == 0) {

@@ -110,7 +110,7 @@ export const en = {
   activityType: 'activityType',
   addActivity: 'addActivity',
   editActivity: 'editActivity',
-  goodsName: 'goodsName',
+  goodsNumber: 'groupGoods',
   validDate: 'validDate',
   startDate: 'start Date',
   endDate: 'end Date',

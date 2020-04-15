@@ -29,7 +29,6 @@ import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecVal;
 import com.vpu.mp.service.pojo.shop.image.DownloadImageBo;
-import com.vpu.mp.service.pojo.shop.member.userImp.UserImportMqParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSortService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
@@ -126,7 +125,7 @@ public class GoodsImportService extends ShopBaseService {
             List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
             GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
             // 调用消息队列
-            saas.taskJobMainService.dispatchImmediately(mqParam, UserImportMqParam.class.getName(), getShopId(),
+            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
                 TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
 //            goodsVpuExcelImportMqCallback(mqParam);
         }
@@ -200,8 +199,8 @@ public class GoodsImportService extends ShopBaseService {
             Integer goodsId = goodsImportOperate(getShopId(), value, successGoodsList, illegalGoodsList, isUpdate, batchId);
             goodsIds.add(goodsId);
         }
-        int successNum = readyToImportGoodsList.size() - illegalGoodsList.size();
-        importRecordService.updateGoodsImportSuccessNum(successNum, batchId);
+
+        importRecordService.updateGoodsImportSuccessNum(successGoodsList.size(), batchId);
         successGoodsList.addAll(illegalGoodsList);
         importRecordService.insertGoodsImportDetailBatch(successGoodsList);
         goodsService.updateEs(goodsIds);
