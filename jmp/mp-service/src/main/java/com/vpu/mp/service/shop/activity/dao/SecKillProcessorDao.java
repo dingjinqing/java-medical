@@ -83,7 +83,7 @@ public class SecKillProcessorDao extends ShopBaseService {
         seckillVo.setActivityId(skId);
         seckillVo.setActivityType(BaseConstant.ACTIVITY_TYPE_SEC_KILL);
 
-        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId));
+        seckillVo.setActState(this.canApplySecKill(secKill,capsule.getGoodsNumber(),userId,capsule.getGoodsId()));
         if (BaseConstant.ACTIVITY_STATUS_NOT_HAS.equals(seckillVo.getActState())) {
             return  seckillVo;
         }
@@ -111,8 +111,8 @@ public class SecKillProcessorDao extends ShopBaseService {
      * @param goodsNumber goods表的库存
      * @return 0正常;1该活动不存在;2该活动已停用;3该活动未开始;4该活动已结束;5商品已抢光;6该用户已达到限购数量上限;7该秒杀为会员专属，该用户没有对应会员卡
      */
-    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId) {
-        return seckillService.canApplySecKill(secKill,goodsNumber,userId);
+    private Byte canApplySecKill(SecKillDefineRecord secKill,Integer goodsNumber,Integer userId,Integer goodsId) {
+        return seckillService.canApplySecKill(secKill,goodsNumber,userId,goodsId);
     }
 
     /**
