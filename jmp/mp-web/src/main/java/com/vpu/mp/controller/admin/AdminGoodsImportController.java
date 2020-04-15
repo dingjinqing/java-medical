@@ -67,7 +67,7 @@ public class AdminGoodsImportController extends AdminBaseController{
         ExcelWriter excelWriter = new ExcelWriter(getLang(), workbook);
         GoodsVpuExcelImportModel modelExample = GoodsVpuExcelImportModel.createModelExample();
         excelWriter.writeModelList(Collections.singletonList(modelExample),GoodsVpuExcelImportModel.class);
-        export2Excel(workbook, "goods.xlsx", response);
+        export2Excel(workbook, "goods", response);
     }
 
     @GetMapping("/api/admin/goods/vpu/excel/download/fail/data/{batchId}")
@@ -75,7 +75,7 @@ public class AdminGoodsImportController extends AdminBaseController{
         Workbook workbook = shop().goodsImportRecordService.downloadFailData(batchId, getLang());
         Timestamp operateTime = shop().goodsImportRecordService.getOperateTime(batchId);
         String time = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, operateTime);
-        String fileName = time + "_" + batchId + "_goods.xlsx";
+        String fileName = time + "_" + batchId + "_goods";
         export2Excel(workbook, fileName, response);
     }
 }
