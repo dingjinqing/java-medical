@@ -17,21 +17,21 @@ import java.util.List;
 import static com.vpu.mp.db.shop.Tables.*;
 
 /**
- * 
+ *
  * @author 常乐
  * 2019年7月9日
  */
 @Service
 public class ChooseLinkService extends ShopBaseService {
-	
+
 	@Autowired
 	public AdminDecorationService adminDecoration;
-	
+
 //	常用链接
 	public Boolean commonLink() {
 		return false;
 	}
-	
+
 	/**
 	 * 商品链接列表
 	 * @param param
@@ -45,7 +45,7 @@ public class ChooseLinkService extends ShopBaseService {
 		select.orderBy(GOODS.GOODS_ID.desc());
 		return this.getPageResult(select, param.currentPage,param.pageRows,GoodsLinkVo.class);
 	}
-	
+
 	/**
 	 * 商品链接条件查询
 	 * @param select
@@ -59,7 +59,7 @@ public class ChooseLinkService extends ShopBaseService {
 		}
 		return select;
 	}
-		
+
 	/**
 	 * 自定义页面
 	 * @param param
@@ -74,7 +74,7 @@ public class ChooseLinkService extends ShopBaseService {
 		PageResult<XcxCustomerPageVo> list = adminDecoration.getPageList(xcx);
 		return list;
 	}
-	
+
 	/**
 	 * 拼团抽奖链接
 	 * @return
@@ -87,7 +87,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 瓜分积分链接
 	 * @return
@@ -99,7 +99,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 好友助力链接
 	 * @return
@@ -107,12 +107,14 @@ public class ChooseLinkService extends ShopBaseService {
 	public List<ActivityVo> getPromoteList() {
 		List<ActivityVo> list = db().select(FRIEND_PROMOTE_ACTIVITY.ID,FRIEND_PROMOTE_ACTIVITY.ACT_CODE,FRIEND_PROMOTE_ACTIVITY.ACT_NAME,FRIEND_PROMOTE_ACTIVITY.START_TIME,FRIEND_PROMOTE_ACTIVITY.END_TIME)
 				.from(FRIEND_PROMOTE_ACTIVITY)
-				.where(FRIEND_PROMOTE_ACTIVITY.END_TIME.ge(new Timestamp(System.currentTimeMillis())))
-				.and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
-				.fetch().into(ActivityVo.class);
+                .where(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(new Timestamp(System.currentTimeMillis())))
+                .and(FRIEND_PROMOTE_ACTIVITY.START_TIME.lt(new Timestamp(System.currentTimeMillis())))
+                .and(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+                .and(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK.eq((byte)0))
+                .fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 加价购活动链接
 	 * @return
@@ -126,7 +128,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 幸运大抽奖
 	 * @return
@@ -140,7 +142,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 优惠券链接
 	 * @return
@@ -158,7 +160,7 @@ public class ChooseLinkService extends ShopBaseService {
             return null;
         }
 	}
-	
+
 	/**
 	 * 会员卡链接
 	 * @return
@@ -172,7 +174,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(CardLinkVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 一口价链接
 	 * @return
@@ -185,7 +187,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 满折满减活动链接
 	 * @return
@@ -198,7 +200,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 测评活动链接
 	 * @return
@@ -211,7 +213,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return assessList;
 	}
-	
+
 	/**
 	 * 优惠券礼包活动链接
 	 * @return
@@ -224,7 +226,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(ActivityVo.class);
 		return packList;
 	}
-	
+
 	/**
 	 * 创建跳转网页内容
 	 * @param info
@@ -237,7 +239,7 @@ public class ChooseLinkService extends ShopBaseService {
 		int res = db().executeInsert(record);
 		return res;
 	}
-	
+
 	/**
 	 * 网页跳转列表
 	 * @return
@@ -258,7 +260,7 @@ public class ChooseLinkService extends ShopBaseService {
 		int res = db().delete(DECORATE_LINK).where(DECORATE_LINK.ID.eq(id)).execute();
 		return res;
 	}
-	
+
 	/**
 	 * 表单页面链接
 	 * @return
@@ -270,7 +272,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(PageFormVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 门店列表
 	 * @param param
@@ -284,7 +286,7 @@ public class ChooseLinkService extends ShopBaseService {
 		PageResult<StoreVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), StoreVo.class);
 		return pageResult;
 	}
-	                        
+
 	/**
 	 * 获取小程序名称
 	 * @return
@@ -296,7 +298,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(XcxNameListVo.class);
 		return list;
 	}
-	
+
 	/**
 	 * 获得装修跳转链接列表
 	 * @return
@@ -310,7 +312,7 @@ public class ChooseLinkService extends ShopBaseService {
 				.fetch().into(XcxLinkListVo.class);
 		return linkList;
 	}
-	
+
 	/**
 	 * 保存小程序跳转链接
 	 * @param info
@@ -337,10 +339,10 @@ public class ChooseLinkService extends ShopBaseService {
 		int res = db().update(DECORATE_LINK).set(DECORATE_LINK.DEL_FLAG,(byte) 1).where(DECORATE_LINK.ID.eq(id)).execute();
 		return res;
 	}
-	
 
-	
-	
+
+
+
 	/**
 	 * 选择商家分类
 	 * @return
@@ -351,14 +353,14 @@ public class ChooseLinkService extends ShopBaseService {
 				.from(SORT)
 				.where(SORT.LEVEL.eq((short) 0))
 				.fetch().into(SortVo.class);
-		
+
 		//遍历每级分类下子分类
 		for(SortVo level1 : levelList) {
 			List<SortVo> level2List = db().select(SORT.SORT_ID,SORT.SORT_NAME)
 				.from(SORT)
 				.where(SORT.PARENT_ID.eq((int) level1.getSortId()))
 				.fetch().into(SortVo.class);
-			
+
 			level1.setLevelList2(level2List);
 		}
 		return levelList;
