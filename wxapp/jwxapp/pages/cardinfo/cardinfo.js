@@ -222,7 +222,7 @@ global.wxPage({
     console.log('购买++++++++++++++')
     console.log(cardInfo)
     if(cardInfo.isPay === 1){
-      let realPrice = cardInfo.payType === 0 ? `￥${cardInfo.payFee}购买` : `${cardInfo.payFee}积分购买`
+      let realPrice = cardInfo.payType === 0 ? `￥${cardInfo.payFee}` : `${cardInfo.payFee}积分`
       return {
         realPrice
       }
