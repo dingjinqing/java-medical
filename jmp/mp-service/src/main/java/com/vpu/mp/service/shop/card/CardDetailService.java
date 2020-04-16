@@ -254,13 +254,14 @@ public class CardDetailService extends ShopBaseService{
 	/**
 	 * 	获取会员卡同步打标签数据
 	 */
-	private CardTag getCardTag(MemberCardRecord card) {
+	public CardTag getCardTag(MemberCardRecord card) {
 		logger().info("获取会员卡同步打标签数据");
 		CardTagSwitch cardTag = CardTag.CardTagSwitch.values()[card.getCardTag()];
 		String cardTagId = card.getCardTagId();
 		List<TagVo> tags = new ArrayList<>();
+		List<Integer> ids = null;
 		if(!StringUtils.isBlank(cardTagId)) {
-			List<Integer> ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
+			ids = Util.json2Object(cardTagId,new TypeReference<List<Integer>>() {
 	        }, false);
 			tags = tagSvc.getTagsById(ids);
 		}
@@ -268,6 +269,7 @@ public class CardDetailService extends ShopBaseService{
 		return CardTag.builder()
 					.cardTag(cardTag)
 					.cardTags(tags)
+					.cardTagId(ids)
 					.build();
 	}
 	
