@@ -42,6 +42,16 @@ public class UserCardConstant {
 	 */
 	public static final Byte GIVE_WAY_SUCCESS = 2;
 	
-	
+	/*********************************************
+	 *  card_source
+	 **********************************************/
+	/**
+	 * 	来源： 正常领取
+	 */
+	 public static final Byte SOURCE_NORMAL = 0;
+	 /**
+	  *	来源:： 转赠
+	  */
+	 public static final Byte SOURCE_GIVE_WAY = 2;
 	 
 }

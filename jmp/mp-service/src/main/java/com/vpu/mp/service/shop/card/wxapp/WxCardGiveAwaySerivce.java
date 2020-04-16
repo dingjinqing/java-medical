@@ -3,22 +3,21 @@ package com.vpu.mp.service.shop.card.wxapp;
 import static com.vpu.mp.db.shop.Tables.GIVE_CARD_RECORD;
 import static com.vpu.mp.db.shop.Tables.USER_CARD;
 
+import java.sql.Timestamp;
+
+import org.jooq.Condition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
-
-
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.GiveCardRecordRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
-
-import java.sql.Timestamp;
-
-import org.jooq.Condition;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Service;
+import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 
 
 /**
@@ -41,6 +40,8 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	 */
 	public final static Byte FLAG_SUCCESS = 2;
 	
+	@Autowired
+	private LimitCardOpt limitCardOpt;
 	/**
 	 *	添加限次卡转赠记录
 	 */
@@ -95,5 +96,32 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	}
 	
 	
+	/**
+	 * 	领取赠送的会员卡
+	 */
+	public void getGiveAwayCard(DefaultCardParam param) {
+		logger().info("领取赠送的会员卡");
+		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(param.getCardNo());
+		if(giveWayInfo == null || giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
+			logger().info("链接已失效");
+		}else if(giveWayInfo.getUserId().equals(param.getUserId())) {
+			logger().info("此卡为自己赠送");
+		}
+		
+		
+//		CardReceiveFailException
+	}
+	
+	/**
+	 * 	获取正常转赠的记录
+	 * 	@param cardNo
+	 */
+	public GiveCardRecordRecord getNormalGiveCardRecordByCardNo(String cardNo) {
+		
+		Condition condition = GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL)
+			.and(GIVE_CARD_RECORD.CARD_NO.eq(cardNo));
+		
+		return db().fetchOne(GIVE_CARD_RECORD, condition);
+	}
 	
 }
