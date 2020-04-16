@@ -19,6 +19,7 @@
           <el-form-item
             :label="$t('addBargainAct.bargainType')+':'"
             prop=""
+            required
           >
             <el-radio-group
               :disabled="isEditFlag"
@@ -130,10 +131,7 @@
                 width="160"
               >
                 <template slot-scope="scope">
-                  <el-form-item
-                    :prop="'goodsRow.'+scope.$index+'.stock'"
-                    style="margin-bottom:0;"
-                  >
+                  <el-form-item style="margin-bottom:0;">
                     <el-input-number
                       v-model="scope.row.stock"
                       size="mini"
@@ -145,7 +143,14 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="剩余"></el-table-column>
+              <!-- <el-table-column
+                prop="saleNum"
+                label="剩余"
+                align="center"
+                width="90"
+                v-if="isEditFlag"
+                class="tableHeaderHeight"
+              ></el-table-column> -->
 
               <!-- 商品原价 -->
               <el-table-column
@@ -159,15 +164,17 @@
               <!-- 指定金额 - 砍价底价 -->
               <el-table-column
                 v-if="param.bargainType == 0"
-                prop="shopPrice"
                 :label="$t('addBargainAct.bargainReservePrice')"
                 align="center"
                 class="tableHeaderHeight"
               >
+                <!-- :prop="'goodsRow.' + scope.$index + '.expectationPrice'" -->
                 <template slot-scope="scope">
                   <el-form-item
-                    :prop="'goodsRow.'+scope.$index+'.expectationPrice'"
                     style="margin-bottom:0;"
+                    :rules="[
+                      {required: true, message: '砍价低价不能为空', trigger: 'blur'}
+                    ]"
                   >
                     <el-input-number
                       v-model="scope.row.expectationPrice"
@@ -185,7 +192,6 @@
               <!-- 任意金额 - 结算金额 -->
               <el-table-column
                 v-else
-                prop="shopPrice"
                 :label="$t('addBargainAct.sttlementAmount')"
                 class="tableHeaderHeight"
                 align="center"
@@ -193,10 +199,7 @@
                 <template slot-scope="scope">
                   <div>
                     <div style="display: flex;justify-content: center;">
-                      <el-form-item
-                        :prop="'goodsRow.'+scope.$index+'.floorPrice'"
-                        style="margin-bottom: 0"
-                      >
+                      <el-form-item style="margin-bottom: 0">
                         <el-input-number
                           :disabled="isEditFlag"
                           v-model="scope.row.floorPrice"
@@ -208,10 +211,7 @@
                         </el-input-number>
                       </el-form-item>
                       <span style="margin: 10px 6px;">{{$t('marketCommon.to')}}</span>
-                      <el-form-item
-                        :prop="'goodsRow.'+scope.$idnex+'.expectationPrice'"
-                        style="margin-bottom: 0"
-                      >
+                      <el-form-item style="margin-bottom: 0">
                         <el-input-number
                           :disabled="isEditFlag"
                           v-model="scope.row.expectationPrice"
@@ -238,6 +238,8 @@
               <el-table-column
                 label="操作"
                 align="center"
+                v-if="addFlag"
+                width="90"
               >
                 <template slot-scope="scope">
                   <div
@@ -286,6 +288,7 @@
             <el-form-item
               :label="$t('marketCommon.shippingSetting')+':'"
               prop=""
+              required
             >
               <el-radio-group v-model="param.freeFreight">
                 <el-radio :label="1">{{$t('marketCommon.freeShipping')}}</el-radio>
@@ -293,7 +296,10 @@
               </el-radio-group>
             </el-form-item>
 
-            <el-form-item :label="$t('addBargainAct.expectToParticipateInBargaining')+':'">
+            <el-form-item
+              :label="$t('addBargainAct.expectToParticipateInBargaining')+':'"
+              required
+            >
               <el-input-number
                 :disabled="isEditFlag"
                 v-model="param.expectationNumber"
@@ -651,6 +657,7 @@ export default {
       this.actId = this.$route.query.id
       // 编辑时部分信息不可修改
       this.isEditFlag = true
+      this.addFlag = false
       // 点击编辑按钮进来，初始化页面数据
       let SimpleBargainParam = {
         'id': this.$route.query.id
@@ -660,13 +667,15 @@ export default {
         if (res.error === 0) {
           console.log(res, 'res--')
           this.param = res.content
-          this.param.effectiveDate = []
-          this.param.effectiveDate.push(res.content.startTime)
-          this.param.effectiveDate.push(res.content.endTime)
+          console.log(this.param)
+          this.param.effectiveDate = [res.content.startTime, res.content.endTime]
+          // console.log(this.param.effectiveDate)
+          // this.param.effectiveDate.push(res.content.startTime)
+          // this.param.effectiveDate.push(res.content.endTime)
           this.mrkingVoucherObjs = res.content.mrkingVoucherList
           this.rewardCouponObjs = res.content.rewardCouponList
-          // this.goodsRow.push(res.content.goods)
           this.goodsRow = res.content.bargainGoods
+          console.log(this.goodsRow)
           let resultConfig = res.content.shopShareConfig
           this.shareConfig = resultConfig
           this.shareConfig.shareImg = resultConfig.shareImgFullUrl
@@ -709,7 +718,6 @@ export default {
       }
     }
     var validLevel = (rule, value, callback) => {
-      console.log(value)
       var reg = /^(0|[1-9][0-9]*)$/
       if (value === '' || !value) {
         callback(new Error('请输入优先级'))
@@ -741,7 +749,7 @@ export default {
         bargainMoneyType: 0,
         stock: 0,
         floorPrice: 0,
-        effectiveDate: '',
+        effectiveDate: [],
         goodsId: 0,
         expectationPrice: '',
         needBindMobile: false,
@@ -749,6 +757,8 @@ export default {
         bargainMin: '',
         bargainMax: '',
         first: '',
+        startTime: '',
+        endTime: '',
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
@@ -773,6 +783,7 @@ export default {
       goodsIdList: [],
       arrorFlag: true,
       activeIndex: 0,
+      addFlag: true,
       ArrowArr: [
         {
           img_1: this.$imageHost + '/image/admin/show_more.png'
@@ -795,10 +806,6 @@ export default {
         first: [
           { required: true, validator: validLevel, trigger: ['blur', 'change'] }
         ]
-        //  flist: [
-        //   { required: true, validator: levelValid, trigger: ['blur', 'change'] }
-        //   // { max: 20, message: this.$t('groupBuy.lengthMax20'), trigger: 'blur' }
-        // ],
       }
     }
   },
@@ -860,7 +867,7 @@ export default {
       })
       this.goodsIdList.splice(index, 1)
       let goodsTarget = this.goodsRow.findIndex(item => {
-        return id === item.id
+        return id === item.goodsId
       })
       this.goodsRow.splice(goodsTarget, 1)
     },
@@ -920,7 +927,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'kanjia'
+                  name: 'bargain'
                 })
               } else {
                 this.$message.error(res.message)
@@ -946,7 +953,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'kanjia'
+                  name: 'bargain'
                 })
               } else {
                 this.$message.error(this.$t('marketCommon.failureOperation'))
@@ -990,7 +997,7 @@ export default {
       // }
       if (this.param.bargainType === 0) {
         // 砍到指定金额结算：期望参与砍价人次必填；商品首次砍价可砍价百分比区间必填；砍价底价必填
-        if (this.param.expectationPrice === '') {
+        if (this.goodsRow.expectationPrice === '') {
           this.$message.warning(this.$t('addBargainAct.vaildExpectationPrice'))
           return false
         }
