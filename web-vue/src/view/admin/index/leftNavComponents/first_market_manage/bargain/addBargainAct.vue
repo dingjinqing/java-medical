@@ -121,7 +121,11 @@
                 align="center"
                 class="tableHeaderHeight"
                 width="90px"
-              ></el-table-column>
+              >
+                <template slot-scope="scope">
+                  <span>{{scope.row.goodsNumber}}</span>
+                </template>
+              </el-table-column>
 
               <!-- 砍价库存 -->
               <el-table-column
@@ -143,32 +147,38 @@
                 </template>
               </el-table-column>
 
-              <!-- <el-table-column
+              <el-table-column
                 prop="saleNum"
-                label="剩余"
+                label="已售数量"
                 align="center"
                 width="90"
                 v-if="isEditFlag"
                 class="tableHeaderHeight"
-              ></el-table-column> -->
+              >
+                <template slot-scope="scope">
+                  <span>{{scope.row.saleNum}}</span>
+                </template>
+              </el-table-column>
 
               <!-- 商品原价 -->
               <el-table-column
                 prop="shopPrice"
                 :label="$t('addBargainAct.goodsOriginalPrice')"
                 align="center"
-                class="tableHeaderHeight"
-                width="90"
-              ></el-table-column>
+                width="120"
+              >
+                <template slot-scope="scope">
+                  <span>{{scope.row.shopPrice}}</span>
+                </template>
+              </el-table-column>
 
               <!-- 指定金额 - 砍价底价 -->
               <el-table-column
-                v-if="param.bargainType == 0"
+                v-if="param.bargainType === 0"
                 :label="$t('addBargainAct.bargainReservePrice')"
                 align="center"
                 class="tableHeaderHeight"
               >
-                <!-- :prop="'goodsRow.' + scope.$index + '.expectationPrice'" -->
                 <template slot-scope="scope">
                   <el-form-item
                     style="margin-bottom:0;"
@@ -191,7 +201,7 @@
 
               <!-- 任意金额 - 结算金额 -->
               <el-table-column
-                v-else
+                v-if="param.bargainType === 1"
                 :label="$t('addBargainAct.sttlementAmount')"
                 class="tableHeaderHeight"
                 align="center"
@@ -227,9 +237,6 @@
                       <span>({{$t('addBargainAct.default0')}})</span>
                       <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
                     </div>
-                    <!-- <div style="margin: 4px 6px">({{$t('addBargainAct.default0')}})
-                      <span style="color: #999;">{{$t('addBargainAct.sttlementAmountTip')}}</span>
-                    </div> -->
                   </div>
                 </template>
               </el-table-column>
@@ -927,7 +934,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(res.message)
@@ -953,7 +960,7 @@ export default {
               if (res.error === 0) {
                 this.$message.success(this.$t('marketCommon.successfulOperation'))
                 this.$router.push({
-                  name: 'bargain'
+                  name: 'kanjia'
                 })
               } else {
                 this.$message.error(this.$t('marketCommon.failureOperation'))
