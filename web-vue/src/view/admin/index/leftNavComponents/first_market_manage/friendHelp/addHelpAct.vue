@@ -11,7 +11,7 @@
           ref="form"
         >
           <el-form-item
-            :label="$t('promoteList.actName')"
+            :label="$t('promoteList.actName') + '：'"
             prop="actName"
           >
             <el-input
@@ -26,7 +26,7 @@
             >{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.actValidityPeriod')"
+            :label="$t('promoteList.actValidityPeriod') + '：'"
             prop="validity"
           >
             <el-date-picker
@@ -71,13 +71,14 @@
             </section> -->
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.rewardType')"
-            prop=""
+            :label="$t('promoteList.rewardType') + '：'"
+            prop="rewardType"
           >
             <el-radio
               v-model="form.rewardType"
               label=0
               :disabled="isEditFlag"
+              @change="rewardTypeChange"
             >
               {{$t('promoteList.giftGoods')}}
             </el-radio>
@@ -85,6 +86,7 @@
               v-model="form.rewardType"
               label=1
               :disabled="isEditFlag"
+              @change="rewardTypeChange"
             >{{$t('promoteList.discountGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
@@ -112,63 +114,79 @@
             </el-col>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.rewardSet')"
+            :label="$t('promoteList.rewardSet') + '：'"
             prop=""
+            :required="true"
           >
             <el-table
               v-if="form.rewardType==0 || form.rewardType==1"
               :data="form.goodsInfo"
               border
-              style="width:50%"
+              style="width:60%"
             >
               <el-table-column
                 prop="goodsName"
                 :label="$t('promoteList.goodsInfo')"
                 align="center"
-              ><template></template>
-              </el-table-column>
+              ></el-table-column>
               <el-table-column
                 prop="shopPrice"
                 :label="$t('promoteList.goodsPrice')"
                 align="center"
-              ><template></template>
-              </el-table-column>
-
+              ></el-table-column>
               <el-table-column
                 prop="prdNumber"
                 :label="$t('promoteList.goodsStore')"
                 align="center"
-              ><template></template>
-              </el-table-column>
-
+              ></el-table-column>
               <el-table-column
                 :label="$t('promoteList.actStore')"
                 align="center"
+                width="180px"
               >
-                <template slot-scope="data">
-                  <el-input
-                    v-model="data.row.market_store"
-                    size="small"
-                    :disabled="isEditFlag"
-                  ></el-input>
+                <template slot-scope="scope">
+                  <el-form-item
+                    :prop="'goodsInfo.' +  scope.$index+ '.market_store'"
+                    :rules="[
+                    { required: true, message: '请填写活动库存', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validateStore(rule, value, callback, scope.row.prdNumber)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
+                    <el-input
+                      v-model="scope.row.market_store"
+                      size="small"
+                      :disabled="isEditFlag"
+                    ></el-input>
+                  </el-form-item>
                 </template>
               </el-table-column>
-
               <el-table-column
                 v-if="form.rewardType==1"
-                prop="market_price"
                 :label="$t('promoteList.actPrice')"
                 align="center"
+                width="180px"
               >
-                <template slot-scope="data">
-                  <el-input v-model="data.row.market_price"></el-input>
+                <template slot-scope="scope">
+                  <el-form-item
+                    :prop="'goodsInfo.' +  scope.$index+ '.market_price'"
+                    :rules="[
+                    { required: true, message: '请填写活动价', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validatePrice(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
+                    <el-input
+                      v-model="scope.row.market_price"
+                      size="small"
+                      :disabled="isEditFlag"
+                    ></el-input>
+                  </el-form-item>
                 </template>
               </el-table-column>
             </el-table>
 
             <el-table
               v-if="form.rewardType==2"
-              :data="coupon_info"
+              :data="form.coupon_info"
               border
               style="width: 300px;"
             >
@@ -190,25 +208,32 @@
               </el-table-column>
               <el-table-column
                 :label="$t('promoteList.couponNum')"
-                width="130"
                 align="center"
+                width="180px"
               >
                 <template slot-scope="scope">
-                  <div>
+                  <el-form-item
+                    :prop="'coupon_info.' +  scope.$index+ '.send_num'"
+                    :rules="[
+                    { required: true, message: '请填写发券数量', trigger: 'change' },
+                    { validator: (rule, value, callback)=>{validateSendNum(rule, value, callback, scope.row.surplus)}, trigger: ['blur', 'change'] }
+                  ]"
+                  >
                     <el-input
                       v-model="scope.row.send_num"
                       size="small"
                       style="width:100px;"
                     ></el-input>
-                  </div>
+                  </el-form-item>
                 </template>
               </el-table-column>
             </el-table>
           </el-form-item>
 
           <el-form-item
-            :label="$t('promoteList.rewardValidityPeriod')"
+            :label="$t('promoteList.rewardValidityPeriod') + '：'"
             prop=""
+            :required="true"
           >
             <div style="display:flex">
               <el-form-item prop="rewardDuration">
@@ -234,8 +259,8 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.currentPromoteValue')"
-            prop=""
+            :label="$t('promoteList.currentPromoteValue') + '：'"
+            prop="promoteType"
           >
             <el-radio
               v-model="form.promoteType"
@@ -245,10 +270,13 @@
               v-model="form.promoteType"
               label="1"
             >{{$t('promoteList.randomValue')}}</el-radio>
-            <span>{{$t('promoteList.actRules')}}</span>
+            <span
+              style="margin-left: 10px;color: #5a8bff; cursor: pointer;"
+              @click="ruleHandler"
+            >{{$t('promoteList.actRules')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.requiredPromoteValue')"
+            :label="$t('promoteList.requiredPromoteValue') + '：'"
             prop="promoteAmount"
           >
             <div style="display:flex">
@@ -262,7 +290,7 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.requiredPromoteTimes')"
+            :label="$t('promoteList.requiredPromoteTimes') + '：'"
             prop="promoteTimes"
           >
             <div style="display:flex">
@@ -276,8 +304,9 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.launchTimesLimit')"
+            :label="$t('promoteList.launchTimesLimit') + '：'"
             prop=""
+            :required="true"
           >
             <div style="display:flex">
               <span>{{$t('promoteList.userIn')}}</span>
@@ -308,7 +337,8 @@
                   style="margin:0 5px"
                   v-model="form.launchLimitTimes"
                 ></el-input>
-              </el-form-item>{{$t('promoteList.time')}}
+              </el-form-item>
+              {{$t('promoteList.time')}}
               <div
                 style="margin-left:10px"
                 class="gray"
@@ -316,16 +346,19 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.sharePromote')"
-            prop="shareCreateTimes"
+            :label="$t('promoteList.sharePromote') + '：'"
+            prop=""
+            :required="true"
           >
             <div style="display:flex">
               <span>{{$t('promoteList.friendShare')}}</span>
-              <el-input
-                style="margin:0 5px"
-                size="small"
-                v-model="form.shareCreateTimes"
-              ></el-input>
+              <el-form-item prop="shareCreateTimes">
+                <el-input
+                  style="margin:0 5px"
+                  size="small"
+                  v-model="form.shareCreateTimes"
+                ></el-input>
+              </el-form-item>
               <span>{{$t('promoteList.promoteOpportunity')}}</span>
               <div
                 style="margin-left: 10px"
@@ -334,8 +367,8 @@
             </div>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.promoteCondition')"
-            prop=""
+            :label="$t('promoteList.promoteCondition') + '：'"
+            prop="promoteCondition"
           >
             <el-radio
               v-model="form.promoteCondition"
@@ -349,16 +382,19 @@
           </el-form-item>
           <!--  助力次数限制-->
           <el-form-item
-            label="助力次数限制"
-            prop="promoteTimesPerDay"
+            label="助力次数限制："
+            prop=""
+            :required="true"
           >
             <div style="display:flex">
               <div>单个用户每天最多可帮忙助力</div>
-              <el-input
-                size="small"
-                style="margin-right: 10px"
-                v-model="form.promoteTimesPerDay"
-              ></el-input>
+              <el-form-item prop="promoteTimesPerDay">
+                <el-input
+                  style="margin:0 5px"
+                  size="small"
+                  v-model="form.promoteTimesPerDay"
+                ></el-input>
+              </el-form-item>
               <div>{{$t('promoteList.time')}}</div>
               <div
                 style="margin-left:12px"
@@ -369,8 +405,8 @@
 
           <el-form-item
             v-if="form.rewardType == 1"
-            :label="$t('promoteList.couponStrategy')"
-            prop=""
+            :label="$t('promoteList.couponStrategy') + '：'"
+            prop="useDiscount"
           >
             <el-radio
               v-model="form.useDiscount"
@@ -384,8 +420,8 @@
           </el-form-item>
           <el-form-item
             v-if="form.rewardType == 1"
-            :label="$t('promoteList.scoreStrategy')"
-            prop=""
+            :label="$t('promoteList.scoreStrategy') + '：'"
+            prop="useScore"
           >
             <el-radio
               v-model="form.useScore"
@@ -398,22 +434,25 @@
             <span class="gray">{{$t('promoteList.scoreStrategyText')}}</span>
           </el-form-item>
           <el-form-item
-            :label="$t('promoteList.promoteFail')"
-            prop=""
+            :label="$t('promoteList.promoteFail') + '：'"
+            prop="failedSendType"
           >
             <el-radio
               v-model="form.failedSendType"
               label="0"
+              @change="failedSendTypeChange"
             >
               {{$t('promoteList.giftNothing')}}
             </el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="1"
+              @change="failedSendTypeChange"
             >{{$t('promoteList.coupon')}}</el-radio>
             <el-radio
               v-model="form.failedSendType"
               label="2"
+              @change="failedSendTypeChange"
             >{{$t('promoteList.point')}}</el-radio>
             <div
               v-if="form.failedSendType==1"
@@ -452,8 +491,7 @@
 
             </div>
 
-            <div v-if="
-              form.failedSendType==2">
+            <div v-if="form.failedSendType==2">
               {{$t('promoteList.giftPoint')}}
               <el-input
                 size="small"
@@ -471,7 +509,7 @@
                 {{$t('promoteList.moreSettings')}}
               </template>
               <el-form-item
-                :label="$t('promoteList.actShare')"
+                :label="$t('promoteList.actShare') + '：'"
                 prop=""
               >
                 <div>
@@ -628,6 +666,96 @@ export default {
     }
   },
   data () {
+    // 自定义奖励有效期
+    var validateRewardDuration = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写有效期'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力值
+    var validatePromoteAmount = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力值'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数
+    var validatePromoteTimes = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力次数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数
+    var validateLaunchLimit = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写时间'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验所需助力次数限制
+    var validateLaunchLimitTimes = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
+      if (value === '') {
+        callback(new Error('请填写次数限制'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力机会
+    var validateShareCreateTimes = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请填写助力机会'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力次数限制
+    var validatePromoteTimesPerDay = (rule, value, callback) => {
+      var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
+      if (value === '') {
+        callback(new Error('请填写次数限制'))
+      } else if (!re.test(value)) {
+        callback(new Error('请填写0或正整数'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义校验助力失败赠送
+    var validateFailedSendType = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/ // 正整数
+      if (!value) {
+        callback(new Error('请选择助力失败赠送条件'))
+      } else if (value === '1' && (this.coupon_duplicate.length === 0 || this.coupon_duplicate === [])) {
+        callback(new Error('请选择赠送优惠券'))
+      } else if (value === '2' && (!this.form.failedSendContent || !re.test(this.form.failedSendContent))) {
+        callback(new Error('请正确填写赠送积分'))
+      } else {
+        callback()
+      }
+    }
     return {
       couponFlag: null,
       promoteId: '',
@@ -695,8 +823,8 @@ export default {
           label: this.$t('promoteList.year')
         }],
         launchLimitUnitSelect: '',
-        launchLimitTimes: '',
-        shareCreateTimes: '',
+        launchLimitTimes: '0',
+        shareCreateTimes: '1',
         promoteCondition: '0',
         failedSendType: '0',
         failedSendContent: '',
@@ -705,16 +833,19 @@ export default {
         shareImgType: '0',
         // customImgPath: '',
         // 选中商品id
-        goodsInfo: [{
-          goodsIds: '',
-          goodsName: '',
-          shopPrice: '',
-          goodsNumber: '',
-          rewardType: '',
-          market_price: '',
-          market_store: ''
-        }],
-        promoteTimesPerDay: ''
+        goodsInfo: [
+          // {
+          //   goodsIds: '',
+          //   goodsName: '',
+          //   shopPrice: '',
+          //   goodsNumber: '',
+          //   rewardType: '',
+          //   market_price: '',
+          //   market_store: ''
+          // }
+        ],
+        coupon_info: [],
+        promoteTimesPerDay: '0'
       },
       // 优惠券
       coupon_msg: [],
@@ -742,31 +873,49 @@ export default {
       // 表单约束
       formRules: {
         actName: [
-          { required: true, message: '活动名称不能为空', trigger: 'blur' }
+          { required: true, message: '请填写活动名称', trigger: 'change' }
         ],
         validity: [
-          { required: true, message: '请填写有效期', trigger: 'change' }
+          { required: true, message: '请填写活动有效期', trigger: 'change' }
+        ],
+        rewardType: [
+          { required: true, message: '请选择奖励类型', trigger: 'change' }
         ],
         rewardDuration: [
-          { required: true, message: '奖励有效期不能为空', trigger: 'blur' }
+          { required: true, validator: validateRewardDuration, trigger: 'change' }
+        ],
+        promoteType: [
+          { required: true, message: '请选择单次助力值', trigger: 'change' }
         ],
         promoteAmount: [
-          { required: true, message: '所需助力值不能为空', trigger: 'blur' }
+          { required: true, validator: validatePromoteAmount, trigger: 'change' }
         ],
         promoteTimes: [
-          { required: true, message: '所需助力次数不能为空', trigger: 'blur' }
+          { required: true, validator: validatePromoteTimes, trigger: 'change' }
         ],
         launchLimitDuration: [
-          { required: true, message: '发起次数限制不能为空', trigger: 'blur' }
+          { required: true, validator: validateLaunchLimit, message: '请填写时间', trigger: 'change' }
         ],
         launchLimitTimes: [
-          { required: true, message: '发起次数限制不能为空', trigger: 'blur' }
+          { required: true, validator: validateLaunchLimitTimes, trigger: 'change' }
         ],
         shareCreateTimes: [
-          { required: true, message: '助力机会不能为空', trigger: 'blur' }
+          { required: true, validator: validateShareCreateTimes, trigger: 'change' }
+        ],
+        promoteCondition: [
+          { required: true, message: '请选择好友助力条件', trigger: 'change' }
         ],
         promoteTimesPerDay: [
-          { required: true, message: '助力次数限制不能为空', trigger: 'blur' }
+          { required: true, validator: validatePromoteTimesPerDay, trigger: 'change' }
+        ],
+        useDiscount: [
+          { required: true, message: '请选择优惠叠加策略', trigger: 'change' }
+        ],
+        useScore: [
+          { required: true, message: '请选择积分抵扣策略', trigger: 'change' }
+        ],
+        failedSendType: [
+          { required: true, validator: validateFailedSendType, trigger: 'change' }
         ]
       },
       srcList: {
@@ -874,9 +1023,9 @@ export default {
         }
         if (this.form.rewardType === '2') {
           updateCoupon(this.form.rewardSet.reward_ids).then(res => {
-            this.coupon_info = res.content
-            this.coupon_info[0].send_num = this.form.rewardSet.market_store
-            console.log('couponInfo:', this.coupon_info)
+            this.form.coupon_info = res.content
+            this.form.coupon_info[0].send_num = this.form.rewardSet.market_store
+            console.log('couponInfo:', this.form.coupon_info)
           })
         }
         if (this.form.failedSendType === '1') {
@@ -888,56 +1037,63 @@ export default {
       })
     },
     addAct () {
-      console.log('this.form.rewardType:', this.form.rewardType)
-      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
-        if (this.form.goodsInfo[0].market_price == null) {
-          this.form.goodsInfo[0].market_price = ''
-        }
-        this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
-        this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
-        console.log(this.form.goodsInfo[0].market_store)
-        this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
-        console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
-        console.log('rewardSet:', this.form.rewardSet)
-        console.log('rewardContent:', this.form.rewardContent)
+      if ((this.form.rewardType === '0' || this.form.rewardType === '1') && this.form.goodsInfo.length === 0) {
+        this.$message.warning('请选择商品奖励设置')
+        return false
+      } else if (this.form.rewardType === '2' && this.form.coupon_info.length === 0) {
+        this.$message.warning('请选择优惠券奖励设置')
+        return false
       }
-      if (this.form.rewardType === '2') {
-        this.form.rewardSet.market_store = this.coupon_info[0].send_num
-        // this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
-        console.log('rewardSet:', this.form.rewardSet)
-        console.log('rewardContent:', this.form.rewardContent)
-      }
-      let addParam = {
-        'id': this.promoteId,
-        'actName': this.form.actName,
-        'startTime': this.form.validity[0],
-        'endTime': this.form.validity[1],
-        'rewardType': this.form.rewardType,
-        'fpRewardContent': this.form.rewardSet,
-        'rewardDuration': this.form.rewardDuration,
-        'rewardDurationUnit': this.form.rewardDurationUnitSelect,
-        'promoteType': this.form.promoteType,
-        'promoteAmount': this.form.promoteAmount,
-        'promoteTimes': this.form.promoteTimes,
-        'launchLimitDuration': this.form.launchLimitDuration,
-        'launchLimitUnit': this.form.launchLimitUnitSelect,
-        'launchLimitTimes': this.form.launchLimitTimes,
-        'shareCreateTimes': this.form.shareCreateTimes,
-        'promoteCondition': this.form.promoteCondition,
-        'useDiscount': this.form.useDiscount,
-        'useScore': this.form.useScore,
-        'failedSendType': this.form.failedSendType,
-        'failedSendContent': this.form.failedSendContent,
-        'activityShareType': this.form.activityShareType,
-        'customShareWord': this.form.customShareWord,
-        'shareImgType': this.form.shareImgType,
-        'customImgPath': this.srcList.src,
-        'promoteTimesPerDay': this.form.promoteTimesPerDay
-      }
-      console.log('submit', this.form)
       this.$refs['form'].validate((valid) => {
         console.log('submit', this.form)
         if (valid) {
+          console.log('this.form.rewardType:', this.form.rewardType)
+          if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+            if (this.form.goodsInfo[0].market_price == null) {
+              this.form.goodsInfo[0].market_price = ''
+            }
+            this.form.rewardSet.market_price = this.form.goodsInfo[0].market_price
+            this.form.rewardSet.market_store = this.form.goodsInfo[0].market_store
+            console.log(this.form.goodsInfo[0].market_store)
+            this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+            console.log('this.form.rewardSet.goods_ids:', this.form.rewardSet.goods_ids)
+            console.log('rewardSet:', this.form.rewardSet)
+            console.log('rewardContent:', this.form.rewardContent)
+          }
+          if (this.form.rewardType === '2') {
+            this.form.rewardSet.market_store = this.form.coupon_info[0].send_num
+            // this.form.rewardContent = '[' + JSON.stringify(this.form.rewardSet) + ']'
+            console.log('rewardSet:', this.form.rewardSet)
+            console.log('rewardContent:', this.form.rewardContent)
+          }
+          let addParam = {
+            'id': this.promoteId,
+            'actName': this.form.actName,
+            'startTime': this.form.validity[0],
+            'endTime': this.form.validity[1],
+            'rewardType': this.form.rewardType,
+            'fpRewardContent': this.form.rewardSet,
+            'rewardDuration': this.form.rewardDuration,
+            'rewardDurationUnit': this.form.rewardDurationUnitSelect,
+            'promoteType': this.form.promoteType,
+            'promoteAmount': this.form.promoteAmount,
+            'promoteTimes': this.form.promoteTimes,
+            'launchLimitDuration': this.form.launchLimitDuration,
+            'launchLimitUnit': this.form.launchLimitUnitSelect,
+            'launchLimitTimes': this.form.launchLimitTimes,
+            'shareCreateTimes': this.form.shareCreateTimes,
+            'promoteCondition': this.form.promoteCondition,
+            'useDiscount': this.form.useDiscount,
+            'useScore': this.form.useScore,
+            'failedSendType': this.form.failedSendType,
+            'failedSendContent': this.form.failedSendContent,
+            'activityShareType': this.form.activityShareType,
+            'customShareWord': this.form.customShareWord,
+            'shareImgType': this.form.shareImgType,
+            'customImgPath': this.srcList.src,
+            'promoteTimesPerDay': this.form.promoteTimesPerDay
+          }
+          console.log('submit', this.form)
           if (this.promoteId !== 'null') {
             console.log('I am updating!')
             updateInfo(addParam).then(res => {
@@ -1010,11 +1166,11 @@ export default {
       switch (val) {
         case 1: {
           console.log(this.couponDialogFlag)
-          console.log(this.coupon_info)
+          console.log(this.form.coupon_info)
           this.couponFlag = 1
           let obj = {
             couponDialogFlag: !this.couponDialogFlag,
-            couponList: this.coupon_info
+            couponList: this.form.coupon_info
           }
           this.$http.$emit('V-AddCoupon', obj)
           this.showCouponDialog = !this.showCouponDialog
@@ -1037,8 +1193,8 @@ export default {
       console.log('couponInfo:', data)
       if (this.couponFlag === 1) {
         this.form.rewardSet.reward_ids = data[0].id
-        this.coupon_info = data
-        console.log(this.coupon_info)
+        this.form.coupon_info = data
+        console.log(this.form.coupon_info)
       } else {
         this.form.failedSendContent = data[0].id
         this.coupon_duplicate = data
@@ -1049,6 +1205,64 @@ export default {
     // 查看活动规则
     ruleHandler () {
       window.open('http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&fromuid=1')
+    },
+
+    // 切换奖励类型
+    rewardTypeChange () {
+      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
+        this.form.goodsInfo = []
+      } else {
+        this.form.coupon_info = []
+      }
+    },
+
+    // 校验活动库存
+    validateStore (rule, value, callback, prdNumber) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写活动库存'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写活动库存'))
+      } else if (Number(value) > prdNumber) {
+        callback(new Error('活动库存不能大于商品库存'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验活动价
+    validatePrice (rule, value, callback, shopPrice) {
+      var re = /^\d+(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('请填写活动价'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写活动价'))
+      } else if (Number(value) > shopPrice) {
+        callback(new Error('活动价不能大于原价'))
+      } else {
+        callback()
+      }
+    },
+
+    // 校验发券数量
+    validateSendNum (rule, value, callback, surplus) {
+      var re = /^(0|\+?[1-9][0-9]*)$/
+      if (!value) {
+        callback(new Error('请填写数量'))
+      } else if (!re.test(value)) {
+        callback(new Error('请正确填写数量'))
+      } else if (surplus !== 0 && Number(value) > surplus) {
+        callback(new Error('数量不能大于剩余量'))
+      } else {
+        callback()
+      }
+    },
+
+    // 切换助力失败赠送条件
+    failedSendTypeChange () {
+      this.coupon_duplicate = []
+      this.form.failedSendContent = ''
+      this.$refs['form'].validateField('failedSendType')
     }
   }
 }

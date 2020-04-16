@@ -102,21 +102,21 @@
                         :style="data.col_type==='2'?'width:100%':data.col_type==='0'?'width:100%;':data.col_type==='4'?'width:145px':data.col_type==='1'?'width:163px':data.col_type==='3'?'width:128px':''"
                       >
                         <!--多人开团`````````````````-->
-                        <div
+                        <!-- <div
                           class="activity"
                           v-if="item.noShowActFlag === 1"
                         >
                           {{$t('commodity.setuProvince')}}{{item.discountPrice}}{{$t('commodity.element')}}
-                        </div>
+                        </div> -->
                         <!---->
                         <!--砍价````````````````````-->
-                        <div
+                        <!-- <div
                           class="activity"
                           style="width:85px"
                           v-if="item.noShowActFlag === 3"
                         >
                           {{item.realPrice}}{{$t('commodity.yuanChopAway')}}
-                        </div>
+                        </div> -->
                         <!--限时降价`````````````````-->
                         <div
                           class="activity"
