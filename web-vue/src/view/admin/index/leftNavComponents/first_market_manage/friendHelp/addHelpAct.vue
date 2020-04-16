@@ -713,7 +713,7 @@ export default {
     // 自定义校验所需助力次数限制
     var validateLaunchLimitTimes = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
-      if (!value) {
+      if (value === '') {
         callback(new Error('请填写次数限制'))
       } else if (!re.test(value)) {
         callback(new Error('请填写0或正整数'))
@@ -735,7 +735,7 @@ export default {
     // 自定义校验助力次数限制
     var validatePromoteTimesPerDay = (rule, value, callback) => {
       var re = /^(0|\+?[1-9][0-9]*)$/ // 0或正整数
-      if (!value) {
+      if (value === '') {
         callback(new Error('请填写次数限制'))
       } else if (!re.test(value)) {
         callback(new Error('请填写0或正整数'))
