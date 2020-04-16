@@ -14,6 +14,8 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
+import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
 /**
 * @author 黄壮壮
 * @Date: 2019年11月28日
@@ -360,6 +362,15 @@ public class CardUtil {
 		}else {
 			return time.toLocalDateTime().toLocalDate();
 		}
+	}
+	/**
+	 * 	会员卡是否开启转赠模式
+	 * @param cardGiveWay
+	 * @return true开启 | false 禁止转赠
+	 */
+	public static boolean isCardGiveWway(Byte cardGiveWay) {
+		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveWay];
+		return CardGive.CardGiveSwitch.on.equals(val);
 	}
 	
 	
