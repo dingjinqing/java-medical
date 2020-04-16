@@ -2082,6 +2082,7 @@ public class UserCardService extends ShopBaseService {
         CardRenewCheckoutVo vo = new CardRenewCheckoutVo();
         Timestamp expireTime = null;
         BigDecimal money = BigDecimal.ZERO;
+        WebPayVo webPayVo = new WebPayVo();
         //现金
         if (order.getRenewType()==(byte)0){
             //使用账户余额数量大于0
@@ -2113,7 +2114,25 @@ public class UserCardService extends ShopBaseService {
                 record.setType((byte)0);
                 db().executeInsert(record);
             }
-//            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){}
+            //支付
+            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){
+                //微信支付接口
+                try {
+                    logger().info("会员卡续费微信支付-开始");
+                    UserRecord user = memberService.getUserRecordById(param.getUserId());
+                    MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
+                    webPayVo = mpPaymentService.wxUnitOrder(param.getClientIp(), cardInfo.getCardName(), order.getRenewOrderSn(), param.getMoneyPaid(), user.getWxOpenid());
+                } catch (WxPayException e) {
+                    logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", order.getRenewOrderSn(), e);
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+                }catch (Exception e) {
+                    logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+                }
+                logger().debug("优惠券礼包-微信支付接口调用结果：{}", webPayVo);
+                // 更新记录微信预支付id：prepayid
+                cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
+            }
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
             //修改会员卡过期时间
@@ -2143,6 +2162,7 @@ public class UserCardService extends ShopBaseService {
         }
         vo.setExpireTime(expireTime);
         vo.setMoney(money);
+        vo.setWebPayVo(webPayVo);
         return vo;
     }
 

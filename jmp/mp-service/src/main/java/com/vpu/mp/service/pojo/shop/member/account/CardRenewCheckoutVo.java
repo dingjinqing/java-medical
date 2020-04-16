@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.member.account;
 
+import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,4 +17,6 @@ public class CardRenewCheckoutVo {
     private Timestamp expireTime;
     /** 支付金额 */
     private BigDecimal money;
+
+    private WebPayVo webPayVo;
 }
