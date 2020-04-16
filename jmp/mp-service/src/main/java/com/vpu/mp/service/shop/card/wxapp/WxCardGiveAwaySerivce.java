@@ -133,7 +133,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 				Condition giveCardCondition = GIVE_CARD_RECORD.CARD_NO.eq(param.getCardNo())
 						.and(GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL));
 				
-				this.transaction(()->{
+				transaction(()->{
 					db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
 					db().executeUpdate(giveCardRecordRecord,giveCardCondition);
 				});
