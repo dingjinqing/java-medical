@@ -52,7 +52,7 @@ public class PictorialImgPx {
      * 商品shareDoc内容
      */
     private Integer shareDocX = bgPadding+textMargin;
-    private Integer shareDocY = headerStartY + userHeaderDiameter+5;
+    private Integer shareDocY = headerStartY + userHeaderDiameter+7;
     /**
      * 商品宽高,位置x,y
      */
