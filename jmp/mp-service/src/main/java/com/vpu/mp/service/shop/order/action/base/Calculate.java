@@ -47,6 +47,7 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.distribution.MpDistributionGoodsService;
 import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
 import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.member.AddressService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
@@ -110,6 +111,8 @@ public class Calculate extends ShopBaseService {
     private OrderGoodsService orderGoods;
     @Autowired
     private PackageSaleProcessor packageSaleProcessor;
+    @Autowired
+    private IncreasePurchaseService increasePurchase;
 
     /**
      * 计算订单商品折扣金额
@@ -421,7 +424,11 @@ public class Calculate extends ShopBaseService {
                 bo.setIsShipping(OrderConstant.YES);
                 continue;
             }
-            //TODO 检查加价购换购商品是否走运费计算
+            //检查加价购换购商品是否走运费计算
+            if(bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0 && increasePurchase.isFreeShip(bo.getPurchasePriceId())) {
+                bo.setIsShipping(OrderConstant.YES);
+                continue;
+            }
             if (totalMaps.get(bo.getDeliverTemplateId()) == null) {
                 totalMaps.put(bo.getDeliverTemplateId(), new Total());
             }

@@ -301,16 +301,16 @@ public class OrderGoodsService extends ShopBaseService{
             discountDetail(StringUtils.EMPTY).
             deliverTemplateId(goods.getGoodsInfo().getDeliverTemplateId()).
             //商品质量
-            goodsWeight(goods.getGoodsInfo().getGoodsWeight()).
+            goodsWeight(goods.getProductInfo().getPrdWeight()).
             //TODO 后续处理
             userCoupon(null).
             catId(goods.getGoodsInfo().getCatId()).
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
-            purchasePriceId(null).
-            purchasePriceRuleId(null).
             reducePriceId(goods.getReducePriceId() == null ? NumberUtils.INTEGER_ZERO : goods.getReducePriceId()).
+            purchasePriceId(goods.getPurchasePriceId()).
+            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
             reducePriceId(goods.getReducePriceId()).
@@ -341,6 +341,15 @@ public class OrderGoodsService extends ShopBaseService{
                 //设置首单特惠在等等商品表记录，目前orderGoods中actId.type只记录首单特惠，后期考虑记录全部非叠加型活动
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                 record.setActivityId(bo.getFirstSpecialId());
+            }else if (bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0) {
+                //加价购
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                record.setActivityId(bo.getPurchasePriceId());
+                record.setActivityRule(bo.getPurchasePriceRuleId());
+            }else if(bo.getReducePriceId() != null && bo.getReducePriceId() > 0) {
+                //限时降价
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                record.setActivityId(bo.getReducePriceId());
             }
             records.add(record);
         }
