@@ -13,10 +13,17 @@ public class UserCardConstant {
 	 */
 	public static final Byte FLAG_NORMAL = 0;
 	/**
-	 * 	不可用状态
+	 * 	已废除
+	 */
+	public static final Byte FLAG_DEL = 1;
+	/**
+	 * 	转赠中
 	 */
 	public static final Byte FLAG_CANNOT_USE = 2;
-	
+	/**
+	 * 	已转赠
+	 */
+	public static final Byte FLAG_GIVE_FINISHED = 3;
 	
 	
 	/*********************************************

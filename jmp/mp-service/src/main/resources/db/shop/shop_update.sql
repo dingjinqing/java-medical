@@ -366,6 +366,9 @@ ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_status` tinyint(1) DEFAULT 0 C
 ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_surplus` int(11) DEFAULT NULL COMMENT '卡剩余赠送次数';
 ALTER TABLE `b2c_user_card` ADD COLUMN `card_source` tinyint(1) NOT NULL DEFAULT 0 COMMENT '卡来源 0:正常  2 别人转赠 ';
 
+-- 2020年04月16日 修改备注
+ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:正常，1:删除 2 转赠中 3 已转赠';
+
 /*********************2.11*************************END*/
 
 
