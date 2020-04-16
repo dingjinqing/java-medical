@@ -22,7 +22,10 @@ align-items: center;
 width: 46rpx;
 height: 46rpx;
 }
-
+.imgView{
+  display: flex;
+  align-items: center;
+}
 .main>view{
   position: relative;
   padding: 0 0 20rpx 0rpx;

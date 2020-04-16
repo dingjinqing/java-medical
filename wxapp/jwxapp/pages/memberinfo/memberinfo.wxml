@@ -243,10 +243,10 @@
 						-->
 						<block wx:for='{{item.optionArr}}' wx:for-item='val' wx:for-index='indexC' wx:key='indexC'>
 
-							<view class="checkbox" bindtap="checkboxChange"   data-value='{{val.optionTitle}}' data-index='{{index}}'>
-							<image class="image" src="{{ checkbox_no }}"  wx:if='{{val.isChecked != true}}' />
-							<text class='iconfont iconduoxuan' style='font-size:56rpx;color:{{comColor}};' wx:else></text>
-								<text style="border-bottom:0" style="margin-left:10px" class="customTitle">{{val.optionTitle}}</text>
+							<view class="checkbox" style="{{val.isChecked?'':'padding-left:4rpx'}}" bindtap="checkboxChange"   data-value='{{val.optionTitle}}' data-index='{{index}}'>
+								<image class="image" src="{{ checkbox_no }}" style="margin-right:24rpx"  wx:if='{{val.isChecked != true}}' />
+								<text class='iconfont iconduoxuan' style='font-size:56rpx;color:{{comColor}};margin-right:18rpx' wx:else></text>
+								<text style="border-bottom:0"  class="customTitle">{{val.optionTitle}}</text>
 							</view>
 
           				</block>
