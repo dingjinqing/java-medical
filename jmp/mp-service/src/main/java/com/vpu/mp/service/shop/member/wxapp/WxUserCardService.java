@@ -30,7 +30,7 @@ public class WxUserCardService extends ShopBaseService {
 	@Autowired
 	private WxAppCardActivationService wxAppCardActivationService;
 	@Autowired
-	private WxCardGiveAwaySerivce giveAwaySvc;
+	public WxCardGiveAwaySerivce giveAwaySvc;
 	@Autowired 
 	private UserCardService userCardService;
 	
