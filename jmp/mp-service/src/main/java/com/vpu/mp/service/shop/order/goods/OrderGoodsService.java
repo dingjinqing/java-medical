@@ -341,6 +341,15 @@ public class OrderGoodsService extends ShopBaseService{
                 //设置首单特惠在等等商品表记录，目前orderGoods中actId.type只记录首单特惠，后期考虑记录全部非叠加型活动
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                 record.setActivityId(bo.getFirstSpecialId());
+            }else if (bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0) {
+                //加价购
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                record.setActivityId(bo.getPurchasePriceId());
+                record.setActivityRule(bo.getPurchasePriceRuleId());
+            }else if(bo.getReducePriceId() != null && bo.getReducePriceId() > 0) {
+                //限时降价
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
+                record.setActivityId(bo.getReducePriceId());
             }
             records.add(record);
         }

@@ -547,3 +547,13 @@ display: block;
 .rebate_bottom button::after{
 border:none;
 }
+.card-price{
+  display: flex;
+  flex-direction: column;
+}
+.card-price > text+text{
+  margin-top: 5rpx;
+}
+.card-price > text.line-price{
+  text-decoration: line-through;
+}

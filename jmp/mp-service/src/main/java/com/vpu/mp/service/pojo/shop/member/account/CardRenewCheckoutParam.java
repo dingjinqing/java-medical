@@ -36,4 +36,6 @@ public class CardRenewCheckoutParam {
     private Integer scoreNum;
     /** 使用账户余额数量 */
     private BigDecimal useAccount;
+    /**ip地址*/
+    private String clientIp;
 }

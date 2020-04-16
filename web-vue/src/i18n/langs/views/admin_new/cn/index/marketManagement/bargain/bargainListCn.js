@@ -14,6 +14,7 @@ export const cn = {
   vaildDate: '有效期',
   statusName: '活动状态',
   goodsName: '商品名称',
+  level: '优先级',
   goodsNumber: '商品库存',
   stock: '砍价库存',
   successNumber: '成功数量',

@@ -59,31 +59,23 @@ export default {
     }
   },
   watch: {
-    selectedOptions: function (newVal, oldVal) {
-      console.log(newVal)
-      let selectIds = []
-      if (newVal && newVal.length > 0) {
-        selectIds = newVal.map(item => item.value)
-      }
-      console.log('ids:', selectIds)
-      this.$emit('update:selectedIds', selectIds)
+    selectedIds: {
+      handler: function (newVal, oldVal) {
+        let selects = []
+        let unselects = []
+        this.storeDatas.forEach(item => {
+          if (newVal.includes(item.value)) {
+            console.log(item)
+            selects.push(item)
+          } else {
+            unselects.push(item)
+          }
+        })
+        this.selectedOptions = selects
+        this.unSelectedOptions = unselects
+      },
+      immediate: true
     }
-  },
-  mounted () {
-    console.log(this.storeDatas)
-    console.log(this.selectedIds)
-    let selects = []
-    let unselects = []
-    this.storeDatas.forEach(item => {
-      if (this.selectedIds.includes(item.value)) {
-        console.log(item)
-        selects.push(item)
-      } else {
-        unselects.push(item)
-      }
-    })
-    this.selectedOptions = selects
-    this.unSelectedOptions = unselects
   },
   updated () {
     console.log('update....')
@@ -95,12 +87,22 @@ export default {
         let item = this.unSelectedOptions.splice(index, 1)
         this.selectId = ''
         this.selectedOptions.push(...item)
+        this.selectOptionChange()
       }
     },
     deleteSelectHandle (item, index) {
       console.log(item, index)
       this.selectedOptions.splice(index, 1)
       this.unSelectedOptions.push(item)
+      this.selectOptionChange()
+    },
+    selectOptionChange () {
+      let selectOptions = this.selectedOptions
+      let selectIds = []
+      if (selectOptions && selectOptions.length > 0) {
+        selectIds = selectOptions.map(item => item.value)
+      }
+      this.$emit('update:selectedIds', selectIds)
     }
   }
 }

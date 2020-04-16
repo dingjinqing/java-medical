@@ -2571,5 +2571,14 @@ public class GoodsService extends ShopBaseService {
     public void updateGoodsCommentNum(int goodsId) {
         int goodsComm = goodsComment.getGoodsCommentNum(goodsId);
         db().update(GOODS).set(GOODS.COMMENT_NUM, goodsComm).where(GOODS.GOODS_ID.eq(goodsId)).execute();
+
+        //es更新
+        try {
+            if (esUtilSearchService.esState()) {
+                esGoodsCreateService.updateEsGoodsIndex(goodsId, getShopId());
+            }
+        } catch (Exception e) {
+            logger().debug("商品修改-同步es数据异常："+e.getMessage());
+        }
     }
 }

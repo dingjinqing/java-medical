@@ -27,7 +27,7 @@
 				<view class="card_surface_bottom">
 					<view class="surface_bottom_left">
 						<view class="surface_bottom_item">
-							<view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0}}">余额：￥{{cardInfo.money}}</view>
+							<view wx:if="{{cardInfo.cardType === 0 && cardInfo.chargeMoney && cardInfo.money>=0 && cardInfo.cardNo}}">余额：￥{{cardInfo.money}}</view>
 							<block wx:if="{{cardInfo.cardType === 1}}">
 								<view wx:if="{{cardInfo.exchangSurplus}}">剩余可兑换商品数量：{{cardInfo.exchangSurplus}} (运费以实际结算价为准)</view>
 								<view wx:if="{{cardInfo.surplus}}">剩余可使用服务次数：{{cardInfo.surplus}}</view>
@@ -43,6 +43,10 @@
 						 bindtap="showQrCode"
 						 src="{{imageUrl}}image/wxapp/erweima1.png"
 						/>
+					</view>
+					<view class="card-price" wx:if="{{!cardInfo.cardNo && cardInfo.cardPrice}}">
+						<text>{{cardInfo.cardPrice.realPrice}}</text>
+						<text class="line-price" wx:if="{{cardInfo.cardPrice.linePrice}}"></text>
 					</view>
 				</view>
 				<view class="card_status" wx:if="{{cardInfo.cardStopImg}}">

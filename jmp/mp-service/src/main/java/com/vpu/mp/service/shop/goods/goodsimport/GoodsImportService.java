@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.goods.goodsimport;
 
-import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -85,8 +84,10 @@ public class GoodsImportService extends ShopBaseService {
             workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
             filePath = createFilePath(getShopId(), param.getFile().getOriginalFilename());
             try {
+                logger().debug("微铺宝excel商品导入excel上传upYun开始");
                 imageService.getUpYunClient().writeFile(filePath, in2, true, null);
-            } catch (IOException | UpException e) {
+                logger().debug("微铺宝excel商品导入excel上传upYun结束");
+            } catch (Exception e) {
                 logger().debug("微铺宝excel商品导入excel上传upYun失败：" + e.getMessage());
                 return JsonResultCode.GOODS_EXCEL_UPLOAD_UPYUN_WRONG;
             }
