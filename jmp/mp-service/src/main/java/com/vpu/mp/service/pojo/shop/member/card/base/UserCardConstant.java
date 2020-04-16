@@ -9,9 +9,13 @@ public class UserCardConstant {
 	 *  flag
 	 **********************************************/
 	/**
+	 * 	正常使用
+	 */
+	public static final Byte FLAG_NORMAL = 0;
+	/**
 	 * 	不可用状态
 	 */
-	public static Byte FLAG_CANNOT_USE = 2;
+	public static final Byte FLAG_CANNOT_USE = 2;
 	
 	
 	
@@ -19,17 +23,17 @@ public class UserCardConstant {
 	 *  give_away_status
 	 **********************************************/
 	/**
-	 * 	正常
+	 * 	正常,即没有进行转赠
 	 */
-	public static Byte GIVE_AWAY_NOR = 0;
+	public static final Byte GIVE_AWAY_NORMAL = 0;
 	/**
 	 * 	转赠中
 	 */
-	public static Byte GIVE_AWAY_ING = 1;
+	public static final Byte GIVE_AWAY_ING = 1;
 	/**
 	 * 	转赠成功
 	 */
-	public static Byte GIVE_WAY_SUCCESS = 2;
+	public static final Byte GIVE_WAY_SUCCESS = 2;
 	
 	
 	 

@@ -15,6 +15,9 @@ import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 
 import java.sql.Timestamp;
+
+import org.jooq.Condition;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 
@@ -25,6 +28,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class WxCardGiveAwaySerivce extends ShopBaseService {
+	/**
+	 * 	转赠记录正常 
+	 */
+	public final static Byte FLAG_NORMAL = 0;
+	/**
+	 * 	转赠记录取消
+	 */
+	public final static Byte FLAG_QUIT = 1;
+	/**
+	 * 转赠记录成功
+	 */
+	public final static Byte FLAG_SUCCESS = 2;
 	
 	/**
 	 *	添加限次卡转赠记录
@@ -54,4 +69,31 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 			db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
 		});
 	}
+	
+	
+	/**
+	 * 	取消限次卡转赠
+	 */
+	public void quitLimitCardGiveAway(DefaultCardParam param) {
+		logger().info("取消限次卡转赠");
+		
+		Condition giveCardCondition = GIVE_CARD_RECORD.CARD_NO.eq(param.getCardNo())
+								.and(GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL));
+		GiveCardRecordRecord giveCardRecordRecord = new GiveCardRecordRecord();
+		giveCardRecordRecord.setFlag(FLAG_QUIT);
+		
+		UserCardRecord userCardRecord = UserCardRecordBuilder.create()
+				.flag(UserCardConstant.FLAG_NORMAL)
+				.giveAwayStatus(UserCardConstant.GIVE_AWAY_NORMAL)
+				.build();
+		Condition userCardCondition = USER_CARD.CARD_NO.eq(param.getCardNo());
+		
+		this.transaction(()->{
+			db().executeUpdate(giveCardRecordRecord, giveCardCondition);
+			db().executeUpdate(userCardRecord, userCardCondition);
+		});
+	}
+	
+	
+	
 }
