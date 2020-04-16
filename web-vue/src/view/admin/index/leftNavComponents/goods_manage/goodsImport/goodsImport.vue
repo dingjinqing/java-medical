@@ -15,7 +15,7 @@
           <el-input
             size="small"
             style="width:150px;"
-            :placeholder="$t('goodsImport.operationTime')"
+            :placeholder="$t('goodsImport.peBatchNum')"
             v-model="queryParams.batchId"
           ></el-input>
         </li>
