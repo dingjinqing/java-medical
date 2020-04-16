@@ -224,7 +224,7 @@
 					</view>
 					<view class='main_ipt main_picker' wx:if="{{item.isChecked == 1&& item.customType == 1}}">
 						<view class='customTitle' style="border-bottom:0"><text class="must_choose" wx:if='{{item.optionVer == 1}}'>*</text>{{item.customTitle}}</view>
-						<checkbox-group bindchange="checkboxChange" data-index="{{index}}">
+						<checkbox-group bindchange="checkboxChange"  data-index="{{index}}">
 							<label
 							 class="checkbox"
 							 wx:for="{{item.optionArr}}"
@@ -233,7 +233,7 @@
 							 wx:key="bindex"
 							>
               					<view class="customTitle">
-								<checkbox value="{{val.optionTitle}}" checked="{{val.isChecked}}" />
+								<checkbox color='{{comColor}}' value="{{val.optionTitle}}" checked="{{val.isChecked}}" />
 								{{val.optionTitle}}
                			 		</view>
 							</label>
