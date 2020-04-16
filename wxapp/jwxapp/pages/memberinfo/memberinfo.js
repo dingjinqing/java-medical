@@ -1045,7 +1045,7 @@ global.wxPage({
         item.isChecked = !item.isChecked
       }
     })
-
+    // that.$set()
     that.setData({
       custom_arr: custom_arr
     })
