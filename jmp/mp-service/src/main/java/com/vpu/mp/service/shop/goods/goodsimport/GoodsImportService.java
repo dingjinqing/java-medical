@@ -3,6 +3,9 @@ package com.vpu.mp.service.shop.goods.goodsimport;
 import com.vpu.mp.db.shop.tables.records.GoodsImportDetailRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
+import com.vpu.mp.service.foundation.excel.exception.handler.IllegalExcelBinder;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -10,6 +13,7 @@ import com.vpu.mp.service.foundation.util.RegexUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.Goods;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIIllegalEnum;
@@ -17,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsDataIllegalEnumWrap;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.GoodsExcelImportBase;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportBo;
+import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportModel;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportMqParam;
 import com.vpu.mp.service.pojo.shop.goods.goodsimport.vpu.GoodsVpuExcelImportParam;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -76,11 +81,11 @@ public class GoodsImportService extends ShopBaseService {
         Workbook workbook = null;
         String filePath;
         try (InputStream in1 = param.getFile().getInputStream(); InputStream in2 = param.getFile().getInputStream()) {
-//            workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
+            workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
             filePath = createFilePath(getShopId(), param.getFile().getOriginalFilename());
             try {
                 logger().debug("微铺宝excel商品导入excel上传upYun开始");
-                imageService.getUpYunClient().writeFile(filePath, in1, true, null);
+                imageService.getUpYunClient().writeFile(filePath, in2, true, null);
                 logger().debug("微铺宝excel商品导入excel上传upYun结束");
             } catch (Exception e) {
                 logger().debug("微铺宝excel商品导入excel上传upYun失败：" + e.getMessage());
@@ -91,40 +96,40 @@ public class GoodsImportService extends ShopBaseService {
             return JsonResultCode.GOODS_EXCEL_IMPORT_WORKBOOK_CREATE_FAIL;
         }
 
-//        // 创建handler读取对应的excel数据
-//        GoodsExcelIllegalFormatterHandler handler = new GoodsExcelIllegalFormatterHandler();
-//        ExcelReader excelReader = new ExcelReader(param.getLang(), workbook, handler);
-//        List<GoodsVpuExcelImportModel> goodsVpuExcelImportModels = excelReader.readModelList(GoodsVpuExcelImportModel.class);
-//
-//        IllegalExcelBinder wrongBinderInfo = handler.getWrongBinderInfo();
-//        JsonResultCode code;
-//        if (wrongBinderInfo != null) {
-//            switch (wrongBinderInfo.getIllegalExcelEnum()) {
-//                case ILLEGEL_SHEET_POSITION: // sheet位置错误
-//                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX;
-//                    break;
-//                case SHEET_HEAD_NULL:// sheet header位置错误
-//                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX;
-//                    break;
-//                case ILLEGAL_SHEET_HEAD:// sheet 数据列和model定义的列位置不一致或列名错误
-//                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO;
-//                    break;
-//                default:
-//                    code = JsonResultCode.CODE_FAIL;
-//            }
-//        } else if (goodsVpuExcelImportModels.size() > MAX_IMPORT_NUM) {
-//            return JsonResultCode.GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE;
-//        } else {
-//            code = JsonResultCode.CODE_SUCCESS;
-//            Integer batchId = importRecordService.insertGoodsImportInfo(goodsVpuExcelImportModels.size(), filePath, param.getIsUpdate());
-//            /**excel model 对象转换为对应的业务对象*/
-//            List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
-//            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
-//            // 调用消息队列
-//            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
-//                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
-//            goodsVpuExcelImportMqCallback(mqParam);
-//        }
+        // 创建handler读取对应的excel数据
+        GoodsExcelIllegalFormatterHandler handler = new GoodsExcelIllegalFormatterHandler();
+        ExcelReader excelReader = new ExcelReader(param.getLang(), workbook, handler);
+        List<GoodsVpuExcelImportModel> goodsVpuExcelImportModels = excelReader.readModelList(GoodsVpuExcelImportModel.class);
+
+        IllegalExcelBinder wrongBinderInfo = handler.getWrongBinderInfo();
+        JsonResultCode code;
+        if (wrongBinderInfo != null) {
+            switch (wrongBinderInfo.getIllegalExcelEnum()) {
+                case ILLEGEL_SHEET_POSITION: // sheet位置错误
+                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX;
+                    break;
+                case SHEET_HEAD_NULL:// sheet header位置错误
+                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_HEADER_WRONG_INDEX;
+                    break;
+                case ILLEGAL_SHEET_HEAD:// sheet 数据列和model定义的列位置不一致或列名错误
+                    code = JsonResultCode.GOODS_EXCEL_IMPORT_SHEET_COLUMN_NOT_MAP_POJO;
+                    break;
+                default:
+                    code = JsonResultCode.CODE_FAIL;
+            }
+        } else if (goodsVpuExcelImportModels.size() > MAX_IMPORT_NUM) {
+            return JsonResultCode.GOODS_EXCEL_IMPORT_NUM_OUT_OF_SIZE;
+        } else {
+            code = JsonResultCode.CODE_SUCCESS;
+            Integer batchId = importRecordService.insertGoodsImportInfo(goodsVpuExcelImportModels.size(), filePath, param.getIsUpdate());
+            /**excel model 对象转换为对应的业务对象*/
+            List<GoodsVpuExcelImportBo> goodsList = goodsVpuExcelImportModels.stream().map(GoodsVpuExcelImportBo::new).collect(Collectors.toList());
+            GoodsVpuExcelImportMqParam mqParam = new GoodsVpuExcelImportMqParam(goodsList, param.getLang(), param.getIsUpdate(), batchId, getShopId(), null);
+            // 调用消息队列
+            saas.taskJobMainService.dispatchImmediately(mqParam, GoodsVpuExcelImportMqParam.class.getName(), getShopId(),
+                TaskJobsConstant.TaskJobEnum.GOODS_VPU_EXCEL_IMPORT.getExecutionType());
+            goodsVpuExcelImportMqCallback(mqParam);
+        }
         return JsonResultCode.CODE_SUCCESS;
     }
 
