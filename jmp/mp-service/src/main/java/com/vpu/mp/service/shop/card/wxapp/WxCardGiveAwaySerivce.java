@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserCardRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.member.builder.GiveCardRecordRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.UserCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
+import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.shop.member.card.LimitCardOpt;
 
@@ -99,13 +102,17 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	/**
 	 * 	领取赠送的会员卡
 	 */
-	public void getGiveAwayCard(DefaultCardParam param) {
+	public void getGiveAwayCard(DefaultCardParam param) throws MpException {
 		logger().info("领取赠送的会员卡");
 		GiveCardRecordRecord giveWayInfo = getNormalGiveCardRecordByCardNo(param.getCardNo());
 		if(giveWayInfo == null || giveWayInfo.getDeadline().before(DateUtil.getLocalDateTime())) {
 			logger().info("链接已失效");
+			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_VALIDLINK);
 		}else if(giveWayInfo.getUserId().equals(param.getUserId())) {
 			logger().info("此卡为自己赠送");
+			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_BYSELF);
+		}else {
+			limitCardOpt.handleSendGiveAwayCard(giveWayInfo.getUserId(), giveWayInfo.getUserId(), param.getCardNo());
 		}
 		
 		
