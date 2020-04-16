@@ -281,9 +281,9 @@ public class MPGoodsRecommendService extends ShopBaseService {
      */
     public List<Integer> getOnShelfGoods(String goodsIds, String catIds, String sortIds) {
         List<Integer> result = new ArrayList<>();
-        List<Integer> goodsResult = new ArrayList<>();
-        List<Integer> catResult = new ArrayList<>();
-        List<Integer> sortResult = new ArrayList<>();
+//        List<Integer> goodsResult = new ArrayList<>();
+//        List<Integer> catResult = new ArrayList<>();
+//        List<Integer> sortResult = new ArrayList<>();
         SelectConditionStep<Record1<Integer>> selectConditionStep = db().select(GOODS.GOODS_ID)
             .from(GOODS)
             .where(GOODS.DEL_FLAG.eq(NOT_DELETE))
@@ -298,16 +298,14 @@ public class MPGoodsRecommendService extends ShopBaseService {
             String goodsIdsJson = "["+goodsIds+"]";
             List<Integer> goodsIdsList = Util.json2Object(goodsIdsJson, new TypeReference<List<Integer>>() {
             }, false);
-            goodsResult = selectConditionStep.and(GOODS.GOODS_ID.in(goodsIdsList)).orderBy(GOODS.CREATE_TIME.desc())
-                .fetchInto(Integer.class);
+            selectConditionStep.and(GOODS.GOODS_ID.in(goodsIdsList)).orderBy(GOODS.CREATE_TIME.desc());
         }
         //指定平台分类
         if (catIds != null) {
             String catIdsJson = "["+catIds+"]";
             List<Integer> catIdsList = Util.json2Object(catIdsJson, new TypeReference<List<Integer>>() {
             }, false);
-            catResult = selectConditionStep.and(GOODS.CAT_ID.in(sysCateService.getAllChild(catIdsList))).orderBy(GOODS.CREATE_TIME.desc())
-                .fetchInto(Integer.class);
+            selectConditionStep.and(GOODS.CAT_ID.in(sysCateService.getAllChild(catIdsList))).orderBy(GOODS.CREATE_TIME.desc());
         }
         //指定商家分类
         if (sortIds != null) {
@@ -315,13 +313,10 @@ public class MPGoodsRecommendService extends ShopBaseService {
             List<Integer> sortIdsList = Util.json2Object(sortIdsJson, new TypeReference<List<Integer>>() {
             }, false);
             //在所有父子节点中查找
-            sortResult = selectConditionStep.and(GOODS.SORT_ID.in(getAllChild(sortIdsList))).orderBy(GOODS.CREATE_TIME.desc())
-                .fetchInto(Integer.class);
+            selectConditionStep.and(GOODS.SORT_ID.in(getAllChild(sortIdsList))).orderBy(GOODS.CREATE_TIME.desc());
         }
 
-        result.addAll(goodsResult);
-        result.addAll(catResult);
-        result.addAll(sortResult);
+        result = selectConditionStep.fetchInto(Integer.class);
         logger().info("推荐商品id集合："+result);
         return result;
     }
