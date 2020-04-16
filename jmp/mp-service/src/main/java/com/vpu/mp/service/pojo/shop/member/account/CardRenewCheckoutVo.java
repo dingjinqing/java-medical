@@ -17,6 +17,6 @@ public class CardRenewCheckoutVo {
     private Timestamp expireTime;
     /** 支付金额 */
     private BigDecimal money;
-
+    private String failMsg;
     private WebPayVo webPayVo;
 }
