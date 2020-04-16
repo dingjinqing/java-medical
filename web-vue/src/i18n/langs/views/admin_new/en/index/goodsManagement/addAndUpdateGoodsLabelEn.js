@@ -30,5 +30,7 @@ export const en = {
   selectGoods: 'select goods',
   selectSorts: 'select sorts',
   isResetGoodsLabels: 'is select goods labels？',
-  resetGoodsLabels: 'reset goods labels'
+  resetGoodsLabels: 'reset goods labels',
+  confirm: 'Confirm',
+  cancel: 'Cancel'
 }
