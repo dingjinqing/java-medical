@@ -23,12 +23,6 @@ import static com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant.SOU
  */
 @Service
 public class LimitCardOpt extends CardOpt {
-	@Autowired
-	private UserCardService userCardService;
-	@Autowired
-	private UserCardDaoService userCardDao;
-	@Autowired
-	private MemberCardService cardService;
 	
 	public LimitCardOpt() {
 		super(CardConstant.MCARD_TP_LIMIT);
