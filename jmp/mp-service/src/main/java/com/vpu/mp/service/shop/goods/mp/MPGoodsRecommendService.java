@@ -128,7 +128,7 @@ public class MPGoodsRecommendService extends ShopBaseService {
 
         SortItemEnum sortItemEnum = null;
         //开启了店铺默认排序规则
-        if(shopCommonConfigService.getRecommendSort().equals(Byte.valueOf((byte)1))){
+        if(shopCommonConfigService.getRecommendSort().equals((byte)1)){
             sortItemEnum = goodsMpService.getShopGoodsSortEnum();
         }
 
