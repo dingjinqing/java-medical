@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.Tables.USER_CARD;
 
 import java.sql.Timestamp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,11 +113,32 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 			logger().info("此卡为自己赠送");
 			throw new CardReceiveFailException(JsonResultCode.CODE_CARD_RECEIVE_BYSELF);
 		}else {
-			limitCardOpt.handleSendGiveAwayCard(giveWayInfo.getUserId(), giveWayInfo.getUserId(), param.getCardNo());
+			String cardNo = limitCardOpt.handleSendGiveAwayCard(param.getUserId(), param.getCardId(), param.getCardNo());
+			if(StringUtils.isBlank(cardNo)) {
+				logger().info("领卡失败");
+				throw new CardReceiveFailException();
+			}else {
+				UserCardRecord userCardRecord = UserCardRecordBuilder.create()
+					.flag(UserCardConstant.FLAG_GIVE_FINISHED)
+					.giveAwayStatus(UserCardConstant.GIVE_WAY_SUCCESS)
+					.build();
+				
+				GiveCardRecordRecord giveCardRecordRecord = GiveCardRecordRecordBuilder.create()
+					.getUserId(param.getCardId())
+					.getTime(DateUtil.getLocalDateTime())
+					.getCardNo(cardNo)
+					.flag(FLAG_SUCCESS)
+					.build();
+				
+				Condition giveCardCondition = GIVE_CARD_RECORD.CARD_NO.eq(param.getCardNo())
+						.and(GIVE_CARD_RECORD.FLAG.eq(FLAG_NORMAL));
+				
+				this.transaction(()->{
+					db().executeUpdate(userCardRecord, USER_CARD.CARD_NO.eq(param.getCardNo()));
+					db().executeUpdate(giveCardRecordRecord,giveCardCondition);
+				});
+			}
 		}
-		
-		
-//		CardReceiveFailException
 	}
 	
 	/**
