@@ -564,8 +564,11 @@ public class IncreasePurchaseService extends ShopBaseService {
 
         //用户的购物车
         WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
-        vo.setMainPrice(cartBo.getTotalPrice());
-        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
+        BigDecimal totalPrice = cartBo.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
+        vo.setMainPrice(totalPrice);
+        vo.setChangeDoc(getChangeGoodsDoc(totalPrice,ruleRecords));
 
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
@@ -664,12 +667,14 @@ public class IncreasePurchaseService extends ShopBaseService {
         PurchaseChangeGoodsVo vo = new PurchaseChangeGoodsVo();
 
         WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS,param.getPurchasePriceId());
-        BigDecimal cartTotalPrice = BigDecimal.ZERO;
+        WxAppCartBo cartBoMainGoods = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        BigDecimal cartTotalPrice = cartBoMainGoods.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
         List<Integer> cartPrdIds = new ArrayList<>();
         Integer cartTotalGoodsNumber = 0;
         if(CollectionUtils.isNotEmpty(cartBo.getCartGoodsList())){
             for(WxAppCartGoods g:cartBo.getCartGoodsList()){
-                cartTotalPrice = cartTotalPrice.add(g.getPrdPrice().multiply(BigDecimal.valueOf(g.getCartNumber())));
                 cartPrdIds.add(g.getProductId());
                 cartTotalGoodsNumber += g.getCartNumber();
             }
@@ -732,6 +737,15 @@ public class IncreasePurchaseService extends ShopBaseService {
         return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
     }
 
-
+    /**
+     * 换购商品运费策略
+     * @param ActId
+     * @return
+     */
+    public boolean isFreeShip(Integer ActId) {
+        //换购商品运费策略，0免运费，1使用原商品运费模板
+        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(ActId)).fetchOneInto(Byte.class);
+        return NumberUtils.BYTE_ZERO.equals(isFreeShip);
+    }
 
 }

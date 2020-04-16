@@ -27,7 +27,7 @@ view,text,input{
 .main_ipt{
   width: 80%;
   display: inline-block;
-  padding-left: 20rpx;
+  /* padding-left: 20rpx; */
   height: 50rpx;
   min-height: 50rpx;
   line-height: 50rpx;
