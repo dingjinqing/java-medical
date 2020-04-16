@@ -108,6 +108,7 @@ public class LimitCardOpt extends CardOpt {
 		if(result>0) {
 			logger().info(String.format("成功向ID为%d的用户，发送了%d张限次会员卡：%s", userId, result,mCard.getCardName()));
 			userCardService.addChargeMoney(mCard,newCard);
+			addAcitivityTag(userId,mCard);
 			return newCard.getCardNo();
 		}else{
 			logger().info("领取限次卡失败");

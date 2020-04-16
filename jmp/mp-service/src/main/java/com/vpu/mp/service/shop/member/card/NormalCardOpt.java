@@ -59,7 +59,8 @@ public class NormalCardOpt extends CardOpt {
 		userCardService.addUserCardScore(userId, card);
 		//	赠送卡余额记录
 		userCardService.addChargeMoney(card, uCard);
-		
+		//	同步打标签
+		addAcitivityTag(userId,card);
 		
 		//	发送模板消息
 		userCardService.sendScoreTemplateMsg(card);
