@@ -189,6 +189,7 @@ global.wxPage({
         cardInfo.buyScore = JSON.parse(cardInfo.buyScore)
         cardInfo.chargeMoney = JSON.parse(cardInfo.chargeMoney)
         cardInfo.storeList = cardInfo.storeList
+        cardInfo.cardPrice = that.getCardPrice(cardInfo)
         if (cardInfo.activation) {
           card_activation = card_info.activation;
         }
@@ -216,6 +217,17 @@ global.wxPage({
     if (cardItem.cardType === 2) return null
     if (cardItem.expireType === 2) return `永久有效`
     return `${cardItem.startDate} 至 ${cardItem.endDate}`
+  },
+  getCardPrice(cardInfo){
+    console.log('购买++++++++++++++')
+    console.log(cardInfo)
+    if(cardInfo.isPay === 1){
+      let realPrice = cardInfo.payType === 0 ? `￥${cardInfo.payFee}` : `${cardInfo.payFee}积分`
+      return {
+        realPrice
+      }
+    }
+    return null
   },
   // 获取会员卡停用/删除状态图片
   getCardStopImage (cardItem) {

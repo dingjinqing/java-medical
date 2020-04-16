@@ -59,6 +59,8 @@ module.exports = {
   "seckill": "秒杀",
   "failGetFight": "获取拼团详情失败",
   "viewOrder":"查看订单",
+  "viewCouponList":"查看优惠券列表",
+  "viewCardInfo":"查看会员卡",
   "returnIndex":"返回首页",
   "score":"积分"
 }

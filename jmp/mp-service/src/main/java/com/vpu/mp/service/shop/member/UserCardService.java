@@ -2073,15 +2073,17 @@ public class UserCardService extends ShopBaseService {
     public CardRenewCheckoutVo renewCardCheckout(CardRenewCheckoutParam  param) throws MpException {
         Integer userId = param.getUserId();
         String cardNo = param.getCardNo();
+        CardRenewCheckoutVo vo = new CardRenewCheckoutVo();
         UserCardParam memberCard = userCardDao.getUserCardInfo(cardNo);
         UserRecord userInfo = userService.getUserByUserId(userId);
-        CardRenewRecord order = createRenewMemberOrder(userInfo,param,memberCard);
+        CardRenewRecord order = createRenewMemberOrder(userInfo,param,memberCard,vo);
         if(order==null){
             return null;
         }
-        CardRenewCheckoutVo vo = new CardRenewCheckoutVo();
+
         Timestamp expireTime = null;
         BigDecimal money = BigDecimal.ZERO;
+        WebPayVo webPayVo = new WebPayVo();
         //现金
         if (order.getRenewType()==(byte)0){
             //使用账户余额数量大于0
@@ -2113,7 +2115,25 @@ public class UserCardService extends ShopBaseService {
                 record.setType((byte)0);
                 db().executeInsert(record);
             }
-//            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){}
+            //支付
+            if (order.getMoneyPaid().compareTo(BigDecimal.ZERO)>0){
+                //微信支付接口
+                try {
+                    logger().info("会员卡续费微信支付-开始");
+                    UserRecord user = memberService.getUserRecordById(param.getUserId());
+                    MemberCardRecord cardInfo = userCardDao.getMemberCardById(param.getCardId());
+                    webPayVo = mpPaymentService.wxUnitOrder(param.getClientIp(), cardInfo.getCardName(), order.getRenewOrderSn(), param.getMoneyPaid(), user.getWxOpenid());
+                } catch (WxPayException e) {
+                    logger().error("微信预支付调用接口失败WxPayException，订单号：{},异常：{}", order.getRenewOrderSn(), e);
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+                }catch (Exception e) {
+                    logger().error("微信预支付调用接口失败Exception，订单号：{},异常：{}", order.getRenewOrderSn(), e.getMessage());
+                    throw new BusinessException(JsonResultCode.CODE_ORDER_WXPAY_UNIFIEDORDER_FAIL);
+                }
+                logger().debug("优惠券礼包-微信支付接口调用结果：{}", webPayVo);
+                // 更新记录微信预支付id：prepayid
+                cardOrderService.updatePrepayId(order.getRenewOrderSn(),webPayVo.getResult().getPrepayId());
+            }
             //更新订单信息
             updateOrderInfo(order.getRenewOrderSn());
             //修改会员卡过期时间
@@ -2143,6 +2163,7 @@ public class UserCardService extends ShopBaseService {
         }
         vo.setExpireTime(expireTime);
         vo.setMoney(money);
+        vo.setWebPayVo(webPayVo);
         return vo;
     }
 
@@ -2153,19 +2174,19 @@ public class UserCardService extends ShopBaseService {
      * @param memberCard
      * @return
      */
-    public CardRenewRecord createRenewMemberOrder(UserRecord user,CardRenewCheckoutParam orderInfo,UserCardParam memberCard){
+    public CardRenewRecord createRenewMemberOrder(UserRecord user,CardRenewCheckoutParam orderInfo,UserCardParam memberCard,CardRenewCheckoutVo vo){
         //判断当前卡是否删除，是否可续费
         if (orderInfo.getCardNo()!=null){
             if (memberCard.getUserCardFlag()==(byte)1){
-                logger().info("该会员卡已删除");
+                vo.setFailMsg("该会员卡已删除");
             }
             if (memberCard.getRenewMemberCard()==(byte)0){
-                logger().info("该会员卡不可续费");
+                vo.setFailMsg("该会员卡不可续费");
             }
         }
         //当前卡号为空-续费失败
         if(orderInfo.getCardId()==null){
-            logger().info("续费失败");
+            vo.setFailMsg("续费失败");
         }
         //账户余额
         BigDecimal accountNum = orderInfo.getUseAccount()!=null?orderInfo.getUseAccount():new BigDecimal(0);
@@ -2179,31 +2200,31 @@ public class UserCardService extends ShopBaseService {
         if (memberCard.getRenewType()==(byte)1){
             //校验用户积分
             if (scoreNum>user.getScore()){
-                logger().info("积分不足，无法下单");
+                vo.setFailMsg("积分不足，无法下单");
             }
             //校验积分数量
             if (!orderInfo.getRenewNum().equals(memberCard.getRenewNum())){
-                logger().info("积分数量不对，无法下单");
+                vo.setFailMsg("积分数量不对，无法下单");
             }
         }
         //现金支付 可用会员卡余额，余额，微信
         else {
             //校验余额数量
             if (!orderInfo.getRenewNum().equals(memberCard.getRenewNum())){
-                logger().info("金额数量不对，无法下单");
+                vo.setFailMsg("金额数量不对，无法下单");
             }
 
             if (accountNum.compareTo(user.getAccount()) > 0){
-                logger().info("余额不足，无法下单");
+                vo.setFailMsg("余额不足，无法下单");
             }
             if (memberCardReduce.compareTo(BigDecimal.ZERO)>0){
                 BigDecimal memberCardMoney = userCardDao.getUserCardInfo(orderInfo.getMemberCardNo()).getMoney();
                 if (memberCardReduce.compareTo(memberCardMoney)>0){
-                    logger().info("会员卡余额不足，无法下单");
+                    vo.setFailMsg("会员卡余额不足，无法下单");
                 }
             }
             if (orderInfo.getMoneyPaid().compareTo(BigDecimal.ZERO)<0|| !orderInfo.getMoneyPaid().equals(moneyPaid)){
-                logger().info("应付金额计算错误");
+                vo.setFailMsg("应付金额计算错误");
             }
         }//else结束
 

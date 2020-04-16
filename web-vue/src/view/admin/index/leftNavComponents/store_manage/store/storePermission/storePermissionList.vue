@@ -401,7 +401,6 @@ export default {
   mounted () {
     this.initStoreList()
     this.initDataList()
-    this.accountForm = this.baseAccountForm
   },
   methods: {
     initDataList () {
@@ -432,6 +431,7 @@ export default {
     // 添加账户弹窗
     addAccountHandle () {
       this.accountDialogVisible = !this.accountDialogVisible
+      this.accountForm = this.baseAccountForm
       this.isEdit = false
     },
     // 添加/修改账户
@@ -541,7 +541,12 @@ export default {
           getAccountApi(that.editAccountId).then(res => {
             if (res.error === 0) {
               res.content.storeList = res.content.storeLists
-              that.accountForm = Object.assign({}, that.baseAccountForm, res.content)
+              let accountForm = Object.assign({}, that.baseAccountForm, res.content)
+              accountForm.accountPasswd = ''
+              if (res.content.storeLists && res.content.storeLists.length > 0) {
+                accountForm.storeList = res.content.storeLists
+              }
+              that.accountForm = accountForm
             } else {
               that.$message.error(res.message)
             }

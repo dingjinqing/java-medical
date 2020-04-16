@@ -230,24 +230,39 @@
             v-show="moreFilters"
           >
             <span>{{$t('order.orderTime')}}：</span>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="orderTime"
-              type="daterange"
               :range-separator="$t('membershipIntroduction.to')"
               :start-placeholder="$t('membershipIntroduction.Starttime')"
               :end-placeholder="$t('membershipIntroduction.Endtime')"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              :default-time="['00:00:00','23:59:59']"
               size="small"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="orderTime.startTime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="default_input"
+              @change="datePickerChange(true,orderTime)"
+              size="small"
+            />
+             至
+            <el-date-picker
+              v-model="orderTime.endTime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="default_input"
+              @change="datePickerChange(false,orderTime)"
+              :picker-options="orderEndTime"
+              size="small"
+            />
           </div>
           <div
             class="filters_item"
             v-show="moreFilters"
           >
             <span>{{$t('order.completeTime')}}：</span>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="completeTime"
               type="daterange"
               :range-separator="$t('membershipIntroduction.to')"
@@ -257,7 +272,25 @@
               :default-time="['00:00:00','23:59:59']"
               size="small"
             >
-            </el-date-picker>
+            </el-date-picker> -->
+            <el-date-picker
+              v-model="completeTime.startTime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="datePickerChange(true,completeTime)"
+              class="default_input"
+              size="small"
+            />
+             至
+            <el-date-picker
+              v-model="completeTime.endTime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="datePickerChange(false,completeTime)"
+              :picker-options="completeEndTime"
+              class="default_input"
+              size="small"
+            />
           </div>
         </div>
       </div>
@@ -851,8 +884,14 @@ export default {
         shippingNo: '',
         roomId: null
       },
-      orderTime: null,
-      completeTime: null,
+      orderTime: {
+        startTime: null,
+        endTime: null
+      },
+      completeTime: {
+        startTime: null,
+        endTime: null
+      },
       sourceList: [
       ],
       storeList: [
@@ -883,6 +922,16 @@ export default {
         provinceCode: '',
         cityCode: '',
         districtCode: ''
+      },
+      orderEndTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.orderTime.startTime).getTime()
+        }
+      },
+      completeEndTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.completeTime.startTime).getTime()
+        }
       }
     }
   },
@@ -922,13 +971,19 @@ export default {
       },
       immediate: true
     },
-    completeTime (val) {
-      this.searchParams.finishedTimeStart = val ? val[0] : null
-      this.searchParams.finishedTimeEnd = val ? val[1] : null
+    completeTime: {
+      handler (val) {
+        this.searchParams.finishedTimeStart = val.startTime ? val.startTime : null
+        this.searchParams.finishedTimeEnd = val.endTime ? val.endTime : null
+      },
+      deep: true
     },
-    orderTime (val) {
-      this.searchParams.createTimeStart = val ? val[0] : null
-      this.searchParams.createTimeEnd = val ? val[1] : null
+    orderTime: {
+      handler (val) {
+        this.searchParams.createTimeStart = val.startTime ? val.startTime : null
+        this.searchParams.createTimeEnd = val.endTime ? val.endTime : null
+      },
+      deep: true
     }
   },
   methods: {
@@ -1077,6 +1132,20 @@ export default {
     },
     handleExportColumnSelect () {
       this.showExportConfirm = true
+    },
+    /* 验证输入的时间范围是否合法 */
+    datePickerChange (isStart, target) {
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   }
 }

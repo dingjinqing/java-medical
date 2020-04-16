@@ -77,8 +77,10 @@ public class IntegralConvertService extends ShopBaseService {
      * @return 活动商品信息
      */
 	public PageResult<PopListVo> getPopList(PopListParam param){
-	    SelectConditionStep<? extends Record> select = db().select(imd.ID.as("integral_goods_id"),GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
-        GOODS.SHOP_PRICE.as("prd_price"),imp.STOCK.as("stock_sum"),imp.MONEY,imp.SCORE,imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+	    SelectConditionStep<? extends Record> select = db().select(imd.ID.as("integral_goods_id"),
+            GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+            DSL.sum(imp.STOCK).as("stock_sum"),DSL.min(imp.MONEY).as("money"),DSL.min(imp.SCORE).as("score"),
+            imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
             .from(imd)
             .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
             .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
@@ -92,10 +94,18 @@ public class IntegralConvertService extends ShopBaseService {
 	    if (null!=param.getIsOnSale()&&!param.getIsOnSale().equals(DEFAULT_SALE_STATUS)){
             select.and(GOODS.IS_ON_SALE.eq(param.getIsOnSale()));
         }
+	    select.groupBy(imd.ID.as("integral_goods_id"),
+            GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+            imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"));
 	    //整合分页信息
         PageResult<PopListVo> result = getPageResult(select,param.getCurrentPage(),param.getPageRows(),PopListVo.class);
 	    for (PopListVo vo :result.dataList){
 	        vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+	        BigDecimal prdPrice = db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE))
+                .from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(vo.getGoodsId()))
+                .fetchOneInto(BigDecimal.class);
+	        vo.setPrdPrice(prdPrice);
         }
 	    return result;
     }

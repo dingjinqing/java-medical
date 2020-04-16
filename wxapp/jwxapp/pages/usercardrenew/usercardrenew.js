@@ -5,6 +5,7 @@ var opt = {};
 var user_account_input;
 var member_card_input;
 var new_money_paid;
+var account_discount;
 global.wxPage({
   /**
    * 页面的初始数据
@@ -114,6 +115,7 @@ global.wxPage({
     } else {
       cardInfo.shopAvatar = that.data.bottom.logo;
     }
+    cardInfo.renewNum = cardInfo.renewNum.toFixed(2)
     that.setData({
       cardInfo: cardInfo,
       bg: bg,
@@ -122,8 +124,8 @@ global.wxPage({
 
 
     that.data.create_order.money_paid = cardInfo.renewNum; // 续费金额或积分
-    that.data.create_order.account_discount = 0;
-    that.data.create_order.member_card_balance = 0;
+    that.data.create_order.account_discount = 0.00;
+    that.data.create_order.member_card_balance = 0.00;
     opt.score_num = 0;
     if (cardInfo.renewType == 0) { // 现金处理
       that.data.user_money.account = cardInfo.account; // 用户余额
@@ -255,14 +257,15 @@ global.wxPage({
     }
   },
   checkCancelYue: function (e) { // 用户余额
-    new_money_paid = parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.account_discount);
+    new_money_paid = (parseFloat(this.data.create_order.money_paid) + parseFloat(this.data.create_order.account_discount)).toFixed(2);
+    console.log(new_money_paid)
     this.setData({
       'create_order.money_paid': new_money_paid,
       account_pay_control: 0,
       pay_yue: 0,
       prompt_message: '',
       user_account_input: '',
-      'create_order.account_discount': 0,
+      'create_order.account_discount': 0.00,
     })
   },
   checkCancelCard: function (e) { // 会员卡余额
@@ -273,7 +276,7 @@ global.wxPage({
       pay_card: 0,
       prompt_message: '',
       member_card_input: '',
-      'create_order.member_card_balance': 0,
+      'create_order.member_card_balance': 0.00,
     })
   },
   // 余额支付弹窗确定事件
@@ -289,11 +292,11 @@ global.wxPage({
       }
     }
     new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(user_account_input)).toFixed(2);
-    this.data.create_order.account_discount = parseFloat(user_account_input).toFixed(2);
+
     this.setData({
       user_account_input: user_account_input <= 0 ? '' : user_account_input,
       pay_yue: 1,
-      'create_order.account_discount': e.detail,
+      'create_order.account_discount': parseFloat(user_account_input).toFixed(2),
       payMode: false
     })
     this.definePay();
@@ -312,11 +315,10 @@ global.wxPage({
     }
     console.log(this.data.create_order.money_paid)
     new_money_paid = (parseFloat(this.data.create_order.money_paid) - parseFloat(member_card_input)).toFixed(2);
-    this.data.create_order.member_card_balance = parseFloat(member_card_input).toFixed(2);
     this.setData({
       member_card_input: member_card_input > 0 ? member_card_input : '',
       pay_card: 1,
-      'create_order.member_card_balance': e.detail,
+      'create_order.member_card_balance': parseFloat(member_card_input).toFixed(2),
       cardPayMode: false
     })
     this.definePay();
@@ -337,29 +339,31 @@ global.wxPage({
   //  提交订单
   OneClickBuy (e) {
     var that = this;
+
     let params = {
       cardId: opt.card_id,
       cardNo: opt.card_no,
-      memberCardBalance: 0,
+      memberCardBalance: 0.00,
       memberCardNo: 0,
-      moneyPaid: 0,
-      renewNum: opt.renew_num,
+      moneyPaid: 0.00,
+      renewNum: parseFloat(opt.renew_num).toFixed(2),
       scoreNum: opt.score_num,
-      useAccount: 0
+      useAccount: 0.00
     }
+    console.log(that.data)
     // opt.openid = util.getCache('openid');
     // opt.form_id = e.detail.formId;
     if (that.data.cardInfo.renewType == 0) { // 现金支付
       params.moneyPaid = that.data.create_order.money_paid; // 续费金额
       params.useAccount = that.data.create_order.account_discount; // 余额支付
-      params.memberCardBalance = that.data.create_order.member_card_balance; // 会员卡支付的价钱数额
+      params.memberCardBalance = that.data.create_order.member_card_balance == 0 ? '0.00' : that.data.create_order.member_card_balance; // 会员卡支付的价钱数额
       params.memberCardNo = that.data.memberCardNo;
       params.scoreNum = 0;
     } else {  // 积分支付
       params.moneyPaid = that.data.cardInfo.renewNum;
-      params.useAccount = 0;
-      params.memberCardBalance = 0;
-      params.memberCardNo = 0;
+      params.useAccount = 0.00;
+      params.memberCardBalance = 0.00;
+      params.memberCardNo = 0.00;
     }
     console.log(opt, params);
 
@@ -403,7 +407,6 @@ global.wxPage({
       //   }
     }, params)
   },
-
   to_index () {
     util.reLaunch({
       url: '/pages/index/index'

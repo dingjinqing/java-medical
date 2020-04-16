@@ -69,7 +69,8 @@ global.wxPage({
     img_len: 0,
     image: false,
     comm_img: [],
-    mobile: util.getCache('mobile')
+    mobile: util.getCache('mobile'),
+    checkbox_no: imageUrl + '/image/admin/select.png'
   },
 
   /**
@@ -1034,19 +1035,17 @@ global.wxPage({
   // 自定义多选
   checkboxChange: function (e) {
     let that = this
-    let index = e.target.dataset.index
+    let index = e.currentTarget.dataset.index
     let custom_arr = that.data.custom_arr
-    let valueList = e.detail.value
-    console.log(index)
+    let valueList = e.currentTarget.dataset.value
+    console.log(index, custom_arr, e, valueList)
     custom_arr[index].optionArr.find((item, index) => {
-      item.isChecked = false
-      valueList.find((val, key) => {
-        if (val == item.optionTitle) {
-          item.isChecked = true
-        }
-      })
+      // item.isChecked = false
+      if (valueList == item.optionTitle) {
+        item.isChecked = !item.isChecked
+      }
     })
-
+    // that.$set()
     that.setData({
       custom_arr: custom_arr
     })

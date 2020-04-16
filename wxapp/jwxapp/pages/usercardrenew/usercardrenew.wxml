@@ -5,7 +5,6 @@
 		<view class="card_type" wx:if="{{cardInfo.cardType == 0}}">普通卡</view>
 		<view class="card_info">
 			<view class="card_surface_top">
-				<!--存疑-->
 				<image src="{{ cardInfo.shopAvatar }}" class="shop_img" />
 				<view class="card_name_box">
 					<view class="card_name">{{ cardInfo.cardName }}
