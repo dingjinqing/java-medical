@@ -23,6 +23,20 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 @Service
 public class UserTagService extends ShopBaseService{
 	/**
+	 * 	标签来源： 后台设置
+	 */
+	public final static Short SRC_BACKEND = 0;
+	/**
+	 * 	标签来源： 优惠券
+	 */
+	public final static Short SRC_COUPON = 1;
+	/**
+	 * 	标签来源： 会员卡
+	 */
+	public final static Short SRC_CARD = 2;
+	
+	
+	/**
 	 * 获取用户标签
 	 * @return  List<TagVo> 不会为null
 	 */
@@ -55,7 +69,8 @@ public class UserTagService extends ShopBaseService{
 	/**
 	 * 	活动，如：领券，领卡，添加用户标签
 	 * @param userId
-	 * @param tagIdList
+	 * @param tagIdList 标签IDs
+	 * @param source 0后台设置 1优惠券 2会员卡
 	 */
 	public void addActivityTag(Integer userId,List<Integer> tagIdList,Short source,Integer activitiId) {
 		logger().info("给用户打标签");
