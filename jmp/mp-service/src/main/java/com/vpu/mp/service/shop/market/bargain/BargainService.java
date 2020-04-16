@@ -113,7 +113,7 @@ public class BargainService extends ShopBaseService  {
 	public PageResult<BargainPageListQueryVo> getPageList(BargainPageListQueryParam param) {
 		SelectWhereStep<? extends Record> select = db().select(
 				BARGAIN.ID,BARGAIN.BARGAIN_NAME,BARGAIN.BARGAIN_TYPE,BARGAIN.START_TIME,BARGAIN.END_TIME,BARGAIN.STATUS,
-				BARGAIN.GOODS_ID,BARGAIN.STOCK
+				BARGAIN.GOODS_ID,BARGAIN.STOCK,BARGAIN.FIRST
 				).
 				from(BARGAIN);
         select = buildOptions(select,param);
