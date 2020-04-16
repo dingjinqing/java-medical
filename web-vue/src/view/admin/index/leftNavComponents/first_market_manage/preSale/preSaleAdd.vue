@@ -897,7 +897,7 @@ export default {
                     if (res.error === 0) {
                       console.log(res)
                       this.$message.success('更新成功')
-                      // this.gotoHome()
+                      this.gotoHome()
                     } else {
                       this.$message.error('更新失败')
                     }
@@ -907,7 +907,7 @@ export default {
                     if (res.error === 0) {
                       console.log(res)
                       this.$message.success('添加成功')
-                      // this.gotoHome()
+                      this.gotoHome()
                     } else {
                       this.$message.error('创建失败')
                     }
