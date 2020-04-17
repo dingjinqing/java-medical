@@ -348,6 +348,7 @@ public class QrCodeService extends ShopBaseService {
     
     /**
      * 	获取转赠会员卡图
+     *	@return	图片绝对路径
      */
     public String createCardGiveAwayImage(MemberCardRecord card) {
     	logger().info("获取转赠会员卡图");
