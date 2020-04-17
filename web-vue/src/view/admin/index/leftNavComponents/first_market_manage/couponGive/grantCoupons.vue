@@ -31,6 +31,7 @@
               <div>
                 <span style="color:#999;fontSize:12px">{{$t('couponGive.peopleTip')}}</span>
               </div>
+              <!-- 加购人群 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.addCartPeople')"
@@ -39,6 +40,7 @@
                 ></el-checkbox>
                 <span style="color:#999;fontSize:12px;">{{$t('couponGive.addCartTip')}}</span>
               </div>
+              <!-- 购买指定商品人群 -->
               <div>
                 <el-checkbox
                   :label="$t('couponGive.buyGoodsPeople')"
@@ -196,11 +198,19 @@
                       style="line-height:normal"
                     >
                       <div class="coupon_list_top">
-                        <span>￥</span>
-                        <span class="number">{{item.denomination}}</span>
+                        <span v-if="item.actCode==='voucher'">￥ {{item.denomination}}</span>
+                        <span v-if="item.actCode==='discount'">{{item.denomination}} 折</span>
+                        <span v-if="item.actCode==='random'"></span>
                       </div>
                       <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
-                      <div class="coupon_center_number">剩余{{item.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus ===0"
+                      >库存不限制</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="item.surplus !==0"
+                      >剩余{{item.surplus}}张</div>
                       <div
                         class="coupon_list_bottom"
                         style="font-size:12px"
@@ -209,7 +219,13 @@
                     <span
                       @click="deleteCouponImg(index)"
                       class="deleteIcon"
-                    >×</span>
+                    >
+                      <!-- × -->
+                      <img
+                        :src="imgHost+'/image/admin/sign_del.png'"
+                        alt=""
+                      >
+                    </span>
                   </div>
                 </div>
                 <div
@@ -222,6 +238,7 @@
                     :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
                     style="width: 78px;height:78px;cursor:pointer"
                   ></el-image>
+                  <p>添加优惠券</p>
                 </div>
               </div>
             </el-form-item>
@@ -272,7 +289,7 @@
         @click="addAct"
       >{{$t('couponGive.confirmGrant')}}</el-button>
     </div>
-    <!-- 添加会员的弹窗 -->
+    <!-- 选择指定会员弹窗 -->
     <memberListDialog
       v-if="dialogOff"
       @userIdList="getUserIdList"
@@ -672,6 +689,7 @@ export default {
       this.memberNum = val.length // 把选中的数组长度赋值给已选会员数
       // 当添加会员后 发送获取人数接口
       this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
     },
     formatUserIdList (userIdList) {
       let arr = []
@@ -720,6 +738,7 @@ export default {
       this.goodsNum = row.length
       // 发送获取人数
       this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
     },
     // 选择商品
     handleChooseGoods () {
@@ -753,6 +772,7 @@ export default {
       console.log('现在的id：', this.params.goodsIdList)
       // this.params.goodsIdList = this.goodsIdList.filter((item) => item !== id)
       this.fetchUserList(this.params)
+      this.$refs['params'].validateField('crowd')
     },
     // 获取选中的path
     getPath (res) {
@@ -789,6 +809,7 @@ export default {
         default:
           break
       }
+      this.$refs['params'].validateField('crowd')
     },
     handleGetUser () {
       this.dialogVisible = true
@@ -1080,21 +1101,6 @@ export default {
   margin: 5px 5px;
   position: relative;
 }
-.deleteIcon {
-  width: 17px;
-  height: 17px;
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  line-height: 17px;
-  text-align: center;
-  position: relative;
-  top: -41px;
-  right: -95px;
-  cursor: pointer;
-  opacity: 0.8;
-}
 .ImgWrap .moveIcon {
   width: 17px;
   height: 17px;
@@ -1246,27 +1252,23 @@ export default {
     width: 17px !important;
     height: 17px;
     line-height: 17px;
-    top: -118px;
+    top: -112px;
     left: 45px;
-    cursor: pointer;
-    opacity: 0.8;
-    color: #fff;
-    background: #ccc;
-    border: 1px solid #ccc;
-    border-radius: 50%;
     text-align: center;
+    cursor: pointer;
   }
 }
 .addInfo {
   display: inline-block;
   position: relative;
   width: 100px;
-  height: 101px;
+  height: 96px;
   margin-bottom: 10px;
   background: #fff;
   border: 1px solid #e4e4e4;
   cursor: pointer;
   text-align: center;
+  border-radius: 10px;
   img {
     margin-top: 10px;
   }
