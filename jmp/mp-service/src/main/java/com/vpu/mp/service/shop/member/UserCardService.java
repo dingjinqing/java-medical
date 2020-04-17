@@ -2108,7 +2108,7 @@ public class UserCardService extends ShopBaseService {
                 //增加会员卡消费记录
                 CardConsumerRecord record = new CardConsumerRecord();
                 record.setUserId(userId);
-                record.setMoney(order.getMemberCardRedunce());
+                record.setMoney(new BigDecimal("-"+order.getMemberCardRedunce().toString()));
                 record.setCardNo(param.getMemberCardNo());
                 record.setCardId(cardInfo.getCardId());
                 record.setReason(order.getRenewOrderSn());
@@ -2148,7 +2148,7 @@ public class UserCardService extends ShopBaseService {
                 ScoreParam scoreParam = new ScoreParam();
                 scoreParam.setScoreDis(userInfo.getScore());
                 scoreParam.setUserId(userId);
-                scoreParam.setScore(order.getUseScore().intValue());
+                scoreParam.setScore(-order.getUseScore().intValue());
                 scoreParam.setRemarkCode(RemarkTemplate.CARD_RENEW.code);
                 scoreParam.setRemarkData("会员卡续费"+order.getRenewOrderSn());
                 scoreParam.setChangeWay(61);
