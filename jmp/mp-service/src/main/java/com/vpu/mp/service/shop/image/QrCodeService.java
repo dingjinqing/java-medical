@@ -286,7 +286,7 @@ public class QrCodeService extends ShopBaseService {
 	}
 	
     /**
-     * 获取 会员卡头像
+     * 	获取 会员卡头像
      */
 	private BufferedImage getCardVatar() {
 		String shopAvatar = saas().shop.getShopAvatarById(this.getShopId());
@@ -346,8 +346,39 @@ public class QrCodeService extends ShopBaseService {
 		return obj == null;
 	}
     
-    
-    
+    /**
+     * 	获取转赠会员卡图
+     */
+    public String createCardGiveAwayImage(MemberCardRecord card) {
+    	logger().info("获取转赠会员卡图");
+    	final short type = QrCodeTypeEnum.USER_CARD_INFO.getType();
+    	CodeRecord code = getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,card.getId());
+    	String relativePath;
+    	if(code==null) {
+        	//	背景
+        	final String bgPath = "image/wxapp/card_give_away.png";
+        	BufferedImage giveWayBgImg = getBgImg(400,320,bgPath);
+        	
+        	//	头像
+        	BufferedImage cardVatar = getCardVatar();
+        	
+        	//	会员卡名称
+        	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 0, 0);
+        	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
+    				Color.WHITE);
+
+        	relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+           
+        	CodeRecord codeRecord = db().newRecord(CODE);
+            codeRecord.setType(type);
+            codeRecord.setParamId(String.valueOf(card.getId()));
+            codeRecord.setQrcodeImg(relativePath);
+            codeRecord.insert();
+    	}else {
+    		relativePath = code.getQrcodeImg();
+    	}
+    	return imageService.imageUrl(relativePath);
+    }
     
     
     
