@@ -80,13 +80,13 @@ public class PictorialImgPx {
     private Integer customerIconWidth =40;
     private Integer customerIconHeight = 30;
     private Integer customerIconStartX = customerRectStartX+20;
-    private Integer customerIconStartY = customerRectStartY +20;
+    private Integer customerIconStartY = customerRectStartY +17;
 
     private Integer customerTextPadding = 8;
-    private Integer customerTextStartY = customerRectStartY + 5;
+    private Integer customerTextStartY = customerRectStartY + 10;
     private Integer customerTextStartX = customerRectStartX+20;
 
-    private Integer customerSecondTextStartY = customerTextStartY +12;
+    private Integer customerSecondTextStartY = customerTextStartY +10;
     private Color customerTextFontColor = new Color(255, 255, 255);
 
     /*****************海报底部图片配置参数******************/
