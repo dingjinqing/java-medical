@@ -787,6 +787,9 @@ export default {
       imgHost: `${this.$imageHost}`,
       dateInterval: [], // 时间范围
       chooseGoodsIdList: [], // 选择商品
+      getReturnGoodsIdList: '',
+      getReturnPlatIdList: '',
+      getReturnBussinessIdList: '',
 
       params: {
         id: '',
@@ -1185,6 +1188,38 @@ export default {
           this.params.endTime = data.endTime
         }
       }
+
+      // 商品回显
+      let tempGoods = data.goodsIds.split(',')
+      this.choosingGoodsDateFlag1 = this.handleReturnGoodsId(tempGoods)
+      this.noneBlockDiscArr[0].num = this.getReturnGoodsIdList.length
+      // 平台分类回显
+      // let tempPlat = data.goodsCatIds.split(',')
+      // this.platformCategoryIds = this.handleReturnPlatId(tempPlat)
+      // this.noneBlockDiscArr[2].num = this.getReturnPlatIdList.length
+      // 商家分类回显
+      let tempBussiness = data.goodsSortIds.split(',')
+      this.shopCategoryIds = this.handleReturBussinessId(tempBussiness)
+      this.noneBlockDiscArr[1].num = this.getReturnBussinessIdList.length
+    },
+    handleReturnGoodsId (goodsData) {
+      let newArr = goodsData.map(Number)
+      this.getReturnGoodsIdList = Array.from(new Set(newArr))
+      let result = Array.from(new Set(newArr))
+      return result
+    },
+    // handleReturnPlatId (goodsData) {
+    //   let newArr = goodsData.map(Number)
+    //   this.getReturnPlatIdList = Array.from(new Set(newArr))
+    //   let result = Array.from(new Set(newArr))
+    //   return result
+    // },
+    handleReturBussinessId (goodsData) {
+      console.log(goodsData)
+      let newArr = goodsData.map(Number)
+      this.getReturnBussinessIdList = Array.from(new Set(newArr))
+      let result = Array.from(new Set(newArr))
+      return result
     },
 
     // 添加支付有礼活动接口调用
