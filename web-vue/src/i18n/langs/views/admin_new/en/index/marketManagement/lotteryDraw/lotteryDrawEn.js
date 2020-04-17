@@ -46,6 +46,7 @@ export const en = {
   edit: 'Edit',
   share: 'Share',
   stop: 'Stop',
+  start: 'Start',
   order: 'View active orders',
   user: 'Participating users',
   userDetail: 'Get new user details',
