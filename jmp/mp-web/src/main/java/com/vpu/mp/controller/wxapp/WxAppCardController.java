@@ -246,7 +246,7 @@ public class WxAppCardController extends WxAppBaseController {
 	/**
 	 * 	转赠限次卡
 	 */
-	@PostMapping("api/card/giveAway/record")
+	@PostMapping("/api/card/giveAway/record")
 	public JsonResult limitCardGiveAway(DefaultCardParam param) {
 		logger().info("转赠限次卡");
 		param.setUserId(wxAppAuth.user().getUserId());
