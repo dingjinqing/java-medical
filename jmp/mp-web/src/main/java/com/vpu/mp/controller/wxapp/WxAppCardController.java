@@ -235,7 +235,7 @@ public class WxAppCardController extends WxAppBaseController {
 	/**
 	 * 	取消限次卡转赠
 	 */
-	@PostMapping("/api/card/giveAway/quit")
+	@PostMapping("/api/wxapp/card/giveAway/quit")
 	public JsonResult quitLimitCardGiveAway(DefaultCardParam param) {
 		logger().info("取消限次卡转赠");
 		param.setUserId(wxAppAuth.user().getUserId());
@@ -246,7 +246,7 @@ public class WxAppCardController extends WxAppBaseController {
 	/**
 	 * 	转赠限次卡
 	 */
-	@PostMapping("/api/card/giveAway/record")
+	@PostMapping("/api/wxapp/card/giveAway/record")
 	public JsonResult limitCardGiveAway(DefaultCardParam param) {
 		logger().info("转赠限次卡");
 		param.setUserId(wxAppAuth.user().getUserId());
