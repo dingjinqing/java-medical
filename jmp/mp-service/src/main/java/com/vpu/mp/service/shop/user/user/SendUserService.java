@@ -218,11 +218,11 @@ public class SendUserService extends ShopBaseService {
             fetch().into(Integer.class);
     }
     private List<Integer> getSendUserByUserTagList(List<Integer> tagList){
-        return db().select(USER_TAG.USER_ID).
-            from(USER_TAG).
-            where(USER_TAG.IS_DELETE.eq((byte) 0)).
-            and(USER_TAG.TAG_ID.in(tagList)).
-            fetch().into(Integer.class);
+    	
+    	return db().select(USER_TAG.USER_ID).
+                from(USER_TAG).
+                where(USER_TAG.TAG_ID.in(tagList)).
+                fetch().into(Integer.class);
     }
     private List<Integer> getSendUserByPayedDay(Integer days,Date today){
         Timestamp havePayDay = Util.getEarlyTimeStamp(today, -days);
