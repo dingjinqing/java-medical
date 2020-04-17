@@ -169,7 +169,14 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private Integer getResaleQuantity(Integer purchasePriceId) {
         Integer defaultValue = 0;
-        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)).and(og.ACTIVITY_ID.eq(purchasePriceId)).and(og.ACTIVITY_RULE.greaterThan(0)).and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).and(oi.SHIPPING_TIME.isNotNull()).or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED)).fetchOptionalInto(Integer.class).orElse(defaultValue);
+        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
+            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .and(og.ACTIVITY_RULE.greaterThan(0))
+            .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(oi.SHIPPING_TIME.isNotNull())
+            .and(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED))
+            .fetchOptionalInto(Integer.class).orElse(defaultValue);
     }
 
     /**
