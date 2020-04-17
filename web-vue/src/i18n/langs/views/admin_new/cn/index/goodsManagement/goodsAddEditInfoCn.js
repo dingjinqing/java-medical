@@ -235,6 +235,7 @@ export const cn = {
     promotionLanguage: '推广语内容：',
     promotionLanguageTooLong: '推广语超长',
     promotionDocTooLong: '文档内容过长',
+    promotionDocIsNull: '文档内容不可为空',
     shareGoodsAction: '商品分享海报：',
     shareGoodsActionRadio1: '默认样式',
     shareGoodsActionRadio2: '自定义样式',
