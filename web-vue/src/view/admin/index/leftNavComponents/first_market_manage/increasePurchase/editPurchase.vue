@@ -88,6 +88,7 @@
           <el-form-item
             :label="$t('purchase.rule1')+'：'"
             label-width="110px"
+            style="margin-top:10px;"
           >
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
@@ -178,6 +179,7 @@
         <el-table
           :data="main_table"
           style="width: 100%"
+          border
         >
           <el-table-column :label="$t('purchase.goodsName')">
             <template slot-scope="{ row }">
@@ -248,6 +250,7 @@
             <el-table
               :data="purchase_table1"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -259,12 +262,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -311,12 +314,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -363,12 +366,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -397,17 +400,17 @@
     </div>
     <div class="footer">
       <el-button
-        v-if="step === 0 || step === 1"
-        type="primary"
-        size="small"
-        @click="nextStep(step+1)"
-      >{{$t('purchase.nextStep')}}</el-button>
-      <el-button
         v-if="step === 1 || step === 2"
         type="primary"
         size="small"
         @click="preStep"
       >{{$t('purchase.preStep')}}</el-button>
+      <el-button
+        v-if="step === 0 || step === 1"
+        type="primary"
+        size="small"
+        @click="nextStep(step+1)"
+      >{{$t('purchase.nextStep')}}</el-button>
       <el-button
         type="primary"
         size="small"

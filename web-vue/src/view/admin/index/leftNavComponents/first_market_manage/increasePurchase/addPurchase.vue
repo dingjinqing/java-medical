@@ -88,6 +88,7 @@
           <el-form-item
             :label="$t('purchase.rule1')+'：'"
             label-width="110px"
+            style="margin-top:10px;"
           >
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
@@ -178,6 +179,7 @@
         <el-table
           :data="main_table"
           style="width: 100%"
+          border
         >
           <el-table-column :label="$t('purchase.goodsName')">
             <template slot-scope="{ row }">
@@ -236,6 +238,7 @@
             <el-button
               type="primary"
               @click="showChoosingGoods1"
+              size="small"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
             <ChoosingGoods
@@ -249,6 +252,7 @@
             <el-table
               :data="purchase_table1"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -260,12 +264,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -313,12 +317,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -366,12 +370,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -632,6 +636,7 @@ export default {
     },
     // 选择换购商品弹窗回调显示
     choosingGoodsResult1 (row) {
+      console.log('row:', row)
       this.purchase_table1 = row
       this.purcahse_rule1.productId = []
       this.purchase_table1.map((item, index) => {

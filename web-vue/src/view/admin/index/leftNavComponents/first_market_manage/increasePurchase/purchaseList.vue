@@ -2,7 +2,7 @@
   <div class="container">
     <div class="top">
       <statusTab
-        v-model="orderStatus"
+        v-model="param.status"
         :activityName="activityName"
         :standard="true"
       />
@@ -134,7 +134,15 @@
           :label="$t('purchase.singlemax')"
           align="center"
         >
-
+          <template slot-scope="{row}">
+            <div v-if="row.maxChangePurchase === 0">
+              不限制
+            </div>
+            <div
+              v-else
+              v-text="row.maxChangePurchase"
+            ></div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="resaleQuantity"
@@ -153,7 +161,7 @@
               <el-tooltip
                 :content="$t('purchase.edit')"
                 placement="top"
-                v-if="scope.row.category === 8 || scope.row.category === 4"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
                   class="el-icon-edit-outline iconSpn"
@@ -164,7 +172,7 @@
               <el-tooltip
                 :content="$t('purchase.share')"
                 placement="top"
-                v-if="scope.row.category === 8 || scope.row.category === 4"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
                   class="el-icon-share iconSpn"
@@ -175,7 +183,7 @@
               <el-tooltip
                 :content="$t('purchase.Disable')"
                 placement="top"
-                v-if="scope.row.category === 8 || scope.row.category === 4"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
                   class="el-icon-circle-close iconSpn"
@@ -186,7 +194,7 @@
               <el-tooltip
                 :content="$t('purchase.Enable')"
                 placement="top"
-                v-if="scope.row.category === 1"
+                v-if="scope.row.category === 4 && notExpired(scope.row)"
               >
                 <span
                   class="el-icon-circle-check iconSpn"
@@ -217,7 +225,7 @@
               <el-tooltip
                 :content="$t('purchase.delete')"
                 placement="top"
-                v-if="scope.row.category === 1 || scope.row.category === 2"
+                v-if="scope.row.category === 3 || scope.row.category === 4"
               >
                 <span
                   @click="deleteShare(scope.row.id)"
@@ -261,34 +269,6 @@ export default {
   mounted () {
     this.langDefault()
   },
-  watch: {
-    orderStatus: {
-      handler: function (n, o) {
-        console.log(n)
-        let category = 0
-        switch (n) {
-          case 0:
-            category = 0
-            break
-          case 1:
-            category = 8
-            break
-          case 2:
-            category = 4
-            break
-          case 3:
-            category = 2
-            break
-          case 4:
-            category = 1
-            break
-        }
-        this.$set(this.param, 'category', category)
-        this.initDataList()
-      },
-      immediate: true
-    }
-  },
   created () {
     this.initDataList()
   },
@@ -297,9 +277,8 @@ export default {
       activityName: this.$t('purchase.addPriceBuy'),
       tableData: [],
       pageParams: {},
-      orderStatus: 1,
       param: {
-        status: '',
+        status: 1,
         category: 0,
         name: '',
         // dateRange: [],
@@ -316,6 +295,11 @@ export default {
       showShareDialog: false,
       shareImg: '',
       sharePath: ''
+    }
+  },
+  watch: {
+    'param.status': function (val) {
+      this.initDataList()
     }
   },
   methods: {
@@ -385,6 +369,7 @@ export default {
     },
     // 查询数据列表
     initDataList () {
+      this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
       getList(this.param).then((res) => {
@@ -479,6 +464,15 @@ export default {
           this.showShareDialog = !this.showShareDialog
         }
       })
+    },
+    notExpired (row) {
+      let time = new Date(row.timestamp)
+      let endTime = new Date(row.endTime)
+      if (time < endTime) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
