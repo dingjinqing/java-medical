@@ -109,7 +109,7 @@ export default {
   methods: {
     setValue () {
       if (!this.isEmpty(this.sendMsg)) {
-        this.isUseDefault = Number(this.sendMsg.is_use_default)
+        this.isUseDefault = Number(this.sendMsg.isUseDefault)
         this.editMsg = this.sendMsg.document
       }
     },
@@ -151,7 +151,7 @@ export default {
       }
       let msg = {
         'document': this.editMsg,
-        'is_use_default': String(this.isUseDefault)
+        'isUseDefault': String(this.isUseDefault)
       }
       this.$emit('ActivityMsg', msg)
     }

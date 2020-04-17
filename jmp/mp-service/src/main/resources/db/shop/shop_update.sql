@@ -174,6 +174,8 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_1` mediumint(11) NULL
 ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_2` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
 ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL DEFAULT 0 COMMENT '分组商品数' ;
 
+-- 2020-04-17 拼团抽奖表添加活动说明字段
+ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
@@ -345,6 +347,34 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `card_tag_id` varchar(20) COMMENT '领�
 ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_away` tinyint(1) DEFAULT 0 COMMENT '0:不可转赠，1:可以转赠';
 ALTER TABLE `b2c_member_card` ADD COLUMN `card_give_continue` tinyint(1) DEFAULT 0 COMMENT '0:不可继续转赠，1:可以继续转赠';
 ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMMENT '最多可转赠多少次 0不限制';
+
+
+-- 2020年04月15日 添加限次卡转赠记录表
+CREATE TABLE IF NOT EXISTS `b2c_give_card_record` (
+  `id`int(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(8)  not null default 0 comment '转赠人用户ID',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment '转赠时间',
+  `card_no` varchar(32) default '' not null comment '转赠会员卡号',
+  `get_user_id` int(8) not null default 0 comment '获赠人用户ID',
+  `get_time` timestamp null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
+  `get_card_no` varchar(32) default '' not null comment '获赠会员卡号',
+  `flag` tinyint(1) default '0' comment '正常 1放弃 2 转赠成功',
+  `deadline` timestamp NULL DEFAULT NULL comment '链接截止时间',
+  PRIMARY KEY (`id`)
+);
+
+-- 2020年04月15日 在用户卡表中添加转赠字段
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_status` tinyint(1) DEFAULT 0 COMMENT '0:正常，1:转赠中，2转赠成功';
+ALTER TABLE `b2c_user_card` ADD COLUMN `give_away_surplus` int(11) DEFAULT NULL COMMENT '卡剩余赠送次数';
+ALTER TABLE `b2c_user_card` ADD COLUMN `card_source` tinyint(1) NOT NULL DEFAULT 0 COMMENT '卡来源 0:正常  2 别人转赠 ';
+
+-- 2020年04月16日 修改备注
+ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0:正常，1:删除 2 转赠中 3 已转赠';
+
+-- 2020年04月16日 用户标签添加字段
+ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
+ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
 /*********************2.11*************************END*/
 
 

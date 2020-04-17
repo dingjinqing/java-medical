@@ -253,7 +253,7 @@ export default {
           background: #fff;
           padding: 5px;
           .goodsName {
-            width: 100%;
+            width: 250px;
             margin-bottom: 5px;
             white-space: nowrap;
             text-overflow: ellipsis;

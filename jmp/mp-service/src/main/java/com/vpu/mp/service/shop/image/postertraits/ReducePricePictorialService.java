@@ -230,12 +230,13 @@ public class ReducePricePictorialService extends ShopBaseService {
         // 拼装价值限时降价图片和商品价格
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {
             BufferedImage reduceIconBufferImg = ImageIO.read(reduceIconStream);
-            ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBgPadding(), imgPx.getPriceY());
-            int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + imgPx.getBgPadding() + 10;
+            ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBottomTextStartX(), imgPx.getPriceY());
+
+            int realPriceStartX = imgPx.getBottomTextStartX() + reduceIconBufferImg.getWidth() + 10;
             String realPriceText = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
+            ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 8, imgPx.getRealPriceColor(), false);
             Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
-            int linePriceStartX = realPriceStartX + textWidth + imgPx.getBgPadding() + 10;
+            int linePriceStartX = realPriceStartX + textWidth +  10;
             ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY() - 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
 
         } catch (IOException e) {

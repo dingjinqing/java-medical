@@ -1,7 +1,7 @@
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="body">
   <include src="/pages/common/header.wxml"/>
-  <view class="main-container" wx:if="{{dataList}}">
+  <view class="main-container">
     <view class="filter" style="top:{{margin_top_nav + 8}}px">
       <view class="input_box">
         <view>
@@ -17,13 +17,13 @@
               <text class="date">{{item.date}}</text>
               <view class="goods_content">
               <block wx:for="{{item.goodsList}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">
-                <v-double-col-goods goods-data="{{goodsItem}}"/>
+                <v-double-col-goods wx:if="{{goodsItem}}" goods-data="{{goodsItem}}" del-market="{{delMarket}}" show-cart="{{showCart}}"/>
               </block>
               </view>
             </block>
           </block>
       </block>
-      <block wx:else>
+      <block wx:if="{{loaded && !dataList[0].length}}">
         <view class="is-null" >
           <image src="{{imageUrl}}image/wxapp/no_result.png"></image>
           <text>{{i18n.$t(localePack,"page1.history.errorTips")}}</text>

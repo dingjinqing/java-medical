@@ -215,4 +215,45 @@ public class WxAppCardController extends WxAppBaseController {
 		payParam.setClientIp(RequestUtil.getIp(request));
     	return success(shop().userCard.buyCardCreateOrder(payParam));
 	}
+	
+	/**
+	 * 	领取赠送的会员卡
+	 */
+	@PostMapping("/api/wxapp/card/getgiveawaycard")
+	public JsonResult getGiveAwayCard(@RequestBody DefaultCardParam param) {
+		logger().info("领取赠送的会员卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		try {
+			shop().user.wxUserCardService.giveAwaySvc.getGiveAwayCard(param);
+			return success();
+		} catch (MpException e) {
+			return fail(e.getErrorCode());
+		}
+	}
+	
+	
+	/**
+	 * 	取消限次卡转赠
+	 */
+	@PostMapping("/api/wxapp/card/giveAway/quit")
+	public JsonResult quitLimitCardGiveAway(@RequestBody DefaultCardParam param) {
+		logger().info("取消限次卡转赠");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.giveAwaySvc.quitLimitCardGiveAway(param);
+		return success();
+	}
+	
+	/**
+	 * 	转赠限次卡
+	 */
+	@PostMapping("/api/wxapp/card/giveAway/record")
+	public JsonResult limitCardGiveAway(@RequestBody DefaultCardParam param) {
+		logger().info("转赠限次卡");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.giveAwaySvc.addLimitCardGiveAwayRecord(param);
+		return success();
+	}
+	
+	
+	
 }

@@ -1027,6 +1027,10 @@ export default {
         goodsImg: null
       }
 
+      if (retData.sortId === null) {
+        retData.sortId = 0
+      }
+
       retData.goodsLabels = []
       this.labelSelectedItems.forEach(item => retData.goodsLabels.push(item.id))
 

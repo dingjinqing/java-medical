@@ -136,7 +136,7 @@ public final class ImageUtil {
     public static int addFontWithRect(BufferedImage bufferedImage, int x, int y, String message, Font font, Color lineColor,Color fillColor,Color fontColor){
         int paddingLeft = 5;
         int paddingHeight = font.getSize()/4;
-        int fontHeight = getTextAscent(bufferedImage,font);
+        int fontHeight = getTextAscent(bufferedImage,font)+paddingLeft;
         int textWidth = getTextWidth(bufferedImage,font,message);
         addRect(bufferedImage,x,y,textWidth+2*paddingLeft,fontHeight,lineColor,fillColor);
         // 添加文本时的y值表示的是文本的底边位置
@@ -171,13 +171,15 @@ public final class ImageUtil {
      * @param message 文本内容
      * @param font 字体
      * @param fontColor 字体颜色
+     * @return rectWidth
      */
-    public static void addFontWithLine(BufferedImage bufferedImage, int x, int y, String message,Font font, Color fontColor) {
+    public static int addFontWithLine(BufferedImage bufferedImage, int x, int y, String message,Font font, Color fontColor) {
         int linePad = 5;
         int textWidth = getTextWidth(bufferedImage, font, message);
         int textHeight = getTextAscent(bufferedImage,font);
         addFont(bufferedImage,message,font,x+linePad,y+textHeight,fontColor);
         addLine(bufferedImage,x,y+textHeight/4*3,x+textWidth+2*linePad,y+textHeight/4*3,fontColor);
+        return textWidth + 2*linePad;
     }
 
     /**
