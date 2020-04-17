@@ -1,14 +1,17 @@
 package com.vpu.mp.service.foundation.database;
 
-import com.vpu.mp.config.DatabaseConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.config.DatabaseConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import lombok.Data;
 
 /**
  *
@@ -59,8 +62,7 @@ public class DatasourceManager {
     protected HikariDataSource getDatasource(DbConfig dbConfig) {
         String key = dbConfig.getDatasourceKey();
         if (!datasources.containsKey(key)) {
-            //	datasources.put(key,dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
-            datasources.put(key,dataSource(getJdbcUrl("127.0.0.1",9910, ""), dbConfig.username, dbConfig.password));
+            datasources.put(key,dataSource(getJdbcUrl(dbConfig.host, dbConfig.port, ""), dbConfig.username, dbConfig.password));
         }
         return datasources.get(key);
     }
@@ -71,6 +73,7 @@ public class DatasourceManager {
      * @param url
      * @param username
      * @param password
+     * @param driver
      * @return
      */
     protected HikariDataSource dataSource(String url, String username, String password) {
