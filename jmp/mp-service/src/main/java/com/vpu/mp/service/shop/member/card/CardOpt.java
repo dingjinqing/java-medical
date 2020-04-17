@@ -1,14 +1,29 @@
 package com.vpu.mp.service.shop.member.card;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
+import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.member.UserCardService;
+import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 
 /**
  *	 卡操作抽象类
  * @author 黄壮壮
  *
  */
+@Service
 public abstract class CardOpt {
+	@Autowired protected UserTagService userTagSvc;
+	@Autowired protected MemberCardService cardService;
+	@Autowired protected UserCardService userCardService;
+	@Autowired protected UserCardDaoService userCardDao;
 	/**	卡类型	*/
 	private Byte type;
 	
@@ -59,5 +74,19 @@ public abstract class CardOpt {
 	 * @return true 可以 false 不可以
 	 */
 	public abstract boolean canSendCard(Integer userId,Integer cardId);
+	
+	/**
+	 * 	同步用户打标签
+	 * @param userId
+	 * @param mCard
+	 */
+	protected void addAcitivityTag(Integer userId,MemberCardRecord mCard) {
+		logger().info("同步用户打标签");
+		
+		List<Integer> tagIdList = cardService.cardDetailSvc.getCardTag(mCard).getCardTagId();
+		if(tagIdList!=null && tagIdList.size()>0) {
+			userTagSvc.addActivityTag(userId, tagIdList, userTagSvc.SRC_CARD, mCard.getId());
+		}
+	}
 
 }

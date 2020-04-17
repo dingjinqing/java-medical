@@ -1552,5 +1552,19 @@ public class OrderInfoService extends ShopBaseService {
 														.and(DslPlus.findInSet(goodsType, TABLE.GOODS_TYPE)))))))
 				.fetchAnyInto(TABLE);
     }
+    
+    /**
+     * 	获得用户兑换卡未完成订单
+     * @return OrderInfoRecord || null 如果没有数据
+     */
+    public OrderInfoRecord getNotFinishedOrderOfCard(String cardNo) {
+    	logger().info("获取用户兑换卡尾完成的订单");
+    	Condition condition = TABLE.CARD_NO.eq(cardNo)
+    			.and(TABLE.ORDER_STATUS.ge(OrderConstant.ORDER_WAIT_DELIVERY))
+    			.and(TABLE.ORDER_STATUS.notIn(OrderConstant.ORDER_FINISHED,OrderConstant.ORDER_RETURN_FINISHED,OrderConstant.ORDER_REFUND_FINISHED))
+    			.and(TABLE.GOODS_TYPE.likeRegex(getGoodsTypeToSearch(new Byte[]{BaseConstant.ACTIVITY_TYPE_EXCHANG_ORDER})));
+		
+    	return db().fetchOne(TABLE, condition);
+    }
 
 }

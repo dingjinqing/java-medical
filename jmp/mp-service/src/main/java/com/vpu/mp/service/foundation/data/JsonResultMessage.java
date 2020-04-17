@@ -607,7 +607,8 @@ public class JsonResultMessage {
     public static final String CODE_EXCEL_NUM_MAX = "code.excel.num.max";
     public static final String CODE_EXCEL_NUM_MIN = "code.excel.num.min";
     public static final String CODE_EXCEL_HAVE_SAME = "code.excel.have.same";
-
+    public static final String CODE_CARD_RECEIVE_VALIDLINK = "code.card.receive.validlink";
+    public static final String CODE_CARD_RECEIVE_BYSELF = "code.card.receive.byself";
     /**
      *  会员列表导出
      */

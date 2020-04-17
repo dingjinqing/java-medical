@@ -1082,4 +1082,8 @@ public class Tables {
      * The table <code>jmini_shop_489258.b2c_card_renew</code>.
      */
     public static final CardRenew CARD_RENEW = com.vpu.mp.db.shop.tables.CardRenew.CARD_RENEW;
+    /**
+     * The table <code>jmini_shop_489258.b2c_give_card_record</code>.
+     */
+    public static final GiveCardRecord GIVE_CARD_RECORD = com.vpu.mp.db.shop.tables.GiveCardRecord.GIVE_CARD_RECORD;
 }
