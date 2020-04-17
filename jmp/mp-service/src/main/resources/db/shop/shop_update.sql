@@ -348,16 +348,16 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMM
 
 
 -- 2020年04月15日 添加限次卡转赠记录表
-CREATE TABLE IF NOT EXISTS `b2c_give_card_record`(
+CREATE TABLE `b2c_give_card_record`(
   `id`int(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(8)  NOT NULL DEFAULT 0 comment '转赠人用户ID',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment '转赠时间',
-  `card_no` varchar(32) default '' NOT NULL comment '转赠会员卡号',
+  `user_id` int(8)  not null default 0 comment '转赠人用户ID',
+  `create_time` timestamp not null comment '转赠时间',
+  `card_no` varchar(32) default '' not null comment '转赠会员卡号',
   `get_user_id` int(8) not null default 0 comment '获赠人用户ID',
   `get_time` timestamp null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
   `get_card_no` varchar(32) default '' not null comment '获赠会员卡号',
   `flag` tinyint(1) default '0' comment '正常 1放弃 2 转赠成功',
-  `deadline` timestamp NULL DEFAULT NULL comment '链接截止时间',
+  `deadline` timestamp not null comment '链接截止时间',
   PRIMARY KEY (`id`)
 );
 
