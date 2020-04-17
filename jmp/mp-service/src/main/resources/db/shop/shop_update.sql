@@ -348,7 +348,7 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMM
 
 
 -- 2020年04月15日 添加限次卡转赠记录表
-CREATE TABLE IF NOT EXISTS `b2c_give_card_record`(
+CREATE TABLE IF NOT EXISTS `b2c_give_card_record` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id`       int(8)  not null default 0    comment '转赠人用户ID',
   `create_time`             timestamp      not null comment '转赠时间',
