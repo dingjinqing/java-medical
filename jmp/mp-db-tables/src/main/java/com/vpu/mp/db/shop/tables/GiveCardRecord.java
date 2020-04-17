@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GiveCardRecord extends TableImpl<GiveCardRecordRecord> {
 
-    private static final long serialVersionUID = -831299863;
+    private static final long serialVersionUID = 1543488210;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_give_card_record</code>
@@ -101,7 +101,7 @@ public class GiveCardRecord extends TableImpl<GiveCardRecordRecord> {
     /**
      * The column <code>jmini_shop_489258.b2c_give_card_record.deadline</code>. 链接截止时间
      */
-    public final TableField<GiveCardRecordRecord, Timestamp> DEADLINE = createField("deadline", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "链接截止时间");
+    public final TableField<GiveCardRecordRecord, Timestamp> DEADLINE = createField("deadline", org.jooq.impl.SQLDataType.TIMESTAMP, this, "链接截止时间");
 
     /**
      * Create a <code>jmini_shop_489258.b2c_give_card_record</code> table reference

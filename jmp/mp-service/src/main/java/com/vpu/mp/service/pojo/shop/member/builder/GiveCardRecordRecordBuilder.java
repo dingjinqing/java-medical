@@ -10,6 +10,7 @@ import com.vpu.mp.db.shop.tables.records.GiveCardRecordRecord;
  * @Description: 会员卡赠送Builder
  */
 
+
 public class GiveCardRecordRecordBuilder {
 	private GiveCardRecordRecord record;
 	
@@ -97,3 +98,4 @@ public class GiveCardRecordRecordBuilder {
 		return record;
 	}
 }
+
