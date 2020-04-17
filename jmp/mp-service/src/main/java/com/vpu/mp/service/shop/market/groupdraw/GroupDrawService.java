@@ -160,7 +160,16 @@ public class GroupDrawService extends ShopBaseService {
 			throw new IllegalStateException("Invalid group draw id or it has already been disabled.");
 		}
 	}
-
+    /**
+     * 启用活动
+     */
+    public void enableGroupDraw(Integer id) {
+        int result = db().update(GROUP_DRAW).set(GROUP_DRAW.STATUS, ACTIVITY_STATUS_NORMAL)
+            .where(GROUP_DRAW.ID.eq(id).and(GROUP_DRAW.STATUS.ne(ACTIVITY_STATUS_NORMAL))).execute();
+        if (0 == result) {
+            throw new IllegalStateException("Invalid group draw id or it has already been enabled.");
+        }
+    }
 	/**
 	 * 更新活动
 	 */
