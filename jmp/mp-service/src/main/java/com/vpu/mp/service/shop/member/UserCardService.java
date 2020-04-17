@@ -51,6 +51,7 @@ import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.process.DefaultMarketingProcess;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.card.CardFreeShipService;
+import com.vpu.mp.service.shop.card.wxapp.WxCardDetailService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -181,6 +182,9 @@ public class UserCardService extends ShopBaseService {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private WxCardDetailService wxCardDetailSvc;
+    
 	public static final String DESC = "score_open_card";
 
 	/**
@@ -863,51 +867,7 @@ public class UserCardService extends ShopBaseService {
 	}
 
 	public WxAppUserCardVo getUserCardDetail(UserCardParam param,String lang) throws UserCardNullException {
-		logger().info("获取卡的详细信息");
-		WxAppUserCardVo card = null;
-		if(param.getCardId() != null) {
-			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getUserId(),param.getCardId());
-		}else {
-			card = (WxAppUserCardVo) userCardDao.getUserCardInfo(param.getCardNo());
-		}
-
-		if (card == null) {
-			throw new UserCardNullException();
-		}
-
-		dealWithUserCardDetailInfo(card);
-
-		card.setCumulativeConsumptionAmounts(orderInfoService.getAllConsumpAmount(param.getUserId()));
-		card.setCumulativeScore(scoreService.getAccumulationScore(param.getUserId()));
-		logger().info("卡的校验状态");
-		CardExamineRecord  cardExamine = cardVerifyService.getStatusByNo(param.getCardNo());
-		if(cardExamine != null) {
-			card.setCardVerifyStatus(cardVerifyService.getCardVerifyStatus(param.getCardNo()));
-			WxAppCardExamineVo cardExamineVo = new WxAppCardExamineVo();
-			cardExamineVo.setPassTime(cardExamine.getPassTime());
-			cardExamineVo.setRefuseTime(cardExamine.getRefuseTime());
-			cardExamineVo.setRefuseDesc(cardExamine.getRefuseDesc());
-			cardExamineVo.setStatus(cardExamine.getStatus());
-			card.setIsExamine(cardExamineVo);
-		}
-		// TODO 开卡送卷
-		setQrCode(card);
-
-		if (CardUtil.isGradeCard(card.getCardType())) {
-
-			NextGradeCardVo nextGradeCard = getNextGradeCard(card.getGrade());
-			card.setNextGradeCard(nextGradeCard);
-		}
-
-		// 包邮信息
-		dealWithFreeShipInfo(card,lang);
-		// 自定义权益
-		MemberCardRecord mCard = new MemberCardRecord();
-		mCard.setCustomRights(card.getCustomRights());
-		mCard.setCustomRightsFlag(card.getCustomRightsFlag());
-		CardCustomRights customRights = memberCardService.cardDetailSvc.getCustomRights(mCard);
-		card.setCardCustomRights(customRights);
-		return card;
+		return wxCardDetailSvc.getUserCardDetail(param, lang);
 	}
 
 	private NextGradeCardVo getNextGradeCard(String currentGrade) {

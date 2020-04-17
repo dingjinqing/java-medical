@@ -14,6 +14,7 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeBean;
 import com.vpu.mp.service.pojo.shop.member.card.EffectTimeParam;
+import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardGive.CardGiveSwitch;
 /**
@@ -299,10 +300,10 @@ public class CardUtil {
 	 */
 	public static EffectTimeBean getUserCardEffectTime(EffectTimeParam card) {
 		EffectTimeBean bean = new EffectTimeBean();
-		// 按照领卡的时间快照将进行设置
+		//	按照领卡的时间快照将进行设置
 		if(isCardFixTime(card.getExpireType()) && 
 				card.getExpireTime() != null) {
-			// 固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
+			//	固定时间 取会员卡的设置的起始时间，以及领卡时设置的过期时间
 			if(card.getStartTime() != null) {
 				bean.setStartDate(card.getStartTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getStartTime());
@@ -314,7 +315,7 @@ public class CardUtil {
 		}else if(isCardTimeStartFrom(card.getExpireType()) || 
 				(isCardTimeForever(card.getExpireType()) &&
 						card.getExpireTime() != null) ) {
-			// 自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
+			//	自领取之日起 取用户领卡的时间  或者 永久有效，但是之前设置了有效期也取快照
 			if(card.getCreateTime() != null) {
 				bean.setStartDate(card.getCreateTime().toLocalDateTime().toLocalDate());
 				bean.setStartTime(card.getCreateTime());
@@ -327,10 +328,10 @@ public class CardUtil {
 		}
 		
 		if(card.getExpireTime() != null) {
-			// 取快照 有效期
+			//	取快照 有效期
 			bean.setExpireType(NumberUtils.BYTE_ONE);
 		}else {
-			// 永久有效
+			//	永久有效
 			bean.setExpireType((byte)2);
 		}
 		
@@ -373,5 +374,29 @@ public class CardUtil {
 		return CardGive.CardGiveSwitch.on.equals(val);
 	}
 	
+	/**
+	 * 	卡是否允许继续转赠
+	 * 	@return true 可以继续转赠 |  false 不允许继续转赠
+	 */
+	public static boolean isCardGiveContinue(Byte cardGiveContinue) {
+		CardGiveSwitch val = CardGive.CardGiveSwitch.values()[cardGiveContinue];
+		return CardGive.CardGiveSwitch.on.equals(val);
+	}
+	
+	/**
+	 * 	卡来源是否正常
+	 * @return true 正常来源  |  false 非正常来源
+	 */
+	public static boolean isCardSourceNormal(Byte cardSource) {
+		return UserCardConstant.SOURCE_NORMAL.equals(cardSource);
+	}
+	
+	/**
+	 * 	卡来源与转赠
+	 *	@return true 转赠 | false 非转赠 
+	 */
+	public static boolean isCardSourceGiveWay(Byte cardSource) {
+		return UserCardConstant.SOURCE_GIVE_WAY.equals(cardSource);
+	}
 	
 }

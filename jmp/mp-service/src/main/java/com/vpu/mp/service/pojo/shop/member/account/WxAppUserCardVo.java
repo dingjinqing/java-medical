@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardGiveVo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -79,6 +80,10 @@ public class WxAppUserCardVo extends UserCardParam {
 	 * 	 审核状态
 	 */
 	protected Byte cardVerifyStatus;
+	/**
+	 * 	用户卡的转赠数据
+	 */
+	protected CardGiveVo cardGive;
 	public void calcCardIsExpired(){
 		if(isExpire()) {
 			this.expire = ALREADY_EXPIRED;
@@ -87,11 +92,7 @@ public class WxAppUserCardVo extends UserCardParam {
 		}
 	}
 	public void calcRenewal() {
-		if(isPermanent()) {
-			setRenewal(NON_RENEWAL);
-		}else {
-			setRenewal(AVAILABLE_RENEWAL);
-		}
+		setRenewal(renewMemberCard);
 	}
 	public void calcUsageTime() {
 		if(getUserCardCreateTime()!=null) {

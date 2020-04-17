@@ -144,6 +144,7 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	/**
 	 * 	获取正常转赠的记录
 	 * 	@param cardNo
+	 * 	@return  GiveCardRecordRecord || null 如果没有数据
 	 */
 	public GiveCardRecordRecord getNormalGiveCardRecordByCardNo(String cardNo) {
 		
