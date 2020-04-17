@@ -352,11 +352,11 @@ CREATE TABLE IF NOT EXISTS `b2c_give_card_record`(
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id`       int(8)  not null default 0    comment '转赠人用户ID',
   `create_time`             timestamp      not null comment '转赠时间',
-  `card_no`              varchar(32) default ''        not null comment '转赠会员卡号',
+  `card_no`              varchar(32)  not null default ''        comment '转赠会员卡号',
   `get_user_id`       int(8) not null default 0    comment '获赠人用户ID',
-  `get_time`       timestamp   null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
-  `get_card_no`              varchar(32) default ''        not null comment '获赠会员卡号',
-  `flag`       tinyint(1)                        default '0' comment '正常 1放弃 2 转赠成功',
+  `get_time`       timestamp not   null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
+  `get_card_no`   varchar(32)       not null  default ''  comment '获赠会员卡号',
+  `flag`       tinyint(1)   default '0' comment '正常 1放弃 2 转赠成功',
   `deadline`             timestamp      not null comment '链接截止时间',
   PRIMARY KEY (`id`)
 );
