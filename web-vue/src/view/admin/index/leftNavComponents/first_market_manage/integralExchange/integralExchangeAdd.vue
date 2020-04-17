@@ -824,7 +824,7 @@ export default {
   .scoreDiv {
     display: flex;
     /deep/ .el-input {
-      min-width: 50px;
+      min-width: 55px;
     }
     span {
       display: flex !important;

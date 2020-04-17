@@ -375,9 +375,9 @@ export default {
         rewardCouponIds: [], // 拼团失败送优惠券id
         goodsIds: [], // 参与活动的商品id
         // 规则说明
-        activityCopywriting: {
-          document: null,
-          is_use_default: null
+        actCopywriting: {
+          document: '',
+          isUseDefault: 0
         }
       },
       // 校验表单
@@ -479,7 +479,7 @@ export default {
       })
     },
 
-    // 保存秒杀活动
+    // 保存拼团抽奖活动
     saveClickHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -576,13 +576,12 @@ export default {
     // 设置规则说明
     lotteryDrawRule () {
       this.ruleShow = true
+      this.sendMsg = this.form.actCopywriting
     },
     // 规则说明回调函数
     activityMsg (data) {
-      console.log('回来的值')
-      console.log(data)
       this.ruleShow = false
-      // this.activity.activityCopywriting = data
+      this.form.actCopywriting = data
     }
 
   }

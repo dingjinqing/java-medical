@@ -10,6 +10,7 @@
         :range-separator="$t(`dateTimePicker.to`)"
         :start-placeholder="$t(`dateTimePicker.pleaseSelectTheStartTime`)"
         :end-placeholder="$t(`dateTimePicker.pleaseSelectTheEndTime`)"
+        :default-time="['00:00:00','23:59:59']"
         @change="handleChange"
       >
       </el-date-picker>

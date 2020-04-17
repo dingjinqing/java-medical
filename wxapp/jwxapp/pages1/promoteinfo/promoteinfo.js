@@ -169,10 +169,18 @@ global.wxPage({
     }
     util.api('/api/wxapp/promote/participate', function (res) {
       if (res.error == 0) {
-        var add_promote_value = res.content.promoteValue; // 助力值
-        var modal_can_share = res.content.canShare; // 能否再分享
-        var cant_promote = res.content.cantPromote; // 助力失败原因
-        if (promote_info.canPromote == null && promote_info.canShare == null) {
+        if (res.content.cantPromote == null) {
+          // 助力成功
+          var add_promote_value = res.content.promoteValue; // 助力值
+          var modal_can_share = res.content.canShare; // 能否再分享
+          that.setData({
+            promote_ok: 1,
+            add_promote_value: add_promote_value,
+            modal_can_share: modal_can_share
+          })
+        } else {
+          // 助力失败
+          var cant_promote = res.content.cantPromote; // 助力失败原因
           if (cant_promote == 0) {
             cant_promote = '该助力申请未发起'
           } else if (cant_promote == 1) {
@@ -185,17 +193,37 @@ global.wxPage({
           that.setData({
             promote_fail: 1,
             is_shares: 0,
-            cant_promote: cant_promote,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
-          })
-        } else {
-          that.setData({
-            promote_ok: 1,
-            add_promote_value: add_promote_value,
-            modal_can_share: modal_can_share
+            cant_promote: cant_promote
           })
         }
+
+        // var add_promote_value = res.content.promoteValue; // 助力值
+        // var modal_can_share = res.content.canShare; // 能否再分享
+        // var cant_promote = res.content.cantPromote; // 助力失败原因
+        // if (promote_info.canPromote == null && promote_info.canShare == null) {
+        //   if (cant_promote == 0) {
+        //     cant_promote = '该助力申请未发起'
+        //   } else if (cant_promote == 1) {
+        //     cant_promote = '助力已完成，不再需要助力'
+        //   } else if (cant_promote == 2) {
+        //     cant_promote = '今天的助力次数已经用完了'
+        //   } else if (cant_promote == 3) {
+        //     cant_promote = '助力次数已用完'
+        //   }
+        //   that.setData({
+        //     promote_fail: 1,
+        //     is_shares: 0,
+        //     cant_promote: cant_promote,
+        //     add_promote_value: add_promote_value,
+        //     modal_can_share: modal_can_share
+        //   })
+        // } else {
+        //   that.setData({
+        //     promote_ok: 1,
+        //     add_promote_value: add_promote_value,
+        //     modal_can_share: modal_can_share
+        //   })
+        // }
 
       } else {
         util.showModal('提示', res.message);

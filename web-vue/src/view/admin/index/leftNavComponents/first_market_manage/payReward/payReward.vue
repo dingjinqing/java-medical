@@ -44,7 +44,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            {{scope.row.goodsAreaType === 1? '部分商品':'全部商品'}}
+            {{scope.row.goodsAreaType === 0? '部分商品':'全部商品'}}
             <br>
             {{$t('payReward.full')}}{{scope.row.minPayMoney===null || scope.row.minPayMoney === 0 ?'0.00':(scope.row.minPayMoney >= 1 ? scope.row.minPayMoney + ".00" : scope.row.minPayMoney)}}{{$t('payReward.yuan')}}
           </template>
