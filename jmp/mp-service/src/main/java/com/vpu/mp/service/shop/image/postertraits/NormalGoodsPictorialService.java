@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 
 /**
@@ -141,6 +142,9 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         }
 
         PictorialImgPx imgPx = new PictorialImgPx();
+        if (BigDecimal.valueOf(0).equals(param.getLinePrice())) {
+            param.setLinePrice(null);
+        }
         // 拼装背景图
         BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsVo.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
 

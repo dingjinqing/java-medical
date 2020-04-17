@@ -1,3 +1,4 @@
+// generate by generateRecordBuilder.py
 package com.vpu.mp.service.pojo.shop.member.builder;
 
 import java.math.BigDecimal;
@@ -8,8 +9,9 @@ import com.vpu.mp.db.shop.tables.records.UserCardRecord;
 /**
  * @author 黄壮壮
  * @Date: 2019年11月1日
- * @Description:
+ * @Description: 用户卡builder
  */
+
 
 public class UserCardRecordBuilder {
 	private UserCardRecord record;
@@ -132,6 +134,27 @@ public class UserCardRecordBuilder {
 	public UserCardRecordBuilder freeNum (Integer freeNum) {
 		if(freeNum != null){
 			record.setFreeNum(freeNum);
+		}
+		return this;
+	}
+
+	public UserCardRecordBuilder giveAwayStatus (Byte giveAwayStatus) {
+		if(giveAwayStatus != null){
+			record.setGiveAwayStatus(giveAwayStatus);
+		}
+		return this;
+	}
+
+	public UserCardRecordBuilder giveAwaySurplus (Integer giveAwaySurplus) {
+		if(giveAwaySurplus != null){
+			record.setGiveAwaySurplus(giveAwaySurplus);
+		}
+		return this;
+	}
+
+	public UserCardRecordBuilder cardSource (Byte cardSource) {
+		if(cardSource != null){
+			record.setCardSource(cardSource);
 		}
 		return this;
 	}
