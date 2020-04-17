@@ -143,10 +143,11 @@ public class GroupDrawService extends ShopBaseService {
 	public ShareQrCodeVo getMpQRCode(GroupDrawShareParam param) {
 		Integer groupDrawId = param.getGroupDrawId();
 		String pathParam = "groupDrawId=" + groupDrawId;
+		logger().info("path为：{}",pathParam);
 		String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.PIN_LOTTERY, pathParam);
 		ShareQrCodeVo vo = new ShareQrCodeVo();
 		vo.setImageUrl(imageUrl);
-		vo.setPagePath(QrCodeTypeEnum.PIN_LOTTERY.getUrl());
+		vo.setPagePath(QrCodeTypeEnum.PIN_LOTTERY.getPathUrl(pathParam));
 		return vo;
 	}
 
