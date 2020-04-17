@@ -353,7 +353,7 @@ ALTER TABLE `b2c_member_card` ADD COLUMN `most_give_away` int(10) DEFAULT 0 COMM
 CREATE TABLE IF NOT EXISTS `b2c_give_card_record`(
   `id`int(20) NOT NULL AUTO_INCREMENT,
   `user_id` int(8)  not null default 0 comment '转赠人用户ID',
-  `create_time` timestamp not null comment '转赠时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP comment '转赠时间',
   `card_no` varchar(32) default '' not null comment '转赠会员卡号',
   `get_user_id` int(8) not null default 0 comment '获赠人用户ID',
   `get_time` timestamp null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '领取时间',
