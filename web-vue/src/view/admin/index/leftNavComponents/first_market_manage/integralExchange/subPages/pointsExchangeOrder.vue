@@ -20,7 +20,7 @@
             ></el-input>
           </div>
           <div class="filters_item select">
-            <span>{{$t('mintegralExchange.orderNumber')}}</span>
+            <span>{{$t('mintegralExchange.orderStatus')}}</span>
             <el-select
               v-model="orderStatus"
               :placeholder="$t('mintegralExchange.pleaseChoose')"
