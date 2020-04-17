@@ -30,5 +30,7 @@ export const cn = {
   selectGoods: '件商品',
   selectSorts: '件分类',
   isResetGoodsLabels: '是否确认清除已设置的商品标签？',
-  resetGoodsLabels: '清除商品标签'
+  resetGoodsLabels: '清除商品标签',
+  confirm: '确定',
+  cancel: '取消'
 }

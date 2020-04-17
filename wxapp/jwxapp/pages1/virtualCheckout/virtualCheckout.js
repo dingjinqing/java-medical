@@ -335,7 +335,7 @@ global.wxPage({
           util.toast_success('支付成功',()=>{
             util.jumpLink(
               `pages1/payment/payment${this.getUrlParams({
-                isNotGoods:1,
+                goodsType:2,
                 useInfo: JSON.stringify({ ...this.data.usePayInfo })
               })}`,
               'redirectTo'
@@ -351,7 +351,7 @@ global.wxPage({
       util.toast_success('支付成功',()=>{
         util.jumpLink(
           `pages1/payment/payment${this.getUrlParams({
-            isNotGoods:1,
+            goodsType:2,
             useInfo: JSON.stringify({ ...this.data.usePayInfo })
           })}`,
           'redirectTo'
@@ -373,7 +373,7 @@ global.wxPage({
           util.toast_success('支付成功',()=>{
             util.jumpLink(
               `pages1/payment/payment${this.getUrlParams({
-                isNotGoods:1,
+                goodsType:3,
                 useInfo: JSON.stringify({ ...this.data.usePayInfo })
               })}`,
               'redirectTo'
@@ -389,7 +389,8 @@ global.wxPage({
       util.toast_success('支付成功',()=>{
         util.jumpLink(
           `pages1/payment/payment${this.getUrlParams({
-            isNotGoods:1,
+            goodsType:3,
+            cardNo: res.content.cardSn,
             useInfo: JSON.stringify({ ...this.data.usePayInfo })
           })}`,
           'redirectTo'

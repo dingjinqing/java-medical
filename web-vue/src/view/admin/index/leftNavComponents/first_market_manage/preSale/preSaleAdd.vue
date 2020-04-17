@@ -106,9 +106,9 @@
               >
               </el-date-picker>
               <el-button
+                v-if="!isEditeFlag"
                 size="small"
                 @click="handleDelete"
-                v-if="!isEditeFlag"
               >删除</el-button>
             </el-form-item>
 
@@ -838,12 +838,12 @@ export default {
         goodsId: '',
         deliverType: 1, // 发货时间类型 1：指定，2：尾款支付
         deliverTime: null, // 发货时间
-        deliverDays: null, // 几天后发货
+        deliverDays: '', // 几天后发货
         discountType: 0, // 优惠叠加策略
         returnType: 0, // 定金退款策略
         showSaleNumber: 0, // 预售数量展示
         buyType: 0, // 商品购买方式
-        buyNumber: null, // 购买数量限制
+        buyNumber: '', // 购买数量限制
         shareAction: 1,
         shareDoc: '',
         shareImgAction: 1,
@@ -967,78 +967,101 @@ export default {
       this.$refs.param.validateField('deliverType')
     },
     // 保存
-    add () {
-      this.param.buyNumber = Number(this.param.buyNumber)
-      this.param.first = Number(this.param.first)
-      this.param.deliverDays = Number(this.param.deliverDays)
-      if (this.activityType === 0) {
-        this.param.preTime = 0
-      } else if (this.activityType === -1) {
-        this.param.preTime = -1
-      } else {
-        this.param.preTime = Number(this.param.preTime)
-      }
+    add1 () {
+      this.$refs['param'].validate((valid) => {
+        if (valid) {
+          this.$refs['param-s'].validate((valid) => {
+            console.log(valid, 'valid')
+            if (valid) {
+              const { param } = this
+              this.param.buyNumber = Number(this.param.buyNumber)
+              console.log(param, 'get param')
+              this.formatParam()
+              if (!this.validateParam()) {
+                return false
+              } else {
+                // const { param } = this
+                this.formatParam()
 
-      this.param.products.forEach((item, index) => {
-        console.log(item)
-        item.productId = Number(item.prdId)
-        item.presalePrice = Number(item.presalePrice)
-        item.presaleNumber = Number(item.presaleNumber)
-        item.presaleMoney = Number(item.presaleMoney)
-        item.preDiscountMoney1 = Number(item.preDiscountMoney1)
-        item.preDiscountMoney2 = Number(item.preDiscountMoney2)
-      })
-      let products = []
-      // this.param.stock = 0
-      this.param.products.forEach(item => {
-        if (item.goodsSpecProducts) {
-          console.log(item.goodsSpecProducts)
-          item.goodsSpecProducts.forEach(specItem => {
-            let { prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = specItem
-            let goodsId = item.goodsId
-            products.push({ goodsId, productId: prdId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
-            // this.param.stock += Number(stock)
+                this.param.buyNumber = Number(this.param.buyNumber)
+                this.param.first = Number(this.param.first)
+                this.param.deliverDays = Number(this.param.deliverDays)
+                if (this.activityType === 0) {
+                  this.param.preTime = 0
+                } else if (this.activityType === -1) {
+                  this.param.preTime = -1
+                } else {
+                  this.param.preTime = Number(this.param.preTime)
+                }
+
+                this.param.products.forEach((item, index) => {
+                  console.log(item)
+                  item.productId = Number(item.prdId)
+                  item.presalePrice = Number(item.presalePrice)
+                  item.presaleNumber = Number(item.presaleNumber)
+                  item.presaleMoney = Number(item.presaleMoney)
+                  item.preDiscountMoney1 = Number(item.preDiscountMoney1)
+                  item.preDiscountMoney2 = Number(item.preDiscountMoney2)
+                })
+                let products = []
+                // this.param.stock = 0
+                this.param.products.forEach(item => {
+                  if (item.goodsSpecProducts) {
+                    console.log(item.goodsSpecProducts)
+                    item.goodsSpecProducts.forEach(specItem => {
+                      let { prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = specItem
+                      let goodsId = item.goodsId
+                      products.push({ goodsId, productId: prdId, presalePrice: Number(presalePrice), presaleNumber: Number(presaleNumber), presaleMoney: Number(presaleMoney), preDiscountMoney1: Number(preDiscountMoney1), preDiscountMoney2: Number(preDiscountMoney2), stock: Number(stock) })
+                      // this.param.stock += Number(stock)
+                    })
+                  } else {
+                    let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
+                    products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
+                    // this.param.stock += Number(stock)
+                  }
+                })
+
+                if (this.update) {
+                  updatePreSale({ ...this.param, products }).then(res => {
+                    if (res.error === 0) {
+                      console.log(res)
+                      this.$message.success('更新成功')
+                      this.gotoHome()
+                    } else {
+                      this.$message.error('更新失败')
+                    }
+                  })
+                } else {
+                  createPreSale({ ...this.param, products }).then(res => {
+                    if (res.error === 0) {
+                      console.log(res)
+                      this.$message.success('添加成功')
+                      this.gotoHome()
+                    } else {
+                      this.$message.error('创建失败')
+                    }
+                  })
+                }
+              }
+            } else {
+              this.$message.error('请正确填写表单')
+              return false
+            }
           })
         } else {
-          let { goodsId, prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock } = item
-          products.push({ goodsId, productId: prdId, presalePrice, presaleNumber, presaleMoney, preDiscountMoney1, preDiscountMoney2, stock: Number(stock) })
-          // this.param.stock += Number(stock)
+          this.$message.error('请正确填写表单')
+          return false
         }
       })
-
-      const { param } = this
-
-      console.log(param, 'get param')
-      this.formatParam()
-      this.validateParam()
-      if (this.update) {
-        updatePreSale({ ...this.param, products }).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('更新成功')
-            this.gotoHome()
-          } else {
-            this.$message.error('更新失败')
-          }
-        })
-      } else {
-        createPreSale({ ...this.param, products }).then(res => {
-          if (res.error === 0) {
-            console.log(res)
-            this.$message.success('添加成功')
-            this.gotoHome()
-          }
-        })
-      }
     },
     formatParam () {
       this.formatTimes()
     },
     formatTimes () {
-      const { isFullPay, payTimeRange, twoSteps } = this
+      const { isFullPay, twoSteps } = this
       if (isFullPay) {
-        this.param.startTime = format(payTimeRange[0])
-        this.param.endTime = format(payTimeRange[1])
+        // this.param.startTime = format(payTimeRange[0])
+        // this.param.endTime = format(payTimeRange[1])
         this.param.preStartTime = format(this.param.preTime1Range[0])
         this.param.preEndTime = format(this.param.preTime1Range[1])
       } else {
@@ -1101,21 +1124,23 @@ export default {
           return false
         }
       } else if (!this.param.preStartTime2 || this.param.preStartTime2 === '') {
-        if (this.param.startTime < this.param.prrStartTime) {
+        if (this.param.startTime < this.param.preStartTime) {
           this.$message.warning('尾款支付开始时间应大于定金支付的开始时间')
           return false
         }
       } else {
         return false
       }
-      if (this.param.deliverType === 1) {
+      if (this.param.presaleType === 0 && this.param.deliverType === 1) {
         if (this.param.deliverTime < this.param.endTime) {
           this.$message.warning('指定发货时间应大于尾款支付时间')
+          return false
         }
       }
-      if (this.param.presaleType === 1) {
+      if (this.param.presaleType === 1 && this.param.deliverType === 1) {
         if (this.param.deliverTime < this.param.preEndTime) {
           this.$message.warning('指定发货时间应大于尾款支付时间')
+          return false
         }
       }
 
@@ -1128,15 +1153,6 @@ export default {
         this.$message.warning('请选择自定义图片')
         return false
       }
-
-      this.$refs['param-s'].validate((valid) => {
-        console.log(valid, 'valid')
-        if (valid) {
-          // alert('111')
-        } else {
-          // alert('222')
-        }
-      })
       return true
     },
     // 删除二阶段时间
@@ -1355,6 +1371,16 @@ export default {
     'param.goodsId': function (value) {
       if (value) {
         this.$refs.param.validateField('goodsId')
+      }
+    },
+    'param.presaleType': function (value) {
+      if (value) {
+        this.$refs.param.validateField('presaleType')
+      }
+    },
+    'param.deliverType': function (value) {
+      if (value) {
+        this.$refs.param.validateField('deliverType')
       }
     }
   },

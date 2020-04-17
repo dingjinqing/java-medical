@@ -189,6 +189,7 @@ public class WxAppCardController extends WxAppBaseController {
      */
     @PostMapping(value="/api/wxapp/card/renew/checkout")
     public JsonResult cardRenewCheckout(@RequestBody CardRenewCheckoutParam param) throws MpException {
+        param.setClientIp(RequestUtil.getIp(request));
         CardRenewCheckoutVo res = shop().userCard.renewCardCheckout(param);
         return success(res);
     }
