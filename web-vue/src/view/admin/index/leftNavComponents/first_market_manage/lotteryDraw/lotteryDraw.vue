@@ -283,7 +283,7 @@
 import addLotteryDraw from './addLotteryDraw.vue'
 import shareDialog from '@/components/admin/shareDialog'
 import pagination from '@/components/admin/pagination/pagination'
-import { lotteryDrawList, deleteLotteryDraw, shareLotteryDraw, updateStatus } from '@/api/admin/marketManage/lotteryDraw.js'
+import { lotteryDrawList, deleteLotteryDraw, shareLotteryDraw, stopStatus, startStatus } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
   components: {
     addLotteryDraw,
@@ -432,7 +432,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        updateStatus(id).then((res) => {
+        stopStatus(id).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('seckill.stopSuccess') })
             this.initDataList()
@@ -450,7 +450,12 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-
+        startStatus(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
+            this.initDataList()
+          }
+        })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.startFail') })
       })

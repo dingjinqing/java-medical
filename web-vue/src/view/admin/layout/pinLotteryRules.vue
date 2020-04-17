@@ -1,6 +1,16 @@
 <template>
   <!-- 小程序-拼团抽奖规则页面 -->
-  <div class="pinLotteryRules">
+  <div
+    class="pinLotteryRules"
+    v-if="isUseDefault === '0'"
+  >
+    <div v-html="pinLotteryRules"></div>
+  </div>
+
+  <div
+    class="pinLotteryRules"
+    v-else
+  >
     <p class="title">参与步骤</p>
     <p>1、在低价抽奖商品列表页,点击商品进入商品详情页,通过下单开团入口进入订单结算页,付款成功后,按页面提示分享给微信好友;</p>
     <p>2、好友通过小程序落地页查看活动现状,完成支付,参与拼团;</p>
@@ -13,9 +23,35 @@
 </template>
 
 <script>
+// import { pinLotteryRules } from '@/api/admin/util.js'
 export default {
+  data () {
+    return {
+      isUseDefault: '1', // 使用默认规则
+      pinLotteryRules: '' // 自定义规则
+    }
+  },
   mounted () {
-    document.title = '拼团抽奖规则'
+    // 初始化数据
+    this.initData()
+  },
+  methods: {
+    initData () {
+      // 获取传参
+      // let part = window.location.href.split('?')[1].split('&')
+      // let shopId = Number(part[0].split('=')[1])
+      // let gId = Number(part[2].split('=')[1])
+      // let obj = {
+      //   shop_id: shopId,
+      //   gId: gId
+      // }
+      // pinLotteryRules(obj).then(res => {
+      //   if (res.error === 0) {
+      //     this.isUseDefault = res.content.actCopywriting.isUseDefault
+      //     this.pinLotteryRules = res.content.actCopywriting.document
+      //   }
+      // })
+    }
   }
 }
 </script>
