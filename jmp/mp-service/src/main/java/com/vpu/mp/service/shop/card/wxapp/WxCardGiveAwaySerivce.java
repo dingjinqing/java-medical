@@ -166,10 +166,11 @@ public class WxCardGiveAwaySerivce extends ShopBaseService {
 	public CardGiveVo getCardGiveImg(MemberCardRecord card) {
 		logger().info("获取转赠卡分享图片");
 		CardGiveVo cardGiveVo = new CardGiveVo();
-		String fullShareImg = qrCodeSvc.createCardGiveAwayImage(card);
-		cardGiveVo.setFullShareImg(fullShareImg);
 		try {
+			String fullShareImg = qrCodeSvc.createCardGiveAwayImage(card);
 			URL url = new URL(fullShareImg);
+			
+			cardGiveVo.setFullShareImg(fullShareImg);
 			cardGiveVo.setShareImg(url.getPath());
 		} catch (MalformedURLException e) {
 			logger().info("错误： 获取转赠卡分享图片: "+"fullShareImg");
