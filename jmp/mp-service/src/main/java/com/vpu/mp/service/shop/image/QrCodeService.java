@@ -361,8 +361,8 @@ public class QrCodeService extends ShopBaseService {
     	BufferedImage cardVatar = getCardVatar();
     	
     	//	会员卡名称
-    	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 0, 0);
-    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
+    	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 30, 20);
+    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 170, 90,
 				Color.WHITE);
 
     	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
