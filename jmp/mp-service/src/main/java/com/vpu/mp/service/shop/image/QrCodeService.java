@@ -311,13 +311,17 @@ public class QrCodeService extends ShopBaseService {
 	}
 
     /**
-     * 获取底层图片
+     * 	获取底层图片
      */
 	private BufferedImage getBgImg(Integer width,Integer height) {
+		String userBgPath = "image/wxapp/user_background.png";
+		return getBgImg(width,height,userBgPath);
+	}
+		
+	private BufferedImage getBgImg(Integer width,Integer height,String userBgPath) {
 		// 背景图片
     	BufferedImage bgImg = null;
     	InputStream loadFile = null;
-    	String userBgPath = "image/wxapp/user_background.png";
     	try {
     		loadFile = Util.loadFile(userBgPath);
 			bgImg = ImageIO.read(loadFile);
