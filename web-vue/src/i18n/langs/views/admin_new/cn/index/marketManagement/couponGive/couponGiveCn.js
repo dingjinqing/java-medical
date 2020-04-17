@@ -45,7 +45,7 @@ export const cn = {
   buyMore: '购买次数大于',
   buyLess: '购买次数小于',
   priceHigher: '购买商品均价大于',
-  priceLess: '购买商品均价大小于',
+  priceLess: '购买商品均价小于',
   loginRecord: '有登录记录',
   immediatelyGrant: '立即发放',
   regularlyGrant: '定时发放',
