@@ -452,6 +452,12 @@ export default {
         return false
       }
 
+      if (this.goodsDistributionInfo.shareAction === 2 && isStrBlank(this.goodsDistributionInfo.shareDoc)) {
+        this.$message.warning({ message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocIsNull'), type: 'warning' })
+        this.$refs.shareDocInput.focus()
+        return false
+      }
+
       if (this.goodsDistributionInfo.shareAction === 2 && !isStrBlank(this.goodsDistributionInfo.shareDoc) &&
         this.goodsDistributionInfo.shareDoc.length > 15) {
         this.$message.warning({ message: this.$t('goodsAddEditInfo.goodsDistribution.promotionDocTooLong'), type: 'warning' })
