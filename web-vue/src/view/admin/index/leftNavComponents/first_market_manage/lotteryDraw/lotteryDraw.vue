@@ -183,6 +183,17 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
+                :content="$t('lotteryDraw.start')"
+                placement="top"
+                v-if="scope.row.status === 4"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-check"
+                  @click="startHandler(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
                 :content="$t('lotteryDraw.order')"
                 placement="top"
                 v-if="scope.row.status !== 2"
@@ -429,6 +440,19 @@ export default {
         })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.stopFail') })
+      })
+    },
+
+    // 启用
+    startHandler (id) {
+      this.$confirm(this.$t('seckill.startTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.startFail') })
       })
     },
 

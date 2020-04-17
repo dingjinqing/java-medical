@@ -46,6 +46,7 @@ export const cn = {
   edit: '编辑',
   share: '分享',
   stop: '停用',
+  start: '启用',
   order: '查看活动订单',
   user: '参与用户',
   userDetail: '获取新用户明细',
