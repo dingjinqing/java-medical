@@ -155,7 +155,7 @@ public class QrCodeService extends ShopBaseService {
     }
 
     public String getQrCodeImgRelativePath(short type){
-        return format("upload/%s/qrcode/%s/",  getShopId(), type);
+        return format("upload/%s/qrcode/%s/",getShopId(), type);
     }
     
     
@@ -369,7 +369,12 @@ public class QrCodeService extends ShopBaseService {
     				Color.WHITE);
 
         	relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
-           
+        	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
+        	try {
+				this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
+			} catch (Exception e) {
+				logger().error("转赠卡上传upyun失败");
+			}
         	CodeRecord codeRecord = db().newRecord(CODE);
             codeRecord.setType(type);
             codeRecord.setParamId(String.valueOf(card.getId()));
