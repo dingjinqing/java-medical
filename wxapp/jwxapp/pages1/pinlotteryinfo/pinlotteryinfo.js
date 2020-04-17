@@ -318,7 +318,7 @@ global.wxPage({
   },
   // 查看活动规则
   to_rule: function () {
-    util.jumpToWeb('/wxapp/pinlottery/help');
+    util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + group_draw_id);
   },
   /**
    * 用户点击右上角分享
