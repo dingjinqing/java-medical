@@ -641,7 +641,7 @@
                       </template>
                       <template v-else>
                         <span>
-                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * 100) + $t('order.score')}}
+                          {{currencyPool[orderItem.currency][lang][1] + orderItem.moneyPaid.toFixed(2) + ' + ' + (orderItem.scoreDiscount * orderItem.scoreProportion) + $t('order.score')}}
                         </span>
                         <br />
                         <span>
