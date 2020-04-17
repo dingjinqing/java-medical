@@ -60,6 +60,7 @@ global.wxPage({
   },
 
   request_group () {
+    var that = this;
     util.api('/api/wxapp/groupdraw/info', function (res) {
       if (res.error == 0) {
         var group_info = res.content;
