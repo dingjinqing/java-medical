@@ -24,9 +24,13 @@
               v-show="data.show_clock === '1'||data.show_clock === 1"
               class="group-time"
             >
-              <span v-show="data.group_draw_endtime">{{$t('fightGroup.letEnd')}}{{lastTime}}</span>
-              <span v-show="!data.group_draw_endtime">{{$t('fightGroup.sorryLetEnd')}}</span>
+              <span v-show="data.end_time">{{$t('fightGroup.letEnd')}}{{lastTime}}</span>
+              <span v-show="!data.end_time">{{$t('fightGroup.sorryLetEnd')}}</span>
             </p>
+            <p
+              class="group-time"
+              v-if="data.state"
+            >{{data.state|fmtState}}</p>
           </div>
         </div>
       </div>
@@ -114,8 +118,8 @@ export default {
       return this.$t('fightGroup.puzzleDraw')
     },
     lastTime: function () {
-      if (this.data.group_draw_endtime) {
-        let date = new Date(this.data.group_draw_endtime)
+      if (this.data.end_time) {
+        let date = new Date(this.data.end_time)
         let now = new Date()
         let time1 = date - now // 相差毫秒数
         if (time1 <= 0) {
@@ -169,6 +173,26 @@ export default {
       },
       immediate: true,
       deep: true
+    }
+  },
+  filters: {
+    fmtState (val) {
+      let text = ''
+      switch (val) {
+        case 1:
+          text = '活动不存在'
+          break
+        case 2:
+          text = '活动已停用'
+          break
+        case 3:
+          text = '活动未开始'
+          break
+        case 4:
+          text = '活动已过期'
+          break
+      }
+      return text
     }
   },
   mounted () {
@@ -232,6 +256,7 @@ export default {
       padding-top: 40px;
     }
     .group-time {
+      margin-top: 5px;
       font-size: 12px;
     }
   }
