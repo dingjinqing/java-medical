@@ -1013,6 +1013,8 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
     /**'1.00元大抽奖，快来参与吧'文字*/
     public static final String WX_MA_GROUP_DRAW_PICTORIAL_DOC = "wx.ma.group.draw.pictorial.doc";
+    /**首单特惠*/
+    public static final String WX_MA_FIRST_SPECIAL_INFO="wx.ma.first.special.info";
 
     /** 拼团相关 */
     /** 开团省 */
