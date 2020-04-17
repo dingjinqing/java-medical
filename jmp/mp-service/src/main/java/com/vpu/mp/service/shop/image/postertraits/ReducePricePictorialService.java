@@ -223,7 +223,7 @@ public class ReducePricePictorialService extends ShopBaseService {
             BufferedImage reduceIconBufferImg = ImageIO.read(reduceIconStream);
             ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBgPadding(), imgPx.getPriceY());
             int realPriceStartX = imgPx.getBgPadding() + reduceIconBufferImg.getWidth() + imgPx.getBgPadding() + 10;
-            String realPriceText = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+            String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
             ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
             Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
             int linePriceStartX = realPriceStartX + textWidth + imgPx.getBgPadding() + 10;
