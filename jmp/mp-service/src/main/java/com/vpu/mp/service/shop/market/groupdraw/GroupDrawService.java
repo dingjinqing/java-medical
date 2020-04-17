@@ -338,7 +338,7 @@ public class GroupDrawService extends ShopBaseService {
 		return new GroupDrawRecord(null, param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(),
 				param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(), param.getOpenLimit(),
 				param.getLimitAmount(), param.getToNumShow(), ACTIVITY_STATUS_NORMAL, (byte) 1, null, null, ZERO, null,
-				param.getRewardCouponId());
+				param.getRewardCouponId(),null);
 	}
 
 	/**
