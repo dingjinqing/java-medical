@@ -2247,6 +2247,7 @@ public class UserCardService extends ShopBaseService {
         record.setRenewOrderSn(orderSn);
         record.setUserId(user.getUserId());
         record.setOrderStatus((byte)0);
+        record.setPayment("");
         record.setPayCode(payCode);
         record.setMoneyPaid(moneyPaid);
         record.setMemberCardNo(orderInfo.getMemberCardNo());
