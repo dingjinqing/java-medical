@@ -183,6 +183,17 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
+                :content="$t('lotteryDraw.start')"
+                placement="top"
+                v-if="scope.row.status === 4"
+              >
+                <span
+                  style="font-size: 22px;"
+                  class="el-icon-circle-check"
+                  @click="startHandler(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <el-tooltip
                 :content="$t('lotteryDraw.order')"
                 placement="top"
                 v-if="scope.row.status !== 2"
@@ -272,7 +283,7 @@
 import addLotteryDraw from './addLotteryDraw.vue'
 import shareDialog from '@/components/admin/shareDialog'
 import pagination from '@/components/admin/pagination/pagination'
-import { lotteryDrawList, deleteLotteryDraw, shareLotteryDraw, updateStatus } from '@/api/admin/marketManage/lotteryDraw.js'
+import { lotteryDrawList, deleteLotteryDraw, shareLotteryDraw, stopStatus, startStatus } from '@/api/admin/marketManage/lotteryDraw.js'
 export default {
   components: {
     addLotteryDraw,
@@ -421,7 +432,7 @@ export default {
         cancelButtonText: this.$t('seckill.cancel'),
         type: 'warning'
       }).then(() => {
-        updateStatus(id).then((res) => {
+        stopStatus(id).then((res) => {
           if (res.error === 0) {
             this.$message.success({ message: this.$t('seckill.stopSuccess') })
             this.initDataList()
@@ -429,6 +440,24 @@ export default {
         })
       }).catch(() => {
         this.$message.info({ message: this.$t('seckill.stopFail') })
+      })
+    },
+
+    // 启用
+    startHandler (id) {
+      this.$confirm(this.$t('seckill.startTip'), {
+        confirmButtonText: this.$t('seckill.sure'),
+        cancelButtonText: this.$t('seckill.cancel'),
+        type: 'warning'
+      }).then(() => {
+        startStatus(id).then((res) => {
+          if (res.error === 0) {
+            this.$message.success({ message: this.$t('seckill.startSuccess') })
+            this.initDataList()
+          }
+        })
+      }).catch(() => {
+        this.$message.info({ message: this.$t('seckill.startFail') })
       })
     },
 
