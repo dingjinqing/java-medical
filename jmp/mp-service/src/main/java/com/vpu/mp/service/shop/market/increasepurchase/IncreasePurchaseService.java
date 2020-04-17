@@ -151,6 +151,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
+            vo.setCategory(param.getCategory());
         }
         return pageResult;
     }
