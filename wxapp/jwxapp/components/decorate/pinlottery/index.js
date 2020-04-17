@@ -13,6 +13,29 @@ global.wxComponent({
       this.startActivityTimer('pinlottery', {
         0: m.surplus_second
       });
+      // 处理活动状态提示 tips
+      this.handleToState(m)
+    },
+    handleToState (m) {
+      let tips = ''
+      switch (m.state) {
+        case 1:
+          tips = '活动不存在'
+          break
+        case 2:
+          tips = '活动已停用'
+          break
+        case 3:
+          tips = '活动未开始'
+          break
+        case 4:
+          tips = '活动已过期'
+          break
+      }
+      console.log(tips)
+      this.setData({
+        'm.tip': tips
+      })
     },
     // 拼团抽奖列表
     bindToGroupList (e) {
