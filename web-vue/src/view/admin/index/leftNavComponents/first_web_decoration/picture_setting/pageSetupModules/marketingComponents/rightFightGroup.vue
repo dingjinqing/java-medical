@@ -122,7 +122,8 @@ export default {
         font_color: '#ffffff',
         module_bg: '0',
         module_img: '',
-        group_draw_endtime: ''
+        end_time: '',
+        state: 0
       },
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -186,6 +187,19 @@ export default {
         if (res.error === 0) {
           console.log(res.content)
           that.fightGroupSelects = res.content
+          let selectId = that.data.group_draw_id
+          if (selectId && (that.data.state === 1 || that.data.state === 2 || that.data.state === 4)) {
+            console.log(that.fightGroupSelects)
+            let index = that.fightGroupSelects.findIndex(item => item.id === that.fightGroupSelects)
+            console.log('index:', index)
+            if (index < 0) {
+              that.fightGroupSelects.push({
+                ...that.data,
+                id: selectId,
+                actName: '该活动已停用'
+              })
+            }
+          }
           if (!that.fightGroupSelects) {
             that.$message.warning(this.$t('fightGroup.noGroupDraw'))
           }
@@ -201,7 +215,12 @@ export default {
     fightGroupActivityChange (select) {
       console.log('select:', select)
       let data = this.fightGroupSelects.find(item => item.id === select)
-      this.$set(this.data, 'group_draw_endtime', data.endTime)
+      this.$set(this.data, 'end_time', data.endTime)
+      if (!data.state) {
+        this.$set(this.data, 'state', 0)
+      } else {
+        this.$set(this.data, 'state', data.state)
+      }
     }
   }
 }
