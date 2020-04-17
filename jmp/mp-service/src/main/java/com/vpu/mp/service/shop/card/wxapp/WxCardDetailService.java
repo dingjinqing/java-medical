@@ -152,7 +152,7 @@ public class WxCardDetailService extends ShopBaseService{
 		CardCustomRights customRights = memberCardSvc.cardDetailSvc.getCustomRights(memberCardRecord);
 		card.setCardCustomRights(customRights);
 		if(CardUtil.isLimitCard(card.getCardType())) {
-			getCardGiveVo(memberCardRecord, userCardRecord);
+			card.setCardGive(getCardGiveVo(memberCardRecord, userCardRecord));
 		}
 		return card;
 	}
