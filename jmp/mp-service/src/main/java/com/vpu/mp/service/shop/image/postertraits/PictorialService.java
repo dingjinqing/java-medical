@@ -151,7 +151,9 @@ public class PictorialService extends ShopBaseService {
         // 设置用户名
         ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor(), false);
         // 设置宣传语
-        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(), false);
+        if (shareDoc != null) {
+            ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(), false);
+        }
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
@@ -201,7 +203,7 @@ public class PictorialService extends ShopBaseService {
         } else {
             double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
             int oneLineCharNum = (int) Math.floor(imgPx.getGoodsNameCanUseWidth() / oneCharWidth);
-            if (goodsName.length() >oneLineCharNum * 3) {
+            if (goodsName.length() > oneLineCharNum * 3) {
                 goodsName = goodsName.substring(0, oneLineCharNum * 2 + oneLineCharNum / 2) + "...";
             }
 
