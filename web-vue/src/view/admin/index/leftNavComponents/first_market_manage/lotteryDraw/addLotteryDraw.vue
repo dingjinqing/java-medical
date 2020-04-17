@@ -377,7 +377,7 @@ export default {
         // 规则说明
         activityCopywriting: {
           document: null,
-          is_use_default: null
+          isUseDefault: 0
         }
       },
       // 校验表单
@@ -582,7 +582,7 @@ export default {
       console.log('回来的值')
       console.log(data)
       this.ruleShow = false
-      // this.activity.activityCopywriting = data
+      // this.form.activityCopywriting = data
     }
 
   }
