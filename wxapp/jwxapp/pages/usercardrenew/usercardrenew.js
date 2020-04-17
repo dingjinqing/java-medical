@@ -184,7 +184,6 @@ global.wxPage({
       // 如果优先用余额支付
       if (cardInfo.balanceFirst == '1') {
         var count = 0;
-        // 所需支付的金额
         user_account_input = that.data.create_order.money_paid - that.data.user_money.account > 0 ? that.data.user_money.account : that.data.create_order.money_paid;
         if (parseInt(user_account_input) == 0) {
           count++;
@@ -363,48 +362,49 @@ global.wxPage({
       params.moneyPaid = that.data.cardInfo.renewNum;
       params.useAccount = 0.00;
       params.memberCardBalance = 0.00;
-      params.memberCardNo = 0.00;
+      params.memberCardNo = 0;
     }
     console.log(opt, params);
 
     util.api('/api/wxapp/card/renew/checkout', function (res) {
       console.log(res)
       //   var order_sn = res.content.order_sn;
-      //   if (res.error == 0) {
-      //     if (typeof (res.content.timeStamp) != 'undefined') {
-      //       console.log('wx**********************');
-      //       wx.requestPayment({
-      //         'timeStamp': res.content.timeStamp,
-      //         'nonceStr': res.content.nonceStr,
-      //         'package': res.content.package,
-      //         'signType': typeof res.content.signType == "undefined" ? 'MD5' : res.content.signType,
-      //         'paySign': res.content.paySign,
-      //         'success': function (ret) {
-      //           util.toast_success('支付成功');
-      //           that.setData({
-      //             'card_info.expire_time': res.content.expire_time,
-      //             'card_info.money': res.content.money,
-      //             success: 1
-      //           })
-      //         },
-      //         'fail': function (res) {
-      //           util.toast_fail('支付失败');
-      //         },
-      //         'complete': function (res) { }
-      //       });
-      //     } else {
-      //       that.setData({
-      //         'card_info.expire_time': res.content.expire_time,
-      //         'card_info.money': res.content.money,
-      //         success: 1
-      //       })
-      //     }
+      if (res.error == 0) {
+        console.log(typeof (res.content.webPayVo.timeStamp))
+        if (typeof (res.content.webPayVo.timeStamp) != 'undefined') {
+          console.log('wx**********************');
+          wx.requestPayment({
+            'timeStamp': res.content.webPayVo.timeStamp,
+            'nonceStr': res.content.webPayVo.nonceStr,
+            'package': res.content.webPayVo.package,
+            'signType': typeof res.content.webPayVo.signType == "undefined" ? 'MD5' : res.content.webPayVo.signType,
+            'paySign': res.content.webPayVo.paySign,
+            'success': function (ret) {
+              util.toast_success('支付成功');
+              that.setData({
+                'cardInfo.expireTime': res.content.expireTime,
+                'cardInfo.money': res.content.money,
+                success: 1
+              })
+            },
+            'fail': function (res) {
+              util.toast_fail('支付失败');
+            },
+            'complete': function (res) { }
+          });
+        } else {
+          that.setData({
+            'cardInfo.expireTime': res.content.expireTime,
+            'cardInfo.money': res.content.money,
+            success: 1
+          })
+        }
 
-      //   } else {
-      //     util.showModal('提示', res.message, function () {
+      } else {
+        util.showModal('提示', res.message, function () {
 
-      //     });
-      //   }
+        });
+      }
     }, params)
   },
   to_index () {
