@@ -23,11 +23,7 @@ import com.vpu.mp.service.pojo.shop.decoration.module.ModuleGroupDraw;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawAddParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawListVo;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawShareParam;
-import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupDrawUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.*;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisInfo;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisMap;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.analysis.GroupDrawAnalysisParam;
@@ -59,10 +55,7 @@ import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.Record18;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -172,11 +165,14 @@ public class GroupDrawService extends ShopBaseService {
 	 * 更新活动
 	 */
 	public void updateGroupDraw(GroupDrawUpdateParam param) {
+        String actCopywriting = Util.toJsonNotNull(param.getActCopywriting());
+        param.setActivityCopywriting(actCopywriting);
 		db().update(GROUP_DRAW).set(GROUP_DRAW.NAME, param.getName()).set(GROUP_DRAW.START_TIME, param.getStartTime())
 				.set(GROUP_DRAW.END_TIME, param.getEndTime()).set(GROUP_DRAW.JOIN_LIMIT, param.getJoinLimit())
 				.set(GROUP_DRAW.LIMIT_AMOUNT, param.getLimitAmount()).set(GROUP_DRAW.OPEN_LIMIT, param.getOpenLimit())
 				.set(GROUP_DRAW.MIN_JOIN_NUM, param.getMinJoinNum()).set(GROUP_DRAW.PAY_MONEY, param.getPayMoney())
-				.set(GROUP_DRAW.TO_NUM_SHOW, param.getToNumShow()).where(GROUP_DRAW.ID.eq(param.getId())).execute();
+				.set(GROUP_DRAW.TO_NUM_SHOW, param.getToNumShow()).set(GROUP_DRAW.ACTIVITY_COPYWRITING, param.getActivityCopywriting())
+            .where(GROUP_DRAW.ID.eq(param.getId())).execute();
 	}
 
 	/**
@@ -185,7 +181,7 @@ public class GroupDrawService extends ShopBaseService {
 	public GroupDrawListVo getGroupDrawById(Integer id) {
 		GroupDrawListParam param = new GroupDrawListParam();
 		param.setId(id);
-		SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select = createSelect(
+		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = createSelect(
 				param);
 		GroupDrawListVo vo = select.fetchOneInto(GroupDrawListVo.class);
 		transformStatus(vo);
@@ -196,7 +192,7 @@ public class GroupDrawService extends ShopBaseService {
 	 * 列表查询
 	 */
 	public PageResult<GroupDrawListVo> getGroupDrawList(GroupDrawListParam param) {
-		SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select = createSelect(
+		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = createSelect(
 				param);
 		PageResult<GroupDrawListVo> result = getPageResult(select, param, GroupDrawListVo.class);
 		List<GroupDrawListVo> dataList = result.getDataList();
@@ -207,9 +203,9 @@ public class GroupDrawService extends ShopBaseService {
 	/**
 	 * 通用查询
 	 */
-	private SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> createSelect(
+	private SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> createSelect(
 			GroupDrawListParam param) {
-		SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select = db()
+		SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select = db()
 				.select(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
 						GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
 						GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW,
@@ -219,14 +215,15 @@ public class GroupDrawService extends ShopBaseService {
 						DSL.countDistinct(JOIN_GROUP_LIST.GROUP_ID).as("groupCount"), GROUP_DRAW.GOODS_ID,
 						GROUP_DRAW.REWARD_COUPON_ID,
 						DSL.countDistinct(JOIN_DRAW_LIST.USER_ID).filterWhere(JOIN_DRAW_LIST.IS_WIN_DRAW.eq((byte) 1))
-								.as("drawUserCount"))
+								.as("drawUserCount"),
+                    GROUP_DRAW.ACTIVITY_COPYWRITING)
 				.from(GROUP_DRAW).leftJoin(JOIN_GROUP_LIST).on(GROUP_DRAW.ID.eq(JOIN_GROUP_LIST.GROUP_DRAW_ID))
 				.leftJoin(JOIN_DRAW_LIST).on(GROUP_DRAW.ID.eq(JOIN_DRAW_LIST.GROUP_DRAW_ID)).where();
 		buildOptions(select, param);
 		select.groupBy(GROUP_DRAW.ID, GROUP_DRAW.NAME, GROUP_DRAW.END_TIME, GROUP_DRAW.START_TIME, GROUP_DRAW.IS_DRAW,
 				GROUP_DRAW.JOIN_LIMIT, GROUP_DRAW.PAY_MONEY, GROUP_DRAW.LIMIT_AMOUNT, GROUP_DRAW.MIN_JOIN_NUM,
 				GROUP_DRAW.OPEN_LIMIT, GROUP_DRAW.STATUS, GROUP_DRAW.TO_NUM_SHOW, GROUP_DRAW.GOODS_ID,
-				GROUP_DRAW.REWARD_COUPON_ID);
+				GROUP_DRAW.REWARD_COUPON_ID,GROUP_DRAW.ACTIVITY_COPYWRITING);
 		return select;
 	}
 
@@ -234,7 +231,7 @@ public class GroupDrawService extends ShopBaseService {
 	 * 查询条件
 	 */
 	private void buildOptions(
-			SelectConditionStep<Record18<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer>> select,
+			SelectConditionStep<Record19<Integer, String, Timestamp, Timestamp, Byte, Short, BigDecimal, Short, Short, Short, Byte, Short, Integer, Integer, Integer, String, String, Integer,String>> select,
 			GroupDrawListParam param) {
 		String name = param.getActivityName();
 		LocalDate startTime = param.getStartTime();
@@ -313,6 +310,8 @@ public class GroupDrawService extends ShopBaseService {
 		if (null != couponId) {
 			vo.setCouponIds(stringToList(couponId));
 		}
+		GroupDrawActCopywriting actCopywriting = Util.json2Object(vo.getActivityCopywriting(),GroupDrawActCopywriting.class,false);
+		vo.setActCopywriting(actCopywriting);
 	}
 
 	/**
@@ -327,6 +326,8 @@ public class GroupDrawService extends ShopBaseService {
 		if (null != rewardCouponIds && (!rewardCouponIds.isEmpty())) {
 			param.setRewardCouponId(listToString(rewardCouponIds));
 		}
+		String actCopywriting = Util.toJsonNotNull(param.getActCopywriting());
+		param.setActivityCopywriting(actCopywriting);
 		param.setGoodsId(listToString(goodsIds));
 		db().insertInto(GROUP_DRAW).set(createGroupDrawRecord(param)).execute();
 	}
@@ -338,7 +339,7 @@ public class GroupDrawService extends ShopBaseService {
 		return new GroupDrawRecord(null, param.getName(), param.getStartTime(), param.getEndTime(), param.getGoodsId(),
 				param.getMinJoinNum(), param.getPayMoney(), param.getJoinLimit(), param.getOpenLimit(),
 				param.getLimitAmount(), param.getToNumShow(), ACTIVITY_STATUS_NORMAL, (byte) 1, null, null, ZERO, null,
-				param.getRewardCouponId(),null);
+				param.getRewardCouponId(),param.getActivityCopywriting());
 	}
 
 	/**
@@ -603,7 +604,7 @@ public class GroupDrawService extends ShopBaseService {
 	/**
 	 * 校验活动是否存在
 	 * 
-	 * @param groupDrawId
+	 * @param
 	 * @return
 	 * @return
 	 */
