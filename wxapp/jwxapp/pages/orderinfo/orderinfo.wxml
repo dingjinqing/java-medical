@@ -228,7 +228,7 @@
       </view>
       <view class="pay_item" wx:if="{{orderInfo.scoreDiscount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useScore")}}</text>
-        <text>-￥{{orderInfo.scoreDiscount}}</text>
+        <text>-{{isScore ? '' : '￥'}}{{isScore ? orderInfo.scoreDiscount * orderInfo.scoreProportion : orderInfo.scoreDiscount}}{{isScore ? '积分' : ''}}</text>
       </view>
       <view class="pay_item" wx:if="{{orderInfo.useAccount > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.useBalance")}}</text>
