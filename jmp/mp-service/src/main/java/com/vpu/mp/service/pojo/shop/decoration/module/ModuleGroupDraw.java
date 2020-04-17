@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.decoration.module;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,10 +53,12 @@ public class ModuleGroupDraw extends ModuleBase {
     private Byte status;
 
     /** */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",  timezone="GMT+8")
     @JsonProperty("start_time")
     private Timestamp startTime;
 
     /** */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",  timezone="GMT+8")
     @JsonProperty("end_time")
     private Timestamp endTime;
 
