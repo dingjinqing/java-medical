@@ -352,37 +352,27 @@ public class QrCodeService extends ShopBaseService {
      */
     public String createCardGiveAwayImage(MemberCardRecord card) {
     	logger().info("获取转赠会员卡图");
-    	final short type = QrCodeTypeEnum.USER_CARD_INFO.getType();
-    	CodeRecord code = getMpQrCode(QrCodeTypeEnum.USER_CARD_INFO,card.getId());
-    	String relativePath;
-    	if(code==null) {
-        	//	背景
-        	final String bgPath = "image/wxapp/card_give_away.png";
-        	BufferedImage giveWayBgImg = getBgImg(400,320,bgPath);
-        	
-        	//	头像
-        	BufferedImage cardVatar = getCardVatar();
-        	
-        	//	会员卡名称
-        	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 0, 0);
-        	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
-    				Color.WHITE);
+    	final short type = 45;
+    	//	背景
+    	final String bgPath = "image/wxapp/card_give_away.png";
+    	BufferedImage giveWayBgImg = getBgImg(500,400,bgPath);
+    	
+    	//	头像
+    	BufferedImage cardVatar = getCardVatar();
+    	
+    	//	会员卡名称
+    	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 0, 0);
+    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 150, 70,
+				Color.WHITE);
 
-        	relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
-        	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
-        	try {
-				this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
-			} catch (Exception e) {
-				logger().error("转赠卡上传upyun失败");
-			}
-        	CodeRecord codeRecord = db().newRecord(CODE);
-            codeRecord.setType(type);
-            codeRecord.setParamId(String.valueOf(card.getId()));
-            codeRecord.setQrcodeImg(relativePath);
-            codeRecord.insert();
-    	}else {
-    		relativePath = code.getQrcodeImg();
-    	}
+    	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+    	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
+    	try {
+			this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
+		} catch (Exception e) {
+			logger().error("转赠卡上传upyun失败");
+		}
+    	
     	return imageService.imageUrl(relativePath);
     }
     
