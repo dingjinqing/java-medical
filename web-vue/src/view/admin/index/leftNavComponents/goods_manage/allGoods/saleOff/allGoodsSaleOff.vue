@@ -91,7 +91,7 @@ export default {
     /* 触发商品分页查询 */
     searchGoodsData () {
       let formFilterData = this.$refs.goodsHeaderFormCmp.getFormData()
-      let formFilterDataString = this.$refs.allGoodsHeaderCmp.getFormDataString()
+      let formFilterDataString = this.$refs.goodsHeaderFormCmp.getFormDataString()
       let params = {
         ...formFilterData,
         ...this.initFilterData,
