@@ -171,6 +171,7 @@ public class WxCardDetailService extends ShopBaseService{
 					GiveCardRecordRecord giveCardRecord = wxCardGiveAwaySvc.getNormalGiveCardRecordByCardNo(userCardRecord.getCardNo());
 					if(giveCardRecord!=null) {
 						return CardGiveVo.builder()
+								.canGiveWay(NumberUtils.BYTE_ONE)
 								.createTime(giveCardRecord.getCreateTime())
 								.deadline(giveCardRecord.getDeadline())
 								.build();
@@ -181,6 +182,7 @@ public class WxCardDetailService extends ShopBaseService{
 					if(giveCardRecord !=null) {
 						UserInfo user = userSvc.getUserInfo(giveCardRecord.getGetUserId());
 						return CardGiveVo.builder()
+									.canGiveWay(NumberUtils.BYTE_ONE)
 									.createTime(giveCardRecord.getCreateTime())
 									.deadline(giveCardRecord.getDeadline())
 									.giveUsername(user != null?user.getUsername():null)
@@ -210,7 +212,7 @@ public class WxCardDetailService extends ShopBaseService{
 				}
 			}
 			
-			return new CardGiveVo();
+			return CardGiveVo.builder().canGiveWay(NumberUtils.BYTE_ZERO).build();
 
 	}
 	
