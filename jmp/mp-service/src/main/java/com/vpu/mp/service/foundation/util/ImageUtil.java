@@ -329,4 +329,19 @@ public final class ImageUtil {
         FontMetrics metrics = graphics.getFontMetrics(font);
         return metrics.getAscent();
     }
+    
+    /**
+     * 	将图片转换为字节数组
+     * @param image
+     * @return byte[]
+     */
+    public static byte[] changeImageToByteArr(BufferedImage image) {
+    	ByteArrayOutputStream os = new ByteArrayOutputStream();
+    	try {
+			ImageIO.write(image, "png", os);
+		} catch (IOException e) {
+			log.error(e.getMessage(),e);
+		}
+    	return os.toByteArray();
+    }
 }
