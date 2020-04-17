@@ -2093,7 +2093,7 @@ public class UserCardService extends ShopBaseService {
                 accountParam.setUserId(userId);
                 accountParam.setAccount(userInfo.getAccount());
                 accountParam.setOrderSn(order.getRenewOrderSn());
-                accountParam.setAmount(order.getUseAccount());
+                accountParam.setAmount(new BigDecimal("-"+order.getUseAccount().toString()));
                 accountParam.setPayment("balance");
                 accountParam.setIsPaid((byte)1);
                 accountParam.setRemarkId(RemarkTemplate.CARD_RENEW.code);
