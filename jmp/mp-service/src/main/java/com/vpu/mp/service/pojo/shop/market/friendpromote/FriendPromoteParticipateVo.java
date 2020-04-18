@@ -13,6 +13,9 @@ import lombok.Data;
 @Data
 @ExcelSheet
 public class FriendPromoteParticipateVo {
+    /** 参与用户id */
+    @ExcelIgnore
+    private Integer joinUserId;
 	/** 参与用户昵称 */
     @ExcelColumn(columnIndex = 0, columnName = JsonResultMessage.FRIEND_PROMOTE_JOIN_USER_NAME)
 	private String username;
@@ -28,6 +31,9 @@ public class FriendPromoteParticipateVo {
 	/** 助力活动Id（用户发起） */
     @ExcelColumn(columnIndex = 3, columnName = JsonResultMessage.FRIEND_PROMOTE_LAUNCH_ACT_ID)
 	private Integer launchId;
+    /** 发起用户id */
+    @ExcelIgnore
+    private Integer launchUserId;
 	/** 活动发起人 */
     @ExcelColumn(columnIndex = 4, columnName = JsonResultMessage.FRIEND_PROMOTE_LAUNCH_USER_NAME)
 	private String launchUsername;

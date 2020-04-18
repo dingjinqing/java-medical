@@ -241,7 +241,7 @@ public class FriendPromoteService extends ShopBaseService {
 	 */
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
-		SelectHavingStep<Record7<Integer, String, String, Integer, Integer, BigDecimal, Byte>> sql = db().select(fpl.ID,
+		SelectHavingStep<? extends Record> sql = db().select(fpl.ID,USER.USER_ID,
                         USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("join_num"),
 						DSL.count(fpd.USER_ID).as("promote_times"), DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"),
 						fpl.PROMOTE_STATUS)
@@ -280,17 +280,17 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteParticipateVo> participateDetail(FriendPromoteParticipateParam param) {
 		User a = USER.as("a");
 		User b = USER.as("b");
-		SelectHavingStep<Record7<Integer, String, String, String, String, Integer, BigDecimal>> sql = db().select(fpd.LAUNCH_ID,
-                        a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
-						b.USERNAME.as("launch_username"), DSL.count(fpd.USER_ID).as("promote_times"),
+		SelectHavingStep<? extends Record> sql = db().select(fpd.LAUNCH_ID,
+                        a.USER_ID.as("join_user_id"),a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+                        b.USER_ID.as("launch_user_id"),b.USERNAME.as("launch_username"), DSL.count(fpd.USER_ID).as("promote_times"),
 						DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"))
 				.from(fpd)
 				.leftJoin(a).on(fpd.USER_ID.eq(a.USER_ID))
 				.leftJoin(fpl).on(fpd.LAUNCH_ID.eq(fpl.ID))
 				.leftJoin(b).on(fpl.USER_ID.eq(b.USER_ID))
 				.where(fpl.PROMOTE_ID.eq(param.getPromoteId()))
-				.groupBy(fpd.LAUNCH_ID,a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
-						b.USERNAME.as("launch_username"));
+				.groupBy(fpd.LAUNCH_ID,a.USER_ID.as("join_user_id"),a.USERNAME, a.MOBILE, a.INVITE_SOURCE,
+                    b.USER_ID.as("launch_user_id"),b.USERNAME.as("launch_username"));
 		// 查询条件
 		if (!StringUtils.isNullOrEmpty(param.getUsername())) {
 			sql.having(a.USERNAME.like(this.likeValue(param.getUsername())));
