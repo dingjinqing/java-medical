@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,6 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
@@ -433,7 +433,7 @@ public class GroupDrawUserService extends ShopBaseService {
 		String[] split = coupOnIds.split(",");
 		List<String> list = new ArrayList<String>();
 		for (String string : split) {
-			Byte couponGetStatus = couponMpService.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), null));
+			Byte couponGetStatus = couponMpService.couponGetStatus(new MpGetCouponParam(Integer.valueOf(string), null));
 			if (Objects.equals(couponGetStatus, ZERO)) {
 				list.add(string);
 			} else {
