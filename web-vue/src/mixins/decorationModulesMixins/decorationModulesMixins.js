@@ -668,6 +668,13 @@ export default {
       let idx = lastIdx + 1
       let obj = {}
       data.forEach(item => {
+        // if (item.module_name === 'm_integral') {
+        //   item.integral_goods.forEach((itemC, indexC) => {
+        //     itemC.stock_sum = itemC.stock_sum ? itemC.stock_sum : 0
+        //     itemC.money = itemC.money ? itemC.money : 0
+        //     itemC.score = itemC.score ? itemC.score : 0
+        //   })
+        // }
         if (!item.cur_idx) {
           obj[`c_${idx}`] = item
           item.cur_idx = idx
