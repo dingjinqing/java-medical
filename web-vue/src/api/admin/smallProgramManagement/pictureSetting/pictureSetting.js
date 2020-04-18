@@ -118,3 +118,12 @@ export function getHandleTemplatesData (data) {
     method: 'get'
   })
 }
+
+// 更新已装修商品信息
+export function updateGoodsData (data) {
+  return service({
+    url: '/api/admin/market/integral/convert/update/goods',
+    method: 'post',
+    data: data
+  })
+}
