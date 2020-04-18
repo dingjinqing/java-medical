@@ -95,7 +95,7 @@
   </div>
 </template>
 <script>
-
+import { updateGoodsData } from '@/api/admin/smallProgramManagement/pictureSetting/pictureSetting.js'
 export default {
   props: {
     flag: Number, // 模块公共
@@ -166,7 +166,35 @@ export default {
           this.$nextTick(() => {
             this.modulesData = newData
             if (newData.integral_goods.length) {
-              this.showData = newData.integral_goods
+              // this.showData = newData.integral_goods
+              let idArr = []
+              newData.integral_goods.forEach((item, index) => {
+                idArr.push(item.integral_goods_id)
+              })
+              updateGoodsData({ actIds: idArr }).then(res => {
+                console.log(res)
+                if (res.error === 0) {
+                  let dataArr = []
+                  res.content.forEach((item, index) => {
+                    let obj = {
+                      'goods_id': item.goodsId,
+                      'integral_goods_id': item.integralGoodsId,
+                      'goods_img': item.goodsImg,
+                      'goods_name': item.goodsName,
+                      'stock_sum': item.stockSum,
+                      'prd_price': item.prdPrice,
+                      'money': item.money,
+                      'score': item.score,
+                      'start_time': item.startTime,
+                      'end_time': item.endTime,
+                      'is_on_sale': item.isOnSale,
+                      'is_delete': item.isDelete
+                    }
+                    dataArr.push(obj)
+                  })
+                  this.showData = dataArr
+                }
+              })
             } else {
               this.showData = this.occupyingData
             }
