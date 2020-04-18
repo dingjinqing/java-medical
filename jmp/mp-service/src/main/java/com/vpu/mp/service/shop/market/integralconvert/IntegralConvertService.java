@@ -146,9 +146,9 @@ public class IntegralConvertService extends ShopBaseService {
 	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
-						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
-						GOODS.GOODS_NUMBER, DSL.sum(imp.STOCK).as("stock"), DSL.sum(imr.NUMBER).as("number"),
-						DSL.count(imr.USER_ID).as("user_number"),imd.STATUS,imd.DEL_FLAG)
+						imd.END_TIME,
+						GOODS.GOODS_NUMBER,
+						imd.STATUS,imd.DEL_FLAG)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
 				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
 				.where(imd.DEL_FLAG.equal(IntegralConvertConstant.NOT_DELETE));
@@ -181,6 +181,31 @@ public class IntegralConvertService extends ShopBaseService {
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);
         for (IntegralConvertListVo item:listVo.getDataList()){
+            BigDecimal money = db().select(DSL.sum(imr.MONEY))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(BigDecimal.class);
+            item.setMoney(money);
+            Integer score = db().select(DSL.sum(imr.SCORE))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setScore(score);
+            Integer number = db().select(DSL.sum(imr.NUMBER))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setNumber(number);
+            Integer stock = db().select(DSL.sum(imp.STOCK))
+                .from(imp)
+                .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setStock(stock);
+            Integer userNumber = db().select(DSL.count(imr.USER_ID))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setUserNumber(userNumber);
             //4 已停用
             if (item.getStatus()==(byte)0){
                 item.setActStatus(4);
