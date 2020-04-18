@@ -86,7 +86,6 @@ public class IntegralConvertService extends ShopBaseService {
             .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
             .where(imd.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(imd.STATUS.eq(NORMAL))
-            .and(imd.START_TIME.lessThan(Util.currentTimeStamp()))
             .and(imd.END_TIME.greaterThan(Util.currentTimeStamp()));
 	    if (!StringUtils.isNullOrEmpty(param.getGoodsName())){
 	        select.and(GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -110,6 +109,34 @@ public class IntegralConvertService extends ShopBaseService {
 	    return result;
     }
 
+    /**
+     * 更新已装修的活动中的商品信息
+     * @param param 已装修活动id
+     * @return 更新后的活动及商品信息
+     */
+    public List<PopListVo> updateActInfo(PopListParam param){
+	    List<PopListVo> sql = db().select(imd.ID.as("integral_goods_id"),
+            GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+            DSL.sum(imp.STOCK).as("stock_sum"),DSL.min(imp.MONEY).as("money"),DSL.min(imp.SCORE).as("score"),
+            imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+            .from(imd)
+            .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
+            .where(imd.ID.in(param.getActIds()))
+            .groupBy(imd.ID.as("integral_goods_id"),
+                GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+                imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+            .fetchInto(PopListVo.class);
+	    sql.forEach(vo->{
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+            BigDecimal prdPrice = db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE))
+                .from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(vo.getGoodsId()))
+                .fetchOneInto(BigDecimal.class);
+            vo.setPrdPrice(prdPrice);
+        });
+	    return sql;
+    }
 	/**
 	 * 积分兑换分页查询列表
 	 *
@@ -589,10 +616,10 @@ public class IntegralConvertService extends ShopBaseService {
             .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))
             .fetchOneInto(Integer.class);
         String pathParam = "gid="+ goodsId +"&atp=4"+"&aid="+param.getId();
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INTEGRAL_ITEM_INFO, pathParam);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.POSTER_GOODS_ITEM, pathParam);
         ShareQrCodeVo share =new ShareQrCodeVo();
         share.setImageUrl(imageUrl);
-        share.setPagePath(QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getPathUrl(pathParam));
+        share.setPagePath(QrCodeTypeEnum.POSTER_GOODS_ITEM.getPathUrl(pathParam));
         return share;
     }
     
