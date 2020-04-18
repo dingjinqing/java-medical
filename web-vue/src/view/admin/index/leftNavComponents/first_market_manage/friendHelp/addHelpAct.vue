@@ -920,8 +920,8 @@ export default {
       },
       srcList: {
         src: `${this.$imageHost}/image/admin/add_img.png`,
-        src1: `${this.$imageHost}/image/admin/share/bargain_share.jpg`,
-        src2: `${this.$imageHost}/image/admin/share/bagain_pictorial.jpg`,
+        src1: `${this.$imageHost}/image/admin/share/promote_share_goods.jpg`,
+        src2: `${this.$imageHost}/image/admin/share/promote_pictorial_goods.jpg`,
         imageUrl: ``
       },
       showCouponDialog: false,
