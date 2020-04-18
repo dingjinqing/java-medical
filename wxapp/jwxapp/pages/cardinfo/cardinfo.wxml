@@ -34,7 +34,7 @@
 							</block>
 						</view>
 					</view>
-					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg&&cardInfo.give_away_status != 2}}">
+					<view class="surface_bottom_right" wx:if="{{!cardInfo.cardStopImg&&cardInfo.userCardFlag != 3}}">
 						<!-- ￥10000 -->
 						<image
 						 wx:if="{{cardInfo.cardNo !== null}}"
@@ -255,7 +255,7 @@
 			>兑换更多商品
 			</view>
 			<!-- 限次卡转赠 -->
-			<view class='card-center' wx:if='{{cardInfo.cardGive && give_card == 0}}'>
+			<view class='card-center' wx:if='{{cardInfo.cardGive.canGiveWay==1 && give_card == 0}}'>
 				<block wx:if="{{cardInfo.cardGive.canGiveWay == 1}}">
 					<view class="cart-info-lt">
 						<image class="arrow" src="{{imageUrl}}image/wxapp/card_icon_rebate.png" mode='widthFix' />
@@ -429,7 +429,7 @@
 				<view class="description" wx:if="{{ cardInfo.desc != null && cardInfo.desc != '' }}">{{cardInfo.desc}}</view>
 			</view>
 		</view>
-		<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1&&give_card==0)}}">
+		<view class="flex_footer" wx:if="{{!(cardInfo.examine && cardInfo.cardVerifyStatus === 1&&give_card==0)&&cardInfo.userCardFlag != 3}}">
 			<view
 			 class="footer_btn"
 			 data-btnType="{{btnType}}"
@@ -448,13 +448,14 @@
 			 bindtap="rebateGetCard"
 			>领取会员卡
 			</view>
-			<view
+			<button
 			 class="footer_btn"
 			 open-type="getUserInfo"
-			 bindgetuserinfo="getUserInfo"
+			 style='background:{{comColor}};font-size:26rpx'
+			 bindgetuserinfo="bindGetUserInfo"
 			 wx:else
 			>领取会员卡
-			</view>
+			</button>
 		</view>
 		<include src="../common/footer.wxml" />
 

@@ -23,7 +23,7 @@ global.wxPage({
     cardId: null,
     give_card: 0,
     rebate_show: false, // 转赠弹窗flag
-
+    ifGetSq: 0
   },
 
   /**
@@ -691,8 +691,9 @@ global.wxPage({
 
   },
   rebateGetCard: function () {
-    let cardInfo = that.data.cardInfo
+    let cardInfo = this.data.cardInfo
     util.api('/api/wxapp/card/getgiveawaycard', function (res) {
+      console.log(res)
       if (res.error == 0) {
         util.toast_success('领取成功', function () {
           setTimeout(function () {
@@ -709,12 +710,14 @@ global.wxPage({
       cardId: cardInfo.cardId
     })
   },
-  getUserInfo: function (e) {
+  bindGetUserInfo: function (e) {
+    console.log('触发')
     var that = this
     util.getUserInfoCommon(e, function (userInfo) {
+      console.log(userInfo)
       if (userInfo) {
         that.setData({
-          ifGetSq: 1,
+          ifGetSq: 1
         })
       }
     });
