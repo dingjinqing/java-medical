@@ -324,6 +324,12 @@ public class IntegralConvertService extends ShopBaseService {
 			int imdId = db().lastID().intValue();
             // 添加数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()){
+			    if (item.getMoney()==null){
+			        item.setMoney(BigDecimal.ZERO);
+                }
+			    if (item.getScore()==null){
+			        item.setScore(0);
+                }
                 db().insertInto(INTEGRAL_MALL_PRODUCT, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
                     .values(imdId, item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
                     .execute();
@@ -383,6 +389,12 @@ public class IntegralConvertService extends ShopBaseService {
 					.where(imd.ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
+                if (item.getMoney()==null){
+                    item.setMoney(BigDecimal.ZERO);
+                }
+                if (item.getScore()==null){
+                    item.setScore(0);
+                }
 			    IntegralMallProductRecord record = db().select().from(imp)
                     .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
                     .and(imp.PRODUCT_ID.eq(item.getPrdId()))
