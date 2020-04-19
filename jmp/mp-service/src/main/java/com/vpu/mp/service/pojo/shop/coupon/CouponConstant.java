@@ -33,6 +33,10 @@ public class CouponConstant {
      */
     public static final byte COUPON_GIVE_SOURCE_PAY_AWARD=2;
     /**
+     * 分裂优惠券
+     */
+    public static final byte COUPON_GIVE_SOURCE_SPLIT_COUPON=6;
+    /**
      * 幸运大抽奖
      */
     public static final byte COUPON_GIVE_SOURCE_LOTTERY_AWARD=8;

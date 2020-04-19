@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
@@ -15,17 +14,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.coupon.CouponAllParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponAllVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
-import com.vpu.mp.service.pojo.shop.coupon.CouponGetDetailParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponParam;
-import com.vpu.mp.service.pojo.shop.coupon.CouponView;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
-import com.vpu.mp.service.pojo.shop.coupon.CouponWxVo;
+import com.vpu.mp.service.pojo.shop.coupon.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
@@ -41,14 +30,7 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import jodd.util.StringUtil;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Record6;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1095,6 +1077,28 @@ public class CouponService extends ShopBaseService {
         }
         return into;
     }
+    /**
+     * 获取优惠信息一条信息
+     * @param couponSn conponSn
+     * @return 一条数据
+     */
+    public CouponAndVoucherDetailVo getOneCouponDetail(String couponSn) {
+        Record record = db().select(CUSTOMER_AVAIL_COUPONS.asterisk(),
+                MRKING_VOUCHER.ACT_NAME, MRKING_VOUCHER.DENOMINATION, MRKING_VOUCHER.ACT_CODE, MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.USE_EXPLAIN, MRKING_VOUCHER.RECOMMEND_GOODS_ID, MRKING_VOUCHER.RECOMMEND_CAT_ID, MRKING_VOUCHER.RECOMMEND_SORT_ID,
+                MRKING_VOUCHER.USE_SCORE, MRKING_VOUCHER.SCORE_NUMBER, MRKING_VOUCHER.DEL_FLAG,
+                MRKING_VOUCHER.VALIDITY, MRKING_VOUCHER.VALIDITY_HOUR, MRKING_VOUCHER.VALIDITY_MINUTE,
+                MRKING_VOUCHER.RANDOM_MAX, MRKING_VOUCHER.RANDOM_MIN, MRKING_VOUCHER.TYPE.as("couponType"),
+                MRKING_VOUCHER.RECEIVE_PER_NUM, MRKING_VOUCHER.RECEIVE_NUM)
+                .from(CUSTOMER_AVAIL_COUPONS)
+                .leftJoin(MRKING_VOUCHER).on(MRKING_VOUCHER.ID.eq(CUSTOMER_AVAIL_COUPONS.ACT_ID))
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn))
+                .fetchAny();
+        if (record != null) {
+           return record.into(CouponAndVoucherDetailVo.class);
+        }
+        return null;
+    }
 
     /**
      * 获取小程序码
@@ -1110,4 +1114,16 @@ public class CouponService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.DISCOUN_COUPON.getPathUrl(pathParam));
         return vo;
     }
+
+    /**
+     * 分裂优惠券可用
+     * @param couponSn 优惠券sn
+     */
+    public void updateSplitCouponEnabled(String couponSn){
+        db().update(CUSTOMER_AVAIL_COUPONS)
+                .set(CUSTOMER_AVAIL_COUPONS.DIVISION_ENABLED,(byte)0)
+                .where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(couponSn))
+                .execute();
+    }
+
 }

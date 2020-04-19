@@ -45,7 +45,11 @@ public class CardGiveVo {
 	 */
 	private Timestamp giveAwayTime;
 	/**
-	 * 	转赠图片
+	 * 	转赠图片(相对路径)
 	 */
 	private String shareImg;
+	/**
+	 * 	转赠图片(绝对路径)
+	 */
+	private String fullShareImg;
 }

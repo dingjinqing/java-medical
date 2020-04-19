@@ -49,6 +49,10 @@ global.wxPage({
                 orderInfo.isFightGroup = 1;
               } else if (item == 3) {
                 orderInfo.activityName = that.$t('pages.order.bargain')
+              } else if (item == 4) {
+                this.setData({
+                  isScore:true
+                })
               } else if (item == 5) {
                 orderInfo.activityName = that.$t('pages.order.seckill')
               } else if (item == 10) {

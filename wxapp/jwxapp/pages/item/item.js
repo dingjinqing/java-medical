@@ -815,7 +815,7 @@ global.wxPage({
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help')
+        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },

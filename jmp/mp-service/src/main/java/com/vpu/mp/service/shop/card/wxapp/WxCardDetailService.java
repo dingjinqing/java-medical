@@ -201,11 +201,11 @@ public class WxCardDetailService extends ShopBaseService{
 										.cardOrderSn(orderRecord.getOrderSn())
 										.build();
 						}else {
-							// TODO 转赠分享码
+							//  转赠分享码
+							CardGiveVo cardGiveVo = wxCardGiveAwaySvc.getCardGiveImg(memberCardRecord);
+							cardGiveVo.setCanGiveWay(NumberUtils.BYTE_ONE);
 							//	该用户卡可以转赠
-							return CardGiveVo.builder()
-										.canGiveWay(NumberUtils.BYTE_ONE)
-										.build();
+							return cardGiveVo;
 						}
 					
 					}

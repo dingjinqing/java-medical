@@ -155,7 +155,7 @@ public class QrCodeService extends ShopBaseService {
     }
 
     public String getQrCodeImgRelativePath(short type){
-        return format("upload/%s/qrcode/%s/",  getShopId(), type);
+        return format("upload/%s/qrcode/%s/",getShopId(), type);
     }
     
     
@@ -286,7 +286,7 @@ public class QrCodeService extends ShopBaseService {
 	}
 	
     /**
-     * 获取 会员卡头像
+     * 	获取 会员卡头像
      */
 	private BufferedImage getCardVatar() {
 		String shopAvatar = saas().shop.getShopAvatarById(this.getShopId());
@@ -311,13 +311,17 @@ public class QrCodeService extends ShopBaseService {
 	}
 
     /**
-     * 获取底层图片
+     * 	获取底层图片
      */
 	private BufferedImage getBgImg(Integer width,Integer height) {
+		String userBgPath = "image/wxapp/user_background.png";
+		return getBgImg(width,height,userBgPath);
+	}
+		
+	private BufferedImage getBgImg(Integer width,Integer height,String userBgPath) {
 		// 背景图片
     	BufferedImage bgImg = null;
     	InputStream loadFile = null;
-    	String userBgPath = "image/wxapp/user_background.png";
     	try {
     		loadFile = Util.loadFile(userBgPath);
 			bgImg = ImageIO.read(loadFile);
@@ -342,8 +346,35 @@ public class QrCodeService extends ShopBaseService {
 		return obj == null;
 	}
     
-    
-    
+    /**
+     * 	获取转赠会员卡图
+     *	@return	图片绝对路径
+     */
+    public String createCardGiveAwayImage(MemberCardRecord card) {
+    	logger().info("获取转赠会员卡图");
+    	final short type = 45;
+    	//	背景
+    	final String bgPath = "image/wxapp/card_give_away.png";
+    	BufferedImage giveWayBgImg = getBgImg(500,400,bgPath);
+    	
+    	//	头像
+    	BufferedImage cardVatar = getCardVatar();
+    	
+    	//	会员卡名称
+    	ImageUtil.addTwoImage(giveWayBgImg, cardVatar, 30, 20);
+    	ImageUtil.addFont(giveWayBgImg, card.getCardName(), ImageUtil.SourceHanSansCN(Font.BOLD, 30), 170, 90,
+				Color.WHITE);
+
+    	String relativePath =getQrCodeImgRelativePath(type)+format("T%sP%s_%s.jpg", type, card.getId(), DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE));
+    	byte[] imgBytes = ImageUtil.changeImageToByteArr(giveWayBgImg);
+    	try {
+			this.imageService.getUpYunClient().writeFile(relativePath, imgBytes, true);
+		} catch (Exception e) {
+			logger().error("转赠卡上传upyun失败");
+		}
+    	
+    	return imageService.imageUrl(relativePath);
+    }
     
     
     

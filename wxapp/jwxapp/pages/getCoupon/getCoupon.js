@@ -17,7 +17,6 @@ global.wxPage({
     imageUrl: app.globalData.imageUrl,
     couponSn: '',
     couponId: null, // 优惠券id
-    user: '',
     act_info: {},
     input_vali: '', // 领取码
     detailType: 1, // 详情类型(个人中心详情: 0, 装修详情: 1)
@@ -219,7 +218,7 @@ global.wxPage({
     var that = this;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
+      path: '/pages/splitinfo/splitinfo?couponSn=' + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
       imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
@@ -237,7 +236,7 @@ global.wxPage({
   to_getRecord: function () {
     var that = this;
     util.navigateTo({
-      url: '/pages/splitinfo/splitinfo?user=' + user + "&couponSn=" + that.data.couponSn + "&couponId=" + that.data.couponId,
+      url: '/pages/splitinfo/splitinfo?couponSn=' + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
     })
   },
 

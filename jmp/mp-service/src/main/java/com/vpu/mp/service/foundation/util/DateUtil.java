@@ -340,4 +340,20 @@ public final class DateUtil {
     public static Timestamp get1970TimeStamp() {
         return Timestamp.from(DATE_1970.toInstant());
     }
+
+	/**
+	 * 时间差 时间1-时间2
+	 * @param formatTime1 时间1
+	 * @param formatTime2 时间2
+	 * @return 天 时 分 秒
+	 */
+	public static Integer[] getTimeDifference(Timestamp formatTime1, Timestamp formatTime2) {
+		long t1 = formatTime1.getTime();
+		long t2 = formatTime2.getTime();
+		Integer days =(int)((t1-t2)/(1000*60*60*24));
+		Integer hours=(int) (((t1 - t2)/1000-days*(60*60*24)/(60*60))/(60*60));
+		Integer minutes=(int) (((t1 - t2)/1000-days*(60*60*24)-hours*(60*60))/60);
+		Integer second=(int) ((t1 - t2)/1000-days*(60*60*24)-hours*(60*60)-minutes*60);
+		return new Integer[]{days,hours,minutes,second};
+	}
 }

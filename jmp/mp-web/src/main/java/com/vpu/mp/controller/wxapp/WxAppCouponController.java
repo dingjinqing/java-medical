@@ -3,7 +3,10 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponVo;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetSplitCouponParam;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetSplitCouponVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackIdParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
@@ -74,13 +77,37 @@ public class WxAppCouponController extends WxAppBaseController {
 	 * @return
 	 */
 	@PostMapping("/get")
-	public JsonResult getCoupon(@RequestBody mpGetCouponParam param) {
+	public JsonResult getCoupon(@RequestBody MpGetCouponParam param) {
 		Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        Byte fetchStatus = shop().mpCoupon.fetchCoupon(param);
+		Byte fetchStatus = shop().mpCoupon.fetchCoupon(param);
         return this.success(fetchStatus);
 	}
 
+	/**
+	 * 优惠券详情
+	 * @param param
+	 * @return
+	 */
+	@PostMapping("/split/detail")
+	public JsonResult getSplitCouponDetail(@RequestBody @Validated MpGetSplitCouponParam param) {
+		Integer userId = wxAppAuth.user().getUserId();
+		param.setUserId(userId);
+		MpGetCouponVo couponDetail = shop().mpCoupon.getSplitCouponDetail(param);
+		return this.success(couponDetail);
+	}
+
+	/**
+	 * 分享分裂优惠券
+	 * @return
+	 */
+	@PostMapping("/split/get")
+	public JsonResult getSplitCoupon(@RequestBody MpGetSplitCouponParam param){
+		Integer userId = wxAppAuth.user().getUserId();
+		param.setUserId(userId);
+		MpGetSplitCouponVo splitCoupon = shop().mpCoupon.getSplitCoupon(param);
+		return success(splitCoupon);
+	}
     /**
      * 删除优惠券
      * @param param
