@@ -271,12 +271,15 @@ public class CouponMpService extends ShopBaseService {
                         coupon.updateSplitCouponEnabled(param.getCouponSn());
                     }
                     saveDivisionReceiveRecord(param, sendData, oneCouponDetail);
+                    vo.setStatus((byte)1);
                 }else {
-                    vo.setStatus((byte)3);
+                    vo.setStatus((byte)4);
                 }
             }
+        }else {
+            logger().info("已领取过优惠券");
+            vo.setStatus((byte)3);
         }
-        logger().info("");
         return vo;
     }
 
@@ -291,10 +294,11 @@ public class CouponMpService extends ShopBaseService {
         record.setUser(param.getShareUserId());
         record.setUserId(param.getUserId());
         record.setCouponId(param.getCouponId());
+        record.setCouponSn(sendData.getCouponSn().get(0));
         record.setAmount(oneCouponDetail.getAmount());
         record.setSource(param.getSource());
         record.setType((byte)1);
-        record.setReceiveCouponSn(sendData.getCouponSn().get(0));
+        record.setReceiveCouponSn(param.getCouponSn());
         record.insert();
     }
 
@@ -363,7 +367,7 @@ public class CouponMpService extends ShopBaseService {
         return  db().select(DIVISION_RECEIVE_RECORD.USER_ID,USER_DETAIL.USERNAME,USER_DETAIL.USER_AVATAR,DIVISION_RECEIVE_RECORD.CREATE_TIME ,DIVISION_RECEIVE_RECORD.AMOUNT)
                 .from(DIVISION_RECEIVE_RECORD)
                 .leftJoin(USER_DETAIL).on(USER_DETAIL.USER_ID.eq(DIVISION_RECEIVE_RECORD.USER_ID))
-                .where(DIVISION_RECEIVE_RECORD.COUPON_SN.eq(couponSn))
+                .where(DIVISION_RECEIVE_RECORD.RECEIVE_COUPON_SN.eq(couponSn))
                 .and(DIVISION_RECEIVE_RECORD.USER.eq(shareUserId))
                 .orderBy(DIVISION_RECEIVE_RECORD.CREATE_TIME.desc())
                 .fetch();

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class MpGetSplitCouponVo {
 
     /**
-     * 状态 1领取成功  2优惠券已领完 3 4
+     * 状态 1领取成功  2优惠券已领完 3优惠券发送失败
      */
     private Byte status =1;
 
