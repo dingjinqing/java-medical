@@ -32,6 +32,17 @@ public class AdminCouponGiveController extends AdminBaseController{
 
 		return success(pageResult);
 	}
+    /**
+     * 定向发放预计发放人数
+     *
+     * @param param 筛选条件
+     * @return 人数
+     */
+    @PostMapping("/userNum")
+    public JsonResult getUserNum(@RequestBody CouponGiveGrantParam param) {
+        CouponUserNum userNum = shop().coupon.couponGiveService.getGrantUserNum(param);
+        return success(userNum);
+    }
 	/**
 	 * 优惠券明细
 	 *
