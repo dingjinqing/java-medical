@@ -430,7 +430,7 @@ export default {
       let params = {
         activityId: this.$route.query.activityId,
         goodsName: this.goodsNameInput,
-        orderSn: this.goodsNameInput,
+        orderSn: this.orderSn,
         orderStatus: this.orderStatus,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
