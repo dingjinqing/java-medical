@@ -261,7 +261,7 @@ public class CouponMpService extends ShopBaseService {
                 couponGive.setCouponArray(new String[]{param.getUserId() + ""});
                 couponGive.setActId(oneCouponDetail.getActId());
                 couponGive.setAccessMode((byte) 0);
-                couponGive.setSplitType((byte) 0);
+                couponGive.setSplitType((byte) 1);
                 couponGive.setGetSource(CouponConstant.COUPON_GIVE_SOURCE_SPLIT_COUPON);
                 CouponGiveQueueBo sendData = coupon.couponGiveService.handlerCouponGive(couponGive);
                 if (sendData.getSuccessSize() > 0) {
