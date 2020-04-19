@@ -494,7 +494,6 @@ public class IntegralConvertService extends ShopBaseService {
                 vo.setGoodsImg(orderTempVo.getGoodsImg());
                 vo.setPrdDesc(orderTempVo.getPrdDesc());
                 vo.setGoodsPrice(orderTempVo.getPrdPrice());
-                vo.setNumber(orderTempVo.getPrdNumber());
 
 				newList.add(vo);
 			});
