@@ -351,7 +351,7 @@ public final class DateUtil {
 		long t1 = formatTime1.getTime();
 		long t2 = formatTime2.getTime();
 		Integer days =(int)((t1-t2)/(1000*60*60*24));
-		Integer hours=(int) ((t1 - t2)/1000-days*(60*60*24)/(60*60));
+		Integer hours=(int) (((t1 - t2)/1000-days*(60*60*24)/(60*60))/(60*60));
 		Integer minutes=(int) (((t1 - t2)/1000-days*(60*60*24)-hours*(60*60))/60);
 		Integer second=(int) ((t1 - t2)/1000-days*(60*60*24)-hours*(60*60)-minutes*60);
 		return new Integer[]{days,hours,minutes,second};

@@ -12,11 +12,9 @@ import lombok.Setter;
 @Setter
 public class MpGetSplitCouponVo {
 
-    private Integer haveNum;
-    private Byte  isOneself;
     /**
-     * 状态
+     * 状态 1领取成功  2优惠券已领完 3 4
      */
-    private Byte status;
+    private Byte status =1;
 
 }

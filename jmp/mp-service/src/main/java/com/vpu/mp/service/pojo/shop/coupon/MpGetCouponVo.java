@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -32,9 +34,9 @@ public class MpGetCouponVo {
      */
     private Integer haveNum;
     /**
-     * 是自己发的优惠券
+     * 是自己发的优惠券 1 自己的 0 别人分享的
      */
-    private Byte isOneself;
+    private Byte isOneself =0;
     /**
      * 状态 1正在 2 已领取过 3已领完 4优惠券过期 5优惠券删除
      */
@@ -51,6 +53,9 @@ public class MpGetCouponVo {
         private String username;
         /*用户头像*/
         private String userAvatar;
+        /**领取时间*/
+        private Timestamp createTime;
+        private BigDecimal amount;
         /**
          * 时间 天 时 秒
          */

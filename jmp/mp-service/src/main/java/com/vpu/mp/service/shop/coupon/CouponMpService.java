@@ -258,7 +258,7 @@ public class CouponMpService extends ShopBaseService {
             if (oneCouponDetail != null) {
                 CouponGiveQueueParam couponGive = new CouponGiveQueueParam();
                 couponGive.setUserIds(Collections.singletonList(param.getUserId()));
-                couponGive.setCouponArray(new String[]{param.getUserId() + ""});
+                couponGive.setCouponArray(new String[]{param.getCouponId() + ""});
                 couponGive.setActId(oneCouponDetail.getActId());
                 couponGive.setAccessMode((byte) 0);
                 couponGive.setSplitType((byte) 1);
@@ -271,10 +271,13 @@ public class CouponMpService extends ShopBaseService {
                         coupon.updateSplitCouponEnabled(param.getCouponSn());
                     }
                     saveDivisionReceiveRecord(param, sendData, oneCouponDetail);
+                }else {
+                    vo.setStatus((byte)3);
                 }
             }
         }
-        return null;
+        logger().info("");
+        return vo;
     }
 
     /**
@@ -318,6 +321,7 @@ public class CouponMpService extends ShopBaseService {
         });
         if (param.getUserId().equals(param.getShareUserId())){
             vo.setHaveNum(userInfos.size());
+            vo.setIsOneself((byte)1);
         }else {
             long count = receiveInfo.stream().filter(info -> info.get(DIVISION_RECEIVE_RECORD.USER_ID).equals(param.getUserId())).count();
             if (count>0){

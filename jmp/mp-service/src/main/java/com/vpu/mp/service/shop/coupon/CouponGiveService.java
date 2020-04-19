@@ -568,25 +568,7 @@ public class CouponGiveService extends ShopBaseService {
         for (String couponId : param.getCouponArray()) {
             logger().info("当前优惠券ID："+couponId+",准备发放");
             // 得到当前优惠券信息
-            CouponDetailsVo couponDetails =
-                db().select(
-                    MRKING_VOUCHER.LIMIT_SURPLUS_FLAG,
-                    MRKING_VOUCHER.SURPLUS,
-                    MRKING_VOUCHER.ACT_CODE,
-                    MRKING_VOUCHER.ACT_NAME,
-                    MRKING_VOUCHER.DENOMINATION,
-                    MRKING_VOUCHER.START_TIME,
-                    MRKING_VOUCHER.END_TIME,
-                    MRKING_VOUCHER.VALIDITY_TYPE,
-                    MRKING_VOUCHER.VALIDITY,
-                    MRKING_VOUCHER.VALIDITY_HOUR,
-                    MRKING_VOUCHER.LEAST_CONSUME,
-                    MRKING_VOUCHER.TYPE,
-                    MRKING_VOUCHER.VALIDITY_MINUTE)
-                    .from(MRKING_VOUCHER)
-                    .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-                    .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
-                    .fetchOneInto(CouponDetailsVo.class);
+            CouponDetailsVo couponDetails = getCouponDetails(couponId);
             // 查询结果为空直接返回
             if (couponDetails == null) {
                 log.error("当前优惠券发放失败，优惠券 [id：{}] 不存在", couponId);
@@ -600,7 +582,7 @@ public class CouponGiveService extends ShopBaseService {
             // 得到开始时间和结束时间
             Map<String, Timestamp> timeMap = getCouponTime(couponDetails);
             // 判断当前券的库存
-            if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
+            if (!param.getAccessMode().equals((byte)2)&&couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)
                 && couponDetails.getSurplus().equals(NumberUtils.INTEGER_ZERO)) {
                 logger().info("当前优惠券ID："+couponId+",发放失败，所选优惠券库存不足");
                 continue;
@@ -675,6 +657,27 @@ public class CouponGiveService extends ShopBaseService {
         couponGiveBo.setSuccessSize(successNum);
         logger().info("发券方法完成");
         return couponGiveBo;
+    }
+
+    private CouponDetailsVo getCouponDetails(String couponId) {
+        return db().select(
+            MRKING_VOUCHER.LIMIT_SURPLUS_FLAG,
+            MRKING_VOUCHER.SURPLUS,
+            MRKING_VOUCHER.ACT_CODE,
+            MRKING_VOUCHER.ACT_NAME,
+            MRKING_VOUCHER.DENOMINATION,
+            MRKING_VOUCHER.START_TIME,
+            MRKING_VOUCHER.END_TIME,
+            MRKING_VOUCHER.VALIDITY_TYPE,
+            MRKING_VOUCHER.VALIDITY,
+            MRKING_VOUCHER.VALIDITY_HOUR,
+            MRKING_VOUCHER.LEAST_CONSUME,
+            MRKING_VOUCHER.TYPE,
+            MRKING_VOUCHER.VALIDITY_MINUTE)
+            .from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
+            .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+            .fetchOneInto(CouponDetailsVo.class);
     }
 
     /**
