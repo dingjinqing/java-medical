@@ -444,7 +444,6 @@ public class CouponGiveService extends ShopBaseService {
         List<Integer> allUserIds =
             db().select(USER.USER_ID)
                 .from(USER)
-                .where(USER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
                 .fetchInto(Integer.class);
         // 得到两个集合差集为N天内无交易记录的用户
         allUserIds.removeAll(havePayUserIds);
