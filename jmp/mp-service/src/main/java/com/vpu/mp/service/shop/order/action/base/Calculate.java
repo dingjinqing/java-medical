@@ -850,6 +850,8 @@ public class Calculate extends ShopBaseService {
         boolean isFs = Lists.newArrayList(goodsType).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         //是否进行返利标识
         boolean flag = false;
+        //总返利
+        BigDecimal rebateMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
         for (OrderGoodsBo bo : param.getBos()) {
             if(bo.getIsGift() != null && OrderConstant.YES == bo.getIsGift()) {
                 //赠品不参与
@@ -875,18 +877,20 @@ public class Calculate extends ShopBaseService {
                 }
                 ArrayList<OrderGoodsRebateRecord> records = orderGoodsRebate.add(rebateRecords, bo, canRebateMoney, check, order.getOrderSn());
                 //赋值
-                bo.setFanliMoney(records.get(0).getRebateMoney());
+                bo.setFanliMoney(records.stream().map(OrderGoodsRebateRecord::getRealRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliPercent(BigDecimalUtil.multiply(records.get(0).getRebatePercent(), BigDecimalUtil.BIGDECIMAL_100));
                 bo.setFanliType(rebateRecords.get(rebateRecords.size()-1).getRebateLevel());
-                bo.setTotalFanliMoney(records.get(0).getTotalRebateMoney());
+                bo.setTotalFanliMoney(records.stream().map(OrderGoodsRebateRecord::getTotalRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliStrategy(strategy.toString());
                 bo.setCanCalculateMoney(canRebateMoney);
+                rebateMoney = BigDecimalUtil.add(bo.getTotalFanliMoney(), rebateMoney);
                 flag = true;
             }
         }
         if(flag) {
             order.setFanliType(DistributionConstant.REBATE_ORDER);
             order.setFanliUserId(userInfo.getInviteId());
+            order.setFanliMoney(rebateMoney);
         }
     }
 
