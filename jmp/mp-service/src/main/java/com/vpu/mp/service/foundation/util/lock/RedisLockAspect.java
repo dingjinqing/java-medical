@@ -33,6 +33,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 /**
@@ -231,9 +232,20 @@ public final class RedisLockAspect extends ShopBaseService {
         }
         //去重
         keys = keys.stream().distinct().collect(Collectors.toList());
+        //当前所有key
+        ArrayList<String> allKeys = new ArrayList<>();
+        lockEntities.get().forEach(x->allKeys.addAll(x.getKeys()));
         //初始化key
-        for (int i = 0, length = keys.size(); i < length; i++) {
-            keys.set(i, new StringBuilder().append(redisLockAnnotation.prefix()).append(redisLockAnnotation.noResubmit() ? StringUtils.EMPTY : getShopId()).append(":").append(keys.get(i)).toString());
+        ListIterator<String> keysIterator = keys.listIterator();
+        while (keysIterator.hasNext()) {
+            String next = keysIterator.next();
+            String key = redisLockAnnotation.prefix() + (redisLockAnnotation.noResubmit() ? StringUtils.EMPTY : getShopId()) + ":" + next;
+            if(allKeys.contains(key)) {
+                //可重入锁逻辑
+                keysIterator.remove();
+            } else {
+                keysIterator.set(key);
+            }
         }
         //线程记录该次加锁keys
         lockEntity.setKeys(keys);
