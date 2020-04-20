@@ -15,6 +15,5 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class PrizeRecordParam extends BasePageParam {
-    @NotNull
-    private Byte status;
+    private Byte status=0;
 }

@@ -63,6 +63,7 @@
             :start-placeholder="$t('purchase.startdate')"
             :end-placeholder="$t('purchase.enddate')"
             :default-time="['00:00:00','23:59:59']"
+            disabled
           >
           </el-date-picker>
         </el-form-item>
@@ -70,11 +71,15 @@
           <el-input
             v-model.number="form1.maxChangePurchase"
             class="input"
+            disabled
           ></el-input>
           <span class="span">{{$t('purchase.content2')}}</span>
         </el-form-item>
         <el-form-item :label="$t('purchase.redemptionGoodsFeright')+'：'">
-          <el-radio-group v-model.number="form1.redemptionFreight">
+          <el-radio-group
+            v-model.number="form1.redemptionFreight"
+            disabled
+          >
             <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
             <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
           </el-radio-group>
@@ -93,15 +98,17 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule1.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule1.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-button
               type="primary"
               size="small"
               style="margin-left:5px"
-              v-if="rule_button1"
+              v-if="rule_button1 && !queryParam.purchaseId"
               @click="ruleButton1"
             >+{{$t('purchase.addRule')}}</el-button>
           </el-form-item>
@@ -113,21 +120,24 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule2.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule2.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-button
               type="primary"
               size="small"
               style="margin-left:5px"
-              v-if="rule_button2"
+              v-if="rule_button2 && !queryParam.purchaseId"
               @click="ruleButton2"
             >+{{$t('purchase.addRule')}}</el-button>
             <el-link
               type="primary"
               style="margin-left:5px"
               @click="ruleDelete2"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.deleteRule')}}</el-link>
           </el-form-item>
           <el-form-item
@@ -138,13 +148,16 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule3.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule3.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-link
               type="primary"
               style="margin-left:5px"
+              v-if="!queryParam.purchaseId"
               @click="ruleDelete3"
             >{{$t('purchase.deleteRule')}}</el-link>
           </el-form-item>
@@ -166,7 +179,9 @@
       <div>
         <el-button
           type="primary"
+          size="small"
           @click="showChoosingGoods"
+          v-if="!queryParam.purchaseId"
         >{{$t('purchase.chooseGoods')}}</el-button>
         <!--选择商品弹窗-->
         <ChoosingGoods
@@ -200,7 +215,10 @@
             :label="$t('purchase.goodsSupply')"
           >
           </el-table-column>
-          <el-table-column :label="$t('purchase.opration')">
+          <el-table-column
+            :label="$t('purchase.opration')"
+            v-if="!queryParam.purchaseId"
+          >
             <template slot-scope="{ row }">
               <el-link
                 type="primary"
@@ -237,7 +255,9 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods1"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -271,7 +291,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -533,6 +556,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route)
     this.queryParam.purchaseId = this.$route.params.id
     this.form1.id = this.$route.params.id
     this.initData()
@@ -560,9 +584,9 @@ export default {
     setPurchaseRule (dataRule, dataGoods) {
       if (dataRule.length >= 1) {
         var array = dataRule[0].split(' --- ')
-        this.purcahse_rule1.id = parseFloat(array[0])
-        this.purcahse_rule1.fullPrice = parseFloat(array[1])
-        this.purcahse_rule1.purchasePrice = parseFloat(array[2])
+        // this.purcahse_rule1.id = parseFloat(array[0])
+        this.purcahse_rule1.fullPrice = parseFloat(array[0])
+        this.purcahse_rule1.purchasePrice = parseFloat(array[1])
         this.purchase_table1 = dataGoods[0]
         this.setDomainImg(this.purchase_table1)
         this.purchase_table1.map((item, index) => {
@@ -571,9 +595,9 @@ export default {
       }
       if (dataRule.length >= 2) {
         var array1 = dataRule[1].split(' --- ')
-        this.purcahse_rule2.id = parseFloat(array1[0])
-        this.purcahse_rule2.fullPrice = parseFloat(array1[1])
-        this.purcahse_rule2.purchasePrice = parseFloat(array1[2])
+        // this.purcahse_rule2.id = parseFloat(array1[0])
+        this.purcahse_rule2.fullPrice = parseFloat(array1[0])
+        this.purcahse_rule2.purchasePrice = parseFloat(array1[1])
         this.purchase_table2 = dataGoods[1]
         this.setDomainImg(this.purchase_table2)
         this.purchase_table2.map((item, index) => {
@@ -584,9 +608,9 @@ export default {
       }
       if (dataRule.length >= 3) {
         var array2 = dataRule[2].split(' --- ')
-        this.purcahse_rule3.id = parseFloat(array2[0])
-        this.purcahse_rule3.fullPrice = parseFloat(array2[1])
-        this.purcahse_rule3.purchasePrice = parseFloat(array2[2])
+        // this.purcahse_rule3.id = parseFloat(array2[0])
+        this.purcahse_rule3.fullPrice = parseFloat(array2[0])
+        this.purcahse_rule3.purchasePrice = parseFloat(array2[1])
         this.purchase_table3 = dataGoods[2]
         this.setDomainImg(this.purchase_table3)
         this.purchase_table3.map((item, index) => {
@@ -600,7 +624,9 @@ export default {
     // 图片加域名
     setDomainImg (data) {
       data.map((item, index) => {
-        item.goodsImg = this.imgHost + '/' + item.goodsImg
+        if (item.goodsImg.indexOf('/') < 0) {
+          item.goodsImg = this.imgHost + '/' + item.goodsImg
+        }
       })
     },
     nextStep (value) {
@@ -706,6 +732,7 @@ export default {
     },
     // 选择换购商品弹窗回调显示
     choosingGoodsResult1 (row) {
+      console.log('row:', row)
       this.purchase_table1 = row
       this.purcahse_rule1.productId = []
       this.purchase_table1.map((item, index) => {
@@ -824,15 +851,18 @@ export default {
     getPurchaseRules () {
       let rules = []
       if (this.rule_num >= 1) {
-        this.purcahse_rule1.productId = this.purcahse_rule1.productId.join()
-        rules.push(this.purcahse_rule1)
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule1.productId.join()
+        rules.push(rule)
       }
       if (this.rule_num >= 2) {
-        this.purcahse_rule2.productId = this.purcahse_rule2.productId.join()
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule2.productId.join()
         rules.push(this.purcahse_rule2)
       }
       if (this.rule_num >= 3) {
-        this.purcahse_rule3.productId = this.purcahse_rule3.productId.join()
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule3.productId.join()
         rules.push(this.purcahse_rule3)
       }
       return rules
@@ -855,7 +885,7 @@ export default {
   padding: 10px;
   background: #fff;
   margin-top: 10px;
-  margin: 10px, 10px, 10px, 10px;
+  margin: 10px, 10px, 50px, 10px;
   .setpTitle {
     margin-top: 10px;
   }
@@ -882,6 +912,7 @@ export default {
   .main_table {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;
@@ -896,6 +927,7 @@ export default {
   .purchase_tab {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;

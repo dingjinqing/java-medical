@@ -940,7 +940,7 @@ public class Calculate extends ShopBaseService {
                 logger().info("自购自己返利");
                 //返利比例(直接返利比例)
                 BigDecimal ratio = BigDecimalUtil.divide(new BigDecimal(userRebateRatio.getFanliRatio().toString()), BigDecimalUtil.BIGDECIMAL_100);
-                result.add(new RebateRecord(goodsStrategy, userInfo.getUserId(), (byte)0, ratio));
+                result.add(new RebateRecord(goodsStrategy, userInfo.getUserId(), DistributionConstant.REBATE_TYPE_SELF, ratio));
                 //邀请过期时间校验
                 if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
                     logger().info("自购，邀请已过期,自己过期不返直接上级");
@@ -953,7 +953,7 @@ public class Calculate extends ShopBaseService {
                         if(rebateRatio2 != null) {
                             logger().info("自购直接上级返利");
                             BigDecimal ratio2 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);
-                            result.add(new RebateRecord(goodsStrategy, userInfo2.getUserId(), (byte)1, ratio2));
+                            result.add(new RebateRecord(goodsStrategy, userInfo2.getUserId(), DistributionConstant.REBATE_TYPE_DIRECT, ratio2));
                         }
                     }
                 }
@@ -974,7 +974,7 @@ public class Calculate extends ShopBaseService {
      * @param current
      * @return
      */
-    private ArrayList<RebateRecord> rebate(DistributionParam cfg, UserRecord userInfo, boolean isFS, DistributionStrategyParam goodsStrategy, Timestamp current) {
+    private ArrayList<RebateRecord> rebate(DistributionParam cfg, UserRecord userInfo, boolean isFs, DistributionStrategyParam goodsStrategy, Timestamp current) {
         logger().info("正常返利start");
         ArrayList<RebateRecord> result = new ArrayList<>();
         //一级返利
@@ -983,11 +983,11 @@ public class Calculate extends ShopBaseService {
         }else {
             RebateRatioVo userRebateRatio1 = distributionGoods.getUserRebateRatio(userInfo, goodsStrategy, cfg);
             if(userRebateRatio1 != null) {
-                Double rebateRatio1 = (isFS && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio1.getFirstRatio() : userRebateRatio1.getFanliRatio();
+                Double rebateRatio1 = (isFs && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio1.getFirstRatio() : userRebateRatio1.getFanliRatio();
                 if(rebateRatio1 != null) {
                     logger().info("正常返利直接上级返利");
                     BigDecimal ratio1 = BigDecimalUtil.divide(new BigDecimal(rebateRatio1.toString()), BigDecimalUtil.BIGDECIMAL_100);
-                    result.add(new RebateRecord(goodsStrategy, userInfo.getInviteId(), (byte)1, ratio1));
+                    result.add(new RebateRecord(goodsStrategy, userInfo.getInviteId(), DistributionConstant.REBATE_TYPE_DIRECT, ratio1));
                 }
             }
         }
@@ -1002,7 +1002,7 @@ public class Calculate extends ShopBaseService {
                 if(rebateRatio2 != null) {
                     logger().info("正常返利间接上级返利");
                     BigDecimal ratio1 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);
-                    result.add(new RebateRecord(goodsStrategy, userInfo2.getInviteId(), (byte)2, ratio1));
+                    result.add(new RebateRecord(goodsStrategy, userInfo2.getInviteId(), DistributionConstant.REBATE_TYPE_INDIRECT, ratio1));
                 }
             }
         }

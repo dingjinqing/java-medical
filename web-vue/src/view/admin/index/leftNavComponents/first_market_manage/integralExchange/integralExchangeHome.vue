@@ -38,6 +38,7 @@
         >
           <IntegralExchangeAdd
             :id="editId"
+            :status="actStatus"
             @backHome="backHome"
           />
         </el-tab-pane>
@@ -324,6 +325,7 @@ export default {
       showSix: false, // 是否显示第六个隐藏的tap
       isEditId: 0,
       editId: -1, // 编辑id
+      actStatus: -1, // 编辑的活动状态
       secondaryVisible: false, // 二次确认弹窗flag
       nowClickOptionFlag: null, // 当前点击的操作项
       row: null, // 当前点击的项
@@ -401,6 +403,7 @@ export default {
           break
         case 2: // 编辑
           this.editId = row.id
+          this.actStatus = row.actStatus
           this.showSix = true
           this.activeName = 'sixth'
           break
@@ -470,6 +473,7 @@ export default {
       this.showSix = true
       this.activeName = 'sixth'
       this.editId = -1
+      this.actStatus = -1
     },
     // 二次确认弹窗处理事件
     handleToSecondSure () {

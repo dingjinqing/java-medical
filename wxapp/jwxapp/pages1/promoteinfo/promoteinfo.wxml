@@ -34,7 +34,7 @@
                {{i18n.$t(localePack,"page1.promote.promoteReward5")}}
               </view>
               <view class='ca_center'>{{i18n.$t(localePack,"page1.promote.promoteReward2")}}{{promote_info.marketStore}}{{i18n.$t(localePack,"page1.promote.promoteReward6")}}，{{i18n.$t(localePack,"page1.promote.promoteReward4")}}</view>
-              <view class='ca_bottom' bindtap='to_cou_search' data-coupon_sn="{{promote_info.couponInfo.couponSn}}" style='color:{{comColor}};background:{{somColor}}'>
+              <view class='ca_bottom' bindtap='to_cou_search' data-act_id="{{promote_info.couponInfo.couponId}}" style='color:{{comColor}};background:{{somColor}}'>
                 {{i18n.$t(localePack,"page1.promote.promoteReward7")}} <image src='{{imageUrl}}image/wxapp/right_into.png' mode='widthFix'></image>
               </view>
           </view>
@@ -84,7 +84,7 @@
           <button class='btn_launch' style='background:{{comColor}}' open-type='share' wx:if='{{promote_info.promoteStatus == 0 && promote_info.launchFlag == 2&&is_shares==1}}'>{{i18n.$t(localePack,"page1.promote.promoteButton8")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 2 &&is_shares==0&&promote_info.canPromote.code == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
           <button class='btn_launch' style='background:{{comColor}}' bindtap='to_own_act' wx:if='{{promote_info.promoteStatus ==2 && promote_info.launchFlag == 2}}'>{{i18n.$t(localePack,"page1.promote.promoteButton7")}}</button>
-          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-coupon_sn="{{promote_info.couponInfo.couponSn}}">{{i18n.$t(localePack,"page1.promote.promoteButton9")}}</button>
+          <button class='btn_launch' style='background:{{comColor}}' bindtap='to_cou_search' wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && promote_info.rewardType == 2}}' data-act_id="{{promote_info.couponInfo.couponId}}">{{i18n.$t(localePack,"page1.promote.promoteButton9")}}</button>
       </view>
    </view>
    <!-- 助力列表 -->
