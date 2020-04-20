@@ -222,7 +222,7 @@ public class GoodsBrandSortMpService extends ShopBaseService{
 
         GoodsSortParentMpVo goodsSortParentMpVo = sortGroupByParentMp.get(0);
         List<GoodsSortMpVo> goodsSorts = goodsSortParentMpVo.getGoodsSorts();
-        // 普通分类下没有二级分类
+        // 普通分类下有二级分类
         if (goodsSorts.size() != 0) {
             GoodsSortMenuContentVo content=new GoodsSortMenuContentVo();
             content.setMenuContentType(GoodsConstant.NORMAL_SORT_TYPE);
@@ -231,12 +231,13 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             content.setContentList(goodsSorts);
             return content;
         } else {
+            // 尝试查询该分类下是否有商品信息
             GoodsMenuContentVo content = new GoodsMenuContentVo();
             List<Integer> goodsIds = goodsMpService.getGoodsIdsBySortIdDao(sort.getSortId());
 
             SortItemEnum sortItemEnum = null;
             //开启了店铺默认排序规则
-            if(shopCommonConfigService.getOrderSort().equals(Byte.valueOf((byte)1))){
+            if(shopCommonConfigService.getOrderSort().equals((byte) 1)){
                 sortItemEnum = goodsMpService.getShopGoodsSortEnum();
             }
 
@@ -246,7 +247,6 @@ public class GoodsBrandSortMpService extends ShopBaseService{
             //是否显示购买按钮
             ShowCartConfig showCart = configService.shopCommonConfigService.getShowCart();
 
-            // 尝试查询该分类下是否有商品信息
             content.setMenuContentType(GoodsConstant.GOODS_TYPE);
             content.setGoodsListMpVos(goodsListNormal);
             content.setDelMarket(delMarket);
