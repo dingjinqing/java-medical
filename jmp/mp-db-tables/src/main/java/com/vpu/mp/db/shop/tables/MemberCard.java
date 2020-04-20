@@ -7,6 +7,7 @@ package com.vpu.mp.db.shop.tables;
 import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.Keys;
+import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 
 import java.math.BigDecimal;
@@ -43,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCard extends TableImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = -1565160064;
+    private static final long serialVersionUID = 271173264;
 
     /**
      * The reference instance of <code>jmini_shop_489258.b2c_member_card</code>
@@ -394,6 +395,11 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
     public final TableField<MemberCardRecord, Integer> MOST_GIVE_AWAY = createField("most_give_away", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最多可转赠多少次 0不限制");
 
     /**
+     * The column <code>jmini_shop_489258.b2c_member_card.cannot_use_action</code>. 不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠
+     */
+    public final TableField<MemberCardRecord, String> CANNOT_USE_ACTION = createField("cannot_use_action", org.jooq.impl.SQLDataType.VARCHAR(10), this, "不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠");
+
+    /**
      * Create a <code>jmini_shop_489258.b2c_member_card</code> table reference
      */
     public MemberCard() {
@@ -431,7 +437,7 @@ public class MemberCard extends TableImpl<MemberCardRecord> {
      */
     @Override
     public Schema getSchema() {
-        return MiniShop_471752.MINI_SHOP_471752;
+    	return MiniShop_471752.MINI_SHOP_471752;
     }
 
     /**
