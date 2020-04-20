@@ -93,7 +93,7 @@
                     <td
                       style="width:7%;"
                       v-if="it.actCode === 'random'"
-                    >最高</td>
+                    >{{it.randomMax}}最高</td>
                     <td style="width:9%;"><span v-html="it.time"></span></td>
                     <td style="width:4%;">
                       <el-button
