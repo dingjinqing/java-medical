@@ -34,7 +34,8 @@
             </el-form-item>
         </el-form>
         <user-tag :visiable.sync="visiable"
-            :tags="cardTag.cardTagId"
+            :tags="cardTag.cardTagId.map(item=>item.id)"
+            :limitNum="3"
             @chooseUserTag="setUserTag"/>
     </div>
 </template>
