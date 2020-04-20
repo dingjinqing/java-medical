@@ -243,34 +243,54 @@
 
     <!-- 分享活动弹窗 -->
     <el-dialog
-      title="扫一扫，分享给好友吧~"
+      :title="$t('seckill.shareTitle')"
       :visible.sync="shareDialogVisible"
-      width="400px"
-      custom-class="share-dialog"
+      width="350px"
+      center
+      :close-on-click-modal="false"
     >
-      <el-image
-        :src="shareInfo.imageUrl"
-        style="width:160px;height:160px;margin:0 auto;"
-        fit="fill"
-      ></el-image>
-      <a
-        class="share-dialog-a"
-        :href="shareInfo.imageUrl"
-        download
-      >下载二维码</a>
-      <div class="share-dialog-footer">
-        <el-input
-          size="small"
-          v-model="shareInfo.pagePath"
-        ></el-input>
-        <el-button
-          type="text"
-          style="margin-left:10px;"
-          v-clipboard:copy="shareInfo.pagePath"
-          v-clipboard:success="onCopySuccess"
-          v-clipboard:error="onCopyError"
-        >复制</el-button>
+      <div style="width: 100%; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #ccc;">
+        <div>
+          <img
+            :src="shareInfo.imageUrl"
+            alt=""
+            style="width:160px;height:160px;"
+          >
+        </div>
+        <div style="margin: 20px; 0">
+          <a
+            v-if="shareInfo.imageUrl"
+            :href="shareInfo.imageUrl"
+            download
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoad') }}</a>
+          <a
+            v-if="!shareInfo.imageUrl"
+            href="javaScript:void(0);"
+            style="color: #999;text-decoration: none;"
+          >{{ $t('seckill.downLoadFail') }}</a>
+        </div>
       </div>
+      <div>
+        <el-input v-model="shareInfo.pagePath">
+          <el-button
+            slot="append"
+            v-clipboard:copy="shareInfo.pagePath"
+            v-clipboard:success="onCopySuccess"
+            v-clipboard:error="onCopyError"
+          >{{ $t('seckill.copy') }}</el-button>
+        </el-input>
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="shareDialogVisible = false">{{ $t('seckill.cancel') }}</el-button>
+        <el-button
+          type="primary"
+          @click="shareDialogVisible = false"
+        >{{ $t('seckill.sure') }}</el-button>
+      </span>
     </el-dialog>
 
   </div>
@@ -317,8 +337,11 @@ export default {
         rewardType: '-1'
       },
       tableData: [], // 表格数据
-      shareDialogVisible: false,
-      shareInfo: {},
+      shareDialogVisible: false, // 分享弹窗
+      shareInfo: {
+        imageUrl: '',
+        pagePath: ''
+      },
       currentPage: 1,
       pageParams: {
 
@@ -351,10 +374,10 @@ export default {
       })
     },
     onCopySuccess () {
-      this.$message.success('已复制')
+      this.$message.success('复制成功')
     },
     onCopyError () {
-      this.$message.error('复制失败')
+      this.$message.warning('复制失败')
     },
     handleClick () {
       console.log('this.tabSwitch：', this.tabSwitch)
