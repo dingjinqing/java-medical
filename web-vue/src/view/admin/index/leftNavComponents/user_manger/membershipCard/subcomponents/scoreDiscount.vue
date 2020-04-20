@@ -37,7 +37,7 @@
             <tr><td id="left-col">折扣叠加：</td><td id="right-col">不可与营销活动共用</td></tr>
             <tr><td></td><td class="tip">可选择会员卡折扣不与哪些营销活动共用</td></tr>
             <tr><td></td><td>
-              <el-checkbox-group v-model="marketActivities">
+              <el-checkbox-group v-model="tmpact" @change="appendActivity">
                 <el-checkbox label="COUPON">优惠券</el-checkbox>
                 <el-checkbox label="REDUCE_PRICE">限时降价</el-checkbox>
                 <el-checkbox label="FIRST_SPECIAL">首单特惠</el-checkbox>
@@ -131,6 +131,10 @@ export default {
     val: {
       type: Object,
       required: true
+    },
+    marketActivities: {
+      type: Array,
+      default: () => { return [] }
     }
   },
   computed: {
@@ -230,7 +234,8 @@ export default {
         ]
       },
       isOnlyShowChooseGoods: false,
-      marketActivities: []
+      tmpact: this.marketActivities
+
     }
   },
   created () {
@@ -331,6 +336,11 @@ export default {
       console.log(this.ruleForm.choosedBrandId)
       this.noneBlockDiscArr[this.brandType].num = idList.length
       console.log(this.noneBlockDiscArr[this.brandType].num)
+    },
+    //  添加新营销活动
+    appendActivity (val) {
+      this.marketActivities.splice(0, this.marketActivities.length)
+      this.marketActivities.push(...val)
     }
   }
 }

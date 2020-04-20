@@ -38,6 +38,7 @@
           <div class="rightTitle">会员权益</div>
           <scoreDiscount
             :val="disCountData"
+            :marketActivities="marketActivities"
             @input="initDiscountData"
             ref="disCountData"
           ></scoreDiscount>
@@ -304,7 +305,8 @@ export default {
       cardTag: {
         cardTag: 'off',
         cardTagId: []
-      }
+      },
+      marketActivities: ['COUPON', 'MEMBER_PRICE']
     }
   },
   mounted () {
