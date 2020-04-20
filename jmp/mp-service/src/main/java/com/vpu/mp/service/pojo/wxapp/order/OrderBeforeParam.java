@@ -174,7 +174,7 @@ public class OrderBeforeParam extends AbstractOrderOperateQueryParam{
             orderCartProductBo.setStoreId(getStoreId());
             orderCartProductBo.setDate(date);
 			goods.forEach(x->{
-				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(),x.getProductInfo()));
+				orderCartProductBo.getAll().add(new OrderCartProductBo.OrderCartProduct(x.getProductId(), x.getGoodsNumber(), x.getPurchasePriceRuleId() != null && x.getPurchasePriceRuleId() > 0, x.getProductInfo()));
 			});
 		}
         return orderCartProductBo;
