@@ -1,3 +1,4 @@
+// generate by generateRecordBuild.py
 package com.vpu.mp.service.pojo.shop.member.builder;
 
 import java.math.BigDecimal;
@@ -8,9 +9,8 @@ import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
 /**
  * @author 黄壮壮
  * @Date: 2019年11月1日
- * @Description: generate by generateRecordBuild.py
+ * @Description: 
  */
-
 
 public class MemberCardRecordBuilder {
 	private MemberCardRecord record;
@@ -497,6 +497,13 @@ public class MemberCardRecordBuilder {
 	public MemberCardRecordBuilder mostGiveAway (Integer mostGiveAway) {
 		if(mostGiveAway != null){
 			record.setMostGiveAway(mostGiveAway);
+		}
+		return this;
+	}
+
+	public MemberCardRecordBuilder cannotUseAction (String cannotUseAction) {
+		if(cannotUseAction != null){
+			record.setCannotUseAction(cannotUseAction);
 		}
 		return this;
 	}
