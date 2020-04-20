@@ -318,7 +318,7 @@ global.wxPage({
    * 券购搜素
    */
   to_search: function (opt) {
-    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var couponSn = opt.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
   }
 })
