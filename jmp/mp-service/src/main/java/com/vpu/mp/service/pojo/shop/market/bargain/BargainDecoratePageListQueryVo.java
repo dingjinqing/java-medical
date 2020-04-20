@@ -45,4 +45,14 @@ public class BargainDecoratePageListQueryVo {
     private String goodsName;
     private String goodsImg;
     private BigDecimal shopPrice;
+
+    /**
+	 *  指定金额结算模式的砍价底价 或 砍到任意金额结算模式的结算金额上限
+	 */
+	private BigDecimal expectationPrice;
+
+	/**
+	 * 任意金额结算模式的结算金额底价
+	 */
+	private BigDecimal floorPrice;
 }
