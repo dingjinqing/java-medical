@@ -113,7 +113,9 @@ public class CouponGiveService extends ShopBaseService {
                             MRKING_VOUCHER.VALIDITY_TYPE,
                             MRKING_VOUCHER.VALIDITY,
                             MRKING_VOUCHER.VALIDITY_HOUR,
-                            MRKING_VOUCHER.VALIDITY_MINUTE)
+                            MRKING_VOUCHER.VALIDITY_MINUTE,
+                            MRKING_VOUCHER.RANDOM_MIN,
+                            MRKING_VOUCHER.RANDOM_MAX)
                             .from(MRKING_VOUCHER)
                             .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(selectId)))
                             .fetchOptionalInto(CouponGiveListConditionVo.class);

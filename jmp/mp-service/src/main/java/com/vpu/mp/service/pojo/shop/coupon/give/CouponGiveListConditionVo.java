@@ -37,4 +37,8 @@ public class CouponGiveListConditionVo {
 	private Integer validityHour;
 	/** 有效期分钟数 */
 	private Integer validityMinute;
+	/** 分裂优惠券最小金额 */
+	private BigDecimal randomMin;
+	/** 分裂优惠券最大金额 */
+	private BigDecimal randomMax;
 }
