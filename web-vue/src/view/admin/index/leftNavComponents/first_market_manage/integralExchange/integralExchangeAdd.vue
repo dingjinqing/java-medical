@@ -312,6 +312,7 @@
       :tuneUpChooseGoods="chooseFlag"
       :chooseGoodsBack="chooseGoodsBack"
       @resultGoodsRow="resultGoodsRow"
+      upperlowershelves
     />
     <!--选择图片弹窗-->
     <ImageDalog
