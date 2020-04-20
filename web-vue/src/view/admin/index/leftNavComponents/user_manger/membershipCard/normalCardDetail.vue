@@ -340,6 +340,7 @@ export default {
 
       // 折扣
       this.disCountData.powerDiscount = data.powerCount === 1
+      console.log(this.disCountData.powerDiscount)
       this.disCountData.discount = data.disCount
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
