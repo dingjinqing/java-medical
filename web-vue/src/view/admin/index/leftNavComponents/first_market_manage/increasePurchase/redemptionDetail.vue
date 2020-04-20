@@ -1,60 +1,50 @@
 <template>
   <div>
     <wrapper>
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.nickName')">
-              <el-input
-                v-model="param.nickName"
-                :placeholder="$t('purchase.inputnickName')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.phone')">
-              <el-input
-                v-model="param.phoneNumber"
-                :placeholder="$t('purchase.inputphone')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="4">
-          <el-form label-width="100px">
-            <el-form-item :label="$t('purchase.redemptionNum')">
-              <el-input
-                v-model="param.redemptionNum"
-                :placeholder="$t('purchase.inputredemptionNum')"
-              ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset=1
+      <div class="top">
+        <el-form
+          label-width="100px"
+          :inline="true"
         >
-          <el-button
-            type="primary"
-            @click="initDateList"
-          >{{$t('purchase.serach')}}</el-button>
-        </el-col>
-        <el-col
-          :span="2"
-          :offset="1"
-        >
-          <el-button
-            type="info"
-            style="float:right;"
-            @click="dataExport"
-          >
-            {{$t('purchase.export')}}
-          </el-button>
-        </el-col>
-      </el-row>
-      <el-row>
+          <el-form-item :label="$t('purchase.nickName')+'：'">
+            <el-input
+              v-model="param.nickName"
+              :placeholder="$t('purchase.inputnickName')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item :label="$t('purchase.phone')+'：'">
+            <el-input
+              v-model="param.phoneNumber"
+              :placeholder="$t('purchase.inputphone')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('purchase.redemptionNum')+'：'">
+            <el-input
+              v-model="param.redemptionNum"
+              :placeholder="$t('purchase.inputredemptionNum')"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="initDateList"
+              size="small"
+            >{{$t('purchase.serach')}}</el-button>
+            <el-button
+              type="info"
+              size="small"
+              @click="dataExport"
+            >
+              {{$t('purchase.export')}}
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="content">
         <el-table
           class="version-manage-table"
           header-row-class-name="tableHeader"
@@ -113,7 +103,7 @@
           >
           </el-table-column>
         </el-table>
-      </el-row>
+      </div>
       <div>
         <pagination
           :page-params.sync="pageParams"
