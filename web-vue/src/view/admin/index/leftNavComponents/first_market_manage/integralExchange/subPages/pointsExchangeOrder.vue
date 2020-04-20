@@ -15,12 +15,12 @@
             <span>{{$t('mintegralExchange.orderNumber')}}：</span>
             <el-input
               size="small"
-              v-model="goodsNameInput"
+              v-model="orderSn"
               :placeholder="$t('mintegralExchange.orderNumber')"
             ></el-input>
           </div>
           <div class="filters_item select">
-            <span>{{$t('mintegralExchange.orderNumber')}}</span>
+            <span>{{$t('mintegralExchange.orderStatus')}}</span>
             <el-select
               v-model="orderStatus"
               :placeholder="$t('mintegralExchange.pleaseChoose')"
@@ -228,7 +228,35 @@
         <p><img :src="`${$imageHost}/image/admin/notice_img.png`"><span>&nbsp;&nbsp;根据以下条件筛选出{{screenLength}}条数据,是否确认导出？</span></p>
       </div>
       <div class="export_title ">
-        <p>{{$t('mintegralExchange.filterCondition')}}</p>
+        <p>筛选条件：</p>
+        <p
+          style="margin-top:10px"
+          v-if="goodsNameInput"
+        >商品名称：{{goodsNameInput}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="orderSn"
+        >订单号：{{orderSn}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="(orderStatusOptions[(orderStatus+1)].label)"
+        >订单状态：{{orderStatusOptions[(orderStatus+1)].label}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="consigneeName"
+        >收货人姓名：{{consigneeName}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="consigneePhone"
+        >收货人手机号：{{consigneePhone}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="orderTime"
+        >下单时间：{{orderTime}}</p>
+        <p
+          style="margin-top:10px"
+          v-if="areaDetail.province || areaDetail.city || areaDetail.district"
+        >收货地址：{{areaDetail.province}}{{areaDetail.city}}{{areaDetail.district}}</p>
       </div>
       <div class="export_title ">
         <p style="font-weight: bold;">{{$t('mintegralExchange.derivedData')}}</p>
@@ -267,6 +295,7 @@ export default {
   data () {
     return {
       goodsNameInput: '', // 商品名称input值
+      orderSn: '',
       orderStatus: -1, // 订单select选中值
       consigneeName: '', // 收货人姓名
       consigneePhone: '', // 收货人手机号
@@ -323,7 +352,7 @@ export default {
       let params = {
         activityId: this.$route.query.activityId,
         goodsName: this.goodsNameInput,
-        orderSn: this.goodsNameInput,
+        orderSn: this.orderSn,
         orderStatus: this.orderStatus === -1 ? '' : this.orderStatus,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
@@ -398,11 +427,17 @@ export default {
         startTime = this.orderTime + ' 00:00:00'
         endTime = this.orderTime + ' 23:59:59'
       }
+      let status = []
+      if (this.orderStatus === -1) {
+        status = null
+      } else {
+        status.push(this.orderStatus)
+      }
       let params = {
         activityId: this.$route.query.activityId,
         goodsName: this.goodsNameInput,
-        orderSn: this.goodsNameInput,
-        orderStatus: this.orderStatus,
+        orderSn: this.orderSn,
+        orderStatus: status,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
         startTime: startTime,
@@ -415,6 +450,7 @@ export default {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         download(res, decodeURIComponent(fileName))
+        this.dialogVisible = false
       })
     },
     // 点击表格订单号

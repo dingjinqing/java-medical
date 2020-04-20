@@ -357,9 +357,7 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
                     return moduleShop;
                 case ModuleConstant.M_GROUP_DRAW:
                     ModuleGroupDraw moduleGroupDraw = objectMapper.readValue(node.getValue().toString(), ModuleGroupDraw.class);
-                    if(StringUtil.isNotEmpty(moduleGroupDraw.getModuleImg())){
-                        moduleGroupDraw.setModuleImg(imageUrl(moduleGroupDraw.getModuleImg()));
-                    }
+                    moduleGroupDraw = saas.getShopApp(getShopId()).groupDraw.getPageIndexGroupDraw(moduleGroupDraw);
                     return moduleGroupDraw;
 
 

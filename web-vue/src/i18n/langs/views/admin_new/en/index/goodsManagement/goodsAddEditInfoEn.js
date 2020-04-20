@@ -243,6 +243,7 @@ export const en = {
     promotionLanguage: 'PromotionLanguage：',
     promotionLanguageTooLong: 'Promotion language too long',
     promotionDocTooLong: 'Promotion doc too long',
+    promotionDocIsNull: 'promotion doc is null',
     shareGoodsAction: 'Goods share poster：',
     shareGoodsActionRadio1: 'Default style',
     shareGoodsActionRadio2: 'Customer style',

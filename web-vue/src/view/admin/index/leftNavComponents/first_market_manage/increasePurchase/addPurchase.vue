@@ -28,9 +28,10 @@
         :rules="rules"
         :model="form1"
         label-width="180px"
+        size="small"
       >
         <el-form-item
-          :label="$t('purchase.activityName')"
+          :label="$t('purchase.activityName')+'：'"
           prop="name"
         >
           <el-input
@@ -40,7 +41,7 @@
           <span class="span">{{$t('purchase.content')}}</span>
         </el-form-item>
         <el-form-item
-          :label="$t('purchase.activityprioty')"
+          :label="$t('purchase.activityprioty')+'：'"
           prop="level"
         >
           <el-input
@@ -50,7 +51,7 @@
           <span class="span">{{$t('purchase.content1')}}</span>
         </el-form-item>
         <el-form-item
-          :label="$t('purchase.activityTime')"
+          :label="$t('purchase.activityTime')+'：'"
           prop="activityDate"
         >
           <el-date-picker
@@ -58,94 +59,102 @@
             type="datetimerange"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
-            range-separator="-"
+            :range-separator="$t('purchase.to')"
             :start-placeholder="$t('purchase.startdate')"
             :end-placeholder="$t('purchase.enddate')"
+            :default-time="['00:00:00', '23:59:59']"
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('purchase.singlemax')">
+        <el-form-item :label="$t('purchase.singlemax')+'：'">
           <el-input
             v-model.number="form1.maxChangePurchase"
             class="input"
           ></el-input>
           <span class="span">{{$t('purchase.content2')}}</span>
         </el-form-item>
-        <el-form-item :label="$t('purchase.redemptionGoodsFeright')">
+        <el-form-item :label="$t('purchase.redemptionGoodsFeright')+'：'">
           <el-radio-group v-model.number="form1.redemptionFreight">
             <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
             <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          :label="$t('purchase.activityRule')"
+          :label="$t('purchase.activityRule')+'：'"
           prop="rule_setting"
+          class="rule-setting"
         >
           <span class="span">{{$t('purchase.content3')}}</span>
+          <el-form-item
+            :label="$t('purchase.rule1')+'：'"
+            label-width="110px"
+            style="margin-top:10px;"
+          >
+            {{$t('purchase.mainFull')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule1.fullPrice"
+            ></el-input>{{$t('purchase.add')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule1.purchasePrice"
+            ></el-input>{{$t('purchase.redemp')}}
+            <el-button
+              type="primary"
+              size="small"
+              style="margin-left:5px"
+              v-if="rule_button1"
+              @click="ruleButton1"
+            >+{{$t('purchase.addRule')}}</el-button>
+          </el-form-item>
+          <el-form-item
+            :label="$t('purchase.rule2')+'：'"
+            v-if="rule_line2"
+            label-width="110px"
+          >
+            {{$t('purchase.mainFull')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule2.fullPrice"
+            ></el-input>{{$t('purchase.add')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule2.purchasePrice"
+            ></el-input>{{$t('purchase.redemp')}}
+            <el-button
+              type="primary"
+              size="small"
+              style="margin-left:5px"
+              v-if="rule_button2"
+              @click="ruleButton2"
+            >+{{$t('purchase.addRule')}}</el-button>
+            <el-link
+              type="primary"
+              style="margin-left:5px"
+              @click="ruleDelete2"
+            >{{$t('purchase.deleteRule')}}</el-link>
+          </el-form-item>
+          <el-form-item
+            :label="$t('purchase.rule3')+'：'"
+            v-if="rule_line3"
+            label-width="110px"
+          >
+            {{$t('purchase.mainFull')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule3.fullPrice"
+            ></el-input>{{$t('purchase.add')}}<el-input
+              class="input1"
+              v-model.number="purcahse_rule3.purchasePrice"
+            ></el-input>{{$t('purchase.redemp')}}
+            <el-link
+              type="primary"
+              style="margin-left:5px"
+              @click="ruleDelete3"
+            >{{$t('purchase.deleteRule')}}</el-link>
+          </el-form-item>
         </el-form-item>
-        <el-form-item :label="$t('purchase.rule1')">
-          {{$t('purchase.mainFull')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule1.fullPrice"
-          ></el-input>{{$t('purchase.add')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule1.purchasePrice"
-          ></el-input>{{$t('purchase.redemp')}}
-          <el-button
-            type="primary"
-            size="small"
-            style="margin-left:5px"
-            v-if="rule_button1"
-            @click="ruleButton1"
-          >+{{$t('purchase.addRule')}}</el-button>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.rule2')"
-          v-if="rule_line2"
-        >
-          {{$t('purchase.mainFull')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule2.fullPrice"
-          ></el-input>{{$t('purchase.add')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule2.purchasePrice"
-          ></el-input>{{$t('purchase.redemp')}}
-          <el-button
-            type="primary"
-            size="small"
-            style="margin-left:5px"
-            v-if="rule_button2"
-            @click="ruleButton2"
-          >+{{$t('purchase.addRule')}}</el-button>
-          <el-link
-            type="primary"
-            style="margin-left:5px"
-            @click="ruleDelete2"
-          >{{$t('purchase.deleteRule')}}</el-link>
-        </el-form-item>
-        <el-form-item
-          :label="$t('purchase.rule3')"
-          v-if="rule_line3"
-        >
-          {{$t('purchase.mainFull')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule3.fullPrice"
-          ></el-input>{{$t('purchase.add')}}<el-input
-            class="input1"
-            v-model.number="purcahse_rule3.purchasePrice"
-          ></el-input>{{$t('purchase.redemp')}}
-          <el-link
-            type="primary"
-            style="margin-left:5px"
-            @click="ruleDelete3"
-          >{{$t('purchase.deleteRule')}}</el-link>
-        </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button
             type="primary"
             @click="nextStep(1)"
           >{{$t('purchase.nextStep')}}</el-button>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </div>
     <!-- 主商品 -->
@@ -157,6 +166,7 @@
         <el-button
           type="primary"
           @click="showChoosingGoods"
+          size="small"
         >{{$t('purchase.chooseGoods')}}</el-button>
         <!--选择商品弹窗-->
         <ChoosingGoods
@@ -169,6 +179,7 @@
         <el-table
           :data="main_table"
           style="width: 100%"
+          border
         >
           <el-table-column :label="$t('purchase.goodsName')">
             <template slot-scope="{ row }">
@@ -199,7 +210,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="bottom">
+      <!-- <div class="bottom">
         <el-button
           type="primary"
           @click="preStep"
@@ -208,7 +219,7 @@
           type="primary"
           @click="nextStep(2)"
         >{{$t('purchase.nextStep')}}</el-button>
-      </div>
+      </div> -->
     </div>
     <!-- 换购商品 -->
     <div
@@ -227,6 +238,7 @@
             <el-button
               type="primary"
               @click="showChoosingGoods1"
+              size="small"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
             <ChoosingGoods
@@ -240,6 +252,7 @@
             <el-table
               :data="purchase_table1"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -251,12 +264,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -304,12 +317,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -357,12 +370,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="shopPrice"
+                prop="prdPrice"
                 :label="$t('purchase.goodsPrice')"
               >
               </el-table-column>
               <el-table-column
-                prop="goodsNumber"
+                prop="prdNumber"
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
@@ -378,7 +391,7 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-      <div class="bottom">
+      <!-- <div class="bottom">
         <el-button
           type="primary"
           @click="preStep"
@@ -387,7 +400,27 @@
           type="primary"
           @click="addPurchase"
         >{{$t('purchase.save')}}</el-button>
-      </div>
+      </div> -->
+    </div>
+    <div class="footer">
+      <el-button
+        v-if="step === 0 || step === 1"
+        type="primary"
+        size="small"
+        @click="nextStep(step+1)"
+      >{{$t('purchase.nextStep')}}</el-button>
+      <el-button
+        v-if="step === 1 || step === 2"
+        type="primary"
+        size="small"
+        @click="preStep"
+      >{{$t('purchase.preStep')}}</el-button>
+      <el-button
+        v-if="step === 2"
+        type="primary"
+        size="small"
+        @click="addPurchase"
+      >{{$t('purchase.save')}}</el-button>
     </div>
   </div>
 </template>
@@ -400,6 +433,7 @@ export default {
     ChoosingGoods
   },
   data () {
+    // 校验活动规则，需满足金额依次递增
     var validateRule = (rule, value, callback) => {
       if (this.rule_num === 1) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '') {
@@ -409,13 +443,23 @@ export default {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '') {
           callback(new Error(this.$t('purchase.content4')))
-        } else { callback() }
+        } else {
+          if (Number(this.purcahse_rule2.fullPrice) < Number(this.purcahse_rule1.fullPrice)) {
+            callback(new Error(this.$t('purchase.content4')))
+          }
+          callback()
+        }
       } else if (this.rule_num === 3) {
         if (this.purcahse_rule1.fullPrice === '' || this.purcahse_rule1.purchasePrice === '' ||
           this.purcahse_rule2.fullPrice === '' || this.purcahse_rule2.purchasePrice === '' ||
           this.purcahse_rule3.fullPrice === '' || this.purcahse_rule3.purchasePrice === '') {
           callback(new Error(this.$t('purchase.content4')))
-        } else { callback() }
+        } else {
+          if (Number(this.purcahse_rule3.fullPrice) < Number(this.purcahse_rule2.fullPrice) || Number(this.purcahse_rule2.fullPrice) < Number(this.purcahse_rule1.fullPrice)) {
+            callback(new Error(this.$t('purchase.content4')))
+          }
+          callback()
+        }
       } else { callback() }
     }
     return {
@@ -592,6 +636,7 @@ export default {
     },
     // 选择换购商品弹窗回调显示
     choosingGoodsResult1 (row) {
+      console.log('row:', row)
       this.purchase_table1 = row
       this.purcahse_rule1.productId = []
       this.purchase_table1.map((item, index) => {
@@ -749,16 +794,12 @@ export default {
   margin: 10px, 10px, 10px, 10px;
   .setpTitle {
     margin-top: 10px;
-    margin-left: 10%;
-    width: 80%;
   }
   .form1 {
     margin-top: 10px;
-    margin-left: 10%;
-    width: 80%;
+    padding: 0 10px;
+    margin-bottom: 80px;
     .form {
-      width: 80%;
-      margin-left: 10%;
       .input {
         width: 250px;
       }
@@ -800,6 +841,20 @@ export default {
     .bottom {
       margin-top: 10px;
       margin-left: 40%;
+    }
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 150px;
+    width: calc(100% - 150px);
+    background: #f8f8f8;
+    text-align: center;
+    padding: 10px 0;
+  }
+  .rule-setting {
+    .el-form-item {
+      margin-left: -90px;
     }
   }
 }

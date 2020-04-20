@@ -346,6 +346,8 @@ export default {
             callback(new Error(this.$t('mintegralExchange.tipsTwo')))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
+          } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
+            callback(new Error('兑换价格或积分不能同时为空'))
           } else {
             callback()
           }
@@ -824,7 +826,7 @@ export default {
   .scoreDiv {
     display: flex;
     /deep/ .el-input {
-      min-width: 50px;
+      min-width: 55px;
     }
     span {
       display: flex !important;

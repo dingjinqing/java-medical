@@ -99,7 +99,6 @@ public class OrderListInfoVo {
 	private Boolean canDeliver;
 	private Boolean canVerify;
     private Boolean showReturnInfo;
-    @JsonIgnore
     private Integer scoreProportion;
     @JsonIgnore
     private Byte isLock;

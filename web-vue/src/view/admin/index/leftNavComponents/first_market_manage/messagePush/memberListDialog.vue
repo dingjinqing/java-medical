@@ -95,10 +95,10 @@
       >
         <el-button
           @click="handleSave"
+          type="primary"
           size="small"
         >确定</el-button>
         <el-button
-          type="primary"
           @click="handleCancel"
           size="small"
         >取消</el-button>
