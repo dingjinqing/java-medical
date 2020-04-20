@@ -244,8 +244,7 @@ global.wxPage({
    */
   coupon_del: function (e) {
     var that = this;
-    var coupon_id = e.currentTarget.dataset.coupon_id;
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    var id = e.currentTarget.dataset.id;
     util.showModal('', '您确定要删除该优惠券？', function () {
       var animate = '';
       var Coupon = that.data.allCoupon;
@@ -253,7 +252,7 @@ global.wxPage({
         if (res.error === 0) {
           for (let i = 0; i < Coupon.length; i++) {
             Coupon[i].right = 0;
-            if (coupon_id == Coupon[i].id) {
+            if (id == Coupon[i].id) {
               Coupon.splice(i, 1)
               i--;
             }
@@ -265,7 +264,7 @@ global.wxPage({
             animate: animate
           })
         }
-      }, { couponId: coupon_id })
+      }, { couponId: id })
     }, true, '取消', '确定')
   },
 
@@ -318,10 +317,10 @@ global.wxPage({
   */
   full_people: function (e) {
     var couponSn = e.target.dataset.coupon_sn;
-    var couponId = e.target.dataset.coupon_id;
+    var actId = e.target.dataset.act_id;
     util.showModal("提示", '领取人数已满', function () {
       util.navigateTo({
-        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
       })
     }, true, '取消', '领取记录');
   },
@@ -332,10 +331,10 @@ global.wxPage({
   onShareAppMessage: function (res) {
     var that = this;
     var couponSn = res.target.dataset.coupon_sn;
-    var couponId = res.target.dataset.coupon_id;
+    var actId = res.target.dataset.act_id;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
       imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
     }
   }
