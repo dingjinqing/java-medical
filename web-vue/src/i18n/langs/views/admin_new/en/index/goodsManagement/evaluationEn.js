@@ -50,5 +50,7 @@ export const en = {
   experience: 'Experience',
   anonymous: 'anonymous',
   select: 'select{0}',
-  noExperience: 'This user did not fill in the user experience'
+  noExperience: 'This user did not fill in the user experience',
+  top: 'top',
+  down: 'Unpin'
 }
