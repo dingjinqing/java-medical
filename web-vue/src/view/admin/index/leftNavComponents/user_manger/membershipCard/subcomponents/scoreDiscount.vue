@@ -26,11 +26,10 @@
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
-          <el-checkbox v-model="ruleForm.cannotUseCoupon" class="score-coupon-cnf">{{$t('memberCard.scoreCouponCfg')}}</el-checkbox>
         </div>
       </el-form-item>
 
-      <el-form-item class="discountItem" >
+      <el-form-item class="discountItem" v-if="ruleForm.powerDiscount">
         <div  id="market-act">
 
          <table>
@@ -390,9 +389,6 @@ export default {
         /deep/ .el-input {
           width: 100%;
         }
-      }
-      .score-coupon-cnf{
-        margin-left: 10px;
       }
     }
     .equity {
