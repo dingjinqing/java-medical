@@ -62,7 +62,7 @@ public class OrderCartProductBo {
     }
 
     private void initMap(){
-        map = productList.stream().collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
+        map = productList.stream().filter(x->!x.isPurchase).collect(Collectors.toMap(OrderCartProduct::getProductId, Function.identity()));
     }
 
     private void initProductIds(){
