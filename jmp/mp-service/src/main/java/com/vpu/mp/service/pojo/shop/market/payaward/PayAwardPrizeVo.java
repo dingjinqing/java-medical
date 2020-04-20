@@ -20,7 +20,7 @@ public class PayAwardPrizeVo {
      */
     private Byte giftType;
     /**
-     * 是否已经发送
+     * 是否已经发送  领奖状态 0未领取1已领取  2奖品已经领光
      */
     private Byte status;
     /**

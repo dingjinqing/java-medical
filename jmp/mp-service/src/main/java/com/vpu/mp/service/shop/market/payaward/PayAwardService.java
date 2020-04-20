@@ -369,6 +369,7 @@ public class PayAwardService extends ShopBaseService {
         Result<PayAwardPrizeRecord> payAwardPrizeRecords = db().selectFrom(PAY_AWARD_PRIZE).where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardRecord.getAwardId())).fetch();
         PayAwardPrizeVo prizeVo = new PayAwardPrizeVo();
         prizeVo.setGiftType(payAwardRecord.getGiftType());
+        prizeVo.setStatus(payAwardRecord.getStatus());
         switch (payAwardRecord.getGiftType()) {
             case GIVE_TYPE_NO_PRIZE:
                 logger().info("无奖励");
