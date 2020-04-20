@@ -629,13 +629,8 @@ public class GoodsMpService extends ShopBaseService {
      * @return 商品ID集合
      */
     public List<Integer> getGoodsIdsBySortIdDao(Integer sortId) {
-        boolean showSoldOutGoods = canShowSoldOutGoods();
-        Condition condition=GOODS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-        if (!showSoldOutGoods) {
-            condition= condition.and(GOODS.GOODS_NUMBER.gt(0));
-        }
-        condition = condition.and(GOODS.SORT_ID.eq(sortId));
-        return db().select(GOODS.GOODS_ID).from(GOODS).where(condition).fetch(GOODS.GOODS_ID);
+        Condition goodsBaseCondition = getGoodsBaseCondition();
+        return db().select(GOODS.GOODS_ID).from(GOODS).where(goodsBaseCondition.and(GOODS.SORT_ID.eq(sortId))).fetch(GOODS.GOODS_ID);
     }
 
     /**
