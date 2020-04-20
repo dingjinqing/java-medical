@@ -308,8 +308,8 @@ global.wxPage({
    * 券购搜素
    */
   to_search: function (opt) {
-    var couponSn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
+    var actId = opt.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
 
   /**

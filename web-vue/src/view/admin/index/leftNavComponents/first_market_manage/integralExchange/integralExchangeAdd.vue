@@ -28,16 +28,23 @@
         >
           <div class="date">
             <el-form-item prop="customTime">
-              <el-date-picker
-                size="small"
-                v-model="ruleForm.customTime"
-                type="datetime"
-                :placeholder="$t('allGoods.batchDialog.selectDateTime')"
-                default-time="00:00:00"
-                format="yyyy-MM-dd HH:mm:ss"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              >
-              </el-date-picker>
+              <div class="timePicker">
+                <el-date-picker
+                  size="small"
+                  v-model="ruleForm.customTime"
+                  type="datetime"
+                  :placeholder="$t('allGoods.batchDialog.selectDateTime')"
+                  default-time="00:00:00"
+                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                >
+                </el-date-picker>
+                <div
+                  class="mask"
+                  v-if="status===1"
+                ></div>
+              </div>
+
             </el-form-item>
             &nbsp;{{$t('mintegralExchange.to')}}&nbsp;
             <el-form-item prop="customTimeEnd">
@@ -80,7 +87,7 @@
             </span>
             <span v-if="ruleForm.checkGoodsName">{{ruleForm.checkGoodsName}}</span>
             <span
-              v-if="ruleForm.checkGoodsName"
+              v-if="ruleForm.checkGoodsName && status!==1"
               @click="handleToChooseGoods()"
               class="modify"
             >{{$t('mintegralExchange.modify')}}</span>
@@ -161,12 +168,42 @@
               prop="stock"
               :label="$t('mintegralExchange.goodsInventory')"
               align="center"
+              v-if="id===-1"
             >
               <template slot-scope="scope">
                 <el-input
                   size="small"
                   v-model="scope.row.stock"
                   onkeyup="value=value.replace(/[^\d.]/g,'')"
+                ></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="xyStock"
+              label="剩余兑换商品库存"
+              align="center"
+              v-if="id!==-1"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  size="small"
+                  v-model="scope.row.xyStock"
+                  onkeyup="value=value.replace(/[^\d.]/g,'')"
+                ></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="sold"
+              label="已售数量"
+              align="center"
+              v-if="id!==-1"
+            >
+              <template slot-scope="scope">
+                <el-input
+                  size="small"
+                  v-model="scope.row.sold"
+                  onkeyup="value=value.replace(/[^\d.]/g,'')"
+                  disabled
                 ></el-input>
               </template>
             </el-table-column>
@@ -330,6 +367,10 @@ export default {
     id: {
       type: Number,
       default: -1
+    },
+    status: {
+      type: Number,
+      default: -1
     }
   },
   components: {
@@ -413,6 +454,7 @@ export default {
       }
     }
     return {
+      isClicktimePicker: true, // 是否可以选择开始时间
       isSureTop: true,
       isSureBottom: true,
       checkGoodsId: null, // 选中的商品id
@@ -486,6 +528,7 @@ export default {
       handler (newData) {
         console.log(newData)
         if (newData !== -1) {
+          console.log(this.status)
           this.isSureTop = true
           this.isSureBottom = true
           integralDetail({ id: newData }).then(res => {
@@ -510,7 +553,9 @@ export default {
                     'prdId': item.prdId
                   },
                   goodsStock: item.prdNumber,
-                  stock: item.stock
+                  stock: item.stock,
+                  xyStock: 1,
+                  sold: 0
                 }
                 arr.push(obj)
               })
@@ -519,7 +564,9 @@ export default {
                 originPrice: '1',
                 exchange: '',
                 goodsStock: '',
-                stock: ''
+                stock: '',
+                xyStock: '',
+                sold: ''
               }
               arr.push(lastObj)
               this.ruleForm.tableData = arr
@@ -637,7 +684,11 @@ export default {
       console.log(row, column, rowIndex, columnIndex)
       if (rowIndex === this.ruleForm.tableData.length - 1) {
         if (columnIndex === 1) {
-          return [1, 4]
+          if (this.id === -1) {
+            return [1, 4]
+          } else {
+            return [1, 5]
+          }
         } else if (columnIndex === 2) {
           return [0, 0]
         } else if (columnIndex === 3) {
@@ -659,10 +710,14 @@ export default {
       let yuanData = ''
       let scoreData = ''
       let kuCunData = ''
+      let xyStock = ''
       if (this.ruleForm.tableData.length) {
         yuanData = this.ruleForm.tableData[0].exchange.money
         scoreData = this.ruleForm.tableData[0].exchange.score
         kuCunData = this.ruleForm.tableData[0].stock
+        if (this.id !== -1) {
+          xyStock = this.ruleForm.tableData[0].xyStock
+        }
       }
       if (flag === 1) {
         this.ruleForm.tableData.forEach((item, index) => {
@@ -672,6 +727,9 @@ export default {
       } else {
         this.ruleForm.tableData.forEach((item, index) => {
           item.stock = kuCunData
+          if (this.id !== -1) {
+            item.xyStock = xyStock
+          }
         })
       }
     },
@@ -946,6 +1004,21 @@ export default {
     padding: 10px 0;
     left: 0;
     right: 0;
+  }
+  .timePicker {
+    position: relative;
+    .mask {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #f5f7fa;
+      z-index: 10;
+      top: 0;
+      opacity: 0.6;
+      &:hover {
+        cursor: not-allowed;
+      }
+    }
   }
 }
 </style>
