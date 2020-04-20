@@ -23,7 +23,7 @@
 </template>
 
 <script>
-// import { pinLotteryRules } from '@/api/admin/util.js'
+import { pinLotteryRules } from '@/api/admin/util.js'
 export default {
   data () {
     return {
@@ -38,19 +38,16 @@ export default {
   methods: {
     initData () {
       // 获取传参
-      // let part = window.location.href.split('?')[1].split('&')
-      // let shopId = Number(part[0].split('=')[1])
-      // let gId = Number(part[2].split('=')[1])
-      // let obj = {
-      //   shop_id: shopId,
-      //   gId: gId
-      // }
-      // pinLotteryRules(obj).then(res => {
-      //   if (res.error === 0) {
-      //     this.isUseDefault = res.content.actCopywriting.isUseDefault
-      //     this.pinLotteryRules = res.content.actCopywriting.document
-      //   }
-      // })
+      let obj = {
+        shop_id: this.$route.query.shop_id,
+        gid: this.$route.query.gid
+      }
+      pinLotteryRules(obj).then(res => {
+        if (res.error === 0 && res.content !== null) {
+          this.isUseDefault = res.content.isUseDefault
+          this.pinLotteryRules = res.content.document
+        }
+      })
     }
   }
 }

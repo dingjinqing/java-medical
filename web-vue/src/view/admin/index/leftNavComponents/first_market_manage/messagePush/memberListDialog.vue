@@ -95,10 +95,10 @@
       >
         <el-button
           @click="handleSave"
+          type="primary"
           size="small"
         >确定</el-button>
         <el-button
-          type="primary"
           @click="handleCancel"
           size="small"
         >取消</el-button>
@@ -121,6 +121,10 @@ export default {
     memberListDialog: {
       type: Boolean,
       default: false
+    },
+    chooseMemberBack: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -172,6 +176,16 @@ export default {
           console.log(res)
           this.questions = dataList
           this.pageParams = page
+
+          // 已选回显
+          console.log(this.chooseMemberBack)
+          this.questions.forEach(item => {
+            this.chooseMemberBack.forEach(val => {
+              if (item.userId === val) {
+                this.$refs.table.toggleRowSelection(item)
+              }
+            })
+          })
           console.log(this.pageParams)
         }
       }).catch(err => console.log(err))

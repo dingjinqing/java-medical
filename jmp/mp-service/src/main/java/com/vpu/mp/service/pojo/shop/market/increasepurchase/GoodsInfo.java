@@ -22,4 +22,6 @@ public class GoodsInfo {
     private BigDecimal shopPrice;
     /** 商品库存 */
     private Integer goodsNumber;
+
+    private String prdDesc;
 }

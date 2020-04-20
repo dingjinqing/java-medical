@@ -13,7 +13,7 @@
             <div class="item">{{$t('order.orderAmount')}}：
               <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
                 {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}} +
-                {{order.scoreDiscount * monetToScore}}{{$t('order.score')}}
+                {{order.scoreDiscount * order.scoreProportion}}{{$t('order.score')}}
               </template>
               <template v-else>
                 {{order.moneyPaid.toFixed(2)}}{{currencyPool[order.currency][lang][0]}}
@@ -443,7 +443,7 @@
                   </span>
                   <template v-if="goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) > -1">
                     <span>
-                      + {{order.scoreDiscount * monetToScore}}{{$t('order.score')}}
+                      + {{order.scoreDiscount * order.scoreProportion}}{{$t('order.score')}}
                     </span>
                     <span>
                       ({{$t('order.freeShipping')}})
@@ -475,7 +475,7 @@
                     {{
                       goodsTypeArray.indexOf('4') == -1 ?
                         (currencyPool[order.currency][lang][1] + order.orderAmount.toFixed(2)) :
-                        (currencyPool[order.currency][lang][1] + (order.orderAmount - order.scoreDiscount).toFixed(2) + '+' + order.scoreDiscount * monetToScore + $t('order.score'))
+                        (currencyPool[order.currency][lang][1] + (order.orderAmount - order.scoreDiscount).toFixed(2) + '+' + order.scoreDiscount * order.scoreProportion + $t('order.score'))
                     }}
                   </span>
                 </p>
@@ -532,9 +532,9 @@
                 <p v-if="order.scoreDiscount > 0">
                   <span>
                     {{
-                       (goodsTypeArray.indexOf($t('goodsTypeList')[5][0] == -1)) ?
-                       ($t('order.scoreDiscount') +'-'+ currencyPool[order.currency][lang][1] + order.scoreDiscount.toFixed(2)) :
-                       ($t('order.scoreExchange') +'-'+ currencyPool[order.currency][lang][1] + order.scoreDiscount.toFixed(2))
+                       goodsTypeArray.indexOf($t('order.goodsTypeList')[5][0].toString()) ?
+                       ($t('order.scoreDiscount') +'：-'+ currencyPool[order.currency][lang][1] + order.scoreDiscount.toFixed(2)) :
+                       ($t('order.scoreExchange') +'：-'+ order.scoreDiscount * order.scoreProportion + $t('order.score'))
                     }}
                   </span>
                 </p>
@@ -713,7 +713,6 @@ export default {
       },
       returnTypeMap: null,
       returnStatusToShowMapping: null,
-      monetToScore: 100,
       goodsTypeArray: [],
       notesOrderSn: '',
       // 控制发货

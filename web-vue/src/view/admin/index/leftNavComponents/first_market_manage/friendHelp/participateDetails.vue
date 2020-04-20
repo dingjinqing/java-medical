@@ -77,7 +77,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser()"
+              @click="getUser(scope.row.joinUserId)"
               type="text"
             > {{scope.row.username}} </el-button>
           </template>
@@ -104,7 +104,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser()"
+              @click="getUser(scope.row.launchUserId)"
               type="text"
             > {{scope.row.launchUsername}} </el-button>
           </template>
@@ -212,9 +212,12 @@ export default {
       console.log('tableData:', this.tableData)
     },
     // 用户
-    getUser () {
+    getUser (id) {
       this.$router.push({
-        path: `/admin/home/main/membershipInformation`
+        path: '/admin/home/main/membershipInformation',
+        query: {
+          userId: id
+        }
       })
     },
     // 导出

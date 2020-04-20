@@ -112,7 +112,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getOrder()"
+              @click="getOrder(scope.row.orderSn)"
               type="text"
             > {{scope.row.orderSn}} </el-button>
           </template>
@@ -225,6 +225,16 @@ export default {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         download(res, decodeURIComponent(fileName))
+      })
+    },
+    // 跳转订单详情
+    getOrder (orderSn) {
+      // 跳转订单详情页面
+      this.$router.push({
+        path: '/admin/home/main/orders/info',
+        query: {
+          orderSn: orderSn
+        }
       })
     }
   },

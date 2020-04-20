@@ -13,6 +13,9 @@ import lombok.Data;
 @Data
 @ExcelSheet
 public class FriendPromoteLaunchVo {
+    /** 发起用户id */
+    @ExcelIgnore
+    private Integer userId;
 	/** 发起用户昵称 */
     @ExcelColumn(columnIndex = 0, columnName = JsonResultMessage.FRIEND_PROMOTE_LAUNCH_USER_NAME)
 	private String username;

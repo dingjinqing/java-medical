@@ -20,7 +20,7 @@ public class PayAwardConstant {
     public final static String REDIS_PAY_AWARD_JOIN_COUNT = "pay_award:join_count:";
 
 
-    //*********************领奖状态 0未领取1已领取
+    //*********************领奖状态 0未领取1已领取  2奖品已经领光
 
     /**
      * 还未领取

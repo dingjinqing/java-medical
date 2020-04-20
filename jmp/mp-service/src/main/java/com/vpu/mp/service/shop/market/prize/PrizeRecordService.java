@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.market.prize;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -44,6 +45,8 @@ public class PrizeRecordService extends ShopBaseService {
     private GoodsService  goodsService;
     @Autowired
     private AtomicOperation atomicOperation;
+    @Autowired
+    private DomainConfig domainConfig;
 
 
     /**
@@ -93,7 +96,7 @@ public class PrizeRecordService extends ShopBaseService {
                 OrderGoodsMpVo orderGoodsMpVo = new OrderGoodsMpVo();
                 orderGoodsMpVo.setProductId(prizeRecord.getPrdId());
                 orderGoodsMpVo.setGoodsAttr(product.getPrdDesc());
-                orderGoodsMpVo.setGoodsImg(product.getGoodsImg());
+                orderGoodsMpVo.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
                 orderGoodsMpVo.setGoodsName(product.getGoodsName());
                 orderGoodsMpVo.setGoodsId(product.getGoodsId());
                 prizeRecord.setOrderGoodsMpVo(orderGoodsMpVo);
@@ -149,7 +152,7 @@ public class PrizeRecordService extends ShopBaseService {
         });
         logger().info("修改我的奖品记录状态");
         db().update(PRIZE_RECORD).set(PRIZE_RECORD.PRIZE_STATUS,PRIZE_STATUS_EXPIRE)
-                .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_UNCLAIMED))
+                .where(PRIZE_RECORD.PRIZE_STATUS.eq(PRIZE_STATUS_EXPIRE))
                 .and(PRIZE_RECORD.EXPIRED_TIME.lt(localDateTime)).execute();
 
     }

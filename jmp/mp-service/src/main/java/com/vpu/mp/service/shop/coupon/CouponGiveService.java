@@ -218,6 +218,51 @@ public class CouponGiveService extends ShopBaseService {
         // 得到当前发券活动id
         BigInteger bigIntegerActId = db().lastID();
         Integer actId = Integer.valueOf(bigIntegerActId.toString());
+        Set<Integer> userIds = getGrantUser(param);
+        // 队列
+        List<Integer> userIdList = new ArrayList<>(userIds);
+        String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds();
+        String[] couponArray = couponIds.split(",");
+        CouponGiveQueueParam newParam =
+            new CouponGiveQueueParam(
+                getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
+        // 立即发送
+        if (param.getSendAction() == 0) {
+            saas.taskJobMainService.dispatchImmediately(
+                newParam,
+                CouponGiveQueueParam.class.getName(),
+                getShopId(),
+                TaskJobEnum.GIVE_COUPON.getExecutionType());
+        }
+        // 定时发送
+        if (param.getSendAction() == 1) {
+            saas.messageTemplateService.createCouponTaskJob(getShopId(), newParam, param.getStartTime());
+        }
+        // 一次发券活动完成后，将发放状态修改为已发放
+        db().update(GIVE_VOUCHER)
+            .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
+            .where(GIVE_VOUCHER.ID.eq(actId))
+            .execute();
+    }
+
+    /**
+     * 获取预计发放人数
+     * @param param 筛选条件
+     * @return 用户数
+     */
+    public CouponUserNum getGrantUserNum(CouponGiveGrantParam param){
+        Set<Integer> userIds = getGrantUser(param);
+        CouponUserNum couponUserNum = new CouponUserNum();
+        couponUserNum.setUserNum(userIds.size());
+        return couponUserNum;
+    }
+
+    /**
+     * 获取当前活动涉及到的所有用户
+     * @param param 筛选信息
+     * @return 用户集合
+     */
+    public Set<Integer> getGrantUser(CouponGiveGrantParam param){
         // 获取当前活动设计到的所有用户 并将发券活动写入用户-优惠券对应表
         Set<Integer> userIds = new HashSet<>();
         // 得到相关时间
@@ -288,32 +333,8 @@ public class CouponGiveService extends ShopBaseService {
                 param.getCouponGiveGrantInfoParams().getPointStartTime(),
                 param.getCouponGiveGrantInfoParams().getPointEndTme());
         }
-        // 队列
-        List<Integer> userIdList = new ArrayList<>(userIds);
-        String couponIds = param.getCouponGiveGrantInfoParams().getCouponIds();
-        String[] couponArray = couponIds.split(",");
-        CouponGiveQueueParam newParam =
-            new CouponGiveQueueParam(
-                getShopId(), userIdList, actId, couponArray, ACCESS_MODE, GET_SOURCE);
-        // 立即发送
-        if (param.getSendAction() == 0) {
-            saas.taskJobMainService.dispatchImmediately(
-                newParam,
-                CouponGiveQueueParam.class.getName(),
-                getShopId(),
-                TaskJobEnum.GIVE_COUPON.getExecutionType());
-        }
-        // 定时发送
-        if (param.getSendAction() == 1) {
-            saas.messageTemplateService.createCouponTaskJob(getShopId(), newParam, param.getStartTime());
-        }
-        // 一次发券活动完成后，将发放状态修改为已发放
-        db().update(GIVE_VOUCHER)
-            .set(GIVE_VOUCHER.SEND_STATUS, NumberUtils.BYTE_ONE)
-            .where(GIVE_VOUCHER.ID.eq(actId))
-            .execute();
+        return userIds;
     }
-
     /**
      * 获取30天内加购用户
      *
@@ -443,7 +464,6 @@ public class CouponGiveService extends ShopBaseService {
         List<Integer> allUserIds =
             db().select(USER.USER_ID)
                 .from(USER)
-                .where(USER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
                 .fetchInto(Integer.class);
         // 得到两个集合差集为N天内无交易记录的用户
         allUserIds.removeAll(havePayUserIds);
