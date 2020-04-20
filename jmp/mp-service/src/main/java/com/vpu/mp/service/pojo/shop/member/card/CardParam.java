@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
@@ -213,5 +214,10 @@ public class CardParam {
 	 * 	会员卡转赠
 	 */
 	private CardGive cardGive;
+	
+	/**
+	 * 折扣不与营销活动公用
+	 */
+	public List<CardMarketActivity> marketActivities;
 	
 }
