@@ -9,6 +9,25 @@ global.wxComponent({
       var _this = this;
       var m = this.data.m = newVal;
       console.log(m, '积分兑换++++++++++++++++++++++++++++')
+      m.integral_goods.forEach((item, index) => {
+        switch (item.tip) {
+          case 1:
+            item.tip = '商品已删除'
+            break
+          case 2:
+            item.tip = '活动已删除'
+            break
+          case 3:
+            item.tip = '活动已停用'
+            break
+          case 4:
+            item.tip = '活动未开始'
+            break
+          case 5:
+            item.tip = '活动已过期'
+            break
+        }
+      })
       this.formatActivityBeginTime(m.integral_goods);
     },
     bindToInegral (e) {

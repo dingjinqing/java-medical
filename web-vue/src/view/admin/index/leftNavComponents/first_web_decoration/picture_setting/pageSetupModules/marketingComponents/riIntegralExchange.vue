@@ -398,6 +398,12 @@ export default {
     },
     // 表格选中
     handleSelectionChange (res) {
+      if (res.length > 6) {
+        let nowClick = res.pop()
+        this.$refs.addActTable.toggleRowSelection(nowClick)
+        this.$message.warning('只能添加6个活动商品')
+        return false
+      }
       if (res.length) {
         this.isShowTable = true
       } else {
@@ -405,7 +411,7 @@ export default {
       }
       this.selectData = res
       // this.moduleData.integral_goods = res
-      console.log(this.moduleData.integral_goods)
+      console.log(res)
     },
     // 添加活动弹窗确定事件
     handleToSure () {

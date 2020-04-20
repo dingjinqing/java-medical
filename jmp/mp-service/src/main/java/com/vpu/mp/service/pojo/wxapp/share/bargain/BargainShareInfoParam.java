@@ -14,4 +14,6 @@ import lombok.Setter;
 public class BargainShareInfoParam extends GoodsShareBaseParam {
     /**需要跳转的页面类型*/
     private Byte pageType;
+    /**pageType=2时获取对应的发起砍价活动的发现记录id（b2c_bargain_record表id）*/
+    private Integer recordId;
 }

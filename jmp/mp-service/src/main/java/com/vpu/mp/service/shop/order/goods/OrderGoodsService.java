@@ -286,7 +286,7 @@ public class OrderGoodsService extends ShopBaseService{
             //TODO 需要考虑
             goodsAttrId(StringUtils.EMPTY).
             goodsImg(goods.getGoodsInfo().getGoodsImg()).
-            //限时降价
+            //满折满减
             straId(goods.getStraId()).
             perDiscount(goods.getPerDiscount()).
             //当前非赠品（赠品后续初始化）
@@ -312,8 +312,8 @@ public class OrderGoodsService extends ShopBaseService{
             sortId(goods.getGoodsInfo().getSortId()).
             brandId(goods.getGoodsInfo().getBrandId()).
             goodsPriceAction(goods.getGoodsPriceAction()).
-            purchasePriceId(null).
-            purchasePriceRuleId(null).
+            purchasePriceId(goods.getPurchasePriceId()).
+            purchasePriceRuleId(goods.getPurchasePriceRuleId()).
             reducePriceId(null).
             firstSpecialId(goods.getFirstSpecialId() == null ? NumberUtils.INTEGER_ZERO : goods.getFirstSpecialId()).
             isCardExclusive(goods.getGoodsInfo().getIsCardExclusive()).
@@ -338,6 +338,11 @@ public class OrderGoodsService extends ShopBaseService{
                 //设置首单特惠在等等商品表记录，目前orderGoods中actId.type只记录首单特惠，后期考虑记录全部非叠加型活动
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
                 record.setActivityId(bo.getFirstSpecialId());
+            }else if (bo.getPurchasePriceRuleId() != null && bo.getPurchasePriceRuleId() > 0) {
+                //加价购
+                record.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                record.setActivityId(bo.getPurchasePriceId());
+                record.setActivityRule(bo.getPurchasePriceRuleId());
             }
             records.add(record);
         }

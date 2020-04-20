@@ -6,6 +6,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
@@ -242,7 +243,7 @@ public class GoodsMpService extends ShopBaseService {
         if (esUtilSearchService.esState()) {
             try {
                 // 从es获取
-                log.debug("小程序-es-搜索商品列表");
+                log.debug("小程序-es-搜索商品列表-param:" +  Util.toJson(param));
                 goodsListCapsules = getPageIndexGoodsListFromEs(param);
                 log.debug("小程序-es-搜索商品列表结果:{}", goodsListCapsules);
             } catch (Exception e) {

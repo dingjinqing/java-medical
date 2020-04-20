@@ -166,17 +166,16 @@
               </td>
               <td class="link">
                 <div class="operateDiv">
-                  <span @click="jumpToChargeDetail(item,1)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
-                  <span @click="jumpToChargeDetail(item,2)">-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
+                  <span v-if="Number(item.cardType)!==2" @click="jumpToChargeDetail(item,1)">{{ $t('membershipIntroduction.chargeDetail')  }}</span>
+                  <span v-if="Number(item.cardType)!==2" @click="jumpToChargeDetail(item,2)">-{{ $t('membershipIntroduction.consumeDetail')  }}</span>
                   <span
                     v-if="!item.deleteShow"
                     @click="deleteUserCard(item)"
-                  >-{{ $t('membershipIntroduction.deleteCard')  }}</span>
+                  >
+                    <span v-if="Number(item.cardType)!==2">-</span>
+                    {{ $t('membershipIntroduction.deleteCard')  }}
+                  </span>
                 </div>
-              </td>
-
-              <td class="tb_decorate_a">
-                {{item.path}}
               </td>
             </tr>
           </tbody>

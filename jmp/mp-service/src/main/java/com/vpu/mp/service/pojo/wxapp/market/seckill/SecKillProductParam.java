@@ -14,6 +14,10 @@ public class SecKillProductParam {
     @NotNull
     private Integer skId;
 
+    /** 秒杀商品ID */
+    @NotNull
+    private Integer goodsId;
+
     /** 秒杀规格ID */
     @NotNull
     private Integer productId;

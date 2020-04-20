@@ -1,75 +1,83 @@
 <template>
-  <div>
-    <wrapper>
+  <div class="container">
+    <div class="top">
       <statusTab
         v-model="param.status"
         :activityName="activityName"
         :standard="true"
       />
+      <div>
+        <el-button
+          type="primary"
+          @click="jump2addPurchase"
+          size="small"
+        >
+          {{$t('purchase.addactivity')}}
+        </el-button>
+      </div>
+    </div>
+    <div class="content">
       <!-- 查询条件 -->
       <el-form
-        label-width="100px"
         :inline="true"
+        size="small"
       >
-        <el-form-item :label="$t('purchase.activityName')">
+        <el-form-item :label="$t('purchase.activityName')+'：'">
           <el-input
             v-model="param.name"
             :placeholder="$t('purchase.inputactivityName')"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('purchase.activityTime')">
+        <el-form-item :label="$t('purchase.activityTime')+'：'">
           <el-date-picker
-            v-model="param.dateRange"
-            type="datetimerange"
-            :range-separator="$t('purchase.to')"
-            :start-placeholder="$t('purchase.startdate')"
-            :end-placeholder="$t('purchase.enddate')"
+            type="datetime"
+            v-model="param.startTime"
+            :placeholder="$t('purchase.startdate')"
             value-format="yyyy-MM-dd HH:mm:ss"
-          >
-          </el-date-picker>
+            style="width: 190px;"
+            align="center"
+          ></el-date-picker>
+          {{$t('purchase.to')}}
+          <el-date-picker
+            type="datetime"
+            v-model="param.endTime"
+            :placeholder="$t('purchase.enddate')"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 190px;"
+            align="center"
+            default-time="23:59:59"
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('purchase.Priceincreaseconditions')">
+        <el-form-item :label="$t('purchase.Priceincreaseconditions')+'：'">
+          {{$t('purchase.full')}}
           <el-input
             v-model.number="param.fullPriceDown"
-            placeholder="0"
             style="width:100px"
           ></el-input>
           {{$t('purchase.rmbto')}}
           <el-input
             v-model.number="param.fullPriceUp"
-            placeholder="0"
             style="width:100px"
           ></el-input>
           {{$t('purchase.rmb')}}
         </el-form-item>
-        <el-form-item :label="$t('purchase.redemptioncondition')">
+        <el-form-item :label="$t('purchase.redemptioncondition')+'：'">
+          {{$t('purchase.full')}}
           <el-input
             v-model.number="param.purchasePriceDown"
-            placeholder="0"
             style="width:100px"
           ></el-input>
           {{$t('purchase.rmbto')}}
           <el-input
             v-model.number="param.purchasePriceUp"
-            placeholder="0"
             style="width:100px"
           ></el-input>
           {{$t('purchase.rmb')}}
-        </el-form-item>
-        <el-form-item>
           <el-button
             type="primary"
-            @click="initDateList"
+            @click="initDataList"
+            style="margin-left:10px;"
           >{{$t('purchase.serach')}}</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            style="float:right;"
-            @click="jump2addPurchase"
-          >
-            {{$t('purchase.addactivity')}}
-          </el-button>
         </el-form-item>
       </el-form>
       <!-- 表格数据 -->
@@ -85,7 +93,6 @@
           :label="$t('purchase.activityName')"
           align="center"
         >
-
         </el-table-column>
         <el-table-column
           :label="$t('purchase.activityTime')"
@@ -117,11 +124,7 @@
                 v-for="(item,index) in scope.row.purchaseInfo"
                 :key="index"
               >
-                <el-form :inline="true">
-                  <el-form-item>
-                    {{$t('purchase.full')}}{{item.split('---')[1]}} {{$t('purchase.addPrice')}} {{item.split('---')[2]}}{{$t('purchase.redemption')}}<br>
-                  </el-form-item>
-                </el-form>
+                {{$t('purchase.full')}}{{item.split('---')[0]}} {{$t('purchase.addPrice')}} {{item.split('---')[1]}}{{$t('purchase.redemption')}}<br>
               </li>
             </ul>
           </template>
@@ -131,7 +134,15 @@
           :label="$t('purchase.singlemax')"
           align="center"
         >
-
+          <template slot-scope="{row}">
+            <div v-if="row.maxChangePurchase === 0">
+              不限制
+            </div>
+            <div
+              v-else
+              v-text="row.maxChangePurchase"
+            ></div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="resaleQuantity"
@@ -146,45 +157,51 @@
         >
           <template slot-scope="scope">
             <div class="operation">
+              <!-- 编辑 -->
               <el-tooltip
                 :content="$t('purchase.edit')"
                 placement="top"
-                v-if="scope.row.status === 0"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
                   class="el-icon-edit-outline iconSpn"
                   @click="jump2editPurchase(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 分享 -->
+              <el-tooltip
+                :content="$t('purchase.share')"
+                placement="top"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
+              >
+                <span
+                  class="el-icon-share iconSpn"
+                  @click="shareActity(scope.row.id)"
+                ></span>
+              </el-tooltip>
+              <!-- 停用 -->
               <el-tooltip
                 :content="$t('purchase.Disable')"
                 placement="top"
-                v-if="scope.row.status === 0"
+                v-if="scope.row.category === 1 || scope.row.category === 2"
               >
                 <span
                   class="el-icon-circle-close iconSpn"
                   @click="disableShare(scope.row.id)"
                 ></span>
               </el-tooltip>
+              <!-- 启用 -->
               <el-tooltip
                 :content="$t('purchase.Enable')"
                 placement="top"
-                v-if="scope.row.status === 1"
+                v-if="scope.row.category === 4 && notExpired(scope.row)"
               >
                 <span
                   class="el-icon-circle-check iconSpn"
                   @click="enableShare(scope.row.id)"
                 ></span>
               </el-tooltip>
-              <el-tooltip
-                :content="$t('purchase.delete')"
-                placement="top"
-              >
-                <span
-                  @click="deleteShare(scope.row.id)"
-                  class="el-icon-delete iconSpn"
-                ></span>
-              </el-tooltip>
+              <!-- 查看换购订单 -->
               <el-tooltip
                 :content="$t('purchase.searchredemptionorder')"
                 placement="top"
@@ -194,22 +211,25 @@
                   class="el-icon-s-cooperation iconSpn"
                 ></span>
               </el-tooltip>
+              <!-- 换购明细 -->
               <el-tooltip
                 :content="$t('purchase.redemptiondetail')"
                 placement="top"
               >
                 <span
                   @click="jumptoRedemptionDetail(scope.row.id)"
-                  class="el-icon-s-cooperation iconSpn"
+                  class="el-icon-s-order iconSpn"
                 ></span>
               </el-tooltip>
+              <!-- 删除 -->
               <el-tooltip
-                :content="$t('purchase.share')"
+                :content="$t('purchase.delete')"
                 placement="top"
+                v-if="scope.row.category === 3 || scope.row.category === 4"
               >
                 <span
-                  class="el-icon-share iconSpn"
-                  @click="shareActity(scope.row.id)"
+                  @click="deleteShare(scope.row.id)"
+                  class="el-icon-delete iconSpn"
                 ></span>
               </el-tooltip>
             </div>
@@ -219,22 +239,22 @@
       <div>
         <pagination
           :page-params.sync="pageParams"
-          @pagination="initDateList"
+          @pagination="initDataList"
         />
       </div>
-      <!-- 分享弹窗组件 -->
-      <shareDialog
-        :show="showShareDialog"
-        :imgPath="shareImg"
-        :pagePath="sharePath"
-        @close="showShareDialog=false"
-      />
-    </wrapper>
+    </div>
+    <!-- 分享弹窗组件 -->
+    <shareDialog
+      :show="showShareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="showShareDialog=false"
+      style="width:400px;margin:0 auto;"
+    />
   </div>
 </template>
 <script>
 import { getList, changeActivity, updatePriority, share } from '@/api/admin/marketManage/increasePurchase.js'
-import wrapper from '@/components/admin/wrapper/wrapper'
 import pagination from '@/components/admin/pagination/pagination.vue'
 import statusTab from '@/components/admin/marketManage/status/statusTab'
 import inputEdit from '@/components/admin/inputEdit'
@@ -243,20 +263,14 @@ export default {
   components: {
     pagination,
     statusTab,
-    wrapper,
     inputEdit,
     shareDialog
   },
   mounted () {
     this.langDefault()
   },
-  watch: {
-    'param.status' (n, o) {
-      this.initDateList()
-    }
-  },
   created () {
-    this.initDateList()
+    this.initDataList()
   },
   data () {
     return {
@@ -267,13 +281,13 @@ export default {
         status: 1,
         category: 0,
         name: '',
-        dateRange: [],
+        // dateRange: [],
         startTime: '',
         endTime: '',
-        fullPriceUp: 0,
-        fullPriceDown: 0,
-        purchasePriceUp: 0,
-        purchasePriceDown: 0,
+        fullPriceUp: '',
+        fullPriceDown: '',
+        purchasePriceUp: '',
+        purchasePriceDown: '',
         // 分页
         currentPage: 0,
         pageRows: 20
@@ -281,6 +295,11 @@ export default {
       showShareDialog: false,
       shareImg: '',
       sharePath: ''
+    }
+  },
+  watch: {
+    'param.status': function (val) {
+      this.initDataList()
     }
   },
   methods: {
@@ -302,7 +321,7 @@ export default {
         updatePriority(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('修改成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -349,17 +368,10 @@ export default {
       })
     },
     // 查询数据列表
-    initDateList () {
+    initDataList () {
       this.param.category = this.param.status
       this.param.currentPage = this.pageParams.currentPage
       this.param.pageRows = this.pageParams.pageRows
-      if (this.param.dateRange != null && this.param.dateRange.length > 0) {
-        this.param.startTime = this.param.dateRange[0]
-        this.param.endTime = this.param.dateRange[1]
-      } else {
-        this.param.startTime = ''
-        this.param.endTime = ''
-      }
       getList(this.param).then((res) => {
         if (res.error === 0) {
           this.handleData(res.content)
@@ -390,7 +402,7 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('停用成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -411,7 +423,7 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('启用成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -432,7 +444,7 @@ export default {
         changeActivity(obj).then(res => {
           if (res.error === 0) {
             this.$message.success('删除成功！')
-            this.initDateList()
+            this.initDataList()
           }
         })
       }).catch(() => {
@@ -452,9 +464,40 @@ export default {
           this.showShareDialog = !this.showShareDialog
         }
       })
+    },
+    notExpired (row) {
+      let time = new Date(row.timestamp)
+      let endTime = new Date(row.endTime)
+      if (time < endTime) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.container {
+  padding: 10px;
+  font-size: 14px;
+}
+.top {
+  padding: 15px;
+  background: #fff;
+}
+.content {
+  margin-top: 10px;
+  padding: 15px;
+  background: #fff;
+  .el-form-item {
+    width: 500px;
+  }
+  .iconSpn {
+    font-size: 22px;
+    color: #5a8bff;
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
 </style>

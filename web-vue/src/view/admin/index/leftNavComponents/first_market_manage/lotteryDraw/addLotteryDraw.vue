@@ -9,6 +9,7 @@
         :rules="fromRules"
         label-width="130px"
         :label-position="'right'"
+        v-if="!ruleShow"
       >
         <el-form-item
           :label="$t('lotteryDraw.activityName') + '：'"
@@ -215,6 +216,16 @@
           </el-card>
         </el-form-item>
         <el-form-item
+          label="活动规则说明："
+          prop=""
+        >
+          <el-button
+            type="primary"
+            size="small"
+            @click="lotteryDrawRule"
+          >设置规则说明</el-button>
+        </el-form-item>
+        <el-form-item
           :label="$t('lotteryDraw.goodsId') + '：'"
           prop="goodsIds"
         >
@@ -273,10 +284,18 @@
         </el-form-item>
       </el-form>
 
+      <lotteryDrawRule
+        v-if="ruleShow"
+        @ActivityMsg="activityMsg"
+        :sendMsg="sendMsg"
+      />
     </div>
 
     <!-- 底部 -->
-    <div class="footer">
+    <div
+      class="footer"
+      v-if="!ruleShow"
+    >
       <el-button
         size="small"
         type="primary"
@@ -308,13 +327,15 @@
 // 引入组件
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
+import lotteryDrawRule from './lotteryDrawRule'
 import { addLotteryDraw, getLotteryDetail, updateLotteryDraw } from '@/api/admin/marketManage/lotteryDraw.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 export default {
   components: {
     addCouponDialog,
-    choosingGoods
+    choosingGoods,
+    lotteryDrawRule
   },
   props: ['isEdite', 'editId'],
   filters: {
@@ -352,7 +373,12 @@ export default {
         limitAmount: 5, // 最小成团人数
         toNumShow: 100, // 最小展示人数
         rewardCouponIds: [], // 拼团失败送优惠券id
-        goodsIds: [] // 参与活动的商品id
+        goodsIds: [], // 参与活动的商品id
+        // 规则说明
+        actCopywriting: {
+          document: '',
+          isUseDefault: 0
+        }
       },
       // 校验表单
       fromRules: {
@@ -393,7 +419,10 @@ export default {
 
       isShowChoosingGoodsDialog: false, // 商品弹窗
       isOnlyShowChooseGoods: false,
-      goodsRow: [] // 活动商品
+      goodsRow: [], // 活动商品
+
+      ruleShow: false, // 规则组件
+      sendMsg: null // 规则内容
 
     }
   },
@@ -450,7 +479,7 @@ export default {
       })
     },
 
-    // 保存秒杀活动
+    // 保存拼团抽奖活动
     saveClickHandler () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -542,6 +571,17 @@ export default {
     deleteGoods (index) {
       this.goodsRow.splice(index, 1)
       this.form.goodsIds.splice(index, 1)
+    },
+
+    // 设置规则说明
+    lotteryDrawRule () {
+      this.ruleShow = true
+      this.sendMsg = this.form.actCopywriting
+    },
+    // 规则说明回调函数
+    activityMsg (data) {
+      this.ruleShow = false
+      this.form.actCopywriting = data
     }
 
   }

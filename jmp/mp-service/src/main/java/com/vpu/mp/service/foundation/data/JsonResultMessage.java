@@ -45,6 +45,12 @@ public class JsonResultMessage {
     public static final String MSG_ACCOUNT_SHOPTYPE_REGISTERED = "account.shoptype.notNull";
     public static final String MSG_ACCOUNT_SYTEM_LOGIN_EXPIRED = "system.account.login.expired";
     public static final String MSG_CODE_ACCOUNT_ENNAME_ISNULL = "enanme.isnull";
+    public static final String MSG_ACCOUNT_MOBILE_LENGTH_LIMIT = "account.mobile.length.limit";
+    public static final String MSG_CODE_ACCOUNT_MOBILE_SAME = "account.or.mobile.same";
+    public static final String MSG_ACCOUNT_USERNAME_LENGTH_LIMIT = "account.username.length.limit";
+    public static final String MSG_CODE_ACCOUNT_ID_NOT = "account.id.not";
+	public static final String MSG_CODE_SHOP_EXPIRE = "code.shop.expire";
+
 
     // 图片
 
@@ -258,6 +264,8 @@ public class JsonResultMessage {
     public static final String GROUP_BUY_ACTIVITY_GROUP_JOINING="group.buy.activity.group.joining";
     public static final String GROUP_BUY_ACTIVITY_GROUP_STOCK_LIMIT="group.buy.activity.group.stock.limit";
     public static final String GROUP_BUY_ACTIVITY_GROUP_INVENTORY_FAILED="group.buy.activity.group.inventory.failed";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_SUCCESS="group.buy.activity.group.success";
+    public static final String GROUP_BUY_ACTIVITY_GROUP_CANCEL="group.buy.activity.group.cancel";
     /**
      * 营销-秒杀
      */
@@ -995,6 +1003,8 @@ public class JsonResultMessage {
     public static final String WX_MA_GROUP_DRAW_SHARE_DOC = "wx.ma.group.draw.share.doc";
     /**'1.00元大抽奖，快来参与吧'文字*/
     public static final String WX_MA_GROUP_DRAW_PICTORIAL_DOC = "wx.ma.group.draw.pictorial.doc";
+    /**首单特惠*/
+    public static final String WX_MA_FIRST_SPECIAL_INFO="wx.ma.first.special.info";
 
     /** 拼团相关 */
     /** 开团省 */

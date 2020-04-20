@@ -107,7 +107,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 已过期3
             case PURCHASE_EXPIRED:
-                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.END_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));
                 break;
             // 未开始2
             case PURCHASE_PREPARE:
@@ -115,7 +115,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 break;
             // 默认进行中1
             default:
-                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now())));
+                categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
                 break;
         }
         Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
@@ -151,6 +151,8 @@ public class IncreasePurchaseService extends ShopBaseService {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
+            vo.setCategory(param.getCategory());
+            vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
     }
@@ -167,7 +169,14 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     private Integer getResaleQuantity(Integer purchasePriceId) {
         Integer defaultValue = 0;
-        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE)).and(og.ACTIVITY_ID.eq(purchasePriceId)).and(og.ACTIVITY_RULE.greaterThan(0)).and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY)).and(oi.SHIPPING_TIME.isNotNull()).or(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED)).fetchOptionalInto(Integer.class).orElse(defaultValue);
+        return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
+            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
+            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .and(og.ACTIVITY_RULE.greaterThan(0))
+            .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
+            .and(oi.SHIPPING_TIME.isNotNull())
+            .and(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED))
+            .fetchOptionalInto(Integer.class).orElse(defaultValue);
     }
 
     /**
@@ -564,8 +573,11 @@ public class IncreasePurchaseService extends ShopBaseService {
 
         //用户的购物车
         WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
-        vo.setMainPrice(cartBo.getTotalPrice());
-        vo.setChangeDoc(getChangeGoodsDoc(cartBo.getTotalPrice(),ruleRecords));
+        BigDecimal totalPrice = cartBo.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
+        vo.setMainPrice(totalPrice);
+        vo.setChangeDoc(getChangeGoodsDoc(totalPrice,ruleRecords));
 
         //过滤掉用户不能买的专属商品
         List<Integer> inGoodsIds = Util.splitValueToList(purchasePriceDefineRecord.getGoodsId());
@@ -662,7 +674,21 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     public PurchaseChangeGoodsVo changePurchaseProductList(PurchaseChangeGoodsParam param,Integer userId){
         PurchaseChangeGoodsVo vo = new PurchaseChangeGoodsVo();
-        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+
+        WxAppCartBo cartBo = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS,param.getPurchasePriceId());
+        WxAppCartBo cartBoMainGoods = cartService.getCartList(userId,null, BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,param.getPurchasePriceId());
+        BigDecimal cartTotalPrice = cartBoMainGoods.getCartGoodsList().stream().map(
+            wxAppCartGoods -> wxAppCartGoods.getPrdPrice().multiply(BigDecimal.valueOf(wxAppCartGoods.getCartNumber()))
+        ).reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<Integer> cartPrdIds = new ArrayList<>();
+        Integer cartTotalGoodsNumber = 0;
+        if(CollectionUtils.isNotEmpty(cartBo.getCartGoodsList())){
+            for(WxAppCartGoods g:cartBo.getCartGoodsList()){
+                cartPrdIds.add(g.getProductId());
+                cartTotalGoodsNumber += g.getCartNumber();
+            }
+        }
+
         PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(param.getPurchasePriceId()));
 
         //用户不能买的专属商品
@@ -671,9 +697,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         List<PurchasePriceRuleRecord> ruleRecords = getRules(param.getPurchasePriceId());
         //输出商品列表
         List<PurchaseChangeGoodsVo.Goods> list = new ArrayList<>();
-        ruleRecords.forEach(rule->{
+        for(PurchasePriceRuleRecord rule : ruleRecords){
             Map<Integer, GoodsSpecProductRecord> prds = goodsService.goodsSpecProductService.goodsSpecProductByIds(Util.splitValueToList(rule.getProductId()));
-            prds.forEach((prdId,productRecord)->{
+            for(GoodsSpecProductRecord productRecord : prds.values()){
                 if(!userExclusiveGoodsIds.contains(productRecord.getGoodsId())){
                     PurchaseChangeGoodsVo.Goods goods = new PurchaseChangeGoodsVo.Goods();
                     GoodsRecord goodsView = goodsService.getGoodsRecordById(productRecord.getGoodsId());
@@ -686,7 +712,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                     goods.setMarketPrice(goodsView.getMarketPrice());
                     goods.setIsDelete(goodsView.getDelFlag());
                     goods.setIsOnSale(goodsView.getIsOnSale());
-                    goods.setPrdId(prdId);
+                    goods.setPrdId(productRecord.getPrdId());
                     goods.setPrdDesc(productRecord.getPrdDesc());
                     if(StringUtil.isNotBlank(productRecord.getPrdImg())){
                         goods.setPrdImg(domainConfig.imageUrl(productRecord.getPrdImg()));
@@ -695,23 +721,40 @@ public class IncreasePurchaseService extends ShopBaseService {
 
                     goods.setPrdPrice(rule.getPurchasePrice());
                     goods.setPurchaseRuleId(rule.getId());
-                    if(cartBo.getProductIdList().contains(prdId)){
+                    if(cartPrdIds.contains(productRecord.getPrdId())){
                         goods.setIsChecked((byte)1);
                     }
-                    if(rule.getFullPrice().compareTo(cartBo.getTotalPrice()) > 0){
+                    if(rule.getFullPrice().compareTo(cartTotalPrice) > 0){
                         goods.setTip((byte)0);
                         goods.setTipMoney(rule.getFullPrice());
+                    }else{
+                        goods.setTip((byte)1);
                     }
 
                     list.add(goods);
                 }
-            });
-        });
+            }
+        }
         vo.setList(list);
         vo.setMaxChangePurchase(purchasePriceDefineRecord.getMaxChangePurchase());
-        vo.setAlreadyChangeNum(cartBo.getTotalGoodsNum());
+        vo.setAlreadyChangeNum(cartTotalGoodsNumber);
 
         return vo;
+    }
+
+    public Result<PurchasePriceRuleRecord> getRules(List<Integer> ruleIds) {
+        return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
+    }
+
+    /**
+     * 换购商品运费策略
+     * @param ActId
+     * @return
+     */
+    public boolean isFreeShip(Integer ActId) {
+        //换购商品运费策略，0免运费，1使用原商品运费模板
+        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(ActId)).fetchOneInto(Byte.class);
+        return NumberUtils.BYTE_ZERO.equals(isFreeShip);
     }
 
 }

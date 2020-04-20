@@ -32,7 +32,7 @@ public class PayAwardRecordService  extends ShopBaseService {
      */
     public PageResult<PayAwardRecordListVo> getPayRewardRecordList(PayAwardRecordListParam param){
         SelectConditionStep<? extends Record> where = db().select(USER.USER_ID,USER.USERNAME,USER.MOBILE,
-                PAY_AWARD_RECORD.ORDER_SN,PAY_AWARD_RECORD.GIFT_TYPE,PAY_AWARD_RECORD.CREATE_TIME)
+                PAY_AWARD_RECORD.ORDER_SN,PAY_AWARD_RECORD.GIFT_TYPE,PAY_AWARD_RECORD.CREATE_TIME,PAY_AWARD_RECORD.STATUS)
                 .from(PAY_AWARD_RECORD)
                 .leftJoin(USER).on(USER.USER_ID.eq(PAY_AWARD_RECORD.USER_ID))
                 .where(PAY_AWARD_RECORD.AWARD_ID.eq(param.getId()));
@@ -122,6 +122,6 @@ public class PayAwardRecordService  extends ShopBaseService {
         return db().update(PAY_AWARD_PRIZE).set(PAY_AWARD_PRIZE.SEND_NUM,PAY_AWARD_PRIZE.SEND_NUM.add(1))
                 .where(PAY_AWARD_PRIZE.PAY_AWARD_ID.eq(payAwardId))
                 .and(PAY_AWARD_PRIZE.ID.eq(prizeId))
-                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER)).execute();
+                .and(PAY_AWARD_PRIZE.SEND_NUM.lt(PAY_AWARD_PRIZE.AWARD_NUMBER).or(PAY_AWARD_PRIZE.AWARD_NUMBER.eq(0))).execute();
     }
 }

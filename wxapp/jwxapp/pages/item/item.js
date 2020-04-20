@@ -592,7 +592,7 @@ global.wxPage({
       1:'/api/wxapp/groupbuy/share/info',//拼团 
       3:'/api/wxapp/bargain/share/info', //砍价
       6:'/api/wxapp/reduceprice/share/info', //限时降价
-      8:'url:/api/wxapp/groupdraw/share/info', //拼团抽奖
+      8:'/api/wxapp/groupdraw/share/info', //拼团抽奖
       10:'/api/wxapp/presale/share/info', //定金膨胀
       18:'/api/wxapp/firstspecial/share/info', //首单特惠
       98:'/api/wxapp/reduceprice/share/info', //限时降价|会员价
@@ -796,7 +796,7 @@ global.wxPage({
         break
 
       case 8:
-        util.jumpToWeb('/wxapp/pinlottery/help')
+        util.jumpToWeb('/wxapp/pinlottery/help', '&gid=' + this.data.specParams.activity.activityId)
         break
     }
   },

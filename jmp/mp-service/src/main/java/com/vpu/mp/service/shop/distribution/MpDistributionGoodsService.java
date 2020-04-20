@@ -135,7 +135,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
              levelInfo = record.into(DistributorLevelVo.class);
         }
 
-        if(levelInfo == null && levelInfo.getLevelStatus() != 1){
+        if(levelInfo != null && levelInfo.getLevelStatus() != 1){
             //return 该分销员等级未开启
         }
 

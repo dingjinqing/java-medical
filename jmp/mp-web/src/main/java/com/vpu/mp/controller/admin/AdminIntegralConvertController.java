@@ -39,6 +39,16 @@ public class AdminIntegralConvertController extends AdminBaseController{
         PageResult<PopListVo> result = shop().integralConvertService.getPopList(param);
         return success(result);
     }
+    /**
+     * 更新已装修的积分兑换活动
+     * @param param 已装修的积分兑换活动id集合
+     * @return 活动商品信息
+     */
+    @PostMapping("/update/goods")
+    public JsonResult updateGoodsInfo(@RequestBody PopListParam param){
+        List<PopListVo> result = shop().integralConvertService.updateActInfo(param);
+        return success(result);
+    }
 	/**
 	 * 查询积分兑换活动分页列表
 	 *

@@ -44,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.PAY_AWARD_RECORD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_TYPE_PAY_AWARD;
-import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_SECTION;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
 import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
@@ -335,10 +334,11 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             logger().info("礼物数量校验");
             PayAwardPrizeRecord awardInfo = payAwardRecordService.getAwardInfo(payAward.getId(), payAwardContentBo.getId());
             boolean canSendAwardFlag =true;
-            if (awardInfo!=null&&awardInfo.getSendNum()<awardInfo.getAwardNumber()){
+            if (awardInfo!=null&&(awardInfo.getAwardNumber().equals(0)||awardInfo.getSendNum()<awardInfo.getAwardNumber())){
                 int i = payAwardRecordService.updateAwardStock(payAward.getId(), payAwardContentBo.getId());
                 if (i<1){
                     canSendAwardFlag =false;
+                    logger().info("礼物已发完");
                 }
             }else {
                 canSendAwardFlag =false;
@@ -361,6 +361,13 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             }
         } catch (Exception e) {
             logger().error("支付有礼活动异常");
+            //获取进行中的活动
+            PayAwardVo payAward = payAwardService.getGoingPayAward(param.getDate());
+            if (payAward == null) {
+                logger().info("支付有礼活动为空!");
+                return;
+            }
+            jedisManager.delete(REDIS_PAY_AWARD_JOIN_COUNT +payAward.getId() +":"+order.getUserId());
             e.printStackTrace();
 
         }

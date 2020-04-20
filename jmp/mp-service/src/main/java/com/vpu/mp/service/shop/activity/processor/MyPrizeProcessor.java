@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.activity.processor;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -61,6 +62,7 @@ public class MyPrizeProcessor extends ShopBaseService implements Processor, Crea
         //不使用优惠券和会员卡
         param.setMemberCardNo(StringUtils.EMPTY);
         param.setCouponSn(StringUtils.EMPTY);
+        param.setIsFreeShippingAct(YES);
         PrizeRecordRecord prizeRecord = prizeRecordService.getById(param.getActivityId());
         if (prizeRecord.getPrizeStatus().equals(PRIZE_STATUS_RECEIVED)) {
             logger().info("奖品已经领取过了");
