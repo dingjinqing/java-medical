@@ -136,9 +136,10 @@
               class="new_order"
               v-for="(item, index) in checkList"
               :key="index"
-              v-if="item.isCheck === true"
+              :style="item.isCheck?'':'display:none'"
             >
               <a
+                v-if="item.isCheck"
                 href="javascript: void(0);"
                 @click="item.link ? jumpHandler(item.link) : selectHandler(item.value)"
               >
@@ -847,7 +848,7 @@
             <a href="javascript:void(0);">
               <img
                 :src="image + '/image/admin/new_ov/calendar_icon.png'"
-                alt=""
+                @click="handleToClickCalender()"
               >
             </a>
           </div>
@@ -1162,6 +1163,12 @@ export default {
     }
   },
   methods: {
+    // 点击日历右上角icon
+    handleToClickCalender () {
+      this.$router.push({
+        name: 'calendar'
+      })
+    },
     // 获取全部数据
     getAllOverview () {
       let obj = {
