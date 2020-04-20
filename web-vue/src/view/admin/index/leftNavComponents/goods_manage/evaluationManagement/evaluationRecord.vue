@@ -341,7 +341,7 @@
               ></span>
             </el-tooltip>
             <el-tooltip
-              :content="置顶"
+              :content="$t('evaluation.top')"
               placement="top"
               v-if="scope.row.isTop === 0"
             >
@@ -351,7 +351,7 @@
               ></span>
             </el-tooltip>
             <el-tooltip
-              :content="取消"
+              :content="$t('evaluation.down')"
               placement="top"
               v-if="scope.row.isTop === 1"
             >
