@@ -242,8 +242,6 @@ public class CardCreateService extends ShopBaseService{
 			initDiscountPartGoods(param, cardBuilder);
 		}
 		
-		// 3. 不可与优惠券公用
-		cardBuilder.cannotUseCoupon(param.getCannotUseCoupon());
 		//	初始化不可与折扣公用的营销活动
 		initDiscountMarketActivity(param, cardBuilder);
 	
