@@ -377,6 +377,25 @@ ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会
 ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
 /*********************2.11*************************END*/
 
+/*********************2.12*************************START*/
+-- 营销日历表
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `calendar_id` int(8) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
+  `sys_cal_act_id` int(8) NOT NULL DEFAULT '0' COMMENT '来源营销日历Id',
+  `activity_type` varchar(16)   NOT NULL DEFAULT '0' COMMENT '具体营销活动类型',
+  `activity_id` int(8) NOT NULL DEFAULT '0' COMMENT '具体营销活动Id',
+  `recommend_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '推荐类型：0站内文本，1外部链接',
+  `recommend_link` varchar(100)   NOT NULL DEFAULT '' COMMENT '推荐链接',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_sync` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据是否已同步到system：目前只同步是否使用的数量',
+  `recommend_title` varchar(32)   NOT NULL DEFAULT '' COMMENT '推荐标题',
+  PRIMARY KEY (`id`),
+  KEY `calendar_id` (`calendar_id`),
+  KEY `sys_cal_act_id` (`sys_cal_act_id`)
+);
 
-
+/*********************2.12*************************END*/
 

@@ -271,6 +271,7 @@ public class Keys {
     public static final Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Identities0.IDENTITY_LIVE_BROADCAST;
     public static final Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Identities0.IDENTITY_CARD_RENEW;
     public static final Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Identities0.IDENTITY_GIVE_CARD_RECORD;
+    public static final Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Identities0.IDENTITY_MARKET_CALENDAR_ACTIVITY;
     
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -529,6 +530,7 @@ public class Keys {
     public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = UniqueKeys0.KEY_B2C_LIVE_BROADCAST_ROOM_ID;
     public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = UniqueKeys0.KEY_B2C_CARD_RENEW_PRIMARY;
     public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_CARD_RECORD_PRIMARY;
+    public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -766,6 +768,7 @@ public class Keys {
         public static Identity<LiveBroadcastRecord, Integer> IDENTITY_LIVE_BROADCAST = Internal.createIdentity(LiveBroadcast.LIVE_BROADCAST, LiveBroadcast.LIVE_BROADCAST.ID);
         public static Identity<CardRenewRecord, Integer> IDENTITY_CARD_RENEW = Internal.createIdentity(CardRenew.CARD_RENEW, CardRenew.CARD_RENEW.ID);
         public static Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Internal.createIdentity(GiveCardRecord.GIVE_CARD_RECORD, GiveCardRecord.GIVE_CARD_RECORD.ID);
+        public static Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Internal.createIdentity(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1029,5 +1032,6 @@ public class Keys {
         public static final UniqueKey<LiveBroadcastRecord> KEY_B2C_LIVE_BROADCAST_ROOM_ID = Internal.createUniqueKey(LiveBroadcast.LIVE_BROADCAST, "KEY_b2c_live_broadcast_room_id", LiveBroadcast.LIVE_BROADCAST.ROOM_ID);
         public static final UniqueKey<CardRenewRecord> KEY_B2C_CARD_RENEW_PRIMARY = Internal.createUniqueKey(CardRenew.CARD_RENEW, "KEY_b2c_card_renew_PRIMARY", CardRenew.CARD_RENEW.ID);
         public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = Internal.createUniqueKey(GiveCardRecord.GIVE_CARD_RECORD, "KEY_b2c_give_card_record_PRIMARY", GiveCardRecord.GIVE_CARD_RECORD.ID);
+        public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
     }
 }
