@@ -16,16 +16,16 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    unusedNum:0, // 未使用个数
+    unusedNum: 0, // 未使用个数
     usedNum: 0, // 已使用个数
-    expiredNum:0, // 已过期个数
+    expiredNum: 0, // 已过期个数
     this_type: 0, // 状态
-    allCoupon:[], // 列表数据
+    allCoupon: [], // 列表数据
     page: 1,
     lastPage: 1,
     pageRows: 20,
   },
- 
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -37,7 +37,7 @@ global.wxPage({
   /**
    * 优惠券列表
    */
-  dataList: function (){
+  dataList: function () {
     var that = this;
     wx.showLoading({
       title: '加载中···',
@@ -52,7 +52,7 @@ global.wxPage({
           usedNum: res.content.usedNum,
           expiredNum: res.content.expiredNum,
           allCoupon: res.content.couponList.dataList
-        }) 
+        })
         // 格式化时间
         if (that.data.allCoupon.length > 0) {
           that.data.allCoupon.forEach(function (item) {
@@ -68,14 +68,14 @@ global.wxPage({
 
         that.setData({
           allCoupon: that.data.allCoupon
-        }) 
+        })
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
         }, false);
         return false;
       }
-    }, { 
+    }, {
       nav: that.data.this_type,
       currentPage: that.data.page,
       pageRows: that.data.pageRows
@@ -144,9 +144,9 @@ global.wxPage({
         return false;
       }
     }, {
-        nav: that.data.this_type,
-        currentPage: that.data.page,
-        pageRows: that.data.pageRows
+      nav: that.data.this_type,
+      currentPage: that.data.page,
+      pageRows: that.data.pageRows
     });
   },
 
@@ -279,12 +279,12 @@ global.wxPage({
     if (name == 'can') {
       that.setData({
         this_type: 0,
-      }) 
+      })
     }
     if (name == 'used') {
       that.setData({
-        this_type:1,
-      }) 
+        this_type: 1,
+      })
     }
     if (name == 'time') {
       that.setData({
@@ -300,7 +300,7 @@ global.wxPage({
   /**
    * 优惠券详情
    */
-  couponDetail:function(opt){
+  couponDetail: function (opt) {
     var couponSn = opt.currentTarget.dataset.couponsn;
     util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type);
   },
@@ -309,8 +309,8 @@ global.wxPage({
    * 券购搜素
    */
   to_search: function (opt) {
-    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var couponSn = opt.currentTarget.dataset.coupon_sn;
+    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
   },
 
   /**
