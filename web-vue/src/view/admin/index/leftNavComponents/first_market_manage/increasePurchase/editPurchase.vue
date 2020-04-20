@@ -63,6 +63,7 @@
             :start-placeholder="$t('purchase.startdate')"
             :end-placeholder="$t('purchase.enddate')"
             :default-time="['00:00:00','23:59:59']"
+            disabled
           >
           </el-date-picker>
         </el-form-item>
@@ -70,11 +71,15 @@
           <el-input
             v-model.number="form1.maxChangePurchase"
             class="input"
+            disabled
           ></el-input>
           <span class="span">{{$t('purchase.content2')}}</span>
         </el-form-item>
         <el-form-item :label="$t('purchase.redemptionGoodsFeright')+'：'">
-          <el-radio-group v-model.number="form1.redemptionFreight">
+          <el-radio-group
+            v-model.number="form1.redemptionFreight"
+            disabled
+          >
             <el-radio :label=0>{{$t('purchase.free')}}</el-radio>
             <el-radio :label=1>{{$t('purchase.noFree')}}</el-radio>
           </el-radio-group>
@@ -93,15 +98,17 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule1.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule1.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-button
               type="primary"
               size="small"
               style="margin-left:5px"
-              v-if="rule_button1"
+              v-if="rule_button1 && !queryParam.purchaseId"
               @click="ruleButton1"
             >+{{$t('purchase.addRule')}}</el-button>
           </el-form-item>
@@ -113,21 +120,24 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule2.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule2.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-button
               type="primary"
               size="small"
               style="margin-left:5px"
-              v-if="rule_button2"
+              v-if="rule_button2 && !queryParam.purchaseId"
               @click="ruleButton2"
             >+{{$t('purchase.addRule')}}</el-button>
             <el-link
               type="primary"
               style="margin-left:5px"
               @click="ruleDelete2"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.deleteRule')}}</el-link>
           </el-form-item>
           <el-form-item
@@ -138,13 +148,16 @@
             {{$t('purchase.mainFull')}}<el-input
               class="input1"
               v-model.number="purcahse_rule3.fullPrice"
+              disabled
             ></el-input>{{$t('purchase.add')}}<el-input
               class="input1"
               v-model.number="purcahse_rule3.purchasePrice"
+              disabled
             ></el-input>{{$t('purchase.redemp')}}
             <el-link
               type="primary"
               style="margin-left:5px"
+              v-if="!queryParam.purchaseId"
               @click="ruleDelete3"
             >{{$t('purchase.deleteRule')}}</el-link>
           </el-form-item>
@@ -168,6 +181,7 @@
           type="primary"
           size="small"
           @click="showChoosingGoods"
+          v-if="!queryParam.purchaseId"
         >{{$t('purchase.chooseGoods')}}</el-button>
         <!--选择商品弹窗-->
         <ChoosingGoods
@@ -201,7 +215,10 @@
             :label="$t('purchase.goodsSupply')"
           >
           </el-table-column>
-          <el-table-column :label="$t('purchase.opration')">
+          <el-table-column
+            :label="$t('purchase.opration')"
+            v-if="!queryParam.purchaseId"
+          >
             <template slot-scope="{ row }">
               <el-link
                 type="primary"
@@ -240,6 +257,7 @@
               type="primary"
               size="small"
               @click="showChoosingGoods1"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -273,7 +291,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
