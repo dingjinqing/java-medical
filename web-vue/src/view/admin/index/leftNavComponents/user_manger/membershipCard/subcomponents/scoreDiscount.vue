@@ -35,7 +35,7 @@
 
          <table>
             <tr><td id="left-col">折扣叠加：</td><td id="right-col">不可与营销活动共用</td></tr>
-            <tr><td></td><td>可选择会员卡折扣不与哪些营销活动共用</td></tr>
+            <tr><td></td><td class="tip">可选择会员卡折扣不与哪些营销活动共用</td></tr>
             <tr><td></td><td>
               <el-checkbox-group v-model="marketActivities">
                 <el-checkbox label="COUPON">优惠券</el-checkbox>
@@ -360,6 +360,9 @@ export default {
         padding-left: 5px;
       }
     }
+  }
+  .tip{
+    color: #999;
   }
   .discountItem {
     padding-left: 100px;
