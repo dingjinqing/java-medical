@@ -214,6 +214,7 @@ public class EsBaseSearchService extends ShopBaseService {
         SearchSourceBuilder sourceBuilder;
 
         PageResult<EsGoods> result = new PageResult<>();
+
         //isQueryByPage == false代表ES搜索不需要进行分页
         if( !param.isQueryByPage() ){
             Page esPage = Page.getPage(1,1,1);
