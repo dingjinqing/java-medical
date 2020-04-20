@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
@@ -54,6 +55,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
@@ -235,19 +237,33 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
         Integer[] goodsIdArray = stringArray2Int(goodsId.split(","));
-        vo.setMainGoods(db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        vo.setMainGoods(db().selectFrom(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        vo.getMainGoods().forEach(g->{
+            if(StringUtil.isNotBlank(g.getGoodsImg())){
+                g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+            }
+        });
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
-        List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
+        List<ProductSmallInfoVo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
             Integer[] array = stringArray2Int(s.split(","));
-            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
+            List<ProductSmallInfoVo> redemptionGoodsList =
+                db().select(g.GOODS_ID,g.GOODS_IMG,g.GOODS_NAME,g.SHOP_PRICE,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC)
+                .from(GOODS_SPEC_PRODUCT).innerJoin(g).on(g.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.in(array)).fetchInto(ProductSmallInfoVo.class);
+            redemptionGoodsList.forEach(g->{
+                if(StringUtil.isNotBlank(g.getGoodsImg())){
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            });
+            redemptionresult[integer++] = redemptionGoodsList;
         }
         vo.setRedemptionGoods(redemptionresult);
         return vo;

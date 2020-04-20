@@ -37,12 +37,6 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    // if (options.launch_user_id && options.launch_user_id != "") {
-    //   launch_user_id = options.launch_user_id
-    // } else {
-    //   // launch_user_id = ''
-    //   launch_user_id = util.getCache('user_id');
-    // }
     launch_user_id = util.getCache('user_id');
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
@@ -56,13 +50,13 @@ global.wxPage({
   },
   // 商品详情
   to_goods: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
-    util.jumpLink("/pages/item/item?gid=" + goods_id);
+    var goodsId = e.currentTarget.dataset.goods_id;
+    util.jumpLink("/pages/item/item?gid=" + goodsId);
   },
   // 券购搜索
   to_cou_search: function (e) {
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
   // 好友助力列表
   to_list: function () {
@@ -196,35 +190,6 @@ global.wxPage({
             cant_promote: cant_promote
           })
         }
-
-        // var add_promote_value = res.content.promoteValue; // 助力值
-        // var modal_can_share = res.content.canShare; // 能否再分享
-        // var cant_promote = res.content.cantPromote; // 助力失败原因
-        // if (promote_info.canPromote == null && promote_info.canShare == null) {
-        //   if (cant_promote == 0) {
-        //     cant_promote = '该助力申请未发起'
-        //   } else if (cant_promote == 1) {
-        //     cant_promote = '助力已完成，不再需要助力'
-        //   } else if (cant_promote == 2) {
-        //     cant_promote = '今天的助力次数已经用完了'
-        //   } else if (cant_promote == 3) {
-        //     cant_promote = '助力次数已用完'
-        //   }
-        //   that.setData({
-        //     promote_fail: 1,
-        //     is_shares: 0,
-        //     cant_promote: cant_promote,
-        //     add_promote_value: add_promote_value,
-        //     modal_can_share: modal_can_share
-        //   })
-        // } else {
-        //   that.setData({
-        //     promote_ok: 1,
-        //     add_promote_value: add_promote_value,
-        //     modal_can_share: modal_can_share
-        //   })
-        // }
-
       } else {
         util.showModal('提示', res.message);
         return false
@@ -363,34 +328,7 @@ global.wxPage({
 
     }
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
+  
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
@@ -403,13 +341,6 @@ global.wxPage({
     wx.hideNavigationBarLoading();
     // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
     wx.stopPullDownRefresh();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
   },
 
   /**

@@ -370,57 +370,59 @@ public class PayAwardService extends ShopBaseService {
         PayAwardPrizeVo prizeVo = new PayAwardPrizeVo();
         prizeVo.setGiftType(payAwardRecord.getGiftType());
         prizeVo.setStatus(payAwardRecord.getStatus());
-        switch (payAwardRecord.getGiftType()) {
-            case GIVE_TYPE_NO_PRIZE:
-                logger().info("无奖励");
-                break;
-            case GIVE_TYPE_ORDINARY_COUPON:
-                logger().info("优惠卷");
-            case GIVE_TYPE_SPLIT_COUPON:
-                logger().info("分裂优惠卷");
-                //已发的优惠卷
-                List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
-                if (couponViews.size() > 0) {
-                    prizeVo.setCouponView(couponViews);
-                }
-                break;
-            case GIVE_TYPE_LOTTERY:
-                logger().info("幸运大抽奖");
-                prizeVo.setLotteryId(Integer.parseInt(payAwardRecord.getAwardData()));
-                break;
-            case GIVE_TYPE_BALANCE:
-                logger().info("余额");
-                prizeVo.setAccount(new BigDecimal(payAwardRecord.getSendData()));
-                break;
-            case GIVE_TYPE_GOODS:
-                logger().info("奖品");
-                PrizeRecordRecord prizeRecordRecord = prizeRecordService.getById(Integer.valueOf(payAwardRecord.getSendData()));
-                ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(prizeRecordRecord.getPrdId());
+        if (!prizeVo.getStatus().equals(PAY_AWARD_GIVE_STATUS_NO_STOCK)){
+            switch (payAwardRecord.getGiftType()) {
+                case GIVE_TYPE_NO_PRIZE:
+                    logger().info("无奖励");
+                    break;
+                case GIVE_TYPE_ORDINARY_COUPON:
+                    logger().info("优惠卷");
+                case GIVE_TYPE_SPLIT_COUPON:
+                    logger().info("分裂优惠卷");
+                    //已发的优惠卷
+                    List<CouponView> couponViews = couponService.getCouponViewByIds(Util.stringToList(payAwardRecord.getSendData()));
+                    if (couponViews.size() > 0) {
+                        prizeVo.setCouponView(couponViews);
+                    }
+                    break;
+                case GIVE_TYPE_LOTTERY:
+                    logger().info("幸运大抽奖");
+                    prizeVo.setLotteryId(Integer.parseInt(payAwardRecord.getAwardData()));
+                    break;
+                case GIVE_TYPE_BALANCE:
+                    logger().info("余额");
+                    prizeVo.setAccount(new BigDecimal(payAwardRecord.getSendData()));
+                    break;
+                case GIVE_TYPE_GOODS:
+                    logger().info("奖品");
+                    PrizeRecordRecord prizeRecordRecord = prizeRecordService.getById(Integer.valueOf(payAwardRecord.getSendData()));
+                    ProductSmallInfoVo product = goodsService.getProductVoInfoByProductId(prizeRecordRecord.getPrdId());
 //                try {
 //                    atomicOperation.updateStockAndSalesByLock(product.getGoodsId(), prizeRecordRecord.getPrdId(), 1, true);
 //                } catch (MpException e) {
 //                    e.printStackTrace();
 //                    logger().error("奖品扣库存失败");
 //                }
-                product.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
-                prizeVo.setProduct(product);
-                prizeVo.setProductId(Integer.parseInt(payAwardRecord.getAwardData()));
-                prizeVo.setKeepDays(payAwardRecord.getKeepDays());
-                prizeVo.setPrizeId(Integer.parseInt(payAwardRecord.getSendData()));
-                break;
-            case GIVE_TYPE_SCORE:
-                logger().info("积分");
-                prizeVo.setScoreNumber(Integer.parseInt(payAwardRecord.getAwardData()));
-                break;
-            case GIVE_TYPE_CUSTOM:
-                logger().info("自定义");
-                PayAwardContentBo payAwardContentBo = Util.parseJson(payAwardRecord.getAwardData(), PayAwardContentBo.class);
-                if (payAwardContentBo != null) {
-                    prizeVo.setCustomImage(payAwardContentBo.getCustomImage());
-                    prizeVo.setCustomLink(payAwardContentBo.getCustomLink());
-                }
-                break;
-            default:
+                    product.setGoodsImg(domainConfig.imageUrl(product.getGoodsImg()));
+                    prizeVo.setProduct(product);
+                    prizeVo.setProductId(Integer.parseInt(payAwardRecord.getAwardData()));
+                    prizeVo.setKeepDays(payAwardRecord.getKeepDays());
+                    prizeVo.setPrizeId(Integer.parseInt(payAwardRecord.getSendData()));
+                    break;
+                case GIVE_TYPE_SCORE:
+                    logger().info("积分");
+                    prizeVo.setScoreNumber(Integer.parseInt(payAwardRecord.getAwardData()));
+                    break;
+                case GIVE_TYPE_CUSTOM:
+                    logger().info("自定义");
+                    PayAwardContentBo payAwardContentBo = Util.parseJson(payAwardRecord.getAwardData(), PayAwardContentBo.class);
+                    if (payAwardContentBo != null) {
+                        prizeVo.setCustomImage(payAwardContentBo.getCustomImage());
+                        prizeVo.setCustomLink(payAwardContentBo.getCustomLink());
+                    }
+                    break;
+                default:
+            }
         }
         String payAwardMessage = getPayAwardMessage(payAward, payAwardPrizeRecords, payAwardRecord, lang);
         PayAwardOrderVo payAwardOrderVo = new PayAwardOrderVo();
