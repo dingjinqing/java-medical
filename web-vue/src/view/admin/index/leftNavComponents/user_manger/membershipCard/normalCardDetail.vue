@@ -515,6 +515,12 @@ export default {
           cardTagId: data.cardTag.cardTags
         }
       }
+
+      // 不折扣公用营销活动
+      if (data.marketActivities) {
+        this.marketActivities = data.marketActivities
+      }
+      console.log(this.marketActivities)
     },
 
     isValidValue (data) {
@@ -677,7 +683,8 @@ export default {
         'freeship': this.freeship,
         'cardRenew': this.cardRenew,
         'customRights': this.customRights,
-        'cardTag': this.cardTag
+        'cardTag': this.cardTag,
+        'marketActivities': this.marketActivities
       }
       if (this.cardId) {
         // 更新会员卡

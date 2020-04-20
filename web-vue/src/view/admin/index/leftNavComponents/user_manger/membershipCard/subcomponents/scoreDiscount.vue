@@ -148,6 +148,9 @@ export default {
     }
   },
   watch: {
+    marketActivities (val) {
+      this.tmpact = val
+    },
     'val': {
       handler (newName, oldName) {
         console.log(newName)
@@ -234,7 +237,7 @@ export default {
         ]
       },
       isOnlyShowChooseGoods: false,
-      tmpact: this.marketActivities
+      tmpact: null
 
     }
   },
