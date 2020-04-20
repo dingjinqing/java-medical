@@ -71,6 +71,7 @@ public class UserTagService extends ShopBaseService{
 	 * @param userId
 	 * @param tagIdList 标签IDs
 	 * @param source 0后台设置 1优惠券 2会员卡
+	 * @param activitiId 活动Id
 	 */
 	public void addActivityTag(Integer userId,List<Integer> tagIdList,Short source,Integer activitiId) {
 		logger().info("给用户打标签");

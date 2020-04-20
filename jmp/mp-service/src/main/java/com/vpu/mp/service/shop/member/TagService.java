@@ -37,7 +37,7 @@ import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 public class TagService extends ShopBaseService {
 	final static Byte DELETE_NO = 0;
 	@Autowired private TagDao tagDao;
-	@Autowired private UserTagService userTagSvc;
+	@Autowired public UserTagService userTagSvc;
 
 	public PageResult<TagInfoVo> getPageList(TagPageListParam param) {
 

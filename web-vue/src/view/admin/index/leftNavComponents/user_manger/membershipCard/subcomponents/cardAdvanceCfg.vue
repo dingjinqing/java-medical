@@ -68,7 +68,7 @@ export default {
     }
   },
   components: {
-    userTag: () => import('./dialog/CardUserTagSet')
+    userTag: () => import('@/components/admin/chooseSelect/userTagSet.vue')
   },
   computed: {
     isLimitCard () {
