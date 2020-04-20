@@ -397,5 +397,10 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
   KEY `sys_cal_act_id` (`sys_cal_act_id`)
 );
 
+
+-- 2020年04月20日 会员卡添加折扣不予营销活动公用
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_action` varchar(10) DEFAULT NULL COMMENT '不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠';
+
+
 /*********************2.12*************************END*/
 
