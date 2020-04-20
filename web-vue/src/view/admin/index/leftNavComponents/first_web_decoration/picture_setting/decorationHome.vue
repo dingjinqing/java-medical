@@ -1338,20 +1338,7 @@ export default {
         })
         return
       }
-      // 积分兑换模块数量限制
-      let integralNum = 0
-      saveMosulesData.forEach((item, index) => {
-        if (item.module_name === 'm_integral') {
-          integralNum++
-        }
-      })
-      if (integralNum > 6) {
-        this.$message.error({
-          message: '积分兑换模块最多上传6个',
-          showClose: true
-        })
-        return
-      }
+
       if (flag === 0) {
         console.log(this.modulesData)
         this.saveTwoDialogVisible = true
