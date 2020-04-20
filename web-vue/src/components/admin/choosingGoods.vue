@@ -21,11 +21,11 @@
             class="chooseCondiction"
           >
             <!--<sortCatTreeSelect-->
-              <!--ref="catTree"-->
-              <!--:filterGoodsInfo="initSortCatParams"-->
-              <!--treeType="cat"-->
-              <!--:treeStyle="initPlateformWidth"-->
-              <!--:selectedId.sync="requestParam.catId"-->
+            <!--ref="catTree"-->
+            <!--:filterGoodsInfo="initSortCatParams"-->
+            <!--treeType="cat"-->
+            <!--:treeStyle="initPlateformWidth"-->
+            <!--:selectedId.sync="requestParam.catId"-->
             <!--/>-->
             <div style="margin-right: 30px;">
               <sortCatTreeSelect
@@ -100,6 +100,27 @@
                   :value="item.id"
                 >
                 </el-option>
+              </el-select>
+            </li>
+            <li v-if="upperlowershelves">
+              <label>上下架：</label>
+              <el-select
+                size="small"
+                style="width:140px"
+                v-model="requestParam.upperlowershelves"
+              >
+                <el-option
+                  label="请选择上下架"
+                  value=""
+                ></el-option>
+                <el-option
+                  label="上架"
+                  value="1"
+                ></el-option>
+                <el-option
+                  label="下架"
+                  value="0"
+                ></el-option>
               </el-select>
             </li>
           </ul>
@@ -180,7 +201,7 @@
                   <span v-if="loadProduct">{{item.prdNumber}}</span>
                 </td>
                 <!--<td class="tb_decorate_a">-->
-                  <!--{{item.catName}}-->
+                <!--{{item.catName}}-->
                 <!--</td>-->
                 <td class="tb_decorate_a">
                   {{item.sortName}}
@@ -300,6 +321,11 @@ export default {
     initialConditionRender: {
       type: Array,
       default: () => []
+    },
+    // 是否筛选上下架
+    upperlowershelves: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -341,7 +367,8 @@ export default {
         highShopPrice: null,
         goodsName: null,
         goodsSn: null,
-        brandId: null
+        brandId: null,
+        upperlowershelves: ''
       },
       showItem: {
         sortId: true,

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGivePopVo;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardTag;
 
 import lombok.Getter;
@@ -106,6 +107,12 @@ public class NormalCardToVo extends NormalCardVo {
 	 */
 	@JsonProperty("cardTag")
 	private CardTag myCardTag;
+	
+	/**
+	 *	不可与优惠券公用的营销活动
+	 */
+	List<CardMarketActivity> marketActivities;
+	
 	/**
 	 * 处理策略
 	 */
