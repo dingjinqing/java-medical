@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.member.card.CardIdParam;
 import com.vpu.mp.service.pojo.shop.member.card.LimitNumCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.NormalCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
@@ -112,9 +114,14 @@ public class CardDetailService extends ShopBaseService{
 		normalCard.setCustomAction(getCustomAction(card));
 		// 用户标签
 		normalCard.setMyCardTag(getCardTag(card));
+		//	不可与折扣公用的营销活动
+		normalCard.setMarketActivities(getMarketActivities(card));
 		return normalCard;
 	}
 	
+
+
+
 	private LimitNumCardToVo changeToLimitCardDetail(MemberCardRecord card) {
 		logger().info("正在获取限次会员卡");
 		LimitNumCardToVo limitCard = card.into(LimitNumCardToVo.class);
@@ -320,7 +327,6 @@ public class CardDetailService extends ShopBaseService{
 	
 	private void assignCardStoreIdAndName(BaseCardVo card) {
 		List<StoreBasicVo> allStore = storeService.getAllStore();
-		
 		if(allStore!=null) {
 			for(Iterator<StoreBasicVo> it = allStore.iterator();it.hasNext();) {
 				StoreBasicVo vo = it.next();
@@ -370,6 +376,30 @@ public class CardDetailService extends ShopBaseService{
 	private <T> boolean isListAvailable(List<T> list) {
 		return list != null && list.size() > 0;
 	}
-
 	
+	/**
+	 * 获取会员卡不可与折扣公用的营销活动
+	 * @param card
+	 * @return List<CardMarketActivity> 不可与优惠券公用的营销活动  不会为null 没有数据会返回空数组 []
+	 */
+	private List<CardMarketActivity> getMarketActivities(MemberCardRecord card) {
+		logger().info("获取会员卡不可与折扣公用的营销活动");
+		List<CardMarketActivity> res = new ArrayList<>();
+		if(card.getDiscount()==null) {
+			return res;
+		}else {
+			//	优惠券营销活动
+			if(NumberUtils.BYTE_ONE.equals(card.getCannotUseCoupon())) {
+				res.add(CardMarketActivity.COUPON);
+			}
+			//	其他营销活动
+			 List<Integer> ids = Util.stringToList(card.getCannotUseAction());
+			 if(ids.size()>0) {
+				 for(Integer id: ids) {
+					 res.add(CardMarketActivity.values()[id]);
+				 }
+			 }
+			 return res;
+		}
+	}
 }
