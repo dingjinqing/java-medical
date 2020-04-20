@@ -310,12 +310,12 @@ public class GroupBuyListService extends ShopBaseService {
                 logger().debug("你已参加过该团[activityId:{}]",activityId);
                 return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
             }
-        }
-        GroupBuyListRecord grouperInfo = getGrouperByGroupId(groupId);
-        if (STATUS_SUCCESS.equals(grouperInfo.getStatus())|| STATUS_DEFAULT_SUCCESS.equals(grouperInfo.getStatus())){
-            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_SUCCESS).build();
-        }else if (grouperInfo.getStatus().equals(STATUS_FAILED)){
-            return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
+            GroupBuyListRecord grouperInfo = getGrouperByGroupId(groupId);
+            if (STATUS_SUCCESS.equals(grouperInfo.getStatus())|| STATUS_DEFAULT_SUCCESS.equals(grouperInfo.getStatus())){
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_SUCCESS).build();
+            }else if (grouperInfo.getStatus().equals(STATUS_FAILED)){
+                return ResultMessage.builder().jsonResultCode(JsonResultCode.GROUP_BUY_ACTIVITY_GROUP_JOINING).build();
+            }
         }
         return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_SUCCESS).flag(true).build();
     }
