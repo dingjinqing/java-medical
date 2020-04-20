@@ -3,22 +3,23 @@
     <wrapper>
       <!-- 查询条件 -->
       <el-form
-        label-width="100px"
+        label-width="110px"
         :inline="true"
+        size="small"
       >
-        <el-form-item :label="$t('marketCommon.goodsName')">
+        <el-form-item :label="$t('marketCommon.goodsName')+'：'">
           <el-input
             v-model="param.goodsName"
             :placeholder="$t('marketCommon.goodsName')"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('marketCommon.orderSn')">
+        <el-form-item :label="$t('marketCommon.orderSn')+'：'">
           <el-input
             v-model="param.orderSn"
             :placeholder="$t('marketCommon.orderSn')"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('marketCommon.orderStatus')">
+        <el-form-item :label="$t('marketCommon.orderStatus')+'：'">
           <el-select
             v-model="param.orderStatus[0]"
             :placeholder="$t('marketCommon.selectPlaceholder')"
@@ -32,19 +33,19 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('marketCommon.consigneeName')">
+        <el-form-item :label="$t('marketCommon.consigneeName')+'：'">
           <el-input
             v-model="param.consignee"
             :placeholder="$t('marketCommon.consigneeName')"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('marketCommon.consigneeMobile')">
+        <el-form-item :label="$t('marketCommon.consigneeMobile')+'：'">
           <el-input
             v-model="param.mobile"
             :placeholder="$t('marketCommon.consigneeMobile')"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('marketCommon.orderTime')">
+        <!-- <el-form-item :label="$t('marketCommon.orderTime')">
           <el-date-picker
             v-model="param.orderTime"
             type="datetimerange"
@@ -52,8 +53,8 @@
             size="small"
             value-format="yyyy-MM-dd HH:mm:ss"
           ></el-date-picker>
-        </el-form-item>
-        <el-form-item :label="$t('marketCommon.shippingAddress')">
+        </el-form-item> -->
+        <el-form-item :label="$t('marketCommon.shippingAddress')+'：'">
           <template>
             <areaLinkage
               @areaData="handleAreaData"
@@ -66,11 +67,8 @@
             type="primary"
             @click="initDataList"
           >{{$t('marketCommon.filter')}}</el-button>
-        </el-form-item>
-        <el-form-item>
           <el-button
             type="primary"
-            style="float:right;"
             @click="exportDataList"
           >
             {{$t('marketCommon.export')}}

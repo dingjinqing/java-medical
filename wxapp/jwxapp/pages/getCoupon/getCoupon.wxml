@@ -151,7 +151,7 @@
           <block wx:else>
             <!-- <block wx:if="{{act_info.isUsed == 0 && act_info.isExpire == 0}}">
               <view class="coupon-vw-btn">
-                <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{act_info.couponSn}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>
+                <button class="coupon-button" bindtap="to_search" data-act_id="{{act_info.actId}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>
                   {{i18n.$t(localePack,"pages.coupon.isUsed")}}
                 </button>
               </view>
@@ -159,7 +159,7 @@
             <!-- 去使用 && 去分享 -->
             <block wx:if="{{act_info.isUsed == 0 && act_info.isExpire == 0 && act_info.divisionEnabled == 0}}">
               <view class="coupon-vw-btn vw-btn">
-                <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{act_info.couponSn}}" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>
+                <button class="coupon-button" bindtap="to_search" data-act_id="{{act_info.actId}}" style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>
                 <block  wx:if="{{act_info.couponType == 1}}">
                   <button class="coupon-button" open-type="share" data-act_id='{{act_info.actId}}' data-coupon_sn="{{act_info.couponSn}}" style='color:{{comColor}};border-color:{{comColor}}' wx:if='{{act_info.canShare == 1}}'>分享好友</button>
                   <button wx:else class="coupon-button" data-act_id='{{act_info.actId}}' data-coupon_sn="{{act_info.couponSn}}" style="color:#666;border-color:#666" bindtap="full_people">分享好友</button>

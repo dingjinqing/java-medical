@@ -122,23 +122,25 @@
         </el-table-column>
 
         <el-table-column
-          prop="giftType"
+          prop="giftText"
           :label="$t('payReward.activityReward')"
           align="center"
-          :formatter="transformText"
         >
         </el-table-column>
 
         <el-table-column
-          prop="createTime"
+          prop="status"
           :label="$t('payReward.getTime')"
           align="center"
         >
+          <template slot-scope="scope">
+            {{ scope.row.status === 0? '待领取' : (scope.row.status  === 1? scope.row.createTime : ' 领取失败(奖品已发完或领取达到上限)')}}
+          </template>
         </el-table-column>
       </el-table>
       <div class="footer">
         <pagination
-          :page-params.sync="pageParams"
+          :page-params.sync="params"
           @pagination="initData()"
         />
       </div>
@@ -207,35 +209,43 @@ export default {
     initData () {
       payRewardDetails(this.params).then(res => {
         console.log(res)
-        this.tableData = res.content.dataList
-        this.pageParams = res.content.page
+        if (res.error === 0) {
+          this.params = Object.assign(this.params, res.content.page)
+          this.tableData = res.content.dataList
+          this.handleData(res.content.dataList)
+        }
       }).catch(err => console.log(err))
     },
     // 查询按钮点击事件
     handleSearch () {
       this.initData()
     },
-    // 活动奖励数组转化为文字
-    transformText (row, col) {
-      switch (row.giftType) {
-        case 0: row.giftType = '无奖品'
+    handleData (data) {
+      console.log(data)
+      data.map(item => {
+        item.giftText = this.getActGift(item.giftType)
+      })
+    },
+    getActGift (gift) {
+      switch (gift) {
+        case 0: gift = '无奖品'
           break
-        case 1: row.giftType = '普通优惠券'
+        case 1: gift = '普通优惠券'
           break
-        case 2: row.giftType = '分裂优惠券'
+        case 2: gift = '分裂优惠券'
           break
-        case 3: row.giftType = '幸运大抽奖'
+        case 3: gift = '幸运大抽奖'
           break
-        case 4: row.giftType = '余额'
+        case 4: gift = '余额'
           break
-        case 5: row.giftType = '商品'
+        case 5: gift = '商品'
           break
-        case 6: row.giftType = '积分'
+        case 6: gift = '积分'
           break
-        case 7: row.giftType = '自定义'
+        case 7: gift = '自定义'
           break
       }
-      return row.giftType
+      return gift
     }
   }
 
