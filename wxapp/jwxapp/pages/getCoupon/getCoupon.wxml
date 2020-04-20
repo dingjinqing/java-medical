@@ -111,7 +111,7 @@
           <block wx:else>
             <block wx:if="{{act_info.isUsed == 0 && act_info.is_expire == 0}}">
               <view class="coupon-vw-btn">
-                <button class="coupon-button" bindtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
+                <button class="coupon-button" bindtap="to_search" data-act_id="{{act_info.actId}}" style='color:{{comColor}};border-color:{{comColor}};margin-top:0;'>{{i18n.$t(localePack,"pages.coupon.isUsed")}}</button>       
               </view> 
             </block>
             <block wx:if="{{act_info.isUsed == 1 || act_info.is_expire == 1 || (act_info.from == 1 && act_info.can_fetch_num <= 0) || act_info.have_expired == 1}}">
