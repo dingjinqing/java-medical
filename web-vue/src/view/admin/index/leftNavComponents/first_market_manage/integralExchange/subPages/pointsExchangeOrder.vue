@@ -427,11 +427,17 @@ export default {
         startTime = this.orderTime + ' 00:00:00'
         endTime = this.orderTime + ' 23:59:59'
       }
+      let status = []
+      if (this.orderStatus === -1) {
+        status = null
+      } else {
+        status.push(this.orderStatus)
+      }
       let params = {
         activityId: this.$route.query.activityId,
         goodsName: this.goodsNameInput,
-        orderSn: this.goodsNameInput,
-        orderStatus: this.orderStatus,
+        orderSn: this.orderSn,
+        orderStatus: status,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
         startTime: startTime,
@@ -444,6 +450,7 @@ export default {
         let fileName = localStorage.getItem('V-content-disposition')
         fileName = fileName.split(';')[1].split('=')[1]
         download(res, decodeURIComponent(fileName))
+        this.dialogVisible = false
       })
     },
     // 点击表格订单号

@@ -10,7 +10,8 @@
         <view class="vip_exclusive" wx:if="{{act_info.cardId != ''}}">
           {{i18n.$t(localePack,"pages.coupon.card")}}
         </view>
-        <view class="record" wx:if="{{act_info.isShare == 1}}" bindtap="to_getRecord">领取记录</view>
+        <!-- <view class="record" wx:if="{{act_info.isShare == 1}}" bindtap="to_getRecord">领取记录</view> -->
+        <view class="record" bindtap="to_getRecord">领取记录</view>
         <text class="name-top" wx:if="{{act_info.id !=''}}">{{act_info.actName}}</text>
         <text class="name-top" wx:else>{{i18n.$t(localePack,"pages.coupon.couponName")}}</text>
         <!-- 来源列表 -->

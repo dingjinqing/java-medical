@@ -86,7 +86,6 @@ public class IntegralConvertService extends ShopBaseService {
             .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
             .where(imd.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(imd.STATUS.eq(NORMAL))
-            .and(imd.START_TIME.lessThan(Util.currentTimeStamp()))
             .and(imd.END_TIME.greaterThan(Util.currentTimeStamp()));
 	    if (!StringUtils.isNullOrEmpty(param.getGoodsName())){
 	        select.and(GOODS.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -110,6 +109,34 @@ public class IntegralConvertService extends ShopBaseService {
 	    return result;
     }
 
+    /**
+     * 更新已装修的活动中的商品信息
+     * @param param 已装修活动id
+     * @return 更新后的活动及商品信息
+     */
+    public List<PopListVo> updateActInfo(PopListParam param){
+	    List<PopListVo> sql = db().select(imd.ID.as("integral_goods_id"),
+            GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+            DSL.sum(imp.STOCK).as("stock_sum"),DSL.min(imp.MONEY).as("money"),DSL.min(imp.SCORE).as("score"),
+            imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+            .from(imd)
+            .leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(imp).on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID))
+            .where(imd.ID.in(param.getActIds()))
+            .groupBy(imd.ID.as("integral_goods_id"),
+                GOODS.GOODS_ID,GOODS.GOODS_NAME,GOODS.GOODS_IMG,
+                imd.START_TIME,imd.END_TIME,GOODS.IS_ON_SALE,GOODS.DEL_FLAG.as("is_delete"))
+            .fetchInto(PopListVo.class);
+	    sql.forEach(vo->{
+            vo.setGoodsImg(domainConfig.imageUrl(vo.getGoodsImg()));
+            BigDecimal prdPrice = db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE))
+                .from(GOODS_SPEC_PRODUCT)
+                .where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(vo.getGoodsId()))
+                .fetchOneInto(BigDecimal.class);
+            vo.setPrdPrice(prdPrice);
+        });
+	    return sql;
+    }
 	/**
 	 * 积分兑换分页查询列表
 	 *
@@ -119,9 +146,9 @@ public class IntegralConvertService extends ShopBaseService {
 	public PageResult<IntegralConvertListVo> getList(IntegralConvertListParam param) {
 		Timestamp nowTime = new Timestamp(System.currentTimeMillis());
 		SelectConditionStep<? extends Record> sql = db().select(imd.ID, imd.NAME, GOODS.GOODS_ID, GOODS.GOODS_IMG, GOODS.GOODS_NAME, imd.START_TIME,
-						imd.END_TIME, DSL.sum(imr.MONEY).as("money"), DSL.sum(imr.SCORE).as("score"),
-						GOODS.GOODS_NUMBER, DSL.sum(imp.STOCK).as("stock"), DSL.sum(imr.NUMBER).as("number"),
-						DSL.count(imr.USER_ID).as("user_number"),imd.STATUS,imd.DEL_FLAG)
+						imd.END_TIME,
+						GOODS.GOODS_NUMBER,
+						imd.STATUS,imd.DEL_FLAG)
 				.from(imd).leftJoin(GOODS).on(imd.GOODS_ID.eq(GOODS.GOODS_ID)).leftJoin(imp)
 				.on(imd.ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)).leftJoin(imr).on(imd.ID.eq(imr.INTEGRAL_MALL_DEFINE_ID))
 				.where(imd.DEL_FLAG.equal(IntegralConvertConstant.NOT_DELETE));
@@ -154,6 +181,31 @@ public class IntegralConvertService extends ShopBaseService {
 		PageResult<IntegralConvertListVo> listVo = getPageResult(sql, param.getCurrentPage(), param.getPageRows(),
 				IntegralConvertListVo.class);
         for (IntegralConvertListVo item:listVo.getDataList()){
+            BigDecimal money = db().select(DSL.sum(imr.MONEY))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(BigDecimal.class);
+            item.setMoney(money);
+            Integer score = db().select(DSL.sum(imr.SCORE))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setScore(score);
+            Integer number = db().select(DSL.sum(imr.NUMBER))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setNumber(number);
+            Integer stock = db().select(DSL.sum(imp.STOCK))
+                .from(imp)
+                .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setStock(stock);
+            Integer userNumber = db().select(DSL.count(imr.USER_ID))
+                .from(imr)
+                .where(imr.INTEGRAL_MALL_DEFINE_ID.eq(item.getId()))
+                .fetchOneInto(Integer.class);
+            item.setUserNumber(userNumber);
             //4 已停用
             if (item.getStatus()==(byte)0){
                 item.setActStatus(4);
@@ -272,6 +324,12 @@ public class IntegralConvertService extends ShopBaseService {
 			int imdId = db().lastID().intValue();
             // 添加数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()){
+			    if (item.getMoney()==null){
+			        item.setMoney(BigDecimal.ZERO);
+                }
+			    if (item.getScore()==null){
+			        item.setScore(0);
+                }
                 db().insertInto(INTEGRAL_MALL_PRODUCT, imp.INTEGRAL_MALL_DEFINE_ID, imp.PRODUCT_ID, imp.MONEY, imp.SCORE, imp.STOCK)
                     .values(imdId, item.getPrdId(),item.getMoney(),item.getScore(),item.getStock())
                     .execute();
@@ -331,6 +389,12 @@ public class IntegralConvertService extends ShopBaseService {
 					.where(imd.ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
+                if (item.getMoney()==null){
+                    item.setMoney(BigDecimal.ZERO);
+                }
+                if (item.getScore()==null){
+                    item.setScore(0);
+                }
 			    IntegralMallProductRecord record = db().select().from(imp)
                     .where(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
                     .and(imp.PRODUCT_ID.eq(item.getPrdId()))
@@ -430,7 +494,6 @@ public class IntegralConvertService extends ShopBaseService {
                 vo.setGoodsImg(orderTempVo.getGoodsImg());
                 vo.setPrdDesc(orderTempVo.getPrdDesc());
                 vo.setGoodsPrice(orderTempVo.getPrdPrice());
-                vo.setNumber(orderTempVo.getPrdNumber());
 
 				newList.add(vo);
 			});
@@ -589,10 +652,10 @@ public class IntegralConvertService extends ShopBaseService {
             .where(INTEGRAL_MALL_DEFINE.ID.eq(param.getId()))
             .fetchOneInto(Integer.class);
         String pathParam = "gid="+ goodsId +"&atp=4"+"&aid="+param.getId();
-        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.INTEGRAL_ITEM_INFO, pathParam);
+        String imageUrl = qrCode.getMpQrCode(QrCodeTypeEnum.POSTER_GOODS_ITEM, pathParam);
         ShareQrCodeVo share =new ShareQrCodeVo();
         share.setImageUrl(imageUrl);
-        share.setPagePath(QrCodeTypeEnum.INTEGRAL_ITEM_INFO.getPathUrl(pathParam));
+        share.setPagePath(QrCodeTypeEnum.POSTER_GOODS_ITEM.getPathUrl(pathParam));
         return share;
     }
     

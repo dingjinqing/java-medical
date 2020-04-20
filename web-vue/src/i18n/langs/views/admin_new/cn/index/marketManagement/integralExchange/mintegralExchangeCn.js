@@ -79,7 +79,7 @@ export const cn = {
   batcSettings: '批量设置：',
   saveFfailed: '保存失败',
   // 订单详情
-  commodityName: '商品名称：',
+  commodityName: '商品名称',
   orderNumber: '订单号',
   orderStatus: '订单状态：',
   pleaseChoose: '请选择',

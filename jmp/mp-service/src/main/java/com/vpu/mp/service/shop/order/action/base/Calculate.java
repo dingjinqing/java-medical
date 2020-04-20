@@ -847,9 +847,11 @@ public class Calculate extends ShopBaseService {
         UserRecord userInfo = user.getUserByUserId(param.getWxUserInfo().getUserId());
         //是否首单
         Byte[] goodsType = OrderInfoService.orderTypeToByte(order.getGoodsType());
-        boolean isFS = Lists.newArrayList(goodsType).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
+        boolean isFs = Lists.newArrayList(goodsType).contains(BaseConstant.ACTIVITY_TYPE_FIRST_SPECIAL);
         //是否进行返利标识
         boolean flag = false;
+        //总返利
+        BigDecimal rebateMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
         for (OrderGoodsBo bo : param.getBos()) {
             if(bo.getIsGift() != null && OrderConstant.YES == bo.getIsGift()) {
                 //赠品不参与
@@ -862,8 +864,9 @@ public class Calculate extends ShopBaseService {
             //成本价保护(最大返利金额)
             BigDecimal check =  BigDecimalUtil.subtrac(canRebateMoney, BigDecimalUtil.multiply(bo.getCostPrice(), new BigDecimal(bo.getGoodsNumber())));
             //商品返利计算
-            List<RebateRecord> rebateRecords = calculateGoodsRebate(cfg, param.getWxUserInfo().getUserId(), bo, goingStrategy, userInfo, isFS);
+            List<RebateRecord> rebateRecords = calculateGoodsRebate(cfg, param.getWxUserInfo().getUserId(), bo, goingStrategy, userInfo, isFs);
             if(CollectionUtils.isNotEmpty(rebateRecords)) {
+                //同一个商品返利策略一样，取第一个即可
                 DistributionStrategyParam strategy = rebateRecords.get(0).getStrategy();
                 if(strategy.getCostProtection() == OrderConstant.YES) {
                     if(BigDecimalUtil.compareTo(check, BigDecimalUtil.BIGDECIMAL_ZERO) < 1) {
@@ -874,44 +877,46 @@ public class Calculate extends ShopBaseService {
                 }
                 ArrayList<OrderGoodsRebateRecord> records = orderGoodsRebate.add(rebateRecords, bo, canRebateMoney, check, order.getOrderSn());
                 //赋值
-                bo.setFanliMoney(records.get(0).getRebateMoney());
+                bo.setFanliMoney(records.stream().map(OrderGoodsRebateRecord::getRealRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliPercent(BigDecimalUtil.multiply(records.get(0).getRebatePercent(), BigDecimalUtil.BIGDECIMAL_100));
                 bo.setFanliType(rebateRecords.get(rebateRecords.size()-1).getRebateLevel());
-                bo.setTotalFanliMoney(records.get(0).getTotalRebateMoney());
+                bo.setTotalFanliMoney(records.stream().map(OrderGoodsRebateRecord::getTotalRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliStrategy(strategy.toString());
-                bo.getCanCalculateMoney();
+                bo.setCanCalculateMoney(canRebateMoney);
+                rebateMoney = BigDecimalUtil.add(bo.getTotalFanliMoney(), rebateMoney);
                 flag = true;
             }
         }
         if(flag) {
             order.setFanliType(DistributionConstant.REBATE_ORDER);
             order.setFanliUserId(userInfo.getInviteId());
+            order.setFanliMoney(rebateMoney);
         }
     }
 
     /**
      * 商品返利计算
-     * @param cfg
-     * @param userId
-     * @param bo
-     * @param goingStrategy
-     * @param userInfo
-     * @param isFS
+     * @param cfg 分销配置
+     * @param userId 当前用户id
+     * @param bo 商品bo
+     * @param goingStrategy 正在进行的返利策略
+     * @param userInfo 当前用户
+     * @param isFs 是否首单
      * @return
      */
-    private List<RebateRecord> calculateGoodsRebate(DistributionParam cfg, Integer userId, OrderGoodsBo bo, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFS) {
+    private List<RebateRecord> calculateGoodsRebate(DistributionParam cfg, Integer userId, OrderGoodsBo bo, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
         //获取商品返利策略
         DistributionStrategyParam goodsStrategy = distributionGoods.getGoodsStrategy(bo.getGoodsId(), bo.getSortId(), goingStrategy);
         if (goodsStrategy == null) {
-            logger().info("该商品吴返利策略，goodsId:{}", bo.getGoodsId());
+            logger().info("该商品无返利策略，goodsId:{}", bo.getGoodsId());
             return null;
         }
         Timestamp current = DateUtil.getSqlTimestamp();
         //自购返利(当自购返利开关开启，若下单人是分销员，则该下单人的间接邀请人不会获得返利，其直接邀请人可获得返利，返利比例为直接邀请人所在等级的间接邀请返利比例)
-        List<RebateRecord> rebateRecords = selfRebate(cfg, userInfo, isFS, goodsStrategy, current);
+        List<RebateRecord> rebateRecords = selfRebate(cfg, userInfo, isFs, goodsStrategy, current);
         if(CollectionUtils.isEmpty(rebateRecords)) {
             //正常返利
-            rebateRecords = rebate(cfg, userInfo, isFS, goodsStrategy, current);
+            rebateRecords = rebate(cfg, userInfo, isFs, goodsStrategy, current);
         }
         return rebateRecords;
     }
@@ -926,6 +931,7 @@ public class Calculate extends ShopBaseService {
      * @return
      */
     private ArrayList<RebateRecord> selfRebate(DistributionParam cfg, UserRecord userInfo, boolean isFS, DistributionStrategyParam goodsStrategy, Timestamp current) {
+        logger().info("自购返利start");
         if (goodsStrategy.getSelfPurchase() == OrderConstant.YES) {
             ArrayList<RebateRecord> result = new ArrayList<>();
             //获取用户自购返利比例
@@ -945,15 +951,17 @@ public class Calculate extends ShopBaseService {
                     if(userRebateRatio2 != null) {
                         Double rebateRatio2 = (isFS && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
                         if(rebateRatio2 != null) {
-                            logger().info("自购上级返利");
+                            logger().info("自购直接上级返利");
                             BigDecimal ratio2 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);
                             result.add(new RebateRecord(goodsStrategy, userInfo2.getUserId(), (byte)1, ratio2));
                         }
                     }
                 }
             }
+            logger().info("自购返利end");
             return result;
         }
+        logger().info("自购返利end");
         return null;
     }
 
@@ -967,6 +975,7 @@ public class Calculate extends ShopBaseService {
      * @return
      */
     private ArrayList<RebateRecord> rebate(DistributionParam cfg, UserRecord userInfo, boolean isFS, DistributionStrategyParam goodsStrategy, Timestamp current) {
+        logger().info("正常返利start");
         ArrayList<RebateRecord> result = new ArrayList<>();
         //一级返利
         if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
@@ -993,10 +1002,11 @@ public class Calculate extends ShopBaseService {
                 if(rebateRatio2 != null) {
                     logger().info("正常返利间接上级返利");
                     BigDecimal ratio1 = BigDecimalUtil.divide(new BigDecimal(rebateRatio2.toString()), BigDecimalUtil.BIGDECIMAL_100);
-                    result.add(new RebateRecord(goodsStrategy, userInfo2.getInviteId(), (byte)1, ratio1));
+                    result.add(new RebateRecord(goodsStrategy, userInfo2.getInviteId(), (byte)2, ratio1));
                 }
             }
         }
+        logger().info("正常返利end");
         return result;
     }
 

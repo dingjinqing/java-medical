@@ -94,4 +94,7 @@ public class CouponHoldService extends ShopBaseService {
         return select;
 
     }
+
+    public void getReceiveInfo(String couponSn, Integer userId) {
+    }
 }

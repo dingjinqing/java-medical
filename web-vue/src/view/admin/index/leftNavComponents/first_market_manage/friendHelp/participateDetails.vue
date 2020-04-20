@@ -77,7 +77,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser(scope.row.userId)"
+              @click="getUser(scope.row.joinUserId)"
               type="text"
             > {{scope.row.username}} </el-button>
           </template>
@@ -104,7 +104,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              @click="getUser(scope.row.userId)"
+              @click="getUser(scope.row.launchUserId)"
               type="text"
             > {{scope.row.launchUsername}} </el-button>
           </template>

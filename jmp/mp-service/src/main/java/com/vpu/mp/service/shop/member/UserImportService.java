@@ -27,8 +27,9 @@ import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.coupon.CouponWxUserImportVo;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
-import com.vpu.mp.service.pojo.shop.coupon.mpGetCouponParam;
+
 import com.vpu.mp.service.pojo.shop.distribution.DistributorGroupListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
@@ -811,8 +812,7 @@ public class UserImportService extends ShopBaseService {
 		String[] split = mrkingVoucherId.split(",");
 		List<String> list = new ArrayList<String>();
 		for (String string : split) {
-			Byte couponGetStatus = couponMpService
-					.couponGetStatus(new mpGetCouponParam(Integer.valueOf(string), userId));
+			Byte couponGetStatus = couponMpService.couponGetStatus(new MpGetCouponParam(Integer.valueOf(string), userId));
 			if (Objects.equals(couponGetStatus, BYTE_ZERO)) {
 				list.add(string);
 			} else {
