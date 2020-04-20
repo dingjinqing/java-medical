@@ -136,11 +136,11 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
       <pagination
         :page-params.sync="pageParams"
         @pagination="loadData"
       />
-
     </div>
   </div>
 </template>
@@ -161,21 +161,21 @@ export default {
       mobile: '',
       actId: '',
       tableData: [],
-      pageParams: {
-        currentPage: 1,
-        pageRows: 20
-      }
+      pageParams: {}, // 分页
+      requestParam: {}
     }
   },
   methods: {
     // 加载数据
     loadData () {
-      this.pageParams.accessId = this.accessId
-      this.pageParams.actId = this.actId
-      this.pageParams.mobile = this.mobile
-      this.pageParams.username = this.username
-      this.pageParams.isUsed = this.isUsed
-      receiveDetails(this.pageParams).then(res => {
+      this.requestParam.accessId = this.accessId
+      this.requestParam.actId = this.actId
+      this.requestParam.mobile = this.mobile
+      this.requestParam.username = this.username
+      this.requestParam.isUsed = this.isUsed
+      this.requestParam.currentPage = this.pageParams.currentPage
+      this.requestParam.pageRows = this.pageParams.pageRows
+      receiveDetails(this.requestParam).then(res => {
         this.tableData = res.content.dataList
         this.pageParams = res.content.page
       })
