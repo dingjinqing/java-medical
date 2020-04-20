@@ -81,7 +81,19 @@
                   >
                     <td style="width:7%;">{{it.couponName}}</td>
                     <td style="width:9%;">{{it.leastConsume | leastConsume}}</td>
-                    <td style="width:7%;">{{it.denomination | denomination}}</td>
+                    <!-- <td style="width:7%;">{{it.denomination | denomination}}</td> -->
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'voucher'"
+                    >{{it.denomination}}元</td>
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'discount'"
+                    >{{it.denomination}}折</td>
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'random'"
+                    >{{it.randomMax}}最高</td>
                     <td style="width:9%;"><span v-html="it.time"></span></td>
                     <td style="width:4%;">
                       <el-button
@@ -123,9 +135,7 @@ export default {
     return {
       actName: '',
       tableData: [],
-      pageParams: {
-        pageRows: 20
-      },
+      pageParams: {}, // 分页
       requestParam: {}
     }
   },
@@ -137,10 +147,8 @@ export default {
     handleSelect () {
       couponGiveList({
         actName: this.actName,
-        page: {
-          currentPage: 1,
-          pageRows: 20
-        }
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
       }).then((res) => {
         if (res.error === 0) {
           this.pageParams = res.content.page

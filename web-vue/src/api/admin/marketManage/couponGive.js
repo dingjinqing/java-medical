@@ -43,3 +43,12 @@ export function addActivity (data) {
     data: data
   })
 }
+
+// 获取预期发放人数
+export function getUserNum (data) {
+  return service({
+    url: '/api/admin/coupon/give/userNum',
+    method: 'post',
+    data: data
+  })
+}
