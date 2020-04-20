@@ -382,7 +382,7 @@ public class CardDetailService extends ShopBaseService{
 	 * @param card
 	 * @return List<CardMarketActivity> 不可与优惠券公用的营销活动  不会为null 没有数据会返回空数组 []
 	 */
-	private List<CardMarketActivity> getMarketActivities(MemberCardRecord card) {
+	public List<CardMarketActivity> getMarketActivities(MemberCardRecord card) {
 		logger().info("获取会员卡不可与折扣公用的营销活动");
 		List<CardMarketActivity> res = new ArrayList<>();
 		if(card.getDiscount()==null) {
