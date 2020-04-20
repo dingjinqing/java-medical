@@ -66,7 +66,7 @@ public class OrderCartProductBo {
     }
 
     private void initProductIds(){
-        productIds = getAll().stream().map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
+        productIds = getAll().stream().filter(x->!x.isPurchase).map(OrderCartProductBo.OrderCartProduct::getProductId).collect(Collectors.toList());
     }
     @Getter
     @Setter
@@ -77,21 +77,24 @@ public class OrderCartProductBo {
         private GoodsSpecProductRecord productRecord;
         private Integer goodsNumber;
         private Byte isChecked;
+        /**加价购不参与map初始化*/
+        private boolean isPurchase;
         /**
          * 商品活动信息
          * k 活动类型
          */
         private Map<Byte ,GoodsActivityInfo> activityInfo =new HashMap<>();
 
-        public OrderCartProduct(Integer productId, Integer goodsNumber,GoodsSpecProductRecord productRecord) {
+        public OrderCartProduct(Integer productId, Integer goodsNumber,boolean isPurchase, GoodsSpecProductRecord productRecord) {
             //商品结算默认选中
-            this(productId,goodsNumber,productRecord, CartConstant.CART_IS_CHECKED);
+            this(productId,goodsNumber,isPurchase,productRecord, CartConstant.CART_IS_CHECKED);
         }
-        public OrderCartProduct(Integer productId, Integer goodsNumber,GoodsSpecProductRecord productRecord,byte isChecked) {
+        public OrderCartProduct(Integer productId, Integer goodsNumber, boolean isPurchase, GoodsSpecProductRecord productRecord,byte isChecked) {
             this.productId = productId;
             this.goodsNumber = goodsNumber;
             this.productRecord =productRecord;
             this.isChecked =isChecked;
+            this.isPurchase=isPurchase;
         }
 
         public GoodsActivityInfo getActivity(Byte activityType){
