@@ -57,21 +57,21 @@
               </view>
             </view>
               
-            <!-- <view class="go_use" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view> -->
+            <!-- <view class="go_use" catchtap="to_search" data-act_id="{{item.actId}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view> -->
             <!-- 去使用 && 去分享 -->
             <view class="go_use" wx:if='{{item.divisionEnabled == 0 && item.couponType == 1}}' style='color:{{comColor}};display: flex;align-items:center;justify-content: center;'>
-              <text catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style="width:50%;display:inline-block;border-right: 1rpx solid #eee;height: 40rpx;line-height: 40rpx;">去使用</text>
-              <button class='split_btn_get' open-type="share" style="font-size:24rpx;color:{{comColor}};margin:0;width:50%;" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}" wx:if='{{item.canShare == 1}}'>去分享</button>
-              <text wx:else style='color:#666;width:50%;' catchtap="full_people" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}">去分享</text>
+              <text catchtap="to_search" data-act_id="{{item.actId}}" style="width:50%;display:inline-block;border-right: 1rpx solid #eee;height: 40rpx;line-height: 40rpx;">去使用</text>
+              <button class='split_btn_get' open-type="share" style="font-size:24rpx;color:{{comColor}};margin:0;width:50%;" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}" wx:if='{{item.canShare == 1}}'>去分享</button>
+              <text wx:else style='color:#666;width:50%;' catchtap="full_people" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}">去分享</text>
             </view>
             <!-- 去使用 || 去分享 -->
             <view class="go_use" wx:else style='color:{{comColor}}'>
               <block wx:if='{{item.divisionEnabled == 0 && item.couponType == 0}}'>
-                <text catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style="width:100%;display:inline-block">去使用</text>
+                <text catchtap="to_search" data-act_id="{{item.actId}}" style="width:100%;display:inline-block">去使用</text>
               </block>
               <block wx:else>
                 <text style="font-size:24rpx;color:#999;">把券分享给好友，且好友领取后本券即可使用</text>
-                <button class='split_btn_get' open-type="share" style="float:right;margin-right:20rpx;font-size:24rpx;color:{{comColor}}" data-coupon_id='{{item.id}}' data-coupon_sn="{{item.couponSn}}">去分享</button>
+                <button class='split_btn_get' open-type="share" style="float:right;margin-right:20rpx;font-size:24rpx;color:{{comColor}}" data-act_id='{{item.actId}}' data-coupon_sn="{{item.couponSn}}">去分享</button>
               </block>
             </view>
           </view>
@@ -113,7 +113,7 @@
                 <view class="click_to_detail" wx:if="{{item.recommendGoodsId != ''}}">{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
                 <view class="time_canuse">{{item.startTime}} - {{item.endTime}}</view>
             </view>  
-            <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-coupon_id="{{item.id}}" data-coupon_sn="{{item.couponSn}}" data-check_action='{{this_type}}' style='background:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.delCoupon")}}</view>
+            <view class="del_btn" wx:if="{{ this_type != 0 }}" catchtap='coupon_del' data-id="{{item.id}}" data-check_action='{{this_type}}' style='background:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.delCoupon")}}</view>
             <view class="go_use" wx:if="{{ this_type == 0 }}" catchtap="to_search" data-coupon_sn="{{item.couponSn}}" style='color:{{comColor}}'>{{i18n.$t(localePack,"pages.coupon.goUse")}}</view>  
           </view>
 

@@ -322,7 +322,7 @@ public class OrderGoodsService extends ShopBaseService{
             bo.setActivityId(goods.getReducePriceId());
             bo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
         }
-        logger().info("initOrderGoods初始化数据结束，参数为：",bo.toString());
+        logger().info("initOrderGoods初始化数据结束，参数为：{}",bo.toString());
         return bo;
     }
 

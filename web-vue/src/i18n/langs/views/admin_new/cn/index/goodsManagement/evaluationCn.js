@@ -50,5 +50,7 @@ export const cn = {
   experience: '心得',
   anonymous: '是否匿名',
   select: '选择{0}',
-  noExperience: '此用户没有填写用户心得'
+  noExperience: '此用户没有填写用户心得',
+  top: '置顶',
+  down: '取消置顶'
 }

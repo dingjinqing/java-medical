@@ -378,7 +378,7 @@ ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
--- 营销日历表
+-- 营销日历表活动
 CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `calendar_id` int(8) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
@@ -395,6 +395,20 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
   PRIMARY KEY (`id`),
   KEY `calendar_id` (`calendar_id`),
   KEY `sys_cal_act_id` (`sys_cal_act_id`)
+);
+-- 营销日历表
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `event_name` varchar(64)  NOT NULL DEFAULT '' COMMENT '事件名称',
+  `event_time` date DEFAULT NULL  COMMENT '事件时间',
+  `event_desc` text COMMENT '事件说明',
+  `pub_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态：0未发布，1已发布',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+  `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '来源：0admin自己添加，1system推荐',
+  `source_id` int(8) NOT NULL DEFAULT '0' COMMENT '来源：来源营销事件id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
 );
 
 /*********************2.12*************************END*/
