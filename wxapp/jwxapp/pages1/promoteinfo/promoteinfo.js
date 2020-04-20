@@ -55,8 +55,8 @@ global.wxPage({
   },
   // 券购搜索
   to_cou_search: function (e) {
-    var couponSn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
   // 好友助力列表
   to_list: function () {
