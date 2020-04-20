@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
@@ -69,7 +70,7 @@ public class CouponGiveService extends ShopBaseService {
      * @return listVo 对应的发券活动信息
      */
     public PageResult<CouponGiveListVo> getCouponGiveList(CouponGiveListParam param) {
-        try {
+
             // 查询活动信息
             SelectLimitStep<Record> couponGiveListVo =
                 db().select().from(GIVE_VOUCHER).orderBy(GIVE_VOUCHER.ID.desc());
@@ -88,12 +89,10 @@ public class CouponGiveService extends ShopBaseService {
                     CouponGiveListVo.class);
             // 整合活动对应优惠券信息
             for (CouponGiveListVo vo : listVo.getDataList()) {
+                CouponGiveGrantInfoParam condition = Util.json2Object(vo.getSendCondition(),CouponGiveGrantInfoParam.class,false);
+                vo.setCondition(condition);
                 // 解析得到活动中包含的优惠券
-                String dataList = vo.getSendCondition();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode;
-                jsonNode = objectMapper.readTree(dataList);
-                String voucherId = jsonNode.get("coupon_ids").toString();
+                String voucherId = condition.getCouponIds();
                 String id = voucherId.replace("\"", "");
                 String[] idArray = id.split(",");
                 // 优惠券信息
@@ -146,12 +145,7 @@ public class CouponGiveService extends ShopBaseService {
                     vo.setTagName(tagName);
                 }
             }
-
             return listVo;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
