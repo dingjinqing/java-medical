@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
@@ -249,14 +250,14 @@ public class IncreasePurchaseService extends ShopBaseService {
         });
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
-        List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
+        List<ProductSmallInfoVo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
             Integer[] array = stringArray2Int(s.split(","));
-            List<GoodsInfo> redemptionGoodsList =
-                db().select(g.GOODS_ID,g.GOODS_IMG,g.GOODS_NAME,g.SHOP_PRICE,g.GOODS_NUMBER,GOODS_SPEC_PRODUCT.PRD_DESC)
+            List<ProductSmallInfoVo> redemptionGoodsList =
+                db().select(g.GOODS_ID,g.GOODS_IMG,g.GOODS_NAME,g.SHOP_PRICE,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC)
                 .from(GOODS_SPEC_PRODUCT).innerJoin(g).on(g.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
-                .where(GOODS_SPEC_PRODUCT.PRD_ID.in(array)).fetchInto(GoodsInfo.class);
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.in(array)).fetchInto(ProductSmallInfoVo.class);
             redemptionGoodsList.forEach(g->{
                 if(StringUtil.isNotBlank(g.getGoodsImg())){
                     g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
