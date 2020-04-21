@@ -17,6 +17,10 @@ public class AvailCouponDetailVo {
 	 * 记录ID
 	 */
 	public Integer id;
+    /**
+     * 优惠券活动ID
+     */
+    public Integer actId;
 	/**
 	 * 优惠券名称
 	 */
