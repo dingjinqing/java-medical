@@ -127,6 +127,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
      */
     @Data
     public static class PurchasePriceRule{
+        /**活动id*/
+        private Integer activityId;
+        /**规则id*/
+        private Integer ruleId;
         private String name;
         /**满金额数*/
         private BigDecimal fullPrice;

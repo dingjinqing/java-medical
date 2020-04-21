@@ -292,9 +292,18 @@ public class PayAwardProcessor extends ShopBaseService implements Processor, Cre
             if (payAward.getGoodsAreaType().equals(GOODS_AREA_TYPE_SECTION.intValue())) {
                 boolean payAwardFlag = false;
                 for (OrderBeforeParam.Goods goods : param.getGoods()) {
-                    boolean hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
-                    boolean hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
-                    boolean hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
+                    boolean hasGoodsId = false;
+                    boolean hasCatId = false;
+                    boolean hasSortId = false;
+                    if (payAward.getGoodsIds()!=null){
+                        hasGoodsId = Arrays.asList(payAward.getGoodsIds().split(",")).contains(goods.getGoodsInfo().getGoodsId().toString());
+                    }
+                    if (payAward.getGoodsCatIds()!=null){
+                        hasCatId = Arrays.asList(payAward.getGoodsCatIds().split(",")).contains(goods.getGoodsInfo().getCatId().toString());
+                    }
+                    if (payAward.getGoodsSortIds()!=null){
+                        hasSortId = Arrays.stream(payAward.getGoodsSortIds().split(",")).anyMatch(goods.getGoodsInfo().getSortId().toString()::equals);
+                    }
                     if (hasGoodsId || hasCatId || hasSortId) {
                         GoodsActivityInfo activityInfo = new GoodsActivityInfo();
                         activityInfo.setActivityType(ACTIVITY_TYPE_PAY_AWARD);
