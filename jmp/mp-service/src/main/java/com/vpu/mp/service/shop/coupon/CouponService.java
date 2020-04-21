@@ -23,7 +23,6 @@ import com.vpu.mp.service.pojo.wxapp.coupon.*;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.member.dao.ScoreDaoService;
 import jodd.util.StringUtil;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -38,9 +37,9 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
 import static com.vpu.mp.service.foundation.util.Util.listToString;
 import static com.vpu.mp.service.foundation.util.Util.stringToList;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ONE;
@@ -202,9 +201,34 @@ public class CouponService extends ShopBaseService {
      * @return
      */
     public MrkingVoucherRecord getOneCouponById(Integer couponId) {
-        return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchOne();
+        return db().selectFrom(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.eq(couponId)).fetchAny();
     }
 
+    /**
+     * 根据优惠券id对应的优惠券所关联的商品和商家分类id获取对应的过滤条件
+     * @param couponId 优惠券id
+     * @return 过滤条件
+     */
+    public Condition buildGoodsSearchCondition(Integer couponId) {
+        MrkingVoucherRecord voucherRecord = getOneCouponById(couponId);
+        if (voucherRecord == null) {
+            logger().debug("优惠券跳转商品搜索页-优惠券id无效");
+            return DSL.falseCondition();
+        } else {
+            Condition condition = DSL.noCondition();
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(voucherRecord.getRecommendGoodsId()) || org.apache.commons.lang3.StringUtils.isNotBlank(voucherRecord.getRecommendSortId())) {
+                if (org.apache.commons.lang3.StringUtils.isNotBlank(voucherRecord.getRecommendGoodsId())) {
+                    List<Integer> goodsIds = Arrays.stream(voucherRecord.getRecommendGoodsId().split(",")).mapToInt(Integer::parseInt).boxed().collect(Collectors.toList());
+                    condition = condition.or(GOODS.GOODS_ID.in(goodsIds));
+                }
+                if (org.apache.commons.lang3.StringUtils.isNotBlank(voucherRecord.getRecommendSortId())) {
+                    List<Integer> sortIds = Arrays.stream(voucherRecord.getRecommendSortId().split(",")).mapToInt(Integer::parseInt).boxed().collect(Collectors.toList());
+                    condition = condition.or(GOODS.SORT_ID.in(sortIds));
+                }
+            }
+           return condition;
+        }
+    }
 
     /**
      * 保存编辑信息
