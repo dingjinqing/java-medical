@@ -1,9 +1,9 @@
 package com.vpu.mp.service.shop.goods.es.convert.param;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.es.*;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
-import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsListMpParam;
 import com.vpu.mp.service.shop.goods.es.convert.exception.ParamConvertException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,9 +46,10 @@ public class GoodsPageConvertEsParam implements EsParamConvertInterface {
         if( null != shopId ){
             propertyList.add(new FieldProperty(EsSearchName.SHOP_ID,shopId));
         }
-        if( param.getIsSaleOut() != null && param.getIsSaleOut() ){
+        if(GoodsConstant.SALE_OUT.equals(param.getIsSaleOut())){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.EQ));
-        }else{
+        }
+        if (GoodsConstant.NOT_SALE_OUT.equals(param.getIsSaleOut())){
             propertyList.add(new FieldProperty(EsSearchName.GOODS_NUMBER,0, Operator.GT));
         }
         if( null != param.getHighShopPrice() ){
