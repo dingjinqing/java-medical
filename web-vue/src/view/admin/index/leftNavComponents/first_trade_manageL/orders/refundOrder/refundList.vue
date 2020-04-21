@@ -118,7 +118,27 @@
                   <div class="tb-head_box">
                     <div class="left">
                       <span>{{$t('order.returnSn') + '：'+ orderItem.returnOrderSn}}</span>
-                      <span>{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
+                      <el-popover
+                        placement="right"
+                        trigger="hover"
+                        open-delay="500"
+                        >
+                        <div class="order-brief" @click="handleViewOrder(orderItem.orderSn)">
+                          <div class="title">订单信息</div>
+                          <div class="brief-info">
+                            <div>订单号：{{orderItem.orderSn}}</div>
+                            <div>订单状态：</div>
+                            <div>支付方式：</div>
+                            <div>配送方式：</div>
+                            <div>订单类型：</div>
+                            <div>下单时间：</div>
+                            <div>下单人：</div>
+                            <div>收件人：</div>
+                            <div>收货地址：</div>
+                          </div>
+                        </div>
+                        <span slot="reference" >{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
+                      </el-popover>
                       <span>
                         {{
                           $t('order.applyTime') + '：'+
@@ -371,6 +391,14 @@ export default {
         '7': this.$t('order.returnStatusList')[7][1],
         '5': this.$t('order.returnStatusList')[8][1]
       }
+    },
+    handleViewOrder (orderSn) {
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
+      })
     }
   }
 }
@@ -548,6 +576,38 @@ export default {
     }
     .default_input {
       width: 180px;
+    }
+  }
+}
+.order-brief{
+  display: flex;
+  width: 250px;
+  flex-direction: column;
+  border-radius: 6px 6px 0px 0px;
+  overflow: hidden;
+  cursor: pointer;
+  > .title{
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    background: #5a8bff;
+  }
+  > .brief-info{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px 15px;
+    background: rgba(90,139,255,0.1);
+    position: relative;
+    > div {
+      color: #333;
+      &+div{
+        margin-top: 5px;
+      }
+    }
+    > .bottom-bg{
+      position: absolute;
+      bottom: 0;
+      left: 10px;
     }
   }
 }

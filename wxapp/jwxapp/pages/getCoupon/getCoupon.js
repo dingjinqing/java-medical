@@ -237,7 +237,6 @@ global.wxPage({
 
   // 领取记录
   to_getRecord: function (e) {
-    debugger
     var couponSn = e.target.dataset.coupon_sn;
     var actId = e.target.dataset.act_id;
     util.navigateTo({
