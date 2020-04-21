@@ -117,6 +117,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @throws MpException
 	 */
 	public void refundBkOrderMoney(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
+        order.setIsReturnBk(true);
 		refundMoneyPaid(order, retId, money);
 	}
 	/**
@@ -246,6 +247,10 @@ public class ReturnMethodService extends ShopBaseService{
             logger().info("微信退款（refundMoneyPaid）start,退款金额：{}", money);
             //子订单取主订单订单号
             String orderSn = orderInfo.isSubOrder(order) ? order.getMainOrderSn() : order.getOrderSn();
+            //补款加后缀
+            if(Boolean.TRUE.equals(order.getIsReturnBk())) {
+                orderSn = orderSn + OrderConstant.BK_SN_SUFFIX;
+            }
             String refundSn = null;
             //支付记录
             PaymentRecordRecord payRecord = paymentRecord.getPaymentRecordByOrderSn(orderSn);
