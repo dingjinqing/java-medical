@@ -62,6 +62,7 @@ import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import com.vpu.mp.service.shop.market.sharereward.ShareRewardService;
 import com.vpu.mp.service.shop.market.sharereward.WxShareRewardService;
+import com.vpu.mp.service.shop.marketCalendar.MarketCalendarService;
 import com.vpu.mp.service.shop.member.*;
 import com.vpu.mp.service.shop.operation.RecordAdminActionService;
 import com.vpu.mp.service.shop.operation.RecordTradeService;
@@ -531,5 +532,10 @@ public class ShopApplication {
      */
     @Autowired
     public LiveService liveService;
+    /**
+     * 营销日历
+     */
+    @Autowired
+    public MarketCalendarService calendarService;
 
 }
