@@ -22,6 +22,7 @@ export default {
 
 <style scoped>
 .promoteRules {
+  width: 100%;
   height: 100%;
   line-height: 3;
   padding: 0 10px;

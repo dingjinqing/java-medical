@@ -258,9 +258,14 @@
               ></el-table-column>
               <el-table-column
                 :label="$t('lotteryDraw.goodsPrice')"
-                prop="shopPrice"
                 align="center"
-              ></el-table-column>
+              >
+                <!-- prop="shopPrice" -->
+                <template slot-scope="scope">
+                  <span v-if="scope.row.isDefaultPrd === true">{{ scope.row.shopPrice }}</span>
+                  <span v-if="scope.row.isDefaultPrd === false">{{ scope.row.prdMaxShopPrice }}</span>
+                </template>
+              </el-table-column>
 
               <el-table-column
                 :label="$t('lotteryDraw.goodsNumber')"
@@ -465,6 +470,19 @@ export default {
     getGoodsInfo (id) {
       getSelectGoods({ goodsId: id }).then((res) => {
         if (res.error === 0) {
+          if (res.content.isDefaultProduct === 0) {
+            // 多规格
+            res.content.isDefaultPrd = false
+            res.content.prdMaxShopPrice = 0
+            res.content.goodsSpecProducts.forEach(item => {
+              if (item.prdPrice > res.content.prdMaxShopPrice) {
+                res.content.prdMaxShopPrice = item.prdPrice
+              }
+            })
+          } else if (res.content.isDefaultProduct === 1) {
+            // 单规格
+            res.content.isDefaultPrd = true
+          }
           this.goodsRow.push(res.content)
         }
       })

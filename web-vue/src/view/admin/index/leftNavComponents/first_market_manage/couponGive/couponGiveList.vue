@@ -170,7 +170,8 @@ export default {
             item['time'] = `${this.$t('couponGive.fromTime')} ${item.validity}${this.$t('couponGive.day')} ${item.validityHour}${this.$t('couponGive.hour')} ${item.validityMinute}${this.$t('couponGive.minute')} ${this.$t('couponGive.effective')}`
           }
         })
-        data[index].obj = JSON.parse(data[index]['sendCondition'])
+        // data[index].obj = JSON.parse(data[index]['sendCondition'])
+        data[index].obj = data[index].condition
         data[index].people = []
         if (data[index].obj.member_box === 1) {
           data[index].people.push(`${this.$t('couponGive.member')}`)
