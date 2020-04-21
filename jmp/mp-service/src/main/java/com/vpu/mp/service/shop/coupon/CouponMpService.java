@@ -270,7 +270,7 @@ public class CouponMpService extends ShopBaseService {
                         logger().info("第一次分享,分享者优惠券可用");
                         coupon.updateSplitCouponEnabled(param.getCouponSn());
                     }
-                    saveDivisionReceiveRecord(param, sendData, oneCouponDetail);
+                    saveDivisionReceiveRecord(param, sendData);
                     vo.setStatus((byte)1);
                 }else {
                     vo.setStatus((byte)4);
@@ -287,15 +287,14 @@ public class CouponMpService extends ShopBaseService {
      * 分裂优惠券分享记录
      * @param param
      * @param sendData
-     * @param oneCouponDetail
      */
-    private void saveDivisionReceiveRecord(MpGetSplitCouponParam param, CouponGiveQueueBo sendData, CouponAndVoucherDetailVo oneCouponDetail) {
+    private void saveDivisionReceiveRecord(MpGetSplitCouponParam param, CouponGiveQueueBo sendData) {
         DivisionReceiveRecordRecord record = db().newRecord(DIVISION_RECEIVE_RECORD);
         record.setUser(param.getShareUserId());
         record.setUserId(param.getUserId());
         record.setCouponId(param.getCouponId());
         record.setCouponSn(sendData.getCouponSn().get(0));
-        record.setAmount(oneCouponDetail.getAmount());
+        record.setAmount(sendData.getSendCoupons().get(0).getAmount());
         record.setSource(param.getSource());
         record.setType((byte)1);
         record.setReceiveCouponSn(param.getCouponSn());
