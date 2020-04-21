@@ -34,26 +34,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          size="small"
-          label="领取方式："
-        >
-          <el-select v-model="isReceive">
-            <el-option
-              v-for="item in receiveList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-button
           size="small"
           type="primary"
           @click="onSubmit"
           style="margin-left: 10px;"
         >{{$t('couponGive.filter')}}</el-button>
-        <!-- <el-button size="small">{{$t('couponGive.export')}}</el-button> -->
       </el-form>
     </div>
     <!-- 表格数据 -->
@@ -176,12 +162,6 @@ export default {
       }, {
         label: this.$t('couponGive.repealed'),
         value: '4'
-      }],
-      isReceive: '0', // 领取状态值
-      // 领取方式
-      receiveList: [{
-        label: '全部',
-        value: '0'
       }],
       tableData: [], // 表格数据
       pageParams: {}, // 分页
