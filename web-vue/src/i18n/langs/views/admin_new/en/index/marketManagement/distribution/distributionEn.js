@@ -83,6 +83,8 @@ export const en = {
   rebateRadioTip2: 'Dispose',
   rebateRadio2: 'official account',
   rebateRadioTip3: 'Note: the use of the rebate function, please ensure that the small program has been binding the authentication service number and configure the relevant payment information, otherwise it can not be presented. Users who do not pay attention to the public number will fail to make withdrawals.',
+  withdrawConfig: 'Withdrawal settings：',
+  withdrawConfigTip: 'When the switch is on, the distributor whose withdrawal amount is not 0 and has been "cleared" can still withdraw Commission',
   minRebate: 'Minimum withdrawal amount of rebate：',
   minUnit: 'yuan',
   minRebateTip: 'The distributor initiates rebate withdrawal and applies for the minimum withdrawal amount in a single time. In order to prevent the distributor from withdrawing too frequently, please set a single minimum withdrawal amount.',
