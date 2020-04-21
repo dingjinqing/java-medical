@@ -111,7 +111,7 @@
               >
                 <el-option
                   label="请选择上下架"
-                  value=""
+                  :value="null"
                 ></el-option>
                 <el-option
                   label="上架"
