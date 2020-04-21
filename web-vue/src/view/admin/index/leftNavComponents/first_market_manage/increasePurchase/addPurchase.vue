@@ -292,6 +292,7 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods2"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
@@ -345,6 +346,7 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods3"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
