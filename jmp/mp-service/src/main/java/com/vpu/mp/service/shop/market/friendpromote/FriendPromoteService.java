@@ -199,7 +199,7 @@ public class FriendPromoteService extends ShopBaseService {
 				.from(USER, fpl).where(fpl.PROMOTE_ID.eq(param.getPromoteId())).and(USER.USER_ID.eq(fpl.USER_ID));
 		// 助力商品
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE,
-            fpl.ID, fpl.PROMOTE_STATUS, fpl.SUCCESS_TIME.as("rec_time"), fpl.ORDER_SN)
+            fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.CREATE_TIME.as("rec_time"), fpl.ORDER_SN)
 				.from(fpl).leftJoin(USER).on(USER.USER_ID.eq(fpl.USER_ID)).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(fpl.ORDER_SN)).where(fpl.PROMOTE_ID.eq(param.getPromoteId()));
 
@@ -242,7 +242,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
 		SelectHavingStep<? extends Record> sql = db().select(fpl.ID,USER.USER_ID,
-                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("join_num"),
+                        USER.USERNAME, USER.MOBILE, DSL.countDistinct(fpd.USER_ID).as("join_num"),
 						DSL.count(fpd.USER_ID).as("promote_times"), DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
@@ -1780,7 +1780,7 @@ public class FriendPromoteService extends ShopBaseService {
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
             .fetchOneInto(String.class);
-        String pathParam = "actCode="+actCode+"&launchId="+0+"&inviteId=";
+        String pathParam = "actCode="+actCode;
         String imgUrl = qrCode.getMpQrCode(QrCodeTypeEnum.FRIEND_HELP_SHARE,pathParam);
         ShareQrCodeVo share = new ShareQrCodeVo();
         share.setImageUrl(imgUrl);

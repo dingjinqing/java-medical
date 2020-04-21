@@ -19,6 +19,62 @@
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2136&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
       >瓜分积分使用教程</el-link>
       <el-link
+        v-if="$route.name == 'distribution_info'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=50&extra=page=1&filter=sortid&sortid=15"
+      >分销使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'gift'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2118&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >赠品使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'promote'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&extra=page=1&filter=sortid&sortid=15"
+      >好友助力使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'sec_kill'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=69"
+      >秒杀活动使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'ordinary_coupon'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=52&extra=page=1&filter=sortid&sortid=15"
+      >普通优惠券使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'free_ship'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2120&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >满包邮使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'group_draw'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2135&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >拼团抽奖使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'reduce_price'"
+        :underline="false"
+        type="primary"
+        target="_blank"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2112&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+      >限时降价使用教程</el-link>
+      <el-link
         v-if="$route.name == 'insteadpay'"
         href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2116&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
         type="primary"

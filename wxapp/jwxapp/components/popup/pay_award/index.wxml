@@ -66,7 +66,7 @@
             <text class="text" bindtap="{{giftInfo.giftType === 4 ? 'goBalanceInfo' : 'goScoreInfo'}}">去看看</text>
           </view>
           <view class="gift-name" wx:if="{{giftInfo.giftType === 5}}">{{giftInfo.awardInfo.product.goodsName}}</view>
-          <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{imageUrl}}{{giftInfo.awardInfo.product.goodsImg}}"></image>
+          <image class="gift-image" wx:if="{{giftInfo.giftType === 5}}" src="{{giftInfo.awardInfo.product.goodsImg}}"></image>
           <text class="gift-tips" wx:if="{{giftInfo.giftType === 5}}" bindtap="">已放入“我的奖品”快领取吧</text>
         </view>
       </block>

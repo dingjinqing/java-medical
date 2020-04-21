@@ -66,7 +66,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
      * @return 加价购数据
      */
     public Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> getPurchasePriceInfo(Integer goodsId, Timestamp date){
-        return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
+        return db().select(PURCHASE_PRICE_DEFINE.ID,PURCHASE_PRICE_RULE.ID, PURCHASE_PRICE_RULE.FULL_PRICE, PURCHASE_PRICE_RULE.PURCHASE_PRICE)
                 .from(PURCHASE_PRICE_DEFINE)
                 .innerJoin(PURCHASE_PRICE_RULE).on(PURCHASE_PRICE_DEFINE.ID.eq(PURCHASE_PRICE_RULE.PURCHASE_PRICE_ID))
                 .where(PURCHASE_PRICE_DEFINE.STATUS.eq(STATUS_NORMAL))

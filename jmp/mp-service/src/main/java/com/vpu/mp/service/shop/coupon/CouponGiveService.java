@@ -157,7 +157,7 @@ public class CouponGiveService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getDetail(CouponGiveDetailParam param) {
 
         CouponHoldListParam couponParam = new CouponHoldListParam();
-        couponParam.setActId(param.getActId());
+//        couponParam.setActId(param.getActId());
         couponParam.setMobile(param.getMobile());
         couponParam.setUsername(param.getUsername());
         couponParam.setStatus(param.getIsUsed().byteValue());
@@ -165,7 +165,13 @@ public class CouponGiveService extends ShopBaseService {
         couponParam.setPageRows(param.getPageRows());
         couponParam.setAccessId(param.getAccessId());
         couponParam.setGetSource(GET_SOURCE);
-        return couponHold.getCouponHoldList(couponParam);
+        PageResult<CouponHoldListVo> result = couponHold.getCouponHoldList(couponParam);
+        result.getDataList().forEach(vo->{
+            if (vo.getUsername()==null){
+                vo.setUsername("未知用户");
+            }
+        });
+        return result;
     }
 
     /**
@@ -648,6 +654,8 @@ public class CouponGiveService extends ShopBaseService {
                             if (affectedRows <= 0) {
                                 throw new BusinessException(JsonResultCode.CODE_FAIL);
                             }
+                            //减库存成功后，同步库存
+                            couponDetails.setSurplus(couponDetails.getSurplus()-1);
                         }
                         //发券操作
                         customerAvailCouponsRecord.insert();

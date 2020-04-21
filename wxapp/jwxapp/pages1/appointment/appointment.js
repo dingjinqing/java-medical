@@ -220,7 +220,7 @@ global.wxPage({
   onLoad: function (options) {
     let that = this
     scene = options.scene;
-    let serviceId = options.service_id
+    let serviceId = options.serviceId
     if (!serviceId && !scene) {
       that.toBack()
       return false
