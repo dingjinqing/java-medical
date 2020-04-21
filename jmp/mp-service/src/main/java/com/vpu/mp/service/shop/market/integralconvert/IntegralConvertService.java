@@ -361,11 +361,14 @@ public class IntegralConvertService extends ShopBaseService {
                 ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,DSL.sum(imr.NUMBER).as("sale_num"))
                 .from(GOODS_SPEC_PRODUCT)
                 .leftJoin(imp).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
-                .leftJoin(imr).on(imr.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .leftJoin(imr).on(imr.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID).and(imr.INTEGRAL_MALL_DEFINE_ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)))
                 .where(imp.PRODUCT_ID.eq(prdId)).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
                 .groupBy(imp.MONEY, imp.SCORE, imp.STOCK,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC
                     ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
                 .fetchOneInto(IntegralConvertProductVo.class);
+            if (listVo.getSaleNum()==null){
+                listVo.setSaleNum((short)0);
+            }
             listVo.setRemainStock(listVo.getStock()-listVo.getSaleNum());
             productList.add(listVo);
         }
