@@ -31,7 +31,7 @@ global.wxPage({
     var that = this;
     that.setData({
       couponSn: options.couponSn,
-      couponId: Number(options.id),
+      couponId: Number(options.couponId),
       couponStatus: options.type
     })
     // 查看详情
