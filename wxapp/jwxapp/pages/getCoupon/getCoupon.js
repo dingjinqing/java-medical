@@ -41,9 +41,9 @@ global.wxPage({
         type: options.type 
       })
     }
-    if (options.couponSn || options.id || options.scene) {
+    if (options.couponSn || options.couponId || options.scene) {
       couponSn = options.couponSn
-      couponId = Number(options.id)
+      couponId = Number(options.couponId)
       // 个人中心查看详情
       util.api("api/wxapp/coupon/detail", function (res) {
         if (res.error == 0) {
