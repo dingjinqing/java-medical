@@ -116,7 +116,7 @@ public class ReturnMethodService extends ShopBaseService{
 	 * @return
 	 * @throws MpException
 	 */
-	public void refundBkMoney(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
+	public void refundBkOrderMoney(OrderInfoVo order , Integer retId ,BigDecimal money) throws MpException {
 		refundMoneyPaid(order, retId, money);
 	}
 	/**
