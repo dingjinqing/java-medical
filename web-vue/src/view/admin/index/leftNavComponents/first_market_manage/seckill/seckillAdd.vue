@@ -118,8 +118,7 @@
                 <el-form-item
                   :prop="'secKillProduct.'+scope.$index+'.secKillPrice'"
                   :rules="[
-                    { required: true, message: '秒杀价不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateMoney(rule, value, callback, scope.row.shopPrice)}, trigger: ['blur', 'change'] }
+                    { required: true, message: '秒杀价不能为空', trigger: 'blur' }
                   ]"
                 >
                   <div
@@ -159,8 +158,7 @@
                 <el-form-item
                   :prop="'secKillProduct.' + scope.$index+ '.stock'"
                   :rules="[
-                    { required: true, message: '秒杀库存不能为空', trigger: 'blur' },
-                    { validator: (rule, value, callback)=>{validateNum(rule, value, callback, scope.row.goodsNumber)}, trigger: ['blur', 'change'] }
+                    { required: true, message: '秒杀库存不能为空', trigger: 'blur' }
                   ]"
                 >
                   <div
@@ -617,6 +615,11 @@ export default {
             goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
           }
         })
+      } else {
+        goodsInfo.priceErrorMsg = null
+        if (goodsInfo.secKillPrice > goodsInfo.shopPrice) {
+          goodsInfo.priceErrorMsg = '有规格秒杀价大于原价，请修改'
+        }
       }
     },
     changeStockInput (goodsInfo, isDialog = null) {
@@ -630,6 +633,11 @@ export default {
             goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
           }
         })
+      } else {
+        goodsInfo.stockErrorMsg = null
+        if (goodsInfo.stock > goodsInfo.goodsNumber) {
+          goodsInfo.stockErrorMsg = '有规格秒杀库存大于原库存，请修改'
+        }
       }
     },
 
