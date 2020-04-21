@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="searchContent">
-      <div class="headerTab">
-        <div
-          class="tabItem"
-          @click="tabItemClicked('goodsForSale')"
-        >{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
-        <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
-        <div
-          class="tabItem"
-          @click="tabItemClicked('goodsForInStock')"
-        >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
-      </div>
+      <!--<div class="headerTab">-->
+        <!--<div-->
+          <!--class="tabItem"-->
+          <!--@click="tabItemClicked('goodsForSale')"-->
+        <!--&gt;{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>-->
+        <!--<div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>-->
+        <!--<div-->
+          <!--class="tabItem"-->
+          <!--@click="tabItemClicked('goodsForInStock')"-->
+        <!--&gt;{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>-->
+      <!--</div>-->
       <allGoodsHeader
         ref="goodsHeaderFormCmp"
         :initSortCatParams="initFilterData"
@@ -72,13 +72,11 @@ export default {
     saleOut
   },
   methods: {
-    tabItemClicked (routerName) {
-      this.$router.push({ name: routerName })
-    },
+    // tabItemClicked (routerName) {
+    //   this.$router.push({ name: routerName })
+    // },
     /* 更新排序字段 */
     sortChange (prop, order) {
-      console.log(prop)
-      console.log(order)
       if (order === null) {
         this.sortData.orderField = null
         this.sortData.orderDirection = null

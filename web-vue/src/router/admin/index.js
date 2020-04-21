@@ -479,16 +479,15 @@ const routes = [{
           // 商品管理/已售罄
           {
             path: '/admin/home/main/goodsManage/goodsForSaleOut',
-            name: 'goodsForSaleOut',
+            name: 'sale_out',
             meta: {
               crumbTitle: 'router.goodsForSaleOut',
-              meta: 'goods_manage',
-              category: 'sale_on'
+              meta: 'goods_manage'
             },
             component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
-              )
+                import(
+                  '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
+                )
           },
           // 商品管理/仓库中
           {
