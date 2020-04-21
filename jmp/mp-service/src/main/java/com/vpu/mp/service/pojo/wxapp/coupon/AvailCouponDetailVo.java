@@ -21,7 +21,6 @@ public class AvailCouponDetailVo {
      * 优惠券活动ID
      */
     public Integer actId;
-<<<<<<< HEAD
     /**
      * 优惠券编码
      */
@@ -30,8 +29,6 @@ public class AvailCouponDetailVo {
      * 优惠券类型；0：普通优惠券；1：分裂优惠券
      */
     public Integer couponType;
-=======
->>>>>>> 6fb060bda1... 优惠券列表、详情添加actId；
 	/**
 	 * 优惠券名称
 	 */

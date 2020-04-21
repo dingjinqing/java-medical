@@ -20,13 +20,10 @@ public class AvailCouponVo {
      * 优惠券活动ID
      */
     public Integer actId;
-<<<<<<< HEAD
     /**
      * random 分裂优惠券随机金额
      */
 	private String actCode;
-=======
->>>>>>> 6fb060bda1... 优惠券列表、详情添加actId；
 	/**
 	 * 优惠券名称
 	 */
