@@ -508,6 +508,8 @@ export const en = {
   memberCardOrder: ['Order management', 'Virtual goods order'],
   // 订单管理 手动退货退款
   manualRefund: ['Order management', 'Manual return refund'],
+  // 订单管理 批量发货
+  bulk_shipment: ['Order Management', 'Bulk Delivery'],
 
   // 门店管理 门店列表
   store_list: ['Store management', 'Stores list'],
