@@ -28,8 +28,12 @@ public class OrderGoodsRebateService extends ShopBaseService {
         BigDecimal goodsTotalRebateMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
         for (RebateRecord rebateRecord: rebateRecords) {
             OrderGoodsRebateRecord record = db().newRecord(TABLE);
+            record.setRebateUserId(rebateRecord.getUserId());
+            record.setGoodsId(bo.getGoodsId());
             record.setOrderSn(orderSn);
+            record.setRebateLevel(rebateRecord.getRebateLevel());
             record.setProductId(bo.getProductId());
+            record.setRebatePercent(rebateRecord.getRatio());
             record.setTotalRebateMoney(BigDecimalUtil.multiply(canRebateMoney, rebateRecord.getRatio()));
             record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
             goodsTotalRebateMoney = goodsTotalRebateMoney.add(record.getTotalRebateMoney());
