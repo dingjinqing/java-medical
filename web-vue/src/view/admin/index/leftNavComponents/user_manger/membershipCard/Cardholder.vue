@@ -191,7 +191,7 @@
   </div>
 </template>
 <script>
-import { getAllCardHolders, exportExcel } from '@/api/admin/memberManage/memberCard.js'
+import { getAllCardHolders, exportExcel, deleteUserCardRequest } from '@/api/admin/memberManage/memberCard.js'
 import { download } from '@/util/excelUtil.js'
 export default {
   components: { Pagination: () => import('@/components/admin/pagination/pagination') },
@@ -304,7 +304,12 @@ export default {
         })
       } else if (index === 2) {
         //  废除
-
+        deleteUserCardRequest({ cardNo: row.cardNo }).then(res => {
+          if (res.error === 0) {
+            this.$message.success(this.$t('membershipIntroduction.deleteCardSuccess'))
+            this.defaultData()
+          }
+        })
       }
     },
 
