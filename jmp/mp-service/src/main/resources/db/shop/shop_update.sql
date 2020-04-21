@@ -375,6 +375,10 @@ ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 C
 ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+--订单返利商品表添加 商品行ID
+ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
+
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
@@ -410,6 +414,11 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 );
+
+
+-- 2020年04月20日 会员卡添加折扣不予营销活动公用
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_action` varchar(10) DEFAULT NULL COMMENT '不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠';
+
 
 /*********************2.12*************************END*/
 

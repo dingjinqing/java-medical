@@ -286,6 +286,7 @@ export const cn = {
   returnFinishTime: '退货完成时间',
   otherInfo: '其他信息',
   orderRealName: '真实姓名',
+  rebate: '返利金额',
   orderCid: '身份证号',
   custom: '自定义下单必填信息',
   orderExportConfirmTip_1: '根据以下条件筛选出',

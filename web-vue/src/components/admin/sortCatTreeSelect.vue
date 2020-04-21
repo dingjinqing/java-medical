@@ -63,14 +63,14 @@ export default {
   },
   props: {
     /* 是否需要查询商品数量相关信息 needGoodsNum：true是 false 否，isOnSale：1查询在售商品，0查询下架商品，
-    isSaleOut: true查询售罄，false查询有货，selectType：1 以商品数量为单位查询数量，2 以规格为单位查询数量  */
+    isSaleOut: 0查询售罄，1查询有货，selectType：1 以商品数量为单位查询数量，2 以规格为单位查询数量  */
     filterGoodsInfo: {
       type: Object,
       default: function () {
         return {
           needGoodsNum: true,
           isOnSale: 1,
-          isSaleOut: false,
+          isSaleOut: 0,
           selectType: 1
         }
       }

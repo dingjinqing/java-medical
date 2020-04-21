@@ -1780,7 +1780,7 @@ public class FriendPromoteService extends ShopBaseService {
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
             .fetchOneInto(String.class);
-        String pathParam = "actCode="+actCode+"&launchId="+0+"&inviteId=";
+        String pathParam = "actCode="+actCode;
         String imgUrl = qrCode.getMpQrCode(QrCodeTypeEnum.FRIEND_HELP_SHARE,pathParam);
         ShareQrCodeVo share = new ShareQrCodeVo();
         share.setImageUrl(imgUrl);

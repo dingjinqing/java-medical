@@ -459,31 +459,30 @@ public class GoodsService extends ShopBaseService {
      * @return condition 拼装后的过滤条件
      */
     private Condition buildIsOnSaleOptions(Condition condition, GoodsPageListParam goodsPageListParam) {
-        // 查询在售（包含售罄商品和规格）
+        // 查询在售
         if (GoodsConstant.ON_SALE.equals(goodsPageListParam.getIsOnSale())) {
             condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.ON_SALE));
-
-            // 查询商品列表的售罄
-            if (Boolean.TRUE.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
-                condition = condition.and(GOODS.GOODS_NUMBER.eq(0));
-            }
-            // 查询商品列表的未售罄
-            if (Boolean.FALSE.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
-                condition = condition.and(GOODS.GOODS_NUMBER.ne(0));
-            }
-            // 查询规格列表的售罄
-            if (Boolean.TRUE.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_PRD_LIST.equals(goodsPageListParam.getSelectType())) {
-                condition = condition.and(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0));
-            }
-            // 查询规格列表的未售罄
-            if (Boolean.FALSE.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_PRD_LIST.equals(goodsPageListParam.getSelectType())) {
-                condition = condition.and(GOODS_SPEC_PRODUCT.PRD_NUMBER.ne(0));
-            }
         }
         // 查询仓库中（下架）
-
         if (GoodsConstant.OFF_SALE.equals(goodsPageListParam.getIsOnSale())) {
             condition = condition.and(GOODS.IS_ON_SALE.eq(GoodsConstant.OFF_SALE));
+        }
+
+        // 查询商品列表的售罄
+        if (GoodsConstant.SALE_OUT.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
+            condition = condition.and(GOODS.GOODS_NUMBER.eq(0));
+        }
+        // 查询商品列表的未售罄
+        if (GoodsConstant.NOT_SALE_OUT.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_LIST.equals(goodsPageListParam.getSelectType())) {
+            condition = condition.and(GOODS.GOODS_NUMBER.ne(0));
+        }
+        // 查询规格列表的售罄
+        if (GoodsConstant.SALE_OUT.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_PRD_LIST.equals(goodsPageListParam.getSelectType())) {
+            condition = condition.and(GOODS_SPEC_PRODUCT.PRD_NUMBER.eq(0));
+        }
+        // 查询规格列表的未售罄
+        if (GoodsConstant.NOT_SALE_OUT.equals(goodsPageListParam.getIsSaleOut()) && GoodsPageListParam.GOODS_PRD_LIST.equals(goodsPageListParam.getSelectType())) {
+            condition = condition.and(GOODS_SPEC_PRODUCT.PRD_NUMBER.ne(0));
         }
         return condition;
     }

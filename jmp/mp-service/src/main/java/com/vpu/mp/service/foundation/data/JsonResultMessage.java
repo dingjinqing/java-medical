@@ -890,6 +890,8 @@ public class JsonResultMessage {
     public static final String ORDER_EXPORT_COLUMN_ORDER_REAL_NAME = "order.export.column.order_real_name";
     public static final String ORDER_EXPORT_COLUMN_ORDER_CID = "order.export.column.order_cid";
     public static final String ORDER_EXPORT_COLUMN_CUSTOM = "order.export.column.custom";
+    public static final String ORDER_EXPORT_COLUMN_REBATE_LEVEL_ONE= "order.export.column.rebate_level_one";
+    public static final String ORDER_EXPORT_COLUMN_REBATE_LEVEL_TWO = "order.export.column.rebate_level_two";
     /**
      * 订单列表导出内容
      */

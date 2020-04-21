@@ -15,15 +15,58 @@
               v-if="item.value === '0'"
             >
               <span slot="label">
-                <span>全部</span>
+                <span>全部<span class="wait_num">0</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
               :label="item.label"
               :name="item.value"
               :key="item.value"
-              v-else
+               v-if="item.value === '1' && target === 'Record'"
             >
+              <span slot="label">
+                <span>待审核<span class="wait_num">0</span></span>
+              </span>
+            </el-tab-pane>
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+               v-if="item.value === '2' && target === 'Record'"
+            >
+              <span slot="label">
+                <span>审核通过<span class="wait_num">0</span></span>
+              </span>
+            </el-tab-pane>
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+               v-if="item.value === '3' && target === 'Record'"
+            >
+              <span slot="label">
+                <span>未通过<span class="wait_num">0</span></span>
+              </span>
+            </el-tab-pane>
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+               v-if="item.value === '4'"
+            >
+              <span slot="label">
+                <span>置顶评论<span class="wait_num">0</span></span>
+              </span>
+            </el-tab-pane>
+            <el-tab-pane
+              :label="item.label"
+              :name="item.value"
+              :key="item.value"
+               v-if="item.value === '5'"
+            >
+              <span slot="label">
+                <span>买家秀<span class="wait_num">0</span></span>
+              </span>
             </el-tab-pane>
           </template>
         </el-tabs>
@@ -70,7 +113,7 @@
               ></el-input>
             </div>
           </el-col>
-          <el-col :span="6" v-if="target === 'Record'">
+          <!-- <el-col :span="6" v-if="target === 'Record'">
             <div class="filters_item">
               <span>{{ $t("evaluation.auditState") + "：" }}</span>
               <el-select
@@ -87,7 +130,7 @@
                 ></el-option>
               </el-select>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="6">
             <div class="filters_item">
               <span>{{ $t("evaluation.evaluationGrade") + "：" }}</span>
@@ -484,7 +527,11 @@ export default {
       tabDefaultStatus: '0',
       tabsStatus: [
         { value: '0', label: '全部' },
-        { value: '1', label: '置顶评论' }
+        { value: '1', label: '待审核' },
+        { value: '2', label: '审核通过' },
+        { value: '3', label: '未通过' },
+        { value: '4', label: '置顶评论' },
+        { value: '5', label: '买家秀' }
       ],
       pageParams: {
         currentPage: 1,
@@ -626,7 +673,16 @@ export default {
     handleClick (data) {
       console.log(data)
       this.tabDefaultStatus = String(data.name)
-      this.searchParams.isTop = data.name === '1' ? 1 : 0
+      this.searchParams.isTop = data.name === '4' ? 1 : 0
+      this.searchParams.flag = -1
+      if (['1', '2', '3'].includes(data.name)) {
+        let flag = {
+          '1': 0,
+          '2': 1,
+          '3': 2
+        }
+        this.searchParams.flag = flag[data.name]
+      }
       this.pageParams.currentPage = 1
       this.initDataList()
     },
@@ -809,6 +865,18 @@ export default {
   }
 }
 .filter-status{
+  .wait_num {
+    position: relative;
+    top: -7px;
+    right: 0;
+    border-radius: 10px;
+    background: #ff9d0e;
+    color: #fff;
+    line-height: 1;
+    font-size: 11px;
+    text-align: center;
+    padding: 2px 5px;
+  }
   /deep/ .el-tabs__nav-wrap::after{
     content:none;
   }

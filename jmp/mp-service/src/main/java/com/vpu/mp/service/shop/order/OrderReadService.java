@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order;
 
 import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
@@ -59,6 +60,7 @@ import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
+import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.goods.FootPrintService;
 import com.vpu.mp.service.shop.goods.GoodsCommentService;
@@ -175,6 +177,8 @@ public class OrderReadService extends ShopBaseService {
     private GroupDrawService groupDrawService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    private OrderGoodsRebateService orderGoodsRebate;
 	/**
 	 * 订单查询
 	 * @param param
@@ -1109,6 +1113,16 @@ public class OrderReadService extends ShopBaseService {
             if(columns.contains(OrderExportVo.SHIPPING_NAME)){
                 if(order.getShippingId() != null && order.getShippingId() > 0){
                     order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
+                }
+            }
+            if(columns.contains(OrderExportVo.REBATE)){
+                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(),order.getGoodsId(),order.getProductId());
+                for(OrderGoodsRebateRecord r : orderRebate){
+                    if(r.getRebateLevel().equals(DistributionConstant.REBATE_LEVEL_1)){
+                        order.setRebateLevelOne(r.getRealRebateMoney());
+                    }else if(r.getRebateLevel().equals(DistributionConstant.REBATE_LEVEL_2)){
+                        order.setRebateLevelTwo(r.getRealRebateMoney());
+                    }
                 }
             }
         }

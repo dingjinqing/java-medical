@@ -31,6 +31,8 @@ public class IntegralConvertProductVo {
 	
 	/** 兑换商品库存 */
 	private Short stock;
+	private Integer remainStock;
+	private Short saleNum;
 
 
 	

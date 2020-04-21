@@ -41,7 +41,12 @@ public class EsFactSearchService extends EsBaseSearchService{
 
     public GoodsFilterItemInitVo assemblyFactByAdminGoodsListInit(GoodsFilterItemInitParam initParam) throws Exception {
         GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
-        goodsPageListParam.setIsSaleOut(initParam.getIsSaleOut());
+        if (goodsPageListParam.getIsSaleOut() != null) {
+            goodsPageListParam.setIsSaleOut(initParam.getIsSaleOut());
+        }
+        if (goodsPageListParam.getIsOnSale() != null) {
+            goodsPageListParam.setIsOnSale(initParam.getIsOnSale());
+        }
         goodsPageListParam.setIsOnSale(initParam.getIsOnSale());
         goodsPageListParam.setSelectType(initParam.getSelectType());
 
