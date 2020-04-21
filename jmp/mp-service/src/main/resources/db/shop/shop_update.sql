@@ -375,6 +375,9 @@ ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 C
 ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+-- 2020年04月21日 ws
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT NULL COMMENT '返利配置详情';
 /*********************2.11*************************END*/
 
 
