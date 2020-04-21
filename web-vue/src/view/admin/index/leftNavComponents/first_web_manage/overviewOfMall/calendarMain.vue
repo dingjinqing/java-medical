@@ -22,13 +22,56 @@
       </div>
       <div class="mainBottom">
         <ul class="calendar_info_box">
-          <li class="calendar_info_line">
-            <div class="left_line_content  pass   content_none ">
+          <li
+            class="calendar_info_line"
+            v-for="(item,index) in calenderData"
+            :key="index"
+            :id="item.isInvalid?'':'targetbox'"
+          >
+            <div
+              class="left_line_content  content_none"
+              :class="item.isInvalid?'pass':''"
+            >
               <div class="month_box">
-                <div class="month">01月</div>
+                <div class="month">{{item.month}}月</div>
               </div>
             </div>
-            <div class="no_style_line"></div>
+            <div
+              v-if="item.data.length===0"
+              class="no_style_line"
+            ></div>
+            <div
+              v-if="item.data.length>0"
+              class="calendar_info_container"
+            >
+              <div
+                class="calendar_info_item"
+                :class="item.isInvalid?'':'in_progress'"
+                v-for="(itemC,indexC) in item.data"
+                :key="indexC"
+              >
+                <div class="top_text">
+                  {{itemC.dateTime}}
+                </div>
+                <div class="middle_text">{{itemC.eventName}}</div>
+                <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
+                <div class="shadow_set">
+                  <div class="shadow_setMain">
+                    <a
+                      href="javascript:;"
+                      style="margin-right:20px"
+                      @click="handleToEdit(itemC)"
+                    ><i class="iconfont iconbianji"></i></a>
+                    <a
+                      href="javascript:;"
+                      style="margin-left:20px"
+                      @click="handleToDel(indexC)"
+                    ><i class="iconfont iconshanchu2"></i></a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </li>
         </ul>
       </div>
@@ -49,12 +92,99 @@ export default {
         value: 2,
         label: '2020年'
       }],
-      dateValue: 2
+      dateValue: -1,
+      calenderData: [{
+        month: '01',
+        data: [],
+        isInvalid: true
+      },
+      {
+        month: '02',
+        data: [],
+        isInvalid: true
+      },
+      {
+        month: '03',
+        data: [],
+        isInvalid: true
+      },
+      {
+        month: '04',
+        data: [],
+        isInvalid: false
+      },
+      {
+        month: '05',
+        data: [],
+        isInvalid: false
+      },
+      {
+        month: '06',
+        data: [
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
+          }
+        ],
+        isInvalid: false
+      },
+      {
+        month: '07',
+        data: [],
+        isInvalid: false
+      },
+      {
+        month: '08',
+        data: [],
+        isInvalid: false
+      },
+      {
+        month: '09',
+        data: [],
+        isInvalid: false
+      },
+      {
+        month: '10',
+        data: ['1'],
+        isInvalid: false
+      },
+      {
+        month: '11',
+        data: ['1', '2'],
+        isInvalid: false
+      },
+      {
+        month: '12',
+        data: [],
+        isInvalid: false
+      }],
+      target: -1
+    }
+  },
+  mounted () {
+    // 初始数据处理
+    this.handleToInit()
+  },
+  methods: {
+    // 初始数据处理
+    handleToInit () {
+      this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
+      document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
+    },
+    // 点击编辑
+    handleToEdit (itemC) {
+      console.log(itemC)
+    },
+    // 点击删除
+    handleToDel (indexC) {
+      console.log(indexC)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .calendarMain {
   padding: 10px;
   min-width: 100%;
@@ -135,6 +265,89 @@ export default {
             width: 100%;
             margin: 40px 0;
             margin-left: 26px;
+          }
+          .calendar_info_container {
+            .calendar_info_item {
+              width: 195px;
+              height: 140px;
+              border-radius: 6px;
+              text-align: center;
+              padding-bottom: 10px;
+              position: relative;
+              min-width: 0;
+              margin-left: 24px;
+              margin-bottom: 20px;
+              border: solid 1px #dddddd;
+              box-sizing: border-box;
+
+              .top_text {
+                line-height: 40px;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                background: #ccc;
+                color: #fff;
+                margin: -1px -1px 0 -1px;
+                font-size: 16px;
+                overflow: hidden;
+                position: relative;
+              }
+              .middle_text {
+                color: #333;
+                font-size: 18px;
+                font-weight: 600;
+                margin-top: 18px;
+                margin-bottom: 11px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+              .bottom_text {
+                line-height: 28px;
+                font-size: 16px;
+                color: #999;
+              }
+
+              .shadow_setMain {
+                top: 0;
+                left: 0;
+                width: 195px;
+                height: 140px;
+                display: flex;
+                position: absolute;
+                background-color: rgba(0, 0, 0, 0);
+                border-radius: 4px;
+                z-index: 3;
+                justify-content: center;
+                align-items: center;
+                transition: background-color 0.5s ease;
+                a {
+                  text-decoration: none !important;
+                  i {
+                    color: #fff;
+                    font-size: 24px;
+                  }
+                }
+              }
+              .shadow_set {
+                display: none;
+              }
+              &:hover {
+                .shadow_set {
+                  display: block !important;
+                  .shadow_setMain {
+                    background-color: rgba(0, 0, 0, 0.5);
+                  }
+                }
+              }
+            }
+            .in_progress {
+              .top_text {
+                background: #f66;
+              }
+              .bottom_text {
+                color: #333;
+              }
+            }
           }
         }
       }
