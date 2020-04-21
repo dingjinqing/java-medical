@@ -233,6 +233,8 @@ public class OrderExportVo {
     public static final String ORDER_CID = "orderCid";
     public static final String CUSTOM = "custom";
     public static final String REBATE = "rebate";
+    public static final String REBATE_LEVEL_ONE = "rebateLevelOne";
+    public static final String REBATE_LEVEL_TWO = "rebateLevelTwo";
 
     public static final String LANGUAGE_TYPE_EXCEL = "excel";
 

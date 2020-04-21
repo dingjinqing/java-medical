@@ -38,4 +38,12 @@ public class CouponDetailsVo {
     private BigDecimal leastConsume;
     /**优惠券类型，0：普通优惠券；1：分裂优惠券*/
     private Byte type;
+  /**
+   * 最大面额
+   */
+  private BigDecimal randomMin;
+  /**
+   * 最小面额
+   */
+    private BigDecimal randomMax;
 }

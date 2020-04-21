@@ -8,15 +8,26 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +43,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Bargain extends TableImpl<BargainRecord> {
 
-    private static final long serialVersionUID = -632077610;
+    private static final long serialVersionUID = 1136766467;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_bargain</code>
@@ -191,6 +202,31 @@ public class Bargain extends TableImpl<BargainRecord> {
      * The column <code>mini_shop_471752.b2c_bargain.first</code>. 优先级
      */
     public final TableField<BargainRecord, Integer> FIRST = createField("first", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.activity_copywriting</code>. 自定义活动说明
+     */
+    public final TableField<BargainRecord, String> ACTIVITY_COPYWRITING = createField("activity_copywriting", org.jooq.impl.SQLDataType.CLOB, this, "自定义活动说明");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.launch_tag</code>. 是否给发起砍价用户打标签
+     */
+    public final TableField<BargainRecord, Byte> LAUNCH_TAG = createField("launch_tag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否给发起砍价用户打标签");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.launch_tag_id</code>. 发起砍价活动用户打标签id
+     */
+    public final TableField<BargainRecord, String> LAUNCH_TAG_ID = createField("launch_tag_id", org.jooq.impl.SQLDataType.VARCHAR(20), this, "发起砍价活动用户打标签id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.attend_tag</code>. 是否参与砍价用户打标签
+     */
+    public final TableField<BargainRecord, Byte> ATTEND_TAG = createField("attend_tag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否参与砍价用户打标签");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_bargain.attend_tag_id</code>. 参与砍价活动用户打标签id
+     */
+    public final TableField<BargainRecord, String> ATTEND_TAG_ID = createField("attend_tag_id", org.jooq.impl.SQLDataType.VARCHAR(20), this, "参与砍价活动用户打标签id");
 
     /**
      * Create a <code>mini_shop_471752.b2c_bargain</code> table reference

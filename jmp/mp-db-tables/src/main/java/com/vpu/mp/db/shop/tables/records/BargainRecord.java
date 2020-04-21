@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
 
-    private static final long serialVersionUID = -29477714;
+    private static final long serialVersionUID = -1998590934;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_bargain.id</code>.
@@ -434,6 +434,76 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
         return (Integer) get(28);
     }
 
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.activity_copywriting</code>. 自定义活动说明
+     */
+    public void setActivityCopywriting(String value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.activity_copywriting</code>. 自定义活动说明
+     */
+    public String getActivityCopywriting() {
+        return (String) get(29);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.launch_tag</code>. 是否给发起砍价用户打标签
+     */
+    public void setLaunchTag(Byte value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.launch_tag</code>. 是否给发起砍价用户打标签
+     */
+    public Byte getLaunchTag() {
+        return (Byte) get(30);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.launch_tag_id</code>. 发起砍价活动用户打标签id
+     */
+    public void setLaunchTagId(String value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.launch_tag_id</code>. 发起砍价活动用户打标签id
+     */
+    public String getLaunchTagId() {
+        return (String) get(31);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.attend_tag</code>. 是否参与砍价用户打标签
+     */
+    public void setAttendTag(Byte value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.attend_tag</code>. 是否参与砍价用户打标签
+     */
+    public Byte getAttendTag() {
+        return (Byte) get(32);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_bargain.attend_tag_id</code>. 参与砍价活动用户打标签id
+     */
+    public void setAttendTagId(String value) {
+        set(33, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_bargain.attend_tag_id</code>. 参与砍价活动用户打标签id
+     */
+    public String getAttendTagId() {
+        return (String) get(33);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -460,7 +530,7 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
     /**
      * Create a detached, initialised BargainRecord
      */
-    public BargainRecord(Integer id, String bargainName, String goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig, Byte bargainType, BigDecimal floorPrice, Byte bargainMoneyType, BigDecimal bargainFixedMoney, BigDecimal bargainMinMoney, BigDecimal bargainMaxMoney, Byte freeFreight, Byte needBindMobile, Integer initialSales, Integer first) {
+    public BargainRecord(Integer id, String bargainName, String goodsId, Timestamp startTime, Timestamp endTime, Integer expectationNumber, BigDecimal expectationPrice, Double bargainMin, Double bargainMax, Integer stock, Integer saleNum, String mrkingVoucherId, Byte status, Byte delFlag, Timestamp createTime, Timestamp updateTime, Timestamp delTime, String rewardCouponId, String shareConfig, Byte bargainType, BigDecimal floorPrice, Byte bargainMoneyType, BigDecimal bargainFixedMoney, BigDecimal bargainMinMoney, BigDecimal bargainMaxMoney, Byte freeFreight, Byte needBindMobile, Integer initialSales, Integer first, String activityCopywriting, Byte launchTag, String launchTagId, Byte attendTag, String attendTagId) {
         super(Bargain.BARGAIN);
 
         set(0, id);
@@ -492,5 +562,10 @@ public class BargainRecord extends UpdatableRecordImpl<BargainRecord> {
         set(26, needBindMobile);
         set(27, initialSales);
         set(28, first);
+        set(29, activityCopywriting);
+        set(30, launchTag);
+        set(31, launchTagId);
+        set(32, attendTag);
+        set(33, attendTagId);
     }
 }
