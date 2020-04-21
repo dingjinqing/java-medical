@@ -18,67 +18,94 @@
         <el-button
           type="primary"
           size="small"
+          @click="handleToAdd(true)"
         >添加营销事件</el-button>
       </div>
       <div class="mainBottom">
-        <ul class="calendar_info_box">
-          <li
-            class="calendar_info_line"
-            v-for="(item,index) in calenderData"
-            :key="index"
-            :id="item.isInvalid?'':'targetbox'"
-          >
-            <div
-              class="left_line_content  content_none"
-              :class="item.isInvalid?'pass':''"
-            >
-              <div class="month_box">
-                <div class="month">{{item.month}}月</div>
-              </div>
-            </div>
-            <div
-              v-if="item.data.length===0"
-              class="no_style_line"
-            ></div>
-            <div
-              v-if="item.data.length>0"
-              class="calendar_info_container"
+        <vue-scroll
+          :ops="ops"
+          style="height:520px"
+        >
+          <ul class="calendar_info_box">
+            <li
+              class="calendar_info_line"
+              v-for="(item,index) in calenderData"
+              :key="index"
+              :id="item.isInvalid?'':'targetbox'"
             >
               <div
-                class="calendar_info_item"
-                :class="item.isInvalid?'':'in_progress'"
-                v-for="(itemC,indexC) in item.data"
-                :key="indexC"
+                class="left_line_content  content_none"
+                :class="item.isInvalid?'pass':''"
               >
-                <div class="top_text">
-                  {{itemC.dateTime}}
-                </div>
-                <div class="middle_text">{{itemC.eventName}}</div>
-                <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
-                <div class="shadow_set">
-                  <div class="shadow_setMain">
-                    <a
-                      href="javascript:;"
-                      style="margin-right:20px"
-                      @click="handleToEdit(itemC)"
-                    ><i class="iconfont iconbianji"></i></a>
-                    <a
-                      href="javascript:;"
-                      style="margin-left:20px"
-                      @click="handleToDel(indexC)"
-                    ><i class="iconfont iconshanchu2"></i></a>
-                  </div>
-
+                <div class="month_box">
+                  <div class="month">{{item.month}}月</div>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
+              <div
+                v-if="item.data.length===0"
+                class="no_style_line"
+              ></div>
+              <div
+                v-if="item.data.length>0"
+                class="calendar_info_container"
+              >
+                <div
+                  class="calendar_info_item"
+                  :class="item.isInvalid?'':'in_progress'"
+                  v-for="(itemC,indexC) in item.data"
+                  :key="indexC"
+                >
+                  <div class="top_text">
+                    {{itemC.dateTime}}
+                  </div>
+                  <div class="middle_text">{{itemC.eventName}}</div>
+                  <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
+                  <div class="shadow_set">
+                    <div class="shadow_setMain">
+                      <a
+                        href="javascript:;"
+                        style="margin-right:20px"
+                        @click="handleToAdd(false,1)"
+                      ><i class="iconfont iconbianji"></i></a>
+                      <a
+                        href="javascript:;"
+                        style="margin-left:20px"
+                        @click="handleToDel(index,indexC)"
+                      ><i class="iconfont iconshanchu2"></i></a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </vue-scroll>
       </div>
     </div>
+    <!--二次删除缺人弹窗-->
+    <el-dialog
+      title="提醒"
+      :visible.sync="dialogVisible"
+      width="20%"
+    >
+      <div style="text-align:center">确认删除本事件么？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToDelSure(delIndex,delIndexC)"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
+import vuescroll from 'vuescroll'
+import Vue from 'vue'
+Vue.use(vuescroll)
 export default {
   data () {
     return {
@@ -125,6 +152,31 @@ export default {
             dateTime: '04-20',
             eventName: '常乐事件添加',
             status: 1
+          },
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
+          },
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
+          },
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
+          },
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
+          },
+          {
+            dateTime: '04-20',
+            eventName: '常乐事件添加',
+            status: 1
           }
         ],
         isInvalid: false
@@ -146,12 +198,12 @@ export default {
       },
       {
         month: '10',
-        data: ['1'],
+        data: [],
         isInvalid: false
       },
       {
         month: '11',
-        data: ['1', '2'],
+        data: [],
         isInvalid: false
       },
       {
@@ -159,7 +211,24 @@ export default {
         data: [],
         isInvalid: false
       }],
-      target: -1
+      target: -1,
+      dialogVisible: false, // 二次删除弹窗flag
+      delIndex: -1,
+      delIndexC: -1,
+      ops: { // 滚动相关设置
+        vuescroll: {
+          mode: 'native'
+        },
+        scrollPanel: {},
+        rail: {
+          keepShow: true
+        },
+        bar: {
+          hoverStyle: true,
+          onlyShowBarOnScroll: false, // 是否只有滚动的时候才显示滚动条
+          background: '#eee'
+        }
+      }
     }
   },
   mounted () {
@@ -177,8 +246,33 @@ export default {
       console.log(itemC)
     },
     // 点击删除
-    handleToDel (indexC) {
-      console.log(indexC)
+    handleToDel (index, indexC) {
+      this.delIndex = index
+      this.delIndexC = indexC
+      this.dialogVisible = true
+    },
+    handleToDelSure (index, indexC) {
+      this.calenderData[index].data.splice(indexC, 1)
+      this.dialogVisible = false
+    },
+    // 点击添加营销事件
+    handleToAdd (flag, item) {
+      if (flag) {
+        this.$router.push({
+          name: 'addCalendarMain',
+          query: {
+            isAdd: true
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'addCalendarMain',
+          query: {
+            isAdd: false,
+            id: item
+          }
+        })
+      }
     }
   }
 }
@@ -208,6 +302,9 @@ export default {
       top: 80px;
       bottom: 0;
       overflow: auto;
+      /deep/ .__view {
+        background-color: #fff;
+      }
       .calendar_info_box {
         display: flex;
         flex-direction: column;
@@ -267,6 +364,8 @@ export default {
             margin-left: 26px;
           }
           .calendar_info_container {
+            display: flex;
+            flex-wrap: wrap;
             .calendar_info_item {
               width: 195px;
               height: 140px;

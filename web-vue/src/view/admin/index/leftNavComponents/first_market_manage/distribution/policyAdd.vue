@@ -49,6 +49,16 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item
+          label="佣金计算方式："
+          prop="calculation"
+        >
+          <el-radio-group v-model="form.calculation">
+            <el-radio :label="1">商品实际支付金额 * 佣金比例</el-radio>
+            <el-radio :label="0">商品实际利润（实际支付金额-成本价）* 佣金比例</el-radio>
+          </el-radio-group>
+          <div class="text">注：未设置成本价的商品，计算佣金时，将以成本价为0元处理</div>
+        </el-form-item>
+        <el-form-item
           :label="$t('distribution.selfPurchase') + '：'"
           prop="selfPurchase"
         >
@@ -59,7 +69,10 @@
           <span class="tips">{{ $t('distribution.strategyTip4') }}</span>
           <div class="text">{{ $t('distribution.strategyTip5') }}</div>
         </el-form-item>
-        <el-form-item prop="costProtection">
+        <el-form-item
+          prop="costProtection"
+          v-if="form.calculation === 1"
+        >
           <template slot="label">
             <el-tooltip
               effect="dark"
@@ -294,6 +307,7 @@ export default {
         validity: '', // 有效期
         startTime: '',
         endTime: '',
+        calculation: 1, // 佣金计算方式
         selfPurchase: 1, // 分销员自购返利
         costProtection: 1, // 成本价保护
         firstRebate: 1, // 邀请新用户下首单返利配置

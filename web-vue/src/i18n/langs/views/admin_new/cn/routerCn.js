@@ -3,6 +3,7 @@ export const cn = {
   taskList: ['概况', '店铺助手'],
   // 营销日历
   calendar: ['概况', '营销日历'],
+  addCalendarMain: ['概况', '营销日历'],
   // 会员管理 会员列表
   membershipList: ['会员管理', '会员列表'],
   memberEditorList: ['会员管理', '会员编辑信息'],

@@ -40,6 +40,46 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item
+          label="活动预告："
+          prop="noticeRadio"
+        >
+          <div>
+            <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
+            <el-popover
+              placement="right-start"
+              width="220"
+              trigger="hover"
+            >
+              <el-image :src="$imageHost + '/image/admin/share/advance_seckill.jpg'"></el-image>
+              <el-button
+                slot="reference"
+                type="text"
+                style="margin: 0 20 0 0px"
+              >查看示例</el-button>
+            </el-popover>
+          </div>
+          <div>
+            <el-radio
+              v-model="form.noticeRadio"
+              :label="1"
+            >活动开始前
+              <el-input
+                v-model="form.noticeValue"
+                style="width: 80px;"
+                size="small"
+              ></el-input>小时进行预告
+            </el-radio>
+            <el-radio
+              v-model="form.noticeRadio"
+              :label="2"
+            >活动创建完成后即进行预告</el-radio>
+            <el-radio
+              v-model="form.noticeRadio"
+              :label="3"
+            >不进行活动预告</el-radio>
+          </div>
+        </el-form-item>
+        <el-form-item
           :label="'优先级' + '：'"
           prop="first"
         >
@@ -461,6 +501,8 @@ export default {
         validity: '', // 有效期
         startTime: '', // 开始时间
         endTime: '', // 结束时间
+        noticeRadio: 1, // 活动预告
+        noticeValue: '', // 预告时间值
         limitAmount: '', // 限购数量
         limitPaytime: '', // 支付有效时间
         secKillProduct: [], // 秒杀价格表格数据
@@ -486,6 +528,9 @@ export default {
         ],
         validity: [
           { required: true, message: '请填写有效期', trigger: 'change' }
+        ],
+        noticeRadio: [
+          { required: true, message: '请选择活动预告类型', trigger: 'change' }
         ],
         limitAmount: [
           { required: true, message: '请填写限购数量', trigger: 'change' }

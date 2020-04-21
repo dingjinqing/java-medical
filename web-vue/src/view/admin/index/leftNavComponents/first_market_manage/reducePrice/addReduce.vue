@@ -48,6 +48,46 @@
         >{{$t('reducePriceList.edit')}}</el-button>
       </el-form-item>
       <el-form-item
+        label="活动预告："
+        prop="noticeRadio"
+      >
+        <div>
+          <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
+          <el-popover
+            placement="right-start"
+            width="220"
+            trigger="hover"
+          >
+            <el-image :src="$imageHost + '/image/admin/share/advance_reduce.jpg'"></el-image>
+            <el-button
+              slot="reference"
+              type="text"
+              style="margin: 0 20 0 0px"
+            >查看示例</el-button>
+          </el-popover>
+        </div>
+        <div>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="1"
+          >活动开始前
+            <el-input
+              v-model="reduceData.noticeValue"
+              style="width: 80px;"
+              size="small"
+            ></el-input>小时进行预告
+          </el-radio>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="2"
+          >活动创建完成后即进行预告</el-radio>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="3"
+          >不进行活动预告</el-radio>
+        </div>
+      </el-form-item>
+      <el-form-item
         :label="$t('marketCommon.first') + '：'"
         prop="first"
       >
@@ -511,6 +551,8 @@ export default {
       reduceData: {
         name: '',
         effectiveDate: '',
+        noticeRadio: 1, // 活动预告
+        noticeValue: '', // 预告时间值
         first: 1, // 优先级
         isCycle: false,
         isLimit: '0',
@@ -533,6 +575,9 @@ export default {
         ],
         effectiveDate: [
           { required: true, message: '请填写有效期', trigger: 'change' }
+        ],
+        noticeRadio: [
+          { required: true, message: '请选择活动预告类型', trigger: 'change' }
         ],
         first: [
           { required: true, message: '请填写优先级', trigger: 'blur' }
@@ -1142,5 +1187,8 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.noticeTip {
+  color: #999;
 }
 </style>
