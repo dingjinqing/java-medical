@@ -1198,7 +1198,8 @@ export default {
         'hasBalance': this.balance,
         'hasCard': this.membershipCard,
         'hasDelete': this.noLanding,
-        'hasImport': this.importMembership
+        'hasImport': this.importMembership,
+        'isDistributor': this.isDistributor
       }
     },
     // 初始化会员列表数据

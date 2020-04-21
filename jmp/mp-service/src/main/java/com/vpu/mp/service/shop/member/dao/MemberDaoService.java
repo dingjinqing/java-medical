@@ -560,7 +560,7 @@ public class MemberDaoService extends ShopBaseService {
 	 */
 	private Condition getIsDistributorCondition(Byte isDistributor) {
 		Condition condition = DSL.noCondition();
-		if(isDistributor != null) {
+		if(isDistributor != null && !NumberUtils.BYTE_MINUS_ONE.equals(isDistributor)) {
 			condition = condition.and(USER.IS_DISTRIBUTOR.eq(isDistributor));
 		}
 		return condition;
