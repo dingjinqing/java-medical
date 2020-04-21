@@ -138,6 +138,10 @@ public class OrderExportVo {
     private String orderCid;  //身份证号
     @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_CUSTOM,columnIndex = 59)
     private String custom;  //自定义下单必填信息
+    @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_REBATE_LEVEL_ONE,columnIndex = 60)
+    private BigDecimal rebateLevelOne;  //一级返利
+    @ExcelColumn(columnName = JsonResultMessage.ORDER_EXPORT_COLUMN_REBATE_LEVEL_TWO,columnIndex = 61)
+    private BigDecimal rebateLevelTwo;  //二级返利
 
     @ExcelIgnore
     private Integer userId;
@@ -228,6 +232,9 @@ public class OrderExportVo {
     public static final String ORDER_REAL_NAME = "orderRealName";
     public static final String ORDER_CID = "orderCid";
     public static final String CUSTOM = "custom";
+    public static final String REBATE = "rebate";
+    public static final String REBATE_LEVEL_ONE = "rebateLevelOne";
+    public static final String REBATE_LEVEL_TWO = "rebateLevelTwo";
 
     public static final String LANGUAGE_TYPE_EXCEL = "excel";
 

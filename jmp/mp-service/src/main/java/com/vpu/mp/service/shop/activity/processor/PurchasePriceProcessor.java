@@ -36,9 +36,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_RULE;
+import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 
 /**
  * 加价购处理器
@@ -113,6 +115,8 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
                             CartActivityInfo.PurchasePriceRule cartPurchasePriceRule = new CartActivityInfo.PurchasePriceRule();
                             cartPurchasePriceRule.setFullPrice(rule.get(PURCHASE_PRICE_RULE.FULL_PRICE));
                             cartPurchasePriceRule.setPurchasePrice(rule.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
+                            cartPurchasePriceRule.setRuleId(rule.get(PURCHASE_PRICE_RULE.ID));
+                            cartPurchasePriceRule.setActivityId(rule.get(PURCHASE_PRICE_DEFINE.ID));
                             purchasePrice.getPurchasePriceRule().add(cartPurchasePriceRule);
                             if (purchasePrice.getRule() == null) {
                                 purchasePrice.setRule(cartPurchasePriceRule);
@@ -153,17 +157,20 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
             Integer k = entry.getKey();
             PurchasePriceCartBo v = entry.getValue();
             CartActivityInfo.PurchasePriceRule rule = v.getPurchasePrice().getRule();
+            //规则id
+            Map<Integer, CartActivityInfo.PurchasePriceRule> ruleMap = v.getPurchasePrice().getPurchasePriceRule().stream().collect(Collectors.toMap(CartActivityInfo.PurchasePriceRule::getRuleId, Function.identity()));
             PurchasePriceDefineRecord purchaseInfo = purchasePriceProcessorDao.getPurchaseInfo(k);
             int goodsNum = 0;
             Iterator<WxAppCartGoods> iterator = cartBo.getCartGoodsList().iterator();
             while (iterator.hasNext()) {
                 WxAppCartGoods goods = iterator.next();
-                if (goods.getType() != null && goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS) && goods.getExtendId().equals(k)) {
+                if (goods.getType() != null && goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS) && ruleMap.containsKey(goods.getExtendId())) {
                     log.info("加价购-加价购商品:{},加价价格:{},数量:{}", goods.getGoodsName(), v.getPurchasePrice().getRule().getPurchasePrice().toString(),goods.getCartNumber());
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS);
-                    goods.setActivityId(k);
-                    goods.setPrdPrice(rule.getPurchasePrice());
+                    goods.setActivityId(goods.getExtendId());
+                    goods.setPrdPrice(ruleMap.get(goods.getExtendId()).getPurchasePrice());
                     goodsNum+=goodsNum+goods.getCartNumber();
+                    log.info("加价购-加购商品数量限制");
                     if (purchaseInfo.getMaxChangePurchase()!=0&&purchaseInfo.getMaxChangePurchase()<goodsNum){
                         log.info("加价商品数量大于规则数量:{}",purchaseInfo.getMaxChangePurchase());
                         for (int i=goodsNum-purchaseInfo.getMaxChangePurchase();i>0;i--){
@@ -179,8 +186,23 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
                         }
                         goodsNum =purchaseInfo.getMaxChangePurchase().intValue();
                     }
+                    log.info("加价购-规则校验");
+                    CartActivityInfo.PurchasePriceRule goodsRule = ruleMap.get(goods.getExtendId());
+                    if (rule.getFullPrice().compareTo(goodsRule.getFullPrice())<0){
+                        log.info("该商品的规则不符合要求");
+                        goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                        if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                        }
+                    }else {
+                        if (goods.getIsChecked().equals(CartConstant.CART_NO_CHECKED)){
+                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_IS_CHECKED);
+                        }
+                    }
                 }
             }
+
+
         }
         //删除无用的数据--无主商品的
         Iterator<WxAppCartGoods> iterator = cartBo.getCartGoodsList().iterator();

@@ -51,4 +51,11 @@ public class OrderGoodsRebateService extends ShopBaseService {
     public Result<OrderGoodsRebateRecord> get(String orderSn) {
         return db().selectFrom(TABLE).where(TABLE.ORDER_SN.eq(orderSn)).fetch();
     }
+
+    public Result<OrderGoodsRebateRecord> get(String orderSn,Integer recId) {
+        return db().selectFrom(TABLE)
+            .where(TABLE.ORDER_SN.eq(orderSn))
+            .and(TABLE.REC_ID.eq(recId))
+            .fetch();
+    }
 }

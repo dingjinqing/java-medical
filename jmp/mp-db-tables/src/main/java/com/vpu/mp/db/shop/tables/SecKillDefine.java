@@ -8,14 +8,25 @@ import com.vpu.mp.db.shop.Indexes;
 import com.vpu.mp.db.shop.Keys;
 import com.vpu.mp.db.shop.MiniShop_471752;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +42,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
 
-    private static final long serialVersionUID = 1127154371;
+    private static final long serialVersionUID = -1270744223;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_sec_kill_define</code>
@@ -54,7 +65,7 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.goods_id</code>. 商品ID
      */
-    public final TableField<SecKillDefineRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB, this, "商品ID");
+    public final TableField<SecKillDefineRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "商品ID");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.name</code>. 活动名称
@@ -74,12 +85,12 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.start_time</code>. 开始时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
+    public final TableField<SecKillDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.end_time</code>. 结束时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
+    public final TableField<SecKillDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("'0000-00-00 00:00:00'", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.stock</code>. 总库存
@@ -109,27 +120,27 @@ public class SecKillDefine extends TableImpl<SecKillDefineRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.del_time</code>. 删除时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<SecKillDefineRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("'0000-00-00 00:00:00'", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.create_time</code>.
      */
-    public final TableField<SecKillDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SecKillDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.update_time</code>. 最后修改时间
      */
-    public final TableField<SecKillDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<SecKillDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.card_id</code>. 专属会员卡
      */
-    public final TableField<SecKillDefineRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.CLOB, this, "专属会员卡");
+    public final TableField<SecKillDefineRecord, String> CARD_ID = createField("card_id", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "专属会员卡");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.share_config</code>. 分享配置
      */
-    public final TableField<SecKillDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享配置");
+    public final TableField<SecKillDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "分享配置");
 
     /**
      * The column <code>mini_shop_471752.b2c_sec_kill_define.base_sale</code>. 初始销量

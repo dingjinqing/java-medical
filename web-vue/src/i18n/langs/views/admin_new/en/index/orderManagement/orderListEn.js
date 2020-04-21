@@ -174,6 +174,7 @@ export const en = {
   returnFinishTime: 'Return completion time',
   otherInfo: 'other information',
   orderRealName: 'actual name',
+  rebate: 'rebate',
   orderCid: 'ID number',
   custom: 'Custom order information required',
   orderExportConfirmTip_1: 'Filter',

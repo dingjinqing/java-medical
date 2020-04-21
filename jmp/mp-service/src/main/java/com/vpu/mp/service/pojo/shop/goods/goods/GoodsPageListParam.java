@@ -66,9 +66,10 @@ public class GoodsPageListParam {
      */
     private Byte isOnSale;
     /**
-     * true表示查询已售罄，isOnSale=1 and goodsNumbers=0
+     * 0表示查询已售罄
+     * 1表示未售罄
      */
-    private Boolean isSaleOut;
+    private Byte isSaleOut;
 
     /**
      * 排序字段

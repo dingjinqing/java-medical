@@ -109,6 +109,7 @@
               <el-checkbox label="memberCardBalance">{{$t('order.memberCardBalance')}}</el-checkbox>
               <el-checkbox label="memberCardReduce">{{$t('order.memberCardReduce')}}</el-checkbox>
               <el-checkbox label="promotionReduce">{{$t('order.promotionReduce')}}</el-checkbox>
+              <el-checkbox label="rebate">{{$t('order.rebate')}}</el-checkbox>
             </td>
           </tr>
           <tr>

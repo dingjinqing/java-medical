@@ -17,9 +17,10 @@ public class GoodsFilterItemInitParam {
      */
     private Byte isOnSale;
     /**
-     * true表示查询已售罄，isOnSale=1 and goodsNumbers=0
+     * 1表示查询已售罄
+     * 0表示未售罄
      */
-    private Boolean isSaleOut;
+    private Byte isSaleOut;
     /**查询类型：1 以商品为统计对象，2以商品规格为统计对象*/
     private Byte selectType;
 

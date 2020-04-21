@@ -375,6 +375,13 @@ ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 C
 ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+--订单返利商品表添加 商品行ID
+ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
+
+
+-- 2020年04月21日 ws
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
@@ -410,6 +417,31 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 );
+
+
+-- 2020年04月20日 会员卡添加折扣不予营销活动公用
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_action` varchar(10) DEFAULT NULL COMMENT '不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠';
+
+-- 2020年04月21日 加价购给参加活动的用户打标签
+ALTER TABLE `b2c_purchase_price_define` ADD COLUMN `activity_tag` tinyint(1) DEFAULT '0' COMMENT '是否给参加活动的用户打标签，1是';
+ALTER TABLE `b2c_purchase_price_define` ADD COLUMN `activity_tag_id` varchar(20) DEFAULT NULL COMMENT '参加活动打标签id';
+
+-- 2020年04月21日 限时降价给参加活动的用户打标签、预告
+ALTER TABLE `b2c_reduce_price` ADD COLUMN `pre_time` int(8) DEFAULT '0' COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数';
+ALTER TABLE `b2c_reduce_price` ADD COLUMN `activity_tag` tinyint(1) DEFAULT '0' COMMENT '是否给参加活动的用户打标签，1是';
+ALTER TABLE `b2c_reduce_price` ADD COLUMN `activity_tag_id` varchar(20) DEFAULT NULL COMMENT '参加活动打标签id';
+
+-- 2020年04月21日 秒杀给参加活动的用户打标签、预告
+ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `pre_time` int(8) DEFAULT '0' COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数';
+ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `activity_tag` tinyint(1) DEFAULT '0' COMMENT '是否给参加活动的用户打标签，1是';
+ALTER TABLE `b2c_sec_kill_define` ADD COLUMN `activity_tag_id` varchar(20) DEFAULT NULL COMMENT '参加活动打标签id';
+
+-- 2020年04月21日 砍价给参加活动的用户打标签、自定义活动规则
+ALTER TABLE `b2c_bargain` ADD COLUMN `activity_copywriting` text COMMENT '自定义活动说明';
+ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag` tinyint(1) DEFAULT '0' COMMENT '是否给发起砍价用户打标签';
+ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag_id` varchar(20) DEFAULT NULL COMMENT '发起砍价活动用户打标签id';
+ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag` tinyint(1) DEFAULT '0' COMMENT '是否参与砍价用户打标签';
+ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL COMMENT '参与砍价活动用户打标签id'
 
 /*********************2.12*************************END*/
 

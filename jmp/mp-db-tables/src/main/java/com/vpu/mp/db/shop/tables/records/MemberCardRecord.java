@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
 
-    private static final long serialVersionUID = 657036721;
+    private static final long serialVersionUID = -889303709;
 
     /**
      * Setter for <code>jmini_shop_489258.b2c_member_card.id</code>.
@@ -968,6 +968,20 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         return (Integer) get(66);
     }
 
+    /**
+     * Setter for <code>jmini_shop_489258.b2c_member_card.cannot_use_action</code>. 不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠
+     */
+    public void setCannotUseAction(String value) {
+        set(67, value);
+    }
+
+    /**
+     * Getter for <code>jmini_shop_489258.b2c_member_card.cannot_use_action</code>. 不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠
+     */
+    public String getCannotUseAction() {
+        return (String) get(67);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -994,7 +1008,7 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
     /**
      * Create a detached, initialised MemberCardRecord
      */
-    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType, Byte cannotUseCoupon, Byte customRightsFlag, String customOptions, Byte cardTag, String cardTagId, Byte cardGiveAway, Byte cardGiveContinue, Integer mostGiveAway) {
+    public MemberCardRecord(Integer id, String cardName, Byte cardType, Byte bgType, String bgColor, String bgImg, BigDecimal discount, Integer sorce, String buyScore, Byte expireType, Timestamp startTime, Timestamp endTime, Integer receiveDay, Byte dateType, Byte activation, String receiveCode, String desc, String mobile, Timestamp createTime, Timestamp updateTime, Byte flag, Integer sendMoney, String chargeMoney, Integer useTime, String storeList, Integer count, Byte delFlag, String grade, String gradeCondition, String activationCfg, Byte examine, String discountGoodsId, String discountCatId, String discountSortId, Byte discountIsAll, Byte isPay, Byte payType, BigDecimal payFee, Byte payOwnGood, Byte receiveAction, Byte isExchang, Byte storeUseSwitch, String exchangGoods, Byte exchangFreight, Integer exchangCount, Integer stock, Integer limit, String discountBrandId, Byte sendCouponSwitch, Byte sendCouponType, String sendCouponIds, String customRights, Byte freeshipLimit, Integer freeshipNum, Byte renewMemberCard, Byte renewType, BigDecimal renewNum, Integer renewTime, Byte renewDateType, Byte cannotUseCoupon, Byte customRightsFlag, String customOptions, Byte cardTag, String cardTagId, Byte cardGiveAway, Byte cardGiveContinue, Integer mostGiveAway, String cannotUseAction) {
         super(MemberCard.MEMBER_CARD);
 
         set(0, id);
@@ -1064,5 +1078,6 @@ public class MemberCardRecord extends UpdatableRecordImpl<MemberCardRecord> {
         set(64, cardGiveAway);
         set(65, cardGiveContinue);
         set(66, mostGiveAway);
+        set(67, cannotUseAction);
     }
 }

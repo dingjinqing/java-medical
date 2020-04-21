@@ -1,3 +1,8 @@
+<!--
+** 渠道分析页面
+**
+** @author: zhaoxin
+--->
 <template>
   <div class="channel_main">
     <section class="filter_condition">
@@ -49,17 +54,29 @@
       </div>
 
       <div class="channel_info info_bottom">
-        <div>
-          <span>注册时间：</span>
-          <el-date-picker
-            type="datetimerange"
-            :range-separator="$t('marketCommon.to')"
-            :start-placeholder="$t('marketCommon.startTime')"
-            :end-placeholder="$t('marketCommon.endTime')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            size="small"
-          >
-          </el-date-picker>
+        <div style="display: flex">
+          <span style="line-height:30px;width:100px;text-align:right">注册时间：</span>
+          <div>
+            <el-date-picker
+              v-model="param.startTime"
+              type="date"
+              style="width:170px;"
+              value-format="yyyy-MM-dd 00:00:00"
+              :placeholder="$t('actionRecord.startTime')"
+              size="small"
+            >
+            </el-date-picker>
+            <span>至</span>
+            <el-date-picker
+              v-model="param.endTime"
+              type="date"
+              style="width:170px;"
+              value-format="yyyy-MM-dd 00:00:00"
+              :placeholder="$t('actionRecord.endTime')"
+              size="small"
+            >
+            </el-date-picker>
+          </div>
         </div>
 
         <div class="filter">
@@ -75,7 +92,7 @@
             size="small"
             type="primary"
             @click="addChannelPage"
-          >筛选</el-button>
+          >添加渠道分析页面</el-button>
         </div>
       </div>
     </section>
@@ -83,33 +100,42 @@
     <section class="table">
       <div class="table_list">
         <el-table
+          :data="tableData"
           header-row-class-name="tableClss"
           style="width: 100%"
           border
         >
           <el-table-column
-            prop="pageName"
+            prop="channelName"
             label="渠道页面名称"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
+            prop="pageName"
             label="源页面"
             align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.pageName}}
+              <br />
+              <span
+                class="el-icon-edit-outline iconSpan"
+                @click="jumpToDataPage(scope.row.id)"
+              ></span>
+            </template>
           </el-table-column>
 
           <el-table-column
-            prop=""
+            prop="share"
             label="源路径"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop=""
+            prop="sourceType"
             label="源页面类型"
             align="center"
           >
@@ -151,7 +177,7 @@
           </el-table-column>
 
           <el-table-column
-            prop="delFlag"
+            prop="textStatus"
             label="状态"
             align="center"
           >
@@ -162,6 +188,45 @@
             label="操作"
             align="center"
           >
+
+            <template slot-scope="scope">
+              <div class="opt">
+                <!-- 分享 -->
+                <el-tooltip
+                  content="分享"
+                  placement="top"
+                >
+                  <span
+                    class="el-icon-share"
+                    @click="shareActivity(scope.row.id)"
+                  ></span>
+                </el-tooltip>
+
+                <!-- 停用 -->
+                <el-tooltip
+                  content="停用"
+                  placement="top"
+                  v-if="scope.row.delFlag === 0"
+                >
+                  <span
+                    class="el-icon-circle-close"
+                    @click="closeStatus(scope.row.id)"
+                  > </span>
+                </el-tooltip>
+
+                <!-- 启用 -->
+                <el-tooltip
+                  content="启用"
+                  placement="top"
+                  v-if="scope.row.delFlag === 1"
+                >
+                  <span
+                    class="el-icon-circle-check"
+                    @click="openStatus(scope.row.id)"
+                  > </span>
+                </el-tooltip>
+              </div>
+            </template>
           </el-table-column>
         </el-table>
         <pagination
@@ -170,15 +235,28 @@
         />
       </div>
     </section>
+
+    <!-- 分享弹窗 -->
+    <shareDialog
+      :show="showShareDialog"
+      :imgPath="shareImg"
+      :pagePath="sharePath"
+      @close="showShareDialog=false"
+    />
+
+    <addChannelPageVue :tuneUpChooseGoods="turnUpChannelDialog" />
   </div>
 </template>
 
 <script>
-import { channelList } from '@/api/admin/marketManage/channelPage.js'
+import { channelList, stopChannelPage, openChannelPage, shareChannelPage } from '@/api/admin/marketManage/channelPage.js'
+import shareDialog from '@/components/admin/shareDialog'
 
 export default {
   components: {
-    pagination: () => import('@/components/admin/pagination/pagination')
+    shareDialog,
+    pagination: () => import('@/components/admin/pagination/pagination'),
+    addChannelPageVue: () => import('./addChannelPage')
   },
   mounted () {
     this.initDataList()
@@ -186,6 +264,8 @@ export default {
   data () {
     return {
       param: {
+        startTime: '',
+        endTime: '',
         channelName: '',
         sourcePage: '',
         sourceType: -1
@@ -194,7 +274,12 @@ export default {
         currentPage: 1,
         pageRows: 10
       },
-      tableData: []
+      tableData: [],
+      turnUpChannelDialog: false,
+      showShareDialog: false, // 分享弹窗
+      shareImg: '',
+      sharePath: ''
+
     }
   },
   methods: {
@@ -202,13 +287,68 @@ export default {
       this.initDataList()
     },
     addChannelPage () {
-
+      this.turnUpChannelDialog = !this.turnUpChannelDialog
+    },
+    shareActivity (id) {
+      this.showShareDialog = !this.showShareDialog
+      shareChannelPage(id).then(res => {
+        if (res.error === 0) {
+          this.shareImg = res.content.imageUrl
+          this.sharePath = res.content.pagePath
+        }
+      })
+    },
+    // 废除
+    closeStatus (id) {
+      this.$confirm('确认要废除该渠道页吗?', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        stopChannelPage(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+          this.initDataList()
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消' })
+      })
+    },
+    // 开启
+    openStatus (id) {
+      this.$confirm('确认要恢复该渠道页吗?', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        openChannelPage(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+          this.initDataList()
+        })
+      }).catch(() => {
+        this.$message.info({ message: '已取消' })
+      })
+    },
+    jumpToDataPage (id) {
+      console.log(id)
+      this.$router.push({
+        name: 'channelStatistical',
+        query: {
+          id: id
+        }
+      })
     },
     initDataList () {
       let obj = {
-        'sourceType': 0,
-        'startTime': '2019-03-26 15:06:10',
-        'endTime': '2019-03-27 15:06:10',
         currentPage: 1,
         pageRows: 10
       }
@@ -217,14 +357,35 @@ export default {
         if (res.error === 0) {
           this.pageParams = res.content.page
           this.tableData = res.content.dataList
+          this.handleDdta(res.content.dataList)
         }
       })
+    },
+    handleDdta (data) {
+      console.log(data)
+      data.map(item => {
+        item.textStatus = this.getTextStatus(item.delFlag)
+      })
+    },
+    getTextStatus (val) {
+      switch (val) {
+        case 0:
+          val = '使用中'
+          break
+        case 1:
+          val = '已废除'
+          break
+      }
+      return val
     }
   }
 }
 
 </script>
 <style lang="scss" scoped>
+* {
+  font-size: 14px;
+}
 .channel_main {
   .filter_condition {
     margin: 10px;
@@ -244,6 +405,15 @@ export default {
       .filter {
         margin-left: 30px;
       }
+    }
+  }
+
+  .opt {
+    text-align: left;
+    span {
+      font-size: 22px;
+      color: #5a8bff;
+      cursor: pointer;
     }
   }
 
