@@ -1095,6 +1095,7 @@ public class OrderReadService extends ShopBaseService {
                 }
             }
             if(columns.contains(OrderExportVo.USER_TAG)){
+                //用户标签
                 List<TagVo> tagList = saas.getShopApp(getShopId()).member.getTagForMember(order.getUserId());
                 StringBuffer tags = new StringBuffer();
                 for(TagVo tag : tagList){
@@ -1102,8 +1103,8 @@ public class OrderReadService extends ShopBaseService {
                 }
                 order.setUserTag(tags.toString());
             }
-
             if(columns.contains(OrderExportVo.RETURN_TIME)){
+                //退款时间
                 ReturnOrderGoodsRecord returnOrderGoodsRecord = returnOrderGoods.getByRecId(order.getRecId());
                 if(returnOrderGoodsRecord != null){
                     order.setReturnTime(returnOrderGoodsRecord.getCreateTime());
@@ -1111,12 +1112,14 @@ public class OrderReadService extends ShopBaseService {
                 }
             }
             if(columns.contains(OrderExportVo.SHIPPING_NAME)){
+                //发货时间
                 if(order.getShippingId() != null && order.getShippingId() > 0){
                     order.setShippingName(expressService.get(order.getShippingId()).getShippingName());
                 }
             }
             if(columns.contains(OrderExportVo.REBATE)){
-                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(),order.getGoodsId(),order.getProductId());
+                //返利金额
+                Result<OrderGoodsRebateRecord> orderRebate = orderGoodsRebate.get(order.getOrderSn(),order.getRecId());
                 for(OrderGoodsRebateRecord r : orderRebate){
                     if(r.getRebateLevel().equals(DistributionConstant.REBATE_LEVEL_1)){
                         order.setRebateLevelOne(r.getRealRebateMoney());
@@ -1125,6 +1128,13 @@ public class OrderReadService extends ShopBaseService {
                     }
                 }
             }
+        }
+
+        //返利金额列特殊处理
+        if(columns.contains(OrderExportVo.REBATE)){
+            columns.remove(OrderExportVo.REBATE);
+            columns.add(OrderExportVo.REBATE_LEVEL_ONE);
+            columns.add(OrderExportVo.REBATE_LEVEL_TWO);
         }
 
         Workbook workbook= ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
