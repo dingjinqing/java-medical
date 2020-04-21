@@ -27,24 +27,23 @@
         >
           <el-select v-model="isUsed">
             <el-option
-              :label="$t('couponGive.all')"
-              value="-1"
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          size="small"
+          label="领取方式："
+        >
+          <el-select v-model="isReceive">
             <el-option
-              :label="$t('couponGive.notUsed')"
-              value="0"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.alreadyUsed')"
-              value="1"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.expired')"
-              value="2"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.repealed')"
-              value="3"
+              v-for="item in receiveList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -54,7 +53,7 @@
           @click="onSubmit"
           style="margin-left: 10px;"
         >{{$t('couponGive.filter')}}</el-button>
-        <el-button size="small">{{$t('couponGive.export')}}</el-button>
+        <!-- <el-button size="small">{{$t('couponGive.export')}}</el-button> -->
       </el-form>
     </div>
     <!-- 表格数据 -->
@@ -155,12 +154,36 @@ export default {
   data: function () {
     return {
       getSource: 9,
-      isUsed: '-1',
+
       accessId: '',
       username: '',
       mobile: '',
       actId: '',
-      tableData: [],
+      isUsed: '0', // 使用状态值
+      // 使用状态
+      statusList: [{
+        label: this.$t('couponGive.all'),
+        value: '0'
+      }, {
+        label: this.$t('couponGive.notUsed'),
+        value: '1'
+      }, {
+        label: this.$t('couponGive.alreadyUsed'),
+        value: '2'
+      }, {
+        label: this.$t('couponGive.expired'),
+        value: '3'
+      }, {
+        label: this.$t('couponGive.repealed'),
+        value: '4'
+      }],
+      isReceive: '0', // 领取状态值
+      // 领取方式
+      receiveList: [{
+        label: '全部',
+        value: '0'
+      }],
+      tableData: [], // 表格数据
       pageParams: {}, // 分页
       requestParam: {}
     }
