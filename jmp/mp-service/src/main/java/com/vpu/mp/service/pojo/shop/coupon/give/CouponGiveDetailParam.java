@@ -16,10 +16,8 @@ public class CouponGiveDetailParam {
   private String mobile;
   /** 用户昵称 */
   private String username;
-  /** 是否使用 0：未使用 1：已使用 2：已过期 3：已废除 */
-  public static final Integer IS_USED_DEFAULT_VALUE = -1;
-
-  private Integer isUsed;
+  /** 是否使用 1 未使用 2 已使用 3 已过期 4已废除 */
+  private Integer isUsed = 0;
 
   /** 分页信息 */
   private Integer currentPage = 1 ;
