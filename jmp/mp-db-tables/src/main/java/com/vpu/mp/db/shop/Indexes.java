@@ -502,6 +502,10 @@ public class Indexes {
     public static final Index LIVE_BROADCAST_ROOM_ID = Indexes0.LIVE_BROADCAST_ROOM_ID;
     public static final Index CARD_RENEW_PRIMARY = Indexes0.CARD_RENEW_PRIMARY;
     public static final Index GIVE_CARD_RECORD_PRIMARY = Indexes0.GIVE_CARD_RECORD_PRIMARY;
+    public static final Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_CALENDAR_ID;
+    public static final Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Indexes0.MARKET_CALENDAR_ACTIVITY_PRIMARY;
+    public static final Index MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID;
+    public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -980,5 +984,9 @@ public class Indexes {
         public static Index LIVE_BROADCAST_ROOM_ID = Internal.createIndex("room_id", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ROOM_ID }, true);
         public static Index CARD_RENEW_PRIMARY = Internal.createIndex("PRIMARY", CardRenew.CARD_RENEW, new OrderField[] { CardRenew.CARD_RENEW.ID }, true);
         public static Index GIVE_CARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", GiveCardRecord.GIVE_CARD_RECORD, new OrderField[] { GiveCardRecord.GIVE_CARD_RECORD.ID }, true);
+        public static Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Internal.createIndex("calendar_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.CALENDAR_ID }, false);
+        public static Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID }, true);
+        public static Index MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID = Internal.createIndex("sys_cal_act_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.SYS_CAL_ACT_ID }, false);
+        public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
     }
 }

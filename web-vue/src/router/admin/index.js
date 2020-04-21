@@ -29,6 +29,20 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/overviewOfMall'
           )
       },
+      // 营销日历
+      {
+        path: '/admin/home/main/overviewOfMall/calendar',
+        name: 'calendar',
+        meta: {
+          crumbTitle: 'router.calendar',
+          meta: 'first_web_manage',
+          category: 'shop_view'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/calendarMain'
+          )
+      },
       // 店铺助手
       {
         path: '/admin/home/main/overviewOfMall/taskList',

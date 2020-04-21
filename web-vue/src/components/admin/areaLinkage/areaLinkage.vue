@@ -103,7 +103,7 @@ export default {
     areaCode: {
       handler (val) {
         this.province = deepCloneObj(chinaData)
-        if (val.provinceCode) {
+        if (val && val.provinceCode) {
           this.values.province = Number(val.provinceCode)
           this.choseProvince(this.values.province)
           this.$nextTick(() => {

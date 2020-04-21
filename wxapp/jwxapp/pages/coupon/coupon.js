@@ -16,16 +16,16 @@ global.wxPage({
    */
   data: {
     imageUrl: app.globalData.imageUrl,
-    unusedNum:0, // 未使用个数
+    unusedNum: 0, // 未使用个数
     usedNum: 0, // 已使用个数
-    expiredNum:0, // 已过期个数
+    expiredNum: 0, // 已过期个数
     this_type: 0, // 状态
-    allCoupon:[], // 列表数据
+    allCoupon: [], // 列表数据
     page: 1,
     lastPage: 1,
     pageRows: 20,
   },
- 
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -37,7 +37,7 @@ global.wxPage({
   /**
    * 优惠券列表
    */
-  dataList: function (){
+  dataList: function () {
     var that = this;
     wx.showLoading({
       title: '加载中···',
@@ -52,7 +52,7 @@ global.wxPage({
           usedNum: res.content.usedNum,
           expiredNum: res.content.expiredNum,
           allCoupon: res.content.couponList.dataList
-        }) 
+        })
         // 格式化时间
         if (that.data.allCoupon.length > 0) {
           that.data.allCoupon.forEach(function (item) {
@@ -68,14 +68,14 @@ global.wxPage({
 
         that.setData({
           allCoupon: that.data.allCoupon
-        }) 
+        })
       } else {
         util.showModal("提示", res.message, function () {
           util.jumpLink("pages/index/index", 'redirectTo');
         }, false);
         return false;
       }
-    }, { 
+    }, {
       nav: that.data.this_type,
       currentPage: that.data.page,
       pageRows: that.data.pageRows
@@ -144,9 +144,9 @@ global.wxPage({
         return false;
       }
     }, {
-        nav: that.data.this_type,
-        currentPage: that.data.page,
-        pageRows: that.data.pageRows
+      nav: that.data.this_type,
+      currentPage: that.data.page,
+      pageRows: that.data.pageRows
     });
   },
 
@@ -244,8 +244,7 @@ global.wxPage({
    */
   coupon_del: function (e) {
     var that = this;
-    var coupon_id = e.currentTarget.dataset.coupon_id;
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
+    var id = e.currentTarget.dataset.id;
     util.showModal('', '您确定要删除该优惠券？', function () {
       var animate = '';
       var Coupon = that.data.allCoupon;
@@ -253,7 +252,7 @@ global.wxPage({
         if (res.error === 0) {
           for (let i = 0; i < Coupon.length; i++) {
             Coupon[i].right = 0;
-            if (coupon_id == Coupon[i].id) {
+            if (id == Coupon[i].id) {
               Coupon.splice(i, 1)
               i--;
             }
@@ -265,7 +264,7 @@ global.wxPage({
             animate: animate
           })
         }
-      }, { couponId: coupon_id })
+      }, { couponId: id })
     }, true, '取消', '确定')
   },
 
@@ -279,12 +278,12 @@ global.wxPage({
     if (name == 'can') {
       that.setData({
         this_type: 0,
-      }) 
+      })
     }
     if (name == 'used') {
       that.setData({
-        this_type:1,
-      }) 
+        this_type: 1,
+      })
     }
     if (name == 'time') {
       that.setData({
@@ -300,7 +299,7 @@ global.wxPage({
   /**
    * 优惠券详情
    */
-  couponDetail:function(opt){
+  couponDetail: function (opt) {
     var couponSn = opt.currentTarget.dataset.couponsn;
     util.jumpLink('/pages/getCoupon/getCoupon?couponSn=' + couponSn + '&type=' + this.data.this_type);
   },
@@ -309,8 +308,8 @@ global.wxPage({
    * 券购搜素
    */
   to_search: function (opt) {
-    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var actId = opt.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
 
   /**
@@ -318,10 +317,10 @@ global.wxPage({
   */
   full_people: function (e) {
     var couponSn = e.target.dataset.coupon_sn;
-    var couponId = e.target.dataset.coupon_id;
+    var actId = e.target.dataset.act_id;
     util.showModal("提示", '领取人数已满', function () {
       util.navigateTo({
-        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
       })
     }, true, '取消', '领取记录');
   },
@@ -332,10 +331,10 @@ global.wxPage({
   onShareAppMessage: function (res) {
     var that = this;
     var couponSn = res.target.dataset.coupon_sn;
-    var couponId = res.target.dataset.coupon_id;
+    var actId = res.target.dataset.act_id;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + couponId + "&inviteId=" + util.getCache('user_id'),
+      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
       imageUrl: that.data.imageUrl + 'image/wxapp/share_icon.jpg',
     }
   }

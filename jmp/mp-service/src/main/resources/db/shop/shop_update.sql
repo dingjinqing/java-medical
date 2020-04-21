@@ -375,8 +375,50 @@ ALTER TABLE `b2c_user_card` MODIFY COLUMN `flag` tinyint(1) NOT NULL DEFAULT 0 C
 ALTER TABLE `b2c_user_tag` ADD COLUMN `source` smallint(2) NOT NULL DEFAULT 0 COMMENT '标签来源 0 后台设置 1领券 2领卡';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `tool_id` int(11) COMMENT '优惠券或会员卡id';
 ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打标签次数，会员卡或优惠券过期停用时次数减一，为0时删除';
+
+--订单返利商品表添加 商品行ID
+ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
+
 /*********************2.11*************************END*/
 
+/*********************2.12*************************START*/
+-- 营销日历表活动
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `calendar_id` int(8) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
+  `sys_cal_act_id` int(8) NOT NULL DEFAULT '0' COMMENT '来源营销日历Id',
+  `activity_type` varchar(16)   NOT NULL DEFAULT '0' COMMENT '具体营销活动类型',
+  `activity_id` int(8) NOT NULL DEFAULT '0' COMMENT '具体营销活动Id',
+  `recommend_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '推荐类型：0站内文本，1外部链接',
+  `recommend_link` varchar(100)   NOT NULL DEFAULT '' COMMENT '推荐链接',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_sync` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据是否已同步到system：目前只同步是否使用的数量',
+  `recommend_title` varchar(32)   NOT NULL DEFAULT '' COMMENT '推荐标题',
+  PRIMARY KEY (`id`),
+  KEY `calendar_id` (`calendar_id`),
+  KEY `sys_cal_act_id` (`sys_cal_act_id`)
+);
+-- 营销日历表
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
+  `id` int(8) NOT NULL AUTO_INCREMENT,
+  `event_name` varchar(64)  NOT NULL DEFAULT '' COMMENT '事件名称',
+  `event_time` date DEFAULT NULL  COMMENT '事件时间',
+  `event_desc` text COMMENT '事件说明',
+  `pub_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态：0未发布，1已发布',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+  `source` tinyint(1) NOT NULL DEFAULT '0' COMMENT '来源：0admin自己添加，1system推荐',
+  `source_id` int(8) NOT NULL DEFAULT '0' COMMENT '来源：来源营销事件id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+);
 
 
+-- 2020年04月20日 会员卡添加折扣不予营销活动公用
+ALTER TABLE `b2c_member_card` ADD COLUMN `cannot_use_action` varchar(10) DEFAULT NULL COMMENT '不能与哪些营销活动共用 1会员价 2限时降价 3首单特惠';
+
+
+/*********************2.12*************************END*/
 

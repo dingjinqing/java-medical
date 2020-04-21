@@ -404,17 +404,17 @@
     </div>
     <div class="footer">
       <el-button
-        v-if="step === 0 || step === 1"
-        type="primary"
-        size="small"
-        @click="nextStep(step+1)"
-      >{{$t('purchase.nextStep')}}</el-button>
-      <el-button
         v-if="step === 1 || step === 2"
         type="primary"
         size="small"
         @click="preStep"
       >{{$t('purchase.preStep')}}</el-button>
+      <el-button
+        v-if="step === 0 || step === 1"
+        type="primary"
+        size="small"
+        @click="nextStep(step+1)"
+      >{{$t('purchase.nextStep')}}</el-button>
       <el-button
         v-if="step === 2"
         type="primary"
@@ -760,15 +760,18 @@ export default {
     getPurchaseRules () {
       let rules = []
       if (this.rule_num >= 1) {
-        this.purcahse_rule1.productId = this.purcahse_rule1.productId.join()
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule1.productId.join()
         rules.push(this.purcahse_rule1)
       }
       if (this.rule_num >= 2) {
-        this.purcahse_rule2.productId = this.purcahse_rule2.productId.join()
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule2.productId.join()
         rules.push(this.purcahse_rule2)
       }
       if (this.rule_num >= 3) {
-        this.purcahse_rule3.productId = this.purcahse_rule3.productId.join()
+        let rule = this.purcahse_rule1
+        rule.productId = this.purcahse_rule3.productId.join()
         rules.push(this.purcahse_rule3)
       }
       return rules
@@ -818,6 +821,7 @@ export default {
   .main_table {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;
@@ -832,6 +836,7 @@ export default {
   .purchase_tab {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;

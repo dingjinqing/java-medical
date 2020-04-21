@@ -27,24 +27,10 @@
         >
           <el-select v-model="isUsed">
             <el-option
-              :label="$t('couponGive.all')"
-              value="-1"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.notUsed')"
-              value="0"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.alreadyUsed')"
-              value="1"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.expired')"
-              value="2"
-            ></el-option>
-            <el-option
-              :label="$t('couponGive.repealed')"
-              value="3"
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -54,7 +40,6 @@
           @click="onSubmit"
           style="margin-left: 10px;"
         >{{$t('couponGive.filter')}}</el-button>
-        <el-button size="small">{{$t('couponGive.export')}}</el-button>
       </el-form>
     </div>
     <!-- 表格数据 -->
@@ -136,11 +121,11 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
       <pagination
         :page-params.sync="pageParams"
         @pagination="loadData"
       />
-
     </div>
   </div>
 </template>
@@ -155,27 +140,45 @@ export default {
   data: function () {
     return {
       getSource: 9,
-      isUsed: '-1',
+
       accessId: '',
       username: '',
       mobile: '',
       actId: '',
-      tableData: [],
-      pageParams: {
-        currentPage: 1,
-        pageRows: 20
-      }
+      isUsed: '0', // 使用状态值
+      // 使用状态
+      statusList: [{
+        label: this.$t('couponGive.all'),
+        value: '0'
+      }, {
+        label: this.$t('couponGive.notUsed'),
+        value: '1'
+      }, {
+        label: this.$t('couponGive.alreadyUsed'),
+        value: '2'
+      }, {
+        label: this.$t('couponGive.expired'),
+        value: '3'
+      }, {
+        label: this.$t('couponGive.repealed'),
+        value: '4'
+      }],
+      tableData: [], // 表格数据
+      pageParams: {}, // 分页
+      requestParam: {}
     }
   },
   methods: {
     // 加载数据
     loadData () {
-      this.pageParams.accessId = this.accessId
-      this.pageParams.actId = this.actId
-      this.pageParams.mobile = this.mobile
-      this.pageParams.username = this.username
-      this.pageParams.isUsed = this.isUsed
-      receiveDetails(this.pageParams).then(res => {
+      this.requestParam.accessId = this.accessId
+      this.requestParam.actId = this.actId
+      this.requestParam.mobile = this.mobile
+      this.requestParam.username = this.username
+      this.requestParam.isUsed = this.isUsed
+      this.requestParam.currentPage = this.pageParams.currentPage
+      this.requestParam.pageRows = this.pageParams.pageRows
+      receiveDetails(this.requestParam).then(res => {
         this.tableData = res.content.dataList
         this.pageParams = res.content.page
       })

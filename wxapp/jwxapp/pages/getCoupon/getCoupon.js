@@ -31,7 +31,7 @@ global.wxPage({
     var that = this;
     that.setData({
       couponSn: options.couponSn,
-      couponId: Number(options.id),
+      couponId: Number(options.couponId),
       couponStatus: options.type
     })
     // 查看详情
@@ -193,8 +193,8 @@ global.wxPage({
 
   // 立即使用
   to_search: function (e) {
-    var couponSn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + couponSn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
 
   // 我的优惠券
@@ -215,28 +215,32 @@ global.wxPage({
    * 用户点击右上角分享
    */
   onShareAppMessage: function (res) {
-    var that = this;
+    var couponSn = res.target.dataset.coupon_sn;
+    var actId = res.target.dataset.act_id;
     return {
       title: '分享优惠券',
-      path: '/pages/splitinfo/splitinfo?couponSn=' + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
+      path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
       imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
 
   // 领取已满员
   full_people: function (e) {
-    var that = this;
+    var couponSn = e.target.dataset.coupon_sn;
+    var actId = e.target.dataset.act_id;
     util.showModal("提示", '领取人数已满', function () {
-      that.to_getRecord();
+      util.navigateTo({
+        url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
+      })
     }, true, '取消', '领取记录');
-
   },
 
   // 领取记录
-  to_getRecord: function () {
-    var that = this;
+  to_getRecord: function (e) {
+    var couponSn = e.target.dataset.coupon_sn;
+    var actId = e.target.dataset.act_id;
     util.navigateTo({
-      url: '/pages/splitinfo/splitinfo?couponSn=' + that.data.couponSn + "&couponId=" + that.data.couponId + "&inviteId=" + util.getCache('user_id'),
+      url: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
     })
   },
 

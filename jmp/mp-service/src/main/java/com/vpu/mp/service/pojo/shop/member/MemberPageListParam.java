@@ -91,4 +91,9 @@ public class MemberPageListParam extends BaseMemberPojo {
 	public MemberPageListParam() {
 		this.userExpParam = new UserExpParam();
 	}
+
+	/**
+	 * 	是否是分销员
+	 */
+	private Byte isDistributor;
 }

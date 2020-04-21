@@ -67,7 +67,8 @@
             <td>{{item.createTime}}</td>
             <td><span v-html="item.people.join(`<br/>`)"></span></td>
             <td>{{item.sendAction | sendAction}}</td>
-            <td>{{item.sendStatus | sendStatus}}</td>
+            <td v-if="item.people.length === 0">未发放</td>
+            <td v-if="item.people.length > 0">{{item.sendStatus | sendStatus}}</td>
             <!-- 6 ~ 10 -->
             <td style="padding: 0;">
               <table
@@ -81,7 +82,19 @@
                   >
                     <td style="width:7%;">{{it.couponName}}</td>
                     <td style="width:9%;">{{it.leastConsume | leastConsume}}</td>
-                    <td style="width:7%;">{{it.denomination | denomination}}</td>
+                    <!-- <td style="width:7%;">{{it.denomination | denomination}}</td> -->
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'voucher'"
+                    >{{it.denomination}}元</td>
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'discount'"
+                    >{{it.denomination}}折</td>
+                    <td
+                      style="width:7%;"
+                      v-if="it.actCode === 'random'"
+                    >{{it.randomMax}}最高</td>
                     <td style="width:9%;"><span v-html="it.time"></span></td>
                     <td style="width:4%;">
                       <el-button
@@ -123,9 +136,7 @@ export default {
     return {
       actName: '',
       tableData: [],
-      pageParams: {
-        pageRows: 20
-      },
+      pageParams: {}, // 分页
       requestParam: {}
     }
   },
@@ -137,10 +148,8 @@ export default {
     handleSelect () {
       couponGiveList({
         actName: this.actName,
-        page: {
-          currentPage: 1,
-          pageRows: 20
-        }
+        currentPage: this.pageParams.currentPage,
+        pageRows: this.pageParams.pageRows
       }).then((res) => {
         if (res.error === 0) {
           this.pageParams = res.content.page
@@ -161,7 +170,8 @@ export default {
             item['time'] = `${this.$t('couponGive.fromTime')} ${item.validity}${this.$t('couponGive.day')} ${item.validityHour}${this.$t('couponGive.hour')} ${item.validityMinute}${this.$t('couponGive.minute')} ${this.$t('couponGive.effective')}`
           }
         })
-        data[index].obj = JSON.parse(data[index]['sendCondition'])
+        // data[index].obj = JSON.parse(data[index]['sendCondition'])
+        data[index].obj = data[index].condition
         data[index].people = []
         if (data[index].obj.member_box === 1) {
           data[index].people.push(`${this.$t('couponGive.member')}`)
