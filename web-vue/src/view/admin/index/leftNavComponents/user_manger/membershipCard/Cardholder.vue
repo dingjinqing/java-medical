@@ -164,7 +164,19 @@
                 :key="index"
                 @click="handleToOperation(scope.row,index)"
               >
-              <span v-if="item.flag !== 1 && index !== 2">{{item}}</span>
+                <span v-if="Number(scope.row.cardType!==2) && index<2">
+                  <span class="opt-item">{{item}}</span>
+                </span>
+                <span v-else>
+                  <span
+                    v-if="scope.row.flag !== 1"
+                    class="opt-item"
+                  > {{item}}</span>
+                  <span
+                    v-else
+                    class="opt-item"
+                  ></span>
+                </span>
               </span>
             </div>
           </template>
@@ -278,6 +290,22 @@ export default {
     // 操作部分点击
     handleToOperation (row, index) {
       console.log(row, index)
+      if (index < 2) {
+        //  充值明细  消费明细
+        this.$router.push({
+          name: 'refillDetailsItem',
+          query: {
+            cardNo: row.cardNo,
+            cardType: row.cardType,
+            username: row.username,
+            userId: row.userId,
+            activeName: index + 1
+          }
+        })
+      } else if (index === 2) {
+        //  废除
+
+      }
     },
 
     // 跳转到会员详情页
@@ -379,6 +407,10 @@ export default {
       span {
         cursor: pointer;
         color: #5a8bff;
+      }
+      .opt-item {
+        width: 60px;
+        display: block;
       }
     }
   }
