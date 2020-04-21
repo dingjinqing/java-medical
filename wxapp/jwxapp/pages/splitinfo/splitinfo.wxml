@@ -56,9 +56,7 @@
       </view>
       <!--立即领取  -->
       <view class='get_notice' wx:if="{{split_info.status==1}}">您的好友送您1张优惠券，赶快来领取吧~</view>
-      <form class='btn_to_get' report-submit='true' bindsubmit='get_this_coupon' wx:if="{{split_info.status==1}}">
-        <button form-type='submit'>立即领取</button>
-      </form>
+      <view class='btn_to_get' wx:if="{{split_info.status==1}}" bindtap='get_this_coupon'>立即领取</view>
     </block>
     <block wx:else>
       <view class='get_notice'>快去分享给您的朋友吧~</view>
