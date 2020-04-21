@@ -36,7 +36,8 @@ global.wxPage({
     console.log(options.identity_id)
     that.setData({
       identity_id: Number(options.identity_id),
-      store_id: options.store_id ? Number(options.store_id) : '',
+      store_id: Number(options.store_id),
+      rule_id: Number(options.rule_id),
       pIds: options.pIds ? JSON.parse(options.pIds) : [],
     })
     main_request(that);
@@ -340,7 +341,7 @@ global.wxPage({
         util.showModal("提示", res.message);
         return false;
       }
-    }, { goodsNumber: 1, prdId: data, activityType: 97, activityId: that.data.identity_id })
+    }, { goodsNumber: 1, prdId: data, activityType: 97, activityId: that.data.rule_id })
   },
 
   /**

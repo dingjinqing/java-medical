@@ -44,6 +44,7 @@ global.wxPage({
           item.isSales = 0
           item.limitMinStyle = 0
           item.limitMaxStyle = 0
+          item.ruleId = '' // 加价购规则id
           if (item.cartActivityInfos.length > 0) {
             // 添加不参与活动
             item.cartActivityInfos[item.cartActivityInfos.length] = {
@@ -71,6 +72,7 @@ global.wxPage({
                     item.ruleList = item.ruleList.substr(0, item.ruleList.length - 1);
                   }
                 } else if (val.activityType == 7) {
+                  item.ruleId = val.purchasePrice.rule.ruleId // 当前加价购规则id
                   val.purchasePrice.purchasePriceRule.forEach((pitem, pindex) => {
                     item.ruleList += pitem.name + '或'
                   })
@@ -438,6 +440,7 @@ global.wxPage({
   to_purchase: function (e) {
     var activityId = e.currentTarget.dataset.activity_id;
     var storeId = e.currentTarget.dataset.store_id;
+    var ruleId = e.currentTarget.dataset.rule_id;
     // 已选换购规格id
     var pIds = []
     this.data.repurchaseList.forEach(item => {
@@ -447,7 +450,7 @@ global.wxPage({
     })
     console.log(pIds)
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&pIds=' + JSON.stringify(pIds),
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&rule_id=' + ruleId + '&pIds=' + JSON.stringify(pIds),
     })
   },
 
