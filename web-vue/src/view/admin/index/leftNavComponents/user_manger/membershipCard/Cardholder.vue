@@ -164,18 +164,25 @@
                 :key="index"
                 @click="handleToOperation(scope.row,index)"
               >
-                <span v-if="Number(scope.row.cardType!==2) && index<2">
-                  <span class="opt-item">{{item}}</span>
+                <span v-if="Number(scope.row.cardType)!==2 && index<2">
+                  <span
+                    class="opt-item"
+                    :class="[Number(scope.row.cardType)!==2?'content-left':'']"
+                  >{{item}}</span>
                 </span>
                 <span v-else>
                   <span
-                    v-if="scope.row.flag !== 1"
+                    v-if="scope.row.flag !== 1 && index===2"
                     class="opt-item"
+                    :class="[Number(scope.row.cardType)!==2?'content-left':'']"
                   > {{item}}</span>
-                  <span
-                    v-else
-                    class="opt-item"
-                  ></span>
+                  <span v-else>
+                    <span
+                      v-if="Number(scope.row.cardType)!==2"
+                      class="opt-item"
+                      :class="[Number(scope.row.cardType)!==2?'content-left':'']"
+                    ></span>
+                  </span>
                 </span>
               </span>
             </div>
@@ -408,7 +415,7 @@ export default {
     }
     .operation {
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       span {
         cursor: pointer;
         color: #5a8bff;
@@ -416,7 +423,11 @@ export default {
       .opt-item {
         width: 60px;
         display: block;
+      }
+
+      .content-left {
         text-align: left;
+        margin-left: 15px;
       }
     }
   }
