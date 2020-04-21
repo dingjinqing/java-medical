@@ -33,6 +33,7 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="00:00:00"
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -44,6 +45,7 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="23:59:59"
             >
             </el-date-picker>
           </div>
@@ -59,6 +61,7 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="00:00:00"
             >
             </el-date-picker>
             <span style="margin: 0 5px">至</span>
@@ -70,6 +73,7 @@
               style="width:185px"
               value-format="yyyy-MM-dd HH:mm:ss"
               clearable
+              default-time="23:59:59"
             >
             </el-date-picker>
           </div>
@@ -248,7 +252,7 @@
         </el-table-column>
       </el-table>
       <pagination
-        :page-params.sync="pageParams"
+        :page-params.sync="param"
         @pagination="initDataList"
       />
     </div>
@@ -296,7 +300,9 @@ export default {
         startTime: null,
         endTime: null,
         preStartTime: null,
-        preEndTime: null
+        preEndTime: null,
+        currentPage: 1,
+        pageRows: 20
       },
       pageParams: {},
       tableData: [],
@@ -312,8 +318,8 @@ export default {
       getPageList(param).then(res => {
         if (res.error === 0) {
           console.log(res, 'res')
+          this.param = Object.assign(this.param, res.content.page)
           this.tableData = res.content.dataList
-          this.pageParams = res.content.page
           this.tableData.map((item, index) => {
             item.statusText = this.getActStatusString(item.status)
           })
