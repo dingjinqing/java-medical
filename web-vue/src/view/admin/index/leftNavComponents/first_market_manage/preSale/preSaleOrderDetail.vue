@@ -100,7 +100,7 @@
           <template slot-scope="scope">
             <div class="goodImge">
               <div>
-                <img :src="$imageHost+'/'+scope.row.goods[0].goodsImg">
+                <img :src="scope.row.goods[0].goodsImg">
               </div>
               <div class="name">
                 {{scope.row.goods[0].goodsName}}

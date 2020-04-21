@@ -20,7 +20,7 @@
               </view>
             
               <!-- 加价购 -->
-              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}">
+              <view class='act_info clearfix' wx:if="{{item.activityType == 7}}" bindtap='to_purchase' data-activity_id="{{ item.activityId }}" data-store_id="{{item.storeId}}" data-rule_id="{{item.ruleId}}">
                 <view class='ai_left'>
                   <view class='full_icon' style='color:{{comColor}};border-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activityType2")}}</view>
                   <view class='act_content' wx:for='{{item.cartActivityInfos}}' wx:for-item="proItem" wx:key='key'>
