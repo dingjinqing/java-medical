@@ -416,6 +416,7 @@ export default {
       .opt-item {
         width: 60px;
         display: block;
+        text-align: left;
       }
     }
   }
