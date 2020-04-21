@@ -220,7 +220,7 @@ global.wxPage({
     return {
       title: '分享优惠券',
       path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
-      imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
+      imageUrl: this.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
 
