@@ -255,8 +255,8 @@ public class GoodsSortService extends ShopBaseService {
      * @param  sortId 待删除二级分类
      */
     public void delete(Integer sortId) {
+        List<Integer> sortIds = new ArrayList<>(6);
         transaction(() -> {
-            List<Integer> sortIds = new ArrayList<>(6);
             DSLContext db = db();
             SortRecord sortRecord = db.selectFrom(SORT).where(SORT.SORT_ID.eq(sortId)).fetchAny();
             if (sortRecord == null) {
@@ -279,12 +279,11 @@ public class GoodsSortService extends ShopBaseService {
                         .where(SORT.SORT_ID.eq(sortRecord.getParentId())).execute();
                 }
             }
-            esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
-            // 通知商品清楚这些绑定
-            saas().getShopApp(getShopId()).goods.clearSortId(sortIds);
         });
 
-
+        esDataUpdateMqService.updateEsGoodsIndexBySortId(sortId,getShopId());
+        // 通知商品清楚这些绑定
+        saas().getShopApp(getShopId()).goods.clearSortId(sortIds);
     }
 
     public GoodsNormalSortDetailVo getNormalSort(Integer sortId){
