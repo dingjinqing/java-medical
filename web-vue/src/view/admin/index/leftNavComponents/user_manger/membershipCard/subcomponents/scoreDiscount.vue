@@ -26,12 +26,26 @@
           >
           </el-input-number>
           <span>{{ $t('memberCard.discount') }}</span>
-          <el-checkbox v-model="ruleForm.cannotUseCoupon" class="score-coupon-cnf">{{$t('memberCard.scoreCouponCfg')}}</el-checkbox>
         </div>
       </el-form-item>
 
-      <el-form-item class="discountItem">
-        <div class="disCountGoodsDiv">
+      <el-form-item class="discountItem" v-if="ruleForm.powerDiscount">
+        <div  id="market-act">
+
+         <table>
+            <tr><td id="left-col">折扣叠加：</td><td id="right-col">不可与营销活动共用</td></tr>
+            <tr><td></td><td class="tip">可选择会员卡折扣不与哪些营销活动共用</td></tr>
+            <tr><td></td><td>
+              <el-checkbox-group v-model="tmpact" @change="appendActivity">
+                <el-checkbox label="COUPON">优惠券</el-checkbox>
+                <el-checkbox label="REDUCE_PRICE">限时降价</el-checkbox>
+                <el-checkbox label="FIRST_SPECIAL">首单特惠</el-checkbox>
+                <el-checkbox label="MEMBER_PRICE">会员价</el-checkbox>
+              </el-checkbox-group>
+              </td></tr>
+          </table>
+
+          <div class="disCountGoodsDiv">
           <div class="disCountGoodsIntro">{{ $t('memberCard.memberDiscountGoods') }}</div>
           <el-radio
             v-model="ruleForm.discountGoodsType"
@@ -75,6 +89,8 @@
             </div>
           </div>
         </div>
+        </div>
+
       </el-form-item>
       <!-- End: 点击指定商品后显示模块 -->
     </el-form>
@@ -114,6 +130,10 @@ export default {
     val: {
       type: Object,
       required: true
+    },
+    marketActivities: {
+      type: Array,
+      default: () => { return [] }
     }
   },
   computed: {
@@ -127,6 +147,9 @@ export default {
     }
   },
   watch: {
+    marketActivities (val) {
+      this.tmpact = val
+    },
     'val': {
       handler (newName, oldName) {
         console.log(newName)
@@ -212,7 +235,9 @@ export default {
           { validator: validateDiscount, required: true, trigger: 'blur' }
         ]
       },
-      isOnlyShowChooseGoods: false
+      isOnlyShowChooseGoods: false,
+      tmpact: null
+
     }
   },
   created () {
@@ -313,12 +338,44 @@ export default {
       console.log(this.ruleForm.choosedBrandId)
       this.noneBlockDiscArr[this.brandType].num = idList.length
       console.log(this.noneBlockDiscArr[this.brandType].num)
+    },
+    //  添加新营销活动
+    appendActivity (val) {
+      this.marketActivities.splice(0, this.marketActivities.length)
+      this.marketActivities.push(...val)
     }
   }
 }
 </script>
 <style scoped lang="scss">
 .discountRoot {
+  #market-act{
+    background-color: #fff;
+    padding: 5px 20px;
+    width: 60%;
+  }
+  table{
+    table-layout: auto;
+    width: 100%;
+  }
+  #left-col{
+    width: 80px;
+    text-align: left;
+    padding: 0px;
+  }
+  td+td{
+    width: auto;
+    padding-left: 30px;
+    /deep/ .el-checkbox{
+      margin: 0 10px 0 0;
+      /deep/ .el-checkbox__label{
+        padding-left: 5px;
+      }
+    }
+  }
+  .tip{
+    color: #999;
+  }
   .discountItem {
     padding-left: 100px;
     .discountDiv {
@@ -332,9 +389,6 @@ export default {
         /deep/ .el-input {
           width: 100%;
         }
-      }
-      .score-coupon-cnf{
-        margin-left: 10px;
       }
     }
     .equity {

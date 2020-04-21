@@ -51,6 +51,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.card.CardParam;
 import com.vpu.mp.service.pojo.shop.member.card.ScoreJson;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomAction;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights.RightSwitch;
@@ -241,8 +242,36 @@ public class CardCreateService extends ShopBaseService{
 			initDiscountPartGoods(param, cardBuilder);
 		}
 		
-		// 3. 不可与优惠券公用
-		cardBuilder.cannotUseCoupon(param.getCannotUseCoupon());
+		//	初始化不可与折扣公用的营销活动
+		initDiscountMarketActivity(param, cardBuilder);
+	
+		
+	}
+	
+	/**
+	 * 初始化不可与折扣公用的营销活动
+	 */
+	private void initDiscountMarketActivity(CardParam param, MemberCardRecordBuilder cardBuilder) {
+		logger().info("初始化不可与折扣公用的营销活动");
+		List<CardMarketActivity> marketActivities = param.getMarketActivities();
+		// 优惠券默认设置为0
+		cardBuilder.cannotUseCoupon(NumberUtils.BYTE_ZERO);
+		//	其他营销活动
+		cardBuilder.cannotUseAction(null);
+
+		if(marketActivities!=null && marketActivities.size()>0) {
+			List<Integer> activityIds = new ArrayList<>(marketActivities.size());
+			for(CardMarketActivity item: marketActivities) {
+				if(CardMarketActivity.COUPON != item) {
+					activityIds.add(item.ordinal());
+				}else {
+					cardBuilder.cannotUseCoupon(NumberUtils.BYTE_ONE);
+				}
+			}
+			if(activityIds.size()>0) {
+				cardBuilder.cannotUseAction(Util.listToString(activityIds));
+			}
+		}
 	}
 	
 	/**

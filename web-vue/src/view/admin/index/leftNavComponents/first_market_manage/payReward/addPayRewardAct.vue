@@ -1190,17 +1190,25 @@ export default {
       }
 
       // 商品回显
-      let tempGoods = data.goodsIds.split(',')
-      this.choosingGoodsDateFlag1 = this.handleReturnGoodsId(tempGoods)
-      this.noneBlockDiscArr[0].num = this.getReturnGoodsIdList.length
+      if (data.goodsIds !== null) {
+        let tempGoods = data.goodsIds.split(',')
+        this.choosingGoodsDateFlag1 = this.handleReturnGoodsId(tempGoods)
+        this.noneBlockDiscArr[0].num = this.getReturnGoodsIdList.length
+      }
+
       // 平台分类回显
-      // let tempPlat = data.goodsCatIds.split(',')
-      // this.platformCategoryIds = this.handleReturnPlatId(tempPlat)
-      // this.noneBlockDiscArr[2].num = this.getReturnPlatIdList.length
+      // if (data.goodsCatIds !== null) {
+      //   let tempPlat = data.goodsCatIds.split(',')
+      //   this.platformCategoryIds = this.handleReturnPlatId(tempPlat)
+      //   this.noneBlockDiscArr[2].num = this.getReturnPlatIdList.length
+      // }
+
       // 商家分类回显
-      let tempBussiness = data.goodsSortIds.split(',')
-      this.shopCategoryIds = this.handleReturBussinessId(tempBussiness)
-      this.noneBlockDiscArr[1].num = this.getReturnBussinessIdList.length
+      if (data.goodsSortIds !== null) {
+        let tempBussiness = data.goodsSortIds.split(',')
+        this.shopCategoryIds = this.handleReturBussinessId(tempBussiness)
+        this.noneBlockDiscArr[1].num = this.getReturnBussinessIdList.length
+      }
     },
     handleReturnGoodsId (goodsData) {
       let newArr = goodsData.map(Number)

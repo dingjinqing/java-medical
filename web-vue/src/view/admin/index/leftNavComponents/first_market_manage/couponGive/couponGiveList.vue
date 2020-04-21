@@ -67,7 +67,8 @@
             <td>{{item.createTime}}</td>
             <td><span v-html="item.people.join(`<br/>`)"></span></td>
             <td>{{item.sendAction | sendAction}}</td>
-            <td>{{item.sendStatus | sendStatus}}</td>
+            <td v-if="item.people.length === 0">未发放</td>
+            <td v-if="item.people.length > 0">{{item.sendStatus | sendStatus}}</td>
             <!-- 6 ~ 10 -->
             <td style="padding: 0;">
               <table
