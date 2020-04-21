@@ -1605,6 +1605,19 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_market_manage/channelPage/channelPage'
       )
+  },
+  // 渠道页面分析 - 商品数据统计
+  {
+    path: '/admin/home/main/channel/statistical',
+    name: 'channelStatistical',
+    meta: {
+      crumbTitle: 'router.channel',
+      meta: 'first_market_manage'
+    },
+    component: () =>
+      import(
+        '@/view/admin/index/leftNavComponents/first_market_manage/channelPage/channelDataQuery'
+      )
   }
 ]
 export default routes
