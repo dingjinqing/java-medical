@@ -4,7 +4,7 @@
       <ul>
         <li class="li">
           <div class="liNav">
-            <div class="phoneClass">{{$t('membershipIntroduction.phoneNum')}}：</div>
+            <div class="phoneClass">{{$t('membershipIntroduction.phoneNum')}}</div>
             <el-input
               v-model="phoneNum"
               :placeholder="$t('membershipIntroduction.placePhoneNum')"
@@ -15,7 +15,7 @@
             class="liNav"
             :class="memberListliNav"
           >
-            <span>{{$t('membershipIntroduction.wechatNickname')}}：</span>
+            <span>{{$t('membershipIntroduction.wechatNickname')}}</span>
             <el-input
               v-model="vxName"
               :placeholder="$t('membershipIntroduction.placeWXNameNum')"
@@ -23,7 +23,7 @@
             ></el-input>
           </div>
           <div class="liNav">
-            <span>{{$t('membershipIntroduction.source')}}：</span>
+            <span>{{$t('membershipIntroduction.source')}}</span>
             <el-select
               v-model="sourceValue"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -42,7 +42,7 @@
             class="liNav"
             :class="memberListliLast"
           >
-            <span>{{$t('membershipIntroduction.membershipCard')}}：</span>
+            <span>{{$t('membershipIntroduction.membershipCard')}}</span>
             <el-select
               v-model="membershipCardVal"
               :placeholder="$t('membershipIntroduction.placeChoise')"
@@ -62,36 +62,10 @@
       <ul class="uls">
         <li>
           <div
-            class="liNav"
-            :class="specielNav"
-          >
-            <span
-              :class="minixLabel"
-              class="labelClass"
-            >{{$t('membershipIntroduction.label')}}：</span>
-            <el-select
-              v-model="labelVal"
-              multiple
-              collapse-tags
-              size="small"
-              :placeholder="$t('membershipIntroduction.placeinpuLabel')"
-            >
-              <el-option
-                v-for="(item,index) in tagSource"
-                :key="index"
-                :label="item.value"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li>
-          <div
             class="liNav date"
             :class="specialliNavTwo"
           >
-            <span>{{$t('membershipIntroduction.registrationTime')}}：</span>
+            <span>{{$t('membershipIntroduction.registrationTime')}}</span>
             <el-date-picker
               v-model="datePickerVal"
               type="daterange"
@@ -110,7 +84,7 @@
             class="liNav"
             :class="memberListliLast"
           >
-            <span>{{$t('membershipIntroduction.inviter')}}：</span>
+            <span>{{$t('membershipIntroduction.inviter')}}</span>
             <el-input
               v-model="inviteUserName"
               :placeholder="$t('membershipIntroduction.coverName')"
@@ -118,14 +92,52 @@
             ></el-input>
           </div>
         </li>
+        <li>
+           <div class="liNav">
+            <span id="distritor-span">{{$t('membershipIntroduction.distributorTip')}} </span>
+            <el-select v-model="isDistributor" size="small">
+              <el-option v-for="opt of distributorOpts"
+                :key="opt"
+                :label="opt.label"
+                :value="opt.id">
+              </el-option>
+            </el-select>
+           </div>
+        </li>
       </ul>
       <ul
         class="hiddenUl"
         v-if='!arrorFlag'
       >
         <li>
+          <div
+            class="liNav"
+            :class="specielNav"
+          >
+            <span
+              :class="minixLabel"
+              class="labelClass"
+            >{{$t('membershipIntroduction.label')}}</span>
+            <el-select
+              v-model="labelVal"
+              multiple
+              collapse-tags
+              size="small"
+              :placeholder="$t('membershipIntroduction.placeinpuLabel')"
+            >
+              <el-option
+                v-for="(item,index) in tagSource"
+                :key="index"
+                :label="item.value"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </li>
+        <li>
           <div>
-            <span>{{$t('membershipIntroduction.reacord')}}：</span>
+            <span>{{$t('membershipIntroduction.reacord')}}</span>
             <el-date-picker
               v-model="datePickerVal_one"
               type="daterange"
@@ -139,7 +151,7 @@
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}：</span>
+            <span>{{$t('membershipIntroduction.PassengerUnitPrice')}}</span>
             <el-input
               v-model="unitPriceLeft"
               :placeholder="$t('membershipIntroduction.Pleasecontent')"
@@ -155,7 +167,7 @@
         </li>
         <li>
           <div>
-            <span>{{$t('membershipIntroduction.behavior')}}：</span>
+            <span>{{$t('membershipIntroduction.behavior')}}</span>
             <el-date-picker
               v-model="datePickerVal_two"
               type="daterange"
@@ -169,7 +181,7 @@
             </el-date-picker>
           </div>
           <div class="hiddenRight">
-            <span>{{$t('membershipIntroduction.purchasetimes')}}：</span>
+            <span>{{$t('membershipIntroduction.purchasetimes')}}</span>
             <el-input
               v-model="frequencyLeft"
               :placeholder="$t('membershipIntroduction.Pleasecontent')"
@@ -185,7 +197,7 @@
         </li>
         <li class="specialLi">
           <div>
-            <span>{{$t('membershipIntroduction.transaction')}}：</span>
+            <span>{{$t('membershipIntroduction.transaction')}}</span>
             <el-date-picker
               v-model="datePickerVal_three"
               type="daterange"
@@ -200,7 +212,7 @@
           </div>
           <div>
             <div  class="brand_title">
-              <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}：</span>
+              <span class="nameClass">{{$t('membershipIntroduction.designatedgoods')}}</span>
               <div
                 class="choiseDivClass"
                 @click="handleClickChoiseGood()"
@@ -774,7 +786,7 @@
           class="balanceDialogDiv"
           style="margin-bottom:30px"
         >
-          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}：</span>
+          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}</span>
           <span>{{ $t('membershipIntroduction.NoLandingPrompt') }}</span>
         </div>
         <span
@@ -803,7 +815,7 @@
           class="balanceDialogDiv"
           style="margin-bottom:30px"
         >
-          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}：</span>
+          <span style="color:#f66">{{ $t('membershipIntroduction.prompt') }}</span>
           <span>{{ $t('membershipIntroduction.ResumeLoginPrompt') }}</span>
         </div>
         <span
@@ -1032,7 +1044,9 @@ export default {
       registTimeDesc: false,
       membershipExportVisible: false,
       batchLoginOpt: false,
-      batchLoginOptAll: false
+      batchLoginOptAll: false,
+      distributorOpts: [],
+      isDistributor: -1
     }
   },
   watch: {
@@ -1041,6 +1055,9 @@ export default {
       this.integralDialogData = this.$t('membershipIntroduction.integralDialogData')
       this.sourceOptions = []
       this.sourceOptions.push(...this.$t('membershipIntroduction.userFromSource'))
+      this.distributorOpts = []
+      this.distributorOpts.push(...this.$t('membershipIntroduction.distributorOpts'))
+
       // 初始化会员列表数据
       this.defaultTabelListData()
       // 初始化会员卡下拉框列表
@@ -2349,5 +2366,9 @@ img {
 }
 .score-order {
   color: #5a8bff;
+}
+#distritor-span{
+  display: block;
+  width: 100px;
 }
 </style>
