@@ -390,6 +390,7 @@ public class MemberDaoService extends ShopBaseService {
 				.and(getInviteUserCondition(param.getInviteUserName()))
 				.and(getUserCardCondition(param.getCardId()))
 				.and(getTagNameCondition(param.getTagName()))
+				.and(getIsDistributorCondition(param.getIsDistributor()))
 				.and(getUnitPriceLowCondition(param.getUnitPriceLow()))
 				.and(getUnitPriceHightCondition(param.getUnitPriceHight()))
 				.and(getBuyCountLowCondition(param.getBuyCountLow()))
@@ -415,6 +416,8 @@ public class MemberDaoService extends ShopBaseService {
 	}
 
 	
+
+
 	/**
 	 * 构建查询会员持有会员卡详情的参数
 	 */
@@ -548,6 +551,17 @@ public class MemberDaoService extends ShopBaseService {
 		Condition condition = DSL.noCondition();
 		if(tagIdList != null && tagIdList.size()>0) {
 			condition = condition.and(USER_TAG.TAG_ID.in(tagIdList));
+		}
+		return condition;
+	}
+	
+	/**
+	 * 	是否是分销员条件
+	 */
+	private Condition getIsDistributorCondition(Byte isDistributor) {
+		Condition condition = DSL.noCondition();
+		if(isDistributor != null && !NumberUtils.BYTE_MINUS_ONE.equals(isDistributor)) {
+			condition = condition.and(USER.IS_DISTRIBUTOR.eq(isDistributor));
 		}
 		return condition;
 	}

@@ -499,5 +499,20 @@ export const cn = {
   distributorLevel: '分销员等级',
   distributorGroup: '分销员分组',
   determine: '确定',
-  cancel2: '取消'
+  cancel2: '取消',
+  distributorOpts: [
+    {
+      id: -1,
+      label: '全部'
+    },
+    {
+      id: 0,
+      label: '否'
+    },
+    {
+      id: 1,
+      label: '是'
+    }
+  ],
+  distributorTip: '是否是分销员'
 }
