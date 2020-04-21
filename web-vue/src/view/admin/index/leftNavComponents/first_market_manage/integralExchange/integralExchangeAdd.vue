@@ -179,7 +179,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="xyStock"
+              prop="remainStock"
               label="剩余兑换商品库存"
               align="center"
               v-if="id!==-1"
@@ -187,13 +187,13 @@
               <template slot-scope="scope">
                 <el-input
                   size="small"
-                  v-model="scope.row.xyStock"
+                  v-model="scope.row.remainStock"
                   onkeyup="value=value.replace(/[^\d.]/g,'')"
                 ></el-input>
               </template>
             </el-table-column>
             <el-table-column
-              prop="sold"
+              prop="saleNum"
               label="已售数量"
               align="center"
               v-if="id!==-1"
@@ -201,7 +201,7 @@
               <template slot-scope="scope">
                 <el-input
                   size="small"
-                  v-model="scope.row.sold"
+                  v-model="scope.row.saleNum"
                   onkeyup="value=value.replace(/[^\d.]/g,'')"
                   disabled
                 ></el-input>
@@ -554,8 +554,8 @@ export default {
                   },
                   goodsStock: item.prdNumber,
                   stock: item.stock,
-                  xyStock: 1,
-                  sold: 0
+                  remainStock: item.remainStock,
+                  saleNum: item.saleNum
                 }
                 arr.push(obj)
               })
@@ -565,8 +565,8 @@ export default {
                 exchange: '',
                 goodsStock: '',
                 stock: '',
-                xyStock: '',
-                sold: ''
+                remainStock: '',
+                saleNum: ''
               }
               arr.push(lastObj)
               this.ruleForm.tableData = arr
@@ -627,7 +627,12 @@ export default {
             obj.prdId = item.exchange.prdId
             obj.money = item.exchange.money
             obj.score = item.exchange.score
-            obj.stock = item.stock
+            if (this.id === -1) {
+              obj.stock = item.stock
+            } else {
+              obj.stock = item.remainStock + item.saleNum
+            }
+
             arr.push(obj)
           }
         })
@@ -710,13 +715,13 @@ export default {
       let yuanData = ''
       let scoreData = ''
       let kuCunData = ''
-      let xyStock = ''
+      let remainStock = ''
       if (this.ruleForm.tableData.length) {
         yuanData = this.ruleForm.tableData[0].exchange.money
         scoreData = this.ruleForm.tableData[0].exchange.score
         kuCunData = this.ruleForm.tableData[0].stock
         if (this.id !== -1) {
-          xyStock = this.ruleForm.tableData[0].xyStock
+          remainStock = this.ruleForm.tableData[0].remainStock
         }
       }
       if (flag === 1) {
@@ -728,7 +733,7 @@ export default {
         this.ruleForm.tableData.forEach((item, index) => {
           item.stock = kuCunData
           if (this.id !== -1) {
-            item.xyStock = xyStock
+            item.remainStock = remainStock
           }
         })
       }
