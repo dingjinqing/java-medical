@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = -1440400638;
+    private static final long serialVersionUID = -1501181824;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -71,12 +71,12 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.start_time</code>. 开始时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
+    public final TableField<ReducePriceRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.end_time</code>. 结束日期
      */
-    public final TableField<ReducePriceRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束日期");
+    public final TableField<ReducePriceRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("'0000-00-00 00:00:00'", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束日期");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.period_action</code>. 周期类型：0:不进行周期重复  1:每天 2:每月 3:每周
@@ -86,12 +86,12 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.point_time</code>. 时间段
      */
-    public final TableField<ReducePriceRecord, String> POINT_TIME = createField("point_time", org.jooq.impl.SQLDataType.VARCHAR(20), this, "时间段");
+    public final TableField<ReducePriceRecord, String> POINT_TIME = createField("point_time", org.jooq.impl.SQLDataType.VARCHAR(20).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "时间段");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.extend_time</code>. 每月第几日（单选）；每周第几天（多选，@符隔开）；
      */
-    public final TableField<ReducePriceRecord, String> EXTEND_TIME = createField("extend_time", org.jooq.impl.SQLDataType.VARCHAR(50), this, "每月第几日（单选）；每周第几天（多选，@符隔开）；");
+    public final TableField<ReducePriceRecord, String> EXTEND_TIME = createField("extend_time", org.jooq.impl.SQLDataType.VARCHAR(50).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "每月第几日（单选）；每周第几天（多选，@符隔开）；");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.batch_discount</code>. 批量打几折
@@ -101,12 +101,12 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.batch_reduce</code>. 批量减多少
      */
-    public final TableField<ReducePriceRecord, BigDecimal> BATCH_REDUCE = createField("batch_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "批量减多少");
+    public final TableField<ReducePriceRecord, BigDecimal> BATCH_REDUCE = createField("batch_reduce", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.DECIMAL)), this, "批量减多少");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.batch_final_price</code>. 批量折后价
      */
-    public final TableField<ReducePriceRecord, BigDecimal> BATCH_FINAL_PRICE = createField("batch_final_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2), this, "批量折后价");
+    public final TableField<ReducePriceRecord, BigDecimal> BATCH_FINAL_PRICE = createField("batch_final_price", org.jooq.impl.SQLDataType.DECIMAL(10, 2).defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.DECIMAL)), this, "批量折后价");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.is_batch_integer</code>. 是否批量取整
@@ -126,7 +126,7 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.del_time</code>. 删除时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "删除时间");
+    public final TableField<ReducePriceRecord, Timestamp> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("'0000-00-00 00:00:00'", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "删除时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.limit_amount</code>.
@@ -141,17 +141,17 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.create_time</code>.
      */
-    public final TableField<ReducePriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReducePriceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.update_time</code>. 最后修改时间
      */
-    public final TableField<ReducePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<ReducePriceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.share_config</code>. 分享设置
      */
-    public final TableField<ReducePriceRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享设置");
+    public final TableField<ReducePriceRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB.defaultValue(org.jooq.impl.DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "分享设置");
 
     /**
      * The column <code>mini_shop_471752.b2c_reduce_price.limit_flag</code>. 超限购买设置标记，1禁止超限购买，0超限全部恢复原价
