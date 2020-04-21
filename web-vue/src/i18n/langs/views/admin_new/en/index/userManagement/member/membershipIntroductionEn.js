@@ -515,5 +515,6 @@ export const en = {
       id: 1,
       label: 'Yes'
     }
-  ]
+  ],
+  distributorTip: 'distrbutor'
 }

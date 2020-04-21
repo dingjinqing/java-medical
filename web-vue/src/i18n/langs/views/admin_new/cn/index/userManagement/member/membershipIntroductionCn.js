@@ -513,5 +513,6 @@ export const cn = {
       id: 1,
       label: '是'
     }
-  ]
+  ],
+  distributorTip: '是否是分销员'
 }
