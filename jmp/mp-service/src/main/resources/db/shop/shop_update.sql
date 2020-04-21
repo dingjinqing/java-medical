@@ -381,7 +381,7 @@ ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAUL
 
 
 -- 2020年04月21日 ws
-ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT NULL COMMENT '返利配置详情';
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
