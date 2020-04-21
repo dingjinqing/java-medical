@@ -17,6 +17,10 @@ public class AvailCouponVo {
 	 */
 	public Integer id;
     /**
+     * 优惠券活动ID
+     */
+    public Integer actId;
+    /**
      * random 分裂优惠券随机金额
      */
 	private String actCode;

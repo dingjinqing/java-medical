@@ -625,10 +625,7 @@ export default {
     addAct () {
       this.$refs['params'].validate((valid) => {
         if (valid) {
-          debugger
           var data = this.params
-          console.log(this.params)
-          console.log(data)
           // 会员卡
           data.cardId = data.cardId.join(',')
           // 会员标签
@@ -644,8 +641,6 @@ export default {
             data.couponGiveGrantInfoParams.point_start_time = data.couponGiveGrantInfoParams.validity[0]
             data.couponGiveGrantInfoParams.point_end_time = data.couponGiveGrantInfoParams.validity[1]
           }
-          console.log(this.params)
-          console.log(data)
           addActivity(data).then(res => {
             if (res.error === 0) {
               this.$message.success('添加成功!')

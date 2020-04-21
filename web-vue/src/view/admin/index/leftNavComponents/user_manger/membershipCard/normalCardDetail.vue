@@ -38,6 +38,7 @@
           <div class="rightTitle">会员权益</div>
           <scoreDiscount
             :val="disCountData"
+            :marketActivities="marketActivities"
             @input="initDiscountData"
             ref="disCountData"
           ></scoreDiscount>
@@ -210,8 +211,6 @@ export default {
         powerDiscount: true,
         discount: undefined,
         discountGoodsType: '1',
-        // 不可与优惠券公用
-        cannotUseCoupon: false,
         choosedGoodsId: [],
         choosedStoreId: [],
         choosedPlatformId: [],
@@ -304,7 +303,8 @@ export default {
       cardTag: {
         cardTag: 'off',
         cardTagId: []
-      }
+      },
+      marketActivities: ['COUPON', 'MEMBER_PRICE']
     }
   },
   mounted () {
@@ -340,6 +340,7 @@ export default {
 
       // 折扣
       this.disCountData.powerDiscount = data.powerCount === 1
+      console.log(this.disCountData.powerDiscount)
       this.disCountData.discount = data.disCount
       if (this.isValidValue(data.discountIsAll)) {
         this.disCountData.discountGoodsType = String(data.discountIsAll)
@@ -348,7 +349,6 @@ export default {
       this.disCountData.choosedStoreId = data.shopCategoryIds
       this.disCountData.choosedPlatformId = data.platformCategoryIds
       this.disCountData.choosedBrandId = data.brandId.map(item => Number(item))
-      this.disCountData.cannotUseCoupon = data.cannotUseCoupon === 1
 
       // 专享
       this.ownGoodsData.powerOwnGoods = data.powerPayOwnGood === 'on'
@@ -513,6 +513,12 @@ export default {
           cardTagId: data.cardTag.cardTags
         }
       }
+
+      // 不折扣公用营销活动
+      if (data.marketActivities) {
+        this.marketActivities = data.marketActivities
+      }
+      console.log(this.marketActivities)
     },
 
     isValidValue (data) {
@@ -621,7 +627,6 @@ export default {
         'bgImg': this.cardNameAndBg.bgImg,
         'powerCount': this.disCountData.powerDiscount ? 1 : 0,
         'disCount': this.disCountData.discount,
-        'cannotUseCoupon': this.disCountData.cannotUseCoupon ? 1 : 0,
         'discountIsAll': this.disCountData.discountGoodsType,
         'goodsId': this.disCountData.choosedGoodsId,
         'shopCategoryIds': this.disCountData.choosedStoreId,
@@ -675,7 +680,8 @@ export default {
         'freeship': this.freeship,
         'cardRenew': this.cardRenew,
         'customRights': this.customRights,
-        'cardTag': this.cardTag
+        'cardTag': this.cardTag,
+        'marketActivities': this.marketActivities
       }
       if (this.cardId) {
         // 更新会员卡

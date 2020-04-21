@@ -156,11 +156,18 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         return null;
     }
 
+    /**
+     * 订单完成时进行返利
+     * @param order
+     * @param isMp
+     * @throws MpException
+     */
     private void finishRebate(OrderInfoRecord order, Byte isMp) throws MpException {
         if(!order.getFanliType().equals(DistributionConstant.REBATE_ORDER) ||
             order.getSettlementFlag().equals(OrderConstant.YES) ||
             !order.getTkOrderType().equals(OrderConstant.TK_NORMAL)) {
             logger().info("完成订单时不满足返利条件");
+            return;
         }
         //goods
         Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());

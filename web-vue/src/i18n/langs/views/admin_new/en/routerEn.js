@@ -3,6 +3,8 @@ export const en = {
   // 概括系列模块
   // 概况-店铺助手
   taskList: ['Survey', 'Shop Assistant'],
+  // 营销日历
+  calendar: ['Survey', 'Marketing calendar'],
   // 会员管理 会员列表
   membershipList: ['Membership management', 'Membership List'],
   memberEditorList: [

@@ -349,15 +349,21 @@ export default {
         startTime = this.orderTime + ' 00:00:00'
         endTime = this.orderTime + ' 23:59:59'
       }
+      let status = []
+      if (this.orderStatus === -1) {
+        status = null
+      } else {
+        status.push(this.orderStatus)
+      }
       let params = {
         activityId: this.$route.query.activityId,
         goodsName: this.goodsNameInput,
         orderSn: this.orderSn,
-        orderStatus: this.orderStatus === -1 ? '' : this.orderStatus,
+        orderStatus: status,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
-        startTime: startTime,
-        endTime: endTime,
+        createTimeStart: startTime,
+        createTimeEnd: endTime,
         provinceCode: this.selectArea.province,
         cityCode: this.selectArea.city,
         districtCode: this.selectArea.district,
@@ -440,8 +446,8 @@ export default {
         orderStatus: status,
         mobile: this.consigneePhone,
         consignee: this.consigneeName,
-        startTime: startTime,
-        endTime: endTime,
+        createTimeStart: startTime,
+        createTimeEnd: endTime,
         provinceCode: this.selectArea.province,
         cityCode: this.selectArea.city,
         districtCode: this.selectArea.district

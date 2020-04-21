@@ -505,6 +505,7 @@ public class Indexes {
     public static final Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_CALENDAR_ID;
     public static final Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Indexes0.MARKET_CALENDAR_ACTIVITY_PRIMARY;
     public static final Index MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID;
+    public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -986,5 +987,6 @@ public class Indexes {
         public static Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Internal.createIndex("calendar_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.CALENDAR_ID }, false);
         public static Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID }, true);
         public static Index MARKET_CALENDAR_ACTIVITY_SYS_CAL_ACT_ID = Internal.createIndex("sys_cal_act_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.SYS_CAL_ACT_ID }, false);
+        public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
     }
 }
