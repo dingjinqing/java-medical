@@ -31,7 +31,7 @@ global.wxPage({
     var that = this;
     that.setData({
       couponSn: options.couponSn,
-      couponId: Number(options.id),
+      couponId: Number(options.couponId),
       couponStatus: options.type
     })
     // 查看详情
@@ -220,7 +220,7 @@ global.wxPage({
     return {
       title: '分享优惠券',
       path: '/pages/splitinfo/splitinfo?couponSn=' + couponSn + "&couponId=" + actId + "&inviteId=" + util.getCache('user_id'),
-      imageUrl: that.data.imageUrl + '/image/wxapp/share_icon.jpg',
+      imageUrl: this.data.imageUrl + '/image/wxapp/share_icon.jpg',
     }
   },
 
@@ -237,7 +237,6 @@ global.wxPage({
 
   // 领取记录
   to_getRecord: function (e) {
-    debugger
     var couponSn = e.target.dataset.coupon_sn;
     var actId = e.target.dataset.act_id;
     util.navigateTo({
