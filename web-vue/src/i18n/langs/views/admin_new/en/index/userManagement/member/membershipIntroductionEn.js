@@ -501,5 +501,19 @@ export const en = {
   distributorLevel: 'Distributor Level',
   distributorGroup: 'Distributor Group',
   determine: 'determine',
-  cancel2: 'cancel'
+  cancel2: 'cancel',
+  distributorOpts: [
+    {
+      id: -1,
+      label: 'All'
+    },
+    {
+      id: 0,
+      label: 'No'
+    },
+    {
+      id: 1,
+      label: 'Yes'
+    }
+  ]
 }
