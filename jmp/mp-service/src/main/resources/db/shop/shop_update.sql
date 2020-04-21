@@ -379,6 +379,9 @@ ALTER TABLE `b2c_user_tag` ADD COLUMN `times` smallint(5) DEFAULT 1 COMMENT '打
 --订单返利商品表添加 商品行ID
 ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAULT 0 COMMENT '商品行ID';
 
+
+-- 2020年04月21日 ws
+ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT NULL COMMENT '返利配置详情';
 /*********************2.11*************************END*/
 
 /*********************2.12*************************START*/
