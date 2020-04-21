@@ -224,6 +224,7 @@
                     <el-input
                       v-model.number="requestParam.freeChances"
                       style="width:50px;"
+                      size="small"
                     ></el-input>次
                   </el-radio>
                   <el-radio label="1">不可免费抽奖</el-radio>
@@ -282,13 +283,25 @@
               </el-form-item>
 
               <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')+'：'">
-                <el-input
+                <el-radio-group v-model="requestParam.noAwardScoreCheck">
+                  <el-radio :label="1">赠送
+                    <el-input
+                      v-model.number="requestParam.noAwardScore"
+                      style="width:50px;"
+                      size="small"
+                    ></el-input>
+                    积分
+                  </el-radio>
+                  <el-radio :label="0">不赠送</el-radio>
+                </el-radio-group>
+                <span class="tips">仅送给未中奖的用户</span>
+                <!-- <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullIsNoPoints')"
                   style="width: 185px"
                   v-model="requestParam.noAwardScore"
                 ></el-input>
-                <span style="color: #999">{{$t('luckyDraw.noWinningBonusPoints')}}</span>
+                <span style="color: #999">{{$t('luckyDraw.noWinningBonusPoints')}}</span> -->
                 <section class="upInfo">
                   <div class="upIcons">
                     <div class="leftContent">
@@ -1332,6 +1345,13 @@ export default {
       color: #f56c6c;
       margin-right: 4px;
     }
+  }
+  .tips {
+    color: #999;
+    line-height: 32px;
+    margin-left: 15px;
+    display: inline-block;
+    vertical-align: middle;
   }
 }
 </style>>
