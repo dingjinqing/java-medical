@@ -5,10 +5,6 @@
         <div class="tabItem tabItemActive">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}</div>
         <div
           class="tabItem"
-          @click="tabItemClicked('goodsForSaleOut')"
-        >{{$t('allGoods.allGoodsRouterHeader.saleOut')}}</div>
-        <div
-          class="tabItem"
           @click="tabItemClicked('goodsForInStock')"
         >{{$t('allGoods.allGoodsRouterHeader.inStock')}}</div>
       </div>

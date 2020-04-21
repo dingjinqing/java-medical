@@ -43,6 +43,20 @@ const routes = [{
             '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/calendarMain'
           )
       },
+      // 营销日历  添加/编辑事件
+      {
+        path: '/admin/home/main/overviewOfMall/addCalendarMain',
+        name: 'addCalendarMain',
+        meta: {
+          crumbTitle: 'router.addCalendarMain',
+          meta: 'first_web_manage',
+          category: 'shop_view'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/first_web_manage/overviewOfMall/addCalendarMain'
+          )
+      },
       // 店铺助手
       {
         path: '/admin/home/main/overviewOfMall/taskList',
@@ -479,16 +493,15 @@ const routes = [{
           // 商品管理/已售罄
           {
             path: '/admin/home/main/goodsManage/goodsForSaleOut',
-            name: 'goodsForSaleOut',
+            name: 'sale_out',
             meta: {
               crumbTitle: 'router.goodsForSaleOut',
-              meta: 'goods_manage',
-              category: 'sale_on'
+              meta: 'goods_manage'
             },
             component: () =>
-              import(
-                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
-              )
+                import(
+                  '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
+                )
           },
           // 商品管理/仓库中
           {

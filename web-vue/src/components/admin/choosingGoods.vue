@@ -107,19 +107,19 @@
               <el-select
                 size="small"
                 style="width:140px"
-                v-model="requestParam.upperlowershelves"
+                v-model="requestParam.isOnSale"
               >
                 <el-option
                   label="请选择上下架"
-                  value=""
+                  :value="null"
                 ></el-option>
                 <el-option
                   label="上架"
-                  value="1"
+                  :value="1"
                 ></el-option>
                 <el-option
                   label="下架"
-                  value="0"
+                  :value="0"
                 ></el-option>
               </el-select>
             </li>
@@ -332,7 +332,7 @@ export default {
     initSortCatParams: function () {
       return {
         needGoodsNum: true,
-        isOnSale: 1,
+        isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0,
         // 查询商品时值为1，规格查询值为2
         selectType: this.loadProduct ? 2 : 1
@@ -358,7 +358,7 @@ export default {
         currentPage: 1,
         pageRows: 3,
         // 在售商品
-        isOnSale: 1,
+        isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0,
         catId: null,
         sortId: null,
@@ -367,8 +367,7 @@ export default {
         highShopPrice: null,
         goodsName: null,
         goodsSn: null,
-        brandId: null,
-        upperlowershelves: ''
+        brandId: null
       },
       showItem: {
         sortId: true,
@@ -413,7 +412,7 @@ export default {
         this.requestParam = {
           currentPage: 1,
           pageRows: 3,
-          isOnSale: 1,
+          isOnSale: this.upperlowershelves ? null : 1,
           isSaleOut: 0,
           catId: null,
           sortId: null,
@@ -533,7 +532,7 @@ export default {
     resetFilterData () {
       this.requestParam = {
         // 在售商品
-        isOnSale: 1,
+        isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0
       }
       // this.$refs['catTree'].clearData()
@@ -547,7 +546,7 @@ export default {
         currentPage: 1,
         pageRows: 3,
         // 在售商品
-        isOnSale: 1,
+        isOnSale: this.upperlowershelves ? null : 1,
         isSaleOut: 0,
         catId: null,
         sortId: null,

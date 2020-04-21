@@ -9,6 +9,7 @@
           labelPosition='right'
           :rules="formRules"
           ref="form"
+          v-if="!ruleShow"
         >
           <el-form-item
             :label="$t('promoteList.actName') + '：'"
@@ -607,12 +608,33 @@
                   </el-radio>
                 </div>
               </el-form-item>
+              <el-form-item
+                label="活动规则说明："
+                prop=""
+              >
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="friendHelpRule"
+                >设置规则说明</el-button>
+              </el-form-item>
             </el-collapse-item>
           </el-collapse>
         </el-form>
+
+        <!-- 规则说明 -->
+        <ActivityRule
+          v-if="ruleShow"
+          @ActivityMsg="activityMsg"
+          :sendMsg="sendMsg"
+          :template="template"
+        />
       </div>
 
-      <div class="footer">
+      <div
+        class="footer"
+        v-if="!ruleShow"
+      >
         <el-button
           type="primary"
           size="small"
@@ -654,6 +676,7 @@ export default {
   components: {
     choosingGoods,
     ImageDalog,
+    ActivityRule: () => import('@/components/admin/activityRule'),
     AddCouponDialog: () => import('@/components/admin/addCouponDialog')
   },
   filters: {
@@ -927,7 +950,23 @@ export default {
       showCouponDialog: false,
       couponIdList: [],
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+
+      ruleShow: false, // 规则组件
+      sendMsg: null, // 回显规则内容
+      // 默认模板内容
+      template: `
+        <div style="line-height: 1.5;">
+          <p>参与步骤</p>
+          <p>1.通过活动海报或好友分享，进入活动页面，通过活动发起按钮，发起助力活动，按页面提示分享给好友帮忙助力；</p>
+          <p>2.好友通过小程序落地页查看活动现状，帮忙助力，获得助力值；</p>
+          <p>3.在活动有效期内，助力值满，则发起人可获得奖励；</p>
+          <p>4.在奖励有效期内，获奖用户领取奖励并完成下单（或查看商品），即可等待商家发货。</p>
+          <p>参与规则</p>
+          <p>1.同一时间，同一用户只能发起一个助力活动；</p>
+          <p>2.发起助力后24小时助力值未满的，则助力失败，不可获得奖励。</p>
+        </div>
+      `
     }
   },
   created () {
@@ -1263,6 +1302,17 @@ export default {
       this.coupon_duplicate = []
       this.form.failedSendContent = ''
       this.$refs['form'].validateField('failedSendType')
+    },
+
+    // 设置规则说明
+    friendHelpRule () {
+      this.ruleShow = true
+      // this.sendMsg = this.form.actCopywriting
+    },
+    // 规则说明回调函数
+    activityMsg (data) {
+      this.ruleShow = false
+      // this.form.actCopywriting = data
     }
   }
 }

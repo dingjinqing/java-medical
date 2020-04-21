@@ -343,6 +343,17 @@
           </div>
         </el-form-item>
 
+        <el-form-item :label="$t('distribution.withdrawConfig')">
+          <el-switch
+            v-model="form.withdraw_config"
+            :active-value="1"
+            :inactive-value="0"
+          ></el-switch>
+          <span v-if="form.withdraw_config === 1">已开启</span>
+          <span v-if="form.withdraw_config === 0">已关闭</span>
+          <span class="text">{{ $t('distribution.withdrawConfigTip') }}</span>
+        </el-form-item>
+
         <el-form-item :label="$t('distribution.minRebate')">
           <el-input
             size="small"
@@ -595,6 +606,7 @@ export default {
         rebate_page_id: '', // 推广模版文案id
         withdraw_status: 1, // 返利体现开关
         withdraw_source: 'wx_mini', // 返利方式
+        withdraw_config: 1, // 提现设置
         withdraw_cash: null, // 返利最小提现金额
         rebate_center_name: '分享给你一个好物店铺快来购物吧！', // 邀请文案
         bg_img: 'http://mpdevimg2.weipubao.cn/image/admin/dis_bg_1.jpg' // 海报背景图
@@ -678,6 +690,12 @@ export default {
           } else {
             this.vaildDate = this.form.vaild
             this.form.vaild = 1
+          }
+          // 提现设置
+          if (!this.form.withdraw_config) {
+            this.form.withdraw_config = 0
+          } else {
+            this.form.withdraw_config = 1
           }
           // 保护期
           if (this.form.protect_date === 0) {
@@ -845,6 +863,12 @@ export default {
       // 有效期
       if (this.form.vaild === 1) {
         this.form.vaild = this.vaildDate
+      }
+      // 提现设置
+      if (this.form.withdraw_config === 1) {
+        this.form.withdraw_config = 'on'
+      } else {
+        delete this.form.withdraw_config
       }
       // 保护期
       if (this.form.protect_date === 1) {

@@ -88,6 +88,8 @@ export const cn = {
   rebateRadioTip2: '去配置',
   rebateRadio2: '公众号',
   rebateRadioTip3: '注意：使用返利提现功能，请确保小程序已绑定认证服务号并配置相关支付信息，否则不可提现，未关注公众号的用户将会提现失败',
+  withdrawConfig: '提现设置：',
+  withdrawConfigTip: '开关开启，提现金额不为0且已“清除”的分销员仍可以提现佣金',
   minRebate: '返利最小提现金额：',
   minUnit: '元',
   minRebateTip: '分销员发起返利提现，单次申请最小提现金额。为防止分销员提现过于频繁，请设置单次最小提现金额。',

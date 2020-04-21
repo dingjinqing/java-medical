@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static org.checkerframework.checker.units.UnitsTools.m;
 
 /**
  * 优惠券管理
@@ -609,6 +610,7 @@ public class CouponGiveService extends ShopBaseService {
                 continue;
             }
             // 发券入库
+            List<CustomerAvailCouponsRecord> sendCoupons = new ArrayList<>();
             for (Integer userId : param.getUserIds()) {
                 try {
                     byte finalType = type;
@@ -635,6 +637,13 @@ public class CouponGiveService extends ShopBaseService {
                         }else {
                             customerAvailCouponsRecord.setDivisionEnabled((byte)0);
                         }
+                        if (couponDetails.getType().equals((byte)1)&&couponDetails.getActCode().equals("random")){
+                            log.info("面额随机优惠券");
+                            //Math.random()*(n+1-m)+m
+                            BigDecimal randomAmount = couponDetails.getRandomMax().add(BigDecimal.ONE).subtract(couponDetails.getRandomMin()).multiply(BigDecimal.valueOf(Math.random())).add(couponDetails.getRandomMin());
+                            customerAvailCouponsRecord.setAmount(randomAmount);
+                            log.info("随机生成优惠券金额在{}~{}直接:{}",couponDetails.getRandomMin(),couponDetails.getRandomMax(),randomAmount);
+                        }
                         // 如果是限制库存类型
                         if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)) {
                             int affectedRows = db().update(MRKING_VOUCHER)
@@ -646,6 +655,8 @@ public class CouponGiveService extends ShopBaseService {
                             if (affectedRows <= 0) {
                                 throw new BusinessException(JsonResultCode.CODE_FAIL);
                             }
+                            //减库存成功后，同步库存
+                            couponDetails.setSurplus(couponDetails.getSurplus()-1);
                         }
                         //发券操作
                         customerAvailCouponsRecord.insert();
@@ -662,7 +673,7 @@ public class CouponGiveService extends ShopBaseService {
                             record.setReceiveCouponSn(customerAvailCouponsRecord.getCouponSn());
                             record.insert();
                         }
-
+                        sendCoupons.add(customerAvailCouponsRecord);
                     });
                     }catch (BusinessException e){
                         break;
@@ -682,23 +693,25 @@ public class CouponGiveService extends ShopBaseService {
 
     private CouponDetailsVo getCouponDetails(String couponId) {
         return db().select(
-            MRKING_VOUCHER.LIMIT_SURPLUS_FLAG,
-            MRKING_VOUCHER.SURPLUS,
-            MRKING_VOUCHER.ACT_CODE,
-            MRKING_VOUCHER.ACT_NAME,
-            MRKING_VOUCHER.DENOMINATION,
-            MRKING_VOUCHER.START_TIME,
-            MRKING_VOUCHER.END_TIME,
-            MRKING_VOUCHER.VALIDITY_TYPE,
-            MRKING_VOUCHER.VALIDITY,
-            MRKING_VOUCHER.VALIDITY_HOUR,
-            MRKING_VOUCHER.LEAST_CONSUME,
-            MRKING_VOUCHER.TYPE,
-            MRKING_VOUCHER.VALIDITY_MINUTE)
-            .from(MRKING_VOUCHER)
-            .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
-            .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
-            .fetchOneInto(CouponDetailsVo.class);
+                MRKING_VOUCHER.LIMIT_SURPLUS_FLAG,
+                MRKING_VOUCHER.SURPLUS,
+                MRKING_VOUCHER.ACT_CODE,
+                MRKING_VOUCHER.ACT_NAME,
+                MRKING_VOUCHER.DENOMINATION,
+                MRKING_VOUCHER.START_TIME,
+                MRKING_VOUCHER.END_TIME,
+                MRKING_VOUCHER.VALIDITY_TYPE,
+                MRKING_VOUCHER.VALIDITY,
+                MRKING_VOUCHER.VALIDITY_HOUR,
+                MRKING_VOUCHER.LEAST_CONSUME,
+                MRKING_VOUCHER.TYPE,
+                MRKING_VOUCHER.RANDOM_MAX,
+                MRKING_VOUCHER.RANDOM_MIN,
+                MRKING_VOUCHER.VALIDITY_MINUTE)
+                .from(MRKING_VOUCHER)
+                .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
+                .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))
+                .fetchOneInto(CouponDetailsVo.class);
     }
 
     /**

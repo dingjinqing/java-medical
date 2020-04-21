@@ -282,6 +282,13 @@ export default {
             flag: false
           },
           {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/sale_end.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/sale_end_h.png',
+            span: '',
+            name: 'sale_out',
+            flag: false
+          },
+          {
             imgUrl: this.$imageHost + '/image/admin/icon_left/picture_add.png',
             imgUrl_h: this.$imageHost + '/image/admin/icon_left/picture_add_h.png',
             span: '',
@@ -650,6 +657,10 @@ export default {
                 itemp.flag = true
               }
               if (itemchildren === 'kanjia' && itemp.name === 'bargain') {
+                itemp.flag = true
+              }
+              // 售罄商品
+              if (itemchildren === 'sale_on' && itemp.name === 'sale_out') {
                 itemp.flag = true
               }
             })

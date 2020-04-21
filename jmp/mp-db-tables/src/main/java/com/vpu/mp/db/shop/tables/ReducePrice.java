@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReducePrice extends TableImpl<ReducePriceRecord> {
 
-    private static final long serialVersionUID = -1440400638;
+    private static final long serialVersionUID = -1671760384;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_reduce_price</code>
@@ -162,6 +162,21 @@ public class ReducePrice extends TableImpl<ReducePriceRecord> {
      * The column <code>mini_shop_471752.b2c_reduce_price.first</code>. 优先级
      */
     public final TableField<ReducePriceRecord, Byte> FIRST = createField("first", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price.pre_time</code>. 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    public final TableField<ReducePriceRecord, Integer> PRE_TIME = createField("pre_time", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price.activity_tag</code>. 是否给参加活动的用户打标签，1是
+     */
+    public final TableField<ReducePriceRecord, Byte> ACTIVITY_TAG = createField("activity_tag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否给参加活动的用户打标签，1是");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_reduce_price.activity_tag_id</code>. 参加活动打标签id
+     */
+    public final TableField<ReducePriceRecord, String> ACTIVITY_TAG_ID = createField("activity_tag_id", org.jooq.impl.SQLDataType.VARCHAR(20), this, "参加活动打标签id");
 
     /**
      * Create a <code>mini_shop_471752.b2c_reduce_price</code> table reference
