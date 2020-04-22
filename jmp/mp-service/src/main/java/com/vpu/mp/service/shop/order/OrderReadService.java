@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -911,10 +912,26 @@ public class OrderReadService extends ShopBaseService {
         if(order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
             List<OrderRebateVo> rebateVos = orderGoodsRebate.getByOrderSn(order.getOrderSn());
             for (OrderRebateVo vo: rebateVos) {
-
+                vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
+                vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
+                DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
+                if(strategy != null) {
+                    if(strategy.getCostProtection() == YES) {
+                        BigDecimal temp;
+                        vo.setCanRebateMoney(
+                            (temp = BigDecimalUtil.subtrac(vo.getCanCalculateMoney(), vo.getCostPrice())).compareTo(BigDecimal.ZERO) > -1 ?
+                                BigDecimalUtil.multiply(temp, new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())) :
+                                BigDecimalUtil.BIGDECIMAL_ZERO);
+                    }
+                }
+                //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
             }
+            //排序
+            rebateVos.sort(Comparator.comparing(OrderRebateVo::getRebateUserId));
+            return rebateVos;
         }
-    return null;
+        return null;
     }
     /*********************************************************************************************************/
 

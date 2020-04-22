@@ -13,6 +13,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.config.trade.GoodsPackageParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
@@ -875,14 +876,15 @@ public class Calculate extends ShopBaseService {
                         continue;
                     }
                 }
-                ArrayList<OrderGoodsRebateRecord> records = orderGoodsRebate.add(rebateRecords, bo, canRebateMoney, check, order.getOrderSn());
+                ArrayList<OrderGoodsRebateRecord> records = orderGoodsRebate.create(rebateRecords, bo, canRebateMoney, check, order.getOrderSn());
                 //赋值
                 bo.setFanliMoney(records.stream().map(OrderGoodsRebateRecord::getRealRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
                 bo.setFanliPercent(BigDecimalUtil.multiply(records.get(0).getRebatePercent(), BigDecimalUtil.BIGDECIMAL_100));
                 bo.setFanliType(rebateRecords.get(rebateRecords.size()-1).getRebateLevel());
                 bo.setTotalFanliMoney(records.stream().map(OrderGoodsRebateRecord::getTotalRebateMoney).reduce(BigDecimalUtil.BIGDECIMAL_100, BigDecimalUtil::add));
-                bo.setFanliStrategy(strategy.toString());
-                bo.setCanCalculateMoney(canRebateMoney);
+                bo.setFanliStrategy(Util.toJson(strategy));
+                bo.setCanCalculateMoney(BigDecimalUtil.divide(canRebateMoney, new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
+                bo.setRebateList(records);
                 rebateMoney = BigDecimalUtil.add(bo.getTotalFanliMoney(), rebateMoney);
                 flag = true;
             }

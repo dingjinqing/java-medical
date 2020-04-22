@@ -34,8 +34,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String username;
     /**下单人手机号*/
     private String userMobile;
-	/**完整收货地址*/
-	private String completeAddress;
 	/**买家留言*/
 	private String addMessage;
 	/**快递单号:后台判断是否查询配送信息依据之一*/

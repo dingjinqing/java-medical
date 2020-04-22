@@ -171,8 +171,8 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
         }
         //goods
         Result<OrderGoodsRecord> goods = orderGoods.getByOrderId(order.getOrderId());
-        //TODO 分销记录(prdId重复)
-        Map<Integer, Result<OrderGoodsRebateRecord>> rebateRecords = orderGoodsRebate.get(order.getOrderSn()).intoGroups(OrderGoodsRebateRecord::getProductId);
+        //分销记录
+        Map<Integer, Result<OrderGoodsRebateRecord>> rebateRecords = orderGoodsRebate.get(order.getOrderSn()).intoGroups(OrderGoodsRebateRecord::getRecId);
         //需要更新的记录
         ArrayList<OrderGoodsRebateRecord> updateRecords = new ArrayList<>();
         //商品返利统计
@@ -190,7 +190,7 @@ public class FinishService extends ShopBaseService implements IorderOperate<Orde
             }
 
             //返利记录
-            Result<OrderGoodsRebateRecord> records = rebateRecords.get(one.getProductId());
+            Result<OrderGoodsRebateRecord> records = rebateRecords.get(one.getRecId());
             if(CollectionUtils.isEmpty(records)) {
                 continue;
             }

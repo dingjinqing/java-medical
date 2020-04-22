@@ -1,9 +1,10 @@
 package com.vpu.mp.service.shop.distribution;
 
-import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
 import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
@@ -11,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.rebate.RebateRecord;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +28,18 @@ import java.util.List;
 public class OrderGoodsRebateService extends ShopBaseService {
     final OrderGoodsRebate TABLE = OrderGoodsRebate.ORDER_GOODS_REBATE;
     final User TABLE_USER = User.USER;
-    final Goods TABLE_GOODS = Goods.GOODS;
+    final OrderGoods TABLE_ORDRE_GOODS = OrderGoods.ORDER_GOODS;
 
-    public ArrayList<OrderGoodsRebateRecord> add(List<RebateRecord> rebateRecords, OrderGoodsBo bo, BigDecimal canRebateMoney, BigDecimal check, String orderSn) {
+    /**
+     * 添加记录（此时并不入库）
+     * @param rebateRecords
+     * @param bo
+     * @param canRebateMoney
+     * @param check
+     * @param orderSn
+     * @return
+     */
+    public ArrayList<OrderGoodsRebateRecord> create(List<RebateRecord> rebateRecords, OrderGoodsBo bo, BigDecimal canRebateMoney, BigDecimal check, String orderSn) {
         ArrayList<OrderGoodsRebateRecord> result = new ArrayList<OrderGoodsRebateRecord>(rebateRecords.size());
         BigDecimal goodsTotalRebateMoney = BigDecimalUtil.BIGDECIMAL_ZERO;
         for (RebateRecord rebateRecord: rebateRecords) {
@@ -53,7 +64,6 @@ public class OrderGoodsRebateService extends ShopBaseService {
                 record.setRebateMoney(BigDecimalUtil.divide(record.getTotalRebateMoney(), new BigDecimal(bo.getGoodsNumber()), RoundingMode.HALF_DOWN));
             }
         }
-        db().batchInsert(result).execute();
         return result;
     }
 
@@ -68,11 +78,34 @@ public class OrderGoodsRebateService extends ShopBaseService {
             .fetch();
     }
     public List<OrderRebateVo> getByOrderSn(String orderSn) {
-        return db().select(TABLE.asterisk(),TABLE_USER.USERNAME, TABLE_GOODS.GOODS_NAME).from(TABLE)
+        return db().select(TABLE.asterisk(),TABLE_USER.USERNAME, TABLE_ORDRE_GOODS.GOODS_NAME, TABLE_ORDRE_GOODS.CAN_CALCULATE_MONEY, TABLE_ORDRE_GOODS.COST_PRICE,TABLE_ORDRE_GOODS.GOODS_NUMBER, TABLE_ORDRE_GOODS.RETURN_NUMBER, TABLE_ORDRE_GOODS.FANLI_STRATEGY).from(TABLE)
             .leftJoin(TABLE_USER).on(TABLE_USER.USER_ID.eq(TABLE.REBATE_USER_ID))
-            .leftJoin(TABLE_GOODS).on(TABLE_GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+            .leftJoin(TABLE_ORDRE_GOODS).on(TABLE_ORDRE_GOODS.REC_ID.eq(TABLE.REC_ID))
             .where(TABLE.ORDER_SN.eq(orderSn))
             .orderBy(TABLE.REBATE_LEVEL)
             .fetchInto(OrderRebateVo.class);
+    }
+
+    /**
+     * processSaveOrderInfo方法数据保存
+     * @param bos
+     * @param records
+     */
+    public void save(List<OrderGoodsBo> bos, List<OrderGoodsRecord> records) {
+        //更新b2c_order_goods_rebate的rec_id
+        List<OrderGoodsRebateRecord> update = new ArrayList<>();
+        for (int i = 0, length = records.size(); i < length; i++) {
+            ArrayList<OrderGoodsRebateRecord> rebateList = bos.get(i).getRebateList();
+            if(CollectionUtils.isNotEmpty(rebateList)) {
+                for (OrderGoodsRebateRecord record: rebateList) {
+                    record.setRecId(records.get(i).getRecId());
+                }
+                update.addAll(rebateList);
+            }
+        }
+        if(CollectionUtils.isNotEmpty(update)) {
+            db().batchInsert(update).execute();
+        }
+
     }
 }
