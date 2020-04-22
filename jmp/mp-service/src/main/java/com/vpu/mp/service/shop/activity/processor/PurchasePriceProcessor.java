@@ -31,11 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -325,7 +321,7 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
     }
 
     @Override

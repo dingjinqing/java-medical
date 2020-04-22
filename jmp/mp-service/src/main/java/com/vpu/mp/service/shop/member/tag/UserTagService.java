@@ -1,20 +1,18 @@
 package com.vpu.mp.service.shop.member.tag;
 
-import static com.vpu.mp.db.shop.Tables.TAG;
-import static com.vpu.mp.db.shop.Tables.USER_TAG;
+import com.vpu.mp.db.shop.tables.records.TagRecord;
+import com.vpu.mp.db.shop.tables.records.UserTagRecord;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.UniqueKey;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.TagRecord;
-import com.vpu.mp.db.shop.tables.records.UserTagRecord;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import static com.vpu.mp.db.shop.Tables.TAG;
+import static com.vpu.mp.db.shop.Tables.USER_TAG;
 /**
  * 	用户标签服务类
  * @author 黄壮壮
@@ -70,7 +68,7 @@ public class UserTagService extends ShopBaseService{
 	 * 	活动，如：领券，领卡，添加用户标签
 	 * @param userId
 	 * @param tagIdList 标签IDs
-	 * @param source 0后台设置 1优惠券 2会员卡
+	 * @param source 0后台设置 1优惠券 2会员卡 7加价购
 	 * @param activitiId 活动Id
 	 */
 	public void addActivityTag(Integer userId,List<Integer> tagIdList,Short source,Integer activitiId) {

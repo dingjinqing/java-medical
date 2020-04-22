@@ -52,6 +52,7 @@ public class PurchaseConstant {
      * 删除状态标识：0未删除，1已删除；默认查询结果不包含已删除信息
      * 活动状态标识：0未禁用（启用），1禁用
      * 是否永久标识，0非永久，1永久
+     * 是否给用户打标签标志，1打标签
      */
     public static final Byte FLAG_ZERO = 0;
     public static final Byte FLAG_ONE = 1;

@@ -33,6 +33,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +90,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private UserTagService userTagService;
 
     /**
      * 分页查询加价购活动信息
@@ -190,6 +193,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         PurchasePriceDefineRecord defineRecord = new PurchasePriceDefineRecord();
         PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
         FieldsUtil.assignNotNull(param, defineRecord);
+        if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
+            defineRecord.setActivityTagId(Util.listToString(param.getActivityTagId()));
+        }
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
             db.executeInsert(defineRecord);
@@ -765,13 +771,25 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     /**
      * 换购商品运费策略
-     * @param ActId
+     * @param actId
      * @return
      */
-    public boolean isFreeShip(Integer ActId) {
+    public boolean isFreeShip(Integer actId) {
         //换购商品运费策略，0免运费，1使用原商品运费模板
-        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(ActId)).fetchOneInto(Byte.class);
+        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(actId)).fetchOneInto(Byte.class);
         return NumberUtils.BYTE_ZERO.equals(isFreeShip);
+    }
+
+    /**
+     * 给下单用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addActivityTag(Integer actId,Integer userId){
+        PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(actId));
+        if(purchasePriceDefineRecord.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(purchasePriceDefineRecord.getActivityTagId())){
+            userTagService.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,actId);
+        }
     }
 
 }
