@@ -503,6 +503,7 @@ export default {
       if (flag) {
         this.showSix = false
         this.activeName = 'first'
+        this.actState = 0
         this.handleToInit()
       }
     }
