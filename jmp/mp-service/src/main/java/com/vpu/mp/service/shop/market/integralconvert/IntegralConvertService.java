@@ -476,15 +476,15 @@ public class IntegralConvertService extends ShopBaseService {
 				FieldsUtil.assignNotNull(data, vo);
 
 				int number = db().select(DSL.sum(imr.NUMBER)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setNumber(number);
 
 				BigDecimal money = db().select(DSL.sum(imr.MONEY)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(BigDecimal.class).get();
+						.fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
 				vo.setMoney(money);
 
 				int score = db().select(DSL.sum(imr.SCORE)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setScore(score);
 
 				Integer productId = db().select(ORDER_GOODS.PRODUCT_ID)
