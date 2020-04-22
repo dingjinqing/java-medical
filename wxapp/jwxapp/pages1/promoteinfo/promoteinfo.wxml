@@ -201,10 +201,10 @@
           <block wx:if='{{promote_ok == 1}}'> 
             <view class='st1' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteHelp1")}}</view>
             <view class='st2'>{{i18n.$t(localePack,"page1.promote.promoteHelp2")}}: <text style='color:{{comColor}}'>{{add_promote_value}}</text></view>
-            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share != null}}' open-type='share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
-            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == null}}' bindtap='to_own_act'>{{i18n.$t(localePack,"page1.promote.promoteHelp4")}}</button>
-            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share != null}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp5")}}</view>
-            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == null}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp6")}}</view>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 1}}' open-type='share'>{{i18n.$t(localePack,"page1.promote.promoteHelp3")}}</button>
+            <button class='st3' style='background:{{comColor}}' wx:if='{{modal_can_share == 0}}' bindtap='to_own_act'>{{i18n.$t(localePack,"page1.promote.promoteHelp4")}}</button>
+            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 1}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp5")}}</view>
+            <view class='st4' bindtap='forgive_share' data-ifshare='{{modal_can_share}}' wx:if='{{modal_can_share == 0}}' >{{i18n.$t(localePack,"page1.promote.promoteHelp6")}}</view>
           </block>
           <block wx:if='{{promote_fail == 1}}'>
             <view class='st1' style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteHelp7")}}</view>
