@@ -10,7 +10,7 @@
         <div class="tipsHidden">
           <div class="tipsTop">
             <p>
-              {{$t('pictureSetting.hiddenTips')}}
+              {{$t('pictureSetting.hiddenTipsForm')}}
             </p>
           </div>
           <div class="tipsBottom">
