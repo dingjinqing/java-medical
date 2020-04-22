@@ -1,41 +1,5 @@
 package com.vpu.mp.service.shop.market.presale;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
-import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
-import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
-import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static org.springframework.util.StringUtils.isEmpty;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record4;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.OrderInfo;
@@ -52,13 +16,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleListVo;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleParam;
-import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
-import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductParam;
-import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
+import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -67,8 +25,32 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-
 import jodd.util.StringUtil;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
+import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
+import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
+import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
+import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * 定金膨胀活动
@@ -548,7 +530,7 @@ public class PreSaleService extends ShopBaseService {
      * @return record信息
      */
 	public PresaleRecord getPresaleRecord(Integer activityId){
-        return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
+        return db().selectFrom(PRESALE).where(PRESALE.ID.eq(activityId))
             .fetchAny();
     }
 

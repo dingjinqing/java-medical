@@ -546,6 +546,16 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     /**
+     * 获取限时降价record信息
+     * @param activityId 活动id
+     * @return record信息 或 null
+     */
+    public ReducePriceRecord getReducePriceRecordCanDel(Integer activityId){
+        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(activityId))
+            .fetchAny();
+    }
+
+    /**
      * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
      * 首单特惠最高优先级，限时降价与等级会员之间价取低价
      * @param goodsId

@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -163,7 +162,7 @@ public class GroupDrawPictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupDrawRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupDrawRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.GROUP_DRAW_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
 

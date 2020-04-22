@@ -281,7 +281,7 @@ public class FirstSpecialService extends ShopBaseService {
      * @return record信息
      */
     public FirstSpecialRecord getFirstSpecialRecord(Integer activityId) {
-        return db().selectFrom(FIRST_SPECIAL).where(FIRST_SPECIAL.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FIRST_SPECIAL.ID.eq(activityId)))
+        return db().selectFrom(FIRST_SPECIAL).where(FIRST_SPECIAL.ID.eq(activityId))
             .fetchAny();
     }
 

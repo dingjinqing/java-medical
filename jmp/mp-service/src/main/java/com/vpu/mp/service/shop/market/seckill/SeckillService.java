@@ -622,7 +622,7 @@ public class SeckillService extends ShopBaseService{
      * @param actId
      * @return
      */
-    private SecKillDefineRecord getSeckillActById(int actId){
+    public SecKillDefineRecord getSeckillActById(int actId){
         return db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(actId)).fetchOptionalInto(SecKillDefineRecord.class).orElse(null);
     }
 

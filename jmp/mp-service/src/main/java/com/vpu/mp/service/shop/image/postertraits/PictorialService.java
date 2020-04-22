@@ -129,16 +129,17 @@ public class PictorialService extends ShopBaseService {
 
     /**
      * 生成海报通用背景图,带活动提示文字
-     * @param userInfo  用户信息
-     * @param shop      店铺配置
-     * @param qrCodeImg 二维码
-     * @param goodsImg  商品图片
-     * @param shareDoc  海报分享文案
-     * @param goodsName 商品名称
+     *
+     * @param userInfo        用户信息
+     * @param shop            店铺配置
+     * @param qrCodeImg       二维码
+     * @param goodsImg        商品图片
+     * @param shareDoc        海报分享文案
+     * @param goodsName       商品名称
      * @param activityTipText 提示文字
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
-     * @param imgPx     图片规格信息
+     * @param realPrice       商品原件
+     * @param linePrice       商品划线价
+     * @param imgPx           图片规格信息
      * @return 通过图片
      */
     public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, String activityTipText, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
@@ -147,24 +148,26 @@ public class PictorialService extends ShopBaseService {
 
     /**
      * 生成海报通用背景图,带活动提示图标
-     * @param userInfo  用户信息
-     * @param shop      店铺配置
-     * @param qrCodeImg 二维码
-     * @param goodsImg  商品图片
-     * @param shareDoc  海报分享文案
-     * @param goodsName 商品名称
+     *
+     * @param userInfo        用户信息
+     * @param shop            店铺配置
+     * @param qrCodeImg       二维码
+     * @param goodsImg        商品图片
+     * @param shareDoc        海报分享文案
+     * @param goodsName       商品名称
      * @param activityTipIcon 提示图标
-     * @param realPrice 商品原件
-     * @param linePrice 商品划线价
-     * @param imgPx     图片规格信息
+     * @param realPrice       商品原件
+     * @param linePrice       商品划线价
+     * @param imgPx           图片规格信息
      * @return 通过图片
      */
     public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BufferedImage activityTipIcon, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
-        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, activityTipIcon,null, realPrice, linePrice, imgPx);
+        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, activityTipIcon, null, realPrice, linePrice, imgPx);
     }
 
     /**
      * 生成海报通用背景图,不带活动提示图标和文字
+     *
      * @param userInfo  用户信息
      * @param shop      店铺配置
      * @param qrCodeImg 二维码
@@ -177,7 +180,7 @@ public class PictorialService extends ShopBaseService {
      * @return 通过图片
      */
     public BufferedImage createPictorialBgImage(PictorialUserInfo userInfo, ShopRecord shop, BufferedImage qrCodeImg, BufferedImage goodsImg, String shareDoc, String goodsName, BigDecimal realPrice, BigDecimal linePrice, PictorialImgPx imgPx) {
-        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, null,null, realPrice, linePrice, imgPx);
+        return createPictorialBgImage(userInfo, shop, qrCodeImg, goodsImg, shareDoc, goodsName, null, null, realPrice, linePrice, imgPx);
     }
 
     /**
@@ -202,9 +205,9 @@ public class PictorialService extends ShopBaseService {
         BufferedImage userAvatarImage = ImageUtil.makeRound(userInfo.getUserAvatarImage(), imgPx.getUserHeaderDiameter());
         ImageUtil.addTwoImage(bgBufferedImage, userAvatarImage, imgPx.getHeaderStartX(), imgPx.getHeaderStartY());
         // 设置用户名
-        ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), imgPx.getDefaultFontColor(), false);
+        ImageUtil.addFont(bgBufferedImage, userInfo.getUserName(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getUserNameX(), imgPx.getUserNameY(), PictorialImgPx.HEAD_FONT_COLOR, false);
         // 设置宣传语
-        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), imgPx.getDefaultFontColor(), false);
+        ImageUtil.addFont(bgBufferedImage, shareDoc, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getShareDocX(), imgPx.getShareDocY(), PictorialImgPx.HEAD_FONT_COLOR, false);
 
         // 设置商品图片
         goodsImg = ImageUtil.resizeImage(imgPx.getGoodsWidth(), imgPx.getGoodsHeight(), goodsImg);
@@ -226,20 +229,20 @@ public class PictorialService extends ShopBaseService {
         }
         //  某些活动价格前面显示的活动提示文字如：首单特惠
         if (activityTipText != null && activityTipIcon == null) {
-            int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBottomTextStartX(), imgPx.getActivityTipTextY(), activityTipText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getRealPriceColor(), null, imgPx.getRealPriceColor());
+            int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBottomTextStartX(), imgPx.getActivityTipTextY(), activityTipText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), PictorialImgPx.REAL_PRICE_COLOR, null, PictorialImgPx.REAL_PRICE_COLOR);
             priceX = imgPx.getBottomTextStartX() + tipWidth + imgPx.getPriceMargin();
         }
         // 设置原价
         if (realPrice != null) {
             String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
             String realPriceStr = moneyFlag + realPrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), priceX, imgPx.getPriceY(), imgPx.getRealPriceColor(), false);
+            ImageUtil.addFont(bgBufferedImage, realPriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), priceX, imgPx.getPriceY(), PictorialImgPx.REAL_PRICE_COLOR, false);
 
             // 设置划线价
             if (linePrice != null) {
                 Integer lineStartX = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStr) + priceX + imgPx.getPriceMargin();
                 String linePriceStr = moneyFlag + linePrice.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-                ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceLineY(), linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
+                ImageUtil.addFontWithLine(bgBufferedImage, lineStartX, imgPx.getPriceLineY(), linePriceStr, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), PictorialImgPx.LINE_PRICE_COLOR);
             }
         }
         return bgBufferedImage;
@@ -260,7 +263,7 @@ public class PictorialService extends ShopBaseService {
         int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), goodsName);
 
         if (nameTextLength <= imgPx.getGoodsNameCanUseWidth()) {
-            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(), imgPx.getGoodsNameColor(), false);
+            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(), PictorialImgPx.GOODS_NAME_COLOR, false);
             return nameCharHeight;
         } else {
             double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
@@ -277,7 +280,7 @@ public class PictorialService extends ShopBaseService {
                 } else {
                     text = goodsName.substring(i, i + oneLineCharNum);
                 }
-                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), nextTextStartY, imgPx.getGoodsNameColor(), false);
+                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
                 nextTextStartY += nameCharHeight;
             }
             return nextTextStartY - imgPx.getGoodsNameStartY();
@@ -325,7 +328,7 @@ public class PictorialService extends ShopBaseService {
      */
     private void addPictorailSelfCustomerContent(BufferedImage bufferedImg, BufferedImage iconBufferImg, String activityPosterText, String firstContentText, String secondContentText, boolean secondNeedLine, PictorialImgPx imgPx) {
 
-        ImageUtil.addRect(bufferedImg, imgPx.getCustomerRectStartX(), imgPx.getCustomerRectStartY(), imgPx.getCustomerRectWidth(), imgPx.getCustomerRectHeight(), null, imgPx.getCustomerRectFillColor());
+        ImageUtil.addRect(bufferedImg, imgPx.getCustomerRectStartX(), imgPx.getCustomerRectStartY(), imgPx.getCustomerRectWidth(), imgPx.getCustomerRectHeight(), null, PictorialImgPx.CUSTOMER_RECT_FILL_COLOR);
         // 添加自定义图标
         if (iconBufferImg != null) {
             iconBufferImg = ImageUtil.resizeImageTransparent(imgPx.getCustomerIconWidth(), imgPx.getCustomerIconHeight(), iconBufferImg);
@@ -333,24 +336,27 @@ public class PictorialService extends ShopBaseService {
             imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX() + imgPx.getCustomerIconWidth() + imgPx.getCustomerTextPadding());
         }
         if (activityPosterText != null && iconBufferImg == null) {
-            int width = ImageUtil.addFontWithRect(bufferedImg, imgPx.getCustomerIconStartX(), imgPx.getCustomerIconStartY(), activityPosterText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor(), null, imgPx.getCustomerTextFontColor());
+            int width = ImageUtil.addFontWithRect(bufferedImg, imgPx.getCustomerIconStartX(), imgPx.getCustomerIconStartY(), activityPosterText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), PictorialImgPx.CUSTOMER_TEXT_FONT_COLOR, null, PictorialImgPx.CUSTOMER_TEXT_FONT_COLOR);
             imgPx.setCustomerTextStartX(imgPx.getCustomerIconStartX() + width + imgPx.getCustomerTextPadding());
         }
         // 添加自定义一级内容（原价等）
-        ImageUtil.addFont(bufferedImg, firstContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getCustomerTextStartX(), imgPx.getCustomerTextStartY(), imgPx.getCustomerTextFontColor(), false);
+        ImageUtil.addFont(bufferedImg, firstContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), imgPx.getCustomerTextStartX(), imgPx.getCustomerTextStartY(), PictorialImgPx.CUSTOMER_TEXT_FONT_COLOR, false);
         Integer realContentTextLength = ImageUtil.getTextWidth(bufferedImg, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), firstContentText);
         if (secondContentText != null) {
             // 添加二级内容(带划线)
             Integer secondContentTextStartX = imgPx.getCustomerTextStartX() + realContentTextLength + imgPx.getCustomerTextPadding();
             if (secondNeedLine) {
-                ImageUtil.addFontWithLine(bufferedImg, secondContentTextStartX, imgPx.getCustomerSecondTextStartY(), secondContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getCustomerTextFontColor());
+                ImageUtil.addFontWithLine(bufferedImg, secondContentTextStartX, imgPx.getCustomerSecondTextStartY(), secondContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), PictorialImgPx.CUSTOMER_TEXT_FONT_COLOR);
             } else {
-                ImageUtil.addFont(bufferedImg, secondContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), secondContentTextStartX, imgPx.getCustomerSecondTextStartY(), imgPx.getCustomerTextFontColor(), false);
+                ImageUtil.addFont(bufferedImg, secondContentText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), secondContentTextStartX, imgPx.getCustomerSecondTextStartY(), PictorialImgPx.CUSTOMER_TEXT_FONT_COLOR, false);
             }
         }
 
     }
 
+    public <T extends Rule> void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, T pictorialRule, Integer goodsId, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
+        uploadToUpanYun(bufferedImage, relativePath, pictorialRule, goodsId, null, null, pictorialRecord, userId);
+    }
 
     /**
      * 将待分享图片上传到U盘云，并在数据库缓存记录
@@ -364,7 +370,7 @@ public class PictorialService extends ShopBaseService {
      * @throws UpException 上传异常
      * @throws IOException 文件io异常
      */
-    public <T extends Rule> void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, T pictorialRule, Integer goodsId, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
+    public <T extends Rule> void uploadToUpanYun(BufferedImage bufferedImage, String relativePath, T pictorialRule, Integer goodsId, Integer activityId, Byte action, PictorialRecord pictorialRecord, Integer userId) throws UpException, IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
             // 上传upanyun
@@ -377,11 +383,12 @@ public class PictorialService extends ShopBaseService {
         // 新增
         if (pictorialRecord == null) {
             pictorialRecord = new PictorialRecord();
-            pictorialRecord.setAction(PictorialConstant.GROUP_BUY_ACTION_SHARE);
+            pictorialRecord.setAction(action);
             pictorialRecord.setPath(relativePath);
             pictorialRecord.setUserId(userId);
             pictorialRecord.setIdentityId(goodsId);
             pictorialRecord.setRule(Util.toJson(pictorialRule));
+            pictorialRecord.setActivityId(activityId);
             addPictorialDao(pictorialRecord);
         } else {
             // 更新

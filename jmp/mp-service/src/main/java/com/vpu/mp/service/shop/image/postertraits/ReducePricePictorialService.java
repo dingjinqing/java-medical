@@ -54,7 +54,7 @@ public class ReducePricePictorialService extends ShopBaseService {
      */
     public GoodsShareInfo getReducePriceShareInfo(ReducePriceShareInfoParam param) {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
+        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
         // 活动信息不可用
         if (reducePriceRecord == null) {
             pictorialLog("分享", "限时降价活动信息不可用");
@@ -135,7 +135,7 @@ public class ReducePricePictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(reducePriceRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.REDUCE_PRICE_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
@@ -157,7 +157,7 @@ public class ReducePricePictorialService extends ShopBaseService {
     public GoodsPictorialInfo getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
+        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
         if (reducePriceRecord == null) {
             pictorialLog("pictorial", "限时降价信息已删除或失效");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);

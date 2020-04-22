@@ -153,7 +153,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupBuyDefineRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.GROUP_BUY_ACTION_SHARE,pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
