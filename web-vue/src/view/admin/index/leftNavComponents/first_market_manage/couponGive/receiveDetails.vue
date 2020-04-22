@@ -141,10 +141,11 @@ export default {
     return {
       getSource: 9,
 
-      accessId: '',
+      accessId: '', // 活动id
+      couponId: '', // 优惠券id
       username: '',
       mobile: '',
-      actId: '',
+
       isUsed: '0', // 使用状态值
       // 使用状态
       statusList: [{
@@ -168,11 +169,17 @@ export default {
       requestParam: {}
     }
   },
+  // 初始化加载项
+  mounted () {
+    this.accessId = this.$route.params.id
+    this.couponId = this.$route.params.couponId
+    this.loadData()
+  },
   methods: {
     // 加载数据
     loadData () {
       this.requestParam.accessId = this.accessId
-      this.requestParam.actId = this.actId
+      this.requestParam.couponId = this.couponId
       this.requestParam.mobile = this.mobile
       this.requestParam.username = this.username
       this.requestParam.isUsed = this.isUsed
@@ -223,12 +230,6 @@ export default {
         }
       })
     }
-  },
-  // 初始化加载项
-  mounted () {
-    this.accessId = this.$route.params.id
-    this.actId = this.$route.params.couponId
-    this.loadData()
   }
 }
 </script>
