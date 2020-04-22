@@ -441,7 +441,7 @@ ALTER TABLE `b2c_bargain` ADD COLUMN `activity_copywriting` text COMMENT '自定
 ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag` tinyint(1) DEFAULT '0' COMMENT '是否给发起砍价用户打标签';
 ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag_id` varchar(20) DEFAULT NULL COMMENT '发起砍价活动用户打标签id';
 ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag` tinyint(1) DEFAULT '0' COMMENT '是否参与砍价用户打标签';
-ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL COMMENT '参与砍价活动用户打标签id'
+ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL COMMENT '参与砍价活动用户打标签id';
 
 /*********************2.12*************************END*/
 

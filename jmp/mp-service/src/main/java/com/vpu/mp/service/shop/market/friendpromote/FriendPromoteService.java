@@ -1,11 +1,58 @@
 package com.vpu.mp.service.shop.market.friendpromote;
 
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_ACTIVITY;
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_DETAIL;
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_LAUNCH;
+import static com.vpu.mp.db.shop.Tables.FRIEND_PROMOTE_TIMES;
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
+import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.PRIZE_RECORD;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.DatePart;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record4;
+import org.jooq.Record6;
+import org.jooq.Record8;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
+import org.jooq.SelectJoinStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.FriendPromoteActivity;
 import com.vpu.mp.db.shop.tables.FriendPromoteDetail;
 import com.vpu.mp.db.shop.tables.FriendPromoteLaunch;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteActivityRecord;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteLaunchRecord;
+import com.vpu.mp.db.shop.tables.records.FriendPromoteTimesRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
@@ -19,7 +66,37 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.ActEffectData;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.ActEffectDataVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.AddPromoteTimesVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.CanLaunch;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.CanPromote;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.CouponInfo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.Duration;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.GoodsInfo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.LaunchVo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteActList;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteDetail;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteInfo;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -28,24 +105,6 @@ import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.task.wechat.MaMpScheduleTaskService;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-
-import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * 好友助力
@@ -1857,4 +1916,31 @@ public class FriendPromoteService extends ShopBaseService {
         excelWriter.writeModelList(vo,FriendPromoteReceiveVo.class);
         return workbook;
     }
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(FRIEND_PROMOTE_ACTIVITY.ID, FRIEND_PROMOTE_ACTIVITY.ACT_NAME.as(CalendarAction.ACTNAME), FRIEND_PROMOTE_ACTIVITY.START_TIME,
+				FRIEND_PROMOTE_ACTIVITY.END_TIME).from(FRIEND_PROMOTE_ACTIVITY).where(FRIEND_PROMOTE_ACTIVITY.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(FRIEND_PROMOTE_ACTIVITY.ID, FRIEND_PROMOTE_ACTIVITY.ACT_NAME.as(CalendarAction.ACTNAME), FRIEND_PROMOTE_ACTIVITY.START_TIME,
+						FRIEND_PROMOTE_ACTIVITY.END_TIME)
+				.from(FRIEND_PROMOTE_ACTIVITY)
+				.where(FRIEND_PROMOTE_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FRIEND_PROMOTE_ACTIVITY.IS_BLOCK
+						.eq(ZERO).and(FRIEND_PROMOTE_ACTIVITY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(FRIEND_PROMOTE_ACTIVITY.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

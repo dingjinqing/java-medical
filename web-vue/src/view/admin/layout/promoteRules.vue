@@ -1,6 +1,16 @@
 <template>
   <!-- 小程序-好友助力规则页面 -->
-  <div class="promoteRules">
+  <div
+    class="promoteRules"
+    v-if="isUseDefault === '0'"
+  >
+    <div v-html="promoteRules"></div>
+  </div>
+
+  <div
+    class="promoteRules"
+    v-else
+  >
     <p class="title">参与步骤</p>
     <p>1、通过活动海报或好友分享,进入活动页面,通过活动发起按钮,发起助力活动,按页面提示分享给好友帮忙助力;</p>
     <p>2、好友通过小程序落地页查看活动现状,帮忙助力,获得助力值;</p>
@@ -13,9 +23,32 @@
 </template>
 
 <script>
+// import { promoteRules } from '@/api/admin/util.js'
 export default {
+  data () {
+    return {
+      isUseDefault: '1', // 使用默认规则
+      promoteRules: '' // 自定义规则
+    }
+  },
   mounted () {
-    document.title = '好友助力规则'
+    // 初始化数据
+    this.initData()
+  },
+  methods: {
+    initData () {
+      // 获取传参
+      // let obj = {
+      //   shop_id: this.$route.query.shop_id,
+      //   gid: this.$route.query.gid
+      // }
+      // promoteRules(obj).then(res => {
+      //   if (res.error === 0 && res.content !== null) {
+      //     this.isUseDefault = res.content.isUseDefault
+      //     this.promoteRules = res.content.document
+      //   }
+      // })
+    }
   }
 }
 </script>

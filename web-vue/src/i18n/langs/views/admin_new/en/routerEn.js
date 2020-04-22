@@ -5,6 +5,7 @@ export const en = {
   taskList: ['Survey', 'Shop Assistant'],
   // 营销日历
   calendar: ['Survey', 'Marketing calendar'],
+  addCalendarMain: ['Survey', 'Marketing calendar'],
   // 会员管理 会员列表
   membershipList: ['Membership management', 'Membership List'],
   memberEditorList: [

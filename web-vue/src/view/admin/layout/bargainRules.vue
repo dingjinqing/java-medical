@@ -1,6 +1,16 @@
 <template>
   <!-- 小程序-砍价规则页面 -->
-  <div class="bargainRules">
+  <div
+    class="bargainRules"
+    v-if="isUseDefault === '0'"
+  >
+    <div v-html="bargainRules"></div>
+  </div>
+
+  <div
+    class="bargainRules"
+    v-else
+  >
     <p>1、用户发起砍价，可以优先为自己砍价，分享给好友则默认再次进行一次砍价，金额和用户首次砍价金额相同;</p>
     <p>2、邀请好友一起砍价，砍到底价即可领取商品；</p>
     <p>3、对于同一个砍价，您只能帮助砍价一次;</p>
@@ -12,9 +22,32 @@
 </template>
 
 <script>
+// import { bargainRules } from '@/api/admin/util.js'
 export default {
+  data () {
+    return {
+      isUseDefault: '1', // 使用默认规则
+      bargainRules: '' // 自定义规则
+    }
+  },
   mounted () {
-    document.title = '砍价规则'
+    // 初始化数据
+    this.initData()
+  },
+  methods: {
+    initData () {
+      // 获取传参
+      // let obj = {
+      //   shop_id: this.$route.query.shop_id,
+      //   gid: this.$route.query.gid
+      // }
+      // bargainRules(obj).then(res => {
+      //   if (res.error === 0 && res.content !== null) {
+      //     this.isUseDefault = res.content.isUseDefault
+      //     this.bargainRules = res.content.document
+      //   }
+      // })
+    }
   }
 }
 </script>

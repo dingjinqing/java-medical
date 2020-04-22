@@ -48,6 +48,46 @@
         >{{$t('reducePriceList.edit')}}</el-button>
       </el-form-item>
       <el-form-item
+        label="活动预告："
+        prop="noticeRadio"
+      >
+        <div>
+          <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
+          <el-popover
+            placement="right-start"
+            width="220"
+            trigger="hover"
+          >
+            <el-image :src="$imageHost + '/image/admin/share/advance_reduce.jpg'"></el-image>
+            <el-button
+              slot="reference"
+              type="text"
+              style="margin: 0 20 0 0px"
+            >查看示例</el-button>
+          </el-popover>
+        </div>
+        <div>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="1"
+          >活动开始前
+            <el-input
+              v-model="reduceData.noticeValue"
+              style="width: 80px;"
+              size="small"
+            ></el-input>小时进行预告
+          </el-radio>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="2"
+          >活动创建完成后即进行预告</el-radio>
+          <el-radio
+            v-model="reduceData.noticeRadio"
+            :label="3"
+          >不进行活动预告</el-radio>
+        </div>
+      </el-form-item>
+      <el-form-item
         :label="$t('marketCommon.first') + '：'"
         prop="first"
       >
@@ -302,6 +342,36 @@
           </template>
         </el-table>
       </div>
+      <el-form-item
+        label="同步打标签："
+        prop=""
+      >
+        <el-checkbox>给参与活动用户打标签</el-checkbox>
+        <span
+          class="el-icon-question"
+          style="color: #666;"
+        ></span>
+        <span
+          class="labelStyle"
+          @click="selectLabel"
+        >选择标签</span>
+        <div v-if="pickLabel.length > 0">
+          <p style="color: #999;">最多可设置3个标签</p>
+          <div
+            v-for="(item, index) in pickLabel"
+            :key="index"
+            class="labelContent"
+          >
+            {{item.value}}
+            <i
+              class="el-icon-close"
+              @click="deleteLabel(index)"
+              style="color: #999; margin-left: 3px;cursorL pointer;"
+            ></i>
+          </div>
+        </div>
+
+      </el-form-item>
 
       <!-- 收起、展开更多配置 -->
       <div
@@ -461,6 +531,14 @@
       @confrim="getProductdata"
     />
 
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="labelValue"
+    />
+
   </div>
 </template>
 
@@ -473,7 +551,8 @@ export default {
     CycleDialog: () => import('./repeatCycle'),
     choosingGoods: () => import('@/components/admin/choosingGoods'),
     productInfo: () => import('./productInfo'),
-    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting')
+    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting'),
+    LabelDialog: () => import('@/components/admin/labelDialog')
   },
   props: ['isEdite', 'editId'],
   data () {
@@ -511,6 +590,8 @@ export default {
       reduceData: {
         name: '',
         effectiveDate: '',
+        noticeRadio: 1, // 活动预告
+        noticeValue: '', // 预告时间值
         first: 1, // 优先级
         isCycle: false,
         isLimit: '0',
@@ -533,6 +614,9 @@ export default {
         ],
         effectiveDate: [
           { required: true, message: '请填写有效期', trigger: 'change' }
+        ],
+        noticeRadio: [
+          { required: true, message: '请选择活动预告类型', trigger: 'change' }
         ],
         first: [
           { required: true, message: '请填写优先级', trigger: 'blur' }
@@ -561,7 +645,11 @@ export default {
       goodsIdList: [],
       tuneUp: false,
       tuneUpChooseGoods: false,
-      isOnlyShowChooseGoods: false
+      isOnlyShowChooseGoods: false,
+
+      labelDialogVisible: false, // 标签弹窗
+      pickLabel: [], // 选中标签列表
+      labelValue: [] // 选中标签id值
     }
   },
   watch: {
@@ -923,7 +1011,30 @@ export default {
       })
     },
 
-    clickHandler () { }
+    clickHandler () { },
+
+    // 标签弹窗
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      this.pickLabel.splice(index, 1)
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
+    },
+
+    // 标签弹窗回调函数
+    resultLabelDatas (row) {
+      this.pickLabel = row
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
+    }
 
     // 提交前校验
     // validParam() {
@@ -1142,5 +1253,24 @@ export default {
   line-height: 80px;
   margin-left: 20px;
   color: rgb(153, 153, 153);
+}
+.noticeTip {
+  color: #999;
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  display: inline-block;
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-right: 10px;
+  color: #666;
 }
 </style>

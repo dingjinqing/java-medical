@@ -47,8 +47,11 @@ public class MarketCalendarActivityService extends ShopBaseService {
 	}
 	
 	
-	public void calendarActList(Integer calendarId) {
-		List<MarketCalendarActivityVo> fetchInto = db().selectFrom(MARKET_CALENDAR_ACTIVITY).where(MARKET_CALENDAR_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).fetchInto(MarketCalendarActivityVo.class);
+	public List<MarketCalendarActivityVo> calendarActList(Integer calendarId) {
+		return db().selectFrom(MARKET_CALENDAR_ACTIVITY)
+				.where(MARKET_CALENDAR_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
+				.fetchInto(MarketCalendarActivityVo.class);
 		
 	}
 }

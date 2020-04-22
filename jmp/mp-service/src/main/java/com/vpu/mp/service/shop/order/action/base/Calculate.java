@@ -864,7 +864,7 @@ public class Calculate extends ShopBaseService {
             //成本价保护(最大返利金额)
             BigDecimal check =  BigDecimalUtil.subtrac(canRebateMoney, BigDecimalUtil.multiply(bo.getCostPrice(), new BigDecimal(bo.getGoodsNumber())));
             //商品返利计算
-            List<RebateRecord> rebateRecords = calculateGoodsRebate(cfg, param.getWxUserInfo().getUserId(), bo, goingStrategy, userInfo, isFs);
+            List<RebateRecord> rebateRecords = calculateGoodsRebate(cfg, bo, goingStrategy, userInfo, isFs);
             if(CollectionUtils.isNotEmpty(rebateRecords)) {
                 //同一个商品返利策略一样，取第一个即可
                 DistributionStrategyParam strategy = rebateRecords.get(0).getStrategy();
@@ -897,14 +897,13 @@ public class Calculate extends ShopBaseService {
     /**
      * 商品返利计算
      * @param cfg 分销配置
-     * @param userId 当前用户id
      * @param bo 商品bo
      * @param goingStrategy 正在进行的返利策略
      * @param userInfo 当前用户
      * @param isFs 是否首单
      * @return
      */
-    private List<RebateRecord> calculateGoodsRebate(DistributionParam cfg, Integer userId, OrderGoodsBo bo, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
+    private List<RebateRecord> calculateGoodsRebate(DistributionParam cfg, OrderGoodsBo bo, List<DistributionStrategyParam> goingStrategy, UserRecord userInfo, boolean isFs) {
         //获取商品返利策略
         DistributionStrategyParam goodsStrategy = distributionGoods.getGoodsStrategy(bo.getGoodsId(), bo.getSortId(), goingStrategy);
         if (goodsStrategy == null) {
@@ -936,6 +935,8 @@ public class Calculate extends ShopBaseService {
             ArrayList<RebateRecord> result = new ArrayList<>();
             //获取用户自购返利比例
             RebateRatioVo userRebateRatio = distributionGoods.getUserRebateRatio(userInfo, goodsStrategy, cfg);
+            //下单用户的直接邀请人
+            UserRecord userInfo2;
             if (userRebateRatio != null && userRebateRatio.getFanliRatio() != null) {
                 logger().info("自购自己返利");
                 //返利比例(直接返利比例)
@@ -944,9 +945,10 @@ public class Calculate extends ShopBaseService {
                 //邀请过期时间校验
                 if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
                     logger().info("自购，邀请已过期,自己过期不返直接上级");
+                }if((userInfo2 = user.getUserByUserId(userInfo.getInviteId())) == null) {
+                    logger().info("自购，无直接上级");
                 }else {
                     //自购二级返利（下单用户的直接邀请人，间接返利比例（或首单返利比例））
-                    UserRecord userInfo2 = user.getUserByUserId(userInfo.getInviteId());
                     RebateRatioVo userRebateRatio2 = distributionGoods.getUserRebateRatio(userInfo2, goodsStrategy, cfg);
                     if(userRebateRatio2 != null) {
                         Double rebateRatio2 = (isFS && goodsStrategy.getFirstRebate() == OrderConstant.YES) ? userRebateRatio2.getFirstRatio() : userRebateRatio2.getRebateRatio();
@@ -980,6 +982,8 @@ public class Calculate extends ShopBaseService {
         //一级返利
         if(userInfo.getInviteExpiryDate() != null && userInfo.getInviteExpiryDate().compareTo(current) > 0) {
             logger().info("正常返利，邀请已过期,自己过期不返直接上级");
+        }else if(userInfo.getInviteId() == null || userInfo.getInviteId() == 0) {
+            logger().info("正常返利，无直接上级");
         }else {
             RebateRatioVo userRebateRatio1 = distributionGoods.getUserRebateRatio(userInfo, goodsStrategy, cfg);
             if(userRebateRatio1 != null) {
@@ -993,7 +997,9 @@ public class Calculate extends ShopBaseService {
         }
         //二级返利
         UserRecord userInfo2 = user.getUserByUserId(userInfo.getInviteId());
-        if(userInfo2.getInviteExpiryDate() != null && userInfo2.getInviteExpiryDate().compareTo(current) > 0) {
+        if(userInfo2 == null) {
+            logger().info("正常返利，无间接上级");
+        } else if(userInfo2.getInviteExpiryDate() != null && userInfo2.getInviteExpiryDate().compareTo(current) > 0) {
             logger().info("正常返利，邀请已过期,直接上级过期不返间接上级");
         }else {
             RebateRatioVo userRebateRatio2 = distributionGoods.getUserRebateRatio(userInfo2, goodsStrategy, cfg);

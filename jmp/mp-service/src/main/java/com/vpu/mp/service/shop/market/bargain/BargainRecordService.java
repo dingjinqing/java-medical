@@ -405,7 +405,7 @@ public class BargainRecordService extends ShopBaseService {
             .innerJoin(GOODS_SPEC_PRODUCT).on(BARGAIN_RECORD.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
             .innerJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_RECORD.BARGAIN_ID))
             .innerJoin(USER).on(USER.USER_ID.eq(BARGAIN_RECORD.USER_ID))
-            .innerJoin(BARGAIN_GOODS).on(BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID))
+            .innerJoin(BARGAIN_GOODS).on((BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID)).and(BARGAIN_GOODS.BARGAIN_ID.eq(BARGAIN_RECORD.BARGAIN_ID)))
         )
             .where(BARGAIN_RECORD.ID.eq(recordId)).and(BARGAIN_RECORD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .fetchOptionalInto(BargainRecordInfo.class).orElse(null);

@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Record4;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
@@ -73,6 +75,9 @@ import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.CanPinInte;
 import com.vpu.mp.service.pojo.wxapp.market.GroupIntegration.GroupDetailVo;
@@ -1274,5 +1279,33 @@ public class GroupIntegrationService extends ShopBaseService {
 			voInfo.add(vo);
 		}
 		return voInfo;
+	}
+	
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(GROUP_INTEGRATION_DEFINE.ID, GROUP_INTEGRATION_DEFINE.NAME.as(CalendarAction.ACTNAME), GROUP_INTEGRATION_DEFINE.START_TIME,
+				GROUP_INTEGRATION_DEFINE.END_TIME).from(GROUP_INTEGRATION_DEFINE).where(GROUP_INTEGRATION_DEFINE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(GROUP_INTEGRATION_DEFINE.ID, GROUP_INTEGRATION_DEFINE.NAME.as(CalendarAction.ACTNAME), GROUP_INTEGRATION_DEFINE.START_TIME,
+						GROUP_INTEGRATION_DEFINE.END_TIME)
+				.from(GROUP_INTEGRATION_DEFINE)
+				.where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(GROUP_INTEGRATION_DEFINE.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(GROUP_INTEGRATION_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
 	}
 }
