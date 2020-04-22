@@ -155,7 +155,7 @@ public class BargainUserService extends ShopBaseService{
 
                 //推送砍价成功消息
                 String goodsName = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargainRecord.getGoodsId()).getGoodsName();
-                bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName);
+                bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName,bargainRecord.getId());
                 bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargainGoods.getExpectationPrice(),goodsName,bargainRecord.getId());
             }else {
                 //砍价record的状态更新
@@ -336,15 +336,16 @@ public class BargainUserService extends ShopBaseService{
     /**
      * 砍价完成小程序订阅消息通知
      */
-    private void bargainSuccessSubscribeNotify(int userId,String bargainName,String goodsName){
+    private void bargainSuccessSubscribeNotify(int userId,String bargainName,String goodsName,int recordId){
         String[][] data = new String[][] { { bargainName }, { goodsName + "砍价已完成" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") } };
         ArrayList<Integer> arrayList = new ArrayList<>();
+        String page = "pages/bargaininfo/bargaininfo?record_id=" + recordId;
         arrayList.add(userId);
         MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(
                 MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
-            .page(null).shopId(getShopId())
+            .page(page).shopId(getShopId())
             .userIdList(arrayList)
             .type(RabbitParamConstant.Type.INVITE_SUCCESS_BARGAIN).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
