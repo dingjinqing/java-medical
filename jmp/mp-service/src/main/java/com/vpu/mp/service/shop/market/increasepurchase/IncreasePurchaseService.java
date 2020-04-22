@@ -33,7 +33,7 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
-import com.vpu.mp.service.shop.member.tag.UserTagService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +91,7 @@ public class IncreasePurchaseService extends ShopBaseService {
     @Autowired
     private GoodsService goodsService;
     @Autowired
-    private UserTagService userTagService;
+    private TagService tagService;
 
     /**
      * 分页查询加价购活动信息
@@ -243,7 +243,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT,ppd.ACTIVITY_TAG,ppd.ACTIVITY_TAG_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
@@ -272,6 +272,9 @@ public class IncreasePurchaseService extends ShopBaseService {
             redemptionresult[integer++] = redemptionGoodsList;
         }
         vo.setRedemptionGoods(redemptionresult);
+        if(vo.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(vo.getActivityTagId())){
+            vo.setTagList(tagService.getTagsById(Util.splitValueToList(vo.getActivityTagId())));
+        }
         return vo;
     }
 
@@ -788,7 +791,7 @@ public class IncreasePurchaseService extends ShopBaseService {
     public void addActivityTag(Integer actId,Integer userId){
         PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(actId));
         if(purchasePriceDefineRecord.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(purchasePriceDefineRecord.getActivityTagId())){
-            userTagService.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,actId);
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,actId);
         }
     }
 
