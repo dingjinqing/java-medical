@@ -30,6 +30,7 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
@@ -340,10 +341,11 @@ public class OrderReadService extends ShopBaseService {
 			//过滤主订单下被拆出的goods
 			orderInfo.filterMainOrderGoods(mainOrder, goods.get(mainOrder.getOrderId()));
 		}
+        mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
 		return mainOrder;
 	}
 
-	/**
+    /**
 	 * 退货、款订单
 	 * @return
 	 */
@@ -900,6 +902,20 @@ public class OrderReadService extends ShopBaseService {
         return result;
     }
 
+    /**
+     * admin订单详情展示分销信息
+     * @param order
+     * @return
+     */
+    private List<OrderRebateVo> getOrderRebateInfo(OrderInfoVo order) {
+        if(order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
+            List<OrderRebateVo> rebateVos = orderGoodsRebate.getByOrderSn(order.getOrderSn());
+            for (OrderRebateVo vo: rebateVos) {
+
+            }
+        }
+    return null;
+    }
     /*********************************************************************************************************/
 
 	/**

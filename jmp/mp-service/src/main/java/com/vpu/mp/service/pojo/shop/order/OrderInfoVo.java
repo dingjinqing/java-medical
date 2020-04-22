@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import lombok.Getter;
@@ -79,4 +80,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**在退款流程中判断是否补款退款*/
     @JsonIgnore
     private Boolean isReturnBk;
+    /**返利信息*/
+    private List<OrderRebateVo> rebateList;
 }

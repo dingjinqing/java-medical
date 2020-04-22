@@ -1,11 +1,14 @@
 package com.vpu.mp.service.shop.distribution;
 
+import com.vpu.mp.db.shop.tables.Goods;
 import com.vpu.mp.db.shop.tables.OrderGoodsRebate;
+import com.vpu.mp.db.shop.tables.User;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.rebate.RebateRecord;
 import org.jooq.Result;
@@ -21,7 +24,9 @@ import java.util.List;
  */
 @Service
 public class OrderGoodsRebateService extends ShopBaseService {
-    OrderGoodsRebate TABLE = OrderGoodsRebate.ORDER_GOODS_REBATE;
+    final OrderGoodsRebate TABLE = OrderGoodsRebate.ORDER_GOODS_REBATE;
+    final User TABLE_USER = User.USER;
+    final Goods TABLE_GOODS = Goods.GOODS;
 
     public ArrayList<OrderGoodsRebateRecord> add(List<RebateRecord> rebateRecords, OrderGoodsBo bo, BigDecimal canRebateMoney, BigDecimal check, String orderSn) {
         ArrayList<OrderGoodsRebateRecord> result = new ArrayList<OrderGoodsRebateRecord>(rebateRecords.size());
@@ -61,5 +66,13 @@ public class OrderGoodsRebateService extends ShopBaseService {
             .where(TABLE.ORDER_SN.eq(orderSn))
             .and(TABLE.REC_ID.eq(recId))
             .fetch();
+    }
+    public List<OrderRebateVo> getByOrderSn(String orderSn) {
+        return db().select(TABLE.asterisk(),TABLE_USER.USERNAME, TABLE_GOODS.GOODS_NAME).from(TABLE)
+            .leftJoin(TABLE_USER).on(TABLE_USER.USER_ID.eq(TABLE.REBATE_USER_ID))
+            .leftJoin(TABLE_GOODS).on(TABLE_GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+            .where(TABLE.ORDER_SN.eq(orderSn))
+            .orderBy(TABLE.REBATE_LEVEL)
+            .fetchInto(OrderRebateVo.class);
     }
 }
