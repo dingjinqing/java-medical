@@ -25,7 +25,7 @@ global.wxPage({
     has_user: 1, // 授权弹窗
     is_shares: 0, // 是否有分享机会
     add_promote_value: 0, // 好友助力值
-    modal_can_share: null, // 好友助力可分享增加助力
+    modal_can_share: 0, // 好友助力可分享增加助力
     cant_promote: '', // 助力失败原因
     pictorial: '', // 海报图片
     posterBase64: ''
@@ -202,7 +202,7 @@ global.wxPage({
   },
   // 助力成功后放弃分享
   forgive_share: function (e) {
-    if (e.currentTarget.dataset.ifshare != null) {
+    if (e.currentTarget.dataset.ifshare == 1) {
       this.setData({
         promote_ok: 0,
         is_shares: 1
