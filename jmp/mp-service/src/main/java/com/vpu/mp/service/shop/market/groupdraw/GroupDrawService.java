@@ -614,6 +614,10 @@ public class GroupDrawService extends ShopBaseService {
 				return null;
 			}
 			for (GoodsSmallVo goodsSmallVo : goodsList) {
+				BigDecimal goodsPriceMax = getGoodsPriceMax(goodsSmallVo.getGoodsId());
+				if(goodsPriceMax!=null) {
+					goodsSmallVo.setMarketPrice(goodsPriceMax);					
+				}
 				goodsSmallVo.setGoodsImg(imageService.imageUrl(goodsSmallVo.getGoodsImg()));
 			}
 			vo.setList(goodsList);
@@ -1302,6 +1306,14 @@ public class GroupDrawService extends ShopBaseService {
     	vo.setIsGrouper(fetchAny.getIsGrouper());
 		return vo;
     }
+    
+	/**
+	 * 获取规格最高价
+	 */
+	private BigDecimal getGoodsPriceMax(Integer goodId) {
+		return db().select(DSL.max(GOODS_SPEC_PRODUCT.PRD_PRICE)).from(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.GOODS_ID.eq(goodId))
+				.fetchOneInto(BigDecimal.class);
+	}
     
     /**
      * 营销日历用id查询活动
