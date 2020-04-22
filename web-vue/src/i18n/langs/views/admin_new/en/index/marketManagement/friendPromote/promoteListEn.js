@@ -91,6 +91,8 @@ export const en = {
   point: 'points',
   giftPoint: 'gift points value',
   moreSettings: 'expand more configurations',
+  openConfigure: 'Open Configure',
+  closeConfigure: 'Close Configure',
   actShare: 'share activity',
   defaultStyle: 'default style',
   customStyle: 'custom style',

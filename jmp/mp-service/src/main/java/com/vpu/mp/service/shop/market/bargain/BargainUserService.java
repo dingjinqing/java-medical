@@ -1,25 +1,5 @@
 package com.vpu.mp.service.shop.market.bargain;
 
-import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
-import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
-import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.BargainRecord;
 import com.vpu.mp.db.shop.tables.records.BargainRecordRecord;
@@ -49,8 +29,26 @@ import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListParam;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainUsersListVo;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
-
 import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.tables.Bargain.BARGAIN;
+import static com.vpu.mp.db.shop.tables.BargainRecord.BARGAIN_RECORD;
+import static com.vpu.mp.db.shop.tables.BargainUserList.BARGAIN_USER_LIST;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.UserDetail.USER_DETAIL;
 
 /**
  * 帮砍价用户
@@ -206,7 +204,7 @@ public class BargainUserService extends ShopBaseService{
 
                 //推送砍价成功消息
                 String goodsName = saas.getShopApp(getShopId()).goods.getGoodsRecordById(bargainRecord.getGoodsId()).getGoodsName();
-                bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName);
+                bargainSuccessSubscribeNotify(bargainRecord.getUserId(),bargain.getBargainName(),goodsName,bargainRecord.getId());
                 bargainSuccessTemplateNotify(bargainRecord.getUserId(),bargain.getExpectationPrice(),goodsName,bargainRecord.getId());
             }else {
                 //砍价record的状态更新
@@ -387,15 +385,16 @@ public class BargainUserService extends ShopBaseService{
     /**
      * 砍价完成小程序订阅消息通知
      */
-    private void bargainSuccessSubscribeNotify(int userId,String bargainName,String goodsName){
+    private void bargainSuccessSubscribeNotify(int userId,String bargainName,String goodsName,int recordId){
         String[][] data = new String[][] { { bargainName }, { goodsName + "砍价已完成" }, { Util.getdate("yyyy-MM-dd HH:mm:ss") } };
         ArrayList<Integer> arrayList = new ArrayList<>();
         arrayList.add(userId);
+        String page = "pages/bargaininfo/bargaininfo?record_id=" + recordId;
         MaSubscribeData buildData = MaSubscribeData.builder().data307(data).build();
         RabbitMessageParam param = RabbitMessageParam.builder()
             .maTemplateData(
                 MaTemplateData.builder().config(SubcribeTemplateCategory.INVITE_SUCCESS).data(buildData).build())
-            .page(null).shopId(getShopId())
+            .page(page).shopId(getShopId())
             .userIdList(arrayList)
             .type(RabbitParamConstant.Type.INVITE_SUCCESS_BARGAIN).build();
         saas.taskJobMainService.dispatchImmediately(param, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());

@@ -58,4 +58,14 @@ public interface GroupBuyConstant {
      * 拼团失败
      */
     public static final Byte STATUS_FAILED = 2;
+    //**拼团类型1：普通拼团，2：老带新团
+    /**
+     * 1：普通拼团，
+     */
+    public static final Byte ACTIVITY_TYPE_GENERAL = 1;
+    /**
+     * 2：老带新团
+     */
+    public static final Byte ACTIVITY_TYPE_OLD_NEW = 2;
+
 }

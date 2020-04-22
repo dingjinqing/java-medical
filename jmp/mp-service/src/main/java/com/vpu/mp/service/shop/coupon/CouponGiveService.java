@@ -654,6 +654,8 @@ public class CouponGiveService extends ShopBaseService {
                             if (affectedRows <= 0) {
                                 throw new BusinessException(JsonResultCode.CODE_FAIL);
                             }
+                            //减库存成功后，同步库存
+                            couponDetails.setSurplus(couponDetails.getSurplus()-1);
                         }
                         //发券操作
                         customerAvailCouponsRecord.insert();

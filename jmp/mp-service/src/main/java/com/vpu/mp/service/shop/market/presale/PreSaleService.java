@@ -191,23 +191,42 @@ public class PreSaleService extends ShopBaseService {
         Timestamp endTime = param.getEndTime();
         Byte status = param.getStatus();
         if (!isEmpty(name)) {
-            query.and(TABLE.PRESALE_NAME.like(format("%s%%", name)));
+            query.and(TABLE.PRESALE_NAME.contains(name));
         }
-        if (null != preStartTime) {
+
+        if (null != preStartTime && null == preEndTime) {
             query.and(
-                (TABLE.PRE_PAY_STEP.eq(PRE_SALE_TWO_PHASE).and(TABLE.PRE_END_TIME_2.gt(preStartTime)))
-                    .or(TABLE.PRE_PAY_STEP.eq(PRE_SALE_ONE_PHASE).and(TABLE.PRE_END_TIME.gt(preStartTime)))
+                TABLE.PRE_START_TIME.lt(preStartTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
             );
         }
-        if (null != preEndTime) {
-            query.and(TABLE.PRE_START_TIME.le(preEndTime));
+        if (null == preStartTime && null != preEndTime) {
+            query.and(
+                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preEndTime))
+            );
         }
-        if (null != startTime) {
-            query.and(TABLE.START_TIME.ge(startTime));
+        if (null != preStartTime && null != preEndTime) {
+            query.and(
+                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
+            );
         }
-        if (null != endTime) {
-            query.and(TABLE.END_TIME.le(endTime));
+
+        if (null != startTime && null == endTime) {
+            query.and(
+                TABLE.START_TIME.lt(startTime).and(TABLE.END_TIME.gt(startTime))
+            );
         }
+        if (null == startTime && null != endTime) {
+            query.and(
+                TABLE.START_TIME.lt(endTime).and(TABLE.END_TIME.gt(endTime))
+            );
+        }
+        if (null != startTime && null != endTime) {
+            query.and(
+                TABLE.START_TIME.lt(endTime).and(TABLE.END_TIME.gt(startTime))
+            );
+        }
+
+
         if (null != status && status > 0) {
             andStatus(query, status);
         }

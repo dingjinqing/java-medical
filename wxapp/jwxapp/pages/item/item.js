@@ -577,7 +577,7 @@ global.wxPage({
           activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
         case 10:
-          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
+          activityData.depositPrice = this.data.goodsInfo.activity === 0 ? this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice})) : this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.preSalePrice}))
           break;
       }
     }
