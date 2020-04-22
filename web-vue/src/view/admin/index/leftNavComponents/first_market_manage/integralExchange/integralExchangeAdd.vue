@@ -139,6 +139,7 @@
               prop="exchange"
               :label="$t('mintegralExchange.exchangePrice')"
               align="center"
+              width="200"
             >
               <template slot-scope="scope">
                 <div class="scoreDiv">
@@ -168,7 +169,7 @@
               prop="stock"
               :label="$t('mintegralExchange.goodsInventory')"
               align="center"
-              v-if="id===-1"
+              v-if="id===-1 || isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
@@ -182,7 +183,7 @@
               prop="remainStock"
               label="剩余兑换商品库存"
               align="center"
-              v-if="id!==-1"
+              v-if="id!==-1&&!isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
@@ -196,7 +197,7 @@
               prop="saleNum"
               label="已售数量"
               align="center"
-              v-if="id!==-1"
+              v-if="id!==-1&&!isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
@@ -453,6 +454,7 @@ export default {
       }
     }
     return {
+      isChangeGoods: false,
       isClicktimePicker: true, // 是否可以选择开始时间
       isSureTop: true,
       isSureBottom: true,
@@ -569,6 +571,7 @@ export default {
               }
               arr.push(lastObj)
               this.ruleForm.tableData = arr
+              this.chooseGoodsBack.push(res.content.goodsId)
               // 处理底部展开的内容
               this.formBottom.style = JSON.stringify(objectShareConfig.share_action)
               if (this.formBottom.style === '2') {
@@ -626,7 +629,7 @@ export default {
             obj.prdId = item.exchange.prdId
             obj.money = item.exchange.money
             obj.score = item.exchange.score
-            if (this.id === -1) {
+            if (this.id === -1 || this.isChangeGoods) {
               obj.stock = item.stock
             } else {
               obj.stock = item.remainStock + item.saleNum
@@ -719,7 +722,7 @@ export default {
         yuanData = this.ruleForm.tableData[0].exchange.money
         scoreData = this.ruleForm.tableData[0].exchange.score
         kuCunData = this.ruleForm.tableData[0].stock
-        if (this.id !== -1) {
+        if (this.id !== -1 && !this.isChangeGoods) {
           remainStock = this.ruleForm.tableData[0].remainStock
         }
       }
@@ -731,7 +734,7 @@ export default {
       } else {
         this.ruleForm.tableData.forEach((item, index) => {
           item.stock = kuCunData
-          if (this.id !== -1) {
+          if (this.id !== -1 && !this.isChangeGoods) {
             item.remainStock = remainStock
           }
         })
@@ -788,6 +791,7 @@ export default {
           }
           arr.push(lastObj)
           this.ruleForm.tableData = arr
+          this.isChangeGoods = true
         }
       })
     },
