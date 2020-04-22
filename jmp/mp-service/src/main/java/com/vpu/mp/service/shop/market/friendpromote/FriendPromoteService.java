@@ -1344,7 +1344,7 @@ public class FriendPromoteService extends ShopBaseService {
 
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
-        promoteVo.setCanShare(canShareTimes);
+        promoteVo.setCanShare(promoteInfo.getCanShare());
         return promoteVo;
     }
 
