@@ -1,5 +1,27 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
+import static com.vpu.mp.db.shop.tables.User.USER;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
@@ -13,40 +35,38 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.*;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGroupVo;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailParam;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailVo;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleOrderPageParam;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageParam;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageVo;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
+import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleShareVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.*;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleAddCartVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckedGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckoutVo;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
+
 import jodd.util.StringUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author huangronggang
@@ -639,5 +659,34 @@ public class PackSaleService extends ShopBaseService {
         vo.setState((byte)0);
         return vo;
     }
+    
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(PACKAGE_SALE.ID, PACKAGE_SALE.PACKAGE_NAME.as(CalendarAction.ACTNAME), PACKAGE_SALE.START_TIME,
+				PACKAGE_SALE.END_TIME).from(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(PACKAGE_SALE.ID, PACKAGE_SALE.PACKAGE_NAME.as(CalendarAction.ACTNAME), PACKAGE_SALE.START_TIME,
+						PACKAGE_SALE.END_TIME)
+				.from(PACKAGE_SALE)
+				.where(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PACKAGE_SALE.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(PACKAGE_SALE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(PACKAGE_SALE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }
 

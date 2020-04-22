@@ -1,35 +1,58 @@
 package com.vpu.mp.service.shop.market.freeshipping;
 
-import com.vpu.mp.db.main.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
-import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
-import com.vpu.mp.service.foundation.data.DelFlag;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.PageResult;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.freeshipping.*;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.shop.image.QrCodeService;
-import com.vpu.mp.service.shop.order.action.base.Calculate;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static com.vpu.mp.db.main.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
+import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.GOODS_AREA_TYPE_ALL;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_DISABLED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_FINISHED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_NOT_STARTED;
+import static com.vpu.mp.service.foundation.data.BaseConstant.NAVBAR_TYPE_ONGOING;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_MONEY;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM;
+import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.CONTYPE_NUM_MONEY;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.main.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.FreeShipping.FREE_SHIPPING;
-import static com.vpu.mp.db.shop.tables.FreeShippingRule.FREE_SHIPPING_RULE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.shop.market.freeshipping.FreeShippingRuleService.*;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.Record5;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.vpu.mp.db.main.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRecord;
+import com.vpu.mp.db.shop.tables.records.FreeShippingRuleRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShipQueryParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingGoodsRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingParam;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingRuleVo;
+import com.vpu.mp.service.pojo.shop.market.freeshipping.FreeShippingVo;
+import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.order.action.base.Calculate;
 
 /**
  * 免邮费
@@ -368,4 +391,32 @@ public class FreeShippingService extends ShopBaseService {
          }
          return false;
     }
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(FREE_SHIPPING.ID, FREE_SHIPPING.NAME.as(CalendarAction.ACTNAME), FREE_SHIPPING.START_TIME,
+				FREE_SHIPPING.END_TIME,FREE_SHIPPING.EXPIRE_TYPE.as(CalendarAction.ISPERMANENT)).from(FREE_SHIPPING).where(FREE_SHIPPING.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record5<Integer, String, Timestamp, Timestamp, Byte>, Integer> select = db()
+				.select(FREE_SHIPPING.ID, FREE_SHIPPING.NAME.as(CalendarAction.ACTNAME), FREE_SHIPPING.START_TIME,
+						FREE_SHIPPING.END_TIME,FREE_SHIPPING.EXPIRE_TYPE.as(CalendarAction.ISPERMANENT))
+				.from(FREE_SHIPPING)
+				.where(FREE_SHIPPING.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(FREE_SHIPPING.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_DISABLE).and(FREE_SHIPPING.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(FREE_SHIPPING.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

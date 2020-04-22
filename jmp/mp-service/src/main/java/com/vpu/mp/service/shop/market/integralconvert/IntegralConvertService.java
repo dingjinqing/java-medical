@@ -1,5 +1,27 @@
 package com.vpu.mp.service.shop.market.integralconvert;
 
+import static com.vpu.mp.db.shop.Tables.GOODS;
+import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_PRODUCT;
+import static com.vpu.mp.db.shop.Tables.INTEGRAL_MALL_RECORD;
+import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
+import static com.vpu.mp.db.shop.Tables.USER;
+import static com.vpu.mp.db.shop.tables.IntegralMallDefine.INTEGRAL_MALL_DEFINE;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.Goods;
@@ -24,29 +46,41 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.integralconvert.*;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertAddParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertConstant;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertGoodsVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertId;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertListVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertOrderVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertProductVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertSelectVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertShareConfig;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralConvertUserVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralMallProductMaVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralNewUser;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralOrderExport;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.IntegralUserExport;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.MinScoreMoney;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.OrderTempVo;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.PopListParam;
+import com.vpu.mp.service.pojo.shop.market.integralconvert.PopListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+
 import jodd.util.StringUtil;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.SelectConditionStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.tables.IntegralMallDefine.INTEGRAL_MALL_DEFINE;
 
 /**
  * 积分兑换
@@ -723,5 +757,33 @@ public class IntegralConvertService extends ShopBaseService {
 		Integer minScore = list.stream().filter(x->x.getScore()!=null).map(IntegralMallProductMaVo::getScore).distinct().min((e1, e2) -> e1.compareTo(e2)).get();
 		BigDecimal minMoney = list.stream().filter(x->x.getScore().equals(minScore)).map(IntegralMallProductMaVo::getMoney).distinct().min((e1, e2) -> e1.compareTo(e2)).get();
 		return new MinScoreMoney(minScore,minMoney);
+	}
+	
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(INTEGRAL_MALL_DEFINE.ID, INTEGRAL_MALL_DEFINE.NAME.as(CalendarAction.ACTNAME), INTEGRAL_MALL_DEFINE.START_TIME,
+				INTEGRAL_MALL_DEFINE.END_TIME).from(INTEGRAL_MALL_DEFINE).where(INTEGRAL_MALL_DEFINE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(INTEGRAL_MALL_DEFINE.ID, INTEGRAL_MALL_DEFINE.NAME.as(CalendarAction.ACTNAME), INTEGRAL_MALL_DEFINE.START_TIME,
+						INTEGRAL_MALL_DEFINE.END_TIME)
+				.from(INTEGRAL_MALL_DEFINE)
+				.where(INTEGRAL_MALL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(INTEGRAL_MALL_DEFINE.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(INTEGRAL_MALL_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(INTEGRAL_MALL_DEFINE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
 	}
 }
