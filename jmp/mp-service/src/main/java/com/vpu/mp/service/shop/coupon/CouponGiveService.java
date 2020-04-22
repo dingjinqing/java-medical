@@ -161,7 +161,7 @@ public class CouponGiveService extends ShopBaseService {
     public PageResult<CouponHoldListVo> getDetail(CouponGiveDetailParam param) {
 
         CouponHoldListParam couponParam = new CouponHoldListParam();
-//        couponParam.setActId(param.getActId());
+        couponParam.setActId(param.getCouponId());
         couponParam.setMobile(param.getMobile());
         couponParam.setUsername(param.getUsername());
         couponParam.setStatus(param.getIsUsed().byteValue());
