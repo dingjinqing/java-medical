@@ -122,7 +122,7 @@ public class BargainService extends ShopBaseService  {
 				).
 				from(BARGAIN);
         select = buildOptions(select,param);
-		select.orderBy(BARGAIN.CREATE_TIME.desc());
+		select.orderBy(BARGAIN.FIRST.desc(),BARGAIN.CREATE_TIME.desc());
         PageResult<BargainPageListQueryVo> page = getPageResult(select,param.getCurrentPage(),param.getPageRows(),BargainPageListQueryVo.class);
 		page.dataList.forEach(vo -> {
             vo.setSuccessNumber(bargainRecord.getBargainRecordNumberByStatus(vo.getId(), BargainRecordService.STATUS_SUCCESS));
