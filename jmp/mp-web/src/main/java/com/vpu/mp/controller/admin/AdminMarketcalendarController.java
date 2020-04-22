@@ -67,9 +67,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 	 */
 	@GetMapping(value = "/api/admin/calendar/list/{year}")
 	public JsonResult calendarList(@PathVariable String year) {
-		
-		return null;
-		
+		return success(shop().calendarService.getListByYear(year));
 	}
 
 }

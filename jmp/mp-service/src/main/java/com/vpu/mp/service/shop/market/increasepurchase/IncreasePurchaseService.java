@@ -1,9 +1,66 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
+import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
+import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONCAT_WS_SEPARATOR;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ONE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ZERO;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.GROUPCONCAT_SEPARATOR;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.IDENTITY_ID;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_ALL;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_EXPIRED;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PREPARE;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_TERMINATED;
+import static org.jooq.impl.DSL.and;
+import static org.jooq.impl.DSL.groupConcat;
+import static org.jooq.impl.DSL.min;
+import static org.jooq.impl.DSL.sum;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record11;
+import org.jooq.Record4;
+import org.jooq.Record7;
+import org.jooq.Record8;
+import org.jooq.Record9;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.Goods;
+import com.vpu.mp.db.shop.tables.OrderGoods;
+import com.vpu.mp.db.shop.tables.OrderInfo;
+import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
+import com.vpu.mp.db.shop.tables.PurchasePriceRule;
 import com.vpu.mp.db.shop.tables.User;
-import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -20,8 +77,24 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.GoodsInfo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseRule;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionGoodsInfo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderVo;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
@@ -33,35 +106,11 @@ import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.user.cart.CartService;
+
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
-import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
-import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
-import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -89,6 +138,8 @@ public class IncreasePurchaseService extends ShopBaseService {
     private DomainConfig domainConfig;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private TagService tagService;
 
     /**
      * 分页查询加价购活动信息
@@ -120,18 +171,18 @@ public class IncreasePurchaseService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
                 break;
         }
-        Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record9<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte, Timestamp>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG,ppd.CREATE_TIME).from(ppd).where(categoryConditon).asTable("ppd");
 
         Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         if (StringUtils.isNotEmpty(param.getName())) {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
         }
         if (param.getStartTime() != null) {
-            selectConditon = selectConditon.and(ppd.START_TIME.greaterThan(param.getStartTime()));
+            selectConditon = selectConditon.and(ppd.START_TIME.ge(param.getStartTime()));
         }
         if (param.getEndTime() != null) {
-            selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
+            selectConditon = selectConditon.and(ppd.END_TIME.le(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
@@ -146,14 +197,14 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
-        SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
-            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
-        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
+        SelectConditionStep<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Timestamp>> resultStep = db().
+            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS,ppd.CREATE_TIME).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
+        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep.orderBy(ppd.LEVEL.desc(),ppd.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(param.getCategory());
+            vo.setCategory(Util.getActStatus(vo.getStatus().equals(FLAG_ONE) ? (byte)0 : (byte)1,vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -190,6 +241,9 @@ public class IncreasePurchaseService extends ShopBaseService {
         PurchasePriceDefineRecord defineRecord = new PurchasePriceDefineRecord();
         PurchasePriceRuleRecord ruleRecord = new PurchasePriceRuleRecord();
         FieldsUtil.assignNotNull(param, defineRecord);
+        if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
+            defineRecord.setActivityTagId(Util.listToString(param.getActivityTagId()));
+        }
         db().transaction(configuration -> {
             DSLContext db = DSL.using(configuration);
             db.executeInsert(defineRecord);
@@ -237,7 +291,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT,ppd.ACTIVITY_TAG,ppd.ACTIVITY_TAG_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
@@ -266,6 +320,9 @@ public class IncreasePurchaseService extends ShopBaseService {
             redemptionresult[integer++] = redemptionGoodsList;
         }
         vo.setRedemptionGoods(redemptionresult);
+        if(vo.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(vo.getActivityTagId())){
+            vo.setTagList(tagService.getTagsById(Util.splitValueToList(vo.getActivityTagId())));
+        }
         return vo;
     }
 
@@ -476,7 +533,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 构建换购明细查询条件
      */
     private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
-        Condition baseCondition = og.ACTIVITY_ID.notEqual(0);
+        Condition baseCondition = and(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_RULE.gt(0));
         if (StringUtils.isNotEmpty(param.getNickName())) {
             baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
         }
@@ -764,13 +822,52 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     /**
      * 换购商品运费策略
-     * @param ActId
+     * @param actId
      * @return
      */
-    public boolean isFreeShip(Integer ActId) {
+    public boolean isFreeShip(Integer actId) {
         //换购商品运费策略，0免运费，1使用原商品运费模板
-        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(ActId)).fetchOneInto(Byte.class);
+        Byte isFreeShip = db().select(ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(actId)).fetchOneInto(Byte.class);
         return NumberUtils.BYTE_ZERO.equals(isFreeShip);
     }
+
+    /**
+     * 给下单用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addActivityTag(Integer actId,Integer userId){
+        PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(actId));
+        if(purchasePriceDefineRecord.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(purchasePriceDefineRecord.getActivityTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,actId);
+        }
+    }
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(ppd.ID, ppd.NAME.as(CalendarAction.ACTNAME), ppd.START_TIME,
+				ppd.END_TIME).from(ppd).where(ppd.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(ppd.ID, ppd.NAME.as(CalendarAction.ACTNAME), ppd.START_TIME,
+						ppd.END_TIME)
+				.from(ppd)
+				.where(ppd.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(ppd.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(ppd.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(ppd.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 
 }

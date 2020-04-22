@@ -1,5 +1,35 @@
 package com.vpu.mp.service.shop.market.seckill;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
+
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -22,7 +52,16 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.*;
+import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDecoratePageListVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillGoodsPriceBo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillOrderExportVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductAddParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
@@ -34,35 +73,17 @@ import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.analysis.OrderActivityUserNum;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
 import com.vpu.mp.service.pojo.wxapp.market.seckill.SeckillCheckVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+
 import jodd.util.StringUtil;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
  * @author 王兵兵
@@ -601,7 +622,7 @@ public class SeckillService extends ShopBaseService{
      * @param actId
      * @return
      */
-    private SecKillDefineRecord getSeckillActById(int actId){
+    public SecKillDefineRecord getSeckillActById(int actId){
         return db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(actId)).fetchOptionalInto(SecKillDefineRecord.class).orElse(null);
     }
 
@@ -745,4 +766,32 @@ public class SeckillService extends ShopBaseService{
         return goodsIds;
     }
 
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(SEC_KILL_DEFINE.SK_ID.as(CalendarAction.ID), SEC_KILL_DEFINE.NAME.as(CalendarAction.ACTNAME), SEC_KILL_DEFINE.START_TIME,
+				SEC_KILL_DEFINE.END_TIME).from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(SEC_KILL_DEFINE.SK_ID.as(CalendarAction.ID), SEC_KILL_DEFINE.NAME.as(CalendarAction.ACTNAME), SEC_KILL_DEFINE.START_TIME,
+						SEC_KILL_DEFINE.END_TIME)
+				.from(SEC_KILL_DEFINE)
+				.where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(SEC_KILL_DEFINE.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(SEC_KILL_DEFINE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(SEC_KILL_DEFINE.SK_ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

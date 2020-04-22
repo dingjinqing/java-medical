@@ -1,5 +1,27 @@
 package com.vpu.mp.service.shop.market.fullcut;
 
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
+import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyConditionRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingStrategyRecord;
@@ -11,8 +33,15 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
-import com.vpu.mp.service.pojo.shop.market.fullcut.*;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyAddParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyCondition;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.fullcut.MrkingStrategyVo;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.market.fullcut.MrkingStrategyGoodsListParam;
@@ -22,26 +51,8 @@ import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.MemberCardService;
 import com.vpu.mp.service.shop.user.cart.CartService;
+
 import jodd.util.StringUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.MrkingStrategy.MRKING_STRATEGY;
-import static com.vpu.mp.db.shop.tables.MrkingStrategyCondition.MRKING_STRATEGY_CONDITION;
 
 /**
  * @author: 王兵兵
@@ -514,5 +525,31 @@ public class MrkingStrategyService extends ShopBaseService {
     }
 
 
-
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
+				MRKING_STRATEGY.END_TIME).from(MRKING_STRATEGY).where(MRKING_STRATEGY.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(MRKING_STRATEGY.ID, MRKING_STRATEGY.ACT_NAME, MRKING_STRATEGY.START_TIME,
+						MRKING_STRATEGY.END_TIME)
+				.from(MRKING_STRATEGY)
+				.where(MRKING_STRATEGY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(MRKING_STRATEGY.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(MRKING_STRATEGY.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(MRKING_STRATEGY.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -59,4 +60,17 @@ public class PurchaseDetailVo {
      * 换购商品运费策略，0免运费，1使用原商品运费模板
      */
     private Byte redemptionFreight;
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id列表
+     */
+    @JsonIgnore
+    private String activityTagId;
+    /**
+     * 标签列表
+     */
+    private List<TagVo> tagList;
 }

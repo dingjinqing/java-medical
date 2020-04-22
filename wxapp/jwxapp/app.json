@@ -117,7 +117,8 @@
         "usercardgoods/usercardgoods",
         "sharerebate/sharerebate",
         "livetransition/livetransition",
-        "aftersaleorder/aftersaleorder"
+        "aftersaleorder/aftersaleorder",
+        "packagesalelist/packagesalelist"
       ]
     }
   ],

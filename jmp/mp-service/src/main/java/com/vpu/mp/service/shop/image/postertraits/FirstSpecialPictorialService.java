@@ -22,10 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
@@ -132,7 +131,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(firstSpecialRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), firstSpecialRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.FIRST_SPECIAL_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
@@ -205,8 +204,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         pictorialLog("pictorial", "mpQrcode:"+mpQrcode);
         BufferedImage qrCodeImage;
         try {
-//            qrCodeImage = ImageIO.read(new URL(mpQrcode));
-            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
+            qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -217,31 +215,9 @@ public class FirstSpecialPictorialService extends ShopBaseService {
 
         // 拼装背景图
         pictorialLog("pictorial", "拼装背景图");
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
-        pictorialLog("pictorial", "拼装背景图完成");
-
-        pictorialLog("pictorial", "国际化价格");
-        String realPriceText =  Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages")+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         String firstSpecialTip = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_FIRST_SPECIAL_INFO, "messages");
-
-        pictorialLog("pictorial", "添加首单特惠文字");
-        int tipWidth = ImageUtil.addFontWithRect(bgBufferedImage, imgPx.getBottomTextStartX(), imgPx.getPriceY(), firstSpecialTip, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getSmallFontSize()), imgPx.getRealPriceColor(),null,imgPx.getRealPriceColor());
-        pictorialLog("pictorial", "添加真实价");
-        int realPriceTextStartX = imgPx.getBgPadding()+tipWidth+ imgPx.getBgPadding() + 10;
-        ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceTextStartX, imgPx.getPriceY() - 10, imgPx.getRealPriceColor(), false);
-        pictorialLog("pictorial", "添加划线价");
-        Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
-        int linePriceTextStartX = realPriceTextStartX+textWidth+ 10;
-        ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getPriceY()-2, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
-
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
-            ImageIO.write(bgBufferedImage, "jpg", outputStream);
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), firstSpecialTip,param.getRealPrice(), param.getLinePrice(), imgPx);
+        pictorialLog("pictorial", "拼装背景图完成");
 
         pictorialLog("pictorial", "转换base64");
         String base64 = ImageUtil.toBase64(bgBufferedImage);

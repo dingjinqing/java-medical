@@ -1,39 +1,78 @@
 package com.vpu.mp.service.shop.market.payaward;
 
+import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
+import static com.vpu.mp.db.shop.Tables.PAY_AWARD_PRIZE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_IS_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_NOT_FOREVER;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_BALANCE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_CUSTOM;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_GOODS;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_LOTTERY;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_NO_PRIZE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_ORDINARY_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SCORE;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.GIVE_TYPE_SPLIT_COUPON;
+import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_NO_STOCK;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.Record5;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.LotteryRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardPrizeRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardRecord;
+import com.vpu.mp.db.shop.tables.records.PayAwardRecordRecord;
+import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
-import com.vpu.mp.service.pojo.shop.market.payaward.*;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardContentBo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardIdParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardListVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardOrderVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeParam;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardPrizeVo;
+import com.vpu.mp.service.pojo.shop.market.payaward.PayAwardVo;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListParam;
 import com.vpu.mp.service.pojo.shop.market.payaward.record.PayAwardRecordListVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PayAwardPromotion;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.market.lottery.LotteryService;
 import com.vpu.mp.service.shop.market.prize.PrizeRecordService;
 import com.vpu.mp.service.shop.order.atomic.AtomicOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.Tables.PAY_AWARD;
-import static com.vpu.mp.db.shop.Tables.PAY_AWARD_PRIZE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.*;
 
 /**
  * 支付有礼
@@ -613,5 +652,34 @@ public class PayAwardService extends ShopBaseService {
         promotion.setMinPayMoney(record6.get(PAY_AWARD.MIN_PAY_MONEY));
         return promotion;
     }
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES.as(CalendarAction.ACTNAME), PAY_AWARD.START_TIME,
+				PAY_AWARD.END_TIME,PAY_AWARD.TIME_TYPE.as(CalendarAction.ISPERMANENT)).from(PAY_AWARD).where(PAY_AWARD.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record5<Integer, String, Timestamp, Timestamp, Byte>, Integer> select = db()
+				.select(PAY_AWARD.ID, PAY_AWARD.ACTIVITY_NAMES.as(CalendarAction.ACTNAME), PAY_AWARD.START_TIME,
+						PAY_AWARD.END_TIME, PAY_AWARD.TIME_TYPE.as(CalendarAction.ISPERMANENT))
+				.from(PAY_AWARD).where(
+						PAY_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+								.and(PAY_AWARD.STATUS.eq(BaseConstant.ACTIVITY_STATUS_DISABLE)
+										.and(PAY_AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(PAY_AWARD.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 
 }

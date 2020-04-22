@@ -1,5 +1,28 @@
 package com.vpu.mp.service.shop.market.couponpack;
 
+import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
+import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
+import static com.vpu.mp.db.shop.tables.User.USER;
+import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.CouponPackRecord;
@@ -19,9 +42,31 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.couponpack.*;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackAddParam;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackConstant;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackDetailListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackDetailListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderExportVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackOrderListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackPageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVoucherVo;
+import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackVoucherAddParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.coupon.pack.*;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActBaseVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackActInfoVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCheckVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderBeforeVo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackOrderParam;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherBo;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackVoucherVo;
 import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
 import com.vpu.mp.service.pojo.wxapp.pay.base.WebPayVo;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -31,27 +76,8 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import com.vpu.mp.service.shop.order.virtual.CouponPackOrderService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
+
 import jodd.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Record;
-import org.jooq.SelectWhereStep;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.CouponPack.COUPON_PACK;
-import static com.vpu.mp.db.shop.tables.CouponPackVoucher.COUPON_PACK_VOUCHER;
-import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.VirtualOrder.VIRTUAL_ORDER;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * @author: 王兵兵
@@ -567,6 +593,36 @@ public class CouponPackService extends ShopBaseService {
 
 
     }
+    
+	/**
+	 * 营销日历用id查询活动
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public MarketVo getActInfo(Integer id) {
+		return db().select(COUPON_PACK.ID, COUPON_PACK.ACT_NAME, COUPON_PACK.START_TIME, COUPON_PACK.END_TIME)
+				.from(COUPON_PACK).where(COUPON_PACK.ID.eq(id)).fetchAnyInto(MarketVo.class);
+	}
+
+	/**
+	 * 营销日历用查询目前正常的活动
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(COUPON_PACK.ID, COUPON_PACK.ACT_NAME, COUPON_PACK.START_TIME, COUPON_PACK.END_TIME)
+				.from(COUPON_PACK)
+				.where(COUPON_PACK.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(COUPON_PACK.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
+								.and(COUPON_PACK.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(COUPON_PACK.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 
 
 }

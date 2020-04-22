@@ -1,4 +1,5 @@
 <view class="main-container">
+  <slot name="top-content" />
   <view class="filter">
     <view class="input_box">
       <view>
@@ -7,6 +8,7 @@
       <input placeholder="请输入搜索关键字" bindconfirm="handleSearch"></input>
     </view>
   </view>
+  <slot name="custom-filter" />
   <slot name="rule" />
   <slot name="goods-content" />
   <slot name="footer" />

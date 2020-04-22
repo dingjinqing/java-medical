@@ -55,4 +55,13 @@ public class AddPurchaseParam {
     @NotNull
     private Byte redemptionFreight;
 
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id列表
+     */
+    private List<Integer> activityTagId;
+
 }

@@ -2,13 +2,19 @@ package com.vpu.mp.service.shop.market.sharereward;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vpu.mp.db.shop.tables.records.ShareAwardRecordRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import lombok.extern.slf4j.Slf4j;
@@ -593,4 +599,35 @@ public class ShareRewardService extends BaseShopConfigService {
         db().update(AWARD_RECORD).set(AWARD_RECORD.USER_NUMBER, AWARD_RECORD.USER_NUMBER.add(INTEGER_ONE)).where(AWARD_RECORD.ID.eq(id)).execute();
         return db().select(AWARD_RECORD.USER_NUMBER).from(AWARD_RECORD).where(AWARD_RECORD.ID.eq(id)).fetchOptionalInto(Integer.class).orElse(INTEGER_ZERO);
     }
+    
+	/**
+	 * 营销日历用id查询活动
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public MarketVo getActInfo(Integer id) {
+		return db()
+				.select(AWARD.ID, AWARD.NAME.as(CalendarAction.ACTNAME), AWARD.START_TIME, AWARD.END_TIME,
+						AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
+				.from(AWARD).where(AWARD.ID.eq(id)).fetchAnyInto(MarketVo.class);
+	}
+
+	/**
+	 * 营销日历用查询目前正常的活动
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record5<Integer, String, Timestamp, Timestamp, Byte>, Integer> select = db()
+				.select(AWARD.ID, AWARD.NAME.as(CalendarAction.ACTNAME), AWARD.START_TIME, AWARD.END_TIME,
+						AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
+				.from(AWARD).where(AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(AWARD.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(AWARD.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

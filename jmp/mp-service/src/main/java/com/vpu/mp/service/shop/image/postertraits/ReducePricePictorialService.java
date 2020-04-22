@@ -22,11 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
@@ -56,7 +54,7 @@ public class ReducePricePictorialService extends ShopBaseService {
      */
     public GoodsShareInfo getReducePriceShareInfo(ReducePriceShareInfoParam param) {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
+        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
         // 活动信息不可用
         if (reducePriceRecord == null) {
             pictorialLog("分享", "限时降价活动信息不可用");
@@ -137,7 +135,7 @@ public class ReducePricePictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(reducePriceRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.REDUCE_PRICE_ACTION_SHARE, pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
@@ -159,7 +157,7 @@ public class ReducePricePictorialService extends ShopBaseService {
     public GoodsPictorialInfo getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
         GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
         ShopRecord shop = saas.shop.getShopById(getShopId());
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecord(param.getActivityId());
+        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
         if (reducePriceRecord == null) {
             pictorialLog("pictorial", "限时降价信息已删除或失效");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
@@ -224,26 +222,18 @@ public class ReducePricePictorialService extends ShopBaseService {
 
         PictorialImgPx imgPx = new PictorialImgPx();
 
-        // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), null, null, imgPx);
-
+        BufferedImage reduceIconBufferImg=null;
         // 拼装价值限时降价图片和商品价格
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {
-            BufferedImage reduceIconBufferImg = ImageIO.read(reduceIconStream);
-            ImageUtil.addTwoImage(bgBufferedImage, reduceIconBufferImg, imgPx.getBottomTextStartX(), imgPx.getPriceY());
-
-            int realPriceStartX = imgPx.getBottomTextStartX() + reduceIconBufferImg.getWidth() + 10;
-            String realPriceText = param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-            ImageUtil.addFont(bgBufferedImage, realPriceText, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceStartX, imgPx.getPriceY() - 8, imgPx.getRealPriceColor(), false);
-            Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
-            int linePriceStartX = realPriceStartX + textWidth +  10;
-            ImageUtil.addFontWithLine(bgBufferedImage, linePriceStartX, imgPx.getPriceY() - 4, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
-
+             reduceIconBufferImg = ImageIO.read(reduceIconStream);
         } catch (IOException e) {
             pictorialLog("pictorial", "装载限时降价图标失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
+        // 拼装背景图
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),reduceIconBufferImg,param.getRealPrice(), param.getLinePrice(), imgPx);
+
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
     }

@@ -1,7 +1,52 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
+import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
+import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.sum;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record10;
+import org.jooq.Record2;
+import org.jooq.Record4;
+import org.jooq.Record5;
+import org.jooq.Result;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
+import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
+import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
+import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,35 +58,23 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceAddParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsAddParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsProductAddParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsVo;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryVo;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceProductVo;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceUpdateParam;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
+
 import jodd.util.StringUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Comparator;
-import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
-import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
-import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.sum;
 
 /**
  * @author: 王兵兵
@@ -513,6 +546,16 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     /**
+     * 获取限时降价record信息
+     * @param activityId 活动id
+     * @return record信息 或 null
+     */
+    public ReducePriceRecord getReducePriceRecordCanDel(Integer activityId){
+        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(activityId))
+            .fetchAny();
+    }
+
+    /**
      * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
      * 首单特惠最高优先级，限时降价与等级会员之间价取低价
      * @param goodsId
@@ -611,5 +654,35 @@ public class ReducePriceService extends ShopBaseService {
         }
         return null;
     }
+    
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME.as(CalendarAction.ACTNAME), REDUCE_PRICE.START_TIME,
+				REDUCE_PRICE.END_TIME).from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME.as(CalendarAction.ACTNAME), REDUCE_PRICE.START_TIME,
+						REDUCE_PRICE.END_TIME)
+				.from(REDUCE_PRICE)
+				.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
+								.and(REDUCE_PRICE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(REDUCE_PRICE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 
 }

@@ -67,6 +67,46 @@
           >
           </el-date-picker>
         </el-form-item>
+        <el-form-item
+          label="同步打标签："
+          class="label-con"
+        >
+          <el-checkbox
+            v-model="form1.activityTag"
+            :true-label="1"
+            :false-label="0"
+            disabled
+          >给参与活动用户打标签</el-checkbox>
+          <el-tooltip
+            effect="light"
+            placement="top"
+            content="成功下单并完成支付的算作参与活动用户"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+          <el-button
+            type="text"
+            @click="selectLabel"
+            disabled
+          >选择标签</el-button>
+          <div
+            class="label-model"
+            v-if="pickLabel.length > 0"
+          >
+            <p>最多可设置3个标签</p>
+            <ul class="label-wrap">
+              <li
+                class="user-label"
+                v-for="(item,index) in pickLabel"
+                :key="item.id"
+              >{{item.value}}<i
+                  :data-id="item.id"
+                  class="el-icon-close"
+                  @click="deleteLabel(index, $event)"
+                ></i></li>
+            </ul>
+          </div>
+        </el-form-item>
         <el-form-item :label="$t('purchase.singlemax')+'：'">
           <el-input
             v-model.number="form1.maxChangePurchase"
@@ -192,7 +232,7 @@
       </div>
       <div class="table">
         <el-table
-          :data="main_table"
+          :data="mainTableData"
           style="width: 100%"
           border
         >
@@ -227,6 +267,10 @@
             </template>
           </el-table-column>
         </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="pageChange"
+        ></pagination>
       </div>
       <!-- <div class="bottom">
         <el-button
@@ -313,7 +357,9 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods2"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -326,6 +372,7 @@
             <el-table
               :data="purchase_table2"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -346,7 +393,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -365,7 +415,9 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods3"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -378,6 +430,7 @@
             <el-table
               :data="purchase_table3"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -398,7 +451,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -440,6 +496,14 @@
         @click="updatePurchase"
       >{{$t('purchase.save')}}</el-button>
     </div>
+
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="form1.activityTagId"
+    />
   </div>
 </template>
 <script>
@@ -448,7 +512,9 @@ import ChoosingGoods from '@/components/admin/choosingGoods'
 import { getDetail, update } from '@/api/admin/marketManage/increasePurchase.js'
 export default {
   components: {
-    ChoosingGoods
+    ChoosingGoods,
+    LabelDialog: () => import('@/components/admin/labelDialog'),
+    pagination: () => import('@/components/admin/pagination/pagination')
   },
   data () {
     var validateRule = (rule, value, callback) => {
@@ -499,7 +565,9 @@ export default {
         endTime: '',
         maxChangePurchase: 0,
         redemptionFreight: 0,
-        rule_setting: '非空'
+        rule_setting: '非空',
+        activityTag: 0, // 是否给参加活动的用户打标签
+        activityTagId: [] // 参加活动打标签id数组
       },
       // 换购规则
       purcahse_rule1: {
@@ -538,6 +606,12 @@ export default {
       form_check: false,
       // 主商品页面参数
       main_table: [],
+      mainTableData: [], // 展示数据
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20,
+        totalRows: 0
+      },
       // 商品弹窗初始数据，编辑页面时用(同时也是主商品id集合)
       goodsId: [],
       tuneUpChooseGoods: false,
@@ -552,7 +626,28 @@ export default {
       queryParam: {
         purchaseId: 0
       },
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+      labelDialogVisible: false, // 打标签弹窗选择标签
+      pickLabel: [] // 选中的标签数据
+    }
+  },
+  watch: {
+    'main_table': {
+      handler: function (newVal, oldVal) {
+        this.pageParams = {
+          currentPage: 1,
+          pageRows: 20,
+          totalRows: newVal.length
+        }
+      }
+    },
+    'pageParams': {
+      handler: function (newVal, oldVal) {
+        let allGoods = [...this.main_table]
+        let startIndex = (this.pageParams.currentPage - 1) * this.pageParams.pageRows + 1
+        this.mainTableData = allGoods.splice(startIndex, this.pageParams.pageRows)
+      },
+      deep: true
     }
   },
   mounted () {
@@ -571,6 +666,8 @@ export default {
           this.form1.activityDate.push(this.form1.startTime)
           this.form1.activityDate.push(this.form1.endTime)
           this.main_table = res.content.mainGoods
+          this.pickLabel = res.content.tagList
+          this.form1.activityTagId = this.pickLabel.map(item => item.id)
           this.setDomainImg(this.main_table)
           this.main_table.map((item, index) => {
             this.goodsId.push(item.goodsId)
@@ -697,6 +794,10 @@ export default {
     },
     // 选择商品弹窗回调显示
     choosingGoodsResult (row) {
+      if (row.length > 100) {
+        this.$message.warning('最多设置100个主商品')
+        row = row.splice(0, 100)
+      }
       this.main_table = row
       this.updateGoodsId(this.main_table)
     },
@@ -851,19 +952,19 @@ export default {
     getPurchaseRules () {
       let rules = []
       if (this.rule_num >= 1) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule1.productId.join()
+        let rule = Object.assign({}, this.purcahse_rule1)
+        rule.productId = rule.productId.join(',')
         rules.push(rule)
       }
       if (this.rule_num >= 2) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule2.productId.join()
-        rules.push(this.purcahse_rule2)
+        let rule = Object.assign({}, this.purcahse_rule2)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       if (this.rule_num >= 3) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule3.productId.join()
-        rules.push(this.purcahse_rule3)
+        let rule = Object.assign({}, this.purcahse_rule3)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       return rules
     },
@@ -875,6 +976,34 @@ export default {
           flag: true
         }
       })
+    },
+    // 选择标签
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+    // 标签选择后回调
+    resultLabelDatas (row) {
+      console.log(row)
+      this.pickLabel = row
+      let labelIds = []
+      row.forEach(item => {
+        labelIds.push(item.id)
+      })
+      this.form1.activityTagId = labelIds
+    },
+    // 删除标签
+    deleteLabel (index, e) {
+      console.log(index, e)
+      if (this.$route.params.id) {
+        this.$message.warning('编辑时不能修改标签')
+        return false
+      }
+      this.pickLabel.splice(index, 1)
+      this.form1.activityTagId = this.pickLabel.map(item => item.id)
+    },
+    // 翻页
+    pageChange () {
+      console.log(this.pageParams)
     }
   }
 }
@@ -951,6 +1080,39 @@ export default {
   .rule-setting {
     .el-form-item {
       margin-left: -90px;
+    }
+  }
+  .label-con {
+    .el-icon-question {
+      line-height: 32px;
+      vertical-align: middle;
+      font-size: 20px;
+      color: #dadada;
+    }
+    .el-button {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+    .label-model {
+      p {
+        color: #999;
+      }
+      .user-label {
+        display: inline-block;
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        padding: 0 10px;
+        margin-right: 10px;
+        background: rgba(235, 241, 255, 1);
+        border: 1px solid rgba(180, 202, 255, 1);
+        border-radius: 2px;
+        text-align: center;
+        color: #666;
+      }
+      .el-icon-close {
+        cursor: pointer;
+      }
     }
   }
 }

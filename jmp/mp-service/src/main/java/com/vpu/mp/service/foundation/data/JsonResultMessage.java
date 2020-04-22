@@ -1027,6 +1027,12 @@ public class JsonResultMessage {
     public static final String  WX_MA_BARGAIN_DOC="wx.ma.bargain.doc";
     /** 砍走*/
     public static final String WX_MA_BARGAIN_TAKE = "wx.ma.bargain.take";
+    /** 秒杀相关 */
+    /** 秒杀宣传语 */
+    public static final String WX_MA_SECKILL_DOC="wx.ma.seckill.doc";
+    /**'秒杀'*/
+    public static final String WX_MA_SECKILL="wx.ma.seckill";
+
     /** 预售图片相关*/
     /**"定金膨胀"四个字*/
     public static final String WX_MA_PRESALE_SHARE_INFO = "wx.ma.presale.share.info";

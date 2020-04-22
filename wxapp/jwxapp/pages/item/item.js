@@ -273,7 +273,6 @@ global.wxPage({
               limitMaxNum,
               goodsImgs
             }
-
             let goodsInfo = {
               goodsSaleNum,
               labels,
@@ -319,8 +318,13 @@ global.wxPage({
             if (res.content.activity && res.content.activity.activityType === 10) {
               this.getPreSaleDiscount(res.content.activity.preSalePrdMpVos)
             }
+            // 获取促销信息
             this.getPromotions(res.content)
+
+            // 获取直播信息
             if (this.data.roomDetailMpInfo) this.getLiveInfo()
+
+            // [1,5,6,10] 会展示活动预告的活动
             resolve(res.content)
             // 购买记录
             this.setData({

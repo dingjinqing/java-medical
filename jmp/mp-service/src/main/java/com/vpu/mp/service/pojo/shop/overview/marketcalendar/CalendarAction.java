@@ -15,4 +15,13 @@ public class CalendarAction {
 	public static final Byte THREE = (byte) 3;
 	/** 已结束 */
 	public static final Byte FOUR = (byte) 4;
+	
+	public static final String ID = "id";
+	public static final String ACTNAME = "actName";
+	public static final String STARTTIME = "startTime";
+	public static final String ENDTIME = "endtime";
+	/** 1代表永久有效*/
+	public static final String ISPERMANENT = "isPermanent";
+	
+	public static final String INFO = "info";
 }

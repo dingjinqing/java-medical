@@ -90,6 +90,8 @@ export const cn = {
   point: '积分',
   giftPoint: '赠送积分值',
   moreSettings: '展开更多配置',
+  openConfigure: '展开更多配置',
+  closeConfigure: '收起更多配置',
   actShare: '活动分享',
   defaultStyle: '默认样式',
   customStyle: '自定义样式',
