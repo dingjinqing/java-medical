@@ -109,16 +109,29 @@
                     v-if="item.choiseActData.id !==-1"
                   >
                     <div class="shadow_setMain">
-                      <a href="javascript:;"><i class="iconfont iconbianji"></i></a>
-                      <a href="javascript:;"><i class="iconfont iconchakanxiangqing"></i></a>
-                      <a href="javascript:;"><i class="iconfont iconxiugai"></i></a>
-                      <a href="javascript:;"><i class="iconfont iconshanchu2"></i></a>
+                      <a
+                        @click="handleToAllHiddenIcon(1)"
+                        href="javascript:;"
+                      ><i class="iconfont iconbianji"></i></a>
+                      <a
+                        @click="handleToAllHiddenIcon(2)"
+                        href="javascript:;"
+                      ><i class="iconfont iconchakanxiangqing"></i></a>
+                      <a
+                        @click="handleToAllHiddenIcon(3)"
+                        href="javascript:;"
+                      ><i class="iconfont iconxiugai"></i></a>
+                      <a
+                        @click="handleToAllHiddenIcon(4)"
+                        href="javascript:;"
+                      ><i class="iconfont iconshanchu2"></i></a>
                     </div>
                   </div>
 
                   <img
                     :src="$imageHost+'/image/admin/dele_service.png'"
                     class="del_new_box"
+                    v-if="item.choiseActData.id ===-1"
                     @click="handleToClickDel(index)"
                   >
                 </li>
@@ -151,7 +164,9 @@
       :visible.sync="delDialogVisible"
       width="20%"
     >
-      <div style="text-align:center;padding-top:20px">确认删除？</div>
+      <div style="text-align:center;padding-top:20px;line-height:20px">
+        {{isClickIconDel?'是否确认删除本活动？活动删除后关联的营销活动不会删除，如需修改对应活动可在营销管理中处理':'确认删除？'}}
+      </div>
       <span
         slot="footer"
         class="dialog-footer"
@@ -224,6 +239,7 @@
           class="version-manage-table"
           header-row-class-name="tableClss"
           :data="tableData"
+          ref="singleTable"
           border
           highlight-current-row
           @current-change="handleCurrentChange"
@@ -447,7 +463,9 @@ export default {
         }
       ],
       chioseDetailVal: '',
-      clickChoiseIndex: '' // 记录点击得选择活动项index
+      clickChoiseIndex: '', // 记录点击得选择活动项index
+      isClickIconDel: false, // 是否是点击的隐藏icon删除
+      isClickIconChoiseAct: false // 是否是点击的隐藏icon重新选择活动
     }
   },
   mounted () {
@@ -493,6 +511,7 @@ export default {
     // 删除icon点击
     handleToClickDel (index) {
       this.delIndex = index
+      this.isClickIconDel = false
       this.delDialogVisible = true
     },
     // 二次删除确定
@@ -503,7 +522,9 @@ export default {
     // 选择具体活动
     handleToChoiseDetail (item, index) {
       this.clickChoiseIndex = index
+      this.isClickIconChoiseAct = false
       this.detailActVisible = true
+      this.$refs.singleTable.setCurrentRow()
     },
     // 选择具体活动弹窗确定事件
     handleToChoiseDetilSure () {
@@ -526,6 +547,25 @@ export default {
     // 点击保存
     handleToSave () {
 
+    },
+    // 选中活动四个icon综合处理
+    handleToAllHiddenIcon (flag) {
+      console.log(flag)
+      switch (flag) {
+        case 1:
+          break
+        case 2:
+          break
+        case 3:
+          this.isClickIconChoiseAct = true
+          this.detailActVisible = true
+          this.$refs.singleTable.setCurrentRow()
+          break
+        case 4:
+          this.isClickIconDel = true
+          this.delDialogVisible = true
+          break
+      }
     }
   }
 }
