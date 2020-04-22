@@ -104,6 +104,18 @@
                     </div>
 
                   </div>
+                  <div
+                    class="shadow_set"
+                    v-if="item.choiseActData.id !==-1"
+                  >
+                    <div class="shadow_setMain">
+                      <a href="javascript:;"><i class="iconfont iconbianji"></i></a>
+                      <a href="javascript:;"><i class="iconfont iconchakanxiangqing"></i></a>
+                      <a href="javascript:;"><i class="iconfont iconxiugai"></i></a>
+                      <a href="javascript:;"><i class="iconfont iconshanchu2"></i></a>
+                    </div>
+                  </div>
+
                   <img
                     :src="$imageHost+'/image/admin/dele_service.png'"
                     class="del_new_box"
@@ -519,6 +531,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/aliIcon/iconfont.scss";
 .addCalendarMain {
   padding: 10px;
   min-width: 100%;
@@ -658,6 +671,40 @@ export default {
           display: flex;
           align-items: center;
           padding-left: 22px;
+          .shadow_set {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            .shadow_setMain {
+              display: flex;
+              align-items: center;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0);
+              z-index: 3;
+              align-items: center;
+              justify-content: space-evenly;
+              transition: all 1s ease;
+              a {
+                text-decoration: none;
+                color: #fff;
+                i {
+                  font-size: 24px;
+                }
+              }
+            }
+          }
+
+          &:hover {
+            .shadow_set {
+              display: block;
+              .shadow_setMain {
+                background-color: rgba(0, 0, 0, 0.5);
+              }
+            }
+          }
         }
         .add_new_list {
           background-color: #f5f5f5;
