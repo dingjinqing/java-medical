@@ -69,6 +69,48 @@
             <div class="activityMain">
               <ul>
                 <li
+                  class="incident_info_item"
+                  v-for="(item,index) in haveChoiseData"
+                  :key="index"
+                >
+                  <img
+                    :src="item.imgUrl"
+                    class="info_left_img"
+                  >
+                  <div class="info_right_box">
+                    <p class="act_name_status">{{item.title}}
+                      <span
+                        v-if="item.choiseActData.id !==-1"
+                        class="act_status"
+                      >进行中</span>
+                    </p>
+                    <p
+                      v-if="item.choiseActData.id !==-1"
+                      class="act_info"
+                    >活动名称：{{item.choiseActData.actName}}</p>
+                    <p
+                      v-if="item.choiseActData.id !==-1"
+                      class="act_info"
+                    >有效期：{{item.choiseActData.dateTime}}</p>
+                    <div
+                      v-if="item.choiseActData.id ===-1"
+                      class="add_act_box"
+                    >
+                      <span class="create_act">新建活动</span>
+                      <span
+                        class="add_act"
+                        @click="handleToChoiseDetail(item,index)"
+                      >选择活动</span>
+                    </div>
+
+                  </div>
+                  <img
+                    :src="$imageHost+'/image/admin/dele_service.png'"
+                    class="del_new_box"
+                    @click="handleToClickDel(index)"
+                  >
+                </li>
+                <li
                   @click="handleToClick()"
                   class="incident_info_item add_new_list"
                 >
@@ -78,6 +120,12 @@
           </div>
         </el-form-item>
       </el-form>
+      <div class="footer">
+        <div
+          class="save"
+          @click="handleToSave()"
+        >{{$t('shopStyle.saveText')}}</div>
+      </div>
     </div>
     <!--事件说明弹窗-->
     <EventExplainDialog
@@ -85,6 +133,24 @@
       :backText="backText"
       @input="handleToGetRich"
     />
+    <!--二次删除确认弹窗-->
+    <el-dialog
+      title="提醒"
+      :visible.sync="delDialogVisible"
+      width="20%"
+    >
+      <div style="text-align:center;padding-top:20px">确认删除？</div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="delDialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="handleToDelSure()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
     <!--选择营销活动弹窗-->
     <el-dialog
       title="选择营销活动"
@@ -117,8 +183,9 @@
             <ul>
               <li
                 class="act_item"
-                v-for="(item,index) in activityData"
+                v-for="(item,index) in nowShowActivityData"
                 :key="index"
+                @click="handleToClickActivity(item)"
               >
                 <img
                   :src="item.imgUrl"
@@ -133,6 +200,55 @@
           </div>
         </el-tabs>
       </div>
+    </el-dialog>
+    <!--选择具体活动弹窗-->
+    <el-dialog
+      title="选择营销活动"
+      :visible.sync="detailActVisible"
+      width="45%"
+    >
+      <div class="choiseDetail">
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="tableData"
+          border
+          highlight-current-row
+          @current-change="handleCurrentChange"
+          style="width: 100%;margin-top:10px"
+        >
+          <el-table-column
+            prop="actName"
+            label="活动名称"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="dateTime"
+            label="有效期"
+            align="center"
+            width="200"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="活动状态"
+            align="center"
+          >
+          </el-table-column>
+        </el-table>
+      </div>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToChoiseDetilSure()"
+        >确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -211,10 +327,119 @@ export default {
             title: '分享有礼',
             tips: '分享商品获得优惠奖励，提升商品曝光度'
           }
+        ],
+        second: [
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/yhqlb.png?v=1.0.0',
+            title: '优惠券礼包',
+            tips: '用户一次获得多张优惠券'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/xsjj.png?v=1.0.0',
+            title: '限时降价',
+            tips: '设定商品在指定时间内降价促销'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/zfyl.png?v=1.0.0',
+            title: '支付有礼',
+            tips: '用户付款后引导参与营销互动'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/sdth.png?v=1.0.0',
+            title: '首单特惠',
+            tips: '用户首次下单享受降价优惠'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/djpz.png?v=1.0.0',
+            title: '定金膨胀',
+            tips: '预售定金翻倍，大促预热利器'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/ms.png?v=1.0.0',
+            title: '秒杀',
+            tips: '快速抢购引导用户更多购买'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/zp.png?v=1.0.0',
+            title: '赠品',
+            tips: '通过丰富的赠品策略，向用户发放赠品'
+          }
+        ],
+        third: [
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/mzmj.png?v=1.0.0',
+            title: '满折满减',
+            tips: '购物满一定金额享受一定优惠'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/dbykj.png?v=1.0.0',
+            title: '打包一口价',
+            tips: '多件商品一口价打包售卖'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/jjg.png?v=1.0.0',
+            title: '加价购',
+            tips: '购买指定商品满一定金额加价换购'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/mby.png?v=1.0.0',
+            title: '满包邮',
+            tips: '购物包邮'
+          }
+        ],
+        fourth: [
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
+            title: '积分兑换',
+            tips: '使用积分兑换商品'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/kpyl.png?v=1.0.0',
+            title: '开屏有礼（原活动有礼）',
+            tips: '用户来到小程序引导参与营销互动'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/pjyl.png?v=1.0.0',
+            title: '评价有礼',
+            tips: '引导用户评价商品，参与营销活动'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/cp.png?v=1.0.0',
+            title: '测评',
+            tips: '兴趣测评，让你更了解用户'
+          }
         ]
       },
-      nowShowActivityData: []
+      nowShowActivityData: [], // 当前选择营销活动弹窗展示的活动内容
+      haveChoiseData: [], // 已经选出的活动数据
+      delDialogVisible: false,
+      detailActVisible: false, // 选择具体活动弹窗flag
+      tableData: [
+        {
+          actName: '腾飞测试1',
+          dateTime: '2020-04-20至2020-04-24',
+          status: '进行中',
+          id: 1
+        },
+        {
+          actName: '腾飞测试2',
+          dateTime: '2020-04-20至2020-04-24',
+          status: '进行中',
+          id: 2
+        },
+        {
+          actName: '腾飞测试3',
+          dateTime: '2020-04-20至2020-04-24',
+          status: '进行中',
+          id: 3
+        }
+      ],
+      chioseDetailVal: '',
+      clickChoiseIndex: '' // 记录点击得选择活动项index
     }
+  },
+  mounted () {
+    this.nowShowActivityData = this.activityData[this.activeName]
   },
   methods: {
     // 点击事件说明编辑
@@ -233,6 +458,62 @@ export default {
     // 选择营销活动弹窗切换
     handleClick (tab, event) {
       console.log(tab, event)
+      this.nowShowActivityData = this.activityData[tab.name]
+    },
+    // 点击营销活动弹窗的项
+    handleToClickActivity (item) {
+      // haveChoiseData
+      let { imgUrl, title } = item
+      console.log(item)
+      let obj = {
+        imgUrl: imgUrl,
+        title: title,
+        choiseActData: {
+          id: -1,
+          status: '',
+          actName: '',
+          dateTime: ''
+        }
+      }
+      this.haveChoiseData.push(obj)
+      this.choiseActivity = false
+    },
+    // 删除icon点击
+    handleToClickDel (index) {
+      this.delIndex = index
+      this.delDialogVisible = true
+    },
+    // 二次删除确定
+    handleToDelSure () {
+      this.haveChoiseData.splice(this.delIndex, 1)
+      this.delDialogVisible = false
+    },
+    // 选择具体活动
+    handleToChoiseDetail (item, index) {
+      this.clickChoiseIndex = index
+      this.detailActVisible = true
+    },
+    // 选择具体活动弹窗确定事件
+    handleToChoiseDetilSure () {
+      // this.chioseDetailVal
+      let { id, actName, dateTime, status } = this.chioseDetailVal
+      let obj = {
+        id: id,
+        status: status,
+        actName: actName,
+        dateTime: dateTime
+      }
+      this.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
+      this.detailActVisible = false
+    },
+    // 具体活动表格选中
+    handleCurrentChange (val) {
+      console.log(val)
+      this.chioseDetailVal = val
+    },
+    // 点击保存
+    handleToSave () {
+
     }
   }
 }
@@ -290,6 +571,80 @@ export default {
         font-size: 14px;
       }
       .activityMain {
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          .incident_info_item {
+            width: 358px;
+            height: 96px;
+            background-color: #f2f6ff;
+            position: relative;
+            min-width: 0;
+            margin-bottom: 20px;
+            margin-right: 16px;
+            border: solid 1px #d9e4ff;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            padding-left: 22px;
+            .del_new_box {
+              position: absolute;
+              right: -9px;
+              top: -7px;
+              cursor: pointer;
+            }
+            .info_left_img {
+              width: 50px;
+              height: 50px;
+              margin-right: 19px;
+            }
+            .info_right_box {
+              flex: 1;
+              display: flex;
+              flex-flow: column;
+              .act_status {
+                color: #f29b16;
+                font-size: 12px;
+                display: inline-block;
+                margin-left: 10px;
+              }
+              .act_info {
+                font-size: 12px;
+                color: #666;
+              }
+              .act_name_status {
+                font-size: 14px;
+                margin-bottom: 10px;
+              }
+              .add_act_box {
+                line-height: 28px;
+                .create_act {
+                  width: 66px;
+                  height: 28px;
+                  background-color: #5a8bff;
+                  border-radius: 2px;
+                  text-align: center;
+                  font-size: 12px;
+                  color: #fff;
+                  display: inline-block;
+                  cursor: pointer;
+                }
+                .add_act {
+                  width: 66px;
+                  height: 28px;
+                  background-color: #5a8bff;
+                  border-radius: 2px;
+                  text-align: center;
+                  font-size: 12px;
+                  color: #fff;
+                  display: inline-block;
+                  cursor: pointer;
+                  margin-left: 10px;
+                }
+              }
+            }
+          }
+        }
         .incident_info_item {
           width: 358px;
           height: 96px;
@@ -372,6 +727,46 @@ export default {
         }
       }
     }
+  }
+  .footer {
+    background: #f8f8fa;
+    border-top: 1px solid #f2f2f2;
+    text-align: center;
+    position: fixed;
+    z-index: 2;
+    bottom: 0;
+    padding: 10px 0;
+    left: 0;
+    right: 0;
+    margin-right: 10px;
+  }
+  .save {
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    border: none;
+    background: #5a8bff;
+    color: #fff;
+    margin: auto;
+    cursor: pointer;
+  }
+  /deep/ .tableClss th {
+    background-color: #f5f5f5;
+    border: none;
+    height: 36px;
+    font-weight: bold;
+    color: #000;
+    padding: 8px 10px;
+  }
+  .dialog-footer {
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .choiseDetail {
+    min-height: 308px;
+    overflow: auto;
   }
 }
 </style>
