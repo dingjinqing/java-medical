@@ -12,7 +12,7 @@ export const en = {
   }],
   newMicroPage: 'New micro page',
   titleTips: 'The current version has no flagship version, and there is no limit to micro pages',
-  hiddenTips: 'The experience version can create up to 5 micro pages, the basic class can create up to 5 micro pages, the advanced version can create up to 50 micro pages, and the flagship version does not limit the number of micro pages',
+  hiddenTips: 'The experience version can create up to 20 micro pages, the basic class can create up to 0 micro pages, the advanced version can create up to 20 micro pages, and the flagship version does not limit the number of micro pages',
   more: 'More',
   pageName: 'page name',
   placeholderText: 'Please enter a page name',
