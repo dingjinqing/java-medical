@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,6 +294,82 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 });
             }
         }
+        //折扣总金额
+        BigDecimal totalReductionMoney=BigDecimal.ZERO;
+        //满减金额计算
+        for (Map.Entry<Integer, List<FullReductionGoodsCartBo>> entry : ruleCartIdMap.entrySet()) {
+            Integer activityId = entry.getKey();
+            List<FullReductionGoodsCartBo> goodsList = entry.getValue();
+            CartActivityInfo  fullReduction = goodsList.get(0).getFullReduction();
+            CartActivityInfo.FullReductionRule fullReductionRule = goodsList.get(0).getFullReductionRule();
+            //总数量
+            int totalNum = goodsList.stream().mapToInt(FullReductionGoodsCartBo::getNum).sum();
+            //总金额
+            BigDecimal totalMoney = goodsList.stream().map(FullReductionGoodsCartBo::getMoney).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal reduceMoney=BigDecimal.ZERO;
+            /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
+            switch (fullReduction.getFullReduction().getFullReductiontype()) {
+                case 1:
+                    if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
+                        if (fullReductionRule.getAmount()<totalNum){
+                            int time = totalNum / fullReductionRule.getAmount();
+                            reduceMoney = fullReductionRule.getReduceMoney().multiply(BigDecimal.valueOf(time));
+                            log.info("符合每满{}件,减{}元,{}件,减{}元",fullReductionRule.getAmount(),fullReductionRule.getReduceMoney(),totalNum,reduceMoney);
+                        }
+                    }else {
+                        if (fullReductionRule.getFullMoney().compareTo(totalMoney)<=0){
+                            BigDecimal time = totalMoney.divide(fullReductionRule.getFullMoney(), 0, BigDecimal.ROUND_DOWN);
+                            reduceMoney = time.multiply(fullReductionRule.getReduceMoney());
+                            log.info("符合每满{}元,减{}元,共{}元,减{}元",fullReductionRule.getFullMoney(),fullReductionRule.getAmount(),totalMoney,reduceMoney);
+                        }
+                    }
+                    break;
+                case 2://满减
+                    if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
+                        if (fullReductionRule.getAmount()<totalNum){
+                            log.info("符合满{}件减{}元,件数{},减{}元",fullReductionRule.getAmount(),fullReductionRule.getReduceMoney(),totalNum,fullReductionRule.getReduceMoney());
+                            reduceMoney =fullReductionRule.getReduceMoney();
+                        }
+                    }else {
+                        if (fullReductionRule.getFullMoney().compareTo(totalMoney)<=0){
+                            log.info("符合满{}元减{}元,共{}元,减{}",fullReductionRule.getFullMoney(),fullReductionRule.getReduceMoney(),totalMoney,fullReductionRule.getReduceMoney());
+                            reduceMoney =fullReductionRule.getReduceMoney();
+                        }
+                    }
+                    break;
+                case 3://3满折
+                    if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
+                        if (fullReductionRule.getAmount()<totalNum){
+                            log.info("符合满{}件打{}折,件数{},减{}元",fullReductionRule.getAmount(),fullReductionRule.getReduceMoney(),totalNum,fullReductionRule.getReduceMoney());
+                            reduceMoney =fullReductionRule.getDiscount().multiply(totalMoney);
+                        }
+                    }else {
+                        if (fullReductionRule.getFullMoney().compareTo(totalMoney)<=0){
+                            log.info("符合满{}元打{}折,共{}元,减{}",fullReductionRule.getFullMoney(),fullReductionRule.getReduceMoney(),totalMoney,fullReductionRule.getReduceMoney());
+                            reduceMoney =fullReductionRule.getDiscount().multiply(totalMoney);
+                        }
+                    }
+                    break;
+                case 4:
+                    if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
+                        if (fullReductionRule.getAmount()<totalNum){
+                            log.info("符合满{}件打{}折,件数{},减{}元",fullReductionRule.getAmount(),fullReductionRule.getReduceMoney(),totalNum,fullReductionRule.getReduceMoney());
+                            FullReductionGoodsCartBo goods = goodsList.get(fullReductionRule.getAmount() - 1);
+                            reduceMoney=fullReductionRule.getDiscount().multiply(goods.getMoney());
+                        }
+                    }else {
+                        if (fullReductionRule.getFullMoney().compareTo(totalMoney)<=0){
+                            log.info("符合满{}元打{}折,共{}元,减{}",fullReductionRule.getFullMoney(),fullReductionRule.getReduceMoney(),totalMoney,fullReductionRule.getReduceMoney());
+                            FullReductionGoodsCartBo goods = goodsList.get(fullReductionRule.getAmount() - 1);
+                            reduceMoney=fullReductionRule.getDiscount().multiply(goods.getMoney());
+                        }
+                    }
+                    break;
+
+            }
+            totalReductionMoney=totalReductionMoney.add(reduceMoney);
+        }
+        cartBo.setFullReductionPrice(totalReductionMoney);
         //国际化
         fullReductionProcessorDao.internationalMessage(cartBo);
     }
