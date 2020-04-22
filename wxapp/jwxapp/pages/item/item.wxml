@@ -14,9 +14,11 @@
 <view class="body">
   <include src="../common/header.wxml" />
   <view class="main-container" wx:if="{{goodsInfo}}">
+
     <!-- 分销邀请人信息 -->
     <v-invite-notice invite-id="{{inviteId}}" />
     <!-- 商品图片 -->
+
     <view class="goods-image">
       <view class="live-tips" wx:if="{{specParams.goodsNumber && roomDetailMpInfo && filter.includes([101,102],liveStatus) && showLive}}">
        <view class="live-avatar-content">
@@ -30,8 +32,10 @@
       <view class="sell-out" wx:if="{{!specParams.goodsNumber}}">已售罄</view>
       <v-goods-swiper goods-media="{{goodsMediaInfo}}" />
     </view>
+
     <!-- actBar 活动倒计时价格等 -->
     <v-act-content act-bar-info="{{actBarInfo}}" />
+
     <!-- 限时降价窗口 -->
     <view class="reduce-price-act-bar" wx:if="{{filter.includes([6,	98],goodsInfo.activity.activityType)}}" style="background-color:{{somColor}};color:{{comColor}};{{goodsInfo.activity.actState === 3 ? 'justify-content: space-between;' : 'justify-content: center;'}}">
       <block wx:if="{{goodsInfo.activity.actState === 3}}">
@@ -48,6 +52,7 @@
         <view class="reduce-end-info">限时降价结束时间：{{goodsInfo.activity.currentEndTimestamp}}</view>
       </block>
     </view>
+
     <!-- 商品信息 -->
     <view class="goods-info">
       <view class="goods-info_top">
@@ -160,8 +165,10 @@
     <view class="scoreRedeem" wx:if="{{goodsInfo.activity.activityType === 4}}">
       您当前拥有的积分总数为：{{goodsInfo.activity.userScore}}积分
     </view>
+
     <!-- 分销信息 -->
     <v-distribution activity="{{specParams.activity}}" distribution="{{goodsDistribution}}" price="{{goodsInfo.singleRealMaxPrice}}" goods-price="{{goodsInfo.prdRealPrice}}" goods-id="{{goodsInfo.goodsId}}"/>
+
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{deliverPlace}}">
       <view class="flex_box">
@@ -169,8 +176,13 @@
         <view class="item_middle">{{deliverPlace}}</view>
       </view>
     </view>
+
     <!-- 优惠券&促销信息 -->
     <v-coupon-promotion wx:if="{{!filter.includes([1,3,4,8,5,10],specParams.activity.activityType)}}" coupon-list="{{couponList}}" promotion="{{promotionInfo}}" goods-gifts="{{goodsGifts}}" />
+
+    <!-- 选择地址 -->
+    <v-address-choose />
+
     <!-- 选择规格（包含无规格情况） -->
     <v-sel-spec products-info="{{specParams}}" can-buy="{{canBuy}}" bindproduct="getProduct" bindgetProductInfo="getProductInfo" limit-info="{{limitInfo}}" show="{{showSpec}}" bind:close="bindCloseSpec" trigger-button="{{triggerButton}}" room-id="{{roomId}}">
       <!-- 服务规则 -->
@@ -188,6 +200,7 @@
       </view>
       <view class="item_line" slot="service-promises" wx:if="{{pledgeInfo.pledgeSwitch && pledgeInfo.pledgeListVo.length > 0}}"></view>
     </v-sel-spec>
+
     <!-- 拼团提示 -->
     <block wx:if="{{specParams.activity.activityType === 1}}">
       <view class="flex_outside_box" wx:if="{{ groupBuyListMpVos.length > 0 }}">
@@ -218,6 +231,7 @@
         </block>
       </view>
     </block>
+
     <!-- 拼团|砍价规则提示 -->
     <block wx:if="{{filter.includes([1,3,8],specParams.activity.activityType)}}">
       <view class="flex_outside_box">
@@ -247,12 +261,16 @@
         <view>开奖时间：如未中奖，将全额退款至原支付账户</view>
       </view>
     </block>
+
     <!-- 用户评价 -->
     <v-comment comment="{{comment}}" goods-id="{{goodsInfo.goodsId}}"/>
+
     <!-- 商品详情 -->
     <v-goods-detail goods-desc-info="{{goodsDescInfo}}" />
+
     <!-- 推荐商品 -->
     <v-recommend id="recommend" pageName="item" />
+    
     <!-- 购买记录  -->
     <v-purchase_record goodsRecords="{{goodsRecords}}"  />
   </view>
