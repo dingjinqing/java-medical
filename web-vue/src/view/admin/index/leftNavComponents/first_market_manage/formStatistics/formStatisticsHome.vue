@@ -17,6 +17,7 @@
             <el-button
               type="primary"
               size="small"
+              @click="handleToClickMore()"
             >{{$t('formStatisticsHome.learnMore')}}</el-button>
           </div>
         </div>
@@ -463,6 +464,12 @@ export default {
     // 当前页发生变化
     handleDetailCurrentChange () {
       this.initData()
+    },
+    // 点击了解更多
+    handleToClickMore () {
+      // this.$router.push({
+
+      // })
     }
   }
 }
