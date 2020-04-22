@@ -521,6 +521,7 @@
             <el-form-item
               :label="$t('promoteList.actShare') + '：'"
               prop=""
+              :required="true"
             >
               <div>
                 <el-radio
