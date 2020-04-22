@@ -128,10 +128,10 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
         }
         if (param.getStartTime() != null) {
-            selectConditon = selectConditon.and(ppd.START_TIME.greaterThan(param.getStartTime()));
+            selectConditon = selectConditon.and(ppd.START_TIME.ge(param.getStartTime()));
         }
         if (param.getEndTime() != null) {
-            selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
+            selectConditon = selectConditon.and(ppd.END_TIME.le(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
@@ -153,7 +153,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
+            vo.setCategory(Util.getActStatus(vo.getStatus().equals(FLAG_ONE) ? (byte)0 : (byte)1,vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -452,8 +452,6 @@ public class IncreasePurchaseService extends ShopBaseService {
             .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
             .where(og.ACTIVITY_RULE.greaterThan(0))
             .and(buildRedemptionDetailOption(param))
-            .and(og.ACTIVITY_ID.eq(param.getActivityId()))
-            .and(og.ACTIVITY_RULE.gt(0))
             .groupBy(og.ORDER_SN).having(sum(og.GOODS_NUMBER).eq(BigDecimal.valueOf(param.getRedemptionNum())))
             .orderBy(oi.CREATE_TIME);
 
@@ -478,7 +476,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 构建换购明细查询条件
      */
     private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
-        Condition baseCondition = og.ACTIVITY_ID.notEqual(0);
+        Condition baseCondition = and(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_RULE.gt(0));
         if (StringUtils.isNotEmpty(param.getNickName())) {
             baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
         }
