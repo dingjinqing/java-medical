@@ -208,7 +208,7 @@ export default {
             data[index].people.push(`${this.$t('couponGive.priceLess')}${item.maxAvePrice}`)
           }
           if (data[index].obj.point_start_time != null && data[index].obj.point_end_time != null) {
-            data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_start_time}${this.$t('couponGive.loginRecord')}`)
+            data[index].people.push(`${item.obj.point_start_time}-${item.obj.point_end_time}${this.$t('couponGive.loginRecord')}`)
           }
         }
         console.log(item.people.join(`<br/>`))
