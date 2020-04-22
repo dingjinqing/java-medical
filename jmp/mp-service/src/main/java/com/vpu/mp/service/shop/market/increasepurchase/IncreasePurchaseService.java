@@ -120,8 +120,8 @@ public class IncreasePurchaseService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
                 break;
         }
-        Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record9<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte, Timestamp>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG,ppd.CREATE_TIME).from(ppd).where(categoryConditon).asTable("ppd");
 
         Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         if (StringUtils.isNotEmpty(param.getName())) {
@@ -146,9 +146,9 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
-        SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
-            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
-        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
+        SelectConditionStep<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Timestamp>> resultStep = db().
+            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS,ppd.CREATE_TIME).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
+        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep.orderBy(ppd.LEVEL.desc(),ppd.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
