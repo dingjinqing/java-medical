@@ -313,7 +313,9 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods2"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -326,6 +328,7 @@
             <el-table
               :data="purchase_table2"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -346,7 +349,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -365,7 +371,9 @@
           <div style="margin_top:10px">
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods3"
+              v-if="!queryParam.purchaseId"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择商品弹窗-->
             <ChoosingGoods
@@ -378,6 +386,7 @@
             <el-table
               :data="purchase_table3"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -398,7 +407,10 @@
                 :label="$t('purchase.goodsSupply')"
               >
               </el-table-column>
-              <el-table-column :label="$t('purchase.opration')">
+              <el-table-column
+                :label="$t('purchase.opration')"
+                v-if="!queryParam.purchaseId"
+              >
                 <template slot-scope="{ row }">
                   <el-link
                     type="primary"
@@ -851,19 +863,19 @@ export default {
     getPurchaseRules () {
       let rules = []
       if (this.rule_num >= 1) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule1.productId.join()
+        let rule = Object.assign({}, this.purcahse_rule1)
+        rule.productId = rule.productId.join(',')
         rules.push(rule)
       }
       if (this.rule_num >= 2) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule2.productId.join()
-        rules.push(this.purcahse_rule2)
+        let rule = Object.assign({}, this.purcahse_rule2)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       if (this.rule_num >= 3) {
-        let rule = this.purcahse_rule1
-        rule.productId = this.purcahse_rule3.productId.join()
-        rules.push(this.purcahse_rule3)
+        let rule = Object.assign({}, this.purcahse_rule3)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       return rules
     },
