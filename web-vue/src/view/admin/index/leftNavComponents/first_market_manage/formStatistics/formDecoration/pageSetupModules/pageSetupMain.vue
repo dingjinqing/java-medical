@@ -44,7 +44,7 @@
           <div class="timeTitle">{{$t('formDecorationHome.endTime')}}</div>
           <el-date-picker
             size="small"
-            v-model="ruleForm.start_time"
+            v-model="ruleForm.end_time"
             type="datetime"
             default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
@@ -545,13 +545,16 @@ export default {
       width: 150px;
     }
     .fixedDate {
-      width: 280px;
+      width: 310px;
       background: #fff;
       padding: 10px;
       border: 1px solid #ddd;
       font-size: 13px;
       .timeContainer {
         display: flex;
+        /deep/ .el-input {
+          width: 200px !important;
+        }
         .timeTitle {
           display: flex;
           align-items: center;

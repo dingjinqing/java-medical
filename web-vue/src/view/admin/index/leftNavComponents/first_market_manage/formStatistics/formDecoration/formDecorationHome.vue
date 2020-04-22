@@ -857,7 +857,17 @@ export default {
       if (!judgeFlag) return
       // 处理数据结构
       let lastData = this.handleToSaveModulesData(saveMosulesData, this.pageSetData, this.cur_idx)
-      console.log(lastData)
+      console.log(lastData, this.pageSetData)
+
+      // 特殊校验post_times
+      if ((Number(this.pageSetData.total_times) < Number(this.pageSetData.day_times)) && this.pageSetData.post_times === '0') {
+        this.$message.error({
+          message: '累计次数必须大于每天次数',
+          showClose: true
+        })
+        return
+      }
+      // 特殊校验结束
       // 保存处理
       if (index === 0) {
         lastData.status = 0
@@ -871,6 +881,9 @@ export default {
             this.$message.success({
               message: '保存成功',
               showClose: true
+            })
+            this.$router.push({
+              name: 'form_decoration'
             })
           } else {
             this.$message.error({
@@ -890,6 +903,9 @@ export default {
             this.$message.success({
               message: '保存成功',
               showClose: true
+            })
+            this.$router.push({
+              name: 'form_decoration'
             })
           } else {
             this.$message.error({
