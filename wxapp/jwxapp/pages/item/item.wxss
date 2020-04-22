@@ -323,3 +323,20 @@
   top: 0;
   z-index: 1;
 }
+.act-teasert{
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+  flex: 1;
+}
+.act-teasert > .act-tag{
+  padding: 0 10rpx;
+  margin-right: 10rpx;
+  border: 2rpx solid;
+  border-radius: 6rpx;
+}
+.act-teasert > .act-price{
+  flex: 1;
+}

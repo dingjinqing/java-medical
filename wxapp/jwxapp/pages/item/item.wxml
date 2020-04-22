@@ -148,6 +148,14 @@
           <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image>
         </view>
       </view>
+      <view class="flex-wrap" >
+        <view class="act-teasert" style="background-color:{{speColor}};color:{{comColor}};">
+          <view class="act-tag">秒杀</view>
+          <view class="act-type">秒杀价：</view>
+          <view class="act-price">￥10.00起</view>
+          <view class="act-time">05.01 15:04:10开始</view>
+        </view>
+      </view>
     </view>
     <view class="scoreRedeem" wx:if="{{goodsInfo.activity.activityType === 4}}">
       您当前拥有的积分总数为：{{goodsInfo.activity.userScore}}积分
