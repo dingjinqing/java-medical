@@ -153,7 +153,7 @@ public class IncreasePurchaseService extends ShopBaseService {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(param.getCategory());
+            vo.setCategory(Util.getActStatus(vo.getStatus(),vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -452,6 +452,8 @@ public class IncreasePurchaseService extends ShopBaseService {
             .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
             .where(og.ACTIVITY_RULE.greaterThan(0))
             .and(buildRedemptionDetailOption(param))
+            .and(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_RULE.gt(0))
             .groupBy(og.ORDER_SN).having(sum(og.GOODS_NUMBER).eq(BigDecimal.valueOf(param.getRedemptionNum())))
             .orderBy(oi.CREATE_TIME);
 
