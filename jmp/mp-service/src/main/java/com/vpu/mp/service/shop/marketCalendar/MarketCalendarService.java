@@ -4,10 +4,7 @@ import static com.vpu.mp.db.shop.tables.MarketCalendar.MARKET_CALENDAR;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +12,6 @@ import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.ls.LSInput;
 
 import com.google.common.base.Objects;
 import com.vpu.mp.db.shop.tables.records.MarketCalendarRecord;
@@ -338,6 +334,8 @@ public class MarketCalendarService extends ShopBaseService {
 			break;
 		case VersionName.SUB_4_ASSESS:
 			// 这个功能还没写
+			break;
+		default:
 			break;
 		}
 		return new ActInfoVo(actInfo, list);
