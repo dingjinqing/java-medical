@@ -413,9 +413,9 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
         for (Map.Entry<Integer, List<FullReductionGoodsCartBo>> entry : ruleCartIdMap.entrySet()) {
             Integer ruleId = entry.getKey();
             List<FullReductionGoodsCartBo> fullReductionGoodsList = entry.getValue();
-            Optional<CartActivityInfo> rule = cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
-            if (rule.isPresent()) {
-                CartActivityInfo cartActivityInfo = rule.get();
+            Optional<CartActivityInfo> fullReductionInfo = cartActivityInfos.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(ruleId)).findFirst();
+            if (fullReductionInfo.isPresent()) {
+                CartActivityInfo cartActivityInfo = fullReductionInfo.get();
                 CartActivityInfo.FullReduction fullReduction = cartActivityInfo.getFullReduction();
                 CartActivityInfo.FullReductionRule fullReductionRule = fullReduction.getRules().get(0);
                 /**活动类型 1每满减 2满减 3满折 4仅第X件打折*/
@@ -464,6 +464,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 }
                 for (FullReductionGoodsCartBo goods : fullReductionGoodsList) {
                     goods.setFullReductionRule(fullReductionRule);
+                    goods.setFullReduction(fullReductionInfo.get());
                 }
             }
         }

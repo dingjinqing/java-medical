@@ -39,4 +39,5 @@ public class FullReductionGoodsCartBo {
     private BigDecimal money;
 
     private CartActivityInfo.FullReductionRule fullReductionRule;
+    private CartActivityInfo  fullReduction;
 }
