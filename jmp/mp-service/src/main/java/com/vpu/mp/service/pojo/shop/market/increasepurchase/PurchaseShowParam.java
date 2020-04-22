@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 @Data
 public class PurchaseShowParam {
-    /** 加价购页面分页展示分模块，进行中8 ，未开始4，已过期2，已停用1，所有0 ；筛选优先级高于下面的条件*/
+    /** 加价购页面分页展示分模块，进行中1 ，未开始2，已过期3，已停用4，所有0 ；筛选优先级高于下面的条件*/
     private Byte category;
     /** 活动名称 */
     private String name;
