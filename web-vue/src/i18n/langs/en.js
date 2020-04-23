@@ -589,6 +589,11 @@ import {
 import {
   en as actionRecord
 } from './views/admin_new/en/index/basicSettings/actionRecord/actionRecordEn'
+// 版本升级与续费
+import {
+  en as versionUpgrade
+} from './views/admin_new/en/index/basicSettings/versionUpgrade/versionUpgradeEn'
+
 const en = {
   messages: {
     lang: 'English',
@@ -1115,6 +1120,7 @@ const en = {
   pictureNavigation, // 页面装修图片导航模块
   authRoleList, // 店铺权限
   actionRecord, // 操作记录
+  versionUpgrade, // 版本升级与续费
   commoditySearch, // 小程序页面装修商品搜索模块
   membershipCard, // 小程序页面装修会员卡模块
   bargain, // 小程序装修砍价模块

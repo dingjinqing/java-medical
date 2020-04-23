@@ -44,10 +44,12 @@
             <el-button
               type="primary"
               size="mini"
+              @click="goVersionUpgrade"
             >{{ this.$t('overview.renew') }}</el-button>
             <el-button
               type="primary"
               size="mini"
+              @click="goVersionUpgrade"
             >{{ this.$t('overview.upgrade') }}</el-button>
           </div>
         </div>
@@ -1560,8 +1562,13 @@ export default {
         name: name,
         params: obj
       })
+    },
+    // 版本升级或续费
+    goVersionUpgrade () {
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade'
+      })
     }
-
   },
   beforeDestroy () {
     // 清除定时器

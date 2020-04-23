@@ -41,7 +41,7 @@ public class PictorialImgPx {
      */
     public static final Color LINE_PRICE_COLOR = new Color(146, 146, 146);
 
-    public static final Color SHARE_IMG_RECT_INNER_COLOR = new Color(255, 241, 234);
+    public static final Color SHARE_IMG_RECT_INNER_COLOR = new Color(255, 238, 238);
 
 
     /**

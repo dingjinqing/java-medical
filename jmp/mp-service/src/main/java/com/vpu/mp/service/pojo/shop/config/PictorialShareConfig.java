@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.config;
 
+import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import lombok.Data;
 
 /**
@@ -26,4 +27,16 @@ public class PictorialShareConfig {
     private Byte shareImgAction;
     /** shareImgAction=2的时候起效果，分享显示的图片相对地址 */
     private String shareImg;
+
+    public static PictorialShareConfig createFromGoodsShareInfoConfig(GoodsSharePostConfig goodsSharePostConfig) {
+        PictorialShareConfig config = new PictorialShareConfig();
+        if (goodsSharePostConfig == null) {
+            return config;
+        }
+        config.setShareAction(goodsSharePostConfig.getShareAction());
+        config.setShareDoc(goodsSharePostConfig.getShareDoc());
+        config.setShareImg(goodsSharePostConfig.getShareImgPath());
+        config.setShareImgAction(goodsSharePostConfig.getShareImgAction());
+        return config;
+    }
 }

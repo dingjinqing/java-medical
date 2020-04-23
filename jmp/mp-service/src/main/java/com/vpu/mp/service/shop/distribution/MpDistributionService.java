@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.member.data.IndustryVo;
 import com.vpu.mp.service.pojo.shop.member.data.MarriageData;
 import com.vpu.mp.service.pojo.wxapp.distribution.*;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import org.joda.time.DateTime;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -431,4 +432,91 @@ public class MpDistributionService extends ShopBaseService{
         }
         return calculateMoney;
     }
+
+    /**
+     * 用户(分销员)之间建立绑定关系
+     * @param param
+     */
+    public void userBind(UserBindParam param){
+        //当前用户是否绑定邀请人
+        int inviteId = isBind(param);
+        if(inviteId > 0){
+            //判断已绑定邀请人是否为分销员
+            int isDistributor = isDistributor(param.getInviteId());
+            //是分销员，判断保护期是否有效
+            if(isDistributor == 1){
+               int isEffective = inviteProtectIsEffective(param.getUserId());
+               if(isEffective == 0){//不在有效保护期内，可以重新绑定
+                   //与当前邀请人建立绑定关系
+                   confirmUserBind(param);
+               }
+            }else{ //当前邀请人是普通用户，可以与当前用户建立邀请绑定
+                confirmUserBind(param);
+            }
+        }else{
+            //没有邀请绑定关系，可以与当前用户建立邀请绑定
+            confirmUserBind(param);
+        }
+    }
+
+    /**
+     * 确定用户与邀请人建立绑定关系
+     * @param param
+     */
+    public void confirmUserBind(UserBindParam param){
+        //邀请人是否为分销员
+        int isDistributor = isDistributor(param.getInviteId());
+        if(isDistributor == 1){//是分销员，需计算邀请保护期
+            //获取分销配置
+            DistributionParam cfg = this.distributionCfg.getDistributionCfg();
+            //邀请保护时间
+            Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
+            Date inviteProtectDate = new Date(protectDate.getTime());
+            db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+                .set(USER.INVITE_PROTECT_DATE,inviteProtectDate)
+                .set(USER.INVITE_TIME,Util.currentTimeStamp())
+                .where(USER.USER_ID.eq(param.getUserId())).execute();
+        }else{//不是分销员，直接建立绑定关系
+            db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+                .set(USER.INVITE_TIME,Util.currentTimeStamp())
+                .where(USER.USER_ID.eq(param.getUserId())).execute();
+        }
+    }
+
+    /**
+     * 用户是否已绑定邀请人
+     * @param param
+     * @return
+     */
+     public int isBind(UserBindParam param){
+         Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(param.getUserId())).fetchOne();
+         if(record != null)
+             return record.into(Integer.class);
+         else
+             return 0;
+    }
+
+    /**
+     * 用户是否为分销员
+     * @param userId
+     * @return
+     */
+    public int isDistributor(Integer userId){
+        int isDistributor =  db().select(USER.IS_DISTRIBUTOR).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(Integer.class);
+        return isDistributor;
+     }
+
+    /**
+     * 邀请保护时间是否有效
+     * @param userId
+     * @return 0：邀请保护失效；1：邀请保护有效
+     */
+     public int inviteProtectIsEffective(Integer userId){
+         UserRecord info = db().select(USER.INVITE_PROTECT_DATE).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
+         Timestamp nowDate = Util.currentTimeStamp();
+         if(nowDate.compareTo(info.getInviteProtectDate())>0)
+             return 0; //邀请保护失效
+         else
+             return 1;  //邀请保护有效
+     }
 }
