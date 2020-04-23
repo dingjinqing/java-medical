@@ -192,18 +192,18 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
             }
             if (CollectionUtils.isNotEmpty(activityInfo.getRecommendCatIds())) {
                 if (activityInfo.getRecommendCatIds().contains(goods.getCatId())) {
-                    logger().info("满折满减：指定普通分类满足,活动id:{}", activityInfo.getId());
+                    logger().info("满折满减：指定平台分类满足,活动id:{}", activityInfo.getId());
                     return true;
                 }
             }
             if (CollectionUtils.isNotEmpty(activityInfo.getRecommendSortIds())) {
-                if (activityInfo.getRecommendSortIds().contains(goods.getGoodsId())) {
+                if (activityInfo.getRecommendSortIds().contains(goods.getSortId())) {
                     logger().info("满折满减：指定商家分类满足,活动id:{}", activityInfo.getId());
                     return true;
                 }
             }
             if (CollectionUtils.isNotEmpty(activityInfo.getRecommendBrandIds())) {
-                if (activityInfo.getRecommendBrandIds().contains(goods.getGoodsId())) {
+                if (activityInfo.getRecommendBrandIds().contains(goods.getBrandId())) {
                     logger().info("满折满减：指定品牌满足,活动id:{}", activityInfo.getId());
                     return true;
                 }
