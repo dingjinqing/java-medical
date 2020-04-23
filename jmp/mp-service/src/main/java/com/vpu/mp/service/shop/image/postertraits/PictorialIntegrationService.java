@@ -119,7 +119,7 @@ public class PictorialIntegrationService extends ShopBaseService {
         } else if (param instanceof FirstSpecialShareInfoParam) {
             return firstSpecialPictorialService.getFirstSpecialPictorialInfo((FirstSpecialShareInfoParam) param);
         } else if(param instanceof SeckillShareInfoParam){
-            return null;
+            return seckillPictorialService.getSeckillPictorialInfo((SeckillShareInfoParam) param);
         } else {
             return normalGoodsPictorialService.getNormalGoodsPictorialInfo(param);
         }

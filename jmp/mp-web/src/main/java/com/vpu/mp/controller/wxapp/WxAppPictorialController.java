@@ -209,6 +209,15 @@ public class WxAppPictorialController extends WxAppBaseController  {
     }
 
     /**
+     * 获取秒杀活动海报图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/seckill/pictorial/info")
+    public JsonResult getSeckillPictorial(@RequestBody SeckillShareInfoParam param){
+        return getActivityPictorialInfo(param);
+    }
+    /**
      * 获取活动海报信息
      * @param param GoodsShareBaseParam
      * @return JsonResult content 为base64或 null
