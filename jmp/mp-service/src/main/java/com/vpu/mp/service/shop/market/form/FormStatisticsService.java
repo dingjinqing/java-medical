@@ -31,7 +31,6 @@ import com.vpu.mp.service.pojo.shop.market.form.*;
 import com.vpu.mp.service.pojo.shop.member.account.ScoreParam;
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.account.UserInfo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataParam;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataVo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessParam;
@@ -238,8 +237,7 @@ public class FormStatisticsService extends ShopBaseService {
         }
         try {
             // 获取用户头像
-            UserInfo userInfo = user.getUserInfo(userId);
-            BufferedImage userAvator = ImageIO.read(new URL(imageService.getImgFullUrl(userInfo.getUserAvatar())));
+            BufferedImage userAvator = ImageIO.read(new URL(imageService.getImgFullUrl(saas.shop.getShopAvatarById(getShopId()))));
             // 获取分享二维码
             ShareQrCodeVo qrCode = getQrCode(pageId);
             BufferedImage qrCodImg = ImageIO.read(new URL(imageService.getImgFullUrl(qrCode.getImageUrl())));
