@@ -551,6 +551,9 @@ public class CartService extends ShopBaseService {
         List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
         if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
             WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
+            if (param.getType().equals(WxAppAddGoodsToCartParam.CART_GOODS_NUM_TYPE_ADD)){
+                param.setGoodsNumber(cartGoods.getCartNumber()+param.getGoodsNumber());
+            }
             logger().info("购物车-修改商品{}数量{}", cartGoods.getGoodsName(), param.getGoodsNumber());
             if (param.getGoodsNumber() < cartGoods.getCartNumber()) {
                 logger().info("购物车-减少商品数量");
