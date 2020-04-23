@@ -129,7 +129,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
                 if (goods.getType() != null && goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS) && ruleMap.containsKey(goods.getExtendId())) {
                     logger().info("加价购-加价购商品:{},加价价格:{},数量:{}", goods.getGoodsName(), v.getPurchasePrice().getRule().getPurchasePrice().toString(),goods.getCartNumber());
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS);
-                    goods.setActivityId(goods.getExtendId());
+                    goods.setActivityId(rule.getActivityId());
                     goods.setPrdPrice(ruleMap.get(goods.getExtendId()).getPurchasePrice());
                     goods.setCartActivityInfos(null);
                     goodsNum+=goodsNum+goods.getCartNumber();
