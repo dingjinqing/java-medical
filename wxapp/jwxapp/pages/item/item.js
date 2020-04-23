@@ -746,9 +746,9 @@ global.wxPage({
         return data
       case '19':
         if (info.goodsAreaType === 1) {
-          data.desc = `购买“指定商品”`
-        } else {
           data.desc = `购买“全部商品”`
+        } else {
+          data.desc = `购买“指定商品”`
         }
         if (info.minPayMoney > 0) {
           data.desc += `且“订单金额满${info.minPayMoney}元”`
