@@ -120,18 +120,18 @@ public class IncreasePurchaseService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
                 break;
         }
-        Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record9<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte, Timestamp>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG,ppd.CREATE_TIME).from(ppd).where(categoryConditon).asTable("ppd");
 
         Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         if (StringUtils.isNotEmpty(param.getName())) {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
         }
         if (param.getStartTime() != null) {
-            selectConditon = selectConditon.and(ppd.START_TIME.greaterThan(param.getStartTime()));
+            selectConditon = selectConditon.and(ppd.START_TIME.ge(param.getStartTime()));
         }
         if (param.getEndTime() != null) {
-            selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
+            selectConditon = selectConditon.and(ppd.END_TIME.le(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
@@ -146,14 +146,14 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
-        SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
-            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
-        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
+        SelectConditionStep<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Timestamp>> resultStep = db().
+            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS,ppd.CREATE_TIME).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
+        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep.orderBy(ppd.LEVEL.desc(),ppd.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(param.getCategory());
+            vo.setCategory(Util.getActStatus(vo.getStatus().equals(FLAG_ONE) ? (byte)0 : (byte)1,vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -476,7 +476,8 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 构建换购明细查询条件
      */
     private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
-        Condition baseCondition = og.ACTIVITY_ID.notEqual(0);
+        Condition baseCondition = and(og.ACTIVITY_ID.eq(param.getActivityId()))
+            .and(og.ACTIVITY_RULE.gt(0));
         if (StringUtils.isNotEmpty(param.getNickName())) {
             baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
         }

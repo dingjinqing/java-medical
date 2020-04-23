@@ -205,8 +205,7 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         pictorialLog("pictorial", "mpQrcode:"+mpQrcode);
         BufferedImage qrCodeImage;
         try {
-//            qrCodeImage = ImageIO.read(new URL(mpQrcode));
-            qrCodeImage = ImageIO.read(new File("E:/qrcode.jpg"));
+            qrCodeImage = ImageIO.read(new URL(mpQrcode));
         } catch (IOException e) {
             pictorialLog("pictorial", "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
@@ -233,15 +232,6 @@ public class FirstSpecialPictorialService extends ShopBaseService {
         Integer textWidth = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getLargeFontSize()), realPriceText);
         int linePriceTextStartX = realPriceTextStartX+textWidth+ 10;
         ImageUtil.addFontWithLine(bgBufferedImage, linePriceTextStartX, imgPx.getPriceY()-2, param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString(), ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getLinePriceColor());
-
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(new File("E:/a.jpg"));
-            ImageIO.write(bgBufferedImage, "jpg", outputStream);
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         pictorialLog("pictorial", "转换base64");
         String base64 = ImageUtil.toBase64(bgBufferedImage);
