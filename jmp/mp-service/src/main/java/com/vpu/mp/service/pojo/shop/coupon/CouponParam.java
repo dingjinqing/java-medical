@@ -178,5 +178,16 @@ public class CouponParam {
      * 分裂优惠券可领券人数
      */
     private Integer receiveNum;
-
+    /**
+     * 是否领取优惠券用户打标签 0:否；1：是
+     */
+    private Byte coupon_tag;
+    /**
+     * 领取优惠券用户打标签id
+     */
+    private String coupon_tag_id;
+    /**
+     * 是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用
+     */
+    private Byte coupon_overlay;
 }

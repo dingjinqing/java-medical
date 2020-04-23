@@ -86,6 +86,12 @@ export default {
             imgUrl_h: this.$imageHost + '/image/system/icon_left/picture_space_h.png',
             span: '图片空间',
             routeName: 'picSpace'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/system/market_calendar.png',
+            imgUrl_h: this.$imageHost + '/image/system/market_calendar_h.png',
+            span: '营销日历',
+            routeName: 'marketingCalendar'
           }
         ],
         storeManagementMain: [
@@ -252,7 +258,7 @@ export default {
   },
   methods: {
     isShowHighLight (route, index) {
-      if (route.span === this.$route.meta.title) {
+      if (route.span === this.$route.meta.title || route.span === this.$route.meta.parentName) {
         return route.imgUrl_h
       } else if (this.hoverIndex > 0 && this.hoverIndex === index) {
         return route.imgUrl_h

@@ -1,6 +1,6 @@
 .filter {
   height: 100rpx;
-  background-color: #fff;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;

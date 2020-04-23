@@ -11,6 +11,7 @@ import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,9 @@ public class PictorialIntegrationService extends ShopBaseService {
     @Autowired
     private FirstSpecialPictorialService firstSpecialPictorialService;
 
+    @Autowired
+    private SeckillPictorialService seckillPictorialService;
+
     /**
      * 获取商品所有图片base64格式集合
      * @return
@@ -94,6 +98,8 @@ public class PictorialIntegrationService extends ShopBaseService {
             return reducePricePictorialService.getReducePriceShareInfo((ReducePriceShareInfoParam) param);
         } else if (param instanceof FirstSpecialShareInfoParam) {
             return firstSpecialPictorialService.getFirstSpecialShareInfo((FirstSpecialShareInfoParam) param);
+        } else if(param instanceof SeckillShareInfoParam){
+            return seckillPictorialService.getSeckillShareInfo((SeckillShareInfoParam) param);
         } else {
             return normalGoodsPictorialService.getNormalGoodsShareInfo(param);
         }
@@ -112,6 +118,8 @@ public class PictorialIntegrationService extends ShopBaseService {
             return reducePricePictorialService.getReducePricePictorialInfo((ReducePriceShareInfoParam) param);
         } else if (param instanceof FirstSpecialShareInfoParam) {
             return firstSpecialPictorialService.getFirstSpecialPictorialInfo((FirstSpecialShareInfoParam) param);
+        } else if(param instanceof SeckillShareInfoParam){
+            return seckillPictorialService.getSeckillPictorialInfo((SeckillShareInfoParam) param);
         } else {
             return normalGoodsPictorialService.getNormalGoodsPictorialInfo(param);
         }

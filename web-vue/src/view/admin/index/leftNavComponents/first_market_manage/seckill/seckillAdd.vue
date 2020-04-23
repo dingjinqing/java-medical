@@ -252,6 +252,37 @@
           >{{ $t('seckill.template') }}</el-radio>
         </el-form-item>
 
+        <el-form-item
+          label="同步打标签："
+          prop=""
+        >
+          <el-checkbox>给参与活动用户打标签</el-checkbox>
+          <span
+            class="el-icon-question"
+            style="color: #666;"
+          ></span>
+          <span
+            class="labelStyle"
+            @click="selectLabel"
+          >选择标签</span>
+          <div v-if="pickLabel.length > 0">
+            <p style="color: #999;">最多可设置3个标签</p>
+            <div
+              v-for="(item, index) in pickLabel"
+              :key="index"
+              class="labelContent"
+            >
+              {{item.value}}
+              <i
+                class="el-icon-close"
+                @click="deleteLabel(index)"
+                style="color: #999; margin-left: 3px;cursorL pointer;"
+              ></i>
+            </div>
+          </div>
+
+        </el-form-item>
+
         <el-form-item label="活动初始销量：">
           <!-- prop="limitAmount" -->
           <el-input-number
@@ -454,6 +485,14 @@
       @confrim="getProductdata"
     />
 
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="labelValue"
+    />
+
   </div>
 </template>
 <script>
@@ -470,7 +509,8 @@ export default {
     choosingGoods,
     actShare,
     ImageDalog,
-    seckillSpecDialog: () => import('./seckillSpecDialog')
+    seckillSpecDialog: () => import('./seckillSpecDialog'),
+    LabelDialog: () => import('@/components/admin/labelDialog')
   },
   props: ['isEdite', 'editId'],
   data () {
@@ -576,7 +616,11 @@ export default {
       // 选中商品id
       goodsIds: [],
       showSpecDialog: false,
-      productInfo: {}
+      productInfo: {},
+
+      labelDialogVisible: false, // 标签弹窗
+      pickLabel: [], // 选中标签列表
+      labelValue: [] // 选中标签id值
 
     }
   },
@@ -930,6 +974,29 @@ export default {
 
     cardIdBlur (e) {
       this.$refs['form'].validateField('cardId')
+    },
+
+    // 标签弹窗
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      this.pickLabel.splice(index, 1)
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
+    },
+
+    // 标签弹窗回调函数
+    resultLabelDatas (row) {
+      this.pickLabel = row
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
     }
 
   }
@@ -1014,5 +1081,21 @@ export default {
   text-align: center;
   color: red;
   line-height: 1;
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  display: inline-block;
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-right: 10px;
+  color: #666;
 }
 </style>

@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.market.MarketAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
@@ -30,6 +31,7 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
+import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.*;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
@@ -96,6 +98,7 @@ import org.jooq.Result;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -340,10 +343,22 @@ public class OrderReadService extends ShopBaseService {
 			//过滤主订单下被拆出的goods
 			orderInfo.filterMainOrderGoods(mainOrder, goods.get(mainOrder.getOrderId()));
 		}
+        mainOrder.setRebateList(getOrderRebateInfo(mainOrder));
 		return mainOrder;
 	}
 
-	/**
+    /**
+     * 售后中心退款订单显示订单简略信息
+     * @param orderSn
+     * @return
+     */
+    public OrderSimpleInfoVo getSimpleInfo(String orderSn) {
+        OrderInfoVo orderInfoVo = get(orderSn);
+        OrderSimpleInfoVo simple = new OrderSimpleInfoVo();
+        BeanUtils.copyProperties(orderInfoVo, simple);
+        return simple;
+    }
+    /**
 	 * 退货、款订单
 	 * @return
 	 */
@@ -900,6 +915,36 @@ public class OrderReadService extends ShopBaseService {
         return result;
     }
 
+    /**
+     * admin订单详情展示分销信息
+     * @param order
+     * @return
+     */
+    private List<OrderRebateVo> getOrderRebateInfo(OrderInfoVo order) {
+        if(order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
+            List<OrderRebateVo> rebateVos = orderGoodsRebate.getByOrderSn(order.getOrderSn());
+            for (OrderRebateVo vo: rebateVos) {
+                vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
+                vo.setCanRebateMoney(vo.getCanRebateTotalMoney());
+                vo.setCostPrice(vo.getCostPrice() == null ? BigDecimalUtil.BIGDECIMAL_ZERO : vo.getCostPrice());
+                DistributionStrategyParam strategy = Util.parseJson(vo.getFanliStrategy(), DistributionStrategyParam.class);
+                if(strategy != null) {
+                    if(strategy.getCostProtection() == YES) {
+                        BigDecimal temp;
+                        vo.setCanRebateMoney(
+                            (temp = BigDecimalUtil.subtrac(vo.getCanCalculateMoney(), vo.getCostPrice())).compareTo(BigDecimal.ZERO) > -1 ?
+                                BigDecimalUtil.multiply(temp, new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())) :
+                                BigDecimalUtil.BIGDECIMAL_ZERO);
+                    }
+                }
+                //分销员真实姓名展示优先级：提现申请填写信息>成为分销员申请表填写信息>用户信息
+            }
+            //排序
+            rebateVos.sort(Comparator.comparing(OrderRebateVo::getRebateUserId));
+            return rebateVos;
+        }
+        return null;
+    }
     /*********************************************************************************************************/
 
 	/**

@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -107,6 +108,16 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return getActivityShareInfo(param);
     }
 
+    /**
+     * 获取秒杀活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/seckill/share/info")
+    public JsonResult getSeckillShareInfo(@RequestBody SeckillShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
     private JsonResult getActivityShareInfo(GoodsShareBaseParam param) {
         WxAppSessionUser user = wxAppAuth.user();
         param.setUserId(user.getUserId());
@@ -197,6 +208,15 @@ public class WxAppPictorialController extends WxAppBaseController  {
         return getActivityPictorialInfo(param);
     }
 
+    /**
+     * 获取秒杀活动海报图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/seckill/pictorial/info")
+    public JsonResult getSeckillPictorial(@RequestBody SeckillShareInfoParam param){
+        return getActivityPictorialInfo(param);
+    }
     /**
      * 获取活动海报信息
      * @param param GoodsShareBaseParam

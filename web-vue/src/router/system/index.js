@@ -49,6 +49,23 @@ const routes = [{
       meta: {
         title: '图片空间'
       }
+    },
+    {
+      path: 'marketing_calendar',
+      component: () => import('@/view/system/index/leftNavComponents/overview/marketingCalendar/calendarMain'),
+      name: 'marketingCalendar',
+      meta: {
+        title: '营销日历'
+      }
+    },
+    {
+      path: 'add_event',
+      component: () => import('@/view/system/index/leftNavComponents/overview/marketingCalendar/addCalendarMain'),
+      name: 'addEvent',
+      meta: {
+        title: '添加事件',
+        parentName: '营销日历'
+      }
     }
   ]
 },

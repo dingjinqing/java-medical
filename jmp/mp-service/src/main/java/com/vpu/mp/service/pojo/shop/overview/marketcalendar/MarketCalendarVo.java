@@ -18,5 +18,7 @@ public class MarketCalendarVo {
 	private Timestamp createTime;
 	private Timestamp updateTime;
 	// 1未开始，2进行中，3失效，4已结束 CalendarAction
-	private Byte status;
+	private Byte eventStatus;
+	// 还有多久开始
+	private Integer downTime = 0;
 }

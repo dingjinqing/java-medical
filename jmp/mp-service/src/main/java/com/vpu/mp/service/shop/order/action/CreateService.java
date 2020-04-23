@@ -29,8 +29,12 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.payment.PaymentVo;
 import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.wxapp.cart.activity.OrderCartProductBo;
-import com.vpu.mp.service.pojo.wxapp.order.*;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateOrderVo;
+import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam.Goods;
+import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.fullreduce.OrderFullReduce;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.packsale.OrderPackageSale;
@@ -43,6 +47,7 @@ import com.vpu.mp.service.shop.config.InsteadPayConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
 import com.vpu.mp.service.shop.config.TradeService;
 import com.vpu.mp.service.shop.coupon.CouponService;
+import com.vpu.mp.service.shop.distribution.OrderGoodsRebateService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.market.freeshipping.FreeShippingService;
@@ -76,11 +81,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.*;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
  * 下单逻辑处理
@@ -158,7 +169,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private InsteadPayConfigService insteadPayConfig;
 
     @Autowired
-    PreSaleProcessorDao preSaleProcessorDao;
+    private PreSaleProcessorDao preSaleProcessorDao;
+
+    @Autowired
+    private OrderGoodsRebateService orderGoodsRebate;
     /**
      * 营销活动processorFactory
      */
@@ -263,7 +277,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 marketProcessorFactory.processSaveOrderInfo(param,order);
                 order.store();
                 order.refresh();
-                orderGoods.addRecords(order, orderBo.getOrderGoodsBo());
+                addOrderGoodsRecords(order, orderBo.getOrderGoodsBo());
                 //支付系统金额
                 orderPay.payMethodInSystem(order, order.getUseAccount(), order.getScoreDiscount(), order.getMemberCardBalance());
                 //必填信息
@@ -303,6 +317,15 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
         }
+    }
+
+    /**
+     * 订单商品入库（存在分销则分销商品更新recid）
+     * @param order
+     * @param orderGoodsBo
+     */
+    private void addOrderGoodsRecords(OrderInfoRecord order, List<OrderGoodsBo> orderGoodsBo) {
+        orderGoodsRebate.save(orderGoodsBo, orderGoods.addRecords(order, orderGoodsBo));
     }
 
     private void checkMust(List<OrderGoodsBo> orderGoodsBos, CreateParam param) throws MpException {

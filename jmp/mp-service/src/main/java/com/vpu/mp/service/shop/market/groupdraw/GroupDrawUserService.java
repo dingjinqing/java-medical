@@ -9,6 +9,7 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.service.foundation.util.Util.currentTimeStamp;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import org.jooq.Record1;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -202,14 +204,6 @@ public class GroupDrawUserService extends ShopBaseService {
 	 */
 	private OrderInfoRecord getOrderInfo(String orderSn) {
 		return db().selectFrom(ORDER_INFO).where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchOneInto(ORDER_INFO);
-	}
-
-	/**
-	 * 获取单品
-	 */
-	private GoodsSpecProductRecord getGoodsSpecProduct(Integer productId) {
-		return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_ID.eq(productId))
-				.fetchOneInto(GOODS_SPEC_PRODUCT);
 	}
 
 	/**

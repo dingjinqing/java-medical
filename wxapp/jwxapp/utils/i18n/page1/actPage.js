@@ -7,5 +7,6 @@ module.exports = {
   "addCart":"加入购物车",
   "gift":"赠品",
   "viewMore":"查看更多",
-  "totalNum":"共{num}件"
+  "totalNum":"共{num}件",
+  "discountInLimitedTime":"限时促销"
 }

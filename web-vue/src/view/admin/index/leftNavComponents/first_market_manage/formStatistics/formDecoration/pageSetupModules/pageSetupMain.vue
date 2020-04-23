@@ -44,7 +44,7 @@
           <div class="timeTitle">{{$t('formDecorationHome.endTime')}}</div>
           <el-date-picker
             size="small"
-            v-model="ruleForm.start_time"
+            v-model="ruleForm.end_time"
             type="datetime"
             default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
@@ -514,12 +514,17 @@ export default {
           'score_number': item.scoreNumber, // 需要积分数
           'limitSurplusFlag': item.limitSurplusFlag
         }
-        console.log(isExistence, obj)
-        if (isExistence.length === 0) {
-          this.ruleForm.send_coupon_list.push(obj)
-          this.couponBackData.push(item.id)
-        }
+        console.log(isExistence, obj, item)
+        // if (isExistence.length === 0) {
+        this.ruleForm.send_coupon_list.push(obj)
+        // }
       })
+      let arrBack = []
+      this.ruleForm.send_coupon_list.forEach((item, index) => {
+        arrBack.push(item.coupon_id)
+      })
+      console.log(arrBack)
+      this.couponBackData = arrBack
     },
     // 点击优惠券右上角删除icon
     handleToDelCoupon (index) {
@@ -545,13 +550,16 @@ export default {
       width: 150px;
     }
     .fixedDate {
-      width: 280px;
+      width: 310px;
       background: #fff;
       padding: 10px;
       border: 1px solid #ddd;
       font-size: 13px;
       .timeContainer {
         display: flex;
+        /deep/ .el-input {
+          width: 200px !important;
+        }
         .timeTitle {
           display: flex;
           align-items: center;

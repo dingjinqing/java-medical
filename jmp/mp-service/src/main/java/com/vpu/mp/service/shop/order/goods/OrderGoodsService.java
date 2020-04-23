@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.order.goods;
 
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -331,7 +332,7 @@ public class OrderGoodsService extends ShopBaseService{
      * @param order 订单
      * @param bos 商品
      */
-    public void addRecords(OrderInfoRecord order, List<OrderGoodsBo> bos){
+    public List<OrderGoodsRecord> addRecords(OrderInfoRecord order, List<OrderGoodsBo> bos){
         List<OrderGoodsRecord> records = new ArrayList<>(bos.size());
         for (OrderGoodsBo bo : bos) {
             bo.setOrderId(order.getOrderId());
@@ -351,9 +352,13 @@ public class OrderGoodsService extends ShopBaseService{
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                 record.setActivityId(bo.getReducePriceId());
             }
+            if(bo.getPurchasePriceId() != null) {
+                record.setPurchaseId(bo.getPurchasePriceId());
+            }
             records.add(record);
         }
         db().batchInsert(records).execute();
+        return records;
     }
 
     /**

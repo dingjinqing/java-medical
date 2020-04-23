@@ -15,8 +15,12 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +66,8 @@ public class ReducePriceService extends ShopBaseService {
     DomainConfig domainConfig;
     @Autowired
     private MemberCardProcessorDao memberCardProcessorDao;
+    @Autowired
+    private TagService tagService;
     /**
      * 新建限时降价活动
      */
@@ -71,6 +77,9 @@ public class ReducePriceService extends ShopBaseService {
             assign(param, record);
             if (param.getShareConfig() != null) {
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
+            }
+            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(param.getActivityTagId())){
+                record.setActivityTagId(Util.listToString(param.getActivityTagId()));
             }
             record.insert();
             Integer reducePriceId = record.getId();
@@ -146,16 +155,16 @@ public class ReducePriceService extends ShopBaseService {
      * 取单个限时降价活动信息
      */
     public ReducePriceVo getReducePriceById(Integer id) {
-        ReducePriceRecord record = db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME, REDUCE_PRICE.START_TIME, REDUCE_PRICE.END_TIME,
-            REDUCE_PRICE.LIMIT_AMOUNT, REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE.POINT_TIME, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.LIMIT_FLAG, REDUCE_PRICE.FIRST, REDUCE_PRICE.SHARE_CONFIG).
-            from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOneInto(ReducePriceRecord.class);
+        ReducePriceRecord record = getReducePriceRecord(id);
         ReducePriceVo res = record.into(ReducePriceVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
         if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
             res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
         }
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
-
+        if(res.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(record.getActivityTagId())){
+            res.setTagList(tagService.getTagsById(Util.splitValueToList(record.getActivityTagId())));
+        }
         return res;
     }
 
@@ -513,6 +522,16 @@ public class ReducePriceService extends ShopBaseService {
     }
 
     /**
+     * 获取限时降价record信息
+     * @param activityId 活动id
+     * @return record信息 或 null
+     */
+    public ReducePriceRecord getReducePriceRecordCanDel(Integer activityId){
+        return db().selectFrom(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(activityId))
+            .fetchAny();
+    }
+
+    /**
      * 考虑限时降价、首单特惠、等级会员价三种情况下，得出的商品价格
      * 首单特惠最高优先级，限时降价与等级会员之间价取低价
      * @param goodsId
@@ -610,6 +629,48 @@ public class ReducePriceService extends ShopBaseService {
             return ret;
         }
         return null;
+    }
+    
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME.as(CalendarAction.ACTNAME), REDUCE_PRICE.START_TIME,
+				REDUCE_PRICE.END_TIME).from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME.as(CalendarAction.ACTNAME), REDUCE_PRICE.START_TIME,
+						REDUCE_PRICE.END_TIME)
+				.from(REDUCE_PRICE)
+				.where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)
+								.and(REDUCE_PRICE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(REDUCE_PRICE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
+
+    /**
+     * 给下单用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addActivityTag(Integer actId,Integer userId){
+        ReducePriceRecord reducePriceRecord = getReducePriceRecord(actId);
+        if(reducePriceRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(reducePriceRecord.getActivityTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(reducePriceRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,actId);
+        }
     }
 
 }

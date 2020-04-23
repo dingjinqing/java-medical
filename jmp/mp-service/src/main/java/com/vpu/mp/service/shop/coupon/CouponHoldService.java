@@ -47,6 +47,21 @@ public class CouponHoldService extends ShopBaseService {
         buildOptions(select,param);
         select.orderBy(h.CREATE_TIME.desc());
         PageResult<CouponHoldListVo> detailList = this.getPageResult(select,param.getCurrentPage(),param.getPageRows(), CouponHoldListVo.class);
+        detailList.dataList.forEach(v->{
+            if (v.getIsUsed()==null){
+                v.setIsUsed(0);
+            }
+            Timestamp nowTime =new Timestamp(System.currentTimeMillis());
+            if (v.getDelFlag()==0&&v.getIsUsed()==0&&v.getEndTime().after(nowTime)){
+                v.setStatus(0);
+            }else if (v.getDelFlag()==0&&v.getIsUsed()==1){
+                v.setStatus(1);
+            }else if (v.getDelFlag()==0&&v.getIsUsed()==0&&v.getEndTime().before(nowTime)){
+                v.setStatus(2);
+            }else if (v.getDelFlag()==1){
+                v.setStatus(3);
+            }
+        });
         return detailList ;
     }
 
@@ -74,12 +89,15 @@ public class CouponHoldService extends ShopBaseService {
             Timestamp nowTime =new Timestamp(System.currentTimeMillis());
             if (param.getStatus()==1){
                 select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
-                        .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime));
+                        .and(CUSTOMER_AVAIL_COUPONS.END_TIME.ge(nowTime))
+                        .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
             }else if (param.getStatus()==2){
-                select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1));
+                select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 1))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
             }else if (param.getStatus()==3){
                 select.where(CUSTOMER_AVAIL_COUPONS.IS_USED.eq((byte) 0))
-                        .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime));
+                        .and(CUSTOMER_AVAIL_COUPONS.END_TIME.lt(nowTime))
+                    .and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 0));
             }else if (param.getStatus()==4){
                 select.where(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq((byte) 1));
             }

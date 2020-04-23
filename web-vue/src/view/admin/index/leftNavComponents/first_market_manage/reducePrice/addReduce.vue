@@ -342,6 +342,36 @@
           </template>
         </el-table>
       </div>
+      <el-form-item
+        label="同步打标签："
+        prop=""
+      >
+        <el-checkbox>给参与活动用户打标签</el-checkbox>
+        <span
+          class="el-icon-question"
+          style="color: #666;"
+        ></span>
+        <span
+          class="labelStyle"
+          @click="selectLabel"
+        >选择标签</span>
+        <div v-if="pickLabel.length > 0">
+          <p style="color: #999;">最多可设置3个标签</p>
+          <div
+            v-for="(item, index) in pickLabel"
+            :key="index"
+            class="labelContent"
+          >
+            {{item.value}}
+            <i
+              class="el-icon-close"
+              @click="deleteLabel(index)"
+              style="color: #999; margin-left: 3px;cursorL pointer;"
+            ></i>
+          </div>
+        </div>
+
+      </el-form-item>
 
       <!-- 收起、展开更多配置 -->
       <div
@@ -501,6 +531,14 @@
       @confrim="getProductdata"
     />
 
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="labelValue"
+    />
+
   </div>
 </template>
 
@@ -513,7 +551,8 @@ export default {
     CycleDialog: () => import('./repeatCycle'),
     choosingGoods: () => import('@/components/admin/choosingGoods'),
     productInfo: () => import('./productInfo'),
-    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting')
+    actShare: () => import('@/components/admin/marketManage/marketActivityShareSetting'),
+    LabelDialog: () => import('@/components/admin/labelDialog')
   },
   props: ['isEdite', 'editId'],
   data () {
@@ -606,7 +645,11 @@ export default {
       goodsIdList: [],
       tuneUp: false,
       tuneUpChooseGoods: false,
-      isOnlyShowChooseGoods: false
+      isOnlyShowChooseGoods: false,
+
+      labelDialogVisible: false, // 标签弹窗
+      pickLabel: [], // 选中标签列表
+      labelValue: [] // 选中标签id值
     }
   },
   watch: {
@@ -968,7 +1011,30 @@ export default {
       })
     },
 
-    clickHandler () { }
+    clickHandler () { },
+
+    // 标签弹窗
+    selectLabel () {
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+
+    // 删除标签
+    deleteLabel (index) {
+      this.pickLabel.splice(index, 1)
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
+    },
+
+    // 标签弹窗回调函数
+    resultLabelDatas (row) {
+      this.pickLabel = row
+      this.labelValue = []
+      this.pickLabel.forEach(item => {
+        this.labelValue.push(item.id)
+      })
+    }
 
     // 提交前校验
     // validParam() {
@@ -1190,5 +1256,21 @@ export default {
 }
 .noticeTip {
   color: #999;
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  display: inline-block;
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-right: 10px;
+  color: #666;
 }
 </style>

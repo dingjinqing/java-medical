@@ -176,6 +176,9 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 
 -- 2020-04-17 拼团抽奖表添加活动说明字段
 ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
+
+-- 20200423订单商品表增加加价购id
+ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
@@ -441,7 +444,11 @@ ALTER TABLE `b2c_bargain` ADD COLUMN `activity_copywriting` text COMMENT '自定
 ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag` tinyint(1) DEFAULT '0' COMMENT '是否给发起砍价用户打标签';
 ALTER TABLE `b2c_bargain` ADD COLUMN `launch_tag_id` varchar(20) DEFAULT NULL COMMENT '发起砍价活动用户打标签id';
 ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag` tinyint(1) DEFAULT '0' COMMENT '是否参与砍价用户打标签';
-ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL COMMENT '参与砍价活动用户打标签id'
+ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL COMMENT '参与砍价活动用户打标签id';
 
+-- 2020年04月22日-常乐-普通优惠券添加用户打标签，与部分营销活动叠加使用配置
+ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_tag` tinyint(1) DEFAULT '0' COMMENT '是否领取优惠券用户打标签 0:否；1：是';
+ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_tag_id` varchar(20) DEFAULT NULL COMMENT '领取优惠券用户打标签id';
+ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_overlay` tinyint(1) NOT NULL DEFAULT '0'  comment '是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用 ';
 /*********************2.12*************************END*/
 

@@ -103,4 +103,6 @@ public class OrderListInfoVo {
     @JsonIgnore
     private Byte isLock;
     private Timestamp orderRemindTime;
+    /**完整收货地址*/
+    private String completeAddress;
 }

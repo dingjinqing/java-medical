@@ -8,23 +8,30 @@ import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NO
 
 import java.sql.Timestamp;
 
-import com.vpu.mp.service.foundation.data.BaseConstant;
-import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
+import javax.validation.Valid;
+
 import org.jooq.Record;
+import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Service;
 
 import com.vpu.mp.db.shop.tables.records.CommentAwardRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardIdParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardListVo;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardParam;
 import com.vpu.mp.service.pojo.shop.market.commentaward.CommentAwardVo;
-
-import javax.validation.Valid;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 
 /**
  * @author 孔德成
@@ -151,4 +158,32 @@ public class CommentAwardService extends ShopBaseService {
     public int deleteCommentAwardActivity(@Valid CommentAwardIdParam param) {
        return  db().update(COMMENT_AWARD).set(COMMENT_AWARD.DEL_FLAG, DelFlag.DISABLE_VALUE).where(COMMENT_AWARD.ID.eq(param.getId())).execute();
     }
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(COMMENT_AWARD.ID, COMMENT_AWARD.NAME.as(CalendarAction.ACTNAME), COMMENT_AWARD.START_TIME,
+				COMMENT_AWARD.END_TIME,COMMENT_AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT)).from(COMMENT_AWARD).where(COMMENT_AWARD.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record5<Integer, String, Timestamp, Timestamp, Byte>, Integer> select = db()
+				.select(COMMENT_AWARD.ID, COMMENT_AWARD.NAME.as(CalendarAction.ACTNAME), COMMENT_AWARD.START_TIME,
+						COMMENT_AWARD.END_TIME,COMMENT_AWARD.IS_FOREVER.as(CalendarAction.ISPERMANENT))
+				.from(COMMENT_AWARD)
+				.where(COMMENT_AWARD.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(COMMENT_AWARD.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(COMMENT_AWARD.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(COMMENT_AWARD.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 }

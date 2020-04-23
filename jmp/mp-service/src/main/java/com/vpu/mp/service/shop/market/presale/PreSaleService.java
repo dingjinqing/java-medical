@@ -18,15 +18,15 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.image.share.ShareConfig;
 import com.vpu.mp.service.pojo.shop.market.presale.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import jodd.util.StringUtil;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -50,7 +50,6 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static java.lang.String.format;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -531,7 +530,7 @@ public class PreSaleService extends ShopBaseService {
      * @return record信息
      */
 	public PresaleRecord getPresaleRecord(Integer activityId){
-        return db().selectFrom(PRESALE).where(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(PRESALE.ID.eq(activityId)))
+        return db().selectFrom(PRESALE).where(PRESALE.ID.eq(activityId))
             .fetchAny();
     }
 
@@ -548,5 +547,33 @@ public class PreSaleService extends ShopBaseService {
         vo.setPagePath(QrCodeTypeEnum.GOODS_ITEM.getPathUrl(pathParam));
         return vo;
     }
+    
+    /**
+     * 营销日历用id查询活动
+     * @param id
+     * @return
+     */
+    public MarketVo getActInfo(Integer id) {
+		return db().select(TABLE.ID, TABLE.PRESALE_NAME.as(CalendarAction.ACTNAME), TABLE.START_TIME,
+				TABLE.END_TIME).from(TABLE).where(TABLE.ID.eq(id)).fetchAnyInto(MarketVo.class);
+    }
+    
+    /**
+     * 营销日历用查询目前正常的活动
+     * @param param
+     * @return
+     */
+	public PageResult<MarketVo> getListNoEnd(MarketParam param) {
+		SelectSeekStep1<Record4<Integer, String, Timestamp, Timestamp>, Integer> select = db()
+				.select(TABLE.ID, TABLE.PRESALE_NAME.as(CalendarAction.ACTNAME), TABLE.START_TIME,
+						TABLE.END_TIME)
+				.from(TABLE)
+				.where(TABLE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE).and(TABLE.STATUS
+						.eq(BaseConstant.ACTIVITY_STATUS_NORMAL).and(TABLE.END_TIME.gt(DateUtil.getSqlTimestamp()))))
+				.orderBy(TABLE.ID.desc());
+		PageResult<MarketVo> pageResult = this.getPageResult(select, param.getCurrentPage(), param.getPageRows(),
+				MarketVo.class);
+		return pageResult;
+	}
 
 }

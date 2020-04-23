@@ -153,7 +153,7 @@ public class GroupBuyPictorialService extends ShopBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(groupBuyDefineRecord.getId(), "share");
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), groupBuyDefineRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(), PictorialConstant.GROUP_BUY_ACTION_SHARE,pictorialRecord, param.getUserId());
 
             return relativePath;
         } catch (IOException e) {
@@ -248,14 +248,12 @@ public class GroupBuyPictorialService extends ShopBaseService {
 
         // 拼装自定义内容
         BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
-
         // "开团省2元" 文字
         String saveText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
         // 活动价
         String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
         // 划线价格
         String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
-
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, saveText, realPriceText, linePriceText, true, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);

@@ -207,6 +207,15 @@ export default {
       this.dialogData.forEach((item, index) => {
         if (item.ischeck) arr.push(item)
       })
+      console.log(arr, this.couponBack)
+      if (this.formDecType) {
+        let length = arr.length + this.couponBack.length
+        console.log(length)
+        if (length > 5) {
+          this.$message.error('最多只能选择5张优惠券哦~')
+          return
+        }
+      }
       if (arr.length > 5 && !this.origin) {
         this.$message.error('最多只能选择5张优惠券哦~')
         return

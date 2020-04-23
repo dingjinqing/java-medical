@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,10 +294,12 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
                 });
             }
         }
+        //折扣总金额
+        BigDecimal totalReductionMoney = fullReductionProcessorDao.getFullReductionMoney(ruleCartIdMap);
+        cartBo.setFullReductionPrice(totalReductionMoney);
         //国际化
         fullReductionProcessorDao.internationalMessage(cartBo);
     }
-
 
 
 }

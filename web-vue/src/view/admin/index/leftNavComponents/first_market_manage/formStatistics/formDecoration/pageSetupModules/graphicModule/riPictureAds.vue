@@ -137,6 +137,7 @@ export default {
     },
     // 选择链接弹窗回传数据
     handleToGetLinkPath (path) {
+      console.log(path)
       this.modulesSaveData.title_link = path
     },
     // 点击图片删除icon

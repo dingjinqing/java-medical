@@ -1,0 +1,8 @@
+<view class="flex_outside_box">
+  <view class="flex_box">
+    <view class="item_left">送至</view>
+    <view class="item_middle" bindtap="chooseAddress">
+      {{addressText || '请选择收货地址'}}
+    </view>
+  </view>
+</view>

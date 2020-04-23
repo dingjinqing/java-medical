@@ -165,6 +165,13 @@
                     <span>{{item.denomination}}</span>
                     <span>{{$t('payReward.discount')}}</span>
                   </div>
+                  <div
+                    class="coupon_list_top"
+                    v-if="item.actCode==='random'"
+                  >
+                    <span>￥</span>
+                    <span class="number">{{item.randomMax}}最高</span>
+                  </div>
                   <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                   <div
                     class="coupon_center_number"
@@ -258,13 +265,13 @@
               ></el-table-column>
               <el-table-column
                 :label="$t('lotteryDraw.goodsPrice')"
+                prop="shopPrice"
                 align="center"
               >
-                <!-- prop="shopPrice" -->
-                <template slot-scope="scope">
+                <!-- <template slot-scope="scope">
                   <span v-if="scope.row.isDefaultPrd === true">{{ scope.row.shopPrice }}</span>
                   <span v-if="scope.row.isDefaultPrd === false">{{ scope.row.prdMaxShopPrice }}</span>
-                </template>
+                </template> -->
               </el-table-column>
 
               <el-table-column
@@ -482,20 +489,20 @@ export default {
     // 获取商品信息
     getGoodsInfo (id) {
       getSelectGoods({ goodsId: id }).then((res) => {
-        if (res.error === 0) {
-          if (res.content.isDefaultProduct === 0) {
-            // 多规格
-            res.content.isDefaultPrd = false
-            res.content.prdMaxShopPrice = 0
-            res.content.goodsSpecProducts.forEach(item => {
-              if (item.prdPrice > res.content.prdMaxShopPrice) {
-                res.content.prdMaxShopPrice = item.prdPrice
-              }
-            })
-          } else if (res.content.isDefaultProduct === 1) {
-            // 单规格
-            res.content.isDefaultPrd = true
-          }
+        if (res.error === 0 && res.content !== null) {
+          // if (res.content.isDefaultProduct === 0) {
+          //   // 多规格
+          //   res.content.isDefaultPrd = false
+          //   res.content.prdMaxShopPrice = 0
+          //   res.content.goodsSpecProducts.forEach(item => {
+          //     if (item.prdPrice > res.content.prdMaxShopPrice) {
+          //       res.content.prdMaxShopPrice = item.prdPrice
+          //     }
+          //   })
+          // } else if (res.content.isDefaultProduct === 1) {
+          //   // 单规格
+          //   res.content.isDefaultPrd = true
+          // }
           this.goodsRow.push(res.content)
         }
       })

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import lombok.Getter;
@@ -33,8 +34,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	private String username;
     /**下单人手机号*/
     private String userMobile;
-	/**完整收货地址*/
-	private String completeAddress;
 	/**买家留言*/
 	private String addMessage;
 	/**快递单号:后台判断是否查询配送信息依据之一*/
@@ -79,4 +78,6 @@ public class OrderInfoVo extends OrderListInfoVo {
 	/**在退款流程中判断是否补款退款*/
     @JsonIgnore
     private Boolean isReturnBk;
+    /**返利信息*/
+    private List<OrderRebateVo> rebateList;
 }
