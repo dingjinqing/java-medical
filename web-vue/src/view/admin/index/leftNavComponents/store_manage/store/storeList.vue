@@ -563,7 +563,9 @@ export default {
       }
     },
     goMore () {
-      window.open('https://mpdev.weipubao.cn/admin/version/notice?mod_name=%E5%BA%97%E9%93%BA%E6%95%B0%E9%87%8F')
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade'
+      })
     }
   },
   watch: {

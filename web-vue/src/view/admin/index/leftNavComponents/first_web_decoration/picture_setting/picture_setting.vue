@@ -20,6 +20,7 @@
                 <el-button
                   type="primary"
                   size="small"
+                  @click="handleToClickMore"
                 >{{$t('pictureSetting.more')}}</el-button>
               </div>
             </div>
@@ -625,6 +626,13 @@ export default {
     handelToCopy () {
       this.$refs.qrCodePageUrlInput.select()
       document.execCommand('Copy')
+    },
+    // 点击了解更多
+    handleToClickMore () {
+      console.log('了解更多')
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade'
+      })
     }
   }
 }
