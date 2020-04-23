@@ -63,6 +63,18 @@ public class GroupBuyEditParam {
      * 初始化数量
      */
     private Integer beginNum=0;
+    /**
+     * 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    private Integer preTime;
+    /**
+     * 参加活动打标签
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id
+     */
+    private String activityTagId;
 
     /**
      * 分享设置

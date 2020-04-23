@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = 329987424;
+    private static final long serialVersionUID = -1218691074;
 
     /**
-     * The reference instance of <code>mini_shop_4748160.b2c_group_buy_define</code>
+     * The reference instance of <code>mini_shop_471752.b2c_group_buy_define</code>
      */
     public static final GroupBuyDefine GROUP_BUY_DEFINE = new GroupBuyDefine();
 
@@ -58,146 +58,161 @@ public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
     }
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.id</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_define.id</code>.
      */
     public final TableField<GroupBuyDefineRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.goods_id</code>. 商品id
+     * The column <code>mini_shop_471752.b2c_group_buy_define.goods_id</code>. 商品id
      */
     public final TableField<GroupBuyDefineRecord, String> GOODS_ID = createField("goods_id", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "商品id");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.name</code>. 活动名称
+     * The column <code>mini_shop_471752.b2c_group_buy_define.name</code>. 活动名称
      */
     public final TableField<GroupBuyDefineRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "活动名称");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.limit_amount</code>. 成团人数 不小于2人
+     * The column <code>mini_shop_471752.b2c_group_buy_define.limit_amount</code>. 成团人数 不小于2人
      */
     public final TableField<GroupBuyDefineRecord, Short> LIMIT_AMOUNT = createField("limit_amount", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "成团人数 不小于2人");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.join_limit</code>. 参团限制 0不限制
+     * The column <code>mini_shop_471752.b2c_group_buy_define.join_limit</code>. 参团限制 0不限制
      */
     public final TableField<GroupBuyDefineRecord, Short> JOIN_LIMIT = createField("join_limit", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "参团限制 0不限制");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.open_limit</code>. 开团限制 0不限制
+     * The column <code>mini_shop_471752.b2c_group_buy_define.open_limit</code>. 开团限制 0不限制
      */
     public final TableField<GroupBuyDefineRecord, Short> OPEN_LIMIT = createField("open_limit", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "开团限制 0不限制");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.limit_buy_num</code>. 最少购买数 0不限制
+     * The column <code>mini_shop_471752.b2c_group_buy_define.limit_buy_num</code>. 最少购买数 0不限制
      */
     public final TableField<GroupBuyDefineRecord, Short> LIMIT_BUY_NUM = createField("limit_buy_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "最少购买数 0不限制");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.limit_max_num</code>. 最多购买数 0不限制
+     * The column <code>mini_shop_471752.b2c_group_buy_define.limit_max_num</code>. 最多购买数 0不限制
      */
     public final TableField<GroupBuyDefineRecord, Short> LIMIT_MAX_NUM = createField("limit_max_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "最多购买数 0不限制");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.start_time</code>. 开始时间
+     * The column <code>mini_shop_471752.b2c_group_buy_define.start_time</code>. 开始时间
      */
-    public final TableField<GroupBuyDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "开始时间");
+    public final TableField<GroupBuyDefineRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "开始时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.end_time</code>. 结束时间
+     * The column <code>mini_shop_471752.b2c_group_buy_define.end_time</code>. 结束时间
      */
-    public final TableField<GroupBuyDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "结束时间");
+    public final TableField<GroupBuyDefineRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "结束时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.stock</code>. 总库存
+     * The column <code>mini_shop_471752.b2c_group_buy_define.stock</code>. 总库存
      */
     public final TableField<GroupBuyDefineRecord, Short> STOCK = createField("stock", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "总库存");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.sale_num</code>. 销量
+     * The column <code>mini_shop_471752.b2c_group_buy_define.sale_num</code>. 销量
      */
     public final TableField<GroupBuyDefineRecord, Short> SALE_NUM = createField("sale_num", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "销量");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.is_default</code>. 默认成团 
+     * The column <code>mini_shop_471752.b2c_group_buy_define.is_default</code>. 默认成团 
      */
     public final TableField<GroupBuyDefineRecord, Byte> IS_DEFAULT = createField("is_default", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "默认成团 ");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.activity_type</code>. 活动类型：1：普通拼团，2：老带新团
+     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_type</code>. 活动类型：1：普通拼团，2：老带新团
      */
     public final TableField<GroupBuyDefineRecord, Byte> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "活动类型：1：普通拼团，2：老带新团");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.is_grouper_cheap</code>. 是否开启团长优惠：0：不开启，1：开启
+     * The column <code>mini_shop_471752.b2c_group_buy_define.is_grouper_cheap</code>. 是否开启团长优惠：0：不开启，1：开启
      */
     public final TableField<GroupBuyDefineRecord, Byte> IS_GROUPER_CHEAP = createField("is_grouper_cheap", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否开启团长优惠：0：不开启，1：开启");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.shipping_type</code>. 运费类型 1免运费 2自定义
+     * The column <code>mini_shop_471752.b2c_group_buy_define.shipping_type</code>. 运费类型 1免运费 2自定义
      */
     public final TableField<GroupBuyDefineRecord, Byte> SHIPPING_TYPE = createField("shipping_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "运费类型 1免运费 2自定义");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.reward_coupon_id</code>. 拼团失败发放优惠券
+     * The column <code>mini_shop_471752.b2c_group_buy_define.reward_coupon_id</code>. 拼团失败发放优惠券
      */
-    public final TableField<GroupBuyDefineRecord, String> REWARD_COUPON_ID = createField("reward_coupon_id", org.jooq.impl.SQLDataType.VARCHAR(200), this, "拼团失败发放优惠券");
+    public final TableField<GroupBuyDefineRecord, String> REWARD_COUPON_ID = createField("reward_coupon_id", org.jooq.impl.SQLDataType.VARCHAR(200).defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.VARCHAR)), this, "拼团失败发放优惠券");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.share_config</code>. 分享设置
+     * The column <code>mini_shop_471752.b2c_group_buy_define.share_config</code>. 分享设置
      */
-    public final TableField<GroupBuyDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB, this, "分享设置");
+    public final TableField<GroupBuyDefineRecord, String> SHARE_CONFIG = createField("share_config", org.jooq.impl.SQLDataType.CLOB.defaultValue(DSL.inline("NULL", org.jooq.impl.SQLDataType.CLOB)), this, "分享设置");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.status</code>. 状态： 1：启用  0： 禁用 2 代表已无库存
+     * The column <code>mini_shop_471752.b2c_group_buy_define.status</code>. 状态： 1：启用  0： 禁用 2 代表已无库存
      */
     public final TableField<GroupBuyDefineRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "状态： 1：启用  0： 禁用 2 代表已无库存");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.del_flag</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_define.del_flag</code>.
      */
     public final TableField<GroupBuyDefineRecord, Byte> DEL_FLAG = createField("del_flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.del_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_define.del_time</code>.
      */
     public final TableField<GroupBuyDefineRecord, Integer> DEL_TIME = createField("del_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.create_time</code>.
+     * The column <code>mini_shop_471752.b2c_group_buy_define.create_time</code>.
      */
-    public final TableField<GroupBuyDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<GroupBuyDefineRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.update_time</code>. 最后修改时间
+     * The column <code>mini_shop_471752.b2c_group_buy_define.update_time</code>. 最后修改时间
      */
-    public final TableField<GroupBuyDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
+    public final TableField<GroupBuyDefineRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(DSL.field("current_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "最后修改时间");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.level</code>. 优先级
+     * The column <code>mini_shop_471752.b2c_group_buy_define.level</code>. 优先级
      */
     public final TableField<GroupBuyDefineRecord, Integer> LEVEL = createField("level", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "优先级");
 
     /**
-     * The column <code>mini_shop_4748160.b2c_group_buy_define.begin_num</code>. 初始成团数
+     * The column <code>mini_shop_471752.b2c_group_buy_define.begin_num</code>. 初始成团数
      */
     public final TableField<GroupBuyDefineRecord, Integer> BEGIN_NUM = createField("begin_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "初始成团数");
 
     /**
-     * Create a <code>mini_shop_4748160.b2c_group_buy_define</code> table reference
+     * The column <code>mini_shop_471752.b2c_group_buy_define.pre_time</code>. 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    public final TableField<GroupBuyDefineRecord, Integer> PRE_TIME = createField("pre_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     */
+    public final TableField<GroupBuyDefineRecord, Byte> ACTIVITY_TAG = createField("activity_tag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "参加活动打标签");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_tag_id</code>. 参加活动打标签id
+     */
+    public final TableField<GroupBuyDefineRecord, String> ACTIVITY_TAG_ID = createField("activity_tag_id", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "参加活动打标签id");
+
+    /**
+     * Create a <code>mini_shop_471752.b2c_group_buy_define</code> table reference
      */
     public GroupBuyDefine() {
         this(DSL.name("b2c_group_buy_define"), null);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_buy_define</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_buy_define</code> table reference
      */
     public GroupBuyDefine(String alias) {
         this(DSL.name(alias), GROUP_BUY_DEFINE);
     }
 
     /**
-     * Create an aliased <code>mini_shop_4748160.b2c_group_buy_define</code> table reference
+     * Create an aliased <code>mini_shop_471752.b2c_group_buy_define</code> table reference
      */
     public GroupBuyDefine(Name alias) {
         this(alias, GROUP_BUY_DEFINE);

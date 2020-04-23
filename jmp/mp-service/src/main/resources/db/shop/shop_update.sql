@@ -450,5 +450,9 @@ ALTER TABLE `b2c_bargain` ADD COLUMN `attend_tag_id` varchar(20) DEFAULT NULL CO
 ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_tag` tinyint(1) DEFAULT '0' COMMENT '是否领取优惠券用户打标签 0:否；1：是';
 ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_tag_id` varchar(20) DEFAULT NULL COMMENT '领取优惠券用户打标签id';
 ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_overlay` tinyint(1) NOT NULL DEFAULT '0'  comment '是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用 ';
+-- 2020年4月23日 kdc 拼团增加用户打标签,预告
+ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
+ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `activity_tag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '参加活动打标签  0:否；1：是' ;
+ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `activity_tag_id` varchar(30) NOT NULL COMMENT '参加活动打标签id' ;
 /*********************2.12*************************END*/
 

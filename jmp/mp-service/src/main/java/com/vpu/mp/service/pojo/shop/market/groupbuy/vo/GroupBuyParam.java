@@ -32,6 +32,18 @@ public class GroupBuyParam {
     @NotNull
     private String goodsId;
     /**
+     * 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    private Integer preTime;
+    /**
+     * 参加活动打标签
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id
+     */
+    private String activityTagId;
+    /**
      * 成团人数 不可小于2人,保存后不可编辑
      */
     @NotNull
@@ -95,6 +107,7 @@ public class GroupBuyParam {
      * 分享设置
      */
     private GroupBuyShareConfigParam share;
+
 
     private String shareConfig;
 
