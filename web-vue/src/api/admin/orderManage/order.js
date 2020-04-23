@@ -161,3 +161,11 @@ export function getDefaultAddress (data) {
     data: data
   })
 }
+// 查询售后订单中订单信息简略
+export function getOrderBrief (data) {
+  return service({
+    url: '/api/admin/order/simple',
+    method: 'post',
+    data: data
+  })
+}
