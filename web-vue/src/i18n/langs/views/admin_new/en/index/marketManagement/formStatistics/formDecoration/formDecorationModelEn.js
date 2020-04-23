@@ -28,7 +28,7 @@ export const en = {
   multipleRows: 'Multiple rows',
   singleRow: 'Single row',
   singleRowLong: 'Single row longitudinal',
-  hint: 'Prompting language',
+  hint: 'Prompting language：',
   hintTip: 'Please enter prompt',
   atLeastInput: 'At least input',
   word: 'word',
