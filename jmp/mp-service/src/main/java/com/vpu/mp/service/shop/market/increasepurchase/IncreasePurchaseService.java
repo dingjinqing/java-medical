@@ -179,10 +179,10 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
         }
         if (param.getStartTime() != null) {
-            selectConditon = selectConditon.and(ppd.START_TIME.ge(param.getStartTime()));
+            selectConditon = selectConditon.and(ppd.END_TIME.ge(param.getStartTime()));
         }
         if (param.getEndTime() != null) {
-            selectConditon = selectConditon.and(ppd.END_TIME.le(param.getEndTime()));
+            selectConditon = selectConditon.and(ppd.START_TIME.le(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
@@ -223,12 +223,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     private Integer getResaleQuantity(Integer purchasePriceId) {
         Integer defaultValue = 0;
         return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
-            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
-            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .where(og.PURCHASE_ID.eq(purchasePriceId))
             .and(og.ACTIVITY_RULE.greaterThan(0))
             .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
-            .and(oi.SHIPPING_TIME.isNotNull())
-            .and(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED))
             .fetchOptionalInto(Integer.class).orElse(defaultValue);
     }
 
@@ -399,7 +396,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.PURCHASE_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.PURCHASE_ID.eq(param.getActivityId()));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -533,8 +530,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 构建换购明细查询条件
      */
     private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
-        Condition baseCondition = and(og.ACTIVITY_ID.eq(param.getActivityId()))
-            .and(og.ACTIVITY_RULE.gt(0));
+        Condition baseCondition = and(og.PURCHASE_ID.eq(param.getActivityId()));
         if (StringUtils.isNotEmpty(param.getNickName())) {
             baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
         }
@@ -818,6 +814,15 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     public Result<PurchasePriceRuleRecord> getRules(List<Integer> ruleIds) {
         return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
+    }
+
+    /**
+     * 获取加价购规则
+     * @param ruleId
+     * @return
+     */
+    public PurchasePriceRuleRecord getRuleByRuleId(Integer ruleId){
+        return db().selectFrom(ppr).where(ppr.ID.eq(ruleId)).fetchAny();
     }
 
     /**

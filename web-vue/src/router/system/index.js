@@ -57,6 +57,15 @@ const routes = [{
       meta: {
         title: '营销日历'
       }
+    },
+    {
+      path: 'add_event',
+      component: () => import('@/view/system/index/leftNavComponents/overview/marketingCalendar/addCalendarMain'),
+      name: 'addEvent',
+      meta: {
+        title: '添加事件',
+        parentName: '营销日历'
+      }
     }
   ]
 },
