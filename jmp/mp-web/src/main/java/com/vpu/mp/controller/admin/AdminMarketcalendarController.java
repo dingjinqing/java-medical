@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
@@ -36,7 +37,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 			String[] strings = saas.shop.version.verifyVerPurview(shopId(), calendarAct.getActivityType());
 			if(strings[0].equals("false")) {
 				//TODO 您没有营销活动xxx的权限
-				return fail();
+				 return this.fail(JsonResultCode.CODE_PARAM_ERROR,", "+calendarAct.getActivityType());
 			}
 		}
 		if (act.equals(CalendarAction.ADD)) {
@@ -108,7 +109,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		MarketParam marketParam = new MarketParam();
 		marketParam.setCurrentPage(param.getCurrentPage());
 		marketParam.setPageRows(param.getPageRows());
-		ActInfoVo actInfo = shop().calendarService.getActInfo(CalendarAction.LIST, null, param.getActivityType(), marketParam);
+		ActInfoVo actInfo = shop().calendarService.getActInfo(param.getActivityType(), null,CalendarAction.LIST, marketParam);
 		return success(actInfo.getList());
 	}
 	

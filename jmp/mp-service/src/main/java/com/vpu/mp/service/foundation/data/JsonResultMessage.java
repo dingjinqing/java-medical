@@ -658,6 +658,8 @@ public class JsonResultMessage {
     public static final String OVERVIEW_MALL_TODOITEM_GET_FAILED = "overview.mall.todoitem.get.failed";
     public static final String OVERVIEW_USER_ANALYSIS_RFM_NULL = "overview.user.analysis.rfm.null";
     public static final String OVERVIEW_YESTERDAY_ANALYSIS_DATA_NULL = "overview.yesterday.analysis.data.null";
+    public static final String SOME_NO_AUTH = "some.no.auth";
+    
     /**
      * 访问分析导出
      */

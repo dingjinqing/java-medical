@@ -360,12 +360,12 @@ public class MarketCalendarService extends ShopBaseService {
 		if (type.equals(CalendarAction.INFO)) {
 			byte actStatus = getActStatus(actInfo);
 			actInfo.setActStatus(actStatus);
-			actInfo.setActivityType(type);
+			actInfo.setActivityType(actType);
 		} else {
 			for (MarketVo vo : list.getDataList()) {
 				byte actStatus = getActStatus(vo);
 				vo.setActStatus(actStatus);
-				vo.setActivityType(type);
+				vo.setActivityType(actType);
 			}
 		}
 		return new ActInfoVo(actInfo == null ? new MarketVo() : actInfo, list);
@@ -381,7 +381,7 @@ public class MarketCalendarService extends ShopBaseService {
 		if (actInfo.getIsPermanent().equals(CalendarAction.ONE)) {
 			return CalendarAction.TWO;
 		}
-		Timestamp statrtTime = actInfo.getStatrtTime();
+		Timestamp statrtTime = actInfo.getStartTime();
 		Timestamp endTime = actInfo.getEndTime();
 		Timestamp nowTime = DateUtil.getSqlTimestamp();
 		if (null == statrtTime || null == endTime) {

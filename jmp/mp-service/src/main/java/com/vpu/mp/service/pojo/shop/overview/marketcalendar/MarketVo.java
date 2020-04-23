@@ -13,7 +13,7 @@ import lombok.Data;
 public class MarketVo {
 	private Integer id;
 	private String actName;
-	private Timestamp statrtTime;
+	private Timestamp startTime;
 	private Timestamp endTime;
 	/** 为1表示永久有效 */
 	private Byte isPermanent = 0;
