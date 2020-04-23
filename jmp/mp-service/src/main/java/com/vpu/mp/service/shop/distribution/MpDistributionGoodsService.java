@@ -225,6 +225,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
         }
         if(cfg.getJudgeStatus() == OrderConstant.YES && Byte.valueOf(OrderConstant.NO).equals(userInfo.getIsDistributor())) {
             logger().info("用户非审核分销员");
+            return null;
         }
         //异常分销等级重置
         if(userInfo.getDistributorLevel() < 1 || userInfo.getDistributorLevel() > 5) {
