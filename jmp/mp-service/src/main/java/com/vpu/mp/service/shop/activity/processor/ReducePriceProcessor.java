@@ -222,7 +222,9 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
      */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()) && param.getActivityId() != null){
+            reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        }
     }
 
     /**

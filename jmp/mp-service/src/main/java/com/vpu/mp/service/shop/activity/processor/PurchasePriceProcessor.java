@@ -1,7 +1,6 @@
 package com.vpu.mp.service.shop.activity.processor;
 
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
-import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -22,7 +21,6 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PurchasePriceP
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.shop.activity.dao.PurchasePriceProcessorDao;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
-import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Record4;
@@ -31,8 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.PURCHASE_PRICE_RULE;
@@ -181,7 +181,9 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(param.getActivityType()) && param.getActivityId() != null){
+            increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        }
     }
 
     @Override
