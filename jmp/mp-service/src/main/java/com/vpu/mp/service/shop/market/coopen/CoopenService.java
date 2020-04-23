@@ -65,10 +65,8 @@ public class CoopenService extends ShopBaseService {
         if (param.getNvaType()!=null){
             switch (param.getNvaType()) {
                 case BaseConstant.NAVBAR_TYPE_ONGOING:
-                    select.and(TABLE.START_DATE.le(Util.currentTimeStamp()))
-                            .and(TABLE.END_DATE.gt(Util.currentTimeStamp()))
+                    select.and((TABLE.START_DATE.le(Util.currentTimeStamp()).and(TABLE.END_DATE.gt(Util.currentTimeStamp()))).or(TABLE.IS_FOREVER.eq(BaseConstant.ACTIVITY_IS_FOREVER.intValue())))
                             .and(TABLE.STATUS.eq(ACTIVITY_STATUS_NORMAL));
-
                     break;
                 case BaseConstant.NAVBAR_TYPE_NOT_STARTED:
                     select.and(TABLE.STATUS.eq(ACTIVITY_STATUS_NORMAL))

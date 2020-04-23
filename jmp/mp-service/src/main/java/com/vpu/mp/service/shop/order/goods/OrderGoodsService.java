@@ -344,6 +344,9 @@ public class OrderGoodsService extends ShopBaseService{
                 record.setActivityId(bo.getPurchasePriceId());
                 record.setActivityRule(bo.getPurchasePriceRuleId());
             }
+            if(bo.getPurchasePriceId() != null) {
+                record.setPurchaseId(bo.getPurchasePriceId());
+            }
             records.add(record);
         }
         db().batchInsert(records).execute();

@@ -176,6 +176,9 @@ ALTER TABLE `b2c_package_sale` MODIFY COLUMN `goods_number_3` mediumint(11) NULL
 
 -- 2020-04-17 拼团抽奖表添加活动说明字段
 ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
+
+-- 20200423订单商品表增加加价购id
+ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
 /***********************2.10*********************END*/
 
 

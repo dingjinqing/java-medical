@@ -142,7 +142,12 @@ export default {
     // 行选中高亮
     handleClick (index) {
       this.clickIindex = index
-      let path = `pages/storeinfo/storeinfo?id=${this.trList[index].storeId}`
+      let path = ''
+      if (this.page_one) {
+        path = `pages/storeinfo/storeinfo?id=${this.trList[index].storeId}`
+      } else {
+        path = `pages1/form/form?pageId=${this.trList[index].pageId}`
+      }
       this.$emit('handleToGetDetailData', this.trList[index])
       this.choisePagePath(path)
     }

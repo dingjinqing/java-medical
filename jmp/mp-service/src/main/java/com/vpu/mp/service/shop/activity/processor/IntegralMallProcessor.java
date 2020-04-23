@@ -99,19 +99,19 @@ public class IntegralMallProcessor implements Processor,GoodsDetailProcessor, Cr
 
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-
+        Map<Integer, OrderGoodsBo> addRecordParam = param.getBos().stream()
+            .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
+            .collect(Collectors.toMap(OrderGoodsBo::getProductId, Function.identity()));
+        dao.addRecords(order, addRecordParam);
     }
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        Map<Integer, OrderGoodsBo> addRecordParam = param.getBos().stream()
-        .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
-        .collect(Collectors.toMap(OrderGoodsBo::getProductId, Function.identity()));
-
-        Map<Integer, Integer> updateParam = addRecordParam.values().stream()
+        Map<Integer, Integer> updateParam = param.getBos().stream()
+            .filter(x -> OrderConstant.IS_GIFT_N.equals(x.getIsGift()))
             .collect(Collectors.toMap(OrderGoodsBo::getProductId, OrderGoodsBo::getGoodsNumber));
         dao.updateStockAndSales(param.getActivityId(), updateParam);
-        dao.addRecords(order, addRecordParam);
+
     }
 
     @Override

@@ -99,7 +99,7 @@ export const cn = {
   ordererStatus: '订单人状态',
   pendingPayment: '待付款',
   customerCancelled: '客户已取消',
-  sellerClosed: '卖家已关闭',
+  sellerClosed: '订单关闭',
   tobShipped: '待发货',
   shipped: '已发货',
   eeceivedGoods: '已收货',
