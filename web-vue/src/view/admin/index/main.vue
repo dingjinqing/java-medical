@@ -5,9 +5,9 @@
       class="admin_contant"
       v-show="flag"
     >
-      <LeftNavigation />
+      <LeftNavigation v-if="displayLeftNav" />
       <div class="rightContainer">
-        <Crumbs />
+        <Crumbs v-if="displayLeftNav" />
         <!-- <vue-scroll
           :ops="ops"
           style="height:100%"
@@ -73,6 +73,15 @@ export default {
     },
     activeFlag_ () {
       return this.activeFlag
+    },
+    displayLeftNav () {
+      let flag = true
+      switch (this.$route.name) {
+        case 'version_upgrade':
+          flag = false
+          break
+      }
+      return flag
     }
   },
   provide () { // 提供

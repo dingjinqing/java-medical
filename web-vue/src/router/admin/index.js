@@ -499,9 +499,9 @@ const routes = [{
               meta: 'goods_manage'
             },
             component: () =>
-                import(
-                  '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
-                )
+              import(
+                '@/view/admin/index/leftNavComponents/goods_manage/allGoods/saleOff/allGoodsSaleOff'
+              )
           },
           // 商品管理/仓库中
           {
@@ -947,6 +947,19 @@ const routes = [{
         component: () =>
           import(
             '@/view/admin/index/leftNavComponents/base_manger/actionRecord/actionRecord'
+          )
+      },
+      // 版本升级与续费
+      {
+        path: '/admin/home/main/versionUpgrade',
+        name: 'version_upgrade',
+        meta: {
+          crumbTitle: '',
+          meta: 'base_manager'
+        },
+        component: () =>
+          import(
+            '@/view/admin/index/leftNavComponents/base_manger/version_upgrade'
           )
       }
     ].concat(marketing, member, order, store)
