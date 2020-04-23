@@ -514,12 +514,17 @@ export default {
           'score_number': item.scoreNumber, // 需要积分数
           'limitSurplusFlag': item.limitSurplusFlag
         }
-        console.log(isExistence, obj)
-        if (isExistence.length === 0) {
-          this.ruleForm.send_coupon_list.push(obj)
-          this.couponBackData.push(item.id)
-        }
+        console.log(isExistence, obj, item)
+        // if (isExistence.length === 0) {
+        this.ruleForm.send_coupon_list.push(obj)
+        // }
       })
+      let arrBack = []
+      this.ruleForm.send_coupon_list.forEach((item, index) => {
+        arrBack.push(item.coupon_id)
+      })
+      console.log(arrBack)
+      this.couponBackData = arrBack
     },
     // 点击优惠券右上角删除icon
     handleToDelCoupon (index) {

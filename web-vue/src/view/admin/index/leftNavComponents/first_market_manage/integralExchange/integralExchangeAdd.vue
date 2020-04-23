@@ -380,21 +380,32 @@ export default {
   data () {
     var validateTableData1 = (rule, value, callback) => {
       console.log(value)
+      let flag = true
       value.forEach((item, index) => {
         if (index !== (value.length - 1)) {
           if (!Number(item.stock)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.cannotBeEmpty')))
           } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.tipsTwo')))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
+            flag = true
             callback(new Error('兑换价格或积分不能同时为空'))
-          } else {
-            callback()
+          } else if (this.id !== -1) {
+            if (Number(item.remainStock) > Number(item.goodsStock)) {
+              flag = true
+              callback(new Error('剩余兑换商品库存要小于商品库存'))
+            }
           }
         }
       })
+      if (flag) {
+        callback()
+      }
     }
     var validate2 = (rule, value, callback) => {
       console.log(value)
@@ -632,7 +643,7 @@ export default {
             if (this.id === -1 || this.isChangeGoods) {
               obj.stock = item.stock
             } else {
-              obj.stock = item.remainStock + item.saleNum
+              obj.stock = Number(item.remainStock) + Number(item.saleNum)
             }
 
             arr.push(obj)

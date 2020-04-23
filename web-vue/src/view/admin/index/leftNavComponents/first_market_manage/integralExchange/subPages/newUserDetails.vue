@@ -124,10 +124,8 @@ export default {
         mobile: this.mobileNum,
         userName: this.userName,
         inviteUserName: this.visityUserName,
-        page: {
-          'currentPage': this.pageParams.currentPage,
-          'pageRows': this.pageParams.pageRows
-        }
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': '20'
       }
       integralNewUserList(params).then(res => {
         console.log(res)
