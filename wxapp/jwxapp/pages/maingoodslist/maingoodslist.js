@@ -25,6 +25,7 @@ global.wxPage({
     specParams: {}, // 规格信息
     basicNumber: 0, // 多规格添加购物车时的基础数量
     basicLimit: null, // 多规格添加购物车时的限制
+    rule_id: '', // 规则id
   },
 
   /**
@@ -37,7 +38,6 @@ global.wxPage({
     that.setData({
       identity_id: Number(options.identity_id),
       store_id: Number(options.store_id),
-      rule_id: Number(options.rule_id),
       pIds: options.pIds ? JSON.parse(options.pIds) : [],
     })
     main_request(that);
@@ -215,6 +215,7 @@ global.wxPage({
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
         var change_goods_info = res.content;
+        var ruleId = ''
         // 已选个数
         change_goods_info.alreadyChangeNum = that.data.pIds.length
         change_goods_info.list.forEach(item => {
@@ -227,9 +228,12 @@ global.wxPage({
           if (item.isChecked == 1) {
             purchase_change_goods[item.prdId] = item.purchaseRuleId
           }
+          // 规则id
+          ruleId = item.purchaseRuleId
         })
         that.setData({
-          change_goods_info: change_goods_info
+          change_goods_info: change_goods_info,
+          rule_id: ruleId
         })
       } else {
         util.showModal("提示", res.message, function () {

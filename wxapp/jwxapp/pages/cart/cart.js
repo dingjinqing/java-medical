@@ -450,7 +450,7 @@ global.wxPage({
     })
     console.log(pIds)
     util.navigateTo({
-      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&rule_id=' + ruleId + '&pIds=' + JSON.stringify(pIds),
+      url: '/pages/maingoodslist/maingoodslist?identity_id=' + activityId + '&store_id=' + storeId + '&pIds=' + JSON.stringify(pIds),
     })
   },
 

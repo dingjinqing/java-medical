@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.upyun.UpException;
 import com.vpu.mp.db.shop.tables.*;
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.FormPageRecord;
+import com.vpu.mp.db.shop.tables.records.FormSubmitDetailsRecord;
+import com.vpu.mp.db.shop.tables.records.FormSubmitListRecord;
+import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.database.DslPlus;
@@ -34,6 +37,7 @@ import com.vpu.mp.service.pojo.wxapp.market.form.FormSubmitDataVo;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessParam;
 import com.vpu.mp.service.pojo.wxapp.market.form.FormSuccessVo;
 import com.vpu.mp.service.pojo.wxapp.share.FormPictorialRule;
+import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialFormImgPx;
 import com.vpu.mp.service.shop.coupon.CouponGiveService;
 import com.vpu.mp.service.shop.coupon.CouponService;
@@ -64,13 +68,11 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static com.vpu.mp.db.shop.tables.Code.CODE;
 import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_FORM_STATISTICS;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
 import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.*;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 import static com.vpu.mp.service.pojo.shop.member.score.ScoreStatusConstant.NO_USE_SCORE_STATUS;
-import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.*;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TRADE_FLOW_IN;
+import static com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum.TYPE_FORM_DECORATION_GIFT;
 import static com.vpu.mp.service.shop.order.store.StoreOrderService.HUNDRED;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 import static org.jooq.impl.DSL.*;
@@ -208,14 +210,10 @@ public class FormStatisticsService extends ShopBaseService {
         return vo;
     }
 
-    public void getFormPictorialCode(int pageId) {
-        CodeRecord record = db().select().from(CODE)
-            .where(CODE.TYPE.eq((short) 100))
-            .and(CODE.PARAM_ID.eq(String.valueOf(pageId)))
-            .fetchOneInto(CODE);
-
+    public String getFormPictorialCode(int pageId) {
         // 获取表单海报图片路径
         Tuple2<Integer, String> pictorial = generateFormPictorial(pageId, 0);
+        return pictorial.v2;
     }
 
     /**
@@ -233,7 +231,7 @@ public class FormStatisticsService extends ShopBaseService {
         // 构建海报标识规则
         FormPictorialRule rule = FormPictorialRule.builder().page_name(record.getPageName()).bg_img(StringUtils.isBlank(bgImg) ? FORM_DEFAULT_BG_IMG : bgImg).build();
         // 判断是否需要重新生成表单海报
-        PictorialRecord pictorialRecord = pictorialService.getPictorialFromDb(INTEGER_ZERO, pageId, (byte) 4);
+        PictorialRecord pictorialRecord = pictorialService.getPictorialFromDb(INTEGER_ZERO, pageId, PictorialConstant.FORM_STATISTICS_ACTION_SHARE);
         if (pictorialService.isNeedNewPictorial(Util.toJson(rule), pictorialRecord)) {
             log.debug("不需要重新生成表单海报，直接返回db中海报路径");
             return new Tuple2<>(0, pictorialRecord.getPath());
