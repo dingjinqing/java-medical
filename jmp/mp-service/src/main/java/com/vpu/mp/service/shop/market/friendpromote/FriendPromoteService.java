@@ -1062,6 +1062,10 @@ public class FriendPromoteService extends ShopBaseService {
      * @return 是否可助力信息
      */
     public CanPromote canPromote(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer userId,Integer launchId){
+        logger().info("*********");
+        logger().info("*promoteInfo*:"+promoteInfo);
+        logger().info("*promoteInfoId*:"+promoteInfo.getId());
+        logger().info("*********");
         CanPromote canPromote = new CanPromote();
         //是否发起
         if(promoteInfo.getPromoteStatus()==-1){
@@ -1078,6 +1082,13 @@ public class FriendPromoteService extends ShopBaseService {
         //判断当天助力次数限制
         if(promoteInfo.getPromoteTimesPerDay()>0){
             Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            logger().info("*********");
+            logger().info("*判断当天助力次数限制*");
+            logger().info("*********");
+            logger().info("用户单天助力次数限制："+promoteInfo.getPromoteTimesPerDay());
+            logger().info("用户对当前配置活动助力次数："+usedPromoteTimesCurrentDay);
+            logger().info("用户对当前发起活动助力次数："+launchIdTime);
             if (usedPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
                 canPromote.setCode((byte)0);
                 canPromote.setMsg((byte)2);
@@ -1093,6 +1104,11 @@ public class FriendPromoteService extends ShopBaseService {
         Integer ownPromoteTimes = promoteTimesInfo+1;
         //判断所有的助力次数限制
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
+        logger().info("*********");
+        logger().info("*判断所有的助力次数限制*");
+        logger().info("*********");
+        logger().info("用户对当前发起活动已经助力次数："+usedPromoteTimes);
+        logger().info("免费机会+分享授权机会："+ownPromoteTimes);
         if (usedPromoteTimes>=ownPromoteTimes){
             canPromote.setCode((byte)0);
             canPromote.setMsg((byte)3);
@@ -1313,6 +1329,8 @@ public class FriendPromoteService extends ShopBaseService {
             //返回参数错误
             throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
+        //设置活动id
+        promoteInfo.setId(record.getId());
         //活动状态：0未开始，1进行中，2已结束
         promoteInfo.setActStatus(getActStatus(param.getActCode()));
         //需要被助力申请信息
