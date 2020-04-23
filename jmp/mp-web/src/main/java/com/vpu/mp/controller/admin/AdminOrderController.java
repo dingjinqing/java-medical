@@ -81,12 +81,12 @@ public class AdminOrderController extends AdminBaseController {
 	}
 
     /**
-     * 	订单详情（不包括退款货、买单订单、虚拟商品订单）
+     * 	订单简略信息
      *
      * @param order
      * @return
      */
-    @PostMapping("/simple/get")
+    @PostMapping("/hover/get")
     public JsonResult getSimpleInfo(@RequestBody @Valid OrderParam order) {
         return success(shop().readOrder.getSimpleInfo(order.getOrderSn()));
     }
