@@ -230,9 +230,9 @@ public class GroupBuyPictorialService extends ShopBaseService {
         // 获取分享码
         String mpQrCode;
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(),goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("group_id=%d",param.getGroupId()));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("uid=%d&group_id=%d",param.getUserId(),param.getGroupId()));
         }
         BufferedImage qrCodeImage;
         try {

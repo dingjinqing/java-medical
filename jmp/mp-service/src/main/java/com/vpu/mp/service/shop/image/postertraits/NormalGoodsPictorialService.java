@@ -131,7 +131,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         }
 
         // 获取分享码
-        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsVo.getGoodsId(), null, null));
+        String mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(),goodsVo.getGoodsId(), null, null));
         BufferedImage qrCodeImage;
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));

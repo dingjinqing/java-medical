@@ -236,9 +236,9 @@ public class BargainPictorialService extends ShopBaseService {
         // 获取分享码
         String mpQrCode;
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("record_id=%d",param.getRecordId()));
+            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("uid=%d&record_id=%d",param.getUserId(),param.getRecordId()));
         }
         BufferedImage qrCodeImage;
         try {
