@@ -147,7 +147,7 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
 
     @Override
     public void processOrderEffective(OrderBeforeParam param,OrderInfoRecord order) throws MpException {
-
+        secKillProcessorDao.seckillService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
     }
 
     @Override

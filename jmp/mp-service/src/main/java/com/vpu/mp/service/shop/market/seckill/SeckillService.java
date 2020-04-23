@@ -1,35 +1,5 @@
 package com.vpu.mp.service.shop.market.seckill;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
-import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
-import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
-
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
@@ -52,16 +22,7 @@ import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SecKillProductVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillAddParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillDecoratePageListVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillGoodsPriceBo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillOrderExportVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillPageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillProductAddParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.seckill.SeckillVo;
+import com.vpu.mp.service.pojo.shop.market.seckill.*;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotalVo;
@@ -82,8 +43,29 @@ import com.vpu.mp.service.pojo.wxapp.market.seckill.SeckillCheckVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
-
+import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
+import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 
 /**
  * @author 王兵兵
@@ -95,15 +77,14 @@ public class SeckillService extends ShopBaseService{
 
     @Autowired
     public SeckillListService seckillList;
-
     @Autowired
     private QrCodeService qrCode;
-
     @Autowired
     private GoodsService goodsService;
-
     @Autowired
     protected DomainConfig domainConfig;
+    @Autowired
+    private TagService tagService;
 
     /**
      * 秒杀活动列表分页数据
@@ -230,6 +211,9 @@ public class SeckillService extends ShopBaseService{
                 }
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
+            if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
+                record.setActivityTagId(Util.listToString(param.getActivityTagId()));
+            }
             record.insert();
             Integer skId = record.getSkId();
             for(SeckillProductAddParam secKillProduct : param.getSecKillProduct()){
@@ -308,9 +292,7 @@ public class SeckillService extends ShopBaseService{
      *
      */
     public SeckillVo getSeckillById(Integer skId){
-        SecKillDefineRecord record = db().select(SEC_KILL_DEFINE.SK_ID,SEC_KILL_DEFINE.NAME,SEC_KILL_DEFINE.GOODS_ID,SEC_KILL_DEFINE.START_TIME,SEC_KILL_DEFINE.END_TIME,SEC_KILL_DEFINE.STOCK,SEC_KILL_DEFINE.FIRST,SEC_KILL_DEFINE.BASE_SALE,
-            SEC_KILL_DEFINE.LIMIT_AMOUNT,SEC_KILL_DEFINE.LIMIT_PAYTIME,SEC_KILL_DEFINE.FREE_FREIGHT,SEC_KILL_DEFINE.CARD_ID,SEC_KILL_DEFINE.SHARE_CONFIG).
-            from(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId)).fetchOneInto(SecKillDefineRecord.class);
+        SecKillDefineRecord record = getSeckillActById(skId);
         SeckillVo res = record.into(SeckillVo.class);
 
         res.setGoods(this.getSecKillGoods(skId));
@@ -321,6 +303,9 @@ public class SeckillService extends ShopBaseService{
                 res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
                 res.getShopShareConfig().setShareImg(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
             }
+        }
+        if(res.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(record.getActivityTagId())){
+            res.setTagList(tagService.getTagsById(Util.splitValueToList(record.getActivityTagId())));
         }
 
         return res;
@@ -794,4 +779,16 @@ public class SeckillService extends ShopBaseService{
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 给下单用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addActivityTag(Integer actId,Integer userId){
+        SecKillDefineRecord secKillDefineRecord = getSeckillActById(actId);
+        if(secKillDefineRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(secKillDefineRecord.getActivityTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(secKillDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_SEC_KILL,actId);
+        }
+    }
 }

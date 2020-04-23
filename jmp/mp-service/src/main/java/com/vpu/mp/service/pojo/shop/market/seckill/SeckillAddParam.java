@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -68,4 +69,18 @@ public class SeckillAddParam {
 
     /** 分享设置*/
     private PictorialShareConfig shareConfig;
+
+    /**
+     * 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    private Integer preTime;
+
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id列表
+     */
+    private List<Integer> activityTagId;
 }

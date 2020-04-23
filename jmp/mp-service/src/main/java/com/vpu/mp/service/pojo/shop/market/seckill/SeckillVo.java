@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.seckill;
 
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.member.card.SimpleMemberCardVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,6 +55,19 @@ public class SeckillVo {
 
     private String shareConfig;
     private PictorialShareConfigVo shopShareConfig;
+
+    /**
+     * 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    private Integer preTime;
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 标签列表
+     */
+    private List<TagVo> tagList;
 
     @Setter
     @Getter

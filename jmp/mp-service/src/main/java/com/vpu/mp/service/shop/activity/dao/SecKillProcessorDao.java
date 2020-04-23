@@ -49,7 +49,7 @@ import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DE
 public class SecKillProcessorDao extends ShopBaseService {
 
     @Autowired
-    SeckillService seckillService;
+    public SeckillService seckillService;
 
     /**
      * 获取商品集合内的秒杀信息

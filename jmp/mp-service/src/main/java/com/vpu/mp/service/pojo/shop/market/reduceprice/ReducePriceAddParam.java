@@ -69,6 +69,10 @@ public class ReducePriceAddParam {
     private PictorialShareConfig shareConfig;
 
     /**
+     * 预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数
+     */
+    private Integer preTime;
+    /**
      * 是否给参加活动的用户打标签，1是
      */
     private Byte activityTag;

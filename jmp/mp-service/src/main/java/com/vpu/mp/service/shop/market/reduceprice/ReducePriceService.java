@@ -78,7 +78,7 @@ public class ReducePriceService extends ShopBaseService {
             if (param.getShareConfig() != null) {
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
             }
-            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(param.getActivityTagId())){
+            if(CollectionUtils.isNotEmpty(param.getActivityTagId())){
                 record.setActivityTagId(Util.listToString(param.getActivityTagId()));
             }
             record.insert();
