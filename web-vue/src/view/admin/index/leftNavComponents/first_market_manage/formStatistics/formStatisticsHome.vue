@@ -505,9 +505,10 @@ export default {
     },
     // 点击了解更多
     handleToClickMore () {
-      // this.$router.push({
-
-      // })
+      console.log('了解更多')
+      this.$router.push({
+        path: '/admin/home/main/versionUpgrade'
+      })
     }
   }
 }
