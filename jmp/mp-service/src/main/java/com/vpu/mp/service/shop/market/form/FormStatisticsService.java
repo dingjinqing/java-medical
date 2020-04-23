@@ -248,7 +248,7 @@ public class FormStatisticsService extends ShopBaseService {
             // 获取海报图片路径
             Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
             // 将待分享图片上传到U盘云，并在数据库缓存记录
-            pictorialService.uploadToUpanYun(pictorialImg, path.v1(), rule, pageId, null, INTEGER_ZERO);
+            pictorialService.uploadToUpanYun(pictorialImg, path.v1(), rule, pageId,pageId, PictorialConstant.FORM_STATISTICS_ACTION_SHARE,null, INTEGER_ZERO);
             return new Tuple2<>(1, path.v1());
         } catch (IOException | UpException e) {
             log.error("表单海报图片创建失败：{}", ExceptionUtils.getStackTrace(e));
