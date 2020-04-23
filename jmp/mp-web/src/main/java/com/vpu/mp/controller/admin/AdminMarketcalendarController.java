@@ -136,7 +136,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 	 */
 	@GetMapping(value = "/api/admin/calendar/limitlist")
 	public JsonResult calendarList() {
-		return success(shop().calendarService.getListByYear(CalendarAction.OVERVIEW));
+		return success(shop().calendarService.getOverviewList());
 	}
 	
 }

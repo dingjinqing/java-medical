@@ -105,12 +105,6 @@ public class MarketCalendarService extends ShopBaseService {
 						.and(DSL.left(MARKET_CALENDAR.EVENT_TIME.cast(String.class), 4).eq(year)))
 				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
 		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
-		if (Objects.equal(year, CalendarAction.OVERVIEW)) {
-			calendarList = db().selectFrom(MARKET_CALENDAR)
-					.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
-							.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
-					.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(2).fetchInto(MarketCalendarVo.class);
-		}
 		for (int i = 1; i < 13; i++) {
 			MarketListData data = new MarketListData();
 			if (i < 10) {
@@ -425,6 +419,26 @@ public class MarketCalendarService extends ShopBaseService {
 		}
 		vo.setActInfo(actInfoList);
 		return vo;
+	}
+	
+	/**
+	 * 概览用的营销日历
+	 * @return
+	 */
+	public List<MarketCalendarVo> getOverviewList() {
+		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
+				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+						.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
+				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(3).fetchInto(MarketCalendarVo.class);
+		for (MarketCalendarVo item : calendarList) {
+			item = eventStatus(item);
+			if (item.getEventStatus().equals(CalendarAction.ONE)) {
+				int days = (int) ((item.getEventTime().getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24L));
+				item.setDownTime(days);
+			}
+		}
+		return calendarList;
 	}
 
 }
