@@ -36,8 +36,7 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		for (CalendarAct calendarAct : param.getCalendarAct()) {
 			String[] strings = saas.shop.version.verifyVerPurview(shopId(), calendarAct.getActivityType());
 			if(strings[0].equals("false")) {
-				//TODO 您没有营销活动xxx的权限
-				 return this.fail(JsonResultCode.CODE_PARAM_ERROR,", "+calendarAct.getActivityType());
+				 return this.fail(JsonResultCode.SOME_NO_AUTH,", "+calendarAct.getActivityType());
 			}
 		}
 		if (act.equals(CalendarAction.ADD)) {
