@@ -302,10 +302,11 @@ global.wxPage({
             has_user: 1
           })
         }
-        // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-        //   username: user_name,
-        //   user_avatar: user_avatar
-        // });
+        util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+          userId: launch_user_id,
+          launchId: launch_id,
+          type: 1
+        });
       } else {
         wx.getUserInfo({
           success: res => {
@@ -313,10 +314,11 @@ global.wxPage({
             var user_name = e.detail.userInfo.nickName;
             util.setCache("nickName", user_name);
             util.setCache("avatarUrl", user_avatar);
-            // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-            //   username: user_name,
-            //   user_avatar: user_avatar
-            // });
+            util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+              userId: launch_user_id,
+              launchId: launch_id,
+              type: 1
+            });
             if (promote_info.promoteCondition == 1) {
               that.setData({
                 has_user: 1
@@ -410,7 +412,7 @@ function shareAdd(that) {
       util.showModal('提示', res.message);
       return false
     }
-  }, { userId: launch_user_id, launchId: launch_id });
+  }, { userId: launch_user_id, launchId: launch_id, type: 0 });
 };
 // 发起助力
 function launchAct(that) {
