@@ -211,6 +211,7 @@
           :tuneUpChooseGoods="tuneUpChooseGoods"
           @resultGoodsDatas="choosingGoodsResult"
           :chooseGoodsBack="goodsId"
+          :checkedNumMax="100"
         />
       </div>
       <div class="table">
@@ -277,6 +278,14 @@
           name="first"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom: 10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则1：购满'+ purcahse_rule1.fullPrice +'元，加价'+purcahse_rule1.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
               @click="showChoosingGoods1"
@@ -288,6 +297,7 @@
               :tuneUpChooseGoods="tuneUpChooseGoods1"
               @resultGoodsDatas="choosingGoodsResult1"
               :chooseGoodsBack="purcahse_rule1.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
@@ -332,6 +342,14 @@
           v-if="rule_num >= 2"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom: 10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则2：购满'+ purcahse_rule2.fullPrice +'元，加价'+purcahse_rule2.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
               size="small"
@@ -343,6 +361,7 @@
               :tuneUpChooseGoods="tuneUpChooseGoods2"
               @resultGoodsDatas="choosingGoodsResult2"
               :chooseGoodsBack="purcahse_rule2.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
@@ -387,6 +406,14 @@
           v-if="rule_num === 3"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom:10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则3：购满'+ purcahse_rule3.fullPrice +'元，加价'+purcahse_rule3.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
               size="small"
@@ -398,6 +425,7 @@
               :tuneUpChooseGoods="tuneUpChooseGoods3"
               @resultGoodsDatas="choosingGoodsResult3"
               :chooseGoodsBack="purcahse_rule3.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
