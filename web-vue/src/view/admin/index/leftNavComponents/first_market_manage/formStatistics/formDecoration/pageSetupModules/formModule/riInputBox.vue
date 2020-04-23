@@ -23,6 +23,7 @@
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
+            :maxlength="20"
           ></el-input>
         </div>
         <div class="list">
@@ -34,6 +35,7 @@
           <el-input
             v-model="modulesSaveData.placeholder"
             size="small"
+            :maxlength="20"
             :placeholder="$t('formDecorationModel.hintTip')"
           ></el-input>
         </div>
