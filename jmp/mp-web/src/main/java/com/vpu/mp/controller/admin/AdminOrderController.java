@@ -86,7 +86,7 @@ public class AdminOrderController extends AdminBaseController {
      * @param order
      * @return
      */
-    @PostMapping("/hover/get")
+    @PostMapping("/simple")
     public JsonResult getSimpleInfo(@RequestBody @Valid OrderParam order) {
         return success(shop().readOrder.getSimpleInfo(order.getOrderSn()));
     }
