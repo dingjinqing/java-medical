@@ -1,66 +1,9 @@
 package com.vpu.mp.service.shop.market.increasepurchase;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
-import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
-import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
-import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONCAT_WS_SEPARATOR;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ONE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_TWO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.CONDITION_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ONE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.FLAG_ZERO;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.GROUPCONCAT_SEPARATOR;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.IDENTITY_ID;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_ALL;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_EXPIRED;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_PREPARE;
-import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.PURCHASE_TERMINATED;
-import static org.jooq.impl.DSL.and;
-import static org.jooq.impl.DSL.groupConcat;
-import static org.jooq.impl.DSL.min;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record11;
-import org.jooq.Record4;
-import org.jooq.Record7;
-import org.jooq.Record8;
-import org.jooq.Record9;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.Goods;
-import com.vpu.mp.db.shop.tables.OrderGoods;
-import com.vpu.mp.db.shop.tables.OrderInfo;
-import com.vpu.mp.db.shop.tables.PurchasePriceDefine;
-import com.vpu.mp.db.shop.tables.PurchasePriceRule;
 import com.vpu.mp.db.shop.tables.User;
+import com.vpu.mp.db.shop.tables.*;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
@@ -77,20 +20,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.AddPurchaseParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.GoodsInfo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseDetailVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseRule;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseShowVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseStatusParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionDetailVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionGoodsInfo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.RedemptionOrderVo;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePriorityParam;
-import com.vpu.mp.service.pojo.shop.market.increasepurchase.UpdatePurchaseParam;
+import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -108,9 +38,34 @@ import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.GoodsCardCoupleService;
 import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.user.cart.CartService;
-
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
+import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
+import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
+import static com.vpu.mp.service.pojo.shop.market.form.FormConstant.MAPPER;
+import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.*;
+import static org.jooq.impl.DSL.*;
 
 /**
  * @author liufei
@@ -808,7 +763,6 @@ public class IncreasePurchaseService extends ShopBaseService {
         vo.setList(list);
         vo.setMaxChangePurchase(purchasePriceDefineRecord.getMaxChangePurchase());
         vo.setAlreadyChangeNum(cartTotalGoodsNumber);
-
         return vo;
     }
 
