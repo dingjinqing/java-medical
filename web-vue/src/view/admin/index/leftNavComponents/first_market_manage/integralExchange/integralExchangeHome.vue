@@ -350,10 +350,8 @@ export default {
     handleToInit () {
       let params = {
         'actState': this.actState,
-        'page': {
-          'currentPage': this.pageParams.currentPage,
-          'pageRows': '20'
-        }
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': '20'
       }
       integralExchangeList(params).then(res => {
         console.log(res)
