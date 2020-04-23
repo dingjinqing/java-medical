@@ -1061,7 +1061,7 @@ public class FriendPromoteService extends ShopBaseService {
         Integer ownPromoteTimes = promoteTimesInfo+1;
         //判断所有的助力次数限制
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
-        if (usedPromoteTimes>ownPromoteTimes){
+        if (usedPromoteTimes>=ownPromoteTimes){
             canPromote.setCode((byte)0);
             canPromote.setMsg((byte)3);
             return canPromote;
@@ -1344,7 +1344,7 @@ public class FriendPromoteService extends ShopBaseService {
 
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
-        promoteVo.setCanShare(canShareTimes);
+        promoteVo.setCanShare(promoteInfo.getCanShare());
         return promoteVo;
     }
 
@@ -1519,7 +1519,10 @@ public class FriendPromoteService extends ShopBaseService {
      * @param param 用户id 发起id
      * @return flag
      */
-    public AddPromoteTimesVo addPromoteTimes(PromoteParam param){
+    public AddPromoteTimesVo addPromoteTimes(PromoteShareOrAuthParam param){
+        PromoteParam promoteParam = new PromoteParam();
+        promoteParam.setUserId(param.getUserId());
+        promoteParam.setLaunchId(param.getLaunchId());
         AddPromoteTimesVo vo = new AddPromoteTimesVo();
         //分享可得助力次数
         Integer shareCreateTimes = addShareTimesInfo(param.getLaunchId());
@@ -1531,8 +1534,13 @@ public class FriendPromoteService extends ShopBaseService {
             return vo;
         }
         Integer addNum = 1;
-        Integer shareTimes = 1;
-        Integer affectRows = addUserPromoteTimes(param,addNum,shareTimes);
+        Integer shareTimes = 1 ;
+        if (param.getType()==1){
+            shareTimes = 0;
+        }
+
+
+        Integer affectRows = addUserPromoteTimes(promoteParam,addNum,shareTimes,param.getType());
         if (affectRows == 0){
             vo.setFlag(0);
             return vo;
@@ -1549,23 +1557,37 @@ public class FriendPromoteService extends ShopBaseService {
      * @param shareTimes 分享次数
      * @return 成功条数
      */
-    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes){
+    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes,Integer type){
         //次数详情
         FriendPromoteTimesRecord promoteTimesInfo = promoteTimesInfo(param);
-        Integer affectRows;
+        Integer affectRows = 0;
+        Byte isAuth = type == 0 ?(byte) 0:(byte)1;
         if (promoteTimesInfo!=null){
             shareTimes = shareTimes + promoteTimesInfo.getShareTimes();
             addNum = addNum + promoteTimesInfo.getOwnPromoteTimes();
-            affectRows = db().update(FRIEND_PROMOTE_TIMES)
-                .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
-                .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
-                .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
-                .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
-                .execute();
+            //分享
+            if (isAuth==(byte)0){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
+            //授权
+            if (isAuth==(byte)1){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .set(FRIEND_PROMOTE_TIMES.IS_AUTH,isAuth)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
         }else {
             affectRows = db().insertInto(FRIEND_PROMOTE_TIMES,FRIEND_PROMOTE_TIMES.SHARE_TIMES,FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,
-                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID)
-                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId())
+                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID,FRIEND_PROMOTE_TIMES.IS_AUTH)
+                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId(),isAuth)
                 .execute();
         }
         return affectRows;

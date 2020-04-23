@@ -257,7 +257,7 @@ export default {
     border-radius: 4px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
   }
 }
 </style>
