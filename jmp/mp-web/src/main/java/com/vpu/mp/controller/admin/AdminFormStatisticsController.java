@@ -95,8 +95,7 @@ public class AdminFormStatisticsController extends AdminBaseController {
      */
     @GetMapping("/api/admin/formstatistics/pictorialCode/{pageId}")
     public JsonResult getPictorialCode(@PathVariable int pageId) {
-        shop().formService.getFormPictorialCode(pageId);
-        return success();
+        return success(shop().formService.getFormPictorialCode(pageId));
     }
 
     /**
