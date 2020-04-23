@@ -86,23 +86,25 @@ public class PictorialIntegrationService extends ShopBaseService {
      * @return {@link GoodsShareInfo}
      */
     public GoodsShareInfo getActivityShareInfo(GoodsShareBaseParam param) {
+        ShareBaseService shareBaseService;
         if (param instanceof GroupBuyShareInfoParam) {
-            return groupBuyPictorialService.getGroupBuyShareInfo((GroupBuyShareInfoParam) param);
+             shareBaseService = groupBuyPictorialService;
         } else if (param instanceof BargainShareInfoParam) {
-            return bargainPictorialService.getBargainShareInfo((BargainShareInfoParam) param);
+            shareBaseService = bargainPictorialService;
         } else if (param instanceof GroupDrawShareInfoParam) {
-            return groupDrawPictorialService.getGroupDrawShareInfo((GroupDrawShareInfoParam) param);
+            shareBaseService = groupDrawPictorialService;
         } else if (param instanceof PreSaleShareInfoParam) {
-            return preSalePictorialService.getPreSaleShareInfo((PreSaleShareInfoParam) param);
+            shareBaseService = preSalePictorialService;
         } else if (param instanceof ReducePriceShareInfoParam) {
-            return reducePricePictorialService.getReducePriceShareInfo((ReducePriceShareInfoParam) param);
+            shareBaseService = reducePricePictorialService;
         } else if (param instanceof FirstSpecialShareInfoParam) {
-            return firstSpecialPictorialService.getFirstSpecialShareInfo((FirstSpecialShareInfoParam) param);
+            shareBaseService = firstSpecialPictorialService;
         } else if(param instanceof SeckillShareInfoParam){
-            return seckillPictorialService.getSeckillShareInfo((SeckillShareInfoParam) param);
+            shareBaseService = seckillPictorialService;
         } else {
-            return normalGoodsPictorialService.getNormalGoodsShareInfo(param);
+            shareBaseService = normalGoodsPictorialService;
         }
+        return shareBaseService.getShareInfo(param);
     }
 
     public GoodsPictorialInfo getActivityPictorialInfo(GoodsShareBaseParam param) {

@@ -11,7 +11,6 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,37 +31,26 @@ public class NormalGoodsPictorialService extends ShareBaseService {
     @Autowired
     GoodsService goodsService;
     @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 普通商品-分享图片生成
-     *
-     * @param param 商品分享参数
-     */
-    public GoodsShareInfo getNormalGoodsShareInfo(GoodsShareBaseParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "商品不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
-        GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
-        PictorialShareConfig  shareConfig= PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
-        return parsePictorialShareConfig(shareConfig,null,goodsRecord,param);
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return null;
     }
 
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
+        return PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
+    }
+
+    @Override
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return goodsRecord.getGoodsImg();
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
     }
     /**

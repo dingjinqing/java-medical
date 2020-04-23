@@ -14,8 +14,6 @@ import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
 import org.jooq.Record;
@@ -42,41 +40,17 @@ public class GroupBuyPictorialService extends ShareBaseService {
     @Autowired
     private GroupBuyService groupBuyService;
     @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 拼团活动-分享图片生成
-     *
-     * @param param 拼团分享参数
-     * @return 拼团分享图片信息
-     */
-    public GoodsShareInfo getGroupBuyShareInfo(GroupBuyShareInfoParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return  groupBuyService.getGroupBuyRecord(activityId);
+    }
 
-        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
-        // 拼团活动信息不可用
-        if (groupBuyDefineRecord == null) {
-            shareLog(getActivityName(), "拼团活动信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return shareInfoVo;
-        }
-
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 拼团商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "拼团商品信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
-
-        PictorialShareConfig shareConfig = Util.parseJson(groupBuyDefineRecord.getShareConfig(), PictorialShareConfig.class);
-        return parsePictorialShareConfig(shareConfig,groupBuyDefineRecord,goodsRecord,param);
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        GroupBuyDefineRecord record= (GroupBuyDefineRecord) aRecord;
+        return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
 
     /**
@@ -85,7 +59,7 @@ public class GroupBuyPictorialService extends ShareBaseService {
     private static final String PIN_GROUP_BG_IMG = "image/wxapp/pin_group_bg.jpg";
 
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupBuyDefineRecord groupBuyDefineRecord = (GroupBuyDefineRecord) aRecord;
         GroupBuyShareInfoParam param = (GroupBuyShareInfoParam) baseParam;
 
@@ -133,7 +107,7 @@ public class GroupBuyPictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupBuyDefineRecord activityRecord = (GroupBuyDefineRecord) aRecord;
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_GROUP_BUY_DOC, "", "messages", activityRecord.getLimitAmount(), baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
     }
@@ -155,7 +129,6 @@ public class GroupBuyPictorialService extends ShareBaseService {
             goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
             return goodsPictorialInfo;
         }
-
         GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
         if (goodsRecord == null) {
             pictorialLog(getActivityName(), "商品信息已删除或失效");
@@ -165,17 +138,12 @@ public class GroupBuyPictorialService extends ShareBaseService {
         pictorialLog(getActivityName(), "读取拼团海报配置信息");
         PictorialShareConfig shareConfig = Util.parseJson(groupBuyDefineRecord.getShareConfig(), PictorialShareConfig.class);
 
-
-        PictorialUserInfo pictorialUserInfo;
-        try {
-            pictorialLog(getActivityName(), "获取用户信息");
-            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
+        PictorialUserInfo userInfo = getUserInfo(param.getUserId(), shop);
+        if (userInfo == null) {
             goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
             return goodsPictorialInfo;
         }
-        getGroupBuyPictorialImg(pictorialUserInfo, shareConfig, groupBuyDefineRecord, goodsRecord, shop, param, goodsPictorialInfo);
+        getGroupBuyPictorialImg(userInfo, shareConfig, groupBuyDefineRecord, goodsRecord, shop, param, goodsPictorialInfo);
         return goodsPictorialInfo;
     }
 

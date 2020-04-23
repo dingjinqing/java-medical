@@ -45,30 +45,15 @@ public class ReducePricePictorialService extends ShareBaseService {
     @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 限时降价获取分享图片
-     *
-     * @param param 分享参数
-     * @return 分享信息
-     */
-    public GoodsShareInfo getReducePriceShareInfo(ReducePriceShareInfoParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
-        // 活动信息不可用
-        if (reducePriceRecord == null) {
-            shareLog(getActivityName(), "限时降价活动信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return shareInfoVo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "限时降价商品信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
-        PictorialShareConfig shareConfig = Util.parseJson(reducePriceRecord.getShareConfig(), PictorialShareConfig.class);
-        return parsePictorialShareConfig(shareConfig,reducePriceRecord,goodsRecord,param);
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return reducePriceService.getReducePriceRecordCanDel(activityId);
+    }
+
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        ReducePriceRecord record = (ReducePriceRecord) aRecord;
+        return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
 
     /**
@@ -76,7 +61,7 @@ public class ReducePricePictorialService extends ShareBaseService {
      */
     private static final String REDUCE_PRICE_SHARE_BG_IMG = "image/wxapp/reduce_price_share.png";
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         ReducePriceRecord reducePriceRecord = (ReducePriceRecord) aRecord;
         ReducePriceShareInfoParam param= (ReducePriceShareInfoParam) baseParam;
 
@@ -111,7 +96,7 @@ public class ReducePricePictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
     }
 

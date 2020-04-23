@@ -15,8 +15,6 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSharePostConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.groupdraw.GroupDrawService;
 import org.jooq.Record;
@@ -42,39 +40,17 @@ public class GroupDrawPictorialService extends ShareBaseService {
     @Autowired
     private GroupDrawService groupDrawService;
     @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 拼团抽奖活动获取分享图片
-     *
-     * @param param 分享参数
-     * @return 分享信息
-     */
-    public GoodsShareInfo getGroupDrawShareInfo(GroupDrawShareInfoParam param) {
-        GoodsShareInfo goodsShareInfo = new GoodsShareInfo();
-        GroupDrawRecord groupDrawRecord = groupDrawService.getById(param.getActivityId());
-        // 拼团活动信息不可用
-        if (groupDrawRecord == null) {
-            shareLog(getActivityName(), "拼团抽奖活动信息不可用");
-            goodsShareInfo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return goodsShareInfo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 拼团商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "拼团抽奖商品信息不可用");
-            goodsShareInfo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return goodsShareInfo;
-        }
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return  groupDrawService.getById(activityId);
+    }
+
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
         GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
-        PictorialShareConfig  shareConfig= PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
-        return parsePictorialShareConfig(shareConfig,groupDrawRecord,goodsRecord,param);
+        return PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
     }
 
     /**
@@ -83,7 +59,7 @@ public class GroupDrawPictorialService extends ShareBaseService {
     private static final String GROUP_DRAW_BG_IMG = "image/wxapp/group_draw.png";
 
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         GroupDrawRecord groupDrawRecord= (GroupDrawRecord) aRecord;
         GroupDrawShareInfoParam param = (GroupDrawShareInfoParam) baseParam;
 
@@ -135,7 +111,7 @@ public class GroupDrawPictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_GROUP_DRAW_SHARE_DOC, "","messages", baseParam.getRealPrice());
     }
 

@@ -47,33 +47,15 @@ public class PreSalePictorialService extends ShareBaseService {
     @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 预售活动获取分享图片
-     *
-     * @param param 分享参数
-     * @return 分享信息
-     */
-    public GoodsShareInfo getPreSaleShareInfo(PreSaleShareInfoParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        PresaleRecord presaleRecord = preSaleService.getPresaleRecord(param.getActivityId());
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return   preSaleService.getPresaleRecord(activityId);
+    }
 
-        // 预售活动信息不可用
-        if (presaleRecord == null) {
-            shareLog(getActivityName(), "定金膨胀活动信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return shareInfoVo;
-        }
-
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "定金膨胀商品信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
-
-        PictorialShareConfig shareConfig = Util.parseJson(presaleRecord.getShareConfig(), PictorialShareConfig.class);
-        return parsePictorialShareConfig(shareConfig,presaleRecord,goodsRecord,param);
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        PresaleRecord record = (PresaleRecord) aRecord;
+        return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
 
     /**
@@ -81,7 +63,7 @@ public class PreSalePictorialService extends ShareBaseService {
      */
     private static final String PRE_SALE_BG_IMG = "image/wxapp/presale.png";
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         PresaleRecord presaleRecord = (PresaleRecord) aRecord;
         PreSaleShareInfoParam param = (PreSaleShareInfoParam) baseParam;
 
@@ -117,7 +99,7 @@ public class PreSalePictorialService extends ShareBaseService {
             ImageUtil.addFontWithLine(bgBufferImg, textStartX, toTop + 100, moneyFlag + linePrice, ImageUtil.SourceHanSansCN(Font.PLAIN, 18),PictorialImgPx.LINE_PRICE_COLOR);
 
             // 上传u盘云并缓存入库
-            String relativePath = moneyFlag+createFilePath(presaleRecord.getId());
+            String relativePath = createFilePath(presaleRecord.getId());
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), presaleRecord.getUpdateTime());
             pictorialService.uploadToUpanYun(bgBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.PRE_SALE_ACTION_SHARE, pictorialRecord, param.getUserId());
 
@@ -131,7 +113,7 @@ public class PreSalePictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         PreSaleShareInfoParam param= (PreSaleShareInfoParam) baseParam;
         return Util.translateMessage(lang, JsonResultMessage.WX_MA_PRESALE_SHARE_DOC, "", "messages", param.getDepositPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
     }

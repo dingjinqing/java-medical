@@ -13,8 +13,6 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import org.jooq.Record;
@@ -36,39 +34,17 @@ public class FirstSpecialPictorialService extends ShareBaseService {
     @Autowired
     FirstSpecialService firstSpecialService;
     @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 首单特惠获取分享图片
-     *
-     * @param param 分享参数
-     * @return 分享信息
-     */
-    public GoodsShareInfo getFirstSpecialShareInfo(FirstSpecialShareInfoParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        FirstSpecialRecord firstSpecialRecord = firstSpecialService.getFirstSpecialRecord(param.getActivityId());
-        // 活动信息不可用
-        if (firstSpecialRecord == null) {
-            shareLog(getActivityName(), "首单特惠活动信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return shareInfoVo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "首单特惠商品信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return  firstSpecialService.getFirstSpecialRecord(activityId);
+    }
 
-        PictorialShareConfig shareConfig = Util.parseJson(firstSpecialRecord.getShareConfig(), PictorialShareConfig.class);
-        return parsePictorialShareConfig(shareConfig,firstSpecialRecord,goodsRecord,param);
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        FirstSpecialRecord record= (FirstSpecialRecord) aRecord;
+        return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
 
     /**
@@ -77,7 +53,7 @@ public class FirstSpecialPictorialService extends ShareBaseService {
     private static final String FIRST_SPECIAL_SHARE_BG_IMG = "image/wxapp/first_special_share.png";
 
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         FirstSpecialRecord firstSpecialRecord = (FirstSpecialRecord) aRecord;
         FirstSpecialShareInfoParam param = (FirstSpecialShareInfoParam) baseParam;
 
@@ -114,7 +90,7 @@ public class FirstSpecialPictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang,Record aRecord,GoodsRecord goodsRecord,GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang,Record aRecord,GoodsRecord goodsRecord,GoodsShareBaseParam baseParam) {
        return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, null, "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
     }
     /**
@@ -140,17 +116,12 @@ public class FirstSpecialPictorialService extends ShareBaseService {
         }
         PictorialShareConfig shareConfig = Util.parseJson(firstSpecialRecord.getShareConfig(), PictorialShareConfig.class);
 
-        PictorialUserInfo pictorialUserInfo;
-        try {
-            pictorialLog(getActivityName(),"获取用户信息");
-            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
+        PictorialUserInfo userInfo = getUserInfo(param.getUserId(), shop);
+        if (userInfo == null) {
             goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
             return goodsPictorialInfo;
         }
-
-        getFirstSpecialPictorialImg(pictorialUserInfo,shareConfig,firstSpecialRecord,goodsRecord,shop,param,goodsPictorialInfo);
+        getFirstSpecialPictorialImg(userInfo,shareConfig,firstSpecialRecord,goodsRecord,shop,param,goodsPictorialInfo);
         return goodsPictorialInfo;
     }
 

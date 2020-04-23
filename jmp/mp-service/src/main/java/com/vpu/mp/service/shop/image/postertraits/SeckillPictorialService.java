@@ -13,8 +13,6 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import org.jooq.Record;
@@ -39,40 +37,17 @@ public class SeckillPictorialService extends ShareBaseService {
     @Autowired
     private SeckillService seckillService;
     @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
     private QrCodeService qrCodeService;
 
-    /**
-     * 秒杀活动-分享图片生成
-     *
-     * @param param 秒杀分享参数
-     * @return 秒杀分享图片信息
-     */
-    public GoodsShareInfo getSeckillShareInfo(SeckillShareInfoParam param) {
-        GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        SecKillDefineRecord secKillDefineRecord = seckillService.getSeckillActById(param.getActivityId());
-        // 拼团活动信息不可用
-        if (secKillDefineRecord == null) {
-            shareLog(getActivityName(), "秒杀活动信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.ACTIVITY_DELETED);
-            return shareInfoVo;
-        }
+    @Override
+     Record getActivityRecord(Integer activityId) {
+        return   seckillService.getSeckillActById(activityId);
+    }
 
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        // 拼团商品信息不可用
-        if (goodsRecord == null) {
-            shareLog(getActivityName(), "秒杀商品信息不可用");
-            shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
-            return shareInfoVo;
-        }
-
-        PictorialShareConfig shareConfig = Util.parseJson(secKillDefineRecord.getShareConfig(), PictorialShareConfig.class);
-        return parsePictorialShareConfig(shareConfig,secKillDefineRecord,goodsRecord,param);
+    @Override
+     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+        SecKillDefineRecord record = (SecKillDefineRecord) aRecord;
+        return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
 
     /**
@@ -80,7 +55,7 @@ public class SeckillPictorialService extends ShareBaseService {
      */
     private static final String SECKILL_BG_IMG = "image/wxapp/sec_kill_bg.jpg";
     @Override
-    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         SecKillDefineRecord secKillDefineRecord = (SecKillDefineRecord) aRecord;
         SeckillShareInfoParam param = (SeckillShareInfoParam) baseParam;
 
@@ -130,7 +105,7 @@ public class SeckillPictorialService extends ShareBaseService {
     }
 
     @Override
-    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         return  Util.translateMessage(lang, JsonResultMessage.WX_MA_SECKILL_DOC, "", "messages",  baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
     }
 
