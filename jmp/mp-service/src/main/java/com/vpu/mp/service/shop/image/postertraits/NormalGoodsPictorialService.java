@@ -1,8 +1,8 @@
 package com.vpu.mp.service.shop.image.postertraits;
 
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
-import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
@@ -13,6 +13,7 @@ import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import java.net.URL;
  * @date 2020年01月17日
  */
 @Service
-public class NormalGoodsPictorialService extends ShopBaseService {
+public class NormalGoodsPictorialService extends ShareBaseService {
     @Autowired
     GoodsService goodsService;
     @Autowired
@@ -44,39 +45,26 @@ public class NormalGoodsPictorialService extends ShopBaseService {
      */
     public GoodsShareInfo getNormalGoodsShareInfo(GoodsShareBaseParam param) {
         GoodsShareInfo shareInfoVo = new GoodsShareInfo();
-        GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
-
-        if (goodsVo == null) {
-            log("share", "商品不可用");
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (goodsRecord == null) {
+            shareLog(getActivityName(), "商品不可用");
             shareInfoVo.setShareCode(PictorialConstant.GOODS_DELETED);
             return shareInfoVo;
         }
-        GoodsSharePostConfig shareConfig = goodsVo.getGoodsSharePostConfig();
-
-        // 用户自定义分享样式
-        if (PictorialShareConfig.CUSTOMER_STYLE.equals(shareConfig.getShareAction())) {
-            if (PictorialShareConfig.DEFAULT_IMG.equals(shareConfig.getShareImgAction())) {
-                shareInfoVo.setImgUrl(goodsVo.getGoodsImg());
-            } else {
-                shareInfoVo.setImgUrl(shareConfig.getShareImgPath());
-            }
-            shareInfoVo.setShareDoc(shareConfig.getShareDoc());
-        } else {
-            // 使用默认分享图片样式
-            shareInfoVo.setImgUrl(goodsVo.getGoodsImg());
-            ShopRecord shop = saas.shop.getShopById(getShopId());
-            String shareDoc = null;
-            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsVo.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), false);
-            if (shareDoc == null) {
-                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", param.getUserName(), goodsVo.getGoodsName());
-            }
-            shareInfoVo.setShareDoc(shareDoc);
-        }
-        shareInfoVo.setImgUrl(imageService.getImgFullUrl(shareInfoVo.getImgUrl()));
-
-        return shareInfoVo;
+        GoodsSharePostConfig goodsShareConfig = Util.parseJson(goodsRecord.getShareConfig(), GoodsSharePostConfig.class);
+        PictorialShareConfig  shareConfig= PictorialShareConfig.createFromGoodsShareInfoConfig(goodsShareConfig);
+        return parsePictorialShareConfig(shareConfig,null,goodsRecord,param);
     }
 
+    @Override
+    protected String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        return goodsRecord.getGoodsImg();
+    }
+
+    @Override
+    protected String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
+    }
     /**
      * 普通商品海报生成接口
      *
@@ -88,7 +76,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
 
         GoodsVo goodsVo = goodsService.selectGoodsShareInfo(param.getTargetId());
         if (goodsVo == null) {
-            log("pictorial", "商品不可用");
+            pictorialLog(getActivityName(), "商品不可用");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
             return goodsPictorialInfo;
         }
@@ -98,10 +86,10 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         // 用户信息
         PictorialUserInfo pictorialUserInfo;
         try {
-            log("pictorial", "获取用户信息");
+            pictorialLog(getActivityName(), "获取用户信息");
             pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
         } catch (IOException e) {
-            log("pictorial", "获取用户信息失败：" + e.getMessage());
+            pictorialLog(getActivityName(),"获取用户信息失败：" + e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
             return goodsPictorialInfo;
         }
@@ -125,7 +113,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         try {
             goodsImage = ImageIO.read(new URL(imageService.getImgFullUrl(goodsImg)));
         } catch (IOException e) {
-            logger().debug("小程序-生成图片-获取商品图片错误，图片地址{}：{}", imageService.getImgFullUrl(goodsImg), e.getMessage());
+            pictorialLog(getActivityName(), "获取商品图片信息失败：" + e.getMessage());
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return goodsPictorialInfo;
         }
@@ -136,7 +124,7 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         try {
             qrCodeImage = ImageIO.read(new URL(mpQrCode));
         } catch (IOException e) {
-            log("pictorial", "获取二维码失败");
+            pictorialLog(getActivityName(), "获取二维码失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
             return goodsPictorialInfo;
         }
@@ -153,8 +141,8 @@ public class NormalGoodsPictorialService extends ShopBaseService {
         return goodsPictorialInfo;
     }
 
-    private void log(String share, String msg) {
-        logger().debug("小程序-普通商品{}-{}", share, msg);
+    @Override
+    protected String getActivityName() {
+        return "normal_goods";
     }
-
 }
