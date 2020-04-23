@@ -92,4 +92,16 @@ public class CouponListVo {
          * 指定商家分类可用
          */
         private String     recommendSortId;
+        /**
+         * 是否领取优惠券用户打标签 0:否；1：是
+         */
+        private Byte couponTag;
+        /**
+         * 领取优惠券用户打标签id
+         */
+        private String couponTagId;
+        /**
+         * 是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用
+         */
+        private Byte couponOverlay;
 }
