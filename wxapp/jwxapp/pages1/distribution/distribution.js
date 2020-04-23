@@ -233,7 +233,7 @@ global.wxPage({
   onShareAppMessage: function (res) {
     var that = this;
     return {
-      path: 'pages/distributionspread/distributionspread?invite_id=' + util.getCache('user_id'),
+      path: 'pages/distributionspread/distributionspread?inviteId=' + util.getCache('user_id'),
       title: util.getCache('nickName') + '邀请你免费赚钱啦，快来申请吧!',
       imageUrl: that.data.imageUrl + '/image/wxapp/share_dis.jpg',
     }
