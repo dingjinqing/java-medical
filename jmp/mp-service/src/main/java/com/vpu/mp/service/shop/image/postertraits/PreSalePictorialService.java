@@ -248,7 +248,6 @@ public class PreSalePictorialService extends ShopBaseService {
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
-        return;
     }
 
     /**

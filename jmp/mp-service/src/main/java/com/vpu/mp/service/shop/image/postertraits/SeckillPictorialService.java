@@ -5,15 +5,14 @@ import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.PictorialRecord;
 import com.vpu.mp.db.shop.tables.records.SecKillDefineRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.ImageUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-import com.vpu.mp.service.pojo.wxapp.share.GoodsShareInfo;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialConstant;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
-import com.vpu.mp.service.pojo.wxapp.share.PictorialRule;
+import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
+import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.ImageService;
@@ -25,8 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -157,6 +155,96 @@ public class SeckillPictorialService extends ShopBaseService {
         }
         return null;
     }
+
+
+    /**
+     * 秒杀海报生成
+     *
+     * @param param 定金膨胀参数
+     * @return base64海报信息
+     */
+    public GoodsPictorialInfo getSeckillPictorialInfo(SeckillShareInfoParam param) {
+        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
+        ShopRecord shop = saas.shop.getShopById(getShopId());
+        SecKillDefineRecord secKillDefineRecord = seckillService.getSeckillActById(param.getActivityId());
+        if (secKillDefineRecord == null) {
+            seckillLog("pictorial", "预售信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
+            return goodsPictorialInfo;
+        }
+
+        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
+        if (goodsRecord == null) {
+            seckillLog("pictorial", "商品信息已删除或失效");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
+            return goodsPictorialInfo;
+        }
+        PictorialShareConfig shareConfig = Util.parseJson(secKillDefineRecord.getShareConfig(), PictorialShareConfig.class);
+
+        PictorialUserInfo pictorialUserInfo;
+        try {
+            seckillLog("pictorial", "获取用户信息");
+            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
+        } catch (IOException e) {
+            seckillLog("pictorial", "获取用户信息失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
+            return goodsPictorialInfo;
+        }
+        getSeckillPictorialImg(pictorialUserInfo, shareConfig, secKillDefineRecord, goodsRecord, shop, param, goodsPictorialInfo);
+        return goodsPictorialInfo;
+    }
+
+    private void getSeckillPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, SecKillDefineRecord secKillDefineRecord, GoodsRecord goodsRecord, ShopRecord shop, SeckillShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
+        BufferedImage goodsImage;
+        try {
+            seckillLog("pictorial", "获取商品图片信息");
+            goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
+        } catch (IOException e) {
+            seckillLog("pictorial", "获取商品图片信息失败：" + e.getMessage());
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
+            return;
+        }
+        seckillLog("pictorial", "获取商品分享语");
+        String shareDoc = null;
+        if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
+            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
+            if (shareDoc == null) {
+                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_SECKILL_DOC, "", "messages", param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+            }
+        } else {
+            shareDoc = shareConfig.getShareDoc();
+        }
+        String mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("gid=%d&aid=%d&atp=%d", goodsRecord.getGoodsId(), secKillDefineRecord.getSkId(), BaseConstant.ACTIVITY_TYPE_SEC_KILL));
+
+        BufferedImage qrCodeImage;
+        try {
+            qrCodeImage = ImageIO.read(new URL(mpQrcode));
+        } catch (IOException e) {
+            seckillLog("pictorial", "获取二维码失败");
+            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
+            return;
+        }
+        PictorialImgPx imgPx = new PictorialImgPx();
+
+        // 拼装背景图
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
+
+        //秒杀文字
+        String seckillText =Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_SECKILL, null, "messages");
+
+        String moneyFlag = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages");
+        String realPriceText = moneyFlag+param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        String linePriceText = moneyFlag+param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+
+        pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, seckillText, realPriceText, linePriceText, true, imgPx);
+
+        String base64 = ImageUtil.toBase64(bgBufferedImage);
+        goodsPictorialInfo.setBase64(base64);
+    }
+
+
+
+
     /**
      * 创建云盘上的相对路径
      *
