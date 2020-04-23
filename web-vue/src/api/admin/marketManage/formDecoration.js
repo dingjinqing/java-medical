@@ -61,6 +61,13 @@ export function shareFormQuery (data) {
     data: data
   })
 }
+// 表单海报
+export function getPictorialCode (pageId) {
+  return service({
+    url: `/api/admin/formstatistics/pictorialCode/${pageId}`,
+    method: 'get'
+  })
+}
 // 反馈列表接口
 export function feedBackListQuery (data) {
   return service({
