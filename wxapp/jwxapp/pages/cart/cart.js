@@ -45,7 +45,7 @@ global.wxPage({
           item.limitMinStyle = 0
           item.limitMaxStyle = 0
           item.ruleId = '' // 加价购规则id
-          if (item.cartActivityInfos.length > 0) {
+          if (item.cartActivityInfos && item.cartActivityInfos.length > 0) {
             // 添加不参与活动
             item.cartActivityInfos[item.cartActivityInfos.length] = {
               activityId: null,
@@ -196,7 +196,8 @@ global.wxPage({
       goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
       prdId,
       activityType,
-      activityId
+      activityId,
+      type: 1
     })
   },
 
@@ -255,7 +256,8 @@ global.wxPage({
           goodsNumber: value,
           prdId,
           activityType,
-          activityId
+          activityId,
+          type: 1
         })
       }
     })

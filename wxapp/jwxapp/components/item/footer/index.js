@@ -464,7 +464,8 @@ global.wxComponent({
           this.triggerEvent('close')
         }, {
         goodsNumber: goodsNumber,
-        prdId: prdId
+        prdId: prdId,
+        type: 2
       }
       );
     },
