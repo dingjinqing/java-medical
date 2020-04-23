@@ -5,13 +5,13 @@
         <el-button
           type="primary"
           size="small"
-        >申请升级</el-button>
+        >{{$t('versionUpgrade.applyUp')}}</el-button>
         <el-button
           type="primary"
           size="small"
-        >申请续费</el-button>
+        >{{$t('versionUpgrade.applyRenewal')}}</el-button>
         <span class="tips">
-          点击下载查看 <el-link type="primary">店+小程序版本功能表.pdf</el-link>
+          {{$t('versionUpgrade.downView')}} <el-link type="primary"> {{$t('versionUpgrade.menu')}}.pdf</el-link>
         </span>
       </div>
       <div class="content">
@@ -21,28 +21,28 @@
             :style="'background-image:url(' + $imageHost + '/image/admin/version_basis.png)'"
           >
             <div class="vh-title">
-              <span class="vh-title-btn vh-title-btn1">基础版</span>
+              <span class="vh-title-btn vh-title-btn1">{{$t('versionUpgrade.basic')}}</span>
             </div>
             <div class="vh-con">
               <span class="vh-con-span">￥</span>
               <span class="vh-con-money">3800</span>
-              <span class="vh-con-span">/1年期</span></div>
+              <span class="vh-con-span">/{{$t('versionUpgrade.yearPeriod')}}</span></div>
           </div>
           <div class="version-content">
             <div class="version-wrap">
-              <h3 style="margin-top:10px;">版本描述</h3>
+              <h3 style="margin-top:10px;">{{$t('versionUpgrade.versionDesc')}}</h3>
               <ul>
-                <li>适用于大多数企业进行官网展示、门店小程序、 电商商城小程序平台搭建的需要</li>
-                <li>享受小程序基础应用功能</li>
+                <li>{{$t('versionUpgrade.basicDesc1')}}</li>
+                <li>{{$t('versionUpgrade.basicDesc2')}}</li>
               </ul>
-              <h3 style="margin-top:24px;">功能描述</h3>
+              <h3 style="margin-top:24px;">{{$t('versionUpgrade.functionDesc')}}</h3>
               <ul>
-                <li>电商版小程序全部功能开放，商品限额500个</li>
-                <li>支持小程序门店展示、服务预约、门店自提功能</li>
-                <li>支持折扣会员卡功能</li>
-                <li>大量装修模块免费开放使用，砍价、视频、会员卡模块不支持使用</li>
-                <li>支持商品优惠券功能</li>
-                <li>小程序概况统计数据一览</li>
+                <li>{{$t('versionUpgrade.bf1')}}</li>
+                <li>{{$t('versionUpgrade.bf2')}}</li>
+                <li>{{$t('versionUpgrade.bf3')}}</li>
+                <li>{{$t('versionUpgrade.bf4')}}</li>
+                <li>{{$t('versionUpgrade.bf5')}}</li>
+                <li>{{$t('versionUpgrade.bf6')}}</li>
               </ul>
             </div>
           </div>
@@ -53,29 +53,29 @@
             :style="'background-image:url(' + $imageHost + '/image/admin/version_high.png)'"
           >
             <div class="vh-title">
-              <span class="vh-title-btn vh-title-btn2">高级版</span>
+              <span class="vh-title-btn vh-title-btn2">{{$t('versionUpgrade.advanceEdition')}}</span>
             </div>
             <div class="vh-con">
               <span class="vh-con-span">￥</span>
               <span class="vh-con-money">5800</span>
-              <span class="vh-con-span">/1年期</span>
+              <span class="vh-con-span">/{{$t('versionUpgrade.yearPeriod')}}</span>
             </div>
           </div>
           <div class="version-content">
             <div class="version-wrap">
-              <h3 style="margin-top:10px;">版本描述</h3>
+              <h3 style="margin-top:10px;">{{$t('versionUpgrade.versionDesc')}}</h3>
               <ul>
-                <li>适用于官网展示、电商商城、预约到店、 营销互动、多门店等小程序平台搭建需要</li>
+                <li>{{$t('versionUpgrade.ad1')}}</li>
               </ul>
-              <h3 style="margin-top:24px;">功能描述</h3>
+              <h3 style="margin-top:24px;">{{$t('versionUpgrade.functionDesc')}}</h3>
               <ul>
-                <li class="red">包含基础版所有功能</li>
-                <li>商品数量无限量</li>
-                <li>支持门店买单和技术预约</li>
-                <li>支持会员标签，充值和限次会员卡</li>
-                <li>支持会员卡、视频装修模块</li>
-                <li>支持拼团、限时降价等近30种营销玩法</li>
-                <li>用户画像、访问分析、来源分析均可实时查询</li>
+                <li class="red">{{$t('versionUpgrade.af1')}}</li>
+                <li>{{$t('versionUpgrade.af2')}}</li>
+                <li>{{$t('versionUpgrade.af3')}}</li>
+                <li>{{$t('versionUpgrade.af4')}}</li>
+                <li>{{$t('versionUpgrade.af5')}}</li>
+                <li>{{$t('versionUpgrade.af6')}}</li>
+                <li>{{$t('versionUpgrade.af7')}}</li>
               </ul>
             </div>
           </div>
@@ -86,12 +86,12 @@
             :style="'background-image:url(' + $imageHost + '/image/admin/version_flagship.png)'"
           >
             <div class="vh-title">
-              <span class="vh-title-btn vh-title-btn3">旗舰版</span>
+              <span class="vh-title-btn vh-title-btn3">{{$t('versionUpgrade.flagship')}}</span>
             </div>
             <div class="vh-con">
               <span class="vh-con-span">￥</span>
               <span class="vh-con-money">9800</span>
-              <span class="vh-con-span">/1年期</span>
+              <span class="vh-con-span">/{{$t('versionUpgrade.yearPeriod')}}</span>
             </div>
             <span class="recommend-span">
               <img
@@ -102,17 +102,17 @@
           </div>
           <div class="version-content">
             <div class="version-wrap">
-              <h3 style="margin-top:10px;">版本描述</h3>
+              <h3 style="margin-top:10px;">{{$t('versionUpgrade.versionDesc')}}</h3>
               <ul>
-                <li>全功能版本，提供超大容量数据存储空间</li>
-                <li>一对一专家咨询服务</li>
+                <li>{{$t('versionUpgrade.fd1')}}</li>
+                <li>{{$t('versionUpgrade.fd2')}}</li>
               </ul>
-              <h3 style="margin-top:24px;">功能描述</h3>
+              <h3 style="margin-top:24px;">{{$t('versionUpgrade.functionDesc')}}</h3>
               <ul>
-                <li class="red">包含高级版全部功能</li>
-                <li>全量装修模块</li>
-                <li>海量营销功能</li>
-                <li>更全面数据查询功能</li>
+                <li class="red">{{$t('versionUpgrade.ff1')}}</li>
+                <li>{{$t('versionUpgrade.ff2')}}</li>
+                <li>{{$t('versionUpgrade.ff3')}}</li>
+                <li>{{$t('versionUpgrade.ff4')}}</li>
               </ul>
             </div>
           </div>

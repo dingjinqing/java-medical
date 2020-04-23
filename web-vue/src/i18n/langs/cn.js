@@ -596,6 +596,11 @@ import {
 import {
   cn as actionRecord
 } from './views/admin_new/cn/index/basicSettings/actionRecord/actionRecordCn'
+// 版本升级与续费
+import {
+  cn as versionUpgrade
+} from './views/admin_new/cn/index/basicSettings/versionUpgrade/versionUpgradeCn'
+
 const cn = {
   messages: {
     lang: '中文',
@@ -1121,6 +1126,7 @@ const cn = {
   storeAnnouncement, // 门店公告
   authRoleList, // 店铺权限
   actionRecord, // 操作记录
+  versionUpgrade, // 版本升级
   decorationHome, // 页面装修部分
   pageSetUp, // 页面装修页面设置
   pictureNavigation, // 页面装修图片导航模块
