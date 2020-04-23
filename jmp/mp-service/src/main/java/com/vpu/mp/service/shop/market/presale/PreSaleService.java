@@ -135,17 +135,18 @@ public class PreSaleService extends ShopBaseService {
 
         if (null != preStartTime && null == preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preStartTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
+                TABLE.PRE_END_TIME.ge(preStartTime).or(TABLE.PRE_END_TIME_2.ge(preStartTime))
             );
         }
         if (null == preStartTime && null != preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preEndTime))
+                TABLE.PRE_START_TIME.le(preEndTime).or(TABLE.PRE_START_TIME_2.le(preEndTime))
             );
         }
         if (null != preStartTime && null != preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
+                (TABLE.PRE_START_TIME.le(preEndTime).and(TABLE.PRE_END_TIME.ge(preStartTime)))
+                .or(TABLE.PRE_START_TIME_2.le(preEndTime).and(TABLE.PRE_END_TIME_2.ge(preStartTime)))
             );
         }
 
