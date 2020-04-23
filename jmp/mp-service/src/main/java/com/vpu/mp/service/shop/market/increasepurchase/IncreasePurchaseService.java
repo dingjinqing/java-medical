@@ -764,6 +764,15 @@ public class IncreasePurchaseService extends ShopBaseService {
     }
 
     /**
+     * 获取加价购规则
+     * @param ruleId
+     * @return
+     */
+    public PurchasePriceRuleRecord getRuleByRuleId(Integer ruleId){
+        return db().selectFrom(ppr).where(ppr.ID.eq(ruleId)).fetchAny();
+    }
+
+    /**
      * 换购商品运费策略
      * @param ActId
      * @return
