@@ -466,6 +466,10 @@ function promote_request(that) {
       if (promote_info.launchId) {
         launch_id = promote_info.launchId
       }
+      // 助力次数提示
+      if (promote_info.canPromote && promote_info.canPromote.code == 0) {
+        util.showModal('提示', '今天的助力次数已用完了');
+      }
       that.setData({
         promote_info: promote_info,
         is_promote_value: is_promote_value,
