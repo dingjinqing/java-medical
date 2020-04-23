@@ -1,52 +1,7 @@
 package com.vpu.mp.service.shop.market.reduceprice;
 
-import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
-import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
-import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
-import static org.jooq.impl.DSL.countDistinct;
-import static org.jooq.impl.DSL.sum;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record10;
-import org.jooq.Record2;
-import org.jooq.Record4;
-import org.jooq.Record5;
-import org.jooq.Result;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.config.DomainConfig;
-import com.vpu.mp.db.shop.tables.records.FirstSpecialProductRecord;
-import com.vpu.mp.db.shop.tables.records.FirstSpecialRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GradePrdRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceGoodsRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceProductRecord;
-import com.vpu.mp.db.shop.tables.records.ReducePriceRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -58,23 +13,39 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceAddParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsAddParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsProductAddParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceGoodsVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePricePageListQueryVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceProductVo;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.reduceprice.ReducePriceVo;
+import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.shop.activity.dao.MemberCardProcessorDao;
 import com.vpu.mp.service.shop.goods.GoodsService;
-
+import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
+import static com.vpu.mp.db.shop.tables.ReducePriceGoods.REDUCE_PRICE_GOODS;
+import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
+import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * @author: 王兵兵
@@ -95,6 +66,8 @@ public class ReducePriceService extends ShopBaseService {
     DomainConfig domainConfig;
     @Autowired
     private MemberCardProcessorDao memberCardProcessorDao;
+    @Autowired
+    private TagService tagService;
     /**
      * 新建限时降价活动
      */
@@ -104,6 +77,9 @@ public class ReducePriceService extends ShopBaseService {
             assign(param, record);
             if (param.getShareConfig() != null) {
                 record.setShareConfig(Util.toJson(param.getShareConfig()));
+            }
+            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(param.getActivityTagId())){
+                record.setActivityTagId(Util.listToString(param.getActivityTagId()));
             }
             record.insert();
             Integer reducePriceId = record.getId();
@@ -179,16 +155,16 @@ public class ReducePriceService extends ShopBaseService {
      * 取单个限时降价活动信息
      */
     public ReducePriceVo getReducePriceById(Integer id) {
-        ReducePriceRecord record = db().select(REDUCE_PRICE.ID, REDUCE_PRICE.NAME, REDUCE_PRICE.START_TIME, REDUCE_PRICE.END_TIME,
-            REDUCE_PRICE.LIMIT_AMOUNT, REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE.POINT_TIME, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.LIMIT_FLAG, REDUCE_PRICE.FIRST, REDUCE_PRICE.SHARE_CONFIG).
-            from(REDUCE_PRICE).where(REDUCE_PRICE.ID.eq(id)).fetchOneInto(ReducePriceRecord.class);
+        ReducePriceRecord record = getReducePriceRecord(id);
         ReducePriceVo res = record.into(ReducePriceVo.class);
         res.setShopShareConfig(Util.parseJson(record.getShareConfig(), PictorialShareConfigVo.class));
         if (res.getShopShareConfig() != null && StringUtil.isNotEmpty(res.getShopShareConfig().getShareImg())) {
             res.getShopShareConfig().setShareImgFullUrl(domainConfig.imageUrl(res.getShopShareConfig().getShareImg()));
         }
         res.setReducePriceGoods(getReducePriceGoodsVoList(id));
-
+        if(res.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(record.getActivityTagId())){
+            res.setTagList(tagService.getTagsById(Util.splitValueToList(record.getActivityTagId())));
+        }
         return res;
     }
 
@@ -684,5 +660,17 @@ public class ReducePriceService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 给下单用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addActivityTag(Integer actId,Integer userId){
+        ReducePriceRecord reducePriceRecord = getReducePriceRecord(actId);
+        if(reducePriceRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(reducePriceRecord.getActivityTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(reducePriceRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,actId);
+        }
+    }
 
 }
