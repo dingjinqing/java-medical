@@ -68,7 +68,7 @@ public class WxAppPromoteController extends WxAppBaseController {
      * @return 提示信息
      */
     @PostMapping("/addTimes")
-    public JsonResult addTimes(@RequestBody PromoteParam param) {
+    public JsonResult addTimes(@RequestBody PromoteShareOrAuthParam param) {
 
         AddPromoteTimesVo vo = shop().friendPromoteService.addPromoteTimes(param);
 

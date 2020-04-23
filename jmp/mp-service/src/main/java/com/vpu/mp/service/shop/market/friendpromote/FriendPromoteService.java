@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import com.vpu.mp.service.pojo.shop.market.friendpromote.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jooq.DatePart;
@@ -66,34 +67,6 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.ActEffectData;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.ActEffectDataVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.AddPromoteTimesVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.CanLaunch;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.CanPromote;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.CouponInfo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.Duration;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FpRewardContent;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteAddParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteLaunchVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteListVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteOptionParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteParticipateVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteReceiveVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteSelectVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.FriendPromoteUpdateParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.GoodsInfo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.LaunchVo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteActList;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteDetail;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteInfo;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteParam;
-import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
@@ -1120,7 +1093,7 @@ public class FriendPromoteService extends ShopBaseService {
         Integer ownPromoteTimes = promoteTimesInfo+1;
         //判断所有的助力次数限制
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
-        if (usedPromoteTimes>ownPromoteTimes){
+        if (usedPromoteTimes>=ownPromoteTimes){
             canPromote.setCode((byte)0);
             canPromote.setMsg((byte)3);
             return canPromote;
@@ -1578,7 +1551,10 @@ public class FriendPromoteService extends ShopBaseService {
      * @param param 用户id 发起id
      * @return flag
      */
-    public AddPromoteTimesVo addPromoteTimes(PromoteParam param){
+    public AddPromoteTimesVo addPromoteTimes(PromoteShareOrAuthParam param){
+        PromoteParam promoteParam = new PromoteParam();
+        promoteParam.setUserId(param.getUserId());
+        promoteParam.setLaunchId(param.getLaunchId());
         AddPromoteTimesVo vo = new AddPromoteTimesVo();
         //分享可得助力次数
         Integer shareCreateTimes = addShareTimesInfo(param.getLaunchId());
@@ -1590,8 +1566,13 @@ public class FriendPromoteService extends ShopBaseService {
             return vo;
         }
         Integer addNum = 1;
-        Integer shareTimes = 1;
-        Integer affectRows = addUserPromoteTimes(param,addNum,shareTimes);
+        Integer shareTimes = 1 ;
+        if (param.getType()==1){
+            shareTimes = 0;
+        }
+
+
+        Integer affectRows = addUserPromoteTimes(promoteParam,addNum,shareTimes,param.getType());
         if (affectRows == 0){
             vo.setFlag(0);
             return vo;
@@ -1608,23 +1589,37 @@ public class FriendPromoteService extends ShopBaseService {
      * @param shareTimes 分享次数
      * @return 成功条数
      */
-    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes){
+    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes,Integer type){
         //次数详情
         FriendPromoteTimesRecord promoteTimesInfo = promoteTimesInfo(param);
-        Integer affectRows;
+        Integer affectRows = 0;
+        Byte isAuth = type == 0 ?(byte) 0:(byte)1;
         if (promoteTimesInfo!=null){
             shareTimes = shareTimes + promoteTimesInfo.getShareTimes();
             addNum = addNum + promoteTimesInfo.getOwnPromoteTimes();
-            affectRows = db().update(FRIEND_PROMOTE_TIMES)
-                .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
-                .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
-                .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
-                .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
-                .execute();
+            //分享
+            if (isAuth==(byte)0){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
+            //授权
+            if (isAuth==(byte)1){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .set(FRIEND_PROMOTE_TIMES.IS_AUTH,isAuth)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
         }else {
             affectRows = db().insertInto(FRIEND_PROMOTE_TIMES,FRIEND_PROMOTE_TIMES.SHARE_TIMES,FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,
-                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID)
-                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId())
+                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID,FRIEND_PROMOTE_TIMES.IS_AUTH)
+                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId(),isAuth)
                 .execute();
         }
         return affectRows;

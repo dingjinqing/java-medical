@@ -98,6 +98,7 @@ import org.jooq.Result;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -346,6 +347,17 @@ public class OrderReadService extends ShopBaseService {
 		return mainOrder;
 	}
 
+    /**
+     * 售后中心退款订单显示订单简略信息
+     * @param orderSn
+     * @return
+     */
+    public OrderSimpleInfoVo getSimpleInfo(String orderSn) {
+        OrderInfoVo orderInfoVo = get(orderSn);
+        OrderSimpleInfoVo simple = new OrderSimpleInfoVo();
+        BeanUtils.copyProperties(orderInfoVo, simple);
+        return simple;
+    }
     /**
 	 * 退货、款订单
 	 * @return

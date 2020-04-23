@@ -1,14 +1,13 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
-
-import lombok.Data;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author: 王兵兵
@@ -68,4 +67,13 @@ public class ReducePriceAddParam {
     /** 分享设置 */
     @NotNull
     private PictorialShareConfig shareConfig;
+
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 参加活动打标签id列表
+     */
+    private List<Integer> activityTagId;
 }

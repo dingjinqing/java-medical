@@ -1,10 +1,11 @@
 package com.vpu.mp.service.pojo.shop.market.reduceprice;
 
+import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
+import lombok.Data;
+
 import java.sql.Timestamp;
 import java.util.List;
-
-import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
-import lombok.Data;
 
 
 /**
@@ -50,4 +51,13 @@ public class ReducePriceVo {
     /** 分享设置 */
     private String shareConfig;
     private PictorialShareConfigVo shopShareConfig;
+
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte activityTag;
+    /**
+     * 标签列表
+     */
+    private List<TagVo> tagList;
 }

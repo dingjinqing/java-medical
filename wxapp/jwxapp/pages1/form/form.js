@@ -37,7 +37,7 @@ global.wxPage({
         page_name: pageContent.pageName
       })
       // 是否显示底部导航
-      if (pageContent.pageCfg && pageContent.pageCfg.has_bottom === 1 && !this.data.show_bottom) {
+      if (pageContent.pageCfg && (pageContent.pageCfg.has_bottom === "1" || pageContent.pageCfg.has_bottom === 1) && !this.data.show_bottom) {
         this.setData({
           show_back: false,
           show_bottom: true

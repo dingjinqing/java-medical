@@ -66,12 +66,10 @@ import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.PartOrderGoodsShip.PART_ORDER_GOODS_SHIP;
 import static com.vpu.mp.db.shop.tables.ReturnOrder.RETURN_ORDER;
-import static com.vpu.mp.db.shop.tables.ServiceOrder.SERVICE_ORDER;
-import static com.vpu.mp.db.shop.tables.StoreOrder.STORE_ORDER;
 import static com.vpu.mp.db.shop.tables.User.USER;
 import static com.vpu.mp.db.shop.tables.UserTag.USER_TAG;
 import static com.vpu.mp.service.pojo.shop.market.increasepurchase.PurchaseConstant.BYTE_THREE;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELETE_NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_PIN_SUCCESSS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUNDING;
@@ -79,19 +77,14 @@ import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_REFUND_FINI
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURNING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_RETURN_FINISHED;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_WAIT_DELIVERY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.ORDER_CLOSED;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_BALANCE_PAY;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.PAY_CODE_WX_PAY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_DEFAULT_STATUS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
-import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_FINISH;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_GOODS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.RT_ONLY_MONEY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_OVERDUE_DELIVERY;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.SHOP_HELPER_REMIND_DELIVERY;
-import static com.vpu.mp.service.shop.store.service.ServiceOrderService.ORDER_STATUS_FINISHED;
 import static org.apache.commons.lang3.math.NumberUtils.BYTE_ZERO;
 import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
@@ -1566,5 +1559,4 @@ public class OrderInfoService extends ShopBaseService {
 		
     	return db().fetchOne(TABLE, condition);
     }
-
 }
