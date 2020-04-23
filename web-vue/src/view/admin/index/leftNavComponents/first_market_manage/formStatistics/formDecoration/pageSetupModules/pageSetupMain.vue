@@ -429,7 +429,7 @@ export default {
           })
           let arr = []
           data.send_coupon_list.forEach((item, index) => {
-            arr.push(item.id)
+            arr.push(item.coupon_id)
           })
           console.log(data)
           this.couponBackData = arr
@@ -515,16 +515,16 @@ export default {
           'limitSurplusFlag': item.limitSurplusFlag
         }
         console.log(isExistence, obj, item)
-        // if (isExistence.length === 0) {
-        this.ruleForm.send_coupon_list.push(obj)
-        // }
+        if (isExistence.length === 0) {
+          this.ruleForm.send_coupon_list.push(obj)
+          let arrBack = []
+          this.ruleForm.send_coupon_list.forEach((item, index) => {
+            arrBack.push(item.coupon_id)
+          })
+          console.log(arrBack)
+          this.couponBackData = arrBack
+        }
       })
-      let arrBack = []
-      this.ruleForm.send_coupon_list.forEach((item, index) => {
-        arrBack.push(item.coupon_id)
-      })
-      console.log(arrBack)
-      this.couponBackData = arrBack
     },
     // 点击优惠券右上角删除icon
     handleToDelCoupon (index) {

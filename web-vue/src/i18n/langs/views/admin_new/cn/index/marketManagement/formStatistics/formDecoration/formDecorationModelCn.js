@@ -29,7 +29,7 @@ export const cn = {
   multipleRows: '多行',
   singleRow: '单行',
   singleRowLong: '单行纵向',
-  hint: '提示语',
+  hint: '提示语：',
   hintTip: '请输入提示语',
   atLeastInput: '至少输入',
   word: '字',
