@@ -321,6 +321,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presalePrice"
                     size="small"
                   />
@@ -352,6 +353,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleNumber"
                     size="small"
                   />
@@ -384,6 +386,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.presaleMoney"
                     size="small"
                   />
@@ -416,6 +419,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney1"
                     size="small"
                   />
@@ -448,6 +452,7 @@
                   style="height: 56px;line-height: 56px;"
                 >
                   <el-input
+                    :disabled="isEditeFlag"
                     v-model="scope.row.preDiscountMoney2"
                     size="small"
                   />
@@ -799,7 +804,7 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > prdPrice) {
-        callback(new Error('活动价格不能大于商品原价'))
+        callback(new Error('价格已大于商品原价'))
       } else {
         callback()
       }
@@ -809,7 +814,7 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写正整数'))
       } else if (value > prdNumber) {
-        callback(new Error('活动库存不能大于商品库存'))
+        callback(new Error('库存已大于商品库存'))
       } else {
         callback()
       }
@@ -829,9 +834,9 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('1阶段定金不能大于活动价格'))
+        callback(new Error('定金不能大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('1阶段定金不能小于定金'))
+        callback(new Error('定金不能小于定金'))
       } else {
         callback()
       }
@@ -841,9 +846,9 @@ export default {
       if (!re.test(value)) {
         callback(new Error('请填写非负数, 可以保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('2阶段定金不能大于活动价格'))
+        callback(new Error('定金不能大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('2阶段定金不能小于定金'))
+        callback(new Error('定金不能小于定金'))
       } else {
         callback()
       }
