@@ -32,4 +32,6 @@ public class OrderSimpleInfoVo {
     private Integer userId;
     private String username;
     private String goodsType;
+    /**下单人手机号*/
+    private String userMobile;
 }
