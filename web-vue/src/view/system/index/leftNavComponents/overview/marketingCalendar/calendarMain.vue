@@ -62,13 +62,12 @@
                   <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
                   <div class="shadow_set">
                     <div class="shadow_setMain">
-                      <a
+                      <!-- <a
                         href="javascript:;"
                         @click="handleToPublish(index,indexC)"
-                      ><i class="iconfont iconfabu"></i></a>
+                      ><i class="iconfont iconfabu"></i></a> -->
                       <a
                         href="javascript:;"
-                        style="margin:0 30px"
                         @click="handleToAdd(false,1)"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
@@ -424,7 +423,7 @@ export default {
                 background-color: rgba(0, 0, 0, 0);
                 border-radius: 4px;
                 z-index: 3;
-                justify-content: center;
+                justify-content: space-evenly;
                 align-items: center;
                 transition: background-color 0.5s ease;
                 a {

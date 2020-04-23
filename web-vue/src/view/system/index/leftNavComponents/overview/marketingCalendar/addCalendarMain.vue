@@ -79,61 +79,20 @@
                   >
                   <div class="info_right_box">
                     <p class="act_name_status">{{item.title}}
-                      <span
-                        v-if="item.choiseActData.id !==-1"
-                        class="act_status"
-                      >进行中</span>
                     </p>
-                    <p
-                      v-if="item.choiseActData.id !==-1"
-                      class="act_info"
-                    >活动名称：{{item.choiseActData.actName}}</p>
-                    <p
-                      v-if="item.choiseActData.id !==-1"
-                      class="act_info"
-                    >有效期：{{item.choiseActData.dateTime}}</p>
-                    <div
-                      v-if="item.choiseActData.id ===-1"
-                      class="add_act_box"
-                    >
-                      <span class="create_act">新建活动</span>
-                      <span
-                        class="add_act"
-                        @click="handleToChoiseDetail(item,index)"
-                      >选择活动</span>
-                    </div>
+                    <p class="act_info">活动状态：已有0家店铺使用</p>
 
                   </div>
-                  <div
-                    class="shadow_set"
-                    v-if="item.choiseActData.id !==-1"
-                  >
+                  <div class="shadow_set">
                     <div class="shadow_setMain">
                       <a
-                        @click="handleToAllHiddenIcon(1)"
-                        href="javascript:;"
-                      ><i class="iconfont iconbianji"></i></a>
-                      <a
-                        @click="handleToAllHiddenIcon(2)"
-                        href="javascript:;"
-                      ><i class="iconfont iconchakanxiangqing"></i></a>
-                      <a
-                        @click="handleToAllHiddenIcon(3)"
-                        href="javascript:;"
-                      ><i class="iconfont iconxiugai"></i></a>
-                      <a
-                        @click="handleToAllHiddenIcon(4)"
+                        @click="handleToAllHiddenIcon()"
                         href="javascript:;"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
                   </div>
 
-                  <img
-                    :src="$imageHost+'/image/admin/dele_service.png'"
-                    class="del_new_box"
-                    v-if="item.choiseActData.id ===-1"
-                    @click="handleToClickDel(index)"
-                  >
+                  <div class="recommend"><span>推荐</span></div>
                 </li>
                 <li
                   @click="handleToClick()"
@@ -165,7 +124,7 @@
       width="20%"
     >
       <div style="text-align:center;padding-top:20px;line-height:20px">
-        {{isClickIconDel?'是否确认删除本活动？活动删除后关联的营销活动不会删除，如需修改对应活动可在营销管理中处理':'确认删除？'}}
+        是否删除本模块
       </div>
       <span
         slot="footer"
@@ -227,56 +186,6 @@
           </div>
         </el-tabs>
       </div>
-    </el-dialog>
-    <!--选择具体活动弹窗-->
-    <el-dialog
-      title="选择营销活动"
-      :visible.sync="detailActVisible"
-      width="45%"
-    >
-      <div class="choiseDetail">
-        <el-table
-          class="version-manage-table"
-          header-row-class-name="tableClss"
-          :data="tableData"
-          ref="singleTable"
-          border
-          highlight-current-row
-          @current-change="handleCurrentChange"
-          style="width: 100%;margin-top:10px"
-        >
-          <el-table-column
-            prop="actName"
-            label="活动名称"
-            align="center"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="dateTime"
-            label="有效期"
-            align="center"
-            width="200"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            label="活动状态"
-            align="center"
-          >
-          </el-table-column>
-        </el-table>
-      </div>
-
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          size="small"
-          @click="handleToChoiseDetilSure()"
-        >确 定</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
@@ -549,23 +458,9 @@ export default {
 
     },
     // 选中活动四个icon综合处理
-    handleToAllHiddenIcon (flag) {
-      console.log(flag)
-      switch (flag) {
-        case 1:
-          break
-        case 2:
-          break
-        case 3:
-          this.isClickIconChoiseAct = true
-          this.detailActVisible = true
-          this.$refs.singleTable.setCurrentRow()
-          break
-        case 4:
-          this.isClickIconDel = true
-          this.delDialogVisible = true
-          break
-      }
+    handleToAllHiddenIcon () {
+      this.isClickIconDel = true
+      this.delDialogVisible = true
     }
   }
 }
@@ -640,12 +535,6 @@ export default {
             display: flex;
             align-items: center;
             padding-left: 22px;
-            .del_new_box {
-              position: absolute;
-              right: -9px;
-              top: -7px;
-              cursor: pointer;
-            }
             .info_left_img {
               width: 50px;
               height: 50px;
@@ -655,45 +544,10 @@ export default {
               flex: 1;
               display: flex;
               flex-flow: column;
-              .act_status {
-                color: #f29b16;
-                font-size: 12px;
-                display: inline-block;
-                margin-left: 10px;
-              }
               .act_info {
                 font-size: 12px;
                 color: #666;
-              }
-              .act_name_status {
-                font-size: 14px;
-                margin-bottom: 10px;
-              }
-              .add_act_box {
-                line-height: 28px;
-                .create_act {
-                  width: 66px;
-                  height: 28px;
-                  background-color: #5a8bff;
-                  border-radius: 2px;
-                  text-align: center;
-                  font-size: 12px;
-                  color: #fff;
-                  display: inline-block;
-                  cursor: pointer;
-                }
-                .add_act {
-                  width: 66px;
-                  height: 28px;
-                  background-color: #5a8bff;
-                  border-radius: 2px;
-                  text-align: center;
-                  font-size: 12px;
-                  color: #fff;
-                  display: inline-block;
-                  cursor: pointer;
-                  margin-left: 10px;
-                }
+                margin-top: 10px;
               }
             }
           }
@@ -854,6 +708,25 @@ export default {
   .choiseDetail {
     min-height: 308px;
     overflow: auto;
+  }
+  .recommend {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-top: 40px solid #f66;
+    border-left: 40px solid transparent;
+    span {
+      position: absolute;
+      font-size: 12px;
+      text-align: center;
+      color: #fff;
+      transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+      top: -34px;
+      left: -25px;
+    }
   }
 }
 </style>
