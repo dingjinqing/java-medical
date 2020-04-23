@@ -394,6 +394,7 @@ public class IntegralConvertService extends ShopBaseService {
 					.set(imd.GOODS_ID, param.getGoodsId())
 					.set(imd.SHARE_CONFIG, shareConfig)
 					.where(imd.ID.eq(param.getId())).execute();
+            db().deleteFrom(INTEGRAL_MALL_PRODUCT).where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
                 if (item.getMoney()==null){
