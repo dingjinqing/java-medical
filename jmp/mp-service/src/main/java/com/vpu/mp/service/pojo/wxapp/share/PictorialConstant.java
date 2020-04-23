@@ -19,6 +19,8 @@ public class PictorialConstant {
     public static final Byte REDUCE_PRICE_ACTION_SHARE = 10;
     /** 首单特惠 */
     public static final Byte FIRST_SPECIAL_ACTION_SHARE = 12;
+    /** 表单统计 */
+    public static final Byte FORM_STATISTICS_ACTION_SHARE = 16;
 
     /********分享或海报异常问题*********/
     /**活动已删除*/
