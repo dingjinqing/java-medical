@@ -391,6 +391,12 @@ export default {
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
             callback(new Error('兑换价格或积分不能同时为空'))
+          } else if (this.id !== -1) {
+            if ((Number(item.remainStock) + Number(item.saleNum)) > Number(item.goodsStock)) {
+              callback(new Error('剩余兑换商品库存加已售商品数量不能大于商品库存'))
+            } else {
+              callback()
+            }
           } else {
             callback()
           }
@@ -633,7 +639,7 @@ export default {
             if (this.id === -1 || this.isChangeGoods) {
               obj.stock = item.stock
             } else {
-              obj.stock = item.remainStock + item.saleNum
+              obj.stock = Number(item.remainStock) + Number(item.saleNum)
             }
 
             arr.push(obj)
