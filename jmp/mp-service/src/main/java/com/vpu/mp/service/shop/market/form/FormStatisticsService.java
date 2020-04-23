@@ -696,16 +696,18 @@ public class FormStatisticsService extends ShopBaseService {
         //送积分
         String formCfg = formRecord.getFormCfg();
         int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE));
-        int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE_NUMBER));
-        if (sendScore==1&&sendScoreNumber>0){
-            log.info("表单--送积分");
-            ScoreParam scoreParam = new ScoreParam();
-            scoreParam.setScore(sendScoreNumber);
-            scoreParam.setUserId(param.getUser().getUserId());
-            scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
-            scoreParam.setRemarkCode(RemarkTemplate.MSG_FORM_DECORATION_GIFT.code);
-            scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_FORM_DECORATION_GIFT.val(), TRADE_FLOW_IN.val());
+        if (sendScore == 1) {
+            int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formCfg, SEND_SCORE_NUMBER));
+            if (sendScoreNumber > 0) {
+                log.info("表单--送积分");
+                ScoreParam scoreParam = new ScoreParam();
+                scoreParam.setScore(sendScoreNumber);
+                scoreParam.setUserId(param.getUser().getUserId());
+                scoreParam.setScoreStatus(NO_USE_SCORE_STATUS);
+                scoreParam.setRemarkCode(RemarkTemplate.MSG_FORM_DECORATION_GIFT.code);
+                scoreService.updateMemberScore(scoreParam, INTEGER_ZERO, TYPE_FORM_DECORATION_GIFT.val(), TRADE_FLOW_IN.val());
 
+            }
         }
         CouponGiveQueueBo sendData =null;
         try {
@@ -759,11 +761,15 @@ public class FormStatisticsService extends ShopBaseService {
             listRecord.setNickName(param.getUser().getUsername());
             listRecord.setOpenId(param.getUser().getWxUser().getOpenId());
             int sendScore = Integer.parseInt(getValueFromFormCfgByKey(formRecord.getFormCfg(), SEND_SCORE));
-            int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formRecord.getFormCfg(), SEND_SCORE_NUMBER));
-            if (sendScore==1&&sendScoreNumber>0){
-                listRecord.setSendScore(sendScoreNumber);
+            if (sendScore == 1) {
+                int sendScoreNumber = Integer.parseInt(getValueFromFormCfgByKey(formRecord.getFormCfg(), SEND_SCORE_NUMBER));
+                if (sendScoreNumber > 0){
+                    listRecord.setSendScore(sendScoreNumber);
+                }
             }
-            listRecord.setSendCoupons(Util.listToString(sendData.getCouponSn()));
+            if (sendData!=null){
+                listRecord.setSendCoupons(Util.listToString(sendData.getCouponSn()));
+            }
             listRecord.insert();
             submitId[0]=listRecord.getSubmitId();
             log.info("表单记录保存");
