@@ -746,6 +746,9 @@ public class IncreasePurchaseService extends ShopBaseService {
 
                     goods.setPrdPrice(rule.getPurchasePrice());
                     goods.setPurchaseRuleId(rule.getId());
+                    log.info("加价购调试-cartPrdIds",Util.toJson(cartPrdIds));
+                    log.info("加价购调试-productRecord",Util.toJson(productRecord.getPrdId()));
+                    log.info("加价购调试-cartBo",Util.toJson(cartBo));
                     if(cartPrdIds.contains(productRecord.getPrdId())){
                         goods.setIsChecked((byte)1);
                     }
