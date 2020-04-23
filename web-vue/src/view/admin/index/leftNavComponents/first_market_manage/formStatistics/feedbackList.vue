@@ -39,7 +39,7 @@
           <el-input
             size="small"
             v-model="formNameInput"
-            placeholder="请输入表单名称"
+            placeholder="请输入提交人名称"
           ></el-input>
         </div>
         <el-button
@@ -228,6 +228,9 @@ export default {
       .list {
         display: flex;
         align-items: center;
+        /deep/ .el-input {
+          min-width: 185px;
+        }
         span {
           white-space: nowrap;
           display: inline-block;
