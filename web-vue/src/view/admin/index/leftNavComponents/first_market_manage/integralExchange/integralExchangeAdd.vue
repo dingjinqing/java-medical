@@ -391,8 +391,8 @@ export default {
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
             callback(new Error('兑换价格或积分不能同时为空'))
           } else if (this.id !== -1) {
-            if ((Number(item.remainStock) + Number(item.saleNum)) > Number(item.goodsStock)) {
-              callback(new Error('剩余兑换商品库存加已售商品数量不能大于商品库存'))
+            if (Number(item.remainStock) > Number(item.goodsStock)) {
+              callback(new Error('剩余兑换商品库存要小于商品库存'))
             } else {
               callback()
             }
