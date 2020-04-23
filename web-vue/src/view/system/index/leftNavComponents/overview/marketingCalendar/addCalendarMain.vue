@@ -69,30 +69,73 @@
             <div class="activityMain">
               <ul>
                 <li
-                  class="incident_info_item"
-                  v-for="(item,index) in haveChoiseData"
+                  v-for="(item,index) in ruleFormBottom.haveChoiseData"
                   :key="index"
                 >
-                  <img
-                    :src="item.imgUrl"
-                    class="info_left_img"
-                  >
-                  <div class="info_right_box">
-                    <p class="act_name_status">{{item.title}}
-                    </p>
-                    <p class="act_info">活动状态：已有0家店铺使用</p>
+                  <div class="incident_info_item">
+                    <img
+                      :src="item.imgUrl"
+                      class="info_left_img"
+                    >
+                    <div class="info_right_box">
+                      <p class="act_name_status">{{item.title}}
+                      </p>
+                      <p class="act_info">活动状态：已有0家店铺使用</p>
 
+                    </div>
+                    <div class="shadow_set">
+                      <div class="shadow_setMain">
+                        <a
+                          @click="handleToAllHiddenIcon()"
+                          href="javascript:;"
+                        ><i class="iconfont iconshanchu2"></i></a>
+                      </div>
+                    </div>
+
+                    <div class="recommend"><span>推荐</span></div>
                   </div>
-                  <div class="shadow_set">
-                    <div class="shadow_setMain">
-                      <a
-                        @click="handleToAllHiddenIcon()"
-                        href="javascript:;"
-                      ><i class="iconfont iconshanchu2"></i></a>
+
+                  <div class="liBottom">
+                    <span>推荐理由：</span>
+                    <div class="reason">
+                      <div class="reasonTop">
+                        <el-radio
+                          v-model="item.radio"
+                          label="1"
+                        >站内文本</el-radio>
+                        <div v-if="item.radio === '1'">
+                          <el-button
+                            size="small"
+                            type="primary"
+                            v-if="!item.nTextLink"
+                            @click="handleToClickText(item,index)"
+                          >选择文本</el-button>
+                          <el-input
+                            v-if="item.nTextLink"
+                            v-model="item.nTextLink"
+                            size="small"
+                          ></el-input>
+                          <span
+                            v-if="item.nTextLink"
+                            class="delText"
+                            @click="handleToDelText(index)"
+                          >删除</span>
+                        </div>
+
+                      </div>
+                      <div class="reasonBottom">
+                        <el-radio
+                          v-model="item.radio"
+                          label="2"
+                        >外部链接</el-radio>
+                        <el-input
+                          v-if="item.radio === '2'"
+                          v-model="item.wTextLink"
+                          size="small"
+                        ></el-input>
+                      </div>
                     </div>
                   </div>
-
-                  <div class="recommend"><span>推荐</span></div>
                 </li>
                 <li
                   @click="handleToClick()"
@@ -187,15 +230,117 @@
         </el-tabs>
       </div>
     </el-dialog>
+    <!--选择文本弹窗-->
+    <el-dialog
+      title="选择营销活动"
+      :visible.sync="detailActVisible"
+      width="45%"
+    >
+      <div class="choiseDetail">
+        <div class="textDialogTop">
+          <span>文章分类：</span>
+          <el-select
+            v-model="classifyValue"
+            placeholder="请选择"
+            size="small"
+          >
+            <el-option
+              v-for="item in classifyOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-button
+            size="small"
+            type="primary"
+          >搜索</el-button>
+        </div>
+        <el-table
+          class="version-manage-table"
+          header-row-class-name="tableClss"
+          :data="tableData"
+          ref="singleTable"
+          border
+          highlight-current-row
+          @current-change="handleCurrentChange"
+          style="width: 100%;margin-top:10px"
+        >
+          <el-table-column
+            prop="actName"
+            label="标题"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="classify"
+            label="分类"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="firstImg"
+            label="头图"
+            align="center"
+            width="290"
+          >
+            <template slot-scope="scope">
+              <img
+                v-if="scope.row.firstImg"
+                :src="scope.row.firstImg"
+                style="width:290px;height:220px"
+              >
+              {{!scope.row.firstImg?'无':''}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="upDateTime"
+            label="更新时间"
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span class="statusStyle">{{scope.row.status}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="seacherGroupIntegrationList"
+        />
+      </div>
+
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          size="small"
+          @click="handleToChoiseDetilSure()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   components: {
+    pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页组件
     EventExplainDialog: () => import('./eventExplainDialog')
   },
   data () {
     return {
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       ruleForm: {
         eventName: '',
         date: ''
@@ -210,7 +355,7 @@ export default {
         ]
       },
       ruleFormBottom: {
-        marketActivity: ''
+        haveChoiseData: []
       },
       rulesBottom: {
         marketActivity: [
@@ -354,27 +499,59 @@ export default {
       tableData: [
         {
           actName: '腾飞测试1',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 1
+          classify: '魅力裙装',
+          firstImg: 'http://mpdevimg2.weipubao.cn/upload/0/image/20200217/crop_KC9xqSLdERhny50V.jpeg',
+          upDateTime: '2020-04-20 16:14:35',
+          status: '已发布',
+          id: 1,
+          path: '/admin/notice/show?article_id=65'
         },
         {
-          actName: '腾飞测试2',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 2
+          actName: '腾飞测试1',
+          classify: '魅力裙装',
+          firstImg: 'http://mpdevimg2.weipubao.cn/upload/0/image/20200217/crop_KC9xqSLdERhny50V.jpeg',
+          upDateTime: '2020-04-20 16:14:35',
+          status: '已发布',
+          id: 1,
+          path: '/admin/notice/show?article_id=65'
         },
         {
-          actName: '腾飞测试3',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 3
+          actName: '腾飞测试1',
+          classify: '魅力裙装',
+          firstImg: '',
+          upDateTime: '2020-04-20 16:14:35',
+          status: '已发布',
+          id: 1,
+          path: '/admin/notice/show?article_id=65'
         }
       ],
       chioseDetailVal: '',
       clickChoiseIndex: '', // 记录点击得选择活动项index
       isClickIconDel: false, // 是否是点击的隐藏icon删除
-      isClickIconChoiseAct: false // 是否是点击的隐藏icon重新选择活动
+      isClickIconChoiseAct: false, // 是否是点击的隐藏icon重新选择活动
+      classifyValue: -1,
+      classifyOptions: [
+        {
+          value: -1,
+          label: '请选择分类'
+        }, {
+          value: 0,
+          label: '迭代通知'
+        }, {
+          value: 1,
+          label: '支付方式'
+        }, {
+          value: 2,
+          label: '服务保障'
+        }, {
+          value: 3,
+          label: '消息通知'
+        },
+        {
+          value: 4,
+          label: '新闻资讯'
+        }
+      ]
     }
   },
   mounted () {
@@ -412,9 +589,13 @@ export default {
           status: '',
           actName: '',
           dateTime: ''
-        }
+        },
+        radio: '1',
+        nTextLink: '',
+        wTextLink: ''
       }
-      this.haveChoiseData.push(obj)
+      console.log(this.ruleFormBottom.haveChoiseData)
+      this.ruleFormBottom.haveChoiseData.push(obj)
       this.choiseActivity = false
     },
     // 删除icon点击
@@ -425,33 +606,34 @@ export default {
     },
     // 二次删除确定
     handleToDelSure () {
-      this.haveChoiseData.splice(this.delIndex, 1)
+      this.ruleFormBottom.haveChoiseData.splice(this.delIndex, 1)
       this.delDialogVisible = false
     },
-    // 选择具体活动
-    handleToChoiseDetail (item, index) {
+    // 选择文本弹窗
+    handleToClickText (item, index) {
       this.clickChoiseIndex = index
-      this.isClickIconChoiseAct = false
+      // this.isClickIconChoiseAct = false
       this.detailActVisible = true
-      this.$refs.singleTable.setCurrentRow()
+      // this.$refs.singleTable.setCurrentRow()
     },
-    // 选择具体活动弹窗确定事件
+    // 选择文本弹窗确定事件
     handleToChoiseDetilSure () {
       // this.chioseDetailVal
-      let { id, actName, dateTime, status } = this.chioseDetailVal
-      let obj = {
-        id: id,
-        status: status,
-        actName: actName,
-        dateTime: dateTime
-      }
-      this.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
+      let { path } = this.chioseDetailVal
+      this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].nTextLink = path
       this.detailActVisible = false
     },
-    // 具体活动表格选中
+    // 文本表格选中
     handleCurrentChange (val) {
       console.log(val)
       this.chioseDetailVal = val
+    },
+    // 点击删除文字
+    handleToDelText (index) {
+      this.ruleFormBottom.haveChoiseData[index].nTextLink = ''
+    },
+    seacherGroupIntegrationList () {
+      // 选择文本弹窗分页变化触发
     },
     // 点击保存
     handleToSave () {
@@ -468,7 +650,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/aliIcon/iconfont.scss";
 .addCalendarMain {
-  padding: 10px;
+  margin-top: 10px;
   min-width: 100%;
   font-size: 14px;
   height: 100%;
@@ -528,13 +710,14 @@ export default {
             background-color: #f2f6ff;
             position: relative;
             min-width: 0;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             margin-right: 16px;
             border: solid 1px #d9e4ff;
             box-sizing: border-box;
             display: flex;
             align-items: center;
             padding-left: 22px;
+
             .info_left_img {
               width: 50px;
               height: 50px;
@@ -550,6 +733,35 @@ export default {
                 margin-top: 10px;
               }
             }
+          }
+        }
+        .liBottom {
+          display: flex;
+          margin-bottom: 10px;
+          .reason {
+            display: flex;
+            flex-direction: column;
+            /deep/ .el-radio {
+              margin-right: 5px;
+            }
+            .reasonTop,
+            .reasonBottom {
+              display: flex;
+              align-items: center;
+              height: 32px;
+            }
+            .reasonTop {
+              margin-bottom: 10px;
+              /deep/ .el-input {
+                width: 156px;
+              }
+              .delText {
+                cursor: pointer;
+                color: #5a8bff;
+              }
+            }
+            // .reasonBottom {
+            // }
           }
         }
         .incident_info_item {
@@ -706,8 +918,11 @@ export default {
     justify-content: center;
   }
   .choiseDetail {
-    min-height: 308px;
+    height: 400px;
     overflow: auto;
+    .textDialogTop {
+      margin-top: 10px;
+    }
   }
   .recommend {
     position: absolute;
@@ -727,6 +942,14 @@ export default {
       top: -34px;
       left: -25px;
     }
+  }
+  .statusStyle {
+    background-color: #739e73;
+    line-height: 24px;
+    padding: 0 8px;
+    display: inline-block;
+    color: #fff;
+    border-radius: 3px;
   }
 }
 </style>
