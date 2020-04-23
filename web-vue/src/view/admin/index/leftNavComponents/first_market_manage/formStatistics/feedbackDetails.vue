@@ -22,7 +22,12 @@
                 width="60%"
                 class="comm_message"
               >
-                {{name}}
+                <block
+                  v-for="(item,index) in name"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
               </td>
             </tr>
             <tr>
@@ -31,7 +36,12 @@
                 width="60%"
                 class="comm_message"
               >
-                {{phoneNum}}
+                <block
+                  v-for="(item,index) in phoneNum"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
               </td>
             </tr>
             <tr>
@@ -40,7 +50,12 @@
                 width="60%"
                 class="comm_message"
               >
-                北京市北京市东城区
+                <block
+                  v-for="(item,index) in address"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
               </td>
             </tr>
             <tr>
@@ -49,7 +64,12 @@
                 width="60%"
                 class="comm_message"
               >
-                {{email}}
+                <block
+                  v-for="(item,index) in email"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
               </td>
             </tr>
             <tr>
@@ -59,15 +79,21 @@
                 class="comm_message"
               >
                 <div class="sex">
-                  <el-radio
-                    disabled
-                    v-model="radio"
-                    label="1"
-                  >男</el-radio>
-                  <el-radio
-                    v-model="radio"
-                    label="2"
-                  >女</el-radio>
+                  <block
+                    v-for="(item,index) in sexArr"
+                    :key="index"
+                  >
+                    <el-radio
+                      :disabled="item.radio!=='1'"
+                      v-model="item.radio"
+                      label="1"
+                    >男</el-radio>
+                    <el-radio
+                      :disabled="item.radio!=='2'"
+                      v-model="item.radio"
+                      label="2"
+                    >女</el-radio>
+                  </block>
                 </div>
               </td>
             </tr>
@@ -77,13 +103,22 @@
                 width="60%"
                 class="comm_message"
               >
-                <div
-                  :style="slideIndex === item?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
-                  v-for="(item,index) in slideArr"
-                  :key="index"
-                >
-                  ·{{item}}
+                <div class="sex">
+                  <block
+                    v-for="(item,index) in xlData"
+                    :key="index"
+                  >
+
+                    <div
+                      :style="item.slideIndex === itemC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                      v-for="(itemC,indexC) in item.slideArr"
+                      :key="indexC"
+                    >
+                      ·{{itemC}}
+                    </div>
+                  </block>
                 </div>
+
                 <!-- <span style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>{{slideArr[0]}}</span>
                 <br>
                 <span style="font-weight: bolder">·</span><span style="color: #0E70CA">{{slideArr[1]}}</span>
@@ -96,7 +131,12 @@
                 width="60%"
                 class="comm_message"
               >
-                {{inputVal}}
+                <block
+                  v-for="(item,index) in inputVal"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
               </td>
             </tr>
             <tr>
@@ -105,13 +145,22 @@
                 width="60%"
                 class="comm_message"
               >
-                <div
-                  v-for="(item,index) in choiseArr"
-                  :key="index"
-                  :style="chooseIndex === index?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
-                >
-                  ·{{item}}
+                <div class="sex">
+                  <block
+                    v-for="(item,index) in xxData"
+                    :key="index"
+                  >
+                    <div
+                      v-for="(itemC,indexC) in item.choiseArr"
+                      :key="indexC"
+                      :style="item.chooseIndex === index?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                    >
+                      ·{{itemC}}
+                    </div>
+
+                  </block>
                 </div>
+
                 <!-- <span :class="choose === '1'?'choose':''" style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>选项1</span>
                 <br>
                 <span :class="choose === '2'?'choose':''" style="font-weight: bolder">·</span><span style="color: #0E70CA">选项2</span>
@@ -124,7 +173,13 @@
                 width="60%"
                 class="comm_message"
               >
-                {{date}}
+                <block
+                  v-for="(item,index) in date"
+                  :key="index"
+                >
+                  {{item}}
+                </block>
+
               </td>
             </tr>
             <tr>
@@ -150,24 +205,30 @@
                 width="60%"
                 class="comm_message"
               >
-                <a
-                  :href="video.video_src"
-                  target="_blank"
-                  class="video_src"
+                <block
+                  v-for="(item,index) in video"
+                  :key="index"
                 >
-                  <img
-                    :src="video.video_img_src"
-                    style="display: inline-block;"
-                    width="140px"
-                    height="80px"
+                  <a
+                    :href="item.video.video_src"
+                    target="_blank"
+                    class="video_src"
                   >
-                  <p class="video_time">00:00:02</p>
-                  <div
-                    :style="`background:url(${$imageHost}/image/admin/play_button.png) no-repeat center`"
-                    class="play_bg"
-                  >
-                  </div>
-                </a>
+                    <img
+                      :src="item.video.video_img_src"
+                      style="display: inline-block;"
+                      width="140px"
+                      height="80px"
+                    >
+                    <p class="video_time">00:00:02</p>
+                    <div
+                      :style="`background:url(${$imageHost}/image/admin/play_button.png) no-repeat center`"
+                      class="play_bg"
+                    >
+                    </div>
+                  </a>
+                </block>
+
               </td>
             </tr>
           </tbody>
@@ -182,18 +243,21 @@ export default {
   data () {
     return {
       radio: '2',
-      name: '', // 姓名
-      phoneNum: '', // 手机号
-      email: '', // 邮箱
+      name: [], // 姓名
+      phoneNum: [], // 手机号
+      email: [], // 邮箱
       sexArr: [], // 性别
       slideArr: [], // 下拉框
       slideIndex: '', // 下拉选中项
-      inputVal: '', // 输入框
+      inputVal: [], // 输入框
       choiseArr: [], // 选项
       chooseIndex: '', // 选中下标
-      date: '', // 日期
-      picture: '', // 图片上传
-      video: '' // 视频模块
+      date: [], // 日期
+      picture: [], // 图片上传
+      video: [], // 视频模块
+      address: [],
+      xlData: [], // 下拉数据汇总
+      xxData: [] // 选项数据汇总
     }
   },
   mounted () {
@@ -212,45 +276,58 @@ export default {
             res.content.forEach((item, index) => {
               switch (item.moduleName) {
                 case 'm_input_name':
-                  this.name = item.moduleValue
+                  this.name.push(item.moduleValue)
                   break
                 case 'm_input_mobile':
-                  this.phoneNum = item.moduleValue
+                  this.phoneNum.push(item.moduleValue)
                   break
                 case 'm_address':
+                  this.address.push(item.moduleValue)
                   break
                 case 'm_input_email':
-                  this.email = item.moduleValue
+                  this.email.push(item.moduleValue)
                   break
                 case 'm_sex':
-                  if (item.moduleValue === item.moduleValueList[0]) {
-                    this.radio = '1'
-                  } else {
-                    this.radio = '2'
+                  let obj = {
+                    radio: null
                   }
-                  this.sexArr = item.moduleValueList
+                  if (item.moduleValue === item.moduleValueList[0]) {
+                    obj.radio = '1'
+                  } else {
+                    obj.radio = '2'
+                  }
+                  this.sexArr.push(obj)
                   break
                 case 'm_slide':
-                  this.slideIndex = item.moduleValue
-                  this.slideArr = item.moduleValueList
+                  let objMslide = {
+                    slideIndex: '',
+                    slideArr: ''
+                  }
+                  objMslide.slideIndex = item.moduleValue
+                  objMslide.slideArr = item.slideArr
+                  this.xlData.push(objMslide)
                   break
                 case 'm_input_text':
-                  this.inputVal = item.moduleValue
+                  this.inputVal.push(item.moduleValue)
                   break
                 case 'm_choose':
-                  this.chooseIndex = Number(item.moduleValue) - 1
-                  console.log(this.chooseIndex)
-                  this.choiseArr = item.moduleValueList
+                  let objMchoose = {
+                    chooseIndex: '',
+                    choiseArr: ''
+                  }
+                  objMchoose.chooseIndex = Number(item.moduleValue) - 1
+                  objMchoose.choiseArr = item.moduleValueList
+                  this.xxData.push(objMchoose)
                   break
                 case 'm_dates':
-                  this.date = item.moduleValue
+                  this.date.push(item.moduleValue)
                   break
                 case 'm_imgs':
                   console.log(item.moduleValue)
-                  this.picture = JSON.parse(item.moduleValue)
+                  this.picture.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_upload_video':
-                  this.video = JSON.parse(item.moduleValue)
+                  this.video.push(JSON.parse(item.moduleValue))
 
                   break
               }
