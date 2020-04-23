@@ -137,4 +137,15 @@ public class WxAppDistributionController extends WxAppBaseController{
         ShareUserInfoVo shareUserInfo = shop().mpDisGoods.getShareUserInfo(param);
         return this.success(shareUserInfo);
     }
+
+    /**
+     * 用户(分销员)之间建立绑定关系
+     * @param param
+     * @return
+     */
+    @PostMapping("/user/bind")
+    public JsonResult userBind(@RequestBody UserBindParam param){
+        shop().mpDistribution.userBind(param);
+        return this.success();
+    }
 }
