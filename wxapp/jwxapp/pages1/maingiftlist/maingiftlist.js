@@ -149,7 +149,8 @@ global.wxPage({
         },
         {
           goodsNumber: goodsNumber,
-          prdId: prdId
+          prdId: prdId,
+          type: 2
         }
       );
   },

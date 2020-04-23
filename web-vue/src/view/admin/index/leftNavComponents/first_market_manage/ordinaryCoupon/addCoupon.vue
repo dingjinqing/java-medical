@@ -522,13 +522,21 @@
                 </el-form-item>
 
                 <el-form-item label="优惠叠加：">
-                  <el-checkbox>不与限时降价、首单特惠、会员价活动共用</el-checkbox>
+                  <el-checkbox
+                    v-model="param.couponOverlay"
+                    :true-label="1"
+                    :false-label="0"
+                  >不与限时降价、首单特惠、会员价活动共用</el-checkbox>
                 </el-form-item>
                 <el-form-item
                   label="同步打标签："
                   v-if="param.type===0"
                 >
-                  <el-checkbox>给领券用户打标签</el-checkbox>
+                  <el-checkbox
+                    v-model="param.couponTag"
+                    :true-label="1"
+                    :false-label="0"
+                  >给领券用户打标签</el-checkbox>
                   <span
                     class="el-icon-question"
                     style="color: #666;"
@@ -598,14 +606,14 @@
       :dialogVisible="labelDialogVisible"
       :multipleLimit="3"
       @resultLabelDatas="resultLabelDatas"
-      :chooseLabelBack="labelValue"
+      :chooseLabelBack="param.couponTagId"
     />
 
   </div>
 </template>
 <script>
 import { saveCoupon, updateCoupon, updateSaveCoupon } from '@/api/admin/marketManage/couponList.js'
-import { allCardApi } from '@/api/admin/marketManage/messagePush'
+import { allCardApi, allTagApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
     ChoosingGoods: () => import('@/components/admin/choosingGoods'),
@@ -758,6 +766,9 @@ export default {
         leastConsume: null,
         scoreNumber: null, // num积分数
         AtreeType: null,
+        couponOverlay: 0, // 优惠叠加
+        couponTag: 0, // 同步打标签
+        couponTagId: '', // 标签id值
         isExclusive: false
       },
       paramRules: {
@@ -830,8 +841,8 @@ export default {
       commInfo: [],
 
       labelDialogVisible: false, // 标签弹窗
-      pickLabel: [], // 选中标签列表
-      labelValue: [] // 选中标签id值
+      labelList: [], // 标签列表数据
+      pickLabel: [] // 选中标签列表
     }
   },
   watch: {
@@ -846,6 +857,7 @@ export default {
 
     this.dataDefalut()
     this.getCardList()
+    this.getTagList()
     // 编辑初始化
     if (this.couponId) {
       this.editType = true
@@ -875,6 +887,15 @@ export default {
       allCardApi().then((res) => {
         if (res.error === 0) {
           this.cardList = res.content
+        }
+      })
+    },
+
+    // 获取标签列表
+    getTagList () {
+      allTagApi().then(res => {
+        if (res.error === 0) {
+          this.labelList = res.content
         }
       })
     },
@@ -973,6 +994,27 @@ export default {
             this.param.availableGoods = 0
           }
 
+          // 优惠叠加
+          this.param.couponOverlay = data.couponOverlay
+          // 同步打标签
+          this.param.couponTag = data.couponTag
+          // 标签id
+          if (data.couponTagId !== '') {
+            this.param.couponTagId = data.couponTagId.split(',')
+            this.param.couponTagId = this.param.couponTagId.map(Number)
+            // 标签数据回显
+            this.pickLabel = []
+            this.labelList.forEach(item => {
+              this.param.couponTagId.forEach(val => {
+                if (item.id === val) {
+                  this.pickLabel.push(item)
+                }
+              })
+            })
+          } else {
+            this.param.couponTagId = []
+          }
+
           // 说明
           this.param.useExplain = data.useExplain
         }
@@ -1035,6 +1077,11 @@ export default {
             this.param.cardId = this.param.cardId.toString()
           } else {
             this.param.cardId = ''
+          }
+
+          // 同步打标签
+          if (this.param.couponTagId && this.param.couponTagId.length > 0) {
+            this.param.couponTagId = this.param.couponTagId.toString()
           }
 
           if (this.editType === false) {
@@ -1210,18 +1257,18 @@ export default {
     // 删除标签
     deleteLabel (index) {
       this.pickLabel.splice(index, 1)
-      this.labelValue = []
+      this.param.couponTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.param.couponTagId.push(item.id)
       })
     },
 
     // 标签弹窗回调函数
     resultLabelDatas (row) {
       this.pickLabel = row
-      this.labelValue = []
+      this.param.couponTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.param.couponTagId.push(item.id)
       })
     }
   },
