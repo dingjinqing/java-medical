@@ -1,4 +1,5 @@
 var util = require('../../utils/util.js')
+var orderEvent = require('../common/order.js')
 global.wxPage({
   /**
    * 页面的初始数据
@@ -99,7 +100,8 @@ global.wxPage({
           let orderInfo = res.content
           this.setCardData(orderInfo)
           this.setData({
-            orderInfo
+            orderInfo,
+            isAward:orderEvent.getIsAward(orderInfo)
           })
           console.log(this.data.orderInfo)
           if(orderInfo.activityType === 4){ //积分兑换数据

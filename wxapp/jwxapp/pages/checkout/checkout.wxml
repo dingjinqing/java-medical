@@ -44,7 +44,11 @@
         <image src="{{imageUrl}}{{goodsItem.goodsImg}}"></image>
         <view class="goods_info">
           <view class="goods_name">
-            <text class="name"><text class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</text>{{goodsItem.goodsName}}</text>
+            <view class="name">
+              <view class="goods-tag" wx:if="{{goodsItem.isGift}}" style="color:{{comColor}};border-color:{{comColor}}">赠品</view>
+              <view class="goods-tag" wx:elif="{{isAward}}" style="color:{{comColor}};border-color:{{comColor}}">奖品</view>
+              {{goodsItem.goodsName}}
+            </view>
             <text class="spec">{{goodsItem.goodsAttr}}</text>
           </view>
           <view class="goods_price">

@@ -77,7 +77,8 @@ global.wxPage({
       ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
-      item.iconName = orderEvent.getOrderTypeIconName(item)
+      item.iconName = orderEvent.getOrderTypeIconName(item);
+      item.isAward = orderEvent.getIsAward(item)
       return item;
     });
     console.log(formatOrderItem);

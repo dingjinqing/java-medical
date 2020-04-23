@@ -59,6 +59,10 @@ global.wxPage({
                 this.setData({
                   isPreSaleOrder:true
                 })
+              } else if ([12,14,16,19].includes(Number(item))){
+                this.setData({
+                  isAward:true
+                })
               }
             })
           }

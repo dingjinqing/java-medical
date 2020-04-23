@@ -303,6 +303,16 @@ var order = {
     } else {
       return null
     }
+  },
+  getIsAward(orderItem){
+    let isAward = false
+    for (let i = 0;i < orderItem.orderType.length; i++){
+      if([12,14,16,19].includes(Number(orderItem.orderType[i]))){
+        isAward = true
+        break
+      }
+    }
+    return isAward
   }
 };
 

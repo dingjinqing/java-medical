@@ -108,7 +108,7 @@
               <td colspan="8"></td>
             </tr>
           </tbody>
-          <template v-for="orderItem in refundOrderList">
+          <template v-for="(orderItem,orderIndex) in refundOrderList">
             <tbody
               :key="orderItem.retId"
               class="hasborder"
@@ -120,10 +120,13 @@
                       <span>{{$t('order.returnSn') + '：'+ orderItem.returnOrderSn}}</span>
                       <el-popover
                         placement="right"
-                        trigger="hover"
-                        open-delay="500"
+                        trigger="manual"
+                        v-model="orderItem.showOrderBrief"
+                      >
+                        <div
+                          class="order-brief"
+                          @click="handleViewOrder(orderItem.orderSn)"
                         >
-                        <div class="order-brief" @click="handleViewOrder(orderItem.orderSn)">
                           <div class="title">订单信息</div>
                           <div class="brief-info">
                             <div>订单号：{{orderItem.orderSn}}</div>
@@ -137,7 +140,11 @@
                             <div>收货地址：</div>
                           </div>
                         </div>
-                        <span slot="reference" >{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
+                        <span
+                          slot="reference"
+                          @mouseenter="requestOrderInfo(orderItem.orderSn,orderIndex)"
+                          @mouseleave="leaveOrderBrief(orderItem.orderSn,orderIndex)"
+                        >{{$t('order.orderSn') + '：'+orderItem.orderSn}}</span>
                       </el-popover>
                       <span>
                         {{
@@ -321,7 +328,8 @@ export default {
         { value: '2', label: '买家待处理' },
         { value: '3', label: '已完成' }
       ],
-      refundOrderList: []
+      refundOrderList: [],
+      orderBriefData: {}
     }
   },
   mounted () {
@@ -391,6 +399,29 @@ export default {
         '7': this.$t('order.returnStatusList')[7][1],
         '5': this.$t('order.returnStatusList')[8][1]
       }
+    },
+    requestOrderInfo (orderSn, targetIndex) {
+      let obj = {
+        searchType: 0,
+        pinStatus: null,
+        orderSn: orderSn
+      }
+      list(obj).then(res => {
+        console.log(res)
+        if (res.error === 0 && res.content) {
+          this.refundOrderList.forEach(element => {
+            this.$set(element, 'showOrderBrief', false)
+          })
+          this.$nextTick(() => {
+            this.$set(this.refundOrderList[targetIndex], 'showOrderBrief', true)
+            this.orderBriefData = res.content.list.dataList[0]
+          })
+        }
+      }).catch(() => {
+      })
+    },
+    leaveOrderBrief (orderSn, targetIndex) {
+      this.$set(this.refundOrderList[targetIndex], 'showOrderBrief', false)
     },
     handleViewOrder (orderSn) {
       this.$router.push({
@@ -579,32 +610,32 @@ export default {
     }
   }
 }
-.order-brief{
+.order-brief {
   display: flex;
   width: 250px;
   flex-direction: column;
   border-radius: 6px 6px 0px 0px;
   overflow: hidden;
   cursor: pointer;
-  > .title{
+  > .title {
     text-align: center;
     line-height: 30px;
     color: white;
     background: #5a8bff;
   }
-  > .brief-info{
+  > .brief-info {
     display: flex;
     flex-direction: column;
     padding: 10px 15px 15px;
-    background: rgba(90,139,255,0.1);
+    background: rgba(90, 139, 255, 0.1);
     position: relative;
     > div {
       color: #333;
-      &+div{
+      & + div {
         margin-top: 5px;
       }
     }
-    > .bottom-bg{
+    > .bottom-bg {
       position: absolute;
       bottom: 0;
       left: 10px;
