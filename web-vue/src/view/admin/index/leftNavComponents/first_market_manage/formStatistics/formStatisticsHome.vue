@@ -9,9 +9,7 @@
       <div class="tipsDiv">{{$t('formStatisticsHome.addFformTip')}}<img :src="this.$imageHost + '/image/admin/system_icon.png'">
         <div class="tipsHidden">
           <div class="tipsTop">
-            <p>
-              {{$t('pictureSetting.hiddenTipsForm')}}
-            </p>
+            <p>{{$t('pictureSetting.hiddenTipsForm')}}</p>
           </div>
           <div class="tipsBottom">
             <el-button
