@@ -262,14 +262,14 @@ export default {
     handleToAdd (flag, item) {
       if (flag) {
         this.$router.push({
-          name: 'addCalendarMain',
+          name: 'addEvent',
           query: {
             isAdd: true
           }
         })
       } else {
         this.$router.push({
-          name: 'addCalendarMain',
+          name: 'addEvent',
           query: {
             isAdd: false,
             id: item

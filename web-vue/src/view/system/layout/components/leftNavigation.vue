@@ -258,7 +258,7 @@ export default {
   },
   methods: {
     isShowHighLight (route, index) {
-      if (route.span === this.$route.meta.title) {
+      if (route.span === this.$route.meta.title || route.span === this.$route.meta.parentName) {
         return route.imgUrl_h
       } else if (this.hoverIndex > 0 && this.hoverIndex === index) {
         return route.imgUrl_h
