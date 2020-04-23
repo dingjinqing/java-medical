@@ -414,7 +414,8 @@ global.wxComponent({
         },
         {
           goodsNumber: goodsNumber,
-          prdId: prdId
+          prdId: prdId,
+          type: 2
         }
       );
     },

@@ -356,7 +356,8 @@ global.wxPage({
           goodsNumber: 1,
           prdId: prdId,
           activityType: 21,
-          activityId: that.data.strategy_id
+          activityId: that.data.strategy_id,
+          type: 2
         })
     } else {
       // 选择规格
@@ -457,7 +458,8 @@ global.wxPage({
         goodsNumber: goodsNumber,
         prdId: prdId,
         activityType: 21,
-        activityId: this.data.strategy_id
+        activityId: this.data.strategy_id,
+        type: 2
       });
   },
 
