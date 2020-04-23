@@ -19,6 +19,7 @@ import com.vpu.mp.db.shop.tables.records.MarketCalendarRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
+import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
@@ -191,6 +192,10 @@ public class MarketCalendarService extends ShopBaseService {
 		logger().info("传入的类型：{}", actType);
 		MarketVo actInfo = new MarketVo();
 		PageResult<MarketVo> list = new PageResult<MarketVo>();
+		Page page=new Page();
+		List<MarketVo> dataList=new ArrayList<MarketVo>();
+		list.setPage(page);
+		list.setDataList(dataList);
 		switch (actType) {
 		case VersionName.SUB_4_PIN_GROUP:
 			if (type.equals(CalendarAction.INFO)) {
