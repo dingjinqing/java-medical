@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarkActivityListParam;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarInfoVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketcalendarParam;
 
 /**
@@ -27,6 +32,13 @@ public class AdminMarketcalendarController extends AdminBaseController {
 	@PostMapping(value = "/api/admin/calendar/market/up")
 	public JsonResult marketCalendarUp(@RequestBody MarketcalendarParam param) {
 		String act = param.getAct();
+		for (CalendarAct calendarAct : param.getCalendarAct()) {
+			String[] strings = saas.shop.version.verifyVerPurview(shopId(), calendarAct.getActivityType());
+			if(strings[0].equals("false")) {
+				//TODO 您没有营销活动xxx的权限
+				return fail();
+			}
+		}
 		if (act.equals(CalendarAction.ADD)) {
 			logger().info("新建");
 			boolean addCalendar = shop().calendarService.addCalendar(param);
@@ -59,9 +71,10 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		}
 		return fail();
 	}
-	
+
 	/**
 	 * 营销日历列表
+	 * 
 	 * @param year
 	 * @return
 	 */
@@ -70,4 +83,60 @@ public class AdminMarketcalendarController extends AdminBaseController {
 		return success(shop().calendarService.getListByYear(year));
 	}
 
+	/**
+	 * 营销日历详情
+	 * 
+	 * @param calendarId
+	 * @return
+	 */
+	@GetMapping(value = "/api/admin/calendar/info/{calendarId}")
+	public JsonResult calendarInfo(@PathVariable Integer calendarId) {
+		MarketCalendarInfoVo calendarInfo = shop().calendarService.getCalendarInfo(calendarId);
+		if (calendarInfo != null) {
+			return success(calendarInfo);
+		}
+		return fail();
+	}
+	
+	/**
+	 * 查询营销活动对应的所有可用活动
+	 * @param param
+	 * @return
+	 */
+	@PostMapping(value = "/api/admin/calendar/market/list")
+	public JsonResult getMarketActivity(@RequestBody MarkActivityListParam param) {
+		MarketParam marketParam = new MarketParam();
+		marketParam.setCurrentPage(param.getCurrentPage());
+		marketParam.setPageRows(param.getPageRows());
+		ActInfoVo actInfo = shop().calendarService.getActInfo(CalendarAction.LIST, null, param.getActivityType(), marketParam);
+		return success(actInfo.getList());
+	}
+	
+
+	/**
+	 * 删除营销日历活动
+	 * @param calActId
+	 * @return
+	 */
+	@GetMapping(value = "/admin/calendar/market/act/del/{calActId}")
+	public JsonResult marketCalendarActDel(@PathVariable Integer calActId) {
+		boolean delInfo = shop().calendarService.calendarActivityService.delInfo(calActId);
+		if(delInfo) {
+			return success();
+		}
+		return fail();
+	}
+	
+	
+	/**
+	 * 营销日历列表-概览里用
+	 * 
+	 * @param year
+	 * @return
+	 */
+	@GetMapping(value = "/api/admin/calendar/limitlist")
+	public JsonResult calendarList() {
+		return success(shop().calendarService.getListByYear(CalendarAction.OVERVIEW));
+	}
+	
 }
