@@ -168,10 +168,8 @@ export default {
         id: this.$route.query.activityId,
         username: this.userName,
         mobile: this.mobileNum,
-        page: {
-          'currentPage': this.pageParams.currentPage,
-          'pageRows': this.pageParams.pageRows
-        }
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': '20'
       }
       integralUserList(params).then(res => {
         console.log(res)

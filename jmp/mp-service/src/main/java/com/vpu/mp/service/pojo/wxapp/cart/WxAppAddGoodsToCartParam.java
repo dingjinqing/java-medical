@@ -2,7 +2,6 @@ package com.vpu.mp.service.pojo.wxapp.cart;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,12 +13,30 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class WxAppAddGoodsToCartParam {
+    /**
+     * 修改
+     */
+    public static final Byte CART_GOODS_NUM_TYPE_GENERAL=1;
+    /**
+     * 累加
+     */
+    public static final Byte CART_GOODS_NUM_TYPE_ADD=2;
 
     private Integer userId;
     private Integer cartId;
+    /**
+     * 数量
+     */
     @NotNull
     @Min(0)
-    private  Integer goodsNumber;
+    private Integer goodsNumber;
+    /**
+     * 修改数量类型  默认1 直接修改数量, 2添加数量
+     */
+    private Byte type= CART_GOODS_NUM_TYPE_GENERAL;
+    /**
+     * 规格id
+     */
     @NotNull
     private Integer prdId;
     /**

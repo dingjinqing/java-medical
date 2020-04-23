@@ -367,10 +367,8 @@ export default {
         provinceCode: this.selectArea.province,
         cityCode: this.selectArea.city,
         districtCode: this.selectArea.district,
-        page: {
-          'currentPage': this.pageParams.currentPage,
-          'pageRows': this.pageParams.pageRows
-        }
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': '20'
       }
       integralOrder(params).then(res => {
         console.log(res)
