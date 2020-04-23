@@ -240,7 +240,7 @@ global.wxComponent({
     productInfo: {
       type: Object,
       value: null,
-      observer(newVal) {
+      observer (newVal) {
         console.log(newVal)
         this.initFooter()
       }
@@ -252,14 +252,14 @@ global.wxComponent({
     activity: {
       type: Object,
       value: null,
-      observer(val) {
+      observer (val) {
         // this.setButtonStyle()
       }
     },
     products: {
       type: Array,
       value: null,
-      observer(val) {
+      observer (val) {
         this.initFooter()
       }
     },
@@ -277,9 +277,9 @@ global.wxComponent({
     cartNum: 0,
   },
   lifetimes: {
-    ready() {
+    ready () {
       this.setData({
-        leftStyle: `color:${(this.data.main_setting.comColor != "#ff6666" || !this.data.main_setting.comColor)?"#fff":"#f66"};background:${this.data.main_setting.commonColor};`,
+        leftStyle: `color:${(this.data.main_setting.comColor != "#ff6666" || !this.data.main_setting.comColor) ? "#fff" : "#f66"};background:${this.data.main_setting.commonColor};`,
         rightStyle: `color:#fff;background:${this.data.main_setting.comColor};`,
         notBuyRightStyle: 'background:#666;'
       })
@@ -290,60 +290,60 @@ global.wxComponent({
    * 组件的方法列表
    */
   methods: {
-    initFooter() {
+    initFooter () {
       this.setData({
         buttonData: this.getButtonData()
       })
       this.setButtonStyle()
     },
-    checkPosition(position) {
+    checkPosition (position) {
       if (this.data.position === 'footer' && !this.data.isDefaultPrd) {
         this.triggerEvent('showSpecDialog', position)
         return true
       }
       return false
     },
-    checkAddCart() {
+    checkAddCart () {
       if (this.checkPosition('left')) return
       this.addCart()
     },
-    checkCheckout() {
+    checkCheckout () {
       if (this.checkPosition('right')) return
       this.toCheckOut()
     },
-    checkBuy() {
+    checkBuy () {
       if (this.checkPosition('left')) return
       this.toCheckOut()
     },
-    checkBargain() {
+    checkBargain () {
       if (!this.checkActStatus()) return
       if (this.checkPosition('right')) return
       this.goBargain()
     },
-    checkGroup() {
+    checkGroup () {
       if (!this.checkActStatus()) return
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
-    checkGroupDraw() {
+    checkGroupDraw () {
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
-    checkSkill() {
+    checkSkill () {
       if (!this.checkActStatus()) return
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
-    checkPreSale() {
+    checkPreSale () {
       if (!this.checkActStatus()) return
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
-    checkScoreRedeem() {
+    checkScoreRedeem () {
       if (this.checkPosition('right')) return
       this.actCheckOut()
     },
-    goBargain() {
+    goBargain () {
       util.api('/api/wxapp/bargain/apply', res => {
         if (res.error == 0) {
           var data = res.content;
@@ -372,7 +372,7 @@ global.wxComponent({
         goodsId: this.data.productInfo.goodsId
       })
     },
-    getButtonData() {
+    getButtonData () {
       let buttonData = {}
       if (this.data.position === 'footer') {
         buttonData['buttonInfo'] = this.data.activity && [1, 3, 4, 5, 8, 10].includes(this.data.activity.activityType) ? actType[this.data.activity.activityType]['footerButtonName'] : actType['default']['footerButtonName']
@@ -430,7 +430,7 @@ global.wxComponent({
       console.log(buttonData)
       return buttonData
     },
-    getCartNum() {
+    getCartNum () {
       util.api('/api/wxapp/cart/list', res => {
         if (res.error === 0) {
           let {
@@ -446,7 +446,7 @@ global.wxComponent({
       })
     },
     // 添加购物车
-    addCart() {
+    addCart () {
       let {
         goodsNum: goodsNumber,
         prdId
@@ -463,19 +463,19 @@ global.wxComponent({
           }
           this.triggerEvent('close')
         }, {
-          goodsNumber: goodsNumber,
-          prdId: prdId
-        }
+        goodsNumber: goodsNumber,
+        prdId: prdId
+      }
       );
     },
 
-    toCheckOut() {
+    toCheckOut () {
       let customParams = {}
       if (this.data.roomId) customParams.roomId = this.data.roomId
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]),...customParams })}`, "navigateTo")
+      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ goodsList: JSON.stringify([this.data.productInfo]), ...customParams })}`, "navigateTo")
       this.triggerEvent('close')
     },
-    async actCheckOut() {
+    async actCheckOut () {
       let params = {
         goodsList: JSON.stringify([this.data.productInfo]),
         activityType: this.data.activity ? this.data.activity.activityType : null,
@@ -493,17 +493,23 @@ global.wxComponent({
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
       if (this.data.roomId) params.roomId = this.data.roomId
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      if (this.data.activity && this.data.activity.activityType === 1) {
+        util.getNeedTemplateId('invite', () => {
+          util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+        })
+      } else {
+        util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      }
       this.triggerEvent('close')
     },
     //整合参数
-    getUrlParams(obj) {
+    getUrlParams (obj) {
       return Object.keys(obj).reduce((UrlStr, item, index) => {
         if (index !== 0) UrlStr += `&`
         return UrlStr += `${item}=${obj[item]}`
       }, '?')
     },
-    getGroupPirce(type) {
+    getGroupPirce (type) {
       let realPriceArr = null
       if (type === 'grouper') {
         realPriceArr = this.data.activity.groupBuyPrdMpVos.map(item => {
@@ -516,7 +522,7 @@ global.wxComponent({
       }
       return this.getMin(realPriceArr)
     },
-    getProducesMinPrice() {
+    getProducesMinPrice () {
       let realPriceArr = this.data.products.map(item => {
         return item.prdRealPrice
       })
@@ -527,17 +533,17 @@ global.wxComponent({
       }
       return `￥${minPrice}~${maxPrice}`
     },
-    getMin(arr) {
+    getMin (arr) {
       return Math.min(...arr)
     },
-    getMax(arr) {
+    getMax (arr) {
       return Math.max(...arr)
     },
-    async checkActLimit(activity, productInfo) {
+    async checkActLimit (activity, productInfo) {
       if (activity && activity.activityType === 5) return (await this.checkSkillLimit(activity, productInfo))
       return true
     },
-    checkSkillLimit({
+    checkSkillLimit ({
       activityId: skId
     }, {
       prdId: productId,
@@ -591,9 +597,9 @@ global.wxComponent({
         })
       })
     },
-    setButtonStyle() {
+    setButtonStyle () {
       let activity = this.data.activity
-      if( !this.data.goodsNumber ){
+      if (!this.data.goodsNumber) {
         this.setData({
           'buttonData.buttonInfo.left.style': 'background-color:#666'
         })
@@ -612,7 +618,7 @@ global.wxComponent({
         }
       }
     },
-    checkActStatus() {
+    checkActStatus () {
       let activity = this.data.activity
       let goodsId = this.data.productInfo.goodsId
       if (activity && [1, 3, 4, 5, 8, 10].includes(activity.activityType) && [1, 2, 3, 4, 5, 6].includes(activity.actState) && (this.data.position === 'footer' || this.data.triggerButton !== 'left')) {
@@ -642,10 +648,10 @@ global.wxComponent({
       return true
     },
     // 返回首页
-    backHome() {
+    backHome () {
       util.jumpLink("pages/index/index", "redirectTo")
     },
-    toCartList() {
+    toCartList () {
       util.jumpLink("pages/cart/cart", "navigateTo")
     }
   }
