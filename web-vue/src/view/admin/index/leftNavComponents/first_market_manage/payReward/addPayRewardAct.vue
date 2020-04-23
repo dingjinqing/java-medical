@@ -32,17 +32,18 @@
       </div>
 
       <!-- 右侧内容区域 -->
-      <div class="rightContent">
-        <!-- 活动配置区域 -->
-        <section class="container">
-          <div class="title">{{$t('payReward.actSetting')}}</div>
-          <el-form
-            label-position="right"
-            label-width="113px"
-            ref="payRewardForm"
-            :rules="rules"
-            :model="params"
-          >
+      <el-form
+        label-position="right"
+        label-width="113px"
+        ref="payRewardForm"
+        :rules="rules"
+        :model="params"
+      >
+        <div class="rightContent">
+          <!-- 活动配置区域 -->
+          <section class="container">
+            <div class="title">{{$t('payReward.actSetting')}}</div>
+
             <el-form-item
               :label="$t('payReward.actName')"
               style="margin-top:15px"
@@ -173,435 +174,431 @@
                 <span>{{$t('payReward.everyJoinTime')}}</span>
               </div>
             </el-form-item>
-          </el-form>
-        </section>
 
-        <!-- 支付奖励区域 -->
-        <section class="container">
-          <div class="pay_rewards">
-            <div class="name">{{$t('payReward.payAward')}}</div>
-            <div>
-              <span style="color: #999">{{$t('payReward.maxPayTimes')}}</span>
-              <div
-                class="addReward"
-                style="display:flex"
-                @click="addPayRewardItem()"
-              >
-                <div style="margin-top:-1px">+</div>{{$t('payReward.addReward')}}
+          </section>
+
+          <!-- 支付奖励区域 -->
+          <section class="container">
+            <div class="pay_rewards">
+              <div class="name">{{$t('payReward.payAward')}}</div>
+              <div>
+                <span style="color: #999">{{$t('payReward.maxPayTimes')}}</span>
+                <div
+                  class="addReward"
+                  style="display:flex"
+                  @click="addPayRewardItem()"
+                >
+                  <div style="margin-top:-1px">+</div>{{$t('payReward.addReward')}}
+                </div>
               </div>
             </div>
-          </div>
-          <el-form
-            label-width="113px"
-            label-position="right"
-            v-for="(item,index) in params.awardList"
-            :key="index"
-            class="order_form"
-          >
-            <!-- 表头部分 -->
             <el-form-item
-              :label="'第'+(index+1)+'次支付奖励'"
-              class="order"
-              label-width="112px"
+              label-width="0"
+              label-position="right"
+              v-for="(item,index) in params.awardList"
+              :key="index"
+              class="order_form"
             >
-              <div class="delIcon">
-                <i
-                  v-if="index>0"
-                  class="el-icon-delete "
-                  style="color:#409eff;cursor:pointer"
-                  @click="deletePayRewardItem(index)"
-                ></i>
-              </div>
-            </el-form-item>
-
-            <!-- 支付奖励 -->
-            <el-form-item
-              :label="$t('payReward.payAward')+'：'"
-              required
-            >
-              <el-radio-group
-                v-model="params.awardList[index].giftType"
-                class="itemOptions"
+              <!-- 表头部分 -->
+              <el-form-item
+                :label="'第'+(index+1)+'次支付奖励'"
+                class="order"
+                label-width="112px"
               >
-                <div style="margin-top:13px">
-                  <el-radio :label="0">{{$t('payReward.noPrize')}}</el-radio>
-                  <el-radio :label="1">{{$t('payReward.ordinaryCoupon')}}</el-radio>
-                  <el-radio :label="2">{{$t('payReward.splitCoupon')}}</el-radio>
+                <div class="delIcon">
+                  <i
+                    v-if="index>0"
+                    class="el-icon-delete "
+                    style="color:#409eff;cursor:pointer"
+                    @click="deletePayRewardItem(index)"
+                  ></i>
                 </div>
-                <div style="margin-top:10px">
-                  <el-radio :label="3">{{$t('payReward.luckyDraw')}}</el-radio>
-                  <el-radio :label="4">{{$t('payReward.leftMoney')}}</el-radio>
-                  <el-radio :label="5">{{$t('payReward.goods')}}</el-radio>
-                </div>
-                <div style="margin-top:10px">
-                  <el-radio :label="6">{{$t('payReward.integral')}}</el-radio>
-                  <el-radio :label="7">{{$t('payReward.custome')}}</el-radio>
-                </div>
-              </el-radio-group>
-            </el-form-item>
+              </el-form-item>
 
-            <!-- 普通优惠券 -->
-            <!-- prop="awardList[index].ordinaryCoupon" -->
-            <el-form-item
-              v-if="item.giftType===1"
-              :label="$t('payReward.ordinaryCoupon')+'：'"
-              prop="ordinaryCouponCheck"
-              :rules="[
-                { required: true, message: '请选择普通优惠券', trigger: 'blur'},
-                { validator: (rule, value, callback) => {validateOrdinaryCoupon(rule, value, callback, awardList[index].ordinaryCoupon)}, trigger:['blur']}
-              ]"
-            >
-              <div class="middleContainer">
-                <div
-                  v-for="(itemC,indexC) in params.awardList[index].ordinaryCoupon"
-                  :key="indexC"
-                  class="addInfo clear"
+              <!-- 支付奖励 -->
+              <el-form-item
+                :label="$t('payReward.payAward')+'：'"
+                required
+              >
+                <el-radio-group
+                  v-model="item.giftType"
+                  class="itemOptions"
                 >
-                  <section
-                    class="couponImgWrapper"
-                    style="line-height: normal"
+                  <div style="margin-top:13px">
+                    <el-radio :label="0">{{$t('payReward.noPrize')}}</el-radio>
+                    <el-radio :label="1">{{$t('payReward.ordinaryCoupon')}}</el-radio>
+                    <el-radio :label="2">{{$t('payReward.splitCoupon')}}</el-radio>
+                  </div>
+                  <div style="margin-top:10px">
+                    <el-radio :label="3">{{$t('payReward.luckyDraw')}}</el-radio>
+                    <el-radio :label="4">{{$t('payReward.leftMoney')}}</el-radio>
+                    <el-radio :label="5">{{$t('payReward.goods')}}</el-radio>
+                  </div>
+                  <div style="margin-top:10px">
+                    <el-radio :label="6">{{$t('payReward.integral')}}</el-radio>
+                    <el-radio :label="7">{{$t('payReward.custome')}}</el-radio>
+                  </div>
+                </el-radio-group>
+              </el-form-item>
+
+              <!-- 普通优惠券 -->
+              <!-- prop="awardList[index].ordinaryCoupon" -->
+              <el-form-item
+                v-if="item.giftType===1"
+                :label="$t('payReward.ordinaryCoupon')+'：'"
+                :rules="[
+                  { required: true, message: '请选择普通优惠券', trigger: 'blur'}
+                ]"
+              >
+                <div class="middleContainer">
+                  <div
+                    v-for="(itemC,indexC) in item.ordinaryCoupon"
+                    :key="indexC"
+                    class="addInfo clear"
                   >
-                    <div
-                      class="coupon_list_top"
-                      v-if="itemC.actCode==='voucher'"
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height: normal"
                     >
-                      <span>￥</span>
-                      <span>{{itemC.denomination}}</span>
-                    </div>
-                    <div
-                      class="coupon_list_top"
-                      v-if="itemC.actCode==='discount'"
-                    >
-                      <span style="font-size: 20px">{{itemC.denomination}}</span>
-                      <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
-                    </div>
-                    <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
-                    <!-- <div class="coupon_center_number">剩余{{itemC.surplus}}张</div> -->
-                    <div
-                      class="coupon_center_number"
-                      v-if="itemC.surplus !==0"
-                    >剩余{{itemC.surplus}}张</div>
-                    <div
-                      class="coupon_center_number"
-                      v-if="itemC.surplus ===0"
-                    >库存不限制</div>
-                    <div
-                      class="coupon_list_bottom"
-                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
-                    >
-                      <span v-if="itemC.scoreNumber === 0">领取</span>
-                      <div v-if="itemC.scoreNumber !== 0">
-                        <span>{{itemC.scoreNumber}}</span>积分 兑换
+                      <div
+                        class="coupon_list_top"
+                        v-if="itemC.actCode==='voucher'"
+                      >
+                        <span>￥</span>
+                        <span>{{itemC.denomination}}</span>
                       </div>
-                    </div>
-                  </section>
-                  <span
-                    @click="deleteCouponImg(itemC,indexC,index)"
-                    class="deleteIcon"
-                  >×</span>
-                </div>
+                      <div
+                        class="coupon_list_top"
+                        v-if="itemC.actCode==='discount'"
+                      >
+                        <span style="font-size: 20px">{{itemC.denomination}}</span>
+                        <span style="font-size: 14px">{{$t('payReward.discount')}}</span>
+                      </div>
+                      <div class="coupon_center_limit">{{itemC.useConsumeRestrict | formatLeastConsume(itemC.leastConsume)}}</div>
+                      <!-- <div class="coupon_center_number">剩余{{itemC.surplus}}张</div> -->
+                      <div
+                        class="coupon_center_number"
+                        v-if="itemC.surplus !==0"
+                      >剩余{{itemC.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="itemC.surplus ===0"
+                      >库存不限制</div>
+                      <div
+                        class="coupon_list_bottom"
+                        :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
+                      >
+                        <span v-if="itemC.scoreNumber === 0">领取</span>
+                        <div v-if="itemC.scoreNumber !== 0">
+                          <span>{{itemC.scoreNumber}}</span>积分 兑换
+                        </div>
+                      </div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg(itemC,indexC,index)"
+                      class="deleteIcon"
+                    >×</span>
+                  </div>
 
-                <div
-                  class="addInfo"
-                  @click="handleToCallDialog1(item,index)"
-                >
-                  <el-image
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p>{{$t('payReward.addCoupon')}}</p>
-                </div>
-              </div>
-              <div class="textTips">{{$t('payReward.maxCouponNumber')}}</div>
-            </el-form-item>
-
-            <!-- 分裂优惠券 -->
-            <el-form-item
-              v-if="params.awardList[index].giftType === 2 "
-              :label="$t('payReward.splitCoupon')+ '：'"
-              prop="awardList[index].splitCoupon"
-              :rules="{
-                required: true, message:'请选择分裂优惠券'
-
-              }"
-            >
-              <div class="middleContainer">
-                <div
-                  v-for="(itemD,indexD) in params.awardList[index].splitCoupon"
-                  :key="indexD"
-                  class="addInfo"
-                >
-                  <section
-                    class="couponImgWrapper"
-                    style="line-height: normal"
+                  <div
+                    class="addInfo"
+                    @click="handleToCallDialog1(item,index)"
                   >
-                    <div
-                      class="coupon_list_top"
-                      v-if="itemD.actCode==='voucher'"
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                    <p>{{$t('payReward.addCoupon')}}</p>
+                  </div>
+                </div>
+                <div class="textTips">{{$t('payReward.maxCouponNumber')}}</div>
+              </el-form-item>
+
+              <!-- 分裂优惠券 -->
+              <el-form-item
+                v-if="item.giftType === 2 "
+                :label="$t('payReward.splitCoupon')+ '：'"
+                :rules="{
+                  required: true, message:'请选择分裂优惠券'
+                }"
+              >
+                <div class="middleContainer">
+                  <div
+                    v-for="(itemD,indexD) in item.splitCoupon"
+                    :key="indexD"
+                    class="addInfo"
+                  >
+                    <section
+                      class="couponImgWrapper"
+                      style="line-height: normal"
                     >
-                      <span>￥</span>
-                      <span>{{itemD.denomination}}</span>
-                    </div>
-                    <div
-                      class="coupon_list_top"
-                      v-else-if="itemD.actCode=='random'"
-                    >
-                      <span>￥</span>
-                      <span>{{itemD.randomMax}}</span>
-                      <span>最高</span>
-                    </div>
-                    <div
-                      class="coupon_list_top"
-                      v-else
-                    >
-                      <span style="font-size: 20px">{{itemD.denomination}}</span>
-                      <span style="font-size: 14px">折</span>
-                    </div>
-                    <div class="coupon_center_limit">{{itemD.useConsumeRestrict | formatLeastConsume(itemD.leastConsume)}}</div>
-                    <!-- <div class="coupon_center_number">剩余{{itemD.surplus}}张</div> -->
-                    <div
-                      class="coupon_center_number"
-                      v-if="itemD.surplus !==0"
-                    >剩余{{itemD.surplus}}张</div>
-                    <div
-                      class="coupon_center_number"
-                      v-if="itemD.surplus ===0"
-                    >库存不限制</div>
-                    <div
-                      class="coupon_list_bottom"
-                      :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
-                    >
-                      <span v-if="itemD.scoreNumber === 0">领取</span>
-                      <div v-if="itemD.scoreNumber !== 0">
-                        <span>{{itemD.scoreNumber}}</span>积分 兑换
+                      <div
+                        class="coupon_list_top"
+                        v-if="itemD.actCode==='voucher'"
+                      >
+                        <span>￥</span>
+                        <span>{{itemD.denomination}}</span>
                       </div>
-                    </div>
-                  </section>
-                  <span
-                    @click="deleteCouponImg2(itemD, indexD, index)"
-                    class="deleteIcon"
-                  >×</span>
+                      <div
+                        class="coupon_list_top"
+                        v-else-if="itemD.actCode=='random'"
+                      >
+                        <span>￥</span>
+                        <span>{{itemD.randomMax}}</span>
+                        <span>最高</span>
+                      </div>
+                      <div
+                        class="coupon_list_top"
+                        v-else
+                      >
+                        <span style="font-size: 20px">{{itemD.denomination}}</span>
+                        <span style="font-size: 14px">折</span>
+                      </div>
+                      <div class="coupon_center_limit">{{itemD.useConsumeRestrict | formatLeastConsume(itemD.leastConsume)}}</div>
+                      <!-- <div class="coupon_center_number">剩余{{itemD.surplus}}张</div> -->
+                      <div
+                        class="coupon_center_number"
+                        v-if="itemD.surplus !==0"
+                      >剩余{{itemD.surplus}}张</div>
+                      <div
+                        class="coupon_center_number"
+                        v-if="itemD.surplus ===0"
+                      >库存不限制</div>
+                      <div
+                        class="coupon_list_bottom"
+                        :style="'background-image:url('+ $imageHost +'/image/admin/coupon_border.png)'"
+                      >
+                        <span v-if="itemD.scoreNumber === 0">领取</span>
+                        <div v-if="itemD.scoreNumber !== 0">
+                          <span>{{itemD.scoreNumber}}</span>积分 兑换
+                        </div>
+                      </div>
+                    </section>
+                    <span
+                      @click="deleteCouponImg2(itemD, indexD, index)"
+                      class="deleteIcon"
+                    >×</span>
+                  </div>
+
+                  <div
+                    class="addInfo"
+                    @click="handleToCallDialog2(item, index)"
+                    style="line-height: normal"
+                    v-if="item.splitCoupon.length < 1"
+                  >
+                    <el-image
+                      fit="scale-down"
+                      :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
+                      style="width: 78px;height:78px;cursor:pointer"
+                    ></el-image>
+                    <p>{{$t('addBargainAct.addCoupon')}}</p>
+                  </div>
                 </div>
+                <div class="textTips">最多可以添加1张优惠券，已过期和已停用的优惠券不能添加</div>
+              </el-form-item>
 
-                <div
-                  class="addInfo"
-                  @click="handleToCallDialog2(item, index)"
-                  style="line-height: normal"
-                >
-                  <!-- v-if="params.awardList[index].splitCoupon.length < 1" -->
-
-                  <el-image
-                    fit="scale-down"
-                    :src="imgHost+'/image/admin/shop_beautify/add_decorete.png'"
-                    style="width: 78px;height:78px;cursor:pointer"
-                  ></el-image>
-                  <p>{{$t('addBargainAct.addCoupon')}}</p>
-                </div>
-              </div>
-              <div class="textTips">最多可以添加1张优惠券，已过期和已停用的优惠券不能添加</div>
-            </el-form-item>
-
-            <!-- 幸运大抽奖 -->
-            <el-form-item
-              v-if="item.giftType === 3"
-              :label="$t('payReward.luckyDraw')+'：'"
-              class="luckyDraw"
-              :prop="`awardList[${index}].lotteryId`"
-              :rules="[
+              <!-- 幸运大抽奖 -->
+              <el-form-item
+                v-if="item.giftType === 3"
+                :label="$t('payReward.luckyDraw')+'：'"
+                class="luckyDraw"
+                :prop="`awardList[${index}].lotteryId`"
+                :rules="[
                 {required: true, validator:(rule, value, callback) => { validateLottery(rule, value, callback, item.lotteryId)}, trigger: ['change']}
               ]"
-            >
-              <el-select
-                size="small"
-                style="width: 120px"
-                v-model="params.awardList[index].lotteryId"
-                :placeholder="$t('payReward.selectDrawAct')"
               >
-                <el-option
-                  v-for="item in options"
-                  :key="item.id"
-                  :label="item.lotteryName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>&nbsp;
-              <span>{{$t('payReward.refresh')}}</span> | <span @click="create">{{$t('payReward.new')}}</span> | <span @click="manage">{{$t('payReward.manage')}}</span>
-            </el-form-item>
+                <el-select
+                  size="small"
+                  style="width: 120px"
+                  v-model="item.lotteryId"
+                  :placeholder="$t('payReward.selectDrawAct')"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.id"
+                    :label="item.lotteryName"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>&nbsp;
+                <span>{{$t('payReward.refresh')}}</span> | <span @click="create">{{$t('payReward.new')}}</span> | <span @click="manage">{{$t('payReward.manage')}}</span>
+              </el-form-item>
 
-            <!-- 余额 -->
-            <el-form-item
-              v-if="params.awardList[index].giftType === 4"
-              :label="$t('payReward.leftMoney')+'：'"
-              :prop="`awardList[${index}].accountNumber`"
-              :rules="[
+              <!-- 余额 -->
+              <el-form-item
+                v-if="item.giftType === 4"
+                :label="$t('payReward.leftMoney')+'：'"
+                :prop="`awardList[${index}].accountNumber`"
+                :rules="[
                 { required: true, validator: (rule, value, callback) => {validateAccountNumber(rule, value, callback, item.accountNumber)}, trigger: 'blur' }
               ]"
-            >
-              <el-input
-                v-model="params.awardList[index].accountNumber"
-                size="small"
-                style="width:120px"
-                :placeholder="$t('payReward.inputLeftMoney')"
-              ></el-input>
-            </el-form-item>
-
-            <el-form-item
-              v-if="item.giftType === 5"
-              :label="$t('payReward.award')+ '：'"
-              required
-            >
-              <div
-                class="addGoodsWrapper"
-                @click="addGoods(index)"
-              >+&nbsp;{{$t('payReward.addGift')}}</div>
-              <div
-                v-if="true"
-                class="goods_modal"
               >
-                <table>
-                  <thead>
-                    <tr style="background: #F8F8F8;">
-                      <th width="50%">{{$t('payReward.goodsName')}}</th>
-                      <th width="10%">{{$t('payReward.goodsPrice')}}</th>
-                      <th width="20%">{{$t('payReward.goodsNumber')}}</th>
-                      <th width="20%">{{$t('payReward.goodsStatus')}}</th>
-                    </tr>
-                  </thead>
-                  <tbody class="tbody">
-                    <tr>
-                      <td>
-                        <section style="overflow:hidden">
-                          <div
-                            class="goods_img"
-                            style="width:40px;height:40px; float: left"
-                          >
-                            <el-image
-                              :src="params.awardList[index].goodsImg"
-                              fit="contain"
-                              style="width:100%; height: 100%;"
-                            ></el-image>
-                          </div>
-                          <span
-                            class="goods_name"
-                            style="float: right;;"
-                          >
-                            {{ params.awardList[index].goodsName}}
-                          </span>
-                        </section>
-                      </td>
-                      <td>
-                        ￥{{params.awardList[index].goodsPrice}}
-                      </td>
-                      <td>
-                        {{ params.awardList[index].goodsNumber}}
-                      </td>
-                      <td>
-                        上架
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </el-form-item>
-
-            <el-form-item
-              v-if="item.giftType === 5"
-              :label="$t('payReward.giftValidity')+'：'"
-              :prop="`awardList[${index}].keepDays`"
-              :rules="[
-                { required: true, validator: (rule,value, callback)=>(validateKeepDays(rule, value, callback, item.keepDays)), trigger:['blur', 'change']}
-              ]"
-            >
-              <div>
                 <el-input
-                  v-model="params.awardList[index].keepDays"
+                  v-model="item.accountNumber"
                   size="small"
-                  style="width:100px"
+                  style="width:120px"
+                  :placeholder="$t('payReward.inputLeftMoney')"
                 ></el-input>
-                <span>天</span>
-                <div>中奖用户需在有效期内领取，过期后将无法领取</div>
-              </div>
-            </el-form-item>
+              </el-form-item>
 
-            <el-form-item
-              v-if="item.giftType === 6"
-              :label="$t('payReward.integral')+'：'"
-              :prop="`awardList[${index}].scoreNumber`"
-              :rules="[
-                { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.scoreNumber)), trigger:['blur', 'change']}
-              ]"
-            >
-              <el-input
-                v-model="params.awardList[index].scoreNumber"
-                size="small"
-                style="width:120px"
-                :placeholder="$t('payReward.inputIntegral')"
-              ></el-input>
-            </el-form-item>
+              <el-form-item
+                v-if="item.giftType === 5"
+                :label="$t('payReward.award')+ '：'"
+                required
+              >
+                <div
+                  class="addGoodsWrapper"
+                  @click="addGoods(index)"
+                >+&nbsp;{{$t('payReward.addGift')}}</div>
+                <div
+                  v-if="true"
+                  class="goods_modal"
+                >
+                  <table>
+                    <thead>
+                      <tr style="background: #F8F8F8;">
+                        <th width="50%">{{$t('payReward.goodsName')}}</th>
+                        <th width="10%">{{$t('payReward.goodsPrice')}}</th>
+                        <th width="20%">{{$t('payReward.goodsNumber')}}</th>
+                        <th width="20%">{{$t('payReward.goodsStatus')}}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="tbody">
+                      <tr>
+                        <td>
+                          <section style="overflow:hidden">
+                            <div
+                              class="goods_img"
+                              style="width:40px;height:40px; float: left"
+                            >
+                              <el-image
+                                :src="item.goodsImg"
+                                fit="contain"
+                                style="width:100%; height: 100%;"
+                              ></el-image>
+                            </div>
+                            <span
+                              class="goods_name"
+                              style="float: right;;"
+                            >
+                              {{ item.goodsName}}
+                            </span>
+                          </section>
+                        </td>
+                        <td>
+                          ￥{{item.goodsPrice}}
+                        </td>
+                        <td>
+                          {{item.goodsNumber}}
+                        </td>
+                        <td>
+                          上架
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </el-form-item>
 
-            <el-form-item
-              v-if="item.giftType === 7"
-              :label="$t('payReward.actImg')+ '：'"
-              :prop="`awardList[${index}].customImage`"
-              :rules="[
+              <el-form-item
+                v-if="item.giftType === 5"
+                :label="$t('payReward.giftValidity')+'：'"
+                :prop="`awardList[${index}].keepDays`"
+                :rules="[
+                  { required: true, validator: (rule,value, callback)=>(validateKeepDays(rule, value, callback, item.keepDays)), trigger:['blur', 'change']}
+                ]"
+              >
+                <div>
+                  <el-input
+                    v-model="item.keepDays"
+                    size="small"
+                    style="width:100px"
+                  ></el-input>
+                  <span>天</span>
+                  <div>中奖用户需在有效期内领取，过期后将无法领取</div>
+                </div>
+              </el-form-item>
+
+              <el-form-item
+                v-if="item.giftType === 6"
+                :label="$t('payReward.integral')+'：'"
+                :prop="`awardList[${index}].scoreNumber`"
+                :rules="[
+                  { required: true, validator: (rule,value, callback)=>(validateIntegral(rule, value, callback, item.scoreNumber)), trigger:['blur', 'change']}
+                ]"
+              >
+                <el-input
+                  v-model="item.scoreNumber"
+                  size="small"
+                  style="width:120px"
+                  :placeholder="$t('payReward.inputIntegral')"
+                ></el-input>
+              </el-form-item>
+
+              <el-form-item
+                v-if="item.giftType === 7"
+                :label="$t('payReward.actImg')+ '：'"
+                :prop="`awardList[${index}].customImage`"
+                :rules="[
                 { required: true, validator: (rule,value, callback)=>(validateImage(rule, value, callback, item.customImage)), trigger:['blur', 'change']}
               ]"
-            >
-              <div style="display: flex">
-                <div
-                  class="size"
-                  @click="handleImage(index)"
-                >
-                  <el-image
-                    :src="$imageHost + '/' + params.awardList[index].customImage"
-                    fit="contain"
-                    style=" width:100%; height: 100%;"
-                  ></el-image>
+              >
+                <div style="display: flex">
+                  <div
+                    class="size"
+                    @click="handleImage(index)"
+                  >
+                    <el-image
+                      :src="$imageHost + '/' + item.customImage"
+                      fit="contain"
+                      style=" width:100%; height: 100%;"
+                    ></el-image>
+                  </div>
+                  <div style="margin-top:10px">{{$t('payReward.imgSize')}}</div>
                 </div>
-                <div style="margin-top:10px">{{$t('payReward.imgSize')}}</div>
-              </div>
-            </el-form-item>
-            <el-form-item
-              v-if="item.giftType === 7"
-              :label="$t('payReward.settingLink')+'：'"
-              :prop="`awardList[${index}].customLink`"
-              :rules="[
+              </el-form-item>
+              <el-form-item
+                v-if="item.giftType === 7"
+                :label="$t('payReward.settingLink')+'：'"
+                :prop="`awardList[${index}].customLink`"
+                :rules="[
                 { required: true, validator: (rule,value, callback)=>(validateCustomLink(rule, value, callback, item.customLink)), trigger:['blur', 'change']}
               ]"
-            >
-              <el-input
-                v-model="params.awardList[index].customLink"
-                size="small"
-                style="width:200px"
-              ></el-input>
-              <span
-                @click="chooseSelect(index)"
-                class="selectLink"
-              >{{$t('payReward.chooseLink')}}</span>
-            </el-form-item>
+              >
+                <el-input
+                  v-model="item.customLink"
+                  size="small"
+                  style="width:200px"
+                ></el-input>
+                <span
+                  @click="chooseSelect(index)"
+                  class="selectLink"
+                >{{$t('payReward.chooseLink')}}</span>
+              </el-form-item>
 
-            <el-form-item
-              v-if="item.giftType !== 0"
-              :label="$t('payReward.giftNumber')+'：'"
-              :prop="`awardList[${index}].awardNumber`"
-              :rules="[
+              <el-form-item
+                v-if="item.giftType !== 0"
+                :label="$t('payReward.giftNumber')+'：'"
+                :prop="`awardList[${index}].awardNumber`"
+                :rules="[
                 { required: true, validator: (rule, value, callback)=>{validateGiftNmuber(rule, value, callback, item.awardNumber)}, trigger: ['blur', 'change']}
               ]"
-            >
-              <div>
-                <el-input
-                  v-model="params.awardList[index].awardNumber"
-                  size="small"
-                  style="width:100px"
-                ></el-input>份
-                <span>(已发{{params.awardList[index].sendNum > 0 ? params.awardList[index].sendNum : 0}}份)</span>
-                <span>{{$t('payReward.giftTips2')}}</span>
-                <div class="tips">{{$t('payReward.giftTips3')}}</div>
-              </div>
+              >
+                <div>
+                  <el-input
+                    v-model="item.awardNumber"
+                    size="small"
+                    style="width:100px"
+                  ></el-input>份
+                  <span>(已发{{item.sendNum > 0 ? item.sendNum : 0}}份)</span>
+                  <span>{{$t('payReward.giftTips2')}}</span>
+                  <div class="tips">{{$t('payReward.giftTips3')}}</div>
+                </div>
+              </el-form-item>
             </el-form-item>
-          </el-form>
-        </section>
-      </div>
+          </section>
+        </div>
+      </el-form>
 
       <!-- 保存按钮 -->
       <div class="save">
@@ -812,7 +809,9 @@ export default {
         actFirst: { required: true, validator: validatelevel, trigger: 'blur' },
         goodsAreaType: { required: true, validator: validateGoodsAreaType, trigger: ['blur', 'change'] },
         limitTimes: { required: true, validator: limitTimesValidator, trigger: 'blur' }
-      }
+      },
+      ordinaryIndex: null,
+      ordinaryData: []
     }
   },
   watch: {
@@ -874,6 +873,7 @@ export default {
       this.currentModelIndex = currentIndex
       console.log(item, 'item--')
       console.log(this.params, 'itemParams--')
+      this.ordinaryIndex = currentIndex
       let arr = []
       item.ordinaryCoupon.forEach(item => {
         console.log(item, 'what is item')
@@ -888,14 +888,23 @@ export default {
     // 普通优惠券数据处理回显处理
     addCouponHandle (data) {
       console.log(data, 'coupon data')
-      console.log(this.currentModelIndex, 'first--')
-      this.params.awardList[this.currentModelIndex].couponIds = data.map(item => item.id)
-      this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
+      // console.log(this.currentModelIndex, 'first--')
+      // this.params.awardList[this.currentModelIndex].couponIds = data.map(item => item.id)
+      // this.params.awardList[this.currentModelIndex].ordinaryCoupon = data
+
+      this.params.awardList.forEach((item, index) => {
+        console.log(item, index)
+        if (index === this.ordinaryIndex) {
+          item.couponIds = data.map(item => item.id)
+          console.log(item.couponIds)
+          item.ordinaryCoupon = data
+        }
+      })
 
       if (this.params.awardList[this.currentModelIndex].giftType === 1) {
         this.params.awardList[this.currentModelIndex].couponList = []
         this.params.awardList[this.currentModelIndex].ordinaryCoupon.map((item, index) => {
-          this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, item, {
+          this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, {
             actCode: item.actCode,
             denomination: item.denomination,
             id: item.id,
@@ -909,11 +918,18 @@ export default {
     },
     // 删除普通优惠券
     deleteCouponImg (item, index, currentIndex) {
+      console.log(item, index, currentIndex)
       console.log(currentIndex)
-      console.log(this.params.awardList[currentIndex])
-      let added = this.params.awardList[currentIndex].ordinaryCouponIdList.map(item => item.id)
+      console.log(this.params.awardList[currentIndex].ordinaryCoupon)
+      let added = this.params.awardList[currentIndex].ordinaryCoupon.map(item => item.id)
       this.emptySelect = added
+      console.log(added)
       this.params.awardList[currentIndex].ordinaryCoupon.splice(index, 1)
+      console.log(this.params.awardList[currentIndex].ordinaryCoupon)
+      let data = this.params.awardList[currentIndex].ordinaryCoupon.map(item => item.id)
+      console.log(data)
+      this.params.awardList[currentIndex].couponIds = data
+      this.params.awardList[currentIndex].couponList = this.params.awardList[currentIndex].ordinaryCoupon
     },
 
     // 分裂优惠券弹窗调起
@@ -935,7 +951,7 @@ export default {
       if (this.params.awardList[this.currentModelIndex].giftType === 2) {
         this.params.awardList[this.currentModelIndex].couponList = []
         this.params.awardList[this.currentModelIndex].splitCoupon.forEach((item, index) => {
-          this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, item, {
+          this.params.awardList[this.currentModelIndex].couponList.push(Object.assign({}, {
             actCode: item.actCode,
             denomination: item.denomination,
             id: item.id,
@@ -949,9 +965,12 @@ export default {
     },
     // 删除分裂优惠券
     deleteCouponImg2 (item, index, receiveCurrentDisCouponIndex) {
-      let disCoupons = this.params.awardList[receiveCurrentDisCouponIndex].splitCouponIdList.map(item => item.id)
+      let disCoupons = this.params.awardList[receiveCurrentDisCouponIndex].splitCoupon.map(item => item.id)
       this.disCouponIdList = disCoupons
       this.params.awardList[receiveCurrentDisCouponIndex].splitCoupon.splice(index, 1)
+      let data = this.params.awardList[receiveCurrentDisCouponIndex].splitCoupon.map(item => item.id)
+      this.params.awardList[receiveCurrentDisCouponIndex].couponIds = data
+      this.params.awardList[receiveCurrentDisCouponIndex].couponList = this.params.awardList[receiveCurrentDisCouponIndex].splitCoupon
     },
 
     // 跳转到幸运大抽奖创建页面
@@ -1145,12 +1164,22 @@ export default {
 
             if (awad.giftType === 1) {
               this.params.awardList[index].ordinaryCoupon = awad.couponView
-              this.params.awardList[index].ordinaryCouponIdList = awad.couponIds
+              console.log(this.params.awardList[index].ordinaryCoupon)
+              let data = awad.couponIds.split(',')
+              console.log(data)
+              this.params.awardList[index].ordinaryCouponIdList = data
+              this.params.awardList[index].couponIds = data
+              this.params.awardList[index].couponList = awad.couponView
+              console.log(this.params.awardList[index].ordinaryCouponIdList)
               this.$forceUpdate()
             }
             if (awad.giftType === 2) {
               this.params.awardList[index].splitCoupon = awad.couponView
+              let data = awad.couponIds.split(',')
+              console.log(data)
               this.params.awardList[index].splitCouponIdList = awad.couponIds
+              this.params.awardList[index].couponIds = data
+              this.params.awardList[index].couponList = awad.couponView
               this.$forceUpdate()
             }
             if (awad.giftType === 5) {
@@ -1245,7 +1274,7 @@ export default {
             goodsSortIds: this.shopCategoryIds === null ? null : String(this.shopCategoryIds) // 商品商家分类
           }
           let requestParams = Object.assign(this.params, obj)
-          console.log(this.params.id, 'this.params.id', this.requestParams, 'this.requestParams', this.params, 'this.params')
+          console.log(this.params.id, 'this.params.id', this.requestParams, 'this.requestParams')
           if (this.params.id === '') {
             this.addActivity(requestParams)
           } else {
@@ -1311,7 +1340,7 @@ export default {
     // 验证积分
     validateIntegral (rule, value, callback, scoreNumber) {
       var re = /^(0|\+?[1-9][0-9]*)$/
-      if (scoreNumber === '') {
+      if (!scoreNumber) {
         callback(new Error('请输入积分'))
       } else if (!re.test(scoreNumber)) {
         callback(new Error('请填写0或者正整数'))
