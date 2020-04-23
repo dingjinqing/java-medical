@@ -19,8 +19,31 @@
           <div
             class="version-header"
             :style="'background-image:url(' + $imageHost + '/image/admin/version_basis.png)'"
-          ></div>
-          <div class="version-content"></div>
+          >
+            <div class="vh-title">
+              <span class="vh-title-btn">基础版</span>
+            </div>
+            <div class="vh-con">
+              <span class="vh-con-span">￥</span>
+              <span class="vh-con-money">3800</span>
+              <span class="vh-con-span">/1年期</span></div>
+          </div>
+          <div class="version-content">
+            <h3>版本描述</h3>
+            <ul>
+              <li>适用于大多数企业进行官网展示、门店小程序、 电商商城小程序平台搭建的需要</li>
+              <li>享受小程序基础应用功能</li>
+            </ul>
+            <h3>功能描述</h3>
+            <ul>
+              <li>电商版小程序全部功能开放，商品限额500个</li>
+              <li>支持小程序门店展示、服务预约、门店自提功能</li>
+              <li>支持折扣会员卡功能</li>
+              <li>大量装修模块免费开放使用，砍价、视频、会员卡模块不支持使用</li>
+              <li>支持商品优惠券功能</li>
+              <li>小程序概况统计数据一览</li>
+            </ul>
+          </div>
         </div>
         <div class="model"></div>
         <div class="model"></div>
@@ -77,6 +100,36 @@ export default {
         overflow: hidden;
         background-size: 100% 100%;
         background-repeat: no-repeat;
+      }
+      .vh-title {
+        height: 40px;
+        margin-top: 15px;
+        text-align: center;
+      }
+      .vh-title-btn {
+        display: inline-block;
+        width: 90px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 20px;
+        color: #fff;
+        opacity: 35%;
+        background-color: #fbcb46;
+        box-shadow: 0 4px 4px rgba(251, 203, 70, 0.35);
+      }
+      .vh-con {
+        height: 50px;
+        line-height: 50px;
+        margin-top: 2px;
+        text-align: center;
+        color: #333;
+      }
+      .vh-con-span {
+        font-size: 14px;
+      }
+      .vh-con-money {
+        font-size: 30px;
       }
     }
   }
