@@ -22,12 +22,13 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in name"
                   :key="index"
+                  style="margin-right:5px"
                 >
                   {{item}}
-                </block>
+                </span>
               </td>
             </tr>
             <tr>
@@ -36,12 +37,13 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in phoneNum"
                   :key="index"
+                  style="margin-right:5px"
                 >
                   {{item}}
-                </block>
+                </span>
               </td>
             </tr>
             <tr>
@@ -50,12 +52,13 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in address"
                   :key="index"
+                  style="margin-right:5px"
                 >
                   {{item}}
-                </block>
+                </span>
               </td>
             </tr>
             <tr>
@@ -64,12 +67,13 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in email"
                   :key="index"
+                  style="margin-right:5px"
                 >
                   {{item}}
-                </block>
+                </span>
               </td>
             </tr>
             <tr>
@@ -79,9 +83,10 @@
                 class="comm_message"
               >
                 <div class="sex">
-                  <block
+                  <span
                     v-for="(item,index) in sexArr"
                     :key="index"
+                    style="margin-right:20px"
                   >
                     <el-radio
                       :disabled="item.radio!=='1'"
@@ -93,7 +98,7 @@
                       v-model="item.radio"
                       label="2"
                     >女</el-radio>
-                  </block>
+                  </span>
                 </div>
               </td>
             </tr>
@@ -104,11 +109,11 @@
                 class="comm_message"
               >
                 <div class="sex">
-                  <block
+                  <span
                     v-for="(item,index) in xlData"
                     :key="index"
+                    style="margin-right:10px"
                   >
-
                     <div
                       :style="item.slideIndex === itemC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
                       v-for="(itemC,indexC) in item.slideArr"
@@ -116,13 +121,8 @@
                     >
                       ·{{itemC}}
                     </div>
-                  </block>
+                  </span>
                 </div>
-
-                <!-- <span style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>{{slideArr[0]}}</span>
-                <br>
-                <span style="font-weight: bolder">·</span><span style="color: #0E70CA">{{slideArr[1]}}</span>
-                <br> -->
               </td>
             </tr>
             <tr>
@@ -131,12 +131,12 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in inputVal"
                   :key="index"
                 >
                   {{item}}
-                </block>
+                </span>
               </td>
             </tr>
             <tr>
@@ -146,19 +146,20 @@
                 class="comm_message"
               >
                 <div class="sex">
-                  <block
+                  <span
                     v-for="(item,index) in xxData"
                     :key="index"
+                    style="margin-right:10px"
                   >
                     <div
                       v-for="(itemC,indexC) in item.choiseArr"
                       :key="indexC"
-                      :style="item.chooseIndex === index?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
+                      :style="item.chooseIndex === indexC?'color:#0E70CA;margin-bottom:5px':'margin-bottom:5px'"
                     >
                       ·{{itemC}}
                     </div>
 
-                  </block>
+                  </span>
                 </div>
 
                 <!-- <span :class="choose === '1'?'choose':''" style="font-weight: bolder;display:inline-block;margin-bottom:5px">·</span><span>选项1</span>
@@ -173,12 +174,13 @@
                 width="60%"
                 class="comm_message"
               >
-                <block
+                <span
                   v-for="(item,index) in date"
                   :key="index"
+                  style="margin-right:10px"
                 >
                   {{item}}
-                </block>
+                </span>
 
               </td>
             </tr>
@@ -192,7 +194,7 @@
                   v-for="(item,index) in picture"
                   :key="index"
                   :src="item"
-                  style="display: inline-block;"
+                  style="display: inline-block;margin-right:10px"
                   width="65px"
                   height="65px"
                   class="click_comm"
@@ -272,26 +274,38 @@ export default {
         let { pageId, userId, submitId } = this.$route.query
         feedBackListDetailQuery({ pageId: pageId, userId: userId, submitId: submitId }).then(res => {
           console.log(res)
+
           if (res.error === 0) {
             res.content.forEach((item, index) => {
               switch (item.moduleName) {
                 case 'm_input_name':
-                  this.name.push(item.moduleValue)
+                  this.name.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_input_mobile':
-                  this.phoneNum.push(item.moduleValue)
+                  this.phoneNum.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_address':
-                  this.address.push(item.moduleValue)
+                  console.log(JSON.parse(item.moduleValue))
+                  let text = ''
+                  console.log(item)
+                  JSON.parse(item.moduleValue).area.forEach((itemC, index) => {
+                    text = text + itemC
+                  })
+                  if (JSON.parse(item.moduleValue).detail) {
+                    text = text + JSON.parse(item.moduleValue).detail
+                  }
+                  console.log(text)
+                  this.address.push(text)
                   break
                 case 'm_input_email':
-                  this.email.push(item.moduleValue)
+                  this.email.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_sex':
+                  console.log(item)
                   let obj = {
                     radio: null
                   }
-                  if (item.moduleValue === item.moduleValueList[0]) {
+                  if (JSON.parse(item.moduleValue) === '男') {
                     obj.radio = '1'
                   } else {
                     obj.radio = '2'
@@ -299,28 +313,42 @@ export default {
                   this.sexArr.push(obj)
                   break
                 case 'm_slide':
+                  console.log(item)
                   let objMslide = {
                     slideIndex: '',
                     slideArr: ''
                   }
-                  objMslide.slideIndex = item.moduleValue
-                  objMslide.slideArr = item.slideArr
+                  item.moduleValueList.forEach((itemC, indexC) => {
+                    if (JSON.parse(item.moduleValue) === itemC) {
+                      objMslide.slideIndex = itemC
+                    }
+                  })
+                  objMslide.slideArr = item.moduleValueList
+                  console.log(objMslide)
                   this.xlData.push(objMslide)
                   break
                 case 'm_input_text':
+                  console.log(item)
                   this.inputVal.push(item.moduleValue)
                   break
                 case 'm_choose':
+                  console.log(item)
                   let objMchoose = {
                     chooseIndex: '',
                     choiseArr: ''
                   }
-                  objMchoose.chooseIndex = Number(item.moduleValue) - 1
+
+                  item.moduleValueList.forEach((itemC, indexC) => {
+                    if (JSON.parse(item.moduleValue) === JSON.stringify(indexC)) {
+                      objMchoose.chooseIndex = indexC
+                    }
+                  })
                   objMchoose.choiseArr = item.moduleValueList
+                  console.log(objMchoose)
                   this.xxData.push(objMchoose)
                   break
                 case 'm_dates':
-                  this.date.push(item.moduleValue)
+                  this.date.push(JSON.parse(item.moduleValue))
                   break
                 case 'm_imgs':
                   console.log(item.moduleValue)
