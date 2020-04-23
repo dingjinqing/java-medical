@@ -5,6 +5,7 @@ import static com.vpu.mp.db.shop.tables.MarketCalendar.MARKET_CALENDAR;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,8 +22,10 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarActivityVo;
+import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarInfoVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketListData;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketListDataVo;
@@ -90,6 +93,7 @@ public class MarketCalendarService extends ShopBaseService {
 
 	/**
 	 * 营销日历列表 里边的
+	 * 
 	 * @param year
 	 * @return
 	 */
@@ -100,12 +104,18 @@ public class MarketCalendarService extends ShopBaseService {
 						.and(DSL.left(MARKET_CALENDAR.EVENT_TIME.cast(String.class), 4).eq(year)))
 				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
 		Date nowDate = DateUtil.yyyyMmDdDate(LocalDate.now());
+		if (Objects.equal(year, CalendarAction.OVERVIEW)) {
+			calendarList = db().selectFrom(MARKET_CALENDAR)
+					.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+							.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
+					.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(2).fetchInto(MarketCalendarVo.class);
+		}
 		for (int i = 1; i < 13; i++) {
 			MarketListData data = new MarketListData();
-			if(i<10) {
+			if (i < 10) {
 				data.setMonth("0" + i);
-			}else {
-				data.setMonth(String.valueOf(i));				
+			} else {
+				data.setMonth(String.valueOf(i));
 			}
 			List<MarketCalendarVo> dataList = new LinkedList<MarketCalendarVo>();
 			data.setData(dataList);
@@ -114,7 +124,7 @@ public class MarketCalendarService extends ShopBaseService {
 		for (MarketCalendarVo item : calendarList) {
 			item = eventStatus(item);
 			if (item.getEventStatus().equals(CalendarAction.ONE)) {
-				int days = (int) ((item.getEventTime().getTime()-nowDate.getTime()) / (1000 * 60 * 60 * 24L));
+				int days = (int) ((item.getEventTime().getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24L));
 				item.setDownTime(days);
 			}
 			Date eventTime = item.getEventTime();
@@ -124,13 +134,17 @@ public class MarketCalendarService extends ShopBaseService {
 			List<MarketCalendarVo> data = marketListData.getData();
 			data.add(item);
 		}
-		return new MarketListDataVo(list,nowDate,getYearList());
+		return new MarketListDataVo(list, nowDate, getYearList());
 	}
-	
+
 	public List<String> getYearList() {
 		Field<String> field = DSL.left(MARKET_CALENDAR.EVENT_TIME.cast(String.class), 4).as("year");
 		return db().select(field).from(MARKET_CALENDAR).where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.groupBy(field).orderBy(field.desc()).fetchInto(String.class);
+	}
+
+	public MarketCalendarRecord getInfoById(Integer id) {
+		return db().selectFrom(MARKET_CALENDAR).where(MARKET_CALENDAR.ID.eq(id)).fetchAny();
 	}
 
 	public MarketCalendarVo eventStatus(MarketCalendarVo param) {
@@ -150,7 +164,7 @@ public class MarketCalendarService extends ShopBaseService {
 				hasAct++;
 				ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO, null);
 				MarketVo actInfo = info.getActInfo();
-				byte actStatus = getActStatus(actInfo);
+				byte actStatus = actInfo.getActStatus();
 				if (Objects.equal(actStatus, CalendarAction.TWO)) {
 					status = 2;
 				}
@@ -167,14 +181,14 @@ public class MarketCalendarService extends ShopBaseService {
 			status = CalendarAction.FOUR;
 		}
 		param.setEventStatus(status);
-		logger().info("日历：{}，状态：{}",param.getEventName(),status);
+		logger().info("日历：{}，状态：{}", param.getEventName(), status);
 		return param;
 	}
 
 	public ActInfoVo getActInfo(String actType, Integer actId, String type, MarketParam param) {
 		ShopApplication shopApp = saas.getShopApp(getShopId());
 		// VsName
-		logger().info("传入的类型：{}",actType);
+		logger().info("传入的类型：{}", actType);
 		MarketVo actInfo = new MarketVo();
 		PageResult<MarketVo> list = new PageResult<MarketVo>();
 		switch (actType) {
@@ -338,7 +352,18 @@ public class MarketCalendarService extends ShopBaseService {
 		default:
 			break;
 		}
-		return new ActInfoVo(actInfo, list);
+		if (type.equals(CalendarAction.INFO)) {
+			byte actStatus = getActStatus(actInfo);
+			actInfo.setActStatus(actStatus);
+			actInfo.setActivityType(type);
+		} else {
+			for (MarketVo vo : list.getDataList()) {
+				byte actStatus = getActStatus(vo);
+				vo.setActStatus(actStatus);
+				vo.setActivityType(type);
+			}
+		}
+		return new ActInfoVo(actInfo == null ? new MarketVo() : actInfo, list);
 	}
 
 	/**
@@ -365,6 +390,36 @@ public class MarketCalendarService extends ShopBaseService {
 			return CalendarAction.ONE;
 		}
 		return CalendarAction.FOUR;
+	}
+
+	/**
+	 * 获取日历活动
+	 * 
+	 * @param calendarId
+	 * @return
+	 */
+	public MarketCalendarInfoVo getCalendarInfo(Integer calendarId) {
+		MarketCalendarRecord record = getInfoById(calendarId);
+		if (record == null) {
+			return null;
+		}
+		MarketCalendarInfoVo vo = record.into(MarketCalendarInfoVo.class);
+		List<MarketCalendarActivityVo> calendarActList = calendarActivityService.calendarActList(calendarId);
+		List<MarketVo> actInfoList = new ArrayList<MarketVo>();
+		for (MarketCalendarActivityVo item : calendarActList) {
+			String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), item.getActivityType());
+			if (verPurview[0].equals("true")) {
+				if (item.getActivityId() > 0) {
+					vo.setHasAct(true);
+					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
+					actInfoList.add(info.getActInfo());
+				}else {
+					vo.setHasAct(false);
+				}
+			}
+		}
+		vo.setActInfo(actInfoList);
+		return vo;
 	}
 
 }

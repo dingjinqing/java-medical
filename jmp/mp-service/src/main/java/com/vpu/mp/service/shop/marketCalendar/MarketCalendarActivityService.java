@@ -52,6 +52,15 @@ public class MarketCalendarActivityService extends ShopBaseService {
 				.where(MARKET_CALENDAR_ACTIVITY.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
 				.fetchInto(MarketCalendarActivityVo.class);
-		
+	}
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	public boolean delInfo(Integer id) {
+		int execute = db().update(MARKET_CALENDAR_ACTIVITY).set(MARKET_CALENDAR_ACTIVITY.DEL_FLAG,DelFlag.DISABLE_VALUE).where(MARKET_CALENDAR_ACTIVITY.ID.eq(id)).execute();
+		return execute==1;
 	}
 }

@@ -24,4 +24,7 @@ public class CalendarAction {
 	public static final String ISPERMANENT = "isPermanent";
 	
 	public static final String INFO = "info";
+	public static final String LIST = "list";
+	
+	public static final String OVERVIEW = "overview";
 }
