@@ -37,12 +37,6 @@ global.wxPage({
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
     actCode = options.actCode;
-    // if (options.launch_user_id && options.launch_user_id != "") {
-    //   launch_user_id = options.launch_user_id
-    // } else {
-    //   // launch_user_id = ''
-    //   launch_user_id = util.getCache('user_id');
-    // }
     launch_user_id = util.getCache('user_id');
     if (options.launch_id && options.launch_id != "") {
       launch_id = options.launch_id;
@@ -56,13 +50,13 @@ global.wxPage({
   },
   // 商品详情
   to_goods: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
-    util.jumpLink("/pages/item/item?gid=" + goods_id);
+    var goodsId = e.currentTarget.dataset.goods_id;
+    util.jumpLink("/pages/item/item?gid=" + goodsId);
   },
   // 券购搜索
   to_cou_search: function (e) {
-    var coupon_sn = e.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var actId = e.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   },
   // 好友助力列表
   to_list: function () {
@@ -78,10 +72,6 @@ global.wxPage({
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
-    // 打开分享弹窗
-    this.setData({
-      share_good: true
-    })
   },
   // 关闭分享
   bindClose: function () {
@@ -196,35 +186,6 @@ global.wxPage({
             cant_promote: cant_promote
           })
         }
-
-        // var add_promote_value = res.content.promoteValue; // 助力值
-        // var modal_can_share = res.content.canShare; // 能否再分享
-        // var cant_promote = res.content.cantPromote; // 助力失败原因
-        // if (promote_info.canPromote == null && promote_info.canShare == null) {
-        //   if (cant_promote == 0) {
-        //     cant_promote = '该助力申请未发起'
-        //   } else if (cant_promote == 1) {
-        //     cant_promote = '助力已完成，不再需要助力'
-        //   } else if (cant_promote == 2) {
-        //     cant_promote = '今天的助力次数已经用完了'
-        //   } else if (cant_promote == 3) {
-        //     cant_promote = '助力次数已用完'
-        //   }
-        //   that.setData({
-        //     promote_fail: 1,
-        //     is_shares: 0,
-        //     cant_promote: cant_promote,
-        //     add_promote_value: add_promote_value,
-        //     modal_can_share: modal_can_share
-        //   })
-        // } else {
-        //   that.setData({
-        //     promote_ok: 1,
-        //     add_promote_value: add_promote_value,
-        //     modal_can_share: modal_can_share
-        //   })
-        // }
-
       } else {
         util.showModal('提示', res.message);
         return false
@@ -337,10 +298,11 @@ global.wxPage({
             has_user: 1
           })
         }
-        // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-        //   username: user_name,
-        //   user_avatar: user_avatar
-        // });
+        util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+          userId: launch_user_id,
+          launchId: launch_id,
+          type: 1
+        });
       } else {
         wx.getUserInfo({
           success: res => {
@@ -348,10 +310,11 @@ global.wxPage({
             var user_name = e.detail.userInfo.nickName;
             util.setCache("nickName", user_name);
             util.setCache("avatarUrl", user_avatar);
-            // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-            //   username: user_name,
-            //   user_avatar: user_avatar
-            // });
+            util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+              userId: launch_user_id,
+              launchId: launch_id,
+              type: 1
+            });
             if (promote_info.promoteCondition == 1) {
               that.setData({
                 has_user: 1
@@ -363,34 +326,7 @@ global.wxPage({
 
     }
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
+  
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
@@ -403,13 +339,6 @@ global.wxPage({
     wx.hideNavigationBarLoading();
     // 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
     wx.stopPullDownRefresh();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
   },
 
   /**
@@ -479,30 +408,45 @@ function shareAdd(that) {
       util.showModal('提示', res.message);
       return false
     }
-  }, { userId: launch_user_id, launchId: launch_id });
+  }, { userId: launch_user_id, launchId: launch_id, type: 0 });
 };
 // 发起助力
 function launchAct(that) {
   util.api("/api/wxapp/promote/launch", function (res) {
     if (res.error == 0) {
-      launch_id = res.content.launchId;
-      launch_user_id = res.content.launchUserId;
-    } else {
-      if (res.message == 1) {
-        util.showModal('提示', '活动已停用或删除');
-      } else if(res.message == 2) {
-        util.showModal('提示', '活动库存不足');
-      } else if (res.message == 3) {
-        util.showModal('提示', '活动商品库存不足');
-      } else if (res.message == 4) {
-        util.showModal('提示', '活动未开始');
-      } else if (res.message == 5) {
-        util.showModal('提示', '活动已结束');
-      } else if (res.message == 6) {
-        util.showModal('提示', '您已发起快邀请好友助力吧');
-      } else if (res.message == 7) {
-        util.showModal('提示', '数据入库失败');
+      if (res.content.msg == 0) {
+        // 发起助力成功
+        launch_id = res.content.launchId;
+        launch_user_id = res.content.launchUserId;
+        // 打开分享弹窗
+        that.setData({
+          share_good: true
+        })
+      } else {
+        if (res.content.msg == 1) {
+          util.showModal('提示', '活动已停用或删除');
+        } else if(res.content.msg == 2) {
+          util.showModal('提示', '活动库存不足');
+        } else if (res.content.msg == 3) {
+          util.showModal('提示', '活动商品库存不足');
+        } else if (res.content.msg == 4) {
+          util.showModal('提示', '活动未开始');
+        } else if (res.content.msg == 5) {
+          util.showModal('提示', '活动已结束');
+        } else if (res.content.msg == 6) {
+          util.showModal('提示', '您已发起快邀请好友助力吧');
+        } else if (res.content.msg == 7) {
+          util.showModal('提示', '数据入库失败');
+        }
+        setTimeout(function () {
+          util.reLaunch({
+            url: '/pages/index/index',
+          })
+        }, 2000);
+        return false
       }
+    } else {
+      util.showModal('提示', res.message);
       return false
     }
   }, { actCode: actCode, userId: launch_user_id });
@@ -532,6 +476,10 @@ function promote_request(that) {
       }
       if (promote_info.launchId) {
         launch_id = promote_info.launchId
+      }
+      // 助力次数提示
+      if (promote_info.canPromote && promote_info.canPromote.code == 0) {
+        util.showModal('提示', '今天的助力次数已用完了');
       }
       that.setData({
         promote_info: promote_info,

@@ -289,7 +289,7 @@ global.wxPage({
       }]
       console.log(goodsList)
       // 请求拼团消息通知权限
-      util.getNeedTemplateId('group_draw', () => {
+      util.getNeedTemplateId('invite', () => {
         util.navigateTo({
           url: "/pages/checkout/checkout?activityType=1&activityId=" + Number(this.data.groupbuyInfo.groupBuyDefineInfo.id) + "&groupid=" + Number(this.data.groupId) + "&goodsList=" + JSON.stringify(goodsList)
         })

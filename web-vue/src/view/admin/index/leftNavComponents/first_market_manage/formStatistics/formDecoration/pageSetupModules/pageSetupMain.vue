@@ -44,7 +44,7 @@
           <div class="timeTitle">{{$t('formDecorationHome.endTime')}}</div>
           <el-date-picker
             size="small"
-            v-model="ruleForm.start_time"
+            v-model="ruleForm.end_time"
             type="datetime"
             default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
@@ -429,7 +429,7 @@ export default {
           })
           let arr = []
           data.send_coupon_list.forEach((item, index) => {
-            arr.push(item.id)
+            arr.push(item.coupon_id)
           })
           console.log(data)
           this.couponBackData = arr
@@ -514,10 +514,15 @@ export default {
           'score_number': item.scoreNumber, // 需要积分数
           'limitSurplusFlag': item.limitSurplusFlag
         }
-        console.log(isExistence, obj)
+        console.log(isExistence, obj, item)
         if (isExistence.length === 0) {
           this.ruleForm.send_coupon_list.push(obj)
-          this.couponBackData.push(item.id)
+          let arrBack = []
+          this.ruleForm.send_coupon_list.forEach((item, index) => {
+            arrBack.push(item.coupon_id)
+          })
+          console.log(arrBack)
+          this.couponBackData = arrBack
         }
       })
     },
@@ -545,13 +550,16 @@ export default {
       width: 150px;
     }
     .fixedDate {
-      width: 280px;
+      width: 310px;
       background: #fff;
       padding: 10px;
       border: 1px solid #ddd;
       font-size: 13px;
       .timeContainer {
         display: flex;
+        /deep/ .el-input {
+          width: 200px !important;
+        }
         .timeTitle {
           display: flex;
           align-items: center;

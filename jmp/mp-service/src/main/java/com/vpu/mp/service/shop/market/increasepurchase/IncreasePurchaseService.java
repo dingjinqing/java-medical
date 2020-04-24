@@ -17,6 +17,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPriceBo;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
@@ -54,6 +55,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.GoodsSpecProduct.GOODS_SPEC_PRODUCT;
 import static com.vpu.mp.db.shop.tables.PurchasePriceDefine.PURCHASE_PRICE_DEFINE;
 import static com.vpu.mp.db.shop.tables.PurchasePriceRule.PURCHASE_PRICE_RULE;
 import static com.vpu.mp.service.foundation.database.DslPlus.concatWs;
@@ -118,18 +120,18 @@ public class IncreasePurchaseService extends ShopBaseService {
                 categoryConditon = categoryConditon.and(ppd.START_TIME.lessThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.END_TIME.greaterThan(Timestamp.valueOf(LocalDateTime.now()))).and(ppd.STATUS.eq(FLAG_ZERO));;
                 break;
         }
-        Table<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte>> conditionStep = db().
-            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG).from(ppd).where(categoryConditon).asTable("ppd");
+        Table<Record9<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Byte, Timestamp>> conditionStep = db().
+            select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS, ppd.DEL_FLAG,ppd.CREATE_TIME).from(ppd).where(categoryConditon).asTable("ppd");
 
         Condition selectConditon = ppd.DEL_FLAG.eq(FLAG_ZERO);
         if (StringUtils.isNotEmpty(param.getName())) {
             selectConditon = selectConditon.and(ppd.NAME.like(this.likeValue(param.getName())));
         }
         if (param.getStartTime() != null) {
-            selectConditon = selectConditon.and(ppd.START_TIME.greaterThan(param.getStartTime()));
+            selectConditon = selectConditon.and(ppd.END_TIME.ge(param.getStartTime()));
         }
         if (param.getEndTime() != null) {
-            selectConditon = selectConditon.and(ppd.END_TIME.lessThan(param.getEndTime()));
+            selectConditon = selectConditon.and(ppd.START_TIME.le(param.getEndTime()));
         }
         if (param.getFullPriceUp() != null&&!BigDecimal.ZERO.equals(param.getFullPriceUp())) {
             selectConditon = selectConditon.and(ppr.FULL_PRICE.lessOrEqual(param.getFullPriceUp()));
@@ -144,14 +146,14 @@ public class IncreasePurchaseService extends ShopBaseService {
             selectConditon = selectConditon.and(ppr.PURCHASE_PRICE.greaterOrEqual(param.getPurchasePriceDown()));
         }
 
-        SelectConditionStep<Record7<Integer, String, Short, Short, Timestamp, Timestamp, Byte>> resultStep = db().
-            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
-        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep, param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
+        SelectConditionStep<Record8<Integer, String, Short, Short, Timestamp, Timestamp, Byte, Timestamp>> resultStep = db().
+            selectDistinct(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.STATUS,ppd.CREATE_TIME).from(conditionStep).leftJoin(ppr).on(ppd.ID.eq(ppr.PURCHASE_PRICE_ID)).where(selectConditon);
+        PageResult<PurchaseShowVo> pageResult = this.getPageResult(resultStep.orderBy(ppd.LEVEL.desc(),ppd.CREATE_TIME.desc()), param.getCurrentPage(), param.getPageRows(), PurchaseShowVo.class);
         for (PurchaseShowVo vo : pageResult.getDataList()) {
             Integer purchaseId = vo.getId();
             vo.setResaleQuantity(getResaleQuantity(purchaseId));
             vo.setPurchaseInfo(getPurchaseDetailInfo(purchaseId));
-            vo.setCategory(param.getCategory());
+            vo.setCategory(Util.getActStatus(vo.getStatus().equals(FLAG_ONE) ? (byte)0 : (byte)1,vo.getStartTime(),vo.getEndTime()));
             vo.setTimestamp(DateUtil.getLocalDateTime());
         }
         return pageResult;
@@ -170,12 +172,9 @@ public class IncreasePurchaseService extends ShopBaseService {
     private Integer getResaleQuantity(Integer purchasePriceId) {
         Integer defaultValue = 0;
         return db().select(sum(og.GOODS_NUMBER)).from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN))
-            .where(og.ACTIVITY_TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE))
-            .and(og.ACTIVITY_ID.eq(purchasePriceId))
+            .where(og.PURCHASE_ID.eq(purchasePriceId))
             .and(og.ACTIVITY_RULE.greaterThan(0))
             .and(oi.ORDER_STATUS.greaterOrEqual(OrderConstant.ORDER_WAIT_DELIVERY))
-            .and(oi.SHIPPING_TIME.isNotNull())
-            .and(oi.ORDER_STATUS.notEqual(OrderConstant.ORDER_REFUND_FINISHED))
             .fetchOptionalInto(Integer.class).orElse(defaultValue);
     }
 
@@ -235,19 +234,33 @@ public class IncreasePurchaseService extends ShopBaseService {
      */
     @SuppressWarnings("unchecked")
     public PurchaseDetailVo getPurchaseDetail(PurchaseDetailParam param) {
-        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
+        PurchaseDetailVo vo = db().select(ppd.ID, ppd.NAME, ppd.LEVEL, ppd.MAX_CHANGE_PURCHASE, ppd.START_TIME, ppd.END_TIME, ppd.GOODS_ID,ppd.REDEMPTION_FREIGHT).from(ppd).where(ppd.ID.eq(param.getPurchaseId())).fetchOptionalInto(PurchaseDetailVo.class).orElseThrow(() -> new RuntimeException("Information doesn't exist!"));
         vo.setPurchaseInfo(getPurchaseDetailInfo(param.getPurchaseId()));
         String goodsId = vo.getGoodsId();
         //主商品详情
         Integer[] goodsIdArray = stringArray2Int(goodsId.split(","));
-        vo.setMainGoods(db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        vo.setMainGoods(db().selectFrom(g).where(g.GOODS_ID.in(goodsIdArray)).fetchInto(GoodsInfo.class));
+        vo.getMainGoods().forEach(g->{
+            if(StringUtil.isNotBlank(g.getGoodsImg())){
+                g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+            }
+        });
         //换购商品详情
         List<String> redemptionGoods = db().select(ppr.PRODUCT_ID).from(ppr).where(ppr.PURCHASE_PRICE_ID.eq(param.getPurchaseId())).orderBy(ppr.ID).fetchInto(String.class);
-        List<GoodsInfo>[] redemptionresult = new List[redemptionGoods.size()];
+        List<ProductSmallInfoVo>[] redemptionresult = new List[redemptionGoods.size()];
         int integer = 0;
         for (String s : redemptionGoods) {
             Integer[] array = stringArray2Int(s.split(","));
-            redemptionresult[integer++] = db().select(g.GOODS_NAME, g.SHOP_ID, g.GOODS_NUMBER).from(g).where(g.GOODS_ID.in(array)).fetchInto(GoodsInfo.class);
+            List<ProductSmallInfoVo> redemptionGoodsList =
+                db().select(g.GOODS_ID,g.GOODS_IMG,g.GOODS_NAME,g.SHOP_PRICE,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_NUMBER,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_DESC)
+                .from(GOODS_SPEC_PRODUCT).innerJoin(g).on(g.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
+                .where(GOODS_SPEC_PRODUCT.PRD_ID.in(array)).fetchInto(ProductSmallInfoVo.class);
+            redemptionGoodsList.forEach(g->{
+                if(StringUtil.isNotBlank(g.getGoodsImg())){
+                    g.setGoodsImg(domainConfig.imageUrl(g.getGoodsImg()));
+                }
+            });
+            redemptionresult[integer++] = redemptionGoodsList;
         }
         vo.setRedemptionGoods(redemptionresult);
         return vo;
@@ -326,7 +339,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * @return the select condition step
      */
     private SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> buildRedemptionListOption(MarketOrderListParam param) {
-        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.ACTIVITY_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.ACTIVITY_ID.eq(param.getActivityId())).and(og.ACTIVITY_TYPE.eq((byte) 7));
+        SelectConditionStep<Record11<String, String, String, String, String, String, String, Timestamp, String, String, String>> conditionStep = db().select(min(oi.ORDER_SN).as("orderSn"), groupConcat(og.GOODS_ID, GROUPCONCAT_SEPARATOR).as("concatId"), groupConcat(og.GOODS_NAME, GROUPCONCAT_SEPARATOR).as("concatName"), groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumber"), groupConcat(og.PURCHASE_ID, GROUPCONCAT_SEPARATOR).as("activityIds"), groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"), groupConcat(g.GOODS_IMG, GROUPCONCAT_SEPARATOR).as("concatImg"), min(oi.CREATE_TIME).as("createTime"), min(oi.CONSIGNEE).as("consignee"), min(oi.MOBILE).as("mobile"), min(oi.ORDER_STATUS_NAME).as("orderStatusName")).from(og).leftJoin(g).on(og.GOODS_ID.eq(g.GOODS_ID)).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).where(og.PURCHASE_ID.eq(param.getActivityId()));
 
         if (StringUtils.isNotBlank(param.getGoodsName())) {
             conditionStep = conditionStep.and(og.GOODS_NAME.like(likeValue(param.getGoodsName())));
@@ -460,7 +473,7 @@ public class IncreasePurchaseService extends ShopBaseService {
      * 构建换购明细查询条件
      */
     private Condition buildRedemptionDetailOption(RedemptionDetailParam param) {
-        Condition baseCondition = og.ACTIVITY_ID.notEqual(0);
+        Condition baseCondition = and(og.PURCHASE_ID.eq(param.getActivityId()));
         if (StringUtils.isNotEmpty(param.getNickName())) {
             baseCondition = baseCondition.and(u.USERNAME.like(this.likeValue(param.getNickName())));
         }
@@ -744,6 +757,15 @@ public class IncreasePurchaseService extends ShopBaseService {
 
     public Result<PurchasePriceRuleRecord> getRules(List<Integer> ruleIds) {
         return db().selectFrom(ppr).where(ppr.ID.in(ruleIds)).fetch();
+    }
+
+    /**
+     * 获取加价购规则
+     * @param ruleId
+     * @return
+     */
+    public PurchasePriceRuleRecord getRuleByRuleId(Integer ruleId){
+        return db().selectFrom(ppr).where(ppr.ID.eq(ruleId)).fetchAny();
     }
 
     /**

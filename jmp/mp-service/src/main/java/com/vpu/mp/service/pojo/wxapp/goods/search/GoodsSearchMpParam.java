@@ -54,9 +54,9 @@ public class GoodsSearchMpParam extends BasePageParam {
     /**用户指定的排序方向*/
     private SortDirectionEnum sortDirection;
 
-    /**店铺默认的排序字段*/
+    /**店铺默认的排序字段-es使用字段*/
     private SortItemEnum shopSortItem;
-    /**店铺默认的排序方向*/
+    /**店铺默认的排序方向-es使用字段*/
     private SortDirectionEnum shopSortDirection;
 
     /**当页面从商品分组跳转至搜索页面时此字段可能会被赋予指定值*/
@@ -68,6 +68,8 @@ public class GoodsSearchMpParam extends BasePageParam {
     public static final Byte PAGE_FROM_GROUP_BUY = BaseConstant.ACTIVITY_TYPE_GROUP_BUY;
     /**admin秒杀活动分享码跳转 pageFrom =5*/
     public static final Byte PAGE_FROM_SEC_KILL = BaseConstant.ACTIVITY_TYPE_SEC_KILL;
+    /**从优惠券跳转至商品搜索页面，展示其关联的商品信息 pageFrom=20*/
+    public static final Byte PAGE_FROM_COUPON=BaseConstant.ACTIVITY_TYPE_COUPON;
     /**从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据*/
     private Byte pageFrom;
     /**用于多商品活动从admin端扫码进入搜索页展示该活动下的商品时使用 activityId*/

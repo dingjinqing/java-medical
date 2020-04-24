@@ -173,6 +173,7 @@
           :tuneUpChooseGoods="tuneUpChooseGoods"
           @resultGoodsDatas="choosingGoodsResult"
           :chooseGoodsBack="goodsId"
+          :checkedNumMax="100"
         />
       </div>
       <div class="table">
@@ -235,6 +236,14 @@
           name="first"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom: 10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则1：购满'+ purcahse_rule1.fullPrice +'元，加价'+purcahse_rule1.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
               @click="showChoosingGoods1"
@@ -246,6 +255,7 @@
               :tuneUpChooseGoods="tuneUpChooseGoods1"
               @resultGoodsDatas="choosingGoodsResult1"
               :chooseGoodsBack="purcahse_rule1.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
@@ -290,8 +300,17 @@
           v-if="rule_num >= 2"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom: 10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则2：购满'+ purcahse_rule2.fullPrice +'元，加价'+purcahse_rule2.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods2"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
@@ -300,12 +319,14 @@
               :tuneUpChooseGoods="tuneUpChooseGoods2"
               @resultGoodsDatas="choosingGoodsResult2"
               :chooseGoodsBack="purcahse_rule2.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
             <el-table
               :data="purchase_table2"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -343,8 +364,17 @@
           v-if="rule_num === 3"
         >
           <div style="margin_top:10px">
+            <div style="margin-bottom:10px;">
+              <el-alert
+                type="warning"
+                show-icon
+                :title="'换购规则3：购满'+ purcahse_rule3.fullPrice +'元，加价'+purcahse_rule3.purchasePrice+'元换购以下商品'"
+                :closable="false"
+              ></el-alert>
+            </div>
             <el-button
               type="primary"
+              size="small"
               @click="showChoosingGoods3"
             >{{$t('purchase.chooseRedempGoods')}}</el-button>
             <!--选择规格弹窗-->
@@ -353,12 +383,14 @@
               :tuneUpChooseGoods="tuneUpChooseGoods3"
               @resultGoodsDatas="choosingGoodsResult3"
               :chooseGoodsBack="purcahse_rule3.productId"
+              :checkedNumMax="20"
             />
           </div>
           <div class="table">
             <el-table
               :data="purchase_table3"
               style="width: 100%"
+              border
             >
               <el-table-column :label="$t('purchase.goodsName')">
                 <template slot-scope="{ row }">
@@ -404,17 +436,17 @@
     </div>
     <div class="footer">
       <el-button
-        v-if="step === 0 || step === 1"
-        type="primary"
-        size="small"
-        @click="nextStep(step+1)"
-      >{{$t('purchase.nextStep')}}</el-button>
-      <el-button
         v-if="step === 1 || step === 2"
         type="primary"
         size="small"
         @click="preStep"
       >{{$t('purchase.preStep')}}</el-button>
+      <el-button
+        v-if="step === 0 || step === 1"
+        type="primary"
+        size="small"
+        @click="nextStep(step+1)"
+      >{{$t('purchase.nextStep')}}</el-button>
       <el-button
         v-if="step === 2"
         type="primary"
@@ -546,6 +578,7 @@ export default {
             showClose: true
           })
         } else {
+          this.purchase_tab = 'first'
           if (this.step++ > 2) this.step = 0
         }
       } else {
@@ -760,16 +793,19 @@ export default {
     getPurchaseRules () {
       let rules = []
       if (this.rule_num >= 1) {
-        this.purcahse_rule1.productId = this.purcahse_rule1.productId.join()
-        rules.push(this.purcahse_rule1)
+        let rule = Object.assign({}, this.purcahse_rule1)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       if (this.rule_num >= 2) {
-        this.purcahse_rule2.productId = this.purcahse_rule2.productId.join()
-        rules.push(this.purcahse_rule2)
+        let rule = Object.assign({}, this.purcahse_rule2)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       if (this.rule_num >= 3) {
-        this.purcahse_rule3.productId = this.purcahse_rule3.productId.join()
-        rules.push(this.purcahse_rule3)
+        let rule = Object.assign({}, this.purcahse_rule3)
+        rule.productId = rule.productId.join(',')
+        rules.push(rule)
       }
       return rules
     },
@@ -818,6 +854,7 @@ export default {
   .main_table {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;
@@ -832,6 +869,7 @@ export default {
   .purchase_tab {
     margin-top: 10px;
     margin-left: 10%;
+    margin-bottom: 50px;
     width: 80%;
     .table {
       margin-top: 10px;

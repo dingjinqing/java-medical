@@ -577,7 +577,7 @@ global.wxPage({
           activityData.linePrice = this.data.actBarInfo.prdLinePrice
           break;
         case 10:
-          activityData.depositPrice = this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice}))
+          activityData.depositPrice = this.data.goodsInfo.activity === 0 ? this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.depositPrice})) : this.getMin(this.data.goodsInfo.activity.preSalePrdMpVos.map(item=>{return item.preSalePrice}))
           break;
       }
     }
@@ -746,9 +746,9 @@ global.wxPage({
         return data
       case '19':
         if (info.goodsAreaType === 1) {
-          data.desc = `购买“指定商品”`
-        } else {
           data.desc = `购买“全部商品”`
+        } else {
+          data.desc = `购买“指定商品”`
         }
         if (info.minPayMoney > 0) {
           data.desc += `且“订单金额满${info.minPayMoney}元”`

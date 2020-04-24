@@ -358,11 +358,18 @@ public class IntegralConvertService extends ShopBaseService {
 		//遍历规格
 		for (Integer prdId : productIds){
             IntegralConvertProductVo listVo = db().select(imp.MONEY, imp.SCORE, imp.STOCK,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC
-                ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
+                ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER,DSL.sum(imr.NUMBER).as("sale_num"))
                 .from(GOODS_SPEC_PRODUCT)
                 .leftJoin(imp).on(imp.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .leftJoin(imr).on(imr.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID).and(imr.INTEGRAL_MALL_DEFINE_ID.eq(imp.INTEGRAL_MALL_DEFINE_ID)))
                 .where(imp.PRODUCT_ID.eq(prdId)).and(imp.INTEGRAL_MALL_DEFINE_ID.eq(param.getId()))
+                .groupBy(imp.MONEY, imp.SCORE, imp.STOCK,GOODS_SPEC_PRODUCT.PRD_ID,GOODS_SPEC_PRODUCT.PRD_DESC
+                    ,GOODS_SPEC_PRODUCT.PRD_PRICE,GOODS_SPEC_PRODUCT.PRD_NUMBER)
                 .fetchOneInto(IntegralConvertProductVo.class);
+            if (listVo.getSaleNum()==null){
+                listVo.setSaleNum((short)0);
+            }
+            listVo.setRemainStock(listVo.getStock()-listVo.getSaleNum());
             productList.add(listVo);
         }
 		selectVo.setProductVo(productList);
@@ -387,6 +394,7 @@ public class IntegralConvertService extends ShopBaseService {
 					.set(imd.GOODS_ID, param.getGoodsId())
 					.set(imd.SHARE_CONFIG, shareConfig)
 					.where(imd.ID.eq(param.getId())).execute();
+            db().deleteFrom(INTEGRAL_MALL_PRODUCT).where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
                 if (item.getMoney()==null){
@@ -469,15 +477,15 @@ public class IntegralConvertService extends ShopBaseService {
 				FieldsUtil.assignNotNull(data, vo);
 
 				int number = db().select(DSL.sum(imr.NUMBER)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setNumber(number);
 
 				BigDecimal money = db().select(DSL.sum(imr.MONEY)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(BigDecimal.class).get();
+						.fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
 				vo.setMoney(money);
 
 				int score = db().select(DSL.sum(imr.SCORE)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setScore(score);
 
 				Integer productId = db().select(ORDER_GOODS.PRODUCT_ID)

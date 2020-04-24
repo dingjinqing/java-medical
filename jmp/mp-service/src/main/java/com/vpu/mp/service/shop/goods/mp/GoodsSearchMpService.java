@@ -7,6 +7,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.list.GoodsShowStyleConfigBo;
 import com.vpu.mp.service.pojo.wxapp.goods.search.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
+import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.es.EsGoodsSearchMpService;
 import com.vpu.mp.service.shop.goods.es.EsUtilSearchService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
@@ -50,6 +51,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     GroupBuyService groupBuyService;
     @Autowired
     SeckillService seckillService;
+    @Autowired
+    CouponService couponService;
     @Autowired
     private ShopCommonConfigService shopCommonConfigService;
 
@@ -100,7 +103,9 @@ public class GoodsSearchMpService extends ShopBaseService {
                 pageResult = searchGoodsForGroupBuyQrCode(param);
             } else if(GoodsSearchMpParam.PAGE_FROM_SEC_KILL.equals(param.getPageFrom())) {
                 pageResult = searchGoodsForSecKillQrCode(param);
-            }else{
+            } else if (GoodsSearchMpParam.PAGE_FROM_COUPON.equals(param.getPageFrom())){
+                pageResult = searchGoodsForVoucher(param);
+            } else{
                 pageResult = searchGoods(param);
             }
         }else{
@@ -145,6 +150,23 @@ public class GoodsSearchMpService extends ShopBaseService {
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
         return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    }
+
+    /**
+     * admin秒杀活动扫码进入
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private PageResult<GoodsListMpBo> searchGoodsForVoucher(GoodsSearchMpParam param){
+        logger().debug("优惠券跳转商品搜索页面");
+        int voucherId = param.getActId();
+        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
+        Condition goodsCouponCondition = couponService.buildGoodsSearchCondition(voucherId);
+
+        goodsBaseCondition = goodsCouponCondition.and(goodsBaseCondition);
+        List<SortField<?>> sortFields = buildSearchOrderFields(param);
+
+        return goodsMpService.findActivityGoodsListCapsulesDao(goodsBaseCondition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**

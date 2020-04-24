@@ -25,6 +25,10 @@ public class WxAppCartBo {
      */
     private BigDecimal totalPrice;
     /**
+     * 满折满减折扣价格
+     */
+    private BigDecimal fullReductionPrice;
+    /**
      * 商品总数量
      */
     private Integer totalGoodsNum;

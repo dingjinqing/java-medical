@@ -1,17 +1,21 @@
 package com.vpu.mp.controller.wxapp;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vpu.mp.db.shop.tables.records.GroupIntegrationDefineRecord;
+import com.vpu.mp.db.shop.tables.records.GroupDrawRecord;
 import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
 /**
@@ -82,4 +86,40 @@ public class HelpController extends HelpBaseController {
 		}
 		
 	}
+
+    /**
+     * 查询服务条款配置
+     *
+     * @return 服务条款配置内容
+     */
+    @GetMapping("/api/wxapp/order/termsofservice")
+    public JsonResult getTermsOfService(@RequestParam Integer shopId) {
+        try {
+            return success(saas.getShopApp(shopId).trade.getTermsOfService());
+        } catch (IOException e) {
+            log.error("服务条款配置内容错误", e);
+            return fail();
+        }
+    }
+    
+    /**
+     * 拼团抽奖服务条款
+     * @param shopId
+     * @param group_draw_id
+     * @return
+     */
+    @GetMapping("/api/wxapp/groupDraw/help")
+    public JsonResult getTempGroupDraw(@RequestParam Integer shopId,@RequestParam Integer groupDrawId) {
+		GroupDrawRecord record = saas.getShopApp(shopId).groupDraw.getById(groupDrawId);
+		if (record == null) {
+			// 活动不存在或没有可参与的活动商品
+			return fail(JsonResultCode.GROUP_DRAW_FAIL);
+		}
+		String activityCopywriting = record.getActivityCopywriting();
+		GroupActivityCopyWriting json=null;
+		if(!StringUtils.isEmpty(activityCopywriting)){
+			json = Util.parseJson(activityCopywriting, GroupActivityCopyWriting.class);		
+		}
+		return success(json);
+    }
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.shop.market.increasepurchase;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -53,7 +54,7 @@ public class PurchaseDetailVo {
     /**
      * 不同换购规则的加价购商品信息
      */
-    private List<GoodsInfo>[] redemptionGoods;
+    private List<ProductSmallInfoVo>[] redemptionGoods;
     /**
      * 换购商品运费策略，0免运费，1使用原商品运费模板
      */

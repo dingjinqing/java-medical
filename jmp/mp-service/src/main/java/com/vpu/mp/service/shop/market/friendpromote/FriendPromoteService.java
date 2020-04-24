@@ -199,7 +199,7 @@ public class FriendPromoteService extends ShopBaseService {
 				.from(USER, fpl).where(fpl.PROMOTE_ID.eq(param.getPromoteId())).and(USER.USER_ID.eq(fpl.USER_ID));
 		// 助力商品
 		SelectConditionStep<Record6<String, String, Integer, Byte, Timestamp, String>> goodSql = db().select(USER.USERNAME, USER.MOBILE,
-            fpl.ID, fpl.PROMOTE_STATUS, fpl.SUCCESS_TIME.as("rec_time"), fpl.ORDER_SN)
+            fpl.ID, fpl.PROMOTE_STATUS, ORDER_INFO.CREATE_TIME.as("rec_time"), fpl.ORDER_SN)
 				.from(fpl).leftJoin(USER).on(USER.USER_ID.eq(fpl.USER_ID)).leftJoin(ORDER_INFO)
 				.on(ORDER_INFO.ORDER_SN.eq(fpl.ORDER_SN)).where(fpl.PROMOTE_ID.eq(param.getPromoteId()));
 
@@ -242,7 +242,7 @@ public class FriendPromoteService extends ShopBaseService {
 	public PageResult<FriendPromoteLaunchVo> launchDetail(FriendPromoteLaunchParam param) {
 		//设置查询条件
 		SelectHavingStep<? extends Record> sql = db().select(fpl.ID,USER.USER_ID,
-                        USER.USERNAME, USER.MOBILE, DSL.count(fpd.USER_ID).as("join_num"),
+                        USER.USERNAME, USER.MOBILE, DSL.countDistinct(fpd.USER_ID).as("join_num"),
 						DSL.count(fpd.USER_ID).as("promote_times"), DSL.sum(fpd.PROMOTE_VALUE).as("promote_value"),
 						fpl.PROMOTE_STATUS)
 				.from(fpl).leftJoin(USER).on(fpl.USER_ID.eq(USER.USER_ID)).leftJoin(fpd).on(fpl.ID.eq(fpd.LAUNCH_ID))
@@ -1030,6 +1030,10 @@ public class FriendPromoteService extends ShopBaseService {
      * @return 是否可助力信息
      */
     public CanPromote canPromote(PromoteInfo promoteInfo,Integer hasPromoteTimes,Integer userId,Integer launchId){
+        logger().info("*********");
+        logger().info("*promoteInfo*:"+promoteInfo);
+        logger().info("*promoteInfoId*:"+promoteInfo.getId());
+        logger().info("*********");
         CanPromote canPromote = new CanPromote();
         //是否发起
         if(promoteInfo.getPromoteStatus()==-1){
@@ -1046,6 +1050,13 @@ public class FriendPromoteService extends ShopBaseService {
         //判断当天助力次数限制
         if(promoteInfo.getPromoteTimesPerDay()>0){
             Integer usedPromoteTimesCurrentDay = getHasPromoteTimes(null,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            Integer launchIdTime = getHasPromoteTimes(launchId,promoteInfo.getId(),userId,DateUtil.getLocalDateTime());
+            logger().info("*********");
+            logger().info("*判断当天助力次数限制*");
+            logger().info("*********");
+            logger().info("用户单天助力次数限制："+promoteInfo.getPromoteTimesPerDay());
+            logger().info("用户对当前配置活动助力次数："+usedPromoteTimesCurrentDay);
+            logger().info("用户对当前发起活动助力次数："+launchIdTime);
             if (usedPromoteTimesCurrentDay>=promoteInfo.getPromoteTimesPerDay()){
                 canPromote.setCode((byte)0);
                 canPromote.setMsg((byte)2);
@@ -1061,7 +1072,12 @@ public class FriendPromoteService extends ShopBaseService {
         Integer ownPromoteTimes = promoteTimesInfo+1;
         //判断所有的助力次数限制
         Integer usedPromoteTimes = getHasPromoteTimes(launchId,null,userId,null);
-        if (usedPromoteTimes>ownPromoteTimes){
+        logger().info("*********");
+        logger().info("*判断所有的助力次数限制*");
+        logger().info("*********");
+        logger().info("用户对当前发起活动已经助力次数："+usedPromoteTimes);
+        logger().info("免费机会+分享授权机会："+ownPromoteTimes);
+        if (usedPromoteTimes>=ownPromoteTimes){
             canPromote.setCode((byte)0);
             canPromote.setMsg((byte)3);
             return canPromote;
@@ -1281,6 +1297,8 @@ public class FriendPromoteService extends ShopBaseService {
             //返回参数错误
             throw new BusinessException(JsonResultCode.CODE_FAIL);
         }
+        //设置活动id
+        promoteInfo.setId(record.getId());
         //活动状态：0未开始，1进行中，2已结束
         promoteInfo.setActStatus(getActStatus(param.getActCode()));
         //需要被助力申请信息
@@ -1344,7 +1362,7 @@ public class FriendPromoteService extends ShopBaseService {
 
         promoteVo.setPromoteValue(promoteValue);
         promoteVo.setCanPromote(isCanPromote==null?0:isCanPromote.getCode());
-        promoteVo.setCanShare(canShareTimes);
+        promoteVo.setCanShare(promoteInfo.getCanShare());
         return promoteVo;
     }
 
@@ -1519,7 +1537,10 @@ public class FriendPromoteService extends ShopBaseService {
      * @param param 用户id 发起id
      * @return flag
      */
-    public AddPromoteTimesVo addPromoteTimes(PromoteParam param){
+    public AddPromoteTimesVo addPromoteTimes(PromoteShareOrAuthParam param){
+        PromoteParam promoteParam = new PromoteParam();
+        promoteParam.setUserId(param.getUserId());
+        promoteParam.setLaunchId(param.getLaunchId());
         AddPromoteTimesVo vo = new AddPromoteTimesVo();
         //分享可得助力次数
         Integer shareCreateTimes = addShareTimesInfo(param.getLaunchId());
@@ -1531,8 +1552,13 @@ public class FriendPromoteService extends ShopBaseService {
             return vo;
         }
         Integer addNum = 1;
-        Integer shareTimes = 1;
-        Integer affectRows = addUserPromoteTimes(param,addNum,shareTimes);
+        Integer shareTimes = 1 ;
+        if (param.getType()==1){
+            shareTimes = 0;
+        }
+
+
+        Integer affectRows = addUserPromoteTimes(promoteParam,addNum,shareTimes,param.getType());
         if (affectRows == 0){
             vo.setFlag(0);
             return vo;
@@ -1549,23 +1575,37 @@ public class FriendPromoteService extends ShopBaseService {
      * @param shareTimes 分享次数
      * @return 成功条数
      */
-    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes){
+    public Integer addUserPromoteTimes(PromoteParam param,Integer addNum,Integer shareTimes,Integer type){
         //次数详情
         FriendPromoteTimesRecord promoteTimesInfo = promoteTimesInfo(param);
-        Integer affectRows;
+        Integer affectRows = 0;
+        Byte isAuth = type == 0 ?(byte) 0:(byte)1;
         if (promoteTimesInfo!=null){
             shareTimes = shareTimes + promoteTimesInfo.getShareTimes();
             addNum = addNum + promoteTimesInfo.getOwnPromoteTimes();
-            affectRows = db().update(FRIEND_PROMOTE_TIMES)
-                .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
-                .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
-                .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
-                .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
-                .execute();
+            //分享
+            if (isAuth==(byte)0){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
+            //授权
+            if (isAuth==(byte)1){
+                affectRows = db().update(FRIEND_PROMOTE_TIMES)
+                    .set(FRIEND_PROMOTE_TIMES.SHARE_TIMES,shareTimes)
+                    .set(FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,addNum)
+                    .set(FRIEND_PROMOTE_TIMES.IS_AUTH,isAuth)
+                    .where(FRIEND_PROMOTE_TIMES.USER_ID.eq(param.getUserId()))
+                    .and(FRIEND_PROMOTE_TIMES.LAUNCH_ID.eq(param.getLaunchId()))
+                    .execute();
+            }
         }else {
             affectRows = db().insertInto(FRIEND_PROMOTE_TIMES,FRIEND_PROMOTE_TIMES.SHARE_TIMES,FRIEND_PROMOTE_TIMES.OWN_PROMOTE_TIMES,
-                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID)
-                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId())
+                FRIEND_PROMOTE_TIMES.USER_ID,FRIEND_PROMOTE_TIMES.LAUNCH_ID,FRIEND_PROMOTE_TIMES.IS_AUTH)
+                .values(shareTimes,addNum,param.getUserId(),param.getLaunchId(),isAuth)
                 .execute();
         }
         return affectRows;
@@ -1780,7 +1820,7 @@ public class FriendPromoteService extends ShopBaseService {
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ID.eq(param.getId()))
             .fetchOneInto(String.class);
-        String pathParam = "actCode="+actCode+"&launchId="+0+"&inviteId=";
+        String pathParam = "actCode="+actCode;
         String imgUrl = qrCode.getMpQrCode(QrCodeTypeEnum.FRIEND_HELP_SHARE,pathParam);
         ShareQrCodeVo share = new ShareQrCodeVo();
         share.setImageUrl(imgUrl);

@@ -23,8 +23,7 @@ global.wxPage({
     can_used_header_flag: false,
     cou_used_header_flag: false,
     cou_guoqi_header_flag: false,
-    // imageUrl: app.globalData.imageUrl,
-    imageUrl: "http://miniimg.cn",
+    imageUrl: app.globalData.imageUrl,
     unusedNum:0,
     usedNum: 0,
     expiredNum:0,
@@ -318,7 +317,7 @@ global.wxPage({
    * 券购搜素
    */
   to_search: function (opt) {
-    var coupon_sn = opt.currentTarget.dataset.coupon_sn;
-    util.jumpLink('/pages1/search/search?couponSn=' + coupon_sn);
+    var actId = opt.currentTarget.dataset.act_id;
+    util.jumpLink('/pages1/search/search?pageFrom=20&actId=' + actId);
   }
 })

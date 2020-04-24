@@ -414,7 +414,8 @@ global.wxComponent({
         },
         {
           goodsNumber: goodsNumber,
-          prdId: prdId
+          prdId: prdId,
+          type: 2
         }
       );
     },
@@ -437,7 +438,13 @@ global.wxComponent({
         delete params.preSaleInfo.preSalePrdMpVos
         params.preSaleInfo = JSON.stringify(params.preSaleInfo)
       }
-      util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      if(this.data.activity && this.data.activity.activityType === 1){
+        util.getNeedTemplateId('invite',()=>{
+          util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+        })
+      } else {
+        util.jumpLink(`pages/checkout/checkout${this.getUrlParams({ ...params })}`, "navigateTo")
+      }
       this.triggerEvent('close')
     },
     //整合参数

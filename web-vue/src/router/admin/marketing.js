@@ -1228,7 +1228,7 @@ const routes = [
   },
   // 编辑加价购活动
   {
-    path: '/api/admin/market/addPriceBuy/edit',
+    path: '/api/admin/market/addPriceBuy/edit/:id',
     name: 'edit_increase_purchase',
     meta: {
       crumbTitle: 'router.edit_increase_purchase',
