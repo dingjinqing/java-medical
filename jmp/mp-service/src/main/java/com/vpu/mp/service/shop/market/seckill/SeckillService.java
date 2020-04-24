@@ -29,6 +29,7 @@ import com.vpu.mp.service.pojo.shop.market.seckill.analysis.SeckillAnalysisTotal
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.card.ValidUserCardBean;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.operation.RecordContentTemplate;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
@@ -788,7 +789,7 @@ public class SeckillService extends ShopBaseService{
     public void addActivityTag(Integer actId,Integer userId){
         SecKillDefineRecord secKillDefineRecord = getSeckillActById(actId);
         if(secKillDefineRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(secKillDefineRecord.getActivityTagId())){
-            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(secKillDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_SEC_KILL,actId);
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(secKillDefineRecord.getActivityTagId()), TagSrcConstant.SECKILL,actId);
         }
     }
 }

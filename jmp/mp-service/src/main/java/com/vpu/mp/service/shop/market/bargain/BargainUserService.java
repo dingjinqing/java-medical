@@ -169,6 +169,9 @@ public class BargainUserService extends ShopBaseService{
             CouponGiveQueueParam newParam = new CouponGiveQueueParam(
                 getShopId(), Arrays.asList(userId), bargain.getId(), bargain.getMrkingVoucherId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_BARGAIN_CUT);
             saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+
+            //打标签
+            saas.getShopApp(getShopId()).bargain.addAttendUserTag(bargain,userId);
         }
 
         return bargainMoney;
