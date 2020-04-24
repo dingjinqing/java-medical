@@ -854,21 +854,30 @@
               >
             </a>
           </div>
-          <div class="calendar_line"></div>
+          <div
+            class="calendar_line"
+            v-if="calenderdata.length"
+          ></div>
           <div class="flex_calendar_box">
-            <a href="javascript:void(0);">
-              <p class="data">10-24</p>
-              <p class="act_name">叶已纷黄，霜降已至</p>
-              <p class="remaining_time">剩<span>0</span>天</p>
-              <div class="dot"></div>
-            </a>
-            <a href="javascript:void(0);">
-              <p class="data">10-24</p>
-              <p class="act_name">叶已纷黄，霜降已至</p>
-              <p class="remaining_time">剩<span>0</span>天</p>
+            <a
+              href="javascript:void(0);"
+              v-for="(item,index) in calenderdata"
+              :key="index"
+              :style="calenderdata.length===2&&index===0?'margin-right:10px':calenderdata.length===3&&index===1?'margin:0 10px':''"
+              @click="handleToCalderDetail(item.id)"
+            >
+              <p class="data">{{item.eventTime}}</p>
+              <p class="act_name">{{item.eventName}}</p>
+              <p class="remaining_time">剩
+                <span>{{item.downTime}}</span>
+                天</p>
               <div class="dot"></div>
             </a>
           </div>
+          <p
+            v-if="!calenderdata.length"
+            style="text-align:center;color:#999"
+          >暂无营销日历</p>
         </div>
         <div class="right-carousel">
           <el-carousel
@@ -1051,6 +1060,7 @@
 // 引入组件
 import VCharts from 'v-charts'
 import bindAccount from './overviewBindAccount.vue'
+import { getOverviewActivity } from '@/api/admin/firstWebManage/calender/calender.js'
 import { getAllOverview, toDoItemRequest, dataRequest, shopAssistantRequest, noticeListRequest, shopShareRequest, shopInfoRequest, getAllStore, getExamineList } from '@/api/admin/survey.js'
 export default {
   components: {
@@ -1059,6 +1069,8 @@ export default {
   },
   data () {
     return {
+      // 营销日历数据
+      calenderdata: [],
       image: `${this.$imageHost}`,
       shareData: {}, // 分享店铺
       dataDialog: false, // 自定义事项弹框
@@ -1144,6 +1156,8 @@ export default {
     this.langDefault()
     // 定时器
     clearInterval(this.timer)
+    // 获取初始营销日历数据
+    this.handleToGetCander()
   },
   watch: {
     lang () {
@@ -1165,10 +1179,29 @@ export default {
     }
   },
   methods: {
+    // 获取初始营销日历数据
+    handleToGetCander () {
+      getOverviewActivity().then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.calenderdata = res.content
+        }
+      })
+    },
     // 点击日历右上角icon
     handleToClickCalender () {
       this.$router.push({
         name: 'calendar'
+      })
+    },
+    // 点击日历项跳转详情
+    handleToCalderDetail (id) {
+      this.$router.push({
+        name: 'addCalendarMain',
+        query: {
+          isAdd: false,
+          id: id
+        }
       })
     },
     // 获取全部数据
@@ -2353,7 +2386,16 @@ img {
   line-height: 24px;
   color: #333;
 }
-
+.remaining_time {
+  span {
+    display: inline-block;
+    background-color: #ffe1e1;
+    color: #f66;
+    padding: 0 8px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+}
 .flex_calendar_box > a > .dot {
   width: 12px;
   height: 12px;
