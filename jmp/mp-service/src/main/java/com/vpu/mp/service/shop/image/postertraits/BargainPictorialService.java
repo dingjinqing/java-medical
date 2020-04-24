@@ -124,84 +124,28 @@ public class BargainPictorialService extends ShareBaseService {
     }
 
     /**
-     * 砍价活动-获取海报
-     *
-     * @param param 砍价分享参数
-     * @return 砍价海报图片base64
-     */
-    public GoodsPictorialInfo getBargainPictorialInfo(BargainShareInfoParam param) {
-        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
-        ShopRecord shop = saas.shop.getShopById(getShopId());
-        BargainRecord bargainRecord = bargainService.getBargainActById(param.getActivityId());
-        if (bargainRecord == null) {
-            pictorialLog(getActivityName(), "砍价信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
-            return goodsPictorialInfo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        if (goodsRecord == null) {
-            pictorialLog(getActivityName(), "商品信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
-            return goodsPictorialInfo;
-        }
-        pictorialLog(getActivityName(), "读取砍价海报配置信息");
-        PictorialShareConfig shareConfig = Util.parseJson(bargainRecord.getShareConfig(), PictorialShareConfig.class);
-
-        PictorialUserInfo userInfo = getUserInfo(param.getUserId(), shop);
-        if (userInfo == null) {
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
-            return goodsPictorialInfo;
-        }
-        getBargainPictorialImg(userInfo, shareConfig, bargainRecord, goodsRecord, shop, param, goodsPictorialInfo);
-        return goodsPictorialInfo;
-    }
-
-    /**
      * 砍价海报中的硬币图片
      */
     private static final String BARGAIN_MONEY_ICON_IMG = "image/wxapp/money_icon.png";
 
-    private void getBargainPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, BargainRecord bargainRecord, GoodsRecord goodsRecord, ShopRecord shop, BargainShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
-        BufferedImage goodsImage;
-        try {
-            pictorialLog(getActivityName(), "获取商品图片信息");
-            goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取商品图片信息失败：" + e.getMessage());
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
-            return;
-        }
-
-        pictorialLog(getActivityName(), "获取商品分享语");
-        String shareDoc = null;
-        if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
-            if (shareDoc == null) {
-                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_DOC, "", "messages", param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP));
-            }
-        } else {
-            shareDoc = shareConfig.getShareDoc();
-        }
-
-        // 获取分享码
+    @Override
+    String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        BargainShareInfoParam param = (BargainShareInfoParam) baseParam;
+        BargainRecord bargainRecord = (BargainRecord) aRecord;
         String mpQrCode;
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", param.getUserId(), goodsRecord.getGoodsId(), bargainRecord.getId(), BaseConstant.ACTIVITY_TYPE_BARGAIN));
         } else {
             mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_BARGAIN_INFO, String.format("uid=%d&record_id=%d", param.getUserId(), param.getRecordId()));
         }
-        BufferedImage qrCodeImage;
-        try {
-            qrCodeImage = ImageIO.read(new URL(mpQrCode));
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取二维码失败");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
-            return;
-        }
+        return mpQrCode;
+    }
 
+    @Override
+    void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImage, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         // 拼装背景图
         PictorialImgPx imgPx = new PictorialImgPx();
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImage, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
 
         BufferedImage moneyIconImg;
         try (InputStream moneyIconIo = Util.loadFile(BARGAIN_MONEY_ICON_IMG)) {
@@ -212,15 +156,17 @@ public class BargainPictorialService extends ShareBaseService {
             return;
         }
         // 原价
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, null, "messages", param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_BARGAIN_TAKE, null, "messages", baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         // 划线价
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
+        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
         // 自定义区域添加内容
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, moneyIconImg, realPriceText, linePriceText, true, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
+        goodsPictorialInfo.setBgImg(bgBufferedImage);
     }
+
 
     /**
      * 砍价活动砍价详情-分享图片生成
