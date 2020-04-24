@@ -155,7 +155,10 @@
           </section>
 
           <section style="display: flex">
-            <el-checkbox v-model="group2Flag">商品组2</el-checkbox>
+            <el-checkbox
+              v-model="group2Flag"
+              @change="changeGroup2Status"
+            >商品组2</el-checkbox>
             <div
               style="margin-left:20px"
               v-if="group2Flag === true"
@@ -192,7 +195,10 @@
           </section>
 
           <section style="display: flex">
-            <el-checkbox v-model="group3Flag">商品组3</el-checkbox>
+            <el-checkbox
+              v-model="group3Flag"
+              @change="changeGroup3Status"
+            >商品组3</el-checkbox>
             <div
               style="margin-left:20px"
               v-if="group3Flag === true"
@@ -868,7 +874,7 @@ export default {
         goodsNumber3: ''
       },
       srcList: {
-        src1: `${this.imageHost}/image/admin/new_preview_image/packagesale.jpg`
+        src1: `${this.$imageHost}/image/admin/new_preview_image/packagesale.jpg`
       },
       // 选择商品
       tuneUpChooseGoodsDialog: false,
@@ -931,6 +937,12 @@ export default {
       console.log(value, 'value----')
       if (value) {
         this.$refs.form.validateField('packageType')
+      }
+    },
+    group2Flag: function (value) {
+      console.log(value)
+      if (value) {
+        this.$refs.form.validateField('group2Flag')
       }
     }
   },
@@ -1095,18 +1107,83 @@ export default {
         return false
       }
     },
+    changeGroup2Status (val) {
+      console.log(val)
+      if (val === false) {
+        this.param.groupName2 = ''
+        this.param.goodsNumber2 = ''
+        // this.selectedGoodsIdList2 = []
+        // this.platformIdList2 = []
+        // this.bussinessIdList2 = []
+      }
+    },
+    changeGroup3Status (val) {
+      console.log(val)
+      if (val === false) {
+        this.param.groupName3 = ''
+        this.param.goodsNumber3 = ''
+        // this.selectedGoodsIdList3 = []
+        // this.platformIdList3 = []
+        // this.bussinessIdList3 = []
+      }
+    },
     // 提交前校验
     validParam () {
       var that = this
-      // let validateGroup1 = this.goodsList.lenght > 0 || this.platformList.lenght > 0 || this.bussinessList.length > 0
-      if (that.goodsList.length === 0 || that.platformList.length === 0 || that.bussinessList.length === 0) {
+      console.log(that)
+      // if (that.goodsList.length === 0 && that.platformList.length === 0 && that.bussinessList.length === 0) {
+      //   that.$message.warning('请选择第一组的商品')
+      // } else {
+      //   return true
+      // }
+
+      //  else if (that.group3Flag) {
+      //   if (that.goodsList3.length === 0 && that.platformLis3.length === 0 && that.bussinessList3.length === 0) {
+      //     that.$message.warning('请选择第3组的商品')
+      //   } else {
+      //     return true
+      //   }
+      // }
+
+      if (that.goodsList.length === 0 && that.platformList.length === 0 && that.bussinessList.length === 0) {
         that.$message.warning('请选择第一组的商品')
-        return false
+      } else if (this.group2Flag) {
+        if (this.goodsList2.length === 0 && this.platformList2.length === 0 && this.bussinessList2.length === 0) {
+          that.$message.warning('请选择第2组的商品')
+        } else if (that.group3Flag === true) {
+          if (that.goodsList3.length === 0 && that.platformList3.length === 0 && that.bussinessList3.length === 0) {
+            that.$message.warning('请选择第3组的商品')
+          } else {
+            return true
+          }
+        } else {
+          return true
+        }
+      } else {
+        return true
       }
-      return true
+
+      // if (this.group2Flag) {
+      //   if (this.goodsList2.length === 0 && this.platformList2.length === 0 && this.bussinessList2.length === 0) {
+      //     that.$message.warning('请选择第2组的商品')
+      //   } else {
+      //     return
+      //   }
+      // }
+
+      if (that.group3Flag === true) {
+        if (that.goodsList3.length === 0 && that.platformList3.length === 0 && that.bussinessList3.length === 0) {
+          that.$message.warning('请选择第3组的商品')
+        } else {
+
+        }
+      }
     },
     submitData () {
       this.$refs['form'].validate((valid) => {
+        if (!this.validParam()) {
+          return false
+        }
         if (valid) {
           let obj = {
             'packageType': this.param.packageType,
@@ -1170,7 +1247,6 @@ export default {
         }
       })
     },
-
     // 编辑初始化
     editPackagePriceInit () {
       getActivityInfo(this.editId).then((res) => {
@@ -1184,8 +1260,10 @@ export default {
           if (data.group3.groupName || data.group3.goodsNumber) {
             this.group3Flag = true
           }
-
-          this.param.validity = [data.startTime, data.endTime]
+          let date = [data.startTime, data.endTime]
+          this.$set(this.param, 'validity', date)
+          this.param.startTime = data.startTime
+          this.param.endTime = data.endTime
           // 商品组1
           this.$set(this.param, 'groupName', data.group1.groupName)
           this.$set(this.param, 'goodsNumber', data.group1.goodsNumber)
