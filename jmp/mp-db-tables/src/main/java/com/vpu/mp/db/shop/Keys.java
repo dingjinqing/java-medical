@@ -274,6 +274,7 @@ public class Keys {
     public static final Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Identities0.IDENTITY_MARKET_CALENDAR;
     public static final Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Identities0.IDENTITY_BULKSHIPMENT_RECORD;
     public static final Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Identities0.IDENTITY_BULKSHIPMENT_RECORD_DETAIL;
+    public static final Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Identities0.IDENTITY_CHECKED_GOODS_CART;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -535,7 +536,7 @@ public class Keys {
     public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_PRIMARY;
     public static final UniqueKey<BulkshipmentRecordRecord> KEY_B2C_BULKSHIPMENT_RECORD_PRIMARY = Internal.createUniqueKey(BulkshipmentRecord.BULKSHIPMENT_RECORD, "KEY_b2c_bulkshipment_record_PRIMARY", BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
     public static final UniqueKey<BulkshipmentRecordDetailRecord> KEY_B2C_BULKSHIPMENT_RECORD_DETAIL_PRIMARY = Internal.createUniqueKey(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, "KEY_b2c_bulkshipment_record_detail_PRIMARY", BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
-
+    public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = UniqueKeys0.KEY_B2C_CHECKED_GOODS_CART_PRIMARY;
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -776,6 +777,7 @@ public class Keys {
         public static Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Internal.createIdentity(MarketCalendar.MARKET_CALENDAR, MarketCalendar.MARKET_CALENDAR.ID);
         public static Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Internal.createIdentity(BulkshipmentRecord.BULKSHIPMENT_RECORD, BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
         public static Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Internal.createIdentity(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
+        public static Identity<CheckedGoodsCartRecord, Integer> IDENTITY_CHECKED_GOODS_CART = Internal.createIdentity(CheckedGoodsCart.CHECKED_GOODS_CART, CheckedGoodsCart.CHECKED_GOODS_CART.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1041,5 +1043,6 @@ public class Keys {
         public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = Internal.createUniqueKey(GiveCardRecord.GIVE_CARD_RECORD, "KEY_b2c_give_card_record_PRIMARY", GiveCardRecord.GIVE_CARD_RECORD.ID);
         public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
         public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = Internal.createUniqueKey(MarketCalendar.MARKET_CALENDAR, "KEY_b2c_market_calendar_PRIMARY", MarketCalendar.MARKET_CALENDAR.ID);
-        }
+        public static final UniqueKey<CheckedGoodsCartRecord> KEY_B2C_CHECKED_GOODS_CART_PRIMARY = Internal.createUniqueKey(CheckedGoodsCart.CHECKED_GOODS_CART, "KEY_b2c_checked_goods_cart_PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART.ID);
+    }    
 }

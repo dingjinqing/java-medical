@@ -508,6 +508,12 @@ public class Indexes {
     public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
     public static final Index BULKSHIPMENT_RECORD_PRIMARY = Indexes0.BULKSHIPMENT_RECORD_PRIMARY;
     public static final Index BULKSHIPMENT_RECORD_DETAIL_PRIMARY = Indexes0.BULKSHIPMENT_RECORD_DETAIL_PRIMARY;
+    public static final Index CHECKED_GOODS_CART_ACTION = Indexes0.CHECKED_GOODS_CART_ACTION;
+    public static final Index CHECKED_GOODS_CART_IDENTITY_ID = Indexes0.CHECKED_GOODS_CART_IDENTITY_ID;
+    public static final Index CHECKED_GOODS_CART_PRIMARY = Indexes0.CHECKED_GOODS_CART_PRIMARY;
+    public static final Index CHECKED_GOODS_CART_PRODUCT_ID = Indexes0.CHECKED_GOODS_CART_PRODUCT_ID;
+    public static final Index CHECKED_GOODS_CART_USER_ID = Indexes0.CHECKED_GOODS_CART_USER_ID;
+    
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -992,5 +998,10 @@ public class Indexes {
         public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
         public static Index BULKSHIPMENT_RECORD_PRIMARY = Internal.createIndex("PRIMARY", BulkshipmentRecord.BULKSHIPMENT_RECORD, new OrderField[] { BulkshipmentRecord.BULKSHIPMENT_RECORD.ID }, true);
         public static Index BULKSHIPMENT_RECORD_DETAIL_PRIMARY = Internal.createIndex("PRIMARY", BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, new OrderField[] { BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID }, true);
+        public static Index CHECKED_GOODS_CART_ACTION = Internal.createIndex("action", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.ACTION }, false);
+        public static Index CHECKED_GOODS_CART_IDENTITY_ID = Internal.createIndex("identity_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.IDENTITY_ID }, false);
+        public static Index CHECKED_GOODS_CART_PRIMARY = Internal.createIndex("PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.ID }, true);
+        public static Index CHECKED_GOODS_CART_PRODUCT_ID = Internal.createIndex("product_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.PRODUCT_ID }, false);
+        public static Index CHECKED_GOODS_CART_USER_ID = Internal.createIndex("user_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.USER_ID }, false);
     }
 }
