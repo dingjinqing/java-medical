@@ -967,7 +967,7 @@ export default {
       this.$refs.param.validateField('deliverType')
     },
     // 保存
-    add1 () {
+    add () {
       this.$refs['param'].validate((valid) => {
         if (valid) {
           this.$refs['param-s'].validate((valid) => {
