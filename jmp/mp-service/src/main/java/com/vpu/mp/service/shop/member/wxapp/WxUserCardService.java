@@ -17,6 +17,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.ActivateCardVo;
 import com.vpu.mp.service.pojo.shop.member.ucard.CardUseListParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
+import com.vpu.mp.service.shop.card.wxapp.WxCardExchangeService;
 import com.vpu.mp.service.shop.card.wxapp.WxCardGiveAwaySerivce;
 import com.vpu.mp.service.shop.member.UserCardService;
 /**
@@ -31,6 +32,8 @@ public class WxUserCardService extends ShopBaseService {
 	private WxAppCardActivationService wxAppCardActivationService;
 	@Autowired
 	public WxCardGiveAwaySerivce giveAwaySvc;
+	@Autowired 
+	public WxCardExchangeService exchangeSvc;
 	@Autowired 
 	private UserCardService userCardService;
 	
