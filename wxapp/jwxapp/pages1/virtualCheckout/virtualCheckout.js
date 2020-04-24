@@ -413,7 +413,13 @@ global.wxPage({
   onShow: function () {
 
   },
-
+  goCouponSearch(e){
+    let {couponId:actId} = e.currentTarget.dataset
+    util.jumpLink(`pages1/search/search${util.getUrlParams({
+      pageFrom:20,
+      actId
+    })}`)
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */
