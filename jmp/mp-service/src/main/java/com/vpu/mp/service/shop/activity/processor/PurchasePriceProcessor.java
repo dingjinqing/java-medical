@@ -19,6 +19,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsulePara
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PurchasePricePromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.PurchasePriceProcessorDao;
 import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import lombok.extern.slf4j.Slf4j;
@@ -181,8 +182,11 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(param.getActivityType()) && param.getActivityId() != null){
-            increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        List<OrderGoodsBo> bos = param.getBos();
+        for(OrderGoodsBo bo:bos){
+            if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
+                increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+            }
         }
     }
 

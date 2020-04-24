@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -222,8 +223,11 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
      */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()) && param.getActivityId() != null){
-            reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        List<OrderGoodsBo> bos = param.getBos();
+        for(OrderGoodsBo bo:bos){
+            if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
+                reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+            }
         }
     }
 
