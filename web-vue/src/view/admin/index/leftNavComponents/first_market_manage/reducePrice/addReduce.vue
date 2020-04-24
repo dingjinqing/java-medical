@@ -71,9 +71,11 @@
             v-model="reduceData.preTime"
             :label="1"
             @change="preTimeChange"
+            :disabled="isEditFlag"
           >活动开始前
             <el-input
               v-model="reduceData.preTimeValue"
+              :disabled="isEditFlag"
               style="width: 80px;"
               size="small"
             ></el-input>小时进行预告
@@ -82,11 +84,13 @@
             v-model="reduceData.preTime"
             :label="-1"
             @change="preTimeChange"
+            :disabled="isEditFlag"
           >活动创建完成后即进行预告</el-radio>
           <el-radio
             v-model="reduceData.preTime"
             :label="0"
             @change="preTimeChange"
+            :disabled="isEditFlag"
           >不进行活动预告</el-radio>
         </div>
       </el-form-item>
@@ -353,6 +357,7 @@
           v-model="reduceData.activityTag"
           :true-label="1"
           :false-label="0"
+          :disabled="isEditFlag"
         >给参与活动用户打标签</el-checkbox>
         <span
           class="el-icon-question"
@@ -1074,6 +1079,9 @@ export default {
 
     // 标签弹窗
     selectLabel () {
+      if (this.isEditFlag === true) {
+        return false
+      }
       this.labelDialogVisible = !this.labelDialogVisible
     },
 
