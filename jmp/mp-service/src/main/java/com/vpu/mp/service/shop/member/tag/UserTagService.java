@@ -68,7 +68,7 @@ public class UserTagService extends ShopBaseService{
 	 * 	活动，如：领券，领卡，添加用户标签
 	 * @param userId
 	 * @param tagIdList 标签IDs
-	 * @param source 0后台设置 1优惠券 2会员卡 6限时降价 7加价购
+	 * @param source 如： 0后台设置 1优惠券 2会员卡 6限时降价 7加价购  {@link com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant}
 	 * @param activitiId 活动Id
 	 */
 	public void addActivityTag(Integer userId,List<Integer> tagIdList,Short source,Integer activitiId) {
