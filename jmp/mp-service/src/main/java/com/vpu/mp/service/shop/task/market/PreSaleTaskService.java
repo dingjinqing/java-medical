@@ -84,7 +84,6 @@ public class PreSaleTaskService extends ShopBaseService {
     public void monitorOrder(){
         List<OrderInfoRecord> orderList = getExpiredPreSaleOrders();
         if(orderList.size() > 0){
-            logger().info("预售定时任务-待处理订单-" + Util.toPrettyJson(orderList));
             orderList.forEach(order->{
                 //在订单关闭操作中对预售订单特殊处理，根据活动设置对订单退款
                 OrderOperateQueryParam param = new OrderOperateQueryParam();
