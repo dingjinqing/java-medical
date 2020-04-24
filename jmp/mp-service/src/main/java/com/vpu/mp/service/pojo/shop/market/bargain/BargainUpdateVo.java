@@ -1,7 +1,9 @@
 package com.vpu.mp.service.pojo.shop.market.bargain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.shop.config.PictorialShareConfigVo;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
+import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -44,4 +46,30 @@ public class BargainUpdateVo {
 
     private String shareConfig;
     private PictorialShareConfigVo shopShareConfig;
+
+    /**
+     * 自定义活动说明
+     */
+    private String activityCopywriting;
+
+    /**
+     * 是否给发起砍价用户打标签，1是
+     */
+    private Byte launchTag;
+    /**
+     * 是否给发起砍价用户打标签标签列表
+     */
+    private List<TagVo> launchTagList;
+    @JsonIgnore
+    private String launchTagId;
+    /**
+     * 是否给参加活动的用户打标签，1是
+     */
+    private Byte attendTag;
+    /**
+     * 参加活动的用户打标签标签列表
+     */
+    private List<TagVo> attendTagList;
+    @JsonIgnore
+    private String attendTagId;
 }

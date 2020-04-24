@@ -51,6 +51,23 @@ const routes = [{
       }
     },
     {
+      path: 'problem_feedback',
+      component: () => import('@/view/system/index/leftNavComponents/overview/problemFeedback/problemFeedback'),
+      name: 'problemFeedback',
+      meta: {
+        title: '问题反馈'
+      }
+    },
+    {
+      path: 'problemFeedback_deatil',
+      component: () => import('@/view/system/index/leftNavComponents/overview/problemFeedback/problemFeedbackDeatil'),
+      name: 'problemFeedbackDeatil',
+      meta: {
+        title: '问题反馈详情',
+        parentName: '问题反馈'
+      }
+    },
+    {
       path: 'marketing_calendar',
       component: () => import('@/view/system/index/leftNavComponents/overview/marketingCalendar/calendarMain'),
       name: 'marketingCalendar',

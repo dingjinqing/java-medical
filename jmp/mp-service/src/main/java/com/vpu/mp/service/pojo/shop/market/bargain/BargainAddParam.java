@@ -120,4 +120,25 @@ public class BargainAddParam {
      * 初始销量(初始砍价人次)
      */
     private Integer initialSales;
+
+    /**
+     * 自定义活动说明
+     */
+    private String activityCopywriting;
+    /**
+     * 是否给发起砍价用户打标签，1是
+     */
+    private Byte launchTag;
+    /**
+     * 发起砍价活动用户打标签id列表
+     */
+    private List<Integer> launchTagId;
+    /**
+     * 是否参与砍价用户打标签，1是
+     */
+    private Byte attendTag;
+    /**
+     * 参与砍价活动用户打标签id列表
+     */
+    private List<Integer> attendTagId;
 }

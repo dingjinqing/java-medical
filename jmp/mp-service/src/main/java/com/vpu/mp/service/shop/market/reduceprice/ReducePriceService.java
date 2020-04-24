@@ -14,6 +14,7 @@ import com.vpu.mp.service.pojo.shop.goods.goods.GoodsProductVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.reduceprice.*;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -669,7 +670,7 @@ public class ReducePriceService extends ShopBaseService {
     public void addActivityTag(Integer actId,Integer userId){
         ReducePriceRecord reducePriceRecord = getReducePriceRecord(actId);
         if(reducePriceRecord.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(reducePriceRecord.getActivityTagId())){
-            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(reducePriceRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE,actId);
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(reducePriceRecord.getActivityTagId()), TagSrcConstant.REDUCE_PRICE,actId);
         }
     }
 

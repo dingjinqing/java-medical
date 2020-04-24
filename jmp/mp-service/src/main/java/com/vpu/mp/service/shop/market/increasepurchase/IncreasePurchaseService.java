@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.goods.spec.ProductSmallInfoVo;
 import com.vpu.mp.service.pojo.shop.image.ShareQrCodeVo;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.increasepurchase.*;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -801,7 +802,7 @@ public class IncreasePurchaseService extends ShopBaseService {
     public void addActivityTag(Integer actId,Integer userId){
         PurchasePriceDefineRecord purchasePriceDefineRecord = db().fetchAny(ppd,ppd.ID.eq(actId));
         if(purchasePriceDefineRecord.getActivityTag().equals(FLAG_ONE) && StringUtil.isNotBlank(purchasePriceDefineRecord.getActivityTagId())){
-            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()),(short)BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE,actId);
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(purchasePriceDefineRecord.getActivityTagId()), TagSrcConstant.PURCHASE_PRICE,actId);
         }
     }
     /**

@@ -287,6 +287,9 @@ public class BargainRecordService extends ShopBaseService {
             bargainUser.addUserBargain(userId,insertRecord.getId());
         });
 
+        //打标签
+        saas.getShopApp(getShopId()).bargain.addLaunchUserTag(param.getBargainId(),userId);
+
         return insertRecord.getId() != null && insertRecord.getId() > 0 ? BargainApplyVo.builder().recordId(insertRecord.getId()).resultCode((byte)0).build() : BargainApplyVo.builder().resultCode((byte)-1).build();
     }
 

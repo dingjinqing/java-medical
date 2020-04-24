@@ -28,6 +28,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
+import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
@@ -35,6 +36,7 @@ import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -79,6 +81,8 @@ public class BargainService extends ShopBaseService  {
     private QrCodeService qrCode;
     @Autowired
     private DomainConfig domainConfig;
+    @Autowired
+    private TagService tagService;
 
 	
 	/**
@@ -202,7 +206,12 @@ public class BargainService extends ShopBaseService  {
 		}
 		record.setGoodsId(Util.listToString(param.getBargainGoods().stream().map(BargainGoods::getGoodsId).collect(Collectors.toList())));
         record.setStock(param.getBargainGoods().stream().mapToInt((x)->x.getStock()).sum());
-
+        if(CollectionUtils.isNotEmpty(param.getAttendTagId())){
+            record.setAttendTagId(Util.listToString(param.getAttendTagId()));
+        }
+        if(CollectionUtils.isNotEmpty(param.getLaunchTagId())){
+            record.setLaunchTagId(Util.listToString(param.getLaunchTagId()));
+        }
 		this.transaction(()->{
             record.insert();
             int id = record.getId();
@@ -292,6 +301,12 @@ public class BargainService extends ShopBaseService  {
             }
             bargain.setMrkingVoucherList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getMrkingVoucherId())));
             bargain.setRewardCouponList(saas().getShopApp(getShopId()).coupon.getCouponViewByIds(Util.splitValueToList(bargain.getRewardCouponId())));
+            if(bargain.getLaunchTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(bargain.getLaunchTagId())){
+                bargain.setLaunchTagList(tagService.getTagsById(Util.splitValueToList(bargain.getLaunchTagId())));
+            }
+            if(bargain.getAttendTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(bargain.getAttendTagId())){
+                bargain.setAttendTagList(tagService.getTagsById(Util.splitValueToList(bargain.getAttendTagId())));
+            }
 			return bargain;
 		}else {
 			return null;
@@ -580,4 +595,27 @@ public class BargainService extends ShopBaseService  {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 给发起砍价用户打标签
+     * @param actId
+     * @param userId
+     */
+    public void addLaunchUserTag(Integer actId,Integer userId){
+        BargainRecord bargainRecord = getBargainActById(actId);
+        if(bargainRecord.getLaunchTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(bargainRecord.getLaunchTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(bargainRecord.getLaunchTagId()),TagSrcConstant.BARGAIN,actId);
+        }
+    }
+
+    /**
+     * 给参与砍价用户打标签
+     * @param bargainRecord
+     * @param userId
+     */
+    public void addAttendUserTag(BargainRecord bargainRecord,Integer userId){
+        if(bargainRecord.getAttendTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(bargainRecord.getAttendTagId())){
+            tagService.userTagSvc.addActivityTag(userId,Util.stringToList(bargainRecord.getAttendTagId()),TagSrcConstant.BARGAIN,bargainRecord.getId());
+        }
+    }
 }
