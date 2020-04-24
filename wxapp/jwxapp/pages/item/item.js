@@ -613,6 +613,7 @@ global.wxPage({
     const apiInfo = {
       1:'/api/wxapp/groupbuy/share/info',//拼团 
       3:'/api/wxapp/bargain/share/info', //砍价
+      5:'/api/wxapp/seckill/share/info', //秒杀
       6:'/api/wxapp/reduceprice/share/info', //限时降价
       8:'/api/wxapp/groupdraw/share/info', //拼团抽奖
       10:'/api/wxapp/presale/share/info', //定金膨胀
