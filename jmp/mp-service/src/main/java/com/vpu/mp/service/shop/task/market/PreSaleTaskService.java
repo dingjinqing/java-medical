@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
+import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -31,6 +32,7 @@ import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -82,51 +84,18 @@ public class PreSaleTaskService extends ShopBaseService {
     public void monitorOrder(){
         List<OrderInfoRecord> orderList = getExpiredPreSaleOrders();
         if(orderList.size() > 0){
-            logger().info("预售定时任务-待处理订单-" + Util.toJson(orderList));
+            logger().info("预售定时任务-待处理订单-" + Util.toPrettyJson(orderList));
             orderList.forEach(order->{
-                PresaleRecord presaleRecord = db().fetchAny(PRESALE,PRESALE.ID.eq(order.getActivityId()));
+                //在订单关闭操作中对预售订单特殊处理
+                OrderOperateQueryParam param = new OrderOperateQueryParam();
+                param.setAction((byte) OrderServiceCode.CLOSE.ordinal());
+                param.setIsMp(OrderConstant.IS_MP_AUTO);
+                param.setOrderSn(order.getOrderSn());
+                param.setOrderId(order.getOrderId());
 
-                //退定金
-                if(presaleRecord.getReturnType().equals(PresaleConstant.PRE_SALE_RETURN_DEPOSIT)){
-                    Result<OrderGoodsRecord> oGoods = orderGoodsService.getByOrderId(order.getOrderId());
-                    //组装退款param
-                    RefundParam param = new RefundParam();
-                    param.setAction((byte)OrderServiceCode.RETURN.ordinal());//1是退款
-                    param.setIsMp(OrderConstant.IS_MP_AUTO);
-                    param.setOrderSn(order.getOrderSn());
-                    param.setOrderId(order.getOrderId());
-                    param.setReturnType(OrderConstant.RT_ONLY_MONEY);
-                    param.setReturnMoney(order.getMoneyPaid().add(order.getScoreDiscount()).add(order.getUseAccount()).add(order.getMemberCardBalance()).subtract(order.getShippingFee()));
-                    param.setShippingFee(order.getShippingFee());
-
-                    List<RefundParam.ReturnGoods> returnGoodsList = new ArrayList<>();
-                    oGoods.forEach(orderGoods->{
-                        RefundParam.ReturnGoods returnGoods = new RefundParam.ReturnGoods();
-                        returnGoods.setRecId(orderGoods.getRecId());
-                        returnGoods.setReturnNumber(orderGoods.getGoodsNumber());
-
-                        returnGoodsList.add(returnGoods);
-                    });
-                    param.setReturnGoods(returnGoodsList);
-
-                    logger().info("预售定时任务-订单退款-" + order.getOrderSn());
-                    //退款
-                    ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
-
-                //不退定金
-                }else{
-                    //在订单关闭操作中对预售订单特殊处理
-                    OrderOperateQueryParam param = new OrderOperateQueryParam();
-                    param.setAction((byte) OrderServiceCode.CLOSE.ordinal());
-                    param.setIsMp(OrderConstant.IS_MP_AUTO);
-                    param.setOrderSn(order.getOrderSn());
-                    param.setOrderId(order.getOrderId());
-
-                    logger().info("预售定时任务-订单关闭-" + order.getOrderSn());
-                    //关闭订单
-                    ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
-                }
-
+                logger().info("预售定时任务-订单关闭-" + order.getOrderSn());
+                //关闭订单
+                ExecuteResult executeResult = saas.getShopApp(getShopId()).orderActionFactory.orderOperate(param);
             });
         }
     }
