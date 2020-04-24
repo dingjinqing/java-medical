@@ -493,7 +493,7 @@ public class IncreasePurchaseService extends ShopBaseService {
                 , min(u.MOBILE).as("mobile")
                 , min(oi.ORDER_SN).as("orderSn")
                 , min(oi.CREATE_TIME).as("createTime")
-                , groupConcat(og.GOODS_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices")
+                , groupConcat(og.DISCOUNTED_TOTAL_PRICE, GROUPCONCAT_SEPARATOR).as("concatPrices")
                 , groupConcat(og.GOODS_NUMBER, GROUPCONCAT_SEPARATOR).as("concatNumbers")
                 , groupConcat(og.ACTIVITY_RULE, GROUPCONCAT_SEPARATOR).as("activityRules"))
             .from(og).leftJoin(oi).on(og.ORDER_SN.eq(oi.ORDER_SN)).leftJoin(u).on(oi.USER_ID.eq(u.USER_ID))
