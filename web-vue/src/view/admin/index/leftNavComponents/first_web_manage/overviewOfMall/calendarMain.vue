@@ -6,6 +6,7 @@
           v-model="dateValue"
           placeholder="请选择"
           size="small"
+          @change="handleToChange"
         >
           <el-option
             v-for="item in dateOptions"
@@ -31,11 +32,11 @@
               class="calendar_info_line"
               v-for="(item,index) in calenderData"
               :key="index"
-              :id="item.isInvalid?'':'targetbox'"
+              :id="item.targetbox?'targetbox':''"
             >
               <div
                 class="left_line_content  content_none"
-                :class="item.isInvalid?'pass':''"
+                :class="item.targetbox?'':'pass'"
               >
                 <div class="month_box">
                   <div class="month">{{item.month}}月</div>
@@ -225,21 +226,38 @@ export default {
   },
   mounted () {
     // 初始数据处理
-    this.handleToInit()
+    var myDate = new Date()
+    var tYear = myDate.getFullYear()
+    console.log(tYear)
+    this.handleToInit(tYear)
   },
   methods: {
     // 初始数据处理
-    handleToInit () {
+    handleToInit (tYear) {
       // this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
-      document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
-
-      getCalendarList(this.dateValue).then(res => {
+      console.log(this.dateValue)
+      let params = null
+      if (tYear) {
+        params = tYear
+      } else {
+        if (this.dateValue !== null) {
+          this.dateOptions.forEach((item, index) => {
+            if (item.value === this.dateValue) {
+              console.log(item.label.slice(0, 4))
+              params = item.label.slice(0, 4)
+            }
+          })
+        }
+      }
+      console.log(params)
+      getCalendarList(params).then(res => {
         console.log(res)
         if (res.error === 0) {
           // 处理年份下拉框数据
           let yearList = res.content.yearList || []
           let yearArr = []
           let currentYear = res.content.currentDate.split('-')[0]
+          let currentMouth = res.content.currentDate.split('-')[1]
           let dateValue = null
           yearList.forEach((item, index) => {
             if (item === currentYear) {
@@ -256,11 +274,26 @@ export default {
             value: null,
             label: '请选择'
           }
-
           yearArr.unshift(obj)
           console.log(yearArr)
           this.dateOptions = yearArr
-          this.dateValue = dateValue
+          if (tYear) {
+            this.dateValue = dateValue
+          }
+          // 处理初始化滑动的位置
+          console.log(currentMouth)
+          res.content.data.forEach((item, index) => {
+            if (Number(item.month) < Number(currentMouth)) {
+              item.targetbox = false
+            } else {
+              item.targetbox = true
+            }
+          })
+          console.log(res.content.data)
+          this.calenderData = res.content.data
+          this.$nextTick(() => {
+            document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
+          })
         }
       })
     },
@@ -296,6 +329,11 @@ export default {
           }
         })
       }
+    },
+    // 年份下拉框选中值变化
+    handleToChange (res) {
+      console.log(res)
+      this.handleToInit()
     }
   }
 }
