@@ -1,6 +1,7 @@
 package com.vpu.mp.service.shop.goods.es;
 
 import com.google.common.collect.Lists;
+import com.vpu.mp.service.foundation.es.EsUtil;
 import com.vpu.mp.service.foundation.es.annotation.EsFiled;
 import com.vpu.mp.service.foundation.es.annotation.EsFiledTypeConstant;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
@@ -10,6 +11,7 @@ import com.vpu.mp.service.shop.goods.es.goods.EsGoodsConstant;
 import com.vpu.mp.service.shop.goods.es.goods.label.EsGoodsLabel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -39,7 +41,7 @@ import java.util.UUID;
 @Slf4j
 public class EsDataInitService implements InitializingBean {
 
-    @Autowired(required = false)
+    @Autowired
     @Qualifier("esConfig")
     private RestHighLevelClient restHighLevelClient;
 
@@ -47,64 +49,10 @@ public class EsDataInitService implements InitializingBean {
     private JedisManager jedisManager;
 
     private void createIndex(String indexName) throws IOException {
-
-        CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName);
-        createIndexRequest.settings(Settings.builder()
-            //由于现阶段的ElasticSearch的部署是单机版因此副分片数量设为0（副分片需要至少两个ES服务才能生效）
-            .put("index.number_of_replicas",0)
-            .put("index.number_of_shards",3)
-            );
-        if (EsGoodsConstant.GOODS_INDEX_NAME.equals(indexName)) {
-            XContentBuilder mapping = createGoodsMapping(EsGoods.class);
-            log.info("\nElasticSearch中未找到对应的GOODS INDEX，执行init...执行的语句---------\n{}", Strings.toString(mapping));
-            createIndexRequest.mapping(mapping);
-        }
-        if (EsGoodsConstant.LABEL_INDEX_NAME.equals(indexName)) {
-            XContentBuilder mapping = createGoodsMapping(EsGoodsLabel.class);
-            log.info("\nElasticSearch中未找到对应的GOODS LABEL INDEX，执行init...执行的语句---------\n{}", Strings.toString(mapping));
-            createIndexRequest.mapping(mapping);
-        }
-//        createIndexRequest.set
-
+        CreateIndexRequest createIndexRequest = EsUtil.getCreateRequest(indexName);
         restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
     }
-    /**
-     * EsGoods Mapping init
-     * @return XContentBuilder
-     * @throws IOException 连接异常
-     */
-    private XContentBuilder createGoodsMapping(Class<?> clz) throws IOException {
-        XContentBuilder xContentBuilder = JsonXContent.contentBuilder()
-            .startObject()
-                .startObject("properties");
-        Field[] fieldArray = clz.getDeclaredFields();
-        for( Field field : fieldArray ){
-            EsFiled a = field.getAnnotation(EsFiled.class);
-            if( a != null ){
-                xContentBuilder.startObject(a.name());
-                xContentBuilder.field("type",a.type());
-                xContentBuilder.field("index",a.index());
-                if( EsFiledTypeConstant.DATE.equals(a.type()) ){
-                    xContentBuilder.field("format","yyyy-MM-dd HH:mm:ss");
-                }
-                if(StringUtils.isNotBlank(a.analyzer()) ){
-                    xContentBuilder.field("analyzer",a.analyzer());
-                }
-                if( StringUtils.isNotBlank(a.copyTo()) ){
-                    xContentBuilder.field("copy_to",a.copyTo());
-                }
-                if(StringUtils.isNotBlank(a.searchAnalyzer()) ){
-                    xContentBuilder.field("search_analyzer",a.searchAnalyzer());
-                }
-                if( "scaled_float".equals(a.type()) ){
-                    xContentBuilder.field("scaling_factor",a.scaledNumber());
-                }
-                xContentBuilder.endObject();
-            }
-        }
-        xContentBuilder.endObject().endObject();
-        return xContentBuilder;
-    }
+
     private boolean containIndex(String indexName){
         boolean result ;
         GetIndexRequest getIndexRequest = new GetIndexRequest(indexName);
