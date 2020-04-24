@@ -226,7 +226,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         List<OrderGoodsBo> bos = param.getBos();
         for(OrderGoodsBo bo:bos){
             if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
-                reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+                reducePriceService.addActivityTag(bo.getActivityId(),param.getWxUserInfo().getUserId());
             }
         }
     }

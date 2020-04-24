@@ -185,7 +185,7 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
         List<OrderGoodsBo> bos = param.getBos();
         for(OrderGoodsBo bo:bos){
             if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
-                increasePurchase.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+                increasePurchase.addActivityTag(bo.getActivityId(),param.getWxUserInfo().getUserId());
             }
         }
     }
