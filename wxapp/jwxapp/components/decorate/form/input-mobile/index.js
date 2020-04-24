@@ -18,7 +18,7 @@ global.wxComponent({
       var m = this.data.m;
       m.error = null;
       if (m.confirm == 1 && (!m.module_value || m.module_value == "")) {
-        m.error = '请选择' + m.form_title;
+        m.error = '请填写' + m.form_title;
       }
       if (m.module_value != "" && m.module_value != undefined) {
         if (!(/^1[3456789]\d{9}$/.test(m.module_value))) {
