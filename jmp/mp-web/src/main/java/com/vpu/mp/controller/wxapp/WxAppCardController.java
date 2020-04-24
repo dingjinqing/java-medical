@@ -1,10 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
 
-import com.vpu.mp.service.foundation.util.RequestUtil;
-import com.vpu.mp.service.pojo.shop.member.account.*;
-import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
-import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +12,19 @@ import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.foundation.util.RequestUtil;
+import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutParam;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewCheckoutVo;
+import com.vpu.mp.service.pojo.shop.member.account.CardRenewParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardGetParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardJudgeVo;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardMaParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserCardParam;
+import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
+import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.member.buy.CardBuyClearingParam;
+import com.vpu.mp.service.pojo.shop.member.buy.CardToPayParam;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.exception.CardActivateException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
@@ -25,6 +34,7 @@ import com.vpu.mp.service.pojo.shop.member.ucard.CardUseListParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
 import com.vpu.mp.service.pojo.shop.member.ucard.ReceiveCardParam;
 import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
+import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 
 /**
@@ -255,5 +265,15 @@ public class WxAppCardController extends WxAppBaseController {
 	}
 	
 	
+	/**
+	 * 	兑换商品列表
+	 */
+	@PostMapping("/api/wxapp/card/change/goodslist")
+	public JsonResult changeGoodsList(@RequestBody @Validated CardExchangeGoodsParam param) {
+		logger().info("兑换商品列表");
+		param.setUserId(wxAppAuth.user().getUserId());
+		shop().user.wxUserCardService.exchangeSvc.changeGoodsList(param);
+		return success();
+	}
 	
 }
