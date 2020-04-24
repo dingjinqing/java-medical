@@ -80,15 +80,10 @@ public class PictorialIntegrationService extends ShopBaseService {
         return imgList;
     }
 
-    /**
-     * 获取活动分享图片信息
-     * @param param 各个活动对应的 GoodsShareBaseParam类
-     * @return {@link GoodsShareInfo}
-     */
-    public GoodsShareInfo getActivityShareInfo(GoodsShareBaseParam param) {
+    private ShareBaseService findShareBaseService(GoodsShareBaseParam param){
         ShareBaseService shareBaseService;
         if (param instanceof GroupBuyShareInfoParam) {
-             shareBaseService = groupBuyPictorialService;
+            shareBaseService = groupBuyPictorialService;
         } else if (param instanceof BargainShareInfoParam) {
             shareBaseService = bargainPictorialService;
         } else if (param instanceof GroupDrawShareInfoParam) {
@@ -104,26 +99,20 @@ public class PictorialIntegrationService extends ShopBaseService {
         } else {
             shareBaseService = normalGoodsPictorialService;
         }
+        return shareBaseService;
+    }
+    /**
+     * 获取活动分享图片信息
+     * @param param 各个活动对应的 GoodsShareBaseParam类
+     * @return {@link GoodsShareInfo}
+     */
+    public GoodsShareInfo getActivityShareInfo(GoodsShareBaseParam param) {
+        ShareBaseService shareBaseService = findShareBaseService(param);
         return shareBaseService.getShareInfo(param);
     }
 
     public GoodsPictorialInfo getActivityPictorialInfo(GoodsShareBaseParam param) {
-        if (param instanceof GroupBuyShareInfoParam) {
-            return groupBuyPictorialService.getGroupBuyPictorialInfo((GroupBuyShareInfoParam) param);
-        } else if (param instanceof BargainShareInfoParam) {
-            return bargainPictorialService.getBargainPictorialInfo((BargainShareInfoParam) param);
-        } else if (param instanceof GroupDrawShareInfoParam) {
-            return groupDrawPictorialService.getGroupDrawPictorialInfo((GroupDrawShareInfoParam) param);
-        } else if (param instanceof PreSaleShareInfoParam) {
-            return preSalePictorialService.getPreSalePictorialInfo((PreSaleShareInfoParam) param);
-        } else if (param instanceof ReducePriceShareInfoParam) {
-            return reducePricePictorialService.getReducePricePictorialInfo((ReducePriceShareInfoParam) param);
-        } else if (param instanceof FirstSpecialShareInfoParam) {
-            return firstSpecialPictorialService.getFirstSpecialPictorialInfo((FirstSpecialShareInfoParam) param);
-        } else if(param instanceof SeckillShareInfoParam){
-            return seckillPictorialService.getSeckillPictorialInfo((SeckillShareInfoParam) param);
-        } else {
-            return normalGoodsPictorialService.getNormalGoodsPictorialInfo(param);
-        }
+        ShareBaseService shareBaseService = findShareBaseService(param);
+        return shareBaseService.getPictorialInfo(param);
     }
 }

@@ -34,6 +34,10 @@ global.wxComponent({
           api:'/api/wxapp/bargain/pictorial/info',
           params: ['realPrice','linePrice','activityId','targetId','pageType']
         },
+        5:{ //秒杀
+          api:'/api/wxapp/seckill/pictorial/info',
+          params: ['realPrice','linePrice','activityId','targetId']
+        },
         6:{ //限时降价
           api:'/api/wxapp/reduceprice/pictorial/info',
           params:['realPrice','linePrice','activityId','targetId']

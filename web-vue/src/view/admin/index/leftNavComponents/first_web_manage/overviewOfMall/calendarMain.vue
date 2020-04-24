@@ -105,21 +105,13 @@
 <script>
 import vuescroll from 'vuescroll'
 import Vue from 'vue'
+import { getCalendarList } from '@/api/admin/firstWebManage/calender/calender.js'
 Vue.use(vuescroll)
 export default {
   data () {
     return {
-      dateOptions: [{
-        value: -1,
-        label: '请选择'
-      }, {
-        value: 1,
-        label: '2019年'
-      }, {
-        value: 2,
-        label: '2020年'
-      }],
-      dateValue: -1,
+      dateOptions: [],
+      dateValue: null,
       calenderData: [{
         month: '01',
         data: [],
@@ -238,8 +230,39 @@ export default {
   methods: {
     // 初始数据处理
     handleToInit () {
-      this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
+      // this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
       document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
+
+      getCalendarList(this.dateValue).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // 处理年份下拉框数据
+          let yearList = res.content.yearList || []
+          let yearArr = []
+          let currentYear = res.content.currentDate.split('-')[0]
+          let dateValue = null
+          yearList.forEach((item, index) => {
+            if (item === currentYear) {
+              dateValue = index
+            }
+            let label = item + '年'
+            let obj = {
+              value: index,
+              label: label
+            }
+            yearArr.push(obj)
+          })
+          let obj = {
+            value: null,
+            label: '请选择'
+          }
+
+          yearArr.unshift(obj)
+          console.log(yearArr)
+          this.dateOptions = yearArr
+          this.dateValue = dateValue
+        }
+      })
     },
     // 点击编辑
     handleToEdit (itemC) {

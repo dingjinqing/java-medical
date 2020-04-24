@@ -14,7 +14,12 @@ global.wxComponent({
    * 组件的初始数据
    */
   data: {
-
+    limitDataName:{
+      0:'优惠券',
+      1:'会员价',
+      2:'限时降价',
+      3:'首单特惠'
+    }
   },
 
   /**
@@ -28,6 +33,7 @@ global.wxComponent({
         cardItem.cardBgStyle = this.getCardBg(cardItem);
         cardItem.cardExpireTime = this.getCardExpireTime(cardItem)
         cardItem.isChecked = (this.data.defaultMemberCardNo && cardItem.cardNo === this.data.defaultMemberCardNo)
+        cardItem.discountLimit = this.getDiscountLimit(cardItem)
         return cardItem
       })
       this.setData({
@@ -75,6 +81,17 @@ global.wxComponent({
       if (!target) { this.triggerEvent('confirm', null); return }
       console.log(target)
       this.triggerEvent('confirm', target.cardNo)
+    },
+    getDiscountLimit({marketIdActivities}){
+      if(!marketIdActivities || !marketIdActivities.length) return null
+      return marketIdActivities.reduce((defaultStr,item,index)=>{
+        if(marketIdActivities.length === 1){
+          defaultStr += this.data.limitDataName[item] + '共用'
+        } else {
+          if(index === 0) defaultStr += this.data.limitDataName[item] + '及部分活动共用'
+        }
+        return defaultStr
+      },'不与')
     }
   },
   observers: {

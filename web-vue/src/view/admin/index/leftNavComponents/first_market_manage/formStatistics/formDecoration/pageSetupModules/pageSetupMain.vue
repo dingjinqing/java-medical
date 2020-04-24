@@ -433,7 +433,7 @@ export default {
           })
           console.log(data)
           this.couponBackData = arr
-          this.ruleForm = newData
+          this.ruleForm = data
         }
       },
       immediate: true,

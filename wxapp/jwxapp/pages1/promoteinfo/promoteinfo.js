@@ -72,6 +72,12 @@ global.wxPage({
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
+    if (promote_info.promoteStatus == 0) {
+      // 打开分享弹窗
+      this.setData({
+        share_good: true
+      })
+    }
   },
   // 关闭分享
   bindClose: function () {
@@ -418,31 +424,53 @@ function launchAct(that) {
         // 发起助力成功
         launch_id = res.content.launchId;
         launch_user_id = res.content.launchUserId;
-        // 打开分享弹窗
-        that.setData({
+        this.setData({
           share_good: true
         })
       } else {
         if (res.content.msg == 1) {
-          util.showModal('提示', '活动已停用或删除');
+          util.showModal('提示', '活动已停用或删除', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         } else if(res.content.msg == 2) {
-          util.showModal('提示', '活动库存不足');
+          util.showModal('提示', '活动库存不足', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         } else if (res.content.msg == 3) {
-          util.showModal('提示', '活动商品库存不足');
+          util.showModal('提示', '活动商品库存不足', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });;
         } else if (res.content.msg == 4) {
-          util.showModal('提示', '活动未开始');
+          util.showModal('提示', '活动未开始', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         } else if (res.content.msg == 5) {
-          util.showModal('提示', '活动已结束');
+          util.showModal('提示', '活动已结束', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         } else if (res.content.msg == 6) {
-          util.showModal('提示', '您已发起快邀请好友助力吧');
+          util.showModal('提示', '您已发起快邀请好友助力吧', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         } else if (res.content.msg == 7) {
-          util.showModal('提示', '数据入库失败');
+          util.showModal('提示', '数据入库失败', function () {
+            util.reLaunch({
+              url: '/pages/index/index'
+            })
+          });
         }
-        setTimeout(function () {
-          util.reLaunch({
-            url: '/pages/index/index',
-          })
-        }, 2000);
         return false
       }
     } else {
