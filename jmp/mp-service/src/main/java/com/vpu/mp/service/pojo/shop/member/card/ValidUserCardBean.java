@@ -5,8 +5,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 
 /**
@@ -56,6 +58,8 @@ public class ValidUserCardBean {
 	private Byte storeUseSwitch;
 	private String storeList;
 	private String grade;
+	private Byte cannotUseCoupon;
+	private String cannotUseAction;
 	/**
 	 * freeship_limit包邮周期类型 -1：不包邮，0:不限制，1：持卡有效期内，2：年，3：季，4：月，5：周，6：日
 	 */
@@ -76,4 +80,12 @@ public class ValidUserCardBean {
      * 	包邮信息描述
      */
     private CardFreeship cardFreeShip;
+    /**
+     * 	不可与折扣公用的营销活动
+     */
+    private List<CardMarketActivity> marketActivities;
+    /**
+     * 	不可与折扣公用的营销活动代号
+     */
+    private List<Integer> marketIdActivities;
 }
