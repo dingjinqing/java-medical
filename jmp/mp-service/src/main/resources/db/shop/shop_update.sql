@@ -385,6 +385,28 @@ ALTER TABLE `b2c_order_goods_rebate` ADD COLUMN `rec_id` int(11) NOT NULL DEFAUL
 
 -- 2020年04月21日 ws
 ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DEFAULT '' COMMENT '返利配置详情';
+
+
+-- 2020年04月24日 添加 已选活动商品表
+CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart`(
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`action` TINYINT(1) DEFAULT 0 COMMENT '活动类型: 1：限次卡兑换',
+	`identity_id` VARCHAR(50) DEFAULT '0' NULL COMMENT '活动ID',
+	`user_id` INT(8) NOT NULL DEFAULT 0 COMMENT '用户ID',
+	`goods_id` INT(8) NOT NULL DEFAULT 0 COMMENT '商品ID',
+	`product_id` INT(11) NOT NULL DEFAULT 0 COMMENT '商品规格组合的产品ID',
+	`goods_number` INT(8) NOT NULL DEFAULT 1 COMMENT '商品数量',
+	`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+	`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+	PRIMARY KEY (`id`),
+	INDEX `user_id` (`user_id`),
+  	INDEX `action` (`action`),
+  	INDEX `identity_id` (`identity_id`),
+  	INDEX `product_id` (`product_id`)
+);
+
+
+
 /*********************2.11*************************END*/
 
 
