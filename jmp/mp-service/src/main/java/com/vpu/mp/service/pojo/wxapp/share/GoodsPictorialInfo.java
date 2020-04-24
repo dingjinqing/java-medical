@@ -2,6 +2,8 @@ package com.vpu.mp.service.pojo.wxapp.share;
 
 import lombok.Data;
 
+import java.awt.image.BufferedImage;
+
 /**
  * 商品海报返回信息
  * @author 李晓冰
@@ -13,4 +15,9 @@ public class GoodsPictorialInfo {
     private Byte pictorialCode = 0;
     /**图片base64*/
     private String base64;
+
+    /**
+     * 此变量仅仅是为了测试方面
+     */
+    private BufferedImage bgImg;
 }

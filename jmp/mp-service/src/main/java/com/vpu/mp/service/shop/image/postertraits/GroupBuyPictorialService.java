@@ -107,101 +107,42 @@ public class GroupBuyPictorialService extends ShareBaseService {
     }
 
     @Override
-     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        GroupBuyDefineRecord activityRecord = (GroupBuyDefineRecord) aRecord;
-        return Util.translateMessage(lang, JsonResultMessage.WX_MA_GROUP_BUY_DOC, "", "messages", activityRecord.getLimitAmount(), baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-    }
+    String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        GroupBuyShareInfoParam param = (GroupBuyShareInfoParam) baseParam;
+        GroupBuyDefineRecord groupBuyDefineRecord = (GroupBuyDefineRecord) aRecord;
 
-
-    /**
-     * 拼团活动-海报生成
-     *
-     * @param param 拼团海报参数
-     * @return 拼团海报图片base64
-     */
-    public GoodsPictorialInfo getGroupBuyPictorialInfo(GroupBuyShareInfoParam param) {
-        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
-        ShopRecord shop = saas.shop.getShopById(getShopId());
-        GroupBuyDefineRecord groupBuyDefineRecord = groupBuyService.getGroupBuyRecord(param.getActivityId());
-
-        if (groupBuyDefineRecord == null) {
-            pictorialLog(getActivityName(), "拼团信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
-            return goodsPictorialInfo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        if (goodsRecord == null) {
-            pictorialLog(getActivityName(), "商品信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
-            return goodsPictorialInfo;
-        }
-        pictorialLog(getActivityName(), "读取拼团海报配置信息");
-        PictorialShareConfig shareConfig = Util.parseJson(groupBuyDefineRecord.getShareConfig(), PictorialShareConfig.class);
-
-        PictorialUserInfo userInfo = getUserInfo(param.getUserId(), shop);
-        if (userInfo == null) {
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
-            return goodsPictorialInfo;
-        }
-        getGroupBuyPictorialImg(userInfo, shareConfig, groupBuyDefineRecord, goodsRecord, shop, param, goodsPictorialInfo);
-        return goodsPictorialInfo;
-    }
-
-    private void getGroupBuyPictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, GroupBuyDefineRecord groupBuyDefineRecord, GoodsRecord goodsRecord, ShopRecord shop, GroupBuyShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
-        BufferedImage goodsImage;
-        try {
-            pictorialLog(getActivityName(), "获取商品图片信息");
-            goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取商品图片信息失败：" + e.getMessage());
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
-            return;
-        }
-
-        pictorialLog(getActivityName(), "获取商品分享语");
-        String shareDoc = null;
-        if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
-            if (shareDoc == null) {
-                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_DOC, null, "messages", groupBuyDefineRecord.getLimitAmount(), param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-            }
-        } else {
-            shareDoc = shareConfig.getShareDoc();
-        }
-
-        // 获取分享码
-        String mpQrCode;
         if (GoodsConstant.GOODS_ITEM.equals(param.getPageType())) {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", param.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), groupBuyDefineRecord.getId(), BaseConstant.ACTIVITY_TYPE_GROUP_BUY));
         } else {
-            mpQrCode = qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("uid=%d&group_id=%d", param.getUserId(), param.getGroupId()));
+            return qrCodeService.getMpQrCode(QrCodeTypeEnum.POSTER_GROUP_BOOKING_INFO, String.format("uid=%d&group_id=%d", baseParam.getUserId(), param.getGroupId()));
         }
+    }
 
-        pictorialLog("pictorial", "mpQrcode:" + mpQrCode);
-        BufferedImage qrCodeImage;
-        try {
-            qrCodeImage = ImageIO.read(new URL(mpQrCode));
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取二维码失败");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
-            return;
-        }
+    @Override
+    void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         PictorialImgPx imgPx = new PictorialImgPx();
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(), param.getRealPrice(), param.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
 
         // 拼装自定义内容
-        BigDecimal saveMoney = param.getLinePrice().subtract(param.getRealPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal saveMoney = baseParam.getLinePrice().subtract(baseParam.getRealPrice()).setScale(2, BigDecimal.ROUND_HALF_UP);
         // "开团省2元" 文字
         String saveText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_GROUP_BUY_SAVE, null, "messages", saveMoney);
         // 活动价
-        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
+        String realPriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP);
         // 划线价格
-        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + param.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
+        String linePriceText = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_PICTORIAL_MONEY_FLAG, "messages") + baseParam.getLinePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
         pictorialService.addPictorialSelfCustomerContent(bgBufferedImage, saveText, realPriceText, linePriceText, true, imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
+        goodsPictorialInfo.setBgImg(bgBufferedImage);
+    }
+
+    @Override
+     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        GroupBuyDefineRecord activityRecord = (GroupBuyDefineRecord) aRecord;
+        return Util.translateMessage(lang, JsonResultMessage.WX_MA_GROUP_BUY_DOC, "", "messages", activityRecord.getLimitAmount(), baseParam.getRealPrice().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
     }
 
     @Override
