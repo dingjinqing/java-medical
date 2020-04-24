@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.marketing.process;
 
+import com.vpu.mp.service.pojo.wxapp.order.marketing.coupon.OrderCouponVo;
 import com.vpu.mp.service.pojo.wxapp.order.marketing.member.OrderMemberVo;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.Data;
 @Builder
 public class DefaultMarketingProcess {
     private OrderMemberVo card;
+    private OrderCouponVo coupon;
     /**会员卡 0 ，优惠券 1*/
     private byte type;
 }
