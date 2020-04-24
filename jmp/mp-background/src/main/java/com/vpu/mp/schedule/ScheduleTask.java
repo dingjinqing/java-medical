@@ -21,7 +21,7 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 @EnableScheduling
 @EnableAsync
-
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class ScheduleTask {
 
     @Autowired

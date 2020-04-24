@@ -3,6 +3,7 @@ package com.vpu.mp.shell;
 
 import com.github.fonimus.ssh.shell.SshShellHelper;
 import com.github.fonimus.ssh.shell.commands.SshShellComponent;
+import com.google.common.collect.Lists;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.service.saas.SaasApplication;
 import com.vpu.mp.thread.es.EsThreadConfig;
@@ -37,36 +38,34 @@ public class EsCommand {
     @ShellMethod("ElasticSearch goods Index . --all[false|true]default true --shop-id<shopId>")
     @ShellMethodAvailability("argsAvailability")
     public void es(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
-
-        List<Integer> shopIdList = null;
-        if( all ){
-            shopIdList = saas.shop.getAll().stream().map(ShopRecord::getShopId).collect(Collectors.toList());
-        }else if( 0 != shopId ){
-            shopIdList = Collections.singletonList(shopId);
-        }
-        if( Objects.requireNonNull(shopIdList).isEmpty() ){
-            helper.printError("Please shopId is not null");
-        }
-        shopIdList.forEach(x->{
-            esThreadConfig.doIndexByShopId(x);
-        });
+        List<Integer> shopIdList = getShopIds(all,shopId);
+        shopIdList.forEach(x->
+            esThreadConfig.doIndexByShopId(x)
+        );
     }
-    @ShellMethod("ElasticSearch lanbel Index . --all[false|true]default true --shopId<shopId>")
+    @ShellMethod("ElasticSearch label Index . --all[false|true]default true --shopId<shopId>")
     public void esl(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
-        List<Integer> shopIdList = null;
-        if( all ){
+        List<Integer> shopIdList = getShopIds(all,shopId);
+        shopIdList.forEach(x->
+            esThreadConfig.doLabelIndexByShopId(x)
+        );
+    }
+    @ShellMethod("ElasticSearch label Index . --all[false|true]default true --shopId<shopId>")
+    public void estest(@ShellOption(arity = 1, defaultValue = "true") boolean all,@ShellOption( defaultValue = "0")int shopId) {
+        saas.esMappingUpdateService.updateEsGoodsMapping();
+    }
+    private List<Integer> getShopIds(boolean all,int shopId){
+        List<Integer> shopIdList = Lists.newArrayList();
+        if( all ) {
             shopIdList = saas.shop.getAll().stream().map(ShopRecord::getShopId).collect(Collectors.toList());
-        }else if( 0 != shopId ){
+        } else if( 0 != shopId ){
             shopIdList = Collections.singletonList(shopId);
         }
         if( Objects.requireNonNull(shopIdList).isEmpty() ){
             helper.printError("Please shopId is not null");
         }
-        shopIdList.forEach(x->{
-            esThreadConfig.doLabelIndexByShopId(x);
-        });
+        return shopIdList;
     }
-
 
     private Availability argsAvailability(){
         if( helper.checkAuthorities(Collections.singletonList("admin")) ){
