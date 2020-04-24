@@ -416,7 +416,9 @@ public class MarketCalendarService extends ShopBaseService {
 				if (item.getActivityId() > 0) {
 					vo.setHasAct(true);
 					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
-					actInfoList.add(info.getActInfo());
+					MarketVo actInfo = info.getActInfo();
+					actInfo.setCalActId(item.getId());
+					actInfoList.add(actInfo);
 				}else {
 					vo.setHasAct(false);
 				}
