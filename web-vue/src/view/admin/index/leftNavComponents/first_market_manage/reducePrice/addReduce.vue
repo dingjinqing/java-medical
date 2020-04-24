@@ -49,7 +49,7 @@
       </el-form-item>
       <el-form-item
         label="活动预告："
-        prop="noticeRadio"
+        prop="preTime"
       >
         <div>
           <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
@@ -68,25 +68,25 @@
         </div>
         <div>
           <el-radio
-            v-model="reduceData.noticeRadio"
+            v-model="reduceData.preTime"
             :label="1"
-            @change="noticeRadioChange"
+            @change="preTimeChange"
           >活动开始前
             <el-input
-              v-model="reduceData.noticeValue"
+              v-model="reduceData.preTimeValue"
               style="width: 80px;"
               size="small"
             ></el-input>小时进行预告
           </el-radio>
           <el-radio
-            v-model="reduceData.noticeRadio"
-            :label="2"
-            @change="noticeRadioChange"
+            v-model="reduceData.preTime"
+            :label="-1"
+            @change="preTimeChange"
           >活动创建完成后即进行预告</el-radio>
           <el-radio
-            v-model="reduceData.noticeRadio"
-            :label="3"
-            @change="noticeRadioChange"
+            v-model="reduceData.preTime"
+            :label="0"
+            @change="preTimeChange"
           >不进行活动预告</el-radio>
         </div>
       </el-form-item>
@@ -543,7 +543,7 @@
       :dialogVisible="labelDialogVisible"
       :multipleLimit="3"
       @resultLabelDatas="resultLabelDatas"
-      :chooseLabelBack="reduceData.couponTagId"
+      :chooseLabelBack="reduceData.activityTagId"
     />
 
   </div>
@@ -574,13 +574,13 @@ export default {
       }
     }
     // 自定义活动预告
-    var validateNoticeRadio = (rule, value, callback) => {
+    var validatePreTime = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
       if (!value) {
         callback(new Error('请选择活动预告类型'))
-      } else if (value === 1 && this.reduceData.noticeValue === '') {
+      } else if (value === 1 && this.reduceData.preTimeValue === '') {
         callback(new Error('请填写活动预告时间'))
-      } else if (value === 1 && !re.test(this.reduceData.noticeValue)) {
+      } else if (value === 1 && !re.test(this.reduceData.preTimeValue)) {
         callback(new Error('活动预告时间填写不正确'))
       } else {
         callback()
@@ -611,8 +611,8 @@ export default {
       reduceData: {
         name: '',
         effectiveDate: '',
-        noticeRadio: 1, // 活动预告
-        noticeValue: '24', // 预告时间值
+        preTime: 1, // 活动预告
+        preTimeValue: '24', // 预告时间值
         first: 1, // 优先级
         isCycle: false,
         isLimit: '0',
@@ -638,8 +638,8 @@ export default {
         effectiveDate: [
           { required: true, message: '请填写有效期', trigger: 'change' }
         ],
-        noticeRadio: [
-          { required: true, validator: validateNoticeRadio, trigger: 'change' }
+        preTime: [
+          { required: true, validator: validatePreTime, trigger: 'change' }
         ],
         first: [
           { required: true, message: '请填写优先级', trigger: 'blur' }
@@ -996,18 +996,18 @@ export default {
             this.goodsIdList.push(item.goodsId)
           })
 
+          // 活动预告
+          if (this.reduceData.preTime > 0) {
+            this.reduceData.preTimeValue = this.reduceData.preTime
+            this.reduceData.preTime = 1
+          }
+
           // 标签id
-          if (this.reduceData.activityTagId !== '') {
-            this.reduceData.activityTagId = this.reduceData.activityTagId.split(',')
-            this.reduceData.activityTagId = this.reduceData.activityTagId.map(Number)
-            // 标签数据回显
-            this.pickLabel = []
-            this.labelList.forEach(item => {
-              this.reduceData.activityTagId.forEach(val => {
-                if (item.id === val) {
-                  this.pickLabel.push(item)
-                }
-              })
+          if (res.content.tagList && res.content.tagList.length > 0) {
+            this.pickLabel = res.content.tagList
+            this.reduceData.activityTagId = []
+            res.content.tagList.forEach(item => {
+              this.reduceData.activityTagId.push(item.id)
             })
           } else {
             this.reduceData.activityTagId = []
@@ -1035,11 +1035,14 @@ export default {
           if (!this.reduceData.isCycle) {
             this.reduceData.periodAction = 0
           }
-
-          // 同步打标签
-          if (this.reduceData.activityTagId && this.reduceData.activityTagId.length > 0) {
-            this.reduceData.activityTagId = this.reduceData.activityTagId.toString()
+          // 活动预告
+          if (this.reduceData.preTime === 1) {
+            this.reduceData.preTime = Number(this.reduceData.preTimeValue)
           }
+          // 同步打标签
+          // if (this.reduceData.activityTagId && this.reduceData.activityTagId.length > 0) {
+          //   this.reduceData.activityTagId = this.reduceData.activityTagId.toString()
+          // }
 
           console.log(this.reduceData)
           if (this.isEdite === false) {
@@ -1077,24 +1080,24 @@ export default {
     // 删除标签
     deleteLabel (index) {
       this.pickLabel.splice(index, 1)
-      this.reduceData.couponTagId = []
+      this.reduceData.activityTagId = []
       this.pickLabel.forEach(item => {
-        this.reduceData.couponTagId.push(item.id)
+        this.reduceData.activityTagId.push(item.id)
       })
     },
 
     // 标签弹窗回调函数
     resultLabelDatas (row) {
       this.pickLabel = row
-      this.reduceData.couponTagId = []
+      this.reduceData.activityTagId = []
       this.pickLabel.forEach(item => {
-        this.reduceData.couponTagId.push(item.id)
+        this.reduceData.activityTagId.push(item.id)
       })
     },
 
     // 活动预告类型切换
-    noticeRadioChange (e) {
-      this.$refs['reduceData'].validateField('noticeRadio')
+    preTimeChange (e) {
+      this.$refs['reduceData'].validateField('preTime')
     }
 
     // 提交前校验
