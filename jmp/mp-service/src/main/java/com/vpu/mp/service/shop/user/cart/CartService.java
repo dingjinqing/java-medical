@@ -528,11 +528,12 @@ public class CartService extends ShopBaseService {
 
     private void checkoutActivity(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
         if (param.getActivityType()!=null){
+            logger().info("修改商品的活动");
             Map<Integer, List<WxAppCartGoods>> cartGoodsMap = cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
             List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
             if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
                 WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
-                if (!param.getActivityType().equals(cartGoods.getActivityType())){
+                if (!param.getActivityType().equals(cartGoods.getActivityType())||!param.getActivityId().equals(cartGoods.getExtendId())){
                     switchActivityGoods(param.getUserId(),cardId,param.getActivityId(),param.getActivityType());
                 }
             }

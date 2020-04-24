@@ -19,7 +19,12 @@
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
+            :maxlength="20"
           ></el-input>
+        </div>
+        <div class="list">
+          <span></span>
+          <div class="tips">最多可输入20个字</div>
         </div>
         <div
           class="list"

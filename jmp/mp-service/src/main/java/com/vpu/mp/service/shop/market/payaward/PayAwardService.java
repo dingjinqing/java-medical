@@ -75,7 +75,7 @@ public class PayAwardService extends ShopBaseService {
     /**
      * 全部商品
      */
-    private static final Integer ALL_GOODS = 0;
+    private static final Integer ALL_GOODS = 1;
 
     /**
      * 添加

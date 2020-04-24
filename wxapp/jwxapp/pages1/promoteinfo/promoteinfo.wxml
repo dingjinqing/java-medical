@@ -60,7 +60,8 @@
           </view>
           <!-- 倒计时提示 -->
           <view class='time_daojishi'>
-            <block wx:if='{{promote_info.promoteStatus == 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 0 && promote_info.surplusSecond > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}' >{{clock}}</text></block>
+            <block wx:if='{{promote_info.promoteStatus == 0 && (!promote_info.surplusSecond || promote_info.surplusSecond <= 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteTime1")}} <text style='color:{{comColor}}'>{{i18n.$t(localePack,"page1.promote.promoteTime8")}}</text></block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime > 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime2")}} <text style='color:{{comColor}}' >{{clock}}</text> {{i18n.$t(localePack,"page1.promote.promoteTime3")}}</block>
             <block wx:if='{{promote_info.promoteStatus == 1 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0) && promote_info.rewardSpurTime <= 0}}'>{{i18n.$t(localePack,"page1.promote.promoteTime4")}}</block>
             <block wx:if='{{promote_info.promoteStatus == 2 && promote_info.launchFlag == 1 && (promote_info.rewardType == 1 || promote_info.rewardType == 0)}}'>{{i18n.$t(localePack,"page1.promote.promoteTime5")}}</block>
