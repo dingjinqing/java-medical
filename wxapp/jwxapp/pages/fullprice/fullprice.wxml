@@ -65,23 +65,20 @@
       </view>
     </view>
     <!-- 底部 -->
-    <view class='main_footers clearfix' style='height:{{isIpx == 1 ? "160rpx":"100rpx"}};background:#fff'>
+    <!-- style='height:{{isIpx == 1 ? "160rpx":"100rpx"}};background:#fff' -->
+    <view class='main_footers clearfix'>
       <view class='foot_left'>
-        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}
-          <text style='color:{{comColor}}'>￥{{al_goods_prices}}</text>
-        </view>
+        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}<text style='color:{{comColor}}'>￥{{al_goods_prices}}</text></view>
         <view class='fl_bottom' wx:if="{{full_info.state == 0}}">{{all_goods_doc}}</view>
         <view class='fl_bottom' wx:if="{{full_info.state == 4}}">{{i18n.$t(localePack,"pages.cart.fullFooter1")}}</view>
       </view>
-      <block wx:if="{{full_info.state == 4}}">
+      <view wx:if="{{full_info.state == 4}}" class="footer_right">
         <view class='to_member' bindtap='to_member' style='background:{{commonColor}};color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};footborder-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.fullFooter2")}}</view>
-      </block>
-      <block wx:if="{{full_info.state == 0}}">
-        <form report-submit='true' bindsubmit='showCheck'>
-          <button class='foot_center' formType='submit' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.fullFooter3")}}</button>
-        </form>
+      </view>
+      <view wx:if="{{full_info.state == 0}}" class="footer_right">
+        <view class='foot_right' bindtap='showCheck' style='color:{{(comColor != "#ff6666" || !comColor)?"#fff":"#f66"}};background:{{commonColor}};border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.fullFooter3")}}</view>
         <view class='foot_right' bindtap='go_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeFooter2")}}</view>
-      </block>
+      </view>
 
     </view>
   </view>
