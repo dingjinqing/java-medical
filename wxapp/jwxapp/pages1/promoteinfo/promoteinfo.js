@@ -72,10 +72,12 @@ global.wxPage({
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
-    // 打开分享弹窗
-    this.setData({
-      share_good: true
-    })
+    if (promote_info.promoteStatus == 0) {
+      // 打开分享弹窗
+      this.setData({
+        share_good: true
+      })
+    }
   },
   // 关闭分享
   bindClose: function () {
@@ -422,6 +424,9 @@ function launchAct(that) {
         // 发起助力成功
         launch_id = res.content.launchId;
         launch_user_id = res.content.launchUserId;
+        this.setData({
+          share_good: true
+        })
       } else {
         if (res.content.msg == 1) {
           util.showModal('提示', '活动已停用或删除', function () {
