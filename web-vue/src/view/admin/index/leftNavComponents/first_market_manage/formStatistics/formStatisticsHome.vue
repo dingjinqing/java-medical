@@ -264,7 +264,10 @@
       :visible.sync="shareVisible"
       width="50%"
     >
-      <div class="shareCodeContainer">
+      <div
+        class="shareCodeContainer"
+        v-if="posterAddressImgUrl"
+      >
         <div class="copyContainer">
           <img
             :src="posterAddressImgUrl"
@@ -434,13 +437,19 @@ export default {
               this.shareCode = res.content.imageUrl
             }
           })
-          getPictorialCode(row.pageId).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.posterAddress = res.content
-              this.posterAddressImgUrl = res.content
-            }
-          })
+          if (row.status === 1) {
+            getPictorialCode(row.pageId).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.posterAddress = res.content
+                this.posterAddressImgUrl = res.content
+              }
+            })
+          } else {
+            this.posterAddress = ''
+            this.posterAddressImgUrl = ''
+          }
+
           break
         case 6: // 关闭
           this.twoSureText = this.$t('formStatisticsHome.sureClose')
