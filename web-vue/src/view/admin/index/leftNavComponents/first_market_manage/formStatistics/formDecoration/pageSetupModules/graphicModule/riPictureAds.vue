@@ -211,7 +211,8 @@ export default {
         position: relative;
         cursor: pointer;
         img {
-          width: 100%;
+          width: 70px;
+          height: 70px;
         }
       }
       .iconTips {
