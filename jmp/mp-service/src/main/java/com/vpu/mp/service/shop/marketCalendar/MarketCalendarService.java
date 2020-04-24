@@ -436,14 +436,18 @@ public class MarketCalendarService extends ShopBaseService {
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
 				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(3).fetchInto(MarketCalendarVo.class);
+		List<MarketCalendarVo> dataList=new ArrayList<MarketCalendarVo>();
 		for (MarketCalendarVo item : calendarList) {
 			item = eventStatus(item);
 			if (item.getEventStatus().equals(CalendarAction.ONE)) {
 				int days = (int) ((item.getEventTime().getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24L));
 				item.setDownTime(days);
 			}
+			if((!item.getEventStatus().equals(CalendarAction.THREE))&&(!item.getEventStatus().equals(CalendarAction.FOUR))) {
+				dataList.add(item);
+			}
 		}
-		return calendarList;
+		return dataList;
 	}
 
 }
