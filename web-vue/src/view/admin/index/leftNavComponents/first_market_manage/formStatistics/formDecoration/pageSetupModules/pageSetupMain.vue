@@ -415,25 +415,25 @@ export default {
         // push进couponBackData
         let turnArr = ['set_own_link', 'authorized_name', 'authorized_mobile', 'send_coupon', 'send_score']
         if (newData) {
-          let data = JSON.parse(JSON.stringify(newData))
-          Object.keys(data).forEach((item, index) => {
+          // let data = JSON.parse(JSON.stringify(newData))
+          Object.keys(newData).forEach((item, index) => {
             console.log(turnArr.indexOf(item))
             if (turnArr.indexOf(item) !== -1) {
-              console.log(typeof data[item])
-              if (typeof data[item] === 'number') {
-                data[item] = this.handleToTurnBoolean(data[item])
+              console.log(typeof newData[item])
+              if (typeof newData[item] === 'number') {
+                newData[item] = this.handleToTurnBoolean(newData[item])
               }
 
-              console.log(data[item])
+              console.log(newData[item])
             }
           })
           let arr = []
-          data.send_coupon_list.forEach((item, index) => {
+          newData.send_coupon_list.forEach((item, index) => {
             arr.push(item.coupon_id)
           })
-          console.log(data)
+          console.log(newData)
           this.couponBackData = arr
-          this.ruleForm = data
+          this.ruleForm = newData
         }
       },
       immediate: true,

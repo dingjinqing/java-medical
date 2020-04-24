@@ -1087,6 +1087,10 @@ export default {
 
     // 删除标签
     deleteLabel (index) {
+      if (this.isEditFlag === true) {
+        this.$message.warning('编辑状态不可操作')
+        return false
+      }
       this.pickLabel.splice(index, 1)
       this.reduceData.activityTagId = []
       this.pickLabel.forEach(item => {

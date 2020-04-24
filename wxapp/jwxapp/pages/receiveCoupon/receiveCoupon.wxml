@@ -32,8 +32,8 @@
         <view class='limit_left'>使用限制：</view>
         <view class='limit_right'>
           <view class='goods_limit'>
-            <text class="coupon-time-btm" style="color:#353535;" wx:if="{{act_info.recommendGoodsId == ''}}">全部商品可用</text>
-            <text class="coupon-time-btm" wx:if="{{act_info.recommendGoodsId != ''}}">部分商品可用</text>
+            <text class="coupon-time-btm" style="color:#353535;" wx:if="{{act_info.recommendGoodsId == ''}}">全部商品可用<text wx:if="{{act_info.couponOverlay == 1}}" style="color: #888;">（限时降价、首单特惠、会员价商品除外）</text></text>
+            <text class="coupon-time-btm" wx:if="{{act_info.recommendGoodsId != ''}}">部分商品可用<text wx:if="{{act_info.couponOverlay == 1}}" style="color: #888;">（限时降价、首单特惠、会员价商品除外）</text></text>
           </view>
           <view class='price_limit'>
             <text wx:if="{{act_info.leastConsume == 0 || act_info.leastConsume == null}}">无门槛（不含运费）</text>
