@@ -94,18 +94,12 @@
         <view class='limit_left'>{{i18n.$t(localePack,"pages.coupon.couponLimit")}}：</view>
         <view class='limit_right'>
           <view class='goods_limit'>
-            <view class="text_limit" style="color:#353535;" wx:if="{{act_info.recommendGoodsId == ''}}">
-              {{i18n.$t(localePack,"pages.coupon.allGoods")}}
-            </view>
-            <view class="text_limit" wx:else>{{i18n.$t(localePack,"pages.coupon.partGoods")}}</view>
+            <text class="coupon-time-btm" style="color:#353535;" wx:if="{{act_info.recommendGoodsId == ''}}">{{i18n.$t(localePack,"pages.coupon.allGoods")}}<text wx:if="{{act_info.couponOverlay == 1}}">（限时降价、首单特惠、会员价商品除外）</text></text>
+            <text class="coupon-time-btm" wx:else>{{i18n.$t(localePack,"pages.coupon.partGoods")}}<text wx:if="{{act_info.couponOverlay == 1}}">（限时降价、首单特惠、会员价商品除外）</text></text>
           </view>
           <view class='price_limit'>
-            <view class="text_limit" wx:if="{{act_info.leastConsume == 0 || act_info.leastConsume == null}}">
-              {{i18n.$t(localePack,"pages.coupon.leastConsume1")}}
-            </view>
-            <view class="text_limit" wx:else>
-              {{i18n.$t(localePack,"pages.coupon.leastConsume2")}}{{act_info.leastConsume}}{{i18n.$t(localePack,"pages.coupon.leastConsume3")}}
-            </view>
+            <text wx:if="{{act_info.leastConsume == 0 || act_info.leastConsume == null}}">{{i18n.$t(localePack,"pages.coupon.leastConsume1")}}</text>
+            <text wx:else>{{i18n.$t(localePack,"pages.coupon.leastConsume2")}}{{act_info.leastConsume}}{{i18n.$t(localePack,"pages.coupon.leastConsume3")}}</text>
           </view>
         </view>
       </view>
