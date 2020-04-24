@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -87,7 +88,7 @@ public class PreSaleTaskService extends ShopBaseService {
                 PresaleRecord presaleRecord = db().fetchAny(PRESALE,PRESALE.ID.eq(order.getActivityId()));
 
                 //退定金
-                if(presaleRecord.getReturnType().equals(PreSaleService.PRE_SALE_RETURN_DEPOSIT)){
+                if(presaleRecord.getReturnType().equals(PresaleConstant.PRE_SALE_RETURN_DEPOSIT)){
                     Result<OrderGoodsRecord> oGoods = orderGoodsService.getByOrderId(order.getOrderId());
                     //组装退款param
                     RefundParam param = new RefundParam();
