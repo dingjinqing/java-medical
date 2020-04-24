@@ -111,7 +111,9 @@ public class GoodsSearchMpService extends ShopBaseService {
             }else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
                 pageResult = searchGoodsForBargainQrCode(param);
             }else if(GoodsSearchMpParam.PAGE_FROM_LIMIT_COUNT_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())){
+                // 限次卡兑换商品不需要处理活动信息
                 pageResult = searchGoodsForLimitMemberCard(param);
+                return createSearchContentVo(pageResult);
             } else{
                 pageResult = searchGoods(param);
             }
@@ -119,8 +121,11 @@ public class GoodsSearchMpService extends ShopBaseService {
             pageResult = searchGoods(param);
         }
 
-
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+       return createSearchContentVo(pageResult);
+    }
+
+    private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
@@ -192,7 +197,8 @@ public class GoodsSearchMpService extends ShopBaseService {
     }
 
     /**
-     * 限次卡兑换商品搜索商品接口
+     * 限次卡兑换商品页面-搜索商品接口
+     * 搜索的结果不需要通过责任链进行活动信息的处理
      * @param param GoodsSearchMpParam
      * @return 该活动下的有效商品信息
      */
@@ -202,7 +208,12 @@ public class GoodsSearchMpService extends ShopBaseService {
 
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
         Condition condition = GOODS.GOODS_ID.in(goodsIdsLimit).and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition.and(goodsBaseCondition), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        PageResult<GoodsListMpBo> pageResult = goodsMpService.findActivityGoodsListCapsulesDao(condition.and(goodsBaseCondition), sortFields, null, null, null);
+        for (GoodsListMpBo goodsListMpBo : pageResult.getDataList()) {
+            goodsListMpBo.setRealPrice(goodsListMpBo.getShopPrice());
+            goodsListMpBo.setLinePrice(goodsListMpBo.getMarketPrice());
+        }
+        return pageResult;
     }
 
     /**
