@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,9 @@ public class MarketCalendarService extends ShopBaseService {
 	 * @return
 	 */
 	public MarketListDataVo getListByYear(String year) {
+		if(StringUtils.isEmpty(year)) {
+			year=String.valueOf(LocalDate.now().getYear());
+		}
 		List<MarketListData> list = new LinkedList<MarketListData>();
 		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
@@ -403,6 +407,7 @@ public class MarketCalendarService extends ShopBaseService {
 			return null;
 		}
 		MarketCalendarInfoVo vo = record.into(MarketCalendarInfoVo.class);
+		vo.setCalendarId(record.getId());
 		List<MarketCalendarActivityVo> calendarActList = calendarActivityService.calendarActList(calendarId);
 		List<MarketVo> actInfoList = new ArrayList<MarketVo>();
 		for (MarketCalendarActivityVo item : calendarActList) {
