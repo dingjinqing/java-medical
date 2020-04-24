@@ -127,9 +127,14 @@ var init = {
 
 
   _initRequest(options) {
-    if (this.user_id && options.invite_id) { //邀请人
-      util.api("/api/wxapp/user/invite", function (res) { }, {
-        invite_id: options.invite_id
+    console.log('init_request')
+    if (this.user_id && options.inviteId) { //邀请人
+      console.log('邀请++++++')
+      let inviteId = options.inviteId
+      let userId = this.user_id
+      util.api("/api/wxapp/distribution/user/bind", function (res) { }, {
+        inviteId,
+        userId
       })
     }
     if (this.user_id && options.template_config_id) {

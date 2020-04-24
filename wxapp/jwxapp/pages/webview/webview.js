@@ -72,7 +72,7 @@ global.wxPage({
    */
   onShareAppMessage: function (options) {
     return {
-      path: '/pages/webview/webview?url=' + encodeURIComponent(options.webViewUrl) + '&invite_id=' + util.getCache('user_id'),
+      path: '/pages/webview/webview?url=' + encodeURIComponent(options.webViewUrl) + '&inviteId=' + util.getCache('user_id'),
     }
   }
 })
