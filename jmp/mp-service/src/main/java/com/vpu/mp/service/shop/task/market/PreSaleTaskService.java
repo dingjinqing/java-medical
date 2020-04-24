@@ -9,13 +9,13 @@ import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
-import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.Presale.PRESALE;
 import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -87,7 +87,7 @@ public class PreSaleTaskService extends ShopBaseService {
                 PresaleRecord presaleRecord = db().fetchAny(PRESALE,PRESALE.ID.eq(order.getActivityId()));
 
                 //退定金
-                if(presaleRecord.getReturnType().equals(PreSaleService.PRE_SALE_RETURN_DEPOSIT)){
+                if(presaleRecord.getReturnType().equals(PresaleConstant.PRE_SALE_RETURN_DEPOSIT)){
                     Result<OrderGoodsRecord> oGoods = orderGoodsService.getByOrderId(order.getOrderId());
                     //组装退款param
                     RefundParam param = new RefundParam();
