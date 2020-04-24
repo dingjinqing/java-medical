@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.index.reindex.ReindexRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,5 +120,11 @@ public class EsGoodsCreateService extends ShopBaseService {
         return goodsList.stream().
             map(x->esManager.assemblyRequest(EsGoodsConstant.GOODS_INDEX_NAME,x)).
             collect(Collectors.toList());
+    }
+
+
+
+    private void reIndexGoods(List<EsGoods> esGoodsList){
+        ReindexRequest request = new ReindexRequest();
     }
 }

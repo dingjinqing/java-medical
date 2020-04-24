@@ -76,6 +76,8 @@ public class EsThreadConfig {
         log.info("\n店铺【{}】索引建立完成，共耗时{}ms",shopId,stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     }
+
+
     @Async("esAsyncExecutor")
     public void doLabelIndexByShopId(Integer shopId) {
         List<Integer> list ;

@@ -22,6 +22,8 @@ import com.vpu.mp.service.saas.SaasApplication;
 @Component
 @EnableScheduling
 @Slf4j
+@EnableAsync
+@ConditionalOnProperty(prefix="schedule",name = "switch", havingValue = "on")
 public class ScheduleTask {
 
     @Autowired
@@ -46,8 +48,7 @@ public class ScheduleTask {
 	/**
 	 * 每天获取微信数据（每天6-12点每半个小时执行一次）
 	 */
-//    @Scheduled(cron = "0 0/30 6-12 * * ?")
-    @Scheduled(cron = "59 * * * * ?")
+    @Scheduled(cron = "0 0/30 6,7,8,9,10,11,12 * * ?")
 	public void taskDailyWechat(){
         log.info("开始微信每天数据定时任务");
 		Result<ShopRecord> result = saas.shop.getAll();
