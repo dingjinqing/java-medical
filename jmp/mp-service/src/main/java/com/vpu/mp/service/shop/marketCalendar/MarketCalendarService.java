@@ -435,7 +435,7 @@ public class MarketCalendarService extends ShopBaseService {
 		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
-				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(3).fetchInto(MarketCalendarVo.class);
+				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
 		List<MarketCalendarVo> dataList=new ArrayList<MarketCalendarVo>();
 		for (MarketCalendarVo item : calendarList) {
 			item = eventStatus(item);
@@ -445,6 +445,9 @@ public class MarketCalendarService extends ShopBaseService {
 			}
 			if((!item.getEventStatus().equals(CalendarAction.THREE))&&(!item.getEventStatus().equals(CalendarAction.FOUR))) {
 				dataList.add(item);
+			}
+			if(dataList.size()==3) {
+				return dataList;
 			}
 		}
 		return dataList;

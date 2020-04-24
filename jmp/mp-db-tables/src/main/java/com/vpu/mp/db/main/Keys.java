@@ -98,7 +98,9 @@ public class Keys {
     public static final Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Identities0.IDENTITY_USER_SUMMARY_TREND;
     public static final Identity<ShopUploadedImageCategoryRecord, Integer> IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY = Identities0.IDENTITY_SHOP_UPLOADED_IMAGE_CATEGORY;
     public static final Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Identities0.IDENTITY_STORE_ACCOUNT;
-
+    public static final Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Identities0.IDENTITY_MARKET_CALENDAR;
+    public static final Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Identities0.IDENTITY_MARKET_CALENDAR_ACTIVITY;
+    
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -203,7 +205,9 @@ public class Keys {
     public static final UniqueKey<ShopUploadedImageCategoryRecord> KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY = UniqueKeys0.KEY_B2C_SHOP_UPLOADED_IMAGE_CATEGORY_PRIMARY;
     public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = UniqueKeys0.KEY_B2C_SHOP_ACCOUNT_USER_NAME;
     public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = UniqueKeys0.KEY_B2C_STORE_ACCOUNT_PRIMARY;
-
+    public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_PRIMARY;
+    public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY;
+    
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -281,6 +285,8 @@ public class Keys {
         public static Identity<UserLoginRecordRecord, Integer> IDENTITY_USER_LOGIN_RECORD = Internal.createIdentity(UserLoginRecord.USER_LOGIN_RECORD, UserLoginRecord.USER_LOGIN_RECORD.ID);
         public static Identity<UserSummaryTrendRecord, Integer> IDENTITY_USER_SUMMARY_TREND = Internal.createIdentity(UserSummaryTrend.USER_SUMMARY_TREND, UserSummaryTrend.USER_SUMMARY_TREND.ID);
         public static Identity<StoreAccountRecord, Integer> IDENTITY_STORE_ACCOUNT = Internal.createIdentity(StoreAccount.STORE_ACCOUNT, StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
+        public static Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Internal.createIdentity(MarketCalendar.MARKET_CALENDAR, MarketCalendar.MARKET_CALENDAR.ID);
+        public static Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Internal.createIdentity(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
     }
 
     private static class UniqueKeys0 {
@@ -385,5 +391,7 @@ public class Keys {
         public static final UniqueKey<ShopAccountRecord> KEY_B2C_SHOP_ACCOUNT_USER_NAME = Internal.createUniqueKey(ShopAccount.SHOP_ACCOUNT, "KEY_b2c_shop_account_user_name", ShopAccount.SHOP_ACCOUNT.USER_NAME);
         public static final UniqueKey<TaskJobContentRecord> KEY_B2C_TASK_JOB_CONTENT_PRIMARY = Internal.createUniqueKey(TaskJobContent.TASK_JOB_CONTENT, "KEY_b2c_task_job_content_PRIMARY", TaskJobContent.TASK_JOB_CONTENT.ID);
         public static final UniqueKey<StoreAccountRecord> KEY_B2C_STORE_ACCOUNT_PRIMARY = Internal.createUniqueKey(StoreAccount.STORE_ACCOUNT, "KEY_b2c_store_account_PRIMARY", StoreAccount.STORE_ACCOUNT.ACCOUNT_ID);
+        public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = Internal.createUniqueKey(MarketCalendar.MARKET_CALENDAR, "KEY_b2c_market_calendar_PRIMARY", MarketCalendar.MARKET_CALENDAR.ID);
+        public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
     }
 }

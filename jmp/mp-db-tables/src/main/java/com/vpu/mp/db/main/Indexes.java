@@ -214,6 +214,9 @@ public class Indexes {
     public static final Index STORE_ACCOUNT_ACCOUNT_NAME = Indexes0.STORE_ACCOUNT_ACCOUNT_NAME;
     public static final Index STORE_ACCOUNT_MOBILE = Indexes0.STORE_ACCOUNT_MOBILE;
     public static final Index STORE_ACCOUNT_PRIMARY = Indexes0.STORE_ACCOUNT_PRIMARY;
+    public static final Index MARKET_CALENDAR_PRIMARY = Indexes0.MARKET_CALENDAR_PRIMARY;
+    public static final Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Indexes0.MARKET_CALENDAR_ACTIVITY_CALENDAR_ID;
+    public static final Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Indexes0.MARKET_CALENDAR_ACTIVITY_PRIMARY;
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -405,5 +408,8 @@ public class Indexes {
         public static Index STORE_ACCOUNT_ACCOUNT_NAME = Internal.createIndex("account_name", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_NAME }, false);
         public static Index STORE_ACCOUNT_MOBILE = Internal.createIndex("mobile", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.MOBILE }, false);
         public static Index STORE_ACCOUNT_PRIMARY = Internal.createIndex("PRIMARY", StoreAccount.STORE_ACCOUNT, new OrderField[] { StoreAccount.STORE_ACCOUNT.ACCOUNT_ID }, true);
+        public static Index MARKET_CALENDAR_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendar.MARKET_CALENDAR, new OrderField[] { MarketCalendar.MARKET_CALENDAR.ID }, true);
+        public static Index MARKET_CALENDAR_ACTIVITY_CALENDAR_ID = Internal.createIndex("calendar_id", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.CALENDAR_ID }, false);
+        public static Index MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createIndex("PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, new OrderField[] { MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID }, true);
     }
 }
