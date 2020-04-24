@@ -76,10 +76,10 @@
   justify-content: space-between;
   color: #fff;
 }
-.card_right > text {
+.card_right > view {
   margin-bottom: 10rpx;
 }
-.card_right > text:last-of-type {
+.card_right > view:last-of-type {
   margin-bottom: 0;
 }
 ::-webkit-scrollbar {
