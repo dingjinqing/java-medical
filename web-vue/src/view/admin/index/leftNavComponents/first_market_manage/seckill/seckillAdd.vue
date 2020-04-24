@@ -62,6 +62,7 @@
             <el-radio
               v-model="form.noticeRadio"
               :label="1"
+              @change="noticeRadioChange"
             >活动开始前
               <el-input
                 v-model="form.noticeValue"
@@ -72,10 +73,12 @@
             <el-radio
               v-model="form.noticeRadio"
               :label="2"
+              @change="noticeRadioChange"
             >活动创建完成后即进行预告</el-radio>
             <el-radio
               v-model="form.noticeRadio"
               :label="3"
+              @change="noticeRadioChange"
             >不进行活动预告</el-radio>
           </div>
         </el-form-item>
@@ -522,6 +525,19 @@ export default {
         callback()
       }
     }
+    // 自定义活动预告
+    var validateNoticeRadio = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!value) {
+        callback(new Error('请选择活动预告类型'))
+      } else if (value === 1 && this.form.noticeValue === '') {
+        callback(new Error('请填写活动预告时间'))
+      } else if (value === 1 && !re.test(this.form.noticeValue)) {
+        callback(new Error('活动预告时间填写不正确'))
+      } else {
+        callback()
+      }
+    }
     // 活动专享
     // var validateShare = (rule, value, callback) => {
     //   if (value === 2 && this.form.shareConfig.shareDoc === '') {
@@ -542,7 +558,7 @@ export default {
         startTime: '', // 开始时间
         endTime: '', // 结束时间
         noticeRadio: 1, // 活动预告
-        noticeValue: '', // 预告时间值
+        noticeValue: '24', // 预告时间值
         limitAmount: '', // 限购数量
         limitPaytime: '', // 支付有效时间
         secKillProduct: [], // 秒杀价格表格数据
@@ -570,7 +586,7 @@ export default {
           { required: true, message: '请填写有效期', trigger: 'change' }
         ],
         noticeRadio: [
-          { required: true, message: '请选择活动预告类型', trigger: 'change' }
+          { required: true, validator: validateNoticeRadio, trigger: 'change' }
         ],
         limitAmount: [
           { required: true, message: '请填写限购数量', trigger: 'change' }
@@ -997,6 +1013,11 @@ export default {
       this.pickLabel.forEach(item => {
         this.labelValue.push(item.id)
       })
+    },
+
+    // 活动预告类型切换
+    noticeRadioChange (e) {
+      this.$refs['form'].validateField('noticeRadio')
     }
 
   }

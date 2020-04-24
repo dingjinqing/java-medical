@@ -70,6 +70,7 @@
           <el-radio
             v-model="reduceData.noticeRadio"
             :label="1"
+            @change="noticeRadioChange"
           >活动开始前
             <el-input
               v-model="reduceData.noticeValue"
@@ -80,10 +81,12 @@
           <el-radio
             v-model="reduceData.noticeRadio"
             :label="2"
+            @change="noticeRadioChange"
           >活动创建完成后即进行预告</el-radio>
           <el-radio
             v-model="reduceData.noticeRadio"
             :label="3"
+            @change="noticeRadioChange"
           >不进行活动预告</el-radio>
         </div>
       </el-form-item>
@@ -346,7 +349,11 @@
         label="同步打标签："
         prop=""
       >
-        <el-checkbox>给参与活动用户打标签</el-checkbox>
+        <el-checkbox
+          v-model="reduceData.activityTag"
+          :true-label="1"
+          :false-label="0"
+        >给参与活动用户打标签</el-checkbox>
         <span
           class="el-icon-question"
           style="color: #666;"
@@ -536,7 +543,7 @@
       :dialogVisible="labelDialogVisible"
       :multipleLimit="3"
       @resultLabelDatas="resultLabelDatas"
-      :chooseLabelBack="labelValue"
+      :chooseLabelBack="reduceData.couponTagId"
     />
 
   </div>
@@ -545,6 +552,7 @@
 <script>
 import { addReducePrice, getReducePriceById, updateReducePrice } from '@/api/admin/marketManage/reducePrice.js'
 import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
+import { allTagApi } from '@/api/admin/marketManage/messagePush'
 export default {
   components: {
     ImageDalog: () => import('@/components/admin/imageDalog'),
@@ -561,6 +569,19 @@ export default {
       console.log(this.pageShowGoodsList)
       if (!this.pageShowGoodsList || this.pageShowGoodsList.length === 0) {
         callback(new Error('请选择活动商品'))
+      } else {
+        callback()
+      }
+    }
+    // 自定义活动预告
+    var validateNoticeRadio = (rule, value, callback) => {
+      var re = /^[1-9]\d*$/
+      if (!value) {
+        callback(new Error('请选择活动预告类型'))
+      } else if (value === 1 && this.reduceData.noticeValue === '') {
+        callback(new Error('请填写活动预告时间'))
+      } else if (value === 1 && !re.test(this.reduceData.noticeValue)) {
+        callback(new Error('活动预告时间填写不正确'))
       } else {
         callback()
       }
@@ -591,7 +612,7 @@ export default {
         name: '',
         effectiveDate: '',
         noticeRadio: 1, // 活动预告
-        noticeValue: '', // 预告时间值
+        noticeValue: '24', // 预告时间值
         first: 1, // 优先级
         isCycle: false,
         isLimit: '0',
@@ -600,6 +621,8 @@ export default {
         batchDiscount: '', // 设置折扣
         batchReduce: '',
         batchFinalPrice: '',
+        activityTag: 0, // 同步打标签
+        activityTagId: '', // 标签id值
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
@@ -616,7 +639,7 @@ export default {
           { required: true, message: '请填写有效期', trigger: 'change' }
         ],
         noticeRadio: [
-          { required: true, message: '请选择活动预告类型', trigger: 'change' }
+          { required: true, validator: validateNoticeRadio, trigger: 'change' }
         ],
         first: [
           { required: true, message: '请填写优先级', trigger: 'blur' }
@@ -648,8 +671,8 @@ export default {
       isOnlyShowChooseGoods: false,
 
       labelDialogVisible: false, // 标签弹窗
-      pickLabel: [], // 选中标签列表
-      labelValue: [] // 选中标签id值
+      labelList: [], // 标签列表数据
+      pickLabel: [] // 选中标签列表
     }
   },
   watch: {
@@ -668,6 +691,7 @@ export default {
   },
   mounted () {
     this.langDefault()
+    this.getTagList()
 
     this.changeFlag = true
 
@@ -677,6 +701,15 @@ export default {
     }
   },
   methods: {
+    // 获取标签列表
+    getTagList () {
+      allTagApi().then(res => {
+        if (res.error === 0) {
+          this.labelList = res.content
+        }
+      })
+    },
+
     // 展开更多配置
     handleToChangeArror () {
       this.arrorFlag = !this.arrorFlag
@@ -919,6 +952,7 @@ export default {
       }
     },
 
+    // 编辑回显
     editReduceInit () {
       // 展开更多配置
       this.arrorFlag = false
@@ -961,6 +995,23 @@ export default {
           this.pageShowGoodsList.forEach(item => {
             this.goodsIdList.push(item.goodsId)
           })
+
+          // 标签id
+          if (this.reduceData.activityTagId !== '') {
+            this.reduceData.activityTagId = this.reduceData.activityTagId.split(',')
+            this.reduceData.activityTagId = this.reduceData.activityTagId.map(Number)
+            // 标签数据回显
+            this.pickLabel = []
+            this.labelList.forEach(item => {
+              this.reduceData.activityTagId.forEach(val => {
+                if (item.id === val) {
+                  this.pickLabel.push(item)
+                }
+              })
+            })
+          } else {
+            this.reduceData.activityTagId = []
+          }
         } else {
           this.$message.warning(res.message)
         }
@@ -983,6 +1034,11 @@ export default {
           // 周期类型
           if (!this.reduceData.isCycle) {
             this.reduceData.periodAction = 0
+          }
+
+          // 同步打标签
+          if (this.reduceData.activityTagId && this.reduceData.activityTagId.length > 0) {
+            this.reduceData.activityTagId = this.reduceData.activityTagId.toString()
           }
 
           console.log(this.reduceData)
@@ -1021,19 +1077,24 @@ export default {
     // 删除标签
     deleteLabel (index) {
       this.pickLabel.splice(index, 1)
-      this.labelValue = []
+      this.reduceData.couponTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.reduceData.couponTagId.push(item.id)
       })
     },
 
     // 标签弹窗回调函数
     resultLabelDatas (row) {
       this.pickLabel = row
-      this.labelValue = []
+      this.reduceData.couponTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.reduceData.couponTagId.push(item.id)
       })
+    },
+
+    // 活动预告类型切换
+    noticeRadioChange (e) {
+      this.$refs['reduceData'].validateField('noticeRadio')
     }
 
     // 提交前校验
