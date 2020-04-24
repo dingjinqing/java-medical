@@ -118,21 +118,35 @@ public class CloseService extends ShopBaseService implements IorderOperate<Order
                 //设置了自动退款
                 if(BigDecimalUtil.compareTo(order.getMoneyPaid(), null) > 0) {
                     returnMethod.refundMoneyPaid(order,0,order.getMoneyPaid());
+                    if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
+                        //积分
+                        refundScoreDiscount(order, order.getScoreDiscount());
+                    }
+                    if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
+                        refundUseAccount(order, order.getUseAccount());
+                        //余额
+                    }
+                    if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
+                        //卡余额
+                        refundMemberCardBalance(order, order.getMemberCardBalance());
+                    }
                 }
             }
+        }else{
+            if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
+                //积分
+                refundScoreDiscount(order, order.getScoreDiscount());
+            }
+            if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
+                refundUseAccount(order, order.getUseAccount());
+                //余额
+            }
+            if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
+                //卡余额
+                refundMemberCardBalance(order, order.getMemberCardBalance());
+            }
         }
-        if(BigDecimalUtil.compareTo(order.getScoreDiscount(), null) > 0) {
-            //积分
-            refundScoreDiscount(order, order.getScoreDiscount());
-        }
-        if(BigDecimalUtil.compareTo(order.getUseAccount(), null) > 0) {
-            refundUseAccount(order, order.getUseAccount());
-            //余额
-        }
-        if(BigDecimalUtil.compareTo(order.getMemberCardBalance(), null) > 0) {
-            //卡余额
-            refundMemberCardBalance(order, order.getMemberCardBalance());
-        }
+
 	}
 	/**
 	 * 	退会员卡余额
