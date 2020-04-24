@@ -165,6 +165,13 @@
                     <span>{{item.denomination}}</span>
                     <span>{{$t('payReward.discount')}}</span>
                   </div>
+                  <div
+                    class="coupon_list_top"
+                    v-if="item.actCode==='random'"
+                  >
+                    <span>￥</span>
+                    <span class="number">{{item.randomMax}}最高</span>
+                  </div>
                   <div class="coupon_center_limit">{{item.useConsumeRestrict | formatLeastConsume(item.leastConsume)}}</div>
                   <div
                     class="coupon_center_number"
@@ -258,13 +265,13 @@
               ></el-table-column>
               <el-table-column
                 :label="$t('lotteryDraw.goodsPrice')"
+                prop="shopPrice"
                 align="center"
               >
-                <!-- prop="shopPrice" -->
-                <template slot-scope="scope">
+                <!-- <template slot-scope="scope">
                   <span v-if="scope.row.isDefaultPrd === true">{{ scope.row.shopPrice }}</span>
                   <span v-if="scope.row.isDefaultPrd === false">{{ scope.row.prdMaxShopPrice }}</span>
-                </template>
+                </template> -->
               </el-table-column>
 
               <el-table-column
@@ -289,10 +296,12 @@
         </el-form-item>
       </el-form>
 
-      <lotteryDrawRule
+      <!-- 规则说明 -->
+      <ActivityRule
         v-if="ruleShow"
         @ActivityMsg="activityMsg"
         :sendMsg="sendMsg"
+        :template="template"
       />
     </div>
 
@@ -332,7 +341,6 @@
 // 引入组件
 import addCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
-import lotteryDrawRule from './lotteryDrawRule'
 import { addLotteryDraw, getLotteryDetail, updateLotteryDraw } from '@/api/admin/marketManage/lotteryDraw.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
@@ -340,7 +348,7 @@ export default {
   components: {
     addCouponDialog,
     choosingGoods,
-    lotteryDrawRule
+    ActivityRule: () => import('@/components/admin/activityRule')
   },
   props: ['isEdite', 'editId'],
   filters: {
@@ -427,8 +435,20 @@ export default {
       goodsRow: [], // 活动商品
 
       ruleShow: false, // 规则组件
-      sendMsg: null // 规则内容
-
+      sendMsg: null, // 规则内容
+      // 默认模板内容
+      template: `
+        <div style="line-height: 1.5;">
+          <p>参与步骤</p>
+          <p>1.在低价抽奖商品列表页，点击商品进入商品详情页，通过下单开团入口进入订单结算页，付款成功后，按页面提示分享给微信好友；</p>
+          <p>2.好友通过小程序落地页查看活动现状，完成支付，参与拼团；</p>
+          <p>3.支付人数在有效期内达到门槛值，则团内所有用户都获得抽奖资格，等待公布中奖结果；</p>
+          <p>4.中奖结果在活动结束时公布，所有中奖订单进入发货流程，未中奖用户及未成团用户将全额退款至原支付账户。</p>
+          <p>参与规则</p>
+          <p>1.活动期间，同一账户每个拼团商品仅可购买一单；</p>
+          <p>2.拼团抽奖商品库存有限，如因库存不足导致抢购失败或发货失败，订单将全额退款至原支付账户。</p>
+        </div>
+      `
     }
   },
   mounted () {
@@ -469,20 +489,20 @@ export default {
     // 获取商品信息
     getGoodsInfo (id) {
       getSelectGoods({ goodsId: id }).then((res) => {
-        if (res.error === 0) {
-          if (res.content.isDefaultProduct === 0) {
-            // 多规格
-            res.content.isDefaultPrd = false
-            res.content.prdMaxShopPrice = 0
-            res.content.goodsSpecProducts.forEach(item => {
-              if (item.prdPrice > res.content.prdMaxShopPrice) {
-                res.content.prdMaxShopPrice = item.prdPrice
-              }
-            })
-          } else if (res.content.isDefaultProduct === 1) {
-            // 单规格
-            res.content.isDefaultPrd = true
-          }
+        if (res.error === 0 && res.content !== null) {
+          // if (res.content.isDefaultProduct === 0) {
+          //   // 多规格
+          //   res.content.isDefaultPrd = false
+          //   res.content.prdMaxShopPrice = 0
+          //   res.content.goodsSpecProducts.forEach(item => {
+          //     if (item.prdPrice > res.content.prdMaxShopPrice) {
+          //       res.content.prdMaxShopPrice = item.prdPrice
+          //     }
+          //   })
+          // } else if (res.content.isDefaultProduct === 1) {
+          //   // 单规格
+          //   res.content.isDefaultPrd = true
+          // }
           this.goodsRow.push(res.content)
         }
       })

@@ -139,6 +139,7 @@
               prop="exchange"
               :label="$t('mintegralExchange.exchangePrice')"
               align="center"
+              width="200"
             >
               <template slot-scope="scope">
                 <div class="scoreDiv">
@@ -168,7 +169,7 @@
               prop="stock"
               :label="$t('mintegralExchange.goodsInventory')"
               align="center"
-              v-if="id===-1"
+              v-if="id===-1 || isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
@@ -179,29 +180,29 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="xyStock"
+              prop="remainStock"
               label="剩余兑换商品库存"
               align="center"
-              v-if="id!==-1"
+              v-if="id!==-1&&!isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
                   size="small"
-                  v-model="scope.row.xyStock"
+                  v-model="scope.row.remainStock"
                   onkeyup="value=value.replace(/[^\d.]/g,'')"
                 ></el-input>
               </template>
             </el-table-column>
             <el-table-column
-              prop="sold"
+              prop="saleNum"
               label="已售数量"
               align="center"
-              v-if="id!==-1"
+              v-if="id!==-1&&!isChangeGoods"
             >
               <template slot-scope="scope">
                 <el-input
                   size="small"
-                  v-model="scope.row.sold"
+                  v-model="scope.row.saleNum"
                   onkeyup="value=value.replace(/[^\d.]/g,'')"
                   disabled
                 ></el-input>
@@ -379,21 +380,32 @@ export default {
   data () {
     var validateTableData1 = (rule, value, callback) => {
       console.log(value)
+      let flag = true
       value.forEach((item, index) => {
         if (index !== (value.length - 1)) {
           if (!Number(item.stock)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.cannotBeEmpty')))
           } else if ((Number(item.stock) !== '') && (Number(item.stock) > item.goodsStock)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.tipsTwo')))
           } else if (Number(item.exchange.money) > Number(item.originPrice)) {
+            flag = true
             callback(new Error(this.$t('mintegralExchange.tipsThree')))
           } else if (!Number(item.exchange.money) && !Number(item.exchange.score)) {
+            flag = true
             callback(new Error('兑换价格或积分不能同时为空'))
-          } else {
-            callback()
+          } else if (this.id !== -1) {
+            if (Number(item.remainStock) > Number(item.goodsStock)) {
+              flag = true
+              callback(new Error('剩余兑换商品库存要小于商品库存'))
+            }
           }
         }
       })
+      if (flag) {
+        callback()
+      }
     }
     var validate2 = (rule, value, callback) => {
       console.log(value)
@@ -453,6 +465,7 @@ export default {
       }
     }
     return {
+      isChangeGoods: false,
       isClicktimePicker: true, // 是否可以选择开始时间
       isSureTop: true,
       isSureBottom: true,
@@ -553,8 +566,8 @@ export default {
                   },
                   goodsStock: item.prdNumber,
                   stock: item.stock,
-                  xyStock: 1,
-                  sold: 0
+                  remainStock: item.remainStock,
+                  saleNum: item.saleNum
                 }
                 arr.push(obj)
               })
@@ -564,11 +577,12 @@ export default {
                 exchange: '',
                 goodsStock: '',
                 stock: '',
-                xyStock: '',
-                sold: ''
+                remainStock: '',
+                saleNum: ''
               }
               arr.push(lastObj)
               this.ruleForm.tableData = arr
+              this.chooseGoodsBack.push(res.content.goodsId)
               // 处理底部展开的内容
               this.formBottom.style = JSON.stringify(objectShareConfig.share_action)
               if (this.formBottom.style === '2') {
@@ -626,7 +640,12 @@ export default {
             obj.prdId = item.exchange.prdId
             obj.money = item.exchange.money
             obj.score = item.exchange.score
-            obj.stock = item.stock
+            if (this.id === -1 || this.isChangeGoods) {
+              obj.stock = item.stock
+            } else {
+              obj.stock = Number(item.remainStock) + Number(item.saleNum)
+            }
+
             arr.push(obj)
           }
         })
@@ -709,13 +728,13 @@ export default {
       let yuanData = ''
       let scoreData = ''
       let kuCunData = ''
-      let xyStock = ''
+      let remainStock = ''
       if (this.ruleForm.tableData.length) {
         yuanData = this.ruleForm.tableData[0].exchange.money
         scoreData = this.ruleForm.tableData[0].exchange.score
         kuCunData = this.ruleForm.tableData[0].stock
-        if (this.id !== -1) {
-          xyStock = this.ruleForm.tableData[0].xyStock
+        if (this.id !== -1 && !this.isChangeGoods) {
+          remainStock = this.ruleForm.tableData[0].remainStock
         }
       }
       if (flag === 1) {
@@ -726,8 +745,8 @@ export default {
       } else {
         this.ruleForm.tableData.forEach((item, index) => {
           item.stock = kuCunData
-          if (this.id !== -1) {
-            item.xyStock = xyStock
+          if (this.id !== -1 && !this.isChangeGoods) {
+            item.remainStock = remainStock
           }
         })
       }
@@ -783,6 +802,7 @@ export default {
           }
           arr.push(lastObj)
           this.ruleForm.tableData = arr
+          this.isChangeGoods = true
         }
       })
     },

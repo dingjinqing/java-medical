@@ -21,6 +21,7 @@ module.exports = {
   "promoteTime5": "已领取，请在订单中查看",
   "promoteTime6": "奖励已经放入您的优惠券包，去看看",
   "promoteTime7": "已结束,助力失败",
+  "promoteTime8": "已经截止",
 
   "promoteButton1": "发起助力",
   "promoteButton2": "邀请好友帮忙助力",

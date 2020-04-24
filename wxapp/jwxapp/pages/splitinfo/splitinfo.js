@@ -19,6 +19,7 @@ global.wxPage({
    */
   onLoad: function (options) {
     if (!util.check_setting(options)) return;
+    console.log(options)
     var that = this;
     that.setData({
       couponSn: options.couponSn,

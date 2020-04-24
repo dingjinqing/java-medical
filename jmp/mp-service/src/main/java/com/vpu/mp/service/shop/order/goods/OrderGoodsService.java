@@ -351,6 +351,9 @@ public class OrderGoodsService extends ShopBaseService{
                 record.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                 record.setActivityId(bo.getReducePriceId());
             }
+            if(bo.getPurchasePriceId() != null) {
+                record.setPurchaseId(bo.getPurchasePriceId());
+            }
             records.add(record);
         }
         db().batchInsert(records).execute();

@@ -380,7 +380,6 @@
             >{{$t('promoteList.authorizeYes')}}</el-radio>
             <span class="gray">{{$t('promoteList.promoteConditionText')}}</span>
           </el-form-item>
-          <!--  助力次数限制-->
           <el-form-item
             label="助力次数限制："
             prop=""
@@ -402,7 +401,6 @@
               >默认为0，表示不限制</div>
             </div>
           </el-form-item>
-
           <el-form-item
             v-if="form.rewardType == 1"
             :label="$t('promoteList.couponStrategy') + '：'"
@@ -501,114 +499,126 @@
             </div>
           </el-form-item>
 
-          <div></div>
           <!-- 收起、展开更多配置 -->
-          <el-collapse>
-            <el-collapse-item>
-              <template slot="title">
-                {{$t('promoteList.moreSettings')}}
-              </template>
-              <el-form-item
-                :label="$t('promoteList.actShare') + '：'"
-                prop=""
-              >
-                <div>
-                  <el-radio
-                    v-model="form.activityShareType"
-                    label="0"
-                  >
-                    {{$t('promoteList.defaultStyle')}}
-                  </el-radio>
-                  <!-- <span>{{$t('promoteList.sharePreview')}}</span>
+          <div
+            @click="handleToChangeArror"
+            style="padding: 0 0 30px 30px; width: 20%;"
+          >
+            <div
+              v-if="arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >
+              {{ $t('promoteList.openConfigure') }}&nbsp;<img :src="ArrowArr[0].img_1">
+            </div>
+            <div
+              v-if="!arrorFlag"
+              style="color:rgb(90, 139, 255);cursor:pointer"
+            >
+              {{ $t('promoteList.closeConfigure') }}&nbsp;<img :src="ArrowArr[1].img_2">
+            </div>
+          </div>
+          <div v-if="!arrorFlag">
+            <el-form-item
+              :label="$t('promoteList.actShare') + '：'"
+              prop=""
+              :required="true"
+            >
+              <div>
+                <el-radio
+                  v-model="form.activityShareType"
+                  label="0"
+                >
+                  {{$t('promoteList.defaultStyle')}}
+                </el-radio>
+                <!-- <span>{{$t('promoteList.sharePreview')}}</span>
                   <span>{{$t('promoteList.posterPreview')}}</span> -->
-                  <el-popover
-                    placement="right-start"
-                    width="220"
-                    trigger="hover"
+                <el-popover
+                  placement="right-start"
+                  width="220"
+                  trigger="hover"
+                >
+                  <el-image :src="srcList.src1"></el-image>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    style="margin: 0px 20px 0px 0px"
+                  >{{$t('marketCommon.viewExample')}}</el-button>
+                </el-popover>
+                <el-popover
+                  placement="right-start"
+                  width="220"
+                  trigger="hover"
+                >
+                  <el-image :src="srcList.src2"></el-image>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                  >{{$t('marketCommon.downloadPoster')}}</el-button>
+                </el-popover>
+              </div>
+              <div>
+                <el-radio
+                  v-model="form.activityShareType"
+                  label="1"
+                >
+                  {{$t('promoteList.customStyle')}}
+                  <div
+                    v-if="form.activityShareType == 1"
+                    style="margin-left: 29px"
                   >
-                    <el-image :src="srcList.src1"></el-image>
-                    <el-button
-                      slot="reference"
-                      type="text"
-                      style="margin: 0px 20px 0px 0px"
-                    >{{$t('marketCommon.viewExample')}}</el-button>
-                  </el-popover>
-                  <el-popover
-                    placement="right-start"
-                    width="220"
-                    trigger="hover"
-                  >
-                    <el-image :src="srcList.src2"></el-image>
-                    <el-button
-                      slot="reference"
-                      type="text"
-                    >{{$t('marketCommon.downloadPoster')}}</el-button>
-                  </el-popover>
-                </div>
-                <div>
-                  <el-radio
-                    v-model="form.activityShareType"
-                    label="1"
-                  >
-                    {{$t('promoteList.customStyle')}}
-                    <div
-                      v-if="form.activityShareType == 1"
-                      style="margin-left: 29px"
-                    >
-                      <div style="margin: 15px 0">
-                        <span style="margin-right: 25px">{{$t('promoteList.words')}}</span>
-                        <el-input
-                          size="small"
-                          style="width:200px"
-                          v-model="form.customShareWord"
-                        ></el-input>
-                      </div>
-                      <div>
-                        <span>{{$t('promoteList.sharePicture')}}</span>
+                    <div style="margin: 15px 0">
+                      <span style="margin-right: 25px">{{$t('promoteList.words')}}</span>
+                      <el-input
+                        size="small"
+                        style="width:200px"
+                        v-model="form.customShareWord"
+                      ></el-input>
+                    </div>
+                    <div>
+                      <span>{{$t('promoteList.sharePicture')}}</span>
+                      <el-radio
+                        v-model="form.shareImgType"
+                        label="0"
+                        style="margin-left:10px"
+                      >{{$t('promoteList.goodsPicture')}}</el-radio>
+
+                      <div style="margin: 10px 0 0 57px">
                         <el-radio
                           v-model="form.shareImgType"
-                          label="0"
-                          style="margin-left:10px"
-                        >{{$t('promoteList.goodsPicture')}}</el-radio>
+                          label="1"
+                        >{{$t('promoteList.customPicture')}}</el-radio>
 
-                        <div style="margin: 10px 0 0 57px">
-                          <el-radio
-                            v-model="form.shareImgType"
-                            label="1"
-                          >{{$t('promoteList.customPicture')}}</el-radio>
-
+                        <div
+                          style="display: flex;align-items: center;flex-wrap: wrap;"
+                          v-if="form.shareImgType == 1"
+                        >
+                          <span
+                            @click="deleteGoodsImg()"
+                            v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
+                            class="deleteIcon"
+                          >×</span>
                           <div
-                            style="display: flex;align-items: center;flex-wrap: wrap;"
-                            v-if="form.shareImgType == 1"
+                            @click="addGoodsImg"
+                            class="ImgWrap"
                           >
-                            <span
-                              @click="deleteGoodsImg()"
-                              v-if="this.srcList.src !==`${this.$imageHost}/image/admin/add_img.png`"
-                              class="deleteIcon"
-                            >×</span>
-                            <div
-                              @click="addGoodsImg"
-                              class="ImgWrap"
-                            >
-                              <el-image
-                                style="width: 80px; height: 80px"
-                                :src="srcList.src"
-                                fit="scale-down"
-                              ></el-image>
-                            </div>
-                            <span class="inputTip">
-                              {{$t('promoteList.pictureTip')}}
-                            </span>
+                            <el-image
+                              style="width: 80px; height: 80px"
+                              :src="srcList.src"
+                              fit="scale-down"
+                            ></el-image>
                           </div>
+                          <span class="inputTip">
+                            {{$t('promoteList.pictureTip')}}
+                          </span>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                  </el-radio>
-                </div>
-              </el-form-item>
-            </el-collapse-item>
-          </el-collapse>
+                </el-radio>
+              </div>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
 
@@ -927,7 +937,15 @@ export default {
       showCouponDialog: false,
       couponIdList: [],
       showImageDialog: false,
-      imgHost: `${this.$imageHost}`
+      imgHost: `${this.$imageHost}`,
+
+      // 展开设置箭头
+      ArrowArr: [{
+        img_1: this.$imageHost + '/image/admin/show_more.png'
+      }, {
+        img_2: this.$imageHost + '/image/admin/hid_some.png'
+      }],
+      arrorFlag: true // 展开更多配置
     }
   },
   created () {
@@ -951,6 +969,8 @@ export default {
       selectOneInfo(selectParam).then(res => {
         console.log('message', res)
         console.log('pageInfo:', res.content)
+        // 展开设置
+        this.arrorFlag = false
         this.form.actName = res.content.actName
         this.form.startTime = res.content.startTime
         this.form.endTime = res.content.endTime
@@ -1205,6 +1225,11 @@ export default {
     // 查看活动规则
     ruleHandler () {
       window.open('http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=736&fromuid=1')
+    },
+
+    // 展开更多配置
+    handleToChangeArror () {
+      this.arrorFlag = !this.arrorFlag
     },
 
     // 切换奖励类型

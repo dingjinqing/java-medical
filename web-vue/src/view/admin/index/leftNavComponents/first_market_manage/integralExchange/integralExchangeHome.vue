@@ -350,10 +350,8 @@ export default {
     handleToInit () {
       let params = {
         'actState': this.actState,
-        'page': {
-          'currentPage': this.pageParams.currentPage,
-          'pageRows': '20'
-        }
+        'currentPage': this.pageParams.currentPage,
+        'pageRows': '20'
       }
       integralExchangeList(params).then(res => {
         console.log(res)
@@ -503,6 +501,7 @@ export default {
       if (flag) {
         this.showSix = false
         this.activeName = 'first'
+        this.actState = 0
         this.handleToInit()
       }
     }

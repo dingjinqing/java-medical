@@ -3,6 +3,7 @@ package com.vpu.mp.service.shop.user.cart;
 import com.vpu.mp.db.shop.tables.records.CartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
+import com.vpu.mp.db.shop.tables.records.PurchasePriceRuleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -13,10 +14,12 @@ import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import com.vpu.mp.service.shop.activity.factory.CartProcessorContext;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.ImageService;
+import com.vpu.mp.service.shop.market.increasepurchase.IncreasePurchaseService;
 import com.vpu.mp.service.shop.member.UserCardService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +59,9 @@ public class CartService extends ShopBaseService {
     private CartProcessorContext cartProcessor;
     @Autowired
     private ImageService imageService;
+    /**加价购*/
+    @Autowired
+    private IncreasePurchaseService increasePurchase;
     /**
      * 用户会员卡
      */
@@ -241,43 +247,30 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public Integer addSpecProduct(Integer userId, Integer prdId, Integer goodsNumber, Integer activityId, Byte activityType) {
-        CartRecord cartRecord = db().selectFrom(CART)
-                .where(CART.USER_ID.eq(userId).and(CART.PRODUCT_ID.eq(prdId)))
-                .and(CART.TYPE.notEqual(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS))
-                .fetchAny();
+        Record goodsProduct = goodsService.getGoodsByProductId(prdId);
+        GoodsRecord goodsRecord = goodsProduct.into(GoodsRecord.class);
+        GoodsSpecProductRecord productRecord = goodsProduct.into(GoodsSpecProductRecord.class);
+        CartRecord cartRecord = db().newRecord(CART);
+        cartRecord.setUserId(userId);
+        cartRecord.setGoodsSn(goodsRecord.getGoodsSn());
+        cartRecord.setCartNumber(goodsNumber.shortValue());
+        cartRecord.setGoodsId(goodsRecord.getGoodsId());
+        cartRecord.setGoodsName(goodsRecord.getGoodsName());
+        cartRecord.setPrdDesc(productRecord.getPrdDesc());
+        cartRecord.setProductId(prdId);
+        cartRecord.setGoodsPrice(productRecord.getPrdPrice());
+        cartRecord.setOriginalPrice(productRecord.getPrdPrice());
+        cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
+        if (activityType != null) {
+            cartRecord.setExtendId(activityId);
+            cartRecord.setType(activityType);
+        }
         //添加加价购商品
         if (activityType != null && activityType.equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS)) {
-            cartRecord = db().selectFrom(CART)
-                    .where(CART.USER_ID.eq(userId))
-                    .and(CART.PRODUCT_ID.eq(prdId))
-                    .and(CART.TYPE.eq(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS))
-                    .and(CART.EXTEND_ID.eq(activityId))
-                    .fetchOne();
+            PurchasePriceRuleRecord rule = increasePurchase.getRuleByRuleId(activityId);
+            cartRecord.setGoodsPrice(rule.getPurchasePrice());
         }
-        if (cartRecord == null) {
-            Record goodsProduct = goodsService.getGoodsByProductId(prdId);
-            GoodsRecord goodsRecord = goodsProduct.into(GoodsRecord.class);
-            GoodsSpecProductRecord productRecord = goodsProduct.into(GoodsSpecProductRecord.class);
-            cartRecord = db().newRecord(CART);
-            cartRecord.setUserId(userId);
-            cartRecord.setGoodsSn(goodsRecord.getGoodsSn());
-            cartRecord.setCartNumber(goodsNumber.shortValue());
-            cartRecord.setGoodsId(goodsRecord.getGoodsId());
-            cartRecord.setGoodsName(goodsRecord.getGoodsName());
-            cartRecord.setPrdDesc(productRecord.getPrdDesc());
-            cartRecord.setProductId(prdId);
-            cartRecord.setGoodsPrice(productRecord.getPrdPrice());
-            cartRecord.setOriginalPrice(productRecord.getPrdPrice());
-            cartRecord.setIsChecked(CartConstant.CART_IS_CHECKED);
-            if (activityType != null) {
-                cartRecord.setExtendId(activityId);
-                cartRecord.setType(activityType);
-            }
-            cartRecord.insert();
-        } else {
-            cartRecord.setCartNumber((short) (goodsNumber + cartRecord.getCartNumber()));
-            cartRecord.update();
-        }
+        cartRecord.insert();
         return cartRecord.getCartId();
     }
 
@@ -409,15 +402,31 @@ public class CartService extends ShopBaseService {
      * 修改
      *
      * @param userId      用户id
+     * @param cartIds      购物车id
+     * @param activityTye 类型
+     * @param activityId  活动id
+     * @return
+     */
+    public int switchActivityGoods(Integer userId, List<Integer> cartIds, Integer activityId, Byte activityTye) {
+        return db().update(CART)
+                .set(CART.EXTEND_ID, activityId).set(CART.TYPE, activityTye)
+                .where(CART.CART_ID.in(cartIds))
+                .and(CART.USER_ID.eq(userId)).execute();
+
+    }
+    /**
+     * 修改
+     *
+     * @param userId      用户id
      * @param cartId      购物车id
      * @param activityTye 类型
      * @param activityId  活动id
      * @return
      */
-    public int switchActivityGoods(Integer userId, List<Integer> cartId, Integer activityId, Byte activityTye) {
+    public int switchActivityGoods(Integer userId, Integer cartId, Integer activityId, Byte activityTye) {
         return db().update(CART)
                 .set(CART.EXTEND_ID, activityId).set(CART.TYPE, activityTye)
-                .where(CART.CART_ID.in(cartId))
+                .where(CART.CART_ID.eq(cartId))
                 .and(CART.USER_ID.eq(userId)).execute();
 
     }
@@ -473,7 +482,8 @@ public class CartService extends ShopBaseService {
      * @return
      */
     public Integer getCartRecord(Integer userId, Integer prdId, Byte activityType, Integer activityId) {
-        if (activityType==null) {
+        //如果是满折满减和加价购切换商品和添加商品
+        if (activityType==null||BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(activityType)|| BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(activityType)) {
             return db().select(CART.CART_ID).from(CART).where(CART.USER_ID.eq(userId)).and(CART.PRODUCT_ID.eq(prdId))
                     .and(CART.TYPE.notEqual(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS)).fetchOne(CART.CART_ID);
         }
@@ -494,7 +504,7 @@ public class CartService extends ShopBaseService {
         if (cardId == null) {
             inCartFlag =false;
             // 检查商品合法性
-            ResultMessage resultMessage = checkProductNumber(param.getPrdId(), 0);
+            ResultMessage resultMessage = checkProductNumber(param.getPrdId(), param.getGoodsNumber());
             if (!resultMessage.getFlag()) {
                 logger().info("购物车-添加商品-错误");
                 return ResultMessage.builder().message("商品错误").build();
@@ -504,7 +514,10 @@ public class CartService extends ShopBaseService {
         }
         //购物车中存在
         WxAppCartBo cartList = getCartList(param.getUserId());
+        //校验商品数量
         ResultMessage resultMessage = checkoutLimit(param, cardId, cartList);
+        //切换商品活动
+        checkoutActivity(param,cardId,cartList);
         if (!resultMessage.getFlag()&&!inCartFlag){
             logger().info("删除多余商品");
             removeCartProductById(param.getUserId(),cardId);
@@ -515,11 +528,35 @@ public class CartService extends ShopBaseService {
         return resultMessage;
     }
 
+    private void checkoutActivity(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
+        if (param.getActivityType()!=null){
+            logger().info("修改商品的活动");
+            Map<Integer, List<WxAppCartGoods>> cartGoodsMap = cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
+            List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
+            if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
+                WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
+                if (!param.getActivityType().equals(cartGoods.getActivityType())||!param.getActivityId().equals(cartGoods.getExtendId())){
+                    switchActivityGoods(param.getUserId(),cardId,param.getActivityId(),param.getActivityType());
+                }
+            }
+        }
+    }
+
+    /**
+     * 校验商品数量
+     * @param param 入参
+     * @param cardId 购物车id
+     * @param cartList 购物车商品列表
+     * @return
+     */
     private ResultMessage checkoutLimit(WxAppAddGoodsToCartParam param, Integer cardId, WxAppCartBo cartList) {
         Map<Integer, List<WxAppCartGoods>> cartGoodsMap = cartList.getCartGoodsList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
         List<WxAppCartGoods> wxAppCartGoods = cartGoodsMap.get(cardId);
         if (wxAppCartGoods != null && wxAppCartGoods.size() > 0) {
             WxAppCartGoods cartGoods = wxAppCartGoods.get(0);
+            if (param.getType().equals(WxAppAddGoodsToCartParam.CART_GOODS_NUM_TYPE_ADD)){
+                param.setGoodsNumber(cartGoods.getCartNumber()+param.getGoodsNumber());
+            }
             logger().info("购物车-修改商品{}数量{}", cartGoods.getGoodsName(), param.getGoodsNumber());
             if (param.getGoodsNumber() < cartGoods.getCartNumber()) {
                 logger().info("购物车-减少商品数量");
@@ -562,8 +599,6 @@ public class CartService extends ShopBaseService {
                 }
             }
         } else {
-            Map<Integer, List<WxAppCartGoods>> cartInvalidGoodsMap = cartList.getInvalidCartList().stream().collect(Collectors.groupingBy(WxAppCartGoods::getCartId));
-            List<WxAppCartGoods> wxAppCartGoods1 = cartInvalidGoodsMap.get(cardId);
             logger().info("购物车-修改数量-商品失效");
             return ResultMessage.builder().jsonResultCode(JsonResultCode.CODE_CART_GOODS_NO_LONGER_VALID).build();
         }

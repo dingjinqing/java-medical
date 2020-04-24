@@ -72,10 +72,6 @@ global.wxPage({
     if (promote_info.promoteStatus == -1) {
       launchAct(that);
     }
-    // 打开分享弹窗
-    this.setData({
-      share_good: true
-    })
   },
   // 关闭分享
   bindClose: function () {
@@ -302,10 +298,11 @@ global.wxPage({
             has_user: 1
           })
         }
-        // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-        //   username: user_name,
-        //   user_avatar: user_avatar
-        // });
+        util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+          userId: launch_user_id,
+          launchId: launch_id,
+          type: 1
+        });
       } else {
         wx.getUserInfo({
           success: res => {
@@ -313,10 +310,11 @@ global.wxPage({
             var user_name = e.detail.userInfo.nickName;
             util.setCache("nickName", user_name);
             util.setCache("avatarUrl", user_avatar);
-            // util.api('/api/wxapp/account/updateUser', function (res) { }, {
-            //   username: user_name,
-            //   user_avatar: user_avatar
-            // });
+            util.api('/api/wxapp/promote/addTimes', function (res) { }, {
+              userId: launch_user_id,
+              launchId: launch_id,
+              type: 1
+            });
             if (promote_info.promoteCondition == 1) {
               that.setData({
                 has_user: 1
@@ -410,30 +408,45 @@ function shareAdd(that) {
       util.showModal('提示', res.message);
       return false
     }
-  }, { userId: launch_user_id, launchId: launch_id });
+  }, { userId: launch_user_id, launchId: launch_id, type: 0 });
 };
 // 发起助力
 function launchAct(that) {
   util.api("/api/wxapp/promote/launch", function (res) {
     if (res.error == 0) {
-      launch_id = res.content.launchId;
-      launch_user_id = res.content.launchUserId;
-    } else {
-      if (res.message == 1) {
-        util.showModal('提示', '活动已停用或删除');
-      } else if(res.message == 2) {
-        util.showModal('提示', '活动库存不足');
-      } else if (res.message == 3) {
-        util.showModal('提示', '活动商品库存不足');
-      } else if (res.message == 4) {
-        util.showModal('提示', '活动未开始');
-      } else if (res.message == 5) {
-        util.showModal('提示', '活动已结束');
-      } else if (res.message == 6) {
-        util.showModal('提示', '您已发起快邀请好友助力吧');
-      } else if (res.message == 7) {
-        util.showModal('提示', '数据入库失败');
+      if (res.content.msg == 0) {
+        // 发起助力成功
+        launch_id = res.content.launchId;
+        launch_user_id = res.content.launchUserId;
+        // 打开分享弹窗
+        that.setData({
+          share_good: true
+        })
+      } else {
+        if (res.content.msg == 1) {
+          util.showModal('提示', '活动已停用或删除');
+        } else if(res.content.msg == 2) {
+          util.showModal('提示', '活动库存不足');
+        } else if (res.content.msg == 3) {
+          util.showModal('提示', '活动商品库存不足');
+        } else if (res.content.msg == 4) {
+          util.showModal('提示', '活动未开始');
+        } else if (res.content.msg == 5) {
+          util.showModal('提示', '活动已结束');
+        } else if (res.content.msg == 6) {
+          util.showModal('提示', '您已发起快邀请好友助力吧');
+        } else if (res.content.msg == 7) {
+          util.showModal('提示', '数据入库失败');
+        }
+        setTimeout(function () {
+          util.reLaunch({
+            url: '/pages/index/index',
+          })
+        }, 2000);
+        return false
       }
+    } else {
+      util.showModal('提示', res.message);
       return false
     }
   }, { actCode: actCode, userId: launch_user_id });
@@ -463,6 +476,10 @@ function promote_request(that) {
       }
       if (promote_info.launchId) {
         launch_id = promote_info.launchId
+      }
+      // 助力次数提示
+      if (promote_info.canPromote && promote_info.canPromote.code == 0) {
+        util.showModal('提示', '今天的助力次数已用完了');
       }
       that.setData({
         promote_info: promote_info,

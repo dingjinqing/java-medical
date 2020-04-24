@@ -394,6 +394,7 @@ public class IntegralConvertService extends ShopBaseService {
 					.set(imd.GOODS_ID, param.getGoodsId())
 					.set(imd.SHARE_CONFIG, shareConfig)
 					.where(imd.ID.eq(param.getId())).execute();
+            db().deleteFrom(INTEGRAL_MALL_PRODUCT).where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
                 if (item.getMoney()==null){
@@ -476,15 +477,15 @@ public class IntegralConvertService extends ShopBaseService {
 				FieldsUtil.assignNotNull(data, vo);
 
 				int number = db().select(DSL.sum(imr.NUMBER)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setNumber(number);
 
 				BigDecimal money = db().select(DSL.sum(imr.MONEY)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(BigDecimal.class).get();
+						.fetchOptionalInto(BigDecimal.class).orElse(BigDecimal.ZERO);
 				vo.setMoney(money);
 
 				int score = db().select(DSL.sum(imr.SCORE)).from(imr).where(imr.ORDER_SN.eq(vo.getOrderSn()))
-						.fetchOptionalInto(Integer.class).get();
+						.fetchOptionalInto(Integer.class).orElse(0);
 				vo.setScore(score);
 
 				Integer productId = db().select(ORDER_GOODS.PRODUCT_ID)

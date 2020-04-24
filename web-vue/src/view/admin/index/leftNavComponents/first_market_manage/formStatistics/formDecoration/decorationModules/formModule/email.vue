@@ -23,7 +23,7 @@
           <span class="name_title">{{modulesShowData.form_title}}</span>
           <input
             class="name_title_place"
-            placeholder="请输入姓名"
+            placeholder="请输入邮箱"
             type="text"
             readonly="readonly"
           >

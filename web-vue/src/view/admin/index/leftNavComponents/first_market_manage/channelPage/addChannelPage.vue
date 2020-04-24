@@ -2,231 +2,345 @@
   <div class="choosingGoods_Container">
     <!--选择商品弹窗-->
     <el-dialog
-      title="选择商品"
+      title="添加渠道页面"
       :visible.sync="choiseGooddialogVisible"
       width="1075px"
       :modal-append-to-body="false"
     >
-      <div
-        class="tips"
-        v-if="showTips"
-      >
-        <i class="el-icon-warning-outline"></i>
-        <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
-      </div>
-      <div class="choiseDialog">
-        <div>
-          <section
-            style="padding-left:30px;display: flex;"
-            class="chooseCondiction"
+      <div style="margin: 20px 10px;">
+        <section>
+          <div>
+            <span>渠道页面分析：</span>
+            <el-input
+              v-model="requestParam.channelName"
+              placeholder="请输入页面名称"
+              size="small"
+              class="default_width"
+              clearable
+            ></el-input>
+          </div>
+          <div style="margin-top: 15px">
+            <span>渠道来源页面：</span>
+            <el-radio-group v-model="requestParam.sourceType">
+              <el-radio :label="0">自定义页面</el-radio>
+              <el-radio :label="1">商品详情页</el-radio>
+            </el-radio-group>
+          </div>
+
+          <div
+            style="display: flex;margin-top:15px;"
+            v-if="requestParam.sourceType===0"
           >
-            <!--<sortCatTreeSelect-->
-            <!--ref="catTree"-->
-            <!--:filterGoodsInfo="initSortCatParams"-->
-            <!--treeType="cat"-->
-            <!--:treeStyle="initPlateformWidth"-->
-            <!--:selectedId.sync="requestParam.catId"-->
-            <!--/>-->
-            <div style="margin-right: 30px;">
-              <sortCatTreeSelect
-                ref="sortTree"
-                :filterGoodsInfo="initSortCatParams"
-                treeType="sort"
-                :treeStyle="initPlateformWidth"
-                :selectedId.sync="requestParam.sortId"
-              />
-            </div>
-            <div>商品标签：
-              <el-select
-                v-model="requestParam.labelId"
-                placeholder="请选择商品标签"
+            <div>
+              <span>页面名称：</span>
+              <el-input
+                v-model="requestParam.channelName"
+                placeholder="请输入页面名称"
                 size="small"
-                style="width:140px;margin-left:-4px"
+                class="default_width"
+                clearable
+              ></el-input>
+            </div>
+            <div style="margin: 0 15px 15px 15px;">
+              <span>页面分类：</span>
+              <el-select
+                v-model="requestParam.sourceType"
+                placeholder="请选择类型"
+                size="small"
+                class="default_width"
+                clearable
               >
                 <el-option
-                  v-for="item in goodsLabelOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </div>
-            <div
-              class="rangeLi"
-              style="margin-left:30px;"
-            >商品价格范围：
-              <el-input
-                v-model="requestParam.lowShopPrice"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>&nbsp;元至&nbsp;
-              <el-input
-                v-model="requestParam.highShopPrice"
-                placeholder="请输入内容"
-                size="small"
-              ></el-input>
-            </div>
-          </section>
-          <ul>
-            <li>商品名称：
-              <el-input
-                v-model="requestParam.goodsName"
-                placeholder="请输入商品名称"
-                size="small"
-                style="width:140px"
-              ></el-input>
-            </li>
-            <li>商品货号：
-              <el-input
-                v-model="requestParam.goodsSn"
-                placeholder="请输入商品货号"
-                size="small"
-                style="width:140px"
-              ></el-input>
-            </li>
-            <li>商品品牌：
-              <el-select
-                v-model="requestParam.brandId"
-                value-key="id"
-                placeholder="请选择商品品牌"
-                size="small"
-                style="width:140px"
-              >
+                  :value="-1"
+                  label="请选择类型"
+                ></el-option>
                 <el-option
-                  v-for="item in goodsBrandOptions"
-                  :key="item.id"
-                  :label="item.brandName"
-                  :value="item.id"
-                >
-                </el-option>
+                  :value="0"
+                  label="生鲜"
+                ></el-option>
+                <el-option
+                  :value="1"
+                  label="食品"
+                ></el-option>
+                <el-option
+                  :value="2"
+                  label="服装"
+                ></el-option>
               </el-select>
-            </li>
-          </ul>
-          <div class="middleBbtnDiv">
+            </div>
             <div>
               <el-button
-                @click="selectGoodsData"
+                size="small"
                 type="primary"
-                size="small"
-                style="margin-right:10px"
-              >筛选</el-button>
-              <el-button
-                @click="resetFilterData"
-                type="info"
-                plain
-                size="small"
-                class="resetCondition"
-              >重置筛选条件</el-button>
-            </div>
-            <div style="padding: 10px;">
-              <span>已经选择{{checkedIdList.length}}件商品</span>
+              > 筛选 </el-button>
             </div>
           </div>
-        </div>
-        <!--选择商品弹窗表格-->
-        <div class="table_container">
-          <table width='100%'>
-            <thead>
-              <tr>
-                <td v-if="!singleElection">
-                  <el-checkbox
-                    v-model="checkPageAllFlag"
-                    @change="checkedPageRow(checkPageAllFlag)"
-                  ></el-checkbox><i class="tdTopText">全选本页</i>
-                </td>
+        </section>
 
-                <td>商品信息</td>
-                <td>商品货号</td>
-                <td>售价</td>
-                <td>库存</td>
-                <!--<td>平台分类</td>-->
-                <td>商家分类</td>
-                <td>商品标签</td>
-                <td>品牌</td>
-              </tr>
-            </thead>
-            <tbody v-if="tbodyFlag">
-              <tr
-                v-for="(item,index) in tableData"
-                :key="index"
-                :class="{goods_tr_choose: item.ischecked}"
-                @click.prevent="handleRowClick(index,item,$event)"
-              >
-                <td v-if="!singleElection">
-                  <div class="tdCenter">
-                    <el-checkbox v-model="item.ischecked"></el-checkbox>
-                  </div>
-
-                </td>
-                <td
-                  class="isLeft"
-                  :class="loadProduct?'tdCenter':''"
-                >
-                  <img :src="item.prdImg || item.goodsImg">
-                  <span>{{item.goodsName}}</span>
-                  <!-- 规格描述 -->
-                  <span v-if="loadProduct">{{item.prdDesc}}</span>
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.goodsSn}}
-                </td>
-                <td class="tb_decorate_a">
-                  <span v-if="!loadProduct">{{item.shopPrice}}</span>
-                  <span v-if="loadProduct">{{item.prdPrice}}</span>
-                </td>
-                <td class="tb_decorate_a">
-                  <span v-if="!loadProduct">{{item.goodsNumber}}</span>
-                  <span v-if="loadProduct">{{item.prdNumber}}</span>
-                </td>
-                <!--<td class="tb_decorate_a">-->
-                <!--{{item.catName}}-->
-                <!--</td>-->
-                <td class="tb_decorate_a">
-                  {{item.sortName}}
-                </td>
-                <td class="tb_decorate_a">
-                  <span
-                    v-for="(childrenItem,childrenIndex) in item.goodsLabels"
-                    :key='childrenIndex'
-                  >{{childrenItem.name}}</span>
-
-                </td>
-                <td class="tb_decorate_a">
-                  {{item.brandName}}
-                </td>
-              </tr>
-            </tbody>
-
-          </table>
-
-          <div class="tablefooter">
-            <div
-              v-if="!singleElection"
-              class="selectAll"
+        <section v-if="requestParam.sourceType===0">
+          <div class="table_list">
+            <el-table
+              header-row-class-name="tableClss"
+              style="width: 100%"
+              border
             >
-              <el-checkbox
-                v-model="checkAllFlag"
-                @change="checkedAllRow(checkAllFlag)"
-              >选择全部</el-checkbox>
+              <el-table-column
+                prop=""
+                label=""
+                align="center"
+                width="50px"
+              >
+                11
+              </el-table-column>
+
+              <el-table-column
+                prop=""
+                label="页面名称"
+                align="center"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop=""
+                label="创建时间"
+                align="center"
+              >
+              </el-table-column>
+
+              <el-table-column
+                prop=""
+                label="页面分类"
+                align="center"
+              >
+              </el-table-column>
+            </el-table>
+          </div>
+        </section>
+
+        <section v-if="requestParam.sourceType===1">
+          <div
+            class="tips"
+            v-if="showTips"
+          >
+            <i class="el-icon-warning-outline"></i>
+            <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
+          </div>
+          <div class="choiseDialog">
+            <div>
+              <section
+                style="padding-left:30px;display: flex;"
+                class="chooseCondiction"
+              >
+                <!-- <sortCatTreeSelect
+              ref="catTree"
+              :filterGoodsInfo="initSortCatParams"
+              treeType="cat"
+              :treeStyle="initPlateformWidth"
+              :selectedId.sync="requestParam.catId"
+            /> -->
+                <div style="margin-right: 30px;">
+                  <sortCatTreeSelect
+                    ref="sortTree"
+                    :filterGoodsInfo="initSortCatParams"
+                    treeType="sort"
+                    :treeStyle="initPlateformWidth"
+                    :selectedId.sync="requestParam.sortId"
+                  />
+                </div>
+                <div>商品标签：
+                  <el-select
+                    v-model="requestParam.labelId"
+                    placeholder="请选择商品标签"
+                    size="small"
+                    style="width:140px;margin-left:-4px"
+                  >
+                    <el-option
+                      v-for="item in goodsLabelOptions"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+                <div
+                  class="rangeLi"
+                  style="margin-left:30px;"
+                >商品价格范围：
+                  <el-input
+                    v-model="requestParam.lowShopPrice"
+                    placeholder="请输入内容"
+                    size="small"
+                  ></el-input>&nbsp;元至&nbsp;
+                  <el-input
+                    v-model="requestParam.highShopPrice"
+                    placeholder="请输入内容"
+                    size="small"
+                  ></el-input>
+                </div>
+              </section>
+              <ul>
+                <li>商品名称：
+                  <el-input
+                    v-model="requestParam.goodsName"
+                    placeholder="请输入商品名称"
+                    size="small"
+                    style="width:140px"
+                  ></el-input>
+                </li>
+                <li>商品货号：
+                  <el-input
+                    v-model="requestParam.goodsSn"
+                    placeholder="请输入商品货号"
+                    size="small"
+                    style="width:140px"
+                  ></el-input>
+                </li>
+                <li>商品品牌：
+                  <el-select
+                    v-model="requestParam.brandId"
+                    value-key="id"
+                    placeholder="请选择商品品牌"
+                    size="small"
+                    style="width:140px"
+                  >
+                    <el-option
+                      v-for="item in goodsBrandOptions"
+                      :key="item.id"
+                      :label="item.brandName"
+                      :value="item.id"
+                    >
+                    </el-option>
+                  </el-select>
+                </li>
+              </ul>
+              <div class="middleBbtnDiv">
+                <div>
+                  <el-button
+                    @click="selectGoodsData"
+                    type="primary"
+                    size="small"
+                    style="margin-right:10px"
+                  >筛选</el-button>
+                  <el-button
+                    @click="resetFilterData"
+                    type="info"
+                    plain
+                    size="small"
+                    class="resetCondition"
+                  >重置筛选条件</el-button>
+                </div>
+                <div style="padding: 10px;">
+                  <span>已经选择{{checkedIdList.length}}件商品</span>
+                </div>
+              </div>
             </div>
-            <div class="paginationInfo">
-              <pagination
-                :page-params.sync="pageParams"
-                @pagination="paginationChange"
-              />
+            <!--选择商品弹窗表格-->
+            <div class="table_container">
+              <table width='100%'>
+                <thead>
+                  <tr>
+                    <td v-if="!singleElection">
+                      <el-checkbox
+                        v-model="checkPageAllFlag"
+                        @change="checkedPageRow(checkPageAllFlag)"
+                      ></el-checkbox><i class="tdTopText">全选本页</i>
+                    </td>
+
+                    <td>商品信息</td>
+                    <td>商品货号</td>
+                    <td>售价</td>
+                    <td>库存</td>
+                    <!--<td>平台分类</td>-->
+                    <td>商家分类</td>
+                    <td>商品标签</td>
+                    <td>品牌</td>
+                  </tr>
+                </thead>
+                <tbody v-if="tbodyFlag">
+                  <tr
+                    v-for="(item,index) in tableData"
+                    :key="index"
+                    :class="{goods_tr_choose: item.ischecked}"
+                    @click.prevent="handleRowClick(index,item,$event)"
+                  >
+                    <td v-if="!singleElection">
+                      <div class="tdCenter">
+                        <el-checkbox v-model="item.ischecked"></el-checkbox>
+                      </div>
+
+                    </td>
+                    <td
+                      class="isLeft"
+                      :class="loadProduct?'tdCenter':''"
+                    >
+                      <img :src="item.prdImg || item.goodsImg">
+                      <span>{{item.goodsName}}</span>
+                      <!-- 规格描述 -->
+                      <span v-if="loadProduct">{{item.prdDesc}}</span>
+                    </td>
+                    <td class="tb_decorate_a">
+                      {{item.goodsSn}}
+                    </td>
+                    <td class="tb_decorate_a">
+                      <span v-if="!loadProduct">{{item.shopPrice}}</span>
+                      <span v-if="loadProduct">{{item.prdPrice}}</span>
+                    </td>
+                    <td class="tb_decorate_a">
+                      <span v-if="!loadProduct">{{item.goodsNumber}}</span>
+                      <span v-if="loadProduct">{{item.prdNumber}}</span>
+                    </td>
+                    <!--<td class="tb_decorate_a">-->
+                    <!--{{item.catName}}-->
+                    <!--</td>-->
+                    <td class="tb_decorate_a">
+                      {{item.sortName}}
+                    </td>
+                    <td class="tb_decorate_a">
+                      <span
+                        v-for="(childrenItem,childrenIndex) in item.goodsLabels"
+                        :key='childrenIndex'
+                      >{{childrenItem.name}}</span>
+
+                    </td>
+                    <td class="tb_decorate_a">
+                      {{item.brandName}}
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+              <div class="tablefooter">
+                <div
+                  v-if="!singleElection"
+                  class="selectAll"
+                >
+                  <el-checkbox
+                    v-model="checkAllFlag"
+                    @change="checkedAllRow(checkAllFlag)"
+                  >选择全部</el-checkbox>
+                </div>
+                <div class="paginationInfo">
+                  <pagination
+                    :page-params.sync="pageParams"
+                    @pagination="paginationChange"
+                  />
+                </div>
+              </div>
+
+            </div>
+            <div
+              class="noData"
+              v-if="!tbodyFlag"
+            >
+              <img :src="noImg">
+              <span>暂无相关数据</span>
             </div>
           </div>
-
-        </div>
-        <div
-          class="noData"
-          v-if="!tbodyFlag"
-        >
-          <img :src="noImg">
-          <span>暂无相关数据</span>
-        </div>
+        </section>
       </div>
+
       <span
         slot="footer"
         class="dialog-footer"
@@ -256,8 +370,8 @@ import {
 import pagination from '@/components/admin/pagination/pagination.vue'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { mapActions } from 'vuex'
-
 import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
+// import { addChannelAct } from '@/api/admin/marketManage/channelPage.js'
 
 export default {
   components: {
@@ -307,7 +421,7 @@ export default {
       return {
         needGoodsNum: true,
         isOnSale: 1,
-        isSaleOut: 0,
+        isSaleOut: false,
         // 查询商品时值为1，规格查询值为2
         selectType: this.loadProduct ? 2 : 1
       }
@@ -329,11 +443,13 @@ export default {
       },
       // 筛选条件
       requestParam: {
+        channelName: '',
+        sourceType: 0,
         currentPage: 1,
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: 0,
+        isSaleOut: false,
         catId: null,
         sortId: null,
         labelId: null,
@@ -387,7 +503,7 @@ export default {
           currentPage: 1,
           pageRows: 3,
           isOnSale: 1,
-          isSaleOut: 0,
+          isSaleOut: false,
           catId: null,
           sortId: null,
           labelId: null,
@@ -507,7 +623,7 @@ export default {
       this.requestParam = {
         // 在售商品
         isOnSale: 1,
-        isSaleOut: 0
+        isSaleOut: false
       }
       // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
@@ -521,7 +637,7 @@ export default {
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: 0,
+        isSaleOut: false,
         catId: null,
         sortId: null,
         labelId: null,
@@ -895,6 +1011,9 @@ img {
 }
 .el-select-dropdown__item {
   margin-top: 0 !important;
+}
+.default_width {
+  width: 170px;
 }
 </style>
 <style lang="scss" scoped>

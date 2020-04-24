@@ -94,11 +94,11 @@ global.wxPage({
     // 添加购物车
     if (prdId) {
       // 单规格
-      var value = cartNumber + 1
-      if (limitAmount != null && limitAmount != 0 && (value > limitAmount)) {
-        util.showModal('提示', '最大限购量为' + limitAmount + '个');
-        return false
-      }
+      // var value = cartNumber + 1
+      // if (limitAmount != null && limitAmount != 0 && (value > limitAmount)) {
+      //   util.showModal('提示', '最大限购量为' + limitAmount + '个');
+      //   return false
+      // }
       util.api('/api/wxapp/cart/add', function (res) {
         if (res.error == 0) {
           util.toast_success('已加入购物车');
@@ -108,10 +108,11 @@ global.wxPage({
           return false;
         }
       }, {
-          goodsNumber: value,
+          goodsNumber: 1,
           prdId: prdId,
           activityType: 21,
-          activityId: that.data.strategy_id
+          activityId: that.data.strategy_id,
+          type: 2
         })
     } else {
       // 选择规格
@@ -202,11 +203,11 @@ global.wxPage({
     var that = this
     let { goodsNum: goodsNumber, prdId } = that.data.productInfo
     // 限购校验
-    let value = that.data.basicNumber + goodsNumber
-    if (that.data.basicLimit != null && that.data.basicLimit != 0 && (value > that.data.basicLimit)) {
-      util.showModal('提示', '最大限购量为' + that.data.basicLimit + '个');
-      return false
-    }
+    // let value = that.data.basicNumber + goodsNumber
+    // if (that.data.basicLimit != null && that.data.basicLimit != 0 && (value > that.data.basicLimit)) {
+    //   util.showModal('提示', '最大限购量为' + that.data.basicLimit + '个');
+    //   return false
+    // }
     util.api("/api/wxapp/cart/add", res => {
       if (res.error == 0) {
         util.toast_success('已加入购物车');
@@ -217,10 +218,11 @@ global.wxPage({
       }
       that.bindCloseSpec()
     }, {
-        goodsNumber: value,
+        goodsNumber: goodsNumber,
         prdId: prdId,
         activityType: 21,
-        activityId: that.data.strategy_id
+        activityId: that.data.strategy_id,
+        type: 2
       });
   },
 
@@ -371,7 +373,8 @@ global.wxPage({
         goodsNumber: type == 'add' ? cartNumber + 1 : cartNumber - 1,
         prdId,
         activityType,
-        activityId
+        activityId,
+        type: 1
       })
   },
 
@@ -430,7 +433,8 @@ global.wxPage({
             goodsNumber: value,
             prdId,
             activityType,
-            activityId
+            activityId,
+            type: 1
           })
       }
     })
