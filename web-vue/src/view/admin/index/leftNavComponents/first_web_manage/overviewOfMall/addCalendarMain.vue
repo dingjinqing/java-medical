@@ -182,7 +182,7 @@
     <el-dialog
       title="选择营销活动"
       :visible.sync="choiseActivity"
-      width="48%"
+      width="730px"
     >
       <div class="choiseActivityMain">
         <el-tabs
