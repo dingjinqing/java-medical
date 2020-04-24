@@ -7,6 +7,7 @@ import com.vpu.mp.service.saas.article.ArticleService;
 import com.vpu.mp.service.saas.categroy.SysCateService;
 import com.vpu.mp.service.saas.db.DataExportService;
 import com.vpu.mp.service.saas.db.RepairDatabaseService;
+import com.vpu.mp.service.saas.es.EsMappingUpdateService;
 import com.vpu.mp.service.saas.image.SystemImageService;
 import com.vpu.mp.service.saas.index.ShopViewOrderService;
 import com.vpu.mp.service.saas.index.ShopViewService;
@@ -105,6 +106,9 @@ public class SaasApplication {
 
     @Autowired
     public QuestionService questionService;
+
+    @Autowired
+    public EsMappingUpdateService esMappingUpdateService;
 
 	public ShopApplication getShopApp(Integer shopId) {
 		databaseManager.switchShopDb(shopId);
