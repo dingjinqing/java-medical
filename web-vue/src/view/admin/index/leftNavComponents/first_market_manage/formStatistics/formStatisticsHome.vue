@@ -262,9 +262,9 @@
     <el-dialog
       :title="$t('formStatisticsHome.shareTitle')"
       :visible.sync="shareVisible"
-      width="30%"
+      width="50%"
     >
-      <div>
+      <div class="shareCodeContainer">
         <div class="copyContainer">
           <img
             :src="posterAddressImgUrl"
@@ -292,7 +292,7 @@
           >{{$t('formStatisticsHome.copy')}}</span>
         </div>
       </div>
-      <div>
+      <div class="shareCodeContainer">
         <div class="copyContainer">
           <img
             :src="shareCode"
@@ -437,8 +437,8 @@ export default {
           getPictorialCode(row.pageId).then(res => {
             console.log(res)
             if (res.error === 0) {
-              this.posterAddress = this.$imageHost + '/' + res.content.pagePath
-              this.posterAddressImgUrl = res.content.imageUrl
+              this.posterAddress = res.content
+              this.posterAddressImgUrl = res.content
             }
           })
           break
@@ -616,18 +616,25 @@ export default {
     }
   }
 }
-.copyContainer {
-  display: flex;
-  justify-content: center;
-  .copy {
-    cursor: pointer;
-    color: #5a8bff;
-  }
-  /deep/ .el-input {
-    width: 200px;
-    margin: 0 10px;
+.shareCodeContainer {
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+  .copyContainer {
+    justify-content: center;
+
+    float: left;
+    .copy {
+      cursor: pointer;
+      color: #5a8bff;
+    }
+    /deep/ .el-input {
+      width: 200px;
+      margin: 0 10px;
+    }
   }
 }
+
 .copyDiv {
   align-items: center;
   margin-top: 20px;
