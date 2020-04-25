@@ -309,6 +309,8 @@ export default {
             this.modulesData = arr
             console.log(this.modulesData)
             this.pageSetData = JSON.parse(res.content.formCfg)
+
+            localStorage.setItem('isProhibitForm', false)
           }
         })
       } else if (this.$route.query.pageId && !this.$route.query.flag) {
@@ -330,6 +332,7 @@ export default {
             this.pageSetData = JSON.parse(res.content.formCfg)
             this.pageSetData.page_name = this.pageSetData.page_name + '+副本'
             console.log(this.pageSetData)
+            localStorage.setItem('isProhibitForm', false)
           }
         })
       }

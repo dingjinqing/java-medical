@@ -9,10 +9,12 @@
           <el-radio
             v-model="modulesSaveData.is_preview"
             label="0"
+            :disabled="isProhibit"
           >{{$t('formDecorationModel.no')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.is_preview"
             label="1"
+            :disabled="isProhibit"
           >{{$t('formDecorationModel.yes')}}</el-radio>
         </div>
         <div class="list">
@@ -47,12 +49,14 @@
             v-model="modulesSaveData.title"
             size="small"
             :maxlength="19"
+            :disabled="isProhibit"
           ></el-input>&nbsp;&nbsp;
           <i style="color:#9A9A9A">{{$t('formDecorationModel.textTip')}}</i>
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.links')}}</span>
           <el-input
+            :disabled="isProhibit"
             v-model="modulesSaveData.title_link"
             size="small"
           ></el-input>&nbsp;&nbsp;
@@ -91,6 +95,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       tuneUpSelectLink: false, // 选择链接弹窗调起
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
@@ -121,9 +126,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 选择弹窗调起
     handleToImageDialog () {
+      if (this.isProhibit) return
       this.imageTuneUp = !this.imageTuneUp
     },
     // 选择图片弹窗选中数据回传
@@ -133,6 +145,7 @@ export default {
     },
     // 调起选择链接弹窗
     handleToCallLinkDialog (index) {
+      if (this.isProhibit) return
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
     // 选择链接弹窗回传数据
@@ -142,6 +155,7 @@ export default {
     },
     // 点击图片删除icon
     handleToClickDel () {
+      if (this.isProhibit) return
       this.modulesSaveData.img_url = ''
       console.log(this.modulesSaveData)
     }
