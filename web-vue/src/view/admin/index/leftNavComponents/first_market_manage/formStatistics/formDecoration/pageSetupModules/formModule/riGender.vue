@@ -6,10 +6,12 @@
         <div class="list">
           <span>{{$t('formDecorationModel.presentation')}}</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_types"
             :label="0"
           >{{$t('formDecorationModel.transverse')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_types"
             :label="1"
           >{{$t('formDecorationModel.portrait')}}</el-radio>
@@ -17,6 +19,7 @@
         <div class="list">
           <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
+            :disabled="isProhibit"
             v-model="modulesSaveData.form_title"
             size="small"
             :maxlength="20"
@@ -28,7 +31,10 @@
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.conditionValidation')}}</span>
-          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
+          <el-checkbox
+            :disabled="isProhibit"
+            v-model="modulesSaveData.confirm"
+          >{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -52,6 +58,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'form_title': '性别',
@@ -81,9 +88,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: this.$t('formDecorationModel.savedSuccessfully'),
