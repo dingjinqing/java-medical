@@ -11,9 +11,11 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SecKillPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.SeckillMpVo;
@@ -71,13 +73,53 @@ public class SecKillProcessorDao extends ShopBaseService {
     }
 
     /**
+     * 获取活动预告
+     * @param goodsId 活动id
+     * @param date 待比较时间
+     * @return
+     */
+    public GoodsActivityAnnounceMpVo getAnnounceInfo(Integer goodsId, Timestamp date){
+        Record3<Timestamp, Integer, BigDecimal> activityInfo = db().select(SEC_KILL_DEFINE.START_TIME, SEC_KILL_DEFINE.PRE_TIME, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+            .from(SEC_KILL_DEFINE).innerJoin(SEC_KILL_PRODUCT_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+            .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(SEC_KILL_DEFINE.END_TIME.gt(date))
+            .and(SEC_KILL_DEFINE.STOCK.gt(0))
+            .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.eq(goodsId))
+            .orderBy(SEC_KILL_DEFINE.FIRST.desc(), SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
+            .fetchAny();
+        if (activityInfo == null) {
+            return null;
+        }
+        // 不预告
+        if (GoodsConstant.ACTIVITY_NOT_PRE.equals(activityInfo.get(SEC_KILL_DEFINE.PRE_TIME))) {
+            return null;
+        }
+
+        // 定时预告判断
+        if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(SEC_KILL_DEFINE.PRE_TIME)) < 0) {
+            Integer hours = activityInfo.get(SEC_KILL_DEFINE.PRE_TIME);
+            int timeHourDifference = DateUtil.getTimeHourDifference(activityInfo.get(SEC_KILL_DEFINE.START_TIME), date);
+            if (timeHourDifference > hours) {
+                return null;
+            }
+        }
+
+        GoodsActivityAnnounceMpVo mpVo = new GoodsActivityAnnounceMpVo();
+        mpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        mpVo.setStartTime(activityInfo.get(SEC_KILL_DEFINE.START_TIME));
+        mpVo.setRealPrice(activityInfo.get(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE));
+        return mpVo;
+    }
+
+    /**
      * 组装输出详情页的秒杀信息
      * @param skId
      * @param userId
      * @param capsule
      * @return
      */
-    public SeckillMpVo getDetailSeckillInfo(Integer skId,Integer userId,GoodsDetailMpBo capsule){
+    public SeckillMpVo getDetailSeckillInfo(Integer skId, Integer userId, GoodsDetailMpBo capsule){
         SeckillMpVo seckillVo = new SeckillMpVo();
 
         SecKillDefineRecord secKill =db().selectFrom(SEC_KILL_DEFINE).where(SEC_KILL_DEFINE.SK_ID.eq(skId).and(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())))
@@ -249,7 +291,7 @@ public class SecKillProcessorDao extends ShopBaseService {
 
     }
 
-    public void processReturn(ReturnOrderRecord returnOrderRecord,Integer activityId, List<OrderReturnGoodsVo> returnGoods){
+    public void processReturn(ReturnOrderRecord returnOrderRecord, Integer activityId, List<OrderReturnGoodsVo> returnGoods){
         String orderSn = null;
         for (OrderReturnGoodsVo g : returnGoods){
             //不是赠品行，返还活动库存

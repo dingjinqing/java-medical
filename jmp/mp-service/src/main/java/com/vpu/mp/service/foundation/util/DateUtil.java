@@ -356,4 +356,16 @@ public final class DateUtil {
 		Integer second=(int) ((t1 - t2)/1000-days*(60*60*24)-hours*(60*60)-minutes*60);
 		return new Integer[]{days,hours,minutes,second};
 	}
+
+    /**
+     * 获取小时差，
+     * @param formatTime1 时间1
+     * @param formatTime2 时间2
+     * @return 时
+     */
+	public static int getTimeHourDifference(Timestamp formatTime1, Timestamp formatTime2){
+        long t1 = formatTime1.getTime();
+        long t2 = formatTime2.getTime();
+        return (int) (t1 - t2)/(1000*60*60);
+    }
 }

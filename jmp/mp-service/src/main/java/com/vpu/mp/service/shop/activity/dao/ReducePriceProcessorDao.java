@@ -67,7 +67,6 @@ public class ReducePriceProcessorDao extends ShopBaseService {
             }
         });
 
-
         Condition condition = DSL.noCondition();
         for (Map.Entry<Integer, Integer> entry : canUseGoodsGroup.entrySet()) {
             condition = condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(entry.getKey()).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(entry.getValue())));
