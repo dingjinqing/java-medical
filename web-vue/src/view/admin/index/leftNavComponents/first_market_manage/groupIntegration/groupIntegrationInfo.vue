@@ -29,6 +29,9 @@
             size="small"
             class="inputWidth"
             :disabled="edit"
+             maxlength="10"
+             type="text"
+             show-word-limit
           ></el-input>
           <el-popover
             placement="right-start"
