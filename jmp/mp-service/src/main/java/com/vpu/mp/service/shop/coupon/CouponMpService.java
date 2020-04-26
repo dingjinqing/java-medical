@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -372,4 +373,18 @@ public class CouponMpService extends ShopBaseService {
                 .fetch();
     }
 
+    /**
+     *适用全部商品的正在进行中的优惠券(库存大于0)
+     * @return
+     */
+    public List<CouponPageDecorationVo> allGoodsCoupon(){
+        Timestamp nowDate = Util.currentTimeStamp();
+        Result<Record> fetch = db().select().from(MRKING_VOUCHER)
+            .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and((MRKING_VOUCHER.END_TIME.ge(nowDate)).or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
+            .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL)).and(MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("")).and(MRKING_VOUCHER.SURPLUS.gt(0)).fetch();
+        if(fetch != null)
+            return fetch.into(CouponPageDecorationVo.class);
+        else
+            return null;
+    }
 }
