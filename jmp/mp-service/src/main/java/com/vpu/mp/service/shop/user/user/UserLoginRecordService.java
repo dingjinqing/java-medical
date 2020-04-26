@@ -1,19 +1,18 @@
 package com.vpu.mp.service.shop.user.user;
 
-import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.UserLoginRecordRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.pojo.wxapp.account.UserLoginRecordVo;
 import com.vpu.mp.service.shop.user.user.dao.UserLoginRecordDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.vpu.mp.db.shop.Tables.USER_LOGIN_RECORD;
 
 /**
  *
@@ -74,4 +73,13 @@ public class UserLoginRecordService extends ShopBaseService {
 	public List<Integer> getUserIdUtilToLoginEndTime(Timestamp time) {
 		return userLoginRecordDao.getUserIdUtilToLoginEndTime(time);
 	}
+
+    /**
+     * 用户最近的一次登录记录
+     * @param userId
+     * @return
+     */
+	public UserLoginRecordRecord getUserLoginRecord(Integer userId){
+	    return db().selectFrom(USER_LOGIN_RECORD).where(USER_LOGIN_RECORD.USER_ID.eq(userId)).orderBy(USER_LOGIN_RECORD.CREATE_TIME.desc()).fetchAny();
+    }
 }
