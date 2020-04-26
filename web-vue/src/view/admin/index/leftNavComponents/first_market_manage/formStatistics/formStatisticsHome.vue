@@ -301,7 +301,7 @@
                 class="copyContainer"
                 style="color:#999"
               >
-                {{$t('formStatisticsHome.posterCode')}}
+                下载二维码
               </div>
             </div>
           </div>
