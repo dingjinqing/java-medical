@@ -83,7 +83,7 @@
                       <span
                         v-if="item.choiseActData.id !==-1"
                         class="act_status"
-                      >进行中</span>
+                      >{{item.choiseActData.actStatus === 1?'未开始':item.choiseActData.actStatus === 2?'进行中':item.choiseActData.actStatus === 3?'已失效':'已结束'}}</span>
                     </p>
                     <p
                       v-if="item.choiseActData.id !==-1"
@@ -92,7 +92,7 @@
                     <p
                       v-if="item.choiseActData.id !==-1"
                       class="act_info"
-                    >有效期：{{item.choiseActData.dateTime}}</p>
+                    >有效期： {{item.choiseActData.isPermanent===1?'永久有效':(item.choiseActData.startTime+'至'+item.choiseActData.endTime)}}</p>
                     <div
                       v-if="item.choiseActData.id ===-1"
                       class="add_act_box"
@@ -292,7 +292,7 @@
   </div>
 </template>
 <script>
-import { eventDeatil, allMarketList } from '@/api/admin/firstWebManage/calender/calender.js'
+import { eventDeatil, allMarketList, saveEvent } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
     EventExplainDialog: () => import('./eventExplainDialog'),
@@ -312,8 +312,7 @@ export default {
       },
       rules: {
         eventName: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         date: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
@@ -562,9 +561,12 @@ export default {
         activityType: activityType,
         choiseActData: {
           id: -1,
-          status: '',
+          actStatus: '',
           actName: '',
-          dateTime: ''
+          startTime: '',
+          endTime: '',
+          isPermanent: '',
+          activityType: ''
         }
       }
       this.haveChoiseData.push(obj)
@@ -606,13 +608,17 @@ export default {
     },
     // 选择具体活动弹窗确定事件
     handleToChoiseDetilSure () {
+      console.log('触发')
       // this.chioseDetailVal
-      let { id, actName, dateTime, status } = this.chioseDetailVal
+      let { id, actName, actStatus, startTime, endTime, isPermanent, activityType } = this.chioseDetailVal
       let obj = {
         id: id,
-        status: status,
+        actStatus: actStatus,
         actName: actName,
-        dateTime: dateTime
+        startTime: startTime,
+        endTime: endTime,
+        isPermanent: isPermanent,
+        activityType: activityType
       }
       this.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
       this.detailActVisible = false
@@ -625,8 +631,19 @@ export default {
     // 点击保存
     handleToSave () {
       let act = ''
+      let calendarAct = []
       if (this.$route.query.isAdd) {
         act = 'add'
+        this.haveChoiseData.forEach((item, index) => {
+          let obj = {
+            activityType: item.activityType,
+            calActId: 0
+          }
+          if (item.choiseActData.length) {
+            obj.calActId = item.choiseActData.id
+          }
+          calendarAct.push(obj)
+        })
       } else {
         act = '编辑'
       }
@@ -635,21 +652,21 @@ export default {
         'eventName': this.ruleForm.eventName,
         'eventTime': this.ruleForm.date + ' 00:00:00',
         'eventDesc': this.richText,
-        'calendarAct': []
+        'calendarAct': calendarAct
       }
-      console.log(params)
-      //       {
-      //     "act": "add",
-      //     "eventName": "接口测试活动1",
-      //     "eventTime": "2020-04-23 00:00:00",
-      //     "eventDesc": "eventDesc描述",
-      //     "calendarAct": [
-      //       {
-      //         "activityType":"pin_group",
-      //         "activityId":1
-      //       }
-      //     ]
-      // }
+      console.log(params, this.haveChoiseData)
+      saveEvent(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '保存成功',
+            showClose: true
+          })
+          this.$router.push({
+            name: 'calendar'
+          })
+        }
+      })
     },
     // 选中活动四个icon综合处理
     handleToAllHiddenIcon (flag) {
