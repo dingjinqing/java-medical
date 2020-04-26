@@ -7,7 +7,6 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.DateUtil;
-import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
@@ -184,11 +183,9 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         List<OrderGoodsBo> bos = param.getBos();
-        log.info("加价购打标签-开始-"+bos.toString());
         for(OrderGoodsBo bo:bos){
-            if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
-                log.info("加价购打标签-进行-"+ Util.toJson(bo));
-                increasePurchase.addActivityTag(bo.getActivityId(),param.getWxUserInfo().getUserId());
+            if(bo.getPurchasePriceId() != null && bo.getPurchasePriceRuleId() != null){
+                increasePurchase.addActivityTag(bo.getPurchasePriceId(),param.getWxUserInfo().getUserId());
             }
         }
     }
