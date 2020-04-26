@@ -89,6 +89,11 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          if (this.modulesData.confirm === 1) {
+            this.modulesData.confirm = true
+          } else {
+            this.modulesData.confirm = false
+          }
           this.modulesSaveData = this.modulesData
         }
       },

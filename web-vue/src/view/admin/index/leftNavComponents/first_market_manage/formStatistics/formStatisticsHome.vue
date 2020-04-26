@@ -385,6 +385,7 @@ export default {
     },
     // 添加表单点击
     handleToAddForm () {
+      localStorage.setItem('isProhibitForm', false)
       this.$router.push({
         name: 'formDecorationHome'
       })

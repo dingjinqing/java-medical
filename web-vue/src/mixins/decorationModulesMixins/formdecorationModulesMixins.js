@@ -227,7 +227,18 @@ export default {
             showClose: true
           })
         }
-
+        // 判断公众号数量
+        let officialAccounts = 0
+        if (item.module_name === 'm_official_accounts') {
+          officialAccounts++
+        }
+        if (officialAccounts > 1) {
+          flag = false
+          this.$message.error({
+            message: '最多上传1个公众号模块',
+            showClose: true
+          })
+        }
         // 校验具体模块
         switch (item.module_name) {
           case 'm_scroll_image':
