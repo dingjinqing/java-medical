@@ -816,7 +816,7 @@ global.wxPage({
     let { type } = e.currentTarget.dataset
     switch (type) {
       case 1:
-        util.jumpToWeb('/wxapp/group/help')
+        util.jumpToWeb('/wxapp/group/help', '&gid=' + this.data.specParams.activity.activityId)
         break
 
       case 3:
