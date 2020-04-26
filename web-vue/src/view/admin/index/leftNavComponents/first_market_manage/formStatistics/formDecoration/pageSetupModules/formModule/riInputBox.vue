@@ -116,6 +116,10 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          this.$nextTick(() => {
+            console.log(localStorage.getItem('isProhibitForm'))
+            this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+          })
           if (this.modulesData.confirm === 1) {
             this.modulesData.confirm = true
           } else {

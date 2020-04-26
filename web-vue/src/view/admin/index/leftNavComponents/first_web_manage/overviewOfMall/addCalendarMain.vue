@@ -258,14 +258,24 @@
             align="center"
             width="200"
           >
+            <template slot-scope="scope">
+              {{scope.row.isPermanent===1?'永久有效':(scope.row.startTime+'至'+scope.row.endTime)}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="status"
             label="活动状态"
             align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.actStatus === 1?'未开始':scope.row.actStatus === 2?'进行中':scope.row.actStatus === 3?'已失效':'已结束'}}
+            </template>
           </el-table-column>
         </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="handleToInitActData"
+        />
       </div>
 
       <span
@@ -282,13 +292,18 @@
   </div>
 </template>
 <script>
-import { eventDeatil } from '@/api/admin/firstWebManage/calender/calender.js'
+import { eventDeatil, allMarketList } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
-    EventExplainDialog: () => import('./eventExplainDialog')
+    EventExplainDialog: () => import('./eventExplainDialog'),
+    pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页组件
   },
   data () {
     return {
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
       calendarId: null, // 编辑时返回的事件id
       hasAct: false, // 编辑时判断是否有营销活动
       ruleForm: {
@@ -469,26 +484,7 @@ export default {
       haveChoiseData: [], // 已经选出的活动数据
       delDialogVisible: false,
       detailActVisible: false, // 选择具体活动弹窗flag
-      tableData: [
-        {
-          actName: '腾飞测试1',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 1
-        },
-        {
-          actName: '腾飞测试2',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 2
-        },
-        {
-          actName: '腾飞测试3',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 3
-        }
-      ],
+      tableData: [], // 具体活动弹窗数据
       chioseDetailVal: '',
       clickChoiseIndex: '', // 记录点击得选择活动项index
       isClickIconDel: false, // 是否是点击的隐藏icon删除
@@ -521,11 +517,6 @@ export default {
           }
         })
       }
-
-      // 查询所有可用营销活动
-      // allMarketList().then(res=>{
-      //   console.log(res)
-      // })
     },
     // 处理营销活动数据
     handleToActData (actInfo) {
@@ -551,6 +542,8 @@ export default {
     },
     // 点击添加营销活动
     handleToClick () {
+      // 查询所有可用营销活动
+
       this.choiseActivity = true
     },
     // 选择营销活动弹窗切换
@@ -590,10 +583,26 @@ export default {
     },
     // 选择具体活动
     handleToChoiseDetail (item, index) {
+      console.log(item)
+      this.handleToInitActData(item)
       this.clickChoiseIndex = index
       this.isClickIconChoiseAct = false
       this.detailActVisible = true
       this.$refs.singleTable.setCurrentRow()
+    },
+    // 具体活动弹窗初始化请求数据
+    handleToInitActData (item) {
+      let params = {
+        activityType: item.activityType,
+        currentPage: this.pageParams.currentPage
+      }
+      allMarketList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.tableData = res.content.dataList
+        }
+      })
     },
     // 选择具体活动弹窗确定事件
     handleToChoiseDetilSure () {
