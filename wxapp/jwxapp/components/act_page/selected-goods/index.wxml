@@ -2,7 +2,7 @@
   <view class="selected-content">
     <view class="title">
       <text>已选商品</text>
-      <text class="edit" bindtap="editToogle">{{isEdit ? '完成':'编辑'}}</text>
+      <text class="edit" bindtap="editToogle" wx:if="{{goodsData.length > 0}}">{{isEdit ? '完成':'编辑'}}</text>
     </view>
     <view class="goods-content" wx:if="{{goodsData.length > 0}}">
       <block wx:for="{{goodsData}}" wx:for-item="goodsItem" wx:key="cartId">

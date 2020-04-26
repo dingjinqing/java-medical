@@ -24,6 +24,7 @@ global.wxComponent({
       if(type === '19' || type === '18') return
       const linkData = {
         7: {url:'/pages/maingoodslist/maingoodslist',params:{identity_id:id}},
+        9: {url:'/pages1/packagesalelist/packagesalelist',params:{packageId:id}},
         15:{url:'pages1/fullship/fullship',params:{ruleId:id}},
         21:{url:'/pages/fullprice/fullprice',params:{strategy_id:id}}
       }

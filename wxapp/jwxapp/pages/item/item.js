@@ -325,6 +325,7 @@ global.wxPage({
             if (this.data.roomDetailMpInfo) this.getLiveInfo()
 
             // [1,5,6,10] 会展示活动预告的活动
+            if (res.content.activityAnnounceMpVo) this.getAnnounce(res.content.activityAnnounceMpVo,res.content.defaultPrd)
             resolve(res.content)
             // 购买记录
             this.setData({
@@ -748,6 +749,9 @@ global.wxPage({
           })
         }
         return data
+      case '9':
+        data.desc = `${info.goodsCount}件${info.priceOrDiscount + (info.packageType === 1 ?  '折' : '元')}`
+        return data
       case '15':
         if (info.conType === 0) {
           data.desc = `满${info.money}元，`
@@ -917,6 +921,22 @@ global.wxPage({
       return activity.stock
     }
     return goodsNumber
+  },
+  getAnnounce(announce,isDefault){
+    let priceName = {
+      1:'拼团价',
+      5:'秒杀价',
+      6:'限时价',
+      10:'定金价'
+    }
+    this.setData({
+      announceData:{
+        tagName:actBaseInfo[announce.activityType].actName,
+        priceName:priceName[announce.activityType],
+        startTime:announce.startTime.substring(5,16),
+        price:parseFloat(announce.realPrice).toFixed(2) + (!isDefault ? '起' : '')
+      }
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

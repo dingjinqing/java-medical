@@ -153,12 +153,12 @@
           <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image>
         </view>
       </view>
-      <view class="flex-wrap" >
+      <view class="flex-wrap" wx:if="{{announceData}}">
         <view class="act-teasert" style="background-color:{{speColor}};color:{{comColor}};">
-          <view class="act-tag">秒杀</view>
-          <view class="act-type">秒杀价：</view>
-          <view class="act-price">￥10.00起</view>
-          <view class="act-time">05.01 15:04:10开始</view>
+          <view class="act-tag">{{announceData.tagName}}</view>
+          <view class="act-type">{{announceData.priceName}}：</view>
+          <view class="act-price">￥{{announceData.price}}</view>
+          <view class="act-time">{{announceData.startTime}}开始</view>
         </view>
       </view>
     </view>
