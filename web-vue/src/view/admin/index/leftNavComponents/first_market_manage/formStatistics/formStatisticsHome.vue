@@ -460,7 +460,7 @@ export default {
             shareFormQuery({ pageId: row.pageId }).then(res => {
               console.log(res)
               if (res.error === 0) {
-                this.shareCodeUrl = this.$imageHost + '/' + res.content.pagePath
+                this.shareCodeUrl = res.content.pagePath
                 this.shareCode = res.content.imageUrl
               }
             })
