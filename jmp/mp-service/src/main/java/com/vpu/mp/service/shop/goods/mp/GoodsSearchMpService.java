@@ -110,15 +110,17 @@ public class GoodsSearchMpService extends ShopBaseService {
                 pageResult = searchGoodsForVoucher(param);
             }else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
                 pageResult = searchGoodsForBargainQrCode(param);
-            } else{
+            }else{
                 pageResult = searchGoods(param);
             }
         }else{
             pageResult = searchGoods(param);
         }
-
-
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+       return createSearchContentVo(pageResult);
+    }
+
+    private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());

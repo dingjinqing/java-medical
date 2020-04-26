@@ -23,6 +23,7 @@ import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.auth.ShopReq;
 import com.vpu.mp.service.pojo.shop.auth.ShopSelectInnerResp;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
+import com.vpu.mp.service.saas.marketCalendar.MarketSysCalendarService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountService;
 import com.vpu.mp.service.saas.shop.official.MpOfficialAccountUserService;
 import com.vpu.mp.service.saas.shop.official.message.MpOfficialAccountMessageService;
@@ -108,6 +109,9 @@ public class ShopService extends MainBaseService {
     
     @Autowired
     public ThirdPartyMsgServices thirdPartyMsgServices;
+    
+    @Autowired
+    public MarketSysCalendarService calendarService;
 
 	public PageResult<ShopListQueryResultVo> getPageList(ShopListQueryParam param) {
 		SelectWhereStep<?> select = db()

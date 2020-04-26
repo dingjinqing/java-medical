@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,9 @@ public class MarketCalendarService extends ShopBaseService {
 	 * @return
 	 */
 	public MarketListDataVo getListByYear(String year) {
+		if(StringUtils.isEmpty(year)) {
+			year=String.valueOf(LocalDate.now().getYear());
+		}
 		List<MarketListData> list = new LinkedList<MarketListData>();
 		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
@@ -403,6 +407,7 @@ public class MarketCalendarService extends ShopBaseService {
 			return null;
 		}
 		MarketCalendarInfoVo vo = record.into(MarketCalendarInfoVo.class);
+		vo.setCalendarId(record.getId());
 		List<MarketCalendarActivityVo> calendarActList = calendarActivityService.calendarActList(calendarId);
 		List<MarketVo> actInfoList = new ArrayList<MarketVo>();
 		for (MarketCalendarActivityVo item : calendarActList) {
@@ -411,7 +416,9 @@ public class MarketCalendarService extends ShopBaseService {
 				if (item.getActivityId() > 0) {
 					vo.setHasAct(true);
 					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
-					actInfoList.add(info.getActInfo());
+					MarketVo actInfo = info.getActInfo();
+					actInfo.setCalActId(item.getId());
+					actInfoList.add(actInfo);
 				}else {
 					vo.setHasAct(false);
 				}
@@ -430,15 +437,22 @@ public class MarketCalendarService extends ShopBaseService {
 		List<MarketCalendarVo> calendarList = db().selectFrom(MARKET_CALENDAR)
 				.where(MARKET_CALENDAR.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
 						.and(MARKET_CALENDAR.EVENT_TIME.ge(nowDate)))
-				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).limit(3).fetchInto(MarketCalendarVo.class);
+				.orderBy(MARKET_CALENDAR.EVENT_TIME.asc()).fetchInto(MarketCalendarVo.class);
+		List<MarketCalendarVo> dataList=new ArrayList<MarketCalendarVo>();
 		for (MarketCalendarVo item : calendarList) {
 			item = eventStatus(item);
 			if (item.getEventStatus().equals(CalendarAction.ONE)) {
 				int days = (int) ((item.getEventTime().getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24L));
 				item.setDownTime(days);
 			}
+			if((!item.getEventStatus().equals(CalendarAction.THREE))&&(!item.getEventStatus().equals(CalendarAction.FOUR))) {
+				dataList.add(item);
+			}
+			if(dataList.size()==3) {
+				return dataList;
+			}
 		}
-		return calendarList;
+		return dataList;
 	}
 
 }

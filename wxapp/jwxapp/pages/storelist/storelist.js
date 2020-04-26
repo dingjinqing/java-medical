@@ -110,7 +110,7 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     return {
-      path: 'pages/storelist/storelist?invite_id=' + util.getCache('user_id')
+      path: 'pages/storelist/storelist?inviteId=' + util.getCache('user_id')
     }
   }
 })

@@ -683,7 +683,7 @@ export default {
           r += item.denomination * item.send_num
         }
       })
-      return r
+      return parseFloat(r).toFixed(2)
     }
   },
   mounted () {

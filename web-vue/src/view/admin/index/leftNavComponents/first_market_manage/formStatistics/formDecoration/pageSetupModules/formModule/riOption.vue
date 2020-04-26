@@ -8,15 +8,18 @@
           <el-radio
             v-model="modulesSaveData.show_types"
             :label="0"
+            :disabled="isProhibit"
           >{{$t('formDecorationModel.singleElection')}}</el-radio>
           <el-radio
             v-model="modulesSaveData.show_types"
             :label="1"
+            :disabled="isProhibit"
           >{{$t('formDecorationModel.multipleSelection')}}</el-radio>
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.titleText')}}</span>
           <el-input
+            :disabled="isProhibit"
             v-model="modulesSaveData.form_title"
             size="small"
             :maxlength="20"
@@ -87,6 +90,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'form_title': '下拉',
@@ -105,6 +109,11 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          if (this.modulesData.confirm === 1) {
+            this.modulesData.confirm = true
+          } else {
+            this.modulesData.confirm = false
+          }
           this.modulesSaveData = this.modulesData
         }
       },
@@ -119,9 +128,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: this.$t('formDecorationModel.savedSuccessfully'),
@@ -130,6 +146,7 @@ export default {
     },
     // 点击添加选项
     handleToAddOption () {
+      if (this.isProhibit) return
       let key = Object.keys(this.modulesSaveData.selects).map(item => {
         return Number(item)
       })
@@ -140,6 +157,7 @@ export default {
     },
     // 点击删除
     handleToDElete (key) {
+      if (this.isProhibit) return
       this.$delete(this.modulesSaveData.selects, key)
       console.log(key, this.modulesSaveData)
     }

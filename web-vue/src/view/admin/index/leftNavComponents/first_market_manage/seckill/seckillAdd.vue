@@ -41,7 +41,7 @@
         </el-form-item>
         <el-form-item
           label="活动预告："
-          prop="noticeRadio"
+          prop="preTime"
         >
           <div>
             <span class="noticeTip">活动开始前会在商品详情中展示活动预告信息</span>
@@ -60,25 +60,29 @@
           </div>
           <div>
             <el-radio
-              v-model="form.noticeRadio"
+              v-model="form.preTime"
               :label="1"
-              @change="noticeRadioChange"
+              @change="preTimeChange"
+              :disabled="this.isEdite"
             >活动开始前
               <el-input
-                v-model="form.noticeValue"
+                v-model="form.preTimeValue"
+                :disabled="this.isEdite"
                 style="width: 80px;"
                 size="small"
               ></el-input>小时进行预告
             </el-radio>
             <el-radio
-              v-model="form.noticeRadio"
-              :label="2"
-              @change="noticeRadioChange"
+              v-model="form.preTime"
+              :label="-1"
+              @change="preTimeChange"
+              :disabled="this.isEdite"
             >活动创建完成后即进行预告</el-radio>
             <el-radio
-              v-model="form.noticeRadio"
-              :label="3"
-              @change="noticeRadioChange"
+              v-model="form.preTime"
+              :label="0"
+              @change="preTimeChange"
+              :disabled="this.isEdite"
             >不进行活动预告</el-radio>
           </div>
         </el-form-item>
@@ -259,7 +263,12 @@
           label="同步打标签："
           prop=""
         >
-          <el-checkbox>给参与活动用户打标签</el-checkbox>
+          <el-checkbox
+            v-model="form.activityTag"
+            :true-label="1"
+            :false-label="0"
+            :disabled="this.isEdite"
+          >给参与活动用户打标签</el-checkbox>
           <span
             class="el-icon-question"
             style="color: #666;"
@@ -493,7 +502,7 @@
       :dialogVisible="labelDialogVisible"
       :multipleLimit="3"
       @resultLabelDatas="resultLabelDatas"
-      :chooseLabelBack="labelValue"
+      :chooseLabelBack="form.activityTagId"
     />
 
   </div>
@@ -504,7 +513,8 @@ import choosingGoods from '@/components/admin/choosingGoods'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 import ImageDalog from '@/components/admin/imageDalog'
 import { getSeckillList, addSeckillList, updateSeckillList } from '@/api/admin/marketManage/seckill.js'
-import { allCardApi } from '@/api/admin/marketManage/messagePush'
+import { allCardApi, allTagApi } from '@/api/admin/marketManage/messagePush'
+
 // import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 // import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 export default {
@@ -526,13 +536,13 @@ export default {
       }
     }
     // 自定义活动预告
-    var validateNoticeRadio = (rule, value, callback) => {
+    var validatePreTime = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
       if (!value) {
         callback(new Error('请选择活动预告类型'))
-      } else if (value === 1 && this.form.noticeValue === '') {
+      } else if (value === 1 && this.form.preTimeValue === '') {
         callback(new Error('请填写活动预告时间'))
-      } else if (value === 1 && !re.test(this.form.noticeValue)) {
+      } else if (value === 1 && !re.test(this.form.preTimeValue)) {
         callback(new Error('活动预告时间填写不正确'))
       } else {
         callback()
@@ -557,8 +567,8 @@ export default {
         validity: '', // 有效期
         startTime: '', // 开始时间
         endTime: '', // 结束时间
-        noticeRadio: 1, // 活动预告
-        noticeValue: '24', // 预告时间值
+        preTime: 1, // 活动预告
+        preTimeValue: '24', // 预告时间值
         limitAmount: '', // 限购数量
         limitPaytime: '', // 支付有效时间
         secKillProduct: [], // 秒杀价格表格数据
@@ -567,6 +577,8 @@ export default {
         first: 1, // 活动优先级
         stock: 0, // 活动总库存
         cardId: [], // 会员卡id
+        activityTag: 0, // 同步打标签
+        activityTagId: '', // 标签id值
         shareConfig: {
           shareAction: 1,
           shareDoc: '',
@@ -585,8 +597,8 @@ export default {
         validity: [
           { required: true, message: '请填写有效期', trigger: 'change' }
         ],
-        noticeRadio: [
-          { required: true, validator: validateNoticeRadio, trigger: 'change' }
+        preTime: [
+          { required: true, validator: validatePreTime, trigger: 'change' }
         ],
         limitAmount: [
           { required: true, message: '请填写限购数量', trigger: 'change' }
@@ -635,9 +647,8 @@ export default {
       productInfo: {},
 
       labelDialogVisible: false, // 标签弹窗
-      pickLabel: [], // 选中标签列表
-      labelValue: [] // 选中标签id值
-
+      labelList: [], // 标签列表数据
+      pickLabel: [] // 选中标签列表
     }
   },
   mounted () {
@@ -649,6 +660,12 @@ export default {
     allCardApi().then((res) => {
       if (res.error === 0) {
         this.cardList = res.content
+      }
+    })
+    // 获取标签列表
+    allTagApi().then(res => {
+      if (res.error === 0) {
+        this.labelList = res.content
       }
     })
   },
@@ -701,6 +718,22 @@ export default {
           }
           // 总库存
           this.form.stock = 0
+          // 活动预告
+          this.form.preTime = data.preTime
+          if (this.form.preTime > 0) {
+            this.form.preTimeValue = this.form.preTime
+            this.form.preTime = 1
+          }
+          // 标签id tagList
+          if (res.content.tagList && res.content.tagList.length > 0) {
+            this.pickLabel = res.content.tagList
+            this.form.activityTagId = []
+            res.content.tagList.forEach(item => {
+              this.form.activityTagId.push(item.id)
+            })
+          } else {
+            this.form.activityTagId = []
+          }
 
           console.log(this.form)
         }
@@ -791,6 +824,14 @@ export default {
             item.productId = item.prdId
             item.secKillPrice = Number(item.secKillPrice)
           })
+          // 活动预告
+          if (this.form.preTime === 1) {
+            this.form.preTime = Number(this.form.preTimeValue)
+          }
+          // 同步打标签
+          // if (this.form.activityTagId && this.form.activityTagId.length > 0) {
+          //   this.form.activityTagId = this.form.activityTagId.toString()
+          // }
 
           console.log(this.form)
 
@@ -994,30 +1035,37 @@ export default {
 
     // 标签弹窗
     selectLabel () {
+      if (this.isEdite === true) {
+        return false
+      }
       this.labelDialogVisible = !this.labelDialogVisible
     },
 
     // 删除标签
     deleteLabel (index) {
+      if (this.isEdite === true) {
+        this.$message.warning('编辑状态不可操作')
+        return false
+      }
       this.pickLabel.splice(index, 1)
-      this.labelValue = []
+      this.form.activityTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.form.activityTagId.push(item.id)
       })
     },
 
     // 标签弹窗回调函数
     resultLabelDatas (row) {
       this.pickLabel = row
-      this.labelValue = []
+      this.form.activityTagId = []
       this.pickLabel.forEach(item => {
-        this.labelValue.push(item.id)
+        this.form.activityTagId.push(item.id)
       })
     },
 
     // 活动预告类型切换
-    noticeRadioChange (e) {
-      this.$refs['form'].validateField('noticeRadio')
+    preTimeChange (e) {
+      this.$refs['form'].validateField('preTime')
     }
 
   }

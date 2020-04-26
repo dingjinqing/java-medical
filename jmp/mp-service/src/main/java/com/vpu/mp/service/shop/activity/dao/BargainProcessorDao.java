@@ -57,7 +57,7 @@ public class BargainProcessorDao extends ShopBaseService {
         Map<Integer, List<BargainGoodsPriceBo>> integerListMap = db().select(BARGAIN_GOODS.GOODS_ID, BARGAIN_GOODS.EXPECTATION_PRICE, BARGAIN_GOODS.FLOOR_PRICE, BARGAIN.BARGAIN_TYPE, BARGAIN.ID)
             .from(BARGAIN_GOODS).leftJoin(BARGAIN).on(BARGAIN.ID.eq(BARGAIN_GOODS.BARGAIN_ID))
             .where(BARGAIN.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(BARGAIN.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date))
+            .and(BARGAIN_GOODS.GOODS_ID.in(goodsIds)).and(BARGAIN.START_TIME.lt(date)).and(BARGAIN.END_TIME.gt(date)).and(BARGAIN.STOCK.gt(0))
             .orderBy(BARGAIN.FIRST.desc(), BARGAIN.CREATE_TIME.desc())
             .fetchGroups(BARGAIN_GOODS.GOODS_ID, BargainGoodsPriceBo.class);
         Map<Integer,BargainGoodsPriceBo> retMap = new HashMap<>(integerListMap.size());

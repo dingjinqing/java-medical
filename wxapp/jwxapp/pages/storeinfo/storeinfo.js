@@ -301,7 +301,7 @@ global.wxPage({
   onShareAppMessage: function (res) {
     return {
       title: info.store_name,
-      path: 'pages/storeinfo/storeinfo?id=' + id + "&invite_id=" + util.getCache('user_id'),
+      path: 'pages/storeinfo/storeinfo?id=' + id + "&inviteId=" + util.getCache('user_id'),
     }
   }
 })

@@ -7,9 +7,13 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
 import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PackSalePromotion;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -27,12 +31,13 @@ import java.util.Set;
 
 /**
  * 打包一口价
+ *
  * @author: 王兵兵
  * @create: 2020-04-15 09:53
  **/
 @Service
 @Slf4j
-public class PackageSaleProcessor implements CreateOrderProcessor {
+public class PackageSaleProcessor implements CreateOrderProcessor, GoodsDetailProcessor {
 
     @Autowired
     private PackSaleService packSaleService;
@@ -57,6 +62,16 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
         return BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE;
     }
 
+    /**
+     * 商品详情
+     **/
+    @Override
+    public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        List<PackSalePromotion> canUsePackSalePromotion = packSaleService.getCanUsePackSalePromotion(capsule.getGoodsId(), capsule.getSortId(), DateUtil.getLocalDateTime());
+        if (canUsePackSalePromotion != null && canUsePackSalePromotion.size() > 0) {
+            capsule.getPromotions().put(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE, canUsePackSalePromotion);
+        }
+    }
 
     /**
      * 初始化参数,活动校验
@@ -73,9 +88,9 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
         PackageSaleRecord packageSaleRecord = packSaleService.getRecord(param.getActivityId());
         List<PackSaleParam.GoodsGroup> groups = packSaleService.getPackageGroups(packageSaleRecord);
         Set<Integer> actGoodsIds = new HashSet<>();
-        for(PackSaleParam.GoodsGroup group:groups){
-            int groupSelectNumber = packSaleService.packageGoodsCartService.getUserGroupGoodsNumber(param.getWxUserInfo().getUserId(),param.getActivityId(),group.getGroupId());
-            if(groupSelectNumber != group.getGoodsNumber()){
+        for (PackSaleParam.GoodsGroup group : groups) {
+            int groupSelectNumber = packSaleService.packageGoodsCartService.getUserGroupGoodsNumber(param.getWxUserInfo().getUserId(), param.getActivityId(), group.getGroupId());
+            if (groupSelectNumber != group.getGoodsNumber()) {
                 throw new MpException(JsonResultCode.PACKAGE_SALE_RULE_CHANGED);
             }
             List<Integer> effectiveGoodsIds = packSaleService.getPackageSaleGroupGoodsIds(group);
@@ -83,7 +98,7 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
         }
 
         Set<Integer> orderGoodsIds = new HashSet<>(param.getGoodsIds());
-        if(!actGoodsIds.containsAll(orderGoodsIds)){
+        if (!actGoodsIds.containsAll(orderGoodsIds)) {
             throw new MpException(JsonResultCode.PACKAGE_SALE_RULE_CHANGED);
         }
     }
@@ -97,7 +112,7 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
      */
     @Override
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        packSaleService.packageGoodsCartService.deleteUserCartGoods(param.getActivityId(),param.getWxUserInfo().getUserId());
+        packSaleService.packageGoodsCartService.deleteUserCartGoods(param.getActivityId(), param.getWxUserInfo().getUserId());
     }
 
     /**
@@ -140,6 +155,7 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
 
     /**
      * 订单处理金额
+     *
      * @param param
      * @param bos
      * @param totalNumberAndPrice
@@ -153,23 +169,23 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
         BigDecimal ratio = null;
 
         //指定金额结算
-        if(packageSaleRecord.getPackageType().equals(PackSaleConstant.PACKAGE_TYPE_MONEY)){
-            ratio = BigDecimalUtil.divide(packageSaleRecord.getTotalMoney(),totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
+        if (packageSaleRecord.getPackageType().equals(PackSaleConstant.PACKAGE_TYPE_MONEY)) {
+            ratio = BigDecimalUtil.divide(packageSaleRecord.getTotalMoney(), totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
             res.setTotalDiscount(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].subtract(packageSaleRecord.getTotalMoney()));
             res.setPackageTotalMoney(packageSaleRecord.getTotalMoney());
             res.setTotalPrice(packageSaleRecord.getTotalMoney());
             res.setRatio(ratio);
-        //指定折扣结算
-        }else if(packageSaleRecord.getPackageType().equals(PackSaleConstant.PACKAGE_TYPE_DISCOUNT)){
-            ratio = BigDecimalUtil.divide(packageSaleRecord.getTotalRatio(),new BigDecimal(10));
+            //指定折扣结算
+        } else if (packageSaleRecord.getPackageType().equals(PackSaleConstant.PACKAGE_TYPE_DISCOUNT)) {
+            ratio = BigDecimalUtil.divide(packageSaleRecord.getTotalRatio(), new BigDecimal(10));
             res.setTotalDiscount(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].subtract(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE].multiply(ratio)));
-            res.setPackageTotalMoney(BigDecimalUtil.multiply(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE],ratio));
-            res.setTotalPrice(BigDecimalUtil.multiply(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE],ratio));
+            res.setPackageTotalMoney(BigDecimalUtil.multiply(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], ratio));
+            res.setTotalPrice(BigDecimalUtil.multiply(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], ratio));
             res.setRatio(ratio);
         }
         for (OrderGoodsBo orderGoodsBo : bos) {
-            orderGoodsBo.setDiscountedGoodsPrice(BigDecimalUtil.multiply(orderGoodsBo.getGoodsPrice(),ratio));
-            orderGoodsBo.setDiscountedTotalPrice(BigDecimalUtil.multiply(orderGoodsBo.getDiscountedGoodsPrice(),new BigDecimal(orderGoodsBo.getGoodsNumber())));
+            orderGoodsBo.setDiscountedGoodsPrice(BigDecimalUtil.multiply(orderGoodsBo.getGoodsPrice(), ratio));
+            orderGoodsBo.setDiscountedTotalPrice(BigDecimalUtil.multiply(orderGoodsBo.getDiscountedGoodsPrice(), new BigDecimal(orderGoodsBo.getGoodsNumber())));
         }
         res.setBos(bos);
         res.setTotalGoodsNumber(totalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
@@ -178,5 +194,4 @@ public class PackageSaleProcessor implements CreateOrderProcessor {
 
         return res;
     }
-
 }

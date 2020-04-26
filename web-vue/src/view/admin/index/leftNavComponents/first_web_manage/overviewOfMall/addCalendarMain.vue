@@ -28,6 +28,7 @@
             v-model="ruleForm.date"
             size="small"
             style="width:188px"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -182,7 +183,7 @@
     <el-dialog
       title="选择营销活动"
       :visible.sync="choiseActivity"
-      width="48%"
+      width="730px"
     >
       <div class="choiseActivityMain">
         <el-tabs
@@ -281,12 +282,15 @@
   </div>
 </template>
 <script>
+import { eventDeatil } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
     EventExplainDialog: () => import('./eventExplainDialog')
   },
   data () {
     return {
+      calendarId: null, // 编辑时返回的事件id
+      hasAct: false, // 编辑时判断是否有营销活动
       ruleForm: {
         eventName: '',
         date: ''
@@ -318,123 +322,146 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
             title: '积分兑换',
-            tips: '使用积分兑换商品'
+            tips: '使用积分兑换商品',
+            activityType: 'integral_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/kj.png?v=1.0.0',
             title: '砍价',
-            tips: '引导用户邀请朋友砍价'
+            tips: '引导用户邀请朋友砍价',
+            activityType: 'bargain'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/gfjf.png?v=1.0.0',
             title: '组团瓜分积分',
-            tips: '提高用户活跃度,引导用户拼团得积分'
+            tips: '提高用户活跃度,引导用户拼团得积分',
+            activityType: 'pin_integration'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/xxdcj.png?v=1.0.0',
             title: '幸运大抽奖',
-            tips: '九宫格式抽奖玩法'
+            tips: '九宫格式抽奖玩法',
+            activityType: 'lottery'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/friend_promote_cion.png?v=1.0.0',
             title: '好友助力',
-            tips: '好友帮忙获得奖励'
+            tips: '好友帮忙获得奖励',
+            activityType: 'promote'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
             title: '积分兑换',
-            tips: '使用积分兑换商品'
+            tips: '使用积分兑换商品',
+            activityType: 'integral_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/wysl.png?v=11.0.0',
             title: '我要送礼',
-            tips: '购买商品送好友'
+            tips: '购买商品送好友',
+            activityType: 'give_gift'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/fxyl.png?v=1.0.0',
             title: '分享有礼',
-            tips: '分享商品获得优惠奖励，提升商品曝光度'
+            tips: '分享商品获得优惠奖励，提升商品曝光度',
+            activityType: 'share_award'
           }
         ],
         second: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/yhqlb.png?v=1.0.0',
             title: '优惠券礼包',
-            tips: '用户一次获得多张优惠券'
+            tips: '用户一次获得多张优惠券',
+            activityType: 'coupon_package'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/xsjj.png?v=1.0.0',
             title: '限时降价',
-            tips: '设定商品在指定时间内降价促销'
+            tips: '设定商品在指定时间内降价促销',
+            activityType: 'reduce_price'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/zfyl.png?v=1.0.0',
             title: '支付有礼',
-            tips: '用户付款后引导参与营销互动'
+            tips: '用户付款后引导参与营销互动',
+            activityType: 'pay_reward'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/sdth.png?v=1.0.0',
             title: '首单特惠',
-            tips: '用户首次下单享受降价优惠'
+            tips: '用户首次下单享受降价优惠',
+            activityType: 'first_special'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/djpz.png?v=1.0.0',
             title: '定金膨胀',
-            tips: '预售定金翻倍，大促预热利器'
+            tips: '预售定金翻倍，大促预热利器',
+            activityType: 'pre_sale'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/ms.png?v=1.0.0',
             title: '秒杀',
-            tips: '快速抢购引导用户更多购买'
+            tips: '快速抢购引导用户更多购买',
+            activityType: 'seckill_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/zp.png?v=1.0.0',
             title: '赠品',
-            tips: '通过丰富的赠品策略，向用户发放赠品'
+            tips: '通过丰富的赠品策略，向用户发放赠品',
+            activityType: 'gift'
           }
         ],
         third: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/mzmj.png?v=1.0.0',
             title: '满折满减',
-            tips: '购物满一定金额享受一定优惠'
+            tips: '购物满一定金额享受一定优惠',
+            activityType: 'full_cut'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/dbykj.png?v=1.0.0',
             title: '打包一口价',
-            tips: '多件商品一口价打包售卖'
+            tips: '多件商品一口价打包售卖',
+            activityType: 'package_sale'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jjg.png?v=1.0.0',
             title: '加价购',
-            tips: '购买指定商品满一定金额加价换购'
+            tips: '购买指定商品满一定金额加价换购',
+            activityType: 'purchase_price'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/mby.png?v=1.0.0',
             title: '满包邮',
-            tips: '购物包邮'
+            tips: '购物包邮',
+            activityType: 'free_ship'
           }
         ],
         fourth: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
             title: '积分兑换',
-            tips: '使用积分兑换商品'
+            tips: '使用积分兑换商品',
+            activityType: 'integral_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/kpyl.png?v=1.0.0',
             title: '开屏有礼（原活动有礼）',
-            tips: '用户来到小程序引导参与营销互动'
+            tips: '用户来到小程序引导参与营销互动',
+            activityType: 'activity_reward'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/pjyl.png?v=1.0.0',
             title: '评价有礼',
-            tips: '引导用户评价商品，参与营销活动'
+            tips: '引导用户评价商品，参与营销活动',
+            activityType: 'comment_gift'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/cp.png?v=1.0.0',
             title: '测评',
-            tips: '兴趣测评，让你更了解用户'
+            tips: '兴趣测评，让你更了解用户',
+            activityType: 'assess'
           }
         ]
       },
@@ -470,8 +497,49 @@ export default {
   },
   mounted () {
     this.nowShowActivityData = this.activityData[this.activeName]
+    // 初始化请求数据
+    this.handleToInit()
   },
   methods: {
+    // 初始化数据  eventDeatil
+    handleToInit () {
+      if (!this.$route.query.isAdd) {
+        let id = this.$route.query.id
+        eventDeatil(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            let { eventName, eventTime, eventDesc, calendarId, hasAct, actInfo } = res.content
+            this.ruleForm.eventName = eventName
+            this.ruleForm.date = eventTime
+            this.richText = eventDesc
+            this.backText = eventDesc
+            this.calendarId = calendarId
+            this.hasAct = hasAct
+            // this.haveChoiseData = actInfo
+            // 处理营销活动数据
+            this.handleToActData(actInfo)
+          }
+        })
+      }
+
+      // 查询所有可用营销活动
+      // allMarketList().then(res=>{
+      //   console.log(res)
+      // })
+    },
+    // 处理营销活动数据
+    handleToActData (actInfo) {
+      // let obj = {
+      //       imgUrl: imgUrl,
+      //       title: title,
+      //       choiseActData: {
+      //         id: -1,
+      //         status: '',
+      //         actName: '',
+      //         dateTime: ''
+      //       }
+      //     }
+    },
     // 点击事件说明编辑
     handleToClickExplain () {
       this.explainVisible = true
@@ -493,11 +561,12 @@ export default {
     // 点击营销活动弹窗的项
     handleToClickActivity (item) {
       // haveChoiseData
-      let { imgUrl, title } = item
+      let { imgUrl, title, activityType } = item
       console.log(item)
       let obj = {
         imgUrl: imgUrl,
         title: title,
+        activityType: activityType,
         choiseActData: {
           id: -1,
           status: '',
@@ -546,7 +615,32 @@ export default {
     },
     // 点击保存
     handleToSave () {
-
+      let act = ''
+      if (this.$route.query.isAdd) {
+        act = 'add'
+      } else {
+        act = '编辑'
+      }
+      let params = {
+        'act': act,
+        'eventName': this.ruleForm.eventName,
+        'eventTime': this.ruleForm.date + ' 00:00:00',
+        'eventDesc': this.richText,
+        'calendarAct': []
+      }
+      console.log(params)
+      //       {
+      //     "act": "add",
+      //     "eventName": "接口测试活动1",
+      //     "eventTime": "2020-04-23 00:00:00",
+      //     "eventDesc": "eventDesc描述",
+      //     "calendarAct": [
+      //       {
+      //         "activityType":"pin_group",
+      //         "activityId":1
+      //       }
+      //     ]
+      // }
     },
     // 选中活动四个icon综合处理
     handleToAllHiddenIcon (flag) {

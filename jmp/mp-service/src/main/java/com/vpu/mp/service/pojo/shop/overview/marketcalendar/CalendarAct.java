@@ -16,4 +16,9 @@ public class CalendarAct {
 	@NotNull
 	private Integer activityId = 0;
 
+	/** 编辑时候传的id */
+	private Integer calActId = 0;
+	/** 编辑时候传的 是否已删除：0否，1是 */
+	private Byte delFlag = 0;
+
 }

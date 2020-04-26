@@ -106,7 +106,7 @@ global.wxPage({
       activity_type: 6
     });
     return {
-      path: "pages1/form/form?page_id=" + this._options.page_id + "&invite_id=" + util.getCache('user_id'),
+      path: "pages1/form/form?page_id=" + this._options.page_id + "&inviteId=" + util.getCache('user_id'),
     }
   }
 })

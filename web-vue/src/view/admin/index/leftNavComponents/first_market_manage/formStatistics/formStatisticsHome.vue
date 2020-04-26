@@ -123,7 +123,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
+              <span>{{scope.row.validityPeriod===1&&scope.row.status===1?($t('formStatisticsHome.permanentValidity')+'（进行中）'):scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -262,9 +262,12 @@
     <el-dialog
       :title="$t('formStatisticsHome.shareTitle')"
       :visible.sync="shareVisible"
-      width="30%"
+      width="50%"
     >
-      <div>
+      <div
+        class="shareCodeContainer"
+        v-if="posterAddressImgUrl"
+      >
         <div class="copyContainer">
           <img
             :src="posterAddressImgUrl"
@@ -292,7 +295,7 @@
           >{{$t('formStatisticsHome.copy')}}</span>
         </div>
       </div>
-      <div>
+      <div class="shareCodeContainer">
         <div class="copyContainer">
           <img
             :src="shareCode"
@@ -382,6 +385,7 @@ export default {
     },
     // 添加表单点击
     handleToAddForm () {
+      localStorage.setItem('isProhibitForm', false)
       this.$router.push({
         name: 'formDecorationHome'
       })
@@ -398,6 +402,11 @@ export default {
       switch (flag) {
         case 1: // 编辑
           console.log(row)
+          if (row.validityPeriod === 1 && row.status === 1) {
+            localStorage.setItem('isProhibitForm', true)
+          } else {
+            localStorage.setItem('isProhibitForm', false)
+          }
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
@@ -417,6 +426,7 @@ export default {
 
           break
         case 4: // 复制
+          localStorage.setItem('isProhibitForm', false)
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
@@ -434,13 +444,19 @@ export default {
               this.shareCode = res.content.imageUrl
             }
           })
-          getPictorialCode(row.pageId).then(res => {
-            console.log(res)
-            if (res.error === 0) {
-              this.posterAddress = this.$imageHost + '/' + res.content.pagePath
-              this.posterAddressImgUrl = res.content.imageUrl
-            }
-          })
+          if (row.status === 1) {
+            getPictorialCode(row.pageId).then(res => {
+              console.log(res)
+              if (res.error === 0) {
+                this.posterAddress = res.content
+                this.posterAddressImgUrl = res.content
+              }
+            })
+          } else {
+            this.posterAddress = ''
+            this.posterAddressImgUrl = ''
+          }
+
           break
         case 6: // 关闭
           this.twoSureText = this.$t('formStatisticsHome.sureClose')
@@ -555,6 +571,7 @@ export default {
           line-height: 30px;
           margin-bottom: 35px;
           p {
+            text-align: justify;
             color: #666;
             font-size: 12px;
             border-bottom: 1px solid #efedee;
@@ -616,18 +633,25 @@ export default {
     }
   }
 }
-.copyContainer {
-  display: flex;
-  justify-content: center;
-  .copy {
-    cursor: pointer;
-    color: #5a8bff;
-  }
-  /deep/ .el-input {
-    width: 200px;
-    margin: 0 10px;
+.shareCodeContainer {
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+  .copyContainer {
+    justify-content: center;
+
+    float: left;
+    .copy {
+      cursor: pointer;
+      color: #5a8bff;
+    }
+    /deep/ .el-input {
+      width: 200px;
+      margin: 0 10px;
+    }
   }
 }
+
 .copyDiv {
   align-items: center;
   margin-top: 20px;

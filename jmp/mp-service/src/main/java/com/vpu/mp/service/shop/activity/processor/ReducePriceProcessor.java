@@ -17,10 +17,12 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsListMpBo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePriceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.activity.dao.ReducePriceProcessorDao;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import com.vpu.mp.service.shop.user.cart.CartService;
@@ -48,7 +50,7 @@ import static com.vpu.mp.db.shop.tables.ReducePriceProduct.REDUCE_PRICE_PRODUCT;
  */
 @Service
 @Slf4j
-public class ReducePriceProcessor implements Processor,ActivityGoodsListProcessor,GoodsDetailProcessor,ActivityCartListStrategy,CreateOrderProcessor{
+public class ReducePriceProcessor implements Processor, ActivityGoodsListProcessor, GoodsDetailProcessor, ActivityCartListStrategy, CreateOrderProcessor {
     @Autowired
     ReducePriceProcessorDao reducePriceProcessorDao;
     @Autowired
@@ -75,7 +77,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         List<Integer> goodsIds = availableCapsule.stream().map(GoodsListMpBo::getGoodsId).collect(Collectors.toList());
         Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsReduceListInfo(goodsIds, DateUtil.getLocalDateTime());
 
-        availableCapsule.forEach(capsule->{
+        availableCapsule.forEach(capsule -> {
             if (goodsReduceListInfo.get(capsule.getGoodsId()) == null) {
                 return;
             }
@@ -93,13 +95,19 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        // 存在一种可能是列表展示的是会员价，进入详情后发现限时降价和列表可以共存，所以限时降价没有像其他活动那样判断activityType和activityId
+
         // 已经被其它活动处理则退出
-        if (capsule.getActivity() != null) {
+            if (capsule.getActivity() != null) {
             return;
         }
 
         ReducePriceMpVo reducePriceInfo = reducePriceProcessorDao.getReducePriceInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
         if (reducePriceInfo == null) {
+            if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
+                GoodsActivityAnnounceMpVo announceInfo = reducePriceProcessorDao.getAnnounceInfo(param.getGoodsId(), DateUtil.getLocalDateTime());
+                capsule.setActivityAnnounceMpVo(announceInfo);
+            }
             return;
         }
 
@@ -123,6 +131,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
     /**
      * 限时减价
      * 限时减价-会员价-商品原价 最小的价格
+     *
      * @param cartBo 业务数据类
      */
     @Override
@@ -130,21 +139,21 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         log.info("购物车-限时降价-开始");
         // 是限时降价商品且不是会员专享
         List<Integer> productList = cartBo.getCartGoodsList().stream()
-                .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType())&&goods.getBuyStatus().equals(BaseConstant.YES))
-                .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
+            .filter(goods -> BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(goods.getGoodsRecord().getGoodsType()) && goods.getBuyStatus().equals(BaseConstant.YES))
+            .map(WxAppCartGoods::getProductId).collect(Collectors.toList());
         Map<Integer, List<Record5<Integer, Integer, Byte, Integer, BigDecimal>>> goodsReduceListInfo = reducePriceProcessorDao.getGoodsProductReduceList(productList, DateUtil.getLocalDateTime());
-        if (goodsReduceListInfo!=null&&goodsReduceListInfo.size()>0){
+        if (goodsReduceListInfo != null && goodsReduceListInfo.size() > 0) {
             cartBo.getCartGoodsList().stream().filter(goods ->
-                    goodsReduceListInfo.get(goods.getProductId()) != null
-                    &&goods.getBuyStatus().equals(BaseConstant.YES)&&goods.getPriceStatus().equals(BaseConstant.NO)).forEach(goods -> {
+                goodsReduceListInfo.get(goods.getProductId()) != null
+                    && goods.getBuyStatus().equals(BaseConstant.YES) && goods.getPriceStatus().equals(BaseConstant.NO)).forEach(goods -> {
                 Record5<Integer, Integer, Byte, Integer, BigDecimal> reducePriceRecord = goodsReduceListInfo.get(goods.getProductId()).get(0);
                 BigDecimal reducePrize = reducePriceRecord.get(REDUCE_PRICE_PRODUCT.PRD_PRICE);
                 //价格小于商品价格限时降价才会生效
-                if (reducePrize.compareTo(goods.getPrdPrice())<0){
+                if (reducePrize.compareTo(goods.getPrdPrice()) < 0) {
                     Integer limitNum = reducePriceRecord.get(REDUCE_PRICE.LIMIT_AMOUNT);
                     Byte limitFlag = reducePriceRecord.get(REDUCE_PRICE.LIMIT_FLAG);
-                    if (limitNum.equals(0)||goods.getCartNumber()<=limitNum||(goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))){
-                        log.info("购物车-限时降价-商品{}",goods.getGoodsName());
+                    if (limitNum.equals(0) || goods.getCartNumber() <= limitNum || (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE))) {
+                        log.info("购物车-限时降价-商品{}", goods.getGoodsName());
                         CartActivityInfo activityInfo = new CartActivityInfo();
                         activityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
                         activityInfo.setActivityId(reducePriceRecord.get(REDUCE_PRICE.ID));
@@ -157,9 +166,9 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
                         goods.setPrdPrice(reducePrize);
                         goods.setLimitMaxNum(limitNum);
                         goods.setActivityLimitType(limitFlag);
-                        if (goods.getCartNumber()>limitNum&&limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
-                            log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中",goods.getGoodsName(),limitNum);
-                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                        if (goods.getCartNumber() > limitNum && limitFlag.equals(BaseConstant.LIMIT_FLAG_CONFINE)) {
+                            log.info("购物车-限时降价-商品{}-限制商品数量{}-取消选中", goods.getGoodsName(), limitNum);
+                            cartService.switchCheckedProduct(cartBo.getUserId(), goods.getCartId(), CartConstant.CART_NO_CHECKED);
                             goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                             goods.setBuyStatus(BaseConstant.NO);
                         }
@@ -185,7 +194,7 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
         log.info("限时降价计算start");
         Map<Integer, Record10<Integer, Integer, BigDecimal, String, String, Byte, Byte, Timestamp, Integer, Byte>> prdPriceMap = reducePriceService.getProductReducePrice(productBo.getProductIds());
         productBo.getAll().forEach(goods -> {
-            if(prdPriceMap.get(goods.getProductId()) != null){
+            if (prdPriceMap.get(goods.getProductId()) != null) {
                 log.info("规格：{},限时降价价 ：{}", goods.getProductId(), prdPriceMap.get(goods.getProductId()));
                 GoodsActivityInfo goodsActivityInfo = new GoodsActivityInfo();
                 goodsActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE);
@@ -222,8 +231,11 @@ public class ReducePriceProcessor implements Processor,ActivityGoodsListProcesso
      */
     @Override
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType()) && param.getActivityId() != null){
-            reducePriceService.addActivityTag(param.getActivityId(),param.getWxUserInfo().getUserId());
+        List<OrderGoodsBo> bos = param.getBos();
+        for (OrderGoodsBo bo : bos) {
+            if (BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null) {
+                reducePriceService.addActivityTag(bo.getActivityId(), param.getWxUserInfo().getUserId());
+            }
         }
     }
 

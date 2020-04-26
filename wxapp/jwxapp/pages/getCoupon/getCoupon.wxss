@@ -142,7 +142,7 @@ button::after {
   margin-bottom: 15rpx;
 }
 
-.limit_right .text_limit {
+.limit_right  text {
   color:#888;
   font-size: 24rpx;
 }

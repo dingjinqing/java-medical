@@ -23,6 +23,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -212,7 +213,14 @@ public class FormStatisticsService extends ShopBaseService {
     public String getFormPictorialCode(int pageId) {
         // 获取表单海报图片路径
         Tuple2<Integer, String> pictorial = generateFormPictorial(pageId, 0);
-        return pictorial.v2;
+        try {
+            byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(imageService.imageUrl(pictorial.v2),430,430);
+            Tuple2<String, String> path =pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
+            imageService.getUpYunClient().writeFile(path.v1(), qrCodeByte, true);
+            return path.v2;
+        }  catch (Exception e) {
+            return "";
+        }
     }
 
     /**
@@ -386,7 +394,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc(imageService.imageUrl(moduleUploadVideo.getVideoImgSrc()));
+            moduleUploadVideo.setVideoImgSrc("http://video-jmpdev.test.upcdn.net"+moduleUploadVideo.getVideoImgSrc());
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();

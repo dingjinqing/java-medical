@@ -174,7 +174,7 @@ export const cn = {
   submitCustomJumpTip: '提交成功可引导用户浏览其他内容',
   customJump: '自定义跳转',
   viewExamples: '查看示例',
-  buttonName: '按钮名称',
+  buttonName: '按钮名称：',
   jumpLink: '跳转链接：',
   reSelection: '重新选择',
   selectJumpLink: '选择跳转链接',

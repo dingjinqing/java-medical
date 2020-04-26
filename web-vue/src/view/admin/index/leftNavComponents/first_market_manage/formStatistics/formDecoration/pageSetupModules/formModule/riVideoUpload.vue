@@ -9,6 +9,7 @@
             v-model="modulesSaveData.form_title"
             size="small"
             :maxlength="20"
+            :disabled="isProhibit"
           ></el-input>
         </div>
         <div class="list">
@@ -17,7 +18,10 @@
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.conditionValidation')}}</span>
-          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
+          <el-checkbox
+            :disabled="isProhibit"
+            v-model="modulesSaveData.confirm"
+          >{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <div class="videoTips">
           <span>{{$t('formDecorationModel.note')}}</span>
@@ -45,6 +49,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'form_title': '图片上传',
@@ -84,6 +89,11 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          if (this.modulesData.confirm === 1) {
+            this.modulesData.confirm = true
+          } else {
+            this.modulesData.confirm = false
+          }
           this.modulesSaveData = this.modulesData
         }
       },
@@ -98,9 +108,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: this.$t('formDecorationModel.savedSuccessfully'),

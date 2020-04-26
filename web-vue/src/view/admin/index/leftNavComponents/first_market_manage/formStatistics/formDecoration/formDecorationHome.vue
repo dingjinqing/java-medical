@@ -597,7 +597,7 @@ export default {
       console.log(index, this.modulesData)
       this.isClickModule = true
       this.$http.$emit('modulesClick', index)
-      this.handleToModuleHight()
+      // this.handleToModuleHight()
     },
     // 中部icon点击处理事件
     handleToClickIcon ({ direction, flag }) {

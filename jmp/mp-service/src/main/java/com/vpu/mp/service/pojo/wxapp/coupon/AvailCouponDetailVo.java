@@ -148,5 +148,9 @@ public class AvailCouponDetailVo {
      * 是否可用,0可用 1不可用(只适用分裂优惠券)
      */
     private Integer divisionEnabled;
+    /**
+     * 是否与限时降价、首单特惠、会员价活动共用 0共用 1不共用
+     */
+    private Byte couponOverlay;
 }
 

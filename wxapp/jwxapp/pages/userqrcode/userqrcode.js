@@ -103,7 +103,7 @@ global.wxPage({
     var Avatar = util.getCache('avatarUrl');
     var QrCode = util.getCache('myQrCode');
     return {
-      path: 'pages/userqrcode/userqrcode?userName=' + Name + '&userAvatar=' + Avatar + '&myQrCode=' + QrCode + '&invite_id=' + util.getCache('user_id'),
+      path: 'pages/userqrcode/userqrcode?userName=' + Name + '&userAvatar=' + Avatar + '&myQrCode=' + QrCode + '&inviteId=' + util.getCache('user_id'),
     }
   }
 

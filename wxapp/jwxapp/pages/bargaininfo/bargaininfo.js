@@ -281,7 +281,7 @@ global.wxPage({
     }
     return {
       title: bargain_info.recordShareImg.shareDoc,
-      path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&invite_id=" + util.getCache('user_id')
+      path: 'pages/bargaininfo/bargaininfo?record_id=' + record_id + "&inviteId=" + util.getCache('user_id')
         + "&bargain_id=" + bargain_info.recordInfo.bargainId,
       imageUrl: bargain_info.recordShareImg.shareImg
     }

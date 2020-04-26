@@ -107,7 +107,7 @@
             :label="$t('marketCommon.orderSn')"
           ></el-table-column>
           <el-table-column
-            prop="receiveTime"
+            prop="createTime"
             :label="$t('couponPackage.receiveTime')"
           ></el-table-column>
           <el-table-column

@@ -44,7 +44,7 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     return {
-      path: "/pages2/brokeragerank/brokeragerank?user_id=" + util.getCache('user_id') + "&invite_id=" + util.getCache('user_id')
+      path: "/pages2/brokeragerank/brokeragerank?user_id=" + util.getCache('user_id') + "&inviteId=" + util.getCache('user_id')
     }
   }
 })

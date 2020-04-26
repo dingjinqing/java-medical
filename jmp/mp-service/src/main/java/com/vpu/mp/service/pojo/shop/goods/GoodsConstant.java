@@ -59,6 +59,7 @@ public class GoodsConstant {
      * 积分兑换
      */
     public final static Byte ACTIVITY_INTEGER_MALL_PRIORITY = 50;
+
     /**
      * 分销
      */
@@ -71,6 +72,12 @@ public class GoodsConstant {
     public static final Byte GOODS_ITEM = 1;
     /**活动页*/
     public static final Byte ACTIVITY_PAGE = 2;
+
+    /**
+     * 活动不预告
+     */
+    public static final Integer ACTIVITY_NOT_PRE = 0;
+
 
     /**************** 小程序、装修-商品分组- 顶部展示分组，展示全部商品栏*****************/
     public final static Byte GOODS_GROUP_LIST_TOP_POSITION = 0;

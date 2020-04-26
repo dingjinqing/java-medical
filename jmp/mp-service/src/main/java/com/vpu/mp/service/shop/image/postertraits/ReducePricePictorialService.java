@@ -46,12 +46,12 @@ public class ReducePricePictorialService extends ShareBaseService {
     private QrCodeService qrCodeService;
 
     @Override
-     Record getActivityRecord(Integer activityId) {
+    Record getActivityRecord(Integer activityId) {
         return reducePriceService.getReducePriceRecordCanDel(activityId);
     }
 
     @Override
-     PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
+    PictorialShareConfig getPictorialConfig(Record aRecord, GoodsRecord goodsRecord) {
         ReducePriceRecord record = (ReducePriceRecord) aRecord;
         return Util.parseJson(record.getShareConfig(), PictorialShareConfig.class);
     }
@@ -60,10 +60,11 @@ public class ReducePricePictorialService extends ShareBaseService {
      * 限时降价分享背景图片地址
      */
     private static final String REDUCE_PRICE_SHARE_BG_IMG = "image/wxapp/reduce_price_share.png";
+
     @Override
-     String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+    String createShareImage(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
         ReducePriceRecord reducePriceRecord = (ReducePriceRecord) aRecord;
-        ReducePriceShareInfoParam param= (ReducePriceShareInfoParam) baseParam;
+        ReducePriceShareInfoParam param = (ReducePriceShareInfoParam) baseParam;
 
         PictorialRecord pictorialRecord = pictorialService.getPictorialDao(goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, null);
         // 已存在生成的图片
@@ -85,10 +86,10 @@ public class ReducePricePictorialService extends ShareBaseService {
             // 上传u盘云并缓存入库
             String relativePath = createFilePath(reducePriceRecord.getId());
             PictorialRule pictorialRule = new PictorialRule(goodsRecord.getUpdateTime(), reducePriceRecord.getUpdateTime());
-            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(),param.getActivityId(),PictorialConstant.REDUCE_PRICE_ACTION_SHARE, pictorialRecord, param.getUserId());
+            pictorialService.uploadToUpanYun(goodsBufferImg, relativePath, pictorialRule, goodsRecord.getGoodsId(), param.getActivityId(), PictorialConstant.REDUCE_PRICE_ACTION_SHARE, pictorialRecord, param.getUserId());
             return relativePath;
         } catch (IOException e) {
-            shareLog(getActivityName(),"图片生成错误：" + e.getMessage());
+            shareLog(getActivityName(), "图片生成错误：" + e.getMessage());
         } catch (UpException e) {
             shareLog(getActivityName(), "UpanYun上传错误：" + e.getMessage());
         }
@@ -96,97 +97,37 @@ public class ReducePricePictorialService extends ShareBaseService {
     }
 
     @Override
-     String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
-        return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
-    }
-
-
-    /**
-     * 限时降价海报生成
-     *
-     * @param param 限时降价售参数
-     * @return base64海报信息
-     */
-    public GoodsPictorialInfo getReducePricePictorialInfo(ReducePriceShareInfoParam param) {
-        GoodsPictorialInfo goodsPictorialInfo = new GoodsPictorialInfo();
-        ShopRecord shop = saas.shop.getShopById(getShopId());
-        ReducePriceRecord reducePriceRecord = reducePriceService.getReducePriceRecordCanDel(param.getActivityId());
-        if (reducePriceRecord == null) {
-            pictorialLog(getActivityName(), "限时降价信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.ACTIVITY_DELETED);
-            return goodsPictorialInfo;
-        }
-        GoodsRecord goodsRecord = goodsService.getGoodsRecordById(param.getTargetId());
-        if (goodsRecord == null) {
-            pictorialLog(getActivityName(), "商品信息已删除或失效");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_DELETED);
-            return goodsPictorialInfo;
-        }
-        PictorialShareConfig shareConfig = Util.parseJson(reducePriceRecord.getShareConfig(), PictorialShareConfig.class);
-
-        PictorialUserInfo pictorialUserInfo;
-        try {
-            pictorialLog(getActivityName(), "获取用户信息");
-            pictorialUserInfo = pictorialService.getPictorialUserInfo(param.getUserId(), shop);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取用户信息失败：" + e.getMessage());
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.USER_PIC_ERROR);
-            return goodsPictorialInfo;
-        }
-        getReducePricePictorialImg(pictorialUserInfo, shareConfig, reducePriceRecord, goodsRecord, shop, param, goodsPictorialInfo);
-        return goodsPictorialInfo;
+    String createMpQrCode(Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        ReducePriceRecord reducePriceRecord = (ReducePriceRecord) aRecord;
+        return qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d", baseParam.getUserId(), goodsRecord.getGoodsId(), reducePriceRecord.getId(), BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE));
     }
 
     private static final String REDUCE_PRICE_BG_IMG = "image/wxapp/reduce_price.png";
 
-    private void getReducePricePictorialImg(PictorialUserInfo pictorialUserInfo, PictorialShareConfig shareConfig, ReducePriceRecord reducePriceRecord, GoodsRecord goodsRecord, ShopRecord shop, ReducePriceShareInfoParam param, GoodsPictorialInfo goodsPictorialInfo) {
-        BufferedImage goodsImage;
-        try {
-            pictorialLog(getActivityName(), "获取商品图片信息");
-            goodsImage = pictorialService.getGoodsPictorialImage(shareConfig, goodsRecord);
-        } catch (IOException e) {
-            pictorialLog(getActivityName(), "获取商品图片信息失败：" + e.getMessage());
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
-            return;
-        }
-
-        pictorialLog(getActivityName(), "获取商品分享语");
-        String shareDoc = null;
-        if (PictorialShareConfig.DEFAULT_STYLE.equals(shareConfig.getShareAction())) {
-            shareDoc = pictorialService.getCommonConfigDoc(param.getUserName(), goodsRecord.getGoodsName(), param.getRealPrice(), shop.getShopLanguage(), true);
-            if (shareDoc == null) {
-                shareDoc = Util.translateMessage(shop.getShopLanguage(), JsonResultMessage.WX_MA_NORMAL_GOODS_INFO, "", "messages");
-            }
-        } else {
-            shareDoc = shareConfig.getShareDoc();
-        }
-        String mpQrcode = qrCodeService.getMpQrCode(QrCodeTypeEnum.GOODS_ITEM, String.format("uid=%d&gid=%d&aid=%d&atp=%d",param.getUserId(),goodsRecord.getGoodsId(), reducePriceRecord.getId(), BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE));
-
-        BufferedImage qrCodeImage;
-        try {
-            qrCodeImage = ImageIO.read(new URL(mpQrcode));
-        } catch (IOException e) {
-            pictorialLog(getActivityName(),"获取二维码失败");
-            goodsPictorialInfo.setPictorialCode(PictorialConstant.QRCODE_ERROR);
-            return;
-        }
-
+    @Override
+    void createPictorialImg(BufferedImage qrCodeBufferImg, BufferedImage goodsImg, PictorialUserInfo userInfo, String shareDoc, Record aRecord, GoodsRecord goodsRecord, ShopRecord shop, GoodsShareBaseParam baseParam, GoodsPictorialInfo goodsPictorialInfo) {
         PictorialImgPx imgPx = new PictorialImgPx();
 
-        BufferedImage reduceIconBufferImg=null;
+        BufferedImage reduceIconBufferImg = null;
         // 拼装价值限时降价图片和商品价格
         try (InputStream reduceIconStream = Util.loadFile(REDUCE_PRICE_BG_IMG)) {
-             reduceIconBufferImg = ImageIO.read(reduceIconStream);
+            reduceIconBufferImg = ImageIO.read(reduceIconStream);
         } catch (IOException e) {
-            pictorialLog(getActivityName(),"装载限时降价图标失败");
+            pictorialLog(getActivityName(), "装载限时降价图标失败");
             goodsPictorialInfo.setPictorialCode(PictorialConstant.GOODS_PIC_ERROR);
             return;
         }
         // 拼装背景图
-        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(pictorialUserInfo, shop, qrCodeImage, goodsImage, shareDoc, goodsRecord.getGoodsName(),reduceIconBufferImg,param.getRealPrice(), param.getLinePrice(), imgPx);
+        BufferedImage bgBufferedImage = pictorialService.createPictorialBgImage(userInfo, shop, qrCodeBufferImg, goodsImg, shareDoc, goodsRecord.getGoodsName(), reduceIconBufferImg, baseParam.getRealPrice(), baseParam.getLinePrice(), imgPx);
 
         String base64 = ImageUtil.toBase64(bgBufferedImage);
         goodsPictorialInfo.setBase64(base64);
+        goodsPictorialInfo.setBgImg(bgBufferedImage);
+    }
+
+    @Override
+    String createDefaultShareDoc(String lang, Record aRecord, GoodsRecord goodsRecord, GoodsShareBaseParam baseParam) {
+        return Util.translateMessage(lang, JsonResultMessage.WX_MA_NORMAL_GOODS_SHARE_INFO, "", "messages", baseParam.getUserName(), goodsRecord.getGoodsName());
     }
 
     @Override

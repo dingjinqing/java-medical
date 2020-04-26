@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.shop.order.calculate;
 
-import com.vpu.mp.service.pojo.shop.decoration.ActivityVo;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,13 +20,13 @@ import java.math.BigDecimal;
 @ToString
 public class UniteMarkeingtRecalculateBo {
     private BigDecimal price;
-    private Byte ActivityType;
-    private Integer ActivityId;
+    private Byte activityType;
+    private Integer activityId;
 
     private UniteMarkeingtRecalculateBo(BigDecimal price, Byte activityType, Integer activityId) {
         this.price = price;
-        ActivityType = activityType;
-        ActivityId = activityId;
+        this.activityType = activityType;
+        this.activityId = activityId;
     }
 
     public static UniteMarkeingtRecalculateBo create(BigDecimal price, Byte activityType, Integer activityId){

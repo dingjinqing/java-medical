@@ -4,13 +4,17 @@ package com.vpu.mp.service.pojo.shop.member.tag;
  */
 public class TagSrcConstant {
 	/** 	后台admin操作	*/
-	private final static Byte ADMIN_BACKEND = 0;
+	public final static Short ADMIN_BACKEND = 0;
 	/**		会员卡	*/
-	private final static Byte MEMBER_CARD = 1;
+    public final static Short MEMBER_CARD = 1;
 	/**		优惠券	*/
-	private final static Byte COUPON = 2;
+    public final static Short COUPON = 2;
+    /**		砍价	*/
+    public final static Short BARGAIN = 3;
+    /**		秒杀	*/
+    public final static Short SECKILL = 5;
     /** 	限时降价 */
-    public final static Byte REDUCE_PRICE = 6;
+    public final static Short REDUCE_PRICE = 6;
     /** 	加价购 */
-    public final static Byte PURCHASE_PRICE = 7;
+    public final static Short PURCHASE_PRICE = 7;
 }

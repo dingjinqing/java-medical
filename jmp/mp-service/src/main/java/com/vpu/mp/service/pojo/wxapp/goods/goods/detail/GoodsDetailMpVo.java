@@ -92,6 +92,9 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
     /**商品最近的五条购买记录 */
     private List<GoodsOrderRecordSmallVo> goodsRecord;
 
+    /**商品活动预告信息*/
+    private GoodsActivityAnnounceMpVo activityAnnounceMpVo;
+
     /**商品促销活动列表*/
     Map<Byte,List<? extends PromotionBase>> promotions = new HashMap<>();
     //**********服务承诺

@@ -62,7 +62,8 @@ export default {
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',
             imgUrl_h: this.$imageHost + '/image/system/icon_left/get_user_h.png',
-            span: '问题反馈'
+            span: '问题反馈',
+            routeName: 'problemFeedback'
           },
           {
             imgUrl: this.$imageHost + '/image/system/icon_left/get_user.png',

@@ -26,4 +26,9 @@ public class AvailCouponParam {
 	 * 当前用户ID
 	 */
 	private Integer userId;
+
+    /**
+     * 卡号
+     */
+    private String couponSn;
 }

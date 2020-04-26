@@ -42,4 +42,35 @@ ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `live_pack_status` TINYINT(1) NULL DEF
 ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `version` varchar(50) not NULL default '' COMMENT '提交账号';
 ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `submit_user` varchar(128) not NULL default '' COMMENT '提交账号';
 ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `submit_user_phone` varchar(32) not NULL default '' COMMENT '提交账号绑定的手机号';
-/***********************2.12*********************END*/
+
+
+-- 营销日历表
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
+`id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
+`event_name` VARCHAR ( 64 ) NOT NULL DEFAULT '' COMMENT '事件名称',
+`event_time` date DEFAULT NULL COMMENT '事件时间',
+`event_desc` text COMMENT '事件说明',
+`pub_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '发布状态：0未发布，1已发布',
+`del_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+PRIMARY KEY ( `id` )
+);
+
+-- 营销日历表对应活动
+CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
+`id` INT ( 8 ) NOT NULL AUTO_INCREMENT,
+`calendar_id` INT ( 8 ) NOT NULL DEFAULT '0' COMMENT '营销日历Id',
+`activity_type` VARCHAR ( 16 ) NOT NULL DEFAULT '0' COMMENT '具体营销活动类型',
+`shop_use_num` INT ( 8 ) NOT NULL DEFAULT '0' COMMENT '店铺使用累计数量',
+`recommend_type` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '推荐类型：0站内文本，1外部链接',
+`recommend_link` VARCHAR ( 100 ) NOT NULL DEFAULT '' COMMENT '推荐链接',
+`del_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
+`create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+`update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+`shop_ids` VARCHAR ( 500 ) NOT NULL DEFAULT '' COMMENT '使用该推荐活动的店铺id，逗号隔开',
+`recommend_title` VARCHAR ( 32 ) NOT NULL DEFAULT '' COMMENT '推荐标题',
+PRIMARY KEY ( `id` ),
+KEY `calendar_id` ( `calendar_id` )
+);
+/*********************2.12*************************END*/

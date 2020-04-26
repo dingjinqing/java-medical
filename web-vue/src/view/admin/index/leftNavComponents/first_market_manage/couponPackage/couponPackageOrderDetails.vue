@@ -160,7 +160,7 @@ export default {
     getRealPrice (moneyPaid, useAccount, useScore, memberCardBalance) {
       let payStr = ''
       if (useScore > 0) {
-        payStr += `${useAccount}积分`
+        payStr += `${useScore}积分`
       } else {
         let price = 0.0
         if (moneyPaid > 0) {
@@ -170,7 +170,7 @@ export default {
           price += useAccount
         };
         if (memberCardBalance > 0) {
-          price += useAccount
+          price += memberCardBalance
         };
         payStr += `${price}元`
       }
