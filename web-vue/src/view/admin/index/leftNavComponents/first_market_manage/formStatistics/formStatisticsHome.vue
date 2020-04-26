@@ -123,7 +123,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
+              <span>{{scope.row.validityPeriod===1&&scope.row.status===1?($t('formStatisticsHome.permanentValidity')+'（进行中）'):scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -401,6 +401,11 @@ export default {
       switch (flag) {
         case 1: // 编辑
           console.log(row)
+          if (row.validityPeriod === 1 && row.status === 1) {
+            localStorage.setItem('isProhibitForm', true)
+          } else {
+            localStorage.setItem('isProhibitForm', false)
+          }
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
@@ -420,6 +425,7 @@ export default {
 
           break
         case 4: // 复制
+          localStorage.setItem('isProhibitForm', false)
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
