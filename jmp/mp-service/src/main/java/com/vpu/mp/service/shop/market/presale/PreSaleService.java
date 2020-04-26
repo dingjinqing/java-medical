@@ -213,17 +213,17 @@ public class PreSaleService extends ShopBaseService {
 
         if (null != startTime && null == endTime) {
             query.and(
-                TABLE.END_TIME.ge(startTime)
+                TABLE.END_TIME.isNotNull().and(TABLE.START_TIME.gt(DateUtil.convertToTimestamp("0001-01-01 00:00:00"))).and(TABLE.END_TIME.ge(startTime))
             );
         }
         if (null == startTime && null != endTime) {
             query.and(
-                TABLE.START_TIME.le(endTime)
+                TABLE.START_TIME.isNotNull().and(TABLE.START_TIME.gt(DateUtil.convertToTimestamp("0001-01-01 00:00:00"))).and(TABLE.START_TIME.le(endTime))
             );
         }
         if (null != startTime && null != endTime) {
             query.and(
-                TABLE.START_TIME.le(endTime).and(TABLE.END_TIME.ge(startTime))
+                TABLE.START_TIME.isNotNull().and(TABLE.START_TIME.gt(DateUtil.convertToTimestamp("0001-01-01 00:00:00"))).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
             );
         }
 
