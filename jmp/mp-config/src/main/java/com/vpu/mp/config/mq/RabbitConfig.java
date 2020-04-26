@@ -75,6 +75,9 @@ public class RabbitConfig {
     /*************商品各种导入处理队列end************/
     /**组团瓜分积分开奖*/
     public static final String QUEUE_GROUP_INTEGRATION_SUCCESS = "group.integration.success";
+    /**system同步日历 */
+    public static final String QUEUE_CALENDAR = "mq.calendar";
+    
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
      */
@@ -126,6 +129,9 @@ public class RabbitConfig {
     public static final String BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY  = "bind.exchange.goods.vpu.excel.import.key";
     /**组团瓜分积分 */
     public static final String BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY = "bind.groupInte.key";
+    /**system同步日历 */
+    public static final String BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY = "sys.calendar.key";
+    
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -293,6 +299,15 @@ public class RabbitConfig {
     }
     
     /**
+     * system同步日历
+     * @return
+     */
+    @Bean
+    public Queue calendarQueue() {
+        return new Queue(QUEUE_CALENDAR,true,false,false);
+    }
+    
+    /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
      * 3.autoDelete    当所有消费客户端连接断开后，是否自动删除队列
@@ -418,5 +433,10 @@ public class RabbitConfig {
     @Bean
     public Binding bindingGroupIntegrationQueue() {
     	   return BindingBuilder.bind(groupIntegrationQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY);
+    }
+    
+    @Bean
+    public Binding bindingSysCalendar() {
+    	   return BindingBuilder.bind(calendarQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY);
     }
 }

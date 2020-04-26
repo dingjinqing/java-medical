@@ -1,7 +1,5 @@
 package com.vpu.mp.controller.admin;
 
-import java.util.List;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;

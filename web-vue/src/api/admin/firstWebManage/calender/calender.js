@@ -11,7 +11,7 @@ export function getOverviewActivity (data) {
 // 营销日历列表
 export function getCalendarList (year) {
   return service({
-    url: `/api/admin/calendar/list/year=${year}`,
+    url: `/api/admin/calendar/list/${year}`,
     method: 'get'
   })
 }
@@ -19,7 +19,7 @@ export function getCalendarList (year) {
 // 删除事件
 export function deltCalendarEvent (calendarId) {
   return service({
-    url: `/api/admin/calendar/market/del/calendarId=${calendarId}`,
+    url: `/api/admin/calendar/market/del/${calendarId}`,
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function deltCalendarEvent (calendarId) {
 // 单个事件详情
 export function eventDeatil (calendarId) {
   return service({
-    url: `/api/admin/calendar/info/calendarId=${calendarId}`,
+    url: `/api/admin/calendar/info/${calendarId}`,
     method: 'get'
   })
 }

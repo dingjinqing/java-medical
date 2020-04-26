@@ -117,6 +117,10 @@ public class GroupBuyDetailVo {
 
     @JsonIgnore
     private String shareConfig;
+    /**
+     * 显示文明
+     */
+    private String activityCopywriting;
 
     /**
      * 产品规格配置

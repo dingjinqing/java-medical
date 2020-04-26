@@ -61,5 +61,6 @@ public class FriendPromoteSelectVo {
     private Integer promoteTimesPerDay;
 	private Byte failedSendType;
 	private Integer failedSendContent;
-
+    private String activityCopywriting;
+    private promoteActCopywriting actCopywriting;
 }
