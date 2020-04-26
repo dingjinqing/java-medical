@@ -493,9 +493,11 @@ public class PackSaleService extends ShopBaseService {
             res.removeAll(group.getGoodsIdList());
             res.addAll(group.getGoodsIdList());
         }
-        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
-        res.removeAll(goodsIds);
-        res.addAll(goodsIds);
+        if(CollectionUtils.isNotEmpty(group.getCatIdList()) || CollectionUtils.isNotEmpty(group.getSortIdList())){
+            List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
+            res.removeAll(goodsIds);
+            res.addAll(goodsIds);
+        }
 
         return res;
     }

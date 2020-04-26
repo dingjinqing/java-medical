@@ -42,6 +42,7 @@
             >
               <div class="title">{{$t('formDecorationModel.option')}}</div>
               <el-input
+                :disabled="isProhibit"
                 v-model="modulesSaveData.selects[key]"
                 size="small"
               ></el-input>
@@ -66,7 +67,10 @@
         </div>
         <div class="list">
           <span>{{$t('formDecorationModel.conditionValidation')}}</span>
-          <el-checkbox v-model="modulesSaveData.confirm">{{$t('formDecorationModel.mustFill')}}</el-checkbox>
+          <el-checkbox
+            :disabled="isProhibit"
+            v-model="modulesSaveData.confirm"
+          >{{$t('formDecorationModel.mustFill')}}</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -109,6 +113,11 @@ export default {
       handler (newData) {
         console.log(newData, this.modulesData)
         if (this.modulesData !== -1) {
+          if (this.modulesData.confirm === 1) {
+            this.modulesData.confirm = true
+          } else {
+            this.modulesData.confirm = false
+          }
           this.modulesSaveData = this.modulesData
         }
       },
