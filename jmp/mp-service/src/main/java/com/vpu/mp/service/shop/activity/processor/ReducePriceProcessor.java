@@ -98,7 +98,7 @@ public class ReducePriceProcessor implements Processor, ActivityGoodsListProcess
         // 存在一种可能是列表展示的是会员价，进入详情后发现限时降价和列表可以共存，所以限时降价没有像其他活动那样判断activityType和activityId
 
         // 已经被其它活动处理则退出
-        if (capsule.getActivity() != null) {
+            if (capsule.getActivity() != null) {
             return;
         }
 
