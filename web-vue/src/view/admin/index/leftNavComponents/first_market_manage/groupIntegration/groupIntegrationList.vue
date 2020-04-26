@@ -24,7 +24,7 @@
           >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-         :label="$t('groupIntegration.notStarted')"
+          :label="$t('groupIntegration.notStarted')"
           name="third"
         >
           <el-button
@@ -33,7 +33,7 @@
           >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-         :label="$t('groupIntegration.expired')"
+          :label="$t('groupIntegration.expired')"
           name="fourth"
         >
           <el-button
@@ -42,7 +42,7 @@
           >{{$t('groupIntegration.addActivities')}}</el-button>
         </el-tab-pane>
         <el-tab-pane
-           :label="$t('groupIntegration.terminated')"
+          :label="$t('groupIntegration.terminated')"
           name="fifth"
         >
           <el-button
@@ -56,12 +56,16 @@
           v-if="showSix"
         >
           <integrationAdd
-          :isEditId="isEditId"
-           @backHome="backHome"/>
+            :isEditId="isEditId"
+            @backHome="backHome"
+          />
         </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="table_list" v-if="!showSix">
+    <div
+      class="table_list"
+      v-if="!showSix"
+    >
       <el-table
         class="version-manage-table"
         header-row-class-name="tableClss"
@@ -78,7 +82,7 @@
         </el-table-column>
         <el-table-column
           prop="content"
-         :label="$t('groupIntegration.content')"
+          :label="$t('groupIntegration.content')"
           align="center"
         >
         </el-table-column>
@@ -105,7 +109,7 @@
         </el-table-column>
         <el-table-column
           prop="expire"
-         :label="$t('groupIntegration.expireStatus')"
+          :label="$t('groupIntegration.expireStatus')"
           align="center"
           width="80"
           :formatter="formatter"
@@ -134,7 +138,7 @@
 
         </el-table-column>
         <el-table-column
-         :label="$t('groupIntegration.options')"
+          :label="$t('groupIntegration.options')"
           align="center"
         >
           <template slot-scope="scope">
@@ -161,7 +165,7 @@
               <el-tooltip
                 :content="$t('groupIntegration.stop')"
                 placement="top"
-                 v-if="scope.row.expire===1||scope.row.expire===2"
+                v-if="scope.row.expire===1||scope.row.expire===2"
               >
                 <span
                   @click="puaseGroupIntegration(scope.row.id)"
@@ -169,9 +173,9 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-               :content="$t('groupIntegration.statrt')"
+                :content="$t('groupIntegration.statrt')"
                 placement="top"
-                 v-if="scope.row.expire===4"
+                v-if="scope.row.expire===4"
               >
                 <span
                   @click="upGroupIntegration(scope.row.id)"
@@ -188,7 +192,7 @@
                 ></span>
               </el-tooltip>
               <el-tooltip
-               :content="$t('groupIntegration.groupDetails')"
+                :content="$t('groupIntegration.groupDetails')"
                 placement="top"
               >
                 <span
@@ -257,6 +261,11 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      this.gotoEdit(this.$route.params.id)
+    }
     // 初始化数据
     this.langDefault()
     let params = {
@@ -317,7 +326,8 @@ export default {
       this.$alert(this.$t('groupIntegration.stopTip1') + '?', this.$t('groupIntegration.stopTip2'), {
         confirmButtonText: this.$t('groupIntegration.ok'),
         cancelButtonText: this.$t('groupIntegration.cancle'),
-        type: 'warning' }).then(() => {
+        type: 'warning'
+      }).then(() => {
         let data = {
           'id': id,
           'status': 0
@@ -338,7 +348,8 @@ export default {
       this.$alert(this.$t('groupIntegration.statertTip1') + '?', this.$t('groupIntegration.stopTip2'), {
         confirmButtonText: this.$t('groupIntegration.ok'),
         cancelButtonText: this.$t('groupIntegration.cancle'),
-        type: 'warning' }).then(() => {
+        type: 'warning'
+      }).then(() => {
         let data = {
           'id': id,
           'status': 1
@@ -359,7 +370,8 @@ export default {
       this.$alert(this.$t('groupIntegration.delTip1') + '?', this.$t('groupIntegration.stopTip2'), {
         confirmButtonText: this.$t('groupIntegration.ok'),
         cancelButtonText: this.$t('groupIntegration.cancle'),
-        type: 'warning' }).then(() => {
+        type: 'warning'
+      }).then(() => {
         delGroupIntegration(id).then(res => {
           if (res.error === 0) {
             this.$message.success(this.$t('groupIntegration.delTip2'))
