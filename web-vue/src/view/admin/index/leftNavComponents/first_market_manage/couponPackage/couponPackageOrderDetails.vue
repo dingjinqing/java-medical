@@ -170,7 +170,7 @@ export default {
           price += useAccount
         };
         if (memberCardBalance > 0) {
-          price += useAccount
+          price += memberCardBalance
         };
         payStr += `${price}元`
       }
