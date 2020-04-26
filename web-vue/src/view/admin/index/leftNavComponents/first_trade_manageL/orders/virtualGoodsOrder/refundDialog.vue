@@ -35,7 +35,7 @@
             v-model="refundData.account"
             size="small"
             controls-position="right"
-            :max="refundInfo.useAccount"
+            :max="refundInfo.useAccount - refundInfo.returnAccount"
             :min="0"
             :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
@@ -43,7 +43,7 @@
             v-model="refundData.memberCardBalance"
             size="small"
             controls-position="right"
-            :max="refundInfo.memberCardBalance"
+            :max="refundInfo.memberCardBalance - refundInfo.returnCardBalance"
             :min="0"
             :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
@@ -51,7 +51,7 @@
             v-model="refundData.money"
             size="small"
             controls-position="right"
-            :max="refundInfo.moneyPaid"
+            :max="refundInfo.moneyPaid - refundInfo.returnMoney"
             :min="0"
             :precision="2"
           ></el-input-number> {{$t('refundDialog.yuan')}}</p>
@@ -59,7 +59,7 @@
             v-model="refundData.score"
             size="small"
             controls-position="right"
-            :max="refundInfo.score"
+            :max="refundInfo.score - refundInfo.returnScore"
             :min="0"
             :precision="0"
           ></el-input-number> {{$t('refundDialog.integral')}}</p>
