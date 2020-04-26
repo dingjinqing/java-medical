@@ -63,7 +63,9 @@ public class TaskJobsConstant {
         /**微铺宝excel模板导入*/
         GOODS_VPU_EXCEL_IMPORT(1012,RabbitConfig.EXCHANGE_GOODS_IMPORT,RabbitConfig.BINDING_EXCHANGE_GOODS_VPU_EXCEL_IMPORT_KEY),
     	/** 组团瓜分积分开奖的异步操作*/
-    	GROUP_INTEGRATION_MQ(1013, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY);
+    	GROUP_INTEGRATION_MQ(1013, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY),
+    	/** system营销日历推送到各个店铺*/
+    	SYS_CALENDAR_MQ(1014, RabbitConfig.EXCHANGE_MARKETING, RabbitConfig.BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY);
     	
         private Integer executionType;
         private String exchangeName;

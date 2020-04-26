@@ -9,15 +9,23 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
+import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord;
 import com.vpu.mp.db.main.tables.records.MarketCalendarRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysAllVo;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqToParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketSysActivityMqParam;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketListData;
@@ -131,12 +139,58 @@ public class MarketSysCalendarService extends MainBaseService {
 			return false;
 		}
 		logger().info("更新营销活动id:{},名称：{}，结果：{}", calendarId, param.getEventName(), update);
-		//calendarActivityService.editCalendarAct(param, calendarId);
+		calendarActivityService.editCalendarAct(param, calendarId);
+		toPush(calendarId);
 		return update == 1 ? true : false;
 	}
 	
 	
 	public MarketCalendarRecord getInfoById(Integer id) {
 		return db().selectFrom(MARKET_CALENDAR).where(MARKET_CALENDAR.ID.eq(id)).fetchAny();
+	}
+	
+	/**
+	 * 同步消息
+	 * @param calendarId
+	 */
+	public void toPush(Integer calendarId) {
+		MarketCalendarRecord record = getInfoById(calendarId);
+		if (record != null&&record.getPubFlag().equals(CalendarAction.ZERO)) {
+			//创建个队列任务去同步
+			MarketMqParam param=new MarketMqParam();
+			Result<MarketCalendarActivityRecord> result = calendarActivityService.getInfoByCalendarId(record.getId());
+			List<MarketSysActivityMqParam> list = result.into(MarketSysActivityMqParam.class);
+			param.setList(list);
+			MarketCalendarSysVo into = record.into(MarketCalendarSysVo.class);
+			param.setVo(into);
+			logger().info("准备发队列");
+			saas.taskJobMainService.dispatchImmediately(param,MarketMqParam.class.getName(),0,TaskJobEnum.SYS_CALENDAR_MQ.getExecutionType());
+			record.setPubFlag(CalendarAction.ONE);
+			int update = record.update();
+			logger().info("更新状态为已同步：{}",update);
+		}
+	}
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	public boolean del(Integer id) {
+		int execute = db().update(MARKET_CALENDAR).set(MARKET_CALENDAR.DEL_FLAG, DelFlag.DISABLE_VALUE)
+				.where(MARKET_CALENDAR.ID.eq(id)).execute();
+		return execute > 0 ? true : false;
+	}
+	
+	
+	public void getCalendarInfo(Integer calendarId) {
+		MarketCalendarRecord record = getInfoById(calendarId);
+		if(record==null) {
+//			return null;
+		}
+		MarketCalendarSysAllVo info = record.into(MarketCalendarSysAllVo.class);
+		info.setCalendarId(calendarId);
+		
+		
 	}
 }
