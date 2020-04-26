@@ -4,6 +4,7 @@ import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecordRecord;
 import com.vpu.mp.db.shop.tables.records.PrizeRecordRecord;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
@@ -14,6 +15,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.market.lottery.JoinLottery;
+import com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant;
 import com.vpu.mp.service.pojo.shop.market.lottery.prize.LotteryPrizeVo;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListParam;
 import com.vpu.mp.service.pojo.shop.market.lottery.record.LotteryRecordPageListVo;
@@ -36,6 +38,7 @@ import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -176,6 +179,27 @@ public class LotteryRecordService extends ShopBaseService {
                 .and(LOTTERY_RECORD.LOTTERY_ID.eq(lotteryId));
         if (chanceSource.intValue() > 0) {
             condition = condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
+        }
+        return db().fetchCount(LOTTERY_RECORD, condition);
+    }
+
+    /**
+     * 获取用户已抽奖次数
+     *
+     * @param userId       会员id
+     * @param lotteryId    活动id
+     * @param chanceSource 1:free 2:share 3:score
+     * @param chanceType 0每人  1每人每天
+     * @return 抽奖次数
+     */
+    public Integer getJoinLotteryNumber(Integer userId, Integer lotteryId, Byte chanceSource,Byte chanceType) {
+        Condition condition = LOTTERY_RECORD.USER_ID.eq(userId)
+                .and(LOTTERY_RECORD.LOTTERY_ID.eq(lotteryId));
+        if (chanceSource.intValue() > 0) {
+            condition = condition.and(LOTTERY_RECORD.CHANCE_SOURCE.eq(chanceSource));
+        }
+        if (LotteryConstant.CHANCE_TYPE_EVERYONE_DAY.equals(chanceType)){
+            condition.and(DslPlus.toDays(LOTTERY_RECORD.CREATE_TIME).eq(DslPlus.toDays(DSL.now())));
         }
         return db().fetchCount(LOTTERY_RECORD, condition);
     }

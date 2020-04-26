@@ -394,14 +394,14 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     * Setter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签
      */
     public void setActivityTag(Byte value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     * Getter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签
      */
     public Byte getActivityTag() {
         return (Byte) get(26);

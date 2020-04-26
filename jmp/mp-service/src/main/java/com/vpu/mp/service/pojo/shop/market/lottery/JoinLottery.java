@@ -3,6 +3,7 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.db.shop.tables.records.LotteryPrizeRecord;
 import com.vpu.mp.db.shop.tables.records.LotteryRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import lombok.Data;
 
@@ -48,6 +49,10 @@ public class JoinLottery {
      * 可用抽奖次数
      */
     private Integer canUseTime;
+    /**
+     * 限制类型 1限制 0不限制
+     */
+    private Byte timeLimitType = BaseConstant.YES;
 
     /**
      * 信息

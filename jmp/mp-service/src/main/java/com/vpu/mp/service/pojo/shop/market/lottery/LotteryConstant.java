@@ -7,6 +7,16 @@ package com.vpu.mp.service.pojo.shop.market.lottery;
  * @date 2019/8/5 10:58
  */
 public class LotteryConstant {
+    //*****************每人n次 每人每天n次******
+    /**
+     * 每人
+     */
+    public final static Byte CHANCE_TYPE_EVERYONE=0;
+    /**
+     * 每人每天
+     */
+    public final static Byte CHANCE_TYPE_EVERYONE_DAY=1;
+
     /***********抽奖来源*****/
     public final static Byte LOTTERY_TIME_ALL=0;
     /**
