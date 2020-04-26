@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.order.goods;
 
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -24,8 +23,17 @@ import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
+import org.jooq.impl.TableRecordImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -357,7 +365,9 @@ public class OrderGoodsService extends ShopBaseService{
             }
             records.add(record);
         }
-        db().batchInsert(records).execute();
+        records.forEach(
+            TableRecordImpl::insert
+        );
         return records;
     }
 
