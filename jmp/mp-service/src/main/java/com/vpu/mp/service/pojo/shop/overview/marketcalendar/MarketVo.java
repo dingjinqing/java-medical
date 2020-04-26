@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class MarketVo {
+	/** 营销活动的id，对应在相关活动的类里*/
 	private Integer id;
 	private String actName;
 	private Timestamp startTime;
@@ -21,4 +22,6 @@ public class MarketVo {
 	private Byte actStatus = 3;
 	/** 活动类型 */
 	private String activityType;
+	/** b2c_market_calendar_activity的id值*/
+	private Integer calActId;
 }

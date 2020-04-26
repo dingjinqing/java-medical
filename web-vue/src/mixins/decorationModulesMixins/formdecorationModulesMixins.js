@@ -204,15 +204,57 @@ export default {
         })
         flag = false
       }
+
       // 判断是否保存表单
       let isSaveModule = false
       let isHaveOkajax = false
+      let richNum = 0
       data.forEach((item, index) => {
         if (item.ok_ajax) {
           isSaveModule = true
           isHaveOkajax = true
         } else if (item.ok_ajax === 0) {
           isHaveOkajax = true
+        }
+        // 判断富文本数量
+        if (item.module_name === 'm_rich_text') {
+          richNum++
+        }
+        if (richNum > 30) {
+          flag = false
+          this.$message.error({
+            message: '最多上传30个富文本模块',
+            showClose: true
+          })
+        }
+
+        // 校验具体模块
+        switch (item.module_name) {
+          case 'm_scroll_image':
+            if (item.img_items.length === 0) {
+              flag = false
+              this.$message.error({
+                message: '轮播图片模块图片最少添加1个',
+                showClose: true
+              })
+            } else {
+              let canShowNum = 0
+              item.img_items.forEach((itemC, indexC) => {
+                if (itemC.can_show === '0') {
+                  canShowNum++
+                }
+              })
+              if (!canShowNum) {
+                this.$message.error({
+                  message: '轮播图组件至少设置一张轮播图为全部用户可见',
+                  showClose: true
+                })
+                flag = false
+              }
+            }
+            console.log(item)
+
+            break
         }
       })
       if (isSaveModule) {

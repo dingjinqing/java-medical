@@ -107,4 +107,7 @@ public class OrderGoodsBo {
 	private Byte isShipping;
 	/**该商品对应的返利信息*/
     private ArrayList<OrderGoodsRebateRecord> rebateList;
+    /**不可使用优惠券*/
+    @JsonIgnore
+    private Byte noUseCoupon;
 }

@@ -1,7 +1,7 @@
 <wxs src="../../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <view class="goods_item" bindtap="toItem">
   <view class="goods_image">
-    <image src="{{goodsItem.goodsImg}}" class="goods-image"></image>
+    <image src="{{goodsItem.goodsImg}}" class="goods-image" lazy-load="true"></image>
     <block wx:if="goodsItem.label">
       <block wx:if="{{goodsItem.label.listPattern == 1}}">
         <view class="label-style1" style='background:url({{imageUrl}}/image/wxapp/label-three.png) no-repeat ; background-size:100%;'>

@@ -52,26 +52,40 @@
               >
                 <div
                   class="calendar_info_item"
-                  :class="item.isInvalid?'':'in_progress'"
+                  :class="itemC.eventStatus === 3?'':'in_progress'"
                   v-for="(itemC,indexC) in item.data"
                   :key="indexC"
                 >
                   <div class="top_text">
-                    {{itemC.dateTime}}
+                    {{itemC.eventTime}}
+                    <span
+                      v-if="itemC.source === 1"
+                      class="ribbon"
+                    >推荐</span>
                   </div>
                   <div class="middle_text">{{itemC.eventName}}</div>
-                  <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
+                  <div
+                    class="bottom_text"
+                    :style="itemC.eventStatus===3?'corlor:#999':''"
+                  >{{itemC.eventStatus===4?'已结束':itemC.eventStatus===2?'进行中':itemC.eventStatus===3?'已失效':''}}</div>
+                  <div
+                    class="bottom_text"
+                    v-if="itemC.eventStatus===1"
+                  >
+                    剩<span>{{itemC.downTime}}</span>天
+                  </div>
                   <div class="shadow_set">
                     <div class="shadow_setMain">
                       <a
                         href="javascript:;"
-                        style="margin-right:20px"
+                        :style="itemC.source !== 1&&itemC.eventStatus!==3?'margin-right:20px':''"
                         @click="handleToAdd(false,1)"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
                         href="javascript:;"
                         style="margin-left:20px"
                         @click="handleToDel(index,indexC)"
+                        v-if="itemC.source !== 1&&itemC.eventStatus!==3"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
 
@@ -106,7 +120,7 @@
 <script>
 import vuescroll from 'vuescroll'
 import Vue from 'vue'
-import { getCalendarList } from '@/api/admin/firstWebManage/calender/calender.js'
+import { getCalendarList, deltCalendarEvent } from '@/api/admin/firstWebManage/calender/calender.js'
 Vue.use(vuescroll)
 export default {
   data () {
@@ -287,6 +301,22 @@ export default {
               item.targetbox = false
             } else {
               item.targetbox = true
+              // 模拟数据
+              // let obj = {
+              //   'id': 1,
+              //   'eventName': '接口测试活动1',
+              //   'eventTime': '2020-04-23',
+              //   'eventDesc': 'eventDesc描述',
+              //   'pubFlag': 0,
+              //   'delFlag': 0,
+              //   'source': 1,
+              //   'sourceId': 0,
+              //   'createTime': '2020-04-23 17:22:22',
+              //   'updateTime': '2020-04-23 17:22:22',
+              //   'eventStatus': 4,
+              //   'downTime': 0
+              // }
+              // item.data.push(obj)
             }
           })
           console.log(res.content.data)
@@ -308,8 +338,17 @@ export default {
       this.dialogVisible = true
     },
     handleToDelSure (index, indexC) {
-      this.calenderData[index].data.splice(indexC, 1)
       this.dialogVisible = false
+      let id = this.calenderData[index].data[indexC].id
+      deltCalendarEvent(id).then(res => {
+        if (res.error === 0) {
+          this.calenderData[index].data.splice(indexC, 1)
+          this.$message.success({
+            message: '删除成功',
+            showClose: true
+          })
+        }
+      })
     },
     // 点击添加营销事件
     handleToAdd (flag, item) {
@@ -325,7 +364,7 @@ export default {
           name: 'addCalendarMain',
           query: {
             isAdd: false,
-            id: item
+            id: item.id
           }
         })
       }
@@ -450,6 +489,26 @@ export default {
                 font-size: 16px;
                 overflow: hidden;
                 position: relative;
+                .ribbon {
+                  display: inline-block;
+                  text-align: center;
+                  width: 90px;
+                  height: 22px;
+                  line-height: 22px;
+                  position: absolute;
+                  top: 6px;
+                  right: -28px;
+                  z-index: 2;
+                  overflow: hidden;
+                  transform: rotate(45deg);
+                  -ms-transform: rotate(45deg);
+                  -moz-transform: rotate(45deg);
+                  -webkit-transform: rotate(45deg);
+                  -o-transform: rotate(45deg);
+                  background: #ffdc1b;
+                  font-size: 12px;
+                  color: #ff4444;
+                }
               }
               .middle_text {
                 color: #333;
@@ -465,6 +524,17 @@ export default {
                 line-height: 28px;
                 font-size: 16px;
                 color: #999;
+                span {
+                  display: inline-block;
+                  padding: 0 12px;
+                  background-color: #eee;
+                  color: #999;
+                  border-radius: 3px;
+                  margin: 0 3px;
+                  font-weight: 600;
+                  color: #f66;
+                  background-color: #ffe1e1;
+                }
               }
 
               .shadow_setMain {

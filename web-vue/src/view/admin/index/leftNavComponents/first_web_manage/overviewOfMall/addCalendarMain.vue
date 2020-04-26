@@ -28,6 +28,7 @@
             v-model="ruleForm.date"
             size="small"
             style="width:188px"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -281,12 +282,15 @@
   </div>
 </template>
 <script>
+import { eventDeatil } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
     EventExplainDialog: () => import('./eventExplainDialog')
   },
   data () {
     return {
+      calendarId: null, // 编辑时返回的事件id
+      hasAct: false, // 编辑时判断是否有营销活动
       ruleForm: {
         eventName: '',
         date: ''
@@ -470,8 +474,49 @@ export default {
   },
   mounted () {
     this.nowShowActivityData = this.activityData[this.activeName]
+    // 初始化请求数据
+    this.handleToInit()
   },
   methods: {
+    // 初始化数据  eventDeatil
+    handleToInit () {
+      if (!this.$route.query.isAdd) {
+        let id = this.$route.query.id
+        eventDeatil(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            let { eventName, eventTime, eventDesc, calendarId, hasAct, actInfo } = res.content
+            this.ruleForm.eventName = eventName
+            this.ruleForm.date = eventTime
+            this.richText = eventDesc
+            this.backText = eventDesc
+            this.calendarId = calendarId
+            this.hasAct = hasAct
+            // this.haveChoiseData = actInfo
+            // 处理营销活动数据
+            this.handleToActData(actInfo)
+          }
+        })
+      }
+
+      // 查询所有可用营销活动
+      // allMarketList().then(res=>{
+      //   console.log(res)
+      // })
+    },
+    // 处理营销活动数据
+    handleToActData (actInfo) {
+      // let obj = {
+      //       imgUrl: imgUrl,
+      //       title: title,
+      //       choiseActData: {
+      //         id: -1,
+      //         status: '',
+      //         actName: '',
+      //         dateTime: ''
+      //       }
+      //     }
+    },
     // 点击事件说明编辑
     handleToClickExplain () {
       this.explainVisible = true
@@ -546,7 +591,32 @@ export default {
     },
     // 点击保存
     handleToSave () {
-
+      let act = ''
+      if (this.$route.query.isAdd) {
+        act = 'add'
+      } else {
+        act = '编辑'
+      }
+      let params = {
+        'act': act,
+        'eventName': this.ruleForm.eventName,
+        'eventTime': this.ruleForm.date + ' 00:00:00',
+        'eventDesc': this.richText,
+        'calendarAct': []
+      }
+      console.log(params)
+      //       {
+      //     "act": "add",
+      //     "eventName": "接口测试活动1",
+      //     "eventTime": "2020-04-23 00:00:00",
+      //     "eventDesc": "eventDesc描述",
+      //     "calendarAct": [
+      //       {
+      //         "activityType":"pin_group",
+      //         "activityId":1
+      //       }
+      //     ]
+      // }
     },
     // 选中活动四个icon综合处理
     handleToAllHiddenIcon (flag) {

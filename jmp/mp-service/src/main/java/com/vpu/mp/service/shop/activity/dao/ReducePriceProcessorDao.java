@@ -10,7 +10,9 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.reduce.ReducePricePrdMpV
 import com.vpu.mp.service.shop.market.firstspecial.FirstSpecialService;
 import com.vpu.mp.service.shop.market.reduceprice.ReducePriceService;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record3;
+import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.tables.ReducePrice.REDUCE_PRICE;
@@ -46,21 +45,31 @@ public class ReducePriceProcessorDao extends ShopBaseService {
      */
     public  Map<Integer, List<Record3<Integer, Integer, BigDecimal>>> getGoodsReduceListInfo(List<Integer> goodsIds, Timestamp date) {
         // 获取正在进行或未来有效的限时降价活动
-        Map<Integer, List<Record2<Integer, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
+        Map<Integer, List<Record5<Integer, String, String, Byte, Integer>>> goodsGroup = db().select(REDUCE_PRICE.ID, REDUCE_PRICE.POINT_TIME, REDUCE_PRICE.EXTEND_TIME, REDUCE_PRICE.PERIOD_ACTION, REDUCE_PRICE_GOODS.GOODS_ID).from(REDUCE_PRICE)
             .innerJoin(REDUCE_PRICE_GOODS).on(REDUCE_PRICE.ID.eq(REDUCE_PRICE_GOODS.REDUCE_PRICE_ID))
             .where(REDUCE_PRICE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
+            .and(REDUCE_PRICE.START_TIME.lt(date))
             .and(REDUCE_PRICE.END_TIME.gt(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME)
+            .orderBy(REDUCE_PRICE.FIRST.desc(), REDUCE_PRICE.CREATE_TIME.desc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_GOODS.GOODS_ID)));
 
+        // 保存正在进行的商品和活动信息
+        Map<Integer,Integer> canUseGoodsGroup = new HashMap<>(goodsGroup.size());
+        // 过滤掉没有正在进行的活动
+        goodsGroup.forEach((goodsId,reduces)->{
+            for (Record5<Integer, String, String, Byte, Integer> reduce : reduces) {
+                if (reducePriceService.isActivityGoingOn(reduce.get(REDUCE_PRICE.POINT_TIME), reduce.get(REDUCE_PRICE.EXTEND_TIME), reduce.get(REDUCE_PRICE.PERIOD_ACTION))) {
+                    canUseGoodsGroup.put(goodsId,reduce.get(REDUCE_PRICE.ID));
+                    return;
+                }
+            }
+        });
+
         Condition condition = DSL.noCondition();
-        for (Map.Entry<Integer, List<Record2<Integer, Integer>>> entry : goodsGroup.entrySet()) {
-            Integer key = entry.getKey();
-            List<Record2<Integer, Integer>> value = entry.getValue();
-            // 按活动时间排序
-            condition = condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(key).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(value.get(0).get(REDUCE_PRICE.ID))));
+        for (Map.Entry<Integer, Integer> entry : canUseGoodsGroup.entrySet()) {
+            condition = condition.or(REDUCE_PRICE_PRODUCT.GOODS_ID.eq(entry.getKey()).and(REDUCE_PRICE_PRODUCT.REDUCE_PRICE_ID.eq(entry.getValue())));
         }
 
         return db().select(REDUCE_PRICE.ID, REDUCE_PRICE_PRODUCT.GOODS_ID, REDUCE_PRICE_PRODUCT.PRD_PRICE)

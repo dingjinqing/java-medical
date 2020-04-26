@@ -103,6 +103,12 @@ public class PreSaleProcessor implements Processor,ActivityGoodsListProcessor,Go
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+
+        if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
+            // 探测是否需要进行活动预告
+            capsule.setActivityAnnounceMpVo(preSaleProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            return;
+        }
         if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_PRE_SALE.equals(param.getActivityType())) {
             return;
         }

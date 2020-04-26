@@ -8,6 +8,7 @@
           <el-input
             v-model="modulesSaveData.form_title"
             size="small"
+            :disabled="isProhibit"
             :maxlength="20"
           ></el-input>
         </div>
@@ -18,10 +19,12 @@
         <div class="list">
           <span>展现形式：</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.image_type"
             :label="1"
           >有图标</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.image_type"
             :label="0"
           >无图标</el-radio>
@@ -52,7 +55,10 @@
         </div>
         <div class="list">
           <span>条件验证：</span>
-          <el-checkbox v-model="modulesSaveData.confirm">必填</el-checkbox>
+          <el-checkbox
+            :disabled="isProhibit"
+            v-model="modulesSaveData.confirm"
+          >必填</el-checkbox>
         </div>
         <!--模块私有end-->
         <div class="sure">
@@ -86,6 +92,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'form_title': '姓名',
@@ -116,9 +123,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 选择弹窗调起
     handleToImageDialog () {
+      if (this.isProhibit) return
       this.imageTuneUp = !this.imageTuneUp
     },
     // 选择图片弹窗选中数据回传
@@ -128,6 +142,7 @@ export default {
     },
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: '模块保存成功',

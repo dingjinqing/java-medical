@@ -5,15 +5,18 @@
       <el-input
         size="small"
         v-model="ruleForm.page_name"
+        :disabled="isProhibit"
       ></el-input>
     </div>
     <div class="listContainer">
       <span>{{$t('formDecorationHome.termOfValidity')}}：</span>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.is_forever_valid"
         label="1"
       >{{$t('formDecorationHome.permanentValidity')}}</el-radio>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.is_forever_valid"
         label="0"
       >{{$t('formDecorationHome.fixedDate')}}</el-radio>
@@ -34,6 +37,7 @@
             default-time="00:00:00"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
+            :disabled="isProhibit"
           >
           </el-date-picker>
         </div>
@@ -49,6 +53,7 @@
             default-time="23:59:59"
             format="yyyy-MM-dd HH:mm:ss"
             value-format="yyyy-MM-dd HH:mm:ss"
+            :disabled="isProhibit"
           >
           </el-date-picker>
         </div>
@@ -57,10 +62,12 @@
     <div class="listContainer">
       <span>{{$t('formDecorationHome.submissionLimit')}}</span>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.post_times"
         label="1"
       >{{$t('formDecorationHome.unlimitedNumber')}}</el-radio>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.post_times"
         label="0"
       >{{$t('formDecorationHome.restrictionTimes')}}</el-radio>
@@ -78,11 +85,13 @@
         <div class="top">
           <div class="leftName">{{$t('formDecorationHome.daily')}}</div>
           <el-input
+            :disabled="isProhibit"
             v-model="ruleForm.day_times"
             size="small"
           ></el-input>
           <div class="leftName">,{{$t('formDecorationHome.cumulative')}}</div>
           <el-input
+            :disabled="isProhibit"
             v-model="ruleForm.total_times"
             size="small"
           ></el-input>
@@ -96,6 +105,7 @@
       <span>{{$t('formDecorationHome.feedbacLimit')}}</span>
       <div class="totleNume">{{$t('formDecorationHome.reach')}}<el-input
           size="small"
+          :disabled="isProhibit"
           v-model="ruleForm.get_times"
         ></el-input>{{$t('formDecorationHome.cannotSubmitAfter')}}</div>
     </div>
@@ -106,10 +116,12 @@
     <div class="listContainer">
       <span>{{$t('formDecorationHome.bottomNavigation')}}</span>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.has_bottom"
         label="1"
       >{{$t('formDecorationHome.addTo')}}</el-radio>
       <el-radio
+        :disabled="isProhibit"
         v-model="ruleForm.has_bottom"
         label="0"
       >{{$t('formDecorationHome.notAdd')}}</el-radio>
@@ -117,6 +129,7 @@
     <div class="listContainer">
       <span>{{$t('formDecorationHome.submitText')}}</span>
       <el-input
+        :disabled="isProhibit"
         size="small"
         v-model="ruleForm.notice_name"
         :placeholder="$t('formDecorationHome.submitTextPlaceHolder')"
@@ -125,6 +138,7 @@
     <div class="listContainer">
       <span>{{$t('formDecorationHome.submitTextColor')}}</span>
       <el-color-picker
+        :disabled="isProhibit"
         v-model="ruleForm.font_color"
         show-alpha
         :predefine="predefineColors"
@@ -134,6 +148,7 @@
     <div class="listContainer">
       <span>{{$t('formDecorationHome.submitBackgroundColor')}}</span>
       <el-color-picker
+        :disabled="isProhibit"
         v-model="ruleForm.bg_color"
         show-alpha
         :predefine="predefineColors"
@@ -167,7 +182,10 @@
     </div>
     <div class="listContainer">
       <span></span>
-      <el-checkbox v-model="ruleForm.set_own_link">{{$t('formDecorationHome.customJump')}}</el-checkbox>
+      <el-checkbox
+        :disabled="isProhibit"
+        v-model="ruleForm.set_own_link"
+      >{{$t('formDecorationHome.customJump')}}</el-checkbox>
       <div class="toCheck">{{$t('formDecorationHome.viewExamples')}}
         <div class="examHidden">
           <img :src="$imageHost+'/image/admin/share/form_success_exapmle.jpg'">
@@ -184,6 +202,7 @@
           <div>{{$t('formDecorationHome.buttonName')}}</div>
           <el-input
             size="small"
+            :disabled="isProhibit"
             v-model="ruleForm.custom_btn_name"
           ></el-input>
         </div>
@@ -206,8 +225,14 @@
     </div>
     <div class="listContainer">
       <span>{{$t('formDecorationHome.userAuthorization')}}</span>
-      <el-checkbox v-model="ruleForm.authorized_name">{{$t('formDecorationHome.mobileNumber')}}</el-checkbox>
-      <el-checkbox v-model="ruleForm.authorized_mobile">{{$t('formDecorationHome.userInformation')}}</el-checkbox>
+      <el-checkbox
+        :disabled="isProhibit"
+        v-model="ruleForm.authorized_name"
+      >{{$t('formDecorationHome.mobileNumber')}}</el-checkbox>
+      <el-checkbox
+        :disabled="isProhibit"
+        v-model="ruleForm.authorized_mobile"
+      >{{$t('formDecorationHome.userInformation')}}</el-checkbox>
     </div>
     <div class="listContainer">
       <span></span>
@@ -219,7 +244,10 @@
       <div class="line"></div>
     </div>
     <div class="listContainer">
-      <el-checkbox v-model="ruleForm.send_coupon">{{$t('formDecorationHome.discountVolume')}}</el-checkbox>
+      <el-checkbox
+        :disabled="isProhibit"
+        v-model="ruleForm.send_coupon"
+      >{{$t('formDecorationHome.discountVolume')}}</el-checkbox>
     </div>
     <!--选中参与优惠卷显示的隐藏模块-->
     <div
@@ -281,17 +309,22 @@
       <div style="color:#999;width:400px;font-size:12px;padding-left:25px">{{$t('formDecorationHome.addDdiscountVolumeTip')}}</div>
     </div>
     <div class="listContainer sendScore">
-      <el-checkbox v-model="ruleForm.send_score">{{$t('formDecorationHome.sendingPoints')}}</el-checkbox>
+      <el-checkbox
+        :disabled="isProhibit"
+        v-model="ruleForm.send_score"
+      >{{$t('formDecorationHome.sendingPoints')}}</el-checkbox>
       &nbsp;&nbsp;
       <el-input
         size="small"
         v-model="ruleForm.send_score_number"
+        :disabled="isProhibit"
       ></el-input>&nbsp;&nbsp;{{$t('formDecorationHome.branch')}}
     </div>
     <div class="sure">
       <el-button
         type="primary"
         size="small"
+        @click="handleToAddSure()"
       >{{$t('formDecorationHome.Determine')}}</el-button>
     </div>
     <!--选择图片弹窗-->
@@ -331,6 +364,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
         '#ff8c00',
@@ -415,25 +449,25 @@ export default {
         // push进couponBackData
         let turnArr = ['set_own_link', 'authorized_name', 'authorized_mobile', 'send_coupon', 'send_score']
         if (newData) {
-          let data = JSON.parse(JSON.stringify(newData))
-          Object.keys(data).forEach((item, index) => {
+          // let data = JSON.parse(JSON.stringify(newData))
+          Object.keys(newData).forEach((item, index) => {
             console.log(turnArr.indexOf(item))
             if (turnArr.indexOf(item) !== -1) {
-              console.log(typeof data[item])
-              if (typeof data[item] === 'number') {
-                data[item] = this.handleToTurnBoolean(data[item])
+              console.log(typeof newData[item])
+              if (typeof newData[item] === 'number') {
+                newData[item] = this.handleToTurnBoolean(newData[item])
               }
 
-              console.log(data[item])
+              console.log(newData[item])
             }
           })
           let arr = []
-          data.send_coupon_list.forEach((item, index) => {
+          newData.send_coupon_list.forEach((item, index) => {
             arr.push(item.coupon_id)
           })
-          console.log(data)
+          console.log(newData)
           this.couponBackData = arr
-          this.ruleForm = data
+          this.ruleForm = newData
         }
       },
       immediate: true,
@@ -458,6 +492,11 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+
     // 初始化语言
     this.langDefault()
     this.backgroundColor = localStorage.getItem('V-backgroundColor') || 'rgb(255, 102, 102)'
@@ -467,6 +506,7 @@ export default {
     // 表单海报背景图点击添加图片
     handleToAddImg (flag) {
       console.log(flag)
+      if (this.isProhibit) return
       if (flag === 1) {
         this.imageFlag = !this.imageFlag
       }
@@ -477,6 +517,7 @@ export default {
       this.ruleForm.bg_img = res.imgUrl
     },
     handleToClickLick () {
+      if (this.isProhibit) return
       this.tuneUpLinkFlag = !this.tuneUpLinkFlag
       console.log(this.tuneUpLinkFlag)
     },
@@ -488,6 +529,7 @@ export default {
     },
     // 点击添加优惠卷
     handleToClickAddCoupon () {
+      if (this.isProhibit) return
       this.tuneUpCouponFlag = !this.tuneUpCouponFlag
     },
     // 选中优惠卷回传
@@ -528,8 +570,21 @@ export default {
     },
     // 点击优惠券右上角删除icon
     handleToDelCoupon (index) {
+      if (this.isProhibit) return
       this.ruleForm.send_coupon_list.splice(index, 1)
       this.couponBackData.splice(index, 1)
+    },
+    // 点击确定
+    handleToAddSure () {
+      if (this.isProhibit) return
+      if (this.ruleForm.page_name === '') {
+        this.$message.error({
+          message: '表单标题不能为空',
+          showClose: true
+        })
+      } else {
+        this.$emit('clickSure', true)
+      }
     }
   }
 }

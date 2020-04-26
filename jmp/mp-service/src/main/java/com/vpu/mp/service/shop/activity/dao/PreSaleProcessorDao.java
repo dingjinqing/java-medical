@@ -6,11 +6,14 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.PreSaleVo;
 import com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant;
 import com.vpu.mp.service.pojo.shop.market.presale.ProductVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSaleMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.presale.PreSalePrdMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
@@ -22,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record3;
 import org.jooq.Record5;
+import org.jooq.Record7;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +93,60 @@ public class PreSaleProcessorDao extends PreSaleService {
             .and(PRESALE.BUY_TYPE.eq(BaseConstant.NO))
             .and(condition)
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(PRESALE_PRODUCT.PRODUCT_ID)));
+    }
+
+    /**
+     * 获取活动预告
+     * @param goodsId 活动id
+     * @param date 待比较时间
+     * @return
+     */
+    public GoodsActivityAnnounceMpVo getAnnounceInfo(Integer goodsId, Timestamp date){
+        // 一阶段或二阶段付定金时间限制
+        //全款：时间限制在活动指定的时间内（和第一阶段使用相同字段）
+        Condition condition = PRESALE.PRE_END_TIME.gt(date).or(PRESALE.PRE_END_TIME_2.gt(date));
+
+        Record7<Integer, Byte, Timestamp,Timestamp, Timestamp, Integer, BigDecimal> activityInfo = db().select(PRESALE.ID, PRESALE.PRESALE_TYPE, PRESALE.PRE_START_TIME,PRESALE.PRE_END_TIME, PRESALE.PRE_START_TIME_2, PRESALE.PRE_TIME, PRESALE_PRODUCT.PRESALE_PRICE)
+            .from(PRESALE_PRODUCT).innerJoin(PRESALE).on(PRESALE.ID.eq(PRESALE_PRODUCT.PRESALE_ID))
+            .where(PRESALE_PRODUCT.GOODS_ID.eq(goodsId))
+            .and(PRESALE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(PRESALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+            .and(PRESALE_PRODUCT.PRESALE_NUMBER.gt(0))
+            .and(condition)
+            .orderBy(PRESALE.FIRST.desc(), PRESALE_PRODUCT.PRESALE_PRICE.asc(), PRESALE.CREATE_TIME.desc()).fetchAny();
+
+        if (activityInfo == null) {
+            return null;
+        }
+        // 不预告
+        if (GoodsConstant.ACTIVITY_NOT_PRE.equals(activityInfo.get(PRESALE.PRE_TIME))) {
+            return null;
+        }
+        // 预售开始时间
+        Timestamp startTime;
+        if (Byte.valueOf((byte) 1).equals(activityInfo.get(PRESALE.PRESALE_TYPE))) {
+            startTime = activityInfo.get(PRESALE.PRE_START_TIME);
+        }else {
+            if (activityInfo.get(PRESALE.PRE_END_TIME).compareTo(date) > 0) {
+                startTime = activityInfo.get(PRESALE.PRE_START_TIME);
+            } else {
+                startTime = activityInfo.get(PRESALE.PRE_START_TIME_2);
+            }
+        }
+        // 定时预告判断
+        if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(PRESALE.PRE_TIME)) < 0) {
+            Integer hours = activityInfo.get(PRESALE.PRE_TIME);
+            int timeHourDifference = DateUtil.getTimeHourDifference(startTime, date);
+            if (timeHourDifference > hours) {
+                return null;
+            }
+        }
+
+        GoodsActivityAnnounceMpVo mpVo = new GoodsActivityAnnounceMpVo();
+        mpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_PRE_SALE);
+        mpVo.setStartTime(startTime);
+        mpVo.setRealPrice(activityInfo.get( PRESALE_PRODUCT.PRESALE_PRICE));
+        return mpVo;
     }
 
     /**
