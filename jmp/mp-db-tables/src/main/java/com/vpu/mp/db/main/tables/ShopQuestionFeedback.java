@@ -42,10 +42,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopQuestionFeedback extends TableImpl<ShopQuestionFeedbackRecord> {
 
-    private static final long serialVersionUID = -414900745;
+    private static final long serialVersionUID = 779436783;
 
     /**
-     * The reference instance of <code>mini_main.b2c_shop_question_feedback</code>
+     * The reference instance of <code>jmini_main.b2c_shop_question_feedback</code>
      */
     public static final ShopQuestionFeedback SHOP_QUESTION_FEEDBACK = new ShopQuestionFeedback();
 
@@ -58,61 +58,76 @@ public class ShopQuestionFeedback extends TableImpl<ShopQuestionFeedbackRecord> 
     }
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.question_feedback_id</code>.
+     * The column <code>jmini_main.b2c_shop_question_feedback.question_feedback_id</code>.
      */
     public final TableField<ShopQuestionFeedbackRecord, Integer> QUESTION_FEEDBACK_ID = createField("question_feedback_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.shop_id</code>. 反馈店铺ID
+     * The column <code>jmini_main.b2c_shop_question_feedback.shop_id</code>. 反馈店铺ID
      */
     public final TableField<ShopQuestionFeedbackRecord, Integer> SHOP_ID = createField("shop_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "反馈店铺ID");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.category_id</code>. 反馈问题分类
+     * The column <code>jmini_main.b2c_shop_question_feedback.category_id</code>. 反馈问题分类
      */
     public final TableField<ShopQuestionFeedbackRecord, Integer> CATEGORY_ID = createField("category_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "反馈问题分类");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.mobile</code>. 填写的手机号
+     * The column <code>jmini_main.b2c_shop_question_feedback.mobile</code>. 填写的手机号
      */
     public final TableField<ShopQuestionFeedbackRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR(32).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "填写的手机号");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.content</code>.
+     * The column <code>jmini_main.b2c_shop_question_feedback.content</code>.
      */
     public final TableField<ShopQuestionFeedbackRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.is_look</code>. 1:已查看
+     * The column <code>jmini_main.b2c_shop_question_feedback.is_look</code>. 1:已查看
      */
     public final TableField<ShopQuestionFeedbackRecord, Byte> IS_LOOK = createField("is_look", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "1:已查看");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.create_time</code>. 反馈时间
+     * The column <code>jmini_main.b2c_shop_question_feedback.create_time</code>. 反馈时间
      */
     public final TableField<ShopQuestionFeedbackRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "反馈时间");
 
     /**
-     * The column <code>mini_main.b2c_shop_question_feedback.qf_img</code>. 图片
+     * The column <code>jmini_main.b2c_shop_question_feedback.qf_img</code>. 图片
      */
     public final TableField<ShopQuestionFeedbackRecord, String> QF_IMG = createField("qf_img", org.jooq.impl.SQLDataType.VARCHAR(191).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片");
 
     /**
-     * Create a <code>mini_main.b2c_shop_question_feedback</code> table reference
+     * The column <code>jmini_main.b2c_shop_question_feedback.version</code>. 提交账号
+     */
+    public final TableField<ShopQuestionFeedbackRecord, String> VERSION = createField("version", org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "提交账号");
+
+    /**
+     * The column <code>jmini_main.b2c_shop_question_feedback.submit_user</code>. 提交账号
+     */
+    public final TableField<ShopQuestionFeedbackRecord, String> SUBMIT_USER = createField("submit_user", org.jooq.impl.SQLDataType.VARCHAR(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "提交账号");
+
+    /**
+     * The column <code>jmini_main.b2c_shop_question_feedback.submit_user_phone</code>. 提交账号绑定的手机号
+     */
+    public final TableField<ShopQuestionFeedbackRecord, String> SUBMIT_USER_PHONE = createField("submit_user_phone", org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "提交账号绑定的手机号");
+
+    /**
+     * Create a <code>jmini_main.b2c_shop_question_feedback</code> table reference
      */
     public ShopQuestionFeedback() {
         this(DSL.name("b2c_shop_question_feedback"), null);
     }
 
     /**
-     * Create an aliased <code>mini_main.b2c_shop_question_feedback</code> table reference
+     * Create an aliased <code>jmini_main.b2c_shop_question_feedback</code> table reference
      */
     public ShopQuestionFeedback(String alias) {
         this(DSL.name(alias), SHOP_QUESTION_FEEDBACK);
     }
 
     /**
-     * Create an aliased <code>mini_main.b2c_shop_question_feedback</code> table reference
+     * Create an aliased <code>jmini_main.b2c_shop_question_feedback</code> table reference
      */
     public ShopQuestionFeedback(Name alias) {
         this(alias, SHOP_QUESTION_FEEDBACK);

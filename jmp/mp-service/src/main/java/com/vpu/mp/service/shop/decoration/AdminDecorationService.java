@@ -109,7 +109,6 @@ public class AdminDecorationService extends ShopBaseService implements ImageDefa
         if (getPageCount() == 0) {
             this.addDefaultPage();
         }
-        System.out.println(param);
         SelectWhereStep<? extends Record> select = db()
             .select(XCX_CUSTOMER_PAGE.PAGE_ID, XCX_CUSTOMER_PAGE.PAGE_NAME, XCX_CUSTOMER_PAGE.CREATE_TIME,
                 XCX_CUSTOMER_PAGE.PAGE_TYPE, XCX_CUSTOMER_PAGE.CAT_ID, PAGE_CLASSIFICATION.NAME)
