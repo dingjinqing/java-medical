@@ -1,5 +1,11 @@
 <template>
   <div class="formDecorationHome">
+    <div
+      class="isProhibit"
+      v-if="isProhibit"
+    >
+      已发布的表单只可查看，不可编辑。
+    </div>
     <div class="main">
       <div class="decLeft">
         <div class="decLeftDrag">
@@ -138,7 +144,10 @@
       </span>
     </el-dialog>
     <!--保存-->
-    <div class="footer">
+    <div
+      class="footer"
+      v-if="!isProhibit"
+    >
       <div>
         <el-button
           type="primary"
@@ -195,6 +204,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false,
       middleHereFlag: false, // 中间拖动滑过模块出现的空白占位控制变量
       nowRightShowIndex: null, // 中间高亮模块索引
       middleModulesList: ['Name', 'CellPhoneNumber', 'ProvinceAndCity', 'Email', 'Gender', 'DropDown', 'InputBox', 'Option', 'DateModule', 'PictureUpload', 'VideoUpload', 'RotationChart', 'RichText', 'PictureAds', 'TextModule', 'Guide', 'AuxiliaryBlank', 'Telephone', 'OfficialAccount'], // 中间显示模块名称池
@@ -285,9 +295,16 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    this.init_drag_event()
+    // this.init_drag_event()
     // 编辑处理
     this.handletToEdit()
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+      if (!this.isProhibit) {
+        this.init_drag_event()
+      }
+    })
   },
   methods: {
     // 编辑处理
@@ -582,6 +599,7 @@ export default {
     },
     //  点击左侧模块加到中间模块队列底部并高亮
     handleToClickLeftModule (id, flag) {
+      if (this.isProhibit) return
       console.log(id, flag)
       if (!flag) return
       this.showModulesList.push(id)
@@ -596,6 +614,7 @@ export default {
     handleToClickModule (index) {
       console.log(index, this.modulesData)
       this.isClickModule = true
+      this.nowRightShowIndex = index
       this.$http.$emit('modulesClick', index)
       // this.handleToModuleHight()
     },
@@ -1050,6 +1069,12 @@ export default {
   }
   .dragText {
     line-height: 16px;
+  }
+  .isProhibit {
+    border-left: 4px solid #8ac38b;
+    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #fff;
   }
 }
 </style>
