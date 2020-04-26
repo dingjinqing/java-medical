@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.shop.distribution.UserRemarkListVo;
 import com.vpu.mp.service.pojo.shop.member.MemberEducationEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberIndustryEnum;
 import com.vpu.mp.service.pojo.shop.member.MemberMarriageEnum;
+import com.vpu.mp.service.shop.ShopApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,12 +58,12 @@ import java.util.List;
  * 2019年7月17日
  */
 @RestController
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class AdminDistributionController extends AdminBaseController{
-//	@Override
-//    protected ShopApplication shop() {
-//        return saas.getShopApp(471752);
-//    }
+	@Override
+    protected ShopApplication shop() {
+        return saas.getShopApp(471752);
+    }
 	//分销配置
 	/**
 	 * 获取分销配置
@@ -73,7 +74,7 @@ public class AdminDistributionController extends AdminBaseController{
 		DistributionParam result = shop().config.distributionCfg.getDistributionCfg();
 		return this.success(result);
 	}
-	
+
 	/**
 	 *设置分销配置
 	 * @param param
@@ -114,7 +115,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().config.distributionCfg.setDistributionDocument(param);
 		return this.success(result);
 	}
-	
+
 	//返利策略配置
 	/**
 	 * 添加返利策略
@@ -130,7 +131,7 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 返利策略分页列表
 	 * @param param
@@ -141,7 +142,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributionStrategyVo> list = shop().rebateStrategy.getStrategyList(param);
 		return this.success(list);
 	}
-	
+
 	/**
 	 * 编辑返利策略
 	 * @param id
@@ -152,7 +153,7 @@ public class AdminDistributionController extends AdminBaseController{
 		List<DistributionStrategyParam> result = shop().rebateStrategy.getOneInfo(id);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 返利策略编辑保存
 	 * @param param
@@ -163,7 +164,7 @@ public class AdminDistributionController extends AdminBaseController{
 		boolean result = shop().rebateStrategy.saveRebateStrategy(param);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 返利策略停用
 	 * @param id
@@ -193,7 +194,7 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 返利策略删除
 	 * @param id
@@ -202,13 +203,13 @@ public class AdminDistributionController extends AdminBaseController{
 	@GetMapping("/admin/distribution/rebate/delete")
 	public JsonResult deleteRebateStrategy(Integer id) {
 		boolean result = shop().rebateStrategy.deleteRebate(id);
-		if(result) { 
+		if(result) {
 			return this.success(result);
 		}else {
 			return this.fail();
 		}
 	}
-	
+
 	//分销员分组
 	/**
 	 * 分销员分组列表
@@ -235,7 +236,7 @@ public class AdminDistributionController extends AdminBaseController{
         int groupCfg = shop().distributorGroup.getGroupCfg();
         return this.success(groupCfg);
     }
-	
+
 	/**
 	 * 添加分销员分组
 	 * @param param
@@ -255,8 +256,8 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
-	
+
+
 	/**
 	 * 设置默认分组
 	 * @param id
@@ -271,7 +272,7 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 取消默认分组
 	 * @param id
@@ -282,7 +283,7 @@ public class AdminDistributionController extends AdminBaseController{
 		boolean result = shop().distributorGroup.cancleDefault(id);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 编辑分组，获取单条信息
 	 * @param id
@@ -303,7 +304,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int res = shop().distributorGroup.groupSave(param);
 		return this.success(res);
 	}
-	
+
 	/**
 	 * 删除分组
 	 * @param id
@@ -318,7 +319,7 @@ public class AdminDistributionController extends AdminBaseController{
 			return this.fail();
 		}
 	}
-	
+
 	/**
 	 * 分销员分组添加分销员
 	 * @param param
@@ -340,7 +341,7 @@ public class AdminDistributionController extends AdminBaseController{
         int res = shop().distributorGroup.userCanSelect(param);
         return this.success(res);
     }
-	
+
 	//分销员等级配置
 	/**
 	 * 分销员等级配置列表
@@ -364,27 +365,27 @@ public class AdminDistributionController extends AdminBaseController{
 			DistributorLevelVo levelInfo = shop().distributorLevel.getOneLevelInfo(level.getLevelId());
 			//定义需要重新定等级的用户
 			List<Integer> upUserIds = new ArrayList<Integer>();
-			
+
 			if(levelInfo != null) {
 				if(levelInfo.getLevelStatus() == 1) { //等级启用中
 					if(level.getLevelUpRoute() == 0 && level.getInviteNumber() == 0 && level.getTotalDistributionMoney() == "0" && level.getTotalBuyMoney() == "0") {
 						return this.fail();//已启用等级设置不能为空
 					}
-					
+
 					//编辑配置保存
 					level.setId(levelInfo.getId());
 					boolean res = shop().distributorLevel.updateLevel(level);
-					
+
 					//配置是否有更新
 					boolean noChange = levelInfo.getInviteNumber().equals(level.getInviteNumber())
 									&& levelInfo.getTotalBuyMoney().equals(level.getTotalBuyMoney())
 									&& levelInfo.getTotalDistributionMoney().equals(level.getTotalDistributionMoney());
-					
+
 					//自动升级更改
 					if(res && level.getLevelUpRoute() == 0 && !noChange) {
 						//可自动升级等级
 						List<Byte> canUpLevels = shop().distributorLevel.getLowerCanUpLevels(level.getLevelId());
-						for(Byte canUpLevel : canUpLevels) {	
+						for(Byte canUpLevel : canUpLevels) {
 							//该等级下用户ID
 							List<Integer> userIds = shop().distributorLevel.getLevelUser(canUpLevel);
 							upUserIds.addAll(userIds);
@@ -394,9 +395,9 @@ public class AdminDistributionController extends AdminBaseController{
 							List<Integer> updateUserIds = shop().distributorLevel.getLevelUser(levelInfo.getLevelId());
 							shop().distributorLevel.updateLevelToOne(updateUserIds);
 							upUserIds.addAll(updateUserIds);
-						} 
-					} 
-					
+						}
+					}
+
 					//自动升级改为手动升级
 					if(res && level.getLevelUpRoute() == 1 && levelInfo.getLevelUpRoute() != 1) {
 						List<Integer> updateUserIds = shop().distributorLevel.getLevelUser(levelInfo.getLevelId());
@@ -470,7 +471,7 @@ public class AdminDistributionController extends AdminBaseController{
 	@PostMapping("/admin/distribution/distrobutor/list")
 	public JsonResult distributorList(@RequestBody DistributorListParam param) {
 		PageResult<DistributorListVo> distributorList = shop().distributorList.getPageList(param);
-		return this.success(distributorList); 
+		return this.success(distributorList);
 	}
 
     /**
@@ -527,7 +528,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorInvitedListVo> invitedlist = shop().distributorList.getInvitedList(param);
 		return this.success(invitedlist);
 	}
-	
+
 	/**
 	 * 清除分销员身份
 	 * @param userId
@@ -549,7 +550,7 @@ public class AdminDistributionController extends AdminBaseController{
         int res = shop().distributorList.setInviteCode(param);
         return this.success(res);
     }
-	
+
 	/**
 	 * 佣金统计
 	 * @param param
@@ -560,7 +561,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<BrokerageListVo> list = shop().brokerage.getbrokerageList(param);
 		return this.success(list);
 	}
-	
+
 	/**
 	 * 分销员等级列表
 	 * @return
@@ -570,7 +571,7 @@ public class AdminDistributionController extends AdminBaseController{
 		List<DistributorLevelVo> levelList = shop().brokerage.getLevelList();
 		return this.success(levelList);
 	}
-	
+
 	/**
 	 * 分销员分组列表
 	 * @return
@@ -580,7 +581,7 @@ public class AdminDistributionController extends AdminBaseController{
 		List<DistributorGroupListVo> groupList = shop().brokerage.getGroupList();
 		return this.success(groupList);
 	}
-	
+
 	/**
 	 * 商品返利统计
 	 * @param param
@@ -591,7 +592,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<RebateGoodsVo> rebateGoodsList = shop().rebateGoods.getRebateGoods(param);
 		return this.success(rebateGoodsList);
 	}
-	
+
 	/**
 	 * 商品返利明细
 	 * @param param
@@ -602,7 +603,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<RebateGoodsDetailVo> detail = shop().rebateGoods.getRebateGoodsDetail(param);
 		return this.success(detail);
 	}
-	
+
 	//分销推广语
 	/**
 	 * 分销推广语列表
@@ -614,7 +615,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<PromotionLanguageListVo> promotionLanguageList = shop().promotionLanguage.getPromotionLanguageList(param);
 		return this.success(promotionLanguageList);
 	}
-	
+
 	/**
 	 * 添加分销推广语
 	 * @param param
@@ -625,7 +626,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().promotionLanguage.addPromotionLanguage(param);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 获取单条分销推广语信息
 	 * @param id
@@ -636,7 +637,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PromotionLanguageListVo result = shop().promotionLanguage.getOnePromotion(id);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 分销推广语编辑保存
 	 * @param param
@@ -647,7 +648,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().promotionLanguage.savePromotionLanguage(param);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 删除分销推广语，假删除
 	 * @param id
@@ -658,7 +659,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().promotionLanguage.delPromotionLanguage(id);
 		return this.success(result);
 	}
-	
+
 	/**
 	 * 停用分销推广语
 	 * @param id
@@ -669,7 +670,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().promotionLanguage.pausePromotionLanguage(id);
 		return this.success(result);
 	}
-	
+
 	/**
 	 *启用分销推广语
 	 * @param id
@@ -680,7 +681,7 @@ public class AdminDistributionController extends AdminBaseController{
 		int result = shop().promotionLanguage.openPromotionLanguage(id);
 		return this.success(result);
 	}
-	
+
 	//分销提现审核
 	/**
 	 * 分销提现审核列表
@@ -692,7 +693,7 @@ public class AdminDistributionController extends AdminBaseController{
 		PageResult<DistributorWithdrawListVo> withdrawList = shop().withdraw.getWithdrawList(param);
 		return this.success(withdrawList);
 	}
-	
+
 	/**
 	 * 提现审核详情
 	 * @param id

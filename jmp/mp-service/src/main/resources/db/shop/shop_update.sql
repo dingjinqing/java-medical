@@ -465,5 +465,8 @@ ALTER TABLE `b2c_lottery`   MODIFY COLUMN `score_chances` int(8) NULL DEFAULT NU
 -- 支付有礼 注释修改  商品范围  状态
 ALTER TABLE `b2c_pay_award`   MODIFY COLUMN `goods_area_type` mediumint(5) NULL DEFAULT 0 COMMENT '商品范围类型 1全部商品 0 部分商品' ;
 ALTER TABLE `b2c_pay_award`   MODIFY COLUMN `status` tinyint(1) NULL DEFAULT 0 COMMENT '状态 1启用 0停用' ;
+
+-- 返利策略 佣金计算方式
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `strategy_type` tinyint(1) NULL DEFAULT 0 COMMENT '佣金计算方式;0:商品实际支付金额*佣金比例；1：商品实际利润（实际支付金额-成本价）* 佣金比例';
 /*********************2.12*************************END*/
 
