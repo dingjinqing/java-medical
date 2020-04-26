@@ -31,241 +31,241 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayAwardRecord extends UpdatableRecordImpl<PayAwardRecord> implements Record17<Integer, String, Byte, Timestamp, Timestamp, Integer, Integer, String, String, String, BigDecimal, Integer, String, Byte, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 2085817305;
+    private static final long serialVersionUID = 1426304437;
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.id</code>.
+     * Setter for <code>mini_shop_471752.b2c_pay_award.id</code>.
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.id</code>.
+     * Getter for <code>mini_shop_471752.b2c_pay_award.id</code>.
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.activity_names</code>. 活动名称
+     * Setter for <code>mini_shop_471752.b2c_pay_award.activity_names</code>. 活动名称
      */
     public void setActivityNames(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.activity_names</code>. 活动名称
+     * Getter for <code>mini_shop_471752.b2c_pay_award.activity_names</code>. 活动名称
      */
     public String getActivityNames() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.time_type</code>. 时间类型0固时1永久
+     * Setter for <code>mini_shop_471752.b2c_pay_award.time_type</code>. 时间类型0固时1永久
      */
     public void setTimeType(Byte value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.time_type</code>. 时间类型0固时1永久
+     * Getter for <code>mini_shop_471752.b2c_pay_award.time_type</code>. 时间类型0固时1永久
      */
     public Byte getTimeType() {
         return (Byte) get(2);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.start_time</code>. 开始
+     * Setter for <code>mini_shop_471752.b2c_pay_award.start_time</code>. 开始
      */
     public void setStartTime(Timestamp value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.start_time</code>. 开始
+     * Getter for <code>mini_shop_471752.b2c_pay_award.start_time</code>. 开始
      */
     public Timestamp getStartTime() {
         return (Timestamp) get(3);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.end_time</code>. 结束
+     * Setter for <code>mini_shop_471752.b2c_pay_award.end_time</code>. 结束
      */
     public void setEndTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.end_time</code>. 结束
+     * Getter for <code>mini_shop_471752.b2c_pay_award.end_time</code>. 结束
      */
     public Timestamp getEndTime() {
         return (Timestamp) get(4);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.act_first</code>. 优先级
+     * Setter for <code>mini_shop_471752.b2c_pay_award.act_first</code>. 优先级
      */
     public void setActFirst(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.act_first</code>. 优先级
+     * Getter for <code>mini_shop_471752.b2c_pay_award.act_first</code>. 优先级
      */
     public Integer getActFirst() {
         return (Integer) get(5);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.goods_area_type</code>. 商品范围类型 0全部商品 1 部分商品
+     * Setter for <code>mini_shop_471752.b2c_pay_award.goods_area_type</code>. 商品范围类型 0全部商品 1 部分商品
      */
     public void setGoodsAreaType(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.goods_area_type</code>. 商品范围类型 0全部商品 1 部分商品
+     * Getter for <code>mini_shop_471752.b2c_pay_award.goods_area_type</code>. 商品范围类型 0全部商品 1 部分商品
      */
     public Integer getGoodsAreaType() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.goods_ids</code>. 商品id
+     * Setter for <code>mini_shop_471752.b2c_pay_award.goods_ids</code>. 商品id
      */
     public void setGoodsIds(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.goods_ids</code>. 商品id
+     * Getter for <code>mini_shop_471752.b2c_pay_award.goods_ids</code>. 商品id
      */
     public String getGoodsIds() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.goods_cat_ids</code>. 商品平台分类
+     * Setter for <code>mini_shop_471752.b2c_pay_award.goods_cat_ids</code>. 商品平台分类
      */
     public void setGoodsCatIds(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.goods_cat_ids</code>. 商品平台分类
+     * Getter for <code>mini_shop_471752.b2c_pay_award.goods_cat_ids</code>. 商品平台分类
      */
     public String getGoodsCatIds() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.goods_sort_ids</code>. 商品商家分类
+     * Setter for <code>mini_shop_471752.b2c_pay_award.goods_sort_ids</code>. 商品商家分类
      */
     public void setGoodsSortIds(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.goods_sort_ids</code>. 商品商家分类
+     * Getter for <code>mini_shop_471752.b2c_pay_award.goods_sort_ids</code>. 商品商家分类
      */
     public String getGoodsSortIds() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.min_pay_money</code>. 最小金额
+     * Setter for <code>mini_shop_471752.b2c_pay_award.min_pay_money</code>. 最小金额
      */
     public void setMinPayMoney(BigDecimal value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.min_pay_money</code>. 最小金额
+     * Getter for <code>mini_shop_471752.b2c_pay_award.min_pay_money</code>. 最小金额
      */
     public BigDecimal getMinPayMoney() {
         return (BigDecimal) get(10);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.limit_times</code>. 每个用户可参加次数
+     * Setter for <code>mini_shop_471752.b2c_pay_award.limit_times</code>. 每个用户可参加次数
      */
     public void setLimitTimes(Integer value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.limit_times</code>. 每个用户可参加次数
+     * Getter for <code>mini_shop_471752.b2c_pay_award.limit_times</code>. 每个用户可参加次数
      */
     public Integer getLimitTimes() {
         return (Integer) get(11);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.award_list</code>. 奖品列表json
+     * Setter for <code>mini_shop_471752.b2c_pay_award.award_list</code>. 奖品列表json
      */
     public void setAwardList(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.award_list</code>. 奖品列表json
+     * Getter for <code>mini_shop_471752.b2c_pay_award.award_list</code>. 奖品列表json
      */
     public String getAwardList() {
         return (String) get(12);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.status</code>. 状态1停用
+     * Setter for <code>mini_shop_471752.b2c_pay_award.status</code>. 状态1停用
      */
     public void setStatus(Byte value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.status</code>. 状态0停用
+     * Getter for <code>mini_shop_471752.b2c_pay_award.status</code>. 状态1停用
      */
     public Byte getStatus() {
         return (Byte) get(13);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.del_flag</code>. 1删除
+     * Setter for <code>mini_shop_471752.b2c_pay_award.del_flag</code>. 1删除
      */
     public void setDelFlag(Byte value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.del_flag</code>. 1删除
+     * Getter for <code>mini_shop_471752.b2c_pay_award.del_flag</code>. 1删除
      */
     public Byte getDelFlag() {
         return (Byte) get(14);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.create_time</code>. 创建时间
+     * Setter for <code>mini_shop_471752.b2c_pay_award.create_time</code>. 创建时间
      */
     public void setCreateTime(Timestamp value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.create_time</code>. 创建时间
+     * Getter for <code>mini_shop_471752.b2c_pay_award.create_time</code>. 创建时间
      */
     public Timestamp getCreateTime() {
         return (Timestamp) get(15);
     }
 
     /**
-     * Setter for <code>mini_shop_4748160.b2c_pay_award.update_time</code>. 跟新时间
+     * Setter for <code>mini_shop_471752.b2c_pay_award.update_time</code>. 跟新时间
      */
     public void setUpdateTime(Timestamp value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>mini_shop_4748160.b2c_pay_award.update_time</code>. 跟新时间
+     * Getter for <code>mini_shop_471752.b2c_pay_award.update_time</code>. 跟新时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(16);

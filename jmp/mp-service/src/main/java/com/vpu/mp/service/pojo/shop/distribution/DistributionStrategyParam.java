@@ -124,6 +124,10 @@ public class DistributionStrategyParam {
 	private Byte      sendCoupon;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+    /**
+     * 佣金计算方式; 0:商品实际支付金额*佣金比例；1：商品实际利润（实际支付金额-成本价）* 佣金比例
+     */
+	private Byte strategyType;
 	private Integer   nav;
 	/**
 	 * 	分页信息

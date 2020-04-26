@@ -1,32 +1,11 @@
 package com.vpu.mp.service.shop.market.packagesale;
 
-import static com.vpu.mp.db.shop.tables.Goods.GOODS;
-import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
-import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
-import static com.vpu.mp.db.shop.tables.User.USER;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.db.shop.tables.records.PackageSaleRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
+import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -35,38 +14,43 @@ import com.vpu.mp.service.pojo.saas.category.SysCatevo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsView;
 import com.vpu.mp.service.pojo.shop.goods.sort.GoodsSortSelectListVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant;
+import com.vpu.mp.service.pojo.shop.market.packagesale.*;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.ActivityStatus;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleConstant.Status;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo;
 import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDefineVo.GoodsGroupVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleDetailVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleOrderPageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSalePageVo;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleParam;
-import com.vpu.mp.service.pojo.shop.market.packagesale.PackSaleShareVo;
 import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketVo;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleAddCartVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckedGoodsListVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleCheckoutVo;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsAddParam;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListParam;
-import com.vpu.mp.service.pojo.wxapp.market.packagesale.PackageSaleGoodsListVo;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.promotion.PackSalePromotion;
+import com.vpu.mp.service.pojo.wxapp.market.packagesale.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.AdminMarketOrderInfoService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
-
 import jodd.util.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.jooq.*;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static com.vpu.mp.db.shop.tables.Goods.GOODS;
+import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
+import static com.vpu.mp.db.shop.tables.PackageSale.PACKAGE_SALE;
+import static com.vpu.mp.db.shop.tables.User.USER;
 
 /**
  * @author huangronggang
@@ -82,7 +66,11 @@ public class PackSaleService extends ShopBaseService {
 	@Autowired public OrderReadService orderReadService;
     @Autowired public PackageGoodsCartService packageGoodsCartService;
     @Autowired private ShopCommonConfigService shopCommonConfigService;
-	
+
+    /**
+     * 按价格打包
+     */
+    public static final Byte PACKAGE_FOR_PRICE = 0;
 	/**
 	 * 分页查询一口价活动列表
 	 * @param param
@@ -513,9 +501,11 @@ public class PackSaleService extends ShopBaseService {
             res.removeAll(group.getGoodsIdList());
             res.addAll(group.getGoodsIdList());
         }
-        List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
-        res.removeAll(goodsIds);
-        res.addAll(goodsIds);
+        if(CollectionUtils.isNotEmpty(group.getCatIdList()) || CollectionUtils.isNotEmpty(group.getSortIdList())){
+            List<Integer> goodsIds = goodsService.getOnShelfGoodsIdList(group.getCatIdList(),group.getSortIdList(), Collections.emptyList());
+            res.removeAll(goodsIds);
+            res.addAll(goodsIds);
+        }
 
         return res;
     }
@@ -549,6 +539,51 @@ public class PackSaleService extends ShopBaseService {
 
     public PackageSaleRecord getRecord(int packageId){
         return db().selectFrom(PACKAGE_SALE).where(PACKAGE_SALE.ID.eq(packageId)).fetchAny();
+    }
+
+    /**
+     * 获取符合条件的 营销信息
+     * @param goodsId
+     * @param sortId
+     * @param now
+     * @return
+     */
+    public List<PackSalePromotion> getCanUsePackSalePromotion(Integer goodsId,Integer sortId,Timestamp now) {
+
+        Condition condition=DslPlus.findInSet(goodsId,PACKAGE_SALE.GOODS_IDS_1).or(DslPlus.findInSet(sortId,PACKAGE_SALE.SORT_IDS_1));
+        condition = condition.or(DslPlus.findInSet(goodsId,PACKAGE_SALE.GOODS_IDS_2)).or(DslPlus.findInSet(sortId,PACKAGE_SALE.SORT_IDS_2));
+        condition = condition.or(DslPlus.findInSet(goodsId,PACKAGE_SALE.GOODS_IDS_3)).or(DslPlus.findInSet(sortId,PACKAGE_SALE.SORT_IDS_3));
+
+        List<PackageSaleRecord> packageSaleRecords = db().selectFrom(PACKAGE_SALE)
+            .where(PACKAGE_SALE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)
+                .and(PACKAGE_SALE.START_TIME.lt(now))
+                .and(PACKAGE_SALE.END_TIME.gt(now))
+                .and(PACKAGE_SALE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
+                .and(condition)).orderBy(PACKAGE_SALE.CREATE_TIME.desc()).fetchInto(PackageSaleRecord.class);
+
+        if (packageSaleRecords.size() == 0) {
+            return null;
+        }
+
+        List<PackSalePromotion> packSalePromotions=new ArrayList<>(packageSaleRecords.size());
+        for (PackageSaleRecord packageSaleRecord : packageSaleRecords) {
+            int goodsCount = 0;
+            goodsCount+= Optional.ofNullable(packageSaleRecord.getGoodsNumber_1()).orElse(0);
+            goodsCount+= Optional.ofNullable(packageSaleRecord.getGoodsNumber_2()).orElse(0);
+            goodsCount+= Optional.ofNullable(packageSaleRecord.getGoodsNumber_3()).orElse(0);
+
+            PackSalePromotion promotion=new PackSalePromotion();
+            promotion.setPromotionId(packageSaleRecord.getId());
+            promotion.setGoodsCount(goodsCount);
+            promotion.setPackageType(packageSaleRecord.getPackageType());
+            if (PACKAGE_FOR_PRICE.equals(packageSaleRecord.getPackageType())) {
+                promotion.setPriceOrDiscount(packageSaleRecord.getTotalMoney());
+            } else {
+                promotion.setPriceOrDiscount(packageSaleRecord.getTotalRatio());
+            }
+            packSalePromotions.add(promotion);
+        }
+        return packSalePromotions;
     }
 
     /**

@@ -78,14 +78,14 @@
                     <div class="shadow_setMain">
                       <a
                         href="javascript:;"
-                        :style="itemC.source !== 1&&itemC.eventStatus!==3?'margin-right:20px':''"
-                        @click="handleToAdd(false,1)"
+                        :style="itemC.source !== 1 || itemC.eventStatus===3?'margin-right:20px':''"
+                        @click="handleToAdd(false,itemC)"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
                         href="javascript:;"
                         style="margin-left:20px"
                         @click="handleToDel(index,indexC)"
-                        v-if="itemC.source !== 1&&itemC.eventStatus!==3"
+                        v-if="itemC.source !== 1 || itemC.eventStatus===3"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
 
@@ -154,38 +154,7 @@ export default {
       },
       {
         month: '06',
-        data: [
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          }
-        ],
+        data: [],
         isInvalid: false
       },
       {
@@ -301,22 +270,6 @@ export default {
               item.targetbox = false
             } else {
               item.targetbox = true
-              // 模拟数据
-              // let obj = {
-              //   'id': 1,
-              //   'eventName': '接口测试活动1',
-              //   'eventTime': '2020-04-23',
-              //   'eventDesc': 'eventDesc描述',
-              //   'pubFlag': 0,
-              //   'delFlag': 0,
-              //   'source': 1,
-              //   'sourceId': 0,
-              //   'createTime': '2020-04-23 17:22:22',
-              //   'updateTime': '2020-04-23 17:22:22',
-              //   'eventStatus': 4,
-              //   'downTime': 0
-              // }
-              // item.data.push(obj)
             }
           })
           console.log(res.content.data)
@@ -352,6 +305,7 @@ export default {
     },
     // 点击添加营销事件
     handleToAdd (flag, item) {
+      console.log(item)
       if (flag) {
         this.$router.push({
           name: 'addCalendarMain',

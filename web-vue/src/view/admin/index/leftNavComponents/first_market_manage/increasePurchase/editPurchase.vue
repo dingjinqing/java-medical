@@ -668,7 +668,7 @@ export default {
     'pageParams': {
       handler: function (newVal, oldVal) {
         let allGoods = [...this.main_table]
-        let startIndex = (this.pageParams.currentPage - 1) * this.pageParams.pageRows + 1
+        let startIndex = (this.pageParams.currentPage - 1) * this.pageParams.pageRows - 0
         this.mainTableData = allGoods.splice(startIndex, this.pageParams.pageRows)
       },
       deep: true
@@ -690,7 +690,7 @@ export default {
           this.form1.activityDate.push(this.form1.startTime)
           this.form1.activityDate.push(this.form1.endTime)
           this.main_table = res.content.mainGoods
-          this.pickLabel = res.content.tagList
+          this.pickLabel = res.content.tagList || []
           this.form1.activityTagId = this.pickLabel.map(item => item.id)
           this.setDomainImg(this.main_table)
           this.main_table.map((item, index) => {

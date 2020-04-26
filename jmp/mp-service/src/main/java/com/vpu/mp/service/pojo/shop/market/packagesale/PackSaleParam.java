@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,7 +36,6 @@ public class PackSaleParam {
 	/**活动类型**/
 	private Byte packageType;
 	/** 结算总价格 */
-	@Positive
 	private BigDecimal totalMoney;
 	/**折扣比例**/
 	private BigDecimal totalRatio;

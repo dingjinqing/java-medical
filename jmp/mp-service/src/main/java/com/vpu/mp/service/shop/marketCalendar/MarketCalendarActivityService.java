@@ -5,15 +5,13 @@ import static com.vpu.mp.db.shop.tables.MarketCalendarActivity.MARKET_CALENDAR_A
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.weaver.Utils;
-import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
-import com.vpu.mp.db.main.tables.records.MarketCalendarRecord;
 import com.vpu.mp.db.shop.tables.records.MarketCalendarActivityRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketSysActivityMqParam;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarActivityVo;
@@ -49,7 +47,7 @@ public class MarketCalendarActivityService extends ShopBaseService {
 		for (CalendarAct calendarAct : calendarActList) {
 			Integer id = calendarAct.getCalActId();
 			if (id > 0) {
-				logger().info("编辑的id：{}",id);
+				logger().info("编辑的id：{}", id);
 				MarketCalendarActivityRecord activityRecord = db().selectFrom(MARKET_CALENDAR_ACTIVITY).where(
 						MARKET_CALENDAR_ACTIVITY.ID.eq(id).and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
 						.fetchAny();
@@ -81,13 +79,13 @@ public class MarketCalendarActivityService extends ShopBaseService {
 
 					int update = activityRecord.update();
 					logger().info("更新推荐的日历活动id：{}；calendarId:{},营销活动：{}；结果：{}", id, calendarId, update);
-				}else {
+				} else {
 					logger().info("更新");
 					activityRecord.setDelFlag(calendarAct.getDelFlag());
 					activityRecord.setActivityId(calendarAct.getActivityId());
 					activityRecord.setActivityType(calendarAct.getActivityType());
 					int update = activityRecord.update();
-					logger().info("更新id为：{}的数据，结果：{}",id,update);
+					logger().info("更新id为：{}的数据，结果：{}", id, update);
 				}
 
 			} else {
@@ -119,5 +117,46 @@ public class MarketCalendarActivityService extends ShopBaseService {
 				.set(MARKET_CALENDAR_ACTIVITY.DEL_FLAG, DelFlag.DISABLE_VALUE).where(MARKET_CALENDAR_ACTIVITY.ID.eq(id))
 				.execute();
 		return execute == 1;
+	}
+
+	/**
+	 * 同步system的消息
+	 * 
+	 * @param param
+	 * @return 
+	 */
+	public boolean getPushInfoInner(MarketMqParam param) {
+		List<MarketSysActivityMqParam> list = param.getList();
+		boolean flag = true;
+		for (MarketSysActivityMqParam item : list) {
+			MarketCalendarActivityRecord record = db().selectFrom(MARKET_CALENDAR_ACTIVITY)
+					.where(MARKET_CALENDAR_ACTIVITY.SYS_CAL_ACT_ID.eq(item.getId())).fetchAny();
+			if (record != null) {
+				// 更新
+				record.setCalendarId(item.getId());
+				record.setActivityType(item.getActivityType());
+				if (!record.getActivityType().equals(item.getActivityType())) {
+					record.reset(MARKET_CALENDAR_ACTIVITY.ACTIVITY_ID);
+				}
+				record.setRecommendType(item.getRecommendType());
+				record.setRecommendLink(item.getRecommendLink());
+				record.setDelFlag(item.getDelFlag());
+				int update = record.update();
+				logger().info("更新system的推送到店铺：{}，system对应id为：{}，结果：{}", getShopId(), item.getId(), update);
+				if (update <= 0) {
+					flag = false;
+				}
+			} else {
+				record = db().newRecord(MARKET_CALENDAR_ACTIVITY, item);
+				record.setSysCalActId(item.getId());
+				record.reset(MARKET_CALENDAR_ACTIVITY.ID);
+				int insert = record.insert();
+				logger().info("新建system的推送到店铺：{}，system对应id为：{}，结果：{}", getShopId(), item.getId(), insert);
+				if (insert <= 0) {
+					flag = false;
+				}
+			}
+		}
+		return flag;
 	}
 }

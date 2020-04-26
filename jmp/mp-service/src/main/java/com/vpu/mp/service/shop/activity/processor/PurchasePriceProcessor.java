@@ -184,8 +184,8 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
         List<OrderGoodsBo> bos = param.getBos();
         for(OrderGoodsBo bo:bos){
-            if(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(bo.getActivityType()) && bo.getActivityId() != null){
-                increasePurchase.addActivityTag(bo.getActivityId(),param.getWxUserInfo().getUserId());
+            if(bo.getPurchasePriceId() != null && bo.getPurchasePriceRuleId() != null){
+                increasePurchase.addActivityTag(bo.getPurchasePriceId(),param.getWxUserInfo().getUserId());
             }
         }
     }

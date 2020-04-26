@@ -28,6 +28,10 @@ public class LotteryVo {
     private String    noAwardIcon;
     private Byte      status;
     private Byte      delFlag;
+    /**
+     * 次数限制 0每人 1每人每天
+     */
+    private Byte chanceType;
 
     private List<LotteryPrizeVo> prizeList;
 

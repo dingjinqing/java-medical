@@ -272,6 +272,11 @@ export default {
   },
   mounted () {
     console.log('groupBuy')
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      this.editActivity(this.$route.params.id)
+    }
     // 初始化数据
     this.langDefault()
     this.initDataList()

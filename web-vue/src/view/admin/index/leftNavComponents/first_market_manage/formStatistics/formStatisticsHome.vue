@@ -123,7 +123,7 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span>{{scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
+              <span>{{scope.row.validityPeriod===1&&scope.row.status===1?($t('formStatisticsHome.permanentValidity')+'（进行中）'):scope.row.validityPeriod===1?$t('formStatisticsHome.permanentValidity'):$t('formStatisticsHome.validTheTerm')}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -262,65 +262,77 @@
     <el-dialog
       :title="$t('formStatisticsHome.shareTitle')"
       :visible.sync="shareVisible"
-      width="50%"
+      width="30%"
     >
-      <div
-        class="shareCodeContainer"
-        v-if="posterAddressImgUrl"
-      >
-        <div class="copyContainer">
-          <img
-            :src="posterAddressImgUrl"
-            alt=""
-            style="width:160px;height:160px"
-            class="code_imgs"
+      <div style="display:flex">
+        <div class="shareCodeContainer">
+          <div class="firstImg">
+            <div class="codeTop">
+
+              <div class="copyContainer">
+                <img
+                  :src="posterAddressImgUrl"
+                  alt=""
+                  style="width:160px;height:160px"
+                  class="code_imgs"
+                >
+              </div>
+              <div
+                class="copyContainer"
+                style="color:#999"
+              >
+                {{$t('formStatisticsHome.posterCode')}}
+              </div>
+
+            </div>
+            <div
+              class="codeTop"
+              v-if="shareCodeUrl"
+            >
+              <div class="copyContainer">
+                <img
+                  :src="shareCode"
+                  alt=""
+                  style="width:160px;height:160px"
+                  class="code_imgs"
+                >
+              </div>
+              <div
+                class="copyContainer"
+                style="color:#999"
+              >
+                下载二维码
+              </div>
+            </div>
+          </div>
+
+          <div class="copyContainer copyDiv">
+            <span>{{$t('formStatisticsHome.posterLink')}}：</span>
+            <el-input
+              size="small"
+              v-model="posterAddress"
+              ref="qrCodePageUrlInput"
+            ></el-input>
+            <span
+              class="copy"
+              @click="handelToCopy"
+            >{{$t('formStatisticsHome.copy')}}</span>
+          </div>
+          <div
+            v-if="shareCodeUrl"
+            class="copyContainer copyDiv"
           >
-        </div>
-        <div
-          class="copyContainer"
-          style="color:#999"
-        >
-          {{$t('formStatisticsHome.posterCode')}}
-        </div>
-        <div class="copyContainer copyDiv">
-          <span>{{$t('formStatisticsHome.posterLink')}}：</span>
-          <el-input
-            size="small"
-            v-model="posterAddress"
-            ref="qrCodePageUrlInput"
-          ></el-input>
-          <span
-            class="copy"
-            @click="handelToCopy"
-          >{{$t('formStatisticsHome.copy')}}</span>
-        </div>
-      </div>
-      <div class="shareCodeContainer">
-        <div class="copyContainer">
-          <img
-            :src="shareCode"
-            alt=""
-            style="width:160px;height:160px"
-            class="code_imgs"
-          >
-        </div>
-        <div
-          class="copyContainer"
-          style="color:#999"
-        >
-          {{$t('formStatisticsHome.posterCode')}}
-        </div>
-        <div class="copyContainer copyDiv">
-          <span>{{$t('formStatisticsHome.posterLink')}}：</span>
-          <el-input
-            size="small"
-            v-model="shareCodeUrl"
-            ref="qrCodePageUrlInput"
-          ></el-input>
-          <span
-            class="copy"
-            @click="handelToCopy"
-          >{{$t('formStatisticsHome.copy')}}</span>
+            <span>分享活动链接：</span>
+            <el-input
+              size="small"
+              v-model="shareCodeUrl"
+              ref="qrCodePageUrlInput"
+            ></el-input>
+            <span
+              class="copy"
+              @click="handelToCopy"
+            >{{$t('formStatisticsHome.copy')}}</span>
+          </div>
         </div>
       </div>
 
@@ -385,6 +397,7 @@ export default {
     },
     // 添加表单点击
     handleToAddForm () {
+      localStorage.setItem('isProhibitForm', false)
       this.$router.push({
         name: 'formDecorationHome'
       })
@@ -401,6 +414,11 @@ export default {
       switch (flag) {
         case 1: // 编辑
           console.log(row)
+          if (row.validityPeriod === 1 && row.status === 1) {
+            localStorage.setItem('isProhibitForm', true)
+          } else {
+            localStorage.setItem('isProhibitForm', false)
+          }
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
@@ -420,6 +438,7 @@ export default {
 
           break
         case 4: // 复制
+          localStorage.setItem('isProhibitForm', false)
           this.$router.push({
             path: '/admin/home/main/formDecorationHome',
             query: {
@@ -430,24 +449,24 @@ export default {
           break
         case 5: // 分享
           this.shareVisible = true
-          shareFormQuery({ pageId: row.pageId }).then(res => {
+          getPictorialCode(row.pageId).then(res => {
             console.log(res)
             if (res.error === 0) {
-              this.shareCodeUrl = this.$imageHost + '/' + res.content.pagePath
-              this.shareCode = res.content.imageUrl
+              this.posterAddress = res.content
+              this.posterAddressImgUrl = res.content
             }
           })
           if (row.status === 1) {
-            getPictorialCode(row.pageId).then(res => {
+            shareFormQuery({ pageId: row.pageId }).then(res => {
               console.log(res)
               if (res.error === 0) {
-                this.posterAddress = res.content
-                this.posterAddressImgUrl = res.content
+                this.shareCodeUrl = res.content.pagePath
+                this.shareCode = res.content.imageUrl
               }
             })
           } else {
-            this.posterAddress = ''
-            this.posterAddressImgUrl = ''
+            this.shareCode = ''
+            this.shareCodeUrl = ''
           }
 
           break
@@ -626,14 +645,23 @@ export default {
     }
   }
 }
+.firstImg {
+  display: flex;
+  justify-content: center;
+}
+.codeTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .shareCodeContainer {
-  display: inline-block;
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   .copyContainer {
+    display: flex;
     justify-content: center;
-
-    float: left;
     .copy {
       cursor: pointer;
       color: #5a8bff;

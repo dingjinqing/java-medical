@@ -636,7 +636,7 @@ export default {
     'pageParams': {
       handler: function (newVal, oldVal) {
         let allGoods = [...this.main_table]
-        let startIndex = (this.pageParams.currentPage - 1) * this.pageParams.pageRows + 1
+        let startIndex = (this.pageParams.currentPage - 1) * this.pageParams.pageRows - 0
         this.mainTableData = allGoods.splice(startIndex, this.pageParams.pageRows)
       },
       deep: true

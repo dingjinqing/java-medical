@@ -38,8 +38,11 @@ ALTER TABLE `b2c_mp_auth_shop` ADD COLUMN `live_pack_status` TINYINT(1) NULL DEF
 -- 更新旗舰版权限
 -- UPDATE `b2c_shop_version` SET `content` = '{"main_config":{"sub_0":["basic_yesterday","portrait_user","second_view","visit_source","analysis_visit_source"],"sub_1":["sort"],"sub_2":["m_member_card","m_voucher","m_bargain","m_video","m_integral_goods","m_seckill_goods","authorization","m_group_draw","m_pin_integration","m_nav"],"sub_3":["charge_card","count_card","grade_card","tag","sign_score","pay_score"],"sub_4":["full_cut","pin_group","bargain","form_decoration","distribution","message_template","pay_reward","coupon_grant","activity_reward","integral_goods","seckill_goods","lottery","purchase_price","reduce_price","group_draw","pin_integration","package_sale","pre_sale","insteadpay","gift","promote","assess","free_ship","reduce_price","coupon_package","comment_gift","first_special","give_gift","share_award",,"wx_mcode",,"live_broadcast"],"sub_5":["store_pay","technician","service","service_city"]},"num_config":{"picture_num":"10240","video_num":"10240","goods_num":"-1","store_num":"200","decorate_num":"-1","form_num":"-1"}}', `level` = 'v4' WHERE `id` = 4;
 /***********************2.11*********************END*/
+/***********************2.12********************BEGIN*/
+ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `version` varchar(50) not NULL default '' COMMENT '使用系统版本';
+ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `submit_user` varchar(128) not NULL default '' COMMENT '提交账号';
+ALTER TABLE `b2c_shop_question_feedback` ADD COLUMN `submit_user_phone` varchar(32) not NULL default '' COMMENT '提交账号绑定的手机号';
 
-/*********************2.12*************************START*/
 
 -- 营销日历表
 CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
@@ -51,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar` (
 `del_flag` TINYINT ( 1 ) NOT NULL DEFAULT '0' COMMENT '是否已删除：0否，1是',
 `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-PRIMARY KEY ( `id` ) 
+PRIMARY KEY ( `id` )
 );
 
 -- 营销日历表对应活动
@@ -68,6 +71,6 @@ CREATE TABLE IF NOT EXISTS `b2c_market_calendar_activity` (
 `shop_ids` VARCHAR ( 500 ) NOT NULL DEFAULT '' COMMENT '使用该推荐活动的店铺id，逗号隔开',
 `recommend_title` VARCHAR ( 32 ) NOT NULL DEFAULT '' COMMENT '推荐标题',
 PRIMARY KEY ( `id` ),
-KEY `calendar_id` ( `calendar_id` ) 
+KEY `calendar_id` ( `calendar_id` )
 );
 /*********************2.12*************************END*/

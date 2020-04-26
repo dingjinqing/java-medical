@@ -65,4 +65,6 @@ public class FriendPromoteUpdateParam {
     private FpRewardContent fpRewardContent;
     /** 单个用户每天最多可帮忙助力次数 */
     private Integer promoteTimesPerDay;
+    /** 活动说明 */
+    private promoteActCopywriting actCopywriting;
 }

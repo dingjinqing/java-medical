@@ -17,7 +17,7 @@ public class WxMaSubscribeMessageGsonAdapter implements JsonSerializer<WxMaSubsc
 	    messageJson.addProperty("touser", message.getTouser());
 	    messageJson.addProperty("template_id", message.getTemplateId());
 	    if (message.getPage() != null) {
-	      messageJson.addProperty("url", message.getPage());
+	      messageJson.addProperty("page", message.getPage());
 	    }
 
 	    JsonObject data = new JsonObject();

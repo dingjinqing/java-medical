@@ -78,10 +78,6 @@ public class LotteryPrizeService  extends ShopBaseService {
             }
             randNumber -= chanceNumerator;
         }
-        if (lottery.getNoAwardScore()!=null&&lottery.getNoAwardScore()>0){
-            //未中奖励积分（安慰奖）
-            joinValid.setResultsType(LOTTERY_TYPE_HEARTEN);
-        }
         //没中奖
         joinValid.setResultsType(LOTTERY_TYPE_NULL);
     }

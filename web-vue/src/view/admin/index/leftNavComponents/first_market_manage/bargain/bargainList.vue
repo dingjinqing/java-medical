@@ -268,6 +268,9 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.params.calenderEdit) {
+      this.edit(this.$route.params.id)
+    }
     this.langDefault()
     // 初始列表化数据
     this.initDataList()

@@ -394,7 +394,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc(imageService.imageUrl(moduleUploadVideo.getVideoImgSrc()));
+            moduleUploadVideo.setVideoImgSrc("http://video-jmpdev.test.upcdn.net"+moduleUploadVideo.getVideoImgSrc());
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();
