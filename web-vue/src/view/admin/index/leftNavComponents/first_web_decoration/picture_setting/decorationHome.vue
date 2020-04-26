@@ -1338,6 +1338,20 @@ export default {
         })
         return
       }
+      // 公众号数量控制
+      let officialAccounts = 0
+      saveMosulesData.forEach((item, index) => {
+        if (item.module_name === 'm_official_accounts') {
+          officialAccounts++
+        }
+      })
+      if (officialAccounts > 1) {
+        this.$message.error({
+          message: '公众号模块最多上传1个',
+          showClose: true
+        })
+        return
+      }
 
       if (flag === 0) {
         console.log(this.modulesData)
