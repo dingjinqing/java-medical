@@ -102,6 +102,10 @@ public class GroupBuyParam {
      * 拼团失败发放优惠券
      */
     private String rewardCouponId;
+    /**
+     * 显示文明
+     */
+    private String activityCopywriting;
 
     /**
      * 分享设置

@@ -43,10 +43,6 @@ public class LotteryConstant {
      */
     public final static byte LOTTERY_TYPE_SEND_OUT=-1;
     /**
-     * 鼓励奖
-     */
-    public final static byte LOTTERY_TYPE_HEARTEN=0;
-    /**
      * 积分
      */
     public final static byte LOTTERY_TYPE_SCORE=1;

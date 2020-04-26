@@ -75,7 +75,10 @@ public class GroupBuyEditParam {
      * 参加活动打标签id
      */
     private String activityTagId;
-
+    /**
+     * 显示文明
+     */
+    private String activityCopywriting;
     /**
      * 分享设置
      */

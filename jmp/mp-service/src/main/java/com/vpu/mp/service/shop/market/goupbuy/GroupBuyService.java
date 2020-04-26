@@ -826,4 +826,14 @@ public class GroupBuyService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 拼团说明
+     * @param id
+     * @return 拼团说明 or null
+     */
+    public String getActivityCopywriting(Integer id) {
+        Record1<String> record1 = db().select(GROUP_BUY_DEFINE.ACTIVITY_COPYWRITING).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchAny();
+        return record1.component1();
+    }
 }
