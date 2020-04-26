@@ -14,7 +14,7 @@
     <!-- 下拉 -->
     <v-slide bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-slide'}}" module="{{module}}"></v-slide>
     <!-- 输入框 -->
-    <v-input-text wx:elif="{{module.component_name == 'v-input-text'}}" module="{{module}}"></v-input-text>
+    <v-input-text bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-input-text'}}" module="{{module}}"></v-input-text>
     <!-- 选项 -->
     <v-choose bind:attached="bindComponentAttached" wx:elif="{{module.component_name == 'v-choose'}}" module="{{module}}"></v-choose>
     <!-- 日期 -->
