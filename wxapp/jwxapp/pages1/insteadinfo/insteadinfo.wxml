@@ -46,9 +46,9 @@
       <text>好友助力</text>
       <view class="line"></view>
     </view>
-    <block wx:for="{{pageInfo.insteadPayDetails.dataList}}" wx:for-item="friendItem" wx:for-index="friendIndex" wx:key="{{friendIndex}}">
+    <block wx:for="{{pageInfo.insteadPayDetails.dataList}}" wx:for-item="friendItem" wx:for-index="friendIndex" wx:key="friendIndex">
       <view class="friend-item">
-        <image class="user-avatar" src="{{friendItem.userAvatar ? friendItem.userAvatar : imageUrl + '/image/wxapp/ins-icon.png'}}"></image>
+        <image class="user-avatar" src="{{friendItem.userAvatar && friendItem.username ? friendItem.userAvatar : imageUrl + '/image/wxapp/ins-icon.png'}}"></image>
         <view class="user-pay-info">
           <view class="user-left">
             <view>{{friendItem.username ? friendItem.username : '(匿名好友)'}}</view>
