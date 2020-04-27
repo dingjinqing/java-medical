@@ -115,9 +115,7 @@ public class QuestionService extends MainBaseService {
         Map<Integer,List<String>> urlMap = getQfImgByIds(feedbackIds);
         List<FeedbackVo> vos = Lists.newArrayList();
         for( FeedbackBo bo : boPageResult.getDataList() ){
-            FeedbackVo vo = new FeedbackVo();
-            BeanUtils.copyProperties(bo,vo);
-            vo.setImageUrls(urlMap.getOrDefault(vo.getQuestionFeedbackId(),Lists.newArrayList()));
+            FeedbackVo vo = convertVo(bo,urlMap);
             vos.add(vo);
         }
         result.dataList = vos;
