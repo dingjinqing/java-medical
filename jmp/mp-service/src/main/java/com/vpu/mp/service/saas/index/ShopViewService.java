@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -239,7 +241,7 @@ public class ShopViewService extends MainBaseService {
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,String> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
-            collect(Collectors.toMap(Function.identity(),y->"0"));
+            collect(Collectors.toMap(x->x,y->"0",(oldValue,newValue)->oldValue,LinkedHashMap::new));
         Field<String> time = dateFormat(ORDER_INFO.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
         List<OrderMoneyInfo> moneyInfos = db().select(time,ORDER_INFO.PAY_CODE,DSL.sum(ORDER_INFO.MONEY_PAID).as("wxPayed"),
             DSL.sum(ORDER_INFO.USE_ACCOUNT).as("balancePayed"),
@@ -264,7 +266,7 @@ public class ShopViewService extends MainBaseService {
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
         Map<String,Integer> dateMap = localDates.stream().
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
-            collect(Collectors.toMap(Function.identity(),y->0));
+            collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
         Field<String> time = dateFormat(ORDER_INFO.PAY_TIME,DateUtil.DATE_FORMAT_SIMPLE).as("time");
         Result<Record2<String,Integer>> result =db().
             select(time,DSL.count(ORDER_INFO.ID)).
@@ -283,15 +285,16 @@ public class ShopViewService extends MainBaseService {
     private List<BaseInfo> getUserNumByDay(ShopViewParam param){
         List<LocalDate> localDates = DateUtil.getAllDatesBetweenTwoDates(
             param.getStartTime().toLocalDateTime().toLocalDate(),param.getEndTime().toLocalDateTime().toLocalDate());
-        Map<String,Integer> dateMap = localDates.stream().
-            map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
-            collect(Collectors.toMap(Function.identity(),y->0));
+        Map<String,Integer> dateMap = localDates.stream()
+            .map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay())))
+            .collect(Collectors.toMap(x->x,y->0,(oldValue,newValue)->oldValue,LinkedHashMap::new));
         Result<Record2<String,Integer>> result =db().
             select(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE),DSL.count(USER.ID))
             .from(USER)
             .where(USER.CREATE_TIME.greaterOrEqual(param.getStartTime())).
                 and(USER.CREATE_TIME.lessOrEqual(param.getEndTime()))
             .groupBy(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE))
+            .orderBy(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE).asc())
             .fetch();
         return getBaseInfoList(result,dateMap);
     }
