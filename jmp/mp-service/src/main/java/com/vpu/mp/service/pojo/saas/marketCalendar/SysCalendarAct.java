@@ -15,7 +15,14 @@ public class SysCalendarAct {
 	private String activityType;
 	/** 0站内文本，1外部链接 */
 	@NotNull
-	private Integer recommendType = 0;
+	private Byte recommendType = 0;
 	/** 外部链接 或者存articleId */
 	private String recommendLink;
+	
+	/** 编辑时候传的id */
+	private Integer activityId = 0;
+	/** 编辑时候传的 是否已删除：0否，1是 */
+	private Byte delFlag = 0;
+	
+	
 }

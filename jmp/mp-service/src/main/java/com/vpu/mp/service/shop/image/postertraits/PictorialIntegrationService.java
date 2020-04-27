@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoPar
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -59,8 +60,12 @@ public class PictorialIntegrationService extends ShopBaseService {
     @Autowired
     private SeckillPictorialService seckillPictorialService;
 
+    @Autowired
+    private RebatePictorialService rebatePictorialService;
+
     /**
      * 获取商品所有图片base64格式集合
+     *
      * @return
      */
     public List<String> getGoodsImagesBase64(Integer goodsId) {
@@ -80,7 +85,7 @@ public class PictorialIntegrationService extends ShopBaseService {
         return imgList;
     }
 
-    private ShareBaseService findShareBaseService(GoodsShareBaseParam param){
+    private ShareBaseService findShareBaseService(GoodsShareBaseParam param) {
         ShareBaseService shareBaseService;
         if (param instanceof GroupBuyShareInfoParam) {
             shareBaseService = groupBuyPictorialService;
@@ -94,15 +99,19 @@ public class PictorialIntegrationService extends ShopBaseService {
             shareBaseService = reducePricePictorialService;
         } else if (param instanceof FirstSpecialShareInfoParam) {
             shareBaseService = firstSpecialPictorialService;
-        } else if(param instanceof SeckillShareInfoParam){
+        } else if (param instanceof SeckillShareInfoParam) {
             shareBaseService = seckillPictorialService;
+        } else if (param instanceof RebateShareInfoParam) {
+            shareBaseService = rebatePictorialService;
         } else {
             shareBaseService = normalGoodsPictorialService;
         }
         return shareBaseService;
     }
+
     /**
      * 获取活动分享图片信息
+     *
      * @param param 各个活动对应的 GoodsShareBaseParam类
      * @return {@link GoodsShareInfo}
      */

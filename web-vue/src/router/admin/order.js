@@ -152,6 +152,17 @@ const routes = [
       import(
         '@/view/admin/index/leftNavComponents/first_trade_manageL/orders/orderList'
       )
+  },
+  // 批量发货
+  {
+    path: '/admin/home/main/orders/bulkShipment/list',
+    name: 'bulk_shipment',
+    meta: {
+      crumbTitle: 'router.bulk_shipment',
+      meta: 'first_trade_manage',
+      category: 'bulk_shipment'
+    },
+    component: () => import('@/view/admin/index/leftNavComponents/first_trade_manageL/orders/bulkShipment/bulkShipmentList')
   }
 ]
 

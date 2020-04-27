@@ -85,13 +85,13 @@
                 >
                 <!--上传视频-->
                 <a
-                  :href="item.moduleValue.video.video_src"
+                  :href="item.moduleValue.video_src"
                   target="_blank"
                   class="video_src"
                   v-if="item.moduleName === 'm_upload_video'"
                 >
                   <img
-                    :src="item.moduleValue.video.video_img_src"
+                    :src="item.moduleValue.video_img_src"
                     style="display: inline-block;"
                     width="140px"
                     height="80px"
@@ -156,11 +156,13 @@ moduleValueList: null
                   console.log(JSON.parse(item.moduleValue))
                   let text = ''
                   console.log(item)
-                  JSON.parse(item.moduleValue).area.forEach((itemC, index) => {
-                    text = text + itemC
-                  })
-                  if (JSON.parse(item.moduleValue).detail) {
-                    text = text + JSON.parse(item.moduleValue).detail
+                  if (item.moduleValue !== '{}') {
+                    JSON.parse(item.moduleValue).area.forEach((itemC, index) => {
+                      text = text + itemC
+                    })
+                    if (JSON.parse(item.moduleValue).detail) {
+                      text = text + JSON.parse(item.moduleValue).detail
+                    }
                   }
                   console.log(text)
                   // this.address.push(text)
@@ -192,7 +194,7 @@ moduleValueList: null
                   //   slideArr: ''
                   // }
                   item.moduleValueList.forEach((itemC, indexC) => {
-                    if (JSON.parse(item.moduleValue) === itemC) {
+                    if (item.moduleValue === itemC) {
                       item.moduleValue = itemC
                     }
                   })
@@ -229,11 +231,13 @@ moduleValueList: null
                   item.moduleValue = JSON.parse(item.moduleValue)[0]
                   break
                 case 'm_upload_video':
+                  console.log(item)
                   item.simple = false
-                  item.moduleValue = JSON.parse(item.moduleValue)[0]
+                  item.moduleValue = JSON.parse(item.moduleValue)
                   break
               }
             })
+            console.log(res.content)
             this.allData = res.content
           }
         })

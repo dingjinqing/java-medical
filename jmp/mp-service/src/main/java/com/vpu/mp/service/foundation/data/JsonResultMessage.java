@@ -1035,6 +1035,10 @@ public class JsonResultMessage {
     public static final String WX_MA_SECKILL_DOC="wx.ma.seckill.doc";
     /**'秒杀'*/
     public static final String WX_MA_SECKILL="wx.ma.seckill";
+    /**分销 ‘【特价专享】唯一渠道，专享价格，等你来抢！’*/
+    public static final String WX_MA_REBATE_DOC = "wx.ma.rebate.doc";
+    /**分销 ‘专享价格’*/
+    public static final String WX_MA_REBATE_SPECIAL_DOC = "wx.ma.rebate.special.doc";
 
     /** 预售图片相关*/
     /**"定金膨胀"四个字*/

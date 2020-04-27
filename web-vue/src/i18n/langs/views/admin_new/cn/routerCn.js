@@ -362,6 +362,8 @@ export const cn = {
   memberCardOrder: ['订单管理', '虚拟订单商品'],
   // 订单管理 手动退货退款
   manualRefund: ['订单管理', '手动退货退款'],
+  // 订单管理 批量发货
+  bulk_shipment: ['订单管理', '批量发货'],
 
   // 门店管理 门店列表
   store_list: ['门店管理', '门店列表'],

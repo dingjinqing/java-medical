@@ -81,73 +81,75 @@
           style="width: 100%;margin-top:10px"
         >
           <el-table-column
-            prop="accountNumber"
+            prop="submitUser"
             label="客户登录账号"
             align="center"
             width="150"
           >
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
+            prop="submitUserPhone"
             label="登录账号手机号"
             align="center"
             width="150"
           >
           </el-table-column>
           <el-table-column
-            prop="fillMobileNumber"
+            prop="mobile"
             label="填写手机号"
             align="center"
             width="150"
           >
           </el-table-column>
           <el-table-column
-            prop="feedbackTime"
+            prop="createTime"
             label="反馈时间"
             align="center"
             width="200"
           >
           </el-table-column>
           <el-table-column
-            prop="useVersion"
+            prop="version"
             label="使用版本"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="questionType"
+            prop="categoryId"
             label="问题类型"
             align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="questionContent"
+            prop="content"
             label="问题内容"
             align="center"
             width="200"
           >
           </el-table-column>
           <el-table-column
-            prop="fillMobileNumber"
+            prop="imageUrls"
             label="图片"
             align="center"
           >
             <template slot-scope="scope">
-              <img
-                v-if="scope.row.img"
-                :src="scope.row.img"
-              >
+              <div class="imgStyle">
+                <img
+                  v-if="scope.row.imageUrls.length"
+                  :src="scope.row.imageUrls[0]"
+                >
+              </div>
 
             </template>
           </el-table-column>
           <el-table-column
-            prop="status"
+            prop="isLook"
             label="已看状态"
             align="center"
           >
             <template slot-scope="scope">
               <span style="color:#FF0000">
-                {{scope.row.status}}
+                {{scope.row.isLook}}
               </span>
 
             </template>
@@ -174,6 +176,7 @@
   </div>
 </template>
 <script>
+import { problemFeedbackList } from '@/api/system/problemFeedback/problemFeedback.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页组件
@@ -181,33 +184,33 @@ export default {
   data () {
     return {
       userName: '', // 反馈用户
-      questionType: -1, // 问题类型
+      questionType: null, // 问题类型
       questionTypeOptions: [
         {
-          value: -1,
+          value: null,
           label: '请选择反馈类型'
         },
         {
-          value: 0,
+          value: 1,
           label: '产品建议'
         },
         {
-          value: 1,
+          value: 2,
           label: '网页异常'
         },
         {
-          value: 2,
+          value: 3,
           label: '功能使用咨询'
         },
         {
-          value: 3,
+          value: 0,
           label: '其他'
         }
       ],
       statusViewed: 0, // 已看状态
       statusViewedOption: [
         {
-          value: -1,
+          value: null,
           label: '请选择已看状态'
         },
         {
@@ -219,8 +222,8 @@ export default {
           label: '已查看'
         }
       ],
-      startTime: '',
-      endTime: '',
+      startTime: null,
+      endTime: null,
       tableData: [
         {
           accountNumber: 'tester001',
@@ -261,16 +264,33 @@ export default {
       ],
       pageParams: {
         currentPage: 1,
-        pageRows: 20,
-        totalRows: 3,
-        pageCount: 1
+        pageRows: 20
       }
     }
   },
   mounted () {
-    // 初始化数据
+    // 初始化数据 problemFeedbackList
+    this.handleToInit()
   },
   methods: {
+    //  初始化数据
+    handleToInit () {
+      let params = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        name: this.userName,
+        categoryId: this.questionType,
+        lookType: this.statusViewed,
+        currentPage: this.pageParams.currentPage
+      }
+      problemFeedbackList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.dataList
+          this.pageParams = res.content.page
+        }
+      })
+    },
     // 当前页变化
     seacherGroupIntegrationList () {
 
@@ -343,6 +363,9 @@ export default {
         color: #5a8bff;
       }
     }
+  }
+  .imgStyle {
+    display: flex;
   }
 }
 </style>
