@@ -145,7 +145,7 @@
                   prop="minPayMoney"
                   style="margin:0 5px"
                   :rules="[
-                    { validator: (rule, value, callback) => {validateMoney(rule, value, callback )}, trigger: ['blur', 'change']}
+                    { validator: (rule, value, callback) => {validateMoney(rule, value, callback )}, trigger: ['change']}
                   ]"
                 >
                   <el-input
@@ -1261,6 +1261,10 @@ export default {
 
     // 添加支付有礼活动接口调用
     activitySave () {
+      if (this.params.awardList.length === 5 && this.params.awardList[4].giftType === 0) {
+        this.$message.warning('最后一次奖励不能为无奖品')
+        return false
+      }
       this.$refs.payRewardForm.validate(valid => {
         console.log(valid, 'valid--')
         if (valid) {
@@ -1398,11 +1402,13 @@ export default {
 
     // 验证支付条件
     validateMoney (rule, value, callback) {
-      var re = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/
+      var re = /^\d+(\.\d{1,2})?$/
       if (value === '') {
         callback(new Error('请输入支付条件'))
+      } else if (value < 0) {
+        callback(new Error('数值不能为负数'))
       } else if (!re.test(value)) {
-        callback(new Error('请输入正整数'))
+        callback(new Error('最多保留两位数字'))
       } else {
         callback()
       }
