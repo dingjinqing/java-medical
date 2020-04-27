@@ -1023,10 +1023,12 @@ public class MemberCardService extends ShopBaseService {
 		if (data.getExchangeCount() != null) {
 			chargeMoneyRecord.setExchangCount(data.getExchangeCount());
 		}
-		
-		if(!StringUtils.isBlank(data.getPayment())) {
-			chargeMoneyRecord.setPayment("");
-		}
+
+        if(StringUtils.isBlank(data.getPayment())) {
+            chargeMoneyRecord.setPayment("");
+        }else{
+            chargeMoneyRecord.setPayment(data.getPayment());
+        }
 		chargeMoneyRecord.insert();
 
 	}
