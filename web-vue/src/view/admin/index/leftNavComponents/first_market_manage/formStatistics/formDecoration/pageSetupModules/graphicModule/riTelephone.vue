@@ -10,16 +10,19 @@
             size="small"
             v-model="modulesSaveData.title"
             :maxlength='14'
+            :disabled="isProhibit"
           ></el-input>
           <div style="margin-left:10px;color:#999">{{$t('textModule.tips')}}</div>
         </div>
         <div class="text">
           <span>{{$t('formDecorationModel.selectaStyle')}}</span>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_type"
             label="0"
           >{{$t('formDecorationModel.ordinary')}}</el-radio>
           <el-radio
+            :disabled="isProhibit"
             v-model="modulesSaveData.show_type"
             label="1"
           >{{$t('formDecorationModel.suspension')}}</el-radio>
@@ -33,10 +36,12 @@
             <div class="list">
               <span>{{$t('formDecorationModel.centerOrNot')}}</span>
               <el-radio
+                :disabled="isProhibit"
                 v-model="modulesSaveData.align_type"
                 label="1"
               >{{$t('formDecorationModel.centered')}}</el-radio>
               <el-radio
+                :disabled="isProhibit"
                 v-model="modulesSaveData.align_type"
                 label="0"
               >{{$t('formDecorationModel.atTheLeft')}}</el-radio>
@@ -44,6 +49,7 @@
             <div class="list">
               <span>{{$t('textModule.fontColor')}}：</span>
               <el-color-picker
+                :disabled="isProhibit"
                 v-model="modulesSaveData.color"
                 show-alpha
                 :predefine="predefineColors"
@@ -57,6 +63,7 @@
             <div class="list">
               <span>{{$t('textModule.backgroundColor')}}：</span>
               <el-color-picker
+                :disabled="isProhibit"
                 v-model="modulesSaveData.background_color"
                 show-alpha
                 :predefine="predefineColors"
@@ -79,6 +86,7 @@
             >
               <img :src="item.imgUrl">
               <el-radio
+                :disabled="isProhibit"
                 v-model="modulesSaveData.align_type"
                 :label="item.id"
               >&nbsp;</el-radio>
@@ -99,6 +107,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       predefineColors: [ // 颜色选择器预定义颜色池
         '#ff4500',
@@ -173,9 +182,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 点击重置
     handleToReset (index) {
+      if (this.isProhibit) return
       switch (index) {
         case 0:
           this.modulesSaveData.color = '#333333'

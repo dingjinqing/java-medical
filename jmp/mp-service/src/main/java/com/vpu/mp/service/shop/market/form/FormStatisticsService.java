@@ -23,6 +23,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.foundation.util.qrcode.QrCodeGenerator;
 import com.vpu.mp.service.pojo.shop.coupon.CouponAndVoucherDetailVo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueBo;
 import com.vpu.mp.service.pojo.shop.coupon.give.CouponGiveQueueParam;
@@ -212,7 +213,15 @@ public class FormStatisticsService extends ShopBaseService {
     public String getFormPictorialCode(int pageId) {
         // 获取表单海报图片路径
         Tuple2<Integer, String> pictorial = generateFormPictorial(pageId, 0);
-        return pictorial.v2;
+        try {
+            byte[] qrCodeByte = QrCodeGenerator.generateQRCodeImg(imageService.imageUrl(pictorial.v2),430,430);
+            Tuple2<String, String> path =pictorialService.getImgDir(16, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(16)));
+            log.info("表单统计-分享二维码1-"+path.v2);
+            imageService.getUpYunClient().writeFile(path.v1(), qrCodeByte, true);
+            return path.v2;
+        }  catch (Exception e) {
+            return "";
+        }
     }
 
     /**
@@ -232,7 +241,7 @@ public class FormStatisticsService extends ShopBaseService {
         // 判断是否需要重新生成表单海报
         PictorialRecord pictorialRecord = pictorialService.getPictorialFromDb(INTEGER_ZERO, pageId, PictorialConstant.FORM_STATISTICS_ACTION_SHARE);
         if (pictorialService.isNeedNewPictorial(Util.toJson(rule), pictorialRecord)) {
-            log.debug("不需要重新生成表单海报，直接返回db中海报路径");
+            log.info("不需要重新生成表单海报，直接返回db中海报路径"+pictorialRecord.getPath());
             return new Tuple2<>(0, pictorialRecord.getPath());
         }
         try {
@@ -249,6 +258,8 @@ public class FormStatisticsService extends ShopBaseService {
             Tuple2<String, String> path = pictorialService.getImgDir(4, pictorialService.getImgFileName(String.valueOf(pageId), String.valueOf(0), String.valueOf(4)));
             // 将待分享图片上传到U盘云，并在数据库缓存记录
             pictorialService.uploadToUpanYun(pictorialImg, path.v1(), rule, pageId, null, INTEGER_ZERO);
+            log.info("表单统计-分享二维码2-"+path.v1);
+            log.info("表单统计-分享二维码3-"+qrCode.getImageUrl());
             return new Tuple2<>(1, path.v1());
         } catch (IOException | UpException e) {
             log.error("表单海报图片创建失败：{}", ExceptionUtils.getStackTrace(e));
@@ -386,7 +397,7 @@ public class FormStatisticsService extends ShopBaseService {
         try {
             moduleUploadVideo = objectMapper.readValue(video, ModuleUploadVideo.class);
             moduleUploadVideo.setVideoSrc(imageService.imageUrl(moduleUploadVideo.getVideoSrc()));
-            moduleUploadVideo.setVideoImgSrc(imageService.imageUrl(moduleUploadVideo.getVideoImgSrc()));
+            moduleUploadVideo.setVideoImgSrc("http://video-jmpdev.test.upcdn.net"+moduleUploadVideo.getVideoImgSrc());
             return objectMapper.writeValueAsString(moduleUploadVideo);
         } catch (IOException e) {
             e.printStackTrace();

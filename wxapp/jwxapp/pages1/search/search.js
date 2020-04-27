@@ -9,7 +9,6 @@ global.wxPage({
     pageParams: null,
     showFilterDialog: false,
     keyWords: null,
-    couponSn: null,
     sortItem:0,
     sortDirection:0,
     filterData: {
@@ -77,7 +76,6 @@ global.wxPage({
         keyWords: this.data.keyWords,
         sortItem: this.data.sortItem,
         sortDirection: this.data.sortDirection,
-        couponSn: this.data.couponSn,
         ...this.data.filterData
       }
     );

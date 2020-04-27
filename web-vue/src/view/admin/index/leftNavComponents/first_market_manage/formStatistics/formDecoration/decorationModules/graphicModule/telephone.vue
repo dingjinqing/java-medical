@@ -36,7 +36,7 @@
       <!--模块编辑区结束-->
       <div
         class="item_operation"
-        v-if="activeBorder"
+        v-if="activeBorder&&!isProhibit"
       >
         <img
           v-if="modulesShowData.show_type==='0'"
@@ -78,6 +78,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false,
       activeBorder: false, // 模块公共
       activeSetHere: false, // 模块公共
       hoverTips: 'hoverTips', // 英文适配  模块公共
@@ -130,6 +131,10 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
     // 初始化语言
     this.langDefault() // 模块公共
     // 初始化数据

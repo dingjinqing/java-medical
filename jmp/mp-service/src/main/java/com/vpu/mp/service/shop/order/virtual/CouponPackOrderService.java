@@ -149,11 +149,10 @@ public class CouponPackOrderService extends VirtualOrderService {
 	 * @return
 	 */
 	public int getVoucherAccessCount(String orderSn) {
-		Record1<Integer> record = db().select(DSL.count()).from(CUSTOMER_AVAIL_COUPONS)
-			.where(CUSTOMER_AVAIL_COUPONS.COUPON_SN.eq(orderSn))
+		return db().selectCount().from(CUSTOMER_AVAIL_COUPONS)
+			.where(CUSTOMER_AVAIL_COUPONS.ACCESS_ORDER_SN.eq(orderSn))
 			.and(CUSTOMER_AVAIL_COUPONS.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
-			.and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK)).fetchOne();
-		return record.value1();
+			.and(CUSTOMER_AVAIL_COUPONS.ACCESS_MODE.eq(CUSTOMER_AVAIL_COUPONS_ACCESSMODE_PACK)).fetchOptionalInto(Integer.class).orElse(0);
 	}
 	/**
 	 * 获取某一个订单 用户还剩余多少优惠劵未发放
@@ -345,6 +344,7 @@ public class CouponPackOrderService extends VirtualOrderService {
                 .setMoney(orderRecord.getMemberCardBalance().negate())
                 .setCardNo(orderRecord.getCardNo())
                 .setReason(orderRecord.getOrderSn())
+                .setReasonId(RemarkTemplate.COUPON_PACK_ORDER.code)
                 // 消费类型 :只支持普通卡0
                 .setType(MCARD_TP_NORMAL);
             TradeOptParam tradeOpt = TradeOptParam

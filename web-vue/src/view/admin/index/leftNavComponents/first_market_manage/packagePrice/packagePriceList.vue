@@ -360,7 +360,11 @@ export default {
           item.activityGroup3 = `${item.groupName3}:${item.goodsNumber3}件`
           item.num += item.goodsNumber3
         }
-        item.activityInfo = `${item.totalMoney}元${item.num}件`
+        if (item.packageType === 0) {
+          item.activityInfo = `${item.totalMoney}元${item.num}件`
+        } else {
+          item.activityInfo = `${item.num}件${item.totalRatio}折`
+        }
         item.statusText = this.getActStatusString(item.activityStatus)
       })
       this.tableInfo = data
