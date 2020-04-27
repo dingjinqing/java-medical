@@ -49,14 +49,14 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item
-          label="佣金计算方式："
-          prop="calculation"
+          :label="$t('distribution.strategyType') + '：'"
+          prop="strategyType"
         >
-          <el-radio-group v-model="form.calculation">
-            <el-radio :label="1">商品实际支付金额 * 佣金比例</el-radio>
-            <el-radio :label="0">商品实际利润（实际支付金额-成本价）* 佣金比例</el-radio>
+          <el-radio-group v-model="form.strategyType">
+            <el-radio :label="0">{{ $t('distribution.strategyTypeTip1') }}</el-radio>
+            <el-radio :label="1">{{ $t('distribution.strategyTypeTip2') }}</el-radio>
           </el-radio-group>
-          <div class="text">注：未设置成本价的商品，计算佣金时，将以成本价为0元处理</div>
+          <div class="text">{{ $t('distribution.strategyTypeTip3') }}</div>
         </el-form-item>
         <el-form-item
           :label="$t('distribution.selfPurchase') + '：'"
@@ -71,7 +71,7 @@
         </el-form-item>
         <el-form-item
           prop="costProtection"
-          v-if="form.calculation === 1"
+          v-if="form.strategyType === 0"
         >
           <template slot="label">
             <el-tooltip
@@ -307,7 +307,7 @@ export default {
         validity: '', // 有效期
         startTime: '',
         endTime: '',
-        calculation: 1, // 佣金计算方式
+        strategyType: 0, // 佣金计算方式
         selfPurchase: 1, // 分销员自购返利
         costProtection: 1, // 成本价保护
         firstRebate: 1, // 邀请新用户下首单返利配置
@@ -456,6 +456,7 @@ export default {
           var data = res.content[0]
           this.form.strategyName = data.strategyName
           this.form.strategyLevel = data.strategyLevel
+          this.form.strategyType = data.strategyType
           // 有效期
           this.form.validity = [data.startTime, data.endTime]
           this.form.selfPurchase = data.selfPurchase

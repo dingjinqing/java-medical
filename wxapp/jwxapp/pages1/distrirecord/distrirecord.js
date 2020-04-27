@@ -30,7 +30,7 @@ global.wxPage({
     */
   onShareAppMessage: function () {
     return {
-      path: this.route + '?invite_id=' + util.getCache('user_id')
+      path: this.route + '?inviteId=' + util.getCache('user_id')
     }
   },
 })

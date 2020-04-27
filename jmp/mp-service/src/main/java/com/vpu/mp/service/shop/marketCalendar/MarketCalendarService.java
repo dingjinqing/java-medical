@@ -22,6 +22,8 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.ActInfoVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAct;
@@ -416,7 +418,9 @@ public class MarketCalendarService extends ShopBaseService {
 				if (item.getActivityId() > 0) {
 					vo.setHasAct(true);
 					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
-					actInfoList.add(info.getActInfo());
+					MarketVo actInfo = info.getActInfo();
+					actInfo.setCalActId(item.getId());
+					actInfoList.add(actInfo);
 				}else {
 					vo.setHasAct(false);
 				}
@@ -451,6 +455,43 @@ public class MarketCalendarService extends ShopBaseService {
 			}
 		}
 		return dataList;
+	}
+	
+	/**
+	 * 同步和推送
+	 * @param param
+	 * @return
+	 */
+	public boolean getPushInfo(MarketMqParam param) {
+		MarketCalendarSysVo vo = param.getVo();
+		MarketCalendarRecord record = db().selectFrom(MARKET_CALENDAR).where(MARKET_CALENDAR.SOURCE_ID.eq(vo.getId())).fetchAny();
+		boolean flag=true;
+		if(record!=null) {
+			//之前发布
+			record.setEventTime(vo.getEventTime());
+			record.setEventName(vo.getEventName());
+			record.setEventDesc(vo.getEventDesc());
+			record.setDelFlag(vo.getDelFlag());
+			int update = record.update();
+			logger().info("店铺活动:{}，更新主库活动：{}，结果：{}",record.getId(),vo.getId(),update);
+			if(update<=0) {
+				flag=false;
+			}
+		}else {
+			record = db().newRecord(MARKET_CALENDAR,vo);
+			record.reset(MARKET_CALENDAR.ID);
+			record.setSource(CalendarAction.ONE);			
+			record.setSourceId(vo.getId());
+			int insert = record.insert();
+			logger().info("店铺活动:{}，创建主库活动：{}，结果：{}",record.getId(),vo.getId(),insert);
+			if(insert<=0) {
+				flag=false;
+			}
+		}
+		if(flag) {
+			flag = calendarActivityService.getPushInfoInner(param);
+		}
+		return flag;
 	}
 
 }

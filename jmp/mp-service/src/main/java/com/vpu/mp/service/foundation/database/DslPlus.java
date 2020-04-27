@@ -53,6 +53,20 @@ public class DslPlus {
     }
 
 
+
+    /**
+     * 从0年开始的天数
+     *
+     * @param field
+     * @return
+     */
+    public static Field<Integer> toDays(Field<Timestamp> field) {
+        log.debug("to_days" );
+        return DSL.field("to_days({0})", SQLDataType.INTEGER, field);
+
+    }
+
+
     /**
      *  FIND_IN_SET 函数
      * @param format

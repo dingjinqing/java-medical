@@ -357,6 +357,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public void addActivity(FriendPromoteAddParam param) {
 		FriendPromoteActivityRecord record = new FriendPromoteActivityRecord();
 		String rewardContent = Util.toJson(param.getFpRewardContent());
+		String activityCopywriting = Util.toJson(param.getActCopywriting());
+		record.setActivityCopywriting(activityCopywriting);
 		record.setRewardContent(rewardContent);
 		record.setShopId(getShopId());
 		record.setActCode(getActCode());
@@ -384,7 +386,10 @@ public class FriendPromoteService extends ShopBaseService {
 
 		FriendPromoteSelectVo vo = db().select().from(fpa).where(fpa.ID.eq(param.getId()))
 				.fetchOneInto(FriendPromoteSelectVo.class);
-
+        if (vo!=null&&vo.getActivityCopywriting()!=null){
+            promoteActCopywriting copywriting = Util.json2Object(vo.getActivityCopywriting(),promoteActCopywriting.class,false);
+            vo.setActCopywriting(copywriting);
+        }
 		return vo;
 	}
 
@@ -396,6 +401,8 @@ public class FriendPromoteService extends ShopBaseService {
 	public void updateActivity(FriendPromoteUpdateParam param) {
 		FriendPromoteActivityRecord record = new FriendPromoteActivityRecord();
         String rewardContent = Util.toJson(param.getFpRewardContent());
+        String activityCopywriting = Util.toJson(param.getActCopywriting());
+        record.setActivityCopywriting(activityCopywriting);
         record.setRewardContent(rewardContent);
 		FieldsUtil.assignNotNull(param, record);
 		db().executeUpdate(record);

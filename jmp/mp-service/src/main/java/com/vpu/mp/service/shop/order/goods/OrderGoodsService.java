@@ -2,7 +2,6 @@ package com.vpu.mp.service.shop.order.goods;
 
 import com.vpu.mp.db.shop.tables.OrderGoods;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
@@ -19,13 +18,23 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Record3;
+import org.jooq.Record6;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
 import org.jooq.impl.DSL;
+import org.jooq.impl.TableRecordImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,9 +51,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -250,11 +257,25 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsRecord>  getGoodsInfoRecordByOrderSn(String orderSn){
-		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
+		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
 	}
+
+	/**
+	 * 查询商品信息
+	 * @param orderSn 订单sn
+	 * @return
+	 */
+	public List<GoodsAndOrderInfoBo> getGoodsInfoAndOrderInfo(String orderSn){
+		return db().select(TABLE.GOODS_ID, TABLE.PRODUCT_ID, TABLE.GOODS_NUMBER, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS.IS_ON_SALE, GOODS.DEL_FLAG)
+				.from(TABLE)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+				.leftJoin(GOODS_SPEC_PRODUCT).on(TABLE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsAndOrderInfoBo.class);
+	}
+
 	/**
 	 * 根据订单号查询商品
 	 * @param orderSn
@@ -357,7 +378,9 @@ public class OrderGoodsService extends ShopBaseService{
             }
             records.add(record);
         }
-        db().batchInsert(records).execute();
+        records.forEach(
+            TableRecordImpl::insert
+        );
         return records;
     }
 

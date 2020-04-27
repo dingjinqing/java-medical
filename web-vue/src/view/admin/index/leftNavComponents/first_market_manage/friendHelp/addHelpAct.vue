@@ -879,7 +879,12 @@ export default {
           // }
         ],
         coupon_info: [],
-        promoteTimesPerDay: '0'
+        promoteTimesPerDay: '0',
+        // 规则说明
+        actCopywriting: {
+          document: '',
+          isUseDefault: 0
+        }
       },
       // 优惠券
       coupon_msg: [],
@@ -1035,6 +1040,7 @@ export default {
         this.form.shareImgType = res.content.shareImgType.toString()
         this.srcList.src = res.content.customImgPath
         this.form.promoteTimesPerDay = res.content.promoteTimesPerDay
+        this.form.actCopywriting = res.content.actCopywriting
         if (this.form.rewardType === '0') {
           // this.form.rewardSet.market_store = JSON.parse(res.content[0].rewardContent.slice(1, -1)).market_store
           console.log('market_store???', this.form.rewardSet.market_store)
@@ -1150,7 +1156,8 @@ export default {
             'customShareWord': this.form.customShareWord,
             'shareImgType': this.form.shareImgType,
             'customImgPath': this.srcList.src,
-            'promoteTimesPerDay': this.form.promoteTimesPerDay
+            'promoteTimesPerDay': this.form.promoteTimesPerDay,
+            'actCopywriting': this.form.actCopywriting
           }
           console.log('submit', this.form)
           if (this.promoteId !== 'null') {
@@ -1332,12 +1339,12 @@ export default {
     // 设置规则说明
     friendHelpRule () {
       this.ruleShow = true
-      // this.sendMsg = this.form.actCopywriting
+      this.sendMsg = this.form.actCopywriting
     },
     // 规则说明回调函数
     activityMsg (data) {
       this.ruleShow = false
-      // this.form.actCopywriting = data
+      this.form.actCopywriting = data
     }
   }
 }

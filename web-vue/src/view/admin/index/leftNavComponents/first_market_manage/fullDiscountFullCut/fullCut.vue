@@ -170,6 +170,11 @@ export default {
   },
   mounted () {
     this.tableDataSearch()
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      this.editHandle(this.$route.params.id)
+    }
   },
   methods: {
     tableDataSearch () {

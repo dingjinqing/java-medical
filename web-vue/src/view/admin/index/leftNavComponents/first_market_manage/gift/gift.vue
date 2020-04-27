@@ -226,6 +226,9 @@ export default {
     // 初始化数据
     this.langDefault()
     this.initDataList()
+    if (this.$route.params.calenderEdit) {
+      this.editGift(this.$route.params.id)
+    }
   },
   methods: {
     // 赠品列表

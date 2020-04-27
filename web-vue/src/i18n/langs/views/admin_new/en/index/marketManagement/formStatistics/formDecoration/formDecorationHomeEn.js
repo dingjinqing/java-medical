@@ -174,7 +174,7 @@ export const en = {
   submitCustomJumpTip: 'Submit successfully to guide users to browse other content',
   customJump: 'Custom jump',
   viewExamples: 'View examples',
-  buttonName: 'Button name',
+  buttonName: 'Button name：',
   jumpLink: 'Jump link:',
   reSelection: 'Re selection',
   selectJumpLink: 'Select jump link',

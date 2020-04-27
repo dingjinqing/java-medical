@@ -320,6 +320,11 @@ export default {
   mounted () {
     this.onSubmit()
     this.initDataList()
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      this.gotoEdit(this.$route.params.id)
+    }
   },
 
   methods: {

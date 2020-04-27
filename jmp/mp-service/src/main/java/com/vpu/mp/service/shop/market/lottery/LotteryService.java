@@ -4,9 +4,7 @@ import static com.vpu.mp.db.shop.Tables.LOTTERY;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_PRIZE;
 import static com.vpu.mp.db.shop.Tables.LOTTERY_RECORD;
 import static com.vpu.mp.db.shop.tables.User.USER;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.foundation.data.BaseConstant.YES;
+import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_ALL;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_FREE;
 import static com.vpu.mp.service.pojo.shop.market.lottery.LotteryConstant.LOTTERY_TIME_SCORE;
@@ -346,6 +344,7 @@ public class LotteryService extends ShopBaseService {
         JoinLottery join = new JoinLottery();
         //获取活动
         LotteryRecord lottery = this.getLotteryById(lotteryId);
+        Byte chanceType = lottery.getChanceType();
         join.setLottery(lottery);
         join.setLotterySource(param.getLotterySource());
         //活动不存在了
@@ -369,13 +368,15 @@ public class LotteryService extends ShopBaseService {
             join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_ACTIVITY_OUT_DATE).build());
             return join;
         }
-        //活动免费
-        Integer freeTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_FREE);
-        if (lottery.getFreeChances() == null || lottery.getFreeChances() > freeTimes) {
+        //活动免费 null 0代表不限制 -1不能免费抽奖
+        Integer userFreeTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId,LOTTERY_TIME_FREE,chanceType);
+        Integer freeChances = lottery.getFreeChances()!=null?lottery.getFreeChances():0;
+        if (freeChances.equals(0)|| lottery.getFreeChances() > userFreeTimes) {
             join.setChanceSource(LOTTERY_TIME_FREE);
             join.setFlag(true);
-            if (lottery.getFreeChances() != null) {
-                join.setCanUseTime(lottery.getFreeChances() - freeTimes);
+            join.setCanUseTime(freeChances - userFreeTimes-1);
+            if (freeChances.equals(0)) {
+                join.setTimeLimitType(NO);
             }
             return join;
         }
@@ -383,34 +384,50 @@ public class LotteryService extends ShopBaseService {
         if (lottery.getCanShare() != null && lottery.getCanShare().equals(YES)) {
             LotteryShareRecord shareRecord = lotteryShareService.getLotteryShareByUser(userId, lotteryId);
             //分享次数
-            Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE);
+            Integer usedShareRecordTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SHARE,chanceType);
             Integer shareTimes = shareRecord != null ? shareRecord.getShareTimes() : 0;
             Integer usedShareTimes= shareRecord != null ? shareRecord.getUseShareTimes() : 0;
-            if (shareTimes >usedShareRecordTimes&& usedShareRecordTimes < lottery.getShareChances()) {
+            Integer shareChances = lottery.getShareChances()!=null?lottery.getShareChances():0;
+            logger().info("用户可以(每天)分享抽奖次数{},已分享次数{},共已使用{},(今天)使用{},",shareChances,shareTimes,usedShareTimes,usedShareRecordTimes);
+            if (shareChances.equals(0)){
+                //不限制
+                join.setTimeLimitType(NO);
+            }else {
+                join.setCanUseTime(shareChances - usedShareRecordTimes);
+            }
+            if (shareTimes>usedShareTimes&&shareTimes >usedShareRecordTimes&&(usedShareRecordTimes < shareChances||shareChances.equals(0))) {
                 //分享抽奖
                 join.setChanceSource(LOTTERY_TIME_SHARE);
-                join.setCanUseTime(shareTimes - usedShareRecordTimes);
+                join.setCanUseTime(shareChances - usedShareRecordTimes-1);
                 join.setFlag(true);
-                shareRecord.setUseShareTimes(usedShareRecordTimes+1);
+                shareRecord.setUseShareTimes(shareRecord.getUseShareTimes()+1);
                 shareRecord.update();
                 return join;
             }
             // 去分享
-            if (lottery.getShareChances() != null && shareTimes < lottery.getShareChances()) {
+            if (shareChances.equals(0)) {
                 join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_SHARE_TIME_USE_UP)
-                        .message(lottery.getShareChances()-shareTimes).build());
+                        .build());
+                return join;
+            } else if (usedShareRecordTimes < shareChances&&shareTimes<=usedShareTimes) {
+                //今天的抽奖次数<抽奖次数 抽奖次数<
+                join.setResultMessage(ResultMessage.builder().jsonResultCode(JsonResultCode.LOTTERY_SHARE_TIME_USE_UP_TIME)
+                        .message(shareChances - usedShareRecordTimes).build());
                 return join;
             }
         }
         //积分抽奖
-        if (lottery.getCanUseScore().equals(YES)) {
-            Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE);
-            if (lottery.getScoreChances() == null || userScoreTimes < lottery.getScoreChances()) {
+        if (lottery.getCanUseScore()!=null&&lottery.getCanUseScore().equals(YES)) {
+            Integer userScoreTimes = lotteryRecordService.getJoinLotteryNumber(userId, lotteryId, LOTTERY_TIME_SCORE,chanceType);
+            Integer scoreChances = lottery.getScoreChances()!=null?lottery.getScoreChances():0;
+            logger().info("积分抽奖-每人(每天)次数{},已使用{}",scoreChances,userScoreTimes);
+            if (scoreChances.equals(0)) {
+                join.setTimeLimitType(NO);
+            }
+            if (scoreChances.equals(0)|| userScoreTimes < scoreChances) {
                 join.setChanceSource(LOTTERY_TIME_SCORE);
                 join.setFlag(true);
-                if (lottery.getScoreChances() != null) {
-                    join.setCanUseTime(lottery.getScoreChances() - userScoreTimes);
-                }
+                join.setCanUseTime(scoreChances - userScoreTimes-1);
                 Integer lotteryScore = lottery.getScorePerChance();
                 Integer userScore = memberService.getUserFieldById(userId, USER.SCORE);
                 //积分不足

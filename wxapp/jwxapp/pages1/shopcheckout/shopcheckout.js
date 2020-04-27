@@ -602,7 +602,7 @@ global.wxPage({
    */
   onShareAppMessage: function () {
     return {
-      path: "/pages/shopcheckout/shopcheckout?store_id=" + create_order.store_id + "&invite_id=" + util.getCache('user_id')
+      path: "/pages/shopcheckout/shopcheckout?store_id=" + create_order.store_id + "&inviteId=" + util.getCache('user_id')
     }
   }
 })

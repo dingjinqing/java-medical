@@ -308,6 +308,7 @@ public class JsonResultMessage {
     public static final String LOTTERY_ACTIVITY_STOP="lottery.activity.stop";
     public static final String LOTTERY_ACTIVITY_NOT_BEGIN="lottery.activity.not.begin";
     public static final String LOTTERY_ACTIVITY_OUT_DATE="lottery.activity.out.date";
+    public static final String LOTTERY_SHARE_TIME_USE_UP_TIME="lottery.share.time.use.up.time";
     public static final String LOTTERY_SHARE_TIME_USE_UP="lottery.share.time.use.up";
     public static final String LOTTERY_SCORE_LESS="lottery.score.less";
     public static final String LOTTERY_SCORE_TIME_USE_UP="lottery.score.time.use.up";

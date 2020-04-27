@@ -351,7 +351,6 @@ export default {
   created () {
     this.handleClick()
   },
-
   methods: {
     // 当前页发生变化
     handleCurrentChange () {
@@ -409,6 +408,10 @@ export default {
         item.marketStore = item.fpRewardContent.market_store
       })
       this.tableData = data
+
+      if (this.$route.params.calenderEdit) {
+        this.updateActive(this.$route.params.id)
+      }
     },
     // 删除优惠券
     delAct (id) {

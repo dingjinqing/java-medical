@@ -322,6 +322,11 @@ export default {
     }
   },
   mounted () {
+    if (this.$route.params.calenderAdd) {
+      this.addLotteryDraw()
+    } else if (this.$route.params.calenderEdit) {
+      this.editHandler(this.$route.params.id)
+    }
     // 初始化数据
     this.langDefault()
     this.initDataList()

@@ -101,6 +101,12 @@ public class GroupBuyProcessor extends ShopBaseService implements Processor, Goo
     /*****************商品详情处理*******************/
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+
+        if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
+            // 探测是否需要进行活动预告
+            capsule.setActivityAnnounceMpVo(groupBuyProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            return;
+        }
         if (param.getActivityId() == null || !BaseConstant.ACTIVITY_TYPE_GROUP_BUY.equals(param.getActivityType())) {
             return;
         }

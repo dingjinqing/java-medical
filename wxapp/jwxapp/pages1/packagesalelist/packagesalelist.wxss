@@ -15,13 +15,21 @@
   background-color:#fff;
 }
 .footer > .selected-price{
-  flex: 1.5;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  justify-content: center;
   padding-left: 20rpx;
-  color: #666;
 }
-.footer > .selected-price > text{
-  font-weight: 600;
+.footer > .selected-price > view{
+  font-size: 24rpx;
+  color: #666;  
+  text-align: left;
+}
+.footer > .selected-price > view+view{
+  font-size: 24rpx;
+  color: #666;  
+  margin-top: 10rpx;
 }
 .spec-footer {
   position: fixed;

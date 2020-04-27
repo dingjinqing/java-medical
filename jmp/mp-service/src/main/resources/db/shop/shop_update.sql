@@ -454,5 +454,23 @@ ALTER TABLE `b2c_mrking_voucher` ADD COLUMN `coupon_overlay` tinyint(1) NOT NULL
 ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `pre_time` int(8) NOT NULL DEFAULT 0 COMMENT '预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数' ;
 ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `activity_tag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '参加活动打标签  0:否；1：是' ;
 ALTER TABLE `b2c_group_buy_define`    ADD COLUMN `activity_tag_id` varchar(30) NOT NULL COMMENT '参加活动打标签id' ;
+-- 2020年4月24日 kdc 拼团增加 活动说明
+ALTER TABLE `b2c_group_buy_define`  ADD COLUMN `activity_copywriting` text NOT NULL COMMENT '活动说明';
+-- 幸运大抽奖  限制免费,未中奖积分奖励 次数限制
+ALTER TABLE `b2c_lottery`   ADD COLUMN `chance_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '次数限制 0每人 1每人每天';
+ALTER TABLE `b2c_lottery`   MODIFY COLUMN `free_chances` int(8) NULL DEFAULT NULL COMMENT '免费抽奖次数 0不限制 -1不可免费抽奖 ';
+ALTER TABLE `b2c_lottery`   MODIFY COLUMN `no_award_score` int(8) NULL DEFAULT NULL COMMENT '未中奖奖励积分 0不赠送积分 ';
+ALTER TABLE `b2c_lottery`   MODIFY COLUMN `share_chances` int(8) NULL DEFAULT NULL COMMENT '分享最多获得次数 0 不限制次数' ;
+ALTER TABLE `b2c_lottery`   MODIFY COLUMN `score_chances` int(8) NULL DEFAULT NULL COMMENT '积分最多抽奖次数 0不限制次数' ;
+-- 支付有礼 注释修改  商品范围  状态
+ALTER TABLE `b2c_pay_award`   MODIFY COLUMN `goods_area_type` mediumint(5) NULL DEFAULT 0 COMMENT '商品范围类型 1全部商品 0 部分商品' ;
+ALTER TABLE `b2c_pay_award`   MODIFY COLUMN `status` tinyint(1) NULL DEFAULT 0 COMMENT '状态 1启用 0停用' ;
+
+
+-- 返利策略 佣金计算方式
+ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `strategy_type` tinyint(1) NULL DEFAULT 0 COMMENT '佣金计算方式;0:商品实际支付金额*佣金比例；1：商品实际利润（实际支付金额-成本价）* 佣金比例';
+
+-- 2020.04.26 好友助力 添加活动规则说明
+ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
 /*********************2.12*************************END*/
 

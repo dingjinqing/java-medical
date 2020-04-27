@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = -1258845008;
+    private static final long serialVersionUID = -1894101593;
 
     /**
      * Setter for <code>mini_shop_471752.b2c_group_buy_define.id</code>.
@@ -394,14 +394,14 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     }
 
     /**
-     * Setter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     * Setter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签
      */
     public void setActivityTag(Byte value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     * Getter for <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签
      */
     public Byte getActivityTag() {
         return (Byte) get(26);
@@ -419,6 +419,20 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
      */
     public String getActivityTagId() {
         return (String) get(27);
+    }
+
+    /**
+     * Setter for <code>mini_shop_471752.b2c_group_buy_define.activity_copywriting</code>. 活动说明
+     */
+    public void setActivityCopywriting(String value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>mini_shop_471752.b2c_group_buy_define.activity_copywriting</code>. 活动说明
+     */
+    public String getActivityCopywriting() {
+        return (String) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -447,7 +461,7 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
     /**
      * Create a detached, initialised GroupBuyDefineRecord
      */
-    public GroupBuyDefineRecord(Integer id, String goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Short limitBuyNum, Short limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime, Integer level, Integer beginNum, Integer preTime, Byte activityTag, String activityTagId) {
+    public GroupBuyDefineRecord(Integer id, String goodsId, String name, Short limitAmount, Short joinLimit, Short openLimit, Short limitBuyNum, Short limitMaxNum, Timestamp startTime, Timestamp endTime, Short stock, Short saleNum, Byte isDefault, Byte activityType, Byte isGrouperCheap, Byte shippingType, String rewardCouponId, String shareConfig, Byte status, Byte delFlag, Integer delTime, Timestamp createTime, Timestamp updateTime, Integer level, Integer beginNum, Integer preTime, Byte activityTag, String activityTagId, String activityCopywriting) {
         super(GroupBuyDefine.GROUP_BUY_DEFINE);
 
         set(0, id);
@@ -478,5 +492,6 @@ public class GroupBuyDefineRecord extends UpdatableRecordImpl<GroupBuyDefineReco
         set(25, preTime);
         set(26, activityTag);
         set(27, activityTagId);
+        set(28, activityCopywriting);
     }
 }

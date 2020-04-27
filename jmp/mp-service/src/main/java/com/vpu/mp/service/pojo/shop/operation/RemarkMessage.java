@@ -86,6 +86,8 @@ public class RemarkMessage {
     public static final String MSG_ENTER_HAS_GIFT = "enter.has.gift";
 	/** 门店支付 */
 	public static final String STORE_PAYMEMBT = "member.card.charge.money.payment";
+    /**优惠券礼包下单*/
+    public static final String MSG_COUPON_PACK_ORDER = "coupon.pack.order.payment";
 
 
 	/**

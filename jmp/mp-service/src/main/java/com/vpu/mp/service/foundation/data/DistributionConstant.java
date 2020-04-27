@@ -39,4 +39,10 @@ public class DistributionConstant {
     public static Byte REBATE_TYPE_SELF = 0;
     public static Byte REBATE_TYPE_DIRECT = 1;
     public static Byte REBATE_TYPE_INDIRECT = 2;
+
+    /**
+     * 是否赠送优惠券 0：不赠送；1：赠送
+     */
+     public static Byte NOT_SEND_COUPON = 0;
+     public static Byte SEND_COUPON = 1;
 }

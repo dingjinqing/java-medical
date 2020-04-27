@@ -82,6 +82,11 @@ public class SecKillProcessor implements Processor,ActivityGoodsListProcessor,Go
      */
     @Override
     public void processGoodsDetail(GoodsDetailMpBo capsule, GoodsDetailCapsuleParam param) {
+        if (param.getActivityType() == null && capsule.getActivityAnnounceMpVo() == null) {
+            // 探测是否需要进行活动预告
+            capsule.setActivityAnnounceMpVo(secKillProcessorDao.getAnnounceInfo(capsule.getGoodsId(),DateUtil.getLocalDateTime()));
+            return;
+        }
         if(param.getActivityId() != null && param.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_SEC_KILL)){
             //处理之前capsule中需要有商品的基本信息
             capsule.setActivity(secKillProcessorDao.getDetailSeckillInfo(param.getActivityId(),param.getUserId(),capsule));

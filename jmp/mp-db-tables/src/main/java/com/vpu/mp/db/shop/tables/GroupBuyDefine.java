@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
 
-    private static final long serialVersionUID = -1218691074;
+    private static final long serialVersionUID = 459471012;
 
     /**
      * The reference instance of <code>mini_shop_471752.b2c_group_buy_define</code>
@@ -188,7 +188,7 @@ public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
     public final TableField<GroupBuyDefineRecord, Integer> PRE_TIME = createField("pre_time", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "预告时间：-1：立刻预告；0：不预告；大于0：开始前预告小时数");
 
     /**
-     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签 0:否；1：是
+     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_tag</code>. 参加活动打标签
      */
     public final TableField<GroupBuyDefineRecord, Byte> ACTIVITY_TAG = createField("activity_tag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "参加活动打标签");
 
@@ -196,6 +196,11 @@ public class GroupBuyDefine extends TableImpl<GroupBuyDefineRecord> {
      * The column <code>mini_shop_471752.b2c_group_buy_define.activity_tag_id</code>. 参加活动打标签id
      */
     public final TableField<GroupBuyDefineRecord, String> ACTIVITY_TAG_ID = createField("activity_tag_id", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "参加活动打标签id");
+
+    /**
+     * The column <code>mini_shop_471752.b2c_group_buy_define.activity_copywriting</code>. 活动说明
+     */
+    public final TableField<GroupBuyDefineRecord, String> ACTIVITY_COPYWRITING = createField("activity_copywriting", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "活动说明");
 
     /**
      * Create a <code>mini_shop_471752.b2c_group_buy_define</code> table reference

@@ -114,10 +114,6 @@ public class GoodsSearchMpParam extends BasePageParam {
      */
     public static final Byte PAGE_FROM_BARGAIN = BaseConstant.ACTIVITY_TYPE_BARGAIN;
     /**
-     * 限次卡兑换商品搜素列表
-     */
-    public static final Byte PAGE_FROM_LIMIT_COUNT_CARD_EXCHANGE_GOODS = 127;
-    /**
      * 从哪个页面跳转至搜索页面，目前用于区分从商品分组模块跳转至此，目前从分组跳转时未从es查数据
      */
     private Byte pageFrom;

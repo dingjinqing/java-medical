@@ -21,6 +21,7 @@ import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
+import com.vpu.mp.service.pojo.shop.member.card.base.CardMarketActivity;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.calculate.UniteMarkeingtRecalculateBo;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
@@ -196,6 +197,24 @@ public class Calculate extends ShopBaseService {
                         continue;
                     }
                 }
+                //优惠券校验是否使用不可使用优惠券的会员卡
+                if(OrderConstant.D_T_COUPON.equals(discountType) && Byte.valueOf(OrderConstant.YES).equals(bo.getNoUseCoupon())) {
+                    continue;
+                }
+                //会员卡优惠券与活动优惠是否叠加
+                if(ACTIVITY_TYPE_FIRST_SPECIAL.equals(bo.getGoodsPriceAction())) {
+                    if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) ? defaultMarketing.getCard().getInfo().getMarketActivities().contains(CardMarketActivity.FIRST_SPECIAL) : defaultMarketing.getCoupon().getInfo().getCouponOverlay().equals(OrderConstant.YES)) {
+                        continue;
+                    }
+                }else if(BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(bo.getGoodsPriceAction())) {
+                    if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) ? defaultMarketing.getCard().getInfo().getMarketActivities().contains(CardMarketActivity.REDUCE_PRICE) : defaultMarketing.getCoupon().getInfo().getCouponOverlay().equals(OrderConstant.YES)) {
+                        continue;
+                    }
+                }else if(BaseConstant.ACTIVITY_TYPE_MEMBER_GRADE.equals(bo.getGoodsPriceAction())) {
+                    if(OrderConstant.D_T_MEMBER_CARD.equals(discountType) ? defaultMarketing.getCard().getInfo().getMarketActivities().contains(CardMarketActivity.MEMBER_PRICE) : defaultMarketing.getCoupon().getInfo().getCouponOverlay().equals(OrderConstant.YES)) {
+                        continue;
+                    }
+                }
             }
             if (OrderConstant.D_T_MEMBER_CARD.equals(discountType)) {
                 //会员卡初始化支持商品
@@ -203,6 +222,9 @@ public class Calculate extends ShopBaseService {
                     defaultMarketing.getCard().setBos(new ArrayList<>());
                 }
                 defaultMarketing.getCard().getBos().add(bo);
+                //标记该商品参与会员卡打折且该卡不可使用优惠券
+                bo.setNoUseCoupon(OrderConstant.YES);
+
             }
             if (OrderConstant.D_T_FULL_REDUCE.equals(discountType) && bo.getPurchasePriceId() != null && bo.getPurchasePriceId() > 0) {
                 continue;
@@ -250,7 +272,7 @@ public class Calculate extends ShopBaseService {
                 OrderCouponVo temp = i.next();
                 if (temp.getBos() != null) {
                     //获取该优惠卷对应商品的总价、总数
-                    BigDecimal[] tolalNumberAndPrice = getTolalNumberAndPriceByType(temp.getBos(), OrderConstant.D_T_COUPON, null);
+                    BigDecimal[] tolalNumberAndPrice = getTolalNumberAndPriceByType(temp.getBos(), OrderConstant.D_T_COUPON, DefaultMarketingProcess.builder().coupon(temp).type(OrderConstant.D_T_COUPON).build());
                     if (BigDecimalUtil.compareTo(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE], null) == 1) {
                         //获取折扣金额
                         BigDecimal discountAmount = coupon.getDiscountAmount(temp, tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
@@ -260,12 +282,12 @@ public class Calculate extends ShopBaseService {
                             temp.setTotalDiscount(discountAmount);
                             temp.setTotalGoodsNumber(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_NUMBER]);
                             temp.setTotalPrice(tolalNumberAndPrice[Calculate.BY_TYPE_TOLAL_PRICE]);
-                            temp.setIdentity(temp.getCouponSn());
+                            temp.setIdentity(temp.getInfo().getCouponSn());
                             //折扣
                             BigDecimal ratio = temp.initRatio();
                             //
                             if (ratio.compareTo(BigDecimal.ZERO) == -1 || ratio.compareTo(BigDecimal.ONE) == 1) {
-                                logger().error("订单结算优惠券计算ratio数据非法,信息为:{}", param.getWxUserInfo(), temp.getCouponSn());
+                                logger().error("订单结算优惠券计算ratio数据非法,信息为:{}", param.getWxUserInfo(), temp.getInfo().getCouponSn());
                                 //数据异常不影响正常流程，不使用该优惠券
                                 i.remove();
                             }
@@ -290,14 +312,14 @@ public class Calculate extends ShopBaseService {
             }
             if (OrderConstant.DEFAULT_COUPON_OR_ORDER_SN.equals(param.getCouponSn())) {
                 //默认选择
-                vo.setCouponSn(coupons.get(0).getCouponSn());
+                vo.setCouponSn(coupons.get(0).getInfo().getCouponSn());
                 vo.setDefaultCoupon(coupons.get(0));
             } else if (StringUtils.isBlank(param.getCouponSn())) {
                 //不选择优惠券
             } else {
                 //选择指定优惠券
                 for (OrderCouponVo coupon : coupons) {
-                    if (coupon.getCouponSn().equals(param.getCouponSn())) {
+                    if (coupon.getInfo().getCouponSn().equals(param.getCouponSn())) {
                         vo.setCouponSn(param.getCouponSn());
                         vo.setDefaultCoupon(coupon);
                     }
@@ -973,7 +995,7 @@ public class Calculate extends ShopBaseService {
      *正常返利
      * @param cfg
      * @param userInfo
-     * @param isFS
+     * @param isFs
      * @param goodsStrategy
      * @param current
      * @return

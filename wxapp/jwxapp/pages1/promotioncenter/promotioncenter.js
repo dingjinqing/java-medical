@@ -636,7 +636,7 @@ global.wxPage({
     var now_goods_id = that.data.pro_goods[now_choosed].goods_id;
     var usernames = util.getCache('nickName');
     return {
-      path: '/pages/item/item?goods_id=' + now_goods_id + '&invite_id=' + util.getCache('user_id'),
+      path: '/pages/item/item?goods_id=' + now_goods_id + '&inviteId=' + util.getCache('user_id'),
       title: usernames + '为您独家推荐' + now_named,
       imageUrl: now_img,
     }

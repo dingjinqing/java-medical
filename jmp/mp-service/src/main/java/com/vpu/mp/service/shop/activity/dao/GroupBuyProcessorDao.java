@@ -7,13 +7,13 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
+import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsActivityAnnounceMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyListMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyMpVo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.groupbuy.GroupBuyPrdMpVo;
 import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.market.goupbuy.GroupBuyService;
-import org.jooq.Record3;
-import org.jooq.Record5;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +57,58 @@ public class GroupBuyProcessorDao extends GroupBuyService {
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
     }
 
+    /**
+     * 获取活动预告
+     * @param goodsId 活动id
+     * @param date 待比较时间
+     * @return
+     */
+    public GoodsActivityAnnounceMpVo getAnnounceInfo(Integer goodsId,Timestamp date){
+
+        Record4<Integer, Byte, Timestamp, Integer> activityInfo = db().select(GROUP_BUY_DEFINE.ID, GROUP_BUY_DEFINE.IS_GROUPER_CHEAP, GROUP_BUY_DEFINE.START_TIME,GROUP_BUY_DEFINE.PRE_TIME)
+            .from(GROUP_BUY_DEFINE).innerJoin(GROUP_BUY_PRODUCT_DEFINE).on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
+            .where(GROUP_BUY_DEFINE.END_TIME.gt(date)).and(GROUP_BUY_DEFINE.STOCK.gt((short) 0))
+            .and(GROUP_BUY_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL)).and(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode())).and(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(goodsId))
+            .orderBy(GROUP_BUY_DEFINE.LEVEL.desc()).fetchAny();
+
+        if (activityInfo == null) {
+            return null;
+        }
+        // 不预告
+        if (GoodsConstant.ACTIVITY_NOT_PRE.equals(activityInfo.get(GROUP_BUY_DEFINE.PRE_TIME))) {
+            return null;
+        }
+        // 定时预告判断
+        if (GoodsConstant.ACTIVITY_NOT_PRE.compareTo(activityInfo.get(GROUP_BUY_DEFINE.PRE_TIME)) < 0) {
+            Integer hours = activityInfo.get(GROUP_BUY_DEFINE.PRE_TIME);
+            int timeHourDifference = DateUtil.getTimeHourDifference(activityInfo.get(GROUP_BUY_DEFINE.START_TIME), date);
+            if (timeHourDifference > hours) {
+                return null;
+            }
+        }
+
+        SortField<?> sortField;
+        if (GroupBuyService.GROUPER_CHEAP.equals(activityInfo.get(GROUP_BUY_DEFINE.IS_GROUPER_CHEAP))) {
+            sortField = GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE.asc();
+        } else {
+            sortField = GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE.asc();
+        }
+
+        Record2<BigDecimal, BigDecimal> prdInfo = db().select(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE, GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE).from(GROUP_BUY_PRODUCT_DEFINE)
+            .where(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID.eq(activityInfo.get(GROUP_BUY_DEFINE.ID)).and(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.eq(goodsId)))
+            .orderBy(sortField).fetchAny();
+
+        GoodsActivityAnnounceMpVo mpVo = new GoodsActivityAnnounceMpVo();
+        mpVo.setActivityType(BaseConstant.ACTIVITY_TYPE_GROUP_BUY);
+        mpVo.setStartTime(activityInfo.get(GROUP_BUY_DEFINE.START_TIME));
+
+        if (GroupBuyService.GROUPER_CHEAP.equals(activityInfo.get(GROUP_BUY_DEFINE.IS_GROUPER_CHEAP))) {
+            mpVo.setRealPrice(prdInfo.get(GROUP_BUY_PRODUCT_DEFINE.GROUPER_PRICE));
+        } else {
+            mpVo.setRealPrice(prdInfo.get(GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE));
+        }
+        return mpVo;
+    }
     /**
      * 商品详情-获取拼团信息
      *

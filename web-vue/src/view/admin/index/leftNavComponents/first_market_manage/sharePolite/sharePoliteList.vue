@@ -307,6 +307,10 @@ export default {
         item.rewardType = item.rewardType.join('、')
       })
       this.tableData = data.pageResult.dataList
+
+      if (this.$route.params.calenderEdit) {
+        this.updateActivity(this.$route.params.id)
+      }
     },
     // 更新每日用户可分享次数上限参数
     saveDailyLimit () {

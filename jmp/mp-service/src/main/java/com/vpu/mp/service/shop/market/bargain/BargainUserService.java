@@ -164,13 +164,15 @@ public class BargainUserService extends ShopBaseService{
         });
 
 
-        if(StringUtil.isNotEmpty(bargain.getMrkingVoucherId()) && userId != bargainRecord.getUserId()){
-            //向帮忙砍价的用户赠送优惠券
-            CouponGiveQueueParam newParam = new CouponGiveQueueParam(
-                getShopId(), Arrays.asList(userId), bargain.getId(), bargain.getMrkingVoucherId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_BARGAIN_CUT);
-            saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+        if(userId != bargainRecord.getUserId()){
+            if(StringUtil.isNotEmpty(bargain.getMrkingVoucherId())){
+                //向帮忙砍价的用户赠送优惠券
+                CouponGiveQueueParam newParam = new CouponGiveQueueParam(
+                    getShopId(), Arrays.asList(userId), bargain.getId(), bargain.getMrkingVoucherId().split(","), BaseConstant.ACCESS_MODE_ISSUE, BaseConstant.GET_SOURCE_BARGAIN_CUT);
+                saas.taskJobMainService.dispatchImmediately(newParam, CouponGiveQueueParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.GIVE_COUPON.getExecutionType());
+            }
 
-            //打标签
+            //给帮砍用户打标签
             saas.getShopApp(getShopId()).bargain.addAttendUserTag(bargain,userId);
         }
 

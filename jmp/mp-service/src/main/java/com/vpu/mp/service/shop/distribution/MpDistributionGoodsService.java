@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import com.vpu.mp.service.pojo.shop.distribution.UserDistributionVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.BaseGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.GoodsRebateChangePriceVo;
 import com.vpu.mp.service.pojo.wxapp.distribution.RebateGoodsCfgParam;
@@ -22,6 +23,7 @@ import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailMpBo;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsDetailMpParam;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
 import com.vpu.mp.service.shop.config.DistributionConfigService;
+import com.vpu.mp.service.shop.coupon.CouponMpService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
 
     @Autowired
     protected DomainConfig domainConfig;
+
+    @Autowired
+    protected CouponMpService mpCoupon;
 
     public RebateRatioVo goodsRebateInfo(Integer goodsId,Integer catId,Integer sortId,Integer userId){
         //获取用户分销等级
@@ -261,9 +266,19 @@ public class MpDistributionGoodsService extends ShopBaseService {
             .and(GOODS_REBATE_PRICE.DEL_FLAG.eq((byte) 0))
             .fetch().into(RebateGoodsCfgVo.class);
 
+        //推广赠送优惠券是否开启
+        Byte sendCoupon = db().select(DISTRIBUTION_STRATEGY.SEND_COUPON).from(DISTRIBUTION_STRATEGY).where(DISTRIBUTION_STRATEGY.ID.eq(param.getRebateId())).fetchOne().into(Byte.class);
+
+        List<CouponPageDecorationVo> allCoupon = null;
+        if(sendCoupon.equals(DistributionConstant.SEND_COUPON)){
+            allCoupon = mpCoupon.allGoodsCoupon();
+        }
+
         GoodsRebateChangePriceVo goodsRebateChangePriceVo = new GoodsRebateChangePriceVo();
         goodsRebateChangePriceVo.setGoods(goods);
+
         goodsRebateChangePriceVo.setRebatePrice(rebatePrice);
+        goodsRebateChangePriceVo.setCouponList(allCoupon);
         return goodsRebateChangePriceVo;
     }
 
@@ -304,12 +319,9 @@ public class MpDistributionGoodsService extends ShopBaseService {
             Record record1 = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
                 .and(USER_REBATE_PRICE.PRODUCT_ID.eq(prdId)).and(USER_REBATE_PRICE.EXPIRE_TIME.gt(nowTime))
                 .fetchOne();
-            System.out.println(param.getUserId());
-            System.out.println(record1);
             if(record1 != null){
                 for(GoodsPrdMpVo item : goodsDetailMpBo.getProducts()){
                     if(item.getPrdId().equals(prdId)){
-                        System.out.println(123);
                         item.setPrdRealPrice(prdPrice);
                     }
                 }

@@ -8,6 +8,7 @@
           ref='editor'
           @input="handleToGetText"
           :value='modulesSaveData.rich_text'
+          :disabled="isProhibit"
         />
       </div>
     </div>
@@ -26,6 +27,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       imageTuneUp: false, // 图片选择弹窗调起
       modulesSaveData: {
         'rich_text': ''
@@ -51,6 +53,12 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
   },
   methods: {
     // 获取富文本编译器输入的内容

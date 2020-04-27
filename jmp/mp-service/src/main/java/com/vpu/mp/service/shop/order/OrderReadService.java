@@ -921,7 +921,7 @@ public class OrderReadService extends ShopBaseService {
      * @return
      */
     private List<OrderRebateVo> getOrderRebateInfo(OrderInfoVo order) {
-        if(order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
+        if(order.getFanliType() != null && order.getFanliType() > OrderConstant.FANLI_TYPE_DEFAULT) {
             List<OrderRebateVo> rebateVos = orderGoodsRebate.getByOrderSn(order.getOrderSn());
             for (OrderRebateVo vo: rebateVos) {
                 vo.setCanRebateTotalMoney(BigDecimalUtil.multiply(vo.getCanCalculateMoney(), new BigDecimal(vo.getGoodsNumber() - vo.getReturnNumber())));
@@ -1223,7 +1223,4 @@ public class OrderReadService extends ShopBaseService {
 		return footprintListVo;
 	}
 
-	public void  getOrderDiscountedAmount(String orderSn){
-
-	}
 }

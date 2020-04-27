@@ -1,43 +1,7 @@
 package com.vpu.mp.service.shop.market.goupbuy;
 
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_DEFINE;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_LIST;
-import static com.vpu.mp.db.shop.Tables.GROUP_BUY_PRODUCT_DEFINE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
-import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_N;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.IS_GROUPER_Y;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_ONGOING;
-import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.STATUS_SUCCESS;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Record3;
-import org.jooq.Record4;
-import org.jooq.Result;
-import org.jooq.SelectSeekStep1;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
-import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyDefineRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyListRecord;
-import com.vpu.mp.db.shop.tables.records.GroupBuyProductDefineRecord;
+import com.vpu.mp.db.shop.tables.records.*;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -55,17 +19,8 @@ import com.vpu.mp.service.pojo.shop.market.MarketOrderListParam;
 import com.vpu.mp.service.pojo.shop.market.MarketOrderListVo;
 import com.vpu.mp.service.pojo.shop.market.MarketSourceUserListParam;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyAnalysisParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyDetailParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyEditParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyListParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyProductParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyAnalysisVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailListVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyDetailVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyParam;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyProductVo;
-import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupBuyShareConfigVo;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.*;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
@@ -81,12 +36,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.detail.GoodsPrdMpVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyDefineInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyGoodsInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoParam;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyInfoVo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyStatusInfo;
-import com.vpu.mp.service.pojo.wxapp.market.groupbuy.GroupBuyUserInfo;
+import com.vpu.mp.service.pojo.wxapp.market.groupbuy.*;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
@@ -96,6 +46,20 @@ import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import org.jooq.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
+import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
+import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
 
 /**
  * @author 孔德成
@@ -110,7 +74,10 @@ public class GroupBuyService extends ShopBaseService {
      * 是否默认成团
      */
     public static final Byte IS_DEFAULT_Y = 1;
-
+    /**
+     * 团长优惠
+     */
+    public static final Byte GROUPER_CHEAP = 1;
     @Autowired
     private GroupBuyListService groupBuyListService;
     @Autowired
@@ -859,4 +826,14 @@ public class GroupBuyService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 拼团说明
+     * @param id
+     * @return 拼团说明 or null
+     */
+    public String getActivityCopywriting(Integer id) {
+        Record1<String> record1 = db().select(GROUP_BUY_DEFINE.ACTIVITY_COPYWRITING).from(GROUP_BUY_DEFINE).where(GROUP_BUY_DEFINE.ID.eq(id)).fetchAny();
+        return record1.component1();
+    }
 }

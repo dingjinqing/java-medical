@@ -189,19 +189,9 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      */
     @Override
     public Object query(OrderBeforeParam param) throws MpException {
-        OrderBeforeVo result = OrderBeforeVo.builder().
-            // 地址
-            address(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId())).
-            // 支持的配送方式
-            expressList(getExpressList()).
-        build();
-        //初始化paramGoods
-        initParamGoods(param);
-        // goods info init
-        initGoodsByParam(param.getGoods());
+        OrderBeforeVo result = init(param);
         // process
         processQueryParam(param, result);
-
         return result;
     }
 
@@ -317,6 +307,17 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         } catch (MpException e) {
             return ExecuteResult.create(e.getErrorCode(), null);
         }
+    }
+
+    private OrderBeforeVo init(OrderBeforeParam param) {
+        OrderBeforeVo result = OrderBeforeVo.builder().build();
+        // 地址
+        result.setAddress(getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId()));
+        // 支持的配送方式
+        result.setExpressList(getExpressList());
+        //初始化paramGoods
+        initParamGoods(param);
+        return result;
     }
 
     /**
@@ -479,24 +480,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
 
 
-    }
-    /**
-     * 初始化购买商品信息(初始化param里的goods信息)
-     * @param goods
-     * @return
-     */
-    public void initGoodsByParam(List<Goods> goods) {
-        // TODO 以下参数为模拟参数
-        for (Goods temp : goods) {
-            // 满折满减
-            temp.setStraId(null);
-            // 购买价格id
-            temp.setPurchasePriceId(null);
-            // 购买规则id
-            temp.setPurchasePriceRuleId(null);
-            // ?crm?
-            temp.setPromoteInfo(null);
-        }
     }
 
     /**
@@ -1094,7 +1077,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //TODO 分销
         //TODO 使用优惠券使用, CRM核销
         if(beforeVo.getDefaultCoupon() != null) {
-            coupon.use(beforeVo.getDefaultCoupon().getId(), order.getOrderSn());
+            coupon.use(beforeVo.getDefaultCoupon().getInfo().getId(), order.getOrderSn());
         }
         //TODO 送赠品(处理门店)
         getGifts(beforeVo, order.getStoreId(), order.getUserId(), orderBo.getOrderType());

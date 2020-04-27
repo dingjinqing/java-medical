@@ -277,6 +277,11 @@ export default {
     } else {
       console.log(222222222)
     }
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      this.editActivity(this.$route.params.id)
+    }
   },
 
   methods: {

@@ -28,6 +28,7 @@
             v-model="ruleForm.date"
             size="small"
             style="width:188px"
+            value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -72,6 +73,7 @@
                   class="incident_info_item"
                   v-for="(item,index) in haveChoiseData"
                   :key="index"
+                  :style="item.delFlag?'display:none':''"
                 >
                   <img
                     :src="item.imgUrl"
@@ -82,7 +84,7 @@
                       <span
                         v-if="item.choiseActData.id !==-1"
                         class="act_status"
-                      >进行中</span>
+                      >{{item.choiseActData.actStatus === 1?'未开始':item.choiseActData.actStatus === 2?'进行中':item.choiseActData.actStatus === 3?'已失效':'已结束'}}</span>
                     </p>
                     <p
                       v-if="item.choiseActData.id !==-1"
@@ -91,12 +93,15 @@
                     <p
                       v-if="item.choiseActData.id !==-1"
                       class="act_info"
-                    >有效期：{{item.choiseActData.dateTime}}</p>
+                    >有效期： {{item.choiseActData.isPermanent===1?'永久有效':(item.choiseActData.startTime+'至'+item.choiseActData.endTime)}}</p>
                     <div
                       v-if="item.choiseActData.id ===-1"
                       class="add_act_box"
                     >
-                      <span class="create_act">新建活动</span>
+                      <span
+                        class="create_act"
+                        @click="handleToAddNewAct(item)"
+                      >新建活动</span>
                       <span
                         class="add_act"
                         @click="handleToChoiseDetail(item,index)"
@@ -110,11 +115,11 @@
                   >
                     <div class="shadow_setMain">
                       <a
-                        @click="handleToAllHiddenIcon(1)"
+                        @click="handleToAllHiddenIcon(1,index,item)"
                         href="javascript:;"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
-                        @click="handleToAllHiddenIcon(2)"
+                        @click="handleToAllHiddenIcon(2,index,item)"
                         href="javascript:;"
                       ><i class="iconfont iconchakanxiangqing"></i></a>
                       <a
@@ -122,7 +127,7 @@
                         href="javascript:;"
                       ><i class="iconfont iconxiugai"></i></a>
                       <a
-                        @click="handleToAllHiddenIcon(4)"
+                        @click="handleToAllHiddenIcon(4,index)"
                         href="javascript:;"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
@@ -257,14 +262,24 @@
             align="center"
             width="200"
           >
+            <template slot-scope="scope">
+              {{scope.row.isPermanent===1?'永久有效':(scope.row.startTime+'至'+scope.row.endTime)}}
+            </template>
           </el-table-column>
           <el-table-column
             prop="status"
             label="活动状态"
             align="center"
           >
+            <template slot-scope="scope">
+              {{scope.row.actStatus === 1?'未开始':scope.row.actStatus === 2?'进行中':scope.row.actStatus === 3?'已失效':'已结束'}}
+            </template>
           </el-table-column>
         </el-table>
+        <pagination
+          :page-params.sync="pageParams"
+          @pagination="handleToInitActData"
+        />
       </div>
 
       <span
@@ -281,20 +296,27 @@
   </div>
 </template>
 <script>
+import { eventDeatil, allMarketList, saveEvent } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
-    EventExplainDialog: () => import('./eventExplainDialog')
+    EventExplainDialog: () => import('./eventExplainDialog'),
+    pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页组件
   },
   data () {
     return {
+      pageParams: {
+        currentPage: 1,
+        pageRows: 20
+      },
+      calendarId: null, // 编辑时返回的事件id
+      hasAct: false, // 编辑时判断是否有营销活动
       ruleForm: {
         eventName: '',
         date: ''
       },
       rules: {
         eventName: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         date: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
@@ -316,125 +338,149 @@ export default {
       activityData: {
         first: [
           {
-            imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
-            title: '积分兑换',
-            tips: '使用积分兑换商品'
+            imgUrl: this.$imageHost + '/image/admin/new_market/drpt.png?v=1.0.0',
+            title: '多人拼团',
+            tips: '引导朋友邀请朋友拼团购买',
+            activityType: 'pin_group'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/kj.png?v=1.0.0',
             title: '砍价',
-            tips: '引导用户邀请朋友砍价'
+            tips: '引导用户邀请朋友砍价',
+            activityType: 'bargain'
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
+            title: '拼团抽奖',
+            tips: '拼团参与抽奖,裂变式转化',
+            activityType: 'group_draw'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/gfjf.png?v=1.0.0',
             title: '组团瓜分积分',
-            tips: '提高用户活跃度,引导用户拼团得积分'
+            tips: '提高用户活跃度,引导用户拼团得积分',
+            activityType: 'pin_integration'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/xxdcj.png?v=1.0.0',
             title: '幸运大抽奖',
-            tips: '九宫格式抽奖玩法'
+            tips: '九宫格式抽奖玩法',
+            activityType: 'lottery'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/friend_promote_cion.png?v=1.0.0',
             title: '好友助力',
-            tips: '好友帮忙获得奖励'
+            tips: '好友帮忙获得奖励',
+            activityType: 'promote'
           },
-          {
-            imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
-            title: '积分兑换',
-            tips: '使用积分兑换商品'
-          },
+
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/wysl.png?v=11.0.0',
             title: '我要送礼',
-            tips: '购买商品送好友'
+            tips: '购买商品送好友',
+            activityType: 'give_gift'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/new_market/fxyl.png?v=1.0.0',
             title: '分享有礼',
-            tips: '分享商品获得优惠奖励，提升商品曝光度'
+            tips: '分享商品获得优惠奖励，提升商品曝光度',
+            activityType: 'share_award'
           }
         ],
         second: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/yhqlb.png?v=1.0.0',
             title: '优惠券礼包',
-            tips: '用户一次获得多张优惠券'
+            tips: '用户一次获得多张优惠券',
+            activityType: 'coupon_package'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/xsjj.png?v=1.0.0',
             title: '限时降价',
-            tips: '设定商品在指定时间内降价促销'
+            tips: '设定商品在指定时间内降价促销',
+            activityType: 'reduce_price'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/zfyl.png?v=1.0.0',
             title: '支付有礼',
-            tips: '用户付款后引导参与营销互动'
+            tips: '用户付款后引导参与营销互动',
+            activityType: 'pay_reward'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/sdth.png?v=1.0.0',
             title: '首单特惠',
-            tips: '用户首次下单享受降价优惠'
+            tips: '用户首次下单享受降价优惠',
+            activityType: 'first_special'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/djpz.png?v=1.0.0',
             title: '定金膨胀',
-            tips: '预售定金翻倍，大促预热利器'
+            tips: '预售定金翻倍，大促预热利器',
+            activityType: 'pre_sale'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/ms.png?v=1.0.0',
             title: '秒杀',
-            tips: '快速抢购引导用户更多购买'
+            tips: '快速抢购引导用户更多购买',
+            activityType: 'seckill_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/zp.png?v=1.0.0',
             title: '赠品',
-            tips: '通过丰富的赠品策略，向用户发放赠品'
+            tips: '通过丰富的赠品策略，向用户发放赠品',
+            activityType: 'gift'
           }
         ],
         third: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/mzmj.png?v=1.0.0',
             title: '满折满减',
-            tips: '购物满一定金额享受一定优惠'
+            tips: '购物满一定金额享受一定优惠',
+            activityType: 'full_cut'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/dbykj.png?v=1.0.0',
             title: '打包一口价',
-            tips: '多件商品一口价打包售卖'
+            tips: '多件商品一口价打包售卖',
+            activityType: 'package_sale'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jjg.png?v=1.0.0',
             title: '加价购',
-            tips: '购买指定商品满一定金额加价换购'
+            tips: '购买指定商品满一定金额加价换购',
+            activityType: 'purchase_price'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/mby.png?v=1.0.0',
             title: '满包邮',
-            tips: '购物包邮'
+            tips: '购物包邮',
+            activityType: 'free_ship'
           }
         ],
         fourth: [
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/jfdh.png?v=1.0.0',
             title: '积分兑换',
-            tips: '使用积分兑换商品'
+            tips: '使用积分兑换商品',
+            activityType: 'integral_goods'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/kpyl.png?v=1.0.0',
             title: '开屏有礼（原活动有礼）',
-            tips: '用户来到小程序引导参与营销互动'
+            tips: '用户来到小程序引导参与营销互动',
+            activityType: 'activity_reward'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/pjyl.png?v=1.0.0',
             title: '评价有礼',
-            tips: '引导用户评价商品，参与营销活动'
+            tips: '引导用户评价商品，参与营销活动',
+            activityType: 'comment_gift'
           },
           {
             imgUrl: this.$imageHost + '/image/admin/market_calendar/cp.png?v=1.0.0',
             title: '测评',
-            tips: '兴趣测评，让你更了解用户'
+            tips: '兴趣测评，让你更了解用户',
+            activityType: 'assess'
           }
         ]
       },
@@ -442,26 +488,7 @@ export default {
       haveChoiseData: [], // 已经选出的活动数据
       delDialogVisible: false,
       detailActVisible: false, // 选择具体活动弹窗flag
-      tableData: [
-        {
-          actName: '腾飞测试1',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 1
-        },
-        {
-          actName: '腾飞测试2',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 2
-        },
-        {
-          actName: '腾飞测试3',
-          dateTime: '2020-04-20至2020-04-24',
-          status: '进行中',
-          id: 3
-        }
-      ],
+      tableData: [], // 具体活动弹窗数据
       chioseDetailVal: '',
       clickChoiseIndex: '', // 记录点击得选择活动项index
       isClickIconDel: false, // 是否是点击的隐藏icon删除
@@ -470,8 +497,87 @@ export default {
   },
   mounted () {
     this.nowShowActivityData = this.activityData[this.activeName]
+    // 初始化请求数据
+    this.handleToInit()
+    // 推荐理由跳转
+    // recommendLink
+    // this.$router.push({
+    //   path: '/admin/home/shopMain',
+    //   query: {
+    //     id: 1,
+    //     change_components: '8'
+    //   }
+    // })
   },
   methods: {
+    // 初始化数据  eventDeatil
+    handleToInit () {
+      if (!this.$route.query.isAdd) {
+        let id = this.$route.query.id
+        console.log(id)
+        eventDeatil(id).then(res => {
+          console.log(res)
+          if (res.error === 0) {
+            let { eventName, eventTime, eventDesc, calendarId, hasAct, actInfo } = res.content
+            this.ruleForm.eventName = eventName
+            this.ruleForm.date = eventTime
+            this.richText = eventDesc
+            this.backText = eventDesc
+            this.calendarId = calendarId
+            this.hasAct = hasAct
+            // this.haveChoiseData = actInfo
+            // 处理营销活动数据
+            this.handleToActData(actInfo)
+          }
+        })
+      }
+    },
+    // 处理营销活动数据
+    handleToActData (actInfo) {
+      console.log(actInfo)
+      // let obj = {
+      //   imgUrl: imgUrl,
+      //   title: title,
+      //   activityType: activityType,
+      //   choiseActData: {
+      //     id: -1,
+      //     actStatus: '',
+      //     actName: '',
+      //     startTime: '',
+      //     endTime: '',
+      //     isPermanent: '',
+      //     activityType: ''
+      //   }
+      // }
+      let arr = []
+      actInfo.forEach((itemP, indexP) => {
+        Object.keys(this.activityData).forEach((item, index) => {
+          this.activityData[item].forEach((itemC, indexC) => {
+            if (itemC.activityType === itemP.activityType) {
+              let obj = {
+                imgUrl: itemC.imgUrl,
+                title: itemC.title,
+                activityType: itemC.activityType,
+                delFlag: 0,
+                choiseActData: {
+                  id: itemP.id,
+                  actStatus: itemP.actStatus,
+                  actName: itemP.actName,
+                  endTime: itemP.endTime,
+                  isPermanent: itemP.isPermanent,
+                  startTime: itemP.startTime,
+                  activityType: itemP.activityType,
+                  calActId: itemP.calActId
+                }
+              }
+              arr.push(obj)
+            }
+          })
+        })
+      })
+      console.log(arr)
+      this.haveChoiseData = arr
+    },
     // 点击事件说明编辑
     handleToClickExplain () {
       this.explainVisible = true
@@ -483,6 +589,8 @@ export default {
     },
     // 点击添加营销活动
     handleToClick () {
+      // 查询所有可用营销活动
+
       this.choiseActivity = true
     },
     // 选择营销活动弹窗切换
@@ -493,16 +601,21 @@ export default {
     // 点击营销活动弹窗的项
     handleToClickActivity (item) {
       // haveChoiseData
-      let { imgUrl, title } = item
+      let { imgUrl, title, activityType } = item
       console.log(item)
       let obj = {
         imgUrl: imgUrl,
         title: title,
+        activityType: activityType,
+        delFlag: 0,
         choiseActData: {
           id: -1,
-          status: '',
+          actStatus: '',
           actName: '',
-          dateTime: ''
+          startTime: '',
+          endTime: '',
+          isPermanent: '',
+          activityType: ''
         }
       }
       this.haveChoiseData.push(obj)
@@ -516,25 +629,49 @@ export default {
     },
     // 二次删除确定
     handleToDelSure () {
-      this.haveChoiseData.splice(this.delIndex, 1)
+      // this.haveChoiseData.splice(this.delIndex, 1)
+      console.log(this.haveChoiseData, this.delIndex)
+      // this.$set(this.haveChoiseData[this.delIndex], this.delFlag, 1)
+      this.haveChoiseData[this.delIndex].delFlag = 1
       this.delDialogVisible = false
+      console.log(this.haveChoiseData)
     },
     // 选择具体活动
     handleToChoiseDetail (item, index) {
+      console.log(item)
+      this.handleToInitActData(item)
       this.clickChoiseIndex = index
       this.isClickIconChoiseAct = false
       this.detailActVisible = true
       this.$refs.singleTable.setCurrentRow()
     },
+    // 具体活动弹窗初始化请求数据
+    handleToInitActData (item) {
+      let params = {
+        activityType: item.activityType,
+        currentPage: this.pageParams.currentPage
+      }
+      allMarketList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.pageParams = res.content.page
+          this.tableData = res.content.dataList
+        }
+      })
+    },
     // 选择具体活动弹窗确定事件
     handleToChoiseDetilSure () {
+      console.log('触发')
       // this.chioseDetailVal
-      let { id, actName, dateTime, status } = this.chioseDetailVal
+      let { id, actName, actStatus, startTime, endTime, isPermanent, activityType } = this.chioseDetailVal
       let obj = {
         id: id,
-        status: status,
+        actStatus: actStatus,
         actName: actName,
-        dateTime: dateTime
+        startTime: startTime,
+        endTime: endTime,
+        isPermanent: isPermanent,
+        activityType: activityType
       }
       this.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
       this.detailActVisible = false
@@ -546,15 +683,91 @@ export default {
     },
     // 点击保存
     handleToSave () {
-
+      console.log(this.haveChoiseData)
+      // calActId
+      let act = ''
+      let calendarAct = []
+      let params = {}
+      if (this.$route.query.isAdd) {
+        act = 'add'
+        this.haveChoiseData.forEach((item, index) => {
+          let obj = {
+            activityType: item.activityType,
+            activityId: 0
+          }
+          if (item.choiseActData.id !== -1) {
+            obj.activityId = item.choiseActData.id
+          }
+          calendarAct.push(obj)
+        })
+        params = {
+          'act': act,
+          'eventName': this.ruleForm.eventName,
+          'eventTime': this.ruleForm.date + ' 00:00:00',
+          'eventDesc': this.richText,
+          'calendarAct': calendarAct
+        }
+      } else {
+        act = 'edit'
+        this.haveChoiseData.forEach((item, index) => {
+          let obj = {
+            activityType: item.activityType,
+            activityId: 0,
+            delFlag: 0
+          }
+          if (item.choiseActData.id !== -1) {
+            obj.activityId = item.choiseActData.id
+            obj.delFlag = item.delFlag
+            if (item.choiseActData.calActId !== undefined) {
+              obj.calActId = item.choiseActData.calActId
+            }
+            console.log(item.choiseActData.calActId)
+          }
+          calendarAct.push(obj)
+        })
+        params = {
+          'act': act,
+          'eventName': this.ruleForm.eventName,
+          'eventTime': this.ruleForm.date + ' 00:00:00',
+          'eventDesc': this.richText,
+          'calendarAct': calendarAct,
+          'calendarId': this.calendarId
+        }
+      }
+      console.log(params, this.haveChoiseData)
+      saveEvent(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.$message.success({
+            message: '保存成功',
+            showClose: true
+          })
+          this.$router.push({
+            name: 'calendar'
+          })
+        }
+      })
     },
     // 选中活动四个icon综合处理
-    handleToAllHiddenIcon (flag) {
-      console.log(flag)
+    handleToAllHiddenIcon (flag, index, item) {
+      console.log(flag, index, item)
+      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'pay_reward', 'first_special', 'pre_sale', 'seckill_goods', 'gift', 'full_cut', 'package_sale', 'purchase_price', 'free_ship', 'integral_goods', 'activity_reward', 'comment_gift']
+      // 跳转
+      let jmp = ['pin_group', 'kanjia', 'group_draw', 'pin_integration', 'lottery_activity', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'payreward', 'first_special', 'presale', 'sec_kill', 'gift', 'full_cut', 'package', 'purchase_price', 'free_ship', 'integral_convert', 'market_gifted', 'comment_gift']
       switch (flag) {
         case 1:
+          this.$router.push({
+            name: jmp[arr.indexOf(item.activityType)],
+            params: {
+              calenderEdit: true,
+              id: item.choiseActData.id
+            }
+          })
           break
         case 2:
+          this.$router.push({
+            name: jmp[arr.indexOf(item.activityType)]
+          })
           break
         case 3:
           this.isClickIconChoiseAct = true
@@ -562,10 +775,25 @@ export default {
           this.$refs.singleTable.setCurrentRow()
           break
         case 4:
+          this.delIndex = index
           this.isClickIconDel = true
           this.delDialogVisible = true
           break
       }
+    },
+    // 点击新建活动
+    handleToAddNewAct (item) {
+      console.log(item)
+      // 多人拼团 pin_group
+      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'pay_reward', 'first_special', 'pre_sale', 'seckill_goods', 'gift', 'full_cut', 'package_sale', 'purchase_price', 'free_ship', 'integral_goods', 'activity_reward', 'comment_gift']
+      // 跳转
+      let jmp = ['pin_group', 'bargain_activity', 'group_draw', 'pin_integration', 'lottery_activity', 'promote_activity', 'share_polite_add', 'coupon_Package_add', 'reduce_price', 'addPayRewardAct', 'first_special_add', 'presale_add_view', 'sec_kill', 'gift_add_view', 'full_cut', 'package', 'add_increase_purchase', 'free_ship', 'integral_convert', 'market_gifted', 'comment_gift']
+      this.$router.push({
+        name: jmp[arr.indexOf(item.activityType)],
+        params: {
+          calenderAdd: true
+        }
+      })
     }
   }
 }
@@ -852,7 +1080,7 @@ export default {
     justify-content: center;
   }
   .choiseDetail {
-    min-height: 308px;
+    height: 470px;
     overflow: auto;
   }
 }

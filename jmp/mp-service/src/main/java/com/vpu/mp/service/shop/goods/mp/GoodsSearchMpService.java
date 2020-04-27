@@ -110,17 +110,17 @@ public class GoodsSearchMpService extends ShopBaseService {
                 pageResult = searchGoodsForVoucher(param);
             }else if (GoodsSearchMpParam.PAGE_FROM_BARGAIN.equals(param.getPageFrom())){
                 pageResult = searchGoodsForBargainQrCode(param);
-            }else if(GoodsSearchMpParam.PAGE_FROM_LIMIT_COUNT_CARD_EXCHANGE_GOODS.equals(param.getPageFrom())){
-                pageResult = searchGoodsForLimitMemberCard(param);
-            } else{
+            }else{
                 pageResult = searchGoods(param);
             }
         }else{
             pageResult = searchGoods(param);
         }
-
-
         goodsMpService.disposeGoodsList(pageResult.dataList, param.getUserId());
+       return createSearchContentVo(pageResult);
+    }
+
+    private GoodsSearchContentVo createSearchContentVo(PageResult<GoodsListMpBo> pageResult){
         GoodsShowStyleConfigBo goodsShowStyle = goodsMpService.getGoodsShowStyle();
         GoodsSearchContentVo vo = new GoodsSearchContentVo();
         vo.setDelMarket(goodsShowStyle.getDelMarket());
@@ -189,20 +189,6 @@ public class GoodsSearchMpService extends ShopBaseService {
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
         return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
-    }
-
-    /**
-     * 限次卡兑换商品搜索商品接口
-     * @param param GoodsSearchMpParam
-     * @return 该活动下的有效商品信息
-     */
-    private PageResult<GoodsListMpBo> searchGoodsForLimitMemberCard(GoodsSearchMpParam param) {
-        List<Integer> goodsIdsLimit = param.getGoodsIds();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-
-        List<SortField<?>> sortFields = buildSearchOrderFields(param);
-        Condition condition = GOODS.GOODS_ID.in(goodsIdsLimit).and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
-        return goodsMpService.findActivityGoodsListCapsulesDao(condition.and(goodsBaseCondition), sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**

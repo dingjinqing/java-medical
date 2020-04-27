@@ -309,6 +309,10 @@ export default {
         item.statusName = this.getActStatusString(item.currentState)
       })
       this.tableData = data
+
+      if (this.$route.params.calenderEdit) {
+        this.edit(this.$route.params.id)
+      }
     },
 
     // 停用优惠券礼包活动
@@ -324,8 +328,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -347,8 +350,7 @@ export default {
       }).then(() => {
         updateCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
@@ -369,8 +371,7 @@ export default {
       }).then(() => {
         deleteCouponPackage(param).then((res) => {
           if (res.error === 0) {
-            this.$message({
-              type: 'success',
+            this.$message.success({
               message: this.$t('marketCommon.successfulOperation')
             })
             this.initDataList()
