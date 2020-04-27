@@ -463,23 +463,25 @@ public class MpDistributionService extends ShopBaseService{
      * 确定用户与邀请人建立绑定关系
      * @param param
      */
-    public void confirmUserBind(UserBindParam param){
+    private void confirmUserBind(UserBindParam param){
         //邀请人是否为分销员
         int isDistributor = isDistributor(param.getInviteId());
-        if(isDistributor == 1){//是分销员，需计算邀请保护期
-            //获取分销配置
-            DistributionParam cfg = this.distributionCfg.getDistributionCfg();
-            //邀请保护时间
-            Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
-            Date inviteProtectDate = new Date(protectDate.getTime());
-            db().update(USER).set(USER.INVITE_ID,param.getInviteId())
-                .set(USER.INVITE_PROTECT_DATE,inviteProtectDate)
-                .set(USER.INVITE_TIME,Util.currentTimeStamp())
-                .where(USER.USER_ID.eq(param.getUserId())).execute();
-        }else{//不是分销员，直接建立绑定关系
-            db().update(USER).set(USER.INVITE_ID,param.getInviteId())
-                .set(USER.INVITE_TIME,Util.currentTimeStamp())
-                .where(USER.USER_ID.eq(param.getUserId())).execute();
+        if(!param.getUserId().equals(param.getInviteId())){
+            if(isDistributor == 1){//是分销员，需计算邀请保护期
+                //获取分销配置
+                DistributionParam cfg = this.distributionCfg.getDistributionCfg();
+                //邀请保护时间
+                Timestamp protectDate =DateUtil.getTimeStampPlus(cfg.getProtectDate(), ChronoUnit.DAYS);
+                Date inviteProtectDate = new Date(protectDate.getTime());
+                db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+                    .set(USER.INVITE_PROTECT_DATE,inviteProtectDate)
+                    .set(USER.INVITE_TIME,Util.currentTimeStamp())
+                    .where(USER.USER_ID.eq(param.getUserId())).execute();
+            }else{//不是分销员，直接建立绑定关系
+                db().update(USER).set(USER.INVITE_ID,param.getInviteId())
+                    .set(USER.INVITE_TIME,Util.currentTimeStamp())
+                    .where(USER.USER_ID.eq(param.getUserId())).execute();
+            }
         }
     }
 
@@ -488,7 +490,7 @@ public class MpDistributionService extends ShopBaseService{
      * @param param
      * @return
      */
-     public int isBind(UserBindParam param){
+     private int isBind(UserBindParam param){
          Record record = db().select(USER.INVITE_ID).from(USER).where(USER.USER_ID.eq(param.getUserId())).fetchOne();
          if(record != null)
              return record.into(Integer.class);
@@ -511,7 +513,7 @@ public class MpDistributionService extends ShopBaseService{
      * @param userId
      * @return 0：邀请保护失效；1：邀请保护有效
      */
-     public int inviteProtectIsEffective(Integer userId){
+     private int inviteProtectIsEffective(Integer userId){
          UserRecord info = db().select(USER.INVITE_PROTECT_DATE).from(USER).where(USER.USER_ID.eq(userId)).fetchOne().into(UserRecord.class);
          Timestamp nowDate = Util.currentTimeStamp();
          if(nowDate.compareTo(info.getInviteProtectDate())>0)
