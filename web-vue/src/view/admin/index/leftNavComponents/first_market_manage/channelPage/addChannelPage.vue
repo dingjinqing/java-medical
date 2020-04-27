@@ -34,7 +34,7 @@
             <div>
               <span>页面名称：</span>
               <el-input
-                v-model="requestParam.channelName"
+                v-model="formDialog.pageName"
                 placeholder="请输入页面名称"
                 size="small"
                 class="default_width"
@@ -44,34 +44,26 @@
             <div style="margin: 0 15px 15px 15px;">
               <span>页面分类：</span>
               <el-select
-                v-model="requestParam.sourceType"
+                v-model="formDialog.catId"
                 placeholder="请选择类型"
                 size="small"
                 class="default_width"
                 clearable
               >
                 <el-option
-                  :value="-1"
-                  label="请选择类型"
-                ></el-option>
-                <el-option
-                  :value="0"
-                  label="生鲜"
-                ></el-option>
-                <el-option
-                  :value="1"
-                  label="食品"
-                ></el-option>
-                <el-option
-                  :value="2"
-                  label="服装"
-                ></el-option>
+                  v-for="item in pageSetoptions"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
               </el-select>
             </div>
             <div>
               <el-button
                 size="small"
                 type="primary"
+                @click="choosePage()"
               > 筛选 </el-button>
             </div>
           </div>
@@ -80,35 +72,28 @@
         <section v-if="requestParam.sourceType===0">
           <div class="table_list">
             <el-table
+              :data="customPageData"
+              highlight-current-row
+              @current-change="handleCurrentChange"
               header-row-class-name="tableClss"
               style="width: 100%"
+              height="300px"
               border
             >
               <el-table-column
-                prop=""
-                label=""
-                align="center"
-                width="50px"
-              >
-                11
-              </el-table-column>
-
-              <el-table-column
-                prop=""
+                prop="pageName"
                 label="页面名称"
                 align="center"
               >
               </el-table-column>
-
               <el-table-column
-                prop=""
+                prop="createTime"
                 label="创建时间"
                 align="center"
               >
               </el-table-column>
-
               <el-table-column
-                prop=""
+                prop="name"
                 label="页面分类"
                 align="center"
               >
@@ -118,26 +103,12 @@
         </section>
 
         <section v-if="requestParam.sourceType===1">
-          <div
-            class="tips"
-            v-if="showTips"
-          >
-            <i class="el-icon-warning-outline"></i>
-            <span>规则说明：同一个商品若同时参加多个营销活动在商品列表中优先显示规则为 秒杀 > 定金膨胀 > 砍价 > 多人拼团 > 首单特惠 > 限时降价</span>
-          </div>
           <div class="choiseDialog">
             <div>
               <section
                 style="padding-left:30px;display: flex;"
                 class="chooseCondiction"
               >
-                <!-- <sortCatTreeSelect
-              ref="catTree"
-              :filterGoodsInfo="initSortCatParams"
-              treeType="cat"
-              :treeStyle="initPlateformWidth"
-              :selectedId.sync="requestParam.catId"
-            /> -->
                 <div style="margin-right: 30px;">
                   <sortCatTreeSelect
                     ref="sortTree"
@@ -268,7 +239,6 @@
                       <div class="tdCenter">
                         <el-checkbox v-model="item.ischecked"></el-checkbox>
                       </div>
-
                     </td>
                     <td
                       class="isLeft"
@@ -328,7 +298,6 @@
                   />
                 </div>
               </div>
-
             </div>
             <div
               class="noData"
@@ -362,8 +331,8 @@
 import {
   getProductIdsListAll,
   getGoodsIdsListAll,
-  getGoodsListByIds,
-  getProductListByIds,
+  // getGoodsListByIds,
+  // getProductListByIds,
   allGoodsQueryRequest,
   getGoodsProductList
 } from '@/api/admin/brandManagement.js'
@@ -371,7 +340,9 @@ import pagination from '@/components/admin/pagination/pagination.vue'
 import { getGoodsFilterItem } from '@/api/admin/goodsManage/allGoods/allGoods'
 import { mapActions } from 'vuex'
 import sortCatTreeSelect from '@/components/admin/sortCatTreeSelect'
-// import { addChannelAct } from '@/api/admin/marketManage/channelPage.js'
+import { getPageCate } from '@/api/admin/decoration/pageSet.js'
+import { shopDecorateList } from '@/api/admin/marketManage/distribution.js'
+import { addChannelAct } from '@/api/admin/marketManage/channelPage.js'
 
 export default {
   components: {
@@ -391,11 +362,6 @@ export default {
     },
     // 多选最大数量
     checkedNumMax: Number,
-    // 是否显示提示
-    showTips: {
-      type: Boolean,
-      default: false
-    },
     // 弹出窗口
     tuneUpChooseGoods: Boolean,
     // 只回显已选商品
@@ -421,7 +387,7 @@ export default {
       return {
         needGoodsNum: true,
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         // 查询商品时值为1，规格查询值为2
         selectType: this.loadProduct ? 2 : 1
       }
@@ -441,6 +407,9 @@ export default {
         currentPage: 1,
         pageRows: 3
       },
+      pageSetoptions: [],
+      selectPageType: '',
+      customPageData: [],
       // 筛选条件
       requestParam: {
         channelName: '',
@@ -449,7 +418,7 @@ export default {
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         catId: null,
         sortId: null,
         labelId: null,
@@ -480,7 +449,15 @@ export default {
       checkedRow: {},
       checkedRowList: [],
       checkedUrlList: [],
-      tbodyFlag: true
+      tbodyFlag: true,
+      formDialog: {
+        pageName: null,
+        catId: null
+      },
+      templateRow: {},
+      selectedPageId: '',
+      selectedGoodsId: '',
+      contentId: ''
     }
   },
   watch: {
@@ -489,7 +466,7 @@ export default {
         console.log(newData)
         console.log('chooseGoodsBack')
         let uniqGoodsIds = Array.from(new Set(this.chooseGoodsBack))
-        // this.chooseGoodsBack = uniqGoodsIds
+        this.selectedGoodsId = uniqGoodsIds
         this.checkedIdList = uniqGoodsIds
       },
       deep: true,
@@ -503,7 +480,7 @@ export default {
           currentPage: 1,
           pageRows: 3,
           isOnSale: 1,
-          isSaleOut: false,
+          isSaleOut: 0,
           catId: null,
           sortId: null,
           labelId: null,
@@ -528,16 +505,20 @@ export default {
             break
         }
       }
+      console.log(this.requestParam.sourceType)
       this.choiseGooddialogVisible = true
       this.selectGoodsData()
     }
   },
   mounted () {
     // 初始化数据
-
     console.log('choosingGoods', 'mounted')
     this._initFilterDatas().then(res => {
       // this.selectGoodsData()
+    })
+    this.initGetPageData().then(res => {
+    })
+    this.initPageList().then(res => {
     })
   },
   methods: {
@@ -555,6 +536,38 @@ export default {
           this.goodsBrandOptions = arr2.concat(res.content.goodsBrands)
         }
       })
+    },
+    // 自定义页面 - 页面分类下拉框接口
+    initGetPageData () {
+      return getPageCate().then(res => {
+        if (!res) return
+        if (res.error === 0) {
+          console.log(res)
+          this.pageSetoptions = res.content
+        }
+      })
+    },
+    // 自定义页面 - table表格数据接口
+    initPageList () {
+      let obj = {
+        'pageName': this.formDialog.pageName,
+        'catId': this.formDialog.catId
+      }
+      return shopDecorateList(obj).then(res => {
+        console.log(res)
+        this.customPageData = res.content.dataList
+      })
+    },
+    choosePage () {
+      this.initPageList()
+    },
+    // 改变自定义页面
+    handleCurrentChange (val) {
+      console.log(val)
+      this.templateRow = val
+      console.log(this.templateRow)
+      this.selectedPageId = val.pageId
+      console.log(this.selectedPageId)
     },
     /* 筛选商品或规格数据 */
     selectGoodsData () {
@@ -623,7 +636,7 @@ export default {
       this.requestParam = {
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false
+        isSaleOut: 0
       }
       // this.$refs['catTree'].clearData()
       this.$refs['sortTree'].clearData()
@@ -633,11 +646,13 @@ export default {
     cancleBtnHandle () {
       this.choiseGooddialogVisible = false
       this.requestParam = {
+        channelName: '',
+        sourceType: 0,
         currentPage: 1,
         pageRows: 3,
         // 在售商品
         isOnSale: 1,
-        isSaleOut: false,
+        isSaleOut: 0,
         catId: null,
         sortId: null,
         labelId: null,
@@ -647,6 +662,10 @@ export default {
         goodsSn: null,
         brandId: null
       }
+    },
+    // 商品数据处理
+    goodsDataProcess () {
+
     },
     /* 确定 */
     handleChoiseGooddialog () {
@@ -665,6 +684,8 @@ export default {
       this.transmitGoodsIds(this.checkedIdList)
       this.$emit('resultGoodsIds', this.checkedIdList)
       this.$emit('result', this.checkedIdList)
+      // 自定义页面回显
+      this.$emit('handleSelectTemplate', this.templateRow)
       // 找出差异数据
       let residueIds = this.checkedIdList.filter(id => {
         this.checkedRowList.forEach(itme => {
@@ -684,27 +705,41 @@ export default {
         return false
       })
       console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
-      if (this.loadProduct) {
-        getProductListByIds({ productId: residueIds }).then(res => {
-          res.content.forEach(item => {
-            this.checkedRowList.push(item)
-          })
-          console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
-          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
-          // 把选中的id集合和url集合回传
-          this.$emit('res', this.checkedIdList, this.checkedUrlList)
-        })
+      // if (this.loadProduct) {
+      //   getProductListByIds({ productId: residueIds }).then(res => {
+      //     res.content.forEach(item => {
+      //       this.checkedRowList.push(item)
+      //     })
+      //     console.log('返回参数', residueIds, Array.from(this.checkedRowList), this.checkedIdList)
+      //     this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+      //     // 把选中的id集合和url集合回传
+      //     this.$emit('res', this.checkedIdList, this.checkedUrlList)
+      //   })
+      // } else {
+      //   getGoodsListByIds({ goodsIds: residueIds }).then(res => {
+      //     res.content.forEach(item => {
+      //       this.checkedRowList.push(item)
+      //     })
+      //     console.log('返回参数', this.checkedRowList, Array.from(this.checkedRowList))
+      //     this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
+      //     // 把选中的id集合和url集合回传
+      //     this.$emit('res', this.checkedIdList, this.checkedUrlList)
+      //   })
+      // }
+      if (this.requestParam.sourceType === 0) {
+        this.contentId = this.selectedPageId
       } else {
-        getGoodsListByIds({ goodsIds: residueIds }).then(res => {
-          res.content.forEach(item => {
-            this.checkedRowList.push(item)
-          })
-          console.log('返回参数', this.checkedRowList, Array.from(this.checkedRowList))
-          this.$emit('resultGoodsDatas', Array.from(this.checkedRowList))
-          // 把选中的id集合和url集合回传
-          this.$emit('res', this.checkedIdList, this.checkedUrlList)
-        })
+        this.contentId = this.selectedGoodsId
       }
+      let requestObj = {
+        channelName: this.requestParam.channelName,
+        sourceType: this.requestParam.sourceType,
+        contentId: this.contentId
+      }
+      console.log(requestObj)
+      addChannelAct(requestObj).then(res => {
+        console.log(res)
+      })
     },
     /* 翻页方法 */
     paginationChange () {
@@ -716,6 +751,8 @@ export default {
       item.ischecked = !item.ischecked
       // 单选
       if (this.singleElection) {
+        this.selectedGoodsId = item.goodsId
+        console.log(this.selectedGoodsId)
         this.clearCheckedRow(item)
         this.tableData.forEach(i => {
           if (i !== item && i.ischecked) {
@@ -816,7 +853,6 @@ export default {
       }
       this.hxTableData()
     }
-
   }
 }
 </script>
