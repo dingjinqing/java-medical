@@ -726,6 +726,10 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
         //设置授权相关
         promoteInfo.setPromoteCondition(record.getPromoteCondition());
+        //设置活动说明相关
+        if (record.getActivityCopywriting()!=null){
+            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(),promoteActCopywriting.class,false));
+        }
 
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
