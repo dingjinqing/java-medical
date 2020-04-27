@@ -188,6 +188,7 @@ public class PackageGoodsCartService extends ShopBaseService {
             .from(PACKAGE_GOODS_CART)
             .where(PACKAGE_GOODS_CART.PACKAGE_ID.eq(packageId))
             .and(PACKAGE_GOODS_CART.USER_ID.eq(userId))
+            .and(PACKAGE_GOODS_CART.GOODS_NUMBER.gt(0))
             .fetchInto(PackageSaleCheckoutVo.CheckoutGoods.class);
     }
 
