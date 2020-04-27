@@ -27,13 +27,13 @@ public class UserGoodsRecordService extends ShopBaseService {
      * @param param
      */
     public void addUserGoodsRecord(GoodsDetailMpParam param){
-        UserLoginRecordRecord userLoginRecordRecord = userLoginRecordService.getUserLoginRecord(param.getUserId());
-
         UserGoodsRecordRecord todayRecord = getTodayRecord(param.getUserId(),param.getGoodsId());
         if(todayRecord != null){
             todayRecord.setCount((short)(todayRecord.getCount()+1));
             todayRecord.update();
         }else{
+            UserLoginRecordRecord userLoginRecordRecord = userLoginRecordService.getUserLoginRecord(param.getUserId());
+
             UserGoodsRecordRecord insertRecord = db().newRecord(USER_GOODS_RECORD);
             insertRecord.setUserId(param.getUserId());
             insertRecord.setGoodsId(param.getGoodsId());
