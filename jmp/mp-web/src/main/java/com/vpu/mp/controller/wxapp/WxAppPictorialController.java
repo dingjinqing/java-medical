@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.wxapp.share.firstspecial.FirstSpecialShareInfoPar
 import com.vpu.mp.service.pojo.wxapp.share.group.GroupDrawShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.groupbuy.GroupBuyShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
+import com.vpu.mp.service.pojo.wxapp.share.rebate.RebateShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.reduce.ReducePriceShareInfoParam;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,6 +116,16 @@ public class WxAppPictorialController extends WxAppBaseController  {
      */
     @PostMapping("/api/wxapp/seckill/share/info")
     public JsonResult getSeckillShareInfo(@RequestBody SeckillShareInfoParam param){
+        return getActivityShareInfo(param);
+    }
+
+    /**
+     * 获取秒杀活动分享图片
+     * @param param 参数信息
+     * @return  JsonResult
+     */
+    @PostMapping("/api/wxapp/rebate/share/info")
+    public JsonResult getRebateShareInfo(@RequestBody RebateShareInfoParam param){
         return getActivityShareInfo(param);
     }
 

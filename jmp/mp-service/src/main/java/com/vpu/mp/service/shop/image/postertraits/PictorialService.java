@@ -248,43 +248,58 @@ public class PictorialService extends ShopBaseService {
         return bgBufferedImage;
     }
 
+
+    /**
+     * 添加文字，可以自动换行
+     * @param bgBufferedImage 背景
+     * @param text 文字
+     * @param startX 开始x
+     * @param startY 开始y
+     * @param maxWidth 最大可使用宽度
+     * @param maxRows 最大行数
+     * @param font 字体
+     * @return 文字高度
+     */
+    public int addTextWithBreak(BufferedImage bgBufferedImage, String text, Integer startX, Integer startY,Integer maxWidth,Integer maxRows, Font font) {
+        // 名称单个字符高度
+        int nameCharHeight = ImageUtil.getTextAscent(bgBufferedImage, font);
+        // 名称总长度
+        int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, font, text);
+
+        if (nameTextLength <= maxWidth) {
+            ImageUtil.addFont(bgBufferedImage, text, font, startX, startY, PictorialImgPx.GOODS_NAME_COLOR, false);
+            return nameCharHeight;
+        } else {
+            double oneCharWidth = Math.ceil(nameTextLength * 1.0 / text.length());
+            int oneLineCharNum = (int) Math.floor(maxWidth / oneCharWidth);
+            if (text.length() > oneLineCharNum * maxRows) {
+                text = text.substring(0, oneLineCharNum * (maxRows-1) + oneLineCharNum / (maxRows-1)) + "...";
+            }
+
+            int nextTextStartY =startY;
+            String textTemp;
+            for (int i = 0; i < text.length(); i += oneLineCharNum) {
+                if (i + oneLineCharNum >= text.length()) {
+                    textTemp = text.substring(i);
+                } else {
+                    textTemp = text.substring(i, i + oneLineCharNum);
+                }
+                ImageUtil.addFont(bgBufferedImage, textTemp, font,startX, nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
+                nextTextStartY += nameCharHeight;
+            }
+            return nextTextStartY - startY;
+        }
+    }
     /**
      * 海报添加商品名称，根据长度自动折行或截断商品名称
      *
      * @param bgBufferedImage 背景图bufferImage
      * @param goodsName       商品名称
      * @param imgPx           图片规格信息
-     * @return 商品结束出Y值
+     * @return 商品名称高度
      */
     private int pictorialAddFontName(BufferedImage bgBufferedImage, String goodsName, PictorialImgPx imgPx) {
-        // 名称单个字符高度
-        int nameCharHeight = imgPx.getMediumFontAscent(bgBufferedImage);
-        // 名称总长度
-        int nameTextLength = ImageUtil.getTextWidth(bgBufferedImage, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), goodsName);
-
-        if (nameTextLength <= imgPx.getGoodsNameCanUseWidth()) {
-            ImageUtil.addFont(bgBufferedImage, goodsName, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(), PictorialImgPx.GOODS_NAME_COLOR, false);
-            return nameCharHeight;
-        } else {
-            double oneCharWidth = Math.ceil(nameTextLength * 1.0 / goodsName.length());
-            int oneLineCharNum = (int) Math.floor(imgPx.getGoodsNameCanUseWidth() / oneCharWidth);
-            if (goodsName.length() > oneLineCharNum * 3) {
-                goodsName = goodsName.substring(0, oneLineCharNum * 2 + oneLineCharNum / 2) + "...";
-            }
-
-            int nextTextStartY = imgPx.getGoodsNameStartY();
-            String text;
-            for (int i = 0; i < goodsName.length(); i += oneLineCharNum) {
-                if (i + oneLineCharNum >= goodsName.length()) {
-                    text = goodsName.substring(i);
-                } else {
-                    text = goodsName.substring(i, i + oneLineCharNum);
-                }
-                ImageUtil.addFont(bgBufferedImage, text, ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()), imgPx.getBottomTextStartX(), nextTextStartY, PictorialImgPx.GOODS_NAME_COLOR, false);
-                nextTextStartY += nameCharHeight;
-            }
-            return nextTextStartY - imgPx.getGoodsNameStartY();
-        }
+        return addTextWithBreak(bgBufferedImage,goodsName, imgPx.getBottomTextStartX(), imgPx.getGoodsNameStartY(),imgPx.getGoodsNameCanUseWidth(),3,ImageUtil.SourceHanSansCN(Font.PLAIN, imgPx.getMediumFontSize()));
     }
 
     /**
@@ -409,12 +424,19 @@ public class PictorialService extends ShopBaseService {
      */
     public boolean isGoodsSharePictorialRecordCanUse(String rule, Timestamp goodsUpdateTime, Timestamp activityUpdateTime) {
         PictorialRule pictorialRule = Util.parseJson(rule, PictorialRule.class);
-        // 之前生成的图片依然可用，则直接返回其在upanyun上的相对路径
-        if (pictorialRule.getGoodsUpdateTime().compareTo(goodsUpdateTime) >= 0 && pictorialRule.getActivityUpdateTime().compareTo(activityUpdateTime) >= 0) {
-            return true;
-        } else {
+        if (pictorialRule == null) {
             return false;
         }
+        boolean goodsTimeOk = true, activityTimeOk = true;
+        if (pictorialRule.getGoodsUpdateTime() != null) {
+            goodsTimeOk = pictorialRule.getGoodsUpdateTime().compareTo(goodsUpdateTime) >= 0;
+        }
+        if (pictorialRule.getActivityUpdateTime() != null) {
+            activityTimeOk = pictorialRule.getActivityUpdateTime().compareTo(activityUpdateTime) >= 0;
+        }
+
+        // 之前生成的图片依然可用，则直接返回其在upanyun上的相对路径
+        return goodsTimeOk && activityTimeOk;
     }
 
     /**
