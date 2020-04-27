@@ -204,8 +204,6 @@ public class CouponMpService extends ShopBaseService {
             if(couponData.getCouponTag().equals(BaseConstant.COUPON_TAG)){
                 //给领券用户打标签
                 List<Integer> couponTagIds = Util.stringToList(couponData.getCouponTagId());
-                System.out.println(couponData.getCouponTagId());
-                System.out.println(couponTagIds);
                 userTag.addActivityTag(param.getUserId(),couponTagIds,userTag.SRC_COUPON,param.getCouponId());
             }
         }
