@@ -28,4 +28,6 @@ public class ShopListQueryParam {
 	
 	public Timestamp expireStartTime;
 	public Timestamp expireEndTime;
+	/** 营销日历对应的id*/
+	private Integer calendarActId;
 }

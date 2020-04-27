@@ -1,6 +1,8 @@
 package com.vpu.mp.service.saas.shop;
 
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
+import com.vpu.mp.db.main.tables.records.MarketCalendarActivityRecord;
+import com.vpu.mp.db.main.tables.records.MarketCalendarRecord;
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.db.main.tables.records.ShopOperationRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
@@ -12,6 +14,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.auth.SystemTokenAuthInfo;
+import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarActVo;
 import com.vpu.mp.service.pojo.saas.shop.ShopConst;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopListQueryResultVo;
@@ -42,6 +45,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -220,6 +224,18 @@ public class ShopService extends MainBaseService {
 		}
 		if(!StringUtils.isEmpty(param.expireEndTime)) {
 			select.where(SHOP.EXPIRE_TIME.le(param.expireEndTime));
+		}
+		if (param.getCalendarActId() != null && param.getCalendarActId() != 0) {
+			MarketCalendarActivityRecord record = calendarService.calendarActivityService.getInfoById(param.getCalendarActId());
+			if(record!=null) {
+				SysCalendarActVo vo = record.into(SysCalendarActVo.class);
+				String shopIds = vo.getShopIds();
+				if(!StringUtils.isEmpty(shopIds)) {
+					String[] split = shopIds.split(",");
+					List<String> list = Arrays.asList(split);
+					select.where(SHOP.SHOP_ID.in(list));
+				}
+			}
 		}
 		return select;
 	}

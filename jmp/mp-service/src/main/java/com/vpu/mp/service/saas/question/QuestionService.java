@@ -46,7 +46,7 @@ public class QuestionService extends MainBaseService {
     public void insert(Integer shopId, FeedbackParam param, AdminTokenAuthInfo userInfo){
         ShopQuestionFeedbackRecord record = buildRecord(param,shopId,userInfo);
         Integer id = insertFeedback(record);
-        if(CollectionUtils.isEmpty(param.getImgs()) ){
+        if(!CollectionUtils.isEmpty(param.getImgs()) ){
             batchInsertImg(buildImgRecord(param.getImgs(),id));
         }
     }
@@ -105,7 +105,7 @@ public class QuestionService extends MainBaseService {
      */
     private PageResult<FeedbackVo> assemblyDataList(PageResult<FeedbackBo> boPageResult){
         PageResult<FeedbackVo> result = new PageResult<>();
-        BeanUtils.copyProperties(boPageResult.page,result.page);
+        BeanUtils.copyProperties(boPageResult,result);
         List<Integer> feedbackIds = boPageResult.dataList.stream()
             .map(FeedbackBo::getQuestionFeedbackId)
             .collect(Collectors.toList());
@@ -115,9 +115,7 @@ public class QuestionService extends MainBaseService {
         Map<Integer,List<String>> urlMap = getQfImgByIds(feedbackIds);
         List<FeedbackVo> vos = Lists.newArrayList();
         for( FeedbackBo bo : boPageResult.getDataList() ){
-            FeedbackVo vo = new FeedbackVo();
-            BeanUtils.copyProperties(bo,vo);
-            vo.setImageUrls(urlMap.getOrDefault(vo.getQuestionFeedbackId(),Lists.newArrayList()));
+            FeedbackVo vo = convertVo(bo,urlMap);
             vos.add(vo);
         }
         result.dataList = vos;
@@ -251,7 +249,7 @@ public class QuestionService extends MainBaseService {
         List<QfImgRecord> result = Lists.newArrayList();
         for (int i = 0; i < imgs.size(); i++) {
             QfImgRecord record = new QfImgRecord();
-            record.setImgUrl(imgs.get(i+1));
+            record.setImgUrl(imgs.get(i));
             record.setQuestionFeedbackId(id);
             record.setImgDesc(String.valueOf(i));
             result.add(record);

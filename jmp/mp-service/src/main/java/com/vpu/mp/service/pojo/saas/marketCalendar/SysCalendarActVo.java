@@ -1,7 +1,5 @@
 package com.vpu.mp.service.pojo.saas.marketCalendar;
 
-import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 
 /**
@@ -11,10 +9,9 @@ import lombok.Data;
  */
 @Data
 public class SysCalendarActVo {
-	@NotNull
+	private Integer id;
 	private String activityType;
 	/** 0站内文本，1外部链接 */
-	@NotNull
 	private Integer recommendType = 0;
 	/** 外部链接 或者存articleId */
 	private String recommendLink;

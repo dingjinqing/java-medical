@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 public class PackSalePageVo {
 	/** 活动ID */
 	private Integer id;
+	/**活动类型**/
+	private Byte packageType;
 	/** 活动名称 */
 	private String packageName;
 	/** 活动开始时间 */
@@ -28,6 +30,8 @@ public class PackSalePageVo {
 	private Timestamp endTime;
 	/** 结算总价格 */
 	private BigDecimal totalMoney;
+	/**折扣比例**/
+	private BigDecimal totalRatio;
 	/** 分组1 是否启用 */
 	private Byte goodsGroup1;
 	/** 分组1 分组名称*/
@@ -87,10 +91,12 @@ public class PackSalePageVo {
 		}
 		PackSalePageVo vo = new PackSalePageVo();
 		vo.setId(record.getId());
+		vo.setPackageType(record.getPackageType());
 		vo.setPackageName(record.getPackageName());
 		vo.setStartTime(record.getStartTime());
 		vo.setEndTime(record.getEndTime());
 		vo.setTotalMoney(record.getTotalMoney());
+		vo.setTotalRatio(record.getTotalRatio());
 		vo.setGoodsGroup1(record.getGoodsGroup_1());
 		vo.setGroupName1(record.getGroupName_1());
 		vo.setGoodsNumber1(record.getGoodsNumber_1());
