@@ -246,6 +246,9 @@ export default {
       }
     })
     this.langDefault()
+    if (this.$route.params.calenderEdit) {
+      this.edit(this.$route.params.id)
+    }
   },
   methods: {
     initDataList () {
