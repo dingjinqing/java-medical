@@ -30,6 +30,7 @@ import com.vpu.mp.service.shop.activity.dao.FullReductionProcessorDao;
 import com.vpu.mp.service.shop.member.UserCardService;
 import com.vpu.mp.service.shop.member.dao.UserCardDaoService;
 import com.vpu.mp.service.shop.order.action.base.Calculate;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,6 +58,8 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
     UserCardService userCard;
     @Autowired
     Calculate calculate;
+    @Autowired
+    private CartService cartService;
 
     /*****处理器优先级*****/
     @Override
@@ -247,58 +243,63 @@ public class FullReductionProcessor implements Processor, ActivityGoodsListProce
         //可用的会员
         List<ValidUserCardBean> validCardList = userCard.userCardDao.getValidCardList(cartBo.getUserId(), new Byte[]{CardConstant.MCARD_TP_NORMAL, CardConstant.MCARD_TP_GRADE}, UserCardDaoService.CARD_ONLINE);
         List<Integer> cardIds = validCardList.stream().map(ValidUserCardBean::getCardId).collect(Collectors.toList());
-        //活动和商品信息
-        Map<Integer, List<FullReductionGoodsCartBo>> ruleCartIdMap = new HashMap<>();
-        Set<CartActivityInfo> cartActivityInfos = new HashSet<>();
+        //活动和商品信息 k 活动id v商品信息
+        Map<Integer, List<FullReductionGoodsCartBo>> ruleGoodsMap = new HashMap<>();
+        //k 活动id v活动信息
+        Map<Integer,CartActivityInfo> activityMap =new HashMap<>();
         //获取商品可用的活动
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
-            List<CartActivityInfo> cartActivityInfoList = fullReductionProcessorDao.getGoodsFullReductionActivityList(goods.getGoodsId(),
+            Map<Integer, CartActivityInfo> cartActivityInfoMap = fullReductionProcessorDao.getGoodsFullReductionActivityList(goods.getGoodsId(),
                     goods.getGoodsRecord().getCatId(),
                     goods.getGoodsRecord().getBrandId(),
                     goods.getGoodsRecord().getSortId(),
                     cardIds,
                     cartBo.getDate());
-            if (cartActivityInfoList != null && cartActivityInfoList.size() > 0) {
-                goods.getCartActivityInfos().addAll(cartActivityInfoList);
-                cartActivityInfos.addAll(cartActivityInfoList);
+            if (cartActivityInfoMap != null && cartActivityInfoMap.size() > 0) {
+                goods.getCartActivityInfos().addAll(cartActivityInfoMap.values());
+                activityMap.putAll(cartActivityInfoMap);
                 //商品是否已经选择活动 且商品选中状态
                 if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)) {
-                    Optional<CartActivityInfo> any = cartActivityInfoList.stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(goods.getExtendId())).findAny();
-                    if (any.isPresent()&&goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)) {
+                    Optional<CartActivityInfo> any = cartActivityInfoMap.values().stream().filter(cartActivityInfo -> cartActivityInfo.getActivityId().equals(goods.getExtendId())).findAny();
+                    if (any.isPresent()) {
                         //商品活动
                         goods.setActivityType(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION);
                         goods.setActivityId(goods.getExtendId());
                         //活动记录
-                        fullReductionProcessorDao.getFullReductionGoodsBo(ruleCartIdMap, goods);
-                    } else {
-                        //活动失效 todo 购物车操作
+                        fullReductionProcessorDao.getFullReductionGoodsBo(ruleGoodsMap, goods,any.get());
+                    }else {
+                        log.info("购物车满折满减-没有找到合适活动,取消活动选中");
+                        cartService.switchActivityGoods(cartBo.getUserId(),goods.getCartId(),null,null);
                     }
                 }
             }
         }
         //当前活动选择规则
-        fullReductionProcessorDao.fullReductionRuleOption(ruleCartIdMap, cartActivityInfos);
+        fullReductionProcessorDao.fullReductionRuleOption(ruleGoodsMap, activityMap);
+        //折扣总金额
+        BigDecimal totalReductionMoney = fullReductionProcessorDao.getFullReductionMoney(ruleGoodsMap,activityMap);
+        cartBo.setFullReductionPrice(totalReductionMoney);
+        //国际化
+        fullReductionProcessorDao.internationalMessage(cartBo,activityMap);
         //给商品分配规则
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
             if (goods.getActivityType()!=null&&goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)){
-                List<FullReductionGoodsCartBo> fullReductionGoodsBos = ruleCartIdMap.get(goods.getActivityId());
-                fullReductionGoodsBos.forEach(FullReductionGoodsCartBo -> {
-                    if (FullReductionGoodsCartBo.getCartId().equals(goods.getCartId())){
-                        goods.getCartActivityInfos().forEach(cartActivityInfo -> {
-                            if (cartActivityInfo.getActivityType()!=null&&cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)
+                CartActivityInfo fullActivityInfo = activityMap.get(goods.getActivityId());
+                List<CartActivityInfo> cartActivityInfos = goods.getCartActivityInfos();
+                Iterator<CartActivityInfo> iterator = cartActivityInfos.iterator();
+                while (iterator.hasNext()) {
+                    CartActivityInfo cartActivityInfo = iterator.next();
+                    if (cartActivityInfo.getActivityType()!=null&&cartActivityInfo.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION)
                             && goods.getActivityId().equals(cartActivityInfo.getActivityId())){
-                                cartActivityInfo.getFullReduction().setRule(FullReductionGoodsCartBo.getFullReductionRule());
-                            }
-                        });
+                        if (cartActivityInfo.getActivityId().equals(goods.getExtendId())) {
+                            iterator.remove();
+                            continue;
+                        }
                     }
-                });
+                }
+                cartActivityInfos.add(0,fullActivityInfo);
             }
         }
-        //折扣总金额
-        BigDecimal totalReductionMoney = fullReductionProcessorDao.getFullReductionMoney(ruleCartIdMap);
-        cartBo.setFullReductionPrice(totalReductionMoney);
-        //国际化
-        fullReductionProcessorDao.internationalMessage(cartBo);
     }
 
 
