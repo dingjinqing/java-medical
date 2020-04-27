@@ -222,6 +222,13 @@ export default {
     // 初始化数据
     this.langDefault()
     this.initDataList()
+    this.$nextTick(() => {
+      if (this.$route.params.calenderAdd) {
+        this.addHandler()
+      } else if (this.$route.params.calenderEdit) {
+        this.editHandler(this.$route.params.id)
+      }
+    })
   },
   methods: {
     // 满包邮列表

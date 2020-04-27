@@ -36,14 +36,6 @@ public class ReducePricePictorialService extends ShareBaseService {
 
     @Autowired
     private ReducePriceService reducePriceService;
-    @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
     @Override
     Record getActivityRecord(Integer activityId) {

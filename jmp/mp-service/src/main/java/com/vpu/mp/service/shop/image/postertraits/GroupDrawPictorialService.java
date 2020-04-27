@@ -39,8 +39,6 @@ import java.net.URL;
 public class GroupDrawPictorialService extends ShareBaseService {
     @Autowired
     private GroupDrawService groupDrawService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
     @Override
      Record getActivityRecord(Integer activityId) {

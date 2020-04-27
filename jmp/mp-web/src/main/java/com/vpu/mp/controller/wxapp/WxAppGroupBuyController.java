@@ -36,15 +36,6 @@ public class WxAppGroupBuyController extends WxAppBaseController {
         return success(groupBuyInfo);
     }
 
-    /**
-     * 获取拼团说明
-     * @param param id
-     * @return 拼团说明
-     */
-    @PostMapping("/copywriting")
-    public JsonResult getActivityCopywriting(@RequestBody @Validated GroupBuyIdParam param){
-        String activityCopywriting = shop().groupBuy.getActivityCopywriting(param.getId());
-        return success(activityCopywriting);
-    }
+
 
 }

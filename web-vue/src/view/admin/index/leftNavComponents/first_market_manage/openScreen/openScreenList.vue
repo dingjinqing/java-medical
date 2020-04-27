@@ -226,6 +226,14 @@ export default {
   mounted () {
     this.initDataList()
     this.langDefault()
+    if (this.$route.params.calenderAdd) {
+      this.addOpenScreen()
+    } else if (this.$route.params.calenderEdit) {
+      let row = {
+        id: this.$route.params.id
+      }
+      this.edit('edit', row)
+    }
   },
   methods: {
     tabClickHandle (tab) {

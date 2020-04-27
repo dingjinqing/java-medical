@@ -7,6 +7,8 @@ import com.vpu.mp.service.foundation.util.RequestUtil;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
+import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseVo;
 import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.PayParam;
@@ -14,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDe
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
+import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
@@ -159,6 +162,20 @@ public class WxAppOrderController extends WxAppBaseController{
 		}
 	}
 
+    /**
+     * 再次购买
+     * @return
+     */
+	@PostMapping("/repurchase")
+	public JsonResult orderRepurchase(@RequestBody @Valid OrderRepurchaseParam param){
+        WxAppSessionUser user = wxAppAuth.user();
+        param.setUserId(user.getUserId());
+        OrderRepurchaseVo orderRepurchaseVo = shop().writeOrder.orderRepurchase(param);
+        if (orderRepurchaseVo.getResultMessage()!=null&&!orderRepurchaseVo.getResultMessage().getFlag()){
+            return fail(orderRepurchaseVo.getResultMessage());
+        }
+        return success(orderRepurchaseVo);
+    }
 	/**
 	 * 统计数量（废弃）
 	 */

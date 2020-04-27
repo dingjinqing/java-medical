@@ -344,6 +344,15 @@ export default {
     this.langDefault()
     // 初始化数据
     this.handleToInit()
+    if (this.$route.params.calenderAdd) {
+      this.addActivity()
+    } else if (this.$route.params.calenderEdit) {
+      let row = {
+        id: this.$route.params.id,
+        actStatus: '6'
+      }
+      this.handleToOption(row, 2)
+    }
   },
   methods: {
     // 初始化数据

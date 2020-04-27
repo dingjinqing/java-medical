@@ -13,9 +13,6 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.presale.PreSaleShareInfoParam;
-import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.ImageService;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.presale.PreSaleService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +35,6 @@ public class PreSalePictorialService extends ShareBaseService {
 
     @Autowired
     PreSaleService preSaleService;
-    @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private ImageService imageService;
-    @Autowired
-    private PictorialService pictorialService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
     @Override
      Record getActivityRecord(Integer activityId) {

@@ -223,6 +223,11 @@ export default {
     // 初始化数据
     this.langDefault()
     this.initDataList()
+    if (this.$route.params.calenderAdd) {
+      this.addReduce()
+    } else if (this.$route.params.calenderEdit) {
+      this.editHandler(this.$route.params.id)
+    }
   },
   methods: {
     initDataList () {

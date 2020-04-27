@@ -247,6 +247,14 @@ export default {
   mounted () {
     this.langDefault()
     this.initDataList()
+    if (this.$route.params.calenderAdd) {
+      this.addTabHandle()
+    } else if (this.$route.params.calenderEdit) {
+      let row = {
+        id: this.$route.params.id
+      }
+      this.edit('edit', row)
+    }
   },
   methods: {
     initDataList () {
