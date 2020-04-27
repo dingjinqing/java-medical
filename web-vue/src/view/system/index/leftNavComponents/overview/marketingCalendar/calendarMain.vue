@@ -6,6 +6,7 @@
           v-model="dateValue"
           placeholder="请选择"
           size="small"
+          @change="handleToChange"
         >
           <el-option
             v-for="item in dateOptions"
@@ -31,11 +32,11 @@
               class="calendar_info_line"
               v-for="(item,index) in calenderData"
               :key="index"
-              :id="item.isInvalid?'':'targetbox'"
+              :id="item.targetbox?'targetbox':''"
             >
               <div
                 class="left_line_content  content_none"
-                :class="item.isInvalid?'pass':''"
+                :class="item.targetbox?'':'pass'"
               >
                 <div class="month_box">
                   <div class="month">{{item.month}}月</div>
@@ -51,28 +52,45 @@
               >
                 <div
                   class="calendar_info_item"
-                  :class="item.isInvalid?'':'in_progress'"
+                  :class="itemC.eventStatus === 3?'':'in_progress'"
                   v-for="(itemC,indexC) in item.data"
                   :key="indexC"
                 >
                   <div class="top_text">
-                    {{itemC.dateTime}}
+                    {{itemC.eventTime}}
+                    <span
+                      v-if="itemC.source === 1"
+                      class="ribbon"
+                    >推荐</span>
                   </div>
                   <div class="middle_text">{{itemC.eventName}}</div>
-                  <div class="bottom_text">{{itemC.status===1?'已结束':''}}</div>
+                  <div
+                    class="bottom_text"
+                    :style="itemC.eventStatus===3?'corlor:#999':''"
+                  >{{itemC.eventStatus===4?'已结束':itemC.eventStatus===2?'进行中':itemC.eventStatus===3?'已失效':''}}</div>
+                  <div
+                    class="bottom_text"
+                    v-if="itemC.eventStatus===1"
+                  >
+                    剩<span>{{itemC.downTime}}</span>天
+                  </div>
                   <div class="shadow_set">
                     <div class="shadow_setMain">
-                      <!-- <a
-                        href="javascript:;"
-                        @click="handleToPublish(index,indexC)"
-                      ><i class="iconfont iconfabu"></i></a> -->
                       <a
                         href="javascript:;"
-                        @click="handleToAdd(false,1)"
+                        :style="itemC.pubFlag===1?'margin-right:20px':''"
+                        @click="handleToAdd(false,itemC)"
                       ><i class="iconfont iconbianji"></i></a>
                       <a
                         href="javascript:;"
+                        :style="itemC.source !== 1 || itemC.eventStatus===3?'margin-right:20px':''"
+                        @click="handleToAdd(false,itemC)"
+                      ><i class="iconfont iconbianji"></i></a>
+                      <a
+                        href="javascript:;"
+                        style="margin-left:20px"
                         @click="handleToDel(index,indexC)"
+                        v-if="itemC.source !== 1 || itemC.eventStatus===3"
                       ><i class="iconfont iconshanchu2"></i></a>
                     </div>
 
@@ -107,21 +125,13 @@
 <script>
 import vuescroll from 'vuescroll'
 import Vue from 'vue'
+import { systemGetCalendarList, deltCalendarEvent } from '@/api/admin/firstWebManage/calender/calender.js'
 Vue.use(vuescroll)
 export default {
   data () {
     return {
-      dateOptions: [{
-        value: -1,
-        label: '请选择'
-      }, {
-        value: 1,
-        label: '2019年'
-      }, {
-        value: 2,
-        label: '2020年'
-      }],
-      dateValue: -1,
+      dateOptions: [],
+      dateValue: null,
       calenderData: [{
         month: '01',
         data: [],
@@ -149,38 +159,7 @@ export default {
       },
       {
         month: '06',
-        data: [
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          },
-          {
-            dateTime: '04-20',
-            eventName: '常乐事件添加',
-            status: 1
-          }
-        ],
+        data: [],
         isInvalid: false
       },
       {
@@ -235,13 +214,76 @@ export default {
   },
   mounted () {
     // 初始数据处理
-    this.handleToInit()
+    var myDate = new Date()
+    var tYear = myDate.getFullYear()
+    console.log(tYear)
+    this.handleToInit(tYear)
   },
   methods: {
     // 初始数据处理
-    handleToInit () {
-      this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
-      document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
+    handleToInit (tYear) {
+      // this.dateValue = this.dateOptions[this.dateOptions.length - 1].value
+      console.log(this.dateValue)
+      let params = null
+      if (tYear) {
+        params = tYear
+      } else {
+        if (this.dateValue !== null) {
+          this.dateOptions.forEach((item, index) => {
+            if (item.value === this.dateValue) {
+              console.log(item.label.slice(0, 4))
+              params = item.label.slice(0, 4)
+            }
+          })
+        }
+      }
+      console.log(params)
+      systemGetCalendarList(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          // 处理年份下拉框数据
+          let yearList = res.content.yearList || []
+          let yearArr = []
+          let currentYear = res.content.currentDate.split('-')[0]
+          let currentMouth = res.content.currentDate.split('-')[1]
+          let dateValue = null
+          yearList.forEach((item, index) => {
+            if (item === currentYear) {
+              dateValue = index
+            }
+            let label = item + '年'
+            let obj = {
+              value: index,
+              label: label
+            }
+            yearArr.push(obj)
+          })
+          let obj = {
+            value: null,
+            label: '请选择'
+          }
+          yearArr.unshift(obj)
+          console.log(yearArr)
+          this.dateOptions = yearArr
+          if (tYear) {
+            this.dateValue = dateValue
+          }
+          // 处理初始化滑动的位置
+          console.log(currentMouth)
+          res.content.data.forEach((item, index) => {
+            if (Number(item.month) < Number(currentMouth)) {
+              item.targetbox = false
+            } else {
+              item.targetbox = true
+            }
+          })
+          console.log(res.content.data)
+          this.calenderData = res.content.data
+          this.$nextTick(() => {
+            document.getElementById('targetbox').scrollIntoView({ behavior: 'smooth' })
+          })
+        }
+      })
     },
     // 点击编辑
     handleToEdit (itemC) {
@@ -254,11 +296,21 @@ export default {
       this.dialogVisible = true
     },
     handleToDelSure (index, indexC) {
-      this.calenderData[index].data.splice(indexC, 1)
       this.dialogVisible = false
+      let id = this.calenderData[index].data[indexC].id
+      deltCalendarEvent(id).then(res => {
+        if (res.error === 0) {
+          this.calenderData[index].data.splice(indexC, 1)
+          this.$message.success({
+            message: '删除成功',
+            showClose: true
+          })
+        }
+      })
     },
     // 点击添加营销事件
     handleToAdd (flag, item) {
+      console.log(item)
       if (flag) {
         this.$router.push({
           name: 'addEvent',
@@ -271,14 +323,15 @@ export default {
           name: 'addEvent',
           query: {
             isAdd: false,
-            id: item
+            id: item.id
           }
         })
       }
     },
-    // 点击发布icon
-    handleToPublish (index, indexC) {
-      console.log(index, indexC)
+    // 年份下拉框选中值变化
+    handleToChange (res) {
+      console.log(res)
+      this.handleToInit()
     }
   }
 }
@@ -286,7 +339,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/aliIcon/iconfont.scss";
 .calendarMain {
-  // padding: 10px;
   margin-top: 10px;
   min-width: 100%;
   font-size: 14px;
@@ -303,11 +355,6 @@ export default {
       border-bottom: 1px solid #eee;
     }
     .mainBottom {
-      // position: absolute;
-      // left: 15px;
-      // right: 15px;
-      // top: 80px;
-      // bottom: 0;
       overflow: auto;
       /deep/ .__view {
         background-color: #fff;
@@ -396,6 +443,26 @@ export default {
                 font-size: 16px;
                 overflow: hidden;
                 position: relative;
+                .ribbon {
+                  display: inline-block;
+                  text-align: center;
+                  width: 90px;
+                  height: 22px;
+                  line-height: 22px;
+                  position: absolute;
+                  top: 6px;
+                  right: -28px;
+                  z-index: 2;
+                  overflow: hidden;
+                  transform: rotate(45deg);
+                  -ms-transform: rotate(45deg);
+                  -moz-transform: rotate(45deg);
+                  -webkit-transform: rotate(45deg);
+                  -o-transform: rotate(45deg);
+                  background: #ffdc1b;
+                  font-size: 12px;
+                  color: #ff4444;
+                }
               }
               .middle_text {
                 color: #333;
@@ -411,6 +478,17 @@ export default {
                 line-height: 28px;
                 font-size: 16px;
                 color: #999;
+                span {
+                  display: inline-block;
+                  padding: 0 12px;
+                  background-color: #eee;
+                  color: #999;
+                  border-radius: 3px;
+                  margin: 0 3px;
+                  font-weight: 600;
+                  color: #f66;
+                  background-color: #ffe1e1;
+                }
               }
 
               .shadow_setMain {
@@ -423,7 +501,7 @@ export default {
                 background-color: rgba(0, 0, 0, 0);
                 border-radius: 4px;
                 z-index: 3;
-                justify-content: space-evenly;
+                justify-content: center;
                 align-items: center;
                 transition: background-color 0.5s ease;
                 a {

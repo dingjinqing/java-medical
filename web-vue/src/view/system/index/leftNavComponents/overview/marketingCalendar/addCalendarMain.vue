@@ -71,6 +71,7 @@
                 <li
                   v-for="(item,index) in ruleFormBottom.haveChoiseData"
                   :key="index"
+                  :style="item.delFlag?'display:none':''"
                 >
                   <div class="incident_info_item">
                     <img
@@ -330,6 +331,7 @@
   </div>
 </template>
 <script>
+import { systemSaveEvent } from '@/api/admin/firstWebManage/calender/calender.js'
 export default {
   components: {
     pagination: () => import('@/components/admin/pagination/pagination.vue'), // 分页组件
@@ -584,6 +586,7 @@ export default {
       let obj = {
         imgUrl: imgUrl,
         title: title,
+        delFlag: 0,
         choiseActData: {
           id: -1,
           status: '',
@@ -606,7 +609,8 @@ export default {
     },
     // 二次删除确定
     handleToDelSure () {
-      this.ruleFormBottom.haveChoiseData.splice(this.delIndex, 1)
+      // this.ruleFormBottom.haveChoiseData.splice(this.delIndex, 1)
+      this.haveChoiseData[this.delIndex].delFlag = 1
       this.delDialogVisible = false
     },
     // 选择文本弹窗
@@ -637,7 +641,12 @@ export default {
     },
     // 点击保存
     handleToSave () {
+      let params = {
 
+      }
+      systemSaveEvent(params).then(res => {
+        console.log(res)
+      })
     },
     // 选中活动四个icon综合处理
     handleToAllHiddenIcon () {

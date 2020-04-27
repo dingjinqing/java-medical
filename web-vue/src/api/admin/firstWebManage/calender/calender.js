@@ -49,3 +49,19 @@ export function allMarketList (data) {
     data: data
   })
 }
+
+// system 营销日历列表
+export function systemGetCalendarList (year) {
+  return service({
+    url: `/api/system/calendar/list/${year}`,
+    method: 'get'
+  })
+}
+// system  营销日历编辑/添加 日历
+export function systemSaveEvent (data) {
+  return service({
+    url: '/api/system/calendar/market/up',
+    method: 'post',
+    data: data
+  })
+}

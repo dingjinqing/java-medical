@@ -72,7 +72,8 @@ const routes = [{
       component: () => import('@/view/system/index/leftNavComponents/overview/marketingCalendar/calendarMain'),
       name: 'marketingCalendar',
       meta: {
-        title: '日历列表'
+        title: '日历列表',
+        parentName: '营销日历'
       }
     },
     {

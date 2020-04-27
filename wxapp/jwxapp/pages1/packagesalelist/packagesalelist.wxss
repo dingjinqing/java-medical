@@ -79,3 +79,8 @@
   text-align: center;
   flex: 1;
 }
+.footer-desc{
+  display: flex;
+  flex: 2.5 !important;
+  justify-content: center;
+}
