@@ -20,6 +20,7 @@ import com.vpu.mp.service.pojo.wxapp.coupon.AvailCouponDetailVo;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponDelParam;
 import com.vpu.mp.service.pojo.wxapp.coupon.CouponPageDecorationVo;
 import com.vpu.mp.service.shop.member.MemberService;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
@@ -50,6 +51,10 @@ public class CouponMpService extends ShopBaseService {
 
     @Autowired
     public CouponService coupon;
+
+    @Autowired
+    public UserTagService userTag;
+
     /**
      * 获取装修模块优惠券列表
      * @param moduleCoupon
@@ -196,6 +201,13 @@ public class CouponMpService extends ShopBaseService {
             }
         }else{
             coupon.couponGiveService.handlerCouponGive(couponParam);
+            if(couponData.getCouponTag().equals(BaseConstant.COUPON_TAG)){
+                //给领券用户打标签
+                List<Integer> couponTagIds = Util.stringToList(couponData.getCouponTagId());
+                System.out.println(couponData.getCouponTagId());
+                System.out.println(couponTagIds);
+                userTag.addActivityTag(param.getUserId(),couponTagIds,userTag.SRC_COUPON,param.getCouponId());
+            }
         }
         return fetchCouponStatus;
     }
