@@ -15,6 +15,7 @@ import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.shop.ShopPojo;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionConfig;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionName;
 import com.vpu.mp.service.pojo.shop.config.ShopShareConfig;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
 import com.vpu.mp.service.pojo.shop.decoration.module.*;
@@ -313,7 +314,9 @@ public class MpDecorationService extends ShopBaseService {
                 String key = node.getKey();
                 if (keyIdx == null || key.equals(keyIdx)) {
                     Object element = this.convertModule(objectMapper, node, user);
-                    result.put(key, element);
+                    if(element!=null) {
+                    	result.put(key, element);                    	
+                    }
                 }
             }
         } catch (Exception e) {
@@ -342,22 +345,43 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_GOODS:
                     return this.convertGoodsForIndex(objectMapper, node, user);
                 case ModuleConstant.M_COUPON:
+					if (isNoAuth(VersionName.SUB_2_M_VOUCHER)) {
+						return null;
+					}
                     return this.convertCouponForIndex(objectMapper, node, user);
                 case ModuleConstant.M_CARD:
-                    return this.convertCardForIndex(objectMapper, node, user);
+					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) {
+						return null;
+					}
+					return this.convertCardForIndex(objectMapper, node, user);
                 case ModuleConstant.M_BARGAIN:
+					if (isNoAuth(VersionName.SUB_2_M_MEMBER_CARD)) {
+						return null;
+					}
                     return this.convertBargainForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SECKILL:
+					if (isNoAuth(VersionName.SUB_2_M_SECKILL_GOODS)) {
+						return null;
+					}
                     return this.convertSeckillForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_ADVER:
                     return this.convertImageAdverForIndex(objectMapper, node, user);
                 case ModuleConstant.M_PIN_INTEGRATION:
+					if (isNoAuth(VersionName.SUB_2_M_PIN_INTEGRATION)) {
+						return null;
+					}
                     return this.convertGroupIntegrationForIndex(objectMapper, node, user);
                 case ModuleConstant.M_GROUP_DRAW:
+					if (isNoAuth(VersionName.SUB_2_M_GROUP_DRAW)) {
+						return null;
+					}
                     return this.convertGroupDrawForIndex(objectMapper, node, user);
                 case ModuleConstant.M_SCROLL_IMAGE:
                     return this.convertScrollImageForIndex(objectMapper, node, user);
                 case ModuleConstant.M_VIDEO:
+					if (isNoAuth(VersionName.SUB_2_M_VIDEO)) {
+						return null;
+					}
                     return this.convertVideoForIndex(objectMapper, node, user);
                 case ModuleConstant.M_IMAGE_GUIDE:
                     return this.convertImageGuideForIndex(objectMapper, node, user);
@@ -374,6 +398,9 @@ public class MpDecorationService extends ShopBaseService {
                 case ModuleConstant.M_SHOP:
                     return this.convertShopBgForIndex(objectMapper, node, user);
                 case ModuleConstant.M_INTEGRAL:
+					if (isNoAuth(VersionName.SUB_2_M_INTEGRAL_GOODS)) {
+						return null;
+					}
                     return this.convertIntegralForIndex(objectMapper, node, user);
                 /**
                  * TODO: 添加其他模块，一些不需要转换的模块，可以走最后默认的转换。
@@ -386,6 +413,19 @@ public class MpDecorationService extends ShopBaseService {
         }
         return objectMapper.readValue(node.getValue().toString(), Object.class);
     }
+
+    /**
+     * 没有权限是true
+     * @return
+     */
+	private boolean isNoAuth(String modeName) {
+		String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), modeName);
+		if(!verPurview[0].equals("true")) {
+			logger().info("店铺：{}，的模块：{}没有权限");
+			return true;
+		}
+		return false;
+	}
 
 
     /**

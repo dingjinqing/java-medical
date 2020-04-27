@@ -20,5 +20,5 @@ public class MarketCalendarInfoVo {
 	private Integer calendarId;
 	/**是否有营销活动  true为有*/
 	private boolean hasAct;
-
+	private Byte source;
 }
