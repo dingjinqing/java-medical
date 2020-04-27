@@ -122,7 +122,6 @@ global.wxPage({
           },
           fail: res => {
             console.log(res)
-            util.jumpLink(`/pages/orderinfo/orderinfo?orderSn=${res.orderSn}`, 'redirectTo')
           },
           complete: res => {}
         })
