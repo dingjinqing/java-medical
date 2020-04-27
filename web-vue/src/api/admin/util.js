@@ -67,3 +67,12 @@ export function pinRulesApi (data) {
     method: 'post'
   })
 }
+
+// 小程序好友助力规则接口
+export function promoteRules (data) {
+  return service({
+    url: '/api/wxapp/promote/actCopywriting',
+    data,
+    method: 'post'
+  })
+}
