@@ -140,8 +140,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		List<ActSelectList> result = db().select(GROUP_INTEGRATION_DEFINE.ID, GROUP_INTEGRATION_DEFINE.NAME)
 				.from(GROUP_INTEGRATION_DEFINE).where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(STATUS_NORMAL))
-				.and(GROUP_INTEGRATION_DEFINE.START_TIME.lessThan(Util.currentTimeStamp())
-						.and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp())))
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp()))
 				.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc()).fetchInto(ActSelectList.class);
 		return result;
 	}
