@@ -105,7 +105,7 @@ public class QuestionService extends MainBaseService {
      */
     private PageResult<FeedbackVo> assemblyDataList(PageResult<FeedbackBo> boPageResult){
         PageResult<FeedbackVo> result = new PageResult<>();
-        BeanUtils.copyProperties(boPageResult.page,result.page);
+        BeanUtils.copyProperties(boPageResult,result);
         List<Integer> feedbackIds = boPageResult.dataList.stream()
             .map(FeedbackBo::getQuestionFeedbackId)
             .collect(Collectors.toList());
