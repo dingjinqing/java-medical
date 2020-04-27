@@ -419,6 +419,8 @@ public class MarketCalendarService extends ShopBaseService {
 					vo.setHasAct(true);
 					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
 					MarketVo actInfo = info.getActInfo();
+					actInfo.setRecommendLink(item.getRecommendLink());
+					actInfo.setRecommendType(item.getRecommendType());
 					actInfo.setCalActId(item.getId());
 					actInfoList.add(actInfo);
 				}else {

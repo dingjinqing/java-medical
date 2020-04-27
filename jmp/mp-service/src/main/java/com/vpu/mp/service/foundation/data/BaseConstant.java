@@ -237,6 +237,10 @@ public final  class  BaseConstant {
      * 23收藏有礼送券
      */
     public final static Byte GET_SOURCE_COLLECT =23;
+    /**领券用户不打标签*/
+    public final static Byte NOT_COUPON_TAG = 0;
+    /**领券用户打标签*/
+    public final static Byte COUPON_TAG = 1;
 
 
     //accessMode

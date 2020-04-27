@@ -1,48 +1,60 @@
 <wxs src="../../utils/i18n/i18n.wxs" module="i18n"></wxs>
 <include src="/pages/common/header.wxml" />
 <v-container bindsearch="getSearchText">
-  <view slot="top-content">
-    <view  class="rule">
-      <text>{{i18n.$t(localePack,"page1.actPage.discountInLimitedTime")}}：{{ruleText}}</text>
-    </view>
-    <view class="group-filter" wx:if="{{tabList && tabList.length > 1}}">
-      <block wx:for="{{tabList}}" wx:key="index">
-        <view style="{{groupId === (index + 1) ? 'border-bottom-color:' + comColor + ';' : ''}}" data-type="{{index + 1}}" bindtap="changeGroup">{{item.groupName}}({{item.selectNumber}}/{{item.goodsNumber}})</view>
-      </block>
-    </view>
-  </view>
-  <view slot="custom-filter" class="term-filter">
-    <view style="{{sortName === 1 ? 'color:' + comColor + ';' : ''}}" data-type="1" bindtap="customFilter">销量 {{sortName === 1 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
-    <view style="{{sortName === 2 ? 'color:' + comColor + ';' : ''}}" data-type="2" bindtap="customFilter">价格 {{sortName === 2 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
-  </view>
-  <view slot="goods-content" class="goods-content">
-    <block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
-      <block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
-        <v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" bindshowSpecDialog="showSpecDialog" />
-      </block>
-    </block>
-  </view>
-  <view class="footer" slot="footer">
-    <view class="selected-price">
-      <view>
-        优惠<text style="color:{{comColor}};">￥{{totalMoney.discountMoney || 0.00}}</text>
-      </view>
-      <view>
-        应付<text style="color:{{comColor}};">￥{{totalMoney.totalSelectMoney || 0.00}}</text>
-      </view></view>
-    <view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">已选0件</view>
-    <view class="cart" style="background-color:{{comColor}}">立即结算</view>	
-  </view>
+	<view slot="top-content">
+		<view class="rule">
+			<text>{{i18n.$t(localePack,"page1.actPage.discountInLimitedTime")}}：{{ruleText}}</text>
+		</view>
+		<view class="group-filter" wx:if="{{tabList && tabList.length > 1}}">
+			<block wx:for="{{tabList}}" wx:key="index">
+				<view style="{{groupId === (index + 1) ? 'border-bottom-color:' + comColor + ';' : ''}}" data-type="{{index + 1}}" bindtap="changeGroup">{{item.groupName}}({{item.selectNumber}}/{{item.goodsNumber}})</view>
+			</block>
+		</view>
+	</view>
+	<view slot="custom-filter" class="term-filter">
+		<view style="{{sortName === 1 ? 'color:' + comColor + ';' : ''}}" data-type="1" bindtap="customFilter">销量 {{sortName === 1 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
+		<view style="{{sortName === 2 ? 'color:' + comColor + ';' : ''}}" data-type="2" bindtap="customFilter">价格 {{sortName === 2 ? sortOrder === 1 ? '⬆' : '⬇' : ''}}</view>
+	</view>
+	<view slot="goods-content" class="goods-content">
+		<block wx:for="{{dataList}}" wx:for-item="pageItem" wx:key="pageIndex" wx:for-index="pageIndex">
+			<block wx:for="{{pageItem}}" wx:key="goodsId" wx:for-index="itemIndex">
+				<v-single-col-goods goods-data="{{item}}" del-market="{{delMarket}}" show-cart="{{showCart}}" bindshowSpecDialog="showSpecDialog" />
+			</block>
+		</block>
+	</view>
+	<view class="footer" slot="footer">
+		<view class="selected-price">
+			<view>
+				优惠<text style="color:{{comColor}};">￥{{totalMoney.discountMoney || 0.00}}</text>
+			</view>
+			<view>
+				应付<text style="color:{{comColor}};">￥{{totalMoney.totalSelectMoney || 0.00}}</text>
+			</view>
+		</view>
+		<view class="selected" style="background-color:{{commonColor}}" bindtap="showSelected">已选{{cartData.totalSelectNumber}}件</view>
+		<view class="cart" bindtap="goCheckOut" style="background-color:{{comColor}}">立即结算</view>
+	</view>
 </v-container>
 
-<v-selected bindcartChange="cartChange" show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}"/>
+<v-selected  show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}" custom-footer-left custom-delete custom-control-num binddeletCart="deletCart" bindcartNumChange="cartNumChange">
+	<view slot="footer-left" class="footer-desc">
+		<view>已选<text style="color:{{comColor}};">{{cartData.totalSelectNumber}}件</text>，</view>
+		<view wx:if="{{totalGoodsNumber - cartData.totalSelectNumber > 0}}">再选<text style="color:{{comColor}};" >{{totalGoodsNumber - cartData.totalSelectNumber}}件</text></view>
+		<view  wx:if="{{rule.packageType === 1}}">
+			下单可享<text style="color:{{comColor}};">{{rule.discountTotalRatio}}折</text><text>优惠</text>
+		</view>
+		<view  wx:else>
+			下单可享<text style="color:{{comColor}};">{{rule.totalMoney}}元</text><text>结算</text>
+		</view>
+	</view>
+</v-selected>
 
 
 <v-spec-dialog wx:if="{{showSpec}}" show="{{showSpec}}" bind:close="bindCloseSpec" products-info="{{productsInfo}}" bindproductData="getProductData">
-  <v-goods-num-cfg slot="num-cfg"  origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum"/>
-  <view class="spec-footer" slot="footer">
-    <view class="footer_flex_view"  bindtap="addCart" style='color:#fff;background:{{comColor}};'>
-      <text>{{i18n.$t(localePack,"page1.actPage.addCart")}}</text>
-    </view>
-  </view>
+	<v-goods-num-cfg slot="num-cfg" origin="dialog" limit-info="{{limitInfo}}" bindgoodsNumData="getGoodsNum" />
+	<view class="spec-footer" slot="footer">
+		<view class="footer_flex_view" bindtap="addCart" style='color:#fff;background:{{comColor}};'>
+			<text>{{i18n.$t(localePack,"page1.actPage.addCart")}}</text>
+		</view>
+	</view>
 </v-spec-dialog>

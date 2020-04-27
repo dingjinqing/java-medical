@@ -167,7 +167,7 @@
     </view>
 
     <!-- 分销信息 -->
-    <v-distribution activity="{{specParams.activity}}" distribution="{{goodsDistribution}}" price="{{goodsInfo.singleRealMaxPrice}}" goods-price="{{goodsInfo.prdRealPrice}}" goods-id="{{goodsInfo.goodsId}}"/>
+    <v-distribution activity="{{specParams.activity}}" distribution="{{goodsDistribution}}" price="{{goodsInfo.singleRealMaxPrice}}" goods-price="{{goodsInfo.prdRealPrice}}" line-price="{{goodsInfo.singleLinePrice}}" goods-id="{{goodsInfo.goodsId}}"/>
 
     <!-- 发货地 -->
     <view class="flex_outside_box" wx:if="{{deliverPlace}}">

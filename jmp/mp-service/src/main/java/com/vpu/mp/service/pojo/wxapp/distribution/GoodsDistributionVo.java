@@ -1,5 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.distribution;
 
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
 import lombok.Data;
 
@@ -23,4 +25,8 @@ public class GoodsDistributionVo {
      * 返利比例
      */
     private RebateRatioVo rebateRatio;
+    /**
+     * 赠送优惠券信息
+     */
+    private List<CouponListVo> sendCoupon;
 }

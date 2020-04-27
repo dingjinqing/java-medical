@@ -48,7 +48,9 @@ global.wxPage({
           ['dataList[' + (parseInt(currentPage) - 1) + ']']: this.resetGoodsList(res.content.goods.dataList),
           tabList: res.content.tabList,
           ruleText: this.getRuleText(res.content),
-          totalMoney:res.content.totalMoney,
+          totalMoney: res.content.totalMoney,
+          totalGoodsNumber: res.content.totalGoodsNumber,
+          rule: res.content.title,
           showCart: this.data.isFirstLoad ? {
             cart_type: 1,
             show_cart: 1
@@ -66,18 +68,21 @@ global.wxPage({
       pageRows: 20
     }, '', true)
   },
-  requestCartGoodsList(){
-    let {packageId} = this.data
-    util.api('/api/wxapp/packagesale/checkedlist',res=>{
+  requestCartGoodsList() {
+    let {
+      packageId
+    } = this.data
+    util.api('/api/wxapp/packagesale/checkedlist', res => {
       console.log(res)
-      if(res.error === 0){
+      if (res.error === 0) {
         this.setData({
-          cartData:{
-            cartGoodsList:this.resetCartList(res.content)
+          cartData: {
+            cartGoodsList: this.resetCartList(res.content),
+            totalSelectNumber: res.content.totalSelectNumber
           }
         })
       }
-    },{
+    }, {
       packageId
     })
   },
@@ -91,13 +96,21 @@ global.wxPage({
       }
     })
   },
-  resetCartList({goodsList}){
-   return goodsList.reduce((defaultData,item,index)=>{
-      let {selectList} = item
-      selectList.forEach(cartItem=>cartItem.cartNumber = cartItem.goodsNumber)
-      defaultData = [...defaultData,...selectList]
+  resetCartList({
+    goodsList
+  }) {
+    return goodsList.reduce((defaultData, item, index) => {
+      let {
+        selectList,
+        groupId
+      } = item
+      selectList.forEach(cartItem => {
+        cartItem.cartNumber = cartItem.goodsNumber;
+        cartItem.groupId = groupId
+      })
+      defaultData = [...defaultData, ...selectList]
       return defaultData
-    },[])
+    }, [])
   },
   customFilter(e) {
     let {
@@ -148,48 +161,51 @@ global.wxPage({
     })
     this.requestGoodsList()
   },
-  getRuleText({title,tabList}){
+  getRuleText({
+    title,
+    tabList
+  }) {
     let ruleText = ''
-    if(title.packageType === 1){
+    if (title.packageType === 1) {
       ruleText = `以下商品购满${title.totalGoodsNumber}件可享${title.discountTotalRatio}折优惠`;
     } else {
       ruleText = `以下商品${title.totalMoney}元${title.totalGoodsNumber}件`;
     }
-    let groupStr = tabList.reduce((defaultStr,item,index)=>{
-      if(tabList.length > 1 ){
-        if(index === 0) defaultStr += `，其中，`
+    let groupStr = tabList.reduce((defaultStr, item, index) => {
+      if (tabList.length > 1) {
+        if (index === 0) defaultStr += `，其中，`
         defaultStr += `${item.groupName}需选择${item.goodsNumber}件，`
-        if(index === tabList.length - 1) defaultStr += `满足选择条件即可结算`
+        if (index === tabList.length - 1) defaultStr += `满足选择条件即可结算`
       }
       return defaultStr
-    },'')
+    }, '')
     return `${ruleText}${groupStr}`
   },
-  showSelected(){
+  showSelected() {
     this.setData({
-      showSelectedDialog:true
+      showSelectedDialog: true
     })
   },
-  showSpecDialog(e){
+  showSpecDialog(e) {
     console.log(e)
-    util.api("/api/wxapp/goods/detail",res=>{
-      if(res.error === 0){
+    util.api("/api/wxapp/goods/detail", res => {
+      if (res.error === 0) {
         let productsInfo = {
-          activity:null,
-          defaultPrd:res.content.defaultPrd,
-          goodsId:res.content.goodsId,
-          goodsImgs:res.content.goodsImgs,
-          goodsNumber:res.content.goodsNumber,
-          limitBuyNum:res.content.limitBuyNum,
-          limitMaxNum:res.content.limitMaxNum,
-          products:res.content.products
+          activity: null,
+          defaultPrd: res.content.defaultPrd,
+          goodsId: res.content.goodsId,
+          goodsImgs: res.content.goodsImgs,
+          goodsNumber: res.content.goodsNumber,
+          limitBuyNum: res.content.limitBuyNum,
+          limitMaxNum: res.content.limitMaxNum,
+          products: res.content.products
         }
         this.setData({
           productsInfo,
-          showSpec:true
+          showSpec: true
         })
       }
-    },{
+    }, {
       goodsId: e.detail.goodsId,
       activityId: e.detail.activityId,
       activityType: e.detail.activityType,
@@ -198,80 +214,136 @@ global.wxPage({
       lat: null
     })
   },
-  bindCloseSpec(){
+  bindCloseSpec() {
     this.setData({
-      showSpec:false
+      showSpec: false
     })
   },
-  getProductData(e){
+  getProductData(e) {
     this.setData({
-      product:e.detail,
-      limitInfo:{
-        activityType:this.data.productsInfo.activityType,
-        limitBuyNum:e.detail.limitBuyNum,
-        limitMaxNum:e.detail.limitMaxNum,
-        prdNumber:e.detail.prdNumber
+      product: e.detail,
+      limitInfo: {
+        activityType: this.data.productsInfo.activityType,
+        limitBuyNum: e.detail.limitBuyNum,
+        limitMaxNum: e.detail.limitMaxNum,
+        prdNumber: e.detail.prdNumber
       }
     })
   },
   getGoodsNum(e) {
     this.setData({
-      productInfo: { ...this.data.product, goodsNum:e.detail.goodsNum }
+      productInfo: {
+        ...this.data.product,
+        goodsNum: e.detail.goodsNum
+      }
     });
   },
-  addCart(){
-    let { goodsNum: goodsNumber, prdId:productId,goodsId} = this.data.productInfo
-    let {packageId,groupId} = this.data
-      util.api(
-        "/api/wxapp/packagesale/add",
-        res => {
-          console.log(res)
-          if (res.error == 0 && res.content.state === 0) {
-            util.toast_success('添加成功')
-            this.requestCartGoodsList()
-            this.requestGoodsList()
-          } else if (res.error == 0 && res.content.state !== 0) {
-            let errorMessage = {
-              1:'该一口价活动已删除',
-              2:'该一口价活动已停用',
-              3:'该一口价活动已过期',
-              4:'该一口价活动未开始',
-              5:'活动规则已发生变化，请重新选择',
-              6:'分组已选满',
-              7:'该商品已失效',
-              8:'该商品已下架',
-              9:'该商品库存不足'
-            }
-            if(![5,6].includes(res.content.state)) util.showModal('提示', errorMessage[res.content.state]);
-            if(res.content.state === 5){
-              util.showModal("提示", errorMessage[res.content.state],  () => {
-                this.setData({
-                  groupId:1,
-                  search:null,
-                  sortName: null,
-                  sortOrder: null,
-                  'pageParams.currentPage': 1
-                })
-                this.requestGoodsList()
-                this.requestCartGoodsList()
-              }, true, "取消", "继续参加")
-            }
-            if(res.content.state === 6){
-              util.showModal('提示', `${res.content.groupName}${errorMessage[res.content.state]}`)
-            }
-          } else {
-            util.showModal('提示', res.message);
+  addCart() {
+    let {
+      goodsNum: goodsNumber,
+      prdId: productId,
+      goodsId
+    } = this.data.productInfo
+    let {
+      packageId,
+      groupId
+    } = this.data
+    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber)
+  },
+  deletCart({
+    detail: goodsData
+  }) {
+    let {packageId} = this.data
+    let {groupId,goodsId,productId,cartNumber} = goodsData
+    this.cartOperate(packageId,groupId,goodsId, productId,-cartNumber,'delete')
+  },
+  cartNumChange({
+    detail: goodsData
+  }) {
+    let {packageId} = this.data
+    let {type,groupId,goodsId,productId} = goodsData
+    let goodsNumber = type === 'plus' ? 1 : -1
+    this.cartOperate(packageId,groupId,goodsId, productId,goodsNumber,type)
+  },
+  cartOperate(packageId,groupId,goodsId, productId,goodsNumber,type){
+    util.api(
+      "/api/wxapp/packagesale/add",
+      res => {
+        console.log(res)
+        if (res.error == 0 && res.content.state === 0) {
+          if(!type) util.toast_success('添加成功')
+          if(type === 'delete') util.toast_success('删除成功')
+          this.requestCartGoodsList()
+          this.requestGoodsList()
+        } else if (res.error == 0 && res.content.state !== 0) {
+          let errorMessage = {
+            1: '该一口价活动已删除',
+            2: '该一口价活动已停用',
+            3: '该一口价活动已过期',
+            4: '该一口价活动未开始',
+            5: '活动规则已发生变化，请重新选择',
+            6: '分组已选满',
+            7: '该商品已失效',
+            8: '该商品已下架',
+            9: '该商品库存不足'
           }
-          this.bindCloseSpec()
-        },
-        {
-          packageId,
-          groupId,
-          goodsId,
-          productId,
-          goodsNumber
+          if (![5, 6].includes(res.content.state)) util.showModal('提示', errorMessage[res.content.state]);
+          if (res.content.state === 5) {
+            util.showModal("提示", errorMessage[res.content.state], () => {
+              this.setData({
+                groupId: 1,
+                search: null,
+                sortName: null,
+                sortOrder: null,
+                'pageParams.currentPage': 1
+              })
+              this.requestGoodsList()
+              this.requestCartGoodsList()
+            }, true, "取消", "继续参加")
+          }
+          if (res.content.state === 6) {
+            util.showModal('提示', `${res.content.groupName}${errorMessage[res.content.state]}`)
+          }
+        } else {
+          util.showModal('提示', res.message);
         }
-      );
+        this.bindCloseSpec()
+      }, {
+        packageId,
+        groupId,
+        goodsId,
+        productId,
+        goodsNumber
+      }
+    );
+  },
+  goCheckOut(){
+    let {packageId} = this.data
+    util.api('/api/wxapp/packagesale/checkout',res=>{
+      console.log(res)
+      if(res.error === 0 && res.content.state === 0){
+        let goodsList = res.content.goods.map(item=>{
+          item.prdId = item.productId,
+          item.goodsNum = item.goodsNumber
+          return item
+        })
+        util.jumpLink(`pages/checkout/checkout${util.getUrlParams({ goodsList: JSON.stringify(goodsList), activityType:9, activityId:packageId})}`, "navigateTo")
+      } else if (res.error === 0 && res.content.state !== 0) {
+        let errorMessage = {
+          1:'该活动已删除',
+          2:'该活动已停用',
+          3:'该活动已过期',
+          4:'分组商品选择数量不足',
+          5:'分组商品超出可结算数量'
+        }
+        if([1,2,3].includes(res.content.state)) util.showModal('提示', errorMessage[res.content.state]);
+        if([4,5].includes(res.content.state)) {
+          util.showModal('提示', `${res.content.groupName}${errorMessage[res.content.state]}`);
+        }
+      } else {
+        util.showModal('提示', res.message);
+      }
+    },{packageId})
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

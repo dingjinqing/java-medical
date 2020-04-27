@@ -91,6 +91,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
          * 活动名称
          */
         private String name;
+        /**
+         * 使用 1生效 2不生效
+         */
+        private Byte userd;
         /**满多少金额，活动中指定使用满金额策略时使用*/
         private BigDecimal fullMoney;
         /**满几件或第几件（第X件打折），活动中指定使用满件数策略时使用*/

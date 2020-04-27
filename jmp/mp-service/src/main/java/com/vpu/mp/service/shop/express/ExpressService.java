@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.Shipping;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,5 +32,12 @@ public class ExpressService extends ShopBaseService {
 
     public ExpressVo get(Byte id){
         return gets(Lists.newArrayList(id)).get(id);
+    }
+
+    public ExpressVo get(String name) {
+        if(StringUtils.isBlank(name)) {
+            return null;
+        }
+        return db().selectFrom(TABLE).where(TABLE.SHIPPING_NAME.eq(name)).fetchOneInto(ExpressVo.class);
     }
 }
