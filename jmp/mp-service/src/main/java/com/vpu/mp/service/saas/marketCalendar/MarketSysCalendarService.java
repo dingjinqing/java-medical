@@ -196,7 +196,7 @@ public class MarketSysCalendarService extends MainBaseService {
 		MarketCalendarSysAllVo info = record.into(MarketCalendarSysAllVo.class);
 		info.setCalendarId(calendarId);
 		List<SysCalendarActVo> calendarActList = calendarActivityService.calendarActList(calendarId);
-		info.setCalendarAct(calendarActList);
+		info.setActInfo(calendarActList);
 		return info;
 	}
 }

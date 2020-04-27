@@ -23,5 +23,5 @@ public class MarketCalendarSysAllVo {
 	private Timestamp createTime;
 	private Timestamp updateTime;
 	private Integer calendarId;
-	private List<SysCalendarActVo> calendarAct;
+	private List<SysCalendarActVo> actInfo;
 }

@@ -168,6 +168,7 @@ export default {
           }
         })
       }
+      this.dialogShow = false
     }
   },
   watch: {

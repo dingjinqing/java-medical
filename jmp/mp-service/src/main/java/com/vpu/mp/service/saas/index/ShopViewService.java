@@ -26,7 +26,7 @@ import static com.vpu.mp.db.main.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.main.tables.Shop.SHOP;
 import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 import static com.vpu.mp.db.main.tables.User.USER;
-import static com.vpu.mp.db.shop.tables.UserAccount.USER_ACCOUNT;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 /**
  * @author luguangyao
  */
@@ -53,12 +53,16 @@ public class ShopViewService extends MainBaseService {
         OrderStatisticsInfo info = new OrderStatisticsInfo();
         info.setAllOrderNum(getAllOrderNum());
         OrderMoneyInfo moneyInfo = getOrderMoneyStatistics();
+
         info.setOrderNumInfos(getOrderNumByDay(param));
         info.setOrderMoneyInfos(getOrderMoneyByDay(param));
-        info.setWxPayed(moneyInfo.getWxPayed().toString());
-        info.setBalancePayed(moneyInfo.getBalancePayed().toString());
-        info.setCardBalancePayed(moneyInfo.getCardBalancePayed().toString());
-        info.setIntegralPayed(moneyInfo.getIntegralPayed().toString());
+        if( moneyInfo != null ){
+            info.setWxPayed(moneyInfo.getWxPayed().toString());
+            info.setBalancePayed(moneyInfo.getBalancePayed().toString());
+            info.setCardBalancePayed(moneyInfo.getCardBalancePayed().toString());
+            info.setIntegralPayed(moneyInfo.getIntegralPayed().toString());
+        }
+
         return info;
     }
 
@@ -214,7 +218,7 @@ public class ShopViewService extends MainBaseService {
     }
 
     private Integer getAccountNumByCondition(Condition condition){
-        return db().selectCount().from(USER_ACCOUNT).where(condition).fetchOne(0,Integer.class);
+        return db().selectCount().from(SHOP_ACCOUNT).where(condition).fetchOne(0,Integer.class);
     }
 
     /**
@@ -283,12 +287,12 @@ public class ShopViewService extends MainBaseService {
             map(x->DateUtil.dateFormat(DateUtil.DATE_FORMAT_SIMPLE,Timestamp.valueOf(x.atStartOfDay()))).
             collect(Collectors.toMap(Function.identity(),y->0));
         Result<Record2<String,Integer>> result =db().
-            select(dateFormat(USER.CREATE_TIME,DateUtil.DATE_FORMAT_SIMPLE),DSL.count(USER.ID)).
-            from(USER).
-            where(
-                USER.CREATE_TIME.greaterOrEqual(param.getStartTime())).
-                and(USER.CREATE_TIME.lessOrEqual(param.getEndTime())
-                ).fetch();
+            select(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE),DSL.count(USER.ID))
+            .from(USER)
+            .where(USER.CREATE_TIME.greaterOrEqual(param.getStartTime())).
+                and(USER.CREATE_TIME.lessOrEqual(param.getEndTime()))
+            .groupBy(dateFormat(USER.CREATE_TIME,DateUtil.DATE_MYSQL_SIMPLE))
+            .fetch();
         return getBaseInfoList(result,dateMap);
     }
 
