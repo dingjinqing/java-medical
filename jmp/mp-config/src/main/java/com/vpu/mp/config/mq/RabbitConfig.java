@@ -95,6 +95,7 @@ public class RabbitConfig {
     public static final String EXCHANGE_GOODS_IMPORT = "direct.goods";
 
 
+
     /** 发送失败路由键 */
     public static final String BINDING_EXCHANGE_ERROR_KEY = "direct.error.send";
     /** 处理失败路由键 */
