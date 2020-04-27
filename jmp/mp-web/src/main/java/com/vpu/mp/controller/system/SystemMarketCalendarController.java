@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysAllVo;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarInfoVo;
 
@@ -96,7 +97,10 @@ public class SystemMarketCalendarController extends SystemBaseController {
 	 */
 	@GetMapping(value = "/api/system/calendar/info/{calendarId}")
 	public JsonResult calendarInfo(@PathVariable Integer calendarId) {
-		saas.shop.calendarService.getCalendarInfo(calendarId);
-		return fail();
+		MarketCalendarSysAllVo info = saas.shop.calendarService.getCalendarInfo(calendarId);
+		if(info==null) {
+			return fail();
+		}
+		return success(info);
 	}
 }

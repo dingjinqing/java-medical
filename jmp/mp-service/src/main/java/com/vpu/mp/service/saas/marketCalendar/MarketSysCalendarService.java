@@ -25,6 +25,7 @@ import com.vpu.mp.service.pojo.saas.marketCalendar.MarketCalendarSysVo;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketMqToParam;
 import com.vpu.mp.service.pojo.saas.marketCalendar.MarketSysActivityMqParam;
+import com.vpu.mp.service.pojo.saas.marketCalendar.SysCalendarActVo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.MarketCalendarVo;
@@ -182,15 +183,20 @@ public class MarketSysCalendarService extends MainBaseService {
 		return execute > 0 ? true : false;
 	}
 	
-	
-	public void getCalendarInfo(Integer calendarId) {
+	/**
+	 * 单个信息
+	 * @param calendarId
+	 * @return
+	 */
+	public MarketCalendarSysAllVo getCalendarInfo(Integer calendarId) {
 		MarketCalendarRecord record = getInfoById(calendarId);
 		if(record==null) {
-//			return null;
+			return null;
 		}
 		MarketCalendarSysAllVo info = record.into(MarketCalendarSysAllVo.class);
 		info.setCalendarId(calendarId);
-		
-		
+		List<SysCalendarActVo> calendarActList = calendarActivityService.calendarActList(calendarId);
+		info.setCalendarAct(calendarActList);
+		return info;
 	}
 }
