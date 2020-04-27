@@ -421,7 +421,7 @@ public class MpDecorationService extends ShopBaseService {
 	private boolean isNoAuth(String modeName) {
 		String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), modeName);
 		if(!verPurview[0].equals("true")) {
-			logger().info("店铺：{}，的模块：{}没有权限");
+			logger().info("店铺：{}，的模块：{}没有权限",getShopId(),modeName);
 			return true;
 		}
 		return false;
