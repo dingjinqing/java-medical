@@ -448,17 +448,20 @@ public class GroupIntegrationService extends ShopBaseService {
 		step.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
 		switch (pageParam.getType()) {
 		case GroupIntegrationDefineEnums.QueryType.UNSTARTED:
-			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())));
+			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.OVERDUE:
-			step.and(GROUP_INTEGRATION_DEFINE.END_TIME.lt(Timestamp.valueOf(LocalDateTime.now())));
+			step.and(GROUP_INTEGRATION_DEFINE.END_TIME.lt(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.STOPPED:
 			step.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.STOPPED.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.UNDER_WAY:
 			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.le(Timestamp.valueOf(LocalDateTime.now())))
-					.and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(Timestamp.valueOf(LocalDateTime.now())));
+					.and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		default:
 			break;
