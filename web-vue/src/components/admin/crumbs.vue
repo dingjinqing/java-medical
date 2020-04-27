@@ -95,6 +95,13 @@
         :underline="false"
         target="_blank"
       >直播使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'share_award'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=2133&extra=page%3D1%26filter%3Dsortid%26sortid%3D15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >分享有礼使用教程</el-link>
     </span>
   </div>
 </template>
