@@ -61,17 +61,25 @@
       </div>
       <div class="list">
         <span>图片：</span>
-        <img
-          v-if="img"
-          :src="img"
+        <div
+          class="display:flex"
+          v-if="img.length"
         >
-        {{!img?'无':''}}
+          <img
+            v-for="(item,index) in img"
+            :key="index"
+            :src="item"
+            style="margin-right:10px"
+          >
+        </div>
+        {{img.length?'':'无'}}
       </div>
     </div>
 
   </div>
 </template>
 <script>
+import { problemFeedbackDetail } from '@/api/system/problemFeedback/problemFeedback.js'
 export default {
   data () {
     return {
@@ -82,7 +90,43 @@ export default {
       questionType: '',
       useVersion: '',
       questionContent: '',
-      img: ''
+      img: []
+    }
+  },
+  mounted () {
+    // 初始化数据
+    this.handleToInit()
+  },
+  methods: {
+    // 初始化数据
+    handleToInit () {
+      problemFeedbackDetail(this.$route.query.id).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          let { submitUser, submitUserPhone, mobile, createTime, content, version, categoryId, imageUrls } = res.content
+          this.accountNumber = submitUser
+          this.phoneNum = submitUserPhone
+          this.fillMobileNumber = mobile
+          this.feedbackTime = createTime
+          this.questionContent = content
+          this.useVersion = version
+          switch (categoryId) {
+            case 1:
+              this.questionType = '产品建议'
+              break
+            case 2:
+              this.questionType = '网页异常'
+              break
+            case 3:
+              this.questionType = '功能使用咨询'
+              break
+            case 4:
+              this.questionType = '其他'
+              break
+          }
+          this.img = imageUrls
+        }
+      })
     }
   }
 }

@@ -149,9 +149,8 @@
           >
             <template slot-scope="scope">
               <span style="color:#FF0000">
-                {{scope.row.isLook}}
+                {{scope.row.isLook?'已查看':'未查看'}}
               </span>
-
             </template>
           </el-table-column>
           <el-table-column
@@ -293,18 +292,21 @@ export default {
     },
     // 当前页变化
     seacherGroupIntegrationList () {
-
+      this.handleToInit()
     },
     // 点击查看详情
     handleToClickDetail (row) {
       console.log(row)
       this.$router.push({
-        name: 'problemFeedbackDeatil'
+        path: 'problemFeedback_deatil',
+        query: {
+          id: row.questionFeedbackId
+        }
       })
     },
     // 点击筛选
     handleToClickSeach () {
-
+      this.handleToInit()
     }
   }
 }
