@@ -754,7 +754,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("用户id:{},不是第一次参加", userId);
 				canPinInte.setIsNew(IS_DAY_DIVIDE_N);
 				addPinGroup = groupIntegrationList.addPinGroup(groupId, userId, pinInteId, IS_DAY_DIVIDE_N,
-						IS_DAY_DIVIDE_Y, inviteUser);
+						IS_DAY_DIVIDE_N, inviteUser);
 			}
 			if (addPinGroup == 0) {
 				canPinInte.setStatus(STATUS_EIGHT);
