@@ -171,6 +171,9 @@ import pagination from '@/components/admin/pagination/pagination.vue'
 export default {
   components: { statusTab, pagination },
   mounted () {
+    if (this.$route.params.calenderEdit) {
+      this.handleEdit(this.$route.params.id)
+    }
     this.langDefault()
   },
   watch: {

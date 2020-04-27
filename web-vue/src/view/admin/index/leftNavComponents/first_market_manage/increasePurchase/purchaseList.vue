@@ -268,6 +268,9 @@ export default {
   },
   mounted () {
     this.langDefault()
+    if (this.$route.params.calenderEdit) {
+      this.jump2editPurchase(this.$route.params.id)
+    }
   },
   created () {
     this.initDataList()

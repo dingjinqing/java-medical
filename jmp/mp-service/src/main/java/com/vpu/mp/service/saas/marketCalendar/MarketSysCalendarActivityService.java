@@ -37,13 +37,37 @@ public class MarketSysCalendarActivityService extends MainBaseService {
 		}
 	}
 
+	/**
+	 * 更新
+	 * @param param
+	 * @param calendarId
+	 */
 	public void editCalendarAct(MarketCalendarParam param, Integer calendarId) {
 		List<SysCalendarAct> calendarActList = param.getCalendarAct();
 		for (SysCalendarAct sysCalendarAct : calendarActList) {
-			MarketCalendarActivityRecord record = db().newRecord(MARKET_CALENDAR_ACTIVITY, sysCalendarAct);
-			record.setCalendarId(calendarId == null ? 0 : calendarId);
-			int update = record.update();
-			logger().info("system更新日历活动id：{}；营销活动：{}；结果：{}", calendarId, sysCalendarAct.getActivityType(), update);
+			Integer id = sysCalendarAct.getActivityId();
+			if (id != null && id != 0) {
+				MarketCalendarActivityRecord record = db().selectFrom(MARKET_CALENDAR_ACTIVITY).where(
+						MARKET_CALENDAR_ACTIVITY.ID.eq(id).and(MARKET_CALENDAR_ACTIVITY.CALENDAR_ID.eq(calendarId)))
+						.fetchAny();
+				if (record != null) {
+					record.setActivityType(sysCalendarAct.getActivityType());
+					record.setRecommendType(sysCalendarAct.getRecommendType());
+					record.setRecommendLink(sysCalendarAct.getRecommendLink());
+					record.setDelFlag(sysCalendarAct.getDelFlag());
+					int update = record.update();
+					logger().info("system更新日历活动id：{}；营销活动：{}；结果：{}", calendarId, id, update);
+				}else {
+					logger().info("system更新日历活动id：{}；营销活动id：{}；不匹配", calendarId, id);
+				}
+			} else {
+				MarketCalendarActivityRecord record = db().newRecord(MARKET_CALENDAR_ACTIVITY, sysCalendarAct);
+				record.setCalendarId(calendarId == null ? 0 : calendarId);
+				int update = record.insert();
+				logger().info("system更新中新增日历活动id：{}；营销活动：{}；结果：{}", calendarId, sysCalendarAct.getActivityType(),
+						update);
+			}
+
 		}
 	}
 

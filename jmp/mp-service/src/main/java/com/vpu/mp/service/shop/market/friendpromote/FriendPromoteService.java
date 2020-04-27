@@ -726,6 +726,10 @@ public class FriendPromoteService extends ShopBaseService {
         promoteInfo.setRewardDurationUnit(record.getRewardDurationUnit());
         //设置授权相关
         promoteInfo.setPromoteCondition(record.getPromoteCondition());
+        //设置活动说明相关
+        if (record.getActivityCopywriting()!=null){
+            promoteInfo.setActCopywriting(Util.json2Object(record.getActivityCopywriting(),promoteActCopywriting.class,false));
+        }
 
         //判断奖励类型-为赠送商品或商品折扣时
         if(record.getRewardType()==ZERO||record.getRewardType()==ONE){
@@ -1963,4 +1967,23 @@ public class FriendPromoteService extends ShopBaseService {
 				MarketVo.class);
 		return pageResult;
 	}
+
+    /**
+     * 小程序-根据actCode获得当前活动的活动说明
+     * @param param actCode
+     * @return {{@link promoteActCopywriting}}
+     */
+	public promoteActCopywriting getActCopywriting(PromoteParam param){
+	    String actCode = param.getActCode();
+	    String activityCopywriting = db().select(FRIEND_PROMOTE_ACTIVITY.ACTIVITY_COPYWRITING)
+            .from(FRIEND_PROMOTE_ACTIVITY)
+            .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
+            .fetchOptionalInto(String.class)
+            .orElse(null);
+	    promoteActCopywriting actCopywriting = new promoteActCopywriting();
+	    if (activityCopywriting!=null){
+	        actCopywriting = Util.json2Object(activityCopywriting,promoteActCopywriting.class,false);
+        }
+	    return actCopywriting;
+    }
 }

@@ -18,7 +18,8 @@ global.wxComponent({
     },
     price:Number,
     goodsPrice:String,
-    goodsId:Number
+    goodsId:Number,
+    linePrice:Number
   },
 
   /**
@@ -97,7 +98,8 @@ global.wxComponent({
         goodsPrice:this.data.goodsPrice,
         rebateId:this.data.distribution.rebateRatio.rebateId,
         rebateRatio:this.data.distribution.rebateRatio.rebateRatio,
-        goodsId:this.data.goodsId
+        goodsId:this.data.goodsId,
+        linePrice:this.data.linePrice
       })}`,'navigateTo')
     }
   }

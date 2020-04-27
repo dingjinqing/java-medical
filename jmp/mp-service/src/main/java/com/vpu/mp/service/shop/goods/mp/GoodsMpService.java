@@ -2,12 +2,14 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.activity.GoodsDetailCapsuleParam;
@@ -436,6 +438,8 @@ public class GoodsMpService extends ShopBaseService {
         processorFactory.doProcess(goodsDetailMpBo, capsuleParam);
         if(param.getRebateConfig() != null){
             mpDisGoods.addRebatePrice(goodsDetailMpBo,param);
+            List<CouponListVo> mrkingVoucherRecords = mpDisGoods.sendCoupon(param);
+            goodsDetailMpBo.getGoodsDistribution().setSendCoupon(mrkingVoucherRecords);
         }
 
         return goodsDetailMpBo;

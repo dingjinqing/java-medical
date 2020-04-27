@@ -11,7 +11,7 @@
   <view class="a-tips">注：此链接分享后24小时内有效，过期不可继续领券，可以原价购买商品</view>
   <block wx:for="{{productList}}" wx:key="prdId">
     <view class="spec-set-content">
-      <view class="spec-name">{{item.spec_desc}}</view>
+      <view class="spec-name">{{item.prdDesc}}</view>
       <view class="spec-item-info">
         <text class="item-title" style="padding-top:8rpx;">商品价格：</text>
         <view class="item-right price-set">
@@ -33,6 +33,32 @@
       </view>
     </view>
   </block>
+
+  <view class="coupon-content" wx:if="{{couponData}}">
+    <view class="coupon-toggle">
+      <view data-type="1" bindtap="toogleCouponGive"><text class="iconfont {{giveCoupon ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>赠送优惠券</view>
+      <view data-type="0" bindtap="toogleCouponGive"><text class="iconfont {{!giveCoupon ? 'icondanxuan' : 'icondanxuanbiankuang'}}" style="color:{{comColor}};"></text>不赠送优惠券</view>
+    </view>
+    <block wx:for="{{couponData}}" wx:key="id">
+      <view class="coupon-info-content" data-id="{{item.id}}" bindtap="chooseCouponData">
+        <text class="iconfont {{item.checked ? 'iconduoxuan':'iconduoxuanbiankuang'}}" style="color:{{comColor}};"></text>
+        <view class="coupon-info">
+          <view class="coupon-left" style="background-color:{{comColor}};">
+            <view class="coupon-name">{{item.actName}}</view>
+            <view class="coupon-price" wx:if="{{item.actCode === 'voucher'}}">￥{{item.denomination}}元</view>
+            <view class="coupon-price" wx:if="{{item.actCode === 'discount'}}">{{item.denomination}}折</view>
+            <view class="coupon-price" wx:if="{{item.actCode === 'random'}}">￥<text class="big">{{item.randomMax}}</text>最高</view>
+            <view class="tips" wx:if="{{item.actCode === 'random'}}">随机优惠</view>
+          </view>
+          <view class="coupon-right">
+            <view class="use-limit">使用条件：{{item.useConsumeRestrict === 1 ? '满'+item.leastConsume+'元可用' : '无门槛'}}</view>
+            <view class="can-use-time">有效时间：{{item.canUseTime}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+    
+  </view>
   
   <view class="footer-button">
     <view class='a-tips'>预计最高可返利佣金：{{rebateInfo}}元</view>

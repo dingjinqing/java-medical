@@ -6,7 +6,19 @@ global.wxComponent({
    * 组件的属性列表
    */
   properties: {
-    goodsData:Array
+    goodsData:Array,
+    customFooterLeft:{
+      type:Boolean,
+      value:false
+    },
+    customDelete:{
+      type:Boolean,
+      value:false
+    },
+    customControlNum:{
+      type:Boolean,
+      value:false
+    }
   },
 
   /**
@@ -33,6 +45,12 @@ global.wxComponent({
     },
     cartChange(){	
       this.triggerEvent('cartChange')	
+    },
+    deletCart({detail}){
+      this.triggerEvent('deletCart',{...detail})
+    },
+    cartNumChange({detail}){
+      this.triggerEvent('cartNumChange',{...detail})
     }
   }
 })

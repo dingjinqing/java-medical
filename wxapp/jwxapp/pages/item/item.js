@@ -188,14 +188,15 @@ global.wxPage({
   onLoad: function (options) {
     console.log(options, '++++++++++++++++++++++++')
     if (!options.gid) return
-    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null} = options
+    let { gid: goodsId, aid: activityId = null, atp: activityType = null,room_id:roomId = null,rebateConfig=null, inviteId=null, couponIds=null} = options
     this.setData({
       goodsId,
       activityId:activityId === 'null' ? null : activityId,
       activityType:activityType === 'null' || activityType === '0' ? null : activityType,
       roomId:roomId,
       rebateConfig,
-      inviteId
+      inviteId,
+      couponIds
     })
     this.requestGoodsInfo()
   },
@@ -204,6 +205,7 @@ global.wxPage({
     let result = new Promise((resolve, reject) => {
       let customParams = {}
       if(this.data.rebateConfig) customParams.rebateConfig = JSON.parse(this.data.rebateConfig)
+      if(this.data.couponIds) customParams.couponIds = this.data.couponIds
       util.api(
         '/api/wxapp/goods/detail',
         res => {

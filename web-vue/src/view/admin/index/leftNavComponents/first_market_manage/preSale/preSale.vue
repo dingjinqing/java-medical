@@ -288,6 +288,9 @@ export default {
   },
   mounted () {
     this.initDataList()
+    if (this.$route.params.calenderEdit) {
+      this.gotoEdit(this.$route.params.id)
+    }
   },
   data () {
     return {

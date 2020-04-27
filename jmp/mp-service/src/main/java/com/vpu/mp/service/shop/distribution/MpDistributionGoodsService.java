@@ -1,12 +1,16 @@
 package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.config.DomainConfig;
+import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.shop.config.distribution.DistributionParam;
+import com.vpu.mp.service.pojo.shop.coupon.CouponListVo;
+import com.vpu.mp.service.pojo.shop.coupon.MpGetCouponParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorLevelVo;
 import com.vpu.mp.service.pojo.shop.distribution.RebateRatioVo;
@@ -33,14 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTION_STRATEGY;
-import static com.vpu.mp.db.shop.Tables.DISTRIBUTOR_LEVEL;
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.GOODS_REBATE_PRICE;
-import static com.vpu.mp.db.shop.Tables.GOODS_SPEC_PRODUCT;
-import static com.vpu.mp.db.shop.Tables.USER;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
-import static com.vpu.mp.db.shop.Tables.USER_REBATE_PRICE;
+import static com.vpu.mp.db.shop.Tables.*;
 
 /**
  * @Author 常乐
@@ -297,7 +294,6 @@ public class MpDistributionGoodsService extends ShopBaseService {
         Timestamp rebateToTime = Timestamp.valueOf(rebateTime);
 
         Timestamp nowTime = Util.currentTimeStamp();
-
         //判断当前用户对该商品是否进行过分销改价
         param.getRebateConfig().getRebatePrice().forEach((prdId,prdPrice)->{
             Record record = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
@@ -336,6 +332,25 @@ public class MpDistributionGoodsService extends ShopBaseService {
      */
     public ShareUserInfoVo getShareUserInfo(ShareUserInfoParam param){
         ShareUserInfoVo info = db().select().from(USER).leftJoin(USER_DETAIL).on(USER.USER_ID.eq(USER_DETAIL.USER_ID)).where(USER.USER_ID.eq(param.getInviteId())).fetchOne().into(ShareUserInfoVo.class);
+        return info;
+    }
+
+    /**
+     * 分销赠送优惠券
+     * @param param
+     * @return
+     */
+    public List<CouponListVo> sendCoupon(GoodsDetailMpParam param){
+        MpGetCouponParam mpGetCouponParam = new MpGetCouponParam();
+        mpGetCouponParam.setUserId(param.getUserId());
+        List<Integer> couponIds = Util.stringToList(param.getCouponIds());
+        //发放优惠券
+        for(Integer couponId:couponIds){
+            mpGetCouponParam.setCouponId(couponId);
+            Byte res = mpCoupon.fetchCoupon(mpGetCouponParam);
+        }
+        //返回优惠券信息
+        List<CouponListVo> info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(couponIds)).fetch().into(CouponListVo.class);
         return info;
     }
 }

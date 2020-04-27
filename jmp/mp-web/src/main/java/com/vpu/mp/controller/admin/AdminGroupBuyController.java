@@ -34,7 +34,7 @@ import java.sql.Timestamp;
  * @date 2019/7/18 14:27
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/admin/market/groupbuy")
 public class AdminGroupBuyController extends AdminBaseController {
 
 
@@ -44,7 +44,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyListParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/list")
+    @PostMapping("/list")
     public JsonResult getListGroupBuy(@RequestBody @Valid GroupBuyListParam param) {
         return success(shop().groupBuy.getListGroupBuy(param));
     }
@@ -56,7 +56,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/add")
+    @PostMapping("/add")
     public JsonResult addGroupBuy(@RequestBody @Valid GroupBuyParam param) {
         Timestamp date = DateUtil.getLocalDateTime();
         shop().groupBuy.addGroupBuy(param);
@@ -70,7 +70,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyIdParam
      * @return  JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/delete")
+    @PostMapping("/delete")
     public JsonResult deleteGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
@@ -86,7 +86,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyEditParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/update")
+    @PostMapping("/update")
     public JsonResult updateGroupBuy(@RequestBody @Valid GroupBuyEditParam param) {
         //校验参数
         if (param == null ||param.getId()==null ||
@@ -104,7 +104,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyIdParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/detail")
+    @PostMapping("/detail")
     public JsonResult detailGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         if (param.getId()==null){
             return fail(JsonResultCode.CODE_PARAM_ERROR);
@@ -120,7 +120,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyIdParam  活动Id
      * @return JsonResult qrCodeVo 二维码信息
      */
-    @PostMapping("/admin/market/groupbuy/share")
+    @PostMapping("/share")
     public JsonResult shareGroupBuy(@RequestBody @Valid GroupBuyIdParam param) {
         ShareQrCodeVo qrCodeVo = shop().groupBuy.shareGroupBuy(param.getId());
         return success(qrCodeVo);
@@ -132,7 +132,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyIdParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/change/status")
+    @PostMapping("/change/status")
     public JsonResult changeStatusActivity(@RequestBody @Validated(GroupBuyStatusVaild.class) GroupBuyIdParam param) {
         GroupBuyDefineRecord groupBuyRecord = shop().groupBuy.getGroupBuyRecord(param.getId());
         if (groupBuyRecord==null){
@@ -155,7 +155,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * @param param GroupBuyDetailParam
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/detail/list")
+    @PostMapping("/detail/list")
     public JsonResult detailGroupBuyList(@RequestBody @Valid GroupBuyDetailParam param) {
         PageResult<GroupBuyDetailListVo> vo = shop().groupBuy.detailGroupBuyList(param);
         return success(vo);
@@ -166,7 +166,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      * 拼团订单
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/order/list")
+    @PostMapping("/order/list")
     public JsonResult groupBuyOrderList(@RequestBody @Valid MarketOrderListParam param) {
         return success(shop().groupBuy.groupBuyOrderList(param));
     }
@@ -176,7 +176,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      *
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/user/list")
+    @PostMapping("/user/list")
     public JsonResult groupBuyNewUserList(@RequestBody @Valid MarketSourceUserListParam param) {
         PageResult<MemberInfoVo> pageResult = shop().groupBuy.groupBuyNewUserList(param);
         return success(pageResult);
@@ -188,7 +188,7 @@ public class AdminGroupBuyController extends AdminBaseController {
      *
      * @return JsonResult
      */
-    @PostMapping("/admin/market/groupbuy/analysis")
+    @PostMapping("/analysis")
     public JsonResult groupBuyAnalysis(@RequestBody @Valid GroupBuyAnalysisParam param) {
         return success(shop().groupBuy.groupBuyAnalysis(param));
     }

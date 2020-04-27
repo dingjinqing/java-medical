@@ -1190,8 +1190,8 @@ export default {
             'packageName': this.param.packageName,
             'startTime': this.param.validity[0],
             'endTime': this.param.validity[1],
-            'totalMoney': this.param.totalMoney,
-            'totalRatio': this.param.totalRatio,
+            'totalMoney': Number(this.param.totalMoney),
+            'totalRatio': Number(this.param.totalRatio),
             'group1': {
               'groupName': this.param.groupName,
               'goodsNumber': this.param.goodsNumber,

@@ -394,6 +394,13 @@ export default {
             span: '',
             name: 'member_card_order',
             flag: false
+          },
+          {
+            imgUrl: this.$imageHost + '/image/admin/icon_left/bullship.png',
+            imgUrl_h: this.$imageHost + '/image/admin/icon_left/bullship_h.png',
+            span: '',
+            name: 'bulk_shipment',
+            flag: true
           }
         ],
         first_market_manage: [

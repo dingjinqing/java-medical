@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordDetailRecord;
 import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -10,6 +11,10 @@ import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelUtil;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.base.ResultMessage;
+import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
+import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseVo;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
@@ -22,10 +27,15 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPojo
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
+import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
+import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.order.action.ShipService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import com.vpu.mp.service.shop.user.cart.CartService;
 import com.vpu.mp.service.shop.order.ship.BatchShipExcelWrongHandler;
 import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordDetailService;
 import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
@@ -41,6 +51,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
 /**
@@ -53,6 +67,14 @@ public class OrderWriteService extends ShopBaseService {
 
     @Autowired
     public ReturnMethodService returnMethodService;
+	@Autowired
+	private OrderGoodsService orderGoods;
+	@Autowired
+	private CartService cartService;
+	@Autowired
+	private GoodsSpecProductService goodsSpecProductService;
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     public ShipService ship;
     @Autowired
@@ -98,6 +120,36 @@ public class OrderWriteService extends ShopBaseService {
 			break;
 		default :
 			logger.error("卖家备注switch_default");
+		}
+		return vo;
+	}
+
+	/**
+	 * 再次购买
+	 * @param param
+	 * @return
+	 */
+	public OrderRepurchaseVo orderRepurchase(OrderRepurchaseParam param) {
+		OrderRepurchaseVo vo=new OrderRepurchaseVo();
+
+		List<GoodsAndOrderInfoBo> goodsInfos = orderGoods.getGoodsInfoAndOrderInfo(param.getOrderSn());
+		List<GoodsAndOrderInfoBo> invalidGoods = goodsInfos.stream().filter(goods -> goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)
+				|| goods.getIsOnSale().equals(GoodsConstant.OFF_SALE)
+				|| goods.getPrdNumber().equals(0)).collect(Collectors.toList());
+		if (invalidGoods.size()>0){
+			vo.setContent("包含"+invalidGoods.size()+"件已失效/已售罄商品，无法再次购买！其他商品已为您加入购物车");
+			goodsInfos.removeAll(invalidGoods);
+		}
+		for (GoodsAndOrderInfoBo next : goodsInfos) {
+			WxAppAddGoodsToCartParam addParam = new WxAppAddGoodsToCartParam();
+			addParam.setUserId(param.getUserId());
+			addParam.setGoodsNumber(next.getGoodsNumber());
+			addParam.setPrdId(next.getProductId());
+			ResultMessage resultMessage = cartService.addGoodsToCart(addParam);
+			if (!resultMessage.getFlag()) {
+				vo.setResultMessage(resultMessage);
+				return vo;
+			}
 		}
 		return vo;
 	}

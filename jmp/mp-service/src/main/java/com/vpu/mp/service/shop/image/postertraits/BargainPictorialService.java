@@ -17,7 +17,6 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.BargainRecordInfo;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.bargain.BargainShareInfoParam;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.bargain.BargainService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +44,6 @@ import static java.lang.String.format;
 public class BargainPictorialService extends ShareBaseService {
     @Autowired
     private BargainService bargainService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
 
     @Override

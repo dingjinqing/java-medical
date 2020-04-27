@@ -5,6 +5,7 @@ import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyIdParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
 import com.vpu.mp.service.pojo.shop.member.score.CheckSignVo;
@@ -13,9 +14,8 @@ import com.vpu.mp.service.pojo.wxapp.goods.groupDraw.GroupDrawVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -123,4 +123,15 @@ public class HelpController extends HelpBaseController {
 		}
 		return success(json);
     }
+	/**
+	 * 获取拼团说明
+	 * @param id id
+	 * @return 拼团说明
+	 */
+	@GetMapping("/api/wxapp/groupbuy/copywriting")
+	public JsonResult getActivityCopywriting(@RequestParam Integer shopId,@RequestParam Integer id){
+		String activityCopywriting = saas.getShopApp(shopId).groupBuy.getActivityCopywriting(id);
+		return success(activityCopywriting);
+	}
+
 }

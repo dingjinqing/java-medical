@@ -751,9 +751,9 @@ export default {
     // 选中活动四个icon综合处理
     handleToAllHiddenIcon (flag, index, item) {
       console.log(flag, index, item)
-      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award']
+      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'pay_reward', 'first_special', 'pre_sale', 'seckill_goods', 'gift', 'full_cut', 'package_sale', 'purchase_price', 'free_ship', 'integral_goods', 'activity_reward', 'comment_gift']
       // 跳转
-      let jmp = ['pin_group', 'kanjia', 'group_draw', 'pin_integration', 'lottery_activity', 'promote', 'share_award']
+      let jmp = ['pin_group', 'kanjia', 'group_draw', 'pin_integration', 'lottery_activity', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'payreward', 'first_special', 'presale', 'sec_kill', 'gift', 'full_cut', 'package', 'purchase_price', 'free_ship', 'integral_convert', 'market_gifted', 'comment_gift']
       switch (flag) {
         case 1:
           this.$router.push({
@@ -785,9 +785,9 @@ export default {
     handleToAddNewAct (item) {
       console.log(item)
       // 多人拼团 pin_group
-      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award']
+      let arr = ['pin_group', 'bargain', 'group_draw', 'pin_integration', 'lottery', 'promote', 'share_award', 'coupon_package', 'reduce_price', 'pay_reward', 'first_special', 'pre_sale', 'seckill_goods', 'gift', 'full_cut', 'package_sale', 'purchase_price', 'free_ship', 'integral_goods', 'activity_reward', 'comment_gift']
       // 跳转
-      let jmp = ['pin_group', 'bargain_activity', 'group_draw', 'pin_integration', 'lottery_activity', 'promote_activity', 'share_polite_add']
+      let jmp = ['pin_group', 'bargain_activity', 'group_draw', 'pin_integration', 'lottery_activity', 'promote_activity', 'share_polite_add', 'coupon_Package_add', 'reduce_price', 'addPayRewardAct', 'first_special_add', 'presale_add_view', 'sec_kill', 'gift_add_view', 'full_cut', 'package', 'add_increase_purchase', 'free_ship', 'integral_convert', 'market_gifted', 'comment_gift']
       this.$router.push({
         name: jmp[arr.indexOf(item.activityType)],
         params: {

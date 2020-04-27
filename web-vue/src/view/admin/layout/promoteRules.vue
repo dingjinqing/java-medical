@@ -2,7 +2,7 @@
   <!-- 小程序-好友助力规则页面 -->
   <div
     class="promoteRules"
-    v-if="isUseDefault === '0'"
+    v-if="isUseDefault === 0"
   >
     <div v-html="promoteRules"></div>
   </div>
@@ -23,11 +23,11 @@
 </template>
 
 <script>
-// import { promoteRules } from '@/api/admin/util.js'
+import { promoteRules } from '@/api/admin/util.js'
 export default {
   data () {
     return {
-      isUseDefault: '1', // 使用默认规则
+      isUseDefault: 1, // 使用默认规则
       promoteRules: '' // 自定义规则
     }
   },
@@ -38,16 +38,14 @@ export default {
   methods: {
     initData () {
       // 获取传参
-      // let obj = {
-      //   shop_id: this.$route.query.shop_id,
-      //   gid: this.$route.query.gid
-      // }
-      // promoteRules(obj).then(res => {
-      //   if (res.error === 0 && res.content !== null) {
-      //     this.isUseDefault = res.content.isUseDefault
-      //     this.promoteRules = res.content.document
-      //   }
-      // })
+      promoteRules({
+        actCode: this.$route.query.actCode
+      }).then(res => {
+        if (res.error === 0 && res.content !== null) {
+          this.isUseDefault = res.content.isUseDefault
+          this.promoteRules = res.content.document
+        }
+      })
     }
   }
 }
