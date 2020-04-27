@@ -28,12 +28,21 @@ public class SystemIndexController extends SystemBaseController {
     }
 
     /**
-     * system概览-问题反馈
+     * system概览-问题反馈-列表
      * @param param {@link FeedBackParam}
      * @return {@link JsonResult}
      */
     @PostMapping("/api/system/index/feedback/list")
     public JsonResult feedbackList(@RequestBody FeedBackParam param){
         return success(saas.questionService.getPageByParam(param));
+    }
+    /**
+     * system概览-问题反馈-详情
+     * @param id 问题反馈id
+     * @return {@link JsonResult}
+     */
+    @PostMapping("/api/system/index/feedback/detail")
+    public JsonResult feedbackList(@RequestBody Integer id){
+        return success(saas.questionService.detail(id));
     }
 }
