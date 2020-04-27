@@ -36,7 +36,8 @@ export default {
   methods: {
     initGroupRules () {
       let param = {
-        id: this.$route.query.gid
+        id: this.$route.query.gid,
+        shopId: this.$route.query.shop_id
       }
       pinRulesApi(param).then(res => {
         console.log(res)
