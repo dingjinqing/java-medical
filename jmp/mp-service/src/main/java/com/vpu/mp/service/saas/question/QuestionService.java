@@ -46,7 +46,7 @@ public class QuestionService extends MainBaseService {
     public void insert(Integer shopId, FeedbackParam param, AdminTokenAuthInfo userInfo){
         ShopQuestionFeedbackRecord record = buildRecord(param,shopId,userInfo);
         Integer id = insertFeedback(record);
-        if(CollectionUtils.isEmpty(param.getImgs()) ){
+        if(!CollectionUtils.isEmpty(param.getImgs()) ){
             batchInsertImg(buildImgRecord(param.getImgs(),id));
         }
     }
