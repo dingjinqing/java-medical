@@ -202,6 +202,9 @@ export default {
         this.fileList = []
         this.uploadFile = {}
       }
+    },
+    lang (newData) {
+      console.log('触发', newData)
     }
   },
   mounted () {
