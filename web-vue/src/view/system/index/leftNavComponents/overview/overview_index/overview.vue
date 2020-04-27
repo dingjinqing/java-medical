@@ -65,24 +65,26 @@
               <div class="account-title">未开通支付</div>
             </li>
           </ul>
-          <div>
-            <span>时间：</span>
-            <el-date-picker
-              type="date"
-              size="small"
-              style="width:150px;"
-            ></el-date-picker>
-            <span>-</span>
-            <el-date-picker
-              type="date"
-              size="small"
-              style="width:150px;"
-            ></el-date-picker>
-            <el-button
-              type="primary"
-              size="small"
-            >搜索</el-button>
-          </div>
+        </div>
+        <div>
+          <span>时间：</span>
+          <el-date-picker
+            v-model="queryParams.startTime"
+            type="date"
+            size="small"
+            style="width:150px;"
+          ></el-date-picker>
+          <span>-</span>
+          <el-date-picker
+            v-model="queryParams.endTime"
+            type="date"
+            size="small"
+            style="width:150px;"
+          ></el-date-picker>
+          <el-button
+            type="primary"
+            size="small"
+          >搜索</el-button>
         </div>
       </div>
       <div class="module">
@@ -91,9 +93,22 @@
         </div>
         <div class="module-con">
           <div class="module-con-left">
-            <v-chart :options="userStatistics"></v-chart>
+            <ve-line :data="userStatisticsData"></ve-line>
           </div>
-          <div class="module-con-right"></div>
+          <div class="module-con-right">
+            <el-calendar>
+              <template
+                slot="dateCell"
+                slot-scope="{date, data}"
+              >
+                <div>
+                  <p :class="data.isSelected ? 'is-selected' : ''">
+                    {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
+                  </p>
+                </div>
+              </template>
+            </el-calendar>
+          </div>
         </div>
       </div>
       <div class="module">
@@ -101,7 +116,12 @@
           <h2>订单统计 <span>订单总数：</span><span>9402</span></h2>
         </div>
         <div class="module-con">
-          <div class="module-con-left"></div>
+          <div class="module-con-left">
+            <div
+              id="orderStatistics"
+              style="width:782px;height:350px;"
+            ></div>
+          </div>
           <div class="module-con-right"></div>
         </div>
       </div>
@@ -125,14 +145,61 @@
 </template>
 
 <script>
+import { shopViewApi } from '@/api/system/overView/overViewIndex'
+import echarts from 'echarts'
 export default {
   name: 'overview',
   data () {
     return {
+      queryParams: {
+        startTime: '',
+        endTime: ''
+      },
       // 用户统计
-      userStatistics: {
-
-      }
+      userStatisticsData: {
+        columns: ['日期', '新增用户'],
+        rows: [
+          { '日期': '1月1日', '新增用户': 123 },
+          { '日期': '1月2日', '新增用户': 1223 },
+          { '日期': '1月3日', '新增用户': 2123 },
+          { '日期': '1月4日', '新增用户': 4123 },
+          { '日期': '1月5日', '新增用户': 3123 },
+          { '日期': '1月6日', '新增用户': 7123 }
+        ]
+      },
+      orderEcharts: {}
+    }
+  },
+  mounted () {
+    this.initEcharts()
+    this.initData()
+  },
+  methods: {
+    initEcharts () {
+      this.orderEcharts = echarts.init(document.getElementById('orderStatistics'))
+      this.orderEcharts.setOption({
+        title: {
+          text: '注册用户变化趋势'
+        },
+        tooltip: {},
+        xAxis: {
+          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        },
+        yAxis: {},
+        series: [{
+          name: '销量',
+          type: 'line',
+          data: [5, 20, 36, 10, 10, 20]
+        }]
+      })
+    },
+    initData () {
+      let param = Object.assign({}, this.queryParams)
+      shopViewApi(param).then(res => {
+        if (res) {
+          console.log(res)
+        }
+      })
     }
   }
 }
@@ -197,8 +264,27 @@ export default {
         float: left;
       }
     }
+    .account-list {
+      width: 100%;
+      display: flex;
+      padding: 43px 0;
+      li {
+        flex: 1;
+        text-align: center;
+        cursor: pointer;
+        &:not(:last-child) {
+          border-right: 1px solid #e6e9f0;
+        }
+      }
+      .account {
+        margin: 10px 0 15px;
+        font-size: 36px;
+      }
+      .account-title {
+        font-size: 18px;
+      }
+    }
     .module-con {
-      flex: 1;
       display: flex;
       width: 100%;
     }
@@ -207,25 +293,6 @@ export default {
     }
     .module-con-right {
       flex: 1;
-    }
-  }
-  .account-list {
-    display: flex;
-    padding: 43px 0;
-    li {
-      flex: 1;
-      text-align: center;
-      cursor: pointer;
-      &:not(:last-child) {
-        border-right: 1px solid #e6e9f0;
-      }
-    }
-    .account {
-      margin: 10px 0 15px;
-      font-size: 36px;
-    }
-    .account-title {
-      font-size: 18px;
     }
   }
 }
