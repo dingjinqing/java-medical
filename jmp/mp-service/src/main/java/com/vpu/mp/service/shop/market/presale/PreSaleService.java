@@ -50,7 +50,6 @@ import static com.vpu.mp.db.shop.tables.PresaleProduct.PRESALE_PRODUCT;
 import static com.vpu.mp.service.foundation.data.BaseConstant.*;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_ONE_PHASE;
 import static com.vpu.mp.service.pojo.shop.market.presale.PresaleConstant.PRE_SALE_TWO_PHASE;
-import static java.lang.String.format;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -152,17 +151,17 @@ public class PreSaleService extends ShopBaseService {
 
         if (null != startTime && null == endTime) {
             query.and(
-                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.END_TIME.ge(startTime))
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.END_TIME.ge(startTime))
             );
         }
         if (null == startTime && null != endTime) {
             query.and(
-                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime))
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime))
             );
         }
         if (null != startTime && null != endTime) {
             query.and(
-                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
+                TABLE.PRESALE_TYPE.eq(PresaleConstant.PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
             );
         }
 
