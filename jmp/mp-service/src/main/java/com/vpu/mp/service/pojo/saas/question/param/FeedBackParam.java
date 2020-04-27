@@ -12,6 +12,10 @@ public class FeedBackParam extends BasePageParam {
 
     private Byte lookType;
 
+    private Timestamp startTime;
+
+    private Timestamp endTime;
+
     public String getName() {
         return name;
     }
@@ -52,9 +56,7 @@ public class FeedBackParam extends BasePageParam {
         this.endTime = endTime;
     }
 
-    private Timestamp startTime;
 
-    private Timestamp endTime;
 
 
 }
