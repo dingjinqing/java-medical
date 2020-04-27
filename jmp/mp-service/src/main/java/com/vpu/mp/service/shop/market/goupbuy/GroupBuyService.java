@@ -448,6 +448,7 @@ public class GroupBuyService extends ShopBaseService {
             .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
             .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
             .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
+            .orderBy(GROUP_BUY_DEFINE.LEVEL.desc())
             .fetch()
             .stream()
             .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
