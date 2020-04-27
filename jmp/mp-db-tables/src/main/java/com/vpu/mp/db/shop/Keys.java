@@ -18,7 +18,6 @@ import com.vpu.mp.db.shop.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
-import org.jooq.types.UInteger;
 
 import javax.annotation.Generated;
 
@@ -273,7 +272,8 @@ public class Keys {
     public static final Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Identities0.IDENTITY_GIVE_CARD_RECORD;
     public static final Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Identities0.IDENTITY_MARKET_CALENDAR_ACTIVITY;
     public static final Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Identities0.IDENTITY_MARKET_CALENDAR;
-    
+    public static final Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Identities0.IDENTITY_BULKSHIPMENT_RECORD;
+    public static final Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Identities0.IDENTITY_BULKSHIPMENT_RECORD_DETAIL;
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
@@ -533,6 +533,9 @@ public class Keys {
     public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = UniqueKeys0.KEY_B2C_GIVE_CARD_RECORD_PRIMARY;
     public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY;
     public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = UniqueKeys0.KEY_B2C_MARKET_CALENDAR_PRIMARY;
+    public static final UniqueKey<BulkshipmentRecordRecord> KEY_B2C_BULKSHIPMENT_RECORD_PRIMARY = Internal.createUniqueKey(BulkshipmentRecord.BULKSHIPMENT_RECORD, "KEY_b2c_bulkshipment_record_PRIMARY", BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
+    public static final UniqueKey<BulkshipmentRecordDetailRecord> KEY_B2C_BULKSHIPMENT_RECORD_DETAIL_PRIMARY = Internal.createUniqueKey(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, "KEY_b2c_bulkshipment_record_detail_PRIMARY", BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
+
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
@@ -771,6 +774,8 @@ public class Keys {
         public static Identity<GiveCardRecordRecord, Integer> IDENTITY_GIVE_CARD_RECORD = Internal.createIdentity(GiveCardRecord.GIVE_CARD_RECORD, GiveCardRecord.GIVE_CARD_RECORD.ID);
         public static Identity<MarketCalendarActivityRecord, Integer> IDENTITY_MARKET_CALENDAR_ACTIVITY = Internal.createIdentity(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
         public static Identity<MarketCalendarRecord, Integer> IDENTITY_MARKET_CALENDAR = Internal.createIdentity(MarketCalendar.MARKET_CALENDAR, MarketCalendar.MARKET_CALENDAR.ID);
+        public static Identity<BulkshipmentRecordRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD = Internal.createIdentity(BulkshipmentRecord.BULKSHIPMENT_RECORD, BulkshipmentRecord.BULKSHIPMENT_RECORD.ID);
+        public static Identity<BulkshipmentRecordDetailRecord, Integer> IDENTITY_BULKSHIPMENT_RECORD_DETAIL = Internal.createIdentity(BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL, BulkshipmentRecordDetail.BULKSHIPMENT_RECORD_DETAIL.ID);
     }
 
     private static class UniqueKeys0 {
@@ -1036,5 +1041,5 @@ public class Keys {
         public static final UniqueKey<GiveCardRecordRecord> KEY_B2C_GIVE_CARD_RECORD_PRIMARY = Internal.createUniqueKey(GiveCardRecord.GIVE_CARD_RECORD, "KEY_b2c_give_card_record_PRIMARY", GiveCardRecord.GIVE_CARD_RECORD.ID);
         public static final UniqueKey<MarketCalendarActivityRecord> KEY_B2C_MARKET_CALENDAR_ACTIVITY_PRIMARY = Internal.createUniqueKey(MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY, "KEY_b2c_market_calendar_activity_PRIMARY", MarketCalendarActivity.MARKET_CALENDAR_ACTIVITY.ID);
         public static final UniqueKey<MarketCalendarRecord> KEY_B2C_MARKET_CALENDAR_PRIMARY = Internal.createUniqueKey(MarketCalendar.MARKET_CALENDAR, "KEY_b2c_market_calendar_PRIMARY", MarketCalendar.MARKET_CALENDAR.ID);
-    }
+        }
 }

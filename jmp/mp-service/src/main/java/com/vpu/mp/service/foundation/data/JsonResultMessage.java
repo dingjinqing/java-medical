@@ -801,7 +801,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL = "order.shipping.shippingno.not.null";
     public static final String MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL = "order.shipping.shippingid.not.null";
     public static final String MSG_ORDER_SHIPPING_SHIPGOODS_NOT_NULL = "order.shipping.shipgoods.not.null";
-
+    public static final String MSG_ORDER_SHIPPING_EXPRESS_NOT_EXIST = "order.shipping.express.not.exist";
 
     public static final String INVALID_MONEY_AMOUNT = "order.refund.invalid_money_amount";
     public static final String INVALID_ACCOUNT_OR_SCORE = "order.refund.invalid_account_or_score";

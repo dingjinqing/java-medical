@@ -1,13 +1,14 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.ship;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.vpu.mp.service.foundation.data.JsonResultMessage;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 发货
@@ -19,9 +20,6 @@ import lombok.Setter;
 @Setter
 public final class ShipParam extends OrderOperateQueryParam{
 
-	/**
-	 * TODO 
-	 */
 	@NotBlank(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPPINGNO_NOT_NULL)
 	private String shippingNo;
 	@NotNull(message = JsonResultMessage.MSG_ORDER_SHIPPING_SHIPPINGID_NOT_NULL)
@@ -31,6 +29,8 @@ public final class ShipParam extends OrderOperateQueryParam{
 	
 	@Getter
 	@Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
 	public static class ShipGoods {
 		/** order_goods主键 */
 		private Integer recId;

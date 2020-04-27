@@ -1,14 +1,45 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordDetailRecord;
+import com.vpu.mp.db.shop.tables.records.BulkshipmentRecordRecord;
+import com.vpu.mp.service.foundation.data.JsonResultCode;
+import com.vpu.mp.service.foundation.data.JsonResultMessage;
+import com.vpu.mp.service.foundation.excel.ExcelFactory;
+import com.vpu.mp.service.foundation.excel.ExcelReader;
+import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
+import com.vpu.mp.service.foundation.excel.ExcelUtil;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.shop.express.ExpressVo;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderOperateQueryParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.ShipVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipMqParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPojo;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
+import com.vpu.mp.service.shop.express.ExpressService;
+import com.vpu.mp.service.shop.order.action.ShipService;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.refund.ReturnMethodService;
+import com.vpu.mp.service.shop.order.ship.BatchShipExcelWrongHandler;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordDetailService;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 
@@ -22,8 +53,15 @@ public class OrderWriteService extends ShopBaseService {
 
     @Autowired
     public ReturnMethodService returnMethodService;
-
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    public ShipService ship;
+    @Autowired
+    public BulkshipmentRecordService batchShipRecord;
+    @Autowired
+    public BulkshipmentRecordDetailService batchShipDetail;
+    @Autowired
+    public ExpressService express;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 订单标星切换
@@ -63,4 +101,100 @@ public class OrderWriteService extends ShopBaseService {
 		}
 		return vo;
 	}
+
+    /**
+     * 订单标星切换
+     *
+     * @param
+     * @return void
+     */
+    public void batchShip(BatchShipParam param) throws MpException {
+        logger.info("批量发货start");
+        MultipartFile file = param.getFile();
+        if (file == null) {
+            logger().error("文件为null!");
+            throw new MpException(JsonResultCode.CODE_EXCEL_ERRO);
+        }
+        ExcelTypeEnum excelTypeEnum = ExcelUtil.checkFile(file);
+        if (excelTypeEnum == null) {
+            logger().error("导入格式错误!");
+            throw new MpException(JsonResultCode.CODE_EXCEL_ERRO);
+        }
+        param.setExcelTypeEnum(excelTypeEnum);
+        Workbook workbook = null;
+        try (InputStream in1 = param.getFile().getInputStream()) {
+            workbook = ExcelFactory.createWorkbook(in1, param.getExcelTypeEnum());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BatchShipExcelWrongHandler handler = new BatchShipExcelWrongHandler();
+        ExcelReader excelReader = new ExcelReader(param.getLang(), workbook, handler);
+        List<BatchShipPojo> list = excelReader.readModelList(BatchShipPojo.class);
+        // 调用消息队列
+        saas.taskJobMainService.dispatchImmediately(new BatchShipMqParam(getShopId(), param.getAdminInfo(), list), BatchShipMqParam.class.getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.BATCH_SHIP.getExecutionType());
+        logger.info("批量发货send");
+    }
+
+    /**
+     * 批量发货执行
+     * @param param
+     * @return
+     */
+    public void executeBatchShip(BatchShipMqParam param) {
+        logger.info("批量发货executeBatchShip，start");
+        List<BatchShipPojo> info = param.getInfo();
+        if(CollectionUtils.isEmpty(info)) {
+            return;
+        }
+        int sum = info.size(), success = 0;
+        BulkshipmentRecordRecord mainRecord = batchShipRecord.addRecord(sum, param.getAdminInfo());
+
+        for (BatchShipPojo shipPojo : info) {
+            logger.info("单次执行，param:{}", shipPojo);
+            //create record
+            BulkshipmentRecordDetailRecord detailRecord = batchShipDetail.createRecord(shipPojo, mainRecord.getId());
+            //get shippingId
+            ExpressVo expressVo = express.get(shipPojo.getExpress());
+            //check
+            if (detailRecord.getStatus().equals(batchShipDetail.fail)) {
+                detailRecord.insert();
+                continue;
+            } else if (expressVo == null) {
+                detailRecord.setStatus(batchShipDetail.fail);
+                detailRecord.setFailReason(JsonResultMessage.MSG_ORDER_SHIPPING_EXPRESS_NOT_EXIST);
+                detailRecord.insert();
+                continue;
+            }
+            //query
+            OrderOperateQueryParam queryParam = new OrderOperateQueryParam();
+            queryParam.setOrderSn(shipPojo.getOrderSn());
+            ShipVo query = (ShipVo) ship.query(queryParam);
+            //check
+            if (query == null || CollectionUtils.isEmpty(query.getOrderGoodsVo())) {
+                detailRecord.setStatus(batchShipDetail.fail);
+                detailRecord.setFailReason(JsonResultMessage.MSG_ORDER_OPERATE_NO_INSTANCEOF);
+                detailRecord.insert();
+                continue;
+            }
+            //execute
+            ShipParam executeParam = new ShipParam();
+            executeParam.setAdminInfo(param.getAdminInfo());
+            executeParam.setIsMp(OrderConstant.IS_MP_MQ);
+            executeParam.setOrderSn(detailRecord.getOrderSn());
+            executeParam.setShipGoods(query.getOrderGoodsVo().stream().map(x -> new ShipParam.ShipGoods(x.getRecId(), x.getGoodsNumber())).toArray(ShipParam.ShipGoods[]::new));
+            ExecuteResult executeResult = ship.execute(executeParam);
+            if (executeResult == null || executeResult.isSuccess()) {
+                detailRecord.insert();
+                sum++;
+            } else {
+                detailRecord.setStatus(batchShipDetail.fail);
+                detailRecord.setFailReason(executeResult.getErrorCode().getMessage());
+                detailRecord.insert();
+            }
+        }
+        mainRecord.setSuccessNum(success);
+        mainRecord.update();
+        logger.info("批量发货executeBatchShip,批次号:{},总数:{},成功数:{}.end",mainRecord.getId(), mainRecord.getTotalNum(), mainRecord.getSuccessNum());
+    }
 }

@@ -131,6 +131,8 @@ public class RabbitConfig {
     public static final String BINDING_EXCHANGE_GROUP_INTEGRATION_MQ_KEY = "bind.groupInte.key";
     /**system同步日历 */
     public static final String BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY = "sys.calendar.key";
+    /**批量发货 */
+    public static final String BINDING_EXCHANGE_BATCH_SHIP_KEY = "bind.batch.ship.key";
     
     @Bean
     public ConnectionFactory connectionFactory(){

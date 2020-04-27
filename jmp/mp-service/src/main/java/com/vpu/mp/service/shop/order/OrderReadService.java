@@ -1,6 +1,12 @@
 package com.vpu.mp.service.shop.order;
 
-import com.vpu.mp.db.shop.tables.records.*;
+import com.vpu.mp.db.shop.tables.records.GoodsRecord;
+import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderGoodsRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnOrderRecord;
+import com.vpu.mp.db.shop.tables.records.ReturnStatusChangeRecord;
+import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
@@ -24,7 +30,13 @@ import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.shop.market.insteadpay.InsteadPay;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.tag.TagVo;
-import com.vpu.mp.service.pojo.shop.order.*;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.OrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
+import com.vpu.mp.service.pojo.shop.order.OrderPageListQueryParam;
+import com.vpu.mp.service.pojo.shop.order.OrderParam;
+import com.vpu.mp.service.pojo.shop.order.OrderQueryVo;
+import com.vpu.mp.service.pojo.shop.order.OrderSimpleInfoVo;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveOrderList;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
@@ -32,7 +44,12 @@ import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.must.OrderMustVo;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
-import com.vpu.mp.service.pojo.shop.order.refund.*;
+import com.vpu.mp.service.pojo.shop.order.refund.OperatorRecord;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderConciseRefundInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.refund.OrderReturnListVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderInfoVo;
+import com.vpu.mp.service.pojo.shop.order.refund.ReturnOrderParam;
 import com.vpu.mp.service.pojo.shop.order.shipping.BaseShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.shipping.ShippingInfoVo;
 import com.vpu.mp.service.pojo.shop.order.store.StoreOrderInfoVo;
@@ -43,6 +60,9 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDe
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayDetailsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.pay.instead.InsteadPayOrderDetails;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipFailModel;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
 import com.vpu.mp.service.pojo.wxapp.comment.CommentListVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintDayVo;
 import com.vpu.mp.service.pojo.wxapp.footprint.FootprintListVo;
@@ -84,6 +104,8 @@ import com.vpu.mp.service.shop.order.record.ReturnStatusChangeService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.order.refund.goods.ReturnOrderGoodsService;
 import com.vpu.mp.service.shop.order.refund.record.RefundAmountRecordService;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordDetailService;
+import com.vpu.mp.service.shop.order.ship.BulkshipmentRecordService;
 import com.vpu.mp.service.shop.order.ship.ShipInfoService;
 import com.vpu.mp.service.shop.order.store.StoreOrderService;
 import com.vpu.mp.service.shop.order.sub.SubOrderService;
@@ -107,8 +129,17 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -182,11 +213,15 @@ public class OrderReadService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private OrderGoodsRebateService orderGoodsRebate;
-	/**
-	 * 订单查询
-	 * @param param
-	 * @return PageResult
-	 */
+    @Autowired
+    private BulkshipmentRecordService batchRecord;
+    @Autowired
+    private BulkshipmentRecordDetailService batchDetailRecord;
+    /**
+     * 订单查询
+     * @param param
+     * @return PageResult
+     */
 	public OrderQueryVo getPageList(OrderPageListQueryParam param) {
 		logger.info("订单综合查询开始");
 		OrderQueryVo result = new OrderQueryVo();
@@ -944,6 +979,23 @@ public class OrderReadService extends ShopBaseService {
             return rebateVos;
         }
         return null;
+    }
+
+
+    public PageResult<BatchShipListVo> batchShipList(BatchShipListParam param) {
+        return batchRecord.batchShipList(param);
+    }
+
+    public Workbook downloadFailData(Integer batchId, String lang) {
+        List<BatchShipFailModel> data = batchDetailRecord.getFailDataByBatchId(batchId);
+        for (BatchShipFailModel vo : data) {
+            String messages = Util.translateMessage(lang, vo.getFailReason(), null, "messages");
+            vo.setFailReason(messages);
+        }
+        Workbook workbook = ExcelFactory.createWorkbook(ExcelTypeEnum.XLSX);
+        ExcelWriter excelWriter = new ExcelWriter(lang, workbook);
+        excelWriter.writeModelList(data, BatchShipFailModel.class);
+        return workbook;
     }
     /*********************************************************************************************************/
 
