@@ -111,35 +111,35 @@
           border
         >
           <el-table-column
-            prop="channelName"
+            prop="name"
             label="页面名称"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="times"
+            prop="allPv"
             label="访问次数"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="visit"
+            prop="allUv"
             label="访问人数"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="new"
+            prop="newPv"
             label="新用户访问次数"
             align="center"
           >
           </el-table-column>
 
           <el-table-column
-            prop="old"
+            prop="oldPv"
             label="老用户访问次数"
             align="center"
           >
@@ -157,8 +157,8 @@ import { channelData } from '@/api/admin/marketManage/channelPage.js'
 
 export default {
   mounted () {
-    console.log(this.$route.query)
-    this.handleData()
+    this.langDefault()
+    this.initData()
   },
   data () {
     return {
@@ -168,6 +168,11 @@ export default {
         searchType: 1,
         visitorsType: 1,
         searchPage: 1
+      },
+      echartsData: {
+        date: '',
+        title: '',
+        series: []
       },
       dateRange: [
         { value: 2, label: '最近7天' },
@@ -188,12 +193,9 @@ export default {
         { value: 2, label: '11' },
         { value: 3, label: '22' }
       ],
-      tableData: [
-        { channelName: '慧策渠道', times: 1, visit: 10, new: 1, old: 4 },
-        { channelName: '店+小程序', times: 1, visit: 10, new: 1, old: 4 },
-        { channelName: '卡米全渠道', times: 1, visit: 10, new: 1, old: 4 }
-      ],
-      myChart: {}
+      tableData: [],
+      myChart: {},
+      option: {}
     }
   },
   methods: {
@@ -202,20 +204,45 @@ export default {
     },
     // 筛选
     filtrate () {
-      channelData(this.param).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-
-        } else {
-          this.$message.error(res.$message)
-        }
-      })
+      this.initData()
     },
     // 导出数据
     exportData () {
 
     },
-    handleData () {
+    // 初始化数据
+    initData () {
+      channelData(this.param).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          this.tableData = res.content.statisticalList
+          this.initEcharts(res.content)
+        } else {
+          this.$message.error(res.$message)
+        }
+      })
+    },
+    initEcharts (data) {
+      console.log(data)
+
+      for (var i in data.series) {
+        console.log(i)
+        var obj = {
+          name: data.series[i].channelName,
+          type: 'line',
+          data: data.series[i].accessData
+        }
+        console.log(obj)
+        // this.echartsData.title.push(data.channelNameList[i])
+        this.echartsData.series.push(obj)
+        console.log(this.echartsData.series)
+      }
+
+      this.echartsData.date = data.dateList
+      this.echartsData.title = data.channelNameList
+      console.log(this.echartsData.date)
+      console.log(this.echartsData.series)
+      console.log(this.echartsData)
       let myChart = echarts.init(document.getElementById('myChart'))
 
       myChart.setOption({
@@ -223,7 +250,13 @@ export default {
           trigger: 'axis'
         },
         legend: {
-          data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+          type: 'scroll',
+          data: this.echartsData.title,
+          backgroundColor: '#f5f5f5',
+          borderRadius: 5,
+          itemGap: 30,
+          padding: 10,
+          width: 1000
         },
         grid: {
           left: '3%',
@@ -234,38 +267,12 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          data: this.echartsData.date
         },
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            name: '邮件营销',
-            type: 'line',
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: '联盟广告',
-            type: 'line',
-            data: [220, 182, 191, 234, 290, 330, 310]
-          },
-          {
-            name: '视频广告',
-            type: 'line',
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-            name: '直接访问',
-            type: 'line',
-            data: [320, 332, 301, 334, 390, 330, 320]
-          },
-          {
-            name: '搜索引擎',
-            type: 'line',
-            data: [820, 932, 901, 934, 1290, 1330, 1320]
-          }
-        ]
+        series: this.echartsData.series
       })
     }
   }

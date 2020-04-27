@@ -193,14 +193,5 @@ public class AdminGroupBuyController extends AdminBaseController {
         return success(shop().groupBuy.groupBuyAnalysis(param));
     }
 
-    /**
-     * 获取拼团说明
-     * @param param id
-     * @return 拼团说明
-     */
-    @PostMapping("/copywriting")
-    public JsonResult getActivityCopywriting(@RequestBody @Validated GroupBuyIdParam param){
-        String activityCopywriting = shop().groupBuy.getActivityCopywriting(param.getId());
-        return success(activityCopywriting);
-    }
+
 }
