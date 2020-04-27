@@ -63,7 +63,7 @@
       >
         <el-form-item
           label="营销活动"
-          prop="marketActivity"
+          prop="haveChoiseData"
         >
           <div class="marketActivity">
             <div class="tips">温馨提示：删除营销事件中的活动，不会影响营销管理-对应活动列表中已创建的活动</div>
@@ -71,7 +71,7 @@
               <ul>
                 <li
                   class="incident_info_item"
-                  v-for="(item,index) in haveChoiseData"
+                  v-for="(item,index) in ruleFormBottom.haveChoiseData"
                   :key="index"
                   :style="item.delFlag?'display:none':''"
                 >
@@ -303,6 +303,28 @@ export default {
     pagination: () => import('@/components/admin/pagination/pagination.vue') // 分页组件
   },
   data () {
+    var validatePass = (rule, value, callback) => {
+      console.log(value)
+      if (!this.$route.query.isAdd) {
+        let length = 0
+        value.forEach((item, index) => {
+          if (!item.delFlag) {
+            length++
+          }
+        })
+        if (!length) {
+          callback(new Error('请选择营销活动'))
+        } else {
+          callback()
+        }
+      } else {
+        if (!value.length) {
+          callback(new Error('请选择营销活动'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       pageParams: {
         currentPage: 1,
@@ -319,15 +341,15 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' }
         ],
         date: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { type: 'string', required: true, message: '请选择日期', trigger: 'change' }
         ]
       },
       ruleFormBottom: {
-        marketActivity: ''
+        haveChoiseData: []
       },
       rulesBottom: {
-        marketActivity: [
-          { required: true, message: '请选择营销活动', trigger: 'blur' }
+        haveChoiseData: [
+          { required: true, validator: validatePass, trigger: 'blur' }
         ]
       },
       explainVisible: false,
@@ -535,20 +557,6 @@ export default {
     // 处理营销活动数据
     handleToActData (actInfo) {
       console.log(actInfo)
-      // let obj = {
-      //   imgUrl: imgUrl,
-      //   title: title,
-      //   activityType: activityType,
-      //   choiseActData: {
-      //     id: -1,
-      //     actStatus: '',
-      //     actName: '',
-      //     startTime: '',
-      //     endTime: '',
-      //     isPermanent: '',
-      //     activityType: ''
-      //   }
-      // }
       let arr = []
       actInfo.forEach((itemP, indexP) => {
         Object.keys(this.activityData).forEach((item, index) => {
@@ -576,7 +584,7 @@ export default {
         })
       })
       console.log(arr)
-      this.haveChoiseData = arr
+      this.ruleFormBottom.haveChoiseData = arr
     },
     // 点击事件说明编辑
     handleToClickExplain () {
@@ -618,7 +626,7 @@ export default {
           activityType: ''
         }
       }
-      this.haveChoiseData.push(obj)
+      this.ruleFormBottom.haveChoiseData.push(obj)
       this.choiseActivity = false
     },
     // 删除icon点击
@@ -632,7 +640,7 @@ export default {
       // this.haveChoiseData.splice(this.delIndex, 1)
       console.log(this.haveChoiseData, this.delIndex)
       // this.$set(this.haveChoiseData[this.delIndex], this.delFlag, 1)
-      this.haveChoiseData[this.delIndex].delFlag = 1
+      this.ruleFormBottom.haveChoiseData[this.delIndex].delFlag = 1
       this.delDialogVisible = false
       console.log(this.haveChoiseData)
     },
@@ -673,7 +681,7 @@ export default {
         isPermanent: isPermanent,
         activityType: activityType
       }
-      this.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
+      this.ruleFormBottom.haveChoiseData[this.clickChoiseIndex].choiseActData = obj
       this.detailActVisible = false
     },
     // 具体活动表格选中
@@ -685,65 +693,74 @@ export default {
     handleToSave () {
       console.log(this.haveChoiseData)
       // calActId
-      let act = ''
-      let calendarAct = []
-      let params = {}
-      if (this.$route.query.isAdd) {
-        act = 'add'
-        this.haveChoiseData.forEach((item, index) => {
-          let obj = {
-            activityType: item.activityType,
-            activityId: 0
-          }
-          if (item.choiseActData.id !== -1) {
-            obj.activityId = item.choiseActData.id
-          }
-          calendarAct.push(obj)
-        })
-        params = {
-          'act': act,
-          'eventName': this.ruleForm.eventName,
-          'eventTime': this.ruleForm.date + ' 00:00:00',
-          'eventDesc': this.richText,
-          'calendarAct': calendarAct
-        }
-      } else {
-        act = 'edit'
-        this.haveChoiseData.forEach((item, index) => {
-          let obj = {
-            activityType: item.activityType,
-            activityId: 0,
-            delFlag: 0
-          }
-          if (item.choiseActData.id !== -1) {
-            obj.activityId = item.choiseActData.id
-            obj.delFlag = item.delFlag
-            if (item.choiseActData.calActId !== undefined) {
-              obj.calActId = item.choiseActData.calActId
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          this.$refs['ruleFormBottom'].validate((valid2) => {
+            console.log(valid2)
+            if (valid2) {
+              let act = ''
+              let calendarAct = []
+              let params = {}
+              if (this.$route.query.isAdd) {
+                act = 'add'
+                this.ruleFormBottom.haveChoiseData.forEach((item, index) => {
+                  let obj = {
+                    activityType: item.activityType,
+                    activityId: 0
+                  }
+                  if (item.choiseActData.id !== -1) {
+                    obj.activityId = item.choiseActData.id
+                  }
+                  calendarAct.push(obj)
+                })
+                params = {
+                  'act': act,
+                  'eventName': this.ruleForm.eventName,
+                  'eventTime': this.ruleForm.date + ' 00:00:00',
+                  'eventDesc': this.richText,
+                  'calendarAct': calendarAct
+                }
+              } else {
+                act = 'edit'
+                this.ruleFormBottom.haveChoiseData.forEach((item, index) => {
+                  let obj = {
+                    activityType: item.activityType,
+                    activityId: 0,
+                    delFlag: 0
+                  }
+                  if (item.choiseActData.id !== -1) {
+                    obj.activityId = item.choiseActData.id
+                    obj.delFlag = item.delFlag
+                    if (item.choiseActData.calActId !== undefined) {
+                      obj.calActId = item.choiseActData.calActId
+                    }
+                    console.log(item.choiseActData.calActId)
+                  }
+                  calendarAct.push(obj)
+                })
+                params = {
+                  'act': act,
+                  'eventName': this.ruleForm.eventName,
+                  'eventTime': this.ruleForm.date + ' 00:00:00',
+                  'eventDesc': this.richText,
+                  'calendarAct': calendarAct,
+                  'calendarId': this.calendarId
+                }
+              }
+              console.log(params, this.haveChoiseData)
+              saveEvent(params).then(res => {
+                console.log(res)
+                if (res.error === 0) {
+                  this.$message.success({
+                    message: '保存成功',
+                    showClose: true
+                  })
+                  this.$router.push({
+                    name: 'calendar'
+                  })
+                }
+              })
             }
-            console.log(item.choiseActData.calActId)
-          }
-          calendarAct.push(obj)
-        })
-        params = {
-          'act': act,
-          'eventName': this.ruleForm.eventName,
-          'eventTime': this.ruleForm.date + ' 00:00:00',
-          'eventDesc': this.richText,
-          'calendarAct': calendarAct,
-          'calendarId': this.calendarId
-        }
-      }
-      console.log(params, this.haveChoiseData)
-      saveEvent(params).then(res => {
-        console.log(res)
-        if (res.error === 0) {
-          this.$message.success({
-            message: '保存成功',
-            showClose: true
-          })
-          this.$router.push({
-            name: 'calendar'
           })
         }
       })
