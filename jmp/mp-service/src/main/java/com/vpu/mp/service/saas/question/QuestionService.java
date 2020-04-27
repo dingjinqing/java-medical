@@ -168,19 +168,19 @@ public class QuestionService extends MainBaseService {
     private Condition buildParam(FeedBackParam param){
         Condition condition = DSL.noCondition();
         if( StringUtils.isNotBlank(param.getName()) ){
-            condition.and(SHOP_QUESTION_FEEDBACK.SUBMIT_USER.like(likeValue(param.getName())));
+            condition = condition.and(SHOP_QUESTION_FEEDBACK.SUBMIT_USER.like(likeValue(param.getName())));
         }
         if( null != param.getCategoryId() ){
-            condition.and(SHOP_QUESTION_FEEDBACK.CATEGORY_ID.eq(param.getCategoryId()));
+            condition =  condition.and(SHOP_QUESTION_FEEDBACK.CATEGORY_ID.eq(param.getCategoryId()));
         }
         if( null != param.getLookType() ){
-            condition.and(SHOP_QUESTION_FEEDBACK.IS_LOOK.eq(param.getLookType()));
+            condition = condition.and(SHOP_QUESTION_FEEDBACK.IS_LOOK.eq(param.getLookType()));
         }
         if( null != param.getStartTime() ){
-            condition.and(SHOP_QUESTION_FEEDBACK.CREATE_TIME.greaterOrEqual(param.getStartTime()));
+            condition = condition.and(SHOP_QUESTION_FEEDBACK.CREATE_TIME.greaterOrEqual(param.getStartTime()));
         }
         if( null != param.getEndTime() ){
-            condition.and(SHOP_QUESTION_FEEDBACK.CREATE_TIME.lessOrEqual(param.getEndTime()));
+            condition = condition.and(SHOP_QUESTION_FEEDBACK.CREATE_TIME.lessOrEqual(param.getEndTime()));
         }
         return condition;
     }
