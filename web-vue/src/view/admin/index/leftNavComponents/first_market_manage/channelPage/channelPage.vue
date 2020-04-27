@@ -244,7 +244,12 @@
       @close="showShareDialog=false"
     />
 
-    <addChannelPageVue :tuneUpChooseGoods="turnUpChannelDialog" />
+    <addChannelPageVue
+      @resultGoodsRow="choosingGoodsResult"
+      @handleSelectTemplate="handleSelectTemplate"
+      :tuneUpChooseGoods="turnUpChannelDialog"
+      :singleElection="true"
+    />
   </div>
 </template>
 
@@ -278,7 +283,8 @@ export default {
       turnUpChannelDialog: false,
       showShareDialog: false, // 分享弹窗
       shareImg: '',
-      sharePath: ''
+      sharePath: '',
+      goodsIdList: []
 
     }
   },
@@ -377,6 +383,13 @@ export default {
           break
       }
       return val
+    },
+    choosingGoodsResult (row) {
+      console.log(row)
+    },
+    // 自定义页面数据回传
+    handleSelectTemplate (data) {
+      // this.form.rebate_page_id = data.pageId
     }
   }
 }
