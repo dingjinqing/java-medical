@@ -101,10 +101,23 @@
         <div class="card-box">
           <div>
             <span>{{$t('goodsImport.downloadTemp')}}：</span>
-            <el-button
+            <!-- <el-button
               type="text"
               @click="downloadExportModule"
-            >{{$t('goodsImport.fileTemp')}}</el-button>
+            >{{$t('goodsImport.fileTemp')}}</el-button> -->
+            <el-link
+              v-if="lang == 'zh_CN'"
+              :href="$imageHost+'/temp/excel/zh_CN/order/batchShip.xlsx'"
+              type="primary"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
+            <el-link
+              v-else
+              :href="$imageHost+'/temp/excel/en_US/order/batchShip.xlsx'"
+              type="primary"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
+            <span>{{lang}}</span>
           </div>
         </div>
         <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
