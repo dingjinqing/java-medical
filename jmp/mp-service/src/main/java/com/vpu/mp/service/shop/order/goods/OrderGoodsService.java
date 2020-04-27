@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.order.OrderListInfoVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundVo.RefundVoGoods;
 import com.vpu.mp.service.pojo.wxapp.order.OrderBeforeParam;
+import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.record.GoodsOrderRecordSmallVo;
@@ -50,9 +51,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.vpu.mp.db.shop.Tables.GOODS;
-import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
-import static com.vpu.mp.db.shop.Tables.USER_DETAIL;
+import static com.vpu.mp.db.shop.Tables.*;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -258,11 +257,25 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsRecord>  getGoodsInfoRecordByOrderSn(String orderSn){
-		return db().select(TABLE.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
+		return db().select(GOODS.GOODS_ID,GOODS.CAT_ID,GOODS.BRAND_ID,TABLE.GOODS_NUMBER)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsRecord.class);
 	}
+
+	/**
+	 * 查询商品信息
+	 * @param orderSn 订单sn
+	 * @return
+	 */
+	public List<GoodsAndOrderInfoBo> getGoodsInfoAndOrderInfo(String orderSn){
+		return db().select(TABLE.GOODS_ID, TABLE.PRODUCT_ID, TABLE.GOODS_NUMBER, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS.IS_ON_SALE, GOODS.DEL_FLAG)
+				.from(TABLE)
+				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
+				.leftJoin(GOODS_SPEC_PRODUCT).on(TABLE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+				.where(TABLE.ORDER_SN.eq(orderSn)).fetchInto(GoodsAndOrderInfoBo.class);
+	}
+
 	/**
 	 * 根据订单号查询商品
 	 * @param orderSn

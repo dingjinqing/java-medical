@@ -1223,7 +1223,4 @@ public class OrderReadService extends ShopBaseService {
 		return footprintListVo;
 	}
 
-	public void  getOrderDiscountedAmount(String orderSn){
-
-	}
 }
