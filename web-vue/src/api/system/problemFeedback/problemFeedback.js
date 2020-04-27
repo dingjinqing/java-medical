@@ -9,11 +9,11 @@ export function problemFeedbackList (data) {
   })
 }
 
-// system 退出接口
-export function logOut (params) {
+// 问题反馈详情接口
+export function problemFeedbackDetail (params) {
   return request({
-    url: `/api/system/logout`,
-    method: 'get',
+    url: `/api/system/index/feedback/detail`,
+    method: 'Post',
     data: params
   })
 }
