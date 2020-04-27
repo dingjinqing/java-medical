@@ -48,7 +48,7 @@ export const cn = {
   note: '注：',
   videoTip: '每个表单视频模块最多可由用户上传一个小视频，时长不可超过3min，大小不能超过10M',
   // 广告模块
-  advertisingPicture: '广告图片模块',
+  advertisingPicture: '图片广告模块',
   advertisingPictureTip: '图片建议尺寸：宽度630',
   previewOriginal: '预览原图：',
   no: '否',

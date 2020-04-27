@@ -2533,16 +2533,16 @@ public class GoodsService extends ShopBaseService {
         Condition filterCondition = DSL.noCondition();
         //指定平台分类
         if (CollectionUtils.isNotEmpty(catIds)) {
-            filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
+            filterCondition = filterCondition.or(GOODS.CAT_ID.in(saas.sysCate.getAllChild(catIds)));
         }
         //指定商家分类
         if (CollectionUtils.isNotEmpty(sortIds)) {
             //在所有父子节点中查找
-            filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
+            filterCondition = filterCondition.or(GOODS.SORT_ID.in(goodsSort.getChildrenIdByParentIdsDao(sortIds)));
         }
         //指定品牌
         if (CollectionUtils.isNotEmpty(brandIds)) {
-            filterCondition.or(GOODS.BRAND_ID.in(brandIds));
+            filterCondition = filterCondition.or(GOODS.BRAND_ID.in(brandIds));
         }
         selectConditionStep.and(filterCondition);
 

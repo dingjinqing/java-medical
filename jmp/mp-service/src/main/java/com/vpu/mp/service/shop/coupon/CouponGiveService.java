@@ -1,17 +1,15 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
 import com.vpu.mp.db.shop.tables.records.CustomerAvailCouponsRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.exception.BusinessException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
-import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
@@ -30,7 +28,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -38,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static org.checkerframework.checker.units.UnitsTools.m;
 
 /**
  * 优惠券管理
@@ -647,7 +643,7 @@ public class CouponGiveService extends ShopBaseService {
                             log.info("随机生成优惠券金额在{}~{}直接:{}",couponDetails.getRandomMin(),couponDetails.getRandomMax(),randomAmount);
                         }
                         // 如果是限制库存类型
-                        if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO)) {
+                        if (couponDetails.getLimitSurplusFlag().equals(NumberUtils.BYTE_ZERO) && !param.getAccessMode().equals(BaseConstant.ACCESS_MODE_COUPON_PACK)) {
                             int affectedRows = db().update(MRKING_VOUCHER)
                                 .set(MRKING_VOUCHER.SURPLUS, (couponDetails.getSurplus() - 1))
                                 .where(MRKING_VOUCHER.ID.eq(Integer.parseInt(couponId)))

@@ -52,7 +52,7 @@ public class ReducePriceProcessorDao extends ShopBaseService {
             .and(REDUCE_PRICE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(REDUCE_PRICE_GOODS.GOODS_ID.in(goodsIds))
             .and(REDUCE_PRICE.END_TIME.gt(date))
-            .orderBy(REDUCE_PRICE.CREATE_TIME)
+            .orderBy(REDUCE_PRICE.FIRST.desc(),REDUCE_PRICE.CREATE_TIME.desc())
             .fetch().stream().collect(Collectors.groupingBy(x -> x.get(REDUCE_PRICE_GOODS.GOODS_ID)));
 
         Condition condition = DSL.noCondition();

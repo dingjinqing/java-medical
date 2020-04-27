@@ -53,16 +53,13 @@
       </view>
     </view>
     <!-- 底部 -->
-    <view class='main_footers clearfix' style='background:#fff;height:{{isIpx == 1 ? "160rpx":"100rpx"}}'>
+     <!-- style='background:#fff;height:{{isIpx == 1 ? "160rpx":"100rpx"}}' -->
+    <view class='main_footers clearfix'>
       <view class='foot_left'>
-        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}
-          <text style='color:{{comColor}}'>￥{{get_price}}</text>
-        </view>
+        <view class='fl_top'>{{i18n.$t(localePack,"pages.cart.activeFooter1")}}<text style='color:{{comColor}}'>￥{{get_price}}</text></view>
         <view class='fl_bottom'>{{get_doc}}</view>
       </view>
-      <form report-submit='true' bindsubmit='showGoods'>
-        <button class='foot_center' formType='submit' style='background:{{commonColor}};color:#fff;border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.mainFooter1")}}</button>
-      </form>
+      <view class='foot_right' bindtap='showGoods' style='background:{{commonColor}};color:#fff;border-top-color:{{commonColor}}'>{{i18n.$t(localePack,"pages.cart.mainFooter1")}}</view>
       <view class='foot_right' bindtap='click_to_cart' style='background:{{comColor}};border-top-color:{{comColor}}'>{{i18n.$t(localePack,"pages.cart.activeFooter2")}}</view>
     </view>
   </view>

@@ -187,6 +187,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
     			MpOfficialAccountUserRecord accountUserListByRecord =
     					saas.getShopApp(shopId).officialAccountUser.getAccountUserListByRecid(userId);
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
@@ -201,6 +202,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 						.getAccountUserByUserId(userId);
     			//通过shopId得到小程序信息
     			WxUserInfo info=WxUserInfo.builder()
+    					.userId(userId)
     					.mpAppId(accountUserListByRecord.getAppId())
     					.mpOpenId(accountUserListByRecord.getOpenid())
     					.maAppId(authShopByShopId.getAppId())
@@ -233,6 +235,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
                     if( accountUserAccountMap.containsKey(user.getWxUnionId()) ){
                         MpOfficialAccountUserRecord record = accountUserAccountMap.get(user.getWxUnionId());
                         builder.isSubscribe(Boolean.TRUE)
+                        	.userId(x)
                             .mpAppId(record.getAppId())
                             .mpOpenId(record.getOpenid());
                     }
