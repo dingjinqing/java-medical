@@ -13,7 +13,6 @@ import com.vpu.mp.service.pojo.shop.config.PictorialShareConfig;
 import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.share.*;
 import com.vpu.mp.service.pojo.wxapp.share.seckill.SeckillShareInfoParam;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.seckill.SeckillService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,6 @@ import java.net.URL;
 public class SeckillPictorialService extends ShareBaseService {
     @Autowired
     private SeckillService seckillService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
     @Override
      Record getActivityRecord(Integer activityId) {

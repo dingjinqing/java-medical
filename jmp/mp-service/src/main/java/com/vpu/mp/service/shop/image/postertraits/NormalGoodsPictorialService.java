@@ -13,7 +13,6 @@ import com.vpu.mp.service.pojo.wxapp.share.GoodsShareBaseParam;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialImgPx;
 import com.vpu.mp.service.pojo.wxapp.share.PictorialUserInfo;
 import com.vpu.mp.service.shop.goods.GoodsService;
-import com.vpu.mp.service.shop.image.QrCodeService;
 import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +28,6 @@ import java.math.BigDecimal;
 public class NormalGoodsPictorialService extends ShareBaseService {
     @Autowired
     GoodsService goodsService;
-    @Autowired
-    private QrCodeService qrCodeService;
 
     @Override
      Record getActivityRecord(Integer activityId) {
