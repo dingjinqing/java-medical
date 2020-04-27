@@ -249,7 +249,7 @@ public class QuestionService extends MainBaseService {
         List<QfImgRecord> result = Lists.newArrayList();
         for (int i = 0; i < imgs.size(); i++) {
             QfImgRecord record = new QfImgRecord();
-            record.setImgUrl(imgs.get(i+1));
+            record.setImgUrl(imgs.get(i));
             record.setQuestionFeedbackId(id);
             record.setImgDesc(String.valueOf(i));
             result.add(record);
