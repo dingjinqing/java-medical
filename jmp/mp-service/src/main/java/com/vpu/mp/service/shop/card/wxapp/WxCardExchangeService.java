@@ -158,8 +158,9 @@ public class WxCardExchangeService extends ShopBaseService {
 
 	/**
 	 * 已选商品列表
+	 * @return 
 	 */
-	public void changeCheckedGoodsList(UserCheckedGoodsParam param) {
+	public CardCheckedGoodsVo changeCheckedGoodsList(UserCheckedGoodsParam param) {
 		param.setAction(CardConstant.MCARD_TP_LIMIT);
 		CardCheckedGoodsVo vo = new CardCheckedGoodsVo();
 		PageResult<UserCheckedGoodsVo> usercheckedList = userCheckedGoodsSvc.getUsercheckedList(param);
@@ -171,5 +172,6 @@ public class WxCardExchangeService extends ShopBaseService {
 		checkedGoodsParam.setUserId(param.getUserId());
 		Integer totalNumber = userCheckedGoodsSvc.getUserCheckedCount(checkedGoodsParam);
 		vo.setTotalNumber(totalNumber);
+		return vo;
 	}
 }
