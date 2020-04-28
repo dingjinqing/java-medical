@@ -37,6 +37,7 @@ import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardAddExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardCheckedGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
@@ -294,6 +295,7 @@ public class WxAppCardController extends WxAppBaseController {
 	/**
 	 * 限次卡是否能够兑换单个商品校验
 	 */
+	@PostMapping("/api/card/exchange/tobuy/judge")
 	public JsonResult judgeCardExchangeTobuy(@RequestBody @Validated CardExchaneGoodsJudgeParam param) {
 		logger().info("限次卡是否兑换商品判断");
 		param.setUserId(wxAppAuth.user().getUserId());
@@ -318,8 +320,8 @@ public class WxAppCardController extends WxAppBaseController {
 	@PostMapping("/api/wxapp/card/change/checkedlist")
 	public JsonResult changeCheckedGoodsList(@RequestBody UserCheckedGoodsParam param) {
 		param.setUserId(wxAppAuth.user().getUserId());
-		shop().user.wxUserCardService.exchangeSvc.changeCheckedGoodsList(param);
-		return success();
+		CardCheckedGoodsVo vo = shop().user.wxUserCardService.exchangeSvc.changeCheckedGoodsList(param);
+		return success(vo);
 	}
 	
 }
