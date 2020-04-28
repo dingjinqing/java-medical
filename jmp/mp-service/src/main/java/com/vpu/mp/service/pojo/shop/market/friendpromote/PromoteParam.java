@@ -15,4 +15,6 @@ public class PromoteParam {
     private String actCode;
     /** 活动发起id */
     private Integer launchId;
+    /** shopId 特定接口需要 wiki中未说明的忽略掉就行 */
+    private Integer shopId;
 }

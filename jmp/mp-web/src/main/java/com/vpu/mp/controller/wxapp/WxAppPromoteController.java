@@ -95,7 +95,7 @@ public class WxAppPromoteController extends WxAppBaseController {
      */
     @PostMapping("/actCopywriting")
     public JsonResult actCopywriting(@RequestBody PromoteParam param) {
-        promoteActCopywriting vo = shop().friendPromoteService.getActCopywriting(param);
+        promoteActCopywriting vo = saas.getShopApp(param.getShopId()).friendPromoteService.getActCopywriting(param);
         return success(vo);
     }
 }
