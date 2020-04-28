@@ -226,6 +226,8 @@ public class OrderWriteService extends ShopBaseService {
             executeParam.setAdminInfo(param.getAdminInfo());
             executeParam.setIsMp(OrderConstant.IS_MP_MQ);
             executeParam.setOrderSn(detailRecord.getOrderSn());
+            executeParam.setShippingId(expressVo.getShippingId());
+            executeParam.setShippingNo(shipPojo.getTrackingNo());
             executeParam.setShipGoods(query.getOrderGoodsVo().stream().map(x -> new ShipParam.ShipGoods(x.getRecId(), x.getGoodsNumber())).toArray(ShipParam.ShipGoods[]::new));
             ExecuteResult executeResult = ship.execute(executeParam);
             if (executeResult == null || executeResult.isSuccess()) {
