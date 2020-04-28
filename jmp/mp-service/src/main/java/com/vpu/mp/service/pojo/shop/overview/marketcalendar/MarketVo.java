@@ -27,4 +27,5 @@ public class MarketVo {
 	
 	private Byte recommendType;
 	private String recommendLink;
+	private Boolean isRecommend=false;
 }

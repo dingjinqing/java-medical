@@ -415,6 +415,7 @@ public class MarketCalendarService extends ShopBaseService {
 		for (MarketCalendarActivityVo item : calendarActList) {
 			String[] verPurview = saas.shop.version.verifyVerPurview(getShopId(), item.getActivityType());
 			if (verPurview[0].equals("true")) {
+				vo.setHasAct(true);
 				if (item.getActivityId() > 0) {
 					vo.setHasAct(true);
 					ActInfoVo info = getActInfo(item.getActivityType(), item.getActivityId(), CalendarAction.INFO,null);
@@ -422,10 +423,22 @@ public class MarketCalendarService extends ShopBaseService {
 					actInfo.setRecommendLink(item.getRecommendLink());
 					actInfo.setRecommendType(item.getRecommendType());
 					actInfo.setCalActId(item.getId());
+					actInfo.setIsRecommend(item.getSysCalActId() > 0 ? true : false);
 					actInfoList.add(actInfo);
 				}else {
-					vo.setHasAct(false);
+					
+					MarketVo actInfo=new MarketVo();
+					actInfo.setActivityType(item.getActivityType());
+					actInfo.setRecommendLink(item.getRecommendLink());
+					actInfo.setRecommendType(item.getRecommendType());
+					actInfo.setCalActId(item.getId());
+					actInfo.setIsRecommend(item.getSysCalActId() > 0 ? true : false);
+					actInfoList.add(actInfo);
+					
 				}
+			}else {
+				vo.setHasAct(false);
+				logger().info("没有权限：{}",item.getActivityType());
 			}
 		}
 		vo.setActInfo(actInfoList);
