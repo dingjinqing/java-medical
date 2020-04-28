@@ -1,7 +1,7 @@
 package com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch;
 
 import com.vpu.mp.service.foundation.excel.annotation.ExcelColumn;
-import com.vpu.mp.service.foundation.excel.annotation.ExcelColumnNotNull;
+import com.vpu.mp.service.foundation.excel.annotation.ExcelSheet;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,10 +13,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@ExcelSheet
 public class BatchShipPojo {
     /** 订单号 */
     @ExcelColumn(columnIndex = 0, columnName = "order.batch.ship.orderSn")
-    @ExcelColumnNotNull
     private String orderSn;
 
     /** 快递公司 */

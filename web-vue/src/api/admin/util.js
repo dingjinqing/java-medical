@@ -71,8 +71,7 @@ export function pinRulesApi (data) {
 // 小程序好友助力规则接口
 export function promoteRules (data) {
   return service({
-    url: '/api/wxapp/promote/actCopywriting',
-    data,
-    method: 'post'
+    url: `/api/wxapp/promote/actCopywriting?shopId=${data.shopId}&actCode=${data.actCode}`,
+    method: 'get'
   })
 }
