@@ -59,7 +59,7 @@ public class WxAppCartBo {
      */
     private String notice ;
     /**
-     *
+     * 可用的优惠券礼包
      */
     private CouponPackCartVo couponPackage;
 

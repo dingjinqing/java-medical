@@ -1,6 +1,5 @@
 package com.vpu.mp.service.shop.coupon;
 
-import com.vpu.mp.db.shop.tables.DivisionReceiveRecord;
 import com.vpu.mp.db.shop.tables.records.DivisionReceiveRecordRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
@@ -36,9 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.vpu.mp.db.shop.Tables.*;
-import static com.vpu.mp.db.shop.Tables.DIVISION_RECEIVE_RECORD;
-import static com.vpu.mp.service.pojo.shop.coupon.CouponConstant.COUPON_GIVE_SOURCE_PAY_AWARD;
-import static com.vpu.mp.service.pojo.shop.market.payaward.PayAwardConstant.PAY_AWARD_GIVE_STATUS_RECEIVED;
 
 /**
  * @author: 王兵兵
@@ -356,7 +352,7 @@ public class CouponMpService extends ShopBaseService {
                 }
             }
         }
-        if ("random".equals(couponRecord.getActCode())||"voucher".equals(couponRecord.getActCode())){
+        if (CouponConstant.ACT_CODE_RANDOM.equals(couponRecord.getActCode()) || CouponConstant.ACT_CODE_VOUCHER.equals(couponRecord.getActCode())) {
             vo.setUnit("元");
         }else {
             vo.setUnit("折");

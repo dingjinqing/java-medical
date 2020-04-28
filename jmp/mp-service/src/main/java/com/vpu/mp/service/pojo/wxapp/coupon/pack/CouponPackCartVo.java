@@ -21,7 +21,7 @@ public class CouponPackCartVo {
     private BigDecimal maxReduce;
 
     /**
-     *
+     *礼包列表
      */
     private List<PackInfo> packList = new ArrayList<>();
 
