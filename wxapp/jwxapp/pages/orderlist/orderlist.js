@@ -73,7 +73,8 @@ global.wxPage({
         "isDelete",
         "isCancel",
         "isShowFriendPay",
-        "isShowEndPay"
+        "isShowEndPay",
+        "isShowAgainBuy"
       ];
       item.operate = orderEvent.filterObj(item, filterArr);
       item.orderStatusName = orderEvent.getOrderStatus(item);
