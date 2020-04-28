@@ -90,50 +90,48 @@ public class PurchasePriceProcessor implements Processor, GoodsDetailProcessor, 
         Map<Integer, PurchasePriceCartBo> activityMap = new HashMap<>();
         //商品活动信息
         for (WxAppCartGoods goods : cartBo.getCartGoodsList()) {
-            if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)) {
-                Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> purchaseRulesMap;
-                //获取商品的活动
-                if (activityCacheMap.size() > 0 && activityCacheMap.get(goods.getGoodsId()) != null) {
-                    purchaseRulesMap = activityCacheMap.get(goods.getGoodsId());
-                } else {
-                    //获取商品的活动规则
-                    purchaseRulesMap = purchasePriceProcessorDao.getPurchasePriceInfo(goods.getGoodsId(), cartBo.getDate());
-                    activityCacheMap.put(goods.getGoodsId(), purchaseRulesMap);
-                }
-                //配置商品符合的活动信息
-                if (purchaseRulesMap != null && purchaseRulesMap.size() != 0) {
-                    purchaseRulesMap.forEach((key, purchaseRules) -> {
-                        log.info("加价购商品:{},活动id:{}", goods.getGoodsName(), key);
-                        CartActivityInfo cartActivityInfo = new CartActivityInfo();
-                        cartActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
-                        cartActivityInfo.setActivityId(key);
-                        CartActivityInfo.PurchasePrice purchasePrice = new CartActivityInfo.PurchasePrice();
-                        purchasePrice.setPurchasePriceRule(new ArrayList<>());
-                        //加价购规则
-                        for (Record4<Integer, Integer, BigDecimal, BigDecimal> rule : purchaseRules) {
-                            CartActivityInfo.PurchasePriceRule cartPurchasePriceRule = new CartActivityInfo.PurchasePriceRule();
-                            cartPurchasePriceRule.setFullPrice(rule.get(PURCHASE_PRICE_RULE.FULL_PRICE));
-                            cartPurchasePriceRule.setPurchasePrice(rule.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
-                            cartPurchasePriceRule.setRuleId(rule.get(PURCHASE_PRICE_RULE.ID));
-                            cartPurchasePriceRule.setActivityId(rule.get(PURCHASE_PRICE_DEFINE.ID));
-                            purchasePrice.getPurchasePriceRule().add(cartPurchasePriceRule);
-                            if (purchasePrice.getRule() == null) {
-                                purchasePrice.setRule(cartPurchasePriceRule);
-                            }
+            Map<Integer, Result<Record4<Integer, Integer, BigDecimal, BigDecimal>>> purchaseRulesMap;
+            //获取商品的活动
+            if (activityCacheMap.size() > 0 && activityCacheMap.get(goods.getGoodsId()) != null) {
+                purchaseRulesMap = activityCacheMap.get(goods.getGoodsId());
+            } else {
+                //获取商品的活动规则
+                purchaseRulesMap = purchasePriceProcessorDao.getPurchasePriceInfo(goods.getGoodsId(), cartBo.getDate());
+                activityCacheMap.put(goods.getGoodsId(), purchaseRulesMap);
+            }
+            //配置商品符合的活动信息
+            if (purchaseRulesMap != null && purchaseRulesMap.size() != 0) {
+                purchaseRulesMap.forEach((key, purchaseRules) -> {
+                    log.info("加价购商品:{},活动id:{}", goods.getGoodsName(), key);
+                    CartActivityInfo cartActivityInfo = new CartActivityInfo();
+                    cartActivityInfo.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                    cartActivityInfo.setActivityId(key);
+                    CartActivityInfo.PurchasePrice purchasePrice = new CartActivityInfo.PurchasePrice();
+                    purchasePrice.setPurchasePriceRule(new ArrayList<>());
+                    //加价购规则
+                    for (Record4<Integer, Integer, BigDecimal, BigDecimal> rule : purchaseRules) {
+                        CartActivityInfo.PurchasePriceRule cartPurchasePriceRule = new CartActivityInfo.PurchasePriceRule();
+                        cartPurchasePriceRule.setFullPrice(rule.get(PURCHASE_PRICE_RULE.FULL_PRICE));
+                        cartPurchasePriceRule.setPurchasePrice(rule.get(PURCHASE_PRICE_RULE.PURCHASE_PRICE));
+                        cartPurchasePriceRule.setRuleId(rule.get(PURCHASE_PRICE_RULE.ID));
+                        cartPurchasePriceRule.setActivityId(rule.get(PURCHASE_PRICE_DEFINE.ID));
+                        purchasePrice.getPurchasePriceRule().add(cartPurchasePriceRule);
+                        if (purchasePrice.getRule() == null) {
+                            purchasePrice.setRule(cartPurchasePriceRule);
                         }
-                        //设置
-                        cartActivityInfo.setPurchasePrice(purchasePrice);
-                        goods.getCartActivityInfos().add(cartActivityInfo);
-                        //当前商品活动
-                        if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE) && goods.getExtendId().equals(key)) {
-                            log.info("参与活动");
-                            goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
-                            goods.setActivityId(cartActivityInfo.getActivityId());
-                            //当前生效活动
-                            purchasePriceProcessorDao.purchasePricePutMap(activityMap, goods, cartActivityInfo);
-                        }
-                    });
-                }
+                    }
+                    //设置
+                    cartActivityInfo.setPurchasePrice(purchasePrice);
+                    goods.getCartActivityInfos().add(cartActivityInfo);
+                    //当前商品活动
+                    if (goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE) && goods.getExtendId().equals(key)) {
+                        log.info("参与活动");
+                        goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE);
+                        goods.setActivityId(cartActivityInfo.getActivityId());
+                        //当前生效活动
+                        purchasePriceProcessorDao.purchasePricePutMap(activityMap, goods, cartActivityInfo);
+                    }
+                });
             }
         }
         //启用的活动配置
