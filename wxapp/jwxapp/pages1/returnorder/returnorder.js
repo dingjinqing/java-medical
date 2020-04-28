@@ -189,7 +189,7 @@ global.wxPage({
       }
     })
     this.setData({
-      returnMoney: returnMoney,
+      returnMoney: parseFloat(returnMoney).toFixed(2),
       selectGoodIds: selectGoodIds
     })
   },
