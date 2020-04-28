@@ -33,6 +33,10 @@ public class GoodsCommentPageListParam {
     public static final Byte TOP=1;
     /** 未置顶 */
     public static final Byte NOT_TOP=0;
+    /** 买家秀 */
+    public static final Byte SHOW=1;
+    /** 非买家秀 */
+    public static final Byte NOT_SHOW=0;
     /**
      * 	搜索条件
      */
@@ -48,6 +52,8 @@ public class GoodsCommentPageListParam {
     private Byte shopAssistantFlag = NOT_FROM_SHOP_ASSISTANT;
     /** 是否筛选置顶评价 */
     private Byte isTop;
+    /** 是否筛选买家秀评价 */
+    private Byte isShow;
     /**
      * 	分页信息
      */

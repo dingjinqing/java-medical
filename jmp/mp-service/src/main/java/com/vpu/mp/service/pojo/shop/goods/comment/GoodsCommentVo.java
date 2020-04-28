@@ -55,4 +55,6 @@ public class GoodsCommentVo {
     private String prdDesc;
     /** 是否置顶 */
     private Byte isTop;
+    /** 是否买家秀 */
+    private Byte isShow;
 }

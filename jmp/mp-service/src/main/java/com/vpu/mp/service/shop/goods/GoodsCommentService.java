@@ -103,6 +103,7 @@ public class GoodsCommentService extends ShopBaseService {
                     COMMENT_GOODS.BOGUS_USERNAME,
                     COMMENT_GOODS.COMMENT_AWARD_ID,
                     COMMENT_GOODS.IS_TOP,
+                    COMMENT_GOODS.IS_SHOW,
                     GOODS.GOODS_NAME,
                     GOODS.GOODS_IMG,
                     USER.USER_ID,
@@ -191,6 +192,10 @@ public class GoodsCommentService extends ShopBaseService {
     if (GoodsCommentPageListParam.TOP.equals(param.getIsTop())){
         select.and(COMMENT_GOODS.IS_TOP.eq(GoodsCommentPageListParam.TOP));
     }
+      //根据是否买家秀查询
+      if (GoodsCommentPageListParam.TOP.equals(param.getIsTop())){
+          select.and(COMMENT_GOODS.IS_SHOW.eq(GoodsCommentPageListParam.SHOW));
+      }
   }
 
     /**
@@ -1183,5 +1188,29 @@ public class GoodsCommentService extends ShopBaseService {
             .fetchInto(MPGoodsCommentVo.class);
         PageResult<MPGoodsCommentVo> vo = this.getPageResult(sql,currentPage,pageRows,MPGoodsCommentVo.class);
         return vo;
+    }
+    /**
+     * 将评论设置买家秀
+     * @param param 评价记录id
+     */
+    public void setShow(GoodsCommentIdParam param){
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_SHOW,GoodsCommentPageListParam.SHOW)
+            .set(COMMENT_GOODS.SHOW_TIME, DateUtil.getSqlTimestamp())
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
+    }
+
+    /**
+     * 取消评论置顶
+     * @param param 评价记录id
+     */
+    public void cancelShow(GoodsCommentIdParam param){
+        Timestamp showTime = null;
+        db().update(COMMENT_GOODS)
+            .set(COMMENT_GOODS.IS_SHOW,GoodsCommentPageListParam.NOT_SHOW)
+            .set(COMMENT_GOODS.SHOW_TIME, showTime)
+            .where(COMMENT_GOODS.ID.eq(param.getId()))
+            .execute();
     }
 }
