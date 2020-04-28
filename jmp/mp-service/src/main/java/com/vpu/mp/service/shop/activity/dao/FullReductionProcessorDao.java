@@ -530,7 +530,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 CartActivityInfo.FullReductionRule rule = fullReduction.getRule();
                 //当前选中的国际化
                 if (rule!=null){
-                    String message = fullReductionRuleToString(fullReduction,rule,rule.getReduceMoney());
+                    String message = fullReductionRuleToString(fullReduction,rule,rule.getReduceTotalMoney());
                     fullReduction.setCondition(message);
                 }
                 fullReduction.getRules().forEach(rule1->{
@@ -600,7 +600,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                         }
                     }else {
                         if (fullReductionRule.getFullMoney().compareTo(totalMoney)<=0){
-                            reduceMoney =fullReductionRule.getDiscount().multiply(new BigDecimal("0.1")).multiply(totalMoney);
+                            reduceMoney =BigDecimal.ONE.subtract(fullReductionRule.getDiscount().multiply(new BigDecimal("0.1"))).multiply(totalMoney);
                             logger().info("符合满{}元打{}折,共{}元,减{}",fullReductionRule.getFullMoney(),fullReductionRule.getReduceMoney(),totalMoney,reduceMoney);
 
                         }
@@ -613,14 +613,14 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                                 .collect(Collectors.toList());
                         //符合的商品计算减价金额
                         for (FullReductionGoodsCartBo goods : goodsCartBoList) {
-                            BigDecimal multiply = fullReductionRule.getDiscount().multiply(new BigDecimal("0.1")).multiply(goods.getMoney());
+                            BigDecimal multiply = BigDecimal.ONE.subtract(fullReductionRule.getDiscount().multiply(new BigDecimal("0.1"))).multiply(goods.getMoney());
                             logger().info("符合第{}件打{}折,件数{},减{}元",fullReductionRule.getAmount(),fullReductionRule.getDiscount(),goods.getNum(),multiply);
                             reduceMoney = reduceMoney.add(multiply);
                         }
                     }
                     break;
             }
-            fullReductionRule.setReduceMoney(reduceMoney.setScale(2,RoundingMode.HALF_UP));
+            fullReductionRule.setReduceTotalMoney(reduceMoney.setScale(2,RoundingMode.HALF_UP));
             cartActivityInfo.getFullReduction().setRule(fullReductionRule);
             totalReductionMoney=totalReductionMoney.add(reduceMoney);
         }

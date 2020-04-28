@@ -182,19 +182,13 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-            }else {
+            }else if (!BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(goods.getActivityType())){
                 isAllCheck=0;
             }
         }
         //减去折扣
         totalPrice= totalPrice.subtract(cartBo.getFullReductionPrice());
-        //图片链接
-        cartBo.getCartGoodsList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
-        cartBo.getInvalidCartList().forEach(cartGoods->{
-            cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsImg()));
-        });
+
         cartBo.setTotalPrice(totalPrice);
         cartBo.setIsAllCheck(isAllCheck);
 

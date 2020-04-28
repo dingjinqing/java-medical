@@ -502,6 +502,12 @@ public class Indexes {
     public static final Index LIVE_BROADCAST_ROOM_ID = Indexes0.LIVE_BROADCAST_ROOM_ID;
     public static final Index CARD_RENEW_PRIMARY = Indexes0.CARD_RENEW_PRIMARY;
     public static final Index GIVE_CARD_RECORD_PRIMARY = Indexes0.GIVE_CARD_RECORD_PRIMARY;
+    public static final Index CHECKED_GOODS_CART_ACTION = Indexes0.CHECKED_GOODS_CART_ACTION;
+    public static final Index CHECKED_GOODS_CART_IDENTITY_ID = Indexes0.CHECKED_GOODS_CART_IDENTITY_ID;
+    public static final Index CHECKED_GOODS_CART_PRIMARY = Indexes0.CHECKED_GOODS_CART_PRIMARY;
+    public static final Index CHECKED_GOODS_CART_PRODUCT_ID = Indexes0.CHECKED_GOODS_CART_PRODUCT_ID;
+    public static final Index CHECKED_GOODS_CART_USER_ID = Indexes0.CHECKED_GOODS_CART_USER_ID;
+    
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
@@ -980,5 +986,10 @@ public class Indexes {
         public static Index LIVE_BROADCAST_ROOM_ID = Internal.createIndex("room_id", LiveBroadcast.LIVE_BROADCAST, new OrderField[] { LiveBroadcast.LIVE_BROADCAST.ROOM_ID }, true);
         public static Index CARD_RENEW_PRIMARY = Internal.createIndex("PRIMARY", CardRenew.CARD_RENEW, new OrderField[] { CardRenew.CARD_RENEW.ID }, true);
         public static Index GIVE_CARD_RECORD_PRIMARY = Internal.createIndex("PRIMARY", GiveCardRecord.GIVE_CARD_RECORD, new OrderField[] { GiveCardRecord.GIVE_CARD_RECORD.ID }, true);
+        public static Index CHECKED_GOODS_CART_ACTION = Internal.createIndex("action", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.ACTION }, false);
+        public static Index CHECKED_GOODS_CART_IDENTITY_ID = Internal.createIndex("identity_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.IDENTITY_ID }, false);
+        public static Index CHECKED_GOODS_CART_PRIMARY = Internal.createIndex("PRIMARY", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.ID }, true);
+        public static Index CHECKED_GOODS_CART_PRODUCT_ID = Internal.createIndex("product_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.PRODUCT_ID }, false);
+        public static Index CHECKED_GOODS_CART_USER_ID = Internal.createIndex("user_id", CheckedGoodsCart.CHECKED_GOODS_CART, new OrderField[] { CheckedGoodsCart.CHECKED_GOODS_CART.USER_ID }, false);
     }
 }

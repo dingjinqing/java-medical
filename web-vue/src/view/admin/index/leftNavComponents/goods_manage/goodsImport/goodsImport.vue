@@ -128,10 +128,24 @@
         <div class="card-box">
           <div>
             <span>{{$t('goodsImport.downloadTemp')}}：</span>
-            <el-button
+            <!-- <el-button
               type="text"
               @click="downloadExportModule"
-            >{{$t('goodsImport.fileTemp')}}</el-button>
+            >{{$t('goodsImport.fileTemp')}}</el-button> -->
+            <el-link
+              v-if="lang === 'zh_CN'"
+              class="link-top"
+              type="primary"
+              :href="$imageHost+'/temp/excel/zh_CN/goods/goods.xlsx'"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
+            <el-link
+              v-else
+              class="link-top"
+              type="primary"
+              :href="$imageHost+'/temp/excel/en_US/goods/goods.xlsx'"
+              download
+            >{{$t('goodsImport.fileTemp')}}</el-link>
           </div>
         </div>
         <p class="import-popup-title">{{$t('goodsImport.setp2')}}</p>
@@ -233,6 +247,7 @@ export default {
     }
   },
   mounted () {
+    this.langDefault()
     this.initDataList()
   },
   methods: {
@@ -409,6 +424,10 @@ export default {
   }
   .dialog-footer {
     text-align: center;
+  }
+  .link-top {
+    position: relative;
+    top: -1px;
   }
 }
 </style>
