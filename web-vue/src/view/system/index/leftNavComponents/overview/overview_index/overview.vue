@@ -22,14 +22,14 @@
               <div
                 class="account"
                 style="color: #f3bd51;"
-              >{{accountStatisticsInfo.effectiveShopNum}}</div>
+              >{{accountStatisticsInfo.allShopNum}}</div>
               <div class="account-title">店铺总数</div>
             </li>
             <li>
               <div
                 class="account"
                 style="color: #fe6c6c;"
-              >40</div>
+              >{{accountStatisticsInfo.effectiveShopNum}}</div>
               <div class="account-title">有效店铺</div>
             </li>
             <li>
@@ -96,14 +96,11 @@
       </div>
       <div class="module">
         <div class="module-header">
-          <h2>用户统计 <span>用户总数：</span><span>14321</span></h2>
+          <h2>用户统计 <span>用户总数：</span><span v-text="userStatisticsInfo.allNum"></span></h2>
         </div>
         <div class="module-con clearfix">
           <div class="module-con-left">
-            <div
-              id="userStatistics"
-              style="width:782px;height:350px;"
-            ></div>
+            <div id="userStatistics"></div>
           </div>
           <div class="module-con-right">
             <el-calendar :range="dateRange">
@@ -127,14 +124,11 @@
       </div>
       <div class="module">
         <div class="module-header">
-          <h2>订单统计 <span>订单总数：</span><span>9402</span></h2>
+          <h2>订单统计 <span>订单总数：</span><span v-text="orderStatisticsInfo.allOrderNum"></span></h2>
         </div>
         <div class="module-con clearfix">
           <div class="module-con-left">
-            <div
-              id="orderStatistics"
-              style="width:782px;height:350px;"
-            ></div>
+            <div id="orderStatistics"></div>
           </div>
           <div class="module-con-right">
             <el-calendar :range="dateRange">
@@ -147,7 +141,7 @@
                     :class="data.isSelected ? 'is-selected' : ''"
                     style="text-align:center; font-size:16px;"
                   >
-                    <p style="height:20px;line-height:20px;">{{userNum(data)}}</p>
+                    <p style="height:20px;line-height:20px;">{{orderNum(data)}}</p>
                     <p style="font-size: 12px;color:  gray;">{{ data.day.split('-').slice(1).join('-') }}</p>
                   </div>
                 </div>
@@ -160,18 +154,15 @@
         <div class="module-header clearfix">
           <h2>订单支付统计</h2>
           <ul class="pay-ul clearfix">
-            <li>微信：<span>233</span></li>
-            <li>余额：<span>666</span></li>
-            <li>卡余额：<span>222</span></li>
-            <li>积分：<span>233</span></li>
+            <li>微信：<span>{{orderStatisticsInfo.wxPayed||0}},</span></li>
+            <li>余额：<span>{{orderStatisticsInfo.balancePayed||0}},</span></li>
+            <li>卡余额：<span>{{orderStatisticsInfo.cardBalancePayed||0}},</span></li>
+            <li>积分：<span>{{orderStatisticsInfo.integralPayed||0}}</span></li>
           </ul>
         </div>
         <div class="module-con clearfix">
           <div class="module-con-left">
-            <div
-              id="OrderPaymentStatistics"
-              style="width:782px;height:350px;"
-            ></div>
+            <div id="OrderPaymentStatistics"></div>
           </div>
           <div class="module-con-right">
             <el-calendar :range="dateRange">
@@ -184,7 +175,7 @@
                     :class="data.isSelected ? 'is-selected' : ''"
                     style="text-align:center; font-size:16px;"
                   >
-                    <p style="height:20px;line-height:20px;">{{userNum(data)}}</p>
+                    <p style="height:20px;line-height:20px;">{{payMoney(data)}}</p>
                     <p style="font-size: 12px;color:  gray;">{{ data.day.split('-').slice(1).join('-') }}</p>
                   </div>
                 </div>
@@ -212,21 +203,10 @@ export default {
       },
       accountStatisticsInfo: {}, // 账户统计
       userStatisticsInfo: {}, // 用户统计
-      userNumsInfo: [],
       orderStatisticsInfo: {}, // 订单支付统计
-      userStatisticsData: {
-        columns: ['日期', '新增用户'],
-        rows: [
-          { '日期': '1月1日', '新增用户': 123 },
-          { '日期': '1月2日', '新增用户': 1223 },
-          { '日期': '1月3日', '新增用户': 2123 },
-          { '日期': '1月4日', '新增用户': 4123 },
-          { '日期': '1月5日', '新增用户': 3123 },
-          { '日期': '1月6日', '新增用户': 7123 }
-        ]
-      },
       userEcharts: {},
-      orderEcharts: {}
+      orderEcharts: {},
+      orderPaymentEcharts: {}
     }
   },
   computed: {
@@ -274,7 +254,7 @@ export default {
     },
     echartsLoadData (content) {
       let { userStatisticsInfo, orderStatisticsInfo } = content
-      console.log('content:', userStatisticsInfo, orderStatisticsInfo)
+      // 用户统计
       if (userStatisticsInfo.userNumsInfo && userStatisticsInfo.userNumsInfo.length > 0) {
         let userXdata = []
         let userYdata = []
@@ -284,70 +264,240 @@ export default {
         })
         this.userEcharts.setOption({
           title: {
-            text: '注册用户变化趋势'
+            text: '注册用户变化趋势',
+            subtext: '不是虚构'
           },
-          tooltip: {},
+          tooltip: {
+            trigger: 'axis'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              dataView: { readOnly: false },
+              magicType: { type: ['line', 'bar'] },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
           xAxis: {
+            type: 'category',
             data: userXdata
           },
-          yAxis: {},
+          yAxis: {
+            type: 'value'
+          },
+          legend: {
+            data: ['注册量']
+          },
           series: [{
             name: '新增用户',
             type: 'line',
-            data: userYdata
+            data: userYdata,
+            markPoint: {
+              data: [
+                { type: 'max', name: '最大值' },
+                { type: 'min', name: '最小值' }
+              ]
+            },
+            markLine: {
+              data: [
+                { type: 'average', name: '平均值' }
+              ]
+            },
+            label: {
+              normal: {
+                show: true,
+                position: 'top'
+              }
+            }
           }]
         })
       }
-      this.orderEcharts.setOption({
-        title: {
-          text: '注册用户变化趋势'
-        },
-        tooltip: {},
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-        },
-        yAxis: {},
-        series: [{
-          name: '销量',
-          type: 'line',
-          data: [5, 20, 36, 10, 10, 20]
-        }]
-      })
-      this.orderPaymentEcharts.setOption({
-        title: {
-          text: '注册用户变化趋势'
-        },
-        tooltip: {},
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-        },
-        yAxis: {},
-        series: [{
-          name: '销量',
-          type: 'line',
-          data: [5, 20, 36, 10, 10, 20]
-        }]
-      })
+      // 订单统计
+      if (orderStatisticsInfo.orderNumInfos && orderStatisticsInfo.orderNumInfos.length > 0) {
+        let orderXdata = []
+        let orderYdata = []
+        orderStatisticsInfo.orderNumInfos.forEach(item => {
+          orderXdata.push(item.date.split('-').slice(1).join('-'))
+          orderYdata.push(item.num)
+        })
+        this.orderEcharts.setOption({
+          title: {
+            text: '订单变化趋势',
+            subtext: '不是虚构'
+          },
+          xAxis: {
+            type: 'category',
+            data: orderXdata
+          },
+          yAxis: {
+            type: 'value'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['订单量']
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              dataView: { readOnly: false },
+              magicType: { type: ['line', 'bar'] },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
+          series: [
+            {
+              name: '支付订单',
+              type: 'line',
+              data: orderYdata,
+              markPoint: {
+                data: [
+                  { type: 'max', name: '最大值' },
+                  { type: 'min', name: '最小值' }
+                ]
+              },
+              markLine: {
+                data: [
+                  { type: 'average', name: '平均值' }
+                ]
+              }
+            }
+          ]
+        })
+      }
+      // 支付金额统计
+      if (orderStatisticsInfo.orderMoneyInfos && orderStatisticsInfo.orderMoneyInfos.length > 0) {
+        let payXdata = []
+        let payYdata = []
+        let accountMoney = []
+        let cardMoney = []
+        let scoreMoney = []
+        orderStatisticsInfo.orderMoneyInfos.forEach(item => {
+          payXdata.push(item.date.split('-').slice(1).join('-'))
+          payYdata.push(item.money)
+        })
+        this.orderPaymentEcharts.setOption({
+          title: {
+            text: '支付金额变化趋势',
+            subtext: '不是虚构'
+          },
+          xAxis: {
+            type: 'category',
+            data: payXdata
+          },
+          yAxis: {
+            type: 'value'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['支付金额']
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              dataZoom: {
+                yAxisIndex: 'none'
+              },
+              dataView: { readOnly: false },
+              magicType: { type: ['line', 'bar'] },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
+          series: [
+            {
+              name: '微信',
+              type: 'line',
+              data: payYdata,
+              areaStyle: { normal: {} },
+              markPoint: {
+                data: [
+                  { type: 'max', name: '最大值' },
+                  { type: 'min', name: '最小值' }
+                ]
+              },
+              markLine: {
+                data: [
+                  { type: 'average', name: '平均值' }
+                ]
+              }
+            },
+            {
+              name: '账户余额',
+              type: 'line',
+              stack: '总量',
+              areaStyle: { normal: {} },
+              data: accountMoney
+            },
+            {
+              name: '卡余额',
+              type: 'line',
+              stack: '总量',
+              areaStyle: { normal: {} },
+              data: cardMoney
+            },
+            {
+              name: '积分支付',
+              type: 'line',
+              stack: '总量',
+              areaStyle: { normal: {} },
+              data: scoreMoney
+            }
+          ]
+        })
+      }
     },
     initData () {
       let param = Object.assign({}, this.queryParams)
+      if (!param.startTime || !param.endTime) {
+        this.$message.warning('请选择检索时间')
+        return false
+      }
       shopViewApi(param).then(res => {
         if (res) {
           console.log(res)
           this.accountStatisticsInfo = res.content.accountStatisticsInfo // 账户统计
-          this.orderStatisticsInfo = res.content.orderStatisticsInfo // 订单支付统计
           this.userStatisticsInfo = res.content.userStatisticsInfo // 用户统计
-          this.userNumsInfo = res.content.userStatisticsInfo.userNumsInfo
+          this.orderStatisticsInfo = res.content.orderStatisticsInfo // 订单支付统计
           this.echartsLoadData(res.content)
         }
       })
     },
     userNum (data) {
-      console.log(data)
       let day = data.day
-      let info = this.userNumsInfo.find(item => item.date === day)
+      let userNumsInfo = this.userStatisticsInfo.userNumsInfo || []
+      let info = userNumsInfo.find(item => item.date === day)
       if (info) {
         return info.num
+      }
+      return ''
+    },
+    orderNum (data) {
+      let day = data.day
+      let orderNumInfos = this.orderStatisticsInfo.orderNumInfos || []
+      let info = orderNumInfos.find(item => item.date === day)
+      if (info) {
+        return info.num
+      }
+      return ''
+    },
+    payMoney (data) {
+      let day = data.day
+      let orderMoneyInfos = this.orderStatisticsInfo.orderMoneyInfos || []
+      let info = orderMoneyInfos.find(item => item.date === day)
+      if (info) {
+        return info.money
       }
       return ''
     }
@@ -440,6 +590,11 @@ export default {
     .module-con-left {
       width: 60%;
       float: left;
+      & > div {
+        width: 100%;
+        height: 350px;
+        margin-top: 10px;
+      }
     }
     .module-con-right {
       width: 40%;
