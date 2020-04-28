@@ -91,7 +91,7 @@ public class WechatMessageTemplateService extends ShopBaseService {
 
         if( param.getMpTemplateData() != null && !success ){
             if( !saas().getShopApp(param.getShopId()).config.messageConfigService.checkConfig(param.getType()) ){
-                logger().debug("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
+                logger().info("【消息模板监听】---商家{}未开通{}类型的公众号消息推送",param.getShopId(),param.getType());
                 return false;
             }
             if(StringUtils.isBlank(info.getMpOpenId()) ){
