@@ -2,7 +2,9 @@ package com.vpu.mp.service.shop.distribution;
 
 import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.MrkingVoucher;
+import com.vpu.mp.db.shop.tables.RebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.db.shop.tables.records.RebatePriceRecordRecord;
 import com.vpu.mp.db.shop.tables.records.UserRebatePriceRecord;
 import com.vpu.mp.db.shop.tables.records.UserRecord;
 import com.vpu.mp.service.foundation.data.DistributionConstant;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.service.foundation.util.Util.listToString;
 
 /**
  * @Author 常乐
@@ -294,6 +297,10 @@ public class MpDistributionGoodsService extends ShopBaseService {
         Timestamp rebateToTime = Timestamp.valueOf(rebateTime);
 
         Timestamp nowTime = Util.currentTimeStamp();
+
+        //添加分销改价记录
+        addRebatePriceRecord(param);
+
         //判断当前用户对该商品是否进行过分销改价
         param.getRebateConfig().getRebatePrice().forEach((prdId,prdPrice)->{
             Record record = db().select().from(USER_REBATE_PRICE).where(USER_REBATE_PRICE.USER_ID.eq(param.getUserId()))
@@ -343,7 +350,7 @@ public class MpDistributionGoodsService extends ShopBaseService {
     public List<CouponListVo> sendCoupon(GoodsDetailMpParam param){
         MpGetCouponParam mpGetCouponParam = new MpGetCouponParam();
         mpGetCouponParam.setUserId(param.getUserId());
-        List<Integer> couponIds = Util.stringToList(param.getCouponIds());
+        List<Integer> couponIds = Util.stringToList(param.getRebateConfig().getCouponIds());
         //发放优惠券
         for(Integer couponId:couponIds){
             mpGetCouponParam.setCouponId(couponId);
@@ -352,5 +359,20 @@ public class MpDistributionGoodsService extends ShopBaseService {
         //返回优惠券信息
         List<CouponListVo> info = db().select().from(MRKING_VOUCHER).where(MRKING_VOUCHER.ID.in(couponIds)).fetch().into(CouponListVo.class);
         return info;
+    }
+
+    /**
+     * 添加分销改价记录
+     * @param param
+     * @return
+     */
+    private int addRebatePriceRecord(GoodsDetailMpParam param){
+        String rebateConfigInfo = Util.toJson(param.getRebateConfig());
+        RebatePriceRecordRecord rebatePriceRecord = new RebatePriceRecordRecord();
+        rebatePriceRecord.setDataSign(Util.md5(rebateConfigInfo));
+        rebatePriceRecord.setRebateData(rebateConfigInfo);
+        rebatePriceRecord.setUserId(param.getUserId());
+        int res = db().executeInsert(rebatePriceRecord);
+        return res;
     }
 }
