@@ -47,6 +47,7 @@ global.wxComponent({
           distributionShowData = [...distributionShowData,{name:'预估间接返利',type:data.rebateRatio.selfPurchase === 1 ? 2 : 4,price:this.getDistributionPrice(data.rebateRatio.selfPurchase === 1 ? 2 : 4)}]
         }
       }
+      if(data.sendCoupon && data.sendCoupon.length > 0) this.setSendCoupon(data.sendCoupon)
       this.setData({
         distributionShowData
       })
@@ -101,6 +102,23 @@ global.wxComponent({
         goodsId:this.data.goodsId,
         linePrice:this.data.linePrice
       })}`,'navigateTo')
+    },
+    setSendCoupon(couponList){
+      this.setData({
+        sendCoupon:true,
+        awardInfo:{
+          stepInfo:{
+            hasStep:false
+          },
+          message:null,
+          giftInfo: {
+            giftType: 1,
+            awardInfo: {
+              couponView:couponList
+            }
+          }
+        }
+      })
     }
   }
 })

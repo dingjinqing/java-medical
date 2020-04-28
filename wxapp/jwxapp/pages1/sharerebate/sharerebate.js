@@ -180,24 +180,21 @@ global.wxPage({
   onShareAppMessage: function () {
     let rebateConfig = {}
     let date = new Date();
+    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds
     rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
     rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
       defaultData[item.prdId] = item.prdPrice
       return defaultData
     },{})
-    let customParams = {}
-    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) customParams.couponIds = this.data.checkedCouponIds
     console.log(`/pages/item/item${util.getUrlParams({
       gid:this.data.goodsId,
       inviteId:util.getCache("user_id"),
-      ...customParams,
       rebateConfig:JSON.stringify(rebateConfig)
     })}`)
     return {
       path: `/pages/item/item${util.getUrlParams({
         gid:this.data.goodsId,
         inviteId:util.getCache("user_id"),
-        ...customParams,
         rebateConfig:JSON.stringify(rebateConfig)
       })}`,
       ...this.data.shareData

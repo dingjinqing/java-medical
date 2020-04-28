@@ -33,3 +33,7 @@
     </block>
   </view>
 </view>
+
+
+<!-- 支付有理统一样式弹窗，详情赠送优惠券暂用 -->
+<v-pay-award show="{{sendCoupon}}" popup-name="恭喜获得" award-info="{{awardInfo}}" />
