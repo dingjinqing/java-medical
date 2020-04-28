@@ -594,7 +594,7 @@ public class CouponGiveService extends ShopBaseService {
             }
             // 判断优惠券类型 减价or打折
             byte type = 0;
-            if (DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
+            if (CouponConstant.ACT_CODE_DISCOUNT.equalsIgnoreCase(couponDetails.getActCode())) {
                 type = 1;
             }
             // 得到开始时间和结束时间
@@ -860,13 +860,6 @@ public class CouponGiveService extends ShopBaseService {
     }
 
     /**
-     * 优惠券类型，打折还是优惠;0为减价，1为打折
-     */
-    private static final String DISCOUNT = "discount";
-
-    private static final String VOUCHER = "voucher";
-
-    /**
      * 参与表单反馈领取优惠券
      *
      * @param couponId 优惠券活动id
@@ -890,10 +883,10 @@ public class CouponGiveService extends ShopBaseService {
         // 1表示表单送券
         couponsRecord.setGetSource((byte) 1);
         // 优惠券类型，打折还是优惠;0为减价，1为打折
-        if (DISCOUNT.equals(record.getActCode())) {
+        if (CouponConstant.ACT_CODE_DISCOUNT.equals(record.getActCode())) {
             couponsRecord.setActType(1);
             couponsRecord.setType((byte) 1);
-        } else if (VOUCHER.equals(record.getActCode())) {
+        } else if (CouponConstant.ACT_CODE_VOUCHER.equals(record.getActCode())) {
             couponsRecord.setActType(0);
             couponsRecord.setType((byte) 0);
         }

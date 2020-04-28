@@ -65,4 +65,17 @@ public class CouponConstant {
      * 默认库存为0
      */
     public static final Integer SURPLUS = 0;
+
+    /**
+     * 优惠券类型-指定金额减价
+     */
+    public static final String ACT_CODE_VOUCHER = "voucher";
+    /**
+     * 优惠券类型-打折
+     */
+    public static final String ACT_CODE_DISCOUNT = "discount";
+    /**
+     * 优惠券类型-分裂优惠券的随机金额
+     */
+    public static final String ACT_CODE_RANDOM = "random";
 }

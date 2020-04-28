@@ -5,6 +5,7 @@ import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.database.DslPlus;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import org.jooq.Condition;
 import org.jooq.Record5;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,6 @@ import static com.vpu.mp.db.shop.Tables.MRKING_VOUCHER;
 @Service
 public class CouponProcessorDao extends ShopBaseService {
 
-    /**普通优惠券*/
-    private static final byte COUPON_TYPE_NORMAL = 0;
-    private static final String ACT_CODE_VOUCHER = "voucher";
-    private static final String ACT_CODE_DISCOUNT = "discount";
-
     /**
      * 获取关联的最紧密的优惠券信息，排序规则：先满折满减，再面值（金额的话取最大，打折取最小），再时间
      * @param goodsId 商品id
@@ -47,7 +43,7 @@ public class CouponProcessorDao extends ShopBaseService {
         }
 
         // 先打折，后金额，打折的取折扣最小的，金额的取金额最大的
-        if (record5s.get(0).get(MRKING_VOUCHER.ACT_CODE).equals(ACT_CODE_DISCOUNT)) {
+        if (record5s.get(0).get(MRKING_VOUCHER.ACT_CODE).equals(CouponConstant.ACT_CODE_DISCOUNT)) {
             return record5s.get(0);
         } else {
             return record5s.get(record5s.size()-1);
@@ -69,8 +65,8 @@ public class CouponProcessorDao extends ShopBaseService {
             .orderBy(MRKING_VOUCHER.ACT_CODE.asc(), MRKING_VOUCHER.DENOMINATION.asc(), MRKING_VOUCHER.CREATE_TIME.desc())
             .fetchInto(MrkingVoucherRecord.class);
         Map<String, List<MrkingVoucherRecord>> collects = mrkingVoucherRecords.stream().collect(Collectors.groupingBy(MrkingVoucherRecord::getActCode, Collectors.toList()));
-        List<MrkingVoucherRecord> discounts = collects.get(ACT_CODE_DISCOUNT);
-        List<MrkingVoucherRecord> vouchers = collects.get(ACT_CODE_VOUCHER);
+        List<MrkingVoucherRecord> discounts = collects.get(CouponConstant.ACT_CODE_DISCOUNT);
+        List<MrkingVoucherRecord> vouchers = collects.get(CouponConstant.ACT_CODE_VOUCHER);
 
         List<MrkingVoucherRecord> datas = new ArrayList<>();
         if (discounts != null) {
@@ -127,7 +123,7 @@ public class CouponProcessorDao extends ShopBaseService {
             .or(DslPlus.findInSet(catId,MRKING_VOUCHER.RECOMMEND_CAT_ID)).or(DslPlus.findInSet(sortId,MRKING_VOUCHER.RECOMMEND_SORT_ID)));
 
         Condition baseCondition = MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL.getCode()).and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
-            .and(MRKING_VOUCHER.TYPE.eq(COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.SUIT_GOODS.eq((byte) 0));
+            .and(MRKING_VOUCHER.TYPE.eq(CouponConstant.COUPON_TYPE_NORMAL)).and(MRKING_VOUCHER.SUIT_GOODS.eq((byte) 0));
 
         return baseCondition.and(timeCondition).and(surplusCondition).and(usableTargetCondition);
     }

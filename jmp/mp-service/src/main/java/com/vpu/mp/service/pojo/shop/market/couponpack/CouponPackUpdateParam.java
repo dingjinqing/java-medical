@@ -35,6 +35,11 @@ public class CouponPackUpdateParam {
     /** 价格（现金或积分，直接领取时该值为0） */
     private BigDecimal accessCost;
 
+    /**
+     * 购物车是否展示，1是
+     */
+    private Byte showCart;
+
     /** 活动规则 */
     private String     actRule;
 

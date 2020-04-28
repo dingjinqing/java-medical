@@ -179,6 +179,9 @@ ALTER TABLE `b2c_group_draw` ADD COLUMN `activity_copywriting` text COMMENT '活
 
 -- 20200423订单商品表增加加价购id
 ALTER TABLE `b2c_order_goods` ADD COLUMN `purchase_id` int(11) NOT NULL DEFAULT 0 COMMENT '加价购活动id';
+
+-- 20200427优惠券礼包活动添加购物车展示选项
+ALTER TABLE `b2c_coupon_pack` ADD COLUMN `show_cart` tinyint(1) DEFAULT '1' COMMENT '购物车是否展示，1是';
 /***********************2.10*********************END*/
 
 /***********************2.11*********************BEGIN*/
