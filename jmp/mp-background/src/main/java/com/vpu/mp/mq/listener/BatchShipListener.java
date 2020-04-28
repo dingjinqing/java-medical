@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RabbitListener(queues = {RabbitConfig.QUEUE_RETURN_SUB_ORDER},containerFactory = "simpleRabbitListenerContainerFactory")
+@RabbitListener(queues = {RabbitConfig.QUEUE_BATCH_SHIP},containerFactory = "simpleRabbitListenerContainerFactory")
 public class BatchShipListener implements BaseRabbitHandler {
 
     @Autowired
