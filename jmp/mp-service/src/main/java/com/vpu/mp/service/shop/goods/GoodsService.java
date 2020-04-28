@@ -19,6 +19,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
@@ -26,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -2616,8 +2618,14 @@ public class GoodsService extends ShopBaseService {
             apiJsonResult.setMsg("缺少商品");
             return  apiJsonResult;
         }
-
-        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
+        PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
+        mqParam.setShopId(getShopId());
+        mqParam.setStoreId(storeRecord.getStoreId());
+        mqParam.setGoodsPrdList(posSyncProductParam.getGoodsList());
+        // 调用消息队列
+        saas.taskJobMainService.dispatchImmediately(mqParam, PosSyncProductMqParam.class.getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.POS_SYNC_PRODUCT.getExecutionType());
+//        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
         return apiJsonResult;
     }
 

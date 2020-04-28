@@ -79,6 +79,10 @@ public class RabbitConfig {
     public static final String QUEUE_GROUP_INTEGRATION_SUCCESS = "group.integration.success";
     /**system同步日历 */
     public static final String QUEUE_CALENDAR = "mq.calendar";
+    /*************pos对接相关接口使用队列*************/
+    public static final String QUEUE_POS_SYNC_PRODUCT = "pos.sync.product";
+
+    /*************pos对接相关接口使用队列结束*************/
     
     /**
      * 路由和队列的对应关系是1:n不是1:1(路由按照模块区分)
@@ -95,7 +99,8 @@ public class RabbitConfig {
     public static final String EXCHANGE_ORDER = "direct.order";
     /**商品导入路由*/
     public static final String EXCHANGE_GOODS_IMPORT = "direct.goods";
-
+    /**pos对接相关接口路由*/
+    public static final String EXCHANGE_POS_SYNC = "direct.pos.sync";
 
 
     /** 发送失败路由键 */
@@ -136,7 +141,9 @@ public class RabbitConfig {
     public static final String BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY = "sys.calendar.key";
     /**批量发货 */
     public static final String BINDING_EXCHANGE_BATCH_SHIP_KEY = "bind.batch.ship.key";
-    
+    /*************pos对接相关接口路由键*************/
+    public static final String BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY = "bind.pos.sync.product";
+    /*************pos对接相关接口路由键结束*************/
     @Bean
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory connectionFactory =
@@ -302,7 +309,7 @@ public class RabbitConfig {
     public Queue groupIntegrationQueue() {
         return new Queue(QUEUE_GROUP_INTEGRATION_SUCCESS,true,false,false);
     }
-    
+
     /**
      * system同步日历
      * @return
@@ -319,6 +326,12 @@ public class RabbitConfig {
     public Queue batchShipQueue() {
         return new Queue(QUEUE_BATCH_SHIP,true,false,false);
     }
+
+    /**
+     * pos_sync_product pos 同步商品接口 主要同步上下架和价格
+     */
+    @Bean
+    public Queue posSyncProductQueue(){return new Queue(QUEUE_POS_SYNC_PRODUCT,true,false,false);}
 
     /**
      * 1.路由名字
@@ -366,6 +379,11 @@ public class RabbitConfig {
         return new DirectExchange(EXCHANGE_GOODS_IMPORT,true,false);
     }
 
+    /**
+     * @return pos对接使用路由器
+     */
+    @Bean
+    public DirectExchange posSyncExchange(){return new DirectExchange(EXCHANGE_POS_SYNC,true,false);}
     /**
      * @return 路由和队列绑定
      */
@@ -456,5 +474,11 @@ public class RabbitConfig {
     @Bean
     public Binding bindingBatchShipQueue() {
         return BindingBuilder.bind(batchShipQueue()).to(orderExchange()).with(BINDING_EXCHANGE_BATCH_SHIP_KEY);
+    }
+
+    /**pos.sync.product队列绑定 direct.pos.sync 路由 */
+    @Bean
+    public Binding bindingPosSyncProductQueue(){
+        return BindingBuilder.bind(posSyncProductQueue()).to(posSyncExchange()).with(BINDING_EXCHANGE_POS_SYNC_PRODUCT_KEY);
     }
 }
