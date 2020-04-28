@@ -220,11 +220,8 @@ public class ReturnOrderService extends ShopBaseService{
 		returnOrder.setShopId(getShopId());
 		returnOrder.setCurrency(order.getCurrency());
         returnOrder.setIsAutoReturn(param.getIsAutoReturn());
-		//除退货外,refund_status为4(admin退货时也为4)
-        returnOrder.setRefundStatus(
-            param.getReturnType() == OrderConstant.RT_GOODS ?
-                (param.getIsMp() == OrderConstant.IS_MP_ADMIN ? OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING : OrderConstant.REFUND_STATUS_AUDITING)
-                : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
+		//除退货外,refund_status为4
+        returnOrder.setRefundStatus(param.getReturnType() == OrderConstant.RT_GOODS ? OrderConstant.REFUND_STATUS_AUDITING : OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
 		if(param.getReturnType() == OrderConstant.RT_GOODS) {
 			//退货->申请时间
 			returnOrder.setApplyTime(DateUtil.getSqlTimestamp());
