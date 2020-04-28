@@ -197,11 +197,6 @@ public class CouponMpService extends ShopBaseService {
             }
         }else{
             coupon.couponGiveService.handlerCouponGive(couponParam);
-            if(couponData.getCouponTag().equals(BaseConstant.COUPON_TAG)){
-                //给领券用户打标签
-                List<Integer> couponTagIds = Util.stringToList(couponData.getCouponTagId());
-                userTag.addActivityTag(param.getUserId(),couponTagIds,userTag.SRC_COUPON,param.getCouponId());
-            }
         }
         return fetchCouponStatus;
     }
@@ -388,9 +383,10 @@ public class CouponMpService extends ShopBaseService {
         Result<Record> fetch = db().select().from(MRKING_VOUCHER)
             .where(MRKING_VOUCHER.DEL_FLAG.eq(DelFlag.NORMAL_VALUE)).and((MRKING_VOUCHER.END_TIME.ge(nowDate)).or(MRKING_VOUCHER.VALIDITY_TYPE.eq(BaseConstant.COUPON_VALIDITY_TYPE_FLEXIBLE)))
             .and(MRKING_VOUCHER.ENABLED.eq(BaseConstant.COUPON_ENABLED_NORMAL)).and(MRKING_VOUCHER.RECOMMEND_GOODS_ID.eq("")).and(MRKING_VOUCHER.SURPLUS.gt(0)).fetch();
-        if(fetch != null)
+        if(fetch != null) {
             return fetch.into(CouponPageDecorationVo.class);
-        else
+        } else{
             return null;
+        }
     }
 }

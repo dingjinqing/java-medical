@@ -106,7 +106,8 @@ global.wxPage({
       "isDelete",
       "isCancel",
       "isShowFriendPay",
-      "isShowEndPay"
+      "isShowEndPay",
+      "isShowAgainBuy"
     ];
     order.operate = orderEvent.filterObj(order, filterArr);
     console.log(order);

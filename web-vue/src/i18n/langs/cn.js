@@ -438,6 +438,10 @@ import {
 import {
   cn as refundDialog
 } from './views/admin_new/cn/index/orderManagement/virtualGoodsOrder/refundDialogCn'
+// 批量发货
+import {
+  cn as bulkShipment
+} from './views/admin_new/cn/index/orderManagement/bulkShipmentCn'
 
 // 会员管理系列国际化
 // 会员列表
@@ -1046,6 +1050,7 @@ const cn = {
   memberCardOrder, // 虚拟商品订单-会员卡订单
   couponPackageOrder, // 虚拟商品订单- 优惠券包订单
   refundDialog, // 虚拟商品订单- 手动退款弹窗
+  bulkShipment, // 批量发货
 
   // 营销
   marketManage, // 营销管理
