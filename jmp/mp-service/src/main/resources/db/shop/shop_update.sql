@@ -473,7 +473,7 @@ ALTER TABLE `b2c_distribution_strategy` ADD COLUMN `strategy_type` tinyint(1) NU
 -- 2020.04.26 好友助力 添加活动规则说明
 ALTER TABLE `b2c_friend_promote_activity` ADD COLUMN `activity_copywriting` text COMMENT '活动说明';
 -- 批量发货记录表
-create table `b2c_bulkshipment_record` (
+create table  IF NOT EXISTS `b2c_bulkshipment_record` (
   `id`          int not null auto_increment,
   `sys_id`      int(9)  default null comment '操作员ID',
   `account_id`  int(9)  default null comment 'SUB操作员ID',
@@ -486,7 +486,7 @@ create table `b2c_bulkshipment_record` (
 
 
 -- 批量发货详细记录表
-create table `b2c_bulkshipment_record_detail` (
+create table IF NOT EXISTS `b2c_bulkshipment_record_detail` (
   `id`            int(9) not null auto_increment,
   `batch_id`      int(9) not null comment'批次id',
   `status`        tinyint(1)  not null  comment '0成功 1 失败',
