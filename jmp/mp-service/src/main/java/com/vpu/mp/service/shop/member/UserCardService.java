@@ -288,6 +288,11 @@ public class UserCardService extends ShopBaseService {
 		userCardDao.updateUserGradeCardId(userId, newCard.getId());
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
+		//	用户卡升级订阅消息通知
+		if(newCard.getGrade().compareTo(oldCard.getGrade())>0) {
+			
+		}
+		
 		if (newCard.getSorce() != null && newCard.getSorce() > 0) {
 			addUserCardScore(userId, newCard);
 		}
