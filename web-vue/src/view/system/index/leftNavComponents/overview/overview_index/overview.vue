@@ -2,7 +2,10 @@
   <div class="container overview-page">
     <div class="header">
       <div class="h-l">system <span class="title-type">管理员</span></div>
-      <div class="h-r"></div>
+      <div class="h-r"><span
+          style="line-height:27px;"
+          v-text="queryTime"
+        ></span></div>
     </div>
     <div class="content">
       <div class="module">
@@ -197,6 +200,7 @@ export default {
   name: 'overview',
   data () {
     return {
+      queryTime: '',
       queryParams: {
         startTime: '',
         endTime: ''
@@ -464,6 +468,7 @@ export default {
         this.$message.warning('请选择检索时间')
         return false
       }
+      this.queryTime = new Date().format('yyyy-MM-dd hh:mm:ss')
       shopViewApi(param).then(res => {
         if (res) {
           console.log(res)
