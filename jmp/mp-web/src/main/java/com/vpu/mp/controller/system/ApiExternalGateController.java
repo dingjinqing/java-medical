@@ -71,7 +71,8 @@ public class ApiExternalGateController extends ShopBaseService {
             }
 
             ApiJsonResult result = gateService.serviceFunCall(param);
-            return response(result.getCode(),result.getMsg(),result.getData());
+            responseLog(result);
+            return result;
         } catch (Exception e) {
            log.error("servcie gateWay error:"+e.getMessage());
            return response(ApiExternalGateConfig.ERROR_SYSTEM_FAIL,ApiExternalGateConfig.ERROR_SYSTEM_FAIL_MSG);
@@ -85,24 +86,19 @@ public class ApiExternalGateController extends ShopBaseService {
      * @return {@link ApiJsonResult}
      */
     private ApiJsonResult response(Integer errorCode, String errorMsg){
-        return response(errorCode,errorMsg,null);
-    }
-
-    /**
-     * 统一返回信息出口
-     * @param errorCode 操作结果码值
-     * @param errorMsg 操作结果信息
-     * @param data 操作结果数据
-     * @return {@link ApiJsonResult}
-     */
-    private ApiJsonResult response(Integer errorCode, String errorMsg, Object data) {
         ApiJsonResult apiJsonResult = new ApiJsonResult();
         apiJsonResult.setCode(errorCode);
         apiJsonResult.setMsg(errorMsg);
-        if (data != null) {
-            apiJsonResult.setData(data);
-        }
-        log.info("service api response："+ Util.toJson(apiJsonResult));
+        responseLog(apiJsonResult);
         return apiJsonResult;
     }
+
+    /**
+     * 统一日志
+     * @param apiJsonResult 接口返回信息
+     */
+    private void responseLog(ApiJsonResult apiJsonResult){
+        log.info("service api response："+ Util.toJson(apiJsonResult));
+    }
+
 }

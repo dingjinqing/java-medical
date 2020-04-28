@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,6 +212,9 @@ public class ApiExternalGateService extends MainBaseService {
             case ApiExternalGateConfig.SERVICE_GOODS_LIST:
                 apiJsonResult = goodsList(param);
                 break;
+            case ApiExternalGateConfig.SERVICE_POS_SYNC_PRODUCT:
+                apiJsonResult = posSyncProduct(param);
+                break;
             default:
                 apiJsonResult = new ApiJsonResult();
                 apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE);
@@ -225,6 +229,22 @@ public class ApiExternalGateService extends MainBaseService {
         // 需要将成功数据或者错误情况的 errorCode，errorMsg data 封装成对应的ApiJsonResult返回
 
         return new ApiJsonResult();
+    }
+
+    /**
+     * pos 同步商品信息(门店商品信息) 主要同步上下架和价格
+     * @param gateParam
+     * @return
+     */
+    private ApiJsonResult posSyncProduct(ApiExternalGateParam gateParam){
+        PosSyncProductParam param = Util.parseJson(gateParam.getContent(), PosSyncProductParam.class);
+        if (param == null) {
+            ApiJsonResult apiJsonResult = new ApiJsonResult();
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("content 内容参数错误");
+            return apiJsonResult;
+        }
+       return saas().getShopApp(gateParam.getShopId()).goods.posSyncProductMq(param);
     }
 
 
