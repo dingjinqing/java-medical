@@ -318,7 +318,8 @@ export default {
           name: 'addCalendarMain',
           query: {
             isAdd: false,
-            id: item.id
+            id: item.id,
+            eventStatus: item.eventStatus
           }
         })
       }

@@ -269,7 +269,7 @@ public class OrderGoodsService extends ShopBaseService{
 	 * @return
 	 */
 	public List<GoodsAndOrderInfoBo> getGoodsInfoAndOrderInfo(String orderSn){
-		return db().select(TABLE.GOODS_ID, TABLE.PRODUCT_ID, TABLE.GOODS_NUMBER, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS.IS_ON_SALE, GOODS.DEL_FLAG)
+		return db().select(TABLE.GOODS_ID, TABLE.PRODUCT_ID,TABLE.IS_GIFT,TABLE.GOODS_NUMBER, GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS.IS_ON_SALE, GOODS.DEL_FLAG)
 				.from(TABLE)
 				.leftJoin(GOODS).on(GOODS.GOODS_ID.eq(TABLE.GOODS_ID))
 				.leftJoin(GOODS_SPEC_PRODUCT).on(TABLE.PRODUCT_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))

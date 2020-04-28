@@ -38,9 +38,11 @@ export default {
   methods: {
     initData () {
       // 获取传参
-      promoteRules({
+      let obj = {
+        shopId: this.$route.query.shop_id,
         actCode: this.$route.query.actCode
-      }).then(res => {
+      }
+      promoteRules(obj).then(res => {
         if (res.error === 0 && res.content !== null) {
           this.isUseDefault = res.content.isUseDefault
           this.promoteRules = res.content.document
