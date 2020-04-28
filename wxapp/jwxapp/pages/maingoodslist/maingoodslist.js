@@ -25,7 +25,6 @@ global.wxPage({
     specParams: {}, // 规格信息
     basicNumber: 0, // 多规格添加购物车时的基础数量
     basicLimit: null, // 多规格添加购物车时的限制
-    rule_id: '', // 规则id
   },
 
   /**
@@ -88,12 +87,12 @@ global.wxPage({
           return false;
         }
       }, {
-          goodsNumber: 1,
-          prdId: prdId,
-          activityType: 7,
-          activityId: that.data.identity_id,
-          type: 2
-        })
+        goodsNumber: 1,
+        prdId: prdId,
+        activityType: 7,
+        activityId: that.data.identity_id,
+        type: 2
+      })
     } else {
       // 选择规格
       that.setData({
@@ -104,7 +103,7 @@ global.wxPage({
     }
   },
   // 获取商品详情
-  requestGoodsInfo(goodsId) {
+  requestGoodsInfo (goodsId) {
     util.api('/api/wxapp/goods/detail', res => {
       if (res.error == 0) {
         let {
@@ -132,16 +131,16 @@ global.wxPage({
         })
       }
     }, {
-        goodsId: goodsId,
-        activityId: this.data.identity_id,
-        activityType: 7,
-        userId: util.getCache('user_id'),
-        lon: null,
-        lat: null
-      })
+      goodsId: goodsId,
+      activityId: this.data.identity_id,
+      activityType: 7,
+      userId: util.getCache('user_id'),
+      lon: null,
+      lat: null
+    })
   },
   // 获取规格信息
-  getProduct({
+  getProduct ({
     detail: { prdNumber, limitBuyNum = null, limitMaxNum = null }
   }) {
     this.setData({
@@ -154,7 +153,7 @@ global.wxPage({
     })
   },
   // 规格回调
-  getProductData(e) {
+  getProductData (e) {
     this.setData({
       product: e.detail,
       limitInfo: {
@@ -166,21 +165,21 @@ global.wxPage({
     })
   },
   // 数量回调
-  getGoodsNum(e) {
+  getGoodsNum (e) {
     this.setData({
       productInfo: { ...this.data.product, goodsNum: e.detail.goodsNum }
     });
     console.log(this.data.productInfo)
   },
   // 关闭规格弹窗
-  bindCloseSpec() {
+  bindCloseSpec () {
     this.setData({
       showSpec: false,
       triggerButton: ''
     })
   },
   // 规格添加购物车
-  addCart() {
+  addCart () {
     var that = this
     let { goodsNum: goodsNumber, prdId } = that.data.productInfo
     // 限购校验
@@ -199,12 +198,12 @@ global.wxPage({
       }
       that.bindCloseSpec()
     }, {
-        goodsNumber: goodsNumber,
-        prdId: prdId,
-        activityType: 7,
-        activityId: that.data.identity_id,
-        type: 2
-      });
+      goodsNumber: goodsNumber,
+      prdId: prdId,
+      activityType: 7,
+      activityId: that.data.identity_id,
+      type: 2
+    });
   },
 
   // 获取换购商品
@@ -217,7 +216,6 @@ global.wxPage({
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
         var change_goods_info = res.content;
-        var ruleId = ''
         // 已选个数
         change_goods_info.alreadyChangeNum = that.data.pIds.length
         change_goods_info.list.forEach(item => {
@@ -230,12 +228,9 @@ global.wxPage({
           if (item.isChecked == 1) {
             purchase_change_goods[item.prdId] = item.purchaseRuleId
           }
-          // 规则id
-          ruleId = item.purchaseRuleId
         })
         that.setData({
-          change_goods_info: change_goods_info,
-          rule_id: ruleId
+          change_goods_info: change_goods_info
         })
       } else {
         util.showModal("提示", res.message, function () {
@@ -259,7 +254,7 @@ global.wxPage({
       changeMove: true
     })
   },
-  
+
   // 关闭换购商品弹窗
   close_change: function () {
     var that = this;
@@ -312,14 +307,16 @@ global.wxPage({
   btn_confirm_change: function () {
     var that = this;
     var prdIds = []
+    var ruleIds = []
     that.data.change_goods_info.list.forEach(item => {
       if (item.isChecked == 1) {
         prdIds.push(item.prdId)
+        ruleIds.push(item.purchaseRuleId)
       }
     })
-    prdIds.forEach(item => {
+    prdIds.forEach((item, index) => {
       if (that.data.pIds.indexOf(item) == -1) {
-        that.add_cart(item)
+        that.add_cart(item, ruleIds[index])
       }
     })
     that.data.change_goods_info.alreadyChangeNum = prdIds.length
@@ -330,8 +327,9 @@ global.wxPage({
   },
 
   // 添加换购商品到购物车
-  add_cart(data) {
-    console.log(data)
+  add_cart (prdId, ruleId) {
+    console.log(prdId)
+    console.log(ruleId)
     var that = this
     util.api('/api/wxapp/cart/add', function (res) {
       if (res.error == 0) {
@@ -347,12 +345,12 @@ global.wxPage({
         util.showModal("提示", res.message);
         return false;
       }
-    }, { 
-      goodsNumber: 1, 
-      prdId: data, 
-      activityType: 97, 
-      activityId: that.data.rule_id,
-      type: 1 
+    }, {
+      goodsNumber: 1,
+      prdId: prdId,
+      activityType: 97,
+      activityId: ruleId,
+      type: 1
     })
   },
 
@@ -421,7 +419,7 @@ global.wxPage({
     }, { purchasePriceId: that.data.identity_id, search: that.data.searchText, currentPage: that.data.page, pageRows: 10 });
   },
 })
-function main_request(that) {
+function main_request (that) {
   util.api('/api/wxapp/purchase/goodslist', function (res) {
     if (res.error == 0) {
       var main_goods_info = res.content;
@@ -451,7 +449,7 @@ function main_request(that) {
           main_goods_info.is_show_reduce_doc = 0
         }
       }
-      
+
       that.setData({
         main_goods_info: main_goods_info,
         add_goods_info: add_goods_info,
