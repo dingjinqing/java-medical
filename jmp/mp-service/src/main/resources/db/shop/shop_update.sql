@@ -498,5 +498,8 @@ create table IF NOT EXISTS `b2c_bulkshipment_record_detail` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   primary key (`id`)
 );
+-- 评论表添加买家秀相关字段
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `is_show` tinyint(2) DEFAULT '0' COMMENT '是否买家秀';
+ALTER TABLE `b2c_comment_goods` ADD COLUMN `show_time` timestamp NULL DEFAULT NULL COMMENT '买家秀时间';
 /*********************2.12*************************END*/
 

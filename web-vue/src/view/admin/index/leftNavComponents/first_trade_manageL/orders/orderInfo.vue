@@ -603,8 +603,20 @@
             </tr>
           </thead>
           <tbody>
-            <template>
-            </template>
+            <tr v-for="(rebateItem,rebateIndex) in rebateList" :key="rebateIndex">
+              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.mobile}}</td>
+              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.username}}</td>
+              <td v-if="rebateItem.rowSpan" :rowspan="rebateItem.rowSpan">{{rebateItem.realName}}</td>
+              <td>{{rebateItem.goodsName}}</td>
+              <td>{{rebateItem.canRebateTotalMoney}}</td>
+              <td>{{rebateItem.costPrice}}</td>
+              <td>{{rebateItem.canRebateMoney}}</td>
+              <td>{{rebateItem.rebateLevel | getRebateLevel}}</td>
+              <td>{{(rebateItem.rebatePercent * 100).toFixed(2)}}%</td>
+              <td>{{(rebateItem.rebateMoney).toFixed(2)}}</td>
+              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">待返利</td>
+              <td v-if="rebateIndex === 0" :rowspan="rebateList.length"></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -943,6 +955,26 @@ export default {
         })
       }
       return orderList
+    },
+    rebateList () {
+      let target = ''
+      return this.order.rebateList.map(item => {
+        if (target !== item.rebateUserId) {
+          target = item.rebateUserId
+          item.rowSpan = this.order.rebateList.filter(user => { return user.rebateUserId === item.rebateUserId }).length
+        }
+        return item
+      })
+    }
+  },
+  filters: {
+    getRebateLevel (level) {
+      let type = {
+        0: '自购返利',
+        1: '直接邀请',
+        2: '间接邀请'
+      }
+      return type[level]
     }
   }
 }

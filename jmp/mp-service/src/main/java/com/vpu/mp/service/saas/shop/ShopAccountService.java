@@ -1,21 +1,5 @@
 package com.vpu.mp.service.saas.shop;
 
-import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
-import static com.vpu.mp.db.main.tables.Shop.SHOP;
-import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.SelectWhereStep;
-import org.jooq.impl.DSL;
-import org.jooq.tools.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.vpu.mp.db.main.tables.records.ShopAccountRecord;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.jedis.JedisManager;
@@ -28,6 +12,23 @@ import com.vpu.mp.service.pojo.saas.shop.ShopAccountListQueryParam;
 import com.vpu.mp.service.pojo.saas.shop.ShopAccountPojo;
 import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.saas.image.SystemImageService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectWhereStep;
+import org.jooq.impl.DSL;
+import org.jooq.tools.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static com.vpu.mp.db.main.tables.MpAuthShop.MP_AUTH_SHOP;
+import static com.vpu.mp.db.main.tables.Shop.SHOP;
+import static com.vpu.mp.db.main.tables.ShopAccount.SHOP_ACCOUNT;
 
 /**
  * 
@@ -258,5 +259,10 @@ public class ShopAccountService extends MainBaseService {
 		return db().update(SHOP_ACCOUNT).set(SHOP_ACCOUNT.IS_BIND, bind).where(SHOP_ACCOUNT.SYS_ID.eq(sysId)).execute();
 	}
 
-
+    public List<ShopManageVo> getByIds(List<Integer> sysId) {
+	    if (CollectionUtils.isEmpty(sysId)) {
+            return Collections.emptyList();
+        }
+        return db().selectFrom(SHOP_ACCOUNT).where(SHOP_ACCOUNT.SYS_ID.in(sysId)).fetchInto(ShopManageVo.class);
+    }
 }

@@ -2,6 +2,7 @@ package com.vpu.mp.service.shop.goods;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.Tables;
 import com.vpu.mp.db.shop.tables.records.*;
@@ -17,12 +18,15 @@ import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpecProduct;
@@ -47,6 +51,8 @@ import com.vpu.mp.service.shop.image.ImageService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.market.live.LiveService;
 import com.vpu.mp.service.shop.member.MemberCardService;
+import com.vpu.mp.service.shop.store.store.StoreGoodsService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -140,6 +146,10 @@ public class GoodsService extends ShopBaseService {
     private BargainProcessorDao bargainProcessorDao;
     @Autowired
     private GroupBuyProcessorDao groupBuyProcessorDao;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private StoreGoodsService storeGoodsService;
 
     /**
      * 获取全品牌，标签，商家分类数据,平台分类数据
@@ -2579,5 +2589,62 @@ public class GoodsService extends ShopBaseService {
         } catch (Exception e) {
             logger().debug("商品修改-同步es数据异常："+e.getMessage());
         }
+    }
+
+    /**
+     * pos同步商品信息 上下架和价格
+     * @param posSyncProductParam
+     * @return
+     */
+    public ApiJsonResult posSyncProductMq(PosSyncProductParam posSyncProductParam){
+        ApiJsonResult apiJsonResult = new ApiJsonResult();
+        Integer posShopId = posSyncProductParam.getShopId();
+        if (posShopId == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("缺少必传参数shop_id");
+            return  apiJsonResult;
+        }
+        StoreRecord storeRecord = storeService.getStoreByPosShopId(posShopId);
+        if (storeRecord == null) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("该店铺没有对应的门店");
+            return  apiJsonResult;
+        }
+
+        if (posSyncProductParam.getGoodsList() == null || posSyncProductParam.getGoodsList().size() == 0) {
+            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            apiJsonResult.setMsg("缺少商品");
+            return  apiJsonResult;
+        }
+
+        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
+        return apiJsonResult;
+    }
+
+    /**
+     * pos 同步商品规格信息
+     * @param storeId 门店id
+     * @param goodsPrdList 规格同步信息
+     */
+    public void posSyncProductMqCallback(Integer storeId,List<PosSyncGoodsPrdParam> goodsPrdList){
+        Map<String, PosSyncGoodsPrdParam> posPrdMap = goodsPrdList.stream().collect(Collectors.toMap(PosSyncGoodsPrdParam::getPrdSn, Function.identity()));
+        // 过滤掉prdSn无法匹配上的
+        List<GoodsSpecProductRecord> goodsSpecPrdBySn = goodsSpecProductService.getGoodsSpecPrdBySn(posPrdMap.keySet());
+
+        // 待更新规格条码字段的规格集合
+        List<GoodsSpecProductRecord> goodsSpecPrdReadyToUpdate = new ArrayList<>(goodsSpecPrdBySn.size()/2);
+        List<PosSyncGoodsPrdParam> storePrdReadyToUpdate = new ArrayList<>(posPrdMap.size());
+        goodsSpecPrdBySn.forEach(prdRecord->{
+            PosSyncGoodsPrdParam posSyncGoodsPrdParam = posPrdMap.get(prdRecord.getPrdSn());
+            if (!Objects.equals(prdRecord.getPrdCodes(), posSyncGoodsPrdParam.getPrdCodes())) {
+                prdRecord.setPrdCodes(posSyncGoodsPrdParam.getPrdCodes());
+                goodsSpecPrdReadyToUpdate.add(prdRecord);
+            }
+
+            posSyncGoodsPrdParam.setPrdId(prdRecord.getPrdId());
+            storePrdReadyToUpdate.add(posSyncGoodsPrdParam);
+        });
+        db().batchUpdate(goodsSpecPrdReadyToUpdate).execute();
+        storeGoodsService.batchUpdateForSyncPosProduct(storeId,storePrdReadyToUpdate);
     }
 }

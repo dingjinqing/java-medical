@@ -9,8 +9,7 @@ import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.pojo.shop.auth.AdminTokenAuthInfo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipListVo;
-import org.jooq.Record;
-import org.jooq.SelectOnConditionStep;
+import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,12 +31,7 @@ public class BulkshipmentRecordService extends ShopBaseService {
     }
 
     public PageResult<BatchShipListVo> batchShipList(BatchShipListParam param) {
-        SelectOnConditionStep<? extends Record> select = db().select(TABLE.ID, TABLE.SYS_ID, TABLE.ACCOUNT_ID, TABLE.TOTAL_NUM, TABLE.SUCCESS_NUM, TABLE.CREATE_TIME
-            ,MAIN_TABLE_ACCOUNT.USER_NAME, MAIN_TABLE_ACCOUNT.MOBILE
-            ,MAIN_TABLE_CHILD_ACCOUNT.ACCOUNT_NAME.as("child_user_name"), MAIN_TABLE_CHILD_ACCOUNT.MOBILE.as("child_mobile"))
-            .from(TABLE)
-            .leftJoin(MAIN_TABLE_ACCOUNT).on(MAIN_TABLE_ACCOUNT.SYS_ID.eq(TABLE.SYS_ID))
-            .leftJoin(MAIN_TABLE_CHILD_ACCOUNT).on(MAIN_TABLE_CHILD_ACCOUNT.ACCOUNT_ID.eq(TABLE.ACCOUNT_ID));
+        SelectJoinStep<?> select = db().select(TABLE.ID, TABLE.SYS_ID, TABLE.ACCOUNT_ID, TABLE.TOTAL_NUM, TABLE.SUCCESS_NUM, TABLE.CREATE_TIME).from(TABLE);
         if(param.getBatchId() != null) {
             select.where(TABLE.ID.eq(param.getBatchId()));
         }

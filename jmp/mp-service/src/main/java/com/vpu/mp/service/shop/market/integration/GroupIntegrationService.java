@@ -1097,6 +1097,7 @@ public class GroupIntegrationService extends ShopBaseService {
 	public void sendGroupSuccessMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId,String groupName,Integer groupSize) {
 		logger().info("组团瓜分积成功");
 		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId;
+		logger().info("page信息：{}",page);
 		List<Integer> userIdList = new ArrayList<Integer>();
 		userIdList.add(userId);
 		String first="您好，您有新的组团瓜分积成功订单";
