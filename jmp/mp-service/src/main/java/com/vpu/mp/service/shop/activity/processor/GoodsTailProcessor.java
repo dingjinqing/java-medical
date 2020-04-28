@@ -190,7 +190,7 @@ public class GoodsTailProcessor implements Processor,ActivityGoodsListProcessor,
             }
             if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
                 totalPrice = totalPrice.add(goods.getPrdPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
-            }else {
+            }else if (!goods.getActivityType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS)){
                 isAllCheck=0;
             }
         }

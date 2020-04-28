@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.goods.goods.GoodsActivityBaseMp;
 import lombok.Data;
@@ -134,6 +135,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
     public static class PurchasePriceRule{
         /**活动id*/
         private Integer activityId;
+        /**
+         * 状态 1启用 0停用
+         */
+        private Byte status = BaseConstant.NO;
         /**规则id*/
         private Integer ruleId;
         private String name;
