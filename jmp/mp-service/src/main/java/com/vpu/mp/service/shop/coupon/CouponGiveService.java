@@ -18,6 +18,7 @@ import com.vpu.mp.service.pojo.shop.coupon.give.*;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListParam;
 import com.vpu.mp.service.pojo.shop.coupon.hold.CouponHoldListVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.shop.member.tag.UserTagService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -50,6 +51,8 @@ public class CouponGiveService extends ShopBaseService {
     private CouponHoldService couponHold;
     @Autowired
     public CouponService couponService;
+    @Autowired
+    public UserTagService userTag;
     private static final MrkingVoucher MV = MrkingVoucher.MRKING_VOUCHER.as("MV");
 
     /**
@@ -678,6 +681,11 @@ public class CouponGiveService extends ShopBaseService {
                 successNum++;
                 couponGiveBo.getCouponSet().add(Integer.valueOf(couponId));
                 logger().info("当前优惠券ID："+couponId+",发放成功");
+                if(couponDetails.getCouponTag().equals(BaseConstant.COUPON_TAG)){
+                    //给领券用户打标签
+                    List<Integer> couponTagIds = Util.stringToList(couponDetails.getCouponTagId());
+                    userTag.addActivityTag(userId,couponTagIds, UserTagService.SRC_COUPON,Integer.valueOf(couponId));
+                }
             }
         }
         //更新优惠券表发放/领取数量
@@ -703,7 +711,9 @@ public class CouponGiveService extends ShopBaseService {
                 MRKING_VOUCHER.TYPE,
                 MRKING_VOUCHER.RANDOM_MAX,
                 MRKING_VOUCHER.RANDOM_MIN,
-                MRKING_VOUCHER.VALIDITY_MINUTE)
+                MRKING_VOUCHER.VALIDITY_MINUTE,
+            MRKING_VOUCHER.COUPON_TAG_ID,
+            MRKING_VOUCHER.COUPON_TAG)
                 .from(MRKING_VOUCHER)
                 .where(MRKING_VOUCHER.ID.eq(Integer.valueOf(couponId)))
                 .and(MRKING_VOUCHER.DEL_FLAG.eq(NumberUtils.BYTE_ZERO))

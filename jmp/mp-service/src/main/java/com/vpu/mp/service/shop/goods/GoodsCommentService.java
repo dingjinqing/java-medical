@@ -193,7 +193,7 @@ public class GoodsCommentService extends ShopBaseService {
         select.and(COMMENT_GOODS.IS_TOP.eq(GoodsCommentPageListParam.TOP));
     }
       //根据是否买家秀查询
-      if (GoodsCommentPageListParam.TOP.equals(param.getIsTop())){
+      if (GoodsCommentPageListParam.SHOW.equals(param.getIsShow())){
           select.and(COMMENT_GOODS.IS_SHOW.eq(GoodsCommentPageListParam.SHOW));
       }
   }
