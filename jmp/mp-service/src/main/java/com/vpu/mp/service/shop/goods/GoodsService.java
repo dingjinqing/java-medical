@@ -19,12 +19,15 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant;
+import com.vpu.mp.service.pojo.saas.shop.version.VersionNumConfig;
 import com.vpu.mp.service.pojo.shop.goods.GoodsConstant;
 import com.vpu.mp.service.pojo.shop.goods.goods.*;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCouple;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelCoupleTypeEnum;
 import com.vpu.mp.service.pojo.shop.goods.label.GoodsLabelSelectListVo;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncGoodsPrdParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductMqParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.sort.Sort;
 import com.vpu.mp.service.pojo.shop.goods.spec.GoodsSpec;
@@ -361,7 +364,7 @@ public class GoodsService extends ShopBaseService {
             GOODS_BRAND.BRAND_NAME,
             GOODS_SPEC_PRODUCT.PRD_ID, GOODS_SPEC_PRODUCT.PRD_DESC, GOODS_SPEC_PRODUCT.PRD_PRICE, GOODS_SPEC_PRODUCT.CREATE_TIME,
             GOODS_SPEC_PRODUCT.PRD_NUMBER, GOODS_SPEC_PRODUCT.PRD_SN, GOODS_SPEC_PRODUCT.PRD_COST_PRICE, GOODS_SPEC_PRODUCT.PRD_MARKET_PRICE,
-            GOODS_SPEC_PRODUCT.PRD_IMG)
+            GOODS_SPEC_PRODUCT.PRD_IMG, GOODS_SPEC_PRODUCT.PRD_CODES)
             .from(GOODS).leftJoin(SORT).on(GOODS.SORT_ID.eq(SORT.SORT_ID)).leftJoin(GOODS_BRAND)
             .on(GOODS.BRAND_ID.eq(GOODS_BRAND.ID)).innerJoin(GOODS_SPEC_PRODUCT).on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(condition);
@@ -2265,9 +2268,6 @@ public class GoodsService extends ShopBaseService {
             if (!goodsIds.isEmpty() && esUtilSearchService.esState()) {
                 esGoodsCreateService.batchUpdateEsGoodsIndex(goodsIds, getShopId());
                 esGoodsLabelCreateService.createEsLabelIndexForGoodsId(goodsIds, DBOperating.UPDATE);
-            }else{
-                esDataUpdateMqService.addEsGoodsIndex(goodsIds,getShopId(),DBOperating.UPDATE);
-                esDataUpdateMqService.updateGoodsLabelByLabelId(getShopId(),DBOperating.UPDATE,goodsIds,null);
             }
         } catch (Exception e) {
             logger().debug("手动上架所有待上架商品-同步es数据异常：" + e.getMessage());
@@ -2542,8 +2542,14 @@ public class GoodsService extends ShopBaseService {
             apiJsonResult.setMsg("缺少商品");
             return  apiJsonResult;
         }
-
-        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
+        PosSyncProductMqParam mqParam = new PosSyncProductMqParam();
+        mqParam.setShopId(getShopId());
+        mqParam.setStoreId(storeRecord.getStoreId());
+        mqParam.setGoodsPrdList(posSyncProductParam.getGoodsList());
+        // 调用消息队列
+        saas.taskJobMainService.dispatchImmediately(mqParam, PosSyncProductMqParam.class.getName(), getShopId(),
+            TaskJobsConstant.TaskJobEnum.POS_SYNC_PRODUCT.getExecutionType());
+//        posSyncProductMqCallback(storeRecord.getStoreId(),posSyncProductParam.getGoodsList());
         return apiJsonResult;
     }
 
