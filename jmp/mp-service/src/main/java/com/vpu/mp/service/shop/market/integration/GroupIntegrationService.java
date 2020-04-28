@@ -925,7 +925,8 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("活动id：{},团id：{}，更新状态为：{}；结果：{}", pinInteId, groupId, STATUS_TWO, execute2);
 			logger().info("发送拼团失败的通知");
 			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfo) {
-				sendGroupFailedMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(),groupIntegrationMaVo.getInviteUser());
+				Integer inviteUser = groupIntegrationMaVo.getInviteUser()==0?groupIntegrationMaVo.getUserId():groupIntegrationMaVo.getInviteUser();
+				sendGroupFailedMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(),inviteUser);
 			}
 		} else {
 			// 按邀请好友数量瓜分
@@ -998,7 +999,8 @@ public class GroupIntegrationService extends ShopBaseService {
 			String groupName = grouperInfo.getUsername();
 			int groupSize = groupInfoNew.size();
 			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfoNew) {
-				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize,groupIntegrationMaVo.getInviteUser());
+				Integer inviteUser = groupIntegrationMaVo.getInviteUser()==0?groupIntegrationMaVo.getUserId():groupIntegrationMaVo.getInviteUser();
+				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize,inviteUser);
 			}
 			
 		}
