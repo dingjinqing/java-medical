@@ -152,7 +152,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
             param.setActivityType(null);
             param.setActivityId(null);
         }
-        if (param.getActivityId() != null && param.getActivityType() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processInitCheckedOrderCreate(param);
         } else {
@@ -174,7 +174,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @param order
      */
     public void processSaveOrderInfo(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processSaveOrderInfo(param, order);
         } else {
@@ -202,7 +202,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
                 return;
             }
         }
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             processorMap.get(param.getActivityType()).processUpdateStock(param, order);
         } else {
@@ -224,7 +224,7 @@ public class OrderCreateMpProcessorFactory extends AbstractProcessorFactory<Crea
      * @throws MpException
      */
     public void processOrderEffective(OrderBeforeParam param, OrderInfoRecord order) throws MpException {
-        if (param.getActivityId() != null) {
+        if (param.getActivityId() != null && param.getActivityType() != null && param.getActivityId() > 0 && param.getActivityType() > 0) {
             //单一营销
             // 可能有：我要送礼、限次卡兑换、拼团、砍价、积分兑换、秒杀、拼团抽奖、打包一口价、预售、抽奖、支付有礼、测评、好友助力、满折满减购物车下单
             processorMap.get(param.getActivityType()).processOrderEffective(param, order);
