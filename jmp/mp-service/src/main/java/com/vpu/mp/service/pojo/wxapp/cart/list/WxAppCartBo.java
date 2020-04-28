@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.cart.list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
+import com.vpu.mp.service.pojo.wxapp.coupon.pack.CouponPackCartVo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,10 @@ public class WxAppCartBo {
      * 提示信息
      */
     private String notice ;
+    /**
+     *
+     */
+    private CouponPackCartVo couponPackage;
 
     @JsonIgnore
     private Byte activityType;
