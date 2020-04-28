@@ -205,13 +205,16 @@
                 label="活动规则："
                 prop=""
               >
-                <el-radio-group v-model="requestParam.times">
-                  <el-radio :label="1">每人N次</el-radio>
-                  <el-radio :label="2">每人每天N次</el-radio>
+                <el-radio-group v-model="requestParam.chanceType">
+                  <el-radio :label="0">每人N次</el-radio>
+                  <el-radio :label="1">每人每天N次</el-radio>
                 </el-radio-group>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.freePrizeDraw')+'：'">
+              <el-form-item
+                :label="$t('luckyDraw.freePrizeDraw')+'：'"
+                prop="freeChances"
+              >
                 <!-- <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullUnrestricted')"
@@ -219,16 +222,17 @@
                   v-model="requestParam.freeChances"
                 ></el-input>
                 <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span> -->
-                <el-radio-group v-model="requestParam.freeChanceType">
-                  <el-radio label="0">可免费抽奖
+                <el-radio-group v-model="freeChanceType">
+                  <el-radio :label="1">可免费抽奖
                     <el-input
-                      v-model.number="requestParam.freeChances"
-                      style="width:50px;"
+                      v-model.number="freeChances"
+                      style="width:80px;"
                       size="small"
+                      :min="1"
                     ></el-input>次
                   </el-radio>
-                  <el-radio label="1">不可免费抽奖</el-radio>
-                  <el-radio label="2">不限制次数</el-radio>
+                  <el-radio :label="0">不可免费抽奖</el-radio>
+                  <el-radio :label="-1">不限制次数</el-radio>
                 </el-radio-group>
               </el-form-item>
 
@@ -282,12 +286,15 @@
                 </div>
               </el-form-item>
 
-              <el-form-item :label="$t('luckyDraw.noWinningBonusPoints')+'：'">
-                <el-radio-group v-model="requestParam.noAwardScoreCheck">
+              <el-form-item
+                :label="$t('luckyDraw.noWinningBonusPoints')+'：'"
+                prop="noAwardScore"
+              >
+                <el-radio-group v-model="noAwardScoreType">
                   <el-radio :label="1">赠送
                     <el-input
-                      v-model.number="requestParam.noAwardScore"
-                      style="width:50px;"
+                      v-model.number="noAwardScore"
+                      style="width:80px;"
                       size="small"
                     ></el-input>
                     积分
@@ -672,6 +679,18 @@ export default {
       }
       callback()
     }
+    function validFreeChances (rule, value, callback) {
+      if (that.freeChanceType === 1 && that.freeChances === '') {
+        callback(new Error('请填写免费抽奖次数！'))
+      }
+      callback()
+    }
+    function validNoAwardScore (rule, value, callback) {
+      if (that.noAwardScoreType === 1 && that.noAwardScore === '') {
+        callback(new Error('请填写赠送积分数量！'))
+      }
+      callback()
+    }
     // 填写中奖概率
     function validChance (rule, value, callback) {
       let prizeList = that.requestParam.prizeList
@@ -722,7 +741,8 @@ export default {
         lotteryExplain: '',
         startTime: '',
         endTime: '',
-        freeChances: '',
+        freeChances: '', // 免费抽奖次数 0不限制 -1不可免费抽奖
+        chanceType: 0,
         canShare: 2,
         shareChances: 0,
         canUseScore: 2,
@@ -738,6 +758,10 @@ export default {
           { lotteryNumber: 0, chance: 0, chanceNumerator: 0, chanceDenominator: 100, iconImgs: this.$t('luckyDraw.fourthPrize'), lotteryGrade: '4', iconImgsImage: '/image/admin/icon_lottery/4.png', lotteryType: 1 }
         ]
       },
+      freeChances: '', // 免费抽奖次数
+      freeChanceType: 1, // 免费抽奖类型
+      noAwardScoreType: 1, // 未中奖是否赠送积分
+      noAwardScore: '', // 未中奖赠送积分数
       times: 1,
       // 商品弹窗
       isShowChoosingGoodsDialog: false,
@@ -762,7 +786,9 @@ export default {
         ],
         lotteryExplain: [{ required: true, validator: validLotteryExplain, trigger: 'change' }],
         prizeList: [{ validator: validChance, trigger: 'change' }],
-        prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }]
+        prizeNumber: [{ validator: validPrizeNumber, trigger: 'blur' }],
+        freeChances: [{ validator: validFreeChances, trigger: 'blur' }],
+        noAwardScore: [{ validator: validNoAwardScore, trigger: 'blur' }]
       }
     }
   },
@@ -777,7 +803,44 @@ export default {
       return [this.requestParam.prizeList[this.tabSwitch - 1].prdId]
     }
   },
-  watch: {},
+  watch: {
+    freeChanceType: function (val) {
+      if (val <= 0) {
+        this.freeChances = ''
+        this.$set(this.requestParam, 'freeChances', val)
+      } else {
+        this.$set(this.requestParam, 'freeChances', this.freeChances)
+      }
+    },
+    freeChances: function (newVal, oldVal) {
+      if (newVal === '' || newVal > 0) {
+        if (newVal > 0) {
+          this.freeChanceType = 1
+          this.$set(this.requestParam, 'freeChances', newVal)
+        }
+      } else {
+        this.freeChances = oldVal
+      }
+    },
+    noAwardScoreType: function (val) {
+      if (val === 0) {
+        this.noAwardScore = ''
+        this.$set(this.requestParam, 'noAwardScore', 0)
+      } else {
+        this.$set(this.requestParam, 'noAwardScore', this.noAwardScore)
+      }
+    },
+    noAwardScore: function (newVal, oldVal) {
+      if (newVal === '' || newVal > 0) {
+        if (newVal > 0) {
+          this.noAwardScoreType = 1
+          this.$set(this.requestParam, 'noAwardScore', newVal)
+        }
+      } else {
+        this.noAwardScore = oldVal
+      }
+    }
+  },
   methods: {
     lotteryTypeChange (val) {
       console.log(val)
@@ -947,6 +1010,28 @@ export default {
             })
             this.requestParam = res.content
             console.log('数据回显', res, this.requestParam)
+            // 免费抽奖方式
+            let freeChances = this.requestParam.freeChances
+            switch (freeChances) {
+              case 0:
+              case -1:
+                this.freeChanceType = freeChances
+                break
+              default:
+                this.freeChanceType = 1
+                this.freeChances = freeChances
+            }
+            // 赠送积分
+            let noAwardScore = this.requestParam.noAwardScore
+            switch (noAwardScore) {
+              case 0:
+              case -1:
+                this.noAwardScoreType = noAwardScore
+                break
+              default:
+                this.noAwardScoreType = 1
+                this.noAwardScore = noAwardScore
+            }
             this.$forceUpdate()
           } else {
             this.$message.error(this.$t('luckyDraw.fetchDataFail'))
