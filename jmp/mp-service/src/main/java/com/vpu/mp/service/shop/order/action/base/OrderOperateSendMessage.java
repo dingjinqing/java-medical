@@ -103,7 +103,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("退款操作消息推送start");
         //TODO 子单需要推送到主单用户
         // 跳转到退款页面
-        String page = "pages1/returnorder/returnorder?orderSn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
+        String page = "pages1/returndetail/returndetail?return_sn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
         //商品名称
         String goodsName = getReturnGoodsName(returnGoods);
         //金额
@@ -115,8 +115,8 @@ public class OrderOperateSendMessage extends ShopBaseService {
         if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
             //TODO 成功(积分兑换特殊处理)
             //小程序数据
-            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "卖家已同意退款,将原路退回到你的账户" } };
-			String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "卖家已同意退款,将原路退回到你的账户" } };
+            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "退款完成" } };
+			String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "退款完成" } };
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
@@ -137,8 +137,8 @@ public class OrderOperateSendMessage extends ShopBaseService {
             //拒绝申请/退款原因
             String refuseReason = returnOrder.getApplyNotPassReason() != null ? returnOrder.getApplyNotPassReason() : returnOrder.getRefundRefuseReason();
             //小程序数据
-            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { refuseReason }};
-            String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { refuseReason } };
+            String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "退款失败" }};
+            String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "退款失败" } };
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.FAIL_RETURN_MONEY)) {
@@ -168,8 +168,6 @@ public class OrderOperateSendMessage extends ShopBaseService {
      */
     public void send(OrderInfoRecord order, Result<OrderGoodsRecord> goods) {
         logger().info("订单支付成功模板消息start");
-        //商品名称
-        String goodsName = getGoodsName(goods);
         //公众号数据
         String[][] mpData = null;
         if(isSendMp(MessageTemplateConfigConstant.ORDER_SUCCESS_PAY)) {
