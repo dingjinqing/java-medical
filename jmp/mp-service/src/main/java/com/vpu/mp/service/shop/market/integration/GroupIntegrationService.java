@@ -732,6 +732,7 @@ public class GroupIntegrationService extends ShopBaseService {
 					canPinInte.setMsg("已在团中");
 					vo.setInviteUser(gIntegrationMaVo.getInviteUser());
 					vo.setCanPin(canPinInte);
+					vo.setGroupId(groupId);
 					logger().info("已在团中");
 					return vo;
 				}
@@ -1075,7 +1076,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		userIdList.add(userId);
 		String first="您好，您参加的组团瓜分积由于团已过期，拼团失败";
 		String remake="拼团人数未满"+pinInteInfo.getLimitAmount()+"人";
-		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { "", "#173177" }, {remake, "#173177" } };
+		String[][] data = new String[][] { { first, "#173177" }, { pinInteInfo.getName(), "#173177" }, { "", "#173177" }, {remake, "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.FAIL_TEAM)
@@ -1095,7 +1096,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		List<Integer> userIdList = new ArrayList<Integer>();
 		userIdList.add(userId);
 		String first="您好，您有新的组团瓜分积成功订单";
-		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
+		String[][] data = new String[][] { { first, "#173177" }, { pinInteInfo.getName(), "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.SUCCESS_TEAM)
