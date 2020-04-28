@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.activity.dao;
 
+import com.vpu.mp.db.main.tables.Cache;
 import com.vpu.mp.db.shop.tables.records.PurchasePriceDefineRecord;
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
@@ -101,8 +102,10 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
         PurchasePriceCartBo priceCartBo = activityMap.get(goods.getExtendId()) != null ? activityMap.get(cartActivityInfo.getActivityId()) : new PurchasePriceCartBo();
         priceCartBo.getCartId().add(goods.getCartId());
         priceCartBo.getProductId().add(goods.getProductId());
-        priceCartBo.getNum().add(goods.getCartNumber());
-        priceCartBo.getMoney().add(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
+        if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+            priceCartBo.getNum().add(goods.getCartNumber());
+            priceCartBo.getMoney().add(goods.getGoodsPrice().multiply(BigDecimal.valueOf(goods.getCartNumber())));
+        }
         priceCartBo.setPurchasePrice(cartActivityInfo.getPurchasePrice());
         activityMap.put(cartActivityInfo.getActivityId(), priceCartBo);
     }
@@ -118,7 +121,8 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
         for (Map.Entry<Integer, PurchasePriceCartBo> entry : activityMap.entrySet()) {
             Integer k = entry.getKey();
             PurchasePriceCartBo v = entry.getValue();
-            CartActivityInfo.PurchasePriceRule rule = v.getPurchasePrice().getRule();
+            CartActivityInfo.PurchasePriceRule currentRule = v.getPurchasePrice().getRule();
+            BigDecimal moneySums = v.getMoney().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
             //规则id
             Map<Integer, CartActivityInfo.PurchasePriceRule> ruleMap = v.getPurchasePrice().getPurchasePriceRule().stream().collect(Collectors.toMap(CartActivityInfo.PurchasePriceRule::getRuleId, Function.identity()));
             PurchasePriceDefineRecord purchaseInfo = getPurchaseInfo(k);
@@ -127,11 +131,26 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
             while (iterator.hasNext()) {
                 WxAppCartGoods goods = iterator.next();
                 if (goods.getType() != null && goods.getType().equals(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS) && ruleMap.containsKey(goods.getExtendId())) {
-                    logger().info("加价购-加价购商品:{},加价价格:{},数量:{}", goods.getGoodsName(), v.getPurchasePrice().getRule().getPurchasePrice().toString(),goods.getCartNumber());
+                    CartActivityInfo.PurchasePriceRule rule = ruleMap.get(goods.getExtendId());
+                    logger().info("加价购-加价购商品:{},加价价格:{},数量:{}", goods.getGoodsName(), rule.getPurchasePrice().toString(),goods.getCartNumber());
                     goods.setActivityType(BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS);
                     goods.setActivityId(rule.getActivityId());
                     goods.setPrdPrice(ruleMap.get(goods.getExtendId()).getPurchasePrice());
                     goods.setCartActivityInfos(null);
+                    logger().info("加价购-规则校验");
+                    if (moneySums.compareTo(rule.getFullPrice())<0){
+                        logger().info("该商品的规则不符合要求");
+                        if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
+                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
+                        }
+                        goods.setIsChecked(CartConstant.CART_NO_CHECKED);
+                        continue;
+                    }else {
+                        if (goods.getIsChecked().equals(CartConstant.CART_NO_CHECKED)){
+                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_IS_CHECKED);
+                        }
+                        goods.setIsChecked(CartConstant.CART_IS_CHECKED);
+                    }
                     goodsNum+=goodsNum+goods.getCartNumber();
                     logger().info("加价购-加购商品数量限制");
                     if (purchaseInfo.getMaxChangePurchase()!=0&&purchaseInfo.getMaxChangePurchase()<goodsNum){
@@ -149,19 +168,7 @@ public class PurchasePriceProcessorDao extends ShopBaseService {
                         }
                         goodsNum =purchaseInfo.getMaxChangePurchase().intValue();
                     }
-                    logger().info("加价购-规则校验");
-                    CartActivityInfo.PurchasePriceRule goodsRule = ruleMap.get(goods.getExtendId());
-                    if (rule.getFullPrice().compareTo(goodsRule.getFullPrice())<0){
-                        logger().info("该商品的规则不符合要求");
-                        goods.setIsChecked(CartConstant.CART_NO_CHECKED);
-                        if (goods.getIsChecked().equals(CartConstant.CART_IS_CHECKED)){
-                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
-                        }
-                    }else {
-                        if (goods.getIsChecked().equals(CartConstant.CART_NO_CHECKED)){
-                            cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_IS_CHECKED);
-                        }
-                    }
+
                 }
             }
         }
