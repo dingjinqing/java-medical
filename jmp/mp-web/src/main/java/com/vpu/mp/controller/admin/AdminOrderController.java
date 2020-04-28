@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -283,7 +282,7 @@ public class AdminOrderController extends AdminBaseController {
      * 批量发货查询
      */
     @PostMapping("/ship/batch/list")
-    public JsonResult batchShipList(BatchShipListParam param) {
+    public JsonResult batchShipList(@RequestBody BatchShipListParam param) {
         return success(shop().readOrder.batchShipList(param));
     }
 
@@ -291,9 +290,8 @@ public class AdminOrderController extends AdminBaseController {
      * 批量发货失败数据下载
      */
     @PostMapping("/ship/batch/fail/download/{batchId}")
-    public void batchShipList(@PathVariable Integer batchId, HttpServletResponse response) {
+    public void downloadFailData(@PathVariable Integer batchId, HttpServletResponse response) {
         Workbook workbook = shop().readOrder.downloadFailData(batchId, getLang());
-        Timestamp operateTime = shop().goodsImportRecordService.getOperateTime(batchId);
-        export2Excel(workbook, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE, operateTime), response);
+        export2Excel(workbook, DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL_NO_UNDERLINE), response);
     }
 }

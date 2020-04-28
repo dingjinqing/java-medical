@@ -109,6 +109,13 @@
         :underline="false"
         target="_blank"
       >多人拼团使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'lottery_activity'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=51&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >幸运大抽奖使用教程</el-link>
     </span>
   </div>
 </template>

@@ -201,24 +201,34 @@
             <!-- 规则设置 -->
             <div class="boxWrapper">
               <div class="textDesc">{{$t('luckyDraw.rulesSetting')}}</div>
-              <!--                            <el-form-item-->
-              <!--                                    label="活动规则："-->
-              <!--                                    prop=""-->
-              <!--                            >-->
-              <!--                                <el-radio-group v-model="times">-->
-              <!--                                    <el-radio :label="1">每人N次</el-radio>-->
-              <!--                                    <el-radio :label="2">每人每天N次</el-radio>-->
-              <!--                                </el-radio-group>-->
-              <!--                            </el-form-item>-->
+              <el-form-item
+                label="活动规则："
+                prop=""
+              >
+                <el-radio-group v-model="requestParam.times">
+                  <el-radio :label="1">每人N次</el-radio>
+                  <el-radio :label="2">每人每天N次</el-radio>
+                </el-radio-group>
+              </el-form-item>
 
               <el-form-item :label="$t('luckyDraw.freePrizeDraw')+'：'">
-                <el-input
+                <!-- <el-input
                   size="small"
                   :placeholder="$t('luckyDraw.nullUnrestricted')"
                   style="width:125px"
                   v-model="requestParam.freeChances"
                 ></el-input>
-                <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span>
+                <span style="color:#999;">{{$t('luckyDraw.freePizeTimes')}}</span> -->
+                <el-radio-group v-model="requestParam.freeChanceType">
+                  <el-radio label="0">可免费抽奖
+                    <el-input
+                      v-model.number="requestParam.freeChances"
+                      style="width:50px;"
+                    ></el-input>次
+                  </el-radio>
+                  <el-radio label="1">不可免费抽奖</el-radio>
+                  <el-radio label="2">不限制次数</el-radio>
+                </el-radio-group>
               </el-form-item>
 
               <el-form-item :label="$t('luckyDraw.shareTheLuckyDraw')+'：'">
