@@ -509,6 +509,7 @@ public class CartService extends ShopBaseService {
             }
             //添加商品到购物车
             cardId = addSpecProduct(param.getUserId(), param.getPrdId(), param.getGoodsNumber(), param.getActivityId(), param.getActivityType());
+            param.setType((byte)1);
         }
         //购物车中存在
         WxAppCartBo cartList = getCartList(param.getUserId());
