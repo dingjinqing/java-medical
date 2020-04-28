@@ -601,7 +601,7 @@ public class GroupDrawService extends ShopBaseService {
 			for (GoodsSmallVo goodsSmallVo : goodsList) {
 				BigDecimal goodsPriceMax = getGoodsPriceMax(goodsSmallVo.getGoodsId());
 				if(goodsPriceMax!=null) {
-					goodsSmallVo.setMarketPrice(goodsPriceMax);					
+					goodsSmallVo.setShopPrice(goodsPriceMax);					
 				}
 				goodsSmallVo.setGoodsImg(imageService.imageUrl(goodsSmallVo.getGoodsImg()));
 			}

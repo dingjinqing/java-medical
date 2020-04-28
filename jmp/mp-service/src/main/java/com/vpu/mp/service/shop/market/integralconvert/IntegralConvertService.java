@@ -394,6 +394,7 @@ public class IntegralConvertService extends ShopBaseService {
 					.set(imd.GOODS_ID, param.getGoodsId())
 					.set(imd.SHARE_CONFIG, shareConfig)
 					.where(imd.ID.eq(param.getId())).execute();
+            db().deleteFrom(INTEGRAL_MALL_PRODUCT).where(INTEGRAL_MALL_PRODUCT.INTEGRAL_MALL_DEFINE_ID.eq(param.getId())).execute();
 			//修改数据-活动规格信息表
 			for (IntegralConvertProductVo item : param.getProduct()) {
                 if (item.getMoney()==null){
@@ -522,7 +523,15 @@ public class IntegralConvertService extends ShopBaseService {
         if(!moduleIntegral.getIntegralGoods().isEmpty()){
             for(ModuleIntegral.IntegralGoods g : moduleIntegral.getIntegralGoods()){
                 IntegralMallDefineRecord integralMallDefineRecord = db().fetchAny(imd,imd.ID.eq(g.getIntegralGoodsId()));
-                GoodsRecord goodsRecord = goodsService.getGoodsRecordById(g.getGoodsId());
+                if(integralMallDefineRecord != null){
+                    g.setActDelFlag(integralMallDefineRecord.getDelFlag());
+                    g.setStartTime(integralMallDefineRecord.getStartTime());
+                    g.setEndTime(integralMallDefineRecord.getEndTime());
+                }
+                //活动商品可能改变 此时取最新的goodsId
+                Integer goodsId = integralMallDefineRecord.getGoodsId();
+
+                GoodsRecord goodsRecord = goodsService.getGoodsRecordById(goodsId);
                 if(goodsRecord == null || goodsRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
                     g.setTip((byte)1);
                 }else if(integralMallDefineRecord == null || integralMallDefineRecord.getDelFlag().equals(DelFlag.DISABLE_VALUE)){
@@ -537,19 +546,13 @@ public class IntegralConvertService extends ShopBaseService {
                     g.setTip((byte)0);
                 }
 
-                if(integralMallDefineRecord != null){
-                    g.setActDelFlag(integralMallDefineRecord.getDelFlag());
-                    g.setStartTime(integralMallDefineRecord.getStartTime());
-                    g.setEndTime(integralMallDefineRecord.getEndTime());
-                }
-                IntegralMallProductRecord integralMallProductRecord = getMinScoreIntegralMallProduct(g.getIntegralGoodsId());
-                g.setScore(integralMallProductRecord.getScore());
-                g.setMoney(integralMallProductRecord.getMoney());
-
+                IntegralMallProductRecord minScoreRecord = getMinScoreIntegralMallProduct(g.getIntegralGoodsId());
+                g.setScore(minScoreRecord.getScore());
+                IntegralMallProductRecord minMoneyRecord = getMinMoneyIntegralMallProduct(g.getIntegralGoodsId());
+                g.setMoney(minMoneyRecord.getMoney());
                 if(goodsRecord != null){
                     g.setGoodsIsDelete(goodsRecord.getDelFlag());
                 }
-
                 if(goodsRecord != null){
                     g.setGoodsId(goodsRecord.getGoodsId());
                     g.setGoodsName(goodsRecord.getGoodsName());
@@ -568,14 +571,21 @@ public class IntegralConvertService extends ShopBaseService {
     }
 
     /**
-     * 积分最小的一个
+     * 兑换积分最小的一个
      * @param integralMallDefineId
      * @return
      */
     private IntegralMallProductRecord getMinScoreIntegralMallProduct(int integralMallDefineId){
         return db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(integralMallDefineId)).orderBy(imp.SCORE.asc()).fetchAny();
     }
-
+    /**
+     * 兑换金额最小的一个
+     * @param integralMallDefineId
+     * @return
+     */
+    private IntegralMallProductRecord getMinMoneyIntegralMallProduct(int integralMallDefineId){
+        return db().selectFrom(imp).where(imp.INTEGRAL_MALL_DEFINE_ID.eq(integralMallDefineId)).orderBy(imp.MONEY.asc()).fetchAny();
+    }
     /**
      * 订单详情表格导出
      * @param param 查询信息

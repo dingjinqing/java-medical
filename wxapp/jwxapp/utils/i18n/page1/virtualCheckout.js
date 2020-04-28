@@ -1,4 +1,5 @@
 module.exports = {
+  "title":"优惠券礼包结算",
   "couponPackageCheckout":"优惠券礼包",
   "couponPackage":"优惠券礼包",
   "discount":"折",

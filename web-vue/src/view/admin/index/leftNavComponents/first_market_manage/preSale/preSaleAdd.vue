@@ -300,7 +300,6 @@
               align="center"
               label="活动价格"
               prop="presalePrice"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>活动价格</span>
@@ -332,7 +331,6 @@
               align="center"
               prop="presaleNumber"
               label="活动库存"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>活动库存</span>
@@ -365,7 +363,6 @@
               prop="presaleMoney"
               label="定金"
               v-if="param.presaleType===0"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>定金</span>
@@ -398,17 +395,7 @@
               prop="preDiscountMoney1"
               label="1阶段定金可抵扣金额"
               v-if="!isFullPay"
-              :show-overflow-tooltip="true"
             >
-              <template slot="append">
-                <span>1阶段定金可抵扣金额</span>
-                <el-button
-                  @click="setCurrent(4)"
-                  size="mini"
-                  icon="el-icon-edit"
-                >1阶段
-                </el-button>
-              </template>
               <template slot-scope="scope">
                 <el-form-item
                   :prop="'products.' +  scope.$index+ '.preDiscountMoney1'"
@@ -431,7 +418,6 @@
               prop="preDiscountMoney2"
               label="2阶段定金可抵扣金额"
               v-if="twoSteps&&!isFullPay"
-              :show-overflow-tooltip="true"
             >
               <template slot="append">
                 <span>2阶段定金可抵扣金额</span>
@@ -801,8 +787,10 @@ export default {
     // 验证是否选择了商品
     validateMoney (rule, value, callback, prdPrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('价格不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > prdPrice) {
         callback(new Error('价格已大于商品原价'))
       } else {
@@ -821,34 +809,40 @@ export default {
     },
     validateReadyMoney (rule, value, callback, presalePrice) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else {
         callback()
       }
     },
     validateFirstStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('定金不能小于定金'))
+        callback(new Error('数值不能小于定金'))
       } else {
         callback()
       }
     },
     validateSecondStage (rule, value, callback, presalePrice, presaleMoney) {
       var re = /^\d+(\.\d{1,2})?$/
-      if (!re.test(value)) {
-        callback(new Error('请填写非负数, 可以保留两位小数'))
+      if (value < 0) {
+        callback(new Error('定金不能为负数'))
+      } else if (!re.test(value)) {
+        callback(new Error('请保留两位小数'))
       } else if (value > Number(presalePrice)) {
-        callback(new Error('定金不能大于活动价格'))
+        callback(new Error('定金已大于活动价格'))
       } else if (value < Number(presaleMoney)) {
-        callback(new Error('定金不能小于定金'))
+        callback(new Error('数值不能小于定金'))
       } else {
         callback()
       }

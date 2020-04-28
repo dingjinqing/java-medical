@@ -32,7 +32,7 @@
           </view>
           <view class="item-right">
             <view class='coupon-name'>{{couponItem.actName}}</view>
-            <view class='coupon-goods-limit'>
+            <view class='coupon-goods-limit' data-coupon-id="{{couponItem.voucherId}}" bindtap="goSearch">
               {{couponItem.isAllGoodsUse ? i18n.$t(localePack,"page1.virtualCheckout.useGoodsLimit.all") : i18n.$t(localePack,"page1.virtualCheckout.useGoodsLimit.portion")}}
               <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
             </view>

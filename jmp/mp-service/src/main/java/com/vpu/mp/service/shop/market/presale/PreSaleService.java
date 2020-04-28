@@ -196,33 +196,34 @@ public class PreSaleService extends ShopBaseService {
 
         if (null != preStartTime && null == preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preStartTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
+                TABLE.PRE_END_TIME.ge(preStartTime).or(TABLE.PRE_END_TIME_2.ge(preStartTime))
             );
         }
         if (null == preStartTime && null != preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preEndTime))
+                TABLE.PRE_START_TIME.le(preEndTime).or(TABLE.PRE_START_TIME_2.le(preEndTime))
             );
         }
         if (null != preStartTime && null != preEndTime) {
             query.and(
-                TABLE.PRE_START_TIME.lt(preEndTime).and(TABLE.PRE_END_TIME.gt(preStartTime))
+                (TABLE.PRE_START_TIME.le(preEndTime).and(TABLE.PRE_END_TIME.ge(preStartTime)))
+                .or(TABLE.PRE_START_TIME_2.le(preEndTime).and(TABLE.PRE_END_TIME_2.ge(preStartTime)))
             );
         }
 
         if (null != startTime && null == endTime) {
             query.and(
-                TABLE.START_TIME.lt(startTime).and(TABLE.END_TIME.gt(startTime))
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.END_TIME.ge(startTime))
             );
         }
         if (null == startTime && null != endTime) {
             query.and(
-                TABLE.START_TIME.lt(endTime).and(TABLE.END_TIME.gt(endTime))
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime))
             );
         }
         if (null != startTime && null != endTime) {
             query.and(
-                TABLE.START_TIME.lt(endTime).and(TABLE.END_TIME.gt(startTime))
+                TABLE.PRESALE_TYPE.eq(PRE_SALE_TYPE_SPLIT).and(TABLE.START_TIME.le(endTime)).and(TABLE.END_TIME.ge(startTime))
             );
         }
 

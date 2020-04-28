@@ -135,8 +135,7 @@ public class GroupIntegrationService extends ShopBaseService {
 		List<ActSelectList> result = db().select(GROUP_INTEGRATION_DEFINE.ID, GROUP_INTEGRATION_DEFINE.NAME)
 				.from(GROUP_INTEGRATION_DEFINE).where(GROUP_INTEGRATION_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
 				.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(STATUS_NORMAL))
-				.and(GROUP_INTEGRATION_DEFINE.START_TIME.lessThan(Util.currentTimeStamp())
-						.and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp())))
+                .and(GROUP_INTEGRATION_DEFINE.END_TIME.greaterThan(Util.currentTimeStamp()))
 				.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc()).fetchInto(ActSelectList.class);
 		return result;
 	}
@@ -449,17 +448,20 @@ public class GroupIntegrationService extends ShopBaseService {
 		step.orderBy(GROUP_INTEGRATION_DEFINE.ID.desc());
 		switch (pageParam.getType()) {
 		case GroupIntegrationDefineEnums.QueryType.UNSTARTED:
-			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())));
+			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.gt(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.OVERDUE:
-			step.and(GROUP_INTEGRATION_DEFINE.END_TIME.lt(Timestamp.valueOf(LocalDateTime.now())));
+			step.and(GROUP_INTEGRATION_DEFINE.END_TIME.lt(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.STOPPED:
 			step.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.STOPPED.value()));
 			break;
 		case GroupIntegrationDefineEnums.QueryType.UNDER_WAY:
 			step.and(GROUP_INTEGRATION_DEFINE.START_TIME.le(Timestamp.valueOf(LocalDateTime.now())))
-					.and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(Timestamp.valueOf(LocalDateTime.now())));
+					.and(GROUP_INTEGRATION_DEFINE.END_TIME.ge(Timestamp.valueOf(LocalDateTime.now())))
+					.and(GROUP_INTEGRATION_DEFINE.STATUS.eq(GroupIntegrationDefineEnums.Status.NORMAL.value()));
 			break;
 		default:
 			break;
@@ -754,7 +756,7 @@ public class GroupIntegrationService extends ShopBaseService {
 				logger().info("用户id:{},不是第一次参加", userId);
 				canPinInte.setIsNew(IS_DAY_DIVIDE_N);
 				addPinGroup = groupIntegrationList.addPinGroup(groupId, userId, pinInteId, IS_DAY_DIVIDE_N,
-						IS_DAY_DIVIDE_Y, inviteUser);
+						IS_DAY_DIVIDE_N, inviteUser);
 			}
 			if (addPinGroup == 0) {
 				canPinInte.setStatus(STATUS_EIGHT);

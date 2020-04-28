@@ -8,7 +8,10 @@
           <label class="left">{{$t('carouselPicture.previewOriginal')}}</label>
           <div class="right">
             <div class="right-radios">
-              <el-radio-group v-model="modulesSaveData.is_preview">
+              <el-radio-group
+                :disabled="isProhibit"
+                v-model="modulesSaveData.is_preview"
+              >
                 <el-radio label="0">{{$t('carouselPicture.no')}}</el-radio>
                 <el-radio label="1">{{$t('carouselPicture.yes')}}</el-radio>
               </el-radio-group>
@@ -134,6 +137,7 @@ export default {
   },
   data () {
     return {
+      isProhibit: false, // 是否全部禁用
       tuneUpSelectLink: false,
       tuneUp: false, // 选择图片弹窗
       isDraggable: false, // 选择图片弹窗是否多选
@@ -174,9 +178,16 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      console.log(localStorage.getItem('isProhibitForm'))
+      this.isProhibit = JSON.parse(localStorage.getItem('isProhibitForm'))
+    })
+  },
   methods: {
     // 导航配置列表右上角icon点击统一处理
     handleToClickIcon (index, flag) {
+      if (this.isProhibit) return
       let item = this.modulesSaveData.img_items[index]
       switch (flag) {
         case 0:
@@ -202,6 +213,7 @@ export default {
     },
     // 点击模块左侧添加图片调起弹窗
     handleToCallImgDialog (index) {
+      if (this.isProhibit) return
       this.changeLeft = true
       this.changeLeftIndex = index
       this.isDraggable = false
@@ -209,6 +221,7 @@ export default {
     },
     // 点击底部添加列表调起图片弹窗
     handleToClickAddList () {
+      if (this.isProhibit) return
       this.changeLeft = false
       this.isDraggable = true
       this.tuneUp = !this.tuneUp
@@ -245,6 +258,7 @@ export default {
     },
     // 调起选择链接弹窗
     handleToCallLinkDialog (index) {
+      if (this.isProhibit) return
       this.nowPathClick = index
       this.tuneUpSelectLink = !this.tuneUpSelectLink
     },
@@ -254,6 +268,7 @@ export default {
     },
     // 点击确定按钮
     handleToClickSure () {
+      if (this.isProhibit) return
       this.modulesSaveData.ok_ajax = 1
       this.$message.success({
         message: '模块保存成功',

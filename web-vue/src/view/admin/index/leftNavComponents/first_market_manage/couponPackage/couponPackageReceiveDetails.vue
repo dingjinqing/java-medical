@@ -23,15 +23,26 @@
         <div class="filters_item">
           <span>{{$t('couponPackage.receiveTime')}}：</span>
           <el-date-picker
-            v-model="effectiveDate"
-            type="datetimerange"
-            :range-separator="$t('marketCommon.to')"
-            :start-placeholder="$t('marketCommon.startTime')"
-            :end-placeholder="$t('marketCommon.endTime')"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            size="small"
-          >
-          </el-date-picker>
+              v-model="pageParams.startTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Starttime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              class="time_input"
+              @change="datePickerChange(true,pageParams)"
+              size="small"
+            />
+            至
+           <el-date-picker
+              v-model="pageParams.endTime"
+              type="datetime"
+              :placeholder="$t('membershipIntroduction.Endtime')"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="datePickerChange(false,pageParams)"
+              :picker-options="endTime"
+              default-time="23:59:59"
+              class="time_input"
+              size="small"
+            />
         </div>
         <div class="filters_item">
           <span>{{$t('couponPackage.accessMode')}}：</span>
@@ -107,7 +118,7 @@
             :label="$t('marketCommon.orderSn')"
           ></el-table-column>
           <el-table-column
-            prop="receiveTime"
+            prop="createTime"
             :label="$t('couponPackage.receiveTime')"
           ></el-table-column>
           <el-table-column
@@ -133,27 +144,36 @@ export default {
   data () {
     return {
       actId: null,
-      pageParams: {},
+      pageParams: {
+        startTime: null,
+        endTime: null
+      },
       effectiveDate: '',
       tableData: [],
       loading: false,
 
       // 表格原始数据
-      originalData: []
+      originalData: [],
+      endTime: {
+        disabledDate: time => {
+          return time.getTime() < new Date(this.pageParams.startTime).getTime()
+        }
+      }
     }
   },
   methods: {
     initDataList () {
       this.loading = true
       this.pageParams.id = this.actId
-      this.pageParams.startTime = this.effectiveDate[0] ? this.effectiveDate[0] : null
-      this.pageParams.endTime = this.effectiveDate[1] ? this.effectiveDate[1] : null
       getCouponPackDetailPageList(this.pageParams).then((res) => {
         if (res.error === 0) {
           this.originalData = res.content.dataList
           let originalData = JSON.parse(JSON.stringify(this.originalData))
           this.handleData(originalData)
-          this.pageParams = res.content.page
+          this.pageParams = {
+            ...this.pageParams,
+            ...res.content.page
+          }
           this.loading = false
         }
       })
@@ -174,6 +194,21 @@ export default {
         }
       })
       this.tableData = data
+    },
+    /* 验证输入的时间范围是否合法 */
+    datePickerChange (isStart, target) {
+      console.log(target)
+      if (target.startTime === null || target.endTime === null) {
+        return
+      }
+      if (new Date(target.startTime).getTime() <= new Date(target.endTime).getTime()) {
+        return
+      }
+      if (isStart) {
+        target.startTime = null
+      } else {
+        target.endTime = null
+      }
     }
   },
   watch: {
@@ -236,6 +271,9 @@ export default {
     }
     .default_input {
       width: 150px;
+    }
+    .time_input{
+      width: 185px;
     }
   }
 }
