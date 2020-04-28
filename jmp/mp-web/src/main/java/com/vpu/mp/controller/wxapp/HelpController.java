@@ -5,6 +5,8 @@ import com.vpu.mp.db.shop.tables.records.ShopCfgRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.foundation.data.JsonResultCode;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.PromoteParam;
+import com.vpu.mp.service.pojo.shop.market.friendpromote.promoteActCopywriting;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.param.GroupBuyIdParam;
 import com.vpu.mp.service.pojo.shop.market.groupdraw.GroupActivityCopyWriting;
 import com.vpu.mp.service.pojo.shop.market.integration.GroupInteMaVo;
@@ -133,5 +135,15 @@ public class HelpController extends HelpBaseController {
 		String activityCopywriting = saas.getShopApp(shopId).groupBuy.getActivityCopywriting(id);
 		return success(activityCopywriting);
 	}
-
+    /**
+     * 获取好友助力说明
+     *
+     * @param actCode 唯一活动码
+     * @return 活动说明
+     */
+    @GetMapping("/api/wxapp/promote/actCopywriting")
+    public JsonResult promoteActCopywriting(@RequestParam Integer shopId,@RequestParam String actCode) {
+        promoteActCopywriting vo = saas.getShopApp(shopId).friendPromoteService.getActCopywriting(actCode);
+        return success(vo);
+    }
 }

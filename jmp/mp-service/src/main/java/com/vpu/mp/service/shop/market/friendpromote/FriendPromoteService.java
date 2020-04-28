@@ -1970,11 +1970,10 @@ public class FriendPromoteService extends ShopBaseService {
 
     /**
      * 小程序-根据actCode获得当前活动的活动说明
-     * @param param actCode
+     * @param actCode actCode
      * @return {{@link promoteActCopywriting}}
      */
-	public promoteActCopywriting getActCopywriting(PromoteParam param){
-	    String actCode = param.getActCode();
+	public promoteActCopywriting getActCopywriting(String actCode){
 	    String activityCopywriting = db().select(FRIEND_PROMOTE_ACTIVITY.ACTIVITY_COPYWRITING)
             .from(FRIEND_PROMOTE_ACTIVITY)
             .where(FRIEND_PROMOTE_ACTIVITY.ACT_CODE.eq(actCode))
