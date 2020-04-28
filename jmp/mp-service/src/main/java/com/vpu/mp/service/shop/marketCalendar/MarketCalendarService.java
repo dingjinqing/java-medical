@@ -491,7 +491,7 @@ public class MarketCalendarService extends ShopBaseService {
 			}
 		}
 		if(flag) {
-			flag = calendarActivityService.getPushInfoInner(param);
+			flag = calendarActivityService.getPushInfoInner(param,record.getId());
 		}
 		return flag;
 	}
