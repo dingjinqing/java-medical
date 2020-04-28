@@ -391,7 +391,7 @@ ALTER TABLE `b2c_order_goods` MODIFY COLUMN `fanli_strategy` VARCHAR ( 2999 ) DE
 
 
 -- 2020年04月24日 添加 已选活动商品表
-CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart`(
+CREATE TABLE IF NOT EXISTS `b2c_checked_goods_cart` (
 	`id` int(20) NOT NULL AUTO_INCREMENT,
 	`action` TINYINT(1) DEFAULT 0 COMMENT '活动类型: 1：限次卡兑换',
 	`identity_id` VARCHAR(50) DEFAULT '0' NULL COMMENT '活动ID',
