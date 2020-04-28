@@ -15,7 +15,7 @@
       <view class='btn_search' bindtap='bindSearch' data-value='{{search_word}}'>搜索</view>
     </view>
     <view class='icon_info' wx:if='{{search_config.is_open_history == 1 || search_config.is_open_hot_words == 1}}'>
-        <view class='search_history' wx:if='{{search_config.is_open_history == 1 && history_words != []}}'>
+        <view class='search_history' wx:if='{{search_config.is_open_history == 1 && history_words[0].hotWords != ""}}'>
             <view class='have_del'>
               <view class='sh_title'>搜索历史</view>
               <image src='{{imageUrl}}image/wxapp/search_del.png' mode='widthFix' bindtap='to_del'></image>
