@@ -20,6 +20,10 @@ public class GoodsAndOrderInfoBo {
      */
     private Integer productId;
     /**
+     * 是否是赠品
+     */
+    private Byte isGift;
+    /**
      * 订单商品数量
      */
     private Integer goodsNumber;

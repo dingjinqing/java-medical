@@ -27,6 +27,7 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPojo
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -123,10 +124,10 @@ public class OrderWriteService extends ShopBaseService {
 	 */
 	public OrderRepurchaseVo orderRepurchase(OrderRepurchaseParam param) {
 		OrderRepurchaseVo vo=new OrderRepurchaseVo();
-
 		List<GoodsAndOrderInfoBo> goodsInfos = orderGoods.getGoodsInfoAndOrderInfo(param.getOrderSn());
 		List<GoodsAndOrderInfoBo> invalidGoods = goodsInfos.stream().filter(goods -> goods.getDelFlag().equals(DelFlag.DISABLE_VALUE)
 				|| goods.getIsOnSale().equals(GoodsConstant.OFF_SALE)
+                || goods.getIsGift().equals(OrderConstant.YES)
 				|| goods.getPrdNumber().equals(0)).collect(Collectors.toList());
 		if (invalidGoods.size()>0){
 			vo.setContent("包含"+invalidGoods.size()+"件已失效/已售罄商品，无法再次购买！其他商品已为您加入购物车");
@@ -137,6 +138,7 @@ public class OrderWriteService extends ShopBaseService {
 			addParam.setUserId(param.getUserId());
 			addParam.setGoodsNumber(next.getGoodsNumber());
 			addParam.setPrdId(next.getProductId());
+			addParam.setType(WxAppAddGoodsToCartParam.CART_GOODS_NUM_TYPE_ADD);
 			ResultMessage resultMessage = cartService.addGoodsToCart(addParam);
 			if (!resultMessage.getFlag()) {
 				vo.setResultMessage(resultMessage);
