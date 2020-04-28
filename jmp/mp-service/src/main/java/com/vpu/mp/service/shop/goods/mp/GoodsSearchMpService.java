@@ -190,6 +190,21 @@ public class GoodsSearchMpService extends ShopBaseService {
 
         return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
+    
+    /**
+     * 	限次卡兑换商品搜索商品接口
+     * @param param GoodsSearchMpParam
+     * @return 该活动下的有效商品信息
+     */
+    private PageResult<GoodsListMpBo> searchGoodsForLimitMemberCard(GoodsSearchMpParam param) {
+        List<Integer> goodsIdsLimit = param.getGoodsIds();
+        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
+
+        List<SortField<?>> sortFields = buildSearchOrderFields(param);
+        Condition condition = GOODS.GOODS_ID.in(goodsIdsLimit).and(GOODS.GOODS_NAME.like(likeValue(param.getKeyWords())));
+        return goodsMpService.findActivityGoodsListCapsulesDao(condition.and(goodsBaseCondition), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+    }
+    
 
     /**
      * 搜索小程序商品信息
