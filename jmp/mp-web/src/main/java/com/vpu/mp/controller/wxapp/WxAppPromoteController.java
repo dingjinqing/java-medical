@@ -87,15 +87,5 @@ public class WxAppPromoteController extends WxAppBaseController {
 
         return success(vo);
     }
-    /**
-     * 获取活动说明
-     *
-     * @param param actCode
-     * @return 活动说明
-     */
-    @PostMapping("/actCopywriting")
-    public JsonResult actCopywriting(@RequestBody PromoteParam param) {
-        promoteActCopywriting vo = saas.getShopApp(param.getShopId()).friendPromoteService.getActCopywriting(param);
-        return success(vo);
-    }
+
 }
