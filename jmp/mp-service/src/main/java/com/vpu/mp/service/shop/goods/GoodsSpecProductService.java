@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
@@ -702,5 +699,8 @@ public class GoodsSpecProductService extends ShopBaseService {
         return true;
     }
 
+    public List<GoodsSpecProductRecord> getGoodsSpecPrdBySn(Collection<String> prdSn) {
+        return db().selectFrom(GOODS_SPEC_PRODUCT).where(GOODS_SPEC_PRODUCT.PRD_SN.in(prdSn)).fetchInto(GoodsSpecProductRecord.class);
+    }
 
 }
