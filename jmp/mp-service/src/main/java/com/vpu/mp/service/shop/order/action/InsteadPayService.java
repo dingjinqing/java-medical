@@ -188,7 +188,7 @@ public class InsteadPayService extends ShopBaseService implements IorderOperate<
         }
         AtomicReference<SubOrderInfoRecord> subOrderRef = new AtomicReference<>();
         transaction(()->{
-            subOrderRef.set(subOrderService.create(order.getOrderSn(), param.getMoneyPaid(), param.getMessage(), param.getWxUserInfo().getUserId(), ""));
+            subOrderRef.set(subOrderService.create(order.getOrderSn(), param.getMoneyPaid(), param.getMessage(), param.getWxUserInfo().getUserId(), param.getUsername() == null ? "" : param.getUsername()));
         });
         SubOrderInfoRecord subOrder = subOrderRef.get();
         WebPayVo webPayVo = null;

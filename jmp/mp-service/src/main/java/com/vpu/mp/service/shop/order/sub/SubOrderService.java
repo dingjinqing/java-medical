@@ -28,14 +28,14 @@ public class SubOrderService  extends ShopBaseService {
     private SubOrderInfo TABLE = SubOrderInfo.SUB_ORDER_INFO;
     private UserDetail TABLE_USER_DETAIL = UserDetail.USER_DETAIL;
 
-    public SubOrderInfoRecord create(String orderSn, BigDecimal money, String message, Integer userId, String UserName){
+    public SubOrderInfoRecord create(String orderSn, BigDecimal money, String message, Integer userId, String userName){
         logger().info("代付生成sub order start");
         SubOrderInfoRecord order = db().newRecord(TABLE);
         //生成orderSn
         order.setSubOrderSn(IncrSequenceUtil.generateOrderSn(OrderConstant.INSTEAD_PAY_SN_PREFIX));
         order.setMainOrderSn(orderSn);
         order.setUserId(userId);
-        order.setUsername(UserName);
+        order.setUsername(userName);
         order.setOrderStatus(OrderConstant.SubOrderConstant.SUB_ORDER_WAIT_PAY);
         order.setMoneyPaid(money);
         order.setPayCode(OrderConstant.PAY_CODE_WX_PAY);
