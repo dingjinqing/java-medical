@@ -80,6 +80,18 @@ public class ApiExternalGateController extends ShopBaseService {
     }
 
     /**
+     * 临时测试使用
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/test")
+    public ApiJsonResult test(@RequestBody ApiExternalGateParam param){
+        ApiJsonResult result = gateService.serviceFunCall(param);
+        responseLog(result);
+        return result;
+    }
+
+    /**
      * 统一返回信息出口
      * @param errorCode 错误码
      * @param errorMsg 错误信息
