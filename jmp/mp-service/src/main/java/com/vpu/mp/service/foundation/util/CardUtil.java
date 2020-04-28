@@ -1,4 +1,7 @@
 package com.vpu.mp.service.foundation.util;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_ALL;
+import static com.vpu.mp.service.pojo.shop.member.card.CardConstant.MCARD_ISE_PART;
+
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -142,6 +145,22 @@ public class CardUtil {
 	 */
 	public static boolean canExchangGoods(Byte isExchang) {
 		return !CardConstant.MCARD_ISE_NON.equals(isExchang);
+	}
+	
+	/**
+	 * 是否可以兑换全部商品
+	 * @return true 是，false 否
+	 */
+	public static boolean isExchangAllGoods(Byte isExchange) {
+		return MCARD_ISE_ALL.equals(isExchange);
+	}
+	
+	/**
+	 * 是否可以兑换部分商品
+	 * @return true 是，false 否
+	 */
+	public static boolean isExchangPartGoods(Byte isExchange) {
+		return MCARD_ISE_PART.equals(isExchange);
 	}
 	
 	/**
