@@ -63,7 +63,7 @@
     </block>
   </view>
 
-  <view class="friend-pay-footer">
+  <view class="friend-pay-footer" wx:if="{{pageInfo.order.orderStatus === 0}}">
     <block wx:if="{{pageInfo.isSelf === 1 && pageInfo.waitPayMoney > 0}}">
       <view class="flex-one" style="background:{{commonColor}};color:{{(comColor != '#ff6666' || !comColor)?'#fff':'#f66'}};" bindtap="viewCheckout">自己付点</view>
       <button class="flex-two" style="background:{{comColor}}" open-type="share">发送好友</button>
