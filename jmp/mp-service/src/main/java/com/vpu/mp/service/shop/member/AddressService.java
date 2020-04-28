@@ -111,7 +111,7 @@ public class AddressService extends ShopBaseService {
 
     /**
      * 根据微信地图定位获取库中的区县code
-     *
+     *      *
      * @param addressInfo 微信放回的地址信息
      * @return DistrictId 可以为null
      */
