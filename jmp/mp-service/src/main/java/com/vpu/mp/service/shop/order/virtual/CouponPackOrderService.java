@@ -303,6 +303,7 @@ public class CouponPackOrderService extends VirtualOrderService {
             where(VIRTUAL_ORDER.ORDER_SN.eq(orderRecord.getOrderSn())).
             execute();
         orderRecord.refresh();
+        db().update(COUPON_PACK).set(COUPON_PACK.ISSUED_AMOUNT, COUPON_PACK.ISSUED_AMOUNT.add(1)).where(COUPON_PACK.ID.eq(orderRecord.getVirtualGoodsId())).execute();
 
         if(orderRecord.getUseScore() != null && orderRecord.getUseScore() > 0){
             ScoreParam scoreParam = new ScoreParam();
