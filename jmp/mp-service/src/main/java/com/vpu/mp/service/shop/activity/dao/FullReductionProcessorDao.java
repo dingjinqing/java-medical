@@ -530,7 +530,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 CartActivityInfo.FullReductionRule rule = fullReduction.getRule();
                 //当前选中的国际化
                 if (rule!=null){
-                    String message = fullReductionRuleToString(fullReduction,rule,rule.getReduceMoney());
+                    String message = fullReductionRuleToString(fullReduction,rule,rule.getReduceTotalMoney());
                     fullReduction.setCondition(message);
                 }
                 fullReduction.getRules().forEach(rule1->{
@@ -620,7 +620,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                     }
                     break;
             }
-            fullReductionRule.setReduceMoney(reduceMoney.setScale(2,RoundingMode.HALF_UP));
+            fullReductionRule.setReduceTotalMoney(reduceMoney.setScale(2,RoundingMode.HALF_UP));
             cartActivityInfo.getFullReduction().setRule(fullReductionRule);
             totalReductionMoney=totalReductionMoney.add(reduceMoney);
         }

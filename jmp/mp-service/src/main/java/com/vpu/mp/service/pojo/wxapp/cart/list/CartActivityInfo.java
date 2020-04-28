@@ -106,6 +106,10 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
         private BigDecimal reduceMoney;
         /**折扣，活动中指定使用满件数策略时使用*/
         private BigDecimal discount;
+        /**
+         * 优惠总金额
+         */
+        private BigDecimal reduceTotalMoney =BigDecimal.ZERO;
     }
 
 
@@ -135,10 +139,6 @@ public class CartActivityInfo extends GoodsActivityBaseMp {
     public static class PurchasePriceRule{
         /**活动id*/
         private Integer activityId;
-        /**
-         * 状态 1启用 0停用
-         */
-        private Byte status = BaseConstant.NO;
         /**规则id*/
         private Integer ruleId;
         private String name;
