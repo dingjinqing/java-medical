@@ -704,6 +704,11 @@ public class OrderReadService extends ShopBaseService {
 		order.setIsRemindShip(OrderOperationJudgment.isShowRemindShip(order) ? YES : NO);
 		//10.评价（查看评价、评价有礼/商品评价）
 		order.setIsShowCommentType(getCommentType(order));
+		//好友代付
+        if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
+            order.setPayOperationTime(order.getExpireTime().getTime() - Instant.now().toEpochMilli());
+            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+        }
 		//TODO 幸运大抽奖 分享优惠卷。。。。
 		/**按钮-end*/
 	}
@@ -731,8 +736,7 @@ public class OrderReadService extends ShopBaseService {
             //补款设置时间与补款是否可支付
             setBkPayOperation(order);
 		} else if(order.getOrderPayWay().equals(OrderConstant.PAY_WAY_FRIEND_PAYMENT)) {
-            order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
-            order.setIsShowFriendPay(order.getPayOperationTime() > 0 ? YES : NO);
+		    //好友代付在外层处理
         } else {
 			//普通订单待支付取消时间
 			order.setPayOperationTime(order.getExpireTime().getTime() - currenTmilliseconds);
