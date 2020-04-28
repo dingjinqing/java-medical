@@ -2,17 +2,7 @@ package com.vpu.mp.service.shop.activity.factory;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
-import com.vpu.mp.service.shop.activity.processor.ActivityCartListStrategy;
-import com.vpu.mp.service.shop.activity.processor.ExclusiveProcessor;
-import com.vpu.mp.service.shop.activity.processor.FirstSpecialProcessor;
-import com.vpu.mp.service.shop.activity.processor.FullReductionProcessor;
-import com.vpu.mp.service.shop.activity.processor.GoodsBeginProcessor;
-import com.vpu.mp.service.shop.activity.processor.GoodsTailProcessor;
-import com.vpu.mp.service.shop.activity.processor.GradeCardProcessor;
-import com.vpu.mp.service.shop.activity.processor.PreSaleProcessor;
-import com.vpu.mp.service.shop.activity.processor.PurchasePriceProcessor;
-import com.vpu.mp.service.shop.activity.processor.ReducePriceProcessor;
-import com.vpu.mp.service.shop.activity.processor.SecKillProcessor;
+import com.vpu.mp.service.shop.activity.processor.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,6 +43,8 @@ public class CartProcessorContext {
     private FullReductionProcessor fullReduction;
     @Autowired
     private PurchasePriceProcessor purchasePrice;
+    @Autowired
+    private CouponPackageProcessor couponPackage;
     /**
      * 购物车一般活动
      */
@@ -92,6 +84,9 @@ public class CartProcessorContext {
         executeStrategy(fullReduction,cartBo);
         //加价购
         executeStrategy(purchasePrice,cartBo);
+        //优惠券礼包
+        executeStrategy(couponPackage, cartBo);
+
         //活动冲突处理
         executeStrategy(goodsTail,cartBo);
     }
