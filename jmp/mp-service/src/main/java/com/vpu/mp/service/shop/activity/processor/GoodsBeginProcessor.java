@@ -50,7 +50,7 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsRecord()==null||goods.getGoodsId() == null ||  goods.getGoodsRecord().getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
-                log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getGoodsRecord().getDelFlag()+"]");
+                log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+goods +"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 goods.setBuyStatus(BaseConstant.NO);
