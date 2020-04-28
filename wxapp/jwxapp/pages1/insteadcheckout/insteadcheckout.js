@@ -117,7 +117,7 @@ global.wxPage({
           paySign: res.content.webPayVo.paySign,
           success: res => {
             util.toast_success('支付成功',()=>{
-              util.jumpLink(`pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`,'redirectTo')
+              util.jumpLink(`pages1/insteadinfo/insteadinfo?orderSn=${orderSn}&message=${this.data.options.message}`,'redirectTo')
             })
           },
           fail: res => {

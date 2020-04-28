@@ -53,7 +53,7 @@ global.wxPage({
     util.jumpLink(`pages/orderinfo/orderinfo?orderSn=${this.data.pageInfo.order.orderSn}`,'navitageTo')
   },
   viewCheckout(){
-    util.jumpLink(`pages1/insteadcheckout/insteadcheckout?orderSn=${this.data.pageInfo.order.orderSn}&orderId=${this.data.pageInfo.order.orderId}`,'navitageTo')
+    util.jumpLink(`pages1/insteadcheckout/insteadcheckout?orderSn=${this.data.pageInfo.order.orderSn}&orderId=${this.data.pageInfo.order.orderId}&message=${this.data.manageMsg}`,'navitageTo')
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

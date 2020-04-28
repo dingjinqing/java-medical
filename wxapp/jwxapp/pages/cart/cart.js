@@ -127,8 +127,8 @@ global.wxPage({
 
   // 更改全选状态
   changeAllChecked () {
-    let checkFlag = this.data.canBuyGoodsList.find(item => { return item.buyStatus == 0 })
-    if (checkFlag != undefined) {
+    let checkFlag = this.data.canBuyGoodsList.find(item => { return item.buyStatus == 0 && item.activityType != 97 })
+    if (checkFlag != undefined && this.data.isAllCheck == 0) {
       util.showModal('提示', '当前购物车不可全选');
       return false
     }
@@ -137,6 +137,9 @@ global.wxPage({
     util.api('/api/wxapp/cart/switch', res => {
       if (res.error === 0) {
         this.requestCartList()
+      } else {
+        util.showModal('提示', res.message)
+        return false
       }
     }, { cartIds: cartIds, isChecked: isAllCheck })
   },
