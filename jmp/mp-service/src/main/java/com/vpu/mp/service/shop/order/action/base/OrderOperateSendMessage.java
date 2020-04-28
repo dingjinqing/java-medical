@@ -102,7 +102,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("退款操作消息推送start");
         //TODO 子单需要推送到主单用户
         // 跳转到退款页面
-        String page = "pages/returnorder/returnorder?orderSn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
+        String page = "pages1/returnorder/returnorder?orderSn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
         //商品名称
         String goodsName = getReturnGoodsName(returnGoods);
         //金额
