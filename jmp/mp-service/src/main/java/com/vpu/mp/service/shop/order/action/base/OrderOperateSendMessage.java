@@ -103,13 +103,13 @@ public class OrderOperateSendMessage extends ShopBaseService {
         logger().info("退款操作消息推送start");
         //TODO 子单需要推送到主单用户
         // 跳转到退款页面
-        String page = "pages1/returndetail/returndetail?return_sn=" + returnOrder.getOrderSn() + "&ret_id=" + returnOrder.getRetId();
+        String page = "pages1/returndetail/returndetail?return_sn=" + returnOrder.getReturnOrderSn() + "&ret_id=" + returnOrder.getRetId();
         //商品名称
         String goodsName = getReturnGoodsName(returnGoods);
         //金额
         String money = BigDecimalUtil.add(returnOrder.getMoney(), returnOrder.getShippingFee()).toString();
         //申请时间
-        String applyTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, OrderConstant.RT_ONLY_MONEY == returnOrder.getReturnType() ? returnOrder.getShippingOrRefundTime() :returnOrder.getApplyTime());
+        String applyTime = DateUtil.dateFormat(DateUtil.DATE_FORMAT_FULL, OrderConstant.RT_GOODS == returnOrder.getReturnType() ? returnOrder.getApplyTime() : returnOrder.getShippingOrRefundTime());
         //参数
         RabbitMessageParam param;
         if(returnOrder.getRefundStatus() == OrderConstant.REFUND_STATUS_FINISH) {
