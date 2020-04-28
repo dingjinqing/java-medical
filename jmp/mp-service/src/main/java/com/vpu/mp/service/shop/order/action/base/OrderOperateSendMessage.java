@@ -29,6 +29,7 @@ import com.vpu.mp.service.shop.express.ExpressService;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -333,6 +334,9 @@ public class OrderOperateSendMessage extends ShopBaseService {
     }
 
     private String getReturnGoodsName(List<ReturnOrderGoodsRecord> orderGoods) {
+        if(CollectionUtils.isEmpty(orderGoods)) {
+            return "无";
+        }
         return getString(orderGoods.get(0).getGoodsName(), orderGoods.stream().mapToInt(ReturnOrderGoodsRecord::getGoodsNumber).sum(), orderGoods.size());
     }
 
