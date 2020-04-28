@@ -68,7 +68,9 @@ public class RabbitConfig {
     /** 关闭订单队列 */
     public static final String QUEUE_CLOSE_ORDER = "order.close";
     /**代付订单退款*/
-    public static final String QUEUE_RETURN_SUB_ORDER = "order.return_sub";
+    public static final String QUEUE_RETURN_SUB_ORDER = "order.return.sub";
+    /**批量发货*/
+    public static final String QUEUE_BATCH_SHIP = "order.batch.ship";
     /*************商品各种导入处理队列start************/
     /**微铺宝商品excel模板导入*/
     public static final String QUEUE_GOODS_VPU_EXCEL_IMPORT = "goods.vpu.excel.import";
@@ -309,7 +311,15 @@ public class RabbitConfig {
     public Queue calendarQueue() {
         return new Queue(QUEUE_CALENDAR,true,false,false);
     }
-    
+
+    /**
+     * 批量发货
+     */
+    @Bean
+    public Queue batchShipQueue() {
+        return new Queue(QUEUE_BATCH_SHIP,true,false,false);
+    }
+
     /**
      * 1.路由名字
      * 2.durable="true" 是否持久化 rabbitmq重启的时候不需要创建新的交换机
@@ -441,5 +451,10 @@ public class RabbitConfig {
     @Bean
     public Binding bindingSysCalendar() {
     	   return BindingBuilder.bind(calendarQueue()).to(marketingExchange()).with(BINDING_EXCHANGE_SYS_CALENDAR_MQ_KEY);
+    }
+
+    @Bean
+    public Binding bindingBatchShipQueue() {
+        return BindingBuilder.bind(batchShipQueue()).to(orderExchange()).with(BINDING_EXCHANGE_BATCH_SHIP_KEY);
     }
 }
