@@ -1,5 +1,6 @@
 package com.vpu.mp.service.shop.order;
 
+import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
@@ -20,6 +21,7 @@ import com.vpu.mp.service.foundation.util.BigDecimalUtil;
 import com.vpu.mp.service.foundation.util.Page;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.auth.ShopManageVo;
 import com.vpu.mp.service.pojo.shop.config.ShowCartConfig;
 import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.express.ExpressVo;
@@ -78,6 +80,8 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.AfterSaleServiceVo;
 import com.vpu.mp.service.pojo.wxapp.order.refund.ReturnOrderListMp;
+import com.vpu.mp.service.saas.privilege.ChildAccountService;
+import com.vpu.mp.service.saas.shop.ShopAccountService;
 import com.vpu.mp.service.shop.config.ConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import com.vpu.mp.service.shop.config.ShopReturnConfigService;
@@ -140,6 +144,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_GOODS;
@@ -217,6 +222,10 @@ public class OrderReadService extends ShopBaseService {
     private BulkshipmentRecordService batchRecord;
     @Autowired
     private BulkshipmentRecordDetailService batchDetailRecord;
+    @Autowired
+    private ShopAccountService shopAccount;
+    @Autowired
+    private ChildAccountService childAccount;
     /**
      * 订单查询
      * @param param
@@ -987,7 +996,32 @@ public class OrderReadService extends ShopBaseService {
 
 
     public PageResult<BatchShipListVo> batchShipList(BatchShipListParam param) {
-        return batchRecord.batchShipList(param);
+        PageResult<BatchShipListVo> result = batchRecord.batchShipList(param);
+        if(CollectionUtils.isEmpty(result.dataList)) {
+            return result;
+        }
+        List<Integer> sysIds = result.dataList.stream().filter(x -> x.getSysId() != null && x.getSysId() > 0).map(BatchShipListVo::getSysId).collect(Collectors.toList());
+        List<Integer> accountIds = result.dataList.stream().filter(x -> x.getAccountId() != null && x.getAccountId() > 0).map(BatchShipListVo::getAccountId).collect(Collectors.toList());
+        Map<Integer, ShopManageVo> sys = shopAccount.getByIds(sysIds).stream().collect(Collectors.toMap(ShopManageVo::getSysId, Function.identity()));
+        Map<Integer, SystemChildAccountRecord> account = childAccount.getByAccountIds(accountIds).stream().collect(Collectors.toMap(SystemChildAccountRecord::getAccountId, Function.identity()));
+        result.dataList.forEach(
+            x->{
+                if(x.getSysId() != null && x.getSysId() > 0) {
+                    ShopManageVo vo = sys.get(x.getSysId());
+                    if(vo != null) {
+                        x.setUserName(vo.getUserName());
+                        x.setMobile(vo.getMobile());
+                    }
+                }else if(x.getAccountId() != null && x.getAccountId() > 0) {
+                    SystemChildAccountRecord vo = account.get(x.getAccountId());
+                    if(vo != null) {
+                        x.setChildUserName(vo.getAccountName());
+                        x.setChildMobile(vo.getMobile());
+                    }
+                }
+            }
+        );
+        return result;
     }
 
     public Workbook downloadFailData(Integer batchId, String lang) {
