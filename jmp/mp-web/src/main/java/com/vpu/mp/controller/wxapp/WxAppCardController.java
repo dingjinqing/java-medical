@@ -37,6 +37,7 @@ import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardAddExchangeGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchaneGoodsJudgeParam;
 import com.vpu.mp.service.pojo.wxapp.card.param.CardExchangeGoodsParam;
+import com.vpu.mp.service.pojo.wxapp.card.vo.CardExchangeGoodsVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 
@@ -275,8 +276,8 @@ public class WxAppCardController extends WxAppBaseController {
 	public JsonResult changeGoodsList(@RequestBody @Validated CardExchangeGoodsParam param) {
 		logger().info("兑换商品列表");
 		param.setUserId(wxAppAuth.user().getUserId());
-		shop().user.wxUserCardService.exchangeSvc.changeGoodsList(param);
-		return success();
+		CardExchangeGoodsVo vo = shop().user.wxUserCardService.exchangeSvc.changeGoodsList(param);
+		return success(vo);
 	}
 
 	/**
