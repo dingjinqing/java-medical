@@ -76,7 +76,7 @@ public class WxCardExchangeService extends ShopBaseService {
 			List<Integer> goodsIds = Util.splitValueToList(memberCard.getExchangGoods());
 			GoodsPageListParam goodsPageListParam = new GoodsPageListParam();
 			goodsPageListParam.setGoodsIds(goodsIds);
-			goodsPageListParam.setIsSaleOut(NumberUtils.BYTE_ONE.equals(soldOutGoods));
+			goodsPageListParam.setIsSaleOut(soldOutGoods);
 			goodsPageListParam.setGoodsName(param.getSearch());
 			goodsPageListParam.setCurrentPage(param.getCurrentPage());
 			goodsPageListParam.setPageRows(param.getPageRows());
