@@ -695,7 +695,10 @@ export default {
     if (this.tableHeight < 0) {
       this.tableHeight = 400
     }
-    console.log('高度')
+    console.log(this.$route)
+    if (this.$route.params.id !== undefined) {
+      this.mainData.calendarActId = this.$route.params.id
+    }
     console.log(this.tableHeight)
     this.search()
     // document.getElementById('tableSize').style.height = this.tableHeight + 'px'
