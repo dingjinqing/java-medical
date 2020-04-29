@@ -1518,7 +1518,8 @@ public class MemberCardService extends ShopBaseService {
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 
 		insertCardAccountTradesRecord(data, tradeOpt);
-		CardFullDetail  cardFullDetail = getCardDetailByNo(data.getCardNo());
+		MemberCardRecord memberCard = getCardById(userCard.getCardId());
+		
 		// 订阅消息
 		String[][] maData = new String[][] {
 			{String.valueOf(data.getMoney())},
@@ -1529,7 +1530,7 @@ public class MemberCardService extends ShopBaseService {
 		List<Integer> arrayList = Collections.<Integer>singletonList(data.getUserId());
 		// 公众号消息
 		String[][] mpData = new String[][] {
-			{"您好，您的"+cardFullDetail.getMemberCard().getCardName()+"有新的余额变动"},
+			{"您好，您的"+memberCard.getCardName()+"有新的余额变动"},
 			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
 			{String.valueOf(data.getMoney())},
 			{String.valueOf(userCard.getMoney().add(data.getMoney()))},
