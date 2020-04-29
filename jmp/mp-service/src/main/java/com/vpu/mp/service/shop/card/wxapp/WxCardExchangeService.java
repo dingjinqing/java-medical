@@ -174,4 +174,13 @@ public class WxCardExchangeService extends ShopBaseService {
 		vo.setTotalNumber(totalNumber);
 		return vo;
 	}
+
+
+	/**
+	 * 删除兑换商品
+	 * @param param
+	 */
+	public void removeChoosedGoods(UserCheckedGoodsParam param) {
+		userCheckedGoodsSvc.removeChoosedGoods(param);
+	}
 }
