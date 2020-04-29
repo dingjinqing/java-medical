@@ -130,7 +130,12 @@ public enum MpTemplateConfig {
     	"AT0442",
     	"审核未通过提醒",
     	"审核结果{{keyword1.DATA}}审核时间{{keyword2.DATA}}未通过原因{{keyword3.DATA}}申请时间{{keyword4.DATA}}申请内容{{keyword5.DATA}}"
-    );
+    ),
+	GET_CARD(
+		"OPENTM405766398",
+		"会员卡领取成功通知",
+		"{{first.DATA}}会员卡：{{keyword1.DATA}}会员类型：{{keyword2.DATA}}关联手机：{{keyword3.DATA}}有效期至：{{keyword4.DATA}}{{remark.DATA}}"
+	);
 	/**
 	 * 模板编号
 	 */
