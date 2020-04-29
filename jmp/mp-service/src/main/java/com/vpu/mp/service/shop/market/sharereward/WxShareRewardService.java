@@ -503,7 +503,7 @@ public class WxShareRewardService extends ShopBaseService {
             case 1:
                 return "pages/integral/integral";
             case 2:
-                return "pages/couponlist/couponlist";
+                return "pages/coupon/coupon";
             case 3:
                 return "pages/lottery/lottery?lottery_id=" + lotteryId;
             default:
