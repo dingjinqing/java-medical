@@ -69,6 +69,7 @@ import static com.vpu.mp.db.shop.tables.OrderInfo.ORDER_INFO;
 import static com.vpu.mp.db.shop.tables.SecKillDefine.SEC_KILL_DEFINE;
 import static com.vpu.mp.db.shop.tables.SecKillList.SEC_KILL_LIST;
 import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
+import static org.jooq.impl.DSL.select;
 
 /**
  * @author 王兵兵
@@ -350,15 +351,22 @@ public class SeckillService extends ShopBaseService{
      * @return key:商品id，value:活动价格
      */
     public Map<Integer, BigDecimal> getSecKillProductVo(List<Integer> goodsIds, Timestamp date){
-        return db().select(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, DSL.min(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE).as(SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE))
-            .from(SEC_KILL_PRODUCT_DEFINE).innerJoin(SEC_KILL_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
+        return db().select(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE)
+            .from(SEC_KILL_PRODUCT_DEFINE)
+            .innerJoin(SEC_KILL_DEFINE).on(SEC_KILL_DEFINE.SK_ID.eq(SEC_KILL_PRODUCT_DEFINE.SK_ID))
             .where(SEC_KILL_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
             .and(SEC_KILL_DEFINE.STATUS.eq(BaseConstant.ACTIVITY_STATUS_NORMAL))
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
             .and(SEC_KILL_DEFINE.START_TIME.le(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
-            .groupBy(SEC_KILL_PRODUCT_DEFINE.GOODS_ID)
-            .fetchMap(SEC_KILL_PRODUCT_DEFINE.GOODS_ID, SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE);
+            .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
+            .fetch()
+            .stream()
+            .collect(
+                Collectors
+                    .toMap(x->x.get(SEC_KILL_PRODUCT_DEFINE.GOODS_ID),
+                        y->y.get( SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE),(olValue,newValue)->olValue)
+            );
     }
 
     /**
