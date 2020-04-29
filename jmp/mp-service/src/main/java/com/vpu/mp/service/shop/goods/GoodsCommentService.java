@@ -180,13 +180,13 @@ public class GoodsCommentService extends ShopBaseService {
           setCurrentPage(1);
           setPageRows(9999999);
       }});
-      listVo.setRefuseNum(refuseNum);
+      listVo.setTopNum(topNum);
       Integer showNum = getNum(new GoodsCommentPageListParam(){{
           setIsShow((byte)1);
           setCurrentPage(1);
           setPageRows(9999999);
       }});
-      listVo.setRefuseNum(refuseNum);
+      listVo.setShowNum(showNum);
     return listVo;
   }
     public Integer getNum(GoodsCommentPageListParam param) {
