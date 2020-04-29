@@ -130,7 +130,7 @@ public class BargainTaskService extends ShopBaseService {
     public void sendBargainProgress() {
         Result<Record5<Integer, Integer, Integer, String, BigDecimal>> records = getExpiringBargainRecords();
         records.forEach(r -> {
-            sendBargainProgressNotify(r.get(BARGAIN_RECORD.USER_ID), r.get(BARGAIN.EXPECTATION_PRICE), r.get(GOODS.GOODS_NAME), r.get(BARGAIN_RECORD.ID), r.get(BARGAIN_RECORD.USER_NUMBER));
+            sendBargainProgressNotify(r.get(BARGAIN_RECORD.USER_ID), r.get(BARGAIN_GOODS.EXPECTATION_PRICE), r.get(GOODS.GOODS_NAME), r.get(BARGAIN_RECORD.ID), r.get(BARGAIN_RECORD.USER_NUMBER));
         });
     }
     
@@ -194,10 +194,11 @@ public class BargainTaskService extends ShopBaseService {
         Timestamp start = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:00", time));
         Timestamp end = DateUtil.convertToTimestamp(DateUtil.dateFormat("yyyy-MM-dd HH:mm:59", time));
         logger().info("定时发送砍价进度");
-        return db().select(BARGAIN_RECORD.ID, BARGAIN_RECORD.USER_ID, BARGAIN_RECORD.USER_NUMBER, GOODS.GOODS_NAME, BARGAIN.EXPECTATION_PRICE)
+        return db().select(BARGAIN_RECORD.ID, BARGAIN_RECORD.USER_ID, BARGAIN_RECORD.USER_NUMBER, GOODS.GOODS_NAME, BARGAIN_GOODS.EXPECTATION_PRICE)
             .from(BARGAIN_RECORD)
             .leftJoin(BARGAIN).on(BARGAIN_RECORD.BARGAIN_ID.eq(BARGAIN.ID))
             .leftJoin(GOODS).on(BARGAIN_RECORD.GOODS_ID.eq(GOODS.GOODS_ID))
+            .leftJoin(BARGAIN_GOODS).on(BARGAIN_GOODS.BARGAIN_ID.eq(BARGAIN_RECORD.BARGAIN_ID).and(BARGAIN_GOODS.GOODS_ID.eq(BARGAIN_RECORD.GOODS_ID)))
             .where(BARGAIN_RECORD.STATUS.eq(BargainRecordService.STATUS_IN_PROCESS))
             .and(BARGAIN.END_TIME.le(end))
             .and(BARGAIN.END_TIME.ge(start))
