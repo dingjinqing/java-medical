@@ -163,7 +163,7 @@ public class OrderReadService extends ShopBaseService {
     @Autowired
     public AdminMarketOrderInfoService marketOrderInfo;
 	@Autowired
-	private OrderGoodsService orderGoods;
+	public OrderGoodsService orderGoods;
 	@Autowired
 	private ShipInfoService shipInfo;
 	@Autowired

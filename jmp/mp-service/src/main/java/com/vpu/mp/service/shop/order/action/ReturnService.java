@@ -136,17 +136,17 @@ public class ReturnService extends ShopBaseService implements IorderOperate<Orde
             !Byte.valueOf(OrderConstant.RETURN_OPERATE_ADMIN_REFUSE_RETURN_GOODS_APPLY).equals(param.getReturnOperate())){
            //非提交物流、非撤销校验
             if(param.getReturnMoney() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_RETURNMONEY, "退款时未输入退商品金额",null);
             }
             if(param.getShippingFee() == null){
-                ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, null);
+                return ExecuteResult.create(JsonResultCode.CODE_ORDER_RETURN_NOT_NULL_SHIPPINGFEE, "退款时未输入退运费金额",null);
             }
         }
 		//获取订单详情
 		OrderInfoVo order = orderInfo.getByOrderId(param.getOrderId(), OrderInfoVo.class);
 		if(order == null) {
             logger.error("退款退货执行异常，订单不存在");
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_NOT_EXIST, "订单不存在",null);
 		}
 		//result
         ExecuteResult result = ExecuteResult.create();

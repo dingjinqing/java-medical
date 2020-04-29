@@ -2,12 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.JsonResult;
-import com.vpu.mp.service.pojo.shop.market.bargain.SimpleBargainParam;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.market.bargain.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -82,15 +79,5 @@ public class WxAppBargainController extends WxAppBaseController {
     @PostMapping("/api/wxapp/bargain/users")
     public JsonResult getRecordUserList(@RequestBody @Valid BargainUsersListParam param) {
         return success(shop().bargain.bargainRecord.bargainUser.getWxPageList(param));
-    }
-
-    /**
-     * 砍价规则
-     * @param param
-     * @return
-     */
-    @PostMapping("/api/wxapp/bargain/rule")
-    public JsonResult getBargainRule(@RequestBody @Valid SimpleBargainParam param) {
-        return success(shop().bargain.getBargainRule(param.getId()));
     }
 }
