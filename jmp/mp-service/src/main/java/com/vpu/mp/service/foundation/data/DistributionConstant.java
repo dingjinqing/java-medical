@@ -45,4 +45,10 @@ public class DistributionConstant {
      */
      public static Byte NOT_SEND_COUPON = 0;
      public static Byte SEND_COUPON = 1;
+
+    /**
+     * '佣金计算方式;0:商品实际支付金额*佣金比例；1：商品实际利润（实际支付金额-成本价）* 佣金比例'
+     */
+    public static Byte STRATEGY_TYPE_PAYMENT = 0;
+    public static Byte STRATEGY_TYPE_PROFIT = 1;
 }
