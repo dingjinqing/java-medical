@@ -1,3 +1,13 @@
+.ship-tips{
+  position: fixed;
+  bottom: 100rpx;
+  line-height: 80rpx;
+  width: 100%;
+  background-color: rgba(255, 253, 180, 0.9);
+  text-align: center;
+  font-size: 26rpx;
+  color: #f60;
+}
 .footer {
   position: fixed;
   width: 100%;

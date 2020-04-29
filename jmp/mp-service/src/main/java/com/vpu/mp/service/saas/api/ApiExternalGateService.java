@@ -11,6 +11,7 @@ import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.pos.PosVerifyOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
@@ -215,11 +216,11 @@ public class ApiExternalGateService extends MainBaseService {
         String service_name = param.getService_name();
         ApiJsonResult apiJsonResult = null;
         switch (service_name) {
-            case ApiExternalGateConfig.SERVICE_GOODS_LIST:
-                apiJsonResult = goodsList(param);
-                break;
             case ApiExternalGateConfig.SERVICE_POS_SYNC_PRODUCT:
                 apiJsonResult = posSyncProduct(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_POS_SYNC_STOCK:
+                apiJsonResult =posSyncStock(param);
                 break;
             case ApiExternalGateConfig.SERVICE_POS_RETURN_GOODS:
                 apiJsonResult = posSyncProduct(param);
@@ -235,13 +236,6 @@ public class ApiExternalGateService extends MainBaseService {
         return apiJsonResult;
     }
 
-    private ApiJsonResult goodsList(ApiExternalGateParam gateParam) {
-        // param.getContent() 反序列化为对应的类型 =>GoodsListParam param
-        // saas.getShopApp(gateParam.getShopId()).goods.goodsList(param)
-        // 需要将成功数据或者错误情况的 errorCode，errorMsg data 封装成对应的ApiJsonResult返回
-
-        return new ApiJsonResult();
-    }
 
     /**
      * pos 同步商品信息(门店商品信息) 主要同步上下架和价格
@@ -251,14 +245,30 @@ public class ApiExternalGateService extends MainBaseService {
     private ApiJsonResult posSyncProduct(ApiExternalGateParam gateParam){
         PosSyncProductParam param = Util.parseJson(gateParam.getContent(), PosSyncProductParam.class);
         if (param == null) {
-            ApiJsonResult apiJsonResult = new ApiJsonResult();
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("content 内容参数错误");
-            return apiJsonResult;
+            return contentErrorResult();
         }
        return saas().getShopApp(gateParam.getShopId()).goods.posSyncProductMq(param);
     }
 
+    /**
+     * 同步门店库存
+     * @param gateParam
+     * @return
+     */
+    private ApiJsonResult posSyncStock(ApiExternalGateParam gateParam) {
+        PosSyncStockParam param = Util.parseJson(gateParam.getContent(),PosSyncStockParam.class);
+        if (param == null) {
+           return contentErrorResult();
+        }
+        return saas().getShopApp(gateParam.getShopId()).goods.posSyncStock(param);
+    }
+
+    private ApiJsonResult contentErrorResult(){
+        ApiJsonResult apiJsonResult = new ApiJsonResult();
+        apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+        apiJsonResult.setMsg("content 内容参数错误");
+        return apiJsonResult;
+    }
 
     private void logPrinter(String app_id, String msg) {
         log.error("数据同步接口：" + ApiExternalGateConfig.APP_NAMES.get(app_id) + "：" + msg);

@@ -188,7 +188,36 @@
           <tbody>
             <tr>
               <td>{{$t('order.orderSn')}}</td>
-              <td>{{returnInfo.orderSn}}</td>
+              <td>
+                <el-popover
+                  placement="right"
+                  trigger="manual"
+                  v-model="showOrderBrief"
+                >
+                  <div
+                    class="order-brief"
+                    @click="handleViewOrder(returnInfo.orderSn)"
+                  >
+                    <div class="title">订单信息</div>
+                    <div class="brief-info">
+                      <div>订单号：{{returnInfo.orderSn}}</div>
+                      <div>订单状态：{{returnInfo.refundStatus === 5 ? returnStatusToShowMapping['5'] : orderBriefData.orderStatusName}}</div>
+                      <div>支付方式：{{orderBriefData.payName}}</div>
+                      <div>配送方式：{{orderBriefData.deliverType === 0 ? '快递':'自提'}}</div>
+                      <div>订单类型：{{orderBriefData.goodsTypeName}}</div>
+                      <div>下单时间：{{orderBriefData.createTime}}</div>
+                      <div>下单人：{{orderBriefData.username}} {{orderBriefData.userMobile}}</div>
+                      <div>收件人：{{orderBriefData.consignee}} {{orderBriefData.mobile}}</div>
+                      <div>收货地址：{{orderBriefData.completeAddress}}</div>
+                    </div>
+                  </div>
+                  <span
+                    slot="reference"
+                    @mouseenter="requestOrderInfo(returnInfo.orderSn)"
+                    @mouseleave="leaveOrderBrief()"
+                  >{{returnInfo.orderSn}}</span>
+                </el-popover>
+              </td>
               <td>{{$t('order.returnSn')}}</td>
               <td>{{returnInfo.returnOrderSn}}</td>
             </tr>
@@ -619,11 +648,13 @@
 
 <script>
 import {
-  returnInfo, handleReturnInfo, getDefaultAddress
+  returnInfo, handleReturnInfo, getDefaultAddress, getOrderBrief
 } from '@/api/admin/orderManage/order.js'
 export default {
   data () {
     return {
+      paymentTypeMap: {},
+      goodsTypeMap: {},
       returnTypeMap: null,
       searchParam: {
         returnOrderSn: null
@@ -660,7 +691,9 @@ export default {
       refund_balance_money: 0.00,
       refund_score_money: 0.00,
       refund_pay_money: 0.00,
-      bk_order_money: 0.00
+      bk_order_money: 0.00,
+      showOrderBrief: false,
+      orderBriefData: {}
     }
   },
   created () {
@@ -816,6 +849,8 @@ export default {
     },
     arrayToMap () {
       this.returnTypeMap = new Map(this.$t('order.returnTypeList'))
+      this.paymentTypeMap = new Map(this.$t('order.paymentTypeList'))
+      this.goodsTypeMap = new Map(this.$t('order.goodsTypeList'))
       this.returnStatusToShowMapping = {
         '1': this.$t('order.returnStatusMapping_1'),
         '2': this.$t('order.returnStatusList')[3][1],
@@ -838,6 +873,85 @@ export default {
         8: this.$t('order.submitLogistics'),
         9: this.$t('order.refusedReturnGoods')
       }
+    },
+    requestOrderInfo (orderSn, targetIndex) {
+      getOrderBrief({orderSn}).then(res => {
+        console.log(res)
+        if (res.error === 0 && res.content) {
+          this.showOrderBrief = true
+          this.orderBriefData = res.content
+          this.$set(this.orderBriefData, 'orderStatusName', this.getOrderStatus(res.content))
+          this.$set(this.orderBriefData, 'payName', this.getOrderPayName(res.content))
+          this.$set(this.orderBriefData, 'goodsTypeName', this.getGoodsTypeName(res.content))
+        }
+      }).catch(() => {
+      })
+    },
+    leaveOrderBrief (orderSn, targetIndex) {
+      this.showOrderBrief = false
+    },
+    getOrderPayName ({payCodeList}) {
+      let nameArray = []
+      payCodeList.forEach(item => nameArray.push(this.paymentTypeMap.get(item)))
+      return nameArray.join(',')
+    },
+    getOrderStatus (orderData) {
+      const orderStatusList = [
+        [null, '全部订单'],
+        [0, '待付款'],
+        [1, '订单取消'],
+        [2, '订单关闭'],
+        [3, '待发货/待核销'],
+        [4, '已发货'],
+        [5, '已收货/已自提'],
+        [6, '订单完成'],
+        [7, '退货中'],
+        [8, '退货完成'],
+        [9, '退款中'],
+        [10, '退款完成'],
+        [11, '拼团中'],
+        [12, '已成团'],
+        [13, '送礼完成']
+      ]
+      let typeArray = orderData.goodsType.substring(1, orderData.goodsType.length - 1).split('][')
+      console.log(typeArray)
+      if (orderData.orderStatus !== 3 && orderData.orderStatus !== 5) {
+        if (orderData.orderStatus === 0 && typeArray.indexOf(10) !== -1) {
+          if (orderData.bkOrderPaid === 0) {
+            return '待付定金'
+          } else {
+            return '待付尾款'
+          }
+        } else {
+          let orderStatusMap = new Map(orderStatusList)
+          return orderStatusMap.get(orderData.orderStatus)
+        }
+      } else {
+        if (orderData.deliverType === 1 && orderData.orderStatus === 3) {
+          return '待核销'
+        } else if (orderData.deliverType === 0 && orderData.orderStatus === 3) {
+          return '待发货'
+        } else if (orderData.deliverType === 1 && orderData.orderStatus === 5) {
+          return '已自提'
+        } else if (orderData.deliverType === 0 && orderData.orderStatus === 5) {
+          return '已收货'
+        }
+      }
+      return '待发货'
+    },
+    getGoodsTypeName ({goodsType}) {
+      let typeArray = goodsType.substring(1, goodsType.length - 1).split('][')
+      let nameArray = []
+      typeArray.forEach(item => nameArray.push(this.goodsTypeMap.get(Number(item))))
+      return nameArray.join(',')
+    },
+    handleViewOrder (orderSn) {
+      this.$router.push({
+        name: 'orderInfo',
+        query: {
+          orderSn: orderSn
+        }
+      })
     }
   },
   watch: {
@@ -1054,6 +1168,38 @@ export default {
     }
     .el-checkbox-button.is-disabled .el-checkbox-button__inner {
       background-color: #f5f7fa;
+    }
+  }
+}
+.order-brief {
+  display: flex;
+  width: 250px;
+  flex-direction: column;
+  border-radius: 6px 6px 0px 0px;
+  overflow: hidden;
+  cursor: pointer;
+  > .title {
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    background: #5a8bff;
+  }
+  > .brief-info {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px 15px;
+    background: rgba(90, 139, 255, 0.1);
+    position: relative;
+    > div {
+      color: #333;
+      & + div {
+        margin-top: 5px;
+      }
+    }
+    > .bottom-bg {
+      position: absolute;
+      bottom: 0;
+      left: 10px;
     }
   }
 }

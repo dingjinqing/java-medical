@@ -200,6 +200,8 @@ export default {
             line-height: 30px;
           }
           .address_names {
+            display: flex;
+            align-items: center;
             font-size: 14px;
             color: #353535;
             width: 165px;
