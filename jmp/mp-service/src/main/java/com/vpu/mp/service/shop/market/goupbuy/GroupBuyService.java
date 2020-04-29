@@ -452,7 +452,7 @@ public class GroupBuyService extends ShopBaseService {
             .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
             .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
             .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
-            .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+            .and(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
             .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
             .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
             .orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_DEFINE.CREATE_TIME.desc(),GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
