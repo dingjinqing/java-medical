@@ -19,6 +19,8 @@ public class AddressParam {
     /**
      * 商品id
      */
-    public Integer goodsId;
+    private Integer goodsId;
+    private Integer userId;
+    private String lang;
 
 }

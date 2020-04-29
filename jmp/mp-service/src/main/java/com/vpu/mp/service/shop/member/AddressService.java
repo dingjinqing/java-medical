@@ -2,20 +2,21 @@ package com.vpu.mp.service.shop.member;
 
 import com.vpu.mp.config.TxMapLBSConfig;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
+import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.HttpsUtils;
 import com.vpu.mp.service.foundation.util.Util;
-import com.vpu.mp.service.pojo.shop.member.address.AddressCode;
-import com.vpu.mp.service.pojo.shop.member.address.AddressInfo;
-import com.vpu.mp.service.pojo.shop.member.address.AddressLocation;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
-import com.vpu.mp.service.pojo.shop.member.address.WxAddress;
+import com.vpu.mp.service.pojo.shop.member.address.*;
+import com.vpu.mp.service.shop.goods.GoodsDeliverTemplateService;
+import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.mp.GoodsMpService;
 import jodd.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,12 @@ public class AddressService extends ShopBaseService {
 
     @Autowired
     private TxMapLBSConfig txMapLBSConfig;
+    @Autowired
+    private GoodsDeliverTemplateService shippingFeeTemplate;
+    @Autowired
+    private GoodsMpService goodsMpService;
+    @Autowired
+    private GoodsService goodsService;
 
 
     /**
@@ -72,13 +79,16 @@ public class AddressService extends ShopBaseService {
      *
      * @return
      */
-    public UserAddressRecord chooseAddress(Integer userId, WxAddress wxAddress) {
+    public ChooseAddressVo chooseAddress(Integer userId, WxAddress wxAddress) {
         UserAddressRecord userAddress = getUserAddressInfo(userId, wxAddress);
         if (userAddress == null) {
             log.info("添加用户地址[userid:" + userId + "]" + Util.toJson(wxAddress));
             userAddress = addWxAddress(userId, wxAddress);
         }
-        return userAddress;
+        if (userAddress!=null){
+           return userAddress.into(ChooseAddressVo.class);
+        }
+        return null;
     }
 
     /**
@@ -246,4 +256,22 @@ public class AddressService extends ShopBaseService {
         return Util.json2Object(HttpsUtils.get(QQ_MAP_GEOCODER_URL, param, true), AddressInfo.class, true);
     }
 
+    public ChooseAddressVo chooseAddress(AddressParam param) {
+        ChooseAddressVo userAddressVo = chooseAddress(param.getUserId(),param.getWxAddress());
+        if (param.getGoodsId()==null){
+            return userAddressVo;
+        }else {
+            Integer deliverTemplateId = goodsService.getGoodsDeliverTemplateIdById(param.getGoodsId());
+            try {
+                shippingFeeTemplate.getShippingFeeByTemplate(userAddressVo.getDistrictCode(), deliverTemplateId, 1, BigDecimal.ZERO, BigDecimal.ZERO);
+                userAddressVo.setStatus((byte)1);
+            } catch (MpException e) {
+                log.info("不能配送区域");
+                userAddressVo.setStatus((byte)2);
+                userAddressVo.setMessage(Util.translateMessage(param.getLang(),e.getErrorCode().getMessage(),"message"));
+                e.printStackTrace();
+            }
+        }
+        return userAddressVo;
+    }
 }
