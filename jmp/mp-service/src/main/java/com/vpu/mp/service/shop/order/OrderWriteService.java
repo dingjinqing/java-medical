@@ -27,7 +27,6 @@ import com.vpu.mp.service.pojo.shop.order.write.operate.ship.batch.BatchShipPojo
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkParam;
 import com.vpu.mp.service.pojo.shop.order.write.remark.SellerRemarkVo;
 import com.vpu.mp.service.pojo.shop.order.write.star.StarParam;
-import com.vpu.mp.service.pojo.wxapp.cart.CartConstant;
 import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
 import com.vpu.mp.service.pojo.wxapp.order.goods.GoodsAndOrderInfoBo;
 import com.vpu.mp.service.shop.express.ExpressService;
@@ -234,7 +233,7 @@ public class OrderWriteService extends ShopBaseService {
             ExecuteResult executeResult = ship.execute(executeParam);
             if (executeResult == null || executeResult.isSuccess()) {
                 detailRecord.insert();
-                sum++;
+                success++;
             } else {
                 detailRecord.setStatus(batchShipDetail.fail);
                 detailRecord.setFailReason(executeResult.getErrorCode().getMessage());

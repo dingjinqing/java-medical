@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
- * pos核销订单
+ * pos退款
  *
  * @author 王帅
  * @date 2020年04月29日
  */
 @Data
 @AllArgsConstructor
-public class PosVerifyOrderParam {
-    @JsonProperty("order_sn")
-    private String orderSn;
-    @JsonProperty("order_status")
-    private Byte orderStatus;
+public class PosReturnGoodsVo {
+    private BigDecimal money;
+    @JsonProperty("shipping_fee")
+    private BigDecimal shippingFee;
 }

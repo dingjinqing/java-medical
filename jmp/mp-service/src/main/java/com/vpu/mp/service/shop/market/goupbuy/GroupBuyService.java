@@ -42,10 +42,12 @@ import com.vpu.mp.service.shop.coupon.CouponService;
 import com.vpu.mp.service.shop.goods.GoodsService;
 import com.vpu.mp.service.shop.goods.GoodsSpecProductService;
 import com.vpu.mp.service.shop.image.QrCodeService;
+import com.vpu.mp.service.shop.member.TagService;
 import com.vpu.mp.service.shop.order.OrderReadService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.refund.ReturnOrderService;
 import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import jodd.util.StringUtil;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -96,6 +98,8 @@ public class GroupBuyService extends ShopBaseService {
     private ShopCommonConfigService shopCommonConfigService;
     @Autowired
     private QrCodeService qrCode;
+    @Autowired
+    private TagService tagService;
 
 
     /**
@@ -297,6 +301,9 @@ public class GroupBuyService extends ShopBaseService {
         List<Integer> ids = Util.splitValueToList(groupBuy.getRewardCouponId());
         List<CouponView> couponViews = couponService.getCouponViewByIds(ids);
         groupBuy.setCouponViews(couponViews);
+        if(groupBuy.getActivityTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(groupBuy.getActivityTagId())){
+            groupBuy.setTagList(tagService.getTagsById(Util.splitValueToList(groupBuy.getActivityTagId())));
+        }
         groupBuy.setGoodsList(goodsList);
         groupBuy.setProductList(buyProductVos);
         groupBuy.setShare(Util.parseJson(groupBuy.getShareConfig(), GroupBuyShareConfigVo.class));

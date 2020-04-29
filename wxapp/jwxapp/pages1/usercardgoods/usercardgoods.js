@@ -51,7 +51,7 @@ global.wxPage({
         });
       }
     }, {
-      searchText: this.data.searchText,
+      search: this.data.searchText,
       cardNo: this.data.cardNo,
       currentPage: currentPage,
       pageRows: 20
@@ -61,19 +61,45 @@ global.wxPage({
     util.api('/api/wxapp/card/change/checkedlist', res => {
       console.log(res)
       if (res.error === 0) {
+        res.content.goodsList.dataList.forEach((item, index) => {
+          item.goodsPrice = item.marketPrice
+          item.cartNumber = item.goodsNumber
+        })
+        console.log(res.content.goodsList.dataList)
         this.setData({
-          cartData: this.data.cartData.concat(res.content.dataList)
+          cartData: res.content.goodsList.dataList,
+          totalNumber: res.content.totalNumber
         })
       }
     }, {
       identityId: this.data.cardNo,
     })
   },
+  deletCart (res) {
+    console.log(res)
+    util.api('/api/wxapp/card/change/remove', res => {
+      console.log(res)
+      if (res.error === 0) {
+        util.toast_success('删除成功')
+        this.requestCartGoodsList()
+      } else {
+        util.toast_fail('删除失败')
+      }
+    }, {
+      identityId: this.data.cardNo,
+      productId: res.detail.productId,
+      goodsId: res.detail.goodsId
+    })
+  },
+  cartNumChange (res) {
+    console.log(res)
+    this.addCart(res.detail)
+  },
   getSearchText (data) { // 点击搜索
     this.setData({
       searchText: data.detail,
       'pageParams.currentPage': 1,
-      dataList: null
+      dataList: []
     })
     this.requestGoodsList()
   },
@@ -135,23 +161,48 @@ global.wxPage({
     });
     console.log(this.data.productInfo)
   },
-  addCart () {
-    let { goodsNum: prdNumber, prdId, goodsId } = this.data.productInfo
+  addCart (res) {
+    console.log(res.id)
+    let paramsPrdNumber = ''
+    let paramsPrdId = ''
+    let paramsGoodsId = ''
+
+    if (res.id != undefined) {
+      console.log('plus')
+      if (res.type == "plus") {
+        res.cartNumber++
+      } else {
+        res.cartNumber--
+      }
+      let { cartNumber, productId, goodsId } = res
+      paramsPrdNumber = cartNumber
+      paramsPrdId = productId
+      paramsGoodsId = goodsId
+    } else {
+      let { goodsNum, prdId, goodsId } = this.data.productInfo
+      paramsPrdNumber = goodsNum
+      paramsPrdId = prdId
+      paramsGoodsId = goodsId
+    }
     console.log(this.data.productInfo)
     console.log('已选择')
     util.api('/api/wxapp/card/change/add', res => {
       console.log(res)
       if (res.error === 0) {
-        util.toast_success('添加成功')
+        if (res.id == undefined) {
+          util.toast_success('添加成功')
+        }
         this.requestCartGoodsList()
         this.bindCloseSpec()
       } else {
-        util.toast_fail('添加失败')
+        if (res.id == undefined) {
+          util.toast_success('添加失败')
+        }
       }
     }, {
-      goodsId: goodsId,
-      productId: prdId,
-      prdNumber: prdNumber,
+      goodsId: paramsGoodsId,
+      productId: paramsPrdId,
+      prdNumber: paramsPrdNumber,
       cardNo: this.data.cardNo,
     })
   },
@@ -161,29 +212,30 @@ global.wxPage({
   },
   goCheckOut () {
     console.log('点击立即兑换跳转结算页面')
-    util.jumpLink('pages/checkout/checkout', 'navigateTo')
+    //  this.data.cartData   
+    // util.jumpLink('pages/checkout/checkout', 'navigateTo')
   },
   to_goods: function (e) {
     console.log('to_goods')
     // let goods_id = e.currentTarget.dataset.goods_id;
-    // util.api('/api/card/exchange/judge', function (res) {
+    // util.api('/api/wxapp/card/exchange/judge', function (res) {
     //   if (res.error == 0) {
     //     util.navigateTo({
-    //       url: '/pages/item/item?good_id=' + goods_id + '&from_count_card=1&card_no=' + card_no,
+    //       url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
     //     })
     //   } else {
     //     util.showModal('提示', res.message, function () {
     //       util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
     //     }, true, '取消', '原价购买')
     //   }
-    // }, { card_no: card_no, goods_id: goods_id, is_list: 2 })
+    // }, { cardNo: cardNo, goodsId: goodsId, isList: 2 })
     // if (card_info.exchang_surplus == 0) {
     //   util.showModal('提示', '此卡无剩余可兑换次数', function () {
     //     util.jumpLink('/pages/item/item?good_id=' + goods_id, 'navigateTo')
     //   }, true, '取消', '原价购买')
     // } else {
     //   util.navigateTo({
-    //     url: '/pages/item/item?good_id=' + goods_id + '&from_count_card=1&card_no=' + card_no,
+    //     url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
     //   })
     // }
   },

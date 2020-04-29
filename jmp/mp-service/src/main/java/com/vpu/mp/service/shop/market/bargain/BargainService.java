@@ -26,6 +26,7 @@ import com.vpu.mp.service.pojo.shop.market.bargain.*;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisDataVo;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisParam;
 import com.vpu.mp.service.pojo.shop.market.bargain.analysis.BargainAnalysisTotalVo;
+import com.vpu.mp.service.pojo.shop.market.integration.ActivityCopywriting;
 import com.vpu.mp.service.pojo.shop.member.MemberInfoVo;
 import com.vpu.mp.service.pojo.shop.member.MemberPageListParam;
 import com.vpu.mp.service.pojo.shop.member.tag.TagSrcConstant;
@@ -40,11 +41,7 @@ import com.vpu.mp.service.shop.member.TagService;
 import jodd.util.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.jooq.Condition;
-import org.jooq.Record;
-import org.jooq.Record4;
-import org.jooq.SelectSeekStep1;
-import org.jooq.SelectWhereStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -617,5 +614,20 @@ public class BargainService extends ShopBaseService  {
         if(bargainRecord.getAttendTag().equals(BaseConstant.YES) && StringUtil.isNotBlank(bargainRecord.getAttendTagId())){
             tagService.userTagSvc.addActivityTag(userId,Util.stringToList(bargainRecord.getAttendTagId()),TagSrcConstant.BARGAIN,bargainRecord.getId());
         }
+    }
+
+    /**
+     * 砍价规则
+     *
+     * @param bargainId
+     * @return
+     */
+    public String getBargainRule(int bargainId) {
+        String ruleJson = db().select(BARGAIN.ACTIVITY_COPYWRITING).from(BARGAIN).where(BARGAIN.ID.eq(bargainId)).fetchOptionalInto(String.class).orElse("");
+        if (StringUtil.isNotBlank(ruleJson)) {
+            ActivityCopywriting activityCopywriting = Util.parseJson(ruleJson, ActivityCopywriting.class);
+            return activityCopywriting.getDocument();
+        }
+        return "";
     }
 }

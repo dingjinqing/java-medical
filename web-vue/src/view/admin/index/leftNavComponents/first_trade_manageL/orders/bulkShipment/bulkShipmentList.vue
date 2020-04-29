@@ -304,6 +304,7 @@ export default {
         if (res.error === 0) {
           that.$message.success(that.$t('goodsImport.uploadSuccess'))
           that.bulkShipmentDialogVisible = false
+          that.initDataList()
         } else {
           that.$message.error(res.message)
         }

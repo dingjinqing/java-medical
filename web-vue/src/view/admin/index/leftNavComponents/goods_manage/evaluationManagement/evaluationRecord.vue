@@ -15,7 +15,7 @@
               v-if="item.value === '0'"
             >
               <span slot="label">
-                <span>全部<span class="wait_num">0</span></span>
+                <span>全部<span class="wait_num">{{filterNum.allNum}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -25,7 +25,7 @@
                v-if="item.value === '1' && target === 'Record'"
             >
               <span slot="label">
-                <span>待审核<span class="wait_num">0</span></span>
+                <span>待审核<span class="wait_num">{{filterNum.toDoNum}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -35,7 +35,7 @@
                v-if="item.value === '2' && target === 'Record'"
             >
               <span slot="label">
-                <span>审核通过<span class="wait_num">0</span></span>
+                <span>审核通过<span class="wait_num">{{filterNum.passNum}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -45,7 +45,7 @@
                v-if="item.value === '3' && target === 'Record'"
             >
               <span slot="label">
-                <span>未通过<span class="wait_num">0</span></span>
+                <span>未通过<span class="wait_num">{{filterNum.refuseNum}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -55,7 +55,7 @@
                v-if="item.value === '4'"
             >
               <span slot="label">
-                <span>置顶评论<span class="wait_num">0</span></span>
+                <span>置顶评论<span class="wait_num">{{filterNum.topNum}}</span></span>
               </span>
             </el-tab-pane>
             <el-tab-pane
@@ -65,7 +65,7 @@
                v-if="item.value === '5'"
             >
               <span slot="label">
-                <span>买家秀<span class="wait_num">0</span></span>
+                <span>买家秀<span class="wait_num">{{filterNum.showNum}}</span></span>
               </span>
             </el-tab-pane>
           </template>
@@ -548,7 +548,8 @@ export default {
       reviewStatus: null,
       hideEvaluation: null,
       dialogReviewStatus: 0,
-      dialogHideEvaluation: false
+      dialogHideEvaluation: false,
+      filterNum: {}
     }
   },
   mounted () {
@@ -609,6 +610,14 @@ export default {
         console.log(res)
         if (res.error === 0) {
           this.pageParams = res.content.page
+          this.filterNum = {
+            allNum: res.content.allNum,
+            toDoNum: res.content.toDoNum,
+            passNum: res.content.passNum,
+            refuseNum: res.content.refuseNum,
+            topNum: res.content.topNum,
+            showNum: res.content.showNum
+          }
           this.dataList = res.content.dataList.map(item => {
             let commImg = null
             try {

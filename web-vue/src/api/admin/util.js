@@ -74,3 +74,11 @@ export function promoteRules (data) {
     method: 'get'
   })
 }
+
+// 小程序砍价规则接口
+export function bargainRules (data) {
+  return service({
+    url: `/api/wxapp/bargain/rule?shopId=${data.shopId}&id=${data.id}`,
+    method: 'get'
+  })
+}
