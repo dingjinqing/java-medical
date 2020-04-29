@@ -48,9 +48,7 @@ public class UserCheckedGoodsService extends ShopBaseService {
 		Condition condition = DSL.noCondition()
 			.and(TABLE.USER_ID.eq(param.getUserId()))
 			.and(TABLE.ACTION.eq(param.getAction()))
-			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()))
-			.and(TABLE.PRODUCT_ID.eq(param.getProductId()))
-			.and(TABLE.GOODS_ID.eq(param.getGoodsId()));
+			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()));
 		return condition;
 	}
 	
@@ -60,10 +58,11 @@ public class UserCheckedGoodsService extends ShopBaseService {
 	 */
 	public CheckedGoodsCartRecord getUserCheckedGoods(UserCheckedGoodsParam param) {
 		Condition condition = getSearchCheckedGoodsCondition(param);
+		condition = condition.and(TABLE.PRODUCT_ID.eq(param.getProductId()))
+				 			 .and(TABLE.GOODS_ID.eq(param.getGoodsId()));
 		return db().selectFrom(TABLE).where(condition).fetchAny();
 	}
 	
-
 	/**
 	 * 获得已选商品列表
 	 * @return 
