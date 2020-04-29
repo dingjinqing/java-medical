@@ -641,6 +641,7 @@ public class UserService extends ShopBaseService {
 			try {
 				Integer cardId = userCard.updateGrade(userId, null, (byte) 0);
 				data.put("get_grade", cardId);
+				logger().info("cardId的值为"+cardId);
 			} catch (Exception e) {
 				logger().error("userGrade为0时报错");
 				e.printStackTrace();
