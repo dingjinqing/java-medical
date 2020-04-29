@@ -17,12 +17,16 @@ import com.vpu.mp.service.foundation.util.CardUtil;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
+import com.vpu.mp.service.pojo.shop.config.message.MessageTemplateConfigConstant;
+
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.distribution.DistributorSpendVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListParam;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsPageListVo;
 import com.vpu.mp.service.pojo.shop.goods.goods.GoodsSmallVo;
 import com.vpu.mp.service.pojo.shop.market.couponpack.CouponPackUpdateVo;
+
 import com.vpu.mp.service.pojo.shop.member.account.CardReceiveVo;
 import com.vpu.mp.service.pojo.shop.member.account.GradeCardData;
 import com.vpu.mp.service.pojo.shop.member.account.NextGradeCardVo;
@@ -35,6 +39,8 @@ import com.vpu.mp.service.pojo.shop.member.account.UserCardVo;
 import com.vpu.mp.service.pojo.shop.member.account.UserIdAndCardIdParam;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppCardExamineVo;
 import com.vpu.mp.service.pojo.shop.member.account.WxAppUserCardVo;
+import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
+
 import com.vpu.mp.service.pojo.shop.member.bo.UserCardGradePriceBo;
 import com.vpu.mp.service.pojo.shop.member.builder.ChargeMoneyRecordBuilder;
 import com.vpu.mp.service.pojo.shop.member.builder.MemberCardRecordBuilder;
@@ -57,11 +63,19 @@ import com.vpu.mp.service.pojo.shop.member.exception.MemberCardNullException;
 import com.vpu.mp.service.pojo.shop.member.exception.UserCardNullException;
 import com.vpu.mp.service.pojo.shop.member.order.UserOrderBean;
 import com.vpu.mp.service.pojo.shop.member.ucard.DefaultCardParam;
+
 import com.vpu.mp.service.pojo.shop.operation.RemarkMessage;
+
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateConfig;
+import com.vpu.mp.service.pojo.shop.official.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
+
 import com.vpu.mp.service.pojo.shop.operation.RemarkTemplate;
 import com.vpu.mp.service.pojo.shop.operation.TradeOptParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.store.store.StoreBasicVo;
+import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
+import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.card.CardUpgradeVo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.member.card.GeneralUserCardVo;
@@ -86,6 +100,10 @@ import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.order.trade.TradesRecordService;
 import com.vpu.mp.service.shop.order.virtual.VirtualOrderService;
 import com.vpu.mp.service.shop.store.store.StoreService;
+
+import com.vpu.mp.service.shop.user.message.maConfig.SubcribeTemplateCategory;
+import com.vpu.mp.service.shop.user.user.UserService;
+
 import jodd.util.StringUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -231,13 +249,40 @@ public class UserCardService extends ShopBaseService {
 	public void changeUserGradeCard(Integer userId, MemberCardRecord oldCard, MemberCardRecord newCard,
 			String option) {
 		logger().info("用户会员卡升级");
+		
 		//	更新卡
 		userCardDao.updateUserGradeCardId(userId, newCard.getId());
 		//	保存用户卡等级变动信息
 		cardUpgradeService.recordCardUpdateGrade(userId, oldCard, newCard, option);
 		//	用户卡升级订阅消息通知
 		if(newCard.getGrade().compareTo(oldCard.getGrade())>0) {
+			String cardNo = getCardNoByUserAndCardId(userId,newCard.getId());
+			//	订阅消息
+			String[][] maData = new String[][] {
+				{newCard.getCardName()},
+				{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+				{"升级成功"}
+			};
 			
+			//	公众号消息
+			String[][] mpData = new String[][] {
+				{"等级卡升级通知"},
+				{newCard.getCardName()},
+				{"升级成功"},
+				{option}
+			};
+			List<Integer> arrayList = Collections.<Integer>singletonList(userId);
+			MaSubscribeData data = MaSubscribeData.builder().data307(maData).build();
+			
+			RabbitMessageParam param2 = RabbitMessageParam.builder()
+					.maTemplateData(
+							MaTemplateData.builder().config(SubcribeTemplateCategory.USER_GRADE).data(data).build())
+					.mpTemplateData(
+							MpTemplateData.builder().config(MpTemplateConfig.MEMBER_LEVEL_UP).data(mpData).build())
+					.page("pages/cardinfo/cardinfo?card_no="+cardNo).shopId(getShopId())
+					.userIdList(arrayList)
+					.type(MessageTemplateConfigConstant.MEMBER_LEVEL_UP).build();
+			saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 		}
 		
 		if (newCard.getSorce() != null && newCard.getSorce() > 0) {
