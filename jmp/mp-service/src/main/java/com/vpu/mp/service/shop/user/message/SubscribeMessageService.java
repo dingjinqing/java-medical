@@ -189,7 +189,7 @@ public class SubscribeMessageService extends ShopBaseService {
 		}
 		String templateId = templateIdRecord.getTemplateId();
 		// 小程序中是否配置了这个模板
-		templateId = addTemplate(templateIdRecord.getTemplateId(), config);
+		templateId = addTemplate(templateIdRecord.getTemplateId(), config,templateList);
 		logger().info("对应消息的模板templateId：{}",templateId);
 		//拼装报文
 		WxMaSubscribeMessage postData = assembleData(data, config, page, templateId, user.getWxOpenid(),secondId);
@@ -412,8 +412,8 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public String addTemplate(String templateId, SubscribeMessageConfig config) throws WxErrorException {
-		if (!checkTemplate(templateId)) {
+	public String addTemplate(String templateId, SubscribeMessageConfig config,WxOpenMaSubScribeGetTemplateListResult templateList) throws WxErrorException {
+		if (!checkTemplate(templateId,templateList)) {
 			return addTemplate(config);
 		}
 		return templateId;
@@ -442,8 +442,10 @@ public class SubscribeMessageService extends ShopBaseService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	public boolean checkTemplate(String templateId) throws WxErrorException {
-		WxOpenMaSubScribeGetTemplateListResult templateList = open.getMaExtService().getTemplateList(getMaAppId());
+	public boolean checkTemplate(String templateId,WxOpenMaSubScribeGetTemplateListResult templateList) throws WxErrorException {
+		if(templateList==null) {
+			templateList = open.getMaExtService().getTemplateList(getMaAppId());
+		}
 		logger().info("传入的templateId："+templateId);
 		if (templateList.isSuccess()) {
 			//账户下的模板
