@@ -458,7 +458,7 @@ public class FriendPromoteService extends ShopBaseService {
 						fpa)
 				.where(fpl.PROMOTE_ID.eq(fpa.ID).and(
 						fpa.DEL_FLAG.eq(ZERO)).and(fpl.DEL_FLAG.eq(ZERO)).and(fpl.PROMOTE_STATUS.eq(ZERO))
-								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.eq(DateUtil.getLocalDateTime()))))
+								.and(dateFormat(fpl.LAUNCH_TIME, DateUtil.DATE_MYSQL_DAY).eq(date).or(fpa.END_TIME.le(DateUtil.getLocalDateTime()))))
 				.fetch();
 		List<FriendPromoteSelectVo> into = new ArrayList<FriendPromoteSelectVo>();
 		if (fetch != null) {
