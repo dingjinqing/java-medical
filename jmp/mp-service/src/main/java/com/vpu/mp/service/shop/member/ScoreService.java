@@ -182,12 +182,10 @@ public class ScoreService extends ShopBaseService {
 								MaTemplateData.builder().config(SubcribeTemplateCategory.AUDIT).data(data).build())
 						.page("pages1/integral/integral").shopId(getShopId())
 						.userIdList(arrayList)
-						.type(MessageTemplateConfigConstant.FAIL_REVIEW).build();
+						.type(MessageTemplateConfigConstant.POINTS_CONSUMPTION).build();
 				saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());
 				
 			});
-			
-			
 				// TODO CRM
 				
 				insertTradesRecord(param, tradeType, tradeFlow);
@@ -207,15 +205,7 @@ public class ScoreService extends ShopBaseService {
 					saas().getShopApp(getShopId()).record.insertRecord(
 							Arrays.asList(new Integer[] { RecordContentTemplate.MEMBER_INTEGRALT.code }),
 							String.valueOf(dbUser.getUserId()), dbUser.getUsername(), strScore);
-				}
-				
-				
-				
-				
-				
-				
-				
-				
+				}	
 		}catch(DataAccessException e) {
 			logger().info("从事务抛出的DataAccessException中获取我们自定义的异常");
 			Throwable cause = e.getCause();
