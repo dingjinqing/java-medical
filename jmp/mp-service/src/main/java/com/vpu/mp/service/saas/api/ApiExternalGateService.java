@@ -4,12 +4,18 @@ import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.pos.PosVerifyOrderParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,6 +221,12 @@ public class ApiExternalGateService extends MainBaseService {
             case ApiExternalGateConfig.SERVICE_POS_SYNC_PRODUCT:
                 apiJsonResult = posSyncProduct(param);
                 break;
+            case ApiExternalGateConfig.SERVICE_POS_RETURN_GOODS:
+                apiJsonResult = posSyncProduct(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_POS_VERIFY_ORDER:
+                apiJsonResult = posVerifyOrder(param);
+                break;
             default:
                 apiJsonResult = new ApiJsonResult();
                 apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_INVALID_SERVICE);
@@ -250,5 +262,50 @@ public class ApiExternalGateService extends MainBaseService {
 
     private void logPrinter(String app_id, String msg) {
         log.error("数据同步接口：" + ApiExternalGateConfig.APP_NAMES.get(app_id) + "：" + msg);
+    }
+
+    /**
+     * pos核销订单
+     * @param gateParam 参数
+     * @return result
+     */
+    private ApiJsonResult posVerifyOrder(ApiExternalGateParam gateParam) {
+        PosVerifyOrderParam param = Util.parseJson(gateParam.getContent(), PosVerifyOrderParam.class);
+        ApiJsonResult result = new ApiJsonResult();
+        if (param == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("content为空");
+            return result;
+        }
+        if(StringUtils.isBlank(param.getOrderSn())) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("参数order_sn为空或order_status不合法");
+            return result;
+        }
+        if(param.getOrderStatus() == null || !param.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("参数order_status非法");
+            return result;
+        }
+        OrderInfoRecord order = saas().getShopApp(gateParam.getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
+        if(order == null ) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("核销订单不存在");
+            return result;
+        }
+        verifyParam verifyParam = new verifyParam();
+        verifyParam.setOrderId(order.getOrderId());
+        verifyParam.setOrderSn(order.getOrderSn());
+        verifyParam.setIsCheck(false);
+        verifyParam.setAction((byte)OrderServiceCode.VERIFY.ordinal());
+        verifyParam.setIsMp(OrderConstant.IS_MP_POS);
+        ExecuteResult executeResult = saas().getShopApp(gateParam.getShopId()).orderActionFactory.orderOperate(verifyParam);
+        if(executeResult == null || executeResult.isSuccess()) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+        }else {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg((String)executeResult.getResult());
+        }
+        return result;
     }
 }

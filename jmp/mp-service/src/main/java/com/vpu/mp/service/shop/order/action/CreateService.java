@@ -223,7 +223,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
             processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
             //TODO 营销相关 活动校验或活动参数初始化
             marketProcessorFactory.processInitCheckedOrderCreate(param);
-
+            //下架商品校验
+            checkGoodsIsOnSale(param.getGoods());
             if(null != param.getActivityId() && null != param.getActivityType()) {
                 //活动生成ordergodos;
                 orderGoodsBos = initOrderGoods(param, param.getGoods(), param.getStoreId());
@@ -498,6 +499,8 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         processParamGoods(param, param.getWxUserInfo().getUserId(), param.getStoreId());
         //TODO 营销相关 活动校验或活动参数初始化
         marketProcessorFactory.processInitCheckedOrderCreate(param);
+        //下架商品校验
+        checkGoodsIsOnSale(param.getGoods());
         if(null != param.getActivityId() && null != param.getActivityType()) {
             //活动生成ordergodos;
             vo.setOrderGoods(initOrderGoods(param, param.getGoods(), param.getStoreId()));
@@ -508,6 +511,20 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         }
         //据处理过的param和其他信息填充下单确认页返回信息
         processBeforeVoInfo(param,param.getWxUserInfo().getUserId(), param.getStoreId(),vo);
+    }
+
+    /**
+     * 下架商品校验(因为有些活动下架仍可以下单，所以此类processInitCheckedOrderCreate中可以将goods.getGoodsInfo().getIsOnSale()字段设置为已上架)
+     * @param goodsList
+     * @throws MpException
+     */
+    private void checkGoodsIsOnSale(List<Goods> goodsList) throws MpException {
+        for (Goods goods: goodsList) {
+            if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
+                logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
+                throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
+            }
+        }
     }
 
     /**
@@ -687,7 +704,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     }
 
     /**
-     * 校验商品和规格信息
+     * 校验商品和规格信息（商品已下架校验等待process处理checkAndInit后校验
      * @param goods
      * @throws MpException
      */
@@ -695,10 +712,6 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         if (goods.getGoodsInfo() == null || goods.getProductInfo() == null || goods.getGoodsInfo().getDelFlag() == DelFlag.DISABLE.getCode()) {
             logger().error("checkGoodsAndProduct,商品不存在");
             throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NOT_EXIST, null, Util.toJson(goods));
-        }
-        if (!GoodsConstant.ON_SALE.equals(goods.getGoodsInfo().getIsOnSale())) {
-            logger().error("checkGoodsAndProduct,商品已下架,id:" + goods.getGoodsInfo().getGoodsId());
-            throw new MpException(JsonResultCode.CODE_ORDER_GOODS_NO_SALE, null , goods.getGoodsInfo().getGoodsName());
         }
         if (goods.getGoodsNumber() > goods.getProductInfo().getPrdNumber()) {
             logger().error("checkGoodsAndProduct,库存不足,id:" + goods.getProductId());

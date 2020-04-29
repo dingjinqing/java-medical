@@ -70,7 +70,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		OrderInfoRecord order = orderInfo.getRecord(param.getOrderId());
 		
 		if (!OrderOperationJudgment.isVerify(order.into(OrderInfoVo.class))) {
-			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED, null);
+			return ExecuteResult.create(JsonResultCode.CODE_ORDER_VERIFY_OPERATION_NOT_SUPPORTED, "该订单不能核销", null);
 		}
 		
 		if(!order.getVerifyCode().equals(param.getVerifyCode()) && param.getIsCheck()) {
@@ -87,7 +87,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		
 		for (OrderGoodsRecord temp : goods) {
 			temp.setSendNumber(temp.getGoodsNumber());
-			shipInfo.addRecord(shipInfoList, temp, batchNo, null, temp.getGoodsNumber().intValue());
+			shipInfo.addRecord(shipInfoList, temp, batchNo, null, temp.getGoodsNumber());
 		}
 		
 		transaction(()->{
@@ -99,7 +99,7 @@ public class VerifyService extends ShopBaseService implements IorderOperate<Orde
 		});
 		//action操作
 		orderAction.addRecord(order, param, OrderConstant.ORDER_WAIT_DELIVERY, param.getIsCheck() ? "核销" : "强制核销");
-		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_VERIFY.code }), new String[] {param.getOrderSn()});
+		record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.ORDER_VERIFY.code }), param.getOrderSn());
 		sendMessage.sendSelfPickupSuccess(orderInfo.getRecord(param.getOrderId()));
 		return null;
 	}
