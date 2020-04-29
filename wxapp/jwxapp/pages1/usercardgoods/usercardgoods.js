@@ -5,6 +5,7 @@ global.wxPage({
    * 页面的初始数据
    */
   data: {
+    cartData: [],
     dataList: [],
     pageParams: null,
     searchText: null,
@@ -25,7 +26,7 @@ global.wxPage({
       cardNo
     })
     this.requestGoodsList() // 请求兑换商品列表的数据
-    // this.requestCartGoodsList() // 请求已选择的兑换商品数据
+    this.requestCartGoodsList() // 请求已选择的兑换商品数据
   },
 
 
@@ -57,14 +58,15 @@ global.wxPage({
     })
   },
   requestCartGoodsList () {
-    util.api('/api/wxapp/freeship/cart/goods/list', res => {
+    util.api('/api/wxapp/card/change/checkedlist', res => {
+      console.log(res)
       if (res.error === 0) {
         this.setData({
-          cartData: res.content
+          cartData: this.data.cartData.concat(res.content.dataList)
         })
       }
     }, {
-      ruleId: this.data.ruleId,
+      identityId: this.data.cardNo,
     })
   },
   getSearchText (data) { // 点击搜索
@@ -115,6 +117,7 @@ global.wxPage({
   },
   getProductData (e) { // 获取规格弹窗操作回传数据
     console.log(e)
+
     this.setData({
       product: e.detail,
       limitInfo: {
@@ -124,6 +127,7 @@ global.wxPage({
         prdNumber: e.detail.prdNumber
       }
     })
+
   },
   getGoodsNum (e) { // 获取选中的规格弹窗里商品数量
     this.setData({
@@ -132,26 +136,24 @@ global.wxPage({
     console.log(this.data.productInfo)
   },
   addCart () {
-    // let { goodsNum: goodsNumber, prdId } = this.data.productInfo
+    let { goodsNum: prdNumber, prdId, goodsId } = this.data.productInfo
+    console.log(this.data.productInfo)
     console.log('已选择')
-    // util.api(
-    //   "/api/wxapp/cart/add",
-    //   res => {
-    //     if (res.error == 0) {
-    //       util.toast_success('添加成功')
-    //       this.requestCartGoodsList()
-    //     } else {
-    //       util.toast_fail('添加失败')
-    //     }
-    //     this.bindCloseSpec()
-    //   },
-    //   {
-    //     goodsNumber: goodsNumber,
-    //     prdId: prdId
-    //   }
-    // );
-    // util.toast_success('添加成功')
-    this.bindCloseSpec()
+    util.api('/api/wxapp/card/change/add', res => {
+      console.log(res)
+      if (res.error === 0) {
+        util.toast_success('添加成功')
+        this.requestCartGoodsList()
+        this.bindCloseSpec()
+      } else {
+        util.toast_fail('添加失败')
+      }
+    }, {
+      goodsId: goodsId,
+      productId: prdId,
+      prdNumber: prdNumber,
+      cardNo: this.data.cardNo,
+    })
   },
   cartChange () {
     console.log(123)
