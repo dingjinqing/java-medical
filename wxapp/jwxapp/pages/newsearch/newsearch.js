@@ -87,14 +87,12 @@ global.wxPage({
   bindSearch: function (e) {
     console.log(search_word);
     // 添加热词
-    util.api('/api/wxapp/search/addHotWords', function (res) {
-      if (res.error == 0) {
-        util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
-      }
-    }, {
+    util.api('/api/wxapp/search/addHotWords', function (res) {}, {
       userId: userId,
       hotWords: search_word
     })
+
+    util.jumpLink('/pages1/search/search?keyWords=' + search_word, "redirectTo")
 
   },
   to_search: function (e) {

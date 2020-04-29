@@ -25,7 +25,6 @@ global.wxPage({
     specParams: {}, // 规格信息
     basicNumber: 0, // 多规格添加购物车时的基础数量
     basicLimit: null, // 多规格添加购物车时的限制
-    rule_id: '', // 规则id
   },
 
   /**
@@ -217,7 +216,6 @@ global.wxPage({
     util.api('/api/wxapp/purchase/changegoods', function (res) {
       if (res.error == 0) {
         var change_goods_info = res.content;
-        var ruleId = ''
         // 已选个数
         change_goods_info.alreadyChangeNum = that.data.pIds.length
         change_goods_info.list.forEach(item => {
@@ -230,12 +228,9 @@ global.wxPage({
           if (item.isChecked == 1) {
             purchase_change_goods[item.prdId] = item.purchaseRuleId
           }
-          // 规则id
-          ruleId = item.purchaseRuleId
         })
         that.setData({
-          change_goods_info: change_goods_info,
-          rule_id: ruleId
+          change_goods_info: change_goods_info
         })
       } else {
         util.showModal("提示", res.message, function () {
@@ -312,14 +307,16 @@ global.wxPage({
   btn_confirm_change: function () {
     var that = this;
     var prdIds = []
+    var ruleIds = []
     that.data.change_goods_info.list.forEach(item => {
       if (item.isChecked == 1) {
         prdIds.push(item.prdId)
+        ruleIds.push(item.purchaseRuleId)
       }
     })
-    prdIds.forEach(item => {
+    prdIds.forEach((item, index) => {
       if (that.data.pIds.indexOf(item) == -1) {
-        that.add_cart(item)
+        that.add_cart(item, ruleIds[index])
       }
     })
     that.data.change_goods_info.alreadyChangeNum = prdIds.length
@@ -330,8 +327,9 @@ global.wxPage({
   },
 
   // 添加换购商品到购物车
-  add_cart(data) {
-    console.log(data)
+  add_cart(prdId, ruleId) {
+    console.log(prdId)
+    console.log(ruleId)
     var that = this
     util.api('/api/wxapp/cart/add', function (res) {
       if (res.error == 0) {
@@ -349,8 +347,9 @@ global.wxPage({
       }
     }, { 
       goodsNumber: 1, 
-      prdId: data, activityType: 97, 
-      activityId: that.data.rule_id,
+      prdId: prdId, 
+      activityType: 97, 
+      activityId: ruleId,
       type: 1
     })
   },

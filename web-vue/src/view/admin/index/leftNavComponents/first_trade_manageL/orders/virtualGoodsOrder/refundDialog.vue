@@ -59,7 +59,7 @@
             v-model="refundData.score"
             size="small"
             controls-position="right"
-            :max="refundInfo.score - refundInfo.returnScore"
+            :max="refundInfo.useScore - refundInfo.returnScore"
             :min="0"
             :precision="0"
           ></el-input-number> {{$t('refundDialog.integral')}}</p>
@@ -167,8 +167,9 @@ export default {
             })
           }
         })
+      } else {
+        this.dialogShow = false
       }
-      this.dialogShow = false
     }
   },
   watch: {
@@ -181,6 +182,7 @@ export default {
       if (newVal === true) {
         this.dialogShow = true
         this.refundInfo = this.dataInfo
+
         this.refundData.money = this.refundInfo.moneyPaid
         this.refundData.score = this.refundInfo.useScore
         this.refundData.account = this.refundInfo.useAccount

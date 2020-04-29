@@ -10,6 +10,7 @@ import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.shop.user.cart.CartService;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,17 +48,25 @@ public class GoodsBeginProcessor implements ActivityCartListStrategy{
      */
     @Override
     public void doCartOperation(WxAppCartBo cartBo) {
+        //图片链接
+        cartBo.getCartGoodsList().forEach(cartGoods->{
+            if (cartGoods.getGoodsRecord()!=null){
+                cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getGoodsRecord().getGoodsImg()));
+            }
+            if (cartGoods.getProductRecord()!=null&&!Strings.isNullOrEmpty(cartGoods.getProductRecord().getPrdImg())){
+                cartGoods.setGoodsImg(cartService.getImgFullUrlUtil(cartGoods.getProductRecord().getPrdImg()));
+            }
+        });
         //删除的,下架的--移动到失效列表
         List<WxAppCartGoods> invalidGoodsList = cartBo.getCartGoodsList().stream().filter(goods -> {
             if (goods.getGoodsRecord()==null||goods.getGoodsId() == null ||  goods.getGoodsRecord().getDelFlag().equals(DelFlag.DISABLE_VALUE)) {
-                log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+ goods.getGoodsRecord().getDelFlag()+"]");
+                log.debug("商品删除的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getDelFlag:"+goods +"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_DELETE);
                 goods.setIsChecked(CartConstant.CART_NO_CHECKED);
                 goods.setBuyStatus(BaseConstant.NO);
                 cartService.switchCheckedProduct(cartBo.getUserId(),goods.getCartId(),CartConstant.CART_NO_CHECKED);
                 return true;
             }
-            goods.setGoodsImg(goods.getGoodsRecord().getGoodsImg());
             if (goods.getGoodsRecord().getIsOnSale().equals(GoodsConstant.OFF_SALE)){
                 log.debug("商品下架的"+"[getRecId:"+goods.getCartId()+",getGoodsName: "+goods.getGoodsName()+",getIsOnSale:"+ goods.getGoodsRecord().getDelFlag()+"]");
                 goods.setGoodsStatus(CartConstant.GOODS_STATUS_OFF_SALE);

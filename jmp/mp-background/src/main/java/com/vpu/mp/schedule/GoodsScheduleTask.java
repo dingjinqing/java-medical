@@ -68,6 +68,7 @@ public class GoodsScheduleTask {
         result.forEach((r)->{
             saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.monitorGoodsType();
             saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.closeBargainRecord();
+            saas.getShopApp(r.getShopId()).shopTaskService.bargainTaskService.sendBargainProgress();
         });
     }
 

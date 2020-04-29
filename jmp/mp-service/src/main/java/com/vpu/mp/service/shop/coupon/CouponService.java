@@ -954,10 +954,10 @@ public class CouponService extends ShopBaseService {
 			BigDecimal leastConsume = into.getLeastConsume();
 			BigDecimal denomination = into.getDenomination();
 			BigDecimal randomMax = into.getRandomMax();
-			if (actCode.equals("voucher")) {
+            if (actCode.equals(CouponConstant.ACT_CODE_VOUCHER)) {
 				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_VOUCHER, "excel", new Object[] {leastConsume,denomination});
 			}
-			if (actCode.equals("random")) {
+            if (actCode.equals(CouponConstant.ACT_CODE_RANDOM)) {
 				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_RANDOM, "excel", new Object[] {leastConsume,randomMax});
 			}else {
 				couponRule=Util.translateMessage(lang, JsonResultMessage.CODE_EXCEL_OTHER, "excel", new Object[] {leastConsume,denomination});
