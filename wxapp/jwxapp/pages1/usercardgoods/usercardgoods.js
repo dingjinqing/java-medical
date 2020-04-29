@@ -61,8 +61,13 @@ global.wxPage({
     util.api('/api/wxapp/card/change/checkedlist', res => {
       console.log(res)
       if (res.error === 0) {
+        res.content.goodsList.dataList.forEach((item, index) => {
+          item.goodsPrice = item.marketPrice
+          item.cartNumber = item.goodsNumber
+        })
+        console.log(res.content.goodsList.dataList)
         this.setData({
-          cartData: this.data.cartData.concat(res.content.dataList)
+          cartData: this.data.cartData.concat(res.content.goodsList.dataList)
         })
       }
     }, {
