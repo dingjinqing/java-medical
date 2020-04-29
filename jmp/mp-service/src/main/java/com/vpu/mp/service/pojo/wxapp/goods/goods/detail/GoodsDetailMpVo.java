@@ -98,6 +98,8 @@ public class GoodsDetailMpVo extends GoodsBaseMp {
 
     /**商品促销活动列表*/
     Map<Byte,List<? extends PromotionBase>> promotions = new HashMap<>();
+    /**运费地址信息*/
+    DeliverFeeAddressDetailVo deliverFeeAddressVo;
     //**********服务承诺
     /**
      * 服务承诺是否开启

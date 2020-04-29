@@ -130,7 +130,31 @@ public class AddressService extends ShopBaseService {
         if (addressCode==null){
             return null;
         }
-        return addressCode.getDistrictId();
+        return addressCode.getDistrictCode();
+    }
+
+    /**
+     * 根据微信地图定位获取库中ode
+     *      *
+     * @param addressInfo 微信放回的地址信息
+     * @return DistrictId 可以为null
+     */
+    public AddressCode getUserAddress(AddressInfo addressInfo) {
+        if (addressInfo == null) {
+            return null;
+        } else if (!AddressInfo.STATUS_OK.equals(addressInfo.getStatus())) {
+            return null;
+        }
+        AddressInfo.Result.AddressComponent address = addressInfo.getResult().getAddressComponent();
+        if (StringUtils.isEmpty(address.getCity())||StringUtils.isEmpty(address.getDistrict())
+                ||StringUtils.isEmpty(address.getProvince())||StringUtils.isEmpty(address.getNation())){
+            return null;
+        }
+        AddressCode addressCode = checkAndUpdateAddress(address.getProvince(), address.getCity(), address.getDistrict());
+        if (addressCode==null){
+            return null;
+        }
+        return addressCode;
     }
 
     /**
@@ -142,11 +166,11 @@ public class AddressService extends ShopBaseService {
     public UserAddressRecord addWxAddress(Integer userId, WxAddress wxAddress) {
         AddressCode addressCode = checkAndUpdateAddress(wxAddress.getProvinceName(),wxAddress.getCityName(),wxAddress.getCountyName());
         UserAddressRecord address = db().newRecord(USER_ADDRESS);
-        address.setProvinceCode(addressCode.getPostalId());
+        address.setProvinceCode(addressCode.getProvinceCode());
         address.setProvinceName(wxAddress.getProvinceName());
-        address.setCityCode(addressCode.getCityId());
+        address.setCityCode(addressCode.getCityCode());
         address.setCityName(wxAddress.getCityName());
-        address.setDistrictCode(addressCode.getDistrictId());
+        address.setDistrictCode(addressCode.getDistrictCode());
         address.setDistrictName(wxAddress.getCountyName());
         address.setConsignee(wxAddress.getUserName());
         address.setAddressName(wxAddress.getNationalCode());
@@ -188,9 +212,12 @@ public class AddressService extends ShopBaseService {
             log.info("新增库中没有的微信地址区县[district:" + districtNmae + "]");
             districtId = saas.region.district.addNewDistrict(cityId, districtNmae);
         }
-        addressCode.setPostalId(provinceId);
-        addressCode.setCityId(cityId);
-        addressCode.setDistrictId(districtId);
+        addressCode.setProvinceCode(provinceId);
+        addressCode.setProvinceName(provinceName);
+        addressCode.setCityCode(cityId);
+        addressCode.setCityName(cityName);
+        addressCode.setDistrictCode(districtId);
+        addressCode.setDistrictName(districtNmae);
         return addressCode;
     }
     /**
