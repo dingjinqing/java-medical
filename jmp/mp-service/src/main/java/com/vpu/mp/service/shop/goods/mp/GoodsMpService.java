@@ -2,7 +2,7 @@ package com.vpu.mp.service.shop.goods.mp;
 
 import com.vpu.mp.config.UpYunConfig;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
-import com.vpu.mp.db.shop.tables.records.MrkingVoucherRecord;
+import com.vpu.mp.service.foundation.data.BaseConstant;
 import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
@@ -392,10 +392,6 @@ public class GoodsMpService extends ShopBaseService {
                 if (goodsDetailMpBo == null) {
                     return createDeletedGoodsDetailMpVo();
                 }
-                // 商品已下架则不再处理
-                if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
-                    return goodsDetailMpBo;
-                }
                 goodsDetailMpBo.setIsDisposedByEs(true);
             } catch (Exception e) {
                 log.debug("小程序-es-搜索商品详情错误-转换db获取数据:" + e.getMessage());
@@ -404,10 +400,6 @@ public class GoodsMpService extends ShopBaseService {
                 // 商品从数据库内查询，但是数据已经被删除
                 if (goodsDetailMpBo == null) {
                     return createDeletedGoodsDetailMpVo();
-                }
-                // 商品已下架则不再处理
-                if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
-                    return goodsDetailMpBo;
                 }
             }
         } else {
@@ -418,11 +410,13 @@ public class GoodsMpService extends ShopBaseService {
             if (goodsDetailMpBo == null) {
                 return createDeletedGoodsDetailMpVo();
             }
-            // 商品已下架则不再处理
-            if (GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())) {
-                return goodsDetailMpBo;
-            }
         }
+
+        // 商品已下架的不可以使用
+        if (!canOffSale(param)&&GoodsConstant.OFF_SALE.equals(goodsDetailMpBo.getIsOnSale())){
+            return goodsDetailMpBo;
+        }
+
         //添加足迹
         footPrintService.addFootprint(param.getUserId(), param.getGoodsId());
         //添加浏览记录
@@ -445,6 +439,18 @@ public class GoodsMpService extends ShopBaseService {
         return goodsDetailMpBo;
     }
 
+    /**
+     * 是否下架时商品也可用
+     * @param param
+     * @return
+     */
+    private boolean canOffSale(GoodsDetailMpParam param){
+        if (BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.equals(param.getActivityType()) || BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * 创建一个处于删除状态的vo
      * @return {@link GoodsDetailMpVo}
