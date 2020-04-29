@@ -143,7 +143,7 @@ public class WxCardExchangeService extends ShopBaseService {
 			CheckedGoodsCartRecord newRecord = db().newRecord(CHECKED_GOODS_CART);
 			newRecord.setUserId(param.getUserId());
 			newRecord.setGoodsId(param.getGoodsId());
-			newRecord.setProductId(param.getPrdId());
+			newRecord.setProductId(param.getProductId());
 			newRecord.setGoodsNumber(param.getPrdNumber());
 			newRecord.setAction(CardConstant.MCARD_TP_LIMIT);
 			newRecord.setIdentityId(param.getCardNo());
