@@ -104,7 +104,7 @@ global.wxPage({
   },
   // 去活动规则
   toRule: function () {
-    util.jumpToWeb('/wxapp/bargain/help');
+    util.jumpToWeb('/wxapp/bargain/help', '&id=' + bargain_info.recordInfo.bargainId);
   },
   // 去首页
   toIndex: function () {
