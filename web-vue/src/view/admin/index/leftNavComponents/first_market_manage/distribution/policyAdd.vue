@@ -52,7 +52,10 @@
           :label="$t('distribution.strategyType') + '：'"
           prop="strategyType"
         >
-          <el-radio-group v-model="form.strategyType">
+          <el-radio-group
+            v-model="form.strategyType"
+            @change="strategyTypeChange"
+          >
             <el-radio :label="0">{{ $t('distribution.strategyTypeTip1') }}</el-radio>
             <el-radio :label="1">{{ $t('distribution.strategyTypeTip2') }}</el-radio>
           </el-radio-group>
@@ -705,6 +708,13 @@ export default {
       if (this.tableData[index].fanliRatio !== undefined && !re.test(this.tableData[index].firstRatio)) {
         this.tableData[index].firstRatio = 0
         this.$message.warning('首单返利比例在0%-50%之间')
+      }
+    },
+
+    // 切换佣金计算方式
+    strategyTypeChange (val) {
+      if (val === 1) {
+        this.form.costProtection = 0
       }
     }
   }
