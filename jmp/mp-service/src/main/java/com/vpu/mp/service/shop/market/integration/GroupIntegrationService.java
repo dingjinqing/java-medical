@@ -732,6 +732,7 @@ public class GroupIntegrationService extends ShopBaseService {
 					canPinInte.setMsg("已在团中");
 					vo.setInviteUser(gIntegrationMaVo.getInviteUser());
 					vo.setCanPin(canPinInte);
+					vo.setGroupId(groupId);
 					logger().info("已在团中");
 					return vo;
 				}
@@ -839,9 +840,9 @@ public class GroupIntegrationService extends ShopBaseService {
 		} else {
 			logger().info("自己开个拼团或者已经开过团");
 			int existGroup = groupIntegrationList.getExistGroup(userId, pinInteId);
-			logger().info("已经存在的团id:{}",existGroup);
+			logger().info("传入的groupid：{}，已经存在的团id:{}",groupId,existGroup);
 			if ((groupId != null && groupId != 0)|| existGroup!=0) {
-				logger().info("user：{}，已开团，groupId：{}", userId,existGroup);
+				logger().info("user：{}，已开团，groupId：{},existGroup", userId,groupId,existGroup);
 				CanPinInte checkPin = checkPin(pinInteId, existGroup, userId,lang);
 				if (checkPin != null) {
 					vo.setGroupId(existGroup);
@@ -919,7 +920,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			logger().info("活动id：{},团id：{}，更新状态为：{}；结果：{}", pinInteId, groupId, STATUS_TWO, execute2);
 			logger().info("发送拼团失败的通知");
 			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfo) {
-				sendGroupFailedMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId());
+				sendGroupFailedMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(),groupIntegrationMaVo.getInviteUser());
 			}
 		} else {
 			// 按邀请好友数量瓜分
@@ -992,7 +993,7 @@ public class GroupIntegrationService extends ShopBaseService {
 			String groupName = grouperInfo.getUsername();
 			int groupSize = groupInfoNew.size();
 			for (GroupIntegrationMaVo groupIntegrationMaVo : groupInfoNew) {
-				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize);
+				sendGroupSuccessMessage(pinInteInfo, groupId, groupIntegrationMaVo.getUserId(), groupName, groupSize,groupIntegrationMaVo.getInviteUser());
 			}
 			
 		}
@@ -1068,14 +1069,14 @@ public class GroupIntegrationService extends ShopBaseService {
 	/**
 	 * 组团瓜分积分失败发公众号
 	 */
-	public void sendGroupFailedMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId) {
+	public void sendGroupFailedMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId,Integer inviteUser) {
 		logger().info("组团瓜分积失败");
-		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId;
+		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId+"&invite_user="+inviteUser;
 		List<Integer> userIdList = new ArrayList<Integer>();
 		userIdList.add(userId);
 		String first="您好，您参加的组团瓜分积由于团已过期，拼团失败";
 		String remake="拼团人数未满"+pinInteInfo.getLimitAmount()+"人";
-		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { "", "#173177" }, {remake, "#173177" } };
+		String[][] data = new String[][] { { first, "#173177" }, { pinInteInfo.getName(), "#173177" }, { "", "#173177" }, {remake, "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_FAIL).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.FAIL_TEAM)
@@ -1089,13 +1090,14 @@ public class GroupIntegrationService extends ShopBaseService {
 	/**
 	 * 组团瓜分积分成功发公众号
 	 */
-	public void sendGroupSuccessMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId,String groupName,Integer groupSize) {
+	public void sendGroupSuccessMessage(GroupIntegrationDefineRecord pinInteInfo,Integer groupId,Integer userId,String groupName,Integer groupSize,Integer inviteUser) {
 		logger().info("组团瓜分积成功");
-		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId;
+		String page = "pages1/pinintegration/pinintegration?pid="+pinInteInfo.getId()+"&gid="+groupId+"&invite_user="+inviteUser;
+		logger().info("page信息：{}",page);
 		List<Integer> userIdList = new ArrayList<Integer>();
 		userIdList.add(userId);
 		String first="您好，您有新的组团瓜分积成功订单";
-		String[][] data = new String[][] { { first, "#173177" }, { "", "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
+		String[][] data = new String[][] { { first, "#173177" }, { pinInteInfo.getName(), "#173177" }, { groupName, "#173177" },{ String.valueOf(groupSize), "#173177" }, { "", "#173177" } };
 		RabbitMessageParam param = RabbitMessageParam.builder()
 				.mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.GROUP_SUCCESS).data(data).build())
 				.page(page).shopId(getShopId()).userIdList(userIdList).type(RabbitParamConstant.Type.SUCCESS_TEAM)

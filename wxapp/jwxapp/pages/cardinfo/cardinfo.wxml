@@ -234,6 +234,8 @@
 				 wx:for-item="goodsListItem"
 				 wx:for-index="goodsListIndex"
 				 wx:key="goodsListIndex"
+				 data-goods_id="{{goodsListItem.goodsId}}" 
+				 data-is_list="{{cardInfo.goodsList.length < 2 ? 1:2}}"
 				 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_goods"}}'
 				>
 					<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
