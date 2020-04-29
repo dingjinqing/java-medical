@@ -71,7 +71,6 @@ public class RecordTradeService extends ShopBaseService{
 			CardConsumpData cardConsumpData = new CardConsumpData();
 			BeanUtils.copyProperties(userCardData, cardConsumpData);
 			memberCardService.updateMemberCardAccount(cardConsumpData,userCardData.getTradeOpt());
-			
 		}
 			
 	}

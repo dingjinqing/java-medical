@@ -812,7 +812,33 @@ public class MemberCardService extends ShopBaseService {
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_CARD_ACCOUNT.code);
 
 		insertCardAccountTradesRecord(data, tradeOpt);
-		// TODO模板消息
+		CardFullDetail  cardFullDetail = getCardDetailByNo(data.getCardNo());
+		// 订阅消息
+		String[][] maData = new String[][] {
+			{String.valueOf(data.getMoney())},
+			{String.valueOf(userCard.getMoney().add(data.getMoney()))},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{isConsump(data)?"消费":""}
+		};
+		List<Integer> arrayList = Collections.<Integer>singletonList(data.getUserId());
+		// 公众号消息
+		String[][] mpData = new String[][] {
+			{"您好，您的"+cardFullDetail.getMemberCard().getCardName()+"有新的余额变动"},
+			{Util.getdate("yyyy-MM-dd HH:mm:ss")},
+			{String.valueOf(data.getMoney())},
+			{String.valueOf(userCard.getMoney().add(data.getMoney()))},
+			{isConsump(data)?"消费":""}
+		};
+		MaSubscribeData data2 = MaSubscribeData.builder().data307(maData).build();
+		RabbitMessageParam param2 = RabbitMessageParam.builder()
+				.maTemplateData(
+						MaTemplateData.builder().config(SubcribeTemplateCategory.BALANCE_CHANGE).data(data2).build())
+				.mpTemplateData(
+						MpTemplateData.builder().config(MpTemplateConfig.MONEY_CHANGE).data(mpData).build())
+				.page("pages/cardinfo/cardinfo?card_no="+data.getCardNo()).shopId(getShopId())
+				.userIdList(arrayList)
+				.type(MessageTemplateConfigConstant.CHANGE_MEMBER_CARD_MONEY).build();
+		saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobEnum.SEND_MESSAGE.getExecutionType());		
 
 	}
 
@@ -855,11 +881,13 @@ public class MemberCardService extends ShopBaseService {
 
 		/** 4-更新user_card用户会员卡的消费次数 */
 		updateUserCard(data, userCard, RemarkTemplate.ADMIN_STORE_SERIVICE.code);
-		// TODO模板消息
+		
 		/**
 		 * 5-记录交易明细
 		 */
 		insertCardAccountTradesRecord(data, tradeOpt);
+		
+		// TODO模板消息
 	}
 
 	/**
