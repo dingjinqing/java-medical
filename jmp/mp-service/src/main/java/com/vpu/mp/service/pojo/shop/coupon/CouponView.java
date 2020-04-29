@@ -20,7 +20,7 @@ public class CouponView {
     /** 面额 */
     private BigDecimal denomination;
     /** 使用限制 0：无限制 1：有限制 */
-    private Integer useConsumeRestrict;
+    private Byte useConsumeRestrict;
     /** 满多少可用 */
     private BigDecimal leastConsume;
     /** 剩余数量 */

@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.FieldsUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
 import com.vpu.mp.service.foundation.util.Util;
+import com.vpu.mp.service.pojo.shop.coupon.CouponConstant;
 import com.vpu.mp.service.pojo.shop.coupon.CouponView;
 import com.vpu.mp.service.pojo.shop.market.sharereward.*;
 import com.vpu.mp.service.pojo.shop.overview.marketcalendar.CalendarAction;
@@ -323,7 +324,7 @@ public class ShareRewardService extends BaseShopConfigService {
                 com.vpu.mp.service.foundation.exception.Assert.notNull(couponView, JsonResultCode.CODE_DATA_NOT_EXIST, "优惠券 " + shareRule.getCoupon());
                 log.debug("分享有礼活动奖励规则，奖励奖项优惠券[id:{}]所剩库存为：{}", shareRule.getCoupon(), couponView.getSurplus());
                 // 校验活动定义的奖励数量是否满足奖品的库存数量
-                if (shareRule.getCouponNum() != null && shareRule.getCouponNum() > 0 && couponView.getSurplus() < shareRule.getCouponNum()) {
+                if (shareRule.getCouponNum() != null && shareRule.getCouponNum() > 0 && couponView.getUseConsumeRestrict().equals(CouponConstant.LIMIT_SURPLUS) && couponView.getSurplus() > 0 && couponView.getSurplus() < shareRule.getCouponNum()) {
                     log.error("优惠券[id:{}]库存数量 {} 小于分享有礼活动定义的奖励数量 {}！", couponView.getId(), couponView.getSurplus(), shareRule.getCouponNum());
                     com.vpu.mp.service.foundation.exception.Assert.isTrue(false, JsonResultCode.SHARE_REWARD_COUPON_NUM_LIMIT);
                 }
