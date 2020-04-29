@@ -594,7 +594,7 @@ public class FullReductionProcessorDao extends MrkingStrategyService {
                 case 3://3满折
                     if (fullReduction.getFullReduction().getRulesType().equals((byte)2)){
                         if (fullReductionRule.getAmount()<=totalNum){
-                            reduceMoney =fullReductionRule.getDiscount().multiply(new BigDecimal("0.1")).multiply(totalMoney);
+                            reduceMoney = BigDecimal.ONE.subtract(fullReductionRule.getDiscount().multiply(new BigDecimal("0.1"))).multiply(totalMoney);
                             logger().info("符合满{}件打{}折,件数{},减{}元",fullReductionRule.getAmount(),fullReductionRule.getDiscount(),totalNum,reduceMoney);
 
                         }
