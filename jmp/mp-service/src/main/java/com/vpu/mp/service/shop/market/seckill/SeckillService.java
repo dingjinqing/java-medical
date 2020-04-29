@@ -359,7 +359,7 @@ public class SeckillService extends ShopBaseService{
             .and(SEC_KILL_DEFINE.END_TIME.gt(date))
             .and(SEC_KILL_DEFINE.START_TIME.le(date))
             .and(SEC_KILL_PRODUCT_DEFINE.GOODS_ID.in(goodsIds))
-            .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
+            .orderBy(SEC_KILL_DEFINE.FIRST.desc(),SEC_KILL_DEFINE.CREATE_TIME.desc(),SEC_KILL_PRODUCT_DEFINE.SEC_KILL_PRICE.asc())
             .fetch()
             .stream()
             .collect(
