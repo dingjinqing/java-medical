@@ -761,7 +761,14 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         //处理会员卡
         calculate.calculateCardInfo(param, vo);
         //处理当前会员卡
-        BigDecimal memberDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultMemberCard(), bos, OrderConstant.D_T_MEMBER_CARD);
+        BigDecimal memberDiscount;
+        if (BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType()) && orderPackageSale != null) {
+            //打包一口价禁用会员卡折扣
+            memberDiscount = null;
+        } else {
+            memberDiscount = calculate.calculateOrderGoodsDiscount(vo.getDefaultMemberCard(), bos, OrderConstant.D_T_MEMBER_CARD);
+        }
+
         //处理优惠卷
         calculate.calculateCoupon(param, vo);
         //处理当前优惠卷
@@ -815,8 +822,10 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 vo.setBkOrderMoney(BigDecimalUtil.subtrac(goodsPricsAndShipping, orderPreSale.getTotalPreSaleMoney()));
                 currentMoneyPaid = orderPreSale.getTotalPreSaleMoney();
             }
+
+            //打包一口价
         }else if(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType()) && orderPackageSale != null){
-            currentMoneyPaid = orderPackageSale.getTotalPrice();
+            currentMoneyPaid = BigDecimalUtil.add(orderPackageSale.getTotalPrice(), vo.getShippingFee());
         }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(

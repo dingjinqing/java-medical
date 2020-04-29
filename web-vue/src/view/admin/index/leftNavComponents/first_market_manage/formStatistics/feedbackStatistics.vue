@@ -43,7 +43,7 @@
                 :key="index"
               >
                 <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
+                <td>1</td>
                 <td>
                   <div class="progress">
                     <el-progress
@@ -58,73 +58,7 @@
                 <td
                   colspan="3"
                   style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{sexTotal}}</span></td>
-              </tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr>
-                <td>(单选/选填)下拉</td>
-                <td>票数</td>
-                <td width="30%">占比</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item,index) in slideList"
-                :key="index"
-              >
-                <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
-                <td>
-                  <div class="progress">
-                    <el-progress
-                      :text-inside="true"
-                      :stroke-width="26"
-                      :percentage="item.percentage"
-                    ></el-progress>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  colspan="3"
-                  style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{slideTotal}}</span></td>
-              </tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr>
-                <td>(单选/选填)选项</td>
-                <td>票数</td>
-                <td width="30%">占比</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item,index) in chooseList"
-                :key="index"
-              >
-                <td>{{item.moduleType}}</td>
-                <td>{{item.votes}}</td>
-                <td>
-                  <div class="progress">
-                    <el-progress
-                      :text-inside="true"
-                      :stroke-width="26"
-                      :percentage="item.percentage"
-                    ></el-progress>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td
-                  colspan="3"
-                  style="text-align: right;height: 40px;line-height: 40px;padding-right: 20px"
-                ><span>本题有效票数合计：2</span><span style="margin-left: 20px">本题总票数合计：{{chooseTotal}}</span></td>
+                ><span>本题有效票数合计1：</span><span style="margin-left: 20px">本题总票数合计：1</span></td>
               </tr>
             </tbody>
           </table>
