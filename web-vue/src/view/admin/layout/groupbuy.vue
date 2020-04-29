@@ -42,7 +42,10 @@ export default {
       pinRulesApi(param).then(res => {
         console.log(res)
         if (res.error === 0) {
-          this.myRules = res.content
+          let content = JSON.parse(res.content)
+          console.log(content)
+          this.myRules = content.document
+          this.isUseDefault = content.is_use_default
         }
       })
     }
@@ -50,12 +53,21 @@ export default {
 }
 </script>
 
+<style>
+strong {
+  font-weight: bold;
+}
+</style>
 <style scoped>
 .group-buy-page {
   height: 100%;
   line-height: 1.4;
-  padding: 0 0.27rem;
+  padding: 0.2rem 0.27rem;
   background: #fff;
+  word-break: break-all;
+}
+strong {
+  font-weight: bold;
 }
 .group-buy-page h2 {
   color: #000;
