@@ -23,6 +23,14 @@ global.wxComponent({
     showCart: {
       type: Object,
       value: null
+    },
+    customDelete:{
+      type:Boolean,
+      value:false
+    },
+    customControlNum:{
+      type:Boolean,
+      value:false
     }
   },
 
@@ -91,7 +99,10 @@ global.wxComponent({
     },
     // 删除购物车
     delCartGoods(e) {
-      console.log(e.currentTarget.dataset.cartId)
+      if(this.data.customDelete){
+        this.triggerEvent('deletCart',{...this.data.goodsData})
+        return
+      }
       util.api(
         '/api/wxapp/cart/remove',
         res => {
@@ -106,7 +117,11 @@ global.wxComponent({
     // 更改购物车商品数量
     changeGoodsNum(e) {
       let { type } = e.currentTarget.dataset
-      let { cartId, cartNumber, productId, activityType, activityId } = this.data.goodsData
+      let { cartNumber, productId, activityType, activityId } = this.data.goodsData
+      if(this.data.customControlNum){
+        this.triggerEvent('cartNumChange',{type,...this.data.goodsData})
+        return
+      }
       util.api('/api/wxapp/cart/add', res => {
         if (res.error == 0) {
           this.triggerEvent('cartChange') //购物车改变触发
@@ -124,7 +139,7 @@ global.wxComponent({
     },
     changeCartInput(e){
       let cartNumber = parseInt(e.detail.value)
-      let { cartId, productId, activityType, activityId } = this.data.goodsData
+      let { productId, activityType, activityId } = this.data.goodsData
       if(!isNaN(cartNumber)){
 
         util.api('/api/wxapp/cart/add', res => {

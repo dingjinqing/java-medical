@@ -52,9 +52,9 @@ var user = {
   getNeedTemplateId(typs,cb){
     this.api('/api/wxapp/subscribe/getNeedTemplateId',(res)=>{
       if(res.error === 0){
-        // let templateIds = res.content.map(item=>item.templateId)
-        // console.log(templateIds)
         this.toSubscribeMessage(res.content,cb)
+      } else {
+        cb && cb()
       }
     },{typs:typs})
   },
