@@ -79,9 +79,7 @@
               label=0
               :disabled="isEditFlag"
               @change="rewardTypeChange"
-            >
-              {{$t('promoteList.giftGoods')}}
-            </el-radio>
+            >{{$t('promoteList.giftGoods')}}</el-radio>
             <el-radio
               v-model="form.rewardType"
               label=1
@@ -92,6 +90,7 @@
               v-model="form.rewardType"
               label=2
               :disabled="isEditFlag"
+              @change="rewardTypeChange"
             >{{$t('promoteList.giftCoupons')}}</el-radio>
             <el-col v-if="form.rewardType==0 || form.rewardType==1">
               <el-button
@@ -121,6 +120,7 @@
             <el-table
               v-if="form.rewardType==0 || form.rewardType==1"
               :data="form.goodsInfo"
+              key="goodsList"
               border
               style="width:60%"
             >
@@ -187,6 +187,7 @@
             <el-table
               v-if="form.rewardType==2"
               :data="form.coupon_info"
+              key="couponList"
               border
               style="width: 300px;"
             >
@@ -1234,11 +1235,10 @@ export default {
 
     // 切换奖励类型
     rewardTypeChange () {
-      if (this.form.rewardType === '0' || this.form.rewardType === '1') {
-        this.form.goodsInfo = []
-      } else {
-        this.form.coupon_info = []
-      }
+      this.form.goodsInfo = []
+      this.form.coupon_info = []
+      this.goodsIdList = []
+      this.couponIdList = []
     },
 
     // 校验活动库存
