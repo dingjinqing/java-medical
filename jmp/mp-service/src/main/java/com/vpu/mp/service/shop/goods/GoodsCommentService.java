@@ -89,8 +89,9 @@ public class GoodsCommentService extends ShopBaseService {
    * @param param 条件查询参数
    * @return 商品评价信息
    */
-  public PageResult<GoodsCommentVo> getPageList(GoodsCommentPageListParam param) {
-    //查询内容
+  public GoodsCommentListVo getPageList(GoodsCommentPageListParam param) {
+    GoodsCommentListVo listVo = new GoodsCommentListVo();
+      //查询内容
     SelectConditionStep<? extends Record> select =
             db().select(
                     COMMENT_GOODS.ID,
@@ -149,9 +150,93 @@ public class GoodsCommentService extends ShopBaseService {
             vo.setActName(actName);
         }
     }
-    return pageResult;
+    listVo.setPage(pageResult.getPage());
+    listVo.setDataList(pageResult.getDataList());
+    Integer allNum = getNum(new GoodsCommentPageListParam(){{
+        setCurrentPage(1);
+        setPageRows(9999999);
+    }});
+    listVo.setAllNum(allNum);
+      Integer toDoNum = getNum(new GoodsCommentPageListParam(){{
+          setFlag((byte)0);
+          setCurrentPage(1);
+          setPageRows(9999999);
+      }});
+      listVo.setToDoNum(toDoNum);
+      Integer passNum = getNum(new GoodsCommentPageListParam(){{
+          setFlag((byte)1);
+          setCurrentPage(1);
+          setPageRows(9999999);
+      }});
+      listVo.setPassNum(passNum);
+      Integer refuseNum = getNum(new GoodsCommentPageListParam(){{
+          setFlag((byte)2);
+          setCurrentPage(1);
+          setPageRows(9999999);
+      }});
+      listVo.setRefuseNum(refuseNum);
+      Integer topNum = getNum(new GoodsCommentPageListParam(){{
+          setIsTop((byte)1);
+          setCurrentPage(1);
+          setPageRows(9999999);
+      }});
+      listVo.setRefuseNum(refuseNum);
+      Integer showNum = getNum(new GoodsCommentPageListParam(){{
+          setIsShow((byte)1);
+          setCurrentPage(1);
+          setPageRows(9999999);
+      }});
+      listVo.setRefuseNum(refuseNum);
+    return listVo;
   }
-
+    public Integer getNum(GoodsCommentPageListParam param) {
+        //查询内容
+        SelectConditionStep<? extends Record> select =
+            db().select(
+                COMMENT_GOODS.ID,
+                COMMENT_GOODS.ORDER_SN,
+                COMMENT_GOODS.COMMSTAR,
+                COMMENT_GOODS.COMM_NOTE,
+                COMMENT_GOODS.COMM_IMG,
+                COMMENT_GOODS.CREATE_TIME,
+                COMMENT_GOODS.ANONYMOUSFLAG,
+                COMMENT_GOODS.BOGUS_USERNAME,
+                COMMENT_GOODS.COMMENT_AWARD_ID,
+                COMMENT_GOODS.IS_TOP,
+                COMMENT_GOODS.IS_SHOW,
+                GOODS.GOODS_NAME,
+                GOODS.GOODS_IMG,
+                USER.USER_ID,
+                USER.USERNAME,
+                USER.MOBILE,
+                COMMENT_AWARD.AWARD_TYPE,
+                COMMENT_AWARD.SCORE,
+                COMMENT_AWARD.ACCOUNT,
+                COMMENT_GOODS_ANSWER.CONTENT,
+                COMMENT_GOODS.FLAG,
+                GOODS_SPEC_PRODUCT.PRD_DESC)
+                .from(COMMENT_GOODS)
+                .leftJoin(GOODS)
+                .on(GOODS.GOODS_ID.eq(COMMENT_GOODS.GOODS_ID))
+                .leftJoin(USER)
+                .on(USER.USER_ID.eq(COMMENT_GOODS.USER_ID))
+                .leftJoin(COMMENT_AWARD)
+                .on(COMMENT_GOODS.COMMENT_AWARD_ID.eq(COMMENT_AWARD.ID))
+                .leftJoin(COMMENT_GOODS_ANSWER)
+                .on(COMMENT_GOODS.ID.eq(COMMENT_GOODS_ANSWER.COMMENT_ID))
+                .leftJoin(GOODS_SPEC_PRODUCT)
+                .on(COMMENT_GOODS.PRD_ID.eq(GOODS_SPEC_PRODUCT.PRD_ID))
+                .where(COMMENT_GOODS.DEL_FLAG.eq(GoodsCommentPageListParam.IS_DELETE_DEFAULT_VALUE));
+        //添加查询条件
+        this.buildOptions(select, param);
+        //从新到旧排序
+        select.orderBy(COMMENT_GOODS.CREATE_TIME.desc());
+        //整合分页信息
+        PageResult<GoodsCommentVo> pageResult =
+            this.getPageResult(
+                select, param.getCurrentPage(), param.getPageRows(), GoodsCommentVo.class);
+        return pageResult.getDataList().size();
+    }
   /**
    * 根据过滤条件构造对应的sql语句
    *
