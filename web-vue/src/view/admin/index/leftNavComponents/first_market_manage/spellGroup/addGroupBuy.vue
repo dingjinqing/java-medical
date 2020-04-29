@@ -1093,7 +1093,7 @@ export default {
         } else {
           this.form.activityTagId = []
         }
-        this.form.activityCopywriting = data.activityCopywriting
+        this.form.activityCopywriting = JSON.parse(data.activityCopywriting)
       }
     },
 
