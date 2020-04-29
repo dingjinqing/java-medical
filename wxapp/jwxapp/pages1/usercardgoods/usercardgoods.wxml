@@ -68,7 +68,7 @@
 	</view>
 </v-container>
 
-<v-selected bindcartChange="cartChange" show="{{showSelectedDialog}}" goods-data="{{cartData.cartGoodsList}}" />
+<v-selected bindcartChange="cartChange" show="{{showSelectedDialog}}" goods-data="{{cartData}}" />
 
 <v-spec-dialog
  wx:if="{{showSpec}}"
