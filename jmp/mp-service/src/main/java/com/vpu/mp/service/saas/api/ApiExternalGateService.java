@@ -16,6 +16,7 @@ import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.pos.PosReturnGoodsParam;
+import com.vpu.mp.service.pojo.shop.order.pos.PosReturnGoodsVo;
 import com.vpu.mp.service.pojo.shop.order.pos.PosVerifyOrderParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
 import com.vpu.mp.service.pojo.shop.order.write.operate.refund.RefundParam;
@@ -397,6 +398,7 @@ public class ApiExternalGateService extends MainBaseService {
         ExecuteResult executeResult = saas().getShopApp(gateParam.getShopId()).orderActionFactory.orderOperate(executeParam);
         if(executeResult == null || executeResult.isSuccess()) {
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+            result.setData(Util.toJson(new PosReturnGoodsVo(executeParam.getReturnMoney(), executeParam.getShippingFee())));
         }else {
             log.error("pos退款失败，executeResult：{}", executeResult);
             result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
