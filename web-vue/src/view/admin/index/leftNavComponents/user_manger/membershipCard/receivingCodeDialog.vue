@@ -80,7 +80,11 @@
           >
             <div>
               <span>{{$t('memberCard.first')}}:</span>
-              <span><a @click="getTemplate">{{$t('memberCard.downLoadTemp')}}</a></span>
+              <span><el-link
+            type="primary"
+            :underline="false"
+            :href="downLoadSrc"
+          >{{$t('memberCard.downLoadTemp')}}</el-link></span>
             </div>
             <div>
               <span>{{$t('memberCard.second')}}:</span>
@@ -207,7 +211,11 @@
           >
             <div>
               <span>{{$t('memberCard.first')}}:</span>
-              <span><a @click="getPwdTemplate">{{$t('memberCard.downLoadTemp')}}</a></span>
+              <span><el-link
+            type="primary"
+            :underline="false"
+            :href="downLoadSrc2"
+          >{{$t('memberCard.downLoadTemp')}}</el-link></span>
             </div>
             <div>
               <span>{{$t('memberCard.second')}}:</span>
@@ -345,7 +353,9 @@ export default {
         number: [
           { validator: validateCardNumber, trigger: 'blur' }
         ]
-      }
+      },
+      downLoadSrc: `${this.$imageHost}/temp/excel/zh_CN/member_card/Member_Card_Redemption_Code_Template.xlsx`,
+      downLoadSrc2: `${this.$imageHost}/temp/excel/zh_CN/member_card_pwd/Member_Card_Redemption_Code_Pwd_Template.xlsx`
     }
   },
   watch: {
@@ -358,6 +368,16 @@ export default {
 
       if (this.batchId) {
         this.getBatch(this.batchId)
+      }
+    },
+    lang (newData) {
+      if (newData === 'zh_CN') {
+        this.downLoadSrc = `${this.$imageHost}/temp/excel/zh_CN/member_card/Member_Card_Redemption_Code_Template.xlsx`
+        this.downLoadSrc2 = `${this.$imageHost}/temp/excel/zh_CN/member_card_pwd/Member_Card_Redemption_Code_Pwd_Template.xlsx`
+      }
+      if (newData === 'en_US') {
+        this.downLoadSrc = `${this.$imageHost}/temp/excel/en_US/member_card/Member_Card_Redemption_Code_Template.xlsx`
+        this.downLoadSrc2 = `${this.$imageHost}/temp/excel/en_US/member_card_pwd/Member_Card_Redemption_Code_Pwd_Template.xlsx`
       }
     }
   },
