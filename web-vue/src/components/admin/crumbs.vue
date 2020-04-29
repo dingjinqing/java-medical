@@ -116,6 +116,13 @@
         :underline="false"
         target="_blank"
       >幸运大抽奖使用教程</el-link>
+      <el-link
+        v-if="$route.name == 'kanjia'"
+        href="http://bbs.weipubao.cn/forum.php?mod=viewthread&tid=49&extra=page=1&filter=sortid&sortid=15"
+        type="primary"
+        :underline="false"
+        target="_blank"
+      >砍价活动使用教程</el-link>
     </span>
   </div>
 </template>
