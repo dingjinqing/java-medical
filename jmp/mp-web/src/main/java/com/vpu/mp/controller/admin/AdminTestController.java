@@ -246,4 +246,11 @@ public class AdminTestController extends AdminBaseController {
     	thirdPartyMsgServices.thirdPartService(order);
 		return success();
     }
+    
+    @RequestMapping(value = "/api/admin/test/expiring")
+    public JsonResult expiringCouponNotify() {
+    	logger().info("卡券到期提醒测试");
+    	saas.getShopApp(shopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
+		return success();
+    }
 }
