@@ -328,7 +328,7 @@ public class WxAppCardController extends WxAppBaseController {
 	 * 兑换商品删除
 	 */
 	@PostMapping("/api/wxapp/card/change/remove")
-	public JsonResult removeChoosedGoods(UserCheckedGoodsParam param) {
+	public JsonResult removeChoosedGoods(@RequestBody UserCheckedGoodsParam param) {
 		logger().info("兑换商品删除");
 		shop().user.wxUserCardService.exchangeSvc.removeChoosedGoods(param);
 		return success();
