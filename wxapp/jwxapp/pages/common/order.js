@@ -310,7 +310,7 @@ var order = {
         break
       }
     }
-    return isAward
+    return isAward 
   }
 };
 

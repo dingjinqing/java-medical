@@ -35,11 +35,6 @@ global.wxPage({
     let currentPage = this.data.pageParams ?
       this.data.pageParams.currentPage :
       1;
-    if (currentPage === 1) {
-      this.setData({
-        dataList: []
-      })
-    }
     util.api('/api/wxapp/packagesale/goodslist', res => {
       console.log(res)
       if (res.error === 0 && res.content) {

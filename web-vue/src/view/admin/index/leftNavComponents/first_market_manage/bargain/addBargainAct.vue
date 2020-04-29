@@ -15,6 +15,7 @@
           labelPosition='right'
           :rules="formRules"
           ref="form"
+          v-if="!ruleShow"
         >
           <el-form-item
             :label="$t('addBargainAct.bargainType')+':'"
@@ -619,13 +620,105 @@
             <el-form-item label="活动分享:">
               <actShare :shareConfig="shareConfig" />
             </el-form-item>
-          </div>
 
+            <!-- 同步打标签 -->
+            <el-form-item
+              label="同步打标签："
+              prop=""
+            >
+              <section>
+                <el-checkbox
+                  v-model="param.launchTag"
+                  :true-label="1"
+                  :false-label="0"
+                  :disabled="isEditFlag"
+                >给发起砍价用户打标签</el-checkbox>
+                <span
+                  class="el-icon-question"
+                  style="color: #666;"
+                ></span>
+                <span
+                  class="labelStyle"
+                  @click="selectLabel"
+                >选择标签</span>
+                <div v-if="pickLabel.length > 0">
+                  <p style="color: #999;">最多可设置3个标签</p>
+                  <div
+                    v-for="(item, index) in pickLabel"
+                    :key="index"
+                    class="labelContent"
+                  >
+                    {{item.value}}
+                    <i
+                      class="el-icon-close"
+                      @click="deleteLabel(index)"
+                      style="color: #999; margin-left: 3px;cursorL pointer;"
+                    ></i>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <el-checkbox
+                  v-model="param.attendTag"
+                  :true-label="1"
+                  :false-label="0"
+                  :disabled="isEditFlag"
+                >给帮砍价用户打标签</el-checkbox>
+                <span
+                  class="el-icon-question"
+                  style="color: #666;"
+                ></span>
+                <span
+                  class="labelStyle"
+                  @click="selectLabel1"
+                >选择标签</span>
+                <div v-if="pickLabel1.length > 0">
+                  <p style="color: #999;">最多可设置3个标签</p>
+                  <div
+                    v-for="(item, index) in pickLabel1"
+                    :key="index"
+                    class="labelContent"
+                  >
+                    {{item.value}}
+                    <i
+                      class="el-icon-close"
+                      @click="deleteLabel1(index)"
+                      style="color: #999; margin-left: 3px;cursorL pointer;"
+                    ></i>
+                  </div>
+                </div>
+              </section>
+            </el-form-item>
+
+            <el-form-item
+              label="活动规则说明："
+              prop=""
+              :required="true"
+            >
+              <el-button
+                type="primary"
+                size="small"
+                @click="settingRule"
+              >设置规则说明</el-button>
+            </el-form-item>
+          </div>
         </el-form>
 
+        <!-- 规则说明 -->
+        <ActivityRule
+          v-if="ruleShow"
+          @ActivityMsg="activityMsg"
+          :sendMsg="sendMsg"
+          :template="template"
+        />
       </div>
+
     </div>
-    <div class="footer">
+    <div
+      class="footer"
+      v-if="!ruleShow"
+    >
       <el-button
         @click="isEditFlag?updateSubmit():addSubmit()"
         type="primary"
@@ -645,6 +738,22 @@
       :chooseGoodsBack="goodsIdList"
       :singleElection="false"
     />
+
+    <!-- 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas"
+      :chooseLabelBack="param.launchTagId"
+    />
+
+    <!-- 帮砍用户 - 标签弹窗 -->
+    <LabelDialog
+      :dialogVisible="labelDialogVisible1"
+      :multipleLimit="3"
+      @resultLabelDatas="resultLabelDatas1"
+      :chooseLabelBack="param.attendTagId"
+    />
   </div>
 </template>
 
@@ -654,9 +763,11 @@ import actShare from '@/components/admin/marketManage/marketActivityShareSetting
 import AddCouponDialog from '@/components/admin/addCouponDialog'
 import choosingGoods from '@/components/admin/choosingGoods'
 import { addBargain, getBargainByIsd, updateBargain } from '@/api/admin/marketManage/bargain.js'
+import LabelDialog from '@/components/admin/labelDialog'
+import ActivityRule from '@/components/admin/activityRule'
 
 export default {
-  components: { addCoupon, actShare, AddCouponDialog, choosingGoods },
+  components: { addCoupon, actShare, AddCouponDialog, choosingGoods, LabelDialog, ActivityRule },
   mounted () {
     this.langDefault()
     if (this.$route.query.id > 0) {
@@ -687,6 +798,27 @@ export default {
           this.shareConfig = resultConfig
           this.shareConfig.shareImg = resultConfig.shareImgFullUrl
           this.param.needBindMobile = Boolean(res.content.needBindMobile)
+          this.param.activityCopywriting = JSON.parse(res.content.activityCopywriting)
+          this.param.launchTag = Boolean(res.content.launchTag)
+          this.param.attendTag = Boolean(res.content.attendTag)
+          if (res.content.launchTagList && res.content.launchTagList.length > 0) {
+            this.pickLabel = res.content.launchTagList
+            this.param.launchTagId = []
+            res.content.launchTagList.forEach(item => {
+              this.param.launchTagId.push(item.id)
+            })
+          } else {
+            this.param.launchTagId = []
+          }
+          if (res.content.attendTagList && res.content.attendTagList.length > 0) {
+            this.pickLabel1 = res.content.attendTagList
+            this.param.attendTagId = []
+            res.content.attendTagList.forEach(item => {
+              this.param.attendTagId.push(item.id)
+            })
+          } else {
+            this.param.attendTagId = []
+          }
           if (res.content.bargainMin === null && res.content.bargainMax === null) {
             this.param.bargainMin = ''
             this.param.bargainMax = ''
@@ -772,7 +904,18 @@ export default {
           shareImgAction: 1,
           shareImg: null
         },
-        bargainGoods: []
+        bargainGoods: [],
+
+        launchTag: false, // 发起砍价用户打标签
+        launchTagId: null, // 发起砍价用户标签id值
+        attendTag: false, // 帮忙砍价用户打标签
+        attendTagId: null, // 帮忙砍价用户打标签id值
+
+        // 规则说明
+        activityCopywriting: {
+          document: '',
+          isUseDefault: 0
+        }
       },
       shareConfig: {
         shareAction: 1,
@@ -780,6 +923,29 @@ export default {
         shareImgAction: 1,
         shareImg: null
       },
+
+      labelDialogVisible: false, // 标签弹窗
+      labelList: [], // 标签列表数据
+      pickLabel: [], // 选中标签列表
+
+      labelDialogVisible1: false,
+      labelList1: [],
+      pickLabel1: [],
+
+      ruleShow: false, // 规则组件
+      sendMsg: null, // 回显规则内容
+      // 默认模板内容
+      template: `
+        <div style="line-height: 1.5;">
+          <p>1、用户发起砍价，可以优先为自己砍价，分享给好友则默认再次进行一次砍价，金额和用户首次砍价金额相同;</p>
+          <p>2、邀请好友一起砍价，砍到底价即可领取商品；</p>
+          <p>3、对于同一个砍价，您只能帮助砍价一次;</p>
+          <p>4、每次砍价金额随机，参与好友越多越容易成功;</p>
+          <p>5、砍价成功，需要完善收货信息，商家才可进行发货;</p>
+          <p>6、商品数量有限，先到先得，当前砍价商品全部砍完，所有未砍到底价的用户均视为砍价失败，用户不可再发起该砍价，好友也不可再帮助用户砍价;</p>
+          <p>7、主办方可以根据本活动的实际举办情况对活动规则进行变动或者调整，相关调整解释权归商家所有，依法生效。</p>
+        </div>
+      `,
       isEditFlag: false,
       actId: null,
       couponImg: [],
@@ -906,6 +1072,77 @@ export default {
       }
       this.goodsRow = price
     },
+    // 标签弹窗-发起用户
+    selectLabel () {
+      if (this.isEditFlag === true) {
+        return false
+      }
+      this.labelDialogVisible = !this.labelDialogVisible
+    },
+
+    // 删除标签-发起用户
+    deleteLabel (index) {
+      if (this.isEditFlag === true) {
+        this.$message.warning('编辑状态不可操作')
+        return false
+      }
+      this.pickLabel.splice(index, 1)
+      this.param.launchTagId = []
+      this.pickLabel.forEach(item => {
+        this.param.launchTagId.push(item.id)
+      })
+    },
+
+    // 标签弹窗回调函数-发起用户
+    resultLabelDatas (row) {
+      this.pickLabel = row
+      this.param.launchTagId = []
+      this.pickLabel.forEach(item => {
+        this.param.launchTagId.push(item.id)
+      })
+    },
+
+    // 标签弹窗-帮砍用户
+    selectLabel1 () {
+      if (this.isEditFlag === true) {
+        return false
+      }
+      this.labelDialogVisible1 = !this.labelDialogVisible1
+    },
+
+    // 删除标签-帮砍用户
+    deleteLabel1 (index) {
+      if (this.isEditFlag === true) {
+        this.$message.warning('编辑状态不可操作')
+        return false
+      }
+      this.pickLabel1.splice(index, 1)
+      this.param.attendTagId = []
+      this.pickLabel1.forEach(item => {
+        this.param.attendTagId.push(item.id)
+      })
+    },
+
+    // 标签弹窗回调函数-帮砍用户
+    resultLabelDatas1 (row) {
+      this.pickLabel1 = row
+      this.param.attendTagId = []
+      this.pickLabel1.forEach(item => {
+        this.param.attendTagId.push(item.id)
+      })
+    },
+
+    // 设置规则说明
+    settingRule () {
+      this.ruleShow = true
+      this.sendMsg = this.param.activityCopywriting
+    },
+    // 规则说明回调函数
+    activityMsg (data) {
+      this.ruleShow = false
+      this.param.activityCopywriting = data
+    },
+
     addSubmit () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -928,6 +1165,9 @@ export default {
           })
           console.log(bargainGoods)
           this.param.bargainGoods = bargainGoods
+          this.param.activityCopywriting = JSON.stringify(this.param.activityCopywriting)
+          this.param.launchTag = Number(this.param.launchTag)
+          this.param.attendTag = Number(this.param.attendTag)
 
           if (this.validParam()) {
             addBargain(this.param).then((res) => {
@@ -955,6 +1195,11 @@ export default {
           this.param.mrkingVoucherId = this.getCouponIdsString(this.mrkingVoucherObjs)
           this.param.rewardCouponId = this.getCouponIdsString(this.rewardCouponObjs)
           this.param.needBindMobile = this.param.needBindMobile ? 1 : 0
+          this.param.activityCopywriting = JSON.stringify(this.param.activityCopywriting)
+          this.param.launchTag = Number(this.param.launchTag)
+          this.param.attendTag = Number(this.param.attendTag)
+          console.log(this.param)
+
           if (this.validParam()) {
             updateBargain(this.param).then((res) => {
               if (res.error === 0) {
@@ -994,7 +1239,7 @@ export default {
     },
     // 提交前校验
     validParam () {
-      if (!this.param.goodsId) {
+      if (this.param.bargainGoods.length === 0) {
         this.$message.warning(this.$t('addBargainAct.vaildGoodsSelect'))
         return false
       }
@@ -1214,5 +1459,21 @@ export default {
 }
 .settings {
   color: #5a8bff;
+}
+.labelStyle {
+  color: #5a8bff;
+  cursor: pointer;
+}
+.labelContent {
+  display: inline-block;
+  height: 30px;
+  background: rgba(235, 241, 255, 1);
+  border: 1px solid rgba(180, 202, 255, 1);
+  border-radius: 2px;
+  text-align: center;
+  line-height: 30px;
+  padding: 0 10px;
+  margin-right: 10px;
+  color: #666;
 }
 </style>

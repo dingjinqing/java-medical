@@ -4,12 +4,19 @@ import com.vpu.mp.config.ApiExternalGateConfig;
 import com.vpu.mp.db.main.tables.records.AppAuthRecord;
 import com.vpu.mp.db.main.tables.records.AppRecord;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.service.MainBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.Util;
 import com.vpu.mp.service.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.service.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncProductParam;
+import com.vpu.mp.service.pojo.shop.goods.pos.PosSyncStockParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
+import com.vpu.mp.service.pojo.shop.order.pos.PosVerifyOrderParam;
+import com.vpu.mp.service.pojo.shop.order.write.operate.OrderServiceCode;
+import com.vpu.mp.service.pojo.shop.order.write.operate.verify.verifyParam;
+import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,11 +216,17 @@ public class ApiExternalGateService extends MainBaseService {
         String service_name = param.getService_name();
         ApiJsonResult apiJsonResult = null;
         switch (service_name) {
-            case ApiExternalGateConfig.SERVICE_GOODS_LIST:
-                apiJsonResult = goodsList(param);
-                break;
             case ApiExternalGateConfig.SERVICE_POS_SYNC_PRODUCT:
                 apiJsonResult = posSyncProduct(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_POS_SYNC_STOCK:
+                apiJsonResult =posSyncStock(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_POS_RETURN_GOODS:
+                apiJsonResult = posSyncProduct(param);
+                break;
+            case ApiExternalGateConfig.SERVICE_POS_VERIFY_ORDER:
+                apiJsonResult = posVerifyOrder(param);
                 break;
             default:
                 apiJsonResult = new ApiJsonResult();
@@ -223,13 +236,6 @@ public class ApiExternalGateService extends MainBaseService {
         return apiJsonResult;
     }
 
-    private ApiJsonResult goodsList(ApiExternalGateParam gateParam) {
-        // param.getContent() 反序列化为对应的类型 =>GoodsListParam param
-        // saas.getShopApp(gateParam.getShopId()).goods.goodsList(param)
-        // 需要将成功数据或者错误情况的 errorCode，errorMsg data 封装成对应的ApiJsonResult返回
-
-        return new ApiJsonResult();
-    }
 
     /**
      * pos 同步商品信息(门店商品信息) 主要同步上下架和价格
@@ -239,16 +245,77 @@ public class ApiExternalGateService extends MainBaseService {
     private ApiJsonResult posSyncProduct(ApiExternalGateParam gateParam){
         PosSyncProductParam param = Util.parseJson(gateParam.getContent(), PosSyncProductParam.class);
         if (param == null) {
-            ApiJsonResult apiJsonResult = new ApiJsonResult();
-            apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
-            apiJsonResult.setMsg("content 内容参数错误");
-            return apiJsonResult;
+            return contentErrorResult();
         }
        return saas().getShopApp(gateParam.getShopId()).goods.posSyncProductMq(param);
     }
 
+    /**
+     * 同步门店库存
+     * @param gateParam
+     * @return
+     */
+    private ApiJsonResult posSyncStock(ApiExternalGateParam gateParam) {
+        PosSyncStockParam param = Util.parseJson(gateParam.getContent(),PosSyncStockParam.class);
+        if (param == null) {
+           return contentErrorResult();
+        }
+        return saas().getShopApp(gateParam.getShopId()).goods.posSyncStock(param);
+    }
+
+    private ApiJsonResult contentErrorResult(){
+        ApiJsonResult apiJsonResult = new ApiJsonResult();
+        apiJsonResult.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+        apiJsonResult.setMsg("content 内容参数错误");
+        return apiJsonResult;
+    }
 
     private void logPrinter(String app_id, String msg) {
         log.error("数据同步接口：" + ApiExternalGateConfig.APP_NAMES.get(app_id) + "：" + msg);
+    }
+
+    /**
+     * pos核销订单
+     * @param gateParam 参数
+     * @return result
+     */
+    private ApiJsonResult posVerifyOrder(ApiExternalGateParam gateParam) {
+        PosVerifyOrderParam param = Util.parseJson(gateParam.getContent(), PosVerifyOrderParam.class);
+        ApiJsonResult result = new ApiJsonResult();
+        if (param == null) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("content为空");
+            return result;
+        }
+        if(StringUtils.isBlank(param.getOrderSn())) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("参数order_sn为空或order_status不合法");
+            return result;
+        }
+        if(param.getOrderStatus() == null || !param.getOrderStatus().equals(OrderConstant.ORDER_WAIT_DELIVERY)) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("参数order_status非法");
+            return result;
+        }
+        OrderInfoRecord order = saas().getShopApp(gateParam.getShopId()).readOrder.orderInfo.getOrderByOrderSn(param.getOrderSn());
+        if(order == null ) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg("核销订单不存在");
+            return result;
+        }
+        verifyParam verifyParam = new verifyParam();
+        verifyParam.setOrderId(order.getOrderId());
+        verifyParam.setOrderSn(order.getOrderSn());
+        verifyParam.setIsCheck(false);
+        verifyParam.setAction((byte)OrderServiceCode.VERIFY.ordinal());
+        verifyParam.setIsMp(OrderConstant.IS_MP_POS);
+        ExecuteResult executeResult = saas().getShopApp(gateParam.getShopId()).orderActionFactory.orderOperate(verifyParam);
+        if(executeResult == null || executeResult.isSuccess()) {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SUCCESS);
+        }else {
+            result.setCode(ApiExternalGateConfig.ERROR_CODE_SYNC_FAIL);
+            result.setMsg((String)executeResult.getResult());
+        }
+        return result;
     }
 }

@@ -251,7 +251,8 @@ global.wxPage({
               showSalesNumber,
               customService,
               goodsDistribution,
-              roomDetailMpInfo
+              roomDetailMpInfo,
+              deliverFeeAddressVo,
             } = res.content
             let goodsMediaInfo = {
               goodsImgs, //商品图片
@@ -293,7 +294,8 @@ global.wxPage({
               goodsDescInfo,
               goodsGifts, // 赠品,
               goodsDistribution, //分销信息,
-              roomDetailMpInfo
+              roomDetailMpInfo,
+              deliverFeeAddressVo
             })
             this.setData({
               specParams
@@ -936,6 +938,11 @@ global.wxPage({
         startTime:announce.startTime.substring(5,16),
         price:parseFloat(announce.realPrice).toFixed(2) + (!isDefault ? '起' : '')
       }
+    })
+  },
+  addressChange({detail:addressData}){
+    this.setData({
+      'deliverFeeAddressVo.status':addressData.status
     })
   },
   /**

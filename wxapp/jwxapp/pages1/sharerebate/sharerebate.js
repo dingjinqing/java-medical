@@ -180,7 +180,7 @@ global.wxPage({
   onShareAppMessage: function () {
     let rebateConfig = {}
     let date = new Date();
-    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds
+    if(this.data.giveCoupon && this.data.checkedCouponIds && this.data.checkedCouponIds.length > 0) rebateConfig['couponIds'] = this.data.checkedCouponIds.join(',')
     rebateConfig['rebateTime'] = parseInt(date.getTime()/1000)
     rebateConfig['rebatePrice'] = this.data.productList.reduce((defaultData,item)=>{
       defaultData[item.prdId] = item.prdPrice

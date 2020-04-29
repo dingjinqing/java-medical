@@ -500,7 +500,8 @@ export default {
         goodsName: null,
         mobile: null,
         flag: -1,
-        isTop: 0
+        isTop: 0,
+        isShow: 0
       },
       starLevel: [
         { key: 0, value: '全部' },
@@ -674,6 +675,7 @@ export default {
       console.log(data)
       this.tabDefaultStatus = String(data.name)
       this.searchParams.isTop = data.name === '4' ? 1 : 0
+      this.searchParams.isShow = data.name === '5' ? 1 : 0
       this.searchParams.flag = -1
       if (['1', '2', '3'].includes(data.name)) {
         let flag = {

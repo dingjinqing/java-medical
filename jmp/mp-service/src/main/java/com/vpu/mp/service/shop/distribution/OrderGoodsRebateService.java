@@ -7,7 +7,6 @@ import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.BigDecimalUtil;
-import com.vpu.mp.service.pojo.shop.distribution.DistributionStrategyParam;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.rebate.OrderRebateVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
@@ -56,8 +55,7 @@ public class OrderGoodsRebateService extends ShopBaseService {
             result.add(record);
         }
         //成本控制
-        DistributionStrategyParam strategy = rebateRecords.get(0).getStrategy();
-        if(strategy.getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
+        if(rebateRecords.get(0).getStrategy().getCostProtection() == OrderConstant.YES && BigDecimalUtil.compareTo(goodsTotalRebateMoney, check) > 0) {
             BigDecimal limitRatio = BigDecimalUtil.divide(check, goodsTotalRebateMoney, RoundingMode.HALF_DOWN);
             for (OrderGoodsRebateRecord record: result) {
                 record.setTotalRebateMoney(BigDecimalUtil.multiply(record.getTotalRebateMoney(), limitRatio));

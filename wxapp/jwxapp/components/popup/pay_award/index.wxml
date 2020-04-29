@@ -27,10 +27,10 @@
             <block wx:if="{{item.actCode === 'voucher'}}">
               <view class="coupon-l view">￥<text class="text">{{item.denomination}}</text></view>
               <block wx:if="{{item.useConsumeRestrict === 1}}">
-                <view class="coupon-r view"><text class="text">满{{item.leastConsume}}减{{item.denomination}}</text></view>
+                <view class="coupon-r view"><text class="text">满{{item.leastConsume}}减￥{{item.denomination}}</text></view>
               </block>
               <block wx:else>
-                <view class="coupon-r view"><text class="text">优惠券减{{item.denomination}}</text></view>
+                <view class="coupon-r view"><text class="text">优惠券减￥{{item.denomination}}</text></view>
               </block>
             </block>
             <block wx:else>
