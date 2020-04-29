@@ -460,8 +460,8 @@ function launchAct(that) {
           });
         } else if (res.content.msg == 6) {
           util.showModal('提示', '您已发起快邀请好友助力吧', function () {
-            util.reLaunch({
-              url: '/pages/index/index'
+            that.setData({
+              share_good: true
             })
           });
         } else if (res.content.msg == 7) {
