@@ -768,7 +768,7 @@
       :dialogVisible="labelDialogVisible"
       :multipleLimit="3"
       @resultLabelDatas="resultLabelDatas"
-      :chooseLabelBack="form.activityTagId"
+      :chooseLabelBack="activityTagIdList"
     />
 
   </div>
@@ -782,7 +782,7 @@ import ImageDalog from '@/components/admin/imageDalog'
 import actShare from '@/components/admin/marketManage/marketActivityShareSetting'
 // import { getAllGoodsProductList } from '@/api/admin/brandManagement.js'
 // import { getGoodsInfosByGoodIds } from '@/api/admin/goodsManage/allGoods/allGoods'
-import { addGroupBuyActivity, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
+import { addGroupBuyActivity, getGroupBuyDetail, updateGroupBuy } from '@/api/admin/marketManage/spellGroup.js'
 import { getSelectGoods } from '@/api/admin/marketManage/distribution.js'
 import { updateCoupon } from '@/api/admin/marketManage/couponList.js'
 
@@ -796,7 +796,7 @@ export default {
     LabelDialog: () => import('@/components/admin/labelDialog'),
     ActivityRule: () => import('@/components/admin/activityRule')
   },
-  props: ['isEdite', 'editData'],
+  props: ['isEdite', 'editId'],
   filters: {
     formatLeastConsume (useConsumeRestrict, leastConsume) {
       if (useConsumeRestrict === 0) {
@@ -845,7 +845,7 @@ export default {
     // 自定义活动预告
     var validatePreTime = (rule, value, callback) => {
       var re = /^[1-9]\d*$/
-      if (!value) {
+      if ((value !== 0) && (value !== -1) && (value !== 1)) {
         callback(new Error('请选择活动预告类型'))
       } else if (value === 1 && this.form.preTimeValue === '') {
         callback(new Error('请填写活动预告时间'))
@@ -887,7 +887,7 @@ export default {
         stock: 0, // 活动总库存
         preTime: 1, // 活动预告
         preTimeValue: '24', // 预告时间值
-        activityTag: 0, // 同步打标签
+        activityTag: false, // 同步打标签
         activityTagId: null, // 标签id值
 
         // 规则说明
@@ -897,6 +897,7 @@ export default {
         }
       },
       goodsIdList: [],
+      activityTagIdList: [],
       // 校验表单
       fromRules: {
         name: [
@@ -937,7 +938,6 @@ export default {
 
       rewardCouponList: [],
       rewardCouponIds: [],
-      props: ['isEdite'],
       submitStatus: false,
       grouponType: [],
       isShowChoosingGoodsDialog: false,
@@ -991,7 +991,7 @@ export default {
   mounted () {
     // 初始化语言
     this.langDefault()
-    if (this.isEdite) {
+    if (this.isEdite === true) {
       this.editActivityInit()
       this.arrorFlag = false
     }
@@ -1041,60 +1041,63 @@ export default {
 
     // 编辑活动初始化
     editActivityInit () {
-      console.log('this.isEdite', this.isEdite)
-      if (this.isEdite) {
-        let data = this.editData
-        console.log(data, 'init data')
-        this.form.id = data.id
-        this.form.activityType = data.activityType
-        this.form.name = data.name
-        this.form.goodsId = data.goodsId
-        this.form.level = data.level
-        // this.getGoodsInfo(data.goodsId)
-        this.form.product = this.initEditProduct(data.goodsList)
-        this.form.isGrouperCheap = data.isGrouperCheap
-        this.form.startTime = data.startTime
-        this.form.endTime = data.endTime
-        this.form.validityDate = [data.startTime, data.endTime]
-        this.form.limitAmount = data.limitAmount
-        this.form.limitBuyNum = data.limitBuyNum
-        this.form.limitMaxNum = data.limitMaxNum
-        this.form.joinLimit = data.joinLimit
-        this.form.openLimit = data.openLimit
-        this.form.isDefault = data.isDefault
-        this.form.shippingType = data.shippingType
-        this.form.beginNum = data.beginNum
-        if (data.rewardCouponId) {
-          this.form.rewardCouponId = data.rewardCouponId.split(',')
-          this.rewardCouponIds = data.rewardCouponId.split(',')
-          this.getCouponList(this.rewardCouponIds.map(Number))
+      getGroupBuyDetail({ id: this.editId }).then(res => {
+        if (res.error === 0) {
+          let data = res.content
+          console.log(data, 'init data')
+          this.form.id = data.id
+          this.form.activityType = data.activityType
+          this.form.name = data.name
+          this.form.goodsId = data.goodsId
+          this.form.level = data.level
+          this.form.product = this.initEditProduct(data.goodsList)
+          this.form.isGrouperCheap = data.isGrouperCheap
+          this.form.startTime = data.startTime
+          this.form.endTime = data.endTime
+          this.form.validityDate = [data.startTime, data.endTime]
+          this.form.limitAmount = data.limitAmount
+          this.form.limitBuyNum = data.limitBuyNum
+          this.form.limitMaxNum = data.limitMaxNum
+          this.form.joinLimit = data.joinLimit
+          this.form.openLimit = data.openLimit
+          this.form.isDefault = data.isDefault
+          this.form.shippingType = data.shippingType
+          this.form.beginNum = data.beginNum
+          if (data.rewardCouponId) {
+            this.form.rewardCouponId = data.rewardCouponId.split(',')
+            this.rewardCouponIds = data.rewardCouponId.split(',')
+            this.getCouponList(this.rewardCouponIds.map(Number))
+          }
+          if (this.form.isGrouperCheap === 1) {
+            this.showGrouperPrice = true
+          }
+          this.form.share = data.share
+          // 活动预告
+          this.form.preTime = data.preTime
+          if (this.form.preTime > 0) {
+            this.form.preTimeValue = this.form.preTime
+            this.form.preTime = 1
+          } else if (this.form.preTime === 0) {
+            this.form.preTime = 24
+            this.form.preTime = 0
+          } else {
+            this.form.preTime = -1
+          }
+
+          // 标签id tagList
+          if (data.tagList && data.tagList.length > 0) {
+            this.pickLabel = data.tagList
+            this.activityTagIdList = []
+            data.tagList.forEach(item => {
+              this.activityTagIdList.push(item.id)
+            })
+          } else {
+            this.activityTagIdList = []
+          }
+          this.form.activityTag = Boolean(data.activityTag)
+          this.form.activityCopywriting = JSON.parse(data.activityCopywriting)
         }
-        if (this.form.isGrouperCheap === 1) {
-          this.showGrouperPrice = true
-        }
-        this.form.share = data.share
-        // 活动预告
-        this.form.preTime = data.preTime
-        if (this.form.preTime > 0) {
-          this.form.preTimeValue = this.form.preTime
-          this.form.preTime = 1
-        }
-        // 标签id tagList
-        let tagList = data.activityTagId.split(',')
-        let temp = tagList.map(Number)
-        console.log(tagList)
-        console.log(temp)
-        if (temp && temp.length > 0) {
-          this.pickLabel = temp
-          this.form.activityTagId = []
-          temp.forEach(item => {
-            this.form.activityTagId.push(item.id)
-          })
-        } else {
-          this.form.activityTagId = []
-        }
-        this.form.activityCopywriting = JSON.parse(data.activityCopywriting)
-      }
+      })
     },
 
     // 获取商品信息
@@ -1137,8 +1140,8 @@ export default {
           if (this.form.preTime === 1) {
             this.form.preTime = Number(this.form.preTimeValue)
           }
-
-          this.form.activityTagId = String(this.form.activityTagId)
+          this.form.activityTag = Number(this.form.activityTag)
+          this.form.activityTagId = String(this.activityTagIdList)
           this.form.activityCopywriting = JSON.stringify(this.form.activityCopywriting)
 
           // let goodsId = this.form.goodsId.join(',')
@@ -1403,20 +1406,19 @@ export default {
         return false
       }
       this.pickLabel.splice(index, 1)
-      this.form.activityTagId = []
+      this.activityTagIdList = []
       this.pickLabel.forEach(item => {
-        this.form.activityTagId.push(item.id)
-        console.log(this.form.activityTagId)
+        this.activityTagIdList.push(item.id)
+        console.log(this.activityTagIdList)
       })
     },
 
     // 标签弹窗回调函数
     resultLabelDatas (row) {
       this.pickLabel = row
-      this.form.activityTagId = []
+      this.activityTagIdList = []
       this.pickLabel.forEach(item => {
-        this.form.activityTagId.push(item.id)
-        console.log(this.form.activityTagId)
+        this.activityTagIdList.push(item.id)
       })
     },
 
