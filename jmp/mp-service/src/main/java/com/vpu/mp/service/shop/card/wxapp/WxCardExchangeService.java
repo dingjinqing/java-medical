@@ -138,6 +138,7 @@ public class WxCardExchangeService extends ShopBaseService {
 		checkedParam.setUserId(param.getUserId());
 		checkedParam.setProductId(param.getProductId());
 		checkedParam.setIdentityId(param.getCardNo());
+		checkedParam.setGoodsId(param.getGoodsId());
 		
 		CheckedGoodsCartRecord userCheckedGoods = userCheckedGoodsSvc.getUserCheckedGoods(checkedParam);
 		if(userCheckedGoods == null) {
