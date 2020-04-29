@@ -193,4 +193,16 @@ public class StoreGoodsService extends ShopBaseService{
         }
         batchStep.execute();
     }
+
+    /**
+     * 跟新门店商品规格库存
+     * @param storeId 门店id
+     * @param prdId 规格id
+     * @param number 规格数量
+     */
+    public void updatePrdNumForPosSyncStock(Integer storeId, Integer prdId,Integer number) {
+        db().update(STORE_GOODS).set(STORE_GOODS.PRODUCT_NUMBER,number)
+            .where(STORE_GOODS.PRD_ID.eq(prdId).and(STORE_GOODS.STORE_ID.eq(storeId)))
+            .execute();
+    }
 }
