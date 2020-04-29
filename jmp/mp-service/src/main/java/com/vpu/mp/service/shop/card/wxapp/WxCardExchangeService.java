@@ -170,8 +170,12 @@ public class WxCardExchangeService extends ShopBaseService {
 		
 		// 处理图片
 		for(UserCheckedGoodsVo goods: usercheckedList.dataList) {
-			goods.setPrdImg(domainConfig.imageUrl(goods.getPrdImg()));
-			goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+			if(!StringUtils.isBlank(goods.getPrdImg())) {
+				goods.setPrdImg(domainConfig.imageUrl(goods.getPrdImg()));
+			}
+			if(!StringUtils.isBlank(goods.getGoodsImg())) {
+				goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+			}
 		}
 		
 		vo.setGoodsList(usercheckedList);
