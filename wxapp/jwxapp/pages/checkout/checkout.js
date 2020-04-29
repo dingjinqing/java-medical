@@ -99,6 +99,7 @@ global.wxPage({
         if (res.error === 0) {
           let orderInfo = res.content
           this.setCardData(orderInfo)
+          console.log(orderEvent)
           this.setData({
             orderInfo,
             isAward:orderEvent.getIsAward(orderInfo)

@@ -268,7 +268,14 @@ global.wxComponent({
       value: 0
     },
     goodsNumber: Number,
-    roomId: String
+    roomId: String,
+    canShip:{
+      type:Boolean,
+      value:true,
+      observer (val) {
+        this.initFooter()
+      }
+    }
   },
   /**
    * 组件的初始数据
@@ -396,10 +403,12 @@ global.wxComponent({
             delete buttonData['buttonInfo']['left']
           }
         }
-        if (!this.data.goodsNumber) {
+        if (!this.data.goodsNumber || !this.data.canShip) {
+          let errorMessage = '商品已售罄'
+          if(!this.data.canShip) errorMessage='不可配送'
           buttonData['buttonInfo'] = {
             left: {
-              name: '商品已售罄',
+              name: errorMessage,
               event: ''
             },
           }
@@ -416,10 +425,12 @@ global.wxComponent({
         if (this.data.activity && this.data.activity.activityType === 10 && (!this.data.triggerButton || this.data.triggerButton === 'right')) {
           buttonData['buttonInfo']['right'].right = this.data.activity.preSaleType !== 1 ? `￥${this.data.productInfo.actProduct.depositPrice}` : ''
         }
-        if (!this.data.goodsNumber) {
+        if (!this.data.goodsNumber  || !this.data.canShip) {
+          let errorMessage = '商品已售罄'
+          if(!this.data.canShip) errorMessage='不可配送'
           buttonData['buttonInfo'] = {
             left: {
-              name: '商品已售罄',
+              name: errorMessage,
               event: ''
             },
           }
@@ -600,7 +611,7 @@ global.wxComponent({
     },
     setButtonStyle () {
       let activity = this.data.activity
-      if (!this.data.goodsNumber) {
+      if (!this.data.goodsNumber || !this.data.canShip) {
         this.setData({
           'buttonData.buttonInfo.left.style': 'background-color:#666'
         })
