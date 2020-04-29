@@ -237,6 +237,7 @@
 				 data-goods_id="{{goodsListItem.goodsId}}" 
 				 data-is_list="{{cardInfo.goodsList.length < 2 ? 1:2}}"
 				 bindtap='{{cardInfo.give_away_status == 2 ? "show_rebate" : "to_goods"}}'
+				 wx:if='{{goodsListIndex <= 1}}'
 				>
 					<image class="goods_img" src="{{imageUrl}}{{goodsListItem.goodsImg}}" />
 					<view class="goods_right">
