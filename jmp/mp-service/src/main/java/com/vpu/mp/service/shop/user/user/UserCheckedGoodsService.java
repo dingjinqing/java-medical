@@ -48,7 +48,9 @@ public class UserCheckedGoodsService extends ShopBaseService {
 		Condition condition = DSL.noCondition()
 			.and(TABLE.USER_ID.eq(param.getUserId()))
 			.and(TABLE.ACTION.eq(param.getAction()))
-			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()));
+			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()))
+			.and(TABLE.PRODUCT_ID.eq(param.getProductId()))
+			.and(TABLE.GOODS_ID.eq(param.getGoodsId()));
 		return condition;
 	}
 	
