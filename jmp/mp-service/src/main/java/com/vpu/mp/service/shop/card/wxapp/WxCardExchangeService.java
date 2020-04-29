@@ -9,6 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vpu.mp.config.DomainConfig;
 import com.vpu.mp.db.shop.tables.records.CheckedGoodsCartRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.MemberCardRecord;
@@ -44,6 +45,7 @@ public class WxCardExchangeService extends ShopBaseService {
 	@Autowired private ShopCommonConfigService shopCommonCfgSvc;
 	@Autowired private GoodsService goodsSvc;
 	@Autowired private UserCheckedGoodsService userCheckedGoodsSvc;
+	@Autowired private DomainConfig domainConfig;
 	
 	/**
 	 * 兑换商品列表
@@ -164,6 +166,13 @@ public class WxCardExchangeService extends ShopBaseService {
 		param.setAction(CardConstant.MCARD_TP_LIMIT);
 		CardCheckedGoodsVo vo = new CardCheckedGoodsVo();
 		PageResult<UserCheckedGoodsVo> usercheckedList = userCheckedGoodsSvc.getUsercheckedList(param);
+		
+		// 处理图片
+		for(UserCheckedGoodsVo goods: usercheckedList.dataList) {
+			goods.setPrdImg(domainConfig.imageUrl(goods.getPrdImg()));
+			goods.setGoodsImg(domainConfig.imageUrl(goods.getGoodsImg()));
+		}
+		
 		vo.setGoodsList(usercheckedList);
 		//		获取用户已勾选的
 		UserCheckedGoodsParam checkedGoodsParam = new UserCheckedGoodsParam();
