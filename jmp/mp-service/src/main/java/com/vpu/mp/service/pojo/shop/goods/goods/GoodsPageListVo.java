@@ -19,7 +19,7 @@ public class  GoodsPageListVo {
     private String goodsName;
     private String goodsImg;
     private String goodsSn;
-    private BigDecimal marketPrice;
+    private BigDecimal  marketPrice;
     private BigDecimal shopPrice;
     private Byte source;
     private Byte goodsType;
