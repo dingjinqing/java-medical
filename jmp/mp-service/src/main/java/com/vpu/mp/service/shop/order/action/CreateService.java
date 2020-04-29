@@ -822,7 +822,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 currentMoneyPaid = orderPreSale.getTotalPreSaleMoney();
             }
         }else if(BaseConstant.ACTIVITY_TYPE_PACKAGE_SALE.equals(param.getActivityType()) && orderPackageSale != null){
-            currentMoneyPaid = orderPackageSale.getTotalPrice();
+            currentMoneyPaid = BigDecimalUtil.add(orderPackageSale.getTotalPrice(), vo.getShippingFee());
         }
         //支付金额
         BigDecimal moneyPaid = BigDecimalUtil.addOrSubtrac(
