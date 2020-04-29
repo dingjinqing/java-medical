@@ -3,6 +3,7 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.db.shop.tables.records.UserAddressRecord;
 import com.vpu.mp.service.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.member.address.AddressParam;
+import com.vpu.mp.service.pojo.shop.member.address.ChooseAddressVo;
 import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,13 @@ public class WxAppAddressController extends WxAppBaseController {
     @PostMapping("/choose")
     public JsonResult chooseAddress(@RequestBody @Valid AddressParam param){
         WxAppSessionUser user =wxAppAuth.user();
-        UserAddressRecord address = shop().addressService.chooseAddress(user.getUserId(), param.getWxAddress());
+        param.setUserId(user.getUserId());
+        param.setLang(getLang());
+        ChooseAddressVo address = shop().addressService.chooseAddress(param);
         if (address==null){
             return fail();
         }
-        return success(address.into(UserAddressVo.class));
+        return success(address);
     }
 
 }

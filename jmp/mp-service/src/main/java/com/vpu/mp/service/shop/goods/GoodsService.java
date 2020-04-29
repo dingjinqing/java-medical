@@ -777,6 +777,15 @@ public class GoodsService extends ShopBaseService {
     }
 
     /**
+     * 根据id获取商品运费模板id
+     * @param goodsId 商品id
+     * @return id or null
+     */
+    public Integer getGoodsDeliverTemplateIdById(Integer goodsId){
+        return db().select(GOODS.DELIVER_TEMPLATE_ID).from(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchAny(GOODS.DELIVER_TEMPLATE_ID);
+    }
+
+    /**
      * 获取所有商品所关联的有效品牌id集合
      *
      * @return 品牌id集合
