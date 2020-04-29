@@ -1,9 +1,9 @@
 <view class="goods-item" bindtap="{{!enableNumEdit && 'goItem'}}">
   <view class="edit" wx:if="{{isEdit}}">
-    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
+    <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" data-goods-id="{{goodsData.goodsId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>
   <view class="all-image">
-    <image class="goods-image" src="{{goodsData.goodsImg}}"></image>
+    <image class="goods-image" src="{{goodsData.goodsImg}}" lazy-load="true"></image>
   </view>
   <view class="goods-info">
    <text class="goods-name">{{goodsData.goodsName}}</text>
@@ -32,5 +32,3 @@
    </view>
   </view>
 </view>
-
-
