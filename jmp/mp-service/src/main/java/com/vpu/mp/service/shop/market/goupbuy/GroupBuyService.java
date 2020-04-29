@@ -65,6 +65,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.db.shop.Tables.*;
+import static com.vpu.mp.db.shop.tables.SecKillProductDefine.SEC_KILL_PRODUCT_DEFINE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_DISABLE;
 import static com.vpu.mp.service.foundation.data.BaseConstant.ACTIVITY_STATUS_NORMAL;
 import static com.vpu.mp.service.pojo.shop.market.groupbuy.GroupBuyConstant.*;
@@ -437,7 +438,30 @@ public class GroupBuyService extends ShopBaseService {
      * @param date     当前时间
      * @return List<GroupBuyProductDefineRecord>
      */
-    public Map<Integer, List<Record2<Integer, BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date) {
+//    public Map<Integer, List<Record2<Integer, BigDecimal>>> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date) {
+//        return db().select(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+//            .from(GROUP_BUY_PRODUCT_DEFINE)
+//            .leftJoin(GROUP_BUY_DEFINE)
+//            .on(GROUP_BUY_DEFINE.ID.eq(GROUP_BUY_PRODUCT_DEFINE.ACTIVITY_ID))
+//            .where(GROUP_BUY_DEFINE.DEL_FLAG.eq(DelFlag.NORMAL_VALUE))
+//            .and(GROUP_BUY_DEFINE.STATUS.eq(ACTIVITY_STATUS_NORMAL))
+//            .and(GROUP_BUY_DEFINE.STOCK.notEqual((short) 0))
+//            .and(GROUP_BUY_DEFINE.GOODS_ID.in(goodsIds))
+//            .and(GROUP_BUY_DEFINE.START_TIME.lessThan(date))
+//            .and(GROUP_BUY_DEFINE.END_TIME.greaterThan(date))
+//            .orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_DEFINE.CREATE_TIME.desc(),GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
+//            .fetch()
+//            .stream()
+//            .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
+//    }
+    /**
+     * 根据goodsIds获取拼团定义
+     *
+     * @param goodsIds 商品id
+     * @param date     当前时间
+     * @return List<GroupBuyProductDefineRecord>
+     */
+    public Map<Integer, BigDecimal> getGroupBuyProductByGoodsIds(List<Integer> goodsIds, Timestamp date) {
         return db().select(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID, GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .from(GROUP_BUY_PRODUCT_DEFINE)
             .leftJoin(GROUP_BUY_DEFINE)
@@ -451,7 +475,11 @@ public class GroupBuyService extends ShopBaseService {
             .orderBy(GROUP_BUY_DEFINE.LEVEL.desc(),GROUP_BUY_DEFINE.CREATE_TIME.desc(),GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE)
             .fetch()
             .stream()
-            .collect(Collectors.groupingBy(x -> x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID)));
+            .collect(
+                Collectors
+                    .toMap(x->x.get(GROUP_BUY_PRODUCT_DEFINE.GOODS_ID),
+                        y->y.get( GROUP_BUY_PRODUCT_DEFINE.GROUP_PRICE),(olValue,newValue)->olValue)
+            );
     }
 
     private void outPutLog(Integer goodsId) {
