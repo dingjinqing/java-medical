@@ -445,7 +445,7 @@ public class GoodsMpService extends ShopBaseService {
      * @return
      */
     private boolean canOffSale(GoodsDetailMpParam param){
-        if (BaseConstant.ACTIVITY_TYPE_GROUP_DRAW.equals(param.getActivityType()) || BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
+        if (BaseConstant.ACTIVITY_TYPE_INTEGRAL.equals(param.getActivityType())) {
             return true;
         } else {
             return false;
