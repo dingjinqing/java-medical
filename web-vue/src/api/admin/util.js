@@ -62,9 +62,8 @@ export function pinLotteryRules (data) {
 // 小程序拼团规则接口
 export function pinRulesApi (data) {
   return service({
-    url: '/api/wxapp/groupbuy/copywriting',
-    data,
-    method: 'post'
+    url: '/api/wxapp/groupbuy/copywriting?shopId=' + data.shopId + '&id=' + data.id,
+    method: 'get'
   })
 }
 

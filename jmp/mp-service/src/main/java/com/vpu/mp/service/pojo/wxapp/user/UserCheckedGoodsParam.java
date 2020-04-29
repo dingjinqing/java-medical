@@ -28,6 +28,11 @@ public class UserCheckedGoodsParam {
 	 * 规格ID
 	 */
 	private Integer productId;
+	
+	/**
+	 * 商品ID
+	 */
+	private Integer goodsId;
     private Integer currentPage = Page.DEFAULT_CURRENT_PAGE;
     private Integer pageRows = Page.DEFAULT_PAGE_ROWS;
 }

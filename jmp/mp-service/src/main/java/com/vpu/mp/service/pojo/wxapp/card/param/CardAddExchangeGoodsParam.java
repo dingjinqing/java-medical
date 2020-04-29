@@ -23,7 +23,6 @@ public class CardAddExchangeGoodsParam {
 	 * 规格Id
 	 */
 	private Integer productId;
-	private Integer prdId;
 	
 	/**
 	 * 规格数量

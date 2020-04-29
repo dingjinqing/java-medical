@@ -797,7 +797,7 @@ public class FriendPromoteService extends ShopBaseService {
             .on(GOODS.GOODS_ID.eq(GOODS_SPEC_PRODUCT.GOODS_ID))
             .where(GOODS_SPEC_PRODUCT.PRD_ID.eq(prdId))
             .fetchOneInto(String.class);
-        if(goodsInfo.getGoodsImg()==null){
+        if(goodsInfo.getGoodsImg()==null|| "".equals(goodsInfo.getGoodsImg()) ||StringUtils.isNullOrEmpty(goodsInfo.getGoodsImg())){
             goodsInfo.setGoodsImg(goodsImage);
         }
         //图片地址添加域名

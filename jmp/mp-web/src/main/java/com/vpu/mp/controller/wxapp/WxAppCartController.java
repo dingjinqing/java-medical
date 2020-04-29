@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +31,27 @@ public class WxAppCartController extends WxAppBaseController {
     public JsonResult getCartList() {
         WxAppSessionUser user = wxAppAuth.user();
         WxAppCartBo cartList = shop().cart.getCartList(user.getUserId());
+        Iterator<WxAppCartGoods> iterator = cartList.getCartGoodsList().iterator();
+        cartList.setFullReductionGoodsMap(new HashMap<>());
+        cartList.setPurchasePriceGoodsMap(new HashMap<>());
+        while (iterator.hasNext()){
+            WxAppCartGoods next = iterator.next();
+            if (BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(next.getActivityType())||BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(next.getActivityType())){
+                if (cartList.getPurchasePriceGoodsMap().containsKey(next.getActivityId())){
+                    cartList.getPurchasePriceGoodsMap().get(next.getActivityId()).add(next);
+                }else {
+                    cartList.getPurchasePriceGoodsMap().put(next.getActivityId(), Collections.singletonList(next));
+                }
+                iterator.remove();
+            }else if (BaseConstant.ACTIVITY_TYPE_FULL_REDUCTION.equals(next.getActivityType())){
+                if (cartList.getFullReductionGoodsMap().containsKey(next.getActivityId())){
+                    cartList.getFullReductionGoodsMap().get(next.getActivityId()).add(next);
+                }else {
+                    cartList.getFullReductionGoodsMap().put(next.getActivityId(), Collections.singletonList(next));
+                }
+                iterator.remove();
+            }
+        }
         return success(cartList);
     }
 

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.PageResult;
+import com.vpu.mp.service.pojo.shop.member.card.CardConstant;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsParam;
 import com.vpu.mp.service.pojo.wxapp.user.UserCheckedGoodsVo;
 /**
@@ -47,7 +48,9 @@ public class UserCheckedGoodsService extends ShopBaseService {
 		Condition condition = DSL.noCondition()
 			.and(TABLE.USER_ID.eq(param.getUserId()))
 			.and(TABLE.ACTION.eq(param.getAction()))
-			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()));
+			.and(TABLE.IDENTITY_ID.eq(param.getIdentityId()))
+			.and(TABLE.PRODUCT_ID.eq(param.getProductId()))
+			.and(TABLE.GOODS_ID.eq(param.getGoodsId()));
 		return condition;
 	}
 	
@@ -76,6 +79,19 @@ public class UserCheckedGoodsService extends ShopBaseService {
 			.where(condition);
 		
 		return getPageResult(select, param.getCurrentPage(), param.getPageRows(), UserCheckedGoodsVo.class);
+	}
+
+	/**
+	 * 删除记录
+	 * @param param
+	 */
+	public void removeChoosedGoods(UserCheckedGoodsParam param) {
+		db().deleteFrom(TABLE)
+			.where(TABLE.IDENTITY_ID.eq(param.getIdentityId()))
+			.and(TABLE.PRODUCT_ID.eq(param.getProductId()))
+			.and(TABLE.GOODS_ID.eq(param.getGoodsId()))
+			.and(TABLE.ACTION.eq(CardConstant.MCARD_TP_LIMIT))
+			.execute();
 	}
 
 }

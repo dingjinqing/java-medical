@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 购物车业务类
@@ -45,6 +46,14 @@ public class WxAppCartBo {
      * 商品列表
      */
     List<WxAppCartGoods> cartGoodsList;
+    /**
+     * 满折满减 k活动id
+     */
+    Map<Integer,List<WxAppCartGoods>> FullReductionGoodsMap;
+    /**
+     * 加价购 k活动id
+     */
+    Map<Integer,List<WxAppCartGoods>> PurchasePriceGoodsMap;
     /**
      * 购物车 - 失效商品
      */

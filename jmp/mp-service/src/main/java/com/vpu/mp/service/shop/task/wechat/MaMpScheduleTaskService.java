@@ -108,7 +108,7 @@ public class MaMpScheduleTaskService extends ShopBaseService {
 			return null;
 		}
 		List<CouponWxVo> list = coupon.getExpiringCouponList();
-		String page = "pages/couponlist/couponlist";
+		String page = "pages/coupon/coupon";
 		String keyword1 = "尊敬的用户，您的优惠券";
 		String keyword11 = "即将到期";
 		for (CouponWxVo couponWxVo : list) {

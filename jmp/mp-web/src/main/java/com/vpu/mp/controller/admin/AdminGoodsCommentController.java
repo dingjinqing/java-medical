@@ -28,7 +28,7 @@ public class AdminGoodsCommentController extends AdminBaseController {
 	@PostMapping("/list")
 	public JsonResult getPageList(@RequestBody GoodsCommentPageListParam param) {
 
-		PageResult<GoodsCommentVo> pageResult = shop().goods.goodsComment.getPageList(param);
+		GoodsCommentListVo pageResult = shop().goods.goodsComment.getPageList(param);
 
 		return success(pageResult);
 	}
