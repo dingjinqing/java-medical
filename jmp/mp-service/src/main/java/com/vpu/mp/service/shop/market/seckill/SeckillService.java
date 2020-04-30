@@ -10,6 +10,7 @@ import com.vpu.mp.service.foundation.data.DelFlag;
 import com.vpu.mp.service.foundation.excel.ExcelFactory;
 import com.vpu.mp.service.foundation.excel.ExcelTypeEnum;
 import com.vpu.mp.service.foundation.excel.ExcelWriter;
+import com.vpu.mp.service.foundation.jedis.data.DBOperating;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.DateUtil;
 import com.vpu.mp.service.foundation.util.PageResult;
@@ -38,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.qrcode.QrCodeTypeEnum;
 import com.vpu.mp.service.pojo.wxapp.market.seckill.SecKillProductParam;
 import com.vpu.mp.service.pojo.wxapp.market.seckill.SeckillCheckVo;
 import com.vpu.mp.service.shop.goods.GoodsService;
+import com.vpu.mp.service.shop.goods.es.EsDataUpdateMqService;
 import com.vpu.mp.service.shop.image.QrCodeService;
 import com.vpu.mp.service.shop.member.MemberService;
 import jodd.util.StringUtil;
@@ -83,6 +85,9 @@ public class SeckillService extends ShopBaseService{
 
     @Autowired
     protected DomainConfig domainConfig;
+
+    @Autowired
+    private EsDataUpdateMqService esDataUpdateMqService;
 
     /**
      * 秒杀活动列表分页数据
@@ -224,6 +229,8 @@ public class SeckillService extends ShopBaseService{
             saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
         }
 
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(param.getGoodsId()), getShopId(), DBOperating.UPDATE);
+
         /** 操作记录 */
         saas().getShopApp(getShopId()).record.insertRecord(Arrays.asList(new Integer[] { RecordContentTemplate.MARKET_SECKILL_ADD.code }), new String[] {param.getName()});
     }
@@ -264,6 +271,7 @@ public class SeckillService extends ShopBaseService{
             db().executeUpdate(record);
         });
 
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
     }
@@ -278,6 +286,8 @@ public class SeckillService extends ShopBaseService{
             set(SEC_KILL_DEFINE.DEL_TIME,DateUtil.getLocalDateTime()).
             where(SEC_KILL_DEFINE.SK_ID.eq(skId)).
             execute();
+        SecKillDefineRecord record = getSeckillActById(skId);
+        esDataUpdateMqService.addEsGoodsIndex(Util.splitValueToList(record.getGoodsId()), getShopId(), DBOperating.UPDATE);
         //刷新goodsType
         saas.getShopApp(getShopId()).shopTaskService.seckillTaskService.monitorGoodsType();
     }

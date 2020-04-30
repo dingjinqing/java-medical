@@ -577,19 +577,20 @@ global.wxPage({
     let goods_id = e.currentTarget.dataset.goods_id;
     let is_list = e.currentTarget.dataset.is_list;
     let cardNo = this.data.cardInfo.cardNo
-    console.log(goods_id, is_list)
+    let carId = this.data.cardInfo.cardId
+    console.log(goods_id, is_list, this.data.cardInfo)
     //  跳转商品详情需要传参 util.jumpLink(`/pages/item/item?aid=${d.in_goods_id}&atp=4&gid=${d.goods_id}`);
     util.api('/api/wxapp/card/exchange/judge', function (res) {
       console.log(res)
-      // if (res.error == 0) {
-      //   util.navigateTo({
-      //     url: `/pages/item/item?gid=${goods_id}&aid=1&atp=${card_no}`,
-      //   })
-      // } else {
-      //   util.showModal('提示', res.message, function () {
-      //     util.jumpLink(`/pages/item/item?gid=${goods_id}`, 'navigateTo')
-      //   }, true, '取消', '原价购买')
-      // }
+      if (res.error == 0) {
+        util.navigateTo({
+          url: `/pages/item/item?gid=${goods_id}&cardNo=${cardNo}&cardId=${carId}&isChange=1`,
+        })
+      } else {
+        util.showModal('提示', res.message, function () {
+          util.jumpLink(`/pages/item/item?gid=${goods_id}`, 'navigateTo')
+        }, true, '取消', '原价购买')
+      }
     }, {
       cardNo: cardNo,
       goodsId: goods_id,
