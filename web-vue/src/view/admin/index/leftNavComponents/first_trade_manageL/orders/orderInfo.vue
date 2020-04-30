@@ -615,8 +615,8 @@
               <td>{{rebateItem.rebateLevel | getRebateLevel}}</td>
               <td>{{(rebateItem.rebatePercent * 100).toFixed(2)}}%</td>
               <td>{{(rebateItem.rebateMoney).toFixed(2)}}</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">待返利</td>
-              <td v-if="rebateIndex === 0" :rowspan="rebateList.length"></td>
+              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.orderStatus === 6 ? '返利完成' : '待返利'}}</td>
+              <td v-if="rebateIndex === 0" :rowspan="rebateList.length">{{order.orderStatus === 6 ? rebateItem.updateTime : ''}}</td>
             </tr>
           </tbody>
         </table>
