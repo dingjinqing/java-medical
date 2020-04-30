@@ -8,13 +8,22 @@
     <div class="setpTitle">
       <el-steps
         :active="step"
-        finish-status="success"
+        finish-status="finish"
         simple
         align-center
       >
-        <el-step :title="$t('purchase.setActivityRule')"></el-step>
-        <el-step :title="$t('purchase.setMainGoods')"></el-step>
-        <el-step :title="$t('purchase.setRedemptionGoods')"></el-step>
+        <el-step
+          icon="el-icon-edit"
+          :title="$t('purchase.setActivityRule')"
+        ></el-step>
+        <el-step
+          icon="el-icon-edit"
+          :title="$t('purchase.setMainGoods')"
+        ></el-step>
+        <el-step
+          icon="el-icon-edit"
+          :title="$t('purchase.setRedemptionGoods')"
+        ></el-step>
       </el-steps>
     </div>
     <!-- 活动规则 -->
