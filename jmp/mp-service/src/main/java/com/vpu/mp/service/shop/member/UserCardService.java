@@ -130,6 +130,7 @@ import com.vpu.mp.service.pojo.shop.member.card.GradeConditionJson;
 import com.vpu.mp.service.pojo.shop.member.card.RankCardToVo;
 import com.vpu.mp.service.pojo.shop.member.card.SearchCardParam;
 import com.vpu.mp.service.pojo.shop.member.card.UserCardConsumeBean;
+import com.vpu.mp.service.pojo.shop.member.card.base.UserCardConstant;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardCustomRights;
 import com.vpu.mp.service.pojo.shop.member.card.create.CardFreeship;
 import com.vpu.mp.service.pojo.shop.member.exception.CardReceiveFailException;
@@ -2624,6 +2625,14 @@ public class UserCardService extends ShopBaseService {
 		saas.getShopApp(getShopId()).couponPack.sendCouponPack(list);
 		logger().info("会员卡订单-支付完成(回调)-结束");
 		return strings.get(0);
+	}
+	
+	/**
+	 * 	删除所有的用户领取的该等级卡
+	 */
+	public void deleteAllUserGradeCard(Integer cardId) {
+		int num = userCardDao.setAllUserGradeCardDelete(cardId);
+		logger().info(num+"个用户的等级卡被废除");
 	}
 }
 
