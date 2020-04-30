@@ -221,4 +221,31 @@ public class AdminTestController extends AdminBaseController {
         return null;
 
     }
+
+    
+    
+    @RequestMapping(value = "/api/admin/test/live")
+    public JsonResult testLive() {
+    	logger().info("直播列表导入测试");
+        //List<WxMaLiveRoomInfo> getliveinfo = saas.getShopApp(245547).liveService.getliveinfo();
+        //saas.getShopApp(245547).liveService.getLiveList();
+        logger().info("直播列表导入测试结束");
+        return success();
+
+    }
+    
+    @RequestMapping(value = "/api/admin/test/sendOrderMsg")
+    public JsonResult testSendOrderMsg() {
+//    	OrderInfoRecord order = saas.getShopApp(245547).member.order.getOrderByOrderSn("P202004092146259689");
+//    	thirdPartyMsgServices.thirdPartService(order);
+		return success();
+    }
+    
+    @RequestMapping(value = "/api/admin/test/expiring")
+    public JsonResult expiringCouponNotify() {
+    	logger().info("卡券到期提醒测试");
+    	saas.getShopApp(shopId()).shopTaskService.maMpScheduleTaskService.expiringCouponNotify();
+		return success();
+    }
+
 }
