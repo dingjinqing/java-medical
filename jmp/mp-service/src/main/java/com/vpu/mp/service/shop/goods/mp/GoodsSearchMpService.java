@@ -182,12 +182,12 @@ public class GoodsSearchMpService extends ShopBaseService {
      */
     private PageResult<GoodsListMpBo> searchGoodsForBargainQrCode(GoodsSearchMpParam param) {
         int activityId = param.getActId();
-        Condition goodsBaseCondition = goodsMpService.getGoodsBaseCondition();
-        List<Integer> goodsIds = bargainService.getBargainCanUseGoodsIds(activityId, goodsBaseCondition);
-
+        List<Integer> goodsIds = bargainService.getBargainCanUseGoodsIds(activityId, goodsMpService.getGoodsBaseCondition());
+        param.setGoodsIds(goodsIds);
+        Condition condition = buildSearchCondition(param);
         List<SortField<?>> sortFields = buildSearchOrderFields(param);
 
-        return goodsMpService.findActivityGoodsListCapsulesDao(GOODS.GOODS_ID.in(goodsIds), sortFields, param.getCurrentPage(), param.getPageRows(), null);
+        return goodsMpService.findActivityGoodsListCapsulesDao(condition, sortFields, param.getCurrentPage(), param.getPageRows(), null);
     }
 
     /**

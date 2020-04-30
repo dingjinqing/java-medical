@@ -55,4 +55,6 @@ public class OrderRebateVo {
     private Integer returnNumber;
     @JsonIgnore
     private String fanliStrategy;
+    private String mobile;
+    private String realName;
 }
